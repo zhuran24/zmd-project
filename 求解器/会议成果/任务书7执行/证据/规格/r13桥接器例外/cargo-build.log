@@ -1,0 +1,7 @@
+$ cargo build --release -p kernel --target-dir '/home/zhuran24/zmd-research-fresh/求解器/target'
+EXIT_CODE=0
+STDOUT:
+
+STDERR:
+   Compiling kernel v0.1.0 (/home/zhuran24/zmd-research-fresh/求解器/crates/kernel)
+    Finished `release` profile [optimized] target(s) in 5.89s

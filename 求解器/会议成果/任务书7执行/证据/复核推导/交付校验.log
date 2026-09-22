@@ -1,0 +1,16 @@
+command: /usr/bin/python /home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核推导/validate_deliverables.py
+exit_status: 0
+stdout:
+{
+  "status": "pass",
+  "inputs": 15,
+  "deliverables": 3,
+  "findings": {
+    "unique": 13,
+    "refuted": 3,
+    "unresolved": 10
+  },
+  "local_links_checked": 30,
+  "errors": []
+}
+stderr:

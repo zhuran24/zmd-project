@@ -1,0 +1,6 @@
+{"variant": 0, "status": "counterexample", "period": {"category": "算术推论", "value": "190"}, "a": 20, "d_total": 20, "other": 20}
+{"variant": 1, "status": "counterexample", "period": {"category": "算术推论", "value": "190"}, "a": 20, "d_total": 20, "other": 20}
+{"variant": 2, "status": "inconclusive", "period": null, "a": 0, "d_total": 0, "other": 0}
+{"variant": 3, "status": "counterexample", "period": {"category": "算术推论", "value": "105"}, "a": 0, "d_total": 10, "other": 10}
+{"variant": 4, "status": "counterexample", "period": {"category": "算术推论", "value": "395"}, "a": 0, "d_total": 20, "other": 20}
+{"variant": 5, "status": "inconclusive", "period": null, "a": 0, "d_total": 0, "other": 0}

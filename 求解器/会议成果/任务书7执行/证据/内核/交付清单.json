@@ -1,0 +1,521 @@
+{
+  "status": "sealed",
+  "manifest_self_hash_omitted": true,
+  "files": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/README.md",
+      "sha256": "5b835b9435cc431a47f0ca4f4eaaacb50ec8be68a3ff805871c2b9ad10e0a74c",
+      "bytes": 5313
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/config.rs",
+      "sha256": "69676c866f8030ea877e662fdb85f600618f23edd99e4262699997adf9786f5a",
+      "bytes": 21407
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/cycle.rs",
+      "sha256": "d169699dde2e0e0a18b0ae8a441c9923811c0bc5330e317ed02ba5c68449200b",
+      "bytes": 38976
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/cycle_io.rs",
+      "sha256": "93afc189315738f11780b04ac4ff5cbabf93afb2fabc04233ef5c3dd63f4de30",
+      "bytes": 19460
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/engine.rs",
+      "sha256": "1c0f7bd68fef463bee4780f90be237e540f5e6fda680553a9fac9aa8933ec6d7",
+      "bytes": 50350
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/main.rs",
+      "sha256": "b38a6cf3afd455a7b440f4e86bb3c27e5684ff872d4c0a2bfa8b84368f9f651d",
+      "bytes": 14043
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/output.rs",
+      "sha256": "059ad007e43a2df0ab3a4d59a9264a6fd8371be75e08eb26d9f070f6738d12b2",
+      "bytes": 31772
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/polling.rs",
+      "sha256": "7d75aa6d73d0a76aaace36581e5aba0457db239cb7f3d59bb13c1610e551d26c",
+      "bytes": 18833
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/transition.rs",
+      "sha256": "8d2d45792827cd813efd3fd38a39dee0318b999c9d3c7262bea9203c61f1bbb8",
+      "bytes": 37605
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/warehouse.rs",
+      "sha256": "6d50eb1678921d2f3621149d60766463e6c4ce4fd57e0978ae1af7253557d5f5",
+      "bytes": 15607
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/audit_task7.py",
+      "sha256": "591f0226e01006416b25095cc9cfd0fce3af95ad0165938026a77a067d4b23fa",
+      "bytes": 7582
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/verify_all.py",
+      "sha256": "a490697e759dd169008f5323624af482c728f9a2d81d0263c2da5490d6038602",
+      "bytes": 4104
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/周期键读取审计.md",
+      "sha256": "b8b8d2cdd017f3d0c88d71f3885b865d0776c0c390fec645598fd1997ec9eea5",
+      "bytes": 8707
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/内核验收.md",
+      "sha256": "8d7048e1e30ee525259c677b82ce9852db04fb33b2fc5cf7cf0599d6880a3d85",
+      "bytes": 16751
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/规格修改稿-任务8.md",
+      "sha256": "ddf2cfa572b89a4632b27a2c90242cf27f0fb063959bec39c4bcb2cd18323831",
+      "bytes": 7550
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/audit_inputs.py",
+      "sha256": "55c87b4d3e5b56647649a259515f46ac243ae15321ef88a85949d219e398b3c2",
+      "bytes": 6059
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/before.json",
+      "sha256": "00290f517a5f21c20db6c46a039f78531569fbe84c67a54ca9954a888f188448",
+      "bytes": 41272
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/build-binding.json",
+      "sha256": "9c2532164c8feb494d94baaeca088d60398b8ffe70aa385e2d0e11a398eda302",
+      "bytes": 5097
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/checks.json",
+      "sha256": "e27aa004d92d13a73101695e68662501e38f237508bafa4ac813dbcc5c0fc508",
+      "bytes": 11052
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/code-changes.json",
+      "sha256": "57d9c44e49c8d3a1189cc718112e829348f1ec3b77a697353d6f52432ea5c2bc",
+      "bytes": 4702
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/commands.json",
+      "sha256": "d4e04ea623187982b809b76f5a382b82a447c25c087dd7d84f801fd22b8bfcc2",
+      "bytes": 372254
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/commands.log",
+      "sha256": "e6427f47ba0c9744c55acfedadfc67007589b23a99464204c9899eb23fa0cf94",
+      "bytes": 200618
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/cycle-results.json",
+      "sha256": "495df9b97b0419ca37d55dce49128f7175ebbed35c95940249a5798475125e49",
+      "bytes": 6205
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/final-check.log",
+      "sha256": "8dab72cf7716077968583cefc79c4e9369d21e32fe52ee13896ae0bfb79b52b4",
+      "bytes": 249
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/finalize_artifacts.py",
+      "sha256": "f7cb37cfbe3aed5bab0ee63a9b1e02695e0e52403751777ca96e09d27e82037c",
+      "bytes": 22000
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/formal-source-audit.json",
+      "sha256": "92756ffae26509a03e4f360b41910036b676e2e7ee761589b6e26405ea5f0a21",
+      "bytes": 1123
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/generate_cases.py",
+      "sha256": "edbf17c5bd043098fd738316344d9381335e614aca967b9629a89d197ac8c3df",
+      "bytes": 7961
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/historical/identity-delta-pre-audit.json",
+      "sha256": "9fc5bf8eb67023b15c6bd019e82376d8fa6cdd23205563e1dc65f7ac2d600ff0",
+      "bytes": 430334
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/input-reading-audit.json",
+      "sha256": "af4d3a58ef468a9167bca64771370652b02ecdff78dd9387f842749b055e79f1",
+      "bytes": 11160
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/negative/checkpoint-input.json",
+      "sha256": "75abdb8e5a6ef223d529189e2594d7686d2f0a72d7b9751bb8d54db3f67677eb",
+      "bytes": 109448
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/negative/load-stop-cycle.json",
+      "sha256": "59b34170b3f101c30730f316dae6ef2b994ca70b9bafe69872fa425934922408",
+      "bytes": 10579
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/negative/伪造真实反例.json",
+      "sha256": "e8424fc0c32cca38bdff05c8bd44192a342b8ded00f18cff1f11ec0353d6f75d",
+      "bytes": 247968
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/negative/删除证据范围.json",
+      "sha256": "3c35a622ecda5c5ba52140379b73d9520f096f547e0b1837c12fe051d27626f2",
+      "bytes": 242285
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/negative/判定排序错组-input.json",
+      "sha256": "96389f26b521149089e6183ddc309ecbf5ae3d373e59b6da23a683c6af7a3b30",
+      "bytes": 96526
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/negative/判定排序错组-result.json",
+      "sha256": "91569bb227f8d76c2decc905f05be83efa8738e7fdb0f38e8f9452b251284e57",
+      "bytes": 10240
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/negative/制造日程过晚-input.json",
+      "sha256": "f520c1c8435909f43326ef4c856ba80d7e51eda2732e13e68fbf351d04ccaeff",
+      "bytes": 96523
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/negative/制造日程过晚-result.json",
+      "sha256": "f21838b9b533f1c88044c42cc92ac9b951f05989bb28b686b3fa1b4ff538d503",
+      "bytes": 10485
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/negative/同种年龄分组-input.json",
+      "sha256": "792df698abddc090cb67b741ec5fe3e7f5630bd4982571dfa7274ea0e4dc9bd5",
+      "bytes": 96932
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/negative/无线多格歧义.json",
+      "sha256": "c6d266391e14e6ad1f1324a1d92aa1bfff2bdb225001ec025f6ed940a1ef248c",
+      "bytes": 139908
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/negative/植物出库域-input.json",
+      "sha256": "88b9af8ea348347856afd80ab5a1f6d820f3f0191ea061221bb2c4fa3a867bbd",
+      "bytes": 96519
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/negative/篡改入库账.json",
+      "sha256": "a4808b223c6fee713990be123e49086723aeaa2f63a6f36c8376a6a0987dfa2e",
+      "bytes": 250170
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/negative/篡改周期长度.json",
+      "sha256": "5c9c8cf5d11fc5cf9f37f98043362f129fca0d82ff3b4a938d637ec4c19dedc4",
+      "bytes": 247966
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/negative/篡改固定排序.json",
+      "sha256": "5941e54a790f9530e18b8c72620de0d674c72584884d8b0407519be6dadf3942",
+      "bytes": 250168
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/negative/篡改引用指纹.json",
+      "sha256": "03d259335cd65fa5c286416ad81e421f8a4c4b4da60a548240454593134349ac",
+      "bytes": 247966
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/negative/篡改证明指纹.json",
+      "sha256": "1a9c27191305b9713fb6f18171ec06c05a45ac39c46611bd4a024b123814d220",
+      "bytes": 247966
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/protected-files.json",
+      "sha256": "7b0722e5de9466326d30189bfd31198ad94dce1e6dc9c1d820848f8b9c236a09",
+      "bytes": 32351
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/reader-review.json",
+      "sha256": "3b9062e85d6b4f2c74f9924fa5ffd25d72569ddc325018fc11e4635a22ffb2a9",
+      "bytes": 556
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/relative/cycle.json",
+      "sha256": "b979c2005c30c4081e5b9576684ab2ff4eca2e0081117427b963403cca51fd64",
+      "bytes": 245610
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/run_command.py",
+      "sha256": "ec546772ec577cfe61399c11a596eca4c69b6bc28cd77dea1ff56f5d16e79f9b",
+      "bytes": 1377
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/budget-cycle.json",
+      "sha256": "3f0c70b4bd993a6221e5935bbafb6efa6b151d623be6a85b261e0f5c2b0f9af8",
+      "bytes": 109694
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/cache-off.json",
+      "sha256": "4cfa5777d3a76a72ead02d59dd863a9a15389a1a17099a7d97b03f7f7d999376",
+      "bytes": 250168
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/cache-on.json",
+      "sha256": "4cfa5777d3a76a72ead02d59dd863a9a15389a1a17099a7d97b03f7f7d999376",
+      "bytes": 250168
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/checkpoint-record.json",
+      "sha256": "c5dd1cebcbe2f188caaddafd11ca3781a4aef531c589c268619a3ea6897592b4",
+      "bytes": 232550
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/identity-full.json",
+      "sha256": "2ee7f0e0a71873e87ae91d3c85e98bf5b8fd6c3081838621e580d5bd535e4a7c",
+      "bytes": 309084
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/双门窗口恢复.json",
+      "sha256": "55989679b5940afb0d5fc93a7a73992a75728b977d07a78338e01aebb0858460",
+      "bytes": 1041163
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/同刻双箱争余量.json",
+      "sha256": "176286183974df333d4eb6b5c8934a48624113baf0275acd7f253780da03d61f",
+      "bytes": 207733
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/同种年龄分组-cycle.json",
+      "sha256": "08d5f3dc445cdfe094ace28cb5403378dd12aff59e01a1e455c0b16badba871a",
+      "bytes": 248285
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/成熟旧货重试.json",
+      "sha256": "d558d61e2907cc0907825a985cbdcbd6715977f6238bb0c397004ea9e2dfb97b",
+      "bytes": 209337
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/无线一满一可收.json",
+      "sha256": "270c835859f363b89c59397f410e0dc9814ce236968c8efa2e65d8973927deaf",
+      "bytes": 200842
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/无线全拒收.json",
+      "sha256": "e4ca30509fc5654b9c99da84b943fa1112dc83f9e45d08e2053a8e349a780097",
+      "bytes": 234664
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/无线多格全收.json",
+      "sha256": "1398f5981b52c43e4a8e94ade5ab1659e1cdb927c7271c7dc5f71ec0bb7e75b2",
+      "bytes": 199241
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/无线空箱.json",
+      "sha256": "858350d51d3ac35c670655b71a41e18897ea77072245882bcf36ad5f5df50341",
+      "bytes": 231645
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/无线部分接收.json",
+      "sha256": "bafecbe78615499887788dc0836d95da614cbcfdcb3661813e3cb85643720887",
+      "bytes": 238062
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/生产环带-cycle.json",
+      "sha256": "adcbb228cee464047971c424e9fa378ca9496de317c85f8505f818f06a91ec46",
+      "bytes": 320006
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/累计审计与窗口周期-cycle.json",
+      "sha256": "369c40661dd46181d2d2af775a549ba2efc1da58f9047520f1ce7dbd470a6e12",
+      "bytes": 284446
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/累计调低保留-cycle.json",
+      "sha256": "3a83a1d8ac06332cd1311db60066e65d7a05c251d6f8202f59e8900098c004f2",
+      "bytes": 258966
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/累计调低保留.json",
+      "sha256": "b64d7839e8451a664ab8dba33583dc01600429c267bcf441d9d11df4e9c7273a",
+      "bytes": 256540
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/累计调高资格.json",
+      "sha256": "7a3b786032861c0568373eae98d21a15214bf07d516c587bdc920be725afca0c",
+      "bytes": 294958
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/装载与普通制造.json",
+      "sha256": "2b6e6577870a7d75f3de264602f390378a782ea67900cdb29583ca3cd43efb0e",
+      "bytes": 591236
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/身份实际切换.json",
+      "sha256": "46fac8d4ac4b9a70a2bbba50b07a8978b15264d3f9f0a3137bb7384ab1e965b7",
+      "bytes": 310161
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/身份断边恢复.json",
+      "sha256": "a7357bbb8f2560dbba4c056f930977cd56b99671c8d51c608b1b143880e1651c",
+      "bytes": 282545
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/阻尼恢复.json",
+      "sha256": "5215e5c2024325fcd980fde3c9e5697e1f3e4e7fa382308914f3e06ec041b57a",
+      "bytes": 805308
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/静止成熟与暂停键-cycle.json",
+      "sha256": "bac5b1d0037248c3eb417bec7b2c7b5b2918603eea7fc5c2a119e1196b255987",
+      "bytes": 247966
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/静止成熟与暂停键-cycle.record.json",
+      "sha256": "ddfcd9459525f880c06a7eabf380583b6c43b31689e332f460cc58f0f8047573",
+      "bytes": 271437
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/sample-manifest.json",
+      "sha256": "6363abc4b264f42fca4be43df6d18f8de5545d8fcdb94ac12fb67bdd94043ffa",
+      "bytes": 4740
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/spec-merge-audit.json",
+      "sha256": "645e279766a97521a58b7199aedd2150022ab2ed8836a64f817220bdc1ada921",
+      "bytes": 25050
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/supplemental-checks.json",
+      "sha256": "2a0fc69d060c8e0a1f8b08f15779edb5f07dfd104263ddac0ffc12c5e0463081",
+      "bytes": 248
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/supplemental_checks.py",
+      "sha256": "c0e5329a26061674b35fd03dc821308729e333605c47faef1b9590e416870485",
+      "bytes": 1331
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/tool-availability.json",
+      "sha256": "bcac33fd1394339f9e2d0d421e1ff3d2d1f1dd152446a60c09f14cf237a4ad48",
+      "bytes": 286
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/validate_cases.py",
+      "sha256": "dcaeda47df589d00fb31689c9083f769f11cc112e68d682b134974f614c39ccb",
+      "bytes": 11652
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/交付清单.json",
+      "sha256": null,
+      "reason": "manifest self hash omitted"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/文件清单.md",
+      "sha256": "12b7d558b1faa64cf10657d6e00e7c2af3caaaccb53fa8bfb2c6fd6817cf008c",
+      "bytes": 11582
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/结构化结果.json",
+      "sha256": "e7edeb2605c1eb78a3ef2c79aed956f911c60d626ef6f01dc14d41828e4cf99c",
+      "bytes": 19671
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/调试后状态-读取摘要.json",
+      "sha256": "bc4c47980be6ef2ccf9ed196553639f6bd12f4ec4b39dd08607be757e96c6ee1",
+      "bytes": 1718
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/送料与接口-读取摘要.json",
+      "sha256": "109221300684e51f4c3426a73d1346289b8e545262e469c21e57f6a7403f0dd3",
+      "bytes": 2964
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/双门窗口恢复.json",
+      "sha256": "862dbe04ac471c3c914a5da3ac8f1d244504fd6b5bbab62c6819e432cf11217b",
+      "bytes": 165498
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/同刻双箱争余量.json",
+      "sha256": "a91fbac14ca5c2753aa00d653040bbf8152adf04ee2716723208d79fa5108761",
+      "bytes": 97001
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/成熟旧货重试.json",
+      "sha256": "6d576ab863d7a0b077497f25ba15b683bf27138f02afccd0511f5acdce5b5649",
+      "bytes": 96526
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/无线一满一可收.json",
+      "sha256": "99e04ed52d8fc144a1f413ddabbd224f06c11799e0bba964716d336cc68bd126",
+      "bytes": 92439
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/无线全拒收.json",
+      "sha256": "509d08cf57ba6b0251e48abadef106eae90c6cf5fff2eec164c533af35e86110",
+      "bytes": 91565
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/无线多格全收.json",
+      "sha256": "fea651dfa6cbe91ad0b48f26e856b2f30339447f3639cd954ab1770521a01f49",
+      "bytes": 91979
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/无线多格歧义.json",
+      "sha256": "3e8fed4d7974efb44f785e67036f46dbd6ffe3ac91302296b0ab7637ede2045e",
+      "bytes": 91992
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/无线空箱.json",
+      "sha256": "ddbf9d986b72737c0c7219d73f692a0acf9e8d18a135c5a0f7168904ce33de39",
+      "bytes": 90681
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/无线部分接收.json",
+      "sha256": "3c2918565ec16673309b020bc64d9277f7f7fd4e6154aa4fb01d9ea98a27987d",
+      "bytes": 92449
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/生产环带.json",
+      "sha256": "a212c71a64f32486a274958205427918b7f6ae013cd83eb8cd4b095ee5a80e17",
+      "bytes": 107250
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/累计审计与窗口周期.json",
+      "sha256": "aeefd79eead27613ba4f81e85ecfb6fa7d5f0585e8e7648c11d8052f40ee2d54",
+      "bytes": 110233
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/累计调低保留.json",
+      "sha256": "8f89a485c8eab58c2c6fcf66834f24b0aa42772bff99417b646f07cd0cf0e64d",
+      "bytes": 103485
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/累计调高资格.json",
+      "sha256": "f1b835af4a3938c81644b1b1186fcfffdccbd29b9d9d9be1feb4ee8b4ab439ee",
+      "bytes": 104066
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/装载与普通制造.json",
+      "sha256": "6ad3b9e25bbb25657abd9a74701e6e79c677806ffb5fae6f35dfcd68db402ac0",
+      "bytes": 141279
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/身份实际切换.json",
+      "sha256": "e64f05abed796a577c67627fb88eed741731e9866c077509baa98283936f85fd",
+      "bytes": 105981
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/身份断边恢复.json",
+      "sha256": "59b3864c6184c2f9022512003db046ff012c8ac1ff3c7565c379c98acc7b0e6d",
+      "bytes": 103487
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/阻尼恢复.json",
+      "sha256": "5a04d735d3fde1b275fe6c9b65a712ab64bf72a1bc0765c0a8dff8b17ad8a2eb",
+      "bytes": 125107
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/静止成熟与暂停键.json",
+      "sha256": "37c446288ece59bbb8075824be2f545127f5c2cf6d319812d5fba6f19defefb9",
+      "bytes": 96519
+    }
+  ]
+}

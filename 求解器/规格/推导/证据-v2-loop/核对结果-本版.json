@@ -1,0 +1,167 @@
+{
+  "all_16_recorded_inputs_unchanged": true,
+  "protected_files": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+      "sha256": "abc7a5867f6477eedb619c63a21c4a77144c57ad4567fdcfb696b3049d66a670",
+      "bytes": 7220,
+      "lines": 114
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解任务.txt",
+      "sha256": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+      "bytes": 1405,
+      "lines": 16
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解约束.txt",
+      "sha256": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6",
+      "bytes": 24783,
+      "lines": 126
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/候选约束.txt",
+      "sha256": "a0ac3f9c82f371132b7de29fe47e4c6c587904680bc2786523de0c825fd5efd9",
+      "bytes": 244240,
+      "lines": 862
+    }
+  ],
+  "review_snapshot_and_embedded_verdicts_match": true,
+  "denial_1_manual_trace_counts": {
+    "t4_net_change": -4,
+    "t5_net_change": -5,
+    "old_cache_release_is_not_new_completion": true
+  },
+  "denial_2_manual_trace_counts": [
+    {
+      "tick": 0,
+      "source": 1,
+      "before_cache_release": [
+        49,
+        50,
+        50,
+        50
+      ],
+      "release_old_cache": false,
+      "new_harvest_completions": 0,
+      "crush_completions": 0,
+      "net_change": 0
+    },
+    {
+      "tick": 1,
+      "source": 2,
+      "before_cache_release": [
+        49,
+        49,
+        50,
+        50
+      ],
+      "release_old_cache": false,
+      "new_harvest_completions": 0,
+      "crush_completions": 1,
+      "net_change": -1
+    },
+    {
+      "tick": 2,
+      "source": 3,
+      "before_cache_release": [
+        49,
+        49,
+        49,
+        50
+      ],
+      "release_old_cache": false,
+      "new_harvest_completions": 0,
+      "crush_completions": 2,
+      "net_change": -2
+    },
+    {
+      "tick": 3,
+      "source": 4,
+      "before_cache_release": [
+        49,
+        49,
+        49,
+        49
+      ],
+      "release_old_cache": false,
+      "new_harvest_completions": 0,
+      "crush_completions": 3,
+      "net_change": -3
+    },
+    {
+      "tick": 4,
+      "source": 1,
+      "before_cache_release": [
+        48,
+        49,
+        49,
+        49
+      ],
+      "release_old_cache": true,
+      "new_harvest_completions": 0,
+      "crush_completions": 4,
+      "net_change": -4
+    }
+  ],
+  "corrected_inventory_identity_cases": 2187,
+  "identity_scope": "代数恒等式；各整数取值不宣称是可到达的物理事件。无入库且无其他跨界交换时化为 delta K = delta A_H - delta A_G。",
+  "nonnegative_corrected_count_cases": 256,
+  "completion_offset_trace": [
+    {
+      "tick": 0,
+      "N": 40,
+      "H": 0,
+      "G": 0
+    },
+    {
+      "tick": 1,
+      "N": 41,
+      "H": 1,
+      "G": 0
+    },
+    {
+      "tick": 2,
+      "N": 40,
+      "H": 0,
+      "G": 1
+    }
+  ],
+  "first_clearance_not_total_net_loss": {
+    "0": 32,
+    "1": 80,
+    "16": 800
+  },
+  "capacity_arithmetic_not_safety_margin": [
+    {
+      "assumed_loss": 32,
+      "4800_minus_loss": 4768,
+      "difference_from_necessary_128": 4640
+    },
+    {
+      "assumed_loss": 80,
+      "4800_minus_loss": 4720,
+      "difference_from_necessary_128": 4592
+    },
+    {
+      "assumed_loss": 800,
+      "4800_minus_loss": 4000,
+      "difference_from_necessary_128": 3872
+    }
+  ],
+  "target_mineral_budget_exact": {
+    "battery": "3/5",
+    "capsule": "11/20",
+    "mineral_rate": 52,
+    "scope": "已达标循环的必要配平；不证明任意初态可达标。"
+  },
+  "formal_premise_quotes_exact_substrings": 40,
+  "document_structure_links_math_and_unproved_list": true,
+  "document_sha256": "27efd4ae6eafcf93c3592fa36c34eb0f107954652ef217cde898f2731bee8307",
+  "kernel_run": false,
+  "limits": [
+    "没有复演完整基地，也没有证明反馈收敛、全部相位或起法覆盖。",
+    "32、80、800 是首次清出算术，不是已认证的全程净损失上界。",
+    "脚本不验证全部自然语言推导；独立复核仍列为 U8。"
+  ]
+}

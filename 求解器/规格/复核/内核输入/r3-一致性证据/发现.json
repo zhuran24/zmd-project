@@ -1,0 +1,33 @@
+{
+  "findings": [
+    {
+      "id": "K3-r3-L3-01",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/runtime_example.py:177–187",
+      "claim": "运行状态的多个 Decision 只核 value，未解、非法状态或缺少依据的上下文仍被接受并继续运行。",
+      "evidence": "第三轮任务书 §3.C 要求 StateSeed 完整；内核输入 §1.1 要求 unresolved 的 value=null、basis 非空。五个内存变体均被检查器放行并执行四个时刻。",
+      "severity": "重要"
+    },
+    {
+      "id": "K3-r3-L3-02",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/runtime_example.py:65–78、175–183",
+      "claim": "初始可移动级及空仓库格仲裁使用固定样例答案，空源口的矛盾状态获通过，正确派生状态反被拒收。",
+      "evidence": "规则 L30 只在能移动通道的最高级轮询，L73 取货口连接所指仓库格；内核输入 §4 明定空格无货，§6.3 要求按物理守卫计算当前级。源口改指已解决身份的空格后，错误 current_level 与缺项仲裁表仍通过。",
+      "severity": "重要"
+    },
+    {
+      "id": "K3-r3-L3-03",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/test_runtime_input.py:131–153",
+      "claim": "回归没有将交付运行记录与完整重算结果比较，超容量库存和不一致摘要仍通过全部17项检查。",
+      "evidence": "规则 L17 规定制造格上限50；内核输出第27、37行要求核摘要与完整状态一致及事件守卫后效。将 t=2 存货格改为999件、摘要仓库量改为12345，完整回归仍返回通过。",
+      "severity": "重要"
+    },
+    {
+      "id": "K3-r3-L3-04",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/kernel_profile_v1参数赋值.json:4–6",
+      "claim": "参数赋值文件的 profile_source.sha256 与引用的当前受限模型声明不符。",
+      "evidence": "修改请求 §3.4 要求锁定实际读取的声明指纹；记录为 c05b2fe7…6eeae17，现文件为 e499b39b…cf236f。只读重新生成的唯一差异为该指纹，96项赋值及覆盖说明一致。",
+      "severity": "次要"
+    }
+  ],
+  "notes": "完整论证：/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/复核-r3-一致性.md。三例几何及原始0–3 tick轨迹独立复算一致；反例、脚本和逐轴对照位于 /home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/r3-一致性证据。未修改被复核文件；实际混做、下游生产及全称认证仍未覆盖。"
+}

@@ -1,0 +1,39 @@
+[
+  {
+    "stage": "initial checker syntax check, before repair",
+    "command": [
+      "python",
+      "-B",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/密排/核验.py"
+    ],
+    "exit_code": 1,
+    "stderr": "SyntaxError: unmatched ')' at 核验.py line 110",
+    "interpretation": "作者核验脚本括号错误，已修正；无内核装载或游戏步进，非额度错误。"
+  },
+  {
+    "stage": "final reproducible run",
+    "command": [
+      "python",
+      "-B",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/密排/生成.py"
+    ],
+    "cwd": "/home/zhuran24/zmd-research-fresh",
+    "exit_code": 0,
+    "stdout": "{\"units\": 235, \"routes\": 68, \"ports\": 542, \"placed_machines\": 12, \"kinds\": {\"种植机\": 2, \"采种机\": 2, \"粉碎机\": 2, \"供电桩\": 8, \"封装机\": 3, \"协议储存箱\": 2, \"灌装机\": 3, \"协议核心\": 1, \"仓库取货口\": 46, \"传送带\": 162, \"桥接器\": 4}}\n",
+    "stderr": "",
+    "interpretation": "坐标生成/静态几何及算术核查，不是完整游戏轨迹认证。"
+  },
+  {
+    "stage": "final reproducible run",
+    "command": [
+      "python",
+      "-B",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/密排/核验.py"
+    ],
+    "cwd": "/home/zhuran24/zmd-research-fresh",
+    "exit_code": 0,
+    "stdout": "{\"status\": \"pass\", \"checks\": 33, \"metrics\": {\"unit_counts\": {\"种植机\": 2, \"采种机\": 2, \"粉碎机\": 2, \"供电桩\": 8, \"封装机\": 3, \"协议储存箱\": 2, \"灌装机\": 3, \"协议核心\": 1, \"仓库取货口\": 46, \"传送带\": 162, \"桥接器\": 4}, \"occupied_cells\": 697, \"physical_transport_cells\": 166, \"transport_slots\": 170, \"channels\": 182, \"external_interfaces\": 92, \"plant_transport_slots\": {\"荞花\": 20, \"砂叶\": 22}, \"product_transport_slots\": 76, \"product_physical_transport_cells\": 72, \"product_service\": [{\"route\": \"M213_成品\", \"length\": 15, \"components\": 3, \"damping\": 3, \"each_segment_capacity\": \"1\", \"source_max_completion_rate\": \"1/5\", \"source_queue_empty_start_upper\": 2, \"in_flight_empty_start_upper\": 4, \"product_to_box_delay_upper\": 16, \"product_to_warehouse_delay_upper\": 21, \"unrestricted_physical_inflight_upper\": 15, \"full_initial_output_transient\": \"finite; source output<=50 and cache<=1; after receiver starts service source queue drains\"}, {\"route\": \"M214_成品\", \"length\": 7, \"components\": 3, \"damping\": 3, \"each_segment_capacity\": \"1\", \"source_max_completion_rate\": \"1/5\", \"source_queue_empty_start_upper\": 2, \"in_flight_empty_start_upper\": 2, \"product_to_box_delay_upper\": 8, \"product_to_warehouse_delay_upper\": 13, \"unrestricted_physical_inflight_upper\": 7, \"full_initial_output_transient\": \"finite; source output<=50 and cache<=1; after receiver starts service source queue drains\"}, {\"route\": \"M215_成品\", \"length\": 16, \"components\": 5, \"damping\": 5, \"each_segment_capacity\": \"1\", \"source_max_completion_rate\": \"1/5\", \"source_queue_empty_start_upper\": 2, \"in_flight_empty_start_upper\": 4, \"product_to_box_delay_upper\": 17, \"product_to_warehouse_delay_upper\": 22, \"unrestricted_physical_inflight_upper\": 16, \"full_initial_output_transient\": \"finite; source output<=50 and cache<=1; after receiver starts service source queue drains\"}, {\"route\": \"M216_成品\", \"length\": 15, \"components\": 3, \"damping\": 3, \"each_segment_capacity\": \"1\", \"source_max_completion_rate\": \"1/5\", \"source_queue_empty_start_upper\": 2, \"in_flight_empty_start_upper\": 4, \"product_to_box_delay_upper\": 16, \"product_to_warehouse_delay_upper\": 21, \"unrestricted_physical_inflight_upper\": 15, \"full_initial_output_transient\": \"finite; source output<=50 and cache<=1; after receiver starts service source queue drains\"}, {\"route\": \"M217_成品\", \"length\": 7, \"components\": 3, \"damping\": 3, \"each_segment_capacity\": \"1\", \"source_max_completion_rate\": \"1/5\", \"source_queue_empty_start_upper\": 2, \"in_flight_empty_start_upper\": 2, \"product_to_box_delay_upper\": 8, \"product_to_warehouse_delay_upper\": 13, \"unrestricted_physical_inflight_upper\": 7, \"full_initial_output_transient\": \"finite; source output<=50 and cache<=1; after receiver starts service source queue drains\"}, {\"route\": \"M218_成品\", \"length\": 16, \"components\": 5, \"damping\": 5, \"each_segment_capacity\": \"1\", \"source_max_completion_rate\": \"1/5\", \"source_queue_empty_start_upper\": 2, \"in_flight_empty_start_upper\": 4, \"product_to_box_delay_upper\": 17, \"product_to_warehouse_delay_upper\": 22, \"unrestricted_physical_inflight_upper\": 16, \"full_initial_output_transient\": \"finite; source output<=50 and cache<=1; after receiver starts service source queue drains\"}], \"L\": 0, \"U\": 1113, \"full_layout_certified\": false, \"game_execution_performed\": false}}\n",
+    "stderr": "",
+    "interpretation": "坐标生成/静态几何及算术核查，不是完整游戏轨迹认证。"
+  }
+]

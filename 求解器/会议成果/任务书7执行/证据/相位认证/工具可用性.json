@@ -1,0 +1,8 @@
+{
+  "date": "2026-09-21",
+  "requested_tool": "StructuredOutput",
+  "discovery": "ALL_TOOLS按名称和描述搜索StructuredOutput及structured.output",
+  "matched_tools": [],
+  "available": false,
+  "delivery": "结果.json及最终正文输出同schema JSON，供转发工作流提交；不声称调用了缺席工具。"
+}

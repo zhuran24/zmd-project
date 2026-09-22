@@ -1,0 +1,249 @@
+{
+  "binary_sha256": "6fec86994d899dd58ee666d46ebb5c6f0be0c3d076efac0685f40452781fb41f",
+  "cases": [
+    {
+      "name": "benchmark_brick_60",
+      "units": 57,
+      "pc": 97,
+      "input_sha256": "6129cf2ece47c144520107193df19f419203a81de5d03da2aac430b32493b022",
+      "runs": [
+        {
+          "ms_per_tick": 0.58634625,
+          "engine": {
+            "completed_batches": 0,
+            "elapsed_ns": "7036155",
+            "final_inventory": {
+              "源矿": 80000,
+              "砂叶": 80000,
+              "砂叶种子": 80000,
+              "荞花": 80000,
+              "荞花种子": 80000,
+              "蓝铁矿": 80000,
+              "高容谷地电池": 28
+            },
+            "output": "disabled",
+            "statistics": {
+              "completed": 1,
+              "inconclusive": 0,
+              "stopped": 0
+            },
+            "status": "completed",
+            "ticks": 12
+          }
+        },
+        {
+          "ms_per_tick": 0.8507653333333334,
+          "engine": {
+            "completed_batches": 0,
+            "elapsed_ns": "10209184",
+            "final_inventory": {
+              "源矿": 80000,
+              "砂叶": 80000,
+              "砂叶种子": 80000,
+              "荞花": 80000,
+              "荞花种子": 80000,
+              "蓝铁矿": 80000,
+              "高容谷地电池": 28
+            },
+            "output": "disabled",
+            "statistics": {
+              "completed": 1,
+              "inconclusive": 0,
+              "stopped": 0
+            },
+            "status": "completed",
+            "ticks": 12
+          }
+        },
+        {
+          "ms_per_tick": 0.8463362499999999,
+          "engine": {
+            "completed_batches": 0,
+            "elapsed_ns": "10156035",
+            "final_inventory": {
+              "源矿": 80000,
+              "砂叶": 80000,
+              "砂叶种子": 80000,
+              "荞花": 80000,
+              "荞花种子": 80000,
+              "蓝铁矿": 80000,
+              "高容谷地电池": 28
+            },
+            "output": "disabled",
+            "statistics": {
+              "completed": 1,
+              "inconclusive": 0,
+              "stopped": 0
+            },
+            "status": "completed",
+            "ticks": 12
+          }
+        }
+      ],
+      "median_ms": 0.8463362499999999,
+      "threshold_ms": 1,
+      "all_within_target": true
+    },
+    {
+      "name": "benchmark_candidate_b",
+      "units": 535,
+      "pc": 630,
+      "input_sha256": "b66b4d69d7b930a27a6ef7879ab104afa39cfaa33348eccddd3d40f6840d52a8",
+      "runs": [
+        {
+          "ms_per_tick": 17.245435333333333,
+          "engine": {
+            "completed_batches": 0,
+            "elapsed_ns": "206945224",
+            "final_inventory": {
+              "源矿": 85850,
+              "砂叶": 80000,
+              "砂叶种子": 80000,
+              "荞花": 80000,
+              "荞花种子": 80000,
+              "蓝铁矿": 85100
+            },
+            "output": "disabled",
+            "statistics": {
+              "completed": 1,
+              "inconclusive": 0,
+              "stopped": 0
+            },
+            "status": "completed",
+            "ticks": 12
+          }
+        },
+        {
+          "ms_per_tick": 18.218400166666665,
+          "engine": {
+            "completed_batches": 0,
+            "elapsed_ns": "218620802",
+            "final_inventory": {
+              "源矿": 85850,
+              "砂叶": 80000,
+              "砂叶种子": 80000,
+              "荞花": 80000,
+              "荞花种子": 80000,
+              "蓝铁矿": 85100
+            },
+            "output": "disabled",
+            "statistics": {
+              "completed": 1,
+              "inconclusive": 0,
+              "stopped": 0
+            },
+            "status": "completed",
+            "ticks": 12
+          }
+        },
+        {
+          "ms_per_tick": 17.337984083333335,
+          "engine": {
+            "completed_batches": 0,
+            "elapsed_ns": "208055809",
+            "final_inventory": {
+              "源矿": 85850,
+              "砂叶": 80000,
+              "砂叶种子": 80000,
+              "荞花": 80000,
+              "荞花种子": 80000,
+              "蓝铁矿": 85100
+            },
+            "output": "disabled",
+            "statistics": {
+              "completed": 1,
+              "inconclusive": 0,
+              "stopped": 0
+            },
+            "status": "completed",
+            "ticks": 12
+          }
+        }
+      ],
+      "median_ms": 17.337984083333335,
+      "threshold_ms": 20,
+      "all_within_target": true
+    },
+    {
+      "name": "benchmark_brick",
+      "units": 81,
+      "pc": 100,
+      "input_sha256": "ba51cd30be879860d09e517970cbcf3ba643b3f97eaa4030c234f37f222f2cbf",
+      "runs": [
+        {
+          "ms_per_tick": 2.2283976666666665,
+          "engine": {
+            "completed_batches": 0,
+            "elapsed_ns": "26740772",
+            "final_inventory": {
+              "源矿": 80900,
+              "砂叶": 80000,
+              "砂叶种子": 80000,
+              "荞花": 80000,
+              "荞花种子": 80000,
+              "蓝铁矿": 80600
+            },
+            "output": "disabled",
+            "statistics": {
+              "completed": 1,
+              "inconclusive": 0,
+              "stopped": 0
+            },
+            "status": "completed",
+            "ticks": 12
+          }
+        },
+        {
+          "ms_per_tick": 2.6583158333333334,
+          "engine": {
+            "completed_batches": 0,
+            "elapsed_ns": "31899790",
+            "final_inventory": {
+              "源矿": 80900,
+              "砂叶": 80000,
+              "砂叶种子": 80000,
+              "荞花": 80000,
+              "荞花种子": 80000,
+              "蓝铁矿": 80600
+            },
+            "output": "disabled",
+            "statistics": {
+              "completed": 1,
+              "inconclusive": 0,
+              "stopped": 0
+            },
+            "status": "completed",
+            "ticks": 12
+          }
+        },
+        {
+          "ms_per_tick": 2.6497180833333336,
+          "engine": {
+            "completed_batches": 0,
+            "elapsed_ns": "31796617",
+            "final_inventory": {
+              "源矿": 80900,
+              "砂叶": 80000,
+              "砂叶种子": 80000,
+              "荞花": 80000,
+              "荞花种子": 80000,
+              "蓝铁矿": 80600
+            },
+            "output": "disabled",
+            "statistics": {
+              "completed": 1,
+              "inconclusive": 0,
+              "stopped": 0
+            },
+            "status": "completed",
+            "ticks": 12
+          }
+        }
+      ],
+      "median_ms": 2.6497180833333336,
+      "threshold_ms": null,
+      "all_within_target": null
+    }
+  ],
+  "scope": "相同已锁定合成输入，release，3次各12 tick；引擎推进时间，不含装载和序列化。"
+}

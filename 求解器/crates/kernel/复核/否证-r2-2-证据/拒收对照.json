@@ -1,0 +1,40 @@
+[
+  {
+    "case": "reachability-unresolved-control",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/reachability-unresolved-control-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/reachability-unresolved-control-record.json"
+    ],
+    "exit_code": 2,
+    "status": "invalid_input",
+    "open_items": [
+      "invalid_input input @ initial_state.reachability: 条件种子也须给出处说明"
+    ]
+  },
+  {
+    "case": "seed-unlisted-filled-control",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/seed-unlisted-filled-control-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/seed-unlisted-filled-control-record.json"
+    ],
+    "exit_code": 2,
+    "status": "invalid_input",
+    "open_items": [
+      "invalid_input input @ warehouse.unlisted: 未列库存必须为空"
+    ]
+  }
+]

@@ -1,0 +1,165 @@
+{
+  "status": "通过",
+  "binary": "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+  "binary_sha256": "0998b3a72e2c2a51d13d809946146343ba3b82f2044e7298af502a8b963848c0",
+  "cases": [
+    {
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-2-证据/baseline-crusher-input.json",
+      "input_sha256": "515852bd322148a4ed8cc7f22d69007f70ad2730639408a0e6d5f0a1c182b76d",
+      "status": "completed",
+      "exit_code": 0,
+      "completed_instants": 4,
+      "open_items": [
+        "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+        "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+      ]
+    },
+    {
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-2-证据/baseline-splitter-input.json",
+      "input_sha256": "0422db62186f2b3f6ecb874618e0acefd12ab1518764bc7e1eaa99c353e4ef92",
+      "status": "completed",
+      "exit_code": 0,
+      "completed_instants": 12,
+      "open_items": [
+        "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+        "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+      ]
+    },
+    {
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-2-证据/ore-shortage-input.json",
+      "input_sha256": "c741e0902fd14e17abcdfa2271801b3b16e7d0fdd61f15b8085391e3905b3da6",
+      "status": "invalid_input",
+      "exit_code": 2,
+      "completed_instants": 0,
+      "open_items": [
+        "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+        "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。",
+        "invalid_input warehouse.external_supply @ J|0|0|0: instant=0: J|0|0|0：源矿将耗尽，显式补给史不满足持续可得"
+      ]
+    },
+    {
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-2-证据/supply-order-conflict-input.json",
+      "input_sha256": "242fb1f061f41ba155625dd5f9f61e6d87c9cc77658dcb0b2b223ac354397292",
+      "status": "invalid_input",
+      "exit_code": 2,
+      "completed_instants": 0,
+      "open_items": [
+        "invalid_input input @ timeline.relations: 先后图有环"
+      ]
+    },
+    {
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-2-证据/supply-order-control-input.json",
+      "input_sha256": "c9b663ee485a22bf55b0b123f3e0ffefa9b0df86e49be992301173ec3a527740",
+      "status": "completed",
+      "exit_code": 0,
+      "completed_instants": 4,
+      "open_items": [
+        "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+        "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+      ]
+    },
+    {
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-2-证据/pending-historical-alias-input.json",
+      "input_sha256": "6161b7869af8bfa1e20e5d05c5a726a60fa7c857e324061b67ef3fbff83cec23",
+      "status": "invalid_input",
+      "exit_code": 2,
+      "completed_instants": 0,
+      "open_items": [
+        "invalid_input input @ pending_events.build_0: 待事件与历史类型或时刻冲突"
+      ]
+    },
+    {
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-2-证据/offline-wrong-kind-input.json",
+      "input_sha256": "06cc404f935da34404c0cd71cdd354c440ecd3f508bc25ec2ceb9b09b3caa041",
+      "status": "invalid_input",
+      "exit_code": 2,
+      "completed_instants": 0,
+      "open_items": [
+        "invalid_input input @ environment.offline.selected_events[0].event: 须唯一引用全局 offline 事件"
+      ]
+    },
+    {
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-2-证据/offline-control-input.json",
+      "input_sha256": "fe85017a15715aed1afd2fd2cb59f5a19953315a6c1e27658c0de48f344101cf",
+      "status": "unsupported",
+      "exit_code": 2,
+      "completed_instants": 1,
+      "open_items": [
+        "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+        "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。",
+        "unsupported offline.events @ review_offline: 运行区间触及未实现后效"
+      ]
+    },
+    {
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-2-证据/unrelated-fork-input.json",
+      "input_sha256": "d0e6eea7a028546896e3435000dc0437e6ca2ca8dd006c00ab0ad0645f92a315",
+      "status": "invalid_input",
+      "exit_code": 2,
+      "completed_instants": 0,
+      "open_items": [
+        "invalid_input input @ damping.branch.choices: 表项不在查询所选路径上：PC|probe_left:west:0|probe_gate_a:south:0 / splitter"
+      ]
+    },
+    {
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-2-证据/after-closure-control-input.json",
+      "input_sha256": "17f9eae9050a0d172e1db59ac546ba95e9d9d48dc736cd8fe3c5deb7f4ab28d7",
+      "status": "unresolved",
+      "exit_code": 2,
+      "completed_instants": 0,
+      "open_items": [
+        "unresolved output.start_anchor @ trace.start_state.semantic_context.judgment_context: KQ-02：step_tick须推进至下一时刻，但内核输出§2要求首项等于种子时刻；输出契约澄清前不生成completed记录"
+      ]
+    },
+    {
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-2-证据/start-only-input.json",
+      "input_sha256": "515852bd322148a4ed8cc7f22d69007f70ad2730639408a0e6d5f0a1c182b76d",
+      "status": "completed",
+      "exit_code": 0,
+      "completed_instants": 2,
+      "open_items": [
+        "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+        "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+      ],
+      "output_blocked": {
+        "axis": "manufacturing.output_blocked",
+        "coverage_status": "not_exercised",
+        "disposition": "已定",
+        "evidence": [
+          "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+        ],
+        "other_values": "已定域无其它值；未执行结构仍未验证",
+        "reason": "该已定范围无读法损失；关联未定轴另记"
+      }
+    },
+    {
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-2-证据/snapshot-bool-input.json",
+      "input_sha256": "2885cb30bca04080853b9e0eff0005e4b663cb0182239ec3deed639d091b2cd6",
+      "status": "invalid_input",
+      "exit_code": 2,
+      "completed_instants": 0,
+      "open_items": [
+        "invalid_input input @ layout.snapshots[0]: 须为对象"
+      ]
+    },
+    {
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-2-证据/gate-numeric-item-input.json",
+      "input_sha256": "310786cddcb6de33c43f704327ec31d21accb43910197f0a0bdaa02c06a0be0b",
+      "status": "invalid_input",
+      "exit_code": 2,
+      "completed_instants": 0,
+      "open_items": [
+        "invalid_input input @ settings.gates[0].item: 须为目录物品名或 null"
+      ]
+    },
+    {
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-2-证据/initial-duplicate-slot-input.json",
+      "input_sha256": "5291456fa15ecebe73c1cf3dce86221cafa0b1ade493e892acc4c6dbedba0e95",
+      "status": "invalid_input",
+      "exit_code": 2,
+      "completed_instants": 0,
+      "open_items": [
+        "invalid_input input @ initial_state.warehouse.slots[1].slot: 初始仓库标签重复或占用单位格命名域"
+      ]
+    }
+  ]
+}

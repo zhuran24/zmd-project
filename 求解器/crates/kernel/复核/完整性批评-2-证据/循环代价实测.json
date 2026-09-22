@@ -1,0 +1,99 @@
+{
+  "schema": "critic2-cycle-cost-v1",
+  "binary": "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+  "rows": [
+    {
+      "case": "benchmark_brick_60",
+      "mode": "run --no-output",
+      "ticks": 12,
+      "engine_ms_per_tick": 0.8407040833333334,
+      "wall_ms": 30.730247,
+      "completed_batches": 0,
+      "returncode": 0
+    },
+    {
+      "case": "benchmark_brick",
+      "mode": "run --no-output",
+      "ticks": 12,
+      "engine_ms_per_tick": 2.73683725,
+      "wall_ms": 54.753278,
+      "completed_batches": 0,
+      "returncode": 0
+    },
+    {
+      "case": "benchmark_candidate_b",
+      "mode": "run --no-output",
+      "ticks": 12,
+      "engine_ms_per_tick": 17.970954333333335,
+      "wall_ms": 442.732236,
+      "completed_batches": 0,
+      "returncode": 0
+    },
+    {
+      "case": "benchmark_brick_60",
+      "mode": "cycle",
+      "ticks": 12,
+      "wall_ms": 153.435046,
+      "wall_ms_per_tick": 12.786253833333333,
+      "out_bytes": 6000098,
+      "out_mb_per_tick": 0.47684494654337567,
+      "children_peak_rss_mb": 103.12890625,
+      "rss_mb_per_tick": 8.594075520833334,
+      "status": "inconclusive",
+      "returncode": 0
+    },
+    {
+      "case": "benchmark_brick_60",
+      "mode": "cycle",
+      "ticks": 24,
+      "wall_ms": 227.319728,
+      "wall_ms_per_tick": 9.471655333333333,
+      "out_bytes": 10010066,
+      "out_mb_per_tick": 0.39776428540547687,
+      "children_peak_rss_mb": 174.93359375,
+      "rss_mb_per_tick": 7.288899739583333,
+      "status": "inconclusive",
+      "returncode": 0
+    },
+    {
+      "case": "benchmark_brick_60",
+      "mode": "cycle",
+      "ticks": 48,
+      "wall_ms": 365.908144,
+      "wall_ms_per_tick": 7.623086333333333,
+      "out_bytes": 18030002,
+      "out_mb_per_tick": 0.3582239548365275,
+      "children_peak_rss_mb": 318.8828125,
+      "rss_mb_per_tick": 6.643391927083333,
+      "status": "inconclusive",
+      "returncode": 0
+    },
+    {
+      "case": "benchmark_candidate_b",
+      "mode": "cycle",
+      "ticks": 5,
+      "wall_ms": 2660.439775,
+      "wall_ms_per_tick": 532.087955,
+      "out_bytes": 24705644,
+      "out_mb_per_tick": 4.712227630615234,
+      "children_peak_rss_mb": 493.625,
+      "rss_mb_per_tick": 98.725,
+      "status": "inconclusive",
+      "returncode": 0
+    },
+    {
+      "case": "benchmark_candidate_b",
+      "mode": "cycle",
+      "ticks": 10,
+      "wall_ms": 5093.519961,
+      "wall_ms_per_tick": 509.3519961,
+      "out_bytes": 46429304,
+      "out_mb_per_tick": 4.427843475341797,
+      "children_peak_rss_mb": 988.83984375,
+      "rss_mb_per_tick": 98.883984375,
+      "status": "inconclusive",
+      "returncode": 0
+    }
+  ],
+  "note": "engine_ms_per_tick 与 evidence/benchmark.json 同口径（只计推进）；cycle 行是整进程 wall，含生产键、查重、重放与证书序列化。"
+}

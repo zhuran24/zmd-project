@@ -1,0 +1,5 @@
+     Locking 12 packages to latest compatible versions
+   Compiling kernel v0.1.0 (/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/snapshot/求解器/crates/kernel)
+   Compiling kernel_r2_evidence_probe v0.1.0 (/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/probe)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.27s
+     Running `求解器/crates/kernel/复核/r2-测试与证据/target/debug/kernel_r2_evidence_probe '/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/snapshot/求解器'`

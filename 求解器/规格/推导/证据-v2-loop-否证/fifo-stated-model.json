@@ -1,0 +1,4869 @@
+{
+  "scope": "Independent supplied-word model, NOT kernel execution or complete layout",
+  "blocked": [
+    {
+      "t": 0,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 1,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 2,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 3,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 4,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 5,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 6,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 7,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 8,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 9,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 10,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 11,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 12,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 13,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 14,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 15,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 16,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 17,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 18,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 19,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 20,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 21,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 22,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 23,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 24,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 25,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 26,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 27,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 28,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 29,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 30,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 31,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 32,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 33,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 34,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 35,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 36,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 37,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 38,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 39,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 40,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 41,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 42,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 43,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 44,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 45,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 46,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 47,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 48,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 49,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 50,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 51,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 52,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 53,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 54,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 55,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 56,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 57,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 58,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 59,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 60,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 61,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 62,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 63,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 64,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 65,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 66,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 67,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 68,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 69,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 70,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 71,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 72,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 73,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 74,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 75,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 76,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 77,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 78,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 79,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 80,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 81,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 82,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 83,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 84,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 85,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 86,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 87,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 88,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 89,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 90,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 91,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 92,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 93,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 94,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 95,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 96,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 97,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 98,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 99,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 100,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 101,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 102,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 103,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 104,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 105,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 106,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 107,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 108,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 109,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 110,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 111,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 112,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 113,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 114,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 115,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 116,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 117,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 118,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 119,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 120,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 121,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 122,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 123,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 124,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 125,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 126,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 127,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 128,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 129,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 130,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 131,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 132,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 133,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 134,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 135,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 136,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 137,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 138,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 139,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 140,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 141,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 142,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 143,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 144,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 145,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 146,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 147,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 148,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 149,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 150,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 151,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 152,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 153,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 154,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 155,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 156,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 157,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 158,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 159,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 160,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 161,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 162,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 163,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 164,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 165,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 166,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 167,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 168,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 169,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 170,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 171,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 172,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 173,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 174,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 175,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 176,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 177,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 178,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    {
+      "t": 179,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    }
+  ],
+  "released": [
+    {
+      "t": 0,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 1,
+      "batches_completed": 0,
+      "working": true
+    },
+    {
+      "t": 1,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 2,
+      "batches_completed": 1,
+      "working": false
+    },
+    {
+      "t": 2,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 3,
+      "batches_completed": 1,
+      "working": false
+    },
+    {
+      "t": 3,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 4,
+      "batches_completed": 1,
+      "working": true
+    },
+    {
+      "t": 4,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 5,
+      "batches_completed": 2,
+      "working": false
+    },
+    {
+      "t": 5,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 6,
+      "batches_completed": 2,
+      "working": false
+    },
+    {
+      "t": 6,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 7,
+      "batches_completed": 2,
+      "working": true
+    },
+    {
+      "t": 7,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 8,
+      "batches_completed": 3,
+      "working": false
+    },
+    {
+      "t": 8,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 9,
+      "batches_completed": 3,
+      "working": false
+    },
+    {
+      "t": 9,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 10,
+      "batches_completed": 3,
+      "working": true
+    },
+    {
+      "t": 10,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 11,
+      "batches_completed": 4,
+      "working": false
+    },
+    {
+      "t": 11,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 12,
+      "batches_completed": 4,
+      "working": false
+    },
+    {
+      "t": 12,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 13,
+      "batches_completed": 4,
+      "working": true
+    },
+    {
+      "t": 13,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 14,
+      "batches_completed": 5,
+      "working": false
+    },
+    {
+      "t": 14,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 15,
+      "batches_completed": 5,
+      "working": false
+    },
+    {
+      "t": 15,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 16,
+      "batches_completed": 5,
+      "working": true
+    },
+    {
+      "t": 16,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 17,
+      "batches_completed": 6,
+      "working": false
+    },
+    {
+      "t": 17,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 18,
+      "batches_completed": 6,
+      "working": false
+    },
+    {
+      "t": 18,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 19,
+      "batches_completed": 6,
+      "working": true
+    },
+    {
+      "t": 19,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 20,
+      "batches_completed": 7,
+      "working": false
+    },
+    {
+      "t": 20,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 21,
+      "batches_completed": 7,
+      "working": false
+    },
+    {
+      "t": 21,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 22,
+      "batches_completed": 7,
+      "working": true
+    },
+    {
+      "t": 22,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 23,
+      "batches_completed": 8,
+      "working": false
+    },
+    {
+      "t": 23,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 24,
+      "batches_completed": 8,
+      "working": false
+    },
+    {
+      "t": 24,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 25,
+      "batches_completed": 8,
+      "working": true
+    },
+    {
+      "t": 25,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 26,
+      "batches_completed": 9,
+      "working": false
+    },
+    {
+      "t": 26,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 27,
+      "batches_completed": 9,
+      "working": false
+    },
+    {
+      "t": 27,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 28,
+      "batches_completed": 9,
+      "working": true
+    },
+    {
+      "t": 28,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 29,
+      "batches_completed": 10,
+      "working": false
+    },
+    {
+      "t": 29,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 30,
+      "batches_completed": 10,
+      "working": false
+    },
+    {
+      "t": 30,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 31,
+      "batches_completed": 10,
+      "working": true
+    },
+    {
+      "t": 31,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 32,
+      "batches_completed": 11,
+      "working": false
+    },
+    {
+      "t": 32,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 33,
+      "batches_completed": 11,
+      "working": false
+    },
+    {
+      "t": 33,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 34,
+      "batches_completed": 11,
+      "working": true
+    },
+    {
+      "t": 34,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 35,
+      "batches_completed": 12,
+      "working": false
+    },
+    {
+      "t": 35,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 36,
+      "batches_completed": 12,
+      "working": false
+    },
+    {
+      "t": 36,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 37,
+      "batches_completed": 12,
+      "working": true
+    },
+    {
+      "t": 37,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 38,
+      "batches_completed": 13,
+      "working": false
+    },
+    {
+      "t": 38,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 39,
+      "batches_completed": 13,
+      "working": false
+    },
+    {
+      "t": 39,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 40,
+      "batches_completed": 13,
+      "working": true
+    },
+    {
+      "t": 40,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 41,
+      "batches_completed": 14,
+      "working": false
+    },
+    {
+      "t": 41,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 42,
+      "batches_completed": 14,
+      "working": false
+    },
+    {
+      "t": 42,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 43,
+      "batches_completed": 14,
+      "working": true
+    },
+    {
+      "t": 43,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 44,
+      "batches_completed": 15,
+      "working": false
+    },
+    {
+      "t": 44,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 45,
+      "batches_completed": 15,
+      "working": false
+    },
+    {
+      "t": 45,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 46,
+      "batches_completed": 15,
+      "working": true
+    },
+    {
+      "t": 46,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 47,
+      "batches_completed": 16,
+      "working": false
+    },
+    {
+      "t": 47,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 48,
+      "batches_completed": 16,
+      "working": false
+    },
+    {
+      "t": 48,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 49,
+      "batches_completed": 16,
+      "working": true
+    },
+    {
+      "t": 49,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 50,
+      "batches_completed": 17,
+      "working": false
+    },
+    {
+      "t": 50,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 51,
+      "batches_completed": 17,
+      "working": false
+    },
+    {
+      "t": 51,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 52,
+      "batches_completed": 17,
+      "working": true
+    },
+    {
+      "t": 52,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 53,
+      "batches_completed": 18,
+      "working": false
+    },
+    {
+      "t": 53,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 54,
+      "batches_completed": 18,
+      "working": false
+    },
+    {
+      "t": 54,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 55,
+      "batches_completed": 18,
+      "working": true
+    },
+    {
+      "t": 55,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 56,
+      "batches_completed": 19,
+      "working": false
+    },
+    {
+      "t": 56,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 57,
+      "batches_completed": 19,
+      "working": false
+    },
+    {
+      "t": 57,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 58,
+      "batches_completed": 19,
+      "working": true
+    },
+    {
+      "t": 58,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 59,
+      "batches_completed": 20,
+      "working": false
+    },
+    {
+      "t": 59,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 60,
+      "batches_completed": 20,
+      "working": false
+    },
+    {
+      "t": 60,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 61,
+      "batches_completed": 20,
+      "working": true
+    },
+    {
+      "t": 61,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 62,
+      "batches_completed": 21,
+      "working": false
+    },
+    {
+      "t": 62,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 63,
+      "batches_completed": 21,
+      "working": false
+    },
+    {
+      "t": 63,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 64,
+      "batches_completed": 21,
+      "working": true
+    },
+    {
+      "t": 64,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 65,
+      "batches_completed": 22,
+      "working": false
+    },
+    {
+      "t": 65,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 66,
+      "batches_completed": 22,
+      "working": false
+    },
+    {
+      "t": 66,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 67,
+      "batches_completed": 22,
+      "working": true
+    },
+    {
+      "t": 67,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 68,
+      "batches_completed": 23,
+      "working": false
+    },
+    {
+      "t": 68,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 69,
+      "batches_completed": 23,
+      "working": false
+    },
+    {
+      "t": 69,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 70,
+      "batches_completed": 23,
+      "working": true
+    },
+    {
+      "t": 70,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 71,
+      "batches_completed": 24,
+      "working": false
+    },
+    {
+      "t": 71,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 72,
+      "batches_completed": 24,
+      "working": false
+    },
+    {
+      "t": 72,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 73,
+      "batches_completed": 24,
+      "working": true
+    },
+    {
+      "t": 73,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 74,
+      "batches_completed": 25,
+      "working": false
+    },
+    {
+      "t": 74,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 75,
+      "batches_completed": 25,
+      "working": false
+    },
+    {
+      "t": 75,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 76,
+      "batches_completed": 25,
+      "working": true
+    },
+    {
+      "t": 76,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 77,
+      "batches_completed": 26,
+      "working": false
+    },
+    {
+      "t": 77,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 78,
+      "batches_completed": 26,
+      "working": false
+    },
+    {
+      "t": 78,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 79,
+      "batches_completed": 26,
+      "working": true
+    },
+    {
+      "t": 79,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 80,
+      "batches_completed": 27,
+      "working": false
+    },
+    {
+      "t": 80,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 81,
+      "batches_completed": 27,
+      "working": false
+    },
+    {
+      "t": 81,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 82,
+      "batches_completed": 27,
+      "working": true
+    },
+    {
+      "t": 82,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 83,
+      "batches_completed": 28,
+      "working": false
+    },
+    {
+      "t": 83,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 84,
+      "batches_completed": 28,
+      "working": false
+    },
+    {
+      "t": 84,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 85,
+      "batches_completed": 28,
+      "working": true
+    },
+    {
+      "t": 85,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 86,
+      "batches_completed": 29,
+      "working": false
+    },
+    {
+      "t": 86,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 87,
+      "batches_completed": 29,
+      "working": false
+    },
+    {
+      "t": 87,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 88,
+      "batches_completed": 29,
+      "working": true
+    },
+    {
+      "t": 88,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 89,
+      "batches_completed": 30,
+      "working": false
+    },
+    {
+      "t": 89,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 90,
+      "batches_completed": 30,
+      "working": false
+    },
+    {
+      "t": 90,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 91,
+      "batches_completed": 30,
+      "working": true
+    },
+    {
+      "t": 91,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 92,
+      "batches_completed": 31,
+      "working": false
+    },
+    {
+      "t": 92,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 93,
+      "batches_completed": 31,
+      "working": false
+    },
+    {
+      "t": 93,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 94,
+      "batches_completed": 31,
+      "working": true
+    },
+    {
+      "t": 94,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 95,
+      "batches_completed": 32,
+      "working": false
+    },
+    {
+      "t": 95,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 96,
+      "batches_completed": 32,
+      "working": false
+    },
+    {
+      "t": 96,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 97,
+      "batches_completed": 32,
+      "working": true
+    },
+    {
+      "t": 97,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 98,
+      "batches_completed": 33,
+      "working": false
+    },
+    {
+      "t": 98,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 99,
+      "batches_completed": 33,
+      "working": false
+    },
+    {
+      "t": 99,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 100,
+      "batches_completed": 33,
+      "working": true
+    },
+    {
+      "t": 100,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 101,
+      "batches_completed": 34,
+      "working": false
+    },
+    {
+      "t": 101,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 102,
+      "batches_completed": 34,
+      "working": false
+    },
+    {
+      "t": 102,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 103,
+      "batches_completed": 34,
+      "working": true
+    },
+    {
+      "t": 103,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 104,
+      "batches_completed": 35,
+      "working": false
+    },
+    {
+      "t": 104,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 105,
+      "batches_completed": 35,
+      "working": false
+    },
+    {
+      "t": 105,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 106,
+      "batches_completed": 35,
+      "working": true
+    },
+    {
+      "t": 106,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 107,
+      "batches_completed": 36,
+      "working": false
+    },
+    {
+      "t": 107,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 108,
+      "batches_completed": 36,
+      "working": false
+    },
+    {
+      "t": 108,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 109,
+      "batches_completed": 36,
+      "working": true
+    },
+    {
+      "t": 109,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 110,
+      "batches_completed": 37,
+      "working": false
+    },
+    {
+      "t": 110,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 111,
+      "batches_completed": 37,
+      "working": false
+    },
+    {
+      "t": 111,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 112,
+      "batches_completed": 37,
+      "working": true
+    },
+    {
+      "t": 112,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 113,
+      "batches_completed": 38,
+      "working": false
+    },
+    {
+      "t": 113,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 114,
+      "batches_completed": 38,
+      "working": false
+    },
+    {
+      "t": 114,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 115,
+      "batches_completed": 38,
+      "working": true
+    },
+    {
+      "t": 115,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 116,
+      "batches_completed": 39,
+      "working": false
+    },
+    {
+      "t": 116,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 117,
+      "batches_completed": 39,
+      "working": false
+    },
+    {
+      "t": 117,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 118,
+      "batches_completed": 39,
+      "working": true
+    },
+    {
+      "t": 118,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 119,
+      "batches_completed": 40,
+      "working": false
+    },
+    {
+      "t": 119,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 120,
+      "batches_completed": 40,
+      "working": false
+    },
+    {
+      "t": 120,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 121,
+      "batches_completed": 40,
+      "working": true
+    },
+    {
+      "t": 121,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 122,
+      "batches_completed": 41,
+      "working": false
+    },
+    {
+      "t": 122,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 123,
+      "batches_completed": 41,
+      "working": false
+    },
+    {
+      "t": 123,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 124,
+      "batches_completed": 41,
+      "working": true
+    },
+    {
+      "t": 124,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 125,
+      "batches_completed": 42,
+      "working": false
+    },
+    {
+      "t": 125,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 126,
+      "batches_completed": 42,
+      "working": false
+    },
+    {
+      "t": 126,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 127,
+      "batches_completed": 42,
+      "working": true
+    },
+    {
+      "t": 127,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 128,
+      "batches_completed": 43,
+      "working": false
+    },
+    {
+      "t": 128,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 129,
+      "batches_completed": 43,
+      "working": false
+    },
+    {
+      "t": 129,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 130,
+      "batches_completed": 43,
+      "working": true
+    },
+    {
+      "t": 130,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 131,
+      "batches_completed": 44,
+      "working": false
+    },
+    {
+      "t": 131,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 132,
+      "batches_completed": 44,
+      "working": false
+    },
+    {
+      "t": 132,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 133,
+      "batches_completed": 44,
+      "working": true
+    },
+    {
+      "t": 133,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 134,
+      "batches_completed": 45,
+      "working": false
+    },
+    {
+      "t": 134,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 135,
+      "batches_completed": 45,
+      "working": false
+    },
+    {
+      "t": 135,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 136,
+      "batches_completed": 45,
+      "working": true
+    },
+    {
+      "t": 136,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 137,
+      "batches_completed": 46,
+      "working": false
+    },
+    {
+      "t": 137,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 138,
+      "batches_completed": 46,
+      "working": false
+    },
+    {
+      "t": 138,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 139,
+      "batches_completed": 46,
+      "working": true
+    },
+    {
+      "t": 139,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 140,
+      "batches_completed": 47,
+      "working": false
+    },
+    {
+      "t": 140,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 141,
+      "batches_completed": 47,
+      "working": false
+    },
+    {
+      "t": 141,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 142,
+      "batches_completed": 47,
+      "working": true
+    },
+    {
+      "t": 142,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 143,
+      "batches_completed": 48,
+      "working": false
+    },
+    {
+      "t": 143,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 144,
+      "batches_completed": 48,
+      "working": false
+    },
+    {
+      "t": 144,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 145,
+      "batches_completed": 48,
+      "working": true
+    },
+    {
+      "t": 145,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 146,
+      "batches_completed": 49,
+      "working": false
+    },
+    {
+      "t": 146,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 147,
+      "batches_completed": 49,
+      "working": false
+    },
+    {
+      "t": 147,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 148,
+      "batches_completed": 49,
+      "working": true
+    },
+    {
+      "t": 148,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 149,
+      "batches_completed": 50,
+      "working": false
+    },
+    {
+      "t": 149,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 150,
+      "batches_completed": 50,
+      "working": false
+    },
+    {
+      "t": 150,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 151,
+      "batches_completed": 50,
+      "working": true
+    },
+    {
+      "t": 151,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 152,
+      "batches_completed": 51,
+      "working": false
+    },
+    {
+      "t": 152,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 153,
+      "batches_completed": 51,
+      "working": false
+    },
+    {
+      "t": 153,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 154,
+      "batches_completed": 51,
+      "working": true
+    },
+    {
+      "t": 154,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 155,
+      "batches_completed": 52,
+      "working": false
+    },
+    {
+      "t": 155,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 156,
+      "batches_completed": 52,
+      "working": false
+    },
+    {
+      "t": 156,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 157,
+      "batches_completed": 52,
+      "working": true
+    },
+    {
+      "t": 157,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 158,
+      "batches_completed": 53,
+      "working": false
+    },
+    {
+      "t": 158,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 159,
+      "batches_completed": 53,
+      "working": false
+    },
+    {
+      "t": 159,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 160,
+      "batches_completed": 53,
+      "working": true
+    },
+    {
+      "t": 160,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 161,
+      "batches_completed": 54,
+      "working": false
+    },
+    {
+      "t": 161,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 162,
+      "batches_completed": 54,
+      "working": false
+    },
+    {
+      "t": 162,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 163,
+      "batches_completed": 54,
+      "working": true
+    },
+    {
+      "t": 163,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 164,
+      "batches_completed": 55,
+      "working": false
+    },
+    {
+      "t": 164,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 165,
+      "batches_completed": 55,
+      "working": false
+    },
+    {
+      "t": 165,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 166,
+      "batches_completed": 55,
+      "working": true
+    },
+    {
+      "t": 166,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 167,
+      "batches_completed": 56,
+      "working": false
+    },
+    {
+      "t": 167,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 168,
+      "batches_completed": 56,
+      "working": false
+    },
+    {
+      "t": 168,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 169,
+      "batches_completed": 56,
+      "working": true
+    },
+    {
+      "t": 169,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 170,
+      "batches_completed": 57,
+      "working": false
+    },
+    {
+      "t": 170,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 171,
+      "batches_completed": 57,
+      "working": false
+    },
+    {
+      "t": 171,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 172,
+      "batches_completed": 57,
+      "working": true
+    },
+    {
+      "t": 172,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 173,
+      "batches_completed": 58,
+      "working": false
+    },
+    {
+      "t": 173,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 174,
+      "batches_completed": 58,
+      "working": false
+    },
+    {
+      "t": 174,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 175,
+      "batches_completed": 58,
+      "working": true
+    },
+    {
+      "t": 175,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 176,
+      "batches_completed": 59,
+      "working": false
+    },
+    {
+      "t": 176,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 177,
+      "batches_completed": 59,
+      "working": false
+    },
+    {
+      "t": 177,
+      "a": 48,
+      "b": 0,
+      "head": "A",
+      "accepted": 178,
+      "batches_completed": 59,
+      "working": true
+    },
+    {
+      "t": 178,
+      "a": 49,
+      "b": 0,
+      "head": "A",
+      "accepted": 179,
+      "batches_completed": 60,
+      "working": false
+    },
+    {
+      "t": 179,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 180,
+      "batches_completed": 60,
+      "working": false
+    }
+  ],
+  "full_inputs": [
+    {
+      "t": 0,
+      "a": 49,
+      "b": 49,
+      "head": "A",
+      "accepted": 1,
+      "batches_completed": 0,
+      "working": true
+    },
+    {
+      "t": 1,
+      "a": 48,
+      "b": 48,
+      "head": "B",
+      "accepted": 2,
+      "batches_completed": 1,
+      "working": true
+    },
+    {
+      "t": 2,
+      "a": 46,
+      "b": 48,
+      "head": "A",
+      "accepted": 3,
+      "batches_completed": 2,
+      "working": true
+    },
+    {
+      "t": 3,
+      "a": 45,
+      "b": 47,
+      "head": "A",
+      "accepted": 4,
+      "batches_completed": 3,
+      "working": true
+    },
+    {
+      "t": 4,
+      "a": 44,
+      "b": 46,
+      "head": "B",
+      "accepted": 5,
+      "batches_completed": 4,
+      "working": true
+    },
+    {
+      "t": 5,
+      "a": 42,
+      "b": 46,
+      "head": "A",
+      "accepted": 6,
+      "batches_completed": 5,
+      "working": true
+    },
+    {
+      "t": 6,
+      "a": 41,
+      "b": 45,
+      "head": "A",
+      "accepted": 7,
+      "batches_completed": 6,
+      "working": true
+    },
+    {
+      "t": 7,
+      "a": 40,
+      "b": 44,
+      "head": "B",
+      "accepted": 8,
+      "batches_completed": 7,
+      "working": true
+    },
+    {
+      "t": 8,
+      "a": 38,
+      "b": 44,
+      "head": "A",
+      "accepted": 9,
+      "batches_completed": 8,
+      "working": true
+    },
+    {
+      "t": 9,
+      "a": 37,
+      "b": 43,
+      "head": "A",
+      "accepted": 10,
+      "batches_completed": 9,
+      "working": true
+    },
+    {
+      "t": 10,
+      "a": 36,
+      "b": 42,
+      "head": "B",
+      "accepted": 11,
+      "batches_completed": 10,
+      "working": true
+    },
+    {
+      "t": 11,
+      "a": 34,
+      "b": 42,
+      "head": "A",
+      "accepted": 12,
+      "batches_completed": 11,
+      "working": true
+    },
+    {
+      "t": 12,
+      "a": 33,
+      "b": 41,
+      "head": "A",
+      "accepted": 13,
+      "batches_completed": 12,
+      "working": true
+    },
+    {
+      "t": 13,
+      "a": 32,
+      "b": 40,
+      "head": "B",
+      "accepted": 14,
+      "batches_completed": 13,
+      "working": true
+    },
+    {
+      "t": 14,
+      "a": 30,
+      "b": 40,
+      "head": "A",
+      "accepted": 15,
+      "batches_completed": 14,
+      "working": true
+    },
+    {
+      "t": 15,
+      "a": 29,
+      "b": 39,
+      "head": "A",
+      "accepted": 16,
+      "batches_completed": 15,
+      "working": true
+    },
+    {
+      "t": 16,
+      "a": 28,
+      "b": 38,
+      "head": "B",
+      "accepted": 17,
+      "batches_completed": 16,
+      "working": true
+    },
+    {
+      "t": 17,
+      "a": 26,
+      "b": 38,
+      "head": "A",
+      "accepted": 18,
+      "batches_completed": 17,
+      "working": true
+    },
+    {
+      "t": 18,
+      "a": 25,
+      "b": 37,
+      "head": "A",
+      "accepted": 19,
+      "batches_completed": 18,
+      "working": true
+    },
+    {
+      "t": 19,
+      "a": 24,
+      "b": 36,
+      "head": "B",
+      "accepted": 20,
+      "batches_completed": 19,
+      "working": true
+    },
+    {
+      "t": 20,
+      "a": 22,
+      "b": 36,
+      "head": "A",
+      "accepted": 21,
+      "batches_completed": 20,
+      "working": true
+    },
+    {
+      "t": 21,
+      "a": 21,
+      "b": 35,
+      "head": "A",
+      "accepted": 22,
+      "batches_completed": 21,
+      "working": true
+    },
+    {
+      "t": 22,
+      "a": 20,
+      "b": 34,
+      "head": "B",
+      "accepted": 23,
+      "batches_completed": 22,
+      "working": true
+    },
+    {
+      "t": 23,
+      "a": 18,
+      "b": 34,
+      "head": "A",
+      "accepted": 24,
+      "batches_completed": 23,
+      "working": true
+    },
+    {
+      "t": 24,
+      "a": 17,
+      "b": 33,
+      "head": "A",
+      "accepted": 25,
+      "batches_completed": 24,
+      "working": true
+    },
+    {
+      "t": 25,
+      "a": 16,
+      "b": 32,
+      "head": "B",
+      "accepted": 26,
+      "batches_completed": 25,
+      "working": true
+    },
+    {
+      "t": 26,
+      "a": 14,
+      "b": 32,
+      "head": "A",
+      "accepted": 27,
+      "batches_completed": 26,
+      "working": true
+    },
+    {
+      "t": 27,
+      "a": 13,
+      "b": 31,
+      "head": "A",
+      "accepted": 28,
+      "batches_completed": 27,
+      "working": true
+    },
+    {
+      "t": 28,
+      "a": 12,
+      "b": 30,
+      "head": "B",
+      "accepted": 29,
+      "batches_completed": 28,
+      "working": true
+    },
+    {
+      "t": 29,
+      "a": 10,
+      "b": 30,
+      "head": "A",
+      "accepted": 30,
+      "batches_completed": 29,
+      "working": true
+    },
+    {
+      "t": 30,
+      "a": 9,
+      "b": 29,
+      "head": "A",
+      "accepted": 31,
+      "batches_completed": 30,
+      "working": true
+    },
+    {
+      "t": 31,
+      "a": 8,
+      "b": 28,
+      "head": "B",
+      "accepted": 32,
+      "batches_completed": 31,
+      "working": true
+    },
+    {
+      "t": 32,
+      "a": 6,
+      "b": 28,
+      "head": "A",
+      "accepted": 33,
+      "batches_completed": 32,
+      "working": true
+    },
+    {
+      "t": 33,
+      "a": 5,
+      "b": 27,
+      "head": "A",
+      "accepted": 34,
+      "batches_completed": 33,
+      "working": true
+    },
+    {
+      "t": 34,
+      "a": 4,
+      "b": 26,
+      "head": "B",
+      "accepted": 35,
+      "batches_completed": 34,
+      "working": true
+    },
+    {
+      "t": 35,
+      "a": 2,
+      "b": 26,
+      "head": "A",
+      "accepted": 36,
+      "batches_completed": 35,
+      "working": true
+    },
+    {
+      "t": 36,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 37,
+      "batches_completed": 36,
+      "working": true
+    },
+    {
+      "t": 37,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 38,
+      "batches_completed": 37,
+      "working": true
+    },
+    {
+      "t": 38,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 39,
+      "batches_completed": 38,
+      "working": false
+    },
+    {
+      "t": 39,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 40,
+      "batches_completed": 38,
+      "working": false
+    },
+    {
+      "t": 40,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 41,
+      "batches_completed": 38,
+      "working": true
+    },
+    {
+      "t": 41,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 42,
+      "batches_completed": 39,
+      "working": false
+    },
+    {
+      "t": 42,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 43,
+      "batches_completed": 39,
+      "working": false
+    },
+    {
+      "t": 43,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 44,
+      "batches_completed": 39,
+      "working": true
+    },
+    {
+      "t": 44,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 45,
+      "batches_completed": 40,
+      "working": false
+    },
+    {
+      "t": 45,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 46,
+      "batches_completed": 40,
+      "working": false
+    },
+    {
+      "t": 46,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 47,
+      "batches_completed": 40,
+      "working": true
+    },
+    {
+      "t": 47,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 48,
+      "batches_completed": 41,
+      "working": false
+    },
+    {
+      "t": 48,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 49,
+      "batches_completed": 41,
+      "working": false
+    },
+    {
+      "t": 49,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 50,
+      "batches_completed": 41,
+      "working": true
+    },
+    {
+      "t": 50,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 51,
+      "batches_completed": 42,
+      "working": false
+    },
+    {
+      "t": 51,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 52,
+      "batches_completed": 42,
+      "working": false
+    },
+    {
+      "t": 52,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 53,
+      "batches_completed": 42,
+      "working": true
+    },
+    {
+      "t": 53,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 54,
+      "batches_completed": 43,
+      "working": false
+    },
+    {
+      "t": 54,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 55,
+      "batches_completed": 43,
+      "working": false
+    },
+    {
+      "t": 55,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 56,
+      "batches_completed": 43,
+      "working": true
+    },
+    {
+      "t": 56,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 57,
+      "batches_completed": 44,
+      "working": false
+    },
+    {
+      "t": 57,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 58,
+      "batches_completed": 44,
+      "working": false
+    },
+    {
+      "t": 58,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 59,
+      "batches_completed": 44,
+      "working": true
+    },
+    {
+      "t": 59,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 60,
+      "batches_completed": 45,
+      "working": false
+    },
+    {
+      "t": 60,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 61,
+      "batches_completed": 45,
+      "working": false
+    },
+    {
+      "t": 61,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 62,
+      "batches_completed": 45,
+      "working": true
+    },
+    {
+      "t": 62,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 63,
+      "batches_completed": 46,
+      "working": false
+    },
+    {
+      "t": 63,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 64,
+      "batches_completed": 46,
+      "working": false
+    },
+    {
+      "t": 64,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 65,
+      "batches_completed": 46,
+      "working": true
+    },
+    {
+      "t": 65,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 66,
+      "batches_completed": 47,
+      "working": false
+    },
+    {
+      "t": 66,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 67,
+      "batches_completed": 47,
+      "working": false
+    },
+    {
+      "t": 67,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 68,
+      "batches_completed": 47,
+      "working": true
+    },
+    {
+      "t": 68,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 69,
+      "batches_completed": 48,
+      "working": false
+    },
+    {
+      "t": 69,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 70,
+      "batches_completed": 48,
+      "working": false
+    },
+    {
+      "t": 70,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 71,
+      "batches_completed": 48,
+      "working": true
+    },
+    {
+      "t": 71,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 72,
+      "batches_completed": 49,
+      "working": false
+    },
+    {
+      "t": 72,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 73,
+      "batches_completed": 49,
+      "working": false
+    },
+    {
+      "t": 73,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 74,
+      "batches_completed": 49,
+      "working": true
+    },
+    {
+      "t": 74,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 75,
+      "batches_completed": 50,
+      "working": false
+    },
+    {
+      "t": 75,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 76,
+      "batches_completed": 50,
+      "working": false
+    },
+    {
+      "t": 76,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 77,
+      "batches_completed": 50,
+      "working": true
+    },
+    {
+      "t": 77,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 78,
+      "batches_completed": 51,
+      "working": false
+    },
+    {
+      "t": 78,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 79,
+      "batches_completed": 51,
+      "working": false
+    },
+    {
+      "t": 79,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 80,
+      "batches_completed": 51,
+      "working": true
+    },
+    {
+      "t": 80,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 81,
+      "batches_completed": 52,
+      "working": false
+    },
+    {
+      "t": 81,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 82,
+      "batches_completed": 52,
+      "working": false
+    },
+    {
+      "t": 82,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 83,
+      "batches_completed": 52,
+      "working": true
+    },
+    {
+      "t": 83,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 84,
+      "batches_completed": 53,
+      "working": false
+    },
+    {
+      "t": 84,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 85,
+      "batches_completed": 53,
+      "working": false
+    },
+    {
+      "t": 85,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 86,
+      "batches_completed": 53,
+      "working": true
+    },
+    {
+      "t": 86,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 87,
+      "batches_completed": 54,
+      "working": false
+    },
+    {
+      "t": 87,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 88,
+      "batches_completed": 54,
+      "working": false
+    },
+    {
+      "t": 88,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 89,
+      "batches_completed": 54,
+      "working": true
+    },
+    {
+      "t": 89,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 90,
+      "batches_completed": 55,
+      "working": false
+    },
+    {
+      "t": 90,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 91,
+      "batches_completed": 55,
+      "working": false
+    },
+    {
+      "t": 91,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 92,
+      "batches_completed": 55,
+      "working": true
+    },
+    {
+      "t": 92,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 93,
+      "batches_completed": 56,
+      "working": false
+    },
+    {
+      "t": 93,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 94,
+      "batches_completed": 56,
+      "working": false
+    },
+    {
+      "t": 94,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 95,
+      "batches_completed": 56,
+      "working": true
+    },
+    {
+      "t": 95,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 96,
+      "batches_completed": 57,
+      "working": false
+    },
+    {
+      "t": 96,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 97,
+      "batches_completed": 57,
+      "working": false
+    },
+    {
+      "t": 97,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 98,
+      "batches_completed": 57,
+      "working": true
+    },
+    {
+      "t": 98,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 99,
+      "batches_completed": 58,
+      "working": false
+    },
+    {
+      "t": 99,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 100,
+      "batches_completed": 58,
+      "working": false
+    },
+    {
+      "t": 100,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 101,
+      "batches_completed": 58,
+      "working": true
+    },
+    {
+      "t": 101,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 102,
+      "batches_completed": 59,
+      "working": false
+    },
+    {
+      "t": 102,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 103,
+      "batches_completed": 59,
+      "working": false
+    },
+    {
+      "t": 103,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 104,
+      "batches_completed": 59,
+      "working": true
+    },
+    {
+      "t": 104,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 105,
+      "batches_completed": 60,
+      "working": false
+    },
+    {
+      "t": 105,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 106,
+      "batches_completed": 60,
+      "working": false
+    },
+    {
+      "t": 106,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 107,
+      "batches_completed": 60,
+      "working": true
+    },
+    {
+      "t": 107,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 108,
+      "batches_completed": 61,
+      "working": false
+    },
+    {
+      "t": 108,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 109,
+      "batches_completed": 61,
+      "working": false
+    },
+    {
+      "t": 109,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 110,
+      "batches_completed": 61,
+      "working": true
+    },
+    {
+      "t": 110,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 111,
+      "batches_completed": 62,
+      "working": false
+    },
+    {
+      "t": 111,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 112,
+      "batches_completed": 62,
+      "working": false
+    },
+    {
+      "t": 112,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 113,
+      "batches_completed": 62,
+      "working": true
+    },
+    {
+      "t": 113,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 114,
+      "batches_completed": 63,
+      "working": false
+    },
+    {
+      "t": 114,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 115,
+      "batches_completed": 63,
+      "working": false
+    },
+    {
+      "t": 115,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 116,
+      "batches_completed": 63,
+      "working": true
+    },
+    {
+      "t": 116,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 117,
+      "batches_completed": 64,
+      "working": false
+    },
+    {
+      "t": 117,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 118,
+      "batches_completed": 64,
+      "working": false
+    },
+    {
+      "t": 118,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 119,
+      "batches_completed": 64,
+      "working": true
+    },
+    {
+      "t": 119,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 120,
+      "batches_completed": 65,
+      "working": false
+    },
+    {
+      "t": 120,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 121,
+      "batches_completed": 65,
+      "working": false
+    },
+    {
+      "t": 121,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 122,
+      "batches_completed": 65,
+      "working": true
+    },
+    {
+      "t": 122,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 123,
+      "batches_completed": 66,
+      "working": false
+    },
+    {
+      "t": 123,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 124,
+      "batches_completed": 66,
+      "working": false
+    },
+    {
+      "t": 124,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 125,
+      "batches_completed": 66,
+      "working": true
+    },
+    {
+      "t": 125,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 126,
+      "batches_completed": 67,
+      "working": false
+    },
+    {
+      "t": 126,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 127,
+      "batches_completed": 67,
+      "working": false
+    },
+    {
+      "t": 127,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 128,
+      "batches_completed": 67,
+      "working": true
+    },
+    {
+      "t": 128,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 129,
+      "batches_completed": 68,
+      "working": false
+    },
+    {
+      "t": 129,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 130,
+      "batches_completed": 68,
+      "working": false
+    },
+    {
+      "t": 130,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 131,
+      "batches_completed": 68,
+      "working": true
+    },
+    {
+      "t": 131,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 132,
+      "batches_completed": 69,
+      "working": false
+    },
+    {
+      "t": 132,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 133,
+      "batches_completed": 69,
+      "working": false
+    },
+    {
+      "t": 133,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 134,
+      "batches_completed": 69,
+      "working": true
+    },
+    {
+      "t": 134,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 135,
+      "batches_completed": 70,
+      "working": false
+    },
+    {
+      "t": 135,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 136,
+      "batches_completed": 70,
+      "working": false
+    },
+    {
+      "t": 136,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 137,
+      "batches_completed": 70,
+      "working": true
+    },
+    {
+      "t": 137,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 138,
+      "batches_completed": 71,
+      "working": false
+    },
+    {
+      "t": 138,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 139,
+      "batches_completed": 71,
+      "working": false
+    },
+    {
+      "t": 139,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 140,
+      "batches_completed": 71,
+      "working": true
+    },
+    {
+      "t": 140,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 141,
+      "batches_completed": 72,
+      "working": false
+    },
+    {
+      "t": 141,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 142,
+      "batches_completed": 72,
+      "working": false
+    },
+    {
+      "t": 142,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 143,
+      "batches_completed": 72,
+      "working": true
+    },
+    {
+      "t": 143,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 144,
+      "batches_completed": 73,
+      "working": false
+    },
+    {
+      "t": 144,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 145,
+      "batches_completed": 73,
+      "working": false
+    },
+    {
+      "t": 145,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 146,
+      "batches_completed": 73,
+      "working": true
+    },
+    {
+      "t": 146,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 147,
+      "batches_completed": 74,
+      "working": false
+    },
+    {
+      "t": 147,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 148,
+      "batches_completed": 74,
+      "working": false
+    },
+    {
+      "t": 148,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 149,
+      "batches_completed": 74,
+      "working": true
+    },
+    {
+      "t": 149,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 150,
+      "batches_completed": 75,
+      "working": false
+    },
+    {
+      "t": 150,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 151,
+      "batches_completed": 75,
+      "working": false
+    },
+    {
+      "t": 151,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 152,
+      "batches_completed": 75,
+      "working": true
+    },
+    {
+      "t": 152,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 153,
+      "batches_completed": 76,
+      "working": false
+    },
+    {
+      "t": 153,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 154,
+      "batches_completed": 76,
+      "working": false
+    },
+    {
+      "t": 154,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 155,
+      "batches_completed": 76,
+      "working": true
+    },
+    {
+      "t": 155,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 156,
+      "batches_completed": 77,
+      "working": false
+    },
+    {
+      "t": 156,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 157,
+      "batches_completed": 77,
+      "working": false
+    },
+    {
+      "t": 157,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 158,
+      "batches_completed": 77,
+      "working": true
+    },
+    {
+      "t": 158,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 159,
+      "batches_completed": 78,
+      "working": false
+    },
+    {
+      "t": 159,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 160,
+      "batches_completed": 78,
+      "working": false
+    },
+    {
+      "t": 160,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 161,
+      "batches_completed": 78,
+      "working": true
+    },
+    {
+      "t": 161,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 162,
+      "batches_completed": 79,
+      "working": false
+    },
+    {
+      "t": 162,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 163,
+      "batches_completed": 79,
+      "working": false
+    },
+    {
+      "t": 163,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 164,
+      "batches_completed": 79,
+      "working": true
+    },
+    {
+      "t": 164,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 165,
+      "batches_completed": 80,
+      "working": false
+    },
+    {
+      "t": 165,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 166,
+      "batches_completed": 80,
+      "working": false
+    },
+    {
+      "t": 166,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 167,
+      "batches_completed": 80,
+      "working": true
+    },
+    {
+      "t": 167,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 168,
+      "batches_completed": 81,
+      "working": false
+    },
+    {
+      "t": 168,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 169,
+      "batches_completed": 81,
+      "working": false
+    },
+    {
+      "t": 169,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 170,
+      "batches_completed": 81,
+      "working": true
+    },
+    {
+      "t": 170,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 171,
+      "batches_completed": 82,
+      "working": false
+    },
+    {
+      "t": 171,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 172,
+      "batches_completed": 82,
+      "working": false
+    },
+    {
+      "t": 172,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 173,
+      "batches_completed": 82,
+      "working": true
+    },
+    {
+      "t": 173,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 174,
+      "batches_completed": 83,
+      "working": false
+    },
+    {
+      "t": 174,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 175,
+      "batches_completed": 83,
+      "working": false
+    },
+    {
+      "t": 175,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 176,
+      "batches_completed": 83,
+      "working": true
+    },
+    {
+      "t": 176,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 177,
+      "batches_completed": 84,
+      "working": false
+    },
+    {
+      "t": 177,
+      "a": 1,
+      "b": 25,
+      "head": "A",
+      "accepted": 178,
+      "batches_completed": 84,
+      "working": false
+    },
+    {
+      "t": 178,
+      "a": 0,
+      "b": 24,
+      "head": "B",
+      "accepted": 179,
+      "batches_completed": 84,
+      "working": true
+    },
+    {
+      "t": 179,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 180,
+      "batches_completed": 85,
+      "working": false
+    }
+  ]
+}

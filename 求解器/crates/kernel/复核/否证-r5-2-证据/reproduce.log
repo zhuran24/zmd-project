@@ -1,0 +1,1 @@
+{"status": "reproduced", "commands": 29, "schema_documents": 7, "finding_ids": ["KR-r5-L2-01", "KR-r5-L2-02", "KR-r5-L2-03"], "build_output": "/home/zhuran24/zmd-research-fresh/求解器/target", "binary_sha256": "53a68ff1c201d1ac2b28b35e9d43eb8d3f5819db6f73006a82a55d6f8e6ba13f"}

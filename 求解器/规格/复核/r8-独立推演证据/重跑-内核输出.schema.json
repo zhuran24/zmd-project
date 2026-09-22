@@ -1,0 +1,2687 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zmd:kernel-output-v3",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/RunRecord"
+    },
+    {
+      "$ref": "#/$defs/CycleResult"
+    }
+  ],
+  "$defs": {
+    "Quantity": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string",
+          "pattern": "^-?\\d+(?:/[1-9]\\d*)?$"
+        },
+        "category": {
+          "enum": [
+            "条文直引",
+            "算术推论",
+            "候选",
+            "启发式",
+            "实测"
+          ]
+        }
+      },
+      "required": [
+        "value",
+        "category"
+      ],
+      "additionalProperties": false
+    },
+    "Decision": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "enum": [
+            "specified",
+            "derived",
+            "unresolved",
+            "not_applicable"
+          ]
+        },
+        "value": {},
+        "basis": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "required": [
+        "status",
+        "value",
+        "basis"
+      ],
+      "additionalProperties": false
+    },
+    "Time": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "rational"
+        },
+        "value": {
+          "$ref": "#/$defs/Quantity"
+        }
+      },
+      "required": [
+        "kind",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "Hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "Warehouse": {
+      "type": "object",
+      "properties": {
+        "slots": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "slot": {
+                "type": "string",
+                "minLength": 1
+              },
+              "item": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "quantity": {
+                "$ref": "#/$defs/Quantity"
+              },
+              "empty_identity": {
+                "$ref": "#/$defs/Decision"
+              }
+            },
+            "required": [
+              "slot",
+              "item",
+              "quantity",
+              "empty_identity"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "unlisted": {
+          "const": "empty"
+        }
+      },
+      "required": [
+        "slots",
+        "unlisted"
+      ],
+      "additionalProperties": false
+    },
+    "Content": {
+      "type": "object",
+      "properties": {
+        "item": {
+          "type": "string",
+          "minLength": 1
+        },
+        "quantity": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "entered_at": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "item",
+        "quantity",
+        "entered_at"
+      ],
+      "additionalProperties": false
+    },
+    "Progress": {
+      "type": "object",
+      "properties": {
+        "unit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "phase": {
+          "enum": [
+            "idle",
+            "intake",
+            "working",
+            "completed"
+          ]
+        },
+        "recipe": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "candidate_recipes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "locked_recipe": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "remaining": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cooldowns": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "slot": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "remaining": {
+                "$ref": "#/$defs/Time"
+              }
+            },
+            "required": [
+              "slot",
+              "remaining"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "unit",
+        "phase",
+        "recipe",
+        "candidate_recipes",
+        "locked_recipe",
+        "remaining",
+        "cooldowns"
+      ],
+      "additionalProperties": false
+    },
+    "StateSeed": {
+      "type": "object",
+      "properties": {
+        "layout_snapshot": {
+          "type": "string",
+          "minLength": 1
+        },
+        "settings_anchor": {
+          "type": "object",
+          "properties": {
+            "event": {
+              "type": "string",
+              "minLength": 1
+            },
+            "side": {
+              "enum": [
+                "before",
+                "after"
+              ]
+            }
+          },
+          "required": [
+            "event",
+            "side"
+          ],
+          "additionalProperties": false
+        },
+        "warehouse": {
+          "$ref": "#/$defs/Warehouse"
+        },
+        "inventory": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "slot": {
+                "type": "string",
+                "minLength": 1
+              },
+              "contents": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/Content"
+                }
+              }
+            },
+            "required": [
+              "slot",
+              "contents"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "progress": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Progress"
+          }
+        },
+        "logistics": {
+          "type": "object",
+          "properties": {
+            "active_channels": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "blocked_channels": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "poll_memory": {
+              "$ref": "#/$defs/Decision"
+            },
+            "gate_counters": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "unit": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "blocked_reasons": {
+                    "type": "array",
+                    "items": {
+                      "enum": [
+                        "identity_mismatch",
+                        "total_exhausted",
+                        "window_exhausted"
+                      ]
+                    }
+                  },
+                  "total_received": {
+                    "$ref": "#/$defs/Quantity"
+                  },
+                  "window_received": {
+                    "$ref": "#/$defs/Quantity"
+                  },
+                  "window_started_at": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/$defs/Time"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "unit",
+                  "blocked_reasons",
+                  "total_received",
+                  "window_received",
+                  "window_started_at"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "connection_order": {
+              "$ref": "#/$defs/Decision"
+            }
+          },
+          "required": [
+            "active_channels",
+            "blocked_channels",
+            "poll_memory",
+            "gate_counters",
+            "connection_order"
+          ],
+          "additionalProperties": false
+        },
+        "environment": {
+          "type": "object",
+          "properties": {
+            "time": {
+              "$ref": "#/$defs/Time"
+            },
+            "stage": {
+              "enum": [
+                "building",
+                "debug",
+                "zero_intervention"
+              ]
+            },
+            "online": {
+              "type": "boolean"
+            },
+            "withdrawal_memory": {
+              "$ref": "#/$defs/Decision"
+            }
+          },
+          "required": [
+            "time",
+            "stage",
+            "online",
+            "withdrawal_memory"
+          ],
+          "additionalProperties": false
+        },
+        "semantic_context": {
+          "type": "object",
+          "properties": {
+            "arbitration": {
+              "type": "object",
+              "properties": {
+                "level_order": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "warehouse_empty_slot_order": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              },
+              "required": [
+                "level_order",
+                "warehouse_empty_slot_order"
+              ],
+              "additionalProperties": false
+            },
+            "parameter_values": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "axis": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "value": {
+                    "$ref": "#/$defs/Decision"
+                  },
+                  "lifetime": {
+                    "enum": [
+                      "F",
+                      "O",
+                      "U"
+                    ]
+                  }
+                },
+                "required": [
+                  "axis",
+                  "value",
+                  "lifetime"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "judgment_context": {
+              "$ref": "#/$defs/Decision"
+            },
+            "pending_events": {
+              "$ref": "#/$defs/Decision"
+            },
+            "tick_context": {
+              "$ref": "#/$defs/Decision"
+            }
+          },
+          "required": [
+            "arbitration",
+            "parameter_values",
+            "judgment_context",
+            "pending_events",
+            "tick_context"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "layout_snapshot",
+        "settings_anchor",
+        "warehouse",
+        "inventory",
+        "progress",
+        "logistics",
+        "environment",
+        "semantic_context"
+      ],
+      "additionalProperties": false
+    },
+    "Parameters": {
+      "type": "object",
+      "properties": {
+        "axis_registry": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "sha256": {
+              "$ref": "#/$defs/Hash"
+            }
+          },
+          "required": [
+            "path",
+            "sha256"
+          ],
+          "additionalProperties": false
+        },
+        "profile_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "fixed": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/Decision"
+          }
+        },
+        "offline_mutable": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/Decision"
+          }
+        },
+        "fixedness_unproven": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/Decision"
+          }
+        }
+      },
+      "required": [
+        "axis_registry",
+        "profile_id",
+        "fixed",
+        "offline_mutable",
+        "fixedness_unproven"
+      ],
+      "additionalProperties": false
+    },
+    "Event": {
+      "type": "object",
+      "properties": {
+        "event": {
+          "type": "string",
+          "minLength": 1
+        },
+        "operation": {
+          "enum": [
+            "move",
+            "internal_move",
+            "manufacture",
+            "transfer",
+            "manufacture_complete",
+            "time_advance",
+            "ore_supply",
+            "offline",
+            "player_action",
+            "gate_window_expiry",
+            "gate_identity_maintenance"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "minLength": 1
+        },
+        "outcome": {
+          "enum": [
+            "success",
+            "failure",
+            "guard_false",
+            "no_request"
+          ]
+        },
+        "detail": {
+          "type": "string"
+        },
+        "basis": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "required": [
+        "event",
+        "operation",
+        "target",
+        "outcome",
+        "basis"
+      ],
+      "additionalProperties": false
+    },
+    "Tick": {
+      "type": "object",
+      "properties": {
+        "time": {
+          "$ref": "#/$defs/Time"
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Event"
+          }
+        },
+        "state": {
+          "$ref": "#/$defs/StateSeed"
+        },
+        "summary": {
+          "type": "object"
+        },
+        "closure": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "no_success_state_repeat"
+            },
+            "scan_rounds": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "basis": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "required": [
+            "kind",
+            "scan_rounds",
+            "basis"
+          ],
+          "additionalProperties": false
+        },
+        "warehouse_ledger": {
+          "$ref": "#/$defs/WarehouseLedger"
+        }
+      },
+      "required": [
+        "time",
+        "events",
+        "state",
+        "summary",
+        "closure",
+        "warehouse_ledger"
+      ],
+      "additionalProperties": false
+    },
+    "FullTrace": {
+      "type": "object",
+      "properties": {
+        "start_state": {
+          "$ref": "#/$defs/StateSeed"
+        },
+        "ticks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Tick"
+          }
+        },
+        "end_time": {
+          "$ref": "#/$defs/Time"
+        },
+        "format": {
+          "const": "full_state_each_instant"
+        }
+      },
+      "required": [
+        "start_state",
+        "ticks",
+        "end_time",
+        "format"
+      ],
+      "additionalProperties": false
+    },
+    "DeltaTick": {
+      "type": "object",
+      "properties": {
+        "time": {
+          "$ref": "#/$defs/Time"
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Event"
+          }
+        },
+        "summary": {
+          "type": "object"
+        },
+        "closure": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "no_success_state_repeat"
+            },
+            "scan_rounds": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "basis": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "required": [
+            "kind",
+            "scan_rounds",
+            "basis"
+          ],
+          "additionalProperties": false
+        },
+        "delta": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DeltaOperation"
+          }
+        },
+        "warehouse_ledger": {
+          "$ref": "#/$defs/WarehouseLedger"
+        }
+      },
+      "required": [
+        "time",
+        "events",
+        "summary",
+        "closure",
+        "delta",
+        "warehouse_ledger"
+      ],
+      "additionalProperties": false
+    },
+    "DeltaOperation": {
+      "type": "object",
+      "properties": {
+        "op": {
+          "const": "replace"
+        },
+        "path": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "value": {}
+      },
+      "required": [
+        "op",
+        "path",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "CheckpointTrace": {
+      "type": "object",
+      "properties": {
+        "start_state": {
+          "$ref": "#/$defs/StateSeed"
+        },
+        "ticks": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "$ref": "#/$defs/Tick"
+              },
+              {
+                "$ref": "#/$defs/DeltaTick"
+              }
+            ]
+          }
+        },
+        "end_time": {
+          "$ref": "#/$defs/Time"
+        },
+        "format": {
+          "const": "checkpoint_delta"
+        },
+        "checkpoint_interval": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "delta_encoding": {
+          "const": "object_replace_v1"
+        }
+      },
+      "required": [
+        "start_state",
+        "ticks",
+        "end_time",
+        "format",
+        "checkpoint_interval",
+        "delta_encoding"
+      ],
+      "additionalProperties": false
+    },
+    "CoreInbound": {
+      "type": "object",
+      "properties": {
+        "event": {
+          "type": "string",
+          "minLength": 1
+        },
+        "channel": {
+          "type": "string",
+          "minLength": 1
+        },
+        "port": {
+          "type": "string",
+          "minLength": 1
+        },
+        "item": {
+          "type": "string",
+          "minLength": 1
+        },
+        "quantity": {
+          "$ref": "#/$defs/Quantity"
+        }
+      },
+      "required": [
+        "event",
+        "channel",
+        "port",
+        "item",
+        "quantity"
+      ],
+      "additionalProperties": false
+    },
+    "WirelessInbound": {
+      "type": "object",
+      "properties": {
+        "event": {
+          "type": "string",
+          "minLength": 1
+        },
+        "unit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "item": {
+          "type": "string",
+          "minLength": 1
+        },
+        "quantity": {
+          "$ref": "#/$defs/Quantity"
+        }
+      },
+      "required": [
+        "event",
+        "unit",
+        "item",
+        "quantity"
+      ],
+      "additionalProperties": false
+    },
+    "PortOutbound": {
+      "type": "object",
+      "properties": {
+        "event": {
+          "type": "string",
+          "minLength": 1
+        },
+        "channel": {
+          "type": "string",
+          "minLength": 1
+        },
+        "port": {
+          "type": "string",
+          "minLength": 1
+        },
+        "slot": {
+          "type": "string",
+          "minLength": 1
+        },
+        "item": {
+          "type": "string",
+          "minLength": 1
+        },
+        "quantity": {
+          "$ref": "#/$defs/Quantity"
+        }
+      },
+      "required": [
+        "event",
+        "channel",
+        "port",
+        "slot",
+        "item",
+        "quantity"
+      ],
+      "additionalProperties": false
+    },
+    "ExternalSupply": {
+      "type": "object",
+      "properties": {
+        "event": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mode": {
+          "enum": [
+            "sufficient",
+            "explicit_ore_history"
+          ]
+        },
+        "item": {
+          "enum": [
+            "源矿",
+            "蓝铁矿"
+          ]
+        },
+        "quantity": {
+          "$ref": "#/$defs/Quantity"
+        }
+      },
+      "required": [
+        "event",
+        "mode",
+        "item",
+        "quantity"
+      ],
+      "additionalProperties": false
+    },
+    "PlayerWithdrawal": {
+      "type": "object",
+      "properties": {
+        "event": {
+          "type": "string",
+          "minLength": 1
+        },
+        "slot": {
+          "type": "string",
+          "minLength": 1
+        },
+        "item": {
+          "enum": [
+            "高容谷地电池",
+            "精选荞愈胶囊"
+          ]
+        },
+        "quantity": {
+          "$ref": "#/$defs/Quantity"
+        }
+      },
+      "required": [
+        "event",
+        "slot",
+        "item",
+        "quantity"
+      ],
+      "additionalProperties": false
+    },
+    "RepresentativeAdjustment": {
+      "type": "object",
+      "properties": {
+        "item": {
+          "enum": [
+            "高容谷地电池",
+            "精选荞愈胶囊"
+          ]
+        },
+        "quantity": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "reason": {
+          "const": "production_representative"
+        }
+      },
+      "required": [
+        "item",
+        "quantity",
+        "reason"
+      ],
+      "additionalProperties": false
+    },
+    "WarehouseTotal": {
+      "type": "object",
+      "properties": {
+        "item": {
+          "type": "string",
+          "minLength": 1
+        },
+        "core_inbound": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "wireless_inbound": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "port_outbound": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "external_supply": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "player_withdrawal": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "representative_adjustment": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "actual_inbound": {
+          "$ref": "#/$defs/Quantity"
+        }
+      },
+      "required": [
+        "item",
+        "core_inbound",
+        "wireless_inbound",
+        "port_outbound",
+        "external_supply",
+        "player_withdrawal",
+        "representative_adjustment",
+        "actual_inbound"
+      ],
+      "additionalProperties": false
+    },
+    "WarehouseLedger": {
+      "type": "object",
+      "properties": {
+        "core_inbound": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CoreInbound"
+          }
+        },
+        "wireless_inbound": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/WirelessInbound"
+          }
+        },
+        "port_outbound": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/PortOutbound"
+          }
+        },
+        "external_supply": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ExternalSupply"
+          }
+        },
+        "player_withdrawal": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/PlayerWithdrawal"
+          }
+        },
+        "representative_adjustment": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/RepresentativeAdjustment"
+          }
+        },
+        "totals": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/WarehouseTotal"
+          }
+        }
+      },
+      "required": [
+        "core_inbound",
+        "wireless_inbound",
+        "port_outbound",
+        "external_supply",
+        "player_withdrawal",
+        "representative_adjustment",
+        "totals"
+      ],
+      "additionalProperties": false
+    },
+    "RunRecord": {
+      "type": "object",
+      "properties": {
+        "schema": {
+          "const": "kernel-output-v3"
+        },
+        "run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "profile_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "producer": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "enum": [
+                "kernel",
+                "bounded_reference_checker",
+                "manual_expected"
+              ]
+            },
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "claim": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "kind",
+            "path",
+            "claim"
+          ],
+          "additionalProperties": false
+        },
+        "status": {
+          "enum": [
+            "completed",
+            "invalid_input",
+            "unsupported",
+            "unresolved",
+            "inconclusive"
+          ]
+        },
+        "fingerprints": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "role": {
+                "enum": [
+                  "input",
+                  "catalog",
+                  "axis_registry",
+                  "profile",
+                  "parameter_projection",
+                  "formal_source",
+                  "golden",
+                  "checker",
+                  "semantics",
+                  "schema"
+                ]
+              },
+              "path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "sha256": {
+                "$ref": "#/$defs/Hash"
+              }
+            },
+            "required": [
+              "role",
+              "path",
+              "sha256"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "parameter_assignment": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Parameters"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "input_history": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "timeline": {
+                  "type": "object"
+                },
+                "construction": {
+                  "type": "object"
+                },
+                "debug_operations": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                },
+                "environment": {
+                  "type": "object"
+                },
+                "reachability": {
+                  "$ref": "#/$defs/Decision"
+                }
+              },
+              "required": [
+                "timeline",
+                "construction",
+                "debug_operations",
+                "environment",
+                "reachability"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "uncovered_axes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "axis": {
+                "type": "string",
+                "minLength": 1
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1
+              },
+              "disposition": {
+                "type": "string",
+                "minLength": 1
+              },
+              "coverage_status": {
+                "enum": [
+                  "exercised",
+                  "input_checked",
+                  "not_exercised",
+                  "stop_not_triggered",
+                  "proof_pending"
+                ]
+              },
+              "evidence": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "other_values": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "axis",
+              "reason",
+              "disposition",
+              "coverage_status",
+              "evidence",
+              "other_values"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "trace": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/FullTrace"
+            },
+            {
+              "$ref": "#/$defs/CheckpointTrace"
+            }
+          ]
+        },
+        "validation_scope": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "const": "finite_trace"
+                },
+                "from": {
+                  "$ref": "#/$defs/Time"
+                },
+                "through": {
+                  "$ref": "#/$defs/Time"
+                },
+                "golden_match": {
+                  "type": "boolean"
+                },
+                "initial_history": {
+                  "const": "conditional_witness"
+                },
+                "universal_parameters": {
+                  "const": false
+                },
+                "all_reachable_cycles": {
+                  "const": false
+                },
+                "target_certified": {
+                  "const": false
+                },
+                "manufacturing_cycles_completed": {
+                  "$ref": "#/$defs/Quantity"
+                }
+              },
+              "required": [
+                "kind",
+                "from",
+                "through",
+                "golden_match",
+                "initial_history",
+                "universal_parameters",
+                "all_reachable_cycles",
+                "target_certified",
+                "manufacturing_cycles_completed"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "open_items": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "execution_mode": {
+          "enum": [
+            "finite_concrete",
+            "production_abstraction"
+          ]
+        },
+        "port_meeting": {
+          "enum": [
+            "shared_edge_opposite",
+            "closed_segment_touch"
+          ]
+        }
+      },
+      "required": [
+        "schema",
+        "run_id",
+        "profile_id",
+        "producer",
+        "status",
+        "fingerprints",
+        "parameter_assignment",
+        "input_history",
+        "uncovered_axes",
+        "trace",
+        "validation_scope",
+        "open_items",
+        "execution_mode",
+        "port_meeting"
+      ],
+      "additionalProperties": false,
+      "if": {
+        "properties": {
+          "status": {
+            "const": "completed"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "parameter_assignment": {
+            "$ref": "#/$defs/Parameters"
+          },
+          "input_history": {
+            "type": "object",
+            "properties": {
+              "timeline": {
+                "type": "object"
+              },
+              "construction": {
+                "type": "object"
+              },
+              "debug_operations": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              },
+              "environment": {
+                "type": "object"
+              },
+              "reachability": {
+                "$ref": "#/$defs/Decision"
+              }
+            },
+            "required": [
+              "timeline",
+              "construction",
+              "debug_operations",
+              "environment",
+              "reachability"
+            ],
+            "additionalProperties": false
+          },
+          "trace": {
+            "oneOf": [
+              {
+                "$ref": "#/$defs/FullTrace"
+              },
+              {
+                "$ref": "#/$defs/CheckpointTrace"
+              }
+            ]
+          },
+          "validation_scope": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "const": "finite_trace"
+              },
+              "from": {
+                "$ref": "#/$defs/Time"
+              },
+              "through": {
+                "$ref": "#/$defs/Time"
+              },
+              "golden_match": {
+                "type": "boolean"
+              },
+              "initial_history": {
+                "const": "conditional_witness"
+              },
+              "universal_parameters": {
+                "const": false
+              },
+              "all_reachable_cycles": {
+                "const": false
+              },
+              "target_certified": {
+                "const": false
+              },
+              "manufacturing_cycles_completed": {
+                "$ref": "#/$defs/Quantity"
+              }
+            },
+            "required": [
+              "kind",
+              "from",
+              "through",
+              "golden_match",
+              "initial_history",
+              "universal_parameters",
+              "all_reachable_cycles",
+              "target_certified",
+              "manufacturing_cycles_completed"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    "ProofSource": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "$ref": "#/$defs/Hash"
+        }
+      },
+      "required": [
+        "path",
+        "sha256"
+      ],
+      "additionalProperties": false
+    },
+    "CycleKey": {
+      "type": "object",
+      "properties": {
+        "schema": {
+          "const": "production-cycle-key-v1"
+        },
+        "domain": {
+          "const": "production_v1"
+        },
+        "state": {
+          "type": "object",
+          "properties": {
+            "settings_anchor": {
+              "type": "object"
+            },
+            "warehouse": {
+              "type": "object"
+            },
+            "logistics": {
+              "type": "object"
+            },
+            "environment": {
+              "type": "object"
+            },
+            "semantic_context": {
+              "type": "object"
+            },
+            "layout_snapshot": {
+              "type": "string",
+              "minLength": 1
+            },
+            "inventory": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "progress": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          },
+          "required": [
+            "settings_anchor",
+            "warehouse",
+            "logistics",
+            "environment",
+            "semantic_context",
+            "layout_snapshot",
+            "inventory",
+            "progress"
+          ],
+          "additionalProperties": false
+        },
+        "product_acceptance": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "item": {
+                "enum": [
+                  "高容谷地电池",
+                  "精选荞愈胶囊"
+                ]
+              },
+              "state": {
+                "const": "under_capacity"
+              }
+            },
+            "required": [
+              "item",
+              "state"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 2,
+          "maxItems": 2
+        }
+      },
+      "required": [
+        "schema",
+        "domain",
+        "state",
+        "product_acceptance"
+      ],
+      "additionalProperties": false
+    },
+    "CycleRate": {
+      "type": "object",
+      "properties": {
+        "item": {
+          "enum": [
+            "高容谷地电池",
+            "精选荞愈胶囊"
+          ]
+        },
+        "inbound": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "period": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "average": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "target": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "comparison": {
+          "enum": [
+            "lt",
+            "eq",
+            "gt"
+          ]
+        }
+      },
+      "required": [
+        "item",
+        "inbound",
+        "period",
+        "average",
+        "target",
+        "comparison"
+      ],
+      "additionalProperties": false
+    },
+    "Acceptance": {
+      "type": "object",
+      "properties": {
+        "time": {
+          "$ref": "#/$defs/Time"
+        },
+        "products": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "item": {
+                "enum": [
+                  "高容谷地电池",
+                  "精选荞愈胶囊"
+                ]
+              },
+              "capacity_available": {
+                "type": "boolean"
+              },
+              "physical_path_exists": {
+                "type": "boolean"
+              },
+              "selected_acceptance": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "item",
+              "capacity_available",
+              "physical_path_exists",
+              "selected_acceptance"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 2,
+          "maxItems": 2
+        }
+      },
+      "required": [
+        "time",
+        "products"
+      ],
+      "additionalProperties": false
+    },
+    "Cycle": {
+      "type": "object",
+      "properties": {
+        "period": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "start_time": {
+          "$ref": "#/$defs/Time"
+        },
+        "end_time": {
+          "$ref": "#/$defs/Time"
+        },
+        "start_state": {
+          "$ref": "#/$defs/StateSeed"
+        },
+        "end_state": {
+          "$ref": "#/$defs/StateSeed"
+        },
+        "start_key": {
+          "$ref": "#/$defs/CycleKey"
+        },
+        "end_key": {
+          "$ref": "#/$defs/CycleKey"
+        },
+        "normalization": {
+          "type": "object",
+          "properties": {
+            "schema": {
+              "const": "cycle-normalization-v1"
+            },
+            "definition": {
+              "$ref": "#/$defs/ProofSource"
+            },
+            "basis": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "minItems": 1
+            },
+            "domain_checks": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "minItems": 5
+            }
+          },
+          "required": [
+            "schema",
+            "definition",
+            "basis",
+            "domain_checks"
+          ],
+          "additionalProperties": false
+        },
+        "ledger": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "time": {
+                "$ref": "#/$defs/Time"
+              },
+              "warehouse_ledger": {
+                "$ref": "#/$defs/WarehouseLedger"
+              }
+            },
+            "required": [
+              "time",
+              "warehouse_ledger"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1
+        },
+        "totals": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/WarehouseTotal"
+          },
+          "minItems": 2
+        },
+        "rates": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CycleRate"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "acceptance": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Acceptance"
+          },
+          "minItems": 1
+        },
+        "lift": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "enum": [
+                    "proved",
+                    "blocked"
+                  ]
+                },
+                "family": {
+                  "$ref": "#/$defs/ProofSource"
+                },
+                "proof": {
+                  "$ref": "#/$defs/ProofSource"
+                },
+                "family_checks": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "condition": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "unresolved"
+                        ]
+                      },
+                      "evidence": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "minItems": 1
+                      }
+                    },
+                    "required": [
+                      "condition",
+                      "status",
+                      "evidence"
+                    ],
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "required": [
+                "status",
+                "family",
+                "proof",
+                "family_checks"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "period",
+        "start_time",
+        "end_time",
+        "start_state",
+        "end_state",
+        "start_key",
+        "end_key",
+        "normalization",
+        "ledger",
+        "totals",
+        "rates",
+        "acceptance",
+        "lift"
+      ],
+      "additionalProperties": false
+    },
+    "CycleResult": {
+      "type": "object",
+      "properties": {
+        "schema": {
+          "const": "kernel-cycle-v1"
+        },
+        "result_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "enum": [
+            "cycle_found",
+            "counterexample",
+            "stopped",
+            "inconclusive",
+            "invalid_input"
+          ]
+        },
+        "level": {
+          "enum": [
+            "production_part",
+            "full_base",
+            null
+          ]
+        },
+        "execution_mode": {
+          "enum": [
+            "finite_concrete",
+            "production_abstraction"
+          ]
+        },
+        "port_meeting": {
+          "enum": [
+            "shared_edge_opposite",
+            "closed_segment_touch"
+          ]
+        },
+        "seed": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "state": {
+                  "$ref": "#/$defs/StateSeed"
+                },
+                "reachability": {
+                  "$ref": "#/$defs/Decision"
+                },
+                "source_event": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "state",
+                "reachability",
+                "source_event"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "parameter_point": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "assignment": {
+                  "$ref": "#/$defs/Parameters"
+                },
+                "input_axes": {
+                  "type": "object",
+                  "properties": {
+                    "judgment.order": {
+                      "$ref": "#/$defs/Decision"
+                    },
+                    "damping.branch": {
+                      "$ref": "#/$defs/Decision"
+                    },
+                    "connection.build_order": {
+                      "$ref": "#/$defs/Decision"
+                    },
+                    "connection.order": {
+                      "$ref": "#/$defs/Decision"
+                    },
+                    "connection.tie": {
+                      "$ref": "#/$defs/Decision"
+                    },
+                    "connection.belt_shape": {
+                      "$ref": "#/$defs/Decision"
+                    },
+                    "transfer.phase": {
+                      "$ref": "#/$defs/Decision"
+                    },
+                    "manufacturing.recipe_selection": {
+                      "$ref": "#/$defs/Decision"
+                    },
+                    "manufacturing.input_slot_selection": {
+                      "$ref": "#/$defs/Decision"
+                    },
+                    "initialization.warehouse_anchor": {
+                      "$ref": "#/$defs/Decision"
+                    },
+                    "initialization.other_inventory": {
+                      "$ref": "#/$defs/Decision"
+                    },
+                    "initialization.switches": {
+                      "$ref": "#/$defs/Decision"
+                    },
+                    "initialization.build_timing": {
+                      "$ref": "#/$defs/Decision"
+                    },
+                    "initialization.debug_end": {
+                      "$ref": "#/$defs/Decision"
+                    },
+                    "warehouse.external_supply": {
+                      "$ref": "#/$defs/Decision"
+                    }
+                  },
+                  "required": [
+                    "judgment.order",
+                    "damping.branch",
+                    "connection.build_order",
+                    "connection.order",
+                    "connection.tie",
+                    "connection.belt_shape",
+                    "transfer.phase",
+                    "manufacturing.recipe_selection",
+                    "manufacturing.input_slot_selection",
+                    "initialization.warehouse_anchor",
+                    "initialization.other_inventory",
+                    "initialization.switches",
+                    "initialization.build_timing",
+                    "initialization.debug_end",
+                    "warehouse.external_supply"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "assignment",
+                "input_axes"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reading": {
+          "type": "object",
+          "properties": {
+            "port_meeting": {
+              "enum": [
+                "shared_edge_opposite",
+                "closed_segment_touch"
+              ]
+            },
+            "warehouse_acceptance": {
+              "type": "string",
+              "minLength": 1
+            },
+            "acceptance_quantifier": {
+              "type": "string",
+              "minLength": 1
+            },
+            "cycle_interpretation": {
+              "enum": [
+                "production_projection",
+                "observable_base_with_withdrawal"
+              ]
+            },
+            "remaining_assumptions": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "required": [
+            "port_meeting",
+            "warehouse_acceptance",
+            "acceptance_quantifier",
+            "cycle_interpretation",
+            "remaining_assumptions"
+          ],
+          "additionalProperties": false
+        },
+        "support_domain": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1
+            },
+            "checks": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "condition": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "status": {
+                    "enum": [
+                      "pass",
+                      "fail",
+                      "unresolved"
+                    ]
+                  },
+                  "evidence": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "minItems": 1
+                  }
+                },
+                "required": [
+                  "condition",
+                  "status",
+                  "evidence"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "uncovered": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "required": [
+            "name",
+            "checks",
+            "uncovered"
+          ],
+          "additionalProperties": false
+        },
+        "replay_input": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "schema": {
+                  "const": "kernel-input-v3"
+                }
+              },
+              "required": [
+                "schema",
+                "layout",
+                "settings",
+                "parameters",
+                "initial_state",
+                "timeline",
+                "environment"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "run_record": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RunRecord"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cycle": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Cycle"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "stop": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "enum": [
+                    "invalid_input",
+                    "unsupported",
+                    "unresolved",
+                    "resource",
+                    "low_rate"
+                  ]
+                },
+                "axis": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "event": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "time": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/$defs/Time"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "reason": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "partial_events": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/Event"
+                  }
+                }
+              },
+              "required": [
+                "kind",
+                "axis",
+                "event",
+                "time",
+                "reason",
+                "partial_events"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "budget": {
+          "type": "object",
+          "properties": {
+            "max_ticks": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "max_sweeps": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "completed_ticks": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "max_ticks",
+            "max_sweeps",
+            "completed_ticks"
+          ],
+          "additionalProperties": false
+        },
+        "open_items": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "required": [
+        "schema",
+        "result_id",
+        "status",
+        "level",
+        "execution_mode",
+        "port_meeting",
+        "seed",
+        "parameter_point",
+        "reading",
+        "support_domain",
+        "replay_input",
+        "run_record",
+        "cycle",
+        "stop",
+        "budget",
+        "open_items"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "enum": [
+                  "cycle_found",
+                  "counterexample"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "cycle": {
+                "$ref": "#/$defs/Cycle"
+              },
+              "seed": {
+                "type": "object"
+              },
+              "parameter_point": {
+                "type": "object",
+                "properties": {
+                  "assignment": {
+                    "$ref": "#/$defs/Parameters"
+                  },
+                  "input_axes": {
+                    "type": "object",
+                    "properties": {
+                      "judgment.order": {
+                        "$ref": "#/$defs/Decision"
+                      },
+                      "damping.branch": {
+                        "$ref": "#/$defs/Decision"
+                      },
+                      "connection.build_order": {
+                        "$ref": "#/$defs/Decision"
+                      },
+                      "connection.order": {
+                        "$ref": "#/$defs/Decision"
+                      },
+                      "connection.tie": {
+                        "$ref": "#/$defs/Decision"
+                      },
+                      "connection.belt_shape": {
+                        "$ref": "#/$defs/Decision"
+                      },
+                      "transfer.phase": {
+                        "$ref": "#/$defs/Decision"
+                      },
+                      "manufacturing.recipe_selection": {
+                        "$ref": "#/$defs/Decision"
+                      },
+                      "manufacturing.input_slot_selection": {
+                        "$ref": "#/$defs/Decision"
+                      },
+                      "initialization.warehouse_anchor": {
+                        "$ref": "#/$defs/Decision"
+                      },
+                      "initialization.other_inventory": {
+                        "$ref": "#/$defs/Decision"
+                      },
+                      "initialization.switches": {
+                        "$ref": "#/$defs/Decision"
+                      },
+                      "initialization.build_timing": {
+                        "$ref": "#/$defs/Decision"
+                      },
+                      "initialization.debug_end": {
+                        "$ref": "#/$defs/Decision"
+                      },
+                      "warehouse.external_supply": {
+                        "$ref": "#/$defs/Decision"
+                      }
+                    },
+                    "required": [
+                      "judgment.order",
+                      "damping.branch",
+                      "connection.build_order",
+                      "connection.order",
+                      "connection.tie",
+                      "connection.belt_shape",
+                      "transfer.phase",
+                      "manufacturing.recipe_selection",
+                      "manufacturing.input_slot_selection",
+                      "initialization.warehouse_anchor",
+                      "initialization.other_inventory",
+                      "initialization.switches",
+                      "initialization.build_timing",
+                      "initialization.debug_end",
+                      "warehouse.external_supply"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "assignment",
+                  "input_axes"
+                ],
+                "additionalProperties": false
+              },
+              "run_record": {
+                "$ref": "#/$defs/RunRecord"
+              },
+              "replay_input": {
+                "type": "object"
+              },
+              "level": {
+                "enum": [
+                  "production_part",
+                  "full_base"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "cycle_found"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "stop": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "counterexample"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "stop": {
+                "allOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "enum": [
+                          "invalid_input",
+                          "unsupported",
+                          "unresolved",
+                          "resource",
+                          "low_rate"
+                        ]
+                      },
+                      "axis": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "event": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "time": {
+                        "anyOf": [
+                          {
+                            "$ref": "#/$defs/Time"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "reason": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "partial_events": {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/$defs/Event"
+                        }
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "axis",
+                      "event",
+                      "time",
+                      "reason",
+                      "partial_events"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "properties": {
+                      "kind": {
+                        "const": "low_rate"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "enum": [
+                  "stopped",
+                  "inconclusive",
+                  "invalid_input"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "cycle": {
+                "type": "null"
+              },
+              "stop": {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "enum": [
+                      "invalid_input",
+                      "unsupported",
+                      "unresolved",
+                      "resource",
+                      "low_rate"
+                    ]
+                  },
+                  "axis": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "event": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "time": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/$defs/Time"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "reason": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "partial_events": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/Event"
+                    }
+                  }
+                },
+                "required": [
+                  "kind",
+                  "axis",
+                  "event",
+                  "time",
+                  "reason",
+                  "partial_events"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "inconclusive"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "stop": {
+                "properties": {
+                  "kind": {
+                    "const": "resource"
+                  }
+                }
+              },
+              "seed": {
+                "type": "object"
+              },
+              "parameter_point": {
+                "type": "object",
+                "properties": {
+                  "assignment": {
+                    "$ref": "#/$defs/Parameters"
+                  },
+                  "input_axes": {
+                    "type": "object",
+                    "properties": {
+                      "judgment.order": {
+                        "$ref": "#/$defs/Decision"
+                      },
+                      "damping.branch": {
+                        "$ref": "#/$defs/Decision"
+                      },
+                      "connection.build_order": {
+                        "$ref": "#/$defs/Decision"
+                      },
+                      "connection.order": {
+                        "$ref": "#/$defs/Decision"
+                      },
+                      "connection.tie": {
+                        "$ref": "#/$defs/Decision"
+                      },
+                      "connection.belt_shape": {
+                        "$ref": "#/$defs/Decision"
+                      },
+                      "transfer.phase": {
+                        "$ref": "#/$defs/Decision"
+                      },
+                      "manufacturing.recipe_selection": {
+                        "$ref": "#/$defs/Decision"
+                      },
+                      "manufacturing.input_slot_selection": {
+                        "$ref": "#/$defs/Decision"
+                      },
+                      "initialization.warehouse_anchor": {
+                        "$ref": "#/$defs/Decision"
+                      },
+                      "initialization.other_inventory": {
+                        "$ref": "#/$defs/Decision"
+                      },
+                      "initialization.switches": {
+                        "$ref": "#/$defs/Decision"
+                      },
+                      "initialization.build_timing": {
+                        "$ref": "#/$defs/Decision"
+                      },
+                      "initialization.debug_end": {
+                        "$ref": "#/$defs/Decision"
+                      },
+                      "warehouse.external_supply": {
+                        "$ref": "#/$defs/Decision"
+                      }
+                    },
+                    "required": [
+                      "judgment.order",
+                      "damping.branch",
+                      "connection.build_order",
+                      "connection.order",
+                      "connection.tie",
+                      "connection.belt_shape",
+                      "transfer.phase",
+                      "manufacturing.recipe_selection",
+                      "manufacturing.input_slot_selection",
+                      "initialization.warehouse_anchor",
+                      "initialization.other_inventory",
+                      "initialization.switches",
+                      "initialization.build_timing",
+                      "initialization.debug_end",
+                      "warehouse.external_supply"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "assignment",
+                  "input_axes"
+                ],
+                "additionalProperties": false
+              },
+              "replay_input": {
+                "type": "object"
+              },
+              "run_record": {
+                "$ref": "#/$defs/RunRecord"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "level": {
+                "const": "production_part"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "execution_mode": {
+                "const": "production_abstraction"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "level": {
+                "const": "full_base"
+              },
+              "status": {
+                "enum": [
+                  "cycle_found",
+                  "counterexample"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "cycle": {
+                "properties": {
+                  "lift": {
+                    "type": "object",
+                    "properties": {
+                      "status": {
+                        "const": "proved"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

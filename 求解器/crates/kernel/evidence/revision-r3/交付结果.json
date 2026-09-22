@@ -1,0 +1,84 @@
+{
+  "status": "revised_with_open_items",
+  "tests_passed": 121,
+  "clippy": "pass",
+  "cli_cases": 59,
+  "cli_schema_passed": 57,
+  "cli_schema_open": 1,
+  "reference_records": 4,
+  "audited_records": 26,
+  "cycle_results": 10,
+  "ms_per_tick": {
+    "benchmark_brick_60": 0.5877088333333333,
+    "benchmark_brick": 2.7375217500000004,
+    "benchmark_candidate_b": 17.29609483333333
+  },
+  "findings": [
+    {
+      "id": "KR-r3-L1-01",
+      "status": "已修复",
+      "change": "仅before_boundary同步参数；after_closure校验并保留原参数。",
+      "basis": "输入§6.4、KQ-07；参数缺失/冲突/生命周期与合法续跑对照。"
+    },
+    {
+      "id": "KR-r3-L1-02",
+      "status": "已修复",
+      "change": "after_closure待窗口必须deadline>t，before_boundary允许deadline=t。",
+      "basis": "规则L64、转移§2.1；deadline<t/=t/>t及本刻到期维护正例。"
+    },
+    {
+      "id": "KR-r3-L1-03",
+      "status": "已修复",
+      "change": "verify-cycle共用独立完整前缀身份/时序检查，然后整份重算和P步重跑。",
+      "basis": "输出§2、§5.3.1；循环前缀重复事件、原延迟窗口证书均拒收。"
+    },
+    {
+      "id": "KR-r3-L1-04",
+      "status": "已修复",
+      "change": "sufficient在派生与装载阶段核两矿唯一正库存。",
+      "basis": "任务L7、输入§5.4；源矿/蓝铁矿历史空格均拒收，显式补矿回归保留。"
+    },
+    {
+      "id": "KR-r3-L2-01",
+      "status": "已修复",
+      "change": "覆盖缺失表、表内冲突、只改顶层相位、重复轴与生命周期错误。",
+      "basis": "与L1-01同源，独立保留ID；真实桥检查点状态和续跑五字段相等。"
+    },
+    {
+      "id": "KR-r3-L2-02",
+      "status": "已修复",
+      "change": "所有锚点单独解析历史相位Time并核整数0…5；允许合法历史值不同于当前冷却。",
+      "basis": "规则L36、输入§1.1/§5；-1/6/1/2/错误类型拒收，合法0/5对照通过。"
+    },
+    {
+      "id": "KR-r3-L2-03",
+      "status": "标签与审计已修复；运行覆盖仍缺",
+      "change": "桥搬运不计先接；含桥为input_checked，聚合独立核历史/方向/操作。",
+      "basis": "输出§1、第五轮K6；先接与恢复两轴逐条说明缺口，不虚构运行事件。"
+    },
+    {
+      "id": "KR-r3-L3-01",
+      "status": "已修复",
+      "change": "先核完整结构与目录格身份/重复/缺失及仓库引用，再改种子或建派生索引。",
+      "basis": "输入§2.3、转移§1；短格名/布尔种子及扩展矩阵在run/seed/cycle返回JSON和退出2。"
+    },
+    {
+      "id": "KR-r3-L3-02",
+      "status": "分类已修复；schema待KQ-09",
+      "change": "装载资源不足保留inconclusive和resource；无完整种子时仍留空上下文。",
+      "basis": "转移§1、输出§1/§5；年龄溢出run/cycle分类一致，但现行schema拒绝空未决外壳。"
+    },
+    {
+      "id": "KR-r3-L3-03",
+      "status": "已清理",
+      "change": "删除15个编译文件与193文件仓库式快照；4组源码探针移出证据树。",
+      "basis": "任务书5§0.2；cleanup.json保留原路径/字节/SHA-256，清理后无禁目录及ELF/ar。"
+    }
+  ],
+  "open_items": [
+    "KQ-09：现行CycleResult schema不允许装载资源未决的空上下文，与正文可空约定冲突。分类已修复，schema兼容性待S线处理；K线无schema写权。",
+    "K6：connection.bridge_first_contact仅input_checked、transfer.resume_event未实际触发；固定已建成/开关/供电段不能生成对应运行事件。",
+    "密集制造闭环序2/5在1000 tick内仍未决；4份条件周期不证明完整可达史、全局模板全序或一般动态约束。",
+    "级二周期提升的整批容量与非精确拿取族义务、种子/参数/读法族认证及R线最终约减仍开放。"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "name": "relative-batch",
+  "command": [
+    "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+    "verify-batch",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-1-证据/relative-package",
+    "--config",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+  ],
+  "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+  "exit_code": 2,
+  "result": null,
+  "stderr": "已核 certificate.json\nTraceback (most recent call last):\n  File \"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/verify_all.py\", line 64, in <module>\n    if __name__=='__main__':main()\n                            ~~~~^^\n  File \"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/verify_all.py\", line 54, in main\n    assert p.returncode==0,(str(path),p.stdout,p.stderr)\n           ^^^^^^^^^^^^^^^\nAssertionError: ('/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-1-证据/relative-package/record.json', '{\\n  \"execution_mode\": \"finite_concrete\",\\n  \"fingerprints\": [],\\n  \"input_history\": null,\\n  \"open_items\": [\\n    \"invalid_input input @ ../../../../../数据/样例/生产循环环带.json: No such file or directory (os error 2)\"\\n  ],\\n  \"parameter_assignment\": null,\\n  \"port_meeting\": \"shared_edge_opposite\",\\n  \"producer\": {\\n    \"claim\": \"装载停止，未形成游戏后继\",\\n    \"kind\": \"kernel\",\\n    \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs\"\\n  },\\n  \"profile_id\": \"kernel_profile_v1\",\\n  \"run_id\": \"kernel:load-stop\",\\n  \"schema\": \"kernel-output-v3\",\\n  \"status\": \"invalid_input\",\\n  \"trace\": null,\\n  \"uncovered_axes\": [],\\n  \"validation_scope\": null\\n}\\n', '')\n"
+}
+STDOUT
+
+STDERR
+已核 certificate.json
+Traceback (most recent call last):
+  File "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/verify_all.py", line 64, in <module>
+    if __name__=='__main__':main()
+                            ~~~~^^
+  File "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/verify_all.py", line 54, in main
+    assert p.returncode==0,(str(path),p.stdout,p.stderr)
+           ^^^^^^^^^^^^^^^
+AssertionError: ('/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-1-证据/relative-package/record.json', '{\n  "execution_mode": "finite_concrete",\n  "fingerprints": [],\n  "input_history": null,\n  "open_items": [\n    "invalid_input input @ ../../../../../数据/样例/生产循环环带.json: No such file or directory (os error 2)"\n  ],\n  "parameter_assignment": null,\n  "port_meeting": "shared_edge_opposite",\n  "producer": {\n    "claim": "装载停止，未形成游戏后继",\n    "kind": "kernel",\n    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"\n  },\n  "profile_id": "kernel_profile_v1",\n  "run_id": "kernel:load-stop",\n  "schema": "kernel-output-v3",\n  "status": "invalid_input",\n  "trace": null,\n  "uncovered_axes": [],\n  "validation_scope": null\n}\n', '')

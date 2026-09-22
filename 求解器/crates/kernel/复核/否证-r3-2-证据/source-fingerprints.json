@@ -1,0 +1,11 @@
+{
+  "sources": {
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/桥接器双通路.json": "efcab7af7aea7ef76687ab570a67e79e5fcef7a4b33348f5c71c3e70d41f98bf",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json": "2942f3916d63c41d600d8226046cbd2a5bc05439161cfa1c2abd1702b75dd590",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/生产循环环带.json": "6043e8736a6caad5d8ce52e7f64e25e3647db4cfdd731ed4f3fff8b2d95d279d",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询.json": "02ad753b54f31d04390b8672ebd4e316cef91d931fd96fec252c2fed82e863ee",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/tiny-control-input.json": "0a36d15121cbd3f377646dde46b6ec6ba3b5adeab4dc4ef5c5c82a07b47b6917",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/audit-results.json": "0b48fa4db0dfcc1eb23e89bed8cd705baf8c4bc777e91282948e62f134ceeb7c"
+  },
+  "binary_sha256": "82d771d670570efcc9104c8ec8059a0d3a398990643435a60b1222f1cdf300a2"
+}

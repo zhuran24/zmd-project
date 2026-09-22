@@ -1,0 +1,23 @@
+{
+  "name": "load-shell-checkpoint",
+  "command": [
+    "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+    "checkpoint",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/cli/overflow.json",
+    "--out",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-1-证据/load-shell-checkpoint.json",
+    "--config",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+  ],
+  "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+  "exit_code": 101,
+  "result": null,
+  "stderr": "\nthread 'main' (985778) panicked at crates/kernel/src/main.rs:168:77:\ncalled `Option::unwrap()` on a `None` value\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n"
+}
+STDOUT
+
+STDERR
+
+thread 'main' (985778) panicked at crates/kernel/src/main.rs:168:77:
+called `Option::unwrap()` on a `None` value
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

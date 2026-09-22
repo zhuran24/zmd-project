@@ -1,0 +1,56 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.01s
+     Running unittests src/lib.rs (target/debug/deps/topology-958a7a196b95191c)
+
+running 1 test
+test catalog_tests::legacy_machine_constants_equal_catalog ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (target/debug/deps/topology-232d29a62249f608)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/validation.rs (target/debug/deps/validation-55f92a55e3fc13c3)
+
+running 30 tests
+test catalog_port_edges_match_formal_reference_layouts ... ok
+test catalog_unit_properties_match_formal_reference_values ... ok
+test storage_split_counts_both_sides_and_deduplicates_item_rows ... ok
+test storage_relay_cannot_double_material_origin_flow ... ok
+test catalog_is_checked_against_live_formal_sources ... ok
+test fabricated_capacity_cannot_relax_rule ... ok
+test duplicate_source_identity_is_rejected ... ok
+test false_actual_rate_is_not_a_certificate ... ok
+test candidate_passes_static_only ... ok
+test legacy_channels_and_storage_shortcut_are_rejected ... ok
+test plant_storage_condition_uses_current_machine_count ... ok
+test overload_is_exact_and_not_rounded ... ok
+test full_speed_and_transport_projection_are_explicit_but_not_certified ... ok
+test shared_port_rates_are_summed ... ok
+test dedicated_ports_cannot_fork_without_transport_model ... ok
+test false_fanout_certification_is_rejected ... ok
+test changed_channel_breaks_local_balance ... ok
+test zero_rate_does_not_count_as_live_channel ... ok
+test every_formal_constraint_has_coverage_row ... ok
+test wrong_target_recipe_is_rejected ... ok
+test unsupported_routing_fails_closed ... ok
+test zero_denominator_and_missing_fields_fail_loading ... ok
+test multi_material_obligations_cannot_disappear ... ok
+test wrong_target_cannot_redefine_task ... ok
+test invalid_ore_machine_is_not_counted_as_dedicated ... ok
+test logical_feed_ids_cannot_be_physical_or_buffer_channels ... ok
+test numeric_categories_have_field_semantics ... ok
+test catalog_mutations_are_rejected_by_live_source_gate ... ok
+test same_item_multiport_and_mixed_recipe_obligations_are_required ... ok
+test catalog_full_field_mutation_regressions_pass ... ok
+
+test result: ok. 30 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.21s
+
+   Doc-tests topology
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

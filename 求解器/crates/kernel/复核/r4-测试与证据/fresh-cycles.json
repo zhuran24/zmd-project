@@ -1,0 +1,46 @@
+[
+  {
+    "name": "生产循环环带",
+    "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/生产循环环带-fresh-cycle.json",
+    "status": "counterexample",
+    "period": {
+      "category": "算术推论",
+      "value": "20"
+    },
+    "verification": {
+      "checks": [
+        "完整前缀事件身份与时序独立检查",
+        "完整结果逐字段重算",
+        "循环起点重新装载",
+        "P次step_tick事件/状态/台账/闭包逐字段相等",
+        "终态完整键相等"
+      ],
+      "cycle_replayed": true,
+      "period": 20,
+      "start_time": 0,
+      "status": "input_checked"
+    }
+  },
+  {
+    "name": "密集制造闭环序0核验",
+    "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/密集制造闭环序0核验-fresh-cycle.json",
+    "status": "counterexample",
+    "period": {
+      "category": "算术推论",
+      "value": "190"
+    },
+    "verification": {
+      "checks": [
+        "完整前缀事件身份与时序独立检查",
+        "完整结果逐字段重算",
+        "循环起点重新装载",
+        "P次step_tick事件/状态/台账/闭包逐字段相等",
+        "终态完整键相等"
+      ],
+      "cycle_replayed": true,
+      "period": 190,
+      "start_time": 72,
+      "status": "input_checked"
+    }
+  }
+]

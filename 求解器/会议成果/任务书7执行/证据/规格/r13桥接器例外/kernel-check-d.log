@@ -1,0 +1,12 @@
+$ '/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel' check '/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/规格/r13桥接器例外/seed-output-d.json' --config '/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json'
+EXIT_CODE=0
+STDOUT:
+{
+  "buffer_channels": 0,
+  "catalog_sha256": "6e1d59212bd93c718f5010681f65a2281ddd26de928461a53fea224b238ea186",
+  "physical_channels": 0,
+  "status": "input_checked",
+  "units": 3
+}
+
+STDERR:

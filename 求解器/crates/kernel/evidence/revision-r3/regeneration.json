@@ -1,0 +1,161 @@
+{
+  "config_revision": "round5-specification-r8",
+  "config_sha256": "bb0864eec811a6a77065ede33af165ced5e31e384afb166eaa30af554589e34a",
+  "binary_sha256": "6fec86994d899dd58ee666d46ebb5c6f0be0c3d076efac0685f40452781fb41f",
+  "results": [
+    {
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-v3-kernel.json",
+      "ticks": 4,
+      "status": "completed"
+    },
+    {
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询.json",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-v3-kernel.json",
+      "ticks": 12,
+      "status": "completed"
+    },
+    {
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/桥接器双通路.json",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/桥接器双通路-运行记录-v3-kernel.json",
+      "ticks": 30,
+      "status": "completed"
+    },
+    {
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/传输拒收与暂停核验.json",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/传输拒收与暂停核验-运行记录-v3-kernel.json",
+      "ticks": 12,
+      "status": "completed"
+    },
+    {
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/研磨混做核验.json",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/研磨混做核验-运行记录-v3-kernel.json",
+      "ticks": 20,
+      "status": "completed"
+    },
+    {
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/阻尼连续带核验.json",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/阻尼连续带核验-运行记录-v3-kernel.json",
+      "ticks": 18,
+      "status": "completed"
+    },
+    {
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/阻尼切支恢复核验.json",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/阻尼切支恢复核验-运行记录-v3-kernel.json",
+      "ticks": 18,
+      "status": "completed"
+    },
+    {
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/生产循环环带.json",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/生产循环环带-运行记录-v3-kernel.json",
+      "ticks": 50,
+      "status": "completed"
+    },
+    {
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分核验.json",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分核验-运行记录-v3-kernel.json",
+      "ticks": 100,
+      "status": "completed"
+    },
+    {
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点核验.json",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点核验-运行记录-v3-kernel.json",
+      "ticks": 60,
+      "status": "completed"
+    },
+    {
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点闭环核验.json",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点闭环核验-运行记录-v3-kernel.json",
+      "ticks": 240,
+      "status": "completed"
+    },
+    {
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点循环种子核验.json",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点循环种子核验-运行记录-v3-kernel.json",
+      "ticks": 100,
+      "status": "completed"
+    },
+    {
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序0核验.json",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序0核验-运行记录-v3-kernel.json",
+      "ticks": 40,
+      "status": "completed"
+    },
+    {
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序1核验.json",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序1核验-运行记录-v3-kernel.json",
+      "ticks": 40,
+      "status": "completed"
+    },
+    {
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序2核验.json",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序2核验-运行记录-v3-kernel.json",
+      "ticks": 40,
+      "status": "completed"
+    },
+    {
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序3核验.json",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序3核验-运行记录-v3-kernel.json",
+      "ticks": 40,
+      "status": "completed"
+    },
+    {
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序4核验.json",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序4核验-运行记录-v3-kernel.json",
+      "ticks": 40,
+      "status": "completed"
+    },
+    {
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序5核验.json",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序5核验-运行记录-v3-kernel.json",
+      "ticks": 40,
+      "status": "completed"
+    },
+    {
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/生产循环环带-周期证书-kernel.json",
+      "status": "counterexample"
+    },
+    {
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点核验-周期证书-kernel.json",
+      "status": "inconclusive"
+    },
+    {
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点闭环核验-周期证书-kernel.json",
+      "status": "inconclusive"
+    },
+    {
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点循环种子核验-周期证书-kernel.json",
+      "status": "inconclusive"
+    },
+    {
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序0核验-周期证书-kernel.json",
+      "status": "counterexample",
+      "run_record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序0核验-运行记录-v3-kernel.json"
+    },
+    {
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序1核验-周期证书-kernel.json",
+      "status": "counterexample",
+      "run_record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序1核验-运行记录-v3-kernel.json"
+    },
+    {
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序2核验-周期证书-kernel.json",
+      "status": "inconclusive",
+      "run_record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序2核验-运行记录-v3-kernel.json"
+    },
+    {
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序3核验-周期证书-kernel.json",
+      "status": "counterexample",
+      "run_record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序3核验-运行记录-v3-kernel.json"
+    },
+    {
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序4核验-周期证书-kernel.json",
+      "status": "counterexample",
+      "run_record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序4核验-运行记录-v3-kernel.json"
+    },
+    {
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序5核验-周期证书-kernel.json",
+      "status": "inconclusive",
+      "run_record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序5核验-运行记录-v3-kernel.json"
+    }
+  ]
+}

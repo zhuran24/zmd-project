@@ -1,0 +1,86 @@
+[
+  {
+    "case": "valid-control",
+    "exit_code": 0,
+    "status": "completed",
+    "statistics": null
+  },
+  {
+    "case": "invalid-slot-label",
+    "exit_code": 101,
+    "status": null,
+    "statistics": null
+  },
+  {
+    "case": "invalid-unit-label",
+    "exit_code": 2,
+    "status": "invalid_input",
+    "statistics": null
+  },
+  {
+    "case": "invalid-seed-shape",
+    "exit_code": 101,
+    "status": null,
+    "statistics": null
+  },
+  {
+    "case": "run-load-age-overflow",
+    "exit_code": 2,
+    "status": "inconclusive",
+    "statistics": null
+  },
+  {
+    "case": "cycle-load-age-overflow",
+    "exit_code": 2,
+    "status": "stopped",
+    "statistics": null
+  },
+  {
+    "case": "run-one-sweep",
+    "exit_code": 2,
+    "status": "inconclusive",
+    "statistics": {
+      "completed": 0,
+      "inconclusive": 1,
+      "stopped": 0
+    }
+  },
+  {
+    "case": "run-adequate-sweeps",
+    "exit_code": 0,
+    "status": "completed",
+    "statistics": {
+      "completed": 1,
+      "inconclusive": 0,
+      "stopped": 0
+    }
+  },
+  {
+    "case": "cycle-one-sweep",
+    "exit_code": 0,
+    "status": "inconclusive",
+    "statistics": null
+  },
+  {
+    "case": "cycle-adequate-sweeps",
+    "exit_code": 0,
+    "status": "inconclusive",
+    "statistics": null
+  },
+  {
+    "case": "relocated-input",
+    "exit_code": 0,
+    "status": null,
+    "statistics": null
+  },
+  {
+    "case": "relocated-run",
+    "exit_code": 0,
+    "status": "completed",
+    "statistics": {
+      "completed": 1,
+      "inconclusive": 0,
+      "stopped": 0
+    }
+  }
+]

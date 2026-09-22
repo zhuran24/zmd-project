@@ -1,0 +1,68 @@
+{
+  "status": "revised_with_open_items",
+  "tests_passed": 129,
+  "clippy": "pass",
+  "cli_cases": 15,
+  "schema_passed": 11,
+  "schema_failed": 1,
+  "reference_records": 4,
+  "audited_records": 26,
+  "cycle_results": 10,
+  "ms_per_tick": {
+    "benchmark_brick_60": 0.8452749166666668,
+    "benchmark_brick": 2.6731130000000003,
+    "benchmark_candidate_b": 18.0549995
+  },
+  "requested_targets_met": true,
+  "findings": [
+    {
+      "id": "KR-r4-L1-01",
+      "status": "已修复",
+      "change": "普通格按物种集合判混种，同种跨年龄合法；容量、配方与扣料覆盖全部记录，入货保留真实新年龄。",
+      "basis": "规则L13、输入§6、转移§4.1/4.2/6.2；年龄正例、混种/51件/跨格负例、满箱选下一格与跨组制造。"
+    },
+    {
+      "id": "KR-r4-L1-02",
+      "status": "已修复",
+      "change": "派生前严格核trigger恰含kind/value；公开生产键再次核封闭结构。",
+      "basis": "输入§6、转移§6.2；run/seed/cycle和两个键入口拒绝extra，合法待办仍可装载。"
+    },
+    {
+      "id": "KR-r4-L1-03",
+      "status": "已修复",
+      "change": "必填表域从多级非运输取货侧沿完整几何求可查询分流器；非必填行可省，已填行仍严校。",
+      "basis": "输入§5.3、转移§3.1/3.4；空表与全表12刻除参数点外逐字段相等，必填任一子集缺失仍unresolved。"
+    },
+    {
+      "id": "KR-r4-L1-04",
+      "status": "标签与聚合已修复；运行覆盖仍缺",
+      "change": "删除连续两带生成的伪邻接标记；path_runs下邻接轴统一not_exercised。",
+      "basis": "参数轴§2、受限模型声明§2、输出§1；端到端记录、伪造标签拒收及独立缺口审计。"
+    },
+    {
+      "id": "KR-r4-L1-05",
+      "status": "已修复",
+      "change": "已装载引擎的空前缀保留完整起点、空ticks、种子end_time和验证范围；装载失败外壳仍可空。",
+      "basis": "输出§1/§2；t=1检查点在t=2首刻max_sweeps=1停止，全态/增量均核字段并通过AJV。"
+    },
+    {
+      "id": "KR-r4-L2-1",
+      "status": "标签与聚合已修复；运行覆盖仍缺",
+      "change": "与L1-04同根因，独立保留ID；覆盖审计要求所有path_runs记录均未调用几何邻接轴。",
+      "basis": "连续带样例仍实际执行belt_component_rule；未将此证据转记为belt_adjacency。"
+    },
+    {
+      "id": "KR-r4-L2-2",
+      "status": "未解决，已复现并续记KQ-09",
+      "change": "资源不足保持inconclusive/resource，装载失败不伪造状态；现行schema仍拒绝空上下文。",
+      "basis": "输出§1/§5.1、转移§1；当前schema的AJV错误已存，K线无schema写权，S线请求见KQ-09。"
+    }
+  ],
+  "open_items": [
+    "KR-r4-L2-2 / KQ-09：现行CycleResult schema仍拒绝装载资源未决的空上下文；待S线限定非空要求，K线没有schema写权。",
+    "K6运行覆盖仍缺damping.belt_adjacency、connection.bridge_first_contact、transfer.resume_event；分别需要几何连通块、建造先接、暂停后恢复转移。",
+    "密集制造闭环序2/5在1000 tick内未决；已核四份周期仅为条件低产反例，种子可达史、全局参数/读法族和一般动态约束未证。",
+    "级二提升仍缺整批容量余量及非精确拿取族证明；本轮没有完成执行器/认证器的全称认证。"
+  ],
+  "current_report": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r4/修订与验证.md"
+}

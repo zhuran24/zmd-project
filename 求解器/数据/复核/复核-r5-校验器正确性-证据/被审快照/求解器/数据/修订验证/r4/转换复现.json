@@ -1,0 +1,14 @@
+{
+  "status": "通过",
+  "before": {
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json": "74d21a5bd37c6178f988a86a4aa78a03d1e4244ecff26f133bb5e700ada82e43",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/contract.json": "a555045972861bc60a84ade0cfaf81a037a1abfff89be1aeee578b9ef0e1a2db",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/来源清单.json": "180a10da3cb9730046e17ad575a8006bd0598b36fa6f7205d297ab5c55cae0ba"
+  },
+  "after": {
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json": "74d21a5bd37c6178f988a86a4aa78a03d1e4244ecff26f133bb5e700ada82e43",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/contract.json": "a555045972861bc60a84ade0cfaf81a037a1abfff89be1aeee578b9ef0e1a2db",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/来源清单.json": "180a10da3cb9730046e17ad575a8006bd0598b36fa6f7205d297ab5c55cae0ba"
+  },
+  "all_equal": true
+}

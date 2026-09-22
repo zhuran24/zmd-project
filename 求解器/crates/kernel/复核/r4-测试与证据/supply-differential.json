@@ -1,0 +1,24 @@
+{
+  "status": "pass",
+  "ticks": 30,
+  "state_fields": [
+    "inventory",
+    "progress",
+    "logistics",
+    "environment"
+  ],
+  "events_equal": true,
+  "actual_inbound_and_outbound_equal": true,
+  "independent_conservation": true,
+  "counts": {
+    "sufficient": {
+      "ore_out": 30,
+      "external_supply": 30
+    },
+    "explicit_ore_history": {
+      "ore_out": 30,
+      "external_supply": 0
+    }
+  },
+  "scope": "未耗尽、无回矿候选、显式历史为空但覆盖40刻；不是耗尽或回矿情形等价证明。"
+}

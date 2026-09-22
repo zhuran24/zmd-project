@@ -1,0 +1,172 @@
+{
+  "code": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/input.rs",
+      "sha256": "d40bf539f789708e64e3a52d909a9a4a96819545a384b3906acba91f1e3d7c79",
+      "excerpts": [
+        {
+          "start": 335,
+          "end": 364,
+          "lines": [
+            "        let base = path",
+            "            .parent()",
+            "            .ok_or_else(|| Stop::invalid(\"input\", \"路径缺父目录\"))?;",
+            "        let catref: Reference = decode(raw[\"catalog\"].clone(), \"catalog\")?;",
+            "        let catpath = reference(base, &catref)?;",
+            "        let catalog = Catalog::load(&catpath)?;",
+            "        let mut source_paths = vec![(\"catalog\".into(), catpath)];",
+            "        for source in catalog.raw[\"sources\"]",
+            "            .as_array()",
+            "            .ok_or_else(|| Stop::invalid(\"catalog.sources\", \"缺来源\"))?",
+            "        {",
+            "            let relative = source[\"path\"]",
+            "                .as_str()",
+            "                .ok_or_else(|| Stop::invalid(\"catalog.sources\", \"缺路径\"))?;",
+            "            let p = catalog",
+            "                .path",
+            "                .parent()",
+            "                .unwrap()",
+            "                .join(catalog.raw[\"source_root\"].as_str().unwrap_or(\".\"))",
+            "                .join(relative)",
+            "                .canonicalize()",
+            "                .map_err(|e| Stop::invalid(relative, e.to_string()))?;",
+            "            if sha256(&p)? != source[\"sha256\"].as_str().unwrap_or(\"\") {",
+            "                return Err(Stop::invalid(relative, \"正式源指纹不符\"));",
+            "            }",
+            "            source_paths.push((\"formal_source\".into(), p));",
+            "        }",
+            "        let parameters: Parameters = decode(raw[\"parameters\"].clone(), \"parameters\")?;",
+            "        config.validate(&parameters, structural)?;",
+            "        let axispath = reference(base, &parameters.axis_registry)?;"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/catalog.rs",
+      "sha256": "3a0a7c3e21b46d626928fca81e90a617bd55189b8e3f357019c529109510636f",
+      "excerpts": [
+        {
+          "start": 66,
+          "end": 95,
+          "lines": [
+            "        return Err(Stop::invalid(\"sha256sum\", \"散列格式异常\"));",
+            "    }",
+            "    Ok(hash.into())",
+            "}",
+            "/// 内核输入§1：依赖相对于输入文件解析，先核指纹再消费。",
+            "pub fn reference(base: &Path, r: &Reference) -> Result<PathBuf> {",
+            "    let p = base",
+            "        .join(&r.path)",
+            "        .canonicalize()",
+            "        .map_err(|e| Stop::invalid(&r.path, e.to_string()))?;",
+            "    if sha256(&p)? != r.sha256 {",
+            "        return Err(Stop::invalid(&r.path, \"源文件指纹不符\"));",
+            "    }",
+            "    Ok(p)",
+            "}",
+            "impl Catalog {",
+            "    /// 第四轮§4.1：实际加载共享目录，不另抄单位或配方常量。",
+            "    pub fn load(path: &Path) -> Result<Self> {",
+            "        let raw = read_json(path)?;",
+            "        let formal: Value = serde_json::from_str(include_str!(\"../../../数据/正式静态目录.json\"))",
+            "            .map_err(|e| Stop::invalid(\"catalog\", e.to_string()))?;",
+            "        if raw != formal {",
+            "            return Err(Stop::invalid(",
+            "                \"catalog\",",
+            "                \"输入目录不同于本实现编译时登记的正式目录\",",
+            "            ));",
+            "        }",
+            "        if raw[\"schema\"] != \"static-catalog-v2\" {",
+            "            return Err(Stop::invalid(\"catalog.schema\", \"不支持目录版本\"));",
+            "        }"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/config.rs",
+      "sha256": "f2a22d1bbc264a75179fa45d41b03cce33f6e44d197112ba84486446d3df20ad",
+      "excerpts": [
+        {
+          "start": 357,
+          "end": 389,
+          "lines": [
+            "    pub offline_mutable: BTreeMap<Axis, Decision>,",
+            "    pub fixedness_unproven: BTreeMap<Axis, Decision>,",
+            "}",
+            "impl Config {",
+            "    /// 受限模型声明§2：以编译期读取的配置作为实现支持表，拒绝配置改值伪装支持。",
+            "    pub fn parse(v: Value) -> Result<Self> {",
+            "        let c: Self = decode(v, \"config\")?;",
+            "        let supported: Self = decode(",
+            "            serde_json::from_str(include_str!(\"../../../规格/内核配置-v1.json\"))",
+            "                .map_err(|e| Stop::invalid(\"embedded_config\", e.to_string()))?,",
+            "            \"embedded_config\",",
+            "        )?;",
+            "        if c.revision != supported.revision",
+            "            || c.schema != supported.schema",
+            "            || c.profile_id != supported.profile_id",
+            "            || c.axis_count != supported.axis_count",
+            "            || c.axes.keys().ne(supported.axes.keys())",
+            "        {",
+            "            return Err(Stop::invalid(\"config.axes\", \"配置版本或轴全集不符\"));",
+            "        }",
+            "        for (a, r) in &c.axes {",
+            "            let s = &supported.axes[a];",
+            "            if r != s {",
+            "                return Err(Stop::unsupported(",
+            "                    a.name(),",
+            "                    format!(\"config.axes.{}\", a.name()),",
+            "                    \"配置修改超出已实现取值/处置\",",
+            "                ));",
+            "            }",
+            "        }",
+            "        Ok(c)",
+            "    }",
+            "    /// 受限转移§1：每轴恰有一个输入决定，固定轴不可变，输入轴不使用配置接口作为值。"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/seed.rs",
+      "sha256": "35f7a669eba69516a2eeef9b66291ab1b5841ff79d7c165388bfd1bf8f6b03a5",
+      "excerpts": [
+        {
+          "start": 5,
+          "end": 14,
+          "lines": [
+            "",
+            "impl Input {",
+            "    /// 输入§6：保留具体库存/进度和显式仲裁顺序，由同一引擎派生冗余上下文。",
+            "    pub fn canonicalize_seed(raw: Value, base: &Path, config: &Config) -> Result<Value> {",
+            "        // 输入§6.4、KQ-07：先解析封套及完整结构，再区分新起点与历史检查点。",
+            "        let mut input = Self::parse_with_base(raw, base, config, false)?;",
+            "        let decision: Decision = decode(",
+            "            input.raw[\"initial_state\"][\"nonwarehouse\"].clone(),",
+            "            \"initial_state.nonwarehouse\",",
+            "        )?;"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/topology/src/lib.rs",
+      "sha256": "0bd91bd30faa829f9449d537b74fd8941390089b39f61f1a797fb705f7868990",
+      "excerpts": [
+        {
+          "start": 228,
+          "end": 231,
+          "lines": [
+            "}",
+            "fn catalog() -> Catalog {",
+            "    serde_json::from_str(include_str!(\"../../../数据/正式静态目录.json\")).expect(\"内置正式目录损坏\")",
+            "}"
+          ]
+        }
+      ]
+    }
+  ],
+  "interpretation": "reference()检查文件原始字节sha256；Catalog::load比较serde_json::Value相等，并非原始字节逐字相等；catalog和config编译期include_str使用当前文件。topology也include同一路径，本次按授权只编译kernel。另有样例检查器SOURCE_HASHES已仅同步两项哈希，见secondary-registry.json；候选B来源清单及各baseline属于既有证据指纹，不刷新其通过结果。"
+}

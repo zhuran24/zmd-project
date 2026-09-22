@@ -1,0 +1,61 @@
+{
+  "checks": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+      "old_sha256": "abc7a5867f6477eedb619c63a21c4a77144c57ad4567fdcfb696b3049d66a670",
+      "new_sha256": "31ced2a24fef738c72dfa406351b6bad5df3e353d6b1c2dfd06ab1febaf566ff",
+      "old_lines": 114,
+      "new_lines": 114,
+      "old_lines_exact_match": false,
+      "line_diff": [
+        "--- catalog before",
+        "+++ formal source",
+        "@@ -33,7 +33,7 @@",
+        " ",
+        " 需电功能:",
+        " 制造：制造单位拥有供电状态时解锁的功能，一次制造的用量进入缓存格后立刻开始制造，制造结束后制造好的物品进入缓存格，无冷却",
+        "-传输：协议储存箱在供电状态时会一直尝试把自身所有物品格内的所有物品立刻无线传输到仓库中，即使那个物品格中没有物品也一样，5 tick 冷却",
+        "+传输：协议储存箱在供电状态时会一直尝试把自身物品格内的所有物品立刻无线传输到仓库中，能送多少送多少，5 tick 冷却",
+        " ",
+        " 单位",
+        " "
+      ]
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解任务.txt",
+      "old_sha256": "10abf80fe6eefe647471eabe78da4053f77b489d3806722c501c6acb405a2864",
+      "new_sha256": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+      "old_lines": 15,
+      "new_lines": 16,
+      "old_lines_exact_match": false,
+      "line_diff": [
+        "--- catalog before",
+        "+++ formal source",
+        "@@ -6,9 +6,10 @@",
+        " 仓库物品：仓库中的源矿、蓝铁矿、荞花、砂叶、荞花种子、砂叶种子初始为满，其他物品为空",
+        " 外部过程：仓库中的源矿与蓝铁矿持续可得且足够覆盖任意数量的消耗",
+        " 零干预运行：建造完成且调试期结束后，玩家对基地内的任何单位不再有任何动作，从仓库中拿取成品除外",
+        "+拿取成品：玩家会每隔一段时间从仓库内拿取一定数量的成品",
+        " 循环态：基地的状态以固定周期重复的运行状态",
+        " 建造方式：全部单位由蓝图一次建成",
+        "-调试期：布局的全部工作可以不用完全依赖蓝图，同样可以由玩家来做部分操作",
+        "+调试期：布局的全部工作可以不用完全依赖蓝图，也可以由玩家可以做部分操作。玩家可以做对整个基地做任意操作",
+        " 操作精度：玩家的操作无法精确到某个 tick，也无法精确计时",
+        " 离线：离线后任意两条通道的接通先后可能改变",
+        " 判定次序：同一时刻多个判定的先后固定"
+      ]
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解约束.txt",
+      "old_sha256": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6",
+      "new_sha256": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6",
+      "old_lines": 126,
+      "new_lines": 126,
+      "old_lines_exact_match": true,
+      "line_diff": []
+    }
+  ],
+  "catalog_before": "74d21a5bd37c6178f988a86a4aa78a03d1e4244ecff26f133bb5e700ada82e43",
+  "catalog_after": "2170a133c4658b3b64cfef047ac373fac86c828806ec083441234e4761f8ba7f",
+  "note": "catalog_before is original raw-byte SHA-256; catalog_after is initial source relock, final catalog hash is recorded in manifest. task.goal/conditions refreshed from all current task lines."
+}

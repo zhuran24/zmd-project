@@ -1,0 +1,52 @@
+[
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/reference.rs",
+    "sha256": "2efc6e98295f769700baa4cd1d97fd4ecec11647e3a28432eba1218c960530bc",
+    "baseline": {
+      "path": "求解器/crates/kernel/tests/reference.rs",
+      "size": 4151,
+      "sha256": "2efc6e98295f769700baa4cd1d97fd4ecec11647e3a28432eba1218c960530bc"
+    },
+    "unchanged": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-黄金轨迹.json",
+    "sha256": "bf0e705f9a92712cd495ae9fabebe95d910eac38ff825b6dc52da04f5b4b3959",
+    "baseline": {
+      "path": "求解器/数据/样例/混做粉碎机两下游-黄金轨迹.json",
+      "size": 3067,
+      "sha256": "bf0e705f9a92712cd495ae9fabebe95d910eac38ff825b6dc52da04f5b4b3959"
+    },
+    "unchanged": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-黄金轨迹.md",
+    "sha256": "1aa028fcfe4f89844372cb8e96e684f43c238487033aa07ba5a6397944ad7e4d",
+    "baseline": {
+      "path": "求解器/数据/样例/混做粉碎机两下游-黄金轨迹.md",
+      "size": 9861,
+      "sha256": "1aa028fcfe4f89844372cb8e96e684f43c238487033aa07ba5a6397944ad7e4d"
+    },
+    "unchanged": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录.json",
+    "sha256": "e583c931a64c601bd5cb8c2dee1b61a5babc39984fe04101ef72325a03c7dde5",
+    "baseline": {
+      "path": "求解器/数据/样例/混做粉碎机两下游-运行记录.json",
+      "size": 651322,
+      "sha256": "e583c931a64c601bd5cb8c2dee1b61a5babc39984fe04101ef72325a03c7dde5"
+    },
+    "unchanged": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录.json",
+    "sha256": "d0d17b7e428e64d6a3f2d95064e46ab71a3f15d681e4f81732654d45923d26cb",
+    "baseline": {
+      "path": "求解器/数据/样例/分流器三路轮询-运行记录.json",
+      "size": 1914670,
+      "sha256": "d0d17b7e428e64d6a3f2d95064e46ab71a3f15d681e4f81732654d45923d26cb"
+    },
+    "unchanged": true
+  }
+]

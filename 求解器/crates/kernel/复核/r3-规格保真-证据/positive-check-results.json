@@ -1,0 +1,327 @@
+{
+  "status": "通过",
+  "cases": [
+    {
+      "name": "positive-阻尼切支恢复核验",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/debug/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/阻尼切支恢复核验.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--ticks",
+        "16",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/positive-阻尼切支恢复核验.json"
+      ],
+      "exit_code": 0,
+      "status": "completed",
+      "schema": "kernel-output-v3",
+      "open_items": [
+        "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+        "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+      ],
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/positive-阻尼切支恢复核验.json\",\"status\":\"completed\"}\n",
+      "stderr": ""
+    },
+    {
+      "name": "positive-verify-阻尼切支恢复核验",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/debug/kernel",
+        "verify-record",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/positive-阻尼切支恢复核验.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/positive-verify-阻尼切支恢复核验.json"
+      ],
+      "exit_code": 0,
+      "status": "input_checked",
+      "schema": null,
+      "open_items": null,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/positive-verify-阻尼切支恢复核验.json\",\"status\":\"input_checked\"}\n",
+      "stderr": ""
+    },
+    {
+      "name": "positive-桥接器双通路",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/debug/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/桥接器双通路.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--ticks",
+        "12",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/positive-桥接器双通路.json"
+      ],
+      "exit_code": 0,
+      "status": "completed",
+      "schema": "kernel-output-v3",
+      "open_items": [
+        "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+        "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+      ],
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/positive-桥接器双通路.json\",\"status\":\"completed\"}\n",
+      "stderr": ""
+    },
+    {
+      "name": "positive-verify-桥接器双通路",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/debug/kernel",
+        "verify-record",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/positive-桥接器双通路.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/positive-verify-桥接器双通路.json"
+      ],
+      "exit_code": 0,
+      "status": "input_checked",
+      "schema": null,
+      "open_items": null,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/positive-verify-桥接器双通路.json\",\"status\":\"input_checked\"}\n",
+      "stderr": ""
+    },
+    {
+      "name": "positive-研磨混做核验",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/debug/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/研磨混做核验.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--ticks",
+        "12",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/positive-研磨混做核验.json"
+      ],
+      "exit_code": 0,
+      "status": "completed",
+      "schema": "kernel-output-v3",
+      "open_items": [
+        "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+        "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+      ],
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/positive-研磨混做核验.json\",\"status\":\"completed\"}\n",
+      "stderr": ""
+    },
+    {
+      "name": "positive-verify-研磨混做核验",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/debug/kernel",
+        "verify-record",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/positive-研磨混做核验.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/positive-verify-研磨混做核验.json"
+      ],
+      "exit_code": 0,
+      "status": "input_checked",
+      "schema": null,
+      "open_items": null,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/positive-verify-研磨混做核验.json\",\"status\":\"input_checked\"}\n",
+      "stderr": ""
+    },
+    {
+      "name": "positive-ring-cycle",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/debug/kernel",
+        "cycle",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/生产循环环带.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--max-ticks",
+        "50",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/positive-ring-cycle.json"
+      ],
+      "exit_code": 0,
+      "status": "counterexample",
+      "schema": "kernel-cycle-v1",
+      "open_items": [
+        "仅为生产部分周期或有限诊断，不是完整基地循环",
+        "级二F存在整批容量卡点；periodic_lift未获证",
+        "一般动态约束相容性与种子/参数/读法族认证未完成",
+        "精确年龄和累计计数可能造成周期漏检"
+      ],
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/positive-ring-cycle.json\",\"status\":\"counterexample\"}\n",
+      "stderr": ""
+    },
+    {
+      "name": "positive-ring-verification",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/debug/kernel",
+        "verify-cycle",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/positive-ring-cycle.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/positive-ring-verification.json"
+      ],
+      "exit_code": 0,
+      "status": "input_checked",
+      "schema": null,
+      "open_items": null,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/positive-ring-verification.json\",\"status\":\"input_checked\"}\n",
+      "stderr": ""
+    },
+    {
+      "name": "ore-return-79999-seed",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/debug/kernel",
+        "seed",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/ore-return-79999-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/ore-return-79999-seed.json"
+      ],
+      "exit_code": 0,
+      "status": null,
+      "schema": "kernel-input-v3",
+      "open_items": null,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/ore-return-79999-seed.json\",\"status\":null}\n",
+      "stderr": ""
+    },
+    {
+      "name": "ore-return-79999-cycle",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/debug/kernel",
+        "cycle",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/ore-return-79999-seed.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--max-ticks",
+        "2",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/ore-return-79999-cycle.json"
+      ],
+      "exit_code": 2,
+      "status": "stopped",
+      "schema": "kernel-cycle-v1",
+      "open_items": [
+        "仅为生产部分周期或有限诊断，不是完整基地循环",
+        "级二F存在整批容量卡点；periodic_lift未获证",
+        "一般动态约束相容性与种子/参数/读法族认证未完成",
+        "精确年龄和累计计数可能造成周期漏检"
+      ],
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/ore-return-79999-cycle.json\",\"status\":\"stopped\"}\n",
+      "stderr": ""
+    },
+    {
+      "name": "ore-return-79999-concrete",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/debug/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/ore-return-79999-seed.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--ticks",
+        "2",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/ore-return-79999-concrete.json"
+      ],
+      "exit_code": 0,
+      "status": "completed",
+      "schema": "kernel-output-v3",
+      "open_items": [
+        "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+        "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+      ],
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/ore-return-79999-concrete.json\",\"status\":\"completed\"}\n",
+      "stderr": ""
+    },
+    {
+      "name": "ore-return-80000-seed",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/debug/kernel",
+        "seed",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/ore-return-80000-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/ore-return-80000-seed.json"
+      ],
+      "exit_code": 0,
+      "status": null,
+      "schema": "kernel-input-v3",
+      "open_items": null,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/ore-return-80000-seed.json\",\"status\":null}\n",
+      "stderr": ""
+    },
+    {
+      "name": "ore-return-80000-cycle",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/debug/kernel",
+        "cycle",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/ore-return-80000-seed.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--max-ticks",
+        "2",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/ore-return-80000-cycle.json"
+      ],
+      "exit_code": 2,
+      "status": "stopped",
+      "schema": "kernel-cycle-v1",
+      "open_items": [
+        "仅为生产部分周期或有限诊断，不是完整基地循环",
+        "级二F存在整批容量卡点；periodic_lift未获证",
+        "一般动态约束相容性与种子/参数/读法族认证未完成",
+        "精确年龄和累计计数可能造成周期漏检"
+      ],
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/ore-return-80000-cycle.json\",\"status\":\"stopped\"}\n",
+      "stderr": ""
+    },
+    {
+      "name": "ore-return-80000-concrete",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/debug/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/ore-return-80000-seed.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--ticks",
+        "2",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/ore-return-80000-concrete.json"
+      ],
+      "exit_code": 0,
+      "status": "completed",
+      "schema": "kernel-output-v3",
+      "open_items": [
+        "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+        "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+      ],
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/ore-return-80000-concrete.json\",\"status\":\"completed\"}\n",
+      "stderr": ""
+    },
+    {
+      "name": "zero-ore-runtime-rejection",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/debug/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/zero-ore-sufficient-seed.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--ticks",
+        "1",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/zero-ore-runtime-rejection.json"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "schema": "kernel-output-v3",
+      "open_items": [
+        "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+        "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。",
+        "invalid_input warehouse.external_supply @ instant=0: 源矿无库存，显式补给史不满足持续可得"
+      ],
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/zero-ore-runtime-rejection.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    }
+  ]
+}

@@ -1,0 +1,297 @@
+{
+  "reviewed_files": [
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/运行语义.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点清单.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/受限模型声明.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/规则覆盖表.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/四件前置义务对照.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/修订记录.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/check_revision.py",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/参数轴-对内核输入请求的答复.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/第三轮任务验证/发现处置.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/第三轮任务验证/接口对接.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/第三轮任务验证/自查报告.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/cargo-test.log",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/run_checks.py",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/交付指纹.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/交付文件清单.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/交付自审.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/修订回归结果.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/修订论证.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/候选B校验报告.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/原转移回归结果.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/发现处置.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/开工产物指纹.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/开工只读指纹.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/接口快照.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/样例检查结果.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/核对修订回归.py",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/核对样例兼容.py",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/检查汇总.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/正式目录.log",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/自查报告.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/规格自查结果.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/输入投影同步.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/黄金完整核验结果.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/黄金记录重算结果.json"
+  ],
+  "file_count": 39,
+  "protected_count": 25037,
+  "protected_changed_since_r6": [],
+  "axis_count": 99,
+  "input_axis_count": 99,
+  "axis_projection_differences": {},
+  "disposition_counts": {
+    "本版选值": 54,
+    "已定": 12,
+    "由输入全称量化": 15,
+    "超出覆盖即停": 18
+  },
+  "profile_metadata": {
+    "schema": "kernel-profile-registry-v1",
+    "profile_id": "kernel_profile_v1",
+    "revision": "round3-r6",
+    "axis_count": 99
+  },
+  "json_inventory": {
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json": {
+      "type": "dict",
+      "length": 5,
+      "keys": [
+        "schema",
+        "profile_id",
+        "revision",
+        "axis_count",
+        "axes"
+      ]
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/第三轮任务验证/发现处置.json": {
+      "type": "list",
+      "length": 28,
+      "keys": null
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录.json": {
+      "type": "dict",
+      "length": 12,
+      "keys": [
+        "schema",
+        "run_id",
+        "profile_id",
+        "producer",
+        "status",
+        "fingerprints",
+        "parameter_assignment",
+        "input_history",
+        "uncovered_axes",
+        "trace",
+        "validation_scope",
+        "open_items"
+      ]
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/交付指纹.json": {
+      "type": "dict",
+      "length": 37,
+      "keys": [
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/check_revision.py",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/修订记录.md",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/参数轴-对内核输入请求的答复.md",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/受限模型声明.md",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/四件前置义务对照.md",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/cargo-test.log",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/run_checks.py",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/交付自审.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/修订回归结果.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/修订论证.md",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/候选B校验报告.md",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/原转移回归结果.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/发现处置.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/开工产物指纹.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/开工只读指纹.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/接口快照.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/样例检查结果.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/核对修订回归.py",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/核对样例兼容.py",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/检查汇总.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/正式目录.log",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/自查报告.md",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/规格自查结果.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/输入投影同步.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/黄金完整核验结果.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/黄金记录重算结果.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/第三轮任务验证/发现处置.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/第三轮任务验证/接口对接.md",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/第三轮任务验证/自查报告.md",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/规则覆盖表.md",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/运行语义.md",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点清单.md"
+      ]
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/交付文件清单.json": {
+      "type": "list",
+      "length": 39,
+      "keys": null
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/交付自审.json": {
+      "type": "dict",
+      "length": 8,
+      "keys": [
+        "status",
+        "readonly_count",
+        "readonly_changes",
+        "local_links_missing",
+        "golden_evidence_sources_current",
+        "scope_sweep",
+        "reader_review",
+        "open_items"
+      ]
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/修订回归结果.json": {
+      "type": "dict",
+      "length": 5,
+      "keys": [
+        "status",
+        "scope",
+        "checks",
+        "manufacturing_trace",
+        "gate_outcomes"
+      ]
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/原转移回归结果.json": {
+      "type": "dict",
+      "length": 4,
+      "keys": [
+        "status",
+        "scope",
+        "checks",
+        "pipeline_trace"
+      ]
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/发现处置.json": {
+      "type": "list",
+      "length": 5,
+      "keys": null
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/开工产物指纹.json": {
+      "type": "dict",
+      "length": 10747,
+      "keys": null
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/开工只读指纹.json": {
+      "type": "dict",
+      "length": 25037,
+      "keys": null
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/接口快照.json": {
+      "type": "dict",
+      "length": 9,
+      "keys": [
+        "status",
+        "axis_count",
+        "request_sha256",
+        "request_sections_read",
+        "input_sha256",
+        "profile_sha256",
+        "matched_description_fields",
+        "c_runtime_verification",
+        "note"
+      ]
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/样例检查结果.json": {
+      "type": "dict",
+      "length": 12,
+      "keys": [
+        "status",
+        "scope",
+        "results",
+        "negative_tests",
+        "representation_tests",
+        "readonly_source_hashes",
+        "axis_registry_sha256",
+        "axis_count",
+        "axis_alignment",
+        "document_checks",
+        "artifact_sha256",
+        "unverified"
+      ]
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/检查汇总.json": {
+      "type": "dict",
+      "length": 6,
+      "keys": [
+        "status",
+        "scope",
+        "commands",
+        "readonly_count",
+        "readonly_changes",
+        "simulator_file_set_unchanged"
+      ]
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/规格自查结果.json": {
+      "type": "dict",
+      "length": 11,
+      "keys": [
+        "status",
+        "scope",
+        "axis_count",
+        "independent_item_count",
+        "finding_count",
+        "revision6_finding_count",
+        "catalog_sha256",
+        "axis_registry_sha256",
+        "request_sha256",
+        "shared_interface",
+        "checks"
+      ]
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/输入投影同步.json": {
+      "type": "dict",
+      "length": 5,
+      "keys": [
+        "file",
+        "before_sha256",
+        "after_sha256",
+        "fields",
+        "scope"
+      ]
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/黄金完整核验结果.json": {
+      "type": "dict",
+      "length": 11,
+      "keys": [
+        "status",
+        "scope",
+        "axis_count",
+        "samples",
+        "negative_tests",
+        "representation_tests",
+        "golden_match",
+        "full_record_matches_recomputation",
+        "ticks",
+        "completed_batches",
+        "sources"
+      ]
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/黄金记录重算结果.json": {
+      "type": "dict",
+      "length": 6,
+      "keys": [
+        "status",
+        "golden_match",
+        "ticks",
+        "complete_cycles",
+        "events",
+        "output"
+      ]
+    }
+  }
+}

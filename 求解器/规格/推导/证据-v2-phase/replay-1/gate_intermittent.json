@@ -1,0 +1,178 @@
+[
+  {
+    "tick": 0,
+    "offered": true,
+    "accept": true,
+    "leave": false,
+    "window_start": 0,
+    "used": 1
+  },
+  {
+    "tick": 1,
+    "offered": false,
+    "accept": false,
+    "leave": true,
+    "window_start": 0,
+    "used": 1
+  },
+  {
+    "tick": 2,
+    "offered": false,
+    "accept": false,
+    "leave": false,
+    "window_start": 0,
+    "used": 1
+  },
+  {
+    "tick": 3,
+    "offered": false,
+    "accept": false,
+    "leave": false,
+    "window_start": 0,
+    "used": 1
+  },
+  {
+    "tick": 4,
+    "offered": false,
+    "accept": false,
+    "leave": false,
+    "window_start": 0,
+    "used": 1
+  },
+  {
+    "tick": 5,
+    "offered": true,
+    "accept": true,
+    "leave": false,
+    "window_start": 5,
+    "used": 1
+  },
+  {
+    "tick": 6,
+    "offered": false,
+    "accept": false,
+    "leave": true,
+    "window_start": 5,
+    "used": 1
+  },
+  {
+    "tick": 7,
+    "offered": false,
+    "accept": false,
+    "leave": false,
+    "window_start": 5,
+    "used": 1
+  },
+  {
+    "tick": 8,
+    "offered": false,
+    "accept": false,
+    "leave": false,
+    "window_start": 5,
+    "used": 1
+  },
+  {
+    "tick": 9,
+    "offered": false,
+    "accept": false,
+    "leave": false,
+    "window_start": 5,
+    "used": 1
+  },
+  {
+    "tick": 10,
+    "offered": true,
+    "accept": true,
+    "leave": false,
+    "window_start": 10,
+    "used": 1
+  },
+  {
+    "tick": 11,
+    "offered": false,
+    "accept": false,
+    "leave": true,
+    "window_start": 10,
+    "used": 1
+  },
+  {
+    "tick": 12,
+    "offered": false,
+    "accept": false,
+    "leave": false,
+    "window_start": 10,
+    "used": 1
+  },
+  {
+    "tick": 13,
+    "offered": false,
+    "accept": false,
+    "leave": false,
+    "window_start": 10,
+    "used": 1
+  },
+  {
+    "tick": 14,
+    "offered": false,
+    "accept": false,
+    "leave": false,
+    "window_start": 10,
+    "used": 1
+  },
+  {
+    "tick": 15,
+    "offered": true,
+    "accept": true,
+    "leave": false,
+    "window_start": 15,
+    "used": 1
+  },
+  {
+    "tick": 16,
+    "offered": false,
+    "accept": false,
+    "leave": true,
+    "window_start": 15,
+    "used": 1
+  },
+  {
+    "tick": 17,
+    "offered": false,
+    "accept": false,
+    "leave": false,
+    "window_start": 15,
+    "used": 1
+  },
+  {
+    "tick": 18,
+    "offered": false,
+    "accept": false,
+    "leave": false,
+    "window_start": 15,
+    "used": 1
+  },
+  {
+    "tick": 19,
+    "offered": false,
+    "accept": false,
+    "leave": false,
+    "window_start": 15,
+    "used": 1
+  },
+  {
+    "tick": 20,
+    "offered": true,
+    "accept": true,
+    "leave": false,
+    "window_start": 20,
+    "used": 1
+  },
+  {
+    "tick": 21,
+    "offered": false,
+    "accept": false,
+    "leave": true,
+    "window_start": 20,
+    "used": 1
+  }
+]

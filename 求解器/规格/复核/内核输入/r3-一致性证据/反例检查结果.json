@@ -1,0 +1,42 @@
+[
+  {
+    "case": "判定上下文标为未解",
+    "status": "完整运行输入检查通过（有限合成子集）",
+    "runtime_ticks": 4
+  },
+  {
+    "case": "端口预算上下文标为未解",
+    "status": "完整运行输入检查通过（有限合成子集）",
+    "runtime_ticks": 4
+  },
+  {
+    "case": "拿取记忆状态非法",
+    "status": "完整运行输入检查通过（有限合成子集）",
+    "runtime_ticks": 4
+  },
+  {
+    "case": "端口预算缺依据",
+    "status": "完整运行输入检查通过（有限合成子集）",
+    "runtime_ticks": 4
+  },
+  {
+    "case": "接通历史缺依据",
+    "status": "完整运行输入检查通过（有限合成子集）",
+    "runtime_ticks": 4
+  },
+  {
+    "case": "空仓库源仍有current_level且空格仲裁表为空",
+    "status": "完整运行输入检查通过（有限合成子集）",
+    "completed_batches": [
+      "0",
+      "0",
+      "0",
+      "0"
+    ]
+  },
+  {
+    "case": "999件超容量库存和不一致摘要",
+    "regression_status": "通过",
+    "tests": 17
+  }
+]

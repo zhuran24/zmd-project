@@ -1,0 +1,72 @@
+[
+  {
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "cycle",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/生产循环环带.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--max-ticks",
+      "50",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/生产循环环带-重跑周期.json"
+    ],
+    "exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/生产循环环带-重跑周期.json\",\"status\":\"counterexample\"}\n",
+    "stderr": "",
+    "wall_ns": 70036800,
+    "status": "counterexample",
+    "period": {
+      "category": "算术推论",
+      "value": "20"
+    }
+  },
+  {
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "verify-cycle",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/生产循环环带-重跑周期.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "exit_code": 0,
+    "stdout": "{\n  \"checks\": [\n    \"完整结果逐字段重算\",\n    \"循环起点重新装载\",\n    \"P次step_tick事件/状态/台账/闭包逐字段相等\",\n    \"终态完整键相等\"\n  ],\n  \"cycle_replayed\": true,\n  \"period\": 20,\n  \"start_time\": 0,\n  \"status\": \"input_checked\"\n}\n",
+    "stderr": "",
+    "wall_ns": 92495234
+  },
+  {
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "cycle",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序3核验.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--max-ticks",
+      "1000",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/密集制造闭环序3核验-重跑周期.json"
+    ],
+    "exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/密集制造闭环序3核验-重跑周期.json\",\"status\":\"counterexample\"}\n",
+    "stderr": "",
+    "wall_ns": 3518248315,
+    "status": "counterexample",
+    "period": {
+      "category": "算术推论",
+      "value": "105"
+    }
+  },
+  {
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "verify-cycle",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/密集制造闭环序3核验-重跑周期.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "exit_code": 0,
+    "stdout": "{\n  \"checks\": [\n    \"完整结果逐字段重算\",\n    \"循环起点重新装载\",\n    \"P次step_tick事件/状态/台账/闭包逐字段相等\",\n    \"终态完整键相等\"\n  ],\n  \"cycle_replayed\": true,\n  \"period\": 105,\n  \"start_time\": 349,\n  \"status\": \"input_checked\"\n}\n",
+    "stderr": "",
+    "wall_ns": 5532998701
+  }
+]

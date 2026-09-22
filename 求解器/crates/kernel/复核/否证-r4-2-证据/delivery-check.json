@@ -1,0 +1,30 @@
+{
+  "time": "2026-09-20T02:52:50.896087-04:00",
+  "readonly_file_count": 164,
+  "changed_readonly_files": [],
+  "report": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r4-2.md",
+  "report_sha256": "9eb7ca366bd6838333f5a16b900952f22bf60e83f8fc070fba27cbe77c14bb04",
+  "missing_links": [],
+  "evidence_extensions": [
+    ".json",
+    ".log",
+    ".py"
+  ],
+  "forbidden_evidence_files": [],
+  "evidence_subdirectories": [],
+  "new_invocations": 20,
+  "schema_passed": 4,
+  "schema_failed": 1,
+  "verdict_count": 7,
+  "compiled_binary_sha256": "036818919ce8b88a57bccada588910c2f3fb839de0dd0b572e662a10da12940c",
+  "source_probe_sha256": "63278067082550870831fbfa117a727225024640a863812abea6f4d67c6fdd12",
+  "reader_review": {
+    "seven_findings_present": true,
+    "duplicate_and_problem_counts_separate": true,
+    "prior_and_fresh_evidence_separate": true,
+    "loaded_checkpoint_and_load_failure_separate": true,
+    "conditional_seed_not_claimed_reachable": true,
+    "no_fix_claimed": true
+  },
+  "status": "pass"
+}

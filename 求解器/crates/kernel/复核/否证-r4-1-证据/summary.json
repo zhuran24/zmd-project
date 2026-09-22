@@ -1,0 +1,14 @@
+{
+  "status": "completed",
+  "independent_cli_and_probe_calls": 19,
+  "binary_sha256": "6fec86994d899dd58ee666d46ebb5c6f0be0c3d076efac0685f40452781fb41f",
+  "findings_reproduced": [
+    "KR-r4-L1-01",
+    "KR-r4-L1-02",
+    "KR-r4-L1-03",
+    "KR-r4-L1-04",
+    "KR-r4-L1-05",
+    "KR-r4-L2-1",
+    "KR-r4-L2-2"
+  ]
+}

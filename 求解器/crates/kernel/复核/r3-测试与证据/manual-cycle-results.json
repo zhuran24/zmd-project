@@ -1,0 +1,243 @@
+{
+  "status": "pass",
+  "certificate": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/生产循环环带-周期证书-kernel.json",
+  "method": "由t=0的完整循环起点手推：单件四格环每刻移动1格，空箱每5刻尝试；未调用已有转移函数。20个完整StateSeed逐值比较，仅不比较basis/category文字，全部事件身份/操作/对象/结果/detail及闭包轮数另比较。",
+  "period": 20,
+  "start": 0,
+  "end": 20,
+  "rates": {
+    "高容谷地电池": "0/20",
+    "精选荞愈胶囊": "0/20"
+  },
+  "rows": [
+    {
+      "tick": 1,
+      "move": "PC|b:east:0|c:south:0",
+      "position": "c",
+      "age": 0,
+      "cooldown": 4,
+      "empty_transfer": false,
+      "representative_adjustment": [
+        {
+          "item": "精选荞愈胶囊",
+          "quantity": {
+            "value": "5",
+            "category": "算术推论"
+          },
+          "reason": "production_representative"
+        }
+      ],
+      "state_values_match": true,
+      "events_match": true
+    },
+    {
+      "tick": 2,
+      "move": "PC|c:east:0|d:south:0",
+      "position": "d",
+      "age": 0,
+      "cooldown": 3,
+      "empty_transfer": false,
+      "representative_adjustment": [],
+      "state_values_match": true,
+      "events_match": true
+    },
+    {
+      "tick": 3,
+      "move": "PC|d:east:0|a:south:0",
+      "position": "a",
+      "age": 0,
+      "cooldown": 2,
+      "empty_transfer": false,
+      "representative_adjustment": [],
+      "state_values_match": true,
+      "events_match": true
+    },
+    {
+      "tick": 4,
+      "move": "PC|a:east:0|b:south:0",
+      "position": "b",
+      "age": 0,
+      "cooldown": 1,
+      "empty_transfer": false,
+      "representative_adjustment": [],
+      "state_values_match": true,
+      "events_match": true
+    },
+    {
+      "tick": 5,
+      "move": "PC|b:east:0|c:south:0",
+      "position": "c",
+      "age": 0,
+      "cooldown": 5,
+      "empty_transfer": true,
+      "representative_adjustment": [],
+      "state_values_match": true,
+      "events_match": true
+    },
+    {
+      "tick": 6,
+      "move": "PC|c:east:0|d:south:0",
+      "position": "d",
+      "age": 0,
+      "cooldown": 4,
+      "empty_transfer": false,
+      "representative_adjustment": [],
+      "state_values_match": true,
+      "events_match": true
+    },
+    {
+      "tick": 7,
+      "move": "PC|d:east:0|a:south:0",
+      "position": "a",
+      "age": 0,
+      "cooldown": 3,
+      "empty_transfer": false,
+      "representative_adjustment": [],
+      "state_values_match": true,
+      "events_match": true
+    },
+    {
+      "tick": 8,
+      "move": "PC|a:east:0|b:south:0",
+      "position": "b",
+      "age": 0,
+      "cooldown": 2,
+      "empty_transfer": false,
+      "representative_adjustment": [],
+      "state_values_match": true,
+      "events_match": true
+    },
+    {
+      "tick": 9,
+      "move": "PC|b:east:0|c:south:0",
+      "position": "c",
+      "age": 0,
+      "cooldown": 1,
+      "empty_transfer": false,
+      "representative_adjustment": [],
+      "state_values_match": true,
+      "events_match": true
+    },
+    {
+      "tick": 10,
+      "move": "PC|c:east:0|d:south:0",
+      "position": "d",
+      "age": 0,
+      "cooldown": 5,
+      "empty_transfer": true,
+      "representative_adjustment": [],
+      "state_values_match": true,
+      "events_match": true
+    },
+    {
+      "tick": 11,
+      "move": "PC|d:east:0|a:south:0",
+      "position": "a",
+      "age": 0,
+      "cooldown": 4,
+      "empty_transfer": false,
+      "representative_adjustment": [],
+      "state_values_match": true,
+      "events_match": true
+    },
+    {
+      "tick": 12,
+      "move": "PC|a:east:0|b:south:0",
+      "position": "b",
+      "age": 0,
+      "cooldown": 3,
+      "empty_transfer": false,
+      "representative_adjustment": [],
+      "state_values_match": true,
+      "events_match": true
+    },
+    {
+      "tick": 13,
+      "move": "PC|b:east:0|c:south:0",
+      "position": "c",
+      "age": 0,
+      "cooldown": 2,
+      "empty_transfer": false,
+      "representative_adjustment": [],
+      "state_values_match": true,
+      "events_match": true
+    },
+    {
+      "tick": 14,
+      "move": "PC|c:east:0|d:south:0",
+      "position": "d",
+      "age": 0,
+      "cooldown": 1,
+      "empty_transfer": false,
+      "representative_adjustment": [],
+      "state_values_match": true,
+      "events_match": true
+    },
+    {
+      "tick": 15,
+      "move": "PC|d:east:0|a:south:0",
+      "position": "a",
+      "age": 0,
+      "cooldown": 5,
+      "empty_transfer": true,
+      "representative_adjustment": [],
+      "state_values_match": true,
+      "events_match": true
+    },
+    {
+      "tick": 16,
+      "move": "PC|a:east:0|b:south:0",
+      "position": "b",
+      "age": 0,
+      "cooldown": 4,
+      "empty_transfer": false,
+      "representative_adjustment": [],
+      "state_values_match": true,
+      "events_match": true
+    },
+    {
+      "tick": 17,
+      "move": "PC|b:east:0|c:south:0",
+      "position": "c",
+      "age": 0,
+      "cooldown": 3,
+      "empty_transfer": false,
+      "representative_adjustment": [],
+      "state_values_match": true,
+      "events_match": true
+    },
+    {
+      "tick": 18,
+      "move": "PC|c:east:0|d:south:0",
+      "position": "d",
+      "age": 0,
+      "cooldown": 2,
+      "empty_transfer": false,
+      "representative_adjustment": [],
+      "state_values_match": true,
+      "events_match": true
+    },
+    {
+      "tick": 19,
+      "move": "PC|d:east:0|a:south:0",
+      "position": "a",
+      "age": 0,
+      "cooldown": 1,
+      "empty_transfer": false,
+      "representative_adjustment": [],
+      "state_values_match": true,
+      "events_match": true
+    },
+    {
+      "tick": 20,
+      "move": "PC|a:east:0|b:south:0",
+      "position": "b",
+      "age": 0,
+      "cooldown": 5,
+      "empty_transfer": true,
+      "representative_adjustment": [],
+      "state_values_match": true,
+      "events_match": true
+    }
+  ]
+}

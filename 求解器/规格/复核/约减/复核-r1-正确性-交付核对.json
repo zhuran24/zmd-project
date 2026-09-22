@@ -1,0 +1,18 @@
+{
+  "schema": "reduction-review-final-check-r1",
+  "protected_changes": [],
+  "missing_links": [],
+  "shared_source_changes_after_review": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/transition.rs",
+      "review_sha256": "092e2bdedfa9cbd84eb6d6911d410fe4b4a0ae9004e6c0dff6c6d24354744c47",
+      "final_check_sha256": "6f926aec8b454fd989139185edd88daa152b8a522f3c5be8179dc6f69fd04eae"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/polling.rs",
+      "review_sha256": "b23c21541ba72555ef9f99f46a22569ea3907e09a92713b93155d64f24d1dffd",
+      "final_check_sha256": "8fb84535b4aa030b6dda820ccfb9dadb8cc969e714b4cd94e2350f589b95a59f"
+    }
+  ],
+  "interpretation": "被审六文件未变；共享内核在独立并行修订。复核证据以核验JSON的读取指纹为准，不将本报告视为新内核版本复核。"
+}

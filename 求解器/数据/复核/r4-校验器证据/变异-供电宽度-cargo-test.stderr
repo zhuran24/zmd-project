@@ -1,0 +1,6 @@
+   Compiling topology v0.1.0 (/home/zhuran24/zmd-research-fresh/求解器/数据/复核/r4-校验器证据/隔离副本/求解器/crates/topology)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.40s
+     Running unittests src/lib.rs (/home/zhuran24/zmd-research-fresh/求解器/数据/复核/r4-校验器证据/mutated-target/debug/deps/topology-958a7a196b95191c)
+     Running unittests src/main.rs (/home/zhuran24/zmd-research-fresh/求解器/数据/复核/r4-校验器证据/mutated-target/debug/deps/topology-232d29a62249f608)
+     Running tests/validation.rs (/home/zhuran24/zmd-research-fresh/求解器/数据/复核/r4-校验器证据/mutated-target/debug/deps/validation-55f92a55e3fc13c3)
+   Doc-tests topology

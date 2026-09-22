@@ -1,0 +1,14 @@
+{
+  "command": [
+    "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+    "check",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/双成品满仓起动试作.json",
+    "--cycle-domain",
+    "--config",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+  ],
+  "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+  "returncode": 0,
+  "stdout": "{\n  \"domain_report\": [\n    {\n      \"condition\": \"D.1\",\n      \"evidence\": [\n        \"已装载固定布局、设定、global/v1、在线零干预、sufficient；无未来历史/玩家策略\"\n      ],\n      \"locations\": [],\n      \"scope\": \"static\",\n      \"status\": \"pass\"\n    },\n    {\n      \"condition\": \"D.2\",\n      \"evidence\": [\n        \"当前两矿唯一正库存且无可检查回矿候选；未来PC及有资格全箱仍在容量/physical/权限前动态核验\"\n      ],\n      \"locations\": [],\n      \"scope\": \"static\",\n      \"status\": \"pass\"\n    },\n    {\n      \"condition\": \"D.3\",\n      \"evidence\": [\n        \"O为空；成品格无取货指派；新格标签无冲突；retain_history保持该不变量\"\n      ],\n      \"locations\": [],\n      \"scope\": \"static\",\n      \"status\": \"pass\"\n    },\n    {\n      \"condition\": \"D.4\",\n      \"evidence\": [\n        \"全部输入/种子/分支表已装载；未来无终点请求仍动态停止；不证明种子可达\"\n      ],\n      \"locations\": [],\n      \"scope\": \"static\",\n      \"status\": \"pass\"\n    },\n    {\n      \"condition\": \"D.5\",\n      \"evidence\": [\n        \"结构界B=0+300*19=5700 <80000；每PC每刻至多1、每箱每刻至多一次全箱300\"\n      ],\n      \"locations\": [],\n      \"scope\": \"static\",\n      \"status\": \"pass\"\n    }\n  ],\n  \"status\": \"input_checked\",\n  \"trajectory_executed\": false\n}\n",
+  "stderr": ""
+}

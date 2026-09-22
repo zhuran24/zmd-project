@@ -1,0 +1,474 @@
+{
+  "status": "PASS",
+  "schema_sha256": "5033e231db40bab01b0466e3763bc53d6a3e4bc3b7d74c70e30659446e595bfc",
+  "schema_cases": 76,
+  "positive_cases": 18,
+  "negative_cases": 58,
+  "specification_checks": 67,
+  "axis_count": 99,
+  "documents": {
+    "required_field_set": "PASS",
+    "field_count": 20,
+    "old_inline_contract_phrases": "absent",
+    "markdown_link_targets": "PASS"
+  },
+  "scope": "schema结构与规格静态自查；非引用装载、周期重跑或内核回归",
+  "checks": [
+    {
+      "name": "引用式低产周期",
+      "expected": true,
+      "valid": true,
+      "errors": []
+    },
+    {
+      "name": "v3运行记录结构正例",
+      "expected": true,
+      "valid": true,
+      "errors": []
+    },
+    {
+      "name": "拒绝旧循环版本号",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "无记录低产周期",
+      "expected": true,
+      "valid": true,
+      "errors": []
+    },
+    {
+      "name": "无记录找到周期结构",
+      "expected": true,
+      "valid": true,
+      "errors": []
+    },
+    {
+      "name": "referenced运行中资源未决",
+      "expected": true,
+      "valid": true,
+      "errors": []
+    },
+    {
+      "name": "referenced已装载零刻前缀结构",
+      "expected": true,
+      "valid": true,
+      "errors": []
+    },
+    {
+      "name": "referenced已装载不许缺seed",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "referenced已装载不许缺parameter_point",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "referenced已装载不许缺last_state",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "none运行中资源未决",
+      "expected": true,
+      "valid": true,
+      "errors": []
+    },
+    {
+      "name": "none已装载零刻前缀结构",
+      "expected": true,
+      "valid": true,
+      "errors": []
+    },
+    {
+      "name": "none已装载不许缺seed",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "none已装载不许缺parameter_point",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "none已装载不许缺last_state",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "KQ-09真实外壳仅迁移封套",
+      "expected": true,
+      "valid": true,
+      "errors": []
+    },
+    {
+      "name": "装载未知读法不填默认",
+      "expected": true,
+      "valid": true,
+      "errors": []
+    },
+    {
+      "name": "装载诊断unsupported",
+      "expected": true,
+      "valid": true,
+      "errors": []
+    },
+    {
+      "name": "装载诊断unresolved",
+      "expected": true,
+      "valid": true,
+      "errors": []
+    },
+    {
+      "name": "装载诊断invalid_input",
+      "expected": true,
+      "valid": true,
+      "errors": []
+    },
+    {
+      "name": "空外壳不得丢已完成前缀",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "资源未决不得错报种类",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "装载前不得伪造末态",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "拒绝漏必填domain_report",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "拒绝漏必填run_record_ref",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "拒绝漏必填replay_input_ref",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "拒绝漏必填record_mode",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "拒绝漏必填fingerprints",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "拒绝漏必填last_state",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "拒绝漏必填seed",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "拒绝漏必填parameter_point",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "拒绝引用缺run_record_ref/path",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "拒绝引用缺replay_input_ref/path",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "拒绝引用缺run_record_ref/sha256",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "拒绝引用缺replay_input_ref/sha256",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "拒绝引用缺run_record_ref/producer",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "拒绝引用缺replay_input_ref/producer",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "拒绝引用缺run_record_ref/format",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "拒绝引用缺replay_input_ref/format",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "拒绝引用错误sha256",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "拒绝引用错误format",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "拒绝旧内嵌键run_record",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "拒绝旧内嵌键replay_input",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "拒绝复制第三份种子状态",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "拒绝第二份D报告",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "默认模式不得删记录引用",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "无记录模式不得混填引用",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "拒绝D报告数量0",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "拒绝D报告数量4",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "拒绝D报告数量6",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "拒绝成功周期D报告错误condition",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "拒绝成功周期D报告错误scope",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "拒绝成功周期D报告错误status",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "未核报告须定位",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "低产不得报cycle_found",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "无低产不得报counterexample",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "静态命令五项报告",
+      "expected": true,
+      "valid": true,
+      "errors": []
+    },
+    {
+      "name": "根oneOf接收引用式结果",
+      "expected": true,
+      "valid": true,
+      "errors": []
+    },
+    {
+      "name": "根oneOf接收v3记录",
+      "expected": true,
+      "valid": true,
+      "errors": []
+    },
+    {
+      "name": "引用增量记录格式",
+      "expected": true,
+      "valid": true,
+      "errors": []
+    },
+    {
+      "name": "无记录装载资源未决外壳",
+      "expected": true,
+      "valid": true,
+      "errors": []
+    },
+    {
+      "name": "15输入轴不能缺一",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "已装载无记录亦不可丢来源链",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "运行记录不能冒名输入生成器",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "引用producer必填kind",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "引用producer必填path",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "引用producer必填claim",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "重放输入必须v3",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "引用未知键拒收",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "D.2静态通过不能替代周期动态核验",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "D.2不得无依据通过",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "归一化须引用全部五项D",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "有周期不得复制第三端状态",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "已装载读法不可未知",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "未核不得填pass",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    },
+    {
+      "name": "装载前不得冒充已执行事件",
+      "expected": false,
+      "valid": false,
+      "errors": []
+    }
+  ]
+}

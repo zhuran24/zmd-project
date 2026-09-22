@@ -1,0 +1,167 @@
+{
+  "status": "PASS",
+  "scope": "字段编码与局部守卫；试样不是D域完整输入、可达布局或Rust循环证书",
+  "source_record_sha256": "fb4d7e283e21c0d02aa715ddcb97581edf9782babd867d3a78186da7f989c2fb",
+  "check_count": 29,
+  "checks": [
+    "非空年龄/窗口/pending平移保持:1",
+    "非空年龄/窗口/pending平移保持:31",
+    "非空年龄/窗口/pending平移保持:1000003",
+    "植物仓库数量必须保留",
+    "非仓库数量必须保留",
+    "门累计必须保留",
+    "门窗口计数必须保留",
+    "门原因必须保留",
+    "窗口不能只存模5",
+    "冷却剩余须保留",
+    "pending相对截止须保留",
+    "正矿代表量可以不同，矿物种与格不删除",
+    "成品数量/历史格移出键:高容谷地电池:0",
+    "成品数量/历史格移出键:高容谷地电池:1",
+    "成品数量/历史格移出键:高容谷地电池:79999",
+    "成品数量/历史格移出键:高容谷地电池:80000",
+    "成品数量/历史格移出键:精选荞愈胶囊:0",
+    "成品数量/历史格移出键:精选荞愈胶囊:1",
+    "成品数量/历史格移出键:精选荞愈胶囊:79999",
+    "成品数量/历史格移出键:精选荞愈胶囊:80000",
+    "非空匿名序拒绝",
+    "中途锚点拒绝",
+    "未办事件前驱拒绝",
+    "非at_time触发拒绝",
+    "192组年龄与窗口阈值平移（每组双阈值）",
+    "暂停/运行的完成条件由工作量决定，与旧绝对预计截止无关",
+    "未满不蕴含整箱可收",
+    "回矿容量依赖不能由充分供矿删除",
+    "取空保留/释放身份导致匿名集合不同"
+  ],
+  "capacity_cases": [
+    {
+      "stock": 1,
+      "batch": 1,
+      "ore_available": true,
+      "under_capacity": true,
+      "accepts_whole_batch": true,
+      "representative_accepts": true
+    },
+    {
+      "stock": 1,
+      "batch": 2,
+      "ore_available": true,
+      "under_capacity": true,
+      "accepts_whole_batch": true,
+      "representative_accepts": true
+    },
+    {
+      "stock": 1,
+      "batch": 50,
+      "ore_available": true,
+      "under_capacity": true,
+      "accepts_whole_batch": true,
+      "representative_accepts": true
+    },
+    {
+      "stock": 1,
+      "batch": 300,
+      "ore_available": true,
+      "under_capacity": true,
+      "accepts_whole_batch": true,
+      "representative_accepts": true
+    },
+    {
+      "stock": 79998,
+      "batch": 1,
+      "ore_available": true,
+      "under_capacity": true,
+      "accepts_whole_batch": true,
+      "representative_accepts": true
+    },
+    {
+      "stock": 79998,
+      "batch": 2,
+      "ore_available": true,
+      "under_capacity": true,
+      "accepts_whole_batch": true,
+      "representative_accepts": true
+    },
+    {
+      "stock": 79998,
+      "batch": 50,
+      "ore_available": true,
+      "under_capacity": true,
+      "accepts_whole_batch": false,
+      "representative_accepts": true
+    },
+    {
+      "stock": 79998,
+      "batch": 300,
+      "ore_available": true,
+      "under_capacity": true,
+      "accepts_whole_batch": false,
+      "representative_accepts": true
+    },
+    {
+      "stock": 79999,
+      "batch": 1,
+      "ore_available": true,
+      "under_capacity": true,
+      "accepts_whole_batch": true,
+      "representative_accepts": true
+    },
+    {
+      "stock": 79999,
+      "batch": 2,
+      "ore_available": true,
+      "under_capacity": true,
+      "accepts_whole_batch": false,
+      "representative_accepts": true
+    },
+    {
+      "stock": 79999,
+      "batch": 50,
+      "ore_available": true,
+      "under_capacity": true,
+      "accepts_whole_batch": false,
+      "representative_accepts": true
+    },
+    {
+      "stock": 79999,
+      "batch": 300,
+      "ore_available": true,
+      "under_capacity": true,
+      "accepts_whole_batch": false,
+      "representative_accepts": true
+    },
+    {
+      "stock": 80000,
+      "batch": 1,
+      "ore_available": true,
+      "under_capacity": false,
+      "accepts_whole_batch": false,
+      "representative_accepts": true
+    },
+    {
+      "stock": 80000,
+      "batch": 2,
+      "ore_available": true,
+      "under_capacity": false,
+      "accepts_whole_batch": false,
+      "representative_accepts": true
+    },
+    {
+      "stock": 80000,
+      "batch": 50,
+      "ore_available": true,
+      "under_capacity": false,
+      "accepts_whole_batch": false,
+      "representative_accepts": true
+    },
+    {
+      "stock": 80000,
+      "batch": 300,
+      "ore_available": true,
+      "under_capacity": false,
+      "accepts_whole_batch": false,
+      "representative_accepts": true
+    }
+  ]
+}

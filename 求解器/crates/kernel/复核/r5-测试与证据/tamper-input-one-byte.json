@@ -1,0 +1,13 @@
+{
+  "command": [
+    "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+    "verify-cycle",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r5-测试与证据/reference-cycle.json",
+    "--config",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+  ],
+  "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+  "returncode": 2,
+  "stdout": "{\n  \"execution_mode\": \"finite_concrete\",\n  \"fingerprints\": [],\n  \"input_history\": null,\n  \"open_items\": [\n    \"invalid_input input @ /home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r5-测试与证据/reference-input.json: 来源指纹不符，须重验而非刷新\"\n  ],\n  \"parameter_assignment\": null,\n  \"port_meeting\": \"shared_edge_opposite\",\n  \"producer\": {\n    \"claim\": \"装载停止，未形成游戏后继\",\n    \"kind\": \"kernel\",\n    \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs\"\n  },\n  \"profile_id\": \"kernel_profile_v1\",\n  \"run_id\": \"kernel:load-stop\",\n  \"schema\": \"kernel-output-v3\",\n  \"status\": \"invalid_input\",\n  \"trace\": null,\n  \"uncovered_axes\": [],\n  \"validation_scope\": null\n}\n",
+  "stderr": ""
+}

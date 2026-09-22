@@ -1,0 +1,24 @@
+{
+  "name": "zero-ore-runtime-rejection",
+  "command": [
+    "/home/zhuran24/zmd-research-fresh/求解器/target/debug/kernel",
+    "run",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/zero-ore-sufficient-seed.json",
+    "--config",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+    "--ticks",
+    "1",
+    "--out",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/zero-ore-runtime-rejection.json"
+  ],
+  "exit_code": 2,
+  "status": "invalid_input",
+  "schema": "kernel-output-v3",
+  "open_items": [
+    "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+    "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。",
+    "invalid_input warehouse.external_supply @ instant=0: 源矿无库存，显式补给史不满足持续可得"
+  ],
+  "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/zero-ore-runtime-rejection.json\",\"status\":\"invalid_input\"}\n",
+  "stderr": ""
+}

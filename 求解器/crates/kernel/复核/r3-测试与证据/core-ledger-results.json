@@ -1,0 +1,57 @@
+{
+  "status": "pass",
+  "commands": [
+    [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "seed",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/core-ledger-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/core-ledger-input.json"
+    ],
+    [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/core-ledger-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "4",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/core-ledger-record.json"
+    ],
+    [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "verify-record",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/core-ledger-record.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ]
+  ],
+  "ticks": 4,
+  "core_inbound": [
+    {
+      "channel": "PC|belt:north:0|core:south:1",
+      "event": "J|1|0|1",
+      "item": "高容谷地电池",
+      "port": "core:south:1",
+      "quantity": {
+        "category": "算术推论",
+        "value": "1"
+      }
+    },
+    {
+      "channel": "PC|belt:north:0|core:south:1",
+      "event": "J|2|0|1",
+      "item": "高容谷地电池",
+      "port": "core:south:1",
+      "quantity": {
+        "category": "算术推论",
+        "value": "1"
+      }
+    }
+  ],
+  "wireless_inbound": [],
+  "per_species_conservation": true
+}

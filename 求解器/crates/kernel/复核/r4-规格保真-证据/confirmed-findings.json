@@ -1,0 +1,70 @@
+{
+  "branch_scope": {
+    "maximum_geometric_output_levels": {
+      "core": [],
+      "south_box": [
+        "other"
+      ],
+      "north_box": [],
+      "east_box": [],
+      "west_box": [],
+      "ore_source": [
+        "other"
+      ],
+      "probe_left_source": [
+        "other"
+      ],
+      "probe_bottom_source": [
+        "other"
+      ],
+      "probe_box": []
+    },
+    "no_possible_damping_request": true,
+    "control_ticks": 12,
+    "missing_table_status": "unresolved",
+    "missing_table_reason": [
+      "unresolved damping.branch @ choices: 未列全几何分流器的非空出支子集"
+    ]
+  },
+  "unknown_trigger": {
+    "seed_cli_accepted": true,
+    "public_key_accepted": true,
+    "key_difference_only": "/state/semantic_context/pending_events/value/0/trigger/extra",
+    "value": "未定义扩展",
+    "input_requirement": "trigger恰含kind/value；未知扩展拒收"
+  },
+  "empty_prefix": {
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-规格保真-证据/checkpoint-control-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "1",
+      "--max-sweeps",
+      "1",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-规格保真-证据/closed-first-sweep-stop-result.json"
+    ],
+    "exit_code": 2,
+    "seed_phase": "after_closure",
+    "seed_time": {
+      "kind": "rational",
+      "value": {
+        "category": "候选",
+        "value": "1"
+      }
+    },
+    "independent_seed_validation": "成功且完整StateSeed不变",
+    "trace": null,
+    "has_start_state": false,
+    "has_end_time": false,
+    "status": "inconclusive",
+    "reason": [
+      "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+      "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。",
+      "inconclusive resource.sweeps @ J|2|0|13: instant=2 sweep=1: 未见完整状态重复，不能推进时刻"
+    ]
+  }
+}

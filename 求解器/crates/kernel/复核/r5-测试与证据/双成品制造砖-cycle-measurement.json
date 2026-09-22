@@ -1,0 +1,21 @@
+{
+  "command": [
+    "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+    "cycle",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/双成品制造砖.json",
+    "--config",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+    "--ticks",
+    "32",
+    "--no-record",
+    "--search-checkpoint-interval",
+    "32",
+    "--out",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r5-测试与证据/双成品制造砖-benchmark-cycle.json"
+  ],
+  "returncode": 0,
+  "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r5-测试与证据/双成品制造砖-benchmark-cycle.json\",\"status\":\"inconclusive\"}\n",
+  "stderr": "",
+  "wall_ns": 98076889,
+  "max_rss_kb": 16060
+}

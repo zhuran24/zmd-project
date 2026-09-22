@@ -1,0 +1,19 @@
+{
+  "findings": [
+    {
+      "id": "KR-r4-L2-1",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/output.rs:273-275；/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/polling.rs:124-127；/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/audit_round5.py:164-174",
+      "claim": "当前path_runs未执行几何邻接轴，却把连续带路径标为damping.belt_adjacency已执行，导致K6覆盖审计漏报一项缺口。",
+      "evidence": "最终选择点参数轴.md:40限定该轴仅用于geometric_components，受限模型声明.md:40明确path_runs不调用此值；polling.rs只在belt&&previous_belt时写belt_adjacency标记，output.rs据标记报exercised。新跑阻尼连续带核验3刻的J|0|0|0及公开verify-record复现该误报；证据为复核/r4-测试与证据/dormant-axis-evidence.json。",
+      "severity": "重要"
+    },
+    {
+      "id": "KR-r4-L2-2",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/cycle.rs:675-692；/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.schema.json:2527-2633；/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/audit_revision_r3.py:23-39",
+      "claim": "KQ-09仍未收口：cycle装载资源不足返回的真实inconclusive空上下文不符合现行交付schema。",
+      "evidence": "内核输出.md §5.1允许装载前失败run_record为空，受限转移定义§1要求资源不足为inconclusive；CycleResult/allOf/4却强制seed、parameter_point、replay_input及run_record非空。独立重跑age-overflow-cycle得到exit=2、resource.integer、completed_ticks=0及空上下文，AJV2020再次拒收；58份结果中57通过、此1份失败，见复核/r4-测试与证据/independent-schema.json。该项为既有未决复现，需S线修schema，不能改错资源分类或伪造状态。",
+      "severity": "重要"
+    }
+  ],
+  "notes": "完整报告：/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/复核-r4-测试与证据.md。Cargo原生120项通过、1个写死旧证据目录的Rust集成测试改以同等4次CLI调用及全部断言在复核目录通过；Clippy通过。3次release基准两档均达标，26份运行/10份循环审计通过，新搜索并回放20/190 tick周期，手推20 tick全状态及200事件相符；补矿30 tick差分、D.2四组容量对照和31条覆盖轴原始事件抽查完成。保留2项重要发现；现有验收通过不代表错误覆盖标签已正确。"
+}

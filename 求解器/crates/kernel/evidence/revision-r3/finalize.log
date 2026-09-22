@@ -1,0 +1,1 @@
+{"status": "revised_with_open_items", "tests_passed": 121, "clippy": "pass", "cli_cases": 59, "cli_schema_passed": 57, "cli_schema_open": 1, "reference_records": 4, "audited_records": 26, "cycle_results": 10, "ms_per_tick": {"benchmark_brick_60": 0.5877088333333333, "benchmark_brick": 2.7375217500000004, "benchmark_candidate_b": 17.29609483333333}}

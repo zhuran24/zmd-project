@@ -1,0 +1,1121 @@
+{
+  "axis_count": 96,
+  "items": [
+    {
+      "axis": "time.domain",
+      "independent_items": [
+        "I01"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "integer_ticks",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "time.instant_order",
+      "independent_items": [
+        "I07"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "chronological_phases",
+      "findings": [
+        "S3-r6-L3-01"
+      ],
+      "review": "见具名发现的联合后效或覆盖缺口"
+    },
+    {
+      "axis": "time.retry_schedule",
+      "independent_items": [
+        "I02",
+        "I03",
+        "I11"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "ordered_sweeps",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "time.instant_end",
+      "independent_items": [
+        "I02",
+        "I11"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "repeat_scheduler_state",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "time.boundary",
+      "independent_items": [
+        "I01",
+        "I07",
+        "I60"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "elapsed_inclusive",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "time.manufacture_events",
+      "independent_items": [
+        "I06",
+        "I47"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "completion_before_closure",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "judgment.order_scope",
+      "independent_items": [
+        "I05",
+        "I74"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "global",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "judgment.order",
+      "independent_items": [
+        "I04",
+        "I05"
+      ],
+      "disposition": "由输入全称量化",
+      "profile_value": {
+        "interface": "event-order-v1"
+      },
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "judgment.buffer_event_class",
+      "independent_items": [
+        "I04",
+        "I10"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "manufacture_subactions",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "polling.initial_cursor",
+      "independent_items": [
+        "I33"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "first_connected",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "polling.split_merge_start",
+      "independent_items": [
+        "I32"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "second_cursor",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "polling.ungraded_blocked",
+      "independent_items": [
+        "I29"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "empty_turn",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "polling.dual_permission",
+      "independent_items": [
+        "I25",
+        "I27"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "both",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "polling.memory_scope",
+      "independent_items": [
+        "I31"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "per_level",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "polling.resume",
+      "independent_items": [
+        "I31"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "retain_position",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "polling.eligibility_stage",
+      "independent_items": [
+        "I25",
+        "I28"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "pre_filter",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "polling.membership_change",
+      "independent_items": [
+        "I34",
+        "I64"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "retain_survivors",
+      "findings": [
+        "S3-r6-L3-01"
+      ],
+      "review": "见具名发现的联合后效或覆盖缺口"
+    },
+    {
+      "axis": "polling.internal_scope",
+      "independent_items": [
+        "I10",
+        "I28"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "external_only",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "polling.direct_peer",
+      "independent_items": [
+        "I17",
+        "I28"
+      ],
+      "disposition": "已定",
+      "profile_value": "physical_peer",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "polling.level_tie",
+      "independent_items": [
+        "I14",
+        "I30"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "fixed_arbitration",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "damping.belt_component_rule",
+      "independent_items": [
+        "I16"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "path_runs",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "damping.belt_adjacency",
+      "independent_items": [
+        "I16"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "shared_edge",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "damping.branch",
+      "independent_items": [
+        "I17",
+        "I18",
+        "I74"
+      ],
+      "disposition": "由输入全称量化",
+      "profile_value": {
+        "interface": "damping-branch-v1"
+      },
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "damping.no_terminal",
+      "independent_items": [
+        "I19"
+      ],
+      "disposition": "超出覆盖即停",
+      "profile_value": {
+        "policy": "stop",
+        "trigger": "请求求阻尼而所选路径无下一非运输终点"
+      },
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "connection.build_order",
+      "independent_items": [
+        "I12"
+      ],
+      "disposition": "由输入全称量化",
+      "profile_value": {
+        "interface": "construction.selected_order"
+      },
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "connection.order",
+      "independent_items": [
+        "I15",
+        "I72"
+      ],
+      "disposition": "由输入全称量化",
+      "profile_value": {
+        "interface": "timeline_connection_history"
+      },
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "connection.tie",
+      "independent_items": [
+        "I14",
+        "I30"
+      ],
+      "disposition": "由输入全称量化",
+      "profile_value": {
+        "interface": "explicit_channel_order"
+      },
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "connection.port_meeting",
+      "independent_items": [
+        "I13"
+      ],
+      "disposition": "已定",
+      "profile_value": "shared_edge_opposite",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "connection.bridge_first_contact",
+      "independent_items": [
+        "I20"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "physical_contact",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "connection.bridge_tie",
+      "independent_items": [
+        "I20"
+      ],
+      "disposition": "超出覆盖即停",
+      "profile_value": {
+        "policy": "stop",
+        "trigger": "先接并列或桥互依赖，不能由唯一无环见证定向"
+      },
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "transfer.judgment",
+      "independent_items": [
+        "I50"
+      ],
+      "disposition": "已定",
+      "profile_value": "unit",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "transfer.cooldown_scope",
+      "independent_items": [
+        "I50"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "box",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "transfer.phase",
+      "independent_items": [
+        "I50",
+        "I53",
+        "I67"
+      ],
+      "disposition": "由输入全称量化",
+      "profile_value": {
+        "interface": "progress.cooldowns"
+      },
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "transfer.pause",
+      "independent_items": [
+        "I08",
+        "I52"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "pause_with_function",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "transfer.failure_cooldown",
+      "independent_items": [
+        "I52"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "every_attempt",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "transfer.partial_acceptance",
+      "independent_items": [
+        "I51"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "all_or_nothing",
+      "findings": [
+        "S3-r6-L3-02"
+      ],
+      "review": "见具名发现的联合后效或覆盖缺口"
+    },
+    {
+      "axis": "transfer.resume_event",
+      "independent_items": [
+        "I08",
+        "I53"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "ready_in_closure",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "manufacturing.port_slot_relation",
+      "independent_items": [
+        "I38"
+      ],
+      "disposition": "已定",
+      "profile_value": "distributed",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "manufacturing.input_mixing",
+      "independent_items": [
+        "I35"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "single_kind",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "manufacturing.input_capacity_scope",
+      "independent_items": [
+        "I37"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "per_slot_total",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "manufacturing.recipe_match_scope",
+      "independent_items": [
+        "I40",
+        "I41"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "input_union",
+      "findings": [
+        "S3-r6-L3-03"
+      ],
+      "review": "见具名发现的联合后效或覆盖缺口"
+    },
+    {
+      "axis": "manufacturing.recipe_completeness",
+      "independent_items": [
+        "I40",
+        "I41"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "full_batch",
+      "findings": [
+        "S3-r6-L3-03"
+      ],
+      "review": "见具名发现的联合后效或覆盖缺口"
+    },
+    {
+      "axis": "manufacturing.recipe_selection",
+      "independent_items": [
+        "I42"
+      ],
+      "disposition": "由输入全称量化",
+      "profile_value": {
+        "interface": "explicit_recipe_order"
+      },
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "manufacturing.recipe_lock_time",
+      "independent_items": [
+        "I43"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "on_gate_open",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "manufacturing.input_slot_selection",
+      "independent_items": [
+        "I38"
+      ],
+      "disposition": "由输入全称量化",
+      "profile_value": {
+        "interface": "explicit_slot_order"
+      },
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "manufacturing.empty_slot_identity",
+      "independent_items": [
+        "I39"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "release_on_empty",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "manufacturing.input_collection",
+      "independent_items": [
+        "I10",
+        "I43"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "atomic_batch",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "manufacturing.buffer_power_gate",
+      "independent_items": [
+        "I08",
+        "I44"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "manufacturing_only",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "manufacturing.output_blocked",
+      "independent_items": [
+        "I45",
+        "I46",
+        "I47"
+      ],
+      "disposition": "已定",
+      "profile_value": "retain_whole_batch",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "gate.identity_subject",
+      "independent_items": [
+        "I62"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "candidate_item",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "gate.identity_recovery",
+      "independent_items": [
+        "I61",
+        "I62"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "latched",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "gate.window_recovery",
+      "independent_items": [
+        "I60",
+        "I61"
+      ],
+      "disposition": "已定",
+      "profile_value": "on_expiry_if_other_guards",
+      "findings": [
+        "S3-r6-L3-01"
+      ],
+      "review": "见具名发现的联合后效或覆盖缺口"
+    },
+    {
+      "axis": "gate.total_recovery",
+      "independent_items": [
+        "I61"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "latched",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "gate.window_clock",
+      "independent_items": [
+        "I60",
+        "I61"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "wall_clock",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "gate.reconnect_record",
+      "independent_items": [
+        "I15",
+        "I64"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "original_build_record",
+      "findings": [
+        "S3-r6-L3-01"
+      ],
+      "review": "见具名发现的联合后效或覆盖缺口"
+    },
+    {
+      "axis": "gate.limit_requires_identity",
+      "independent_items": [
+        "I58"
+      ],
+      "disposition": "已定",
+      "profile_value": true,
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "gate.counter_edit",
+      "independent_items": [
+        "I65"
+      ],
+      "disposition": "超出覆盖即停",
+      "profile_value": {
+        "policy": "stop",
+        "trigger": "调试改身份/累计/窗口设定并需确定计数后效"
+      },
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "gate.counter_start",
+      "independent_items": [
+        "I59",
+        "I65"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "since_build",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "gate.cancel_limit",
+      "independent_items": [
+        "I58",
+        "I65"
+      ],
+      "disposition": "超出覆盖即停",
+      "profile_value": {
+        "policy": "stop",
+        "trigger": "取消已设限额"
+      },
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "offline.order_domain",
+      "independent_items": [
+        "I15",
+        "I72"
+      ],
+      "disposition": "超出覆盖即停",
+      "profile_value": {
+        "policy": "stop",
+        "trigger": "请求构造完整离线重排域或离线事件出现"
+      },
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "offline.events",
+      "independent_items": [
+        "I71"
+      ],
+      "disposition": "超出覆盖即停",
+      "profile_value": {
+        "policy": "stop",
+        "trigger": "出现任何离线/上线事件"
+      },
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "offline.cursor_effect",
+      "independent_items": [
+        "I34",
+        "I72"
+      ],
+      "disposition": "超出覆盖即停",
+      "profile_value": {
+        "policy": "stop",
+        "trigger": "离线需更新轮询状态"
+      },
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "offline.inventory_effect",
+      "independent_items": [
+        "I71",
+        "I72"
+      ],
+      "disposition": "超出覆盖即停",
+      "profile_value": {
+        "policy": "stop",
+        "trigger": "离线需更新库存"
+      },
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "offline.progress_effect",
+      "independent_items": [
+        "I71",
+        "I72"
+      ],
+      "disposition": "超出覆盖即停",
+      "profile_value": {
+        "policy": "stop",
+        "trigger": "离线需更新进度/时钟"
+      },
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "offline.direction_effect",
+      "independent_items": [
+        "I20",
+        "I72"
+      ],
+      "disposition": "超出覆盖即停",
+      "profile_value": {
+        "policy": "stop",
+        "trigger": "离线需更新桥方向"
+      },
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "offline.gate_total_effect",
+      "independent_items": [
+        "I72"
+      ],
+      "disposition": "超出覆盖即停",
+      "profile_value": {
+        "policy": "stop",
+        "trigger": "离线需更新累计计数"
+      },
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "offline.gate_window_effect",
+      "independent_items": [
+        "I72"
+      ],
+      "disposition": "超出覆盖即停",
+      "profile_value": {
+        "policy": "stop",
+        "trigger": "离线需更新窗口计数"
+      },
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "offline.gate_window_start_effect",
+      "independent_items": [
+        "I72"
+      ],
+      "disposition": "超出覆盖即停",
+      "profile_value": {
+        "policy": "stop",
+        "trigger": "离线需更新窗口起点"
+      },
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "initialization.warehouse_anchor",
+      "independent_items": [
+        "I70"
+      ],
+      "disposition": "由输入全称量化",
+      "profile_value": {
+        "interface": "initial_state.anchor"
+      },
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "initialization.other_inventory",
+      "independent_items": [
+        "I67",
+        "I70"
+      ],
+      "disposition": "由输入全称量化",
+      "profile_value": {
+        "interface": "initial_state.nonwarehouse"
+      },
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "initialization.switches",
+      "independent_items": [
+        "I66"
+      ],
+      "disposition": "由输入全称量化",
+      "profile_value": {
+        "interface": "settings_at_seed"
+      },
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "initialization.build_timing",
+      "independent_items": [
+        "I12",
+        "I66"
+      ],
+      "disposition": "由输入全称量化",
+      "profile_value": {
+        "interface": "timeline"
+      },
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "initialization.debug_actions",
+      "independent_items": [
+        "I21",
+        "I68",
+        "I73"
+      ],
+      "disposition": "超出覆盖即停",
+      "profile_value": {
+        "policy": "stop",
+        "trigger": "运行区间内出现玩家单位操作（种子之前的动作只核证据引用）"
+      },
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "initialization.rotation_stage",
+      "independent_items": [
+        "I21",
+        "I68"
+      ],
+      "disposition": "已定",
+      "profile_value": "build_and_debug",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "initialization.rebuild_inventory",
+      "independent_items": [
+        "I73"
+      ],
+      "disposition": "超出覆盖即停",
+      "profile_value": {
+        "policy": "stop",
+        "trigger": "拆除或重建需确定库存/进度去向"
+      },
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "initialization.debug_end",
+      "independent_items": [
+        "I69",
+        "I70"
+      ],
+      "disposition": "由输入全称量化",
+      "profile_value": {
+        "interface": "initial_state.reachability"
+      },
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "warehouse.capacity",
+      "independent_items": [
+        "I54"
+      ],
+      "disposition": "已定",
+      "profile_value": {
+        "value": "80000",
+        "category": "条文直引"
+      },
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "warehouse.acceptance",
+      "independent_items": [
+        "I56"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "capacity_and_path",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "warehouse.acceptance_quantifier",
+      "independent_items": [
+        "I56"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "per_instant",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "warehouse.withdrawal_policy",
+      "independent_items": [
+        "I56"
+      ],
+      "disposition": "超出覆盖即停",
+      "profile_value": {
+        "policy": "stop",
+        "trigger": "需要执行拿取策略或据此认证完整周期"
+      },
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "warehouse.withdrawal_timing",
+      "independent_items": [
+        "I56",
+        "I69"
+      ],
+      "disposition": "超出覆盖即停",
+      "profile_value": {
+        "policy": "stop",
+        "trigger": "运行区间出现玩家拿取事件；策略与实际时距未实现"
+      },
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "warehouse.external_supply",
+      "independent_items": [
+        "I55"
+      ],
+      "disposition": "由输入全称量化",
+      "profile_value": {
+        "interface": "explicit_ore_history"
+      },
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "warehouse.delivery_count",
+      "independent_items": [
+        "I57"
+      ],
+      "disposition": "已定",
+      "profile_value": "actual_inbound",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "warehouse.empty_slot_identity",
+      "independent_items": [
+        "I39",
+        "I54"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "retain_history",
+      "findings": [
+        "S3-r6-L3-02"
+      ],
+      "review": "见具名发现的联合后效或覆盖缺口"
+    },
+    {
+      "axis": "warehouse.periodic_lift",
+      "independent_items": [
+        "I57"
+      ],
+      "disposition": "超出覆盖即停",
+      "profile_value": {
+        "policy": "stop",
+        "trigger": "把省略仓库/绝对时钟等的抽象周期提升为完整基地周期"
+      },
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "bridge.inventory_scope",
+      "independent_items": [
+        "I17",
+        "I36"
+      ],
+      "disposition": "已定",
+      "profile_value": "two_independent_axis_slots",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "bridge.capacity",
+      "independent_items": [
+        "I03",
+        "I20"
+      ],
+      "disposition": "本版选值",
+      "profile_value": 1,
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "bridge.scheduling_scope",
+      "independent_items": [
+        "I25",
+        "I31"
+      ],
+      "disposition": "已定",
+      "profile_value": "unit",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "power.cell_rule",
+      "independent_items": [
+        "I23",
+        "I24"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "positive_area",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "residence.nontransport",
+      "independent_items": [
+        "I09"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "zero",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "cascade.buffer",
+      "independent_items": [
+        "I10"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "same_instant",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "polling.split_merge_scope",
+      "independent_items": [
+        "I32"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "per_level",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "polling.split_merge_singleton",
+      "independent_items": [
+        "I32"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "sole_member",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "polling.both_failure",
+      "independent_items": [
+        "I26",
+        "I27"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "advance_authorized",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "connection.belt_shape",
+      "independent_items": [
+        "I22"
+      ],
+      "disposition": "由输入全称量化",
+      "profile_value": {
+        "interface": "per_build_shape_map"
+      },
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    },
+    {
+      "axis": "initialization.belt_shape_lifecycle",
+      "independent_items": [
+        "I22"
+      ],
+      "disposition": "本版选值",
+      "profile_value": "fixed_between_builds",
+      "findings": [],
+      "review": "已对照取值、辖域与排除；本视角未取得新增错误的充分依据，不代表联合合法性已证明"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "状态": "通过",
+  "原设计输出与原始资产相同": {
+    "machines.csv": true,
+    "channels.csv": true,
+    "fanout.json": true
+  },
+  "CLI报告与被审报告字节相同": true,
+  "副本转换契约字节相同": true,
+  "隔离目录数据未变": true,
+  "报告sha256": "4ca856465096fdcfd79fc7e75ac2500aa3898cb548c2e5cf124d34bb23815f67",
+  "边界": "工具复现用被审实现；独立数值结论来自先行封存的 recompute.py，未借本脚本推导。"
+}

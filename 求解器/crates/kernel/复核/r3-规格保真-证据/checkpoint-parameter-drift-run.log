@@ -1,0 +1,22 @@
+{
+  "name": "checkpoint-parameter-drift-run",
+  "command": [
+    "/home/zhuran24/zmd-research-fresh/求解器/target/debug/kernel",
+    "run",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/checkpoint-parameter-drift-input.json",
+    "--config",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+    "--ticks",
+    "1",
+    "--out",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/checkpoint-parameter-drift-run.json"
+  ],
+  "exit_code": 2,
+  "status": "invalid_input",
+  "schema": "kernel-output-v3",
+  "open_items": [
+    "invalid_input input @ parameter_values: 当前值/生命周期与参数向量不符"
+  ],
+  "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/checkpoint-parameter-drift-run.json\",\"status\":\"invalid_input\"}\n",
+  "stderr": ""
+}

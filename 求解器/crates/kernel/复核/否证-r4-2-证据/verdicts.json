@@ -1,0 +1,39 @@
+{
+  "verdicts": [
+    {
+      "id": "KR-r4-L1-01",
+      "refuted": false,
+      "reason": "未能否证。独立对照中，同格两件电池分为-2/-1两个年龄组被报“普通格不能混种”，单行两件通过；规则L13限制物种数，转移§6.2明确保留不同年龄。完整论证：/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r4-2.md §2。"
+    },
+    {
+      "id": "KR-r4-L1-02",
+      "refuted": false,
+      "reason": "未能否证。trigger.extra通过seed及两个公开cycle_key入口；与对照键的唯一差异就是该字段，违反trigger={kind,value}和未知扩展拒收要求。见否证-r4-2.md §3及否证-r4-2-证据/key-extra.json。"
+    },
+    {
+      "id": "KR-r4-L1-03",
+      "refuted": false,
+      "reason": "未能否证。完整几何中所有非运输取货侧至多一级，删边或恢复也不能产生阻尼查询；完整表运行12刻成功，仅清空choices即装载停止，超出输入§5.3要求的触达域。见否证-r4-2.md §4。"
+    },
+    {
+      "id": "KR-r4-L1-04",
+      "refuted": false,
+      "reason": "未能否证。path_runs独立新跑3刻仍给belt_adjacency标exercised、附72条证据；源码只记录路径连续两带，未调用规格限定的几何邻接轴。见否证-r4-2.md §5。"
+    },
+    {
+      "id": "KR-r4-L1-05",
+      "refuted": false,
+      "reason": "未能否证。t=1检查点经seed验证且原样保留，正常续跑首刻为2；max-sweeps=1时两种记录格式均trace=null，违反已装载起点及空前缀end_time保留义务。见否证-r4-2.md §6。"
+    },
+    {
+      "id": "KR-r4-L2-1",
+      "refuted": false,
+      "reason": "未能否证。新生成的邻接轴误标记录通过verify-record；聚合代码直接信任exercised标签，现有缺口名单遗漏该轴。与KR-r4-L1-04同源不使发现失效。见否证-r4-2.md §7。"
+    },
+    {
+      "id": "KR-r4-L2-2",
+      "refuted": false,
+      "reason": "未能否证。新跑年龄溢出得到inconclusive/resource及四个null上下文，AJV2020确认现行CycleResult的allOf/4拒收；正常预算未决对照通过。KQ-09已披露但schema冲突未修复。见否证-r4-2.md §8。"
+    }
+  ]
+}

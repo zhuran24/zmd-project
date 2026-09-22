@@ -1,0 +1,344 @@
+[
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/参数轴-对内核输入请求的答复.md",
+    "first_line": 1,
+    "last_line": 24,
+    "lines": [
+      {
+        "line": 1,
+        "text": "# 参数轴对内核输入请求的答复"
+      },
+      {
+        "line": 2,
+        "text": ""
+      },
+      {
+        "line": 3,
+        "text": "日期：2026-09-19。状态：第五轮规格线接口交接；本文件描述当前规格，样例迁移由K线维护。"
+      },
+      {
+        "line": 4,
+        "text": ""
+      },
+      {
+        "line": 5,
+        "text": "已读取[内核输入对参数轴的修改请求](内核输入-对参数轴的修改请求.md)，共享轴表已并入；原91轴保留，现为99轴。逐轴稳定编码以[内核配置-v1.json](内核配置-v1.json)及[受限模型声明](受限模型声明.md)为准，转移细节以[受限转移定义](受限转移定义.md)为准。运行输入的轴表及配置指纹须在最后一次迁移时重新锁定。"
+      },
+      {
+        "line": 6,
+        "text": ""
+      },
+      {
+        "line": 7,
+        "text": "| 请求 | 当前接口及据 |"
+      },
+      {
+        "line": 8,
+        "text": "|---|---|"
+      },
+      {
+        "line": 9,
+        "text": "| 三个具体语法 | 沿用event-order-v1、damping-branch-v2、poll-memory-v1，不增加状态语法轴；轴表、T2/T3/T4引用内核输入§5.2/§5.3/§6.3。 |"
+      },
+      {
+        "line": 10,
+        "text": "| 传送带生命周期 | 采用initialization.belt_shape_lifecycle，U，本版fixed_between_builds；另用connection.belt_shape逐建造生命段记录三种形状。建造选形、旋转保形、调试经重建重选及零干预后无玩家改形已定；直接改形尚无正面授权，不把绝无其它机制冒称已定。 |"
+      },
+      {
+        "line": 11,
+        "text": "| 新轮询轴 | polling.split_merge_scope=per_level；polling.split_merge_singleton=sole_member；polling.both_failure=advance_authorized。 |"
+      },
+      {
+        "line": 12,
+        "text": "| 时间与平局 | time.instant_order=chronological_phases；time.manufacture_events=completion_before_closure；polling.level_tie=fixed_arbitration（输入独立级序，不能替代connection.tie）；connection.port_meeting=shared_edge_opposite（本版选值、open/U；角点相遇待审，见T5）。 |"
+      },
+      {
+        "line": 13,
+        "text": "| 已定字段迁移 | polling.direct_peer=physical_peer、gate.window_recovery=on_expiry_if_other_guards、initialization.rotation_stage=build_and_debug为F；其余以轴表现行标签为准。 |"
+      },
+      {
+        "line": 14,
+        "text": "| 窗口、空格与几何 | 保留wall_clock/identity_only_pause、排除全盘暂停；空格指派须已解决empty_identity；占格互斥与供电义务按最严读法，closed_touch保留。 |"
+      },
+      {
+        "line": 15,
+        "text": ""
+      },
+      {
+        "line": 16,
+        "text": "**事件模板须对齐当前选择**：本版judgment.buffer_event_class=manufacture_subactions；一次制造判定按“旧批整批出缓存→新批整批归集→若启用立刻开始”执行。故本配置的event-order-v1模板集合只含PC move和单位manufacture/transfer，BC有结构/子动作日志，但没有独立internal_move模板。格式可表达独立BC的其它模型，本版不得仍把BC模板强塞给已选manufacture_subactions，也不能用旧独立BC轨迹充当本配置黄金轨迹。（据：缓存格、制造、判定；受限转移定义§2.2/§4.2）"
+      },
+      {
+        "line": 17,
+        "text": ""
+      },
+      {
+        "line": 18,
+        "text": "**双端协调**：一侧授权即可尝试，成功须both；失败只推进判前已授权该边的侧，没有授权的侧不前移。物理可动先算，不含指针。分级侧先最高可动级，级内从next_channel找首个可动成员；不分级侧empty_turn。成功后的next_channel是完整环后继，不能每次重置到首/第二条。（据：轮询、优先级；受限转移定义§3）"
+      },
+      {
+        "line": 19,
+        "text": ""
+      },
+      {
+        "line": 20,
+        "text": "**状态接口必须容纳三原因阻断**：identity_mismatch、total_exhausted、window_exhausted分别保留；满窗只解除窗口原因，不能用一个bool丢掉其它原因。无准入口样例不激活此字段；未来有准入口运行输入在原因状态不能无损恢复时须拒绝运行。窗口本地计数与断边观察分离，本版身份锁存，不读取断边上游候选货。（据：物品准入口；受限转移定义§3.4）"
+      },
+      {
+        "line": 21,
+        "text": ""
+      },
+      {
+        "line": 22,
+        "text": "**停止项的编码**：内核配置表的stop记录是工具覆盖政策，不是游戏参数取值。有限实验未激活时用带域证据的not_applicable/机制引用，不能把stop说成一条新物理机制；发生对应离线、调试、拿取等事件时必须停止。初态可达性及级二仓库周期提升可以未证；级一限受限转移§6的D域，但必须在输出verification_scope中说明合成条件轨迹，不能据“可回放”宣称蓝图鲁棒可达。（据：目标、循环态、操作精度）"
+      },
+      {
+        "line": 23,
+        "text": ""
+      },
+      {
+        "line": 24,
+        "text": "已核内核输入请求§5的终态编码：arbitration.level_order与warehouse_empty_slot_order、judgment_context.phase及准入口blocked_reasons已进入输入格式；受限转移定义使用同名字段。仓库单物种落格按当前无身份空格的显式全序，缺序报invalid；成功PC入库/箱体传输与库存、身份原子提交仅保留仍无身份空格的稳定子序，拒收与空箱不改序，重载直接使用后态当前序；整箱至少两种无非空/历史目标物种且有无身份空格时，在任何修改前返回unsupported；保留历史身份不授权修改现存物品。"
+      }
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md",
+    "first_line": 85,
+    "last_line": 96,
+    "lines": [
+      {
+        "line": 85,
+        "text": "### 4.3 传输模板"
+      },
+      {
+        "line": 86,
+        "text": ""
+      },
+      {
+        "line": 87,
+        "text": "有电且传输开关开、箱冷却剩余0时产生一次单位判定；否则仅访问不判定。先汇总全箱按物种数量，在同一判前快照上拟定落格计划，依次执行下列检查，计划完成前不修改库存、格身份、交付计数或冷却："
+      },
+      {
+        "line": 88,
+        "text": ""
+      },
+      {
+        "line": 89,
+        "text": "1. 按§4.1核身份与空格序完整性，冲突/缺失报invalid。令U为本批中既无非空同种格、也无保留该物种历史身份空格的物种集合；E=E(S)为§4.1定义的当前无身份空格集合，O(S)的定义域恰为E。"
+      },
+      {
+        "line": 90,
+        "text": "2. 若`len(U)>=2 and any(w in assigned_slots for w in E)`（assigned_slots为当前`warehouse_assignments[].slot`集合），立即返回`unsupported(warehouse.empty_slot_identity, competing_new_species)`，保留整个判前状态，不先试某个物种序、不算拒收、不起冷却。只有至少一个无身份空格被端口指派时才触发；给定空格全序仍不决定哪个新物种占据可被取出的格，故不解除此触发。"
+      },
+      {
+        "line": 91,
+        "text": "3. 其它情形按§4.1映射：已有/历史身份目标各自唯一；U只有一种时取空格序首格；E为空时各新物种使用互异的规范新标签；U至少两种而E均未被指派时，按物种名UTF-8字节升序，将新物种依次匹配O(S)首部，余者使用规范新标签。这一规范定序只选工程编码代表，不是游戏的物种优先级；标签冲突报invalid_input；没有可填的替代标签字段，不自动追加后缀（KQ-03）。所有目标确定后再核每种的完整入量与80000容量。"
+      },
+      {
+        "line": 92,
+        "text": "4. 全部容量可收才按§4.1原子提交整箱库存、身份增量及O(S')的稳定子序，按各物种实际入库件数记交付；容量不足则全箱、仓库、身份和O均保留。空箱和已定义的容量拒收仍是一次尝试，cooldown=5；unsupported/invalid不产生游戏后继。"
+      },
+      {
+        "line": 93,
+        "text": ""
+      },
+      {
+        "line": 94,
+        "text": "无端口额度、无运输滞留前件。规则72的箱格编号只管端口收发，不能自动当无线传输物种序。指派空格上的多物种竞争方向仍须先登记有据的批量分配机制及覆盖损失。（据：传输、协议储存箱、物品格、约束·入库途径；本版box、every_attempt、all_or_nothing）"
+      },
+      {
+        "line": 95,
+        "text": ""
+      },
+      {
+        "line": 96,
+        "text": "未指派空格的规范定序依据：规则L13要求同种单格，L41、L73规定取货端口只访问指派格；在任务L8零干预、本文§1无改指派/拿取/离线的运行段内，没有端口能够观察未指派格的标签。不同新物种与这些空格的配对可由未指派格标签的一致置换对应，物种计数、容量、实际可取库存和传输成功与否相同。retain_history使已用格清空仍保留身份，不再回入E；未用空格O按稳定子序删项，继续同种入库按物种唯一目标，因此这个置换关系在后继保持。新格标签一并一致更名，仓库数组、O及引用都必须同步；不能把原始JSON逐字段相等当作此对称关系。若未来改指派、释放身份或让标签参与物理守卫，这个论证即失去前提，必须停止或扩展模型。故无端口引用时的UTF-8规范定序是有上述辖域的工程编码；它不覆盖有指派空格时真实可观察的分配差异。（据：规则L13、L41、L73，任务L8；无干预支持域及retain_history的条件归纳。）"
+      }
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md",
+    "first_line": 132,
+    "last_line": 136,
+    "lines": [
+      {
+        "line": 132,
+        "text": "本版给出**可证的子域**D；一般支持域中直接删字段并不良定义。D的前提必须逐项入证书并由验收器核："
+      },
+      {
+        "line": 133,
+        "text": ""
+      },
+      {
+        "line": 134,
+        "text": "1. §1已建成、在线、zero_intervention、固定geometry/settings，global/event-order-v1及整数时钟；无未来离线、建造、调试、非矿外部事件或逐时刻异序，外部补矿为sufficient。历史的J/C/W保留名不得预占循环起点之后的未来运行身份，活动pending除外。固定历史不是日后会执行的队列。（据：本文§1–2、内核输入§3.1/§5.2；任务L8/L14）"
+      },
+      {
+        "line": 135,
+        "text": "2. 两矿唯一正库存、每次出矿原子补回；**循环段不得有矿石入库**。这在达标候选可用约束·矿系不入库作必要条件核对，但不把违反它的普通运行删成“物理非法”：普通run仍可模拟，cycle对这种抽象返回unsupported。无回矿前提下矿量在取货的唯一读点是§4.1的非空和物种，§3.3旧“最后一件停止”在sufficient不适用；容量只由补回原数保证。（据：任务L7；规则L13/L41；§2.1、§3.3、§4.1/§4.3）"
+      },
+      {
+        "line": 136,
+        "text": "3. 没有取货端口指向两成品的非空/历史身份格；**当前O(S)=[]**，以后retain_history且不创建匿名格，故一直为空。所有`W_new_<hex>`标签如已存在，必须只属于该hex物种的非空或历史身份；未使用的规范新格不能被端口预指派。这样成品新格的创建不挤占可观察匿名格、不抢其它物种规范标签。此为当前键的保守准入条件；不是规则断言O必须为空。O非空而可能被成品消耗的更广抽象，必须另证落格非干扰，当前unsupported，不省略问题。（据：规则L13/L41/L73；§4.1/§4.3；KQ-03）"
+      }
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/修订记录.md",
+    "first_line": 223,
+    "last_line": 234,
+    "lines": [
+      {
+        "line": 223,
+        "text": "| 项目 | 当前改动与论证落点 | 证据与边界 |"
+      },
+      {
+        "line": 224,
+        "text": "|---|---|---|"
+      },
+      {
+        "line": 225,
+        "text": "| S1 | 受限转移新增§6，StateSeed逐叶字段与closure_key的11项对照；动态时刻归年龄/elapsed/remaining，固定建造史不随观察时刻平移；同刻闭包键不替换 | §6.2表与cycle_key_reference.py；无年龄/门累计饱和，循环检测不保证完备 |"
+      },
+      {
+        "line": 226,
+        "text": "| S1两级 | §6.1 D.1–D.5明确可证子域，§6.3逐模板归纳、§6.4率保持；sufficient及explicit_ore_history登记三处并同步输入 | 回矿容量、成品出口、O/标签观察与单tick完整批容量均列准入，不伪称普遍删除库存良定义 |"
+      },
+      {
+        "line": 227,
+        "text": "| S1级二 | §6.5逐项核取空身份、矿可取、接收域、玩家日程；79999+2整箱容量反例定位F不足；periodic_lift只阻断级二 | 允许按任务要求报告精确卡点；F_safe仅作为需另证的强化，不暗换原F，不冒充已可达全周期反例 |"
+      },
+      {
+        "line": 228,
+        "text": "| S2 | kernel-output-v3逐刻逐物种分途径入库/按口出库，环境补给/外取与代表调整分账；kernel-cycle-v1要求完整种子、15轴、读法、键、周期账及独立重跑 | schema与正文同源；checkpoint_delta同样必须台账；低产周期、技术停止、预算未决分开 |"
+      },
+      {
+        "line": 229,
+        "text": "| S3 | KQ-01/03/04/05采纳并落在输入/转移/输出；KQ-02 after_closure首刻t+1；KQ-06采用可用集合局部固定表，注明函数域和其它依赖策略损失 | 对内核的修改请求逐项交接，未声称实现已迁移；I身份维护为非判定事件 |"
+      },
+      {
+        "line": 230,
+        "text": "| S3 R4-Q1 | 相遇前提必填；第四轮挪位验收撤销写入现状，保留原几何证明为史料 | 不实现第二读法，不改正式文件 |"
+      },
+      {
+        "line": 231,
+        "text": "| S4 | 普遍审查场景给精炼炉三条实际同级出支、收后恰1tick腾空与相邻组和条件；密集结点需竞争来源在实际周期内有量 | 六种局部模板序均分推演通过；端到端几何/周期与普遍相容性由K线执行 |"
+      },
+      {
+        "line": 232,
+        "text": "| 全文辖域 | 同步运行语义§5、T4/T12、参数轴及输入投影、声明/JSON、四义务、覆盖入口、接口答复；状态头同步 | 旧复核快照/旧执行记录为史料不重写；当前活跃正文不再声称Rust未实现、v1为当前分支表或全部周期提升都停止 |"
+      },
+      {
+        "line": 233,
+        "text": ""
+      },
+      {
+        "line": 234,
+        "text": "验证命令与完整结果见[第五轮自查报告](第五轮规格修订/自查报告.md)，机械脚本只核结构、字段定位及条件推演；未替代K线cargo、独立循环核验或R线约减。读者视角自审已经按当前终态重读主要交付文档，并修正旧状态头、错误配方行号和接口前缀漏项。级二及一般相容性仍保留真实未决。"
+      }
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.md",
+    "first_line": 5,
+    "last_line": 23,
+    "lines": [
+      {
+        "line": 5,
+        "text": "## 1. 顶层契约"
+      },
+      {
+        "line": 6,
+        "text": ""
+      },
+      {
+        "line": 7,
+        "text": "所有字段必填，明确标为可空的字段也不可省略，未知键拒收。装载前失败而无法形成合法参数、历史、种子或验证范围时，parameter_assignment/input_history/trace/validation_scope可为null，并在open_items给停止位置；completed时这四项均必须非空，不能伪造未发生的状态。物理数字沿用 Quantity，时刻沿用有理 Time；本版 schema 只接有理轨迹，非有理事件输入输出为 unsupported，不用浮点近似替代。Decision 的 value 形状由轴/状态所属接口继续校验，单靠 JSON Schema 不证明它可执行。"
+      },
+      {
+        "line": 8,
+        "text": ""
+      },
+      {
+        "line": 9,
+        "text": "| 字段 | 类型与语义 |"
+      },
+      {
+        "line": 10,
+        "text": "|---|---|"
+      },
+      {
+        "line": 11,
+        "text": "| schema、run_id | kernel-output-v3、唯一运行标识。 |"
+      },
+      {
+        "line": 12,
+        "text": "| execution_mode | finite_concrete或production_abstraction；后者仅按受限转移§6代表化，不能报为玩家真实运行。 |"
+      },
+      {
+        "line": 13,
+        "text": "| port_meeting | shared_edge_opposite或closed_segment_touch的明确读法；须等于参数点。当前内核只实现前者，后者仅用于表达带该前提的停止/待实现记录。 |"
+      },
+      {
+        "line": 14,
+        "text": "| profile_id | 必须等于输入与 parameter_assignment.profile_id，例如 kernel_profile_v1；不能仅凭此名字认定相同解释，仍核源指纹及逐字段值。 |"
+      },
+      {
+        "line": 15,
+        "text": "| producer | `{kind,path,claim}`；kind=kernel、bounded_reference_checker 或 manual_expected，明确产物由内核、有限重算还是手算产生。工具路径也入指纹。手算期望不能标成实际内核输出。 |"
+      },
+      {
+        "line": 16,
+        "text": "| status | completed（所请求有限前缀完成）、invalid_input、unsupported（实现不支持）、unresolved（规格或输入义务未解）、inconclusive（资源不足）。任何状态都不自动表示达标或全题无解。 |"
+      },
+      {
+        "line": 17,
+        "text": "| fingerprints[] | `{role,path,sha256}`；至少含 input、catalog、axis_registry、profile、三份 formal_source、实现 checker/kernel 对应 checker 角色，实际读取的 parameter_projection 及其声明/配置/轴表来源，以及本记录使用的 semantics、schema；若比较黄金结果，另有 golden。依赖清单由校验器重建后与记录严格比较，禁止删掉某个依赖以绕过核验；Python 实现包括 check_golden_trace、runtime_example、check_examples、runtime_record、event_order 和运行回归入口。参数投影在消费前还要核其内部来源哈希、逐轴决定、处置及覆盖说明。哈希针对原始字节，path 绝对路径或相对记录文件；指纹不匹配需重新核验，不允许刷新后沿用旧结论。 |"
+      },
+      {
+        "line": 18,
+        "text": "| parameter_assignment | 原样保存完整 Parameters 的三个生命周期对象和轴表引用；字段集合严格等于被锁定轴表，禁止漏轴、重复轴或悄悄默认。输入历史产生的当前值也存入每个 StateSeed.semantic_context。 |"
+      },
+      {
+        "line": 19,
+        "text": "| input_history | `{timeline,construction,debug_operations,environment,reachability}`，完整保留输入的事件、关系、接通、建成、调试、离线、补矿、拿取历史/策略及初態可达性证据；结构分别按内核输入 §3、§6 校验，不以文件名代替内容。 |"
+      },
+      {
+        "line": 20,
+        "text": "| uncovered_axes[] | `{axis,reason,disposition,coverage_status,evidence,other_values}`，恰覆盖本次全部轴。reason 是配置的通用损失，disposition 是配置处置；coverage_status 单独记录 exercised（实际执行）、input_checked（仅输入/结构检查）、not_exercised（未触发）、stop_not_triggered（停止条件未触及）、proof_pending（证明未完成）。evidence 为事件 id 或结构/未触发原因，other_values 明记其它值及联合组合未覆盖。填了本版值不等于已验证该机制。 |"
+      },
+      {
+        "line": 21,
+        "text": "| trace | `{start_state,ticks,end_time,format}`，format=full_state_each_instant时或checkpoint_delta（见§2.1）。时间推进、同刻顺序及中止点均不得跳步冒充已运行。 |"
+      },
+      {
+        "line": 22,
+        "text": "| validation_scope | 有限区间 from/through、golden_match、conditional_witness 起点、已完成批次数；universal_parameters/all_reachable_cycles/target_certified 必须 false。后续认证需要新版本证据结构，不能将这些位自行改 true。 |"
+      },
+      {
+        "line": 23,
+        "text": "| open_items[] | 未完成义务、超范围和解释冲突；若 status 非 completed，必须注明首个停止事件与原因，允许只保留合法前缀。 |"
+      }
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.md",
+    "first_line": 63,
+    "last_line": 65,
+    "lines": [
+      {
+        "line": 63,
+        "text": "## 3. 验证与结果解释"
+      },
+      {
+        "line": 64,
+        "text": ""
+      },
+      {
+        "line": 65,
+        "text": "必须分开验证：JSON Schema 的字段/类型；输入格式的引用、生命周期、值域和 StateSeed 完整性；事件的守卫、后效与时序；黄金期望比对。对于当前确定性有限子集，验收器读取交付记录后，必须与实际输入参数、输入历史、初态、完整重算 ticks（包括完整状态、全部事件、摘要及闭包）、end_time、validation_scope 逐字段严格比较，JSON 类型也必须相等。先核仓库与普通格的全局命名域、格容量、全记录事件注册、成功移动事件引用和端口收支，再核整份记录。仅另外重算出正确摘要而不比对记录本身，不算验收通过。前三者某项未实现时须列出，不能仅凭 schema 通过说轨迹合法。哈希锁定来源不等于证明来源结论。"
+      }
+    ]
+  }
+]

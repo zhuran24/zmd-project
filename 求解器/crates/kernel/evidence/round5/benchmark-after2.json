@@ -1,0 +1,86 @@
+{
+  "stage": "after2",
+  "platform": "Linux-7.2.6-1-cachyos-x86_64-with-glibc2.44",
+  "binary_sha256": "be9dac13829e40fd848de11ce6ff235ad9b9abb4b734bea8f340adbc907c284b",
+  "reports": [
+    {
+      "name": "benchmark_brick",
+      "manufacturing_units": 30,
+      "total_units": 81,
+      "logical_channels": 50,
+      "physical_channels": 100,
+      "inventory_slots": 140,
+      "ticks": 12,
+      "ms_per_tick": 2.618842416666667,
+      "target_ms": 1,
+      "target_met": false,
+      "engine": {
+        "completed_batches": 0,
+        "elapsed_ns": "31426109",
+        "final_inventory": {
+          "源矿": 80900,
+          "砂叶": 80000,
+          "砂叶种子": 80000,
+          "荞花": 80000,
+          "荞花种子": 80000,
+          "蓝铁矿": 80600
+        },
+        "output": "disabled",
+        "status": "completed",
+        "ticks": 12
+      },
+      "wall_ns": 54075044,
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/fixtures/benchmark_brick.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--ticks",
+        "12",
+        "--no-output"
+      ],
+      "input_sha256": "14b598cd91eb75835b9a0f6d73b2f7fa5ce898419c60dc32d80c3c7fd4166ffc"
+    },
+    {
+      "name": "benchmark_candidate_b",
+      "manufacturing_units": 219,
+      "total_units": 535,
+      "logical_channels": 315,
+      "physical_channels": 630,
+      "inventory_slots": 972,
+      "ticks": 12,
+      "ms_per_tick": 17.19656625,
+      "target_ms": 20,
+      "target_met": true,
+      "engine": {
+        "completed_batches": 0,
+        "elapsed_ns": "206358795",
+        "final_inventory": {
+          "源矿": 85850,
+          "砂叶": 80000,
+          "砂叶种子": 80000,
+          "荞花": 80000,
+          "荞花种子": 80000,
+          "蓝铁矿": 85100
+        },
+        "output": "disabled",
+        "status": "completed",
+        "ticks": 12
+      },
+      "wall_ns": 423204457,
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/fixtures/benchmark_candidate_b.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--ticks",
+        "12",
+        "--no-output"
+      ],
+      "input_sha256": "006dc55b36cfac9877c2a66758da2c5e8239a27e839516bb0b231b7dba11f1b9"
+    }
+  ],
+  "scope": "合成物流压力测试；砖档81单位/100PC，候选B档219制造台/315逻辑段/630PC，未声称真实候选B布置可行或制造满载。"
+}

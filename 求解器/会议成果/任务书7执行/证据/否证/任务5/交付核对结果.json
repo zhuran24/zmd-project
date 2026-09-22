@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "exit_status": 0,
+  "findings": 24,
+  "verdicts": {
+    "否证成立": 0,
+    "否证不成立": 20,
+    "无法判定": 4
+  },
+  "report_and_structured_records_identical": true,
+  "links_checked": 9,
+  "input_fingerprints_unchanged": 23,
+  "source_scripts_executed": false,
+  "quota_error_observed": false,
+  "structured_output_tool_available": false
+}

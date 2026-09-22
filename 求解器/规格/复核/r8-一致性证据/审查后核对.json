@@ -1,0 +1,93 @@
+{
+  "status": "REVIEWED_SPECS_UNCHANGED_WITH_CONCURRENT_KERNEL_CHANGES",
+  "tracked_path_count": 55,
+  "reviewed_spec_paths": 34,
+  "changed_reviewed_specs": [],
+  "changed_formal_or_candidate": [],
+  "changed_kernel_sources": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/engine.rs",
+      "before_sha256": "060dbf928a016a3b334ccd1cf5bd59e239643797cd7405ac8db387c6150678af",
+      "after_sha256": "64ff9249f7bec607cdd9735bb1392dc83adfb9128acc8c3e48428bd0c80753b8"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/event_identity.rs",
+      "before_sha256": "d8e0231b2dfbd951cfe9257778540824cf212937e7265302246faa10d53b251d",
+      "after_sha256": "f3615f3503914461db784f405c9799e717a85060cf1e99a4162662299b3644b3"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/input.rs",
+      "before_sha256": "bfd155109980550ac75c970dd8d2148e9926e8253d2d4845883a162b146e25c0",
+      "after_sha256": "4d5e627e135d1bea81aa88b3efe1ea4db8883775e546fd7d98f731676cbf12bf"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/interfaces.rs",
+      "before_sha256": "bf9d731d8fa3c84f9622f840dae741d269eb98b5019b66f9b752b4da5f4e4503",
+      "after_sha256": "89ae6e4fe38e166ab7382fec01ec87a7c83da48e408abf587ed6dfbf96f7184d"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs",
+      "before_sha256": "77c62cd43a7718d558fc5e0f9d28513ca988ebcc52b903e1db54c28259cd7d33",
+      "after_sha256": "c99a5573e107cc886a0f6f4ed95b70d4517ecd1d9289aa7c73d9646cec798697"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/main.rs",
+      "before_sha256": "f5731efa721ecc32497d647c9c25379ce9dde06995085981881cb1962d1123c6",
+      "after_sha256": "55f473734dad39f209178ca825e5e00e662c6115d790b5c9774080de01a80f38"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/output.rs",
+      "before_sha256": "afc3135f9737b2f267f0340bcda24741158724a162daeb4ae935b3e87a040c32",
+      "after_sha256": "299ee2a0ffcea19b671de7c34d76485cded8891cbd50707e3b4ce2a6a115a2ae"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/polling.rs",
+      "before_sha256": "b23c21541ba72555ef9f99f46a22569ea3907e09a92713b93155d64f24d1dffd",
+      "after_sha256": "8fb84535b4aa030b6dda820ccfb9dadb8cc969e714b4cd94e2350f589b95a59f"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests.rs",
+      "before_sha256": "65033ae054e595230c2a4658f999eb47bbfb432156b660fc9f8ccab2a2969253",
+      "after_sha256": "cd71bb3bf820087e8e0153e05f0ba624bf30619fefc0ae250edc6ca6361fb82b"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests_revision.rs",
+      "before_sha256": "4ef018d8568554c521a2d8acd8a059dfa3c4923a5804f50fd6aa292c5d30c07e",
+      "after_sha256": "97bfc175dfeab33833c0d2f39268ef925081469269fb5e605451fec654d465ec"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests_revision_r2.rs",
+      "before_sha256": "9eb98d70c50ce80b22de5d993a4f9301622ccab866f4c9f5757c675f20b096d3",
+      "after_sha256": "0de7d37fa7f276de370f703b45ca34b46637a7ed071fa97e2555833d102f1247"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/transition.rs",
+      "before_sha256": "092e2bdedfa9cbd84eb6d6911d410fe4b4a0ae9004e6c0dff6c6d24354744c47",
+      "after_sha256": "6f926aec8b454fd989139185edd88daa152b8a522f3c5be8179dc6f69fd04eae"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/warehouse.rs",
+      "before_sha256": "74f4d828f10825538b3449e01dfec30c1498f6d1cd0402ddbc1c0da0769ca572",
+      "after_sha256": "5976dbb53ebbf27013e95c51812cecd958e67246bcdabb196be0040596da3c0b"
+    }
+  ],
+  "closure_key_recheck": {
+    "line": 577,
+    "components": [
+      "state.warehouse",
+      "state.inventory",
+      "state.progress",
+      "memory",
+      "state.logistics.active_channels",
+      "state.logistics.blocked_channels",
+      "state.logistics.gate_counters",
+      "state.logistics.connection_order",
+      "state.semantic_context.arbitration",
+      "pending",
+      "usage"
+    ],
+    "same_components": true
+  },
+  "model_unchanged": true,
+  "note": "源码变化在独立检查完成后、交付自审时观测到；本席没有写K线文件。原脚本保护基线不刷新，既有PASS仅指审查前指纹所锁定时点。"
+}

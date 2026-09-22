@@ -1,0 +1,9 @@
+Reader audit: passed
+All five sections present; local refutations separated from full-layout phase-rate claim.
+Manufacture inputs use official recipes; five-tick products not reused as raw materials.
+No finite-buffer backlog item discarded; serial gates use first-receipt windows.
+No report links missing. No literal unclosed if statements.
+Three formal files and reviewed derivation SHA-256 unchanged.
+Report SHA-256: 0dda3f83383b8a3f32bc4a036188e33885adb8ef9588ba54e3df5c94af4c23e3
+Kernel run: false. Full-layout phase-dependent rate counterexample: false.
+Evidence files: check_traces.py, checks.json, checks.log, continuous_filler.json, gate_intermittent.json, gate_sliding_window.json, inputs.json, parts_backlog.json, reader_audit.log, serial_gates.json, three_fillers.json, verdicts.json

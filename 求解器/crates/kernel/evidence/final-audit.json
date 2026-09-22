@@ -1,0 +1,16 @@
+{
+  "status": "通过",
+  "baseline_unchanged": 1250,
+  "workspace_tests_passed": 79,
+  "workspace_tests_failed": 0,
+  "rust_functions_with_section_comments": 154,
+  "documentation_links_checked": 47,
+  "bridge_static_cli": {
+    "buffer_channels": 0,
+    "catalog_sha256": "74d21a5bd37c6178f988a86a4aa78a03d1e4244ecff26f133bb5e700ada82e43",
+    "physical_channels": 4,
+    "status": "input_checked",
+    "units": 7
+  },
+  "periodic_lift_exit_code": 2
+}

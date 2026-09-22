@@ -1,0 +1,258 @@
+{
+  "type": "StructuredOutput",
+  "status": "done",
+  "task_status": "partial",
+  "error": null,
+  "summary": "F13容量错误已修订并经作者核验；18项判定全部接受。完整植物运行任务仍为partial，L=0、U=1113，修订后独立重核待交。",
+  "files": [
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/植物运行试点.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/送料与接口.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/交付清单.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/修订前指纹.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/修订核验.log",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/修订核验.py",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/修订核验结果.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/修订结果.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/否证逐项处理.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/提取与算术.py",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/核验.py",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/核验结果.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/算术与图核验.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/读者自审.md"
+  ],
+  "upheld_findings": [
+    {
+      "id": "F13",
+      "verdict": "否证成立",
+      "changes": [
+        {
+          "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/植物运行试点.md",
+          "revision_record": "§10 修订记录，F13/F14行及版本说明",
+          "change": "§6增物理种子上限1150/2150的上界和可达见证；850/1600保留为正常配方槽位，联合N公式前置存放条件。"
+        },
+        {
+          "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/送料与接口.json",
+          "revision_record": "末尾修订记录，F13/F14条",
+          "change": "plant-pilot-v2中ordinary_seeds为1150/2150，新增正常槽位字段850/1600及库存定义。"
+        },
+        {
+          "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/提取与算术.py",
+          "revision_record": "末尾修订记录",
+          "change": "生成公式分为50*(P+H+G)与50*(P+H)，同步机读范围。"
+        },
+        {
+          "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/算术与图核验.json",
+          "revision_record": "末尾修订记录",
+          "change": "重新生成两类容量及正常域公式。"
+        },
+        {
+          "files": [
+            "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/核验.py",
+            "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/核验结果.json",
+            "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/修订核验.py",
+            "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/修订核验结果.json",
+            "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/修订核验.log",
+            "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/读者自审.md",
+            "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/交付清单.json"
+          ],
+          "revision_record": "各文件末尾修订记录",
+          "change": "绑定否证与作者修订范围，核66机容量见证、字段一致性及正常域算术，更新交付指纹。"
+        }
+      ]
+    }
+  ],
+  "other_findings": [
+    {
+      "id": "F01",
+      "verdict": "否证不成立",
+      "agree": true,
+      "action": "同意；保留证据分层结论，更新当前审查状态。",
+      "location": "植物运行试点.md §1、§9、§10；修订前指纹.json",
+      "remaining_unproved": []
+    },
+    {
+      "id": "F02",
+      "verdict": "否证不成立",
+      "agree": true,
+      "action": "同意；保留逐机逐口配平与循环根结论。",
+      "location": "植物运行试点.md §2；送料与接口.json candidates",
+      "remaining_unproved": []
+    },
+    {
+      "id": "F03",
+      "verdict": "否证不成立",
+      "agree": true,
+      "action": "同意；保留全空根持续为空和有限下游库存的推导。",
+      "location": "植物运行试点.md §2.2、§8 PR-01",
+      "remaining_unproved": [
+        "PR-01"
+      ]
+    },
+    {
+      "id": "F04",
+      "verdict": "否证不成立",
+      "agree": true,
+      "action": "同意；保留C82前件表及逐批占格引理。",
+      "location": "植物运行试点.md §2.3、§3、§8",
+      "remaining_unproved": [
+        "PR-03",
+        "PR-04",
+        "PR-06"
+      ]
+    },
+    {
+      "id": "F05",
+      "verdict": "否证不成立",
+      "agree": true,
+      "action": "同意；保留逐事件N和K恒等式。",
+      "location": "植物运行试点.md §3.2",
+      "remaining_unproved": []
+    },
+    {
+      "id": "F06",
+      "verdict": "否证不成立",
+      "agree": true,
+      "action": "同意；保留固定偏向的有限轮次界。",
+      "location": "植物运行试点.md §5.1、§8 PR-02",
+      "remaining_unproved": [
+        "PR-02"
+      ]
+    },
+    {
+      "id": "F07",
+      "verdict": "否证不成立",
+      "agree": true,
+      "action": "同意；保留混线Z界、轮相与停流对照。",
+      "location": "植物运行试点.md §4.1",
+      "remaining_unproved": []
+    },
+    {
+      "id": "F08",
+      "verdict": "否证不成立",
+      "agree": true,
+      "action": "同意；保留M150/M151条件时间接口。",
+      "location": "植物运行试点.md §4.2、§8 PR-04/06",
+      "remaining_unproved": [
+        "PR-04",
+        "PR-06"
+      ]
+    },
+    {
+      "id": "F09",
+      "verdict": "否证不成立",
+      "agree": true,
+      "action": "同意；保留满速树局部充分族。",
+      "location": "植物运行试点.md §5.2、§8 PR-01/04",
+      "remaining_unproved": [
+        "PR-01",
+        "PR-04"
+      ]
+    },
+    {
+      "id": "F10",
+      "verdict": "否证不成立",
+      "agree": true,
+      "action": "同意；保留半分根起动定理。",
+      "location": "植物运行试点.md §5.3、§8 PR-01/04",
+      "remaining_unproved": [
+        "PR-01",
+        "PR-04"
+      ]
+    },
+    {
+      "id": "F11",
+      "verdict": "否证不成立",
+      "agree": true,
+      "action": "同意；保留三机几何与23/24/26运输格结论。",
+      "location": "植物运行试点.md §5.3、§8 PR-05",
+      "remaining_unproved": [
+        "PR-05"
+      ]
+    },
+    {
+      "id": "F12",
+      "verdict": "否证不成立",
+      "agree": true,
+      "action": "同意；保留同N=50的三机长期后果对照。",
+      "location": "植物运行试点.md §5.4、§8 PR-07",
+      "remaining_unproved": [
+        "PR-07"
+      ]
+    },
+    {
+      "id": "F14",
+      "verdict": "否证不成立",
+      "agree": true,
+      "action": "同意；保留正常域数值并将存放条件写到每个公式之前。",
+      "location": "植物运行试点.md §6；送料与接口.json inventory_definitions、local_geometry、other_configurations；§10",
+      "remaining_unproved": []
+    },
+    {
+      "id": "F15",
+      "verdict": "否证不成立",
+      "agree": true,
+      "action": "同意；保留217/219/220配方、台数和通道算术。",
+      "location": "植物运行试点.md §7、§8 PR-06",
+      "remaining_unproved": [
+        "PR-06"
+      ]
+    },
+    {
+      "id": "F16",
+      "verdict": "无法判定",
+      "agree": true,
+      "action": "同意缺口；登记未证，细分PR-06的四个实现义务。",
+      "location": "植物运行试点.md §8 PR-06、§10；送料与接口.json open_items；本文件",
+      "remaining_unproved": [
+        "PR-06"
+      ]
+    },
+    {
+      "id": "F17",
+      "verdict": "无法判定",
+      "agree": true,
+      "action": "同意缺口；登记默认后置集合与全参数联合运行未证。",
+      "location": "植物运行试点.md §8 PR-01/03/04/05、§10；送料与接口.json open_items及两个certified=false",
+      "remaining_unproved": [
+        "PR-01",
+        "PR-03",
+        "PR-04",
+        "PR-05"
+      ]
+    },
+    {
+      "id": "F18",
+      "verdict": "无法判定",
+      "agree": true,
+      "action": "同意缺口；登记一般偏向终点及完整基地同总数命题未证。",
+      "location": "植物运行试点.md §8 PR-02/07、§10；送料与接口.json open_items；本文件",
+      "remaining_unproved": [
+        "PR-02",
+        "PR-07"
+      ]
+    }
+  ],
+  "disagreement": [],
+  "for_owner": [],
+  "for_owner_reason": "F16—F18缺具体构造与推导；现行规则与owner裁定已给所需游戏事实。",
+  "validation": {
+    "核验.py_exit_status": 0,
+    "修订核验.py_exit_status": 0,
+    "readonly_inputs_matched": 24,
+    "witness_machines": 66,
+    "candidate_machine_records_unchanged": 438,
+    "candidate_feed_records_unchanged": 629,
+    "conditional_guarantees_unchanged": 4,
+    "independent_recheck": "pending"
+  },
+  "constraints_declaration": "本轮未修改三份正式文件、候选约束.txt，未碰模拟器/目录，未执行任何git命令；全部写入限本席两份交付和证据/植物运行/，未编译或运行游戏内核。",
+  "L": 0,
+  "U": 1113,
+  "修订记录": [
+    {
+      "date": "2026-09-21",
+      "finding": "F01—F18",
+      "change": "记录本轮14份新增或修改文件、F13落点、其余逐项处理及写入边界；status=done指修订任务完成，植物运行主任务仍partial。"
+    }
+  ]
+}

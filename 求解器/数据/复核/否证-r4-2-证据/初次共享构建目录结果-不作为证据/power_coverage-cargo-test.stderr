@@ -1,0 +1,5 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.01s
+     Running unittests src/lib.rs (/home/zhuran24/zmd-research-fresh/求解器/数据/复核/否证-r4-2-证据/target/debug/deps/topology-958a7a196b95191c)
+     Running unittests src/main.rs (/home/zhuran24/zmd-research-fresh/求解器/数据/复核/否证-r4-2-证据/target/debug/deps/topology-232d29a62249f608)
+     Running tests/validation.rs (/home/zhuran24/zmd-research-fresh/求解器/数据/复核/否证-r4-2-证据/target/debug/deps/validation-55f92a55e3fc13c3)
+   Doc-tests topology

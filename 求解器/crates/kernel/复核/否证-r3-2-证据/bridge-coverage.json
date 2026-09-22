@@ -1,0 +1,871 @@
+{
+  "axis": {
+    "axis": "connection.bridge_first_contact",
+    "coverage_status": "exercised",
+    "disposition": "本版选值",
+    "evidence": [
+      "J|0|0|0",
+      "J|0|0|3",
+      "J|1|0|1",
+      "J|1|0|2",
+      "J|1|1|0",
+      "J|1|1|3",
+      "J|2|0|1",
+      "J|2|0|2",
+      "J|2|1|0",
+      "J|2|1|3",
+      "J|3|0|1",
+      "J|3|0|2",
+      "J|3|1|0",
+      "J|3|1|3",
+      "J|4|0|1",
+      "J|4|0|2",
+      "J|4|1|0",
+      "J|4|1|3",
+      "J|5|0|1",
+      "J|5|0|2",
+      "J|5|1|0",
+      "J|5|1|3",
+      "J|6|0|1",
+      "J|6|0|2",
+      "J|6|1|0",
+      "J|6|1|3",
+      "J|7|0|1",
+      "J|7|0|2",
+      "J|7|1|0",
+      "J|7|1|3",
+      "J|8|0|1",
+      "J|8|0|2"
+    ],
+    "other_values": "其它值及其联合组合未覆盖",
+    "reason": "有向成边先接及递归定向"
+  },
+  "cited_events": [
+    {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "basis": [
+        "规则 L13、L15–17、L23–25、L29–32",
+        "约束端口速率",
+        "受限模型声明 polling.both_failure",
+        "内核输入 §5.2、§6.3"
+      ],
+      "detail": "",
+      "event": "J|0|0|0",
+      "operation": "move",
+      "outcome": "success",
+      "target": "PC|south_box:north:2|bridge:south:0"
+    },
+    {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "basis": [
+        "规则 L13、L15–17、L23–25、L29–32",
+        "约束端口速率",
+        "受限模型声明 polling.both_failure",
+        "内核输入 §5.2、§6.3"
+      ],
+      "detail": "",
+      "event": "J|0|0|3",
+      "operation": "move",
+      "outcome": "success",
+      "target": "PC|west_box:north:2|bridge:west:0"
+    },
+    {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "1"
+        }
+      },
+      "basis": [
+        "规则 L13、L15–17、L23–25、L29–32",
+        "约束端口速率",
+        "受限模型声明 polling.both_failure",
+        "内核输入 §5.2、§6.3"
+      ],
+      "detail": "",
+      "event": "J|1|0|1",
+      "operation": "move",
+      "outcome": "success",
+      "target": "PC|bridge:north:0|north_box:south:0"
+    },
+    {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "1"
+        }
+      },
+      "basis": [
+        "规则 L13、L15–17、L23–25、L29–32",
+        "约束端口速率",
+        "受限模型声明 polling.both_failure",
+        "内核输入 §5.2、§6.3"
+      ],
+      "detail": "",
+      "event": "J|1|0|2",
+      "operation": "move",
+      "outcome": "success",
+      "target": "PC|bridge:east:0|east_box:south:0"
+    },
+    {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "1"
+        }
+      },
+      "basis": [
+        "规则 L13、L15–17、L23–25、L29–32",
+        "约束端口速率",
+        "受限模型声明 polling.both_failure",
+        "内核输入 §5.2、§6.3"
+      ],
+      "detail": "",
+      "event": "J|1|1|0",
+      "operation": "move",
+      "outcome": "success",
+      "target": "PC|south_box:north:2|bridge:south:0"
+    },
+    {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "1"
+        }
+      },
+      "basis": [
+        "规则 L13、L15–17、L23–25、L29–32",
+        "约束端口速率",
+        "受限模型声明 polling.both_failure",
+        "内核输入 §5.2、§6.3"
+      ],
+      "detail": "",
+      "event": "J|1|1|3",
+      "operation": "move",
+      "outcome": "success",
+      "target": "PC|west_box:north:2|bridge:west:0"
+    },
+    {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "2"
+        }
+      },
+      "basis": [
+        "规则 L13、L15–17、L23–25、L29–32",
+        "约束端口速率",
+        "受限模型声明 polling.both_failure",
+        "内核输入 §5.2、§6.3"
+      ],
+      "detail": "",
+      "event": "J|2|0|1",
+      "operation": "move",
+      "outcome": "success",
+      "target": "PC|bridge:north:0|north_box:south:0"
+    },
+    {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "2"
+        }
+      },
+      "basis": [
+        "规则 L13、L15–17、L23–25、L29–32",
+        "约束端口速率",
+        "受限模型声明 polling.both_failure",
+        "内核输入 §5.2、§6.3"
+      ],
+      "detail": "",
+      "event": "J|2|0|2",
+      "operation": "move",
+      "outcome": "success",
+      "target": "PC|bridge:east:0|east_box:south:0"
+    },
+    {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "2"
+        }
+      },
+      "basis": [
+        "规则 L13、L15–17、L23–25、L29–32",
+        "约束端口速率",
+        "受限模型声明 polling.both_failure",
+        "内核输入 §5.2、§6.3"
+      ],
+      "detail": "",
+      "event": "J|2|1|0",
+      "operation": "move",
+      "outcome": "success",
+      "target": "PC|south_box:north:2|bridge:south:0"
+    },
+    {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "2"
+        }
+      },
+      "basis": [
+        "规则 L13、L15–17、L23–25、L29–32",
+        "约束端口速率",
+        "受限模型声明 polling.both_failure",
+        "内核输入 §5.2、§6.3"
+      ],
+      "detail": "",
+      "event": "J|2|1|3",
+      "operation": "move",
+      "outcome": "success",
+      "target": "PC|west_box:north:2|bridge:west:0"
+    },
+    {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "3"
+        }
+      },
+      "basis": [
+        "规则 L13、L15–17、L23–25、L29–32",
+        "约束端口速率",
+        "受限模型声明 polling.both_failure",
+        "内核输入 §5.2、§6.3"
+      ],
+      "detail": "",
+      "event": "J|3|0|1",
+      "operation": "move",
+      "outcome": "success",
+      "target": "PC|bridge:north:0|north_box:south:0"
+    },
+    {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "3"
+        }
+      },
+      "basis": [
+        "规则 L13、L15–17、L23–25、L29–32",
+        "约束端口速率",
+        "受限模型声明 polling.both_failure",
+        "内核输入 §5.2、§6.3"
+      ],
+      "detail": "",
+      "event": "J|3|0|2",
+      "operation": "move",
+      "outcome": "success",
+      "target": "PC|bridge:east:0|east_box:south:0"
+    },
+    {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "3"
+        }
+      },
+      "basis": [
+        "规则 L13、L15–17、L23–25、L29–32",
+        "约束端口速率",
+        "受限模型声明 polling.both_failure",
+        "内核输入 §5.2、§6.3"
+      ],
+      "detail": "",
+      "event": "J|3|1|0",
+      "operation": "move",
+      "outcome": "success",
+      "target": "PC|south_box:north:2|bridge:south:0"
+    },
+    {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "3"
+        }
+      },
+      "basis": [
+        "规则 L13、L15–17、L23–25、L29–32",
+        "约束端口速率",
+        "受限模型声明 polling.both_failure",
+        "内核输入 §5.2、§6.3"
+      ],
+      "detail": "",
+      "event": "J|3|1|3",
+      "operation": "move",
+      "outcome": "success",
+      "target": "PC|west_box:north:2|bridge:west:0"
+    },
+    {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "4"
+        }
+      },
+      "basis": [
+        "规则 L13、L15–17、L23–25、L29–32",
+        "约束端口速率",
+        "受限模型声明 polling.both_failure",
+        "内核输入 §5.2、§6.3"
+      ],
+      "detail": "",
+      "event": "J|4|0|1",
+      "operation": "move",
+      "outcome": "success",
+      "target": "PC|bridge:north:0|north_box:south:0"
+    },
+    {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "4"
+        }
+      },
+      "basis": [
+        "规则 L13、L15–17、L23–25、L29–32",
+        "约束端口速率",
+        "受限模型声明 polling.both_failure",
+        "内核输入 §5.2、§6.3"
+      ],
+      "detail": "",
+      "event": "J|4|0|2",
+      "operation": "move",
+      "outcome": "success",
+      "target": "PC|bridge:east:0|east_box:south:0"
+    },
+    {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "4"
+        }
+      },
+      "basis": [
+        "规则 L13、L15–17、L23–25、L29–32",
+        "约束端口速率",
+        "受限模型声明 polling.both_failure",
+        "内核输入 §5.2、§6.3"
+      ],
+      "detail": "",
+      "event": "J|4|1|0",
+      "operation": "move",
+      "outcome": "success",
+      "target": "PC|south_box:north:2|bridge:south:0"
+    },
+    {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "4"
+        }
+      },
+      "basis": [
+        "规则 L13、L15–17、L23–25、L29–32",
+        "约束端口速率",
+        "受限模型声明 polling.both_failure",
+        "内核输入 §5.2、§6.3"
+      ],
+      "detail": "",
+      "event": "J|4|1|3",
+      "operation": "move",
+      "outcome": "success",
+      "target": "PC|west_box:north:2|bridge:west:0"
+    },
+    {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "5"
+        }
+      },
+      "basis": [
+        "规则 L13、L15–17、L23–25、L29–32",
+        "约束端口速率",
+        "受限模型声明 polling.both_failure",
+        "内核输入 §5.2、§6.3"
+      ],
+      "detail": "",
+      "event": "J|5|0|1",
+      "operation": "move",
+      "outcome": "success",
+      "target": "PC|bridge:north:0|north_box:south:0"
+    },
+    {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "5"
+        }
+      },
+      "basis": [
+        "规则 L13、L15–17、L23–25、L29–32",
+        "约束端口速率",
+        "受限模型声明 polling.both_failure",
+        "内核输入 §5.2、§6.3"
+      ],
+      "detail": "",
+      "event": "J|5|0|2",
+      "operation": "move",
+      "outcome": "success",
+      "target": "PC|bridge:east:0|east_box:south:0"
+    },
+    {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "5"
+        }
+      },
+      "basis": [
+        "规则 L13、L15–17、L23–25、L29–32",
+        "约束端口速率",
+        "受限模型声明 polling.both_failure",
+        "内核输入 §5.2、§6.3"
+      ],
+      "detail": "",
+      "event": "J|5|1|0",
+      "operation": "move",
+      "outcome": "success",
+      "target": "PC|south_box:north:2|bridge:south:0"
+    },
+    {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "5"
+        }
+      },
+      "basis": [
+        "规则 L13、L15–17、L23–25、L29–32",
+        "约束端口速率",
+        "受限模型声明 polling.both_failure",
+        "内核输入 §5.2、§6.3"
+      ],
+      "detail": "",
+      "event": "J|5|1|3",
+      "operation": "move",
+      "outcome": "success",
+      "target": "PC|west_box:north:2|bridge:west:0"
+    },
+    {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "6"
+        }
+      },
+      "basis": [
+        "规则 L13、L15–17、L23–25、L29–32",
+        "约束端口速率",
+        "受限模型声明 polling.both_failure",
+        "内核输入 §5.2、§6.3"
+      ],
+      "detail": "",
+      "event": "J|6|0|1",
+      "operation": "move",
+      "outcome": "success",
+      "target": "PC|bridge:north:0|north_box:south:0"
+    },
+    {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "6"
+        }
+      },
+      "basis": [
+        "规则 L13、L15–17、L23–25、L29–32",
+        "约束端口速率",
+        "受限模型声明 polling.both_failure",
+        "内核输入 §5.2、§6.3"
+      ],
+      "detail": "",
+      "event": "J|6|0|2",
+      "operation": "move",
+      "outcome": "success",
+      "target": "PC|bridge:east:0|east_box:south:0"
+    },
+    {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "6"
+        }
+      },
+      "basis": [
+        "规则 L13、L15–17、L23–25、L29–32",
+        "约束端口速率",
+        "受限模型声明 polling.both_failure",
+        "内核输入 §5.2、§6.3"
+      ],
+      "detail": "",
+      "event": "J|6|1|0",
+      "operation": "move",
+      "outcome": "success",
+      "target": "PC|south_box:north:2|bridge:south:0"
+    },
+    {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "6"
+        }
+      },
+      "basis": [
+        "规则 L13、L15–17、L23–25、L29–32",
+        "约束端口速率",
+        "受限模型声明 polling.both_failure",
+        "内核输入 §5.2、§6.3"
+      ],
+      "detail": "",
+      "event": "J|6|1|3",
+      "operation": "move",
+      "outcome": "success",
+      "target": "PC|west_box:north:2|bridge:west:0"
+    },
+    {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "7"
+        }
+      },
+      "basis": [
+        "规则 L13、L15–17、L23–25、L29–32",
+        "约束端口速率",
+        "受限模型声明 polling.both_failure",
+        "内核输入 §5.2、§6.3"
+      ],
+      "detail": "",
+      "event": "J|7|0|1",
+      "operation": "move",
+      "outcome": "success",
+      "target": "PC|bridge:north:0|north_box:south:0"
+    },
+    {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "7"
+        }
+      },
+      "basis": [
+        "规则 L13、L15–17、L23–25、L29–32",
+        "约束端口速率",
+        "受限模型声明 polling.both_failure",
+        "内核输入 §5.2、§6.3"
+      ],
+      "detail": "",
+      "event": "J|7|0|2",
+      "operation": "move",
+      "outcome": "success",
+      "target": "PC|bridge:east:0|east_box:south:0"
+    },
+    {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "7"
+        }
+      },
+      "basis": [
+        "规则 L13、L15–17、L23–25、L29–32",
+        "约束端口速率",
+        "受限模型声明 polling.both_failure",
+        "内核输入 §5.2、§6.3"
+      ],
+      "detail": "",
+      "event": "J|7|1|0",
+      "operation": "move",
+      "outcome": "success",
+      "target": "PC|south_box:north:2|bridge:south:0"
+    },
+    {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "7"
+        }
+      },
+      "basis": [
+        "规则 L13、L15–17、L23–25、L29–32",
+        "约束端口速率",
+        "受限模型声明 polling.both_failure",
+        "内核输入 §5.2、§6.3"
+      ],
+      "detail": "",
+      "event": "J|7|1|3",
+      "operation": "move",
+      "outcome": "success",
+      "target": "PC|west_box:north:2|bridge:west:0"
+    },
+    {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "8"
+        }
+      },
+      "basis": [
+        "规则 L13、L15–17、L23–25、L29–32",
+        "约束端口速率",
+        "受限模型声明 polling.both_failure",
+        "内核输入 §5.2、§6.3"
+      ],
+      "detail": "",
+      "event": "J|8|0|1",
+      "operation": "move",
+      "outcome": "success",
+      "target": "PC|bridge:north:0|north_box:south:0"
+    },
+    {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "8"
+        }
+      },
+      "basis": [
+        "规则 L13、L15–17、L23–25、L29–32",
+        "约束端口速率",
+        "受限模型声明 polling.both_failure",
+        "内核输入 §5.2、§6.3"
+      ],
+      "detail": "",
+      "event": "J|8|0|2",
+      "operation": "move",
+      "outcome": "success",
+      "target": "PC|bridge:east:0|east_box:south:0"
+    }
+  ],
+  "bridge_units": [
+    {
+      "bridge_axes": {
+        "horizontal": {
+          "basis": [
+            "候选先接历史：西侧先接"
+          ],
+          "input_side": "west",
+          "status": "resolved"
+        },
+        "vertical": {
+          "basis": [
+            "候选先接历史：南侧先接"
+          ],
+          "input_side": "south",
+          "status": "resolved"
+        }
+      },
+      "id": "bridge",
+      "kind": "桥接器",
+      "occupied_cells": null,
+      "origin": [
+        {
+          "category": "候选",
+          "value": "12"
+        },
+        {
+          "category": "候选",
+          "value": "10"
+        }
+      ],
+      "port_layout": null,
+      "rotation": "r0"
+    }
+  ],
+  "history": [
+    {
+      "row": {
+        "action": "open",
+        "cause": "build_2",
+        "channel": "PC|south_box:north:2|bridge:south:0",
+        "construction_basis": {
+          "basis": [
+            "受限转移§1：明确有限历史"
+          ],
+          "status": "specified",
+          "value": {
+            "later_build": "build_2",
+            "source_build": "build_1",
+            "target_build": "build_2"
+          }
+        },
+        "event": "connect_0",
+        "geometry_snapshot": "built_layout"
+      },
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "-5"
+        }
+      }
+    },
+    {
+      "row": {
+        "action": "open",
+        "cause": "build_3",
+        "channel": "PC|bridge:north:0|north_box:south:0",
+        "construction_basis": {
+          "basis": [
+            "受限转移§1：明确有限历史"
+          ],
+          "status": "specified",
+          "value": {
+            "later_build": "build_3",
+            "source_build": "build_2",
+            "target_build": "build_3"
+          }
+        },
+        "event": "connect_1",
+        "geometry_snapshot": "built_layout"
+      },
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "-4"
+        }
+      }
+    },
+    {
+      "row": {
+        "action": "open",
+        "cause": "build_5",
+        "channel": "PC|bridge:east:0|east_box:south:0",
+        "construction_basis": {
+          "basis": [
+            "受限转移§1：明确有限历史"
+          ],
+          "status": "specified",
+          "value": {
+            "later_build": "build_5",
+            "source_build": "build_2",
+            "target_build": "build_5"
+          }
+        },
+        "event": "connect_2",
+        "geometry_snapshot": "built_layout"
+      },
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "-2"
+        }
+      }
+    },
+    {
+      "row": {
+        "action": "open",
+        "cause": "build_4",
+        "channel": "PC|west_box:north:2|bridge:west:0",
+        "construction_basis": {
+          "basis": [
+            "受限转移§1：明确有限历史"
+          ],
+          "status": "specified",
+          "value": {
+            "later_build": "build_4",
+            "source_build": "build_4",
+            "target_build": "build_2"
+          }
+        },
+        "event": "connect_3",
+        "geometry_snapshot": "built_layout"
+      },
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "-3"
+        }
+      }
+    }
+  ],
+  "incoming": {
+    "bridge:south:0": 8,
+    "bridge:west:0": 8
+  },
+  "outgoing": {
+    "bridge:north:0": 8,
+    "bridge:east:0": 8
+  },
+  "wireless": {
+    "高容谷地电池": 8,
+    "精选荞愈胶囊": 8
+  },
+  "first_time": {
+    "kind": "rational",
+    "value": {
+      "category": "候选",
+      "value": "0"
+    }
+  },
+  "last_time": {
+    "kind": "rational",
+    "value": {
+      "category": "候选",
+      "value": "29"
+    }
+  },
+  "aggregate_axis": [
+    "桥接器双通路",
+    "传输拒收与暂停核验",
+    "密集结点闭环核验",
+    "密集结点循环种子核验",
+    "密集制造闭环序0核验",
+    "密集制造闭环序1核验",
+    "密集制造闭环序2核验",
+    "密集制造闭环序3核验",
+    "密集制造闭环序4核验",
+    "密集制造闭环序5核验"
+  ],
+  "required_unexercised": [
+    "transfer.resume_event"
+  ]
+}

@@ -1,0 +1,651 @@
+{
+  "independent_geometry": [
+    {
+      "name": "桥接器双通路",
+      "units": 7,
+      "occupied_cells": 122,
+      "ports": 48,
+      "PC": 4,
+      "BC": 0
+    },
+    {
+      "name": "分流器三路轮询",
+      "units": 9,
+      "occupied_cells": 128,
+      "ports": 50,
+      "PC": 4,
+      "BC": 0
+    },
+    {
+      "name": "混做粉碎机两下游",
+      "units": 14,
+      "occupied_cells": 153,
+      "ports": 67,
+      "PC": 11,
+      "BC": 8
+    }
+  ],
+  "mid_closure": {
+    "event": "J|2|0|1",
+    "outcome": "success",
+    "time": 2,
+    "round": 0,
+    "next_template": 2,
+    "inventory": [
+      {
+        "slot": "crusher:input:0",
+        "contents": [
+          {
+            "item": "源矿",
+            "quantity": {
+              "value": "1",
+              "category": "算术推论"
+            },
+            "entered_at": {
+              "kind": "rational",
+              "value": {
+                "value": "2",
+                "category": "候选"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "slot": "crusher:output:0",
+        "contents": []
+      },
+      {
+        "slot": "crusher:buffer:0",
+        "contents": [
+          {
+            "item": "源石粉末",
+            "quantity": {
+              "value": "1",
+              "category": "算术推论"
+            },
+            "entered_at": {
+              "kind": "rational",
+              "value": {
+                "value": "2",
+                "category": "候选"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "slot": "grinder_a:input:0",
+        "contents": []
+      },
+      {
+        "slot": "grinder_a:input:1",
+        "contents": []
+      },
+      {
+        "slot": "grinder_a:output:0",
+        "contents": []
+      },
+      {
+        "slot": "grinder_a:buffer:0",
+        "contents": []
+      },
+      {
+        "slot": "grinder_b:input:0",
+        "contents": []
+      },
+      {
+        "slot": "grinder_b:input:1",
+        "contents": []
+      },
+      {
+        "slot": "grinder_b:output:0",
+        "contents": []
+      },
+      {
+        "slot": "grinder_b:buffer:0",
+        "contents": []
+      },
+      {
+        "slot": "feed_belt:transport:0",
+        "contents": []
+      },
+      {
+        "slot": "belt_a0:transport:0",
+        "contents": []
+      },
+      {
+        "slot": "belt_a1:transport:0",
+        "contents": []
+      },
+      {
+        "slot": "belt_a2:transport:0",
+        "contents": []
+      },
+      {
+        "slot": "belt_b0:transport:0",
+        "contents": []
+      },
+      {
+        "slot": "belt_b1:transport:0",
+        "contents": []
+      },
+      {
+        "slot": "belt_b2:transport:0",
+        "contents": []
+      },
+      {
+        "slot": "belt_b3:transport:0",
+        "contents": []
+      }
+    ],
+    "progress": [
+      {
+        "unit": "crusher",
+        "phase": "completed",
+        "recipe": "粉碎-源矿",
+        "candidate_recipes": [
+          "粉碎-源矿"
+        ],
+        "locked_recipe": "粉碎-源矿",
+        "remaining": {
+          "kind": "rational",
+          "value": {
+            "value": "0",
+            "category": "候选"
+          }
+        },
+        "cooldowns": []
+      },
+      {
+        "unit": "grinder_a",
+        "phase": "idle",
+        "recipe": null,
+        "candidate_recipes": [],
+        "locked_recipe": null,
+        "remaining": null,
+        "cooldowns": []
+      },
+      {
+        "unit": "grinder_b",
+        "phase": "idle",
+        "recipe": null,
+        "candidate_recipes": [],
+        "locked_recipe": null,
+        "remaining": null,
+        "cooldowns": []
+      }
+    ],
+    "poll_memory": {
+      "status": "specified",
+      "value": {
+        "schema": "poll-memory-v1",
+        "sides": [
+          {
+            "unit": "core",
+            "side": "input",
+            "graded": true,
+            "current_level": null,
+            "levels": []
+          },
+          {
+            "unit": "core",
+            "side": "output",
+            "graded": true,
+            "current_level": null,
+            "levels": []
+          },
+          {
+            "unit": "crusher",
+            "side": "input",
+            "graded": true,
+            "current_level": "L|crusher|input|other",
+            "levels": [
+              {
+                "id": "L|crusher|input|other",
+                "members": [
+                  "PC|feed_belt:north:0|crusher:south:0"
+                ],
+                "next_channel": "PC|feed_belt:north:0|crusher:south:0"
+              }
+            ]
+          },
+          {
+            "unit": "crusher",
+            "side": "output",
+            "graded": true,
+            "current_level": null,
+            "levels": [
+              {
+                "id": "L|crusher|output|other",
+                "members": [
+                  "PC|crusher:north:0|belt_a0:south:0",
+                  "PC|crusher:north:2|belt_b0:south:0"
+                ],
+                "next_channel": "PC|crusher:north:0|belt_a0:south:0"
+              }
+            ]
+          },
+          {
+            "unit": "grinder_a",
+            "side": "input",
+            "graded": true,
+            "current_level": null,
+            "levels": [
+              {
+                "id": "L|grinder_a|input|other",
+                "members": [
+                  "PC|belt_a2:north:0|grinder_a:south:4"
+                ],
+                "next_channel": "PC|belt_a2:north:0|grinder_a:south:4"
+              }
+            ]
+          },
+          {
+            "unit": "grinder_a",
+            "side": "output",
+            "graded": true,
+            "current_level": null,
+            "levels": []
+          },
+          {
+            "unit": "grinder_b",
+            "side": "input",
+            "graded": true,
+            "current_level": null,
+            "levels": [
+              {
+                "id": "L|grinder_b|input|other",
+                "members": [
+                  "PC|belt_b3:north:0|grinder_b:south:0"
+                ],
+                "next_channel": "PC|belt_b3:north:0|grinder_b:south:0"
+              }
+            ]
+          },
+          {
+            "unit": "grinder_b",
+            "side": "output",
+            "graded": true,
+            "current_level": null,
+            "levels": []
+          },
+          {
+            "unit": "ore_source",
+            "side": "input",
+            "graded": true,
+            "current_level": null,
+            "levels": []
+          },
+          {
+            "unit": "ore_source",
+            "side": "output",
+            "graded": true,
+            "current_level": null,
+            "levels": [
+              {
+                "id": "L|ore_source|output|other",
+                "members": [
+                  "PC|ore_source:north:1|feed_belt:south:0"
+                ],
+                "next_channel": "PC|ore_source:north:1|feed_belt:south:0"
+              }
+            ]
+          },
+          {
+            "unit": "feed_belt",
+            "side": "input",
+            "graded": true,
+            "current_level": null,
+            "levels": [
+              {
+                "id": "L|feed_belt|input|other",
+                "members": [
+                  "PC|ore_source:north:1|feed_belt:south:0"
+                ],
+                "next_channel": "PC|ore_source:north:1|feed_belt:south:0"
+              }
+            ]
+          },
+          {
+            "unit": "feed_belt",
+            "side": "output",
+            "graded": false,
+            "current_level": "L|feed_belt|output|ungraded",
+            "levels": [
+              {
+                "id": "L|feed_belt|output|ungraded",
+                "members": [
+                  "PC|feed_belt:north:0|crusher:south:0"
+                ],
+                "next_channel": "PC|feed_belt:north:0|crusher:south:0"
+              }
+            ]
+          },
+          {
+            "unit": "belt_a0",
+            "side": "input",
+            "graded": true,
+            "current_level": null,
+            "levels": [
+              {
+                "id": "L|belt_a0|input|other",
+                "members": [
+                  "PC|crusher:north:0|belt_a0:south:0"
+                ],
+                "next_channel": "PC|crusher:north:0|belt_a0:south:0"
+              }
+            ]
+          },
+          {
+            "unit": "belt_a0",
+            "side": "output",
+            "graded": false,
+            "current_level": "L|belt_a0|output|ungraded",
+            "levels": [
+              {
+                "id": "L|belt_a0|output|ungraded",
+                "members": [
+                  "PC|belt_a0:north:0|belt_a1:south:0"
+                ],
+                "next_channel": "PC|belt_a0:north:0|belt_a1:south:0"
+              }
+            ]
+          },
+          {
+            "unit": "belt_a1",
+            "side": "input",
+            "graded": true,
+            "current_level": null,
+            "levels": [
+              {
+                "id": "L|belt_a1|input|other",
+                "members": [
+                  "PC|belt_a0:north:0|belt_a1:south:0"
+                ],
+                "next_channel": "PC|belt_a0:north:0|belt_a1:south:0"
+              }
+            ]
+          },
+          {
+            "unit": "belt_a1",
+            "side": "output",
+            "graded": false,
+            "current_level": "L|belt_a1|output|ungraded",
+            "levels": [
+              {
+                "id": "L|belt_a1|output|ungraded",
+                "members": [
+                  "PC|belt_a1:north:0|belt_a2:south:0"
+                ],
+                "next_channel": "PC|belt_a1:north:0|belt_a2:south:0"
+              }
+            ]
+          },
+          {
+            "unit": "belt_a2",
+            "side": "input",
+            "graded": true,
+            "current_level": null,
+            "levels": [
+              {
+                "id": "L|belt_a2|input|other",
+                "members": [
+                  "PC|belt_a1:north:0|belt_a2:south:0"
+                ],
+                "next_channel": "PC|belt_a1:north:0|belt_a2:south:0"
+              }
+            ]
+          },
+          {
+            "unit": "belt_a2",
+            "side": "output",
+            "graded": false,
+            "current_level": "L|belt_a2|output|ungraded",
+            "levels": [
+              {
+                "id": "L|belt_a2|output|ungraded",
+                "members": [
+                  "PC|belt_a2:north:0|grinder_a:south:4"
+                ],
+                "next_channel": "PC|belt_a2:north:0|grinder_a:south:4"
+              }
+            ]
+          },
+          {
+            "unit": "belt_b0",
+            "side": "input",
+            "graded": true,
+            "current_level": null,
+            "levels": [
+              {
+                "id": "L|belt_b0|input|other",
+                "members": [
+                  "PC|crusher:north:2|belt_b0:south:0"
+                ],
+                "next_channel": "PC|crusher:north:2|belt_b0:south:0"
+              }
+            ]
+          },
+          {
+            "unit": "belt_b0",
+            "side": "output",
+            "graded": false,
+            "current_level": "L|belt_b0|output|ungraded",
+            "levels": [
+              {
+                "id": "L|belt_b0|output|ungraded",
+                "members": [
+                  "PC|belt_b0:east:0|belt_b1:south:0"
+                ],
+                "next_channel": "PC|belt_b0:east:0|belt_b1:south:0"
+              }
+            ]
+          },
+          {
+            "unit": "belt_b1",
+            "side": "input",
+            "graded": true,
+            "current_level": null,
+            "levels": [
+              {
+                "id": "L|belt_b1|input|other",
+                "members": [
+                  "PC|belt_b0:east:0|belt_b1:south:0"
+                ],
+                "next_channel": "PC|belt_b0:east:0|belt_b1:south:0"
+              }
+            ]
+          },
+          {
+            "unit": "belt_b1",
+            "side": "output",
+            "graded": false,
+            "current_level": "L|belt_b1|output|ungraded",
+            "levels": [
+              {
+                "id": "L|belt_b1|output|ungraded",
+                "members": [
+                  "PC|belt_b1:west:0|belt_b2:south:0"
+                ],
+                "next_channel": "PC|belt_b1:west:0|belt_b2:south:0"
+              }
+            ]
+          },
+          {
+            "unit": "belt_b2",
+            "side": "input",
+            "graded": true,
+            "current_level": null,
+            "levels": [
+              {
+                "id": "L|belt_b2|input|other",
+                "members": [
+                  "PC|belt_b1:west:0|belt_b2:south:0"
+                ],
+                "next_channel": "PC|belt_b1:west:0|belt_b2:south:0"
+              }
+            ]
+          },
+          {
+            "unit": "belt_b2",
+            "side": "output",
+            "graded": false,
+            "current_level": "L|belt_b2|output|ungraded",
+            "levels": [
+              {
+                "id": "L|belt_b2|output|ungraded",
+                "members": [
+                  "PC|belt_b2:north:0|belt_b3:south:0"
+                ],
+                "next_channel": "PC|belt_b2:north:0|belt_b3:south:0"
+              }
+            ]
+          },
+          {
+            "unit": "belt_b3",
+            "side": "input",
+            "graded": true,
+            "current_level": null,
+            "levels": [
+              {
+                "id": "L|belt_b3|input|other",
+                "members": [
+                  "PC|belt_b2:north:0|belt_b3:south:0"
+                ],
+                "next_channel": "PC|belt_b2:north:0|belt_b3:south:0"
+              }
+            ]
+          },
+          {
+            "unit": "belt_b3",
+            "side": "output",
+            "graded": false,
+            "current_level": "L|belt_b3|output|ungraded",
+            "levels": [
+              {
+                "id": "L|belt_b3|output|ungraded",
+                "members": [
+                  "PC|belt_b3:north:0|grinder_b:south:0"
+                ],
+                "next_channel": "PC|belt_b3:north:0|grinder_b:south:0"
+              }
+            ]
+          }
+        ]
+      },
+      "basis": [
+        "规则 L29–32；内核输入 §6.3"
+      ]
+    },
+    "movements": [
+      {
+        "event": "J|2|0|1",
+        "channel": "PC|feed_belt:north:0|crusher:south:0",
+        "item": "源矿",
+        "quantity": {
+          "value": "1",
+          "category": "算术推论"
+        }
+      }
+    ],
+    "port_usage": {
+      "feed_belt:north:0": 1,
+      "crusher:south:0": 1
+    },
+    "completed_events": [
+      {
+        "event": "C|2|crusher",
+        "operation": "manufacture_complete",
+        "target": "crusher",
+        "outcome": "success",
+        "basis": [
+          "规则 L35",
+          "运行语义 §4.1",
+          "受限模型声明 time.manufacture_events"
+        ]
+      },
+      {
+        "event": "J|2|0|0",
+        "operation": "move",
+        "target": "PC|ore_source:north:1|feed_belt:south:0",
+        "outcome": "no_request",
+        "detail": "neither_authorized",
+        "basis": [
+          "规则 L13、L15–17、L23–25、L29–32",
+          "约束端口速率",
+          "受限模型声明 polling.both_failure",
+          "内核输入 §5.2、§6.3"
+        ]
+      }
+    ]
+  },
+  "mid_closure_scope": "原参考执行的实际瞬时物理投影；把空调试期结束标签移至此处是报告中的另一历史条件，不是玩家精确控制策略，也不是完整新输入文件。",
+  "source": {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/check_golden_trace.py",
+    "sha256": "40f255e53b4627b9adf457ba0b392453c08ab181dcd539a0216c300723177e83",
+    "capture_line": 156
+  },
+  "event_order_periodic_witness": {
+    "rule": "两个互不相连的空箱每5 tick各做一次单位传输判定；时刻5k，偶数k先A后B，奇数k先B后A。",
+    "prefix": [
+      {
+        "time": 0,
+        "order": [
+          "A",
+          "B"
+        ]
+      },
+      {
+        "time": 5,
+        "order": [
+          "B",
+          "A"
+        ]
+      },
+      {
+        "time": 10,
+        "order": [
+          "A",
+          "B"
+        ]
+      },
+      {
+        "time": 15,
+        "order": [
+          "B",
+          "A"
+        ]
+      },
+      {
+        "time": 20,
+        "order": [
+          "A",
+          "B"
+        ]
+      },
+      {
+        "time": 25,
+        "order": [
+          "B",
+          "A"
+        ]
+      },
+      {
+        "time": 30,
+        "order": [
+          "A",
+          "B"
+        ]
+      },
+      {
+        "time": 35,
+        "order": [
+          "B",
+          "A"
+        ]
+      }
+    ],
+    "scope": "有限前缀可列instant_overrides；完整周期函数在event-order-v1中无编码，未声称该布局达标。"
+  }
+}

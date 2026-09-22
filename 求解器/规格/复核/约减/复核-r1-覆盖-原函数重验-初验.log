@@ -1,0 +1,108 @@
+{
+  "calculated_content_equal_without_sources": true,
+  "source_changes": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md",
+      "recorded_sha256": "a966b004b9e1bc8db3028e8a72039570628ad4f7040b85a76be8f531b981558c",
+      "current_sha256": "36bfc4d83363cf482bc2d6b7068e38c921a937b19182157ad4aa87770b5abefa"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md",
+      "recorded_sha256": "9d1dee9ba0e7d4c6552422d9c3a6b33a97fea147c086adf248241408e0ecf624",
+      "current_sha256": "ad868c6c4c102ddadc7a8e2d566bea65763a350cf330f6fd9b11f9f27630e805"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+      "recorded_sha256": "6a3c2e618b807d4866335f187fc1c108145de44c84eaf53afcf6bcdb759cb221",
+      "current_sha256": "d4a2b567d0861876964c6a968d6b9e052eef74860324e28e86ea20cd6e5a03f7"
+    }
+  ],
+  "recipe_checks": {
+    "status": "passed",
+    "rows": [
+      {
+        "kind": "粉碎机",
+        "input_slots": 1,
+        "recipe_count": 4,
+        "support_sets": 5,
+        "max_simultaneous_candidates": 1
+      },
+      {
+        "kind": "精炼炉",
+        "input_slots": 1,
+        "recipe_count": 3,
+        "support_sets": 4,
+        "max_simultaneous_candidates": 1
+      },
+      {
+        "kind": "研磨机",
+        "input_slots": 2,
+        "recipe_count": 3,
+        "support_sets": 11,
+        "max_simultaneous_candidates": 1
+      },
+      {
+        "kind": "塑形机",
+        "input_slots": 1,
+        "recipe_count": 1,
+        "support_sets": 2,
+        "max_simultaneous_candidates": 1
+      },
+      {
+        "kind": "配件机",
+        "input_slots": 1,
+        "recipe_count": 1,
+        "support_sets": 2,
+        "max_simultaneous_candidates": 1
+      },
+      {
+        "kind": "种植机",
+        "input_slots": 1,
+        "recipe_count": 2,
+        "support_sets": 3,
+        "max_simultaneous_candidates": 1
+      },
+      {
+        "kind": "采种机",
+        "input_slots": 1,
+        "recipe_count": 2,
+        "support_sets": 3,
+        "max_simultaneous_candidates": 1
+      },
+      {
+        "kind": "封装机",
+        "input_slots": 2,
+        "recipe_count": 1,
+        "support_sets": 4,
+        "max_simultaneous_candidates": 1
+      },
+      {
+        "kind": "灌装机",
+        "input_slots": 2,
+        "recipe_count": 1,
+        "support_sets": 4,
+        "max_simultaneous_candidates": 1
+      }
+    ],
+    "per_kind_order_product": 3456,
+    "reduced_classes": 1,
+    "scope": "当前目录、单种格、输入并集、全部原料物种齐备；非输入物种不能新增候选"
+  },
+  "runtime_probes": [
+    {
+      "name": "混做粉碎机两下游",
+      "status": "not_executed",
+      "error_type": "CheckError",
+      "reason": "参数轴表哈希变化，须重新对齐",
+      "interpretation": "原样输入未通过参考入口；未绕过校验，不作换序运行通过声明"
+    },
+    {
+      "name": "分流器三路轮询",
+      "status": "not_executed",
+      "error_type": "CheckError",
+      "reason": "参数轴表哈希变化，须重新对齐",
+      "interpretation": "原样输入未通过参考入口；未绕过校验，不作换序运行通过声明"
+    }
+  ],
+  "reviewed_main_functions_executed": false
+}

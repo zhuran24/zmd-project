@@ -1,0 +1,243 @@
+{
+  "scope": "algebra and hand-trace arithmetic only, no kernel, no complete layout",
+  "old_local_check": "PASS: local footprints within 70x70; no overlap; indicated port-neighbor paths contiguous; three manufacturing units overlap power coverage; gate count and 5-tick spacing consistent; batch-release and inventory arithmetic consistent.\nSCOPE: hand-derived trace checks only. No kernel simulation; no proof of complete-base feasibility or final periodic yield.\n",
+  "event_deltas_N_QH_QG_W": {
+    "分给采种": [
+      0,
+      1,
+      0,
+      1
+    ],
+    "分给粉碎": [
+      0,
+      0,
+      1,
+      -1
+    ],
+    "采种完成": [
+      1,
+      -1,
+      0,
+      0
+    ],
+    "粉碎完成": [
+      -1,
+      0,
+      -1,
+      0
+    ],
+    "种植完成或界内搬运": [
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "output_release": [
+    {
+      "same_type": true,
+      "first_release_after_removed": 2
+    },
+    {
+      "same_type": false,
+      "first_release_after_removed": 50
+    }
+  ],
+  "vacancy_budget_not_net_loss_bound": [
+    {
+      "harvesters": 16,
+      "mixed_mismatch": 0,
+      "first_release_vacancies": 32
+    },
+    {
+      "harvesters": 16,
+      "mixed_mismatch": 1,
+      "first_release_vacancies": 80
+    },
+    {
+      "harvesters": 16,
+      "mixed_mismatch": 2,
+      "first_release_vacancies": 128
+    },
+    {
+      "harvesters": 16,
+      "mixed_mismatch": 3,
+      "first_release_vacancies": 176
+    },
+    {
+      "harvesters": 16,
+      "mixed_mismatch": 4,
+      "first_release_vacancies": 224
+    },
+    {
+      "harvesters": 16,
+      "mixed_mismatch": 5,
+      "first_release_vacancies": 272
+    },
+    {
+      "harvesters": 16,
+      "mixed_mismatch": 6,
+      "first_release_vacancies": 320
+    },
+    {
+      "harvesters": 16,
+      "mixed_mismatch": 7,
+      "first_release_vacancies": 368
+    },
+    {
+      "harvesters": 16,
+      "mixed_mismatch": 8,
+      "first_release_vacancies": 416
+    },
+    {
+      "harvesters": 16,
+      "mixed_mismatch": 9,
+      "first_release_vacancies": 464
+    },
+    {
+      "harvesters": 16,
+      "mixed_mismatch": 10,
+      "first_release_vacancies": 512
+    },
+    {
+      "harvesters": 16,
+      "mixed_mismatch": 11,
+      "first_release_vacancies": 560
+    },
+    {
+      "harvesters": 16,
+      "mixed_mismatch": 12,
+      "first_release_vacancies": 608
+    },
+    {
+      "harvesters": 16,
+      "mixed_mismatch": 13,
+      "first_release_vacancies": 656
+    },
+    {
+      "harvesters": 16,
+      "mixed_mismatch": 14,
+      "first_release_vacancies": 704
+    },
+    {
+      "harvesters": 16,
+      "mixed_mismatch": 15,
+      "first_release_vacancies": 752
+    },
+    {
+      "harvesters": 16,
+      "mixed_mismatch": 16,
+      "first_release_vacancies": 800
+    }
+  ],
+  "four_harvester_manual_trace": [
+    {
+      "tick": 0,
+      "source": 1,
+      "outputs": [
+        49,
+        50,
+        50,
+        50
+      ],
+      "old_batch_released": false,
+      "new_harvest_completions": 0,
+      "crush_completions": 0,
+      "delta_N": 0
+    },
+    {
+      "tick": 1,
+      "source": 2,
+      "outputs": [
+        49,
+        49,
+        50,
+        50
+      ],
+      "old_batch_released": false,
+      "new_harvest_completions": 0,
+      "crush_completions": 1,
+      "delta_N": -1
+    },
+    {
+      "tick": 2,
+      "source": 3,
+      "outputs": [
+        49,
+        49,
+        49,
+        50
+      ],
+      "old_batch_released": false,
+      "new_harvest_completions": 0,
+      "crush_completions": 2,
+      "delta_N": -2
+    },
+    {
+      "tick": 3,
+      "source": 4,
+      "outputs": [
+        49,
+        49,
+        49,
+        49
+      ],
+      "old_batch_released": false,
+      "new_harvest_completions": 0,
+      "crush_completions": 3,
+      "delta_N": -3
+    },
+    {
+      "tick": 4,
+      "source": 1,
+      "outputs": [
+        50,
+        49,
+        49,
+        49
+      ],
+      "old_batch_released": true,
+      "new_harvest_completions": 0,
+      "crush_completions": 4,
+      "delta_N": -4
+    }
+  ],
+  "target_rate_grid_in_twentieths": [
+    [
+      12,
+      11
+    ]
+  ],
+  "full_plant_machine_inventory_capacity_example": 4864,
+  "mineral_balance_rework_not_layout_witness": [
+    {
+      "rework": 0,
+      "ore_refine": 34,
+      "powder_refine": 0,
+      "iron_crush": 34,
+      "iron_powder_use": 34
+    },
+    {
+      "rework": 1,
+      "ore_refine": 34,
+      "powder_refine": 1,
+      "iron_crush": 35,
+      "iron_powder_use": 34
+    },
+    {
+      "rework": 2,
+      "ore_refine": 34,
+      "powder_refine": 2,
+      "iron_crush": 36,
+      "iron_powder_use": 34
+    },
+    {
+      "rework": 3,
+      "ore_refine": 34,
+      "powder_refine": 3,
+      "iron_crush": 37,
+      "iron_powder_use": 34
+    }
+  ],
+  "all_checks": "PASS"
+}

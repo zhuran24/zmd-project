@@ -1,0 +1,139 @@
+{
+  "prior_evidence": "snapshot/hash/embedded_verdict/geometry/arithmetic checked; no prior kernel trace",
+  "denial_2_evidence_files": [],
+  "K_identity_assignments": 2187,
+  "first_clearance": [
+    {
+      "machines": 16,
+      "different_species_full": 0,
+      "clearance": 32
+    },
+    {
+      "machines": 16,
+      "different_species_full": 1,
+      "clearance": 80
+    },
+    {
+      "machines": 16,
+      "different_species_full": 16,
+      "clearance": 800
+    }
+  ],
+  "ordinary_slots_capacity": 4800,
+  "completed_cache_capacity": 64,
+  "illustrative_differences": [
+    4640,
+    4592,
+    3872
+  ],
+  "fifo_results": {
+    "blocked": {
+      "t": 179,
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "accepted": 0,
+      "batches_completed": 0,
+      "working": false
+    },
+    "released": {
+      "t": 179,
+      "a": 50,
+      "b": 0,
+      "head": "B",
+      "accepted": 180,
+      "batches_completed": 60,
+      "working": false
+    },
+    "full_inputs": {
+      "t": 179,
+      "a": 0,
+      "b": 25,
+      "head": "A",
+      "accepted": 180,
+      "batches_completed": 85,
+      "working": false
+    }
+  },
+  "weighted_prefix_discrepancy": [
+    {
+      "word": "AAB",
+      "min": 0,
+      "max": 2,
+      "interval_difference_bound": 2
+    },
+    {
+      "word": "ABA",
+      "min": -1,
+      "max": 1,
+      "interval_difference_bound": 2
+    },
+    {
+      "word": "BAA",
+      "min": -2,
+      "max": 0,
+      "interval_difference_bound": 2
+    }
+  ],
+  "full_input_Z": {
+    "initial": -50,
+    "A_head_deadlock_Z": 50,
+    "B_head_deadlock_Z": [
+      -100,
+      -99
+    ],
+    "sufficient_prefix_D_integer_range": [
+      -48,
+      99
+    ],
+    "symmetric_abs_D_lt_48_is_sufficient_for_no_input_deadlock": true,
+    "limitations": "requires ongoing FIFO supply and output release; no guarantee of target throughput"
+  },
+  "kernel_formal_hashes": [
+    {
+      "path": "《明日方舟：终末地》游戏规则.txt",
+      "catalog_sha256": "abc7a5867f6477eedb619c63a21c4a77144c57ad4567fdcfb696b3049d66a670",
+      "current_sha256": "abc7a5867f6477eedb619c63a21c4a77144c57ad4567fdcfb696b3049d66a670"
+    },
+    {
+      "path": "求解任务.txt",
+      "catalog_sha256": "10abf80fe6eefe647471eabe78da4053f77b489d3806722c501c6acb405a2864",
+      "current_sha256": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac"
+    },
+    {
+      "path": "求解约束.txt",
+      "catalog_sha256": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6",
+      "current_sha256": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6"
+    }
+  ],
+  "kernel_attempts": {
+    "head-block": {
+      "status": "invalid_input",
+      "open_items": [
+        "invalid_input input @ 求解任务.txt: 正式源指纹不符"
+      ],
+      "trajectory_executed": false
+    },
+    "head-release": {
+      "status": "invalid_input",
+      "open_items": [
+        "invalid_input input @ 求解任务.txt: 正式源指纹不符"
+      ],
+      "trajectory_executed": false
+    },
+    "full-inputs": {
+      "status": "invalid_input",
+      "open_items": [
+        "invalid_input input @ 求解任务.txt: 正式源指纹不符"
+      ],
+      "trajectory_executed": false
+    },
+    "gate-first-release": {
+      "status": "invalid_input",
+      "open_items": [
+        "invalid_input input @ 求解任务.txt: 正式源指纹不符"
+      ],
+      "trajectory_executed": false
+    }
+  }
+}

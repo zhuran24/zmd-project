@@ -1,0 +1,93 @@
+[
+  {
+    "time": "0",
+    "nonempty": {
+      "bridge:vertical:0": [
+        {
+          "item": "源矿",
+          "quantity": "1",
+          "entered_at": "0"
+        }
+      ],
+      "west_box:storage:0": [
+        {
+          "item": "源矿",
+          "quantity": "1",
+          "entered_at": "0"
+        }
+      ]
+    },
+    "successes": [
+      "PC|south_box:north:2|bridge:south:0"
+    ],
+    "rounds": 2
+  },
+  {
+    "time": "1",
+    "nonempty": {
+      "north_box:storage:0": [
+        {
+          "item": "源矿",
+          "quantity": "1",
+          "entered_at": "1"
+        }
+      ],
+      "bridge:horizontal:0": [
+        {
+          "item": "源矿",
+          "quantity": "1",
+          "entered_at": "1"
+        }
+      ]
+    },
+    "successes": [
+      "PC|bridge:north:0|north_box:south:0",
+      "PC|west_box:north:2|bridge:west:0"
+    ],
+    "rounds": 2
+  },
+  {
+    "time": "2",
+    "nonempty": {
+      "north_box:storage:0": [
+        {
+          "item": "源矿",
+          "quantity": "1",
+          "entered_at": "1"
+        }
+      ],
+      "east_box:storage:0": [
+        {
+          "item": "源矿",
+          "quantity": "1",
+          "entered_at": "2"
+        }
+      ]
+    },
+    "successes": [
+      "PC|bridge:east:0|east_box:south:0"
+    ],
+    "rounds": 2
+  },
+  {
+    "time": "3",
+    "nonempty": {
+      "north_box:storage:0": [
+        {
+          "item": "源矿",
+          "quantity": "1",
+          "entered_at": "1"
+        }
+      ],
+      "east_box:storage:0": [
+        {
+          "item": "源矿",
+          "quantity": "1",
+          "entered_at": "2"
+        }
+      ]
+    },
+    "successes": [],
+    "rounds": 1
+  }
+]

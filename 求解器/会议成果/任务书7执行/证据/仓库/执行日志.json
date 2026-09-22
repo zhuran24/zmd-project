@@ -1,0 +1,13 @@
+{
+  "command": [
+    "python",
+    "-B",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/仓库/check_warehouse.py"
+  ],
+  "cwd": "/home/zhuran24/zmd-research-fresh",
+  "time": "2026-09-21T10:50:20.397734+00:00",
+  "exit_status": 0,
+  "stdout": "{\"status\": \"pass\", \"arithmetic_cases\": 1440, \"source_hashes_unchanged\": 13, \"check_groups\": 8, \"kernel_steps\": 0}\n",
+  "stderr": "",
+  "interpretation": "局部代数、输入指纹、正式条文引用、文档链接和schema字段定位核对；没有装载或运行内核"
+}

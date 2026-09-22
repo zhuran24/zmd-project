@@ -1,0 +1,34 @@
+[
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+    "old_sha256": "31ced2a24fef738c72dfa406351b6bad5df3e353d6b1c2dfd06ab1febaf566ff",
+    "new_sha256": "d150b86b398f8e73e57bee1598020e6bcd895e5a13a254b4b11dd1e4416c325a",
+    "changed_lines": [
+      36
+    ],
+    "reverse_increment_restores_old_sha256": true,
+    "impact": "R36零传输冷却依owner补充已定；本席不使用箱，植物配方、C82、容量、局部运行结论无受影响前件"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7草案.md",
+    "old_sha256": "32acf147e09de04feabfb575dd509a2c5c06b519b2504ba3ff253c3a61816a26",
+    "new_sha256": "6394c5ee4214a7b48057dcd3e916b59e55085895dff06f93b86a00f139d01620",
+    "changed_lines": [
+      13,
+      29,
+      67
+    ],
+    "reverse_increment_restores_old_sha256": true,
+    "impact": "R36零传输冷却依owner补充已定；本席不使用箱，植物配方、C82、容量、局部运行结论无受影响前件"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/主会话三审-0920.md",
+    "old_sha256": "da7d816827a6d66a20def9be982308df0a0e7a8dcb879c6c75ef2c381ef01f87",
+    "new_sha256": "8710bebae67f41b4f323570a54f046bfed71bc28d3c2e2bc4efa002ee20020a2",
+    "changed_lines": [
+      54
+    ],
+    "reverse_increment_restores_old_sha256": true,
+    "impact": "R36零传输冷却依owner补充已定；本席不使用箱，植物配方、C82、容量、局部运行结论无受影响前件"
+  }
+]

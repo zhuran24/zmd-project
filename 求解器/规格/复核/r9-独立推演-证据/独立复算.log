@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "r8_manifest_entries": 35,
+  "r8_manifest_mismatches": [],
+  "reviewed_sources": 40,
+  "sources_changed_during_review": [],
+  "r8_local_links": 170,
+  "missing_links": [],
+  "r8_guard_cases": 60,
+  "r8_guard_errors": [],
+  "fresh_revision_status": "PASS",
+  "fresh_axis_count": 99,
+  "fresh_round5_status": "PASS",
+  "fresh_round5_count": 183,
+  "fresh_local_checks": 29,
+  "not_rerun": [
+    "check_round8.py写回被审目录且会运行schema生成器，故仅阅读脚本和核对现有产物"
+  ],
+  "scope": "原始字节、现有产物与只读入口重跑；不推断其他席位的写操作"
+}

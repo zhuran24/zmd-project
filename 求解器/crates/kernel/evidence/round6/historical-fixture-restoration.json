@@ -1,0 +1,6 @@
+{
+  "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r3/cli/age-overflow-cycle-result.json",
+  "restored_sha256": "9b895cfa4258be9f758d825b81593da77fe5bee160edef1ad74c477be6f43852",
+  "byte_exact": true,
+  "reason": "S席嵌入结构自查把此v1装载外壳作为历史迁移试样；当前CLI回归输出改放round6，历史试样恢复到开工前逐字节指纹。"
+}

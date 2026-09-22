@@ -1,0 +1,23 @@
+{
+  "name": "overflow-run",
+  "command": [
+    "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+    "run",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r3-1-证据/overflow-input.json",
+    "--config",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+    "--ticks",
+    "2",
+    "--out",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r3-1-证据/overflow-run.json"
+  ],
+  "exit_code": 2,
+  "output_exists": true,
+  "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r3-1-证据/overflow-run.json\",\"status\":\"inconclusive\"}\n",
+  "stderr": "",
+  "status": "inconclusive",
+  "stop": null,
+  "open_items": [
+    "inconclusive resource.integer @ PC|a:east:0|b:south:0: 时差溢出"
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "replays": [
+    {
+      "seat": 1,
+      "exact_original_script_with_only_output_and_root_paths_rebound": true,
+      "byte_identical_results": [
+        "inputs.json",
+        "continuous_filler.json",
+        "three_fillers.json",
+        "gate_sliding_window.json",
+        "gate_intermittent.json",
+        "serial_gates.json",
+        "parts_backlog.json",
+        "checks.json",
+        "checks.log"
+      ]
+    },
+    {
+      "seat": 2,
+      "exact_original_script_with_only_output_and_root_paths_rebound": true,
+      "byte_identical_results": [
+        "输入与结果.json",
+        "核算.log"
+      ]
+    }
+  ],
+  "recipe_conservation_checked": 18,
+  "max_item_total_ore_weight": 50,
+  "target_ore_per_tick": "52",
+  "battery_capsule_per_20_ticks": [
+    12,
+    11
+  ],
+  "blue_block_powder_extra_cycle_net_balance": {
+    "蓝铁块": 0,
+    "蓝铁粉末": 0
+  },
+  "input_hashes_unchanged": true,
+  "kernel_run": false,
+  "whole_layout_certified": false,
+  "v2_independent_review_completed": false
+}

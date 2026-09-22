@@ -1,0 +1,133 @@
+{
+  "schema": "reduction-validation-v2",
+  "axes_count": 15,
+  "axis_declaration_config_document": "passed",
+  "source_fingerprint_changes": [],
+  "combinatorial_bruteforce": {
+    "graphs": 1100,
+    "permutations": 124470,
+    "adjacent_swap_component_graphs": 76,
+    "status": "passed"
+  },
+  "recipe_uniqueness": {
+    "status": "passed",
+    "rows": [
+      {
+        "kind": "粉碎机",
+        "input_slots": 1,
+        "recipe_count": 4,
+        "support_sets": 5,
+        "max_simultaneous_candidates": 1
+      },
+      {
+        "kind": "精炼炉",
+        "input_slots": 1,
+        "recipe_count": 3,
+        "support_sets": 4,
+        "max_simultaneous_candidates": 1
+      },
+      {
+        "kind": "研磨机",
+        "input_slots": 2,
+        "recipe_count": 3,
+        "support_sets": 11,
+        "max_simultaneous_candidates": 1
+      },
+      {
+        "kind": "塑形机",
+        "input_slots": 1,
+        "recipe_count": 1,
+        "support_sets": 2,
+        "max_simultaneous_candidates": 1
+      },
+      {
+        "kind": "配件机",
+        "input_slots": 1,
+        "recipe_count": 1,
+        "support_sets": 2,
+        "max_simultaneous_candidates": 1
+      },
+      {
+        "kind": "种植机",
+        "input_slots": 1,
+        "recipe_count": 2,
+        "support_sets": 3,
+        "max_simultaneous_candidates": 1
+      },
+      {
+        "kind": "采种机",
+        "input_slots": 1,
+        "recipe_count": 2,
+        "support_sets": 3,
+        "max_simultaneous_candidates": 1
+      },
+      {
+        "kind": "封装机",
+        "input_slots": 2,
+        "recipe_count": 1,
+        "support_sets": 4,
+        "max_simultaneous_candidates": 1
+      },
+      {
+        "kind": "灌装机",
+        "input_slots": 2,
+        "recipe_count": 1,
+        "support_sets": 4,
+        "max_simultaneous_candidates": 1
+      }
+    ],
+    "per_kind_order_product": 3456,
+    "reduced_classes": 1,
+    "scope": "当前目录、单种格、输入并集、全部原料物种齐备；非输入物种不能新增候选"
+  },
+  "branch_table_counts": {
+    "1": 1,
+    "2": 2,
+    "3": 24
+  },
+  "branch_projection": {
+    "status": "passed",
+    "evidence": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/分支表约减验证.json",
+    "examples": [
+      {
+        "name": "混做粉碎机两下游",
+        "full_tables": 1,
+        "projected_tables": 1,
+        "behavior_representatives": 1,
+        "gate_subgraphs": 1,
+        "hypothetical_local_query_comparisons": 0
+      },
+      {
+        "name": "分流器三路轮询",
+        "full_tables": 96,
+        "projected_tables": 12,
+        "behavior_representatives": 1,
+        "gate_subgraphs": 4,
+        "hypothetical_local_query_comparisons": 1536
+      }
+    ],
+    "negative_checks": {
+      "multi_level_no_query_rejected": true,
+      "all_mutable_rows_retained": 24,
+      "incomplete_table_rejected": true
+    }
+  },
+  "runtime_probes": [
+    {
+      "name": "混做粉碎机两下游",
+      "status": "not_executed",
+      "error_type": "CheckError",
+      "reason": "参数轴表哈希变化，须重新对齐",
+      "interpretation": "原样输入未通过参考入口；未绕过校验，不作换序运行通过声明"
+    },
+    {
+      "name": "分流器三路轮询",
+      "status": "not_executed",
+      "error_type": "CheckError",
+      "reason": "参数轴表哈希变化，须重新对齐",
+      "interpretation": "原样输入未通过参考入口；未绕过校验，不作换序运行通过声明"
+    }
+  ],
+  "scope": "证明稿自查和组合算法验证；不是Rust内核参数族的穷举运行",
+  "status": "passed_with_runtime_limitations"
+}

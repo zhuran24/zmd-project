@@ -1,0 +1,19 @@
+{
+  "verdicts": [
+    {
+      "id": "KR-r5-L2-01",
+      "refuted": false,
+      "reason": "未能否证。独立构造79999/80000两份合法种子，公开构造器在D.2前以production_abstraction=false返回不同核心当前级；源码确认容量计算先于守卫。详见/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-2.md §1。"
+    },
+    {
+      "id": "KR-r5-L2-02",
+      "refuted": false,
+      "reason": "未能否证。新生成记录仅相对化路径后通过schema和verify-cycle，却在verify-record、verify-batch及记录checkpoint退出2；切到记录目录仍失败，绝对路径对照均通过。详见/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-2.md §2。"
+    },
+    {
+      "id": "KR-r5-L2-03",
+      "refuted": false,
+      "reason": "未能否证。原始overflow.json通过schema及诊断复现，随后checkpoint在main.rs:168解引用null，panic退出101且未生成检查点；有效证书对照成功。详见/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-2.md §3。"
+    }
+  ]
+}

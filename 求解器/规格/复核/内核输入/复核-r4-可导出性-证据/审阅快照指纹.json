@@ -1,0 +1,397 @@
+[
+  {
+    "path": "《明日方舟：终末地》游戏规则.txt",
+    "sha256": "abc7a5867f6477eedb619c63a21c4a77144c57ad4567fdcfb696b3049d66a670",
+    "bytes": 7220
+  },
+  {
+    "path": "求解任务.txt",
+    "sha256": "10abf80fe6eefe647471eabe78da4053f77b489d3806722c501c6acb405a2864",
+    "bytes": 1275
+  },
+  {
+    "path": "求解器/数据/样例/check_examples.py",
+    "sha256": "a5acb5c71d17917ac636d3026360f22a0dc12f1326b570e46d94aeba0a030fcc",
+    "bytes": 49233
+  },
+  {
+    "path": "求解器/数据/样例/check_golden_trace.py",
+    "sha256": "066d587b157936fc8d1360a8fcb8fde2bbc4861e24896ed04ce6c8f457571384",
+    "bytes": 14617
+  },
+  {
+    "path": "求解器/数据/样例/event_order.py",
+    "sha256": "a15c4e76fba4a56a81975dedfe4b4ba11e27347576e1a66532f1d06bf7d7e664",
+    "bytes": 3946
+  },
+  {
+    "path": "求解器/数据/样例/generate_examples.py",
+    "sha256": "b5e4d4198bf8c2c84acfa1ff643b4bb1334a387635d0a909bd75311c20300b2c",
+    "bytes": 10092
+  },
+  {
+    "path": "求解器/数据/样例/kernel_profile_v1参数赋值.json",
+    "sha256": "0ce025ec5d3a6f39eff7f1dc03154ab1d423e47b085e2dc65aa2fdc93622a647",
+    "bytes": 60441
+  },
+  {
+    "path": "求解器/数据/样例/runtime_example.py",
+    "sha256": "c177b008790bb1a1e18f146ff4a47f663869066c5169db07aa489c837f02fda0",
+    "bytes": 24061
+  },
+  {
+    "path": "求解器/数据/样例/runtime_record.py",
+    "sha256": "0074314ba80268e8bfd42f4369a490860f0e90182dba56f5939620ba0ea0ed0c",
+    "bytes": 11880
+  },
+  {
+    "path": "求解器/数据/样例/test_runtime_input.py",
+    "sha256": "0dc610f5310aa39e09bd4737e237f674c6e90f661a11ab9d93004b487fbcc0fe",
+    "bytes": 22066
+  },
+  {
+    "path": "求解器/数据/样例/分流器三路轮询.json",
+    "sha256": "7c15088160ba6abae71bc8de73168b64c393d68e39dc5a357adacc1d496504e1",
+    "bytes": 59041
+  },
+  {
+    "path": "求解器/数据/样例/桥接器双通路.json",
+    "sha256": "c2b91c234a7606be590a826a96b5db71a3be06f4c4bdf16767516bd7608105ce",
+    "bytes": 56578
+  },
+  {
+    "path": "求解器/数据/样例/检查结果.json",
+    "sha256": "6fe88851887da00a1ea7a12b93f6bcbc4bbb140c5b00fc15bd37b553e84f4d5a",
+    "bytes": 7425
+  },
+  {
+    "path": "求解器/数据/样例/混做粉碎机两下游-运行记录.json",
+    "sha256": "b664ed551271e1fbe895821de5041a8c96d29e97d51da353114abf5a403734aa",
+    "bytes": 645292
+  },
+  {
+    "path": "求解器/数据/样例/混做粉碎机两下游-黄金轨迹.json",
+    "sha256": "1650cae7b0445ca34040a48d206916bee0665e4637f0a47d2af0560691c89b7f",
+    "bytes": 2874
+  },
+  {
+    "path": "求解器/数据/样例/混做粉碎机两下游-黄金轨迹.md",
+    "sha256": "bb26af0b9eefd2ef784750979bf62a5f95ba4e1b10746f3cd4f6cfe15a0a2ca2",
+    "bytes": 9038
+  },
+  {
+    "path": "求解器/数据/样例/混做粉碎机两下游.json",
+    "sha256": "105838b00abf675ac8e576a23b1c2c20ce9870b6e8419c7a62e54f83eac98a45",
+    "bytes": 168806
+  },
+  {
+    "path": "求解器/数据/正式静态目录.json",
+    "sha256": "74d21a5bd37c6178f988a86a4aa78a03d1e4244ecff26f133bb5e700ada82e43",
+    "bytes": 156881
+  },
+  {
+    "path": "求解器/规格/check_revision.py",
+    "sha256": "3e939b667d01ce96c96ae4cbf96658f53fa1a1b79e676909263082a4a5ce59fe",
+    "bytes": 23817
+  },
+  {
+    "path": "求解器/规格/修订前只读文件指纹.json",
+    "sha256": "85a6bd4d785f2590f9c45186c0f23136a69c85c54833a2da6cd6fe98d6aa68be",
+    "bytes": 1302
+  },
+  {
+    "path": "求解器/规格/修订记录.md",
+    "sha256": "7ccdead666c776dc76ef927c58b866131884356e42f08b7c5ee6678ae0f7c484",
+    "bytes": 32899
+  },
+  {
+    "path": "求解器/规格/内核输入-修订记录.md",
+    "sha256": "f9f1d8b40201f2002d077748f6a27fb7c111540877c1951508beb69c9260cdad",
+    "bytes": 15761
+  },
+  {
+    "path": "求解器/规格/内核输入-对参数轴的修改请求.md",
+    "sha256": "ef6fa51c1942fb1ddb2b4f3270449a3c6b207718c0334f3b46fe840f20a3d134",
+    "bytes": 6822
+  },
+  {
+    "path": "求解器/规格/内核输入.md",
+    "sha256": "a180570ac7507e9711eeeb6d0dbcc21205aa136c8694634d0cb2d7e536b2486b",
+    "bytes": 84179
+  },
+  {
+    "path": "求解器/规格/内核输入修订验证-r3/build_output_schema.py",
+    "sha256": "3bc0033b7de59610292290baeee681ef79e1498dd4ff2ac0999fbef61f606628",
+    "bytes": 5827
+  },
+  {
+    "path": "求解器/规格/内核输入修订验证-r3/cargo-test.log",
+    "sha256": "c9792af16f15ec358f4309de8ec7c64a47866fbf9db6ab35526222bbf215410d",
+    "bytes": 2583
+  },
+  {
+    "path": "求解器/规格/内核输入修订验证-r3/check_current_coverage.py",
+    "sha256": "6bc162011eb9e60ad59ceaf08d24c43266abeb54c363896485841a252bfbc42e",
+    "bytes": 4436
+  },
+  {
+    "path": "求解器/规格/内核输入修订验证-r3/finalize_delivery.py",
+    "sha256": "e9f3e01fabae53461c8d26408bc8af570048f39c3ab051b826e0301caa0f6b9f",
+    "bytes": 4956
+  },
+  {
+    "path": "求解器/规格/内核输入修订验证-r3/run_checks.py",
+    "sha256": "eea12c35caae7e975bdef7da28e5c2735d053c192f0ee8f462168f3e1b774b91",
+    "bytes": 4259
+  },
+  {
+    "path": "求解器/规格/内核输入修订验证-r3/中途种子.json",
+    "sha256": "5b3d6d7e7684118a1d7c4656c3214c2d3125c51ed0a8e9ec309e839febea68eb",
+    "bytes": 93807
+  },
+  {
+    "path": "求解器/规格/内核输入修订验证-r3/交付清单.json",
+    "sha256": "dce339481c60156b0a341de68d3d545d4f1e2967412f81a1936a7d219c94aa90",
+    "bytes": 11664
+  },
+  {
+    "path": "求解器/规格/内核输入修订验证-r3/交付自审.json",
+    "sha256": "522596ed76de856a6d4930d8c4525c34680276aaa67af1d423ec2383e3d2945c",
+    "bytes": 1021
+  },
+  {
+    "path": "求解器/规格/内核输入修订验证-r3/修订前产物指纹.json",
+    "sha256": "ded0064b5b0cb243de0c6bccdbc24d578012cb6e1acd49438d88861868b248d0",
+    "bytes": 318994
+  },
+  {
+    "path": "求解器/规格/内核输入修订验证-r3/候选B校验.log",
+    "sha256": "484bf8047e0d0e3836408cc5be1789b7f76379e0474721c3317b4853a5cb5f4d",
+    "bytes": 618348
+  },
+  {
+    "path": "求解器/规格/内核输入修订验证-r3/候选B校验报告.md",
+    "sha256": "4ca856465096fdcfd79fc7e75ac2500aa3898cb548c2e5cf124d34bb23815f67",
+    "bytes": 618154
+  },
+  {
+    "path": "求解器/规格/内核输入修订验证-r3/只读指纹.json",
+    "sha256": "56d730ede172d2754fb16361556c811c37ada2d24bdef696b51f62fd115f97e5",
+    "bytes": 4334306
+  },
+  {
+    "path": "求解器/规格/内核输入修订验证-r3/周期排序.json",
+    "sha256": "a93dbdee3affee2cbe2601a8f327467a47034498556ff45bc49eeebe93b6d502",
+    "bytes": 959
+  },
+  {
+    "path": "求解器/规格/内核输入修订验证-r3/存活发现处理.md",
+    "sha256": "9f4dc9217a3e9daa8969c2afc65b6ec3074d4f73e2b0495b45197b092ac41130",
+    "bytes": 12361
+  },
+  {
+    "path": "求解器/规格/内核输入修订验证-r3/并行配置迁移.json",
+    "sha256": "68621c17c1f029ebc2e57544248e325730c24e0b00e52fd25be5bdd63957e970",
+    "bytes": 2484
+  },
+  {
+    "path": "求解器/规格/内核输入修订验证-r3/本次修订前产物指纹.json",
+    "sha256": "67c56137b030a4bb49de1c504731c57b2b883f2ecaffb1f54137bfa9bbfa8426",
+    "bytes": 2620569
+  },
+  {
+    "path": "求解器/规格/内核输入修订验证-r3/样例检查.log",
+    "sha256": "6fe88851887da00a1ea7a12b93f6bcbc4bbb140c5b00fc15bd37b553e84f4d5a",
+    "bytes": 7425
+  },
+  {
+    "path": "求解器/规格/内核输入修订验证-r3/正式目录回源.log",
+    "sha256": "dcfc82323619a613c73d7f13e1583a544a4344a8d139d84cdbb556c880fefead",
+    "bytes": 142
+  },
+  {
+    "path": "求解器/规格/内核输入修订验证-r3/生成样例.log",
+    "sha256": "08503fa964aa20fe9d6a79a66cb9fa0d102478d4cc112e1a989d05d19617fec2",
+    "bytes": 1611
+  },
+  {
+    "path": "求解器/规格/内核输入修订验证-r3/自查报告.md",
+    "sha256": "2ad4a42d54cc4b76a4b73c8ef4776a341bfff15c1c2c5efedbe4fb9de0fe4872",
+    "bytes": 5919
+  },
+  {
+    "path": "求解器/规格/内核输入修订验证-r3/自查结果.json",
+    "sha256": "038f5235fa665868c3074260a4faf7747bcf25b299d0deed23097654bbcbbeed",
+    "bytes": 4170
+  },
+  {
+    "path": "求解器/规格/内核输入修订验证-r3/规则覆盖自查.json",
+    "sha256": "5b77addd07d0c86f8451b68ab8ee03f31c4c6bf3770311f76028d967c6e4fff7",
+    "bytes": 1378
+  },
+  {
+    "path": "求解器/规格/内核输入修订验证-r3/规则覆盖自查.log",
+    "sha256": "2f64096e10d27c0a6e6c81224f58a4a5cbba2d1ba9252b32e1470b92ad230bf7",
+    "bytes": 1146
+  },
+  {
+    "path": "求解器/规格/内核输入修订验证-r3/规格线自查.log",
+    "sha256": "008dca391be76a9c0de3b0587f7ff36c086a0f156f9136fe241e1a629d9ea823",
+    "bytes": 4593
+  },
+  {
+    "path": "求解器/规格/内核输入修订验证-r3/输出schema生成.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "求解器/规格/内核输入修订验证-r3/运行回归.log",
+    "sha256": "68e2738fd08fadfd494af498138e0def00cddc631dc0d2d34ed9efcf664a3ca0",
+    "bytes": 168
+  },
+  {
+    "path": "求解器/规格/内核输入修订验证-r3/运行回归结果.json",
+    "sha256": "bb7a09fae24f7f3102be1e72e27b860786912cdb96643c9f20a8124c07810fe5",
+    "bytes": 7924
+  },
+  {
+    "path": "求解器/规格/内核输入修订验证-r3/配置迁移前拒收.log",
+    "sha256": "56fa96e1ac136aa70870f3d293be2ab17080f516ea74e4c67cc44c6b953d4421",
+    "bytes": 3638
+  },
+  {
+    "path": "求解器/规格/内核输入修订验证-r3/黄金重算.log",
+    "sha256": "5cad1196d5e014be529cc9906012efa3cb62a2f62618bccae9ce985d23c4bbbc",
+    "bytes": 221
+  },
+  {
+    "path": "求解器/规格/内核输出.md",
+    "sha256": "a5d3db78ed247fab1f87b1b9bfd89e2279e99077efa16e2c6b63f146b837e2ce",
+    "bytes": 8984
+  },
+  {
+    "path": "求解器/规格/内核输出.schema.json",
+    "sha256": "2e770aa77ab961296225ad9a10e7b7f3c0fda03f6bfc48a01bb8e73f3ba74471",
+    "bytes": 23829
+  },
+  {
+    "path": "求解器/规格/内核配置-v1.json",
+    "sha256": "3df82c49ab2dcd44abc7a1f36334130787bd557b898743c22cbb97b1be1ee800",
+    "bytes": 48509
+  },
+  {
+    "path": "求解器/规格/参数轴-对内核输入请求的答复.md",
+    "sha256": "958324742e5b123406a4f652cec95cec4785a63a224c18adab393ef321d3834f",
+    "bytes": 6799
+  },
+  {
+    "path": "求解器/规格/受限模型声明.md",
+    "sha256": "fa0981a8550733699a5833093afd4c852740ccf2f3f063a6e7d7bba6e295d33c",
+    "bytes": 41724
+  },
+  {
+    "path": "求解器/规格/受限转移定义.md",
+    "sha256": "16377cdb6b181749ad5a5663d13cefbab65c9a520295f0a40b15289e9b6ba738",
+    "bytes": 22073
+  },
+  {
+    "path": "求解器/规格/四件前置义务对照.md",
+    "sha256": "b3c882488095bdf4e9040b2b360b4c9cf46377ddd0cabd3efe468d851500dc03",
+    "bytes": 11396
+  },
+  {
+    "path": "求解器/规格/第1轮修订自查.md",
+    "sha256": "1a787d8ac5b3e76560fe8dadff8e275940725c0b2e5812b0098a886972b2374e",
+    "bytes": 3515
+  },
+  {
+    "path": "求解器/规格/第2轮修订自查.md",
+    "sha256": "1f4bc4d8d7095b4b76bd415876824e1a26b7bf8d8431d2fed6d0192b662a4480",
+    "bytes": 2334
+  },
+  {
+    "path": "求解器/规格/第2轮自查结果.json",
+    "sha256": "82ed39e70c76aabc5a6d912ca5e93c34291041081ddb6e460599ab353400eba4",
+    "bytes": 839
+  },
+  {
+    "path": "求解器/规格/第3轮修订自查.md",
+    "sha256": "15c5711404a9a62f147aea9aad1d34de46645ceb83992a05922da82535a1e2ee",
+    "bytes": 2265
+  },
+  {
+    "path": "求解器/规格/第3轮自查结果.json",
+    "sha256": "ef4c4bae98fdf487fd5b41e9a54f9603232d6b010a7a35932f17e017923cfa43",
+    "bytes": 1615
+  },
+  {
+    "path": "求解器/规格/第二轮任务修订前只读指纹.json",
+    "sha256": "8461f7ff6733c65df5074e92a2efc85d06199355c300089c90b2032f9db518a1",
+    "bytes": 7900
+  },
+  {
+    "path": "求解器/规格/第二轮任务修订自查.md",
+    "sha256": "de1d199cff749aada976b729965318084540ec63f5775425807fe9b20dfe57a2",
+    "bytes": 4563
+  },
+  {
+    "path": "求解器/规格/第二轮任务自查结果.json",
+    "sha256": "b33bc21edeb5d122209d6f34ef7629e8f6577ed1367e668e98560cad8ec66b27",
+    "bytes": 2467
+  },
+  {
+    "path": "求解器/规格/规则覆盖表.md",
+    "sha256": "b00ba62ec46cf760f6e54464b52a76a5d33b982f0ad9756051d2e369c3bd4756",
+    "bytes": 32381
+  },
+  {
+    "path": "求解器/规格/运行语义.md",
+    "sha256": "1a5cc9d26965335e09f0386c3670ea928a0f31bf9449a38ab0c6f6902fcab053",
+    "bytes": 43973
+  },
+  {
+    "path": "求解器/规格/选择点参数轴.md",
+    "sha256": "aacade17b417a65e1b7d7846615978defcd510bf3f490ae8fdb9e86ce36bd7a9",
+    "bytes": 34342
+  },
+  {
+    "path": "求解器/规格/选择点清单.md",
+    "sha256": "6ce7c5796b4492c8235eb37260fd9689ecfc3e36864a541976298df77cd2af21",
+    "bytes": 48014
+  },
+  {
+    "path": "求解约束.txt",
+    "sha256": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6",
+    "bytes": 24783
+  },
+  {
+    "path": "求解器/数据/送料契约.md",
+    "sha256": "cd0d5c310aba6c096e146b664fb03afc9154e037b7a81b29f539fabe11c498c0",
+    "bytes": 24348
+  },
+  {
+    "path": "求解器/规格/第6轮修订验证/输入投影同步.json",
+    "sha256": "1f43532d5a9f45116d7114918790a84147b75a768331bedecb08da1cf80baedb",
+    "bytes": 597
+  },
+  {
+    "path": "求解器/规格/第6轮修订验证/交付指纹.json",
+    "sha256": "42caa225f4329412af70af57c69bd09c3e6b3e0ff47899385a25f55e24444fcc",
+    "bytes": 5888
+  },
+  {
+    "path": "求解器/规格/第6轮修订验证/黄金完整核验结果.json",
+    "sha256": "4326f19226ea8a3f083e5d655929bda6bb7b2df3203b9f83d8e1aa50f507d241",
+    "bytes": 9013
+  },
+  {
+    "path": "求解器/规格/第6轮修订验证/自查报告.md",
+    "sha256": "10d00509f07c5a26cd51bf6e41a0ee7093539ed14f12cd2e0b64880e569a19eb",
+    "bytes": 6422
+  },
+  {
+    "path": "求解器/规格/第6轮修订验证/交付自审.json",
+    "sha256": "7b737a6e25396a36fd5c875d6303c693430a7ffe2cfa7d1026483200824255a3",
+    "bytes": 577
+  }
+]

@@ -1,0 +1,204 @@
+{
+  "catalog_baseline_exit": 0,
+  "catalog_mutations": [
+    {
+      "name": "unused_recipe_duration",
+      "exit_code": 1,
+      "diagnostic": "目录回源失败：recipes.精炼-蓝铁粉末.duration.value 与正式来源投影不一致：'2' / '1'"
+    },
+    {
+      "name": "used_recipe_input",
+      "exit_code": 1,
+      "diagnostic": "目录回源失败：recipes.研磨-致密蓝铁.inputs.蓝铁粉末.value 与正式来源投影不一致：'3' / '2'"
+    },
+    {
+      "name": "power_coverage_width",
+      "exit_code": 1,
+      "diagnostic": "目录回源失败：units.供电桩.coverage.width.value 与正式来源投影不一致：'13' / '12'"
+    },
+    {
+      "name": "core_port_category",
+      "exit_code": 1,
+      "diagnostic": "目录回源失败：units.协议核心.ports.input_count.category 与正式来源投影不一致：'候选' / '条文直引'"
+    }
+  ],
+  "contract_mutations": [
+    {
+      "name": "overload_exact",
+      "exit_code": 1,
+      "expected_failure_prefix": "端口速率/记录/",
+      "counts": {
+        "能检且通过": 4918,
+        "能检且不通过": 7,
+        "不能静态检": 59
+      }
+    },
+    {
+      "name": "local_balance",
+      "exit_code": 1,
+      "expected_failure_prefix": "逐机配方守恒/",
+      "counts": {
+        "能检且通过": 4920,
+        "能检且不通过": 5,
+        "不能静态检": 59
+      }
+    },
+    {
+      "name": "nonore_full_speed",
+      "exit_code": 1,
+      "expected_failure_prefix": "满速独占/计划标记/",
+      "counts": {
+        "能检且通过": 4923,
+        "能检且不通过": 2,
+        "不能静态检": 59
+      }
+    },
+    {
+      "name": "fake_actual_certificate",
+      "exit_code": 1,
+      "expected_failure_prefix": "契约/实际速率/",
+      "counts": {
+        "能检且通过": 4924,
+        "能检且不通过": 1,
+        "不能静态检": 59
+      }
+    },
+    {
+      "name": "false_target",
+      "exit_code": 1,
+      "expected_failure_prefix": "目标/精选荞愈胶囊",
+      "counts": {
+        "能检且通过": 4924,
+        "能检且不通过": 1,
+        "不能静态检": 59
+      }
+    },
+    {
+      "name": "false_numeric_category",
+      "exit_code": 1,
+      "expected_failure_prefix": "契约/数字类别",
+      "counts": {
+        "能检且通过": 4924,
+        "能检且不通过": 1,
+        "不能静态检": 59
+      }
+    },
+    {
+      "name": "missing_same_item_obligation",
+      "exit_code": 1,
+      "expected_failure_prefix": "契约/多料栏/M152",
+      "counts": {
+        "能检且通过": 4923,
+        "能检且不通过": 2,
+        "不能静态检": 59
+      }
+    },
+    {
+      "name": "false_fanout_certificate",
+      "exit_code": 1,
+      "expected_failure_prefix": "扇出/计划分类/",
+      "counts": {
+        "能检且通过": 4924,
+        "能检且不通过": 1,
+        "不能静态检": 59
+      }
+    },
+    {
+      "name": "unsupported_merger",
+      "exit_code": 1,
+      "expected_failure_prefix": "契约/运输占位/",
+      "counts": {
+        "能检且通过": 4924,
+        "能检且不通过": 1,
+        "不能静态检": 59
+      }
+    },
+    {
+      "name": "decimal_string",
+      "exit_code": 2,
+      "diagnostic": "契约加载失败：分子不是整数"
+    },
+    {
+      "name": "json_float",
+      "exit_code": 2,
+      "diagnostic": "契约加载失败：invalid type: floating point `0.6`, expected a string"
+    },
+    {
+      "name": "zero_denominator",
+      "exit_code": 2,
+      "diagnostic": "契约加载失败：分母必须为正"
+    },
+    {
+      "name": "negative_denominator",
+      "exit_code": 2,
+      "diagnostic": "契约加载失败：分母必须为正"
+    }
+  ],
+  "reviewed_files": {
+    "count": 58,
+    "mismatches": []
+  },
+  "delivery_manifest": {
+    "count": 50,
+    "mismatches": []
+  },
+  "只读文件指纹": {
+    "count": 4,
+    "mismatches": []
+  },
+  "验证依赖指纹": {
+    "count": 37,
+    "mismatches": []
+  },
+  "candidate": {
+    "counts": {
+      "能检且通过": 4925,
+      "能检且不通过": 0,
+      "不能静态检": 59
+    },
+    "same_report_bytes": true,
+    "report_sha256": "4ca856465096fdcfd79fc7e75ac2500aa3898cb548c2e5cf124d34bb23815f67"
+  },
+  "existing_trace": {
+    "producer": {
+      "kind": "bounded_reference_checker",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/check_golden_trace.py",
+      "claim": "有限重算，与手工黄金摘要比较；不是 Rust 内核结果"
+    },
+    "status": "completed",
+    "validation_scope": {
+      "kind": "finite_trace",
+      "from": {
+        "kind": "rational",
+        "value": {
+          "value": "0",
+          "category": "候选"
+        }
+      },
+      "through": {
+        "kind": "rational",
+        "value": {
+          "value": "3",
+          "category": "候选"
+        }
+      },
+      "golden_match": true,
+      "initial_history": "conditional_witness",
+      "universal_parameters": false,
+      "all_reachable_cycles": false,
+      "target_certified": false,
+      "manufacturing_cycles_completed": {
+        "value": "2",
+        "category": "算术推论"
+      }
+    },
+    "open_items": [
+      "未覆盖实际混做与下游生产",
+      "未覆盖离线、其它初态与判定顺序",
+      "有限重算不替代全部可达循环和完整目标认证"
+    ],
+    "trace_length": 4,
+    "same_bytes_as_shared_report": true
+  },
+  "existing_runtime_regression_same_bytes": true
+}

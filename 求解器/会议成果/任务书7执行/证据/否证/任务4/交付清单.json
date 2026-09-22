@@ -1,0 +1,81 @@
+{
+  "status": "done",
+  "files": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/复核/否证-任务4.md",
+      "sha256": "12eb21c9bff08c2e824e712a38edc624ffd5c69f28cec435d65ea9790599e486",
+      "bytes": 35600
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/否证/任务4/交付核对.py",
+      "sha256": "6e0cd77df08109081489ca8525e11011d37f668cb27e088fcf334b119676353c",
+      "bytes": 4155
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/否证/任务4/交付核对结果.json",
+      "sha256": "e5d884ce790396b8f0d0f777981f7ced6734fbff779087c3b710bf5927028c21",
+      "bytes": 268
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/否证/任务4/候选A独立重放.log",
+      "sha256": "294860774a149c0cb38c4454a560ba4d4af0caa736c9da3c88c409f03ac47c12",
+      "bytes": 2010
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/否证/任务4/发现记录.json",
+      "sha256": "e5633e0815d34f78e9522a7d123f60bc624a1f7e7d67fbb58a496de47b401539",
+      "bytes": 33027
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/否证/任务4/容量反例合法摆放.json",
+      "sha256": "2fafb4d6a9e346dbbf6eb4563b0a76df3273ae238f52464b68d76625f6337aa3",
+      "bytes": 20656
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/否证/任务4/普通种子容量反例.json",
+      "sha256": "090c17b7fc74aeda0aaa7b36f6fbc62ca75d9597f2e9a7a0f1706d69401c38e9",
+      "bytes": 1272
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/否证/任务4/独立核查.log",
+      "sha256": "f3a3180710eb29dd4cffe990bed0822ab1354fc13fed67aad24cdb89e1c44655",
+      "bytes": 782
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/否证/任务4/独立核查.py",
+      "sha256": "7aa9c4f39232f4aea0c4f5d8bc21cf82be9c9ff8cbed1e22b3fb8ce83f160041",
+      "bytes": 14650
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/否证/任务4/独立核查结果.json",
+      "sha256": "a451e8bc0e92854f1dad57651c9f50e39281a612fbf3aabca4d6126e9bb9fdf7",
+      "bytes": 8910
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/否证/任务4/生成交付.py",
+      "sha256": "fdbc9cc684472a7e96d0120cbc33ab397a98e5958c40e0b1a48de4281379a067",
+      "bytes": 36604
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/否证/任务4/结构化结果.json",
+      "sha256": "608d505a70da9fed4509a4c3a75aae33895fc4bea37ccbca59307612dc9a4a6d",
+      "bytes": 6208
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/否证/任务4/被审指纹.json",
+      "sha256": "3adc893ef1186bc119cdb4062cc1a39f83343b5af2e5d7c8ab2c3dfa132c061e",
+      "bytes": 10084
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/否证/任务4/规则独推.md",
+      "sha256": "1a529aec565c6986435de72e561fc6eecdf532ee6b7921c7ce7d08c1f51eae2d",
+      "bytes": 3835
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/否证/任务4/读者自审.md",
+      "sha256": "56482fb9d6a664bddedb70f3602e73e9a8132765218cc718d0f6be0bb7281a91",
+      "bytes": 1477
+    }
+  ],
+  "self_hash": "omitted to avoid self reference"
+}

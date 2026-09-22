@@ -1,0 +1,1 @@
+crates/kernel/src/lib.rs:2:#![forbid(unsafe_code)]

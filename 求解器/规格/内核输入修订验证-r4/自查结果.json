@@ -1,0 +1,147 @@
+{
+  "status": "通过",
+  "commands": [
+    {
+      "name": "输出schema生成",
+      "command": [
+        "/usr/bin/python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r3/build_output_schema.py"
+      ],
+      "exit_code": 0,
+      "log": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r4/输出schema生成.log"
+    },
+    {
+      "name": "生成样例",
+      "command": [
+        "/usr/bin/python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/generate_examples.py"
+      ],
+      "exit_code": 0,
+      "log": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r4/生成样例.log"
+    },
+    {
+      "name": "黄金重算",
+      "command": [
+        "/usr/bin/python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/check_golden_trace.py"
+      ],
+      "exit_code": 0,
+      "log": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r4/黄金重算.log"
+    },
+    {
+      "name": "运行回归",
+      "command": [
+        "/usr/bin/python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/test_runtime_input.py"
+      ],
+      "exit_code": 0,
+      "log": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r4/运行回归.log"
+    },
+    {
+      "name": "修订回归",
+      "command": [
+        "/usr/bin/python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r4/test_revision.py"
+      ],
+      "exit_code": 0,
+      "log": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r4/修订回归.log"
+    },
+    {
+      "name": "样例检查",
+      "command": [
+        "/usr/bin/python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/check_examples.py",
+        "--self-test",
+        "--report",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/检查结果.json"
+      ],
+      "exit_code": 0,
+      "log": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r4/样例检查.log"
+    },
+    {
+      "name": "正式目录回源",
+      "command": [
+        "/usr/bin/python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/工具/formal_catalog.py"
+      ],
+      "exit_code": 0,
+      "log": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r4/正式目录回源.log"
+    },
+    {
+      "name": "规则覆盖自查",
+      "command": [
+        "/usr/bin/python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r4/check_current_coverage.py"
+      ],
+      "exit_code": 0,
+      "log": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r4/规则覆盖自查.log"
+    },
+    {
+      "name": "规格线自查",
+      "command": [
+        "/usr/bin/python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/check_revision.py"
+      ],
+      "exit_code": 0,
+      "log": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r4/规格线自查.log"
+    },
+    {
+      "name": "cargo-test",
+      "command": [
+        "cargo",
+        "test",
+        "--offline",
+        "--locked",
+        "--manifest-path",
+        "/home/zhuran24/zmd-research-fresh/求解器/Cargo.toml"
+      ],
+      "exit_code": 0,
+      "log": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r4/cargo-test.log"
+    },
+    {
+      "name": "候选B校验",
+      "command": [
+        "cargo",
+        "run",
+        "--offline",
+        "--locked",
+        "--manifest-path",
+        "/home/zhuran24/zmd-research-fresh/求解器/Cargo.toml",
+        "-p",
+        "topology",
+        "--",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/contract.json"
+      ],
+      "exit_code": 0,
+      "log": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r4/候选B校验.log"
+    }
+  ],
+  "protected_file_count": 25037,
+  "protected_changes": [],
+  "simulator_file_set_unchanged": true,
+  "shared_start_sha256": {
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md": "0423acfca9f18671fa769d4c48a160670a016d4fe5b9fee2703ea061dcf93578",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点清单.md": "24266897ad9a8084b98a98313ee858bc280df9a21f8fbd5972fcba14e8fd86b7",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/规则覆盖表.md": "49ea160e5bbdcc20ba07a5fc1cea6cc34f9f746456e634d689b9f7aeaa8271df",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/运行语义.md": "bc2ac36f637fa63c2300dfd0171c41b610ae711a9f5ad835017295cafc7ab2c2",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/受限模型声明.md": "097067f592a80a78698339c60036d770f54e4c02ad9f06a72610496ce7b027d2",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md": "d439077bb0531fedabadc97c7896f25e3bdee351ed32e2a0d07bb981ffdaf81e",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json": "6a741030785fbf2772495e80b886769faa4fa8b9527e6ed2270b7ff8c8b48d0f"
+  },
+  "shared_drift_during_checks": [],
+  "parallel_shared_changes_since_start": [
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点清单.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/规则覆盖表.md"
+  ],
+  "scope": "规则逐行与输入/有限轨迹核验；不是全称语义、完整循环或达标认证。新§7请求并入状态另列。"
+}

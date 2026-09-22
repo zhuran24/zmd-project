@@ -1,0 +1,289 @@
+{
+  "schema": "critic2-axis-coverage-v1",
+  "records": 24,
+  "axes": 99,
+  "counts": {
+    "input_checked": 15,
+    "not_exercised": 12,
+    "exercised": 54,
+    "stop_not_triggered": 17,
+    "proof_pending": 1
+  },
+  "not_exercised": [
+    {
+      "axis": "damping.belt_adjacency",
+      "disposition": "本版选值"
+    },
+    {
+      "axis": "gate.counter_start",
+      "disposition": "本版选值"
+    },
+    {
+      "axis": "gate.identity_recovery",
+      "disposition": "本版选值"
+    },
+    {
+      "axis": "gate.identity_subject",
+      "disposition": "本版选值"
+    },
+    {
+      "axis": "gate.limit_requires_identity",
+      "disposition": "已定"
+    },
+    {
+      "axis": "gate.total_recovery",
+      "disposition": "本版选值"
+    },
+    {
+      "axis": "initialization.belt_shape_lifecycle",
+      "disposition": "本版选值"
+    },
+    {
+      "axis": "initialization.rotation_stage",
+      "disposition": "已定"
+    },
+    {
+      "axis": "polling.internal_scope",
+      "disposition": "本版选值"
+    },
+    {
+      "axis": "polling.resume",
+      "disposition": "本版选值"
+    },
+    {
+      "axis": "residence.nontransport",
+      "disposition": "本版选值"
+    },
+    {
+      "axis": "transfer.resume_event",
+      "disposition": "本版选值"
+    }
+  ],
+  "never_exercised": [
+    {
+      "axis": "connection.belt_shape",
+      "best_status": "input_checked",
+      "disposition": "由输入全称量化"
+    },
+    {
+      "axis": "connection.bridge_first_contact",
+      "best_status": "input_checked",
+      "disposition": "本版选值"
+    },
+    {
+      "axis": "connection.bridge_tie",
+      "best_status": "stop_not_triggered",
+      "disposition": "超出覆盖即停"
+    },
+    {
+      "axis": "connection.build_order",
+      "best_status": "input_checked",
+      "disposition": "由输入全称量化"
+    },
+    {
+      "axis": "connection.order",
+      "best_status": "input_checked",
+      "disposition": "由输入全称量化"
+    },
+    {
+      "axis": "connection.port_meeting",
+      "best_status": "input_checked",
+      "disposition": "本版选值"
+    },
+    {
+      "axis": "connection.tie",
+      "best_status": "input_checked",
+      "disposition": "由输入全称量化"
+    },
+    {
+      "axis": "damping.belt_adjacency",
+      "best_status": "not_exercised",
+      "disposition": "本版选值"
+    },
+    {
+      "axis": "damping.no_terminal",
+      "best_status": "stop_not_triggered",
+      "disposition": "超出覆盖即停"
+    },
+    {
+      "axis": "gate.cancel_limit",
+      "best_status": "stop_not_triggered",
+      "disposition": "超出覆盖即停"
+    },
+    {
+      "axis": "gate.counter_edit",
+      "best_status": "stop_not_triggered",
+      "disposition": "超出覆盖即停"
+    },
+    {
+      "axis": "gate.counter_start",
+      "best_status": "not_exercised",
+      "disposition": "本版选值"
+    },
+    {
+      "axis": "gate.identity_recovery",
+      "best_status": "not_exercised",
+      "disposition": "本版选值"
+    },
+    {
+      "axis": "gate.identity_subject",
+      "best_status": "not_exercised",
+      "disposition": "本版选值"
+    },
+    {
+      "axis": "gate.limit_requires_identity",
+      "best_status": "not_exercised",
+      "disposition": "已定"
+    },
+    {
+      "axis": "gate.total_recovery",
+      "best_status": "not_exercised",
+      "disposition": "本版选值"
+    },
+    {
+      "axis": "initialization.belt_shape_lifecycle",
+      "best_status": "not_exercised",
+      "disposition": "本版选值"
+    },
+    {
+      "axis": "initialization.build_timing",
+      "best_status": "input_checked",
+      "disposition": "由输入全称量化"
+    },
+    {
+      "axis": "initialization.debug_actions",
+      "best_status": "stop_not_triggered",
+      "disposition": "超出覆盖即停"
+    },
+    {
+      "axis": "initialization.debug_end",
+      "best_status": "input_checked",
+      "disposition": "由输入全称量化"
+    },
+    {
+      "axis": "initialization.other_inventory",
+      "best_status": "input_checked",
+      "disposition": "由输入全称量化"
+    },
+    {
+      "axis": "initialization.rebuild_inventory",
+      "best_status": "stop_not_triggered",
+      "disposition": "超出覆盖即停"
+    },
+    {
+      "axis": "initialization.rotation_stage",
+      "best_status": "not_exercised",
+      "disposition": "已定"
+    },
+    {
+      "axis": "initialization.switches",
+      "best_status": "input_checked",
+      "disposition": "由输入全称量化"
+    },
+    {
+      "axis": "initialization.warehouse_anchor",
+      "best_status": "input_checked",
+      "disposition": "由输入全称量化"
+    },
+    {
+      "axis": "offline.cursor_effect",
+      "best_status": "stop_not_triggered",
+      "disposition": "超出覆盖即停"
+    },
+    {
+      "axis": "offline.direction_effect",
+      "best_status": "stop_not_triggered",
+      "disposition": "超出覆盖即停"
+    },
+    {
+      "axis": "offline.events",
+      "best_status": "stop_not_triggered",
+      "disposition": "超出覆盖即停"
+    },
+    {
+      "axis": "offline.gate_total_effect",
+      "best_status": "stop_not_triggered",
+      "disposition": "超出覆盖即停"
+    },
+    {
+      "axis": "offline.gate_window_effect",
+      "best_status": "stop_not_triggered",
+      "disposition": "超出覆盖即停"
+    },
+    {
+      "axis": "offline.gate_window_start_effect",
+      "best_status": "stop_not_triggered",
+      "disposition": "超出覆盖即停"
+    },
+    {
+      "axis": "offline.inventory_effect",
+      "best_status": "stop_not_triggered",
+      "disposition": "超出覆盖即停"
+    },
+    {
+      "axis": "offline.order_domain",
+      "best_status": "stop_not_triggered",
+      "disposition": "超出覆盖即停"
+    },
+    {
+      "axis": "offline.progress_effect",
+      "best_status": "stop_not_triggered",
+      "disposition": "超出覆盖即停"
+    },
+    {
+      "axis": "polling.direct_peer",
+      "best_status": "input_checked",
+      "disposition": "已定"
+    },
+    {
+      "axis": "polling.initial_cursor",
+      "best_status": "input_checked",
+      "disposition": "本版选值"
+    },
+    {
+      "axis": "polling.internal_scope",
+      "best_status": "not_exercised",
+      "disposition": "本版选值"
+    },
+    {
+      "axis": "polling.resume",
+      "best_status": "not_exercised",
+      "disposition": "本版选值"
+    },
+    {
+      "axis": "power.cell_rule",
+      "best_status": "input_checked",
+      "disposition": "本版选值"
+    },
+    {
+      "axis": "residence.nontransport",
+      "best_status": "not_exercised",
+      "disposition": "本版选值"
+    },
+    {
+      "axis": "transfer.resume_event",
+      "best_status": "not_exercised",
+      "disposition": "本版选值"
+    },
+    {
+      "axis": "warehouse.capacity",
+      "best_status": "input_checked",
+      "disposition": "已定"
+    },
+    {
+      "axis": "warehouse.periodic_lift",
+      "best_status": "proof_pending",
+      "disposition": "超出覆盖即停"
+    },
+    {
+      "axis": "warehouse.withdrawal_policy",
+      "best_status": "stop_not_triggered",
+      "disposition": "超出覆盖即停"
+    },
+    {
+      "axis": "warehouse.withdrawal_timing",
+      "best_status": "stop_not_triggered",
+      "disposition": "超出覆盖即停"
+    }
+  ]
+}

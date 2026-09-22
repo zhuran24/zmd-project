@@ -1,0 +1,242 @@
+[
+  {
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-kernel.json",
+    "boundaries": 4,
+    "axes": [
+      {
+        "axis": "warehouse.acceptance",
+        "coverage_status": "not_exercised",
+        "disposition": "本版选值",
+        "evidence": [
+          "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+        ],
+        "other_values": "其它值及其联合组合未覆盖",
+        "reason": "仅容量/仅路径等目标读法"
+      },
+      {
+        "axis": "warehouse.acceptance_quantifier",
+        "coverage_status": "not_exercised",
+        "disposition": "本版选值",
+        "evidence": [
+          "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+        ],
+        "other_values": "其它值及其联合组合未覆盖",
+        "reason": "验收状态条件及环境量词"
+      }
+    ],
+    "summary_keys": [
+      "completed_batches",
+      "crusher_next_output",
+      "crusher_phase",
+      "crusher_remaining",
+      "nonempty",
+      "tick",
+      "warehouse_ore"
+    ],
+    "tick_keys": [
+      [
+        "closure",
+        "events",
+        "state",
+        "summary",
+        "time"
+      ],
+      [
+        "closure",
+        "events",
+        "state",
+        "summary",
+        "time"
+      ]
+    ],
+    "state_keys": [
+      "environment",
+      "inventory",
+      "layout_snapshot",
+      "logistics",
+      "progress",
+      "semantic_context",
+      "settings_anchor",
+      "warehouse"
+    ]
+  },
+  {
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-checkpoint_delta-kernel.json",
+    "boundaries": 4,
+    "axes": [
+      {
+        "axis": "warehouse.acceptance",
+        "coverage_status": "not_exercised",
+        "disposition": "本版选值",
+        "evidence": [
+          "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+        ],
+        "other_values": "其它值及其联合组合未覆盖",
+        "reason": "仅容量/仅路径等目标读法"
+      },
+      {
+        "axis": "warehouse.acceptance_quantifier",
+        "coverage_status": "not_exercised",
+        "disposition": "本版选值",
+        "evidence": [
+          "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+        ],
+        "other_values": "其它值及其联合组合未覆盖",
+        "reason": "验收状态条件及环境量词"
+      }
+    ],
+    "summary_keys": [
+      "completed_batches",
+      "crusher_next_output",
+      "crusher_phase",
+      "crusher_remaining",
+      "nonempty",
+      "tick",
+      "warehouse_ore"
+    ],
+    "tick_keys": [
+      [
+        "closure",
+        "events",
+        "state",
+        "summary",
+        "time"
+      ],
+      [
+        "closure",
+        "delta",
+        "events",
+        "summary",
+        "time"
+      ]
+    ],
+    "state_keys": [
+      "environment",
+      "inventory",
+      "layout_snapshot",
+      "logistics",
+      "progress",
+      "semantic_context",
+      "settings_anchor",
+      "warehouse"
+    ]
+  },
+  {
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-kernel.json",
+    "boundaries": 12,
+    "axes": [
+      {
+        "axis": "warehouse.acceptance",
+        "coverage_status": "not_exercised",
+        "disposition": "本版选值",
+        "evidence": [
+          "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+        ],
+        "other_values": "其它值及其联合组合未覆盖",
+        "reason": "仅容量/仅路径等目标读法"
+      },
+      {
+        "axis": "warehouse.acceptance_quantifier",
+        "coverage_status": "not_exercised",
+        "disposition": "本版选值",
+        "evidence": [
+          "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+        ],
+        "other_values": "其它值及其联合组合未覆盖",
+        "reason": "验收状态条件及环境量词"
+      }
+    ],
+    "summary_keys": [
+      "delivered_to_boxes",
+      "nonempty",
+      "splitter_next_output",
+      "tick",
+      "warehouse_ore"
+    ],
+    "tick_keys": [
+      [
+        "closure",
+        "events",
+        "state",
+        "summary",
+        "time"
+      ],
+      [
+        "closure",
+        "events",
+        "state",
+        "summary",
+        "time"
+      ]
+    ],
+    "state_keys": [
+      "environment",
+      "inventory",
+      "layout_snapshot",
+      "logistics",
+      "progress",
+      "semantic_context",
+      "settings_anchor",
+      "warehouse"
+    ]
+  },
+  {
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-checkpoint_delta-kernel.json",
+    "boundaries": 12,
+    "axes": [
+      {
+        "axis": "warehouse.acceptance",
+        "coverage_status": "not_exercised",
+        "disposition": "本版选值",
+        "evidence": [
+          "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+        ],
+        "other_values": "其它值及其联合组合未覆盖",
+        "reason": "仅容量/仅路径等目标读法"
+      },
+      {
+        "axis": "warehouse.acceptance_quantifier",
+        "coverage_status": "not_exercised",
+        "disposition": "本版选值",
+        "evidence": [
+          "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+        ],
+        "other_values": "其它值及其联合组合未覆盖",
+        "reason": "验收状态条件及环境量词"
+      }
+    ],
+    "summary_keys": [
+      "delivered_to_boxes",
+      "nonempty",
+      "splitter_next_output",
+      "tick",
+      "warehouse_ore"
+    ],
+    "tick_keys": [
+      [
+        "closure",
+        "events",
+        "state",
+        "summary",
+        "time"
+      ],
+      [
+        "closure",
+        "delta",
+        "events",
+        "summary",
+        "time"
+      ]
+    ],
+    "state_keys": [
+      "environment",
+      "inventory",
+      "layout_snapshot",
+      "logistics",
+      "progress",
+      "semantic_context",
+      "settings_anchor",
+      "warehouse"
+    ]
+  }
+]

@@ -1,0 +1,85 @@
+{
+  "status": "PASS",
+  "reader_review": [
+    "结论限独立推演视角与D/G域，没有提升为全称或K线认证",
+    "字段处理、仓库依赖与闭包归纳均给当前节号或行号",
+    "主报告可独立阅读，附录保留未读S1时的初稿；窄充分条件与正文条件的差异已说明",
+    "实跑99轴与183项、29项局部复算、只核现有22项入口的范围分开",
+    "35份历史交付哈希与40份开工文件口径分开",
+    "所有交叉链接存在，JSON可解析且findings为空",
+    "最终JSON块置于reply.md末尾，字段完整",
+    "逐段重读后澄清闭包证明不要求两代表已有相同成品身份格，修正行号歧义并限定K线结论为本席未执行"
+  ],
+  "local_links_checked": 14,
+  "links": [
+    {
+      "source": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/复核-r9-独立推演.md",
+      "target": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/判等独立推演-r9.md"
+    },
+    {
+      "source": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/复核-r9-独立推演.md",
+      "target": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/r9-独立推演-证据/开工指纹.json"
+    },
+    {
+      "source": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/复核-r9-独立推演.md",
+      "target": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/r9-独立推演-证据/规格自查重跑.log"
+    },
+    {
+      "source": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/复核-r9-独立推演.md",
+      "target": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/r9-独立推演-证据/自查结果.json"
+    },
+    {
+      "source": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/复核-r9-独立推演.md",
+      "target": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/r9-独立推演-证据/独立局部复算.json"
+    },
+    {
+      "source": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/复核-r9-独立推演.md",
+      "target": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/r9-独立推演-证据/复核验证结果.json"
+    },
+    {
+      "source": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/判等独立推演-r9.md",
+      "target": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/复核-r9-独立推演.md"
+    },
+    {
+      "source": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/r9-独立推演-证据/reply.md",
+      "target": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/判等独立推演-r9.md"
+    },
+    {
+      "source": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/r9-独立推演-证据/reply.md",
+      "target": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/r9-独立推演-证据/开工指纹.json"
+    },
+    {
+      "source": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/r9-独立推演-证据/reply.md",
+      "target": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/r9-独立推演-证据/规格自查重跑.log"
+    },
+    {
+      "source": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/r9-独立推演-证据/reply.md",
+      "target": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/r9-独立推演-证据/自查结果.json"
+    },
+    {
+      "source": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/r9-独立推演-证据/reply.md",
+      "target": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/r9-独立推演-证据/独立局部复算.json"
+    },
+    {
+      "source": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/r9-独立推演-证据/reply.md",
+      "target": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/r9-独立推演-证据/复核验证结果.json"
+    },
+    {
+      "source": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/r9-独立推演-证据/reply.md",
+      "target": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/复核-r9-独立推演.md"
+    }
+  ],
+  "evidence_extensions": [
+    ".json",
+    ".log",
+    ".md",
+    ".py"
+  ],
+  "artifacts": {
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/判等独立推演-r9.md": "f15e8fd26a3a1b2bf47065f82ab8f6d6ad7f6bc84f1bb6944e798c42143ce9d9",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/复核-r9-独立推演.md": "88dfdee1ffa020a22dad2706fccaf4f5b91011e3bd547fcb01b6ab49f7d2c092",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/r9-独立推演-证据/reply.md": "f7562fe9bc4904ea8e482b1b34500130e3baff3e6b49a1fe00dafe5342c1d7aa",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/r9-独立推演-证据/最终结果.json": "99d1504f2be78a42116204a1fbd5beabf82b58fb7c4e4d8660495a83c57dd07e",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/r9-独立推演-证据/check_independent.py": "b28a69724e4a7de264f11508d2b9f6a0cf7afe575bc298a0838cb54755686cfb"
+  }
+}

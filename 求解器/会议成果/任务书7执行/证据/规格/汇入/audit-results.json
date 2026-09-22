@@ -1,0 +1,4884 @@
+{
+  "scope": "作者规格一致性、链接、保护文件与schema正负例检查；无内核运行、无游戏证书或独立复核声明",
+  "checks": [
+    {
+      "name": "输入原字节保持: 《明日方舟：终末地》游戏规则.txt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "输入原字节保持: 求解任务.txt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "输入原字节保持: 求解约束.txt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "输入原字节保持: 候选约束.txt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "输入原字节保持: 求解器/会议成果/任务书7执行/受限转移定义-§6.5替换稿.md",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "输入原字节保持: 求解器/会议成果/任务书7执行/规格修改稿-任务6.md",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "输入原字节保持: 求解器/会议成果/任务书7执行/相位离线与认证范围.md",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "输入原字节保持: 求解器/会议成果/任务书7执行/仓库接收与循环对应.md",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:time.domain:0",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:time.instant_order:1",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:time.retry_schedule:2",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:time.instant_end:3",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:time.boundary:4",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:time.manufacture_events:5",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:judgment.order_scope:6",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:judgment.order:7",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:judgment.buffer_event_class:8",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:polling.initial_cursor:9",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:polling.split_merge_start:10",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:polling.ungraded_blocked:11",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:polling.dual_permission:12",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:polling.memory_scope:13",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:polling.resume:14",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:polling.eligibility_stage:15",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:polling.membership_change:16",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:polling.internal_scope:17",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:polling.direct_peer:18",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:polling.level_tie:19",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:damping.belt_component_rule:20",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:damping.belt_adjacency:21",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:damping.branch:22",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:damping.no_terminal:23",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:connection.build_order:24",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:connection.order:25",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:connection.tie:26",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:connection.port_meeting:27",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:connection.bridge_first_contact:28",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:connection.bridge_tie:29",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:transfer.judgment:30",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:transfer.cooldown_scope:31",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:transfer.phase:32",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:transfer.pause:33",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:transfer.failure_cooldown:34",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:transfer.partial_acceptance:35",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:transfer.resume_event:36",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:manufacturing.port_slot_relation:37",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:manufacturing.input_mixing:38",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:manufacturing.input_capacity_scope:39",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:manufacturing.recipe_match_scope:40",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:manufacturing.recipe_completeness:41",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:manufacturing.recipe_selection:42",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:manufacturing.recipe_lock_time:43",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:manufacturing.input_slot_selection:44",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:manufacturing.empty_slot_identity:45",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:manufacturing.input_collection:46",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:manufacturing.buffer_power_gate:47",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:manufacturing.output_blocked:48",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:gate.identity_subject:49",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:gate.identity_recovery:50",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:gate.window_recovery:51",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:gate.total_recovery:52",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:gate.window_clock:53",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:gate.reconnect_record:54",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:gate.limit_requires_identity:55",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:gate.counter_edit:56",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:gate.counter_start:57",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:gate.cancel_limit:58",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:offline.order_domain:59",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:offline.events:60",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:offline.cursor_effect:61",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:offline.inventory_effect:62",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:offline.progress_effect:63",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:offline.direction_effect:64",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:offline.gate_total_effect:65",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:offline.gate_window_effect:66",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:offline.gate_window_start_effect:67",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:initialization.warehouse_anchor:68",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:initialization.other_inventory:69",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:initialization.switches:70",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:initialization.build_timing:71",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:initialization.debug_actions:72",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:initialization.rotation_stage:73",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:initialization.rebuild_inventory:74",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:initialization.debug_end:75",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:warehouse.capacity:76",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:warehouse.acceptance:77",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:warehouse.acceptance_quantifier:78",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:warehouse.withdrawal_policy:79",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:warehouse.withdrawal_timing:80",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:warehouse.external_supply:81",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:warehouse.delivery_count:82",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:warehouse.empty_slot_identity:83",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:warehouse.periodic_lift:84",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:bridge.inventory_scope:85",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:bridge.capacity:86",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:bridge.scheduling_scope:87",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:power.cell_rule:88",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:residence.nontransport:89",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:cascade.buffer:90",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:polling.split_merge_scope:91",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:polling.split_merge_singleton:92",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:polling.both_failure:93",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:connection.belt_shape:94",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:initialization.belt_shape_lifecycle:95",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:gate.concurrent_expiry:96",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:manufacturing.recipe_quantity_match:97",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:manufacturing.recipe_extra_items:98",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:time.domain:0",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:time.instant_order:1",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:time.retry_schedule:2",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:time.instant_end:3",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:time.boundary:4",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:time.manufacture_events:5",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:judgment.order_scope:6",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:judgment.order:7",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:judgment.buffer_event_class:8",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:polling.initial_cursor:9",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:polling.split_merge_start:10",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:polling.ungraded_blocked:11",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:polling.dual_permission:12",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:polling.memory_scope:13",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:polling.resume:14",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:polling.eligibility_stage:15",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:polling.membership_change:16",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:polling.internal_scope:17",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:polling.direct_peer:18",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:polling.level_tie:19",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:damping.belt_component_rule:20",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:damping.belt_adjacency:21",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:damping.branch:22",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:damping.no_terminal:23",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:connection.build_order:24",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:connection.order:25",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:connection.tie:26",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:connection.port_meeting:27",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:connection.bridge_first_contact:28",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:connection.bridge_tie:29",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:transfer.judgment:30",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:transfer.cooldown_scope:31",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:transfer.phase:32",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:transfer.pause:33",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:transfer.failure_cooldown:34",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:transfer.partial_acceptance:35",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:transfer.resume_event:36",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:manufacturing.port_slot_relation:37",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:manufacturing.input_mixing:38",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:manufacturing.input_capacity_scope:39",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:manufacturing.recipe_match_scope:40",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:manufacturing.recipe_completeness:41",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:manufacturing.recipe_selection:42",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:manufacturing.recipe_lock_time:43",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:manufacturing.input_slot_selection:44",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:manufacturing.empty_slot_identity:45",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:manufacturing.input_collection:46",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:manufacturing.buffer_power_gate:47",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:manufacturing.output_blocked:48",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:gate.identity_subject:49",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:gate.identity_recovery:50",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:gate.window_recovery:51",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:gate.total_recovery:52",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:gate.window_clock:53",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:gate.reconnect_record:54",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:gate.limit_requires_identity:55",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:gate.counter_edit:56",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:gate.counter_start:57",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:gate.cancel_limit:58",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:offline.order_domain:59",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:offline.events:60",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:offline.cursor_effect:61",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:offline.inventory_effect:62",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:offline.progress_effect:63",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:offline.direction_effect:64",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:offline.gate_total_effect:65",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:offline.gate_window_effect:66",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:offline.gate_window_start_effect:67",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:initialization.warehouse_anchor:68",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:initialization.other_inventory:69",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:initialization.switches:70",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:initialization.build_timing:71",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:initialization.debug_actions:72",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:initialization.rotation_stage:73",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:initialization.rebuild_inventory:74",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:initialization.debug_end:75",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:warehouse.capacity:76",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:warehouse.acceptance:77",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:warehouse.acceptance_quantifier:78",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:warehouse.withdrawal_policy:79",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:warehouse.withdrawal_timing:80",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:warehouse.external_supply:81",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:warehouse.delivery_count:82",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:warehouse.empty_slot_identity:83",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:warehouse.periodic_lift:84",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:bridge.inventory_scope:85",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:bridge.capacity:86",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:bridge.scheduling_scope:87",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:power.cell_rule:88",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:residence.nontransport:89",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:cascade.buffer:90",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:polling.split_merge_scope:91",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:polling.split_merge_singleton:92",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:polling.both_failure:93",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:connection.belt_shape:94",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:initialization.belt_shape_lifecycle:95",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:gate.concurrent_expiry:96",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:manufacturing.recipe_quantity_match:97",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:manufacturing.recipe_extra_items:98",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:time.domain:0",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:time.instant_order:1",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:time.retry_schedule:2",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:time.instant_end:3",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:time.boundary:4",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:time.manufacture_events:5",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:judgment.order_scope:6",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:judgment.order:7",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:judgment.buffer_event_class:8",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:polling.initial_cursor:9",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:polling.split_merge_start:10",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:polling.ungraded_blocked:11",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:polling.dual_permission:12",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:polling.memory_scope:13",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:polling.resume:14",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:polling.eligibility_stage:15",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:polling.membership_change:16",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:polling.internal_scope:17",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:polling.direct_peer:18",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:polling.level_tie:19",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:damping.belt_component_rule:20",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:damping.belt_adjacency:21",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:damping.branch:22",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:damping.no_terminal:23",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:connection.build_order:24",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:connection.order:25",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:connection.tie:26",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:connection.port_meeting:27",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:connection.bridge_first_contact:28",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:connection.bridge_tie:29",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:transfer.judgment:30",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:transfer.cooldown_scope:31",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:transfer.phase:32",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:transfer.pause:33",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:transfer.failure_cooldown:34",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:transfer.partial_acceptance:35",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:transfer.resume_event:36",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:manufacturing.port_slot_relation:37",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:manufacturing.input_mixing:38",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:manufacturing.input_capacity_scope:39",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:manufacturing.recipe_match_scope:40",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:manufacturing.recipe_completeness:41",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:manufacturing.recipe_selection:42",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:manufacturing.recipe_lock_time:43",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:manufacturing.input_slot_selection:44",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:manufacturing.empty_slot_identity:45",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:manufacturing.input_collection:46",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:manufacturing.buffer_power_gate:47",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:manufacturing.output_blocked:48",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:gate.identity_subject:49",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:gate.identity_recovery:50",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:gate.window_recovery:51",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:gate.total_recovery:52",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:gate.window_clock:53",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:gate.reconnect_record:54",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:gate.limit_requires_identity:55",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:gate.counter_edit:56",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:gate.counter_start:57",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:gate.cancel_limit:58",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:offline.order_domain:59",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:offline.events:60",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:offline.cursor_effect:61",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:offline.inventory_effect:62",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:offline.progress_effect:63",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:offline.direction_effect:64",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:offline.gate_total_effect:65",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:offline.gate_window_effect:66",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:offline.gate_window_start_effect:67",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:initialization.warehouse_anchor:68",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:initialization.other_inventory:69",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:initialization.switches:70",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:initialization.build_timing:71",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:initialization.debug_actions:72",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:initialization.rotation_stage:73",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:initialization.rebuild_inventory:74",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:initialization.debug_end:75",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:warehouse.capacity:76",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:warehouse.acceptance:77",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:warehouse.acceptance_quantifier:78",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:warehouse.withdrawal_policy:79",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:warehouse.withdrawal_timing:80",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:warehouse.external_supply:81",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:warehouse.delivery_count:82",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:warehouse.empty_slot_identity:83",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:warehouse.periodic_lift:84",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:bridge.inventory_scope:85",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:bridge.capacity:86",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:bridge.scheduling_scope:87",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:power.cell_rule:88",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:residence.nontransport:89",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:cascade.buffer:90",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:polling.split_merge_scope:91",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:polling.split_merge_singleton:92",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:polling.both_failure:93",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:connection.belt_shape:94",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:initialization.belt_shape_lifecycle:95",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:gate.concurrent_expiry:96",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:manufacturing.recipe_quantity_match:97",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "表行无重复:manufacturing.recipe_extra_items:98",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "四份99轴恰集一致",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:polling.direct_peer",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:polling.direct_peer",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:connection.port_meeting",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:connection.port_meeting",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:initialization.rotation_stage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:initialization.rotation_stage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:gate.window_recovery",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:gate.window_recovery",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:transfer.judgment",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:transfer.judgment",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:manufacturing.port_slot_relation",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:manufacturing.port_slot_relation",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:manufacturing.output_blocked",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:manufacturing.output_blocked",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:gate.limit_requires_identity",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:gate.limit_requires_identity",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:warehouse.capacity",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:warehouse.capacity",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:warehouse.delivery_count",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:warehouse.delivery_count",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:bridge.inventory_scope",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:bridge.inventory_scope",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:bridge.scheduling_scope",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:bridge.scheduling_scope",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:time.domain",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:time.domain",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:time.instant_order",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:time.instant_order",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:time.retry_schedule",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:time.retry_schedule",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:time.instant_end",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:time.instant_end",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:time.boundary",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:time.boundary",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:time.manufacture_events",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:time.manufacture_events",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:judgment.order_scope",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:judgment.order_scope",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:judgment.buffer_event_class",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:judgment.buffer_event_class",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:polling.initial_cursor",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:polling.initial_cursor",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:polling.split_merge_start",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:polling.split_merge_start",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:polling.split_merge_scope",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:polling.split_merge_scope",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:polling.split_merge_singleton",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:polling.split_merge_singleton",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:polling.ungraded_blocked",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:polling.ungraded_blocked",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:polling.dual_permission",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:polling.dual_permission",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:polling.both_failure",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:polling.both_failure",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:polling.memory_scope",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:polling.memory_scope",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:polling.resume",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:polling.resume",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:polling.eligibility_stage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:polling.eligibility_stage",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:polling.membership_change",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:polling.membership_change",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:polling.internal_scope",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:polling.internal_scope",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:polling.level_tie",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:polling.level_tie",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:damping.belt_component_rule",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:damping.belt_component_rule",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:damping.belt_adjacency",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:damping.belt_adjacency",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:connection.bridge_first_contact",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:connection.bridge_first_contact",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:transfer.cooldown_scope",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:transfer.cooldown_scope",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:transfer.pause",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:transfer.pause",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:transfer.failure_cooldown",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:transfer.failure_cooldown",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:transfer.partial_acceptance",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:transfer.partial_acceptance",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:transfer.resume_event",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:transfer.resume_event",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:manufacturing.input_mixing",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:manufacturing.input_mixing",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:manufacturing.input_capacity_scope",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:manufacturing.input_capacity_scope",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:manufacturing.recipe_match_scope",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:manufacturing.recipe_match_scope",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:manufacturing.recipe_completeness",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:manufacturing.recipe_completeness",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:manufacturing.recipe_lock_time",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:manufacturing.recipe_lock_time",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:manufacturing.empty_slot_identity",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:manufacturing.empty_slot_identity",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:manufacturing.input_collection",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:manufacturing.input_collection",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:manufacturing.buffer_power_gate",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:manufacturing.buffer_power_gate",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:gate.identity_subject",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:gate.identity_subject",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:gate.identity_recovery",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:gate.identity_recovery",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:gate.total_recovery",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:gate.total_recovery",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:gate.window_clock",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:gate.window_clock",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:gate.reconnect_record",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:gate.reconnect_record",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:gate.counter_start",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:gate.counter_start",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:initialization.belt_shape_lifecycle",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:initialization.belt_shape_lifecycle",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:warehouse.acceptance",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:warehouse.acceptance",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:warehouse.acceptance_quantifier",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:warehouse.acceptance_quantifier",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:warehouse.empty_slot_identity",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:warehouse.empty_slot_identity",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:bridge.capacity",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:bridge.capacity",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:power.cell_rule",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:power.cell_rule",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:residence.nontransport",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:residence.nontransport",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:cascade.buffer",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:cascade.buffer",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:judgment.order",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:judgment.order",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:damping.branch",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:damping.branch",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:connection.build_order",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:connection.build_order",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:connection.order",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:connection.order",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:connection.tie",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:connection.tie",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:connection.belt_shape",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:connection.belt_shape",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:transfer.phase",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:transfer.phase",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:manufacturing.recipe_selection",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:manufacturing.recipe_selection",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:manufacturing.input_slot_selection",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:manufacturing.input_slot_selection",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:initialization.warehouse_anchor",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:initialization.warehouse_anchor",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:initialization.other_inventory",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:initialization.other_inventory",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:initialization.switches",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:initialization.switches",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:initialization.build_timing",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:initialization.build_timing",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:initialization.debug_end",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:initialization.debug_end",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:warehouse.external_supply",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:warehouse.external_supply",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:damping.no_terminal",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:damping.no_terminal",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:connection.bridge_tie",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:connection.bridge_tie",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:gate.counter_edit",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:gate.counter_edit",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:gate.cancel_limit",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:gate.cancel_limit",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:offline.order_domain",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:offline.order_domain",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:offline.events",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:offline.events",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:offline.cursor_effect",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:offline.cursor_effect",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:offline.inventory_effect",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:offline.inventory_effect",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:offline.progress_effect",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:offline.progress_effect",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:offline.direction_effect",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:offline.direction_effect",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:offline.gate_total_effect",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:offline.gate_total_effect",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:offline.gate_window_effect",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:offline.gate_window_effect",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:offline.gate_window_start_effect",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:offline.gate_window_start_effect",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:initialization.debug_actions",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:initialization.debug_actions",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:initialization.rebuild_inventory",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:initialization.rebuild_inventory",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:warehouse.withdrawal_policy",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:warehouse.withdrawal_policy",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:warehouse.withdrawal_timing",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:warehouse.withdrawal_timing",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:warehouse.periodic_lift",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:warehouse.periodic_lift",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:gate.concurrent_expiry",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:gate.concurrent_expiry",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:manufacturing.recipe_quantity_match",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:manufacturing.recipe_quantity_match",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "生命周期三处一致:manufacturing.recipe_extra_items",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "配置与模型处置一致:manufacturing.recipe_extra_items",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "当前处置计数",
+      "passed": true,
+      "detail": {
+        "已定": 22,
+        "本版选值": 44,
+        "由输入全称量化": 15,
+        "超出覆盖即停": 18
+      }
+    },
+    {
+      "name": "已定字段:judgment.order_scope",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "已定字段:transfer.failure_cooldown",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "已定字段:warehouse.acceptance",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "已定字段:warehouse.acceptance_quantifier",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "固定排序F",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "当前源指纹:运行语义.md",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "旧口径清除:运行语义.md",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "相对链接存在:运行语义.md:选择点清单",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点清单.md"
+    },
+    {
+      "name": "相对链接存在:运行语义.md:四件前置义务对照",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/四件前置义务对照.md"
+    },
+    {
+      "name": "相对链接存在:运行语义.md:规则覆盖表",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/规则覆盖表.md"
+    },
+    {
+      "name": "相对链接存在:运行语义.md:受限模型声明",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限模型声明.md"
+    },
+    {
+      "name": "相对链接存在:运行语义.md:正式静态目录",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json"
+    },
+    {
+      "name": "相对链接存在:运行语义.md:送料契约",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/数据/送料契约.md"
+    },
+    {
+      "name": "相对链接存在:运行语义.md:选择点参数轴",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md"
+    },
+    {
+      "name": "相对链接存在:运行语义.md:受限模型声明",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限模型声明.md"
+    },
+    {
+      "name": "相对链接存在:运行语义.md:受限转移定义",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md"
+    },
+    {
+      "name": "相对链接存在:运行语义.md:受限模型声明",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限模型声明.md"
+    },
+    {
+      "name": "相对链接存在:运行语义.md:受限转移定义",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md"
+    },
+    {
+      "name": "当前源指纹:选择点清单.md",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "旧口径清除:选择点清单.md",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "相对链接存在:选择点清单.md:运行语义§1",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/运行语义.md"
+    },
+    {
+      "name": "相对链接存在:选择点清单.md:运行语义 §1",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/运行语义.md"
+    },
+    {
+      "name": "相对链接存在:选择点清单.md:选择点参数轴",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md"
+    },
+    {
+      "name": "相对链接存在:选择点清单.md:受限模型声明",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限模型声明.md"
+    },
+    {
+      "name": "相对链接存在:选择点清单.md:内核输入",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md"
+    },
+    {
+      "name": "相对链接存在:选择点清单.md:内核输入",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md"
+    },
+    {
+      "name": "相对链接存在:选择点清单.md:主会话三审 §6",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/主会话三审-0920.md"
+    },
+    {
+      "name": "当前源指纹:选择点参数轴.md",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "旧口径清除:选择点参数轴.md",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "相对链接存在:选择点参数轴.md:运行语义§1",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/运行语义.md"
+    },
+    {
+      "name": "相对链接存在:选择点参数轴.md:内核输入",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md"
+    },
+    {
+      "name": "相对链接存在:选择点参数轴.md:内核输入",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md"
+    },
+    {
+      "name": "相对链接存在:选择点参数轴.md:第3轮独立清单",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/选择点独立清单-r3.md"
+    },
+    {
+      "name": "当前源指纹:受限模型声明.md",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "旧口径清除:受限模型声明.md",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "相对链接存在:受限模型声明.md:运行语义§1",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/运行语义.md"
+    },
+    {
+      "name": "相对链接存在:受限模型声明.md:规格回填",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/规格回填.md"
+    },
+    {
+      "name": "相对链接存在:受限模型声明.md:选择点参数轴",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md"
+    },
+    {
+      "name": "相对链接存在:受限模型声明.md:内核配置-v1.json",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    },
+    {
+      "name": "相对链接存在:受限模型声明.md:受限转移定义",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md"
+    },
+    {
+      "name": "相对链接存在:受限模型声明.md:t,t+1) | 据：滞留、配方、传输、物品准入口 | 其他边界组织 | 边界敏感认证前 |\n| `time.manufacture_events` | 本版选值 | `\"completion_before_closure\"`：工作量耗足的完成在边界阶段入缓存，按输入制造模板序办理；入料齐备且启用时立即开工 | 据：制造、需电功能、配方、判定 | 完成穿插判定、其他同刻位置 | 制造时序或混做认证前 |\n| `judgment.order_scope` | 已定 | `\"fixed_run_order\"`：判定比较规则整场固定，贯穿各时刻、失败重试和离线接续；global模板扫描是其一种工程表示 | 据：任务L15；约束L3、L10；任务6 SP-02/PA-08 | 固定性已定；重复实例嵌入和全部固定排序的覆盖仍须证明 | 任务8拒绝运行中改写排序；重复实例嵌入按具体支持域复核 |\n| `judgment.order` | 由输入全称量化 | `{\"interface\":\"event-order-v1\"}`：输入给整场固定的事件身份、比较序和重复实例嵌入；本配置以global/event-order-v1表达 | 据：规则L25；任务L15；约束L10；任务6 SP-02 | 其它合法固定排序及重复实例嵌入待覆盖；per_instant改变相对序仅作诊断 | 首次对该输入族作全称结论前，证明域与覆盖；缺具体值则拒绝运行 |\n| `judgment.buffer_event_class` | 本版选值 | `\"manufacture_subactions\"`：缓存整批输出/整批输入为一次制造判定内子动作，输出先于新批输入；保留BC结构和记录 | 据：缓存格、通道、判定 | BC独立移动判定与其交织 | 内部通道语义认证前 |\n| `polling.initial_cursor` | 本版选值 | `\"first_connected\"`：普通单位新级起点取级内接通序首条；并列用输入connection.tie | 据：轮询、接通 | 其他普通起点 | 建造/起动全称覆盖前 |\n| `polling.split_merge_start` | 本版选值 | `\"second_cursor\"`：保留全部成员，新轮询环取计数范围的第二条 | 据：轮询 | exclude_first及start_on_second | 分汇流鲁棒认证前 |\n| `polling.ungraded_blocked` | 本版选值 | `\"empty_turn\"`：不分级侧轮到不可动边也做失败判定并前移 | 据：轮询、优先级、取货优先级 | skip前瞻跳过；本组合与已采纳动态约束的普遍相容性待审，场景见普遍审查场景 | 分流序列认证前 |\n| `polling.dual_permission` | 本版选值 | `\"both\"`：成功需两端许可；任一侧授权即触发通道判定，不把成功守卫当尝试守卫 | 据：轮询、优先级、判定 | either_trigger及其他请求协调 | 调度鲁棒性结论前 |\n| `polling.memory_scope` | 本版选值 | `\"per_level\"`：每单位每侧每级保存next_channel与current_level；不分级侧一个环 | 据：轮询、优先级 | per_side全局位置投影 | 级间抢占覆盖前 |\n| `polling.resume` | 本版选值 | `\"retain_position\"`：返回某级保留续接位置，不重置为最早或第二条 | 据：轮询、优先级、约束·轮询均分 | 回级重置及全侧投影 | 轮询均分全前件核验前 |\n| `polling.eligibility_stage` | 本版选值 | `\"pre_filter\"`：先以物理守卫筛最高可动级；双端指针不进入物理可动谓词，见转移§3 | 据：优先级、判定 | 探测后筛级的组织 | 优先级语义覆盖前 |\n| `polling.membership_change` | 本版选值 | `\"retain_survivors\"`：每笔图变更事务以完整前后图映射一次：保留存活续接位，否则沿旧环找存活者，新环按完整接通序初始化 | 据：通道、物品准入口、轮询、离线 | 重新起轮与其他映射 | 准入口恢复/结构切换认证前 |\n| `polling.internal_scope` | 本版选值 | `\"external_only\"`：BC不入端口轮询或通道分级，由制造子动作处理 | 据：缓存格、轮询、取货优先级、存货优先级 | include_buffer_levels的归级机制尚缺 | 内部通道分级覆盖前 |\n| `polling.direct_peer` | 已定 | `\"physical_peer\"`：直接接等于PC的另一端 | 据：通道、端口、取货优先级、存货优先级 | 该已定范围无读法损失；关联未定轴另记 | 不补已排除值；输入不匹配即invalid |\n| `polling.level_tie` | 本版选值 | `\"fixed_arbitration\"`：正式级排序键全等时用输入的级全序；键不等不得反转；与接通并列序分开 | 据：取货优先级、存货优先级、接通 | 并列级联合轮询及其他仲裁 | 级平局鲁棒覆盖前 |\n| `damping.belt_component_rule` | 本版选值 | `\"path_runs\"`：按实际选中路径的极大连续带串计元件 | 据：元件、阻尼；T4 | geometric_components | 阻尼几何解释覆盖前 |\n| `damping.belt_adjacency` | 本版选值 | `\"shared_edge\"`：几何连续时采用共边；本版path_runs不调用此值，显式保存以便迁移 | 据：元件的“连续” | 角触连通的待审域 | 启用geometric_components前 |\n| `damping.branch` | 由输入全称量化 | `{\"interface\":\"damping-branch-v2\"}`：输入整场固定的(fork_unit,available_channels)到outgoing_channel表，按当前非空可用出支集合查询；切支与恢复重新查表 | 据：规则L27阻尼、L64准入口；约束·分叉分支；内核输入§5.3 | 覆盖局部出支集上的确定性无记忆策略；依赖查询起点、其它图状态或历史的选择未覆盖；无终点仍停止 | 实现v2总表与图变更重算；旧表须显式扩展，不能默填失活后的选择 |\n| `damping.no_terminal` | 超出覆盖即停 | `{\"policy\":\"stop\",\"trigger\":\"请求求阻尼而所选路径无下一非运输终点\"}`：仅在非运输取货侧有两个以上非空级需比较阻尼而所选路径无终点时停止；零级/单级按规则短路 | 据：规则L27、L30—31；任务6 SP-03/PA-01 | 多级所需无终点数值及完整分支历史未覆盖；逐单位零级/单级消去见PA-01 | 先核全部实际通道和级数；需阻尼比较时给有据数值或完整覆盖证明 |\n| `connection.build_order` | 由输入全称量化 | `{\"interface\":\"construction.selected_order\"}`：输入完整合法建成史；从已选种子开始的实验不补造建造过程 | 据：蓝图、建造方式 | 未回放的其他建造史仍欠覆盖 | 首次对该输入族作全称结论前，证明域与覆盖；缺具体值则拒绝运行 |\n| `connection.order` | 由输入全称量化 | `{\"interface\":\"timeline_connection_history\"}`：初始较晚建造端的时刻关系与当前顺序来自输入；不默认通道全排列 | 据：接通、离线、约束·接通先后 | 离线接续触发即停 | 首次对该输入族作全称结论前，证明域与覆盖；缺具体值则拒绝运行 |\n| `connection.tie` | 由输入全称量化 | `{\"interface\":\"explicit_channel_order\"}`：输入通道严格全序只用于真实接通时刻并列，保留原并列事实 | 据：接通、轮询 | 不遍历仲裁不等于仲裁鲁棒 | 首次对该输入族作全称结论前，证明域与覆盖；缺具体值则拒绝运行 |\n| `connection.port_meeting` | 已定 | `\"shared_edge_opposite\"`：相邻格共边全长重合、法向相反、存取互补且至少一端运输；角点接触不成通道 | 据：规则L12、L16；约束L28、L94、L100、L123；主会话三审-0920.md §6 owner 09-21裁定 | 已定规则范围内无备选；实现及关联推导见受限转移定义 | 任务8核对实现；规则回填不代表行为已验收 |\n| `connection.bridge_first_contact` | 本版选值 | `\"physical_contact\"`：只在无环且唯一已知非桥先接见证下逐轴解定向 | 据：桥接器、通道、接通 | 有向成边先接及递归定向 | 桥互依赖实例运行前 |\n| `connection.bridge_tie` | 超出覆盖即停 | `{\"policy\":\"stop\",\"trigger\":\"先接并列或桥互依赖，不能由唯一无环见证定向\"}`：先接并列或桥互依赖，不能由唯一无环见证定向时返回unsupported；按该字段具体未完成后效报告工程停止 | 据：桥接器、蓝图、通道 | 该事件/证明域全部未覆盖；stop是工程处置，不是游戏枚举值 | 实现该字段的有据后效并补相应证明并更新配置版本后才恢复 |\n| `transfer.judgment` | 已定 | `\"unit\"`：一个箱一次原子传输判定 | 据：判定（一个单位一次）、传输（自身所有格所有物品） | 该已定范围无读法损失；关联未定轴另记 | 不补已排除值；输入不匹配即invalid |\n| `transfer.cooldown_scope` | 已定 | `\"box\"`：协议储存箱传输采用箱级5 tick冷却；初始相位单列 | 据：规则L25、L36；v46 S-D03；任务书7 §1.1 | 已定规则范围内无备选；实现及关联推导见受限转移定义 | 任务8核对实现；规则回填不代表行为已验收 |\n| `transfer.phase` | 由输入全称量化 | `{\"interface\":\"progress.cooldowns\"}`：每箱输入整数剩余0…5及初态据；无箱且不增箱才可不适用 | 据：规则L36；约束L3、L8—9 | 非整数残余及未验证初态史；传输相位全取值义务保留 | 首次对该输入族作全称结论前，证明域与覆盖；缺具体值则拒绝运行 |\n| `transfer.pause` | 本版选值 | `\"pause_with_function\"`：冷却随需电功能停用暂停，恢复续减 | 据：需电功能、传输 | 墙钟继续计冷却 | 断电/开关认证前 |\n| `transfer.failure_cooldown` | 已定 | `\"every_attempt\"`：空箱、全拒收、部分送出、全部送出每次尝试均开始箱级5 tick冷却 | 据：规则L25、L36；主会话三审§6；任务6 SP-01 | 零传输冷却事实已定；断电恢复和部分扣格后态另核 | 任务8检查空箱及全拒收均起5 tick冷却 |\n| `transfer.partial_acceptance` | 已定 | `\"max_receivable\"`：一次单位判定按各物种现有余量尽量传输；可接部分立即送入，余货留箱 | 据：规则L36“能送多少送多少”、L13、L41；主会话三审-0920.md §6 | 当前Rust传输函数仍为旧实现，任务8须迁移部分接收、残留格与台账 | 任务8核对实现；规则回填不代表行为已验收 |\n| `transfer.resume_event` | 本版选值 | `\"ready_in_closure\"`：恢复且到期的箱在同刻扫描中尝试，不插未登记的额外冷却 | 据：需电功能、传输 | 其他恢复日程 | 停用/恢复认证前 |\n| `manufacturing.port_slot_relation` | 已定 | `\"distributed\"`：制造存取端口只访问同名格 | 据：存货/取货端口、通道、存货/取货物品格 | 该已定范围无读法损失；关联未定轴另记 | 不补已排除值；输入不匹配即invalid |\n| `manufacturing.input_mixing` | 本版选值 | `\"single_kind\"`：甲读法：任意种可进空格，单格不并存多种；跨批混做仍可 | 据：物品格、存货/取货物品格 | 乙混装与多候选竞争 | 混装覆盖前 |\n| `manufacturing.input_capacity_scope` | 本版选值 | `\"per_slot_total\"`：存货格合计≤50；甲下逐种计数数值虽同，语义仍分轴 | 据：存货/取货物品格 | per_kind | 启用混装时 |\n| `manufacturing.recipe_match_scope` | 本版选值 | `\"input_union\"`：按全部输入格并集匹配，不按单格独自求值 | 据：缓存格、大制造单位 | per_slot | 开闸语义覆盖前 |\n| `manufacturing.recipe_completeness` | 本版选值 | `\"full_batch\"`：开闸前所需物种及一批用量备齐；超量及额外物种另由两条匹配轴约束 | 据：缓存格、制造、配方 | all_kinds/partial_kinds | 部分归集及缓存抽象前 |\n| `manufacturing.recipe_selection` | 由输入全称量化 | `{\"interface\":\"explicit_recipe_order\"}`：输入各机型所有配方全序，匹配首条；本版甲＋并集＋整批下至多一条 | 据：缓存格、配方、设定 | 到达史/接通派生选择；本版通常不激活竞争 | 首次对该输入族作全称结论前，证明域与覆盖；缺具体值则拒绝运行 |\n| `manufacturing.recipe_lock_time` | 本版选值 | `\"on_gate_open\"`：开闸锁配方；制造子动作内一批归集 | 据：缓存格、制造 | 首件/齐料后锁定 | 允许分步归集前 |\n| `manufacturing.input_slot_selection` | 由输入全称量化 | `{\"interface\":\"explicit_slot_order\"}`：已有物种用其现格，否则按输入格全序取合法空格 | 据：物品格、大制造单位、协议储存箱 | 端口关联、先空、接通派生选择 | 首次对该输入族作全称结论前，证明域与覆盖；缺具体值则拒绝运行 |\n| `manufacturing.empty_slot_identity` | 本版选值 | `\"release_on_empty\"`：制造格清空后可重新赋种，不保留禁入锁 | 据：物品格、约束·满载配置 | 保留历史身份 | 混做/选格覆盖前 |\n| `manufacturing.input_collection` | 本版选值 | `\"atomic_batch\"`：一次制造判定内整批用量归集，逐条BC记账而不穿插其他事件 | 据：缓存格、判定 | 分步归集与暂停状态 | 部分开闸覆盖前 |\n| `manufacturing.buffer_power_gate` | 本版选值 | `\"manufacturing_only\"`：内部搬运不需电；齐料停用时等待，恢复后立刻开始；工作进度暂停 | 据：需电功能、制造、缓存格 | 内部搬运随功能停用 | 断电缓存覆盖前 |\n| `manufacturing.output_blocked` | 已定 | `\"retain_whole_batch\"`：目标不兼容、容量不足或任一存货格已占产物时整批留缓存，保持completed，不拆批 | 据：缓存格、物品格 | 该已定范围无读法损失；关联未定轴另记 | 不补已排除值；输入不匹配即invalid |\n| `gate.identity_subject` | 本版选值 | `\"candidate_item\"`：检查当前几何对接的候选来件，阻断状态也须按现值复核恢复资格；具体观察事件待任务6 | 据：规则L16、L64；v46 N-F19 | 当前条件恢复已定；观察、维护与判定的交织尚缺推导 | 身份恢复认证前 |\n| `gate.identity_recovery` | 已定 | `\"current_conditions\"`：当前身份相符即解除身份阻断原因；全部原因消失恢复接收资格 | 据：规则L16、L22、L64；v46 N-F19 | 当前Rust身份锁存实现待任务8替换；恢复后的接通记账、轮询和同刻组织仍待任务6 | 任务8核对实现；规则回填不代表行为已验收 |\n| `gate.window_recovery` | 已定 | `\"on_expiry_if_other_guards\"`：满5 tick解除窗口耗尽原因，其他原因分别保留 | 据：物品准入口、约束·准入累计、约束·来源定序 | 该已定范围无读法损失；关联未定轴另记 | 不补已排除值；输入不匹配即invalid |\n| `gate.total_recovery` | 已定 | `\"current_conditions\"`：同一门累计数n保持；当前阈值C>n解除累计阻断，C<=n继续阻断 | 据：规则L16、L22、L64；v46 N-F19 | 已定规则范围内无备选；实现及关联推导见受限转移定义 | 任务8核对实现；规则回填不代表行为已验收 |\n| `gate.window_clock` | 已定 | `\"wall_clock\"`：首件开启5 tick窗口；走完清窗口计数并等待下一件重起；全时段累计数保留 | 据：规则L64“该5 tick从它收下的第一件物品起算、走完后由下一件物品重新起算”；v46 S-D04 | 已定规则范围内无备选；实现及关联推导见受限转移定义 | 任务8核对实现；规则回填不代表行为已验收 |\n| `gate.reconnect_record` | 本版选值 | `\"original_build_record\"`：恢复原几何边及其较晚建造记录；恢复事件另记，不虚构建造 | 据：接通、物品准入口 | 恢复新记录与建造时刻衔接 | 准入口重接解释覆盖前 |\n| `gate.limit_requires_identity` | 已定 | `true`：先设放行物种，才可设两类限额 | 据：物品准入口 | 该已定范围无读法损失；关联未定轴另记 | 不补已排除值；输入不匹配即invalid |\n| `gate.counter_edit` | 超出覆盖即停 | `{\"policy\":\"stop\",\"trigger\":\"调试改身份/累计/窗口设定并需确定计数后效\"}`：同一准入口只改阈值保持全时段累计数n；执行调试动作尚未实现，遇到动作按工程边界停止 | 据：规则L22、L64；任务L12—13；v46 N-F19 | 已定计数保留；改身份、拆建或另行处理历史状态的后效另核；缺任务5/6后置状态推导 | 任务8实现操作回放，并按任务5/6核全部后置状态 |\n| `gate.counter_start` | 本版选值 | `\"since_build\"`：本版从建成起记total_received；窗口首件开窗，初态由历史/种子给 | 据：物品准入口 | 设限后才计累计等 | 带设定变化的准入口认证前 |\n| `gate.cancel_limit` | 超出覆盖即停 | `{\"policy\":\"stop\",\"trigger\":\"取消已设限额\"}`：调试期可取消限额或回到不设；操作回放尚未实现，停止属于工具支持范围 | 据：任务L12—13；规则L22、L64；v46 N-F19 | 取消许可已定；实际计数、窗口和送达后果须随操作记录核验 | 实现该字段的有据后效并补相应证明并更新配置版本后才恢复 |\n| `offline.order_domain` | 超出覆盖即停 | `{\"policy\":\"stop\",\"trigger\":\"请求构造完整离线重排域或离线事件出现\"}`：请求构造完整离线重排域或离线事件出现时返回unsupported；按该字段具体未完成后效报告工程停止 | 据：离线、接通 | 该事件/证明域全部未覆盖；stop是工程处置，不是游戏枚举值 | 实现该字段的有据后效并补相应证明并更新配置版本后才恢复 |\n| `offline.events` | 超出覆盖即停 | `{\"policy\":\"stop\",\"trigger\":\"出现任何离线/上线事件\"}`：出现任何离线/上线事件时返回unsupported；按该字段具体未完成后效报告工程停止 | 据：离线、目标、零干预运行 | 该事件/证明域全部未覆盖；stop是工程处置，不是游戏枚举值 | 实现该字段的有据后效并补相应证明并更新配置版本后才恢复 |\n| `offline.cursor_effect` | 超出覆盖即停 | `{\"policy\":\"stop\",\"trigger\":\"离线需更新轮询状态\"}`：指针记录通道身份；纯重排后须给新环上的接续关系，完整关系未实现则unsupported | 据：任务L14；规则L29—32；任务6 PA-08/PC-04 | 一般指针接续和精确可达排列族缺推导；扩大到所有候选成员只用于充分方向 | 实现该字段的有据后效并补相应证明并更新配置版本后才恢复 |\n| `offline.inventory_effect` | 超出覆盖即停 | `{\"policy\":\"stop\",\"trigger\":\"离线需更新库存\"}`：纯接通重排为零耗时关系，保持全部物品种类、数量和年龄；正时长演化单列。本配置尚未实现离线回放时返回unsupported | 据：任务L14；规则L20、L23、L28—32、L36、L63—64；任务6 SP-07 | 保持关系已按任务6 PA-08给出；一般指针接续、可达排列族及实现仍待完成 | 实现纯重排保持关系，独立核环/级重算和指针接续 |\n| `offline.progress_effect` | 超出覆盖即停 | `{\"policy\":\"stop\",\"trigger\":\"离线需更新进度/时钟\"}`：纯接通重排为零耗时关系，保持批次、剩余制造时长和箱冷却；正时长演化单列。本配置尚未实现离线回放时返回unsupported | 据：任务L14；规则L20、L23、L28—32、L36、L63—64；任务6 SP-07 | 保持关系已按任务6 PA-08给出；一般指针接续、可达排列族及实现仍待完成 | 实现纯重排保持关系，独立核环/级重算和指针接续 |\n| `offline.direction_effect` | 超出覆盖即停 | `{\"policy\":\"stop\",\"trigger\":\"离线需更新桥方向\"}`：纯接通重排为零耗时关系，保持已建桥的端口方向；正时长演化单列。本配置尚未实现离线回放时返回unsupported | 据：任务L14；规则L20、L23、L28—32、L36、L63—64；任务6 SP-07 | 保持关系已按任务6 PA-08给出；一般指针接续、可达排列族及实现仍待完成 | 实现纯重排保持关系，独立核环/级重算和指针接续 |\n| `offline.gate_total_effect` | 超出覆盖即停 | `{\"policy\":\"stop\",\"trigger\":\"离线需更新累计计数\"}`：纯接通重排为零耗时关系，保持真实累计已收数；正时长演化单列。本配置尚未实现离线回放时返回unsupported | 据：任务L14；规则L20、L23、L28—32、L36、L63—64；任务6 SP-07 | 保持关系已按任务6 PA-08给出；一般指针接续、可达排列族及实现仍待完成 | 实现纯重排保持关系，独立核环/级重算和指针接续 |\n| `offline.gate_window_effect` | 超出覆盖即停 | `{\"policy\":\"stop\",\"trigger\":\"离线需更新窗口计数\"}`：纯接通重排为零耗时关系，保持当前窗口计数；正时长演化单列。本配置尚未实现离线回放时返回unsupported | 据：任务L14；规则L20、L23、L28—32、L36、L63—64；任务6 SP-07 | 保持关系已按任务6 PA-08给出；一般指针接续、可达排列族及实现仍待完成 | 实现纯重排保持关系，独立核环/级重算和指针接续 |\n| `offline.gate_window_start_effect` | 超出覆盖即停 | `{\"policy\":\"stop\",\"trigger\":\"离线需更新窗口起点\"}`：纯接通重排为零耗时关系，保持窗口起点或idle标记；正时长演化单列。本配置尚未实现离线回放时返回unsupported | 据：任务L14；规则L20、L23、L28—32、L36、L63—64；任务6 SP-07 | 保持关系已按任务6 PA-08给出；一般指针接续、可达排列族及实现仍待完成 | 实现纯重排保持关系，独立核环/级重算和指针接续 |\n| `initialization.warehouse_anchor` | 由输入全称量化 | `{\"interface\":\"initial_state.anchor\"}`：输入唯一锚点，六物种各80000，其他空；运行种子不可再次补满 | 据：仓库物品、蓝图、协议核心 | 未验证的锚点/建造关联不算可达证据 | 首次对该输入族作全称结论前，证明域与覆盖；缺具体值则拒绝运行 |\n| `initialization.other_inventory` | 由输入全称量化 | `{\"interface\":\"initial_state.nonwarehouse\"}`：完整StateSeed及任务5§3.1程序的可达谓词、可靠包络；准备截面与串行释放后态分别表示 | 据：规则L18、L20、L35；任务L12—13；任务6 SP-05 | exact_reachable_set_enumerated=false；关闭时intake与任务5空缓存后态须联合核，串行释放后保留全部相对进度 | 核专线、单配方、无R89回转/非成品外流前件及全部有限迟延；任务5/6 PC-06接口 |\n| `initialization.switches` | 由输入全称量化 | `{\"interface\":\"settings_at_seed\"}`：输入初值来源及种子锚点的实际开关；无默认全开 | 据：开关、设定、蓝图 | 未覆盖初值与调试史 | 首次对该输入族作全称结论前，证明域与覆盖；缺具体值则拒绝运行 |\n| `initialization.build_timing` | 由输入全称量化 | `{\"interface\":\"timeline\"}`：输入真实建成时刻/相对关系；本版从种子回放区间开始，区间内若建成事件未实现则停 | 据：蓝图、接通、移动 | 建造期间全部运行/非整数时距 | 首次对该输入族作全称结论前，证明域与覆盖；缺具体值则拒绝运行 |\n| `initialization.debug_actions` | 超出覆盖即停 | `{\"policy\":\"stop\",\"trigger\":\"运行区间内出现玩家单位操作（种子之前的动作只核证据引用）\"}`：任务L12已允许对基地任意操作，包括拆建、增建、清理、手工放料和改设定；工具尚不回放这些动作，按工程边界停止 | 据：任务L12“玩家可以做对整个基地做任意操作”、L13；规则L10、L22 | 动作权限已定；非精确操作程序、实际物品收支和全部调试后置状态待任务5/6 | 按任务L13表示操作精度；任务8实现动作，依据具体程序核其后效 |\n| `initialization.rotation_stage` | 已定 | `\"build_and_debug\"`：建造选朝向、调试可旋转；库存和接通后效另审 | 据：旋转、调试期、零干预运行 | 该已定范围无读法损失；关联未定轴另记 | 不补已排除值；输入不匹配即invalid |\n| `initialization.rebuild_inventory` | 超出覆盖即停 | `{\"policy\":\"stop\",\"trigger\":\"拆除或重建需确定库存/进度去向\"}`：拆除或重建需确定库存/进度去向时返回unsupported；按该字段具体未完成后效报告工程停止 | 据：重建、物品格、调试期 | 该事件/证明域全部未覆盖；stop是工程处置，不是游戏枚举值 | 实现该字段的有据后效并补相应证明并更新配置版本后才恢复 |\n| `initialization.debug_end` | 由输入全称量化 | `{\"interface\":\"initial_state.reachability\"}`：输入有限非精确操作程序的后置状态据；合成种子只作条件实验 | 据：调试期、操作精度、目标 | 其他可能调试后态仍待覆盖 | 首次对该输入族作全称结论前，证明域与覆盖；缺具体值则拒绝运行 |\n| `warehouse.capacity` | 已定 | `{\"value\":\"80000\",\"category\":\"条文直引\"}`：每种单格上限80000，数量不限不等于同种无限 | 据：物品格、协议核心、仓库物品 | 该已定范围无读法损失；关联未定轴另记 | 不补已排除值；输入不匹配即invalid |\n| `warehouse.acceptance` | 已定 | `\"receivable_products\"`：环境前提为仓库收得下成品；供电、路径、端口与冷却随生产状态另核 | 据：任务L2、L9；规则L36；任务2§6.5.1；三审§6 | 实际接收检查和接收恢复后的状态集合须逐证书覆盖 | 核核心候选、最高可动级、授权和无线实际接收的完整区间 |\n| `warehouse.acceptance_quantifier` | 已定 | `\"all_candidate_and_actual_checks\"`：证书声明区间内两成品的所有候选及实际入库检查均满足接收响应 | 据：任务L2、L9—10；任务2§6.5.1、§6.5.6 | 端点容量报告只作观测；中断后的恢复状态覆盖另附证明 | 逐事件或不变量证明整个区间，恢复后重核支持集合 |\n| `warehouse.withdrawal_policy` | 超出覆盖即停 | `{\"policy\":\"stop\",\"trigger\":\"需要执行拿取策略或据此认证完整周期\"}`：普通有限执行尚不回放玩家拿取；§6.5环境证明可采用满足接收前提的合法拿取过程，具体完整周期须补程序及复原证据 | 据：任务L8—10、L13；受限转移§6.5 | 具体拿取程序、非精确操作后果和完整周期回放未实现 | 实现该字段的有据后效并补相应证明并更新配置版本后才恢复 |\n| `warehouse.withdrawal_timing` | 超出覆盖即停 | `{\"policy\":\"stop\",\"trigger\":\"运行区间出现玩家拿取事件；策略与实际时距未实现\"}`：运行区间出现玩家拿取事件；策略与实际时距未实现时返回unsupported；按该字段具体未完成后效报告工程停止 | 据：操作精度、判定、循环态 | 该事件/证明域全部未覆盖；stop是工程处置，不是游戏枚举值 | 实现该字段的有据后效并补相应证明并更新配置版本后才恢复 |\n| `warehouse.external_supply` | 由输入全称量化 | `{\"interface\":\"ore-supply-v2\",\"default_mode\":\"sufficient\"}`：输入显式选sufficient（本版循环选值）或explicit_ore_history（备用差分）；前者每次出矿原子回补取走量，后者按有限历史回放 | 据：任务L7外部过程；规则L13、L41容量；受限转移定义§2.1、§6 | sufficient只保证取矿充分，回矿候选即使拒收也会读取容量；生产抽象按转移§6.1 D.2在容量/physical/授权前检查核心PC矿候选，有资格箱含矿则在容量规划前停止；显式有限历史不认证无限重复 | 实现两模式、补给分账及循环准入检查后恢复对应运行；其它环境历史另审 |\n| `warehouse.delivery_count` | 已定 | `\"actual_inbound\"`：实际入库量，不计玩家取走量 | 据：目标、约束·入库途径 | 该已定范围无读法损失；关联未定轴另记 | 不补已排除值；输入不匹配即invalid |\n| `warehouse.empty_slot_identity` | 本版选值 | `\"retain_history\"`：保留历史身份；成功入库原子提交幸存空格稳定子序；至少两种新物种竞争被端口指派的无身份空格即unsupported，未指派格按物种UTF-8字节序作规范编码，见转移§4.1/§4.3 | 据：物品格、仓库、协议核心、仓库取货口；规则L13、L41、L73，任务L8；T12；完整转移见受限转移定义 | 释放身份、其它可观察落格关系及有指派空格的多物种竞争未覆盖；成品拿取保留历史身份的条件非干扰见转移§6，不再一概排除拿取环境论证 | 仓库抽象/空格指派认证前 |\n| `warehouse.periodic_lift` | 超出覆盖即停 | `{\"policy\":\"stop\",\"trigger\":\"请求缺少逐项复原证据的完整基地周期或缺少覆盖证明的全称认证\"}`：正式循环到生产投影按受限转移§6.5核前件；反向完整周期须复原真实仓库、外部过程及全部有效状态 | 据：任务L2、L7—10、L13；规则L14；任务2§6.5；任务6 SP-11 | 一般拿取/矿库存复原、恢复后状态覆盖及全部起点和固定参数覆盖仍待具体证明 | 提供§6.5.5逐项证据与独立复核；任务8实现证书新契约 |\n| `bridge.inventory_scope` | 已定 | `\"two_independent_axis_slots\"`：两轴各自独立格，不换轴 | 据：桥接器 | 该已定范围无读法损失；关联未定轴另记 | 不补已排除值；输入不匹配即invalid |\n| `bridge.capacity` | 本版选值 | `1`：采用仅个数例外的读法，两独立格各1；不从运输下界证明唯一容量 | 据：运输单位、桥接器、约束·箱体过站/约束·运输下限 | 容量也例外的未定域 | 桥接容量完整覆盖前 |\n| `bridge.scheduling_scope` | 已定 | `\"unit\"`：按单位存取两侧，存货共同分级、取货不分级 | 据：轮询、存货/取货优先级、桥接器 | 该已定范围无读法损失；关联未定轴另记 | 不补已排除值；输入不匹配即invalid |\n| `power.cell_rule` | 本版选值 | `\"positive_area\"`：运行本版正面积守卫；达标义务也按最严读法核 | 据：供电桩、供电状态、约束·不得依赖的量；受限模型声明§3 | closed_touch可多解锁功能，行为轨迹未覆盖；达标供电必要条件无额外前件 | 依赖额外供电的行为结论前 |\n| `residence.nontransport` | 本版选值 | `\"zero\"`：非运输格无附加停留；制造仍耗配方工作时长 | 据：滞留、制造、缓存格 | 合法正停留域尚待界定 | 停留语义完整覆盖前 |\n| `cascade.buffer` | 本版选值 | `\"same_instant\"`：本次制造判定内可出缓存再归集新批；不压零制造时长、不豁免运输滞留 | 据：缓存格、判定、移动、配方 | next_instant及独立BC交织 | 内部级联认证前 |\n| `polling.split_merge_scope` | 本版选值 | `\"per_level\"`：汇流器先分级再在每级数第二条；分流器取货侧只有不分级环 | 据：轮询、优先级、存货优先级、分流器、汇流器 | 全侧计数再投影 | 含分流器直连汇流器的认证前 |\n| `polling.split_merge_singleton` | 本版选值 | `\"sole_member\"`：级内或不分级环仅一条时取唯一成员，仍尝试 | 据：轮询、移动 | 延后多口模式等起动组织 | 单成员级/新建通道覆盖前 |\n| `polling.both_failure` | 已定 | `\"advance_authorized\"`：仅登记实际尝试后的后效：已取得并实际使用尝试权限的侧，无论成功失败都立即前移；尝试成立与授权侧识别由dual_permission等轴另行推导 | 据：规则L29原句“尝试后立刻传给下一条”、L30；v46 S-D05 | 双端怎样构成一次尝试、授权侧识别、失败空转和同刻推进仍缺任务6推导 | 任务8核对实现；规则回填不代表行为已验收 |\n| `connection.belt_shape` | 由输入全称量化 | `{\"interface\":\"per_build_shape_map\"}`：每个传送带建造生命段的turn_left/straight/turn_right，由布局边对推导 | 据：传送带、旋转、重建 | 未枚举形状/建造史不算覆盖 | 首次对该输入族作全称结论前，证明域与覆盖；缺具体值则拒绝运行 |\n| `initialization.belt_shape_lifecycle` | 本版选值 | `\"fixed_between_builds\"`：本实验区间保持建成时形状，调试可拆建改形；rotate本身保持相对转角 | 据：规则L10、L11、L60；任务L8、L12—13 | 其它调试改形动作属任务L12任意操作范围，具体前后几何与库存后效尚未实现 | 实现对应调试动作后检查完整快照及后置状态 |\n| `gate.concurrent_expiry` | 本版选值 | `\"atomic_batch\"`：同刻到期窗口从同一快照清原因，最终图一次重算并映射旧指针；访问前多门身份删边同样批处理 | 据：物品准入口、轮询、判定次序；受限转移定义§2.1/§3.4 | 逐边恢复及其显式排序、与判定交织均未覆盖；批处理不是规则唯一裁定 | 同刻多门恢复的全称行为认证前 |\n| `manufacturing.recipe_quantity_match` | 本版选值 | `\"at_least\"`：full_batch下每个配方物种数量至少一批，允许该物种超量；仅搬运一批 | 据：缓存格、存货/取货物品格、配方；一批通过量不等于开闸前数量恰等 | exact（配方物种数量须恰一批）方向待审，不自动获准，也未被满载条件直接排除 | 开闸匹配的完整覆盖前；非full_batch组合须另定义数量关系 |\n| `manufacturing.recipe_extra_items` | 本版选值 | `\"allow\"`：忽略配方之外的物种，只取所选配方一次用量；额外物种留原格 | 据：缓存格、存货/取货物品格、配方；与物种完备度及数量关系分开 | forbid（求值论域中存在额外物种则拒配）方向待审；混装多候选例依赖allow | 混装及额外物种开闸覆盖前 |\n\n## 3. 最严读法与供电核对\n\n约束·不得依赖的量的总则要求目标对每种取值达成。设两种供电覆盖集合为C_positive与C_closed，T15的方块相交公式逐格给C_positive⊆C_closed。对“某需电单位至少被一桩覆盖”这个单调条件，要对两读法成立，充要于在较小的C_positive下成立。因此达标供电义务按positive_area检查，**closed_touch下多覆盖的机器不算数**；保留两读法不削弱约束·供电下限、约束·侧旁供电、约束·面积预算、约束·空矩形上界作为达标必要条件的效力，不把四条另标为“以positive_area为前提”。这只处理供电义务，不证明额外通电后的整条行为轨迹单调：若closed_touch使另一个开启功能解锁，其吞吐/分流后效仍须覆盖。（据：供电桩、供电状态、约束·不得依赖的量；第三轮任务书§2.1）\n\n占格同理：规则没有明写是否允许重叠，达标布局必须在不允许重叠的最严可建造读法下成立，因此单位占格互不相交是必要条件。基地70×70只给边界，旋转只给动作，核心唯一只给数量，不能用三者冒充互斥的据。输入的无重叠合成布局落在这一共同可建造域；不相交不裁定全部物理世界只允许这一读法。行为语义如轮询、分流比、判定序及级平局没有集合包含式的单调保证，不能套用最严读法。（据：约束·不得依赖的量、基地、旋转、协议核心；第三轮任务书§2.1）\n\n数值交叉核对（条件算术，非32台达标见证）：桩左下角(a,b)，positive_area覆盖列a−5…a+6，3×3机起点a−7…a+6；整齐排布每轴5位，扣压桩1位给24位构造。closed_touch起点a−8…a+7，每轴6位，扣压桩4位给32位构造。贴边相应构造为14与16、角为8与8；这些构造不证明可送料或达标，也不凭构造直接证明一般二维堆叠上界。与正式供电数字的核对是线索；保留两读法及必要条件的承重论证是上段的全称量词与集合包含。\n\n| 相隔g | 0 | 1 | 2 | 3 | 4 | 5 | 6 |\n|---|---|---|---|---|---|---|---|\n| 正面积侧旁一维列数ceil((g+7)/3) | 3 | 3 | 3 | 4 | 4 | 4 | 5 |\n| 闭边侧旁一维列数ceil((g+8)/3) | 3 | 3 | 4 | 4 | 4 | 5 | 5 |\n| 约束·侧旁供电的c_g（条文直引） | 13 | 14 | 14 | 17 | 18 | 19 | 22 |\n\n正面积列数跃变在g=3、6，与c_g两处增3的索引一致；闭边在g=2、5。此核对不能把c_g的完整二维/送料推导替换成一维算式；四条正式约束保持其源文前件。可重跑核验见第三轮任务验证的自查报告。（据：小制造单位、供电桩、约束·供电下限、约束·侧旁供电；算术推论）\n\n## 4. 双端权限、闭包及认证边界\n\n本版`both`只限定成功所需的双端许可，是待任务6复核的工程协调。已经发生的尝试无论成败都立即前移属于规则L29已定事实；`polling.both_failure`现只登记这一后效。授权集合A、单侧许可是否构成一次通道尝试、失败空转的结束和同刻继续推进，仍由`dual_permission`、T1及受限转移§3的工程定义承接。最高可移动级筛选始终遵守规则L30。\n\n[受限转移定义",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md"
+    },
+    {
+      "name": "相对链接存在:受限模型声明.md:内核输出",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.md"
+    },
+    {
+      "name": "相对链接存在:受限模型声明.md:内核输入",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md"
+    },
+    {
+      "name": "相对链接存在:受限模型声明.md:四件前置义务对照",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/四件前置义务对照.md"
+    },
+    {
+      "name": "相对链接存在:受限模型声明.md:四件前置义务对照§6",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/四件前置义务对照.md"
+    },
+    {
+      "name": "当前源指纹:受限转移定义.md",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "旧口径清除:受限转移定义.md",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "相对链接存在:受限转移定义.md:运行语义§1",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/运行语义.md"
+    },
+    {
+      "name": "相对链接存在:受限转移定义.md:受限模型声明",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限模型声明.md"
+    },
+    {
+      "name": "相对链接存在:受限转移定义.md:仓库接收与循环对应",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/仓库接收与循环对应.md"
+    },
+    {
+      "name": "相对链接存在:受限转移定义.md:汇入记录",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/规格回填.md"
+    },
+    {
+      "name": "当前源指纹:内核输入.md",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "旧口径清除:内核输入.md",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "相对链接存在:内核输入.md:运行语义§1",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/运行语义.md"
+    },
+    {
+      "name": "相对链接存在:内核输入.md:《明日方舟：终末地》游戏规则.txt",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt"
+    },
+    {
+      "name": "相对链接存在:内核输入.md:求解任务.txt",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解任务.txt"
+    },
+    {
+      "name": "相对链接存在:内核输入.md:求解约束.txt",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解约束.txt"
+    },
+    {
+      "name": "相对链接存在:内核输入.md:正式静态目录.json",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json"
+    },
+    {
+      "name": "相对链接存在:内核输入.md:运行语义",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/运行语义.md"
+    },
+    {
+      "name": "相对链接存在:内核输入.md:送料契约",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/数据/送料契约.md"
+    },
+    {
+      "name": "相对链接存在:内核输入.md:选择点参数轴",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md"
+    },
+    {
+      "name": "相对链接存在:内核输入.md:受限模型声明",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限模型声明.md"
+    },
+    {
+      "name": "相对链接存在:内核输入.md:旧修改请求",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入-对参数轴的修改请求.md"
+    },
+    {
+      "name": "相对链接存在:内核输入.md:内核输入",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md"
+    },
+    {
+      "name": "相对链接存在:内核输入.md:内核输入",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md"
+    },
+    {
+      "name": "相对链接存在:内核输入.md:中途种子.json",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r4/中途种子.json"
+    },
+    {
+      "name": "相对链接存在:内核输入.md:内核配置-v1.json",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    },
+    {
+      "name": "相对链接存在:内核输入.md:运行样例参数赋值",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/kernel_profile_v1参数赋值.json"
+    },
+    {
+      "name": "相对链接存在:内核输入.md:桥接器双通路.json",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/桥接器双通路.json"
+    },
+    {
+      "name": "相对链接存在:内核输入.md:分流器三路轮询.json",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询.json"
+    },
+    {
+      "name": "相对链接存在:内核输入.md:混做粉碎机两下游.json",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json"
+    },
+    {
+      "name": "相对链接存在:内核输入.md:黄金轨迹",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-黄金轨迹.md"
+    },
+    {
+      "name": "相对链接存在:内核输入.md:内核输出",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.md"
+    },
+    {
+      "name": "相对链接存在:内核输入.md:第四轮前置验证",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/第四轮前置验证/验证报告.md"
+    },
+    {
+      "name": "相对链接存在:内核输入.md:内核输入修订记录",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入-修订记录.md"
+    },
+    {
+      "name": "相对链接存在:内核输入.md:调试与释放§3.1",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/调试与释放.md"
+    },
+    {
+      "name": "当前源指纹:内核输出.md",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "旧口径清除:内核输出.md",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "相对链接存在:内核输出.md:运行语义§1",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/运行语义.md"
+    },
+    {
+      "name": "相对链接存在:内核输出.md:内核输出.schema.json",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.schema.json"
+    },
+    {
+      "name": "相对链接存在:内核输出.md:checkpoint_delta.py",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/checkpoint_delta.py"
+    },
+    {
+      "name": "相对链接存在:内核输出.md:runtime_record.py",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/runtime_record.py"
+    },
+    {
+      "name": "相对链接存在:内核输出.md:混做粉碎机两下游运行记录",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录.json"
+    },
+    {
+      "name": "相对链接存在:内核输出.md:独立有限重算",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/check_golden_trace.py"
+    },
+    {
+      "name": "相对链接存在:内核输出.md:黄金摘要",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-黄金轨迹.json"
+    },
+    {
+      "name": "相对链接存在:内核输出.md:运行说明",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行说明.md"
+    },
+    {
+      "name": "相对链接存在:内核输出.md:疑问记录",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/第四轮前置-疑问记录.md"
+    },
+    {
+      "name": "相对链接存在:内核输出.md:历史自查",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r4/自查报告.md"
+    },
+    {
+      "name": "相对链接存在:内核输出.md:runtime_record.py",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/runtime_record.py"
+    },
+    {
+      "name": "当前源指纹:四件前置义务对照.md",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "旧口径清除:四件前置义务对照.md",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "相对链接存在:四件前置义务对照.md:运行语义§1",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/运行语义.md"
+    },
+    {
+      "name": "相对链接存在:四件前置义务对照.md:选择点参数轴",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md"
+    },
+    {
+      "name": "相对链接存在:四件前置义务对照.md:受限模型声明",
+      "passed": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限模型声明.md"
+    },
+    {
+      "name": "仓库替换节:6.5.1",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "仓库替换节:6.5.2",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "仓库替换节:6.5.3",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "仓库替换节:6.5.4",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "仓库替换节:6.5.5",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "仓库替换节:6.5.6",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "关键状态/收支条款:residual=max",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "关键状态/收支条款:min(n,C)",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "关键状态/收支条款:phase-cycle-key-v1",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "关键状态/收支条款:代表化",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "关键状态/收支条款:player_withdrawal",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "关键状态/收支条款:representative_adjustment",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "关键状态/收支条款:真实唤醒",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "关键状态/收支条款:all_candidate_and_actual_checks",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "PC-01至09逐项落地",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "执行证明与史料分区",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "AJV执行退出0",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Draft2020-12元校验",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "schema:生产部分证书形状",
+      "passed": true,
+      "detail": {
+        "expected": true,
+        "actual": true,
+        "errors": []
+      }
+    },
+    {
+      "name": "schema:旧版本证书拒收",
+      "passed": true,
+      "detail": {
+        "expected": false,
+        "actual": false,
+        "errors": [
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "run_id"
+            },
+            "message": "must have required property 'run_id'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "profile_id"
+            },
+            "message": "must have required property 'profile_id'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "producer"
+            },
+            "message": "must have required property 'producer'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "parameter_assignment"
+            },
+            "message": "must have required property 'parameter_assignment'"
+          }
+        ]
+      }
+    },
+    {
+      "name": "schema:环境句缺失拒收",
+      "passed": true,
+      "detail": {
+        "expected": false,
+        "actual": false,
+        "errors": [
+          {
+            "instancePath": "/evidence_scope/kind",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/kind/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "/evidence_scope/direction",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/direction/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "run_id"
+            },
+            "message": "must have required property 'run_id'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "profile_id"
+            },
+            "message": "must have required property 'profile_id'"
+          }
+        ]
+      }
+    },
+    {
+      "name": "schema:数值环境替换句拒收",
+      "passed": true,
+      "detail": {
+        "expected": false,
+        "actual": false,
+        "errors": [
+          {
+            "instancePath": "/evidence_scope/kind",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/kind/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "/evidence_scope/direction",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/direction/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "run_id"
+            },
+            "message": "must have required property 'run_id'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "profile_id"
+            },
+            "message": "must have required property 'profile_id'"
+          }
+        ]
+      }
+    },
+    {
+      "name": "schema:端点未满标记拒收",
+      "passed": true,
+      "detail": {
+        "expected": false,
+        "actual": false,
+        "errors": [
+          {
+            "instancePath": "/evidence_scope/kind",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/kind/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "/evidence_scope/direction",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/direction/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "run_id"
+            },
+            "message": "must have required property 'run_id'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "profile_id"
+            },
+            "message": "must have required property 'profile_id'"
+          }
+        ]
+      }
+    },
+    {
+      "name": "schema:旧lift字段拒收",
+      "passed": true,
+      "detail": {
+        "expected": false,
+        "actual": false,
+        "errors": [
+          {
+            "instancePath": "/evidence_scope/kind",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/kind/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "/evidence_scope/direction",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/direction/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "run_id"
+            },
+            "message": "must have required property 'run_id'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "profile_id"
+            },
+            "message": "must have required property 'profile_id'"
+          }
+        ]
+      }
+    },
+    {
+      "name": "schema:两次电池替代两成品拒收",
+      "passed": true,
+      "detail": {
+        "expected": false,
+        "actual": false,
+        "errors": [
+          {
+            "instancePath": "/evidence_scope/kind",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/kind/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "/evidence_scope/direction",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/direction/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "run_id"
+            },
+            "message": "must have required property 'run_id'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "profile_id"
+            },
+            "message": "must have required property 'profile_id'"
+          }
+        ]
+      }
+    },
+    {
+      "name": "schema:缺接收区间证明拒收",
+      "passed": true,
+      "detail": {
+        "expected": false,
+        "actual": false,
+        "errors": [
+          {
+            "instancePath": "/evidence_scope/kind",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/kind/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "/evidence_scope/direction",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/direction/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "run_id"
+            },
+            "message": "must have required property 'run_id'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "profile_id"
+            },
+            "message": "must have required property 'profile_id'"
+          }
+        ]
+      }
+    },
+    {
+      "name": "schema:声称证明但前向检查未过拒收",
+      "passed": true,
+      "detail": {
+        "expected": false,
+        "actual": false,
+        "errors": [
+          {
+            "instancePath": "/evidence_scope/kind",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/kind/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "/evidence_scope/direction",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/direction/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "run_id"
+            },
+            "message": "must have required property 'run_id'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "profile_id"
+            },
+            "message": "must have required property 'profile_id'"
+          }
+        ]
+      }
+    },
+    {
+      "name": "schema:固定判定值变为global拒收",
+      "passed": true,
+      "detail": {
+        "expected": false,
+        "actual": false,
+        "errors": [
+          {
+            "instancePath": "/evidence_scope/kind",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/kind/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "/evidence_scope/direction",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/direction/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "run_id"
+            },
+            "message": "must have required property 'run_id'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "profile_id"
+            },
+            "message": "must have required property 'profile_id'"
+          }
+        ]
+      }
+    },
+    {
+      "name": "schema:固定排序放U桶拒收",
+      "passed": true,
+      "detail": {
+        "expected": false,
+        "actual": false,
+        "errors": [
+          {
+            "instancePath": "/evidence_scope/kind",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/kind/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "/evidence_scope/direction",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/direction/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "run_id"
+            },
+            "message": "must have required property 'run_id'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "profile_id"
+            },
+            "message": "must have required property 'profile_id'"
+          }
+        ]
+      }
+    },
+    {
+      "name": "schema:零传输冷却停止值拒收",
+      "passed": true,
+      "detail": {
+        "expected": false,
+        "actual": false,
+        "errors": [
+          {
+            "instancePath": "/evidence_scope/kind",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/kind/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "/evidence_scope/direction",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/direction/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "run_id"
+            },
+            "message": "must have required property 'run_id'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "profile_id"
+            },
+            "message": "must have required property 'profile_id'"
+          }
+        ]
+      }
+    },
+    {
+      "name": "schema:成熟剩余旧age编码拒收",
+      "passed": true,
+      "detail": {
+        "expected": false,
+        "actual": false,
+        "errors": [
+          {
+            "instancePath": "/evidence_scope/kind",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/kind/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "/evidence_scope/direction",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/direction/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "run_id"
+            },
+            "message": "must have required property 'run_id'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "profile_id"
+            },
+            "message": "must have required property 'profile_id'"
+          }
+        ]
+      }
+    },
+    {
+      "name": "schema:缺反向复原完整周期拒收",
+      "passed": true,
+      "detail": {
+        "expected": false,
+        "actual": false,
+        "errors": [
+          {
+            "instancePath": "/evidence_scope/kind",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/kind/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "/evidence_scope/direction",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/direction/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "run_id"
+            },
+            "message": "must have required property 'run_id'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "profile_id"
+            },
+            "message": "must have required property 'profile_id'"
+          }
+        ]
+      }
+    },
+    {
+      "name": "schema:完整周期逐项材料形状",
+      "passed": true,
+      "detail": {
+        "expected": true,
+        "actual": true,
+        "errors": []
+      }
+    },
+    {
+      "name": "schema:完整复原漏操作精度拒收",
+      "passed": true,
+      "detail": {
+        "expected": false,
+        "actual": false,
+        "errors": [
+          {
+            "instancePath": "/evidence_scope/kind",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/kind/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "/evidence_scope/direction",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/direction/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "run_id"
+            },
+            "message": "must have required property 'run_id'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "profile_id"
+            },
+            "message": "must have required property 'profile_id'"
+          }
+        ]
+      }
+    },
+    {
+      "name": "schema:真实反例材料形状",
+      "passed": true,
+      "detail": {
+        "expected": true,
+        "actual": true,
+        "errors": []
+      }
+    },
+    {
+      "name": "schema:反例复原未过拒收",
+      "passed": true,
+      "detail": {
+        "expected": false,
+        "actual": false,
+        "errors": [
+          {
+            "instancePath": "/evidence_scope/kind",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/kind/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "/evidence_scope/direction",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/direction/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "run_id"
+            },
+            "message": "must have required property 'run_id'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "profile_id"
+            },
+            "message": "must have required property 'profile_id'"
+          }
+        ]
+      }
+    },
+    {
+      "name": "schema:低产生产循环诊断形状",
+      "passed": true,
+      "detail": {
+        "expected": true,
+        "actual": true,
+        "errors": []
+      }
+    },
+    {
+      "name": "schema:生产低产直接报真实反例拒收",
+      "passed": true,
+      "detail": {
+        "expected": false,
+        "actual": false,
+        "errors": [
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "run_id"
+            },
+            "message": "must have required property 'run_id'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "profile_id"
+            },
+            "message": "must have required property 'profile_id'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "producer"
+            },
+            "message": "must have required property 'producer'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "parameter_assignment"
+            },
+            "message": "must have required property 'parameter_assignment'"
+          }
+        ]
+      }
+    },
+    {
+      "name": "schema:直接条件证明形状",
+      "passed": true,
+      "detail": {
+        "expected": true,
+        "actual": true,
+        "errors": []
+      }
+    },
+    {
+      "name": "schema:直接已证但义务未过拒收",
+      "passed": true,
+      "detail": {
+        "expected": false,
+        "actual": false,
+        "errors": [
+          {
+            "instancePath": "/evidence_scope/kind",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/kind/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "/evidence_scope/direction",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/direction/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "run_id"
+            },
+            "message": "must have required property 'run_id'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "profile_id"
+            },
+            "message": "must have required property 'profile_id'"
+          }
+        ]
+      }
+    },
+    {
+      "name": "schema:仓库独立台账形状",
+      "passed": true,
+      "detail": {
+        "expected": true,
+        "actual": true,
+        "errors": []
+      }
+    },
+    {
+      "name": "schema:数学代表调整冒充玩家拿取拒收",
+      "passed": true,
+      "detail": {
+        "expected": false,
+        "actual": false,
+        "errors": [
+          {
+            "instancePath": "/player_withdrawal/0",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "event"
+            },
+            "message": "must have required property 'event'"
+          },
+          {
+            "instancePath": "/player_withdrawal/0",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "slot"
+            },
+            "message": "must have required property 'slot'"
+          },
+          {
+            "instancePath": "/player_withdrawal/0",
+            "schemaPath": "#/additionalProperties",
+            "keyword": "additionalProperties",
+            "params": {
+              "additionalProperty": "reason"
+            },
+            "message": "must NOT have additional properties"
+          }
+        ]
+      }
+    },
+    {
+      "name": "schema:玩家拿取冒充代表调整拒收",
+      "passed": true,
+      "detail": {
+        "expected": false,
+        "actual": false,
+        "errors": [
+          {
+            "instancePath": "/representative_adjustment/0",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "reason"
+            },
+            "message": "must have required property 'reason'"
+          },
+          {
+            "instancePath": "/representative_adjustment/0",
+            "schemaPath": "#/additionalProperties",
+            "keyword": "additionalProperties",
+            "params": {
+              "additionalProperty": "event"
+            },
+            "message": "must NOT have additional properties"
+          },
+          {
+            "instancePath": "/representative_adjustment/0",
+            "schemaPath": "#/additionalProperties",
+            "keyword": "additionalProperties",
+            "params": {
+              "additionalProperty": "slot"
+            },
+            "message": "must NOT have additional properties"
+          }
+        ]
+      }
+    }
+  ],
+  "passed": 642,
+  "failed": 0,
+  "schema_case_count": 25,
+  "dependencies": {
+    "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/2020.js": "908e9670b478b2ba126802a221b7e47006f50cf467e2c5dd7935d3dbef10a20a",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/生产循环环带-周期证书-kernel.json": "61d1e7d1545bcbbc5bdcc0674a5d5320d4c44d84bde9d1e779a19e8fe0e32d8c",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.schema.json": "c302365255678e1719ef0fd47cba50936ced68aac64b60bd6162f15a29c27ce8"
+  },
+  "schema_results": {
+    "meta": true,
+    "results": [
+      {
+        "name": "生产部分证书形状",
+        "expected": true,
+        "actual": true,
+        "passed": true,
+        "errors": []
+      },
+      {
+        "name": "旧版本证书拒收",
+        "expected": false,
+        "actual": false,
+        "passed": true,
+        "errors": [
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "run_id"
+            },
+            "message": "must have required property 'run_id'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "profile_id"
+            },
+            "message": "must have required property 'profile_id'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "producer"
+            },
+            "message": "must have required property 'producer'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "parameter_assignment"
+            },
+            "message": "must have required property 'parameter_assignment'"
+          }
+        ]
+      },
+      {
+        "name": "环境句缺失拒收",
+        "expected": false,
+        "actual": false,
+        "passed": true,
+        "errors": [
+          {
+            "instancePath": "/evidence_scope/kind",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/kind/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "/evidence_scope/direction",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/direction/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "run_id"
+            },
+            "message": "must have required property 'run_id'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "profile_id"
+            },
+            "message": "must have required property 'profile_id'"
+          }
+        ]
+      },
+      {
+        "name": "数值环境替换句拒收",
+        "expected": false,
+        "actual": false,
+        "passed": true,
+        "errors": [
+          {
+            "instancePath": "/evidence_scope/kind",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/kind/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "/evidence_scope/direction",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/direction/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "run_id"
+            },
+            "message": "must have required property 'run_id'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "profile_id"
+            },
+            "message": "must have required property 'profile_id'"
+          }
+        ]
+      },
+      {
+        "name": "端点未满标记拒收",
+        "expected": false,
+        "actual": false,
+        "passed": true,
+        "errors": [
+          {
+            "instancePath": "/evidence_scope/kind",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/kind/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "/evidence_scope/direction",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/direction/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "run_id"
+            },
+            "message": "must have required property 'run_id'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "profile_id"
+            },
+            "message": "must have required property 'profile_id'"
+          }
+        ]
+      },
+      {
+        "name": "旧lift字段拒收",
+        "expected": false,
+        "actual": false,
+        "passed": true,
+        "errors": [
+          {
+            "instancePath": "/evidence_scope/kind",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/kind/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "/evidence_scope/direction",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/direction/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "run_id"
+            },
+            "message": "must have required property 'run_id'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "profile_id"
+            },
+            "message": "must have required property 'profile_id'"
+          }
+        ]
+      },
+      {
+        "name": "两次电池替代两成品拒收",
+        "expected": false,
+        "actual": false,
+        "passed": true,
+        "errors": [
+          {
+            "instancePath": "/evidence_scope/kind",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/kind/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "/evidence_scope/direction",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/direction/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "run_id"
+            },
+            "message": "must have required property 'run_id'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "profile_id"
+            },
+            "message": "must have required property 'profile_id'"
+          }
+        ]
+      },
+      {
+        "name": "缺接收区间证明拒收",
+        "expected": false,
+        "actual": false,
+        "passed": true,
+        "errors": [
+          {
+            "instancePath": "/evidence_scope/kind",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/kind/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "/evidence_scope/direction",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/direction/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "run_id"
+            },
+            "message": "must have required property 'run_id'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "profile_id"
+            },
+            "message": "must have required property 'profile_id'"
+          }
+        ]
+      },
+      {
+        "name": "声称证明但前向检查未过拒收",
+        "expected": false,
+        "actual": false,
+        "passed": true,
+        "errors": [
+          {
+            "instancePath": "/evidence_scope/kind",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/kind/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "/evidence_scope/direction",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/direction/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "run_id"
+            },
+            "message": "must have required property 'run_id'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "profile_id"
+            },
+            "message": "must have required property 'profile_id'"
+          }
+        ]
+      },
+      {
+        "name": "固定判定值变为global拒收",
+        "expected": false,
+        "actual": false,
+        "passed": true,
+        "errors": [
+          {
+            "instancePath": "/evidence_scope/kind",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/kind/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "/evidence_scope/direction",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/direction/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "run_id"
+            },
+            "message": "must have required property 'run_id'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "profile_id"
+            },
+            "message": "must have required property 'profile_id'"
+          }
+        ]
+      },
+      {
+        "name": "固定排序放U桶拒收",
+        "expected": false,
+        "actual": false,
+        "passed": true,
+        "errors": [
+          {
+            "instancePath": "/evidence_scope/kind",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/kind/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "/evidence_scope/direction",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/direction/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "run_id"
+            },
+            "message": "must have required property 'run_id'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "profile_id"
+            },
+            "message": "must have required property 'profile_id'"
+          }
+        ]
+      },
+      {
+        "name": "零传输冷却停止值拒收",
+        "expected": false,
+        "actual": false,
+        "passed": true,
+        "errors": [
+          {
+            "instancePath": "/evidence_scope/kind",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/kind/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "/evidence_scope/direction",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/direction/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "run_id"
+            },
+            "message": "must have required property 'run_id'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "profile_id"
+            },
+            "message": "must have required property 'profile_id'"
+          }
+        ]
+      },
+      {
+        "name": "成熟剩余旧age编码拒收",
+        "expected": false,
+        "actual": false,
+        "passed": true,
+        "errors": [
+          {
+            "instancePath": "/evidence_scope/kind",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/kind/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "/evidence_scope/direction",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/direction/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "run_id"
+            },
+            "message": "must have required property 'run_id'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "profile_id"
+            },
+            "message": "must have required property 'profile_id'"
+          }
+        ]
+      },
+      {
+        "name": "缺反向复原完整周期拒收",
+        "expected": false,
+        "actual": false,
+        "passed": true,
+        "errors": [
+          {
+            "instancePath": "/evidence_scope/kind",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/kind/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "/evidence_scope/direction",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/direction/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "run_id"
+            },
+            "message": "must have required property 'run_id'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "profile_id"
+            },
+            "message": "must have required property 'profile_id'"
+          }
+        ]
+      },
+      {
+        "name": "完整周期逐项材料形状",
+        "expected": true,
+        "actual": true,
+        "passed": true,
+        "errors": []
+      },
+      {
+        "name": "完整复原漏操作精度拒收",
+        "expected": false,
+        "actual": false,
+        "passed": true,
+        "errors": [
+          {
+            "instancePath": "/evidence_scope/kind",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/kind/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "/evidence_scope/direction",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/direction/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "run_id"
+            },
+            "message": "must have required property 'run_id'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "profile_id"
+            },
+            "message": "must have required property 'profile_id'"
+          }
+        ]
+      },
+      {
+        "name": "真实反例材料形状",
+        "expected": true,
+        "actual": true,
+        "passed": true,
+        "errors": []
+      },
+      {
+        "name": "反例复原未过拒收",
+        "expected": false,
+        "actual": false,
+        "passed": true,
+        "errors": [
+          {
+            "instancePath": "/evidence_scope/kind",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/kind/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "/evidence_scope/direction",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/direction/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "run_id"
+            },
+            "message": "must have required property 'run_id'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "profile_id"
+            },
+            "message": "must have required property 'profile_id'"
+          }
+        ]
+      },
+      {
+        "name": "低产生产循环诊断形状",
+        "expected": true,
+        "actual": true,
+        "passed": true,
+        "errors": []
+      },
+      {
+        "name": "生产低产直接报真实反例拒收",
+        "expected": false,
+        "actual": false,
+        "passed": true,
+        "errors": [
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "run_id"
+            },
+            "message": "must have required property 'run_id'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "profile_id"
+            },
+            "message": "must have required property 'profile_id'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "producer"
+            },
+            "message": "must have required property 'producer'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "parameter_assignment"
+            },
+            "message": "must have required property 'parameter_assignment'"
+          }
+        ]
+      },
+      {
+        "name": "直接条件证明形状",
+        "expected": true,
+        "actual": true,
+        "passed": true,
+        "errors": []
+      },
+      {
+        "name": "直接已证但义务未过拒收",
+        "expected": false,
+        "actual": false,
+        "passed": true,
+        "errors": [
+          {
+            "instancePath": "/evidence_scope/kind",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/kind/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "/evidence_scope/direction",
+            "schemaPath": "#/allOf/0/properties/evidence_scope/properties/direction/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "diagnostic"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "run_id"
+            },
+            "message": "must have required property 'run_id'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "profile_id"
+            },
+            "message": "must have required property 'profile_id'"
+          }
+        ]
+      },
+      {
+        "name": "仓库独立台账形状",
+        "expected": true,
+        "actual": true,
+        "passed": true,
+        "errors": []
+      },
+      {
+        "name": "数学代表调整冒充玩家拿取拒收",
+        "expected": false,
+        "actual": false,
+        "passed": true,
+        "errors": [
+          {
+            "instancePath": "/player_withdrawal/0",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "event"
+            },
+            "message": "must have required property 'event'"
+          },
+          {
+            "instancePath": "/player_withdrawal/0",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "slot"
+            },
+            "message": "must have required property 'slot'"
+          },
+          {
+            "instancePath": "/player_withdrawal/0",
+            "schemaPath": "#/additionalProperties",
+            "keyword": "additionalProperties",
+            "params": {
+              "additionalProperty": "reason"
+            },
+            "message": "must NOT have additional properties"
+          }
+        ]
+      },
+      {
+        "name": "玩家拿取冒充代表调整拒收",
+        "expected": false,
+        "actual": false,
+        "passed": true,
+        "errors": [
+          {
+            "instancePath": "/representative_adjustment/0",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "reason"
+            },
+            "message": "must have required property 'reason'"
+          },
+          {
+            "instancePath": "/representative_adjustment/0",
+            "schemaPath": "#/additionalProperties",
+            "keyword": "additionalProperties",
+            "params": {
+              "additionalProperty": "event"
+            },
+            "message": "must NOT have additional properties"
+          },
+          {
+            "instancePath": "/representative_adjustment/0",
+            "schemaPath": "#/additionalProperties",
+            "keyword": "additionalProperties",
+            "params": {
+              "additionalProperty": "slot"
+            },
+            "message": "must NOT have additional properties"
+          }
+        ]
+      }
+    ]
+  },
+  "counts": {
+    "已定": 22,
+    "本版选值": 44,
+    "由输入全称量化": 15,
+    "超出覆盖即停": 18
+  }
+}

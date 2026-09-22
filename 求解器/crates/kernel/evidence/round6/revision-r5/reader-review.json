@@ -1,0 +1,18 @@
+{
+  "status": "pass",
+  "documents": [
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/README.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/修订与验证.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/修订记录.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核实现-对规格的疑问.md"
+  ],
+  "checks": {
+    "陌生读者上下文": "三发现及条款、接口和试样均自包含",
+    "终态与史料": "README及本报告为现状，原round6报告明确标成执行存档",
+    "头部状态": "报告与最终机械验收一致",
+    "指令回声": "未把写作指令写进正文",
+    "数字口径": "141项测试、52次CLI、29份记录和11份循环；旧数字均在历史区",
+    "命名": "沿用发现ID、KQ编号及revision-r5路径",
+    "交叉引用": "本次四份文档全部本地链接目标存在"
+  }
+}

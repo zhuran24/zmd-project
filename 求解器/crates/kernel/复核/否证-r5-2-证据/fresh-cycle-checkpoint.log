@@ -1,0 +1,5 @@
+{"name": "fresh-cycle-checkpoint", "command": ["/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel", "checkpoint", "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-2-证据/fresh-cycle.json", "--out", "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-2-证据/fresh-cycle-checkpoint.json", "--config", "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"], "cwd": "/home/zhuran24/zmd-research-fresh/求解器", "exit": 0}
+STDOUT
+{"out":"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-2-证据/fresh-cycle-checkpoint.json","status":null}
+
+STDERR

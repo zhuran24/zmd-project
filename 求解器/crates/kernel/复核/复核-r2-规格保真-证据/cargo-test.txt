@@ -1,0 +1,86 @@
+   Compiling proc-macro2 v1.0.107
+   Compiling unicode-ident v1.0.26
+   Compiling quote v1.0.47
+   Compiling serde_core v1.0.229
+   Compiling zmij v1.0.23
+   Compiling serde v1.0.229
+   Compiling serde_json v1.0.151
+   Compiling itoa v1.0.18
+   Compiling memchr v2.8.3
+   Compiling syn v3.0.6
+   Compiling serde_derive v1.0.229
+   Compiling kernel v0.1.0 (/home/zhuran24/zmd-research-fresh/求解器/crates/kernel)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.38s
+     Running unittests src/lib.rs (crates/kernel/复核/复核-r2-规格保真-证据/target/debug/deps/kernel-26241e85d1128675)
+
+running 58 tests
+test tests::checkpoint_delta_negative_cases ... ok
+test tests::integer_validation ... ok
+test tests::damping_no_terminal ... ok
+test tests::config_axes_and_all_stop_values ... ok
+test tests::explicit_step_anchors ... ok
+test tests::catalog_and_geometry ... ok
+test tests::manufacturing_two_material_batch ... ok
+test tests::completed_output_conflict_retains_batch ... ok
+test tests::box_selectors ... ok
+test tests::membership_projection ... ok
+test tests::manufacture_disabled_intake_and_pause ... ok
+test tests::explicit_ore_supply ... ok
+test tests::bridge_same_item_cannot_occupy_both_axes ... ok
+test tests::bridge_two_independent_slots_run ... ok
+test tests::core_inbound_physical_deposit ... ok
+test tests::damping_paths_and_missing_branch ... ok
+test tests::closure_and_resources ... ok
+test tests::after_closure_restart ... ok
+test tests::ore_history_horizon_stop ... ok
+test tests::output_level_damping_priority ... ok
+test tests::revision::revision_independent_identity_audit ... ok
+test tests::identity_latch_and_no_cross_disconnected_observation ... ok
+test tests::level_tie_reversal_changes_winner ... ok
+test tests::revision::revision_ore_depletion_is_not_a_movement_guard ... ok
+test tests::five_tick_recipe_completes_only_at_boundary ... ok
+test tests::output_off_preserves_game_state ... ok
+test tests::simultaneous_ring_restoration ... ok
+test tests::stopped_engine_cannot_continue ... ok
+test tests::projections ... ok
+test tests::revision::revision_manufacturing_axis_evidence ... ok
+test tests::transfer_capacity_and_empty_cooldown ... ok
+test tests::revision::revision_branch_relevance ... ok
+test tests::external_stop_positions ... ok
+test tests::transfer_conservation ... ok
+test tests::revision::revision_warehouse_acceptance ... ok
+test tests::malformed_state_rejected ... ok
+test tests::coverage_five_states ... ok
+test tests::transport_wrong_item_rejects ... ok
+test tests::warehouse_competition_atomic_stop ... ok
+test tests::three_examples_static ... ok
+test tests::warehouse_identity_monotone ... ok
+test tests::revision::revision_supply_order_intersection ... ok
+test tests::revision::revision_pending_history_alias ... ok
+test tests::transfer_cooldown_pause ... ok
+test tests::warehouse_single_unknown_with_assigned_empty ... ok
+test tests::warehouse_unassigned_species_order ... ok
+test tests::warehouse_invalid_identity_and_order ... ok
+test tests::revision::revision_initial_warehouse_labels ... ok
+test tests::warehouse_80000_and_recipe_conservation ... ok
+test tests::revision::revision_external_action_references ... ok
+test tests::total_exhaustion_survives_window_expiry ... ok
+test tests::seed_and_parameter_negatives ... ok
+test tests::revision::revision_gate_item_domain ... ok
+test tests::revision::revision_snapshot_objects ... ok
+test tests::revision::revision_ore_history_sufficiency ... ok
+test tests::byte_determinism_and_layout_permutation ... ok
+test tests::revision::revision_reports_and_after_closure_stop ... ok
+test tests::full_and_delta_record_recompute ... ok
+
+test result: ok. 58 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.43s
+
+     Running tests/reference.rs (crates/kernel/复核/复核-r2-规格保真-证据/target/debug/deps/reference-1613ad1990138602)
+
+running 3 tests
+test crusher_reference ... ok
+test splitter_reference ... ok
+test live_python_differential ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.42s
+

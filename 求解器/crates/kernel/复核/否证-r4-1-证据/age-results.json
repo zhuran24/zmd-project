@@ -1,0 +1,62 @@
+[
+  {
+    "case": "one-age",
+    "exit_code": 0,
+    "status": "kernel-input-v3",
+    "open_items": null,
+    "contents": [
+      {
+        "item": "高容谷地电池",
+        "quantity": {
+          "value": "2",
+          "category": "候选"
+        },
+        "entered_at": {
+          "kind": "rational",
+          "value": {
+            "value": "-2",
+            "category": "候选"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "case": "two-ages",
+    "exit_code": 2,
+    "status": "invalid_input",
+    "open_items": [
+      "invalid_input input @ south_box:storage:0: 普通格不能混种"
+    ],
+    "contents": [
+      {
+        "item": "高容谷地电池",
+        "quantity": {
+          "value": "1",
+          "category": "候选"
+        },
+        "entered_at": {
+          "kind": "rational",
+          "value": {
+            "value": "-2",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "item": "高容谷地电池",
+        "quantity": {
+          "value": "1",
+          "category": "候选"
+        },
+        "entered_at": {
+          "kind": "rational",
+          "value": {
+            "value": "-1",
+            "category": "候选"
+          }
+        }
+      }
+    ]
+  }
+]

@@ -1,0 +1,205 @@
+[
+  {
+    "tick": 0,
+    "actions": [],
+    "front": [
+      "P1",
+      0
+    ],
+    "A": [
+      "P0",
+      0
+    ],
+    "B": [
+      "Q0",
+      0
+    ],
+    "next_A": 5,
+    "next_B": 5
+  },
+  {
+    "tick": 1,
+    "actions": [
+      "Q0:B->sink"
+    ],
+    "front": [
+      "P1",
+      0
+    ],
+    "A": [
+      "P0",
+      0
+    ],
+    "B": null,
+    "next_A": 5,
+    "next_B": 5
+  },
+  {
+    "tick": 2,
+    "actions": [],
+    "front": [
+      "P1",
+      0
+    ],
+    "A": [
+      "P0",
+      0
+    ],
+    "B": null,
+    "next_A": 5,
+    "next_B": 5
+  },
+  {
+    "tick": 3,
+    "actions": [],
+    "front": [
+      "P1",
+      0
+    ],
+    "A": [
+      "P0",
+      0
+    ],
+    "B": null,
+    "next_A": 5,
+    "next_B": 5
+  },
+  {
+    "tick": 4,
+    "actions": [],
+    "front": [
+      "P1",
+      0
+    ],
+    "A": [
+      "P0",
+      0
+    ],
+    "B": null,
+    "next_A": 5,
+    "next_B": 5
+  },
+  {
+    "tick": 5,
+    "actions": [
+      "P0:A->B",
+      "P1:front->A",
+      "P2:source->front"
+    ],
+    "front": [
+      "P2",
+      5
+    ],
+    "A": [
+      "P1",
+      5
+    ],
+    "B": [
+      "P0",
+      5
+    ],
+    "next_A": 10,
+    "next_B": 10
+  },
+  {
+    "tick": 6,
+    "actions": [
+      "P0:B->sink"
+    ],
+    "front": [
+      "P2",
+      5
+    ],
+    "A": [
+      "P1",
+      5
+    ],
+    "B": null,
+    "next_A": 10,
+    "next_B": 10
+  },
+  {
+    "tick": 7,
+    "actions": [],
+    "front": [
+      "P2",
+      5
+    ],
+    "A": [
+      "P1",
+      5
+    ],
+    "B": null,
+    "next_A": 10,
+    "next_B": 10
+  },
+  {
+    "tick": 8,
+    "actions": [],
+    "front": [
+      "P2",
+      5
+    ],
+    "A": [
+      "P1",
+      5
+    ],
+    "B": null,
+    "next_A": 10,
+    "next_B": 10
+  },
+  {
+    "tick": 9,
+    "actions": [],
+    "front": [
+      "P2",
+      5
+    ],
+    "A": [
+      "P1",
+      5
+    ],
+    "B": null,
+    "next_A": 10,
+    "next_B": 10
+  },
+  {
+    "tick": 10,
+    "actions": [
+      "P1:A->B",
+      "P2:front->A",
+      "P3:source->front"
+    ],
+    "front": [
+      "P3",
+      10
+    ],
+    "A": [
+      "P2",
+      10
+    ],
+    "B": [
+      "P1",
+      10
+    ],
+    "next_A": 15,
+    "next_B": 15
+  },
+  {
+    "tick": 11,
+    "actions": [
+      "P1:B->sink"
+    ],
+    "front": [
+      "P3",
+      10
+    ],
+    "A": [
+      "P2",
+      10
+    ],
+    "B": null,
+    "next_A": 15,
+    "next_B": 15
+  }
+]

@@ -1,0 +1,39 @@
+{
+  "compile_command": [
+    "rustc",
+    "--edition=2021",
+    "--crate-name",
+    "identity_control",
+    "-",
+    "-L",
+    "dependency=/home/zhuran24/zmd-research-fresh/求解器/target/debug/deps",
+    "--extern",
+    "kernel=/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/libkernel.rlib",
+    "--extern",
+    "serde_json=/home/zhuran24/zmd-research-fresh/求解器/target/debug/deps/libserde_json-0ab88e76c2088d71.rlib",
+    "-o",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/identity-control"
+  ],
+  "probe_source": "\nuse kernel::{value::read_json, Config, Engine, Input};\nuse serde_json::{json,Value};\nuse std::path::PathBuf;\n// 内核输出§2：区分恢复入口与事后独立身份校验的实际覆盖。\nfn main(){\n let args:Vec<String>=std::env::args().collect();let root=PathBuf::from(&args[1]);\n let config=Config::parse(read_json(&root.join(\"规格/内核配置-v1.json\")).unwrap()).unwrap();\n let mut rows=Vec::new();\n for name in [\"restart-control\",\"movement-build-alias\",\"movement-future-id\"] {\n  let path=root.join(format!(\"crates/kernel/复核/r2-工程证据/{}-input.json\",name));\n  let mut engine=Engine::new(Input::load(&path,&config,false).unwrap()).unwrap();\n  let start=json!(engine.state);let tick=engine.step(true).unwrap().unwrap();\n  let result=kernel::event_identity::validate_event_identity(&engine.input,&start,&[tick]);\n  rows.push(json!({\"case\":name,\"identity_after_step\":result.map_err(|e|e.to_string())}));\n }\n let _:Value=json!(null);println!(\"{}\",json!(rows));\n}\n",
+  "exit_code": 0,
+  "results": [
+    {
+      "case": "restart-control",
+      "identity_after_step": {
+        "Ok": null
+      }
+    },
+    {
+      "case": "movement-build-alias",
+      "identity_after_step": {
+        "Ok": null
+      }
+    },
+    {
+      "case": "movement-future-id",
+      "identity_after_step": {
+        "Err": "invalid_input input @ J|2|0|0: 跨时刻事件重复执行"
+      }
+    }
+  ]
+}

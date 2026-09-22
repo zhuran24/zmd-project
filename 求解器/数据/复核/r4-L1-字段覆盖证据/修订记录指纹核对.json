@@ -1,0 +1,67 @@
+[
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+    "current_equals_recorded_after": true,
+    "recorded_before_differs_from_after": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/送料契约.md",
+    "current_equals_recorded_after": true,
+    "recorded_before_differs_from_after": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/修订记录.md",
+    "current_equals_recorded_after": true,
+    "recorded_before_differs_from_after": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/校验报告.md",
+    "current_equals_recorded_after": true,
+    "recorded_before_differs_from_after": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/contract.json",
+    "current_equals_recorded_after": true,
+    "recorded_before_differs_from_after": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/来源清单.json",
+    "current_equals_recorded_after": true,
+    "recorded_before_differs_from_after": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/验证记录.md",
+    "current_equals_recorded_after": true,
+    "recorded_before_differs_from_after": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/转换说明.md",
+    "current_equals_recorded_after": true,
+    "recorded_before_differs_from_after": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/cargo-test.log",
+    "current_equals_recorded_after": true,
+    "recorded_before_differs_from_after": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/topology/src/lib.rs",
+    "current_equals_recorded_after": true,
+    "recorded_before_differs_from_after": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/topology/tests/validation.rs",
+    "current_equals_recorded_after": true,
+    "recorded_before_differs_from_after": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/工具/check_revision.py",
+    "current_equals_recorded_after": true,
+    "recorded_before_differs_from_after": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/工具/convert_candidate_b.py",
+    "current_equals_recorded_after": true,
+    "recorded_before_differs_from_after": true
+  }
+]

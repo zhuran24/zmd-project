@@ -1,0 +1,98 @@
+[
+  {
+    "name": "ore-79999-seed",
+    "exit_code": 0
+  },
+  {
+    "name": "ore-79999-check",
+    "exit_code": 2
+  },
+  {
+    "name": "ore-79999-cycle",
+    "exit_code": 2
+  },
+  {
+    "name": "ore-79999-finite-run",
+    "exit_code": 0
+  },
+  {
+    "name": "ore-80000-seed",
+    "exit_code": 0
+  },
+  {
+    "name": "ore-80000-check",
+    "exit_code": 2
+  },
+  {
+    "name": "ore-80000-cycle",
+    "exit_code": 2
+  },
+  {
+    "name": "ore-80000-finite-run",
+    "exit_code": 0
+  },
+  {
+    "name": "constructor-build-0",
+    "exit_code": 0
+  },
+  {
+    "name": "constructor-observation",
+    "exit_code": 0
+  },
+  {
+    "name": "cycle-generate",
+    "exit_code": 0
+  },
+  {
+    "name": "absolute-verify-cycle",
+    "exit_code": 0
+  },
+  {
+    "name": "absolute-verify-record-root",
+    "exit_code": 0
+  },
+  {
+    "name": "absolute-verify-record-local",
+    "exit_code": 0
+  },
+  {
+    "name": "absolute-checkpoint",
+    "exit_code": 0
+  },
+  {
+    "name": "absolute-batch",
+    "exit_code": 0
+  },
+  {
+    "name": "relative-verify-cycle",
+    "exit_code": 0
+  },
+  {
+    "name": "relative-verify-record-root",
+    "exit_code": 2
+  },
+  {
+    "name": "relative-verify-record-local",
+    "exit_code": 2
+  },
+  {
+    "name": "relative-checkpoint",
+    "exit_code": 2
+  },
+  {
+    "name": "relative-batch",
+    "exit_code": 2
+  },
+  {
+    "name": "load-shell-verify",
+    "exit_code": 0
+  },
+  {
+    "name": "load-shell-checkpoint",
+    "exit_code": 101
+  },
+  {
+    "name": "schema-validation",
+    "exit_code": 0
+  }
+]

@@ -1,0 +1,146 @@
+   Compiling proc-macro2 v1.0.107
+   Compiling quote v1.0.47
+   Compiling unicode-ident v1.0.26
+   Compiling serde_core v1.0.229
+   Compiling zmij v1.0.23
+   Compiling serde v1.0.229
+   Compiling serde_json v1.0.151
+   Compiling itoa v1.0.18
+   Compiling memchr v2.8.3
+   Compiling autocfg v1.5.1
+   Compiling num-traits v0.2.19
+   Compiling syn v3.0.6
+   Compiling num-integer v0.1.47
+   Compiling num-bigint v0.4.8
+   Compiling num-rational v0.4.2
+   Compiling serde_derive v1.0.229
+   Compiling topology v0.1.0 (/home/zhuran24/zmd-research-fresh/求解器/crates/topology)
+   Compiling kernel v0.1.0 (/home/zhuran24/zmd-research-fresh/求解器/crates/kernel)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.26s
+     Running unittests src/lib.rs (crates/kernel/复核/r1-测试与证据/target/debug/deps/kernel-26241e85d1128675)
+
+running 45 tests
+test tests::checkpoint_delta_negative_cases ... ok
+test tests::integer_validation ... ok
+test tests::config_axes_and_all_stop_values ... ok
+test tests::damping_no_terminal ... ok
+test tests::explicit_step_anchors ... ok
+test tests::catalog_and_geometry ... ok
+test tests::box_selectors ... ok
+test tests::membership_projection ... ok
+test tests::completed_output_conflict_retains_batch ... ok
+test tests::manufacture_disabled_intake_and_pause ... ok
+test tests::manufacturing_two_material_batch ... ok
+test tests::core_inbound_physical_deposit ... ok
+test tests::bridge_two_independent_slots_run ... ok
+test tests::simultaneous_ring_restoration ... ok
+test tests::stopped_engine_cannot_continue ... ok
+test tests::bridge_same_item_cannot_occupy_both_axes ... ok
+test tests::damping_paths_and_missing_branch ... ok
+test tests::ore_history_horizon_stop ... ok
+test tests::after_closure_restart ... ok
+test tests::explicit_ore_supply ... ok
+test tests::closure_and_resources ... ok
+test tests::output_level_damping_priority ... ok
+test tests::level_tie_reversal_changes_winner ... ok
+test tests::warehouse_identity_monotone ... ok
+test tests::transport_wrong_item_rejects ... ok
+test tests::transfer_capacity_and_empty_cooldown ... ok
+test tests::transfer_conservation ... ok
+test tests::five_tick_recipe_completes_only_at_boundary ... ok
+test tests::warehouse_invalid_identity_and_order ... ok
+test tests::warehouse_competition_atomic_stop ... ok
+test tests::warehouse_single_unknown_with_assigned_empty ... ok
+test tests::warehouse_unassigned_species_order ... ok
+test tests::warehouse_80000_and_recipe_conservation ... ok
+test tests::identity_latch_and_no_cross_disconnected_observation ... ok
+test tests::transfer_cooldown_pause ... ok
+test tests::output_off_preserves_game_state ... ok
+test tests::external_stop_positions ... ok
+test tests::total_exhaustion_survives_window_expiry ... ok
+test tests::three_examples_static ... ok
+test tests::projections ... ok
+test tests::coverage_five_states ... ok
+test tests::seed_and_parameter_negatives ... ok
+test tests::malformed_state_rejected ... ok
+test tests::byte_determinism_and_layout_permutation ... ok
+test tests::full_and_delta_record_recompute ... ok
+
+test result: ok. 45 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.40s
+
+     Running unittests src/main.rs (crates/kernel/复核/r1-测试与证据/target/debug/deps/kernel-7b5e2fc753826063)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference.rs (crates/kernel/复核/r1-测试与证据/target/debug/deps/reference-1613ad1990138602)
+
+running 3 tests
+test crusher_reference ... ok
+test splitter_reference ... ok
+test live_python_differential ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.39s
+
+     Running unittests src/lib.rs (crates/kernel/复核/r1-测试与证据/target/debug/deps/topology-958a7a196b95191c)
+
+running 1 test
+test catalog_tests::legacy_machine_constants_equal_catalog ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (crates/kernel/复核/r1-测试与证据/target/debug/deps/topology-232d29a62249f608)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/validation.rs (crates/kernel/复核/r1-测试与证据/target/debug/deps/validation-55f92a55e3fc13c3)
+
+running 30 tests
+test catalog_port_edges_match_formal_reference_layouts ... ok
+test catalog_unit_properties_match_formal_reference_values ... ok
+test storage_relay_cannot_double_material_origin_flow ... ok
+test storage_split_counts_both_sides_and_deduplicates_item_rows ... ok
+test catalog_is_checked_against_live_formal_sources ... ok
+test false_actual_rate_is_not_a_certificate ... ok
+test plant_storage_condition_uses_current_machine_count ... ok
+test dedicated_ports_cannot_fork_without_transport_model ... ok
+test candidate_passes_static_only ... ok
+test wrong_target_recipe_is_rejected ... ok
+test false_fanout_certification_is_rejected ... ok
+test fabricated_capacity_cannot_relax_rule ... ok
+test duplicate_source_identity_is_rejected ... ok
+test changed_channel_breaks_local_balance ... ok
+test multi_material_obligations_cannot_disappear ... ok
+test legacy_channels_and_storage_shortcut_are_rejected ... ok
+test overload_is_exact_and_not_rounded ... ok
+test wrong_target_cannot_redefine_task ... ok
+test shared_port_rates_are_summed ... ok
+test every_formal_constraint_has_coverage_row ... ok
+test zero_rate_does_not_count_as_live_channel ... ok
+test unsupported_routing_fails_closed ... ok
+test full_speed_and_transport_projection_are_explicit_but_not_certified ... ok
+test invalid_ore_machine_is_not_counted_as_dedicated ... ok
+test zero_denominator_and_missing_fields_fail_loading ... ok
+test logical_feed_ids_cannot_be_physical_or_buffer_channels ... ok
+test numeric_categories_have_field_semantics ... ok
+test catalog_mutations_are_rejected_by_live_source_gate ... ok
+test same_item_multiport_and_mixed_recipe_obligations_are_required ... ok
+test catalog_full_field_mutation_regressions_pass ... ok
+
+test result: ok. 30 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.15s
+
+   Doc-tests kernel
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests topology
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

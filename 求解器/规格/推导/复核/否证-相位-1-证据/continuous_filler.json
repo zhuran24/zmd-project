@@ -1,0 +1,90 @@
+[
+  {
+    "tick": 0,
+    "incoming_each": null,
+    "before_start_each": 12,
+    "after_each": 2,
+    "start": true,
+    "complete": false
+  },
+  {
+    "tick": 1,
+    "incoming_each": 3,
+    "before_start_each": null,
+    "after_each": 5,
+    "start": false,
+    "complete": false
+  },
+  {
+    "tick": 2,
+    "incoming_each": 1,
+    "before_start_each": null,
+    "after_each": 6,
+    "start": false,
+    "complete": false
+  },
+  {
+    "tick": 3,
+    "incoming_each": 3,
+    "before_start_each": null,
+    "after_each": 9,
+    "start": false,
+    "complete": false
+  },
+  {
+    "tick": 4,
+    "incoming_each": 1,
+    "before_start_each": null,
+    "after_each": 10,
+    "start": false,
+    "complete": false
+  },
+  {
+    "tick": 5,
+    "incoming_each": 3,
+    "before_start_each": 13,
+    "after_each": 3,
+    "start": true,
+    "complete": true
+  },
+  {
+    "tick": 6,
+    "incoming_each": 1,
+    "before_start_each": null,
+    "after_each": 4,
+    "start": false,
+    "complete": false
+  },
+  {
+    "tick": 7,
+    "incoming_each": 3,
+    "before_start_each": null,
+    "after_each": 7,
+    "start": false,
+    "complete": false
+  },
+  {
+    "tick": 8,
+    "incoming_each": 1,
+    "before_start_each": null,
+    "after_each": 8,
+    "start": false,
+    "complete": false
+  },
+  {
+    "tick": 9,
+    "incoming_each": 3,
+    "before_start_each": null,
+    "after_each": 11,
+    "start": false,
+    "complete": false
+  },
+  {
+    "tick": 10,
+    "incoming_each": 1,
+    "before_start_each": 12,
+    "after_each": 2,
+    "start": true,
+    "complete": true
+  }
+]

@@ -1,0 +1,134 @@
+{
+  "status": "pass",
+  "cases": [
+    {
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序0核验.json",
+      "status": "period_preconditions_pass",
+      "interval": [
+        72,
+        262
+      ],
+      "period": 190,
+      "direct_count": 20,
+      "competing_count": 20,
+      "d_total": 20,
+      "ratio": "1",
+      "manufacturing_completions": {
+        "crusher_loop": 40,
+        "refine_d": 20,
+        "refine_e": 20
+      },
+      "startup_outbound": {
+        "蓝铁矿": 4
+      },
+      "merger_one_tick_releases": 40,
+      "branch_one_tick_releases": {},
+      "d_services_with_empty_bypasses": 20,
+      "connection_time": -78,
+      "reachability": "空库存条件种子；全部循环物料来自真实仓库4件矿，未证明任意建造/调试史可达"
+    },
+    {
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序1核验.json",
+      "status": "period_preconditions_pass",
+      "interval": [
+        275,
+        465
+      ],
+      "period": 190,
+      "direct_count": 20,
+      "competing_count": 20,
+      "d_total": 20,
+      "ratio": "1",
+      "manufacturing_completions": {
+        "crusher_loop": 40,
+        "refine_d": 20,
+        "refine_e": 20
+      },
+      "startup_outbound": {
+        "蓝铁矿": 4
+      },
+      "merger_one_tick_releases": 40,
+      "branch_one_tick_releases": {},
+      "d_services_with_empty_bypasses": 20,
+      "connection_time": -78,
+      "reachability": "空库存条件种子；全部循环物料来自真实仓库4件矿，未证明任意建造/调试史可达"
+    },
+    {
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序2核验.json",
+      "status": "inconclusive",
+      "reason": "预算内未取得完整键重复"
+    },
+    {
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序3核验.json",
+      "status": "period_preconditions_pass",
+      "interval": [
+        349,
+        454
+      ],
+      "period": 105,
+      "direct_count": 0,
+      "competing_count": 10,
+      "d_total": 10,
+      "ratio": "0",
+      "manufacturing_completions": {
+        "refine_d": 10,
+        "refine_e": 10,
+        "crusher_loop": 20
+      },
+      "startup_outbound": {
+        "蓝铁矿": 4
+      },
+      "merger_one_tick_releases": 10,
+      "branch_one_tick_releases": {
+        "t11_6": 10
+      },
+      "d_services_with_empty_bypasses": 10,
+      "connection_time": -78,
+      "reachability": "空库存条件种子；全部循环物料来自真实仓库4件矿，未证明任意建造/调试史可达"
+    },
+    {
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序4核验.json",
+      "status": "period_preconditions_pass",
+      "interval": [
+        126,
+        521
+      ],
+      "period": 395,
+      "direct_count": 0,
+      "competing_count": 20,
+      "d_total": 20,
+      "ratio": "0",
+      "manufacturing_completions": {
+        "crusher_loop": 40,
+        "refine_d": 20,
+        "refine_e": 20
+      },
+      "startup_outbound": {
+        "蓝铁矿": 4
+      },
+      "merger_one_tick_releases": 20,
+      "branch_one_tick_releases": {
+        "t10_5": 20
+      },
+      "d_services_with_empty_bypasses": 20,
+      "connection_time": -78,
+      "reachability": "空库存条件种子；全部循环物料来自真实仓库4件矿，未证明任意建造/调试史可达"
+    },
+    {
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序5核验.json",
+      "status": "inconclusive",
+      "reason": "预算内未取得完整键重复"
+    }
+  ],
+  "varied_positions": [
+    16,
+    31,
+    83
+  ],
+  "distinct_ratios": [
+    "0",
+    "1"
+  ],
+  "sensitivity": "observed",
+  "scope": "只枚举D三条模板在固定三个位置的6种序；非全部事件全序，不作普遍约束证明。相同比例不构成正式约束反例。"
+}

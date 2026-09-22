@@ -1,0 +1,229 @@
+{
+  "records": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-kernel.json",
+      "ticks": 4,
+      "events": 156,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 41,
+        "exercised": 26,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "bee5c2aa24ad8ea31827a2dbe86a26a20cbf8c37483a1973eecff80f00d6958c"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-checkpoint_delta-kernel.json",
+      "ticks": 4,
+      "events": 156,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 41,
+        "exercised": 26,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "24df3b9a94e29113b03ac5984cd96a86d9ec94980e4a136dc0d563e7793edf0b"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-kernel.json",
+      "ticks": 12,
+      "events": 794,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 44,
+        "exercised": 23,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "692859d0beae1e1dc96b6213c24c18be2b6c47be5b1aa0e7622bb76bd3cf3921"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-checkpoint_delta-kernel.json",
+      "ticks": 12,
+      "events": 794,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 44,
+        "exercised": 23,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "b081795b21f4635c677ac6e7dcda5e83a6fd87ccb3610fba396ba3833f876137"
+    }
+  ],
+  "coverage_mutations": [
+    {
+      "sample": "混做粉碎机两下游",
+      "format": "full_state_each_instant",
+      "case": "coverage_fake_axis",
+      "accepted": true,
+      "error": null,
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/混做粉碎机两下游-运行记录-kernel-coverage_fake_axis.json"
+    },
+    {
+      "sample": "混做粉碎机两下游",
+      "format": "full_state_each_instant",
+      "case": "coverage_fake_evidence",
+      "accepted": true,
+      "error": null,
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/混做粉碎机两下游-运行记录-kernel-coverage_fake_evidence.json"
+    },
+    {
+      "sample": "混做粉碎机两下游",
+      "format": "full_state_each_instant",
+      "case": "coverage_fake_transfer",
+      "accepted": true,
+      "error": null,
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/混做粉碎机两下游-运行记录-kernel-coverage_fake_transfer.json"
+    },
+    {
+      "sample": "混做粉碎机两下游",
+      "format": "checkpoint_delta",
+      "case": "coverage_fake_axis",
+      "accepted": true,
+      "error": null,
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/混做粉碎机两下游-运行记录-checkpoint_delta-kernel-coverage_fake_axis.json"
+    },
+    {
+      "sample": "混做粉碎机两下游",
+      "format": "checkpoint_delta",
+      "case": "coverage_fake_evidence",
+      "accepted": true,
+      "error": null,
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/混做粉碎机两下游-运行记录-checkpoint_delta-kernel-coverage_fake_evidence.json"
+    },
+    {
+      "sample": "混做粉碎机两下游",
+      "format": "checkpoint_delta",
+      "case": "coverage_fake_transfer",
+      "accepted": true,
+      "error": null,
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/混做粉碎机两下游-运行记录-checkpoint_delta-kernel-coverage_fake_transfer.json"
+    },
+    {
+      "sample": "分流器三路轮询",
+      "format": "full_state_each_instant",
+      "case": "coverage_fake_axis",
+      "accepted": true,
+      "error": null,
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/分流器三路轮询-运行记录-kernel-coverage_fake_axis.json"
+    },
+    {
+      "sample": "分流器三路轮询",
+      "format": "full_state_each_instant",
+      "case": "coverage_fake_evidence",
+      "accepted": true,
+      "error": null,
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/分流器三路轮询-运行记录-kernel-coverage_fake_evidence.json"
+    },
+    {
+      "sample": "分流器三路轮询",
+      "format": "full_state_each_instant",
+      "case": "coverage_fake_transfer",
+      "accepted": true,
+      "error": null,
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/分流器三路轮询-运行记录-kernel-coverage_fake_transfer.json"
+    },
+    {
+      "sample": "分流器三路轮询",
+      "format": "checkpoint_delta",
+      "case": "coverage_fake_axis",
+      "accepted": true,
+      "error": null,
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/分流器三路轮询-运行记录-checkpoint_delta-kernel-coverage_fake_axis.json"
+    },
+    {
+      "sample": "分流器三路轮询",
+      "format": "checkpoint_delta",
+      "case": "coverage_fake_evidence",
+      "accepted": true,
+      "error": null,
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/分流器三路轮询-运行记录-checkpoint_delta-kernel-coverage_fake_evidence.json"
+    },
+    {
+      "sample": "分流器三路轮询",
+      "format": "checkpoint_delta",
+      "case": "coverage_fake_transfer",
+      "accepted": true,
+      "error": null,
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/分流器三路轮询-运行记录-checkpoint_delta-kernel-coverage_fake_transfer.json"
+    }
+  ],
+  "r1_manifest_files": 31,
+  "r1_manifest_mismatches": [],
+  "r1_baseline_files": 3463,
+  "r1_baseline_changes": [
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/README.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/output.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/input.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/transition.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/interfaces.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/engine.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/warehouse.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/verify_outputs.py",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/实现验证.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/手推桥接轨迹.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核实现-对规格的疑问.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-checkpoint_delta-kernel.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-kernel.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-checkpoint_delta-kernel.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-kernel.json"
+  ],
+  "r1_test_counts": [
+    [
+      "58",
+      "0"
+    ],
+    [
+      "0",
+      "0"
+    ],
+    [
+      "3",
+      "0"
+    ],
+    [
+      "1",
+      "0"
+    ],
+    [
+      "1",
+      "0"
+    ],
+    [
+      "0",
+      "0"
+    ],
+    [
+      "30",
+      "0"
+    ],
+    [
+      "0",
+      "0"
+    ],
+    [
+      "0",
+      "0"
+    ]
+  ],
+  "r1_regression_counts": {
+    "status": "通过",
+    "controls": 4,
+    "metadata_negatives": 40,
+    "cli_negatives": 6
+  },
+  "r1_probe_count": 14,
+  "r2_tests_passed": 92,
+  "r2_tests_failed": 0,
+  "r2_cli_test_relocated": "通过",
+  "rust_functions": 180,
+  "section_comments_missing": [],
+  "banned_constructs": [],
+  "r2_clippy": "    Checking memchr v2.8.3\n    Checking itoa v1.0.18\n    Checking serde_core v1.0.229\n    Checking zmij v1.0.23\n    Checking serde v1.0.229\n    Checking serde_json v1.0.151\n    Checking kernel v0.1.0 (/home/zhuran24/zmd-research-fresh/求解器/crates/kernel)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.68s\n",
+  "r2_build": "   Compiling proc-macro2 v1.0.107\n   Compiling quote v1.0.47\n   Compiling unicode-ident v1.0.26\n   Compiling serde_core v1.0.229\n   Compiling zmij v1.0.23\n   Compiling serde v1.0.229\n   Compiling serde_json v1.0.151\n   Compiling itoa v1.0.18\n   Compiling memchr v2.8.3\n   Compiling syn v3.0.6\n   Compiling serde_derive v1.0.229\n   Compiling kernel v0.1.0 (/home/zhuran24/zmd-research-fresh/求解器/crates/kernel)\n    Finished `release` profile [optimized] target(s) in 5.65s\n"
+}

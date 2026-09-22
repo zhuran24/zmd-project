@@ -1,0 +1,231 @@
+{
+  "status": "pass",
+  "input_checks": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+      "sha256": "31ced2a24fef738c72dfa406351b6bad5df3e353d6b1c2dfd06ab1febaf566ff",
+      "unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解任务.txt",
+      "sha256": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+      "unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解约束.txt",
+      "sha256": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6",
+      "unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/候选约束.txt",
+      "sha256": "a0ac3f9c82f371132b7de29fe47e4c6c587904680bc2786523de0c825fd5efd9",
+      "unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7草案.md",
+      "sha256": "32acf147e09de04feabfb575dd509a2c5c06b519b2504ba3ff253c3a61816a26",
+      "unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/主会话三审-0920.md",
+      "sha256": "da7d816827a6d66a20def9be982308df0a0e7a8dcb879c6c75ef2c381ef01f87",
+      "unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/回路总数决定论-v2.md",
+      "sha256": "e3c1c80e97688cb28042d7ef86f90645b8dc4272f5a28d13f141e4924fd5ca8e",
+      "unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/三种相位不改产量-v2.md",
+      "sha256": "53cc75c3e645c1d975b2c4094e2f75ef23908b6729fdd2eb224696eedd787705",
+      "unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/总纲-流量存量相位.md",
+      "sha256": "625ce76821eae837fb636d699f221d4a813570be1766c33081df5c97993dd2dd",
+      "unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-v2-loop.md",
+      "sha256": "39b06051993e834b5b0adf0149c9ad9cfd8ec69633296d7365db7ebfa1464c2d",
+      "unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-v2-phase.md",
+      "sha256": "4c7082a570988c31557b4905ea2772bb1fcd5ce62f4be954946bc6b0937d2c34",
+      "unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/会议2成果修订-v46.md",
+      "sha256": "dd873bba256906787359ada38480a0caf4eefd9b2c6bc5b05f135278b7617f5c",
+      "unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/证据-v2-loop-否证/inputs.json",
+      "sha256": "92af56da4c563093d4b737f94d44bfb59b26399ec632dbb17dc64cdf567c2056",
+      "unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/证据-v2-phase/v2_rewrite_recycle.md",
+      "sha256": "5c2c34896668ce18cf993e03cc23b9f5e9e102f85e31c9147619c7cfe8211d8e",
+      "unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/证据-v2-loop-否证/checks.json",
+      "sha256": "fb2355d241f63633259a543069fdec6fc5206dedc027363444f1063e2cbedd01",
+      "unchanged": true
+    }
+  ],
+  "deliverables": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-v2-loop-r2.md",
+      "sha256": "f3faf0a4f2fade6555ea43714885ded01a54d4dc0c15c9cb676c6e3627fa1aaf",
+      "lines": 119
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-总纲-1.md",
+      "sha256": "4188a2de00f53e60827dd0e71f84a0deb838fc6bd90fa46e61fc491cf9bb217d",
+      "lines": 78
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/复核/推导.md",
+      "sha256": "20fa05fbd94bf02c23f871751fb27b1d7496da0311e62865758818055c631179",
+      "lines": 97
+    }
+  ],
+  "findings": {
+    "unique": 13,
+    "refuted": 3,
+    "unresolved": 10
+  },
+  "indexed_negative_rows": [
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-v2-loop-r2.md",
+      "line": 63,
+      "ids": [
+        "L-E01"
+      ]
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-v2-loop-r2.md",
+      "line": 71,
+      "ids": [
+        "L-E02"
+      ]
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-总纲-1.md",
+      "line": 35,
+      "ids": [
+        "G-U01"
+      ]
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-总纲-1.md",
+      "line": 48,
+      "ids": [
+        "G-U02"
+      ]
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/复核/推导.md",
+      "line": 24,
+      "ids": [
+        "L-E01"
+      ]
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/复核/推导.md",
+      "line": 35,
+      "ids": [
+        "L-E02"
+      ]
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/复核/推导.md",
+      "line": 36,
+      "ids": [
+        "L-U1"
+      ]
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/复核/推导.md",
+      "line": 37,
+      "ids": [
+        "L-U2"
+      ]
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/复核/推导.md",
+      "line": 38,
+      "ids": [
+        "L-U3"
+      ]
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/复核/推导.md",
+      "line": 39,
+      "ids": [
+        "L-U4"
+      ]
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/复核/推导.md",
+      "line": 40,
+      "ids": [
+        "L-U5"
+      ]
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/复核/推导.md",
+      "line": 41,
+      "ids": [
+        "L-U6"
+      ]
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/复核/推导.md",
+      "line": 42,
+      "ids": [
+        "L-U7"
+      ]
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/复核/推导.md",
+      "line": 61,
+      "ids": [
+        "P-E01"
+      ]
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/复核/推导.md",
+      "line": 66,
+      "ids": [
+        "P-U05"
+      ]
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/复核/推导.md",
+      "line": 81,
+      "ids": [
+        "G-U01"
+      ]
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/复核/推导.md",
+      "line": 85,
+      "ids": [
+        "G-U02"
+      ]
+    }
+  ],
+  "local_links_checked": 30,
+  "allowed_evidence_extensions": [
+    ".py",
+    ".json",
+    ".log",
+    ".md"
+  ],
+  "errors": []
+}

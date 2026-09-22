@@ -1,0 +1,22 @@
+{
+  "execution_mode": "finite_concrete",
+  "fingerprints": [],
+  "input_history": null,
+  "open_items": [
+    "inconclusive resource.integer @ PC|a:east:0|b:south:0: 时差溢出"
+  ],
+  "parameter_assignment": null,
+  "port_meeting": "shared_edge_opposite",
+  "producer": {
+    "claim": "装载停止，未形成游戏后继",
+    "kind": "kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+  },
+  "profile_id": "kernel_profile_v1",
+  "run_id": "kernel:load-stop",
+  "schema": "kernel-output-v3",
+  "status": "inconclusive",
+  "trace": null,
+  "uncovered_axes": [],
+  "validation_scope": null
+}

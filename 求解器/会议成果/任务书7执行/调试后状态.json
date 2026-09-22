@@ -1,0 +1,504 @@
+{
+  "type": "StructuredOutput",
+  "schema": "debug-release-state-v1",
+  "date": "2026-09-21",
+  "status": "partial",
+  "error": null,
+  "L": 0,
+  "U": 1113,
+  "sources": "证据/调试释放/输入指纹.json",
+  "rule_sha256": "d150b86b398f8e73e57bee1598020e6bcd895e5a13a254b4b11dd1e4416c325a",
+  "task4_interface_version": "plant-pilot-v2",
+  "evidence_layers": {
+    "preparation_termination": "conditional_direct_proof",
+    "local_49_output_witness": "reachable_local_material_trace",
+    "loss_identities": "exact_event_accounting",
+    "numeric_loss_examples": "conditional_upper_bounds",
+    "safe_margins": "task4_sufficient_sets_only",
+    "full_factory": "unproved",
+    "independent_review": "pending"
+  },
+  "default_program": {
+    "terminal_definition": "M213-M215封装和M216-M218灌装，A候选加A_前缀",
+    "steps": [
+      "预生产正确中间品",
+      "全关并显式清旧缓存/错种",
+      "输入各50、非末级输出各50、非成品专线填满；成品线允许自然排空",
+      "恢复最终矿口/设定并显式清理在途旧种",
+      "任意顺序开全部非末级并充分等待库存制造静止",
+      "任意顺序逐台开六末级，第一次开末级起计释放，最后一步后零干预"
+    ],
+    "input_preparation": "T12允许预生产、手工放料；不从关闭的机器获得新中间品",
+    "normal_cache_only": true,
+    "exact_tick_control_required": false,
+    "manual_actions_after_zero_intervention": false,
+    "physical_preconditions": [
+      "合法实际几何",
+      "私有有限路径且无纯运输环",
+      "始终供电",
+      "单种计划配方，无R89回转",
+      "非成品无其他外流",
+      "填料恢复已完成，末级此前关闭",
+      "仓库收得下成品"
+    ],
+    "candidates": [
+      {
+        "id": "A219",
+        "machines": 219,
+        "feeds": 314,
+        "terminal_machines": [
+          "A_M213",
+          "A_M214",
+          "A_M215",
+          "A_M216",
+          "A_M217",
+          "A_M218"
+        ],
+        "ordinary_potential_capacity": 166150,
+        "normal_cache_potential_capacity": 2571,
+        "potential_capacity_excluding_transport": 168721,
+        "transport_potential": "sum(l_e * item_weight[e])",
+        "transport_lengths_provided": false,
+        "preparation_proof_realized_in_physical_layout": false
+      },
+      {
+        "id": "B219",
+        "machines": 219,
+        "feeds": 315,
+        "terminal_machines": [
+          "M213",
+          "M214",
+          "M215",
+          "M216",
+          "M217",
+          "M218"
+        ],
+        "ordinary_potential_capacity": 166150,
+        "normal_cache_potential_capacity": 2571,
+        "potential_capacity_excluding_transport": 168721,
+        "transport_potential": "sum(l_e * item_weight[e])",
+        "transport_lengths_provided": false,
+        "preparation_proof_realized_in_physical_layout": false
+      }
+    ]
+  },
+  "main_inference": {
+    "every_machine_has_completed_batch": false,
+    "specific_exception": "六末级从空缓存保持关闭，所以缓存为空",
+    "every_transport_slot_full": false,
+    "specific_transport_exception": "关闭末级且仓库可收，六条成品输出路径有限排空",
+    "every_input_slot_50": "六末级在准备静止时保持50；非末级全部50尚未证明",
+    "no_work_in_progress_before_first_terminal_open": {
+      "proved": true,
+      "conditional_on": "default_program.physical_preconditions及充分等待",
+      "reason": "正势函数、有限库存与有限成功物料动作"
+    },
+    "manufacturing_phase_eliminated_after_last_terminal_open": false,
+    "remaining_states": [
+      "空/完成缓存身份",
+      "逐机输入输出数量",
+      "物品与混线字序",
+      "轮询/接通序",
+      "箱相位",
+      "准入口计数及窗口",
+      "逐台开机后的相对制造进度"
+    ]
+  },
+  "post_state_set": {
+    "representation": "sound_envelope_with_exact_program_reachability_predicate",
+    "exact_reachable_set_enumerated": false,
+    "all_cartesian_combinations_claimed_reachable": false,
+    "preparation_quiescence_meaning": "库存、占用、制造稳定；不声称失败指针停止",
+    "preparation": {
+      "terminal": {
+        "input_each": 50,
+        "output": 0,
+        "cache": "empty",
+        "switch": "off",
+        "product_paths": "empty"
+      },
+      "other_machines": {
+        "switch": "on",
+        "input_range": [
+          0,
+          50
+        ],
+        "output_range": [
+          0,
+          50
+        ],
+        "cache_states": [
+          "empty",
+          "completed_one_batch"
+        ],
+        "empty_cache_condition": "至少一项计划配方原料不足",
+        "completed_cache_same_kind_output": "51-b <= q_out <= 50",
+        "no_successful_material_move": true
+      },
+      "transport": "每实际格为空或一件正确物品；非空已成熟；桥轴独立"
+    },
+    "serial_release": {
+      "orders": "all permutations of six terminals",
+      "delays": "all finite nonnegative d1..d5",
+      "parameter_constraint": "固定判定序；合法离线接通重排保留",
+      "relation": "On_pi6 E_theta(d5) On_pi5 ... E_theta(d1) On_pi1(S_pre)",
+      "cache_states": [
+        "empty",
+        "one_batch_processing",
+        "one_batch_completed_waiting"
+      ],
+      "remaining_time_domains": {
+        "normal": "(0,1]",
+        "terminal": "(0,5]"
+      },
+      "transport_age": "未成熟或成熟",
+      "gate_state": [
+        "item_identity",
+        "accepted_total",
+        "window_accepted",
+        "window_remaining"
+      ],
+      "box_state": [
+        "stock_by_numbered_slot",
+        "cooldown_remaining"
+      ],
+      "constructive_closure_and_certification": "pending"
+    }
+  },
+  "potential": {
+    "weights": {
+      "源矿": 1,
+      "蓝铁矿": 1,
+      "源石粉末": 2,
+      "蓝铁块": 2,
+      "蓝铁粉末": 3,
+      "荞花种子": 2,
+      "砂叶种子": 2,
+      "荞花": 3,
+      "砂叶": 3,
+      "荞花粉末": 2,
+      "砂叶粉末": 2,
+      "致密蓝铁粉末": 9,
+      "致密源石粉末": 7,
+      "细磨荞花粉末": 7,
+      "钢块": 10,
+      "钢制零件": 11,
+      "钢质瓶": 21,
+      "高容谷地电池": 216,
+      "精选荞愈胶囊": 281
+    },
+    "recipe_increases": [
+      {
+        "recipe": "粉碎-源矿",
+        "input_weight": 1,
+        "output_weight": 2,
+        "increase": 1
+      },
+      {
+        "recipe": "粉碎-蓝铁块",
+        "input_weight": 2,
+        "output_weight": 3,
+        "increase": 1
+      },
+      {
+        "recipe": "粉碎-荞花",
+        "input_weight": 3,
+        "output_weight": 4,
+        "increase": 1
+      },
+      {
+        "recipe": "粉碎-砂叶",
+        "input_weight": 3,
+        "output_weight": 6,
+        "increase": 3
+      },
+      {
+        "recipe": "精炼-蓝铁矿",
+        "input_weight": 1,
+        "output_weight": 2,
+        "increase": 1
+      },
+      {
+        "recipe": "精炼-致密蓝铁",
+        "input_weight": 9,
+        "output_weight": 10,
+        "increase": 1
+      },
+      {
+        "recipe": "研磨-致密蓝铁",
+        "input_weight": 8,
+        "output_weight": 9,
+        "increase": 1
+      },
+      {
+        "recipe": "研磨-致密源石",
+        "input_weight": 6,
+        "output_weight": 7,
+        "increase": 1
+      },
+      {
+        "recipe": "研磨-细磨荞花",
+        "input_weight": 6,
+        "output_weight": 7,
+        "increase": 1
+      },
+      {
+        "recipe": "塑形-钢质瓶",
+        "input_weight": 20,
+        "output_weight": 21,
+        "increase": 1
+      },
+      {
+        "recipe": "配件-钢制零件",
+        "input_weight": 10,
+        "output_weight": 11,
+        "increase": 1
+      },
+      {
+        "recipe": "种植-荞花",
+        "input_weight": 2,
+        "output_weight": 3,
+        "increase": 1
+      },
+      {
+        "recipe": "种植-砂叶",
+        "input_weight": 2,
+        "output_weight": 3,
+        "increase": 1
+      },
+      {
+        "recipe": "采种-荞花",
+        "input_weight": 3,
+        "output_weight": 4,
+        "increase": 1
+      },
+      {
+        "recipe": "采种-砂叶",
+        "input_weight": 3,
+        "output_weight": 4,
+        "increase": 1
+      },
+      {
+        "recipe": "封装-电池",
+        "input_weight": 215,
+        "output_weight": 216,
+        "increase": 1
+      },
+      {
+        "recipe": "灌装-胶囊",
+        "input_weight": 280,
+        "output_weight": 281,
+        "increase": 1
+      }
+    ],
+    "proof": "每次计划制造完成至少增1；原矿补入增正值；库存有限；纯运输路径无环",
+    "completion_bound": "V_cap - V_start + V_out",
+    "conservative_wait_bound": {
+      "K": "2*V_cap",
+      "M": "(V_cap+4*K)*(l_max+4)+4*K",
+      "wait_ticks_strictly_more_than": "M+2",
+      "coarse_l_max_bound": 9800,
+      "coarse_transport_potential_bound": 2753800,
+      "purpose": "有限且不需要命中精确tick；不是实际调试耗时推荐"
+    },
+    "excluded_recipe": {
+      "rule_line": 89,
+      "input_weight": 3,
+      "output_weight": 2
+    },
+    "scheduler_microstep_termination_proved": false
+  },
+  "species_accounts": {
+    "荞花": {
+      "seed_identity": "S(t)=S0+2H-P-I_seed",
+      "plant_identity": "V(t)=V0+P-H-G-I_plant",
+      "net_loss": "D=G+I_seed+I_plant-H",
+      "max_loss_definition": "sup over all event prefixes including t=0",
+      "candidate_actual_N0": null,
+      "candidate_actual_Dmax": null,
+      "candidate_actual_safety_margin": null,
+      "unconditional_bound": "0 <= Dmax <= N0",
+      "completed_full_slots_example_N0": 2023,
+      "completed_full_slots_example_N0_add": "actual seed/plant transport slots",
+      "conditional_E1_zero_leak_Dmax_bound": 307,
+      "conditional_E1_zero_leak_Dmax_add": "actual P-to-G plant transport slots",
+      "conditional_first_clear_all_harvesters_full_same_kind": 12
+    },
+    "砂叶": {
+      "seed_identity": "S(t)=S0+2H-P-I_seed",
+      "plant_identity": "V(t)=V0+P-H-G-I_plant",
+      "net_loss": "D=G+I_seed+I_plant-H",
+      "max_loss_definition": "sup over all event prefixes including t=0",
+      "candidate_actual_N0": null,
+      "candidate_actual_Dmax": null,
+      "candidate_actual_safety_margin": null,
+      "unconditional_bound": "0 <= Dmax <= N0",
+      "completed_full_slots_example_N0": 3793,
+      "completed_full_slots_example_N0_add": "actual seed/plant transport slots",
+      "conditional_E1_zero_leak_Dmax_bound": 562,
+      "conditional_E1_zero_leak_Dmax_add": "actual P-to-G plant transport slots",
+      "conditional_first_clear_all_harvesters_full_same_kind": 22
+    }
+  },
+  "loss_bound": {
+    "conditions": [
+      "single final-use boundary per plant",
+      "correctly include initial assigned stock",
+      "A_G-A_H <= E throughout",
+      "weighted leakage W <= Wmax"
+    ],
+    "identity": "D=(A_G-A_H)+W+(B_H-B_H0)-(B_G-B_G0)",
+    "W": "I+I_H-I_G",
+    "bound": "min(N0, E+Wmax+B_Hmax-B_H0+B_G0)",
+    "actual_candidate_E": null,
+    "actual_candidate_path_lengths": null,
+    "per_rejection_loss_constant_used": false
+  },
+  "release_mechanisms": {
+    "first_clear": {
+      "same_kind": "max(0,q+b-50)",
+      "different_kind": "q",
+      "harvester_full": "2*h+48*m",
+      "meaning": "首次清出需求"
+    },
+    "double_belt_planter": {
+      "identity": "Q(n)=50+J(n)-D1(n)-D2(n)",
+      "conditional_bound": "D1=D2=n and J<=n+1 imply Q<=51-n",
+      "continuous_double_service_epochs_max": 51,
+      "loss_bound": false
+    },
+    "mixed_old_inventory": {
+      "formula": "q+b*(u+c+a)",
+      "conditions": "后续无未计旧种到货；缓存c为旧种0/1批；旧种服务兑现",
+      "harvester_or_buck_powder": 152,
+      "sand_powder": 203,
+      "in_transit_old_plants_coefficient": [
+        2,
+        3
+      ]
+    },
+    "leakage": {
+      "zero_leak": "requires structural separation",
+      "seed_bound": "I_seed <= initial warehouse seed vacancies",
+      "plant_bound": "I_plant <= initial warehouse plant vacancies",
+      "bound_condition": "最终只取矿、玩家只拿成品、物品不在仓库内转换",
+      "position_check_required": true
+    }
+  },
+  "sufficient_margins": {
+    "SAFE-FULL-TREE": {
+      "input_after_start": "a in [0,49]",
+      "supply_margin": "a",
+      "capacity_margin": "49-a",
+      "default_reaches_set": null
+    },
+    "SAFE-HALF-LOOP": {
+      "threshold": "l_H+l_S+3",
+      "local_threshold": 23,
+      "q_range": [
+        23,
+        50
+      ],
+      "q50_seed_margin": 27,
+      "q50_capacity_margin": 0,
+      "species": [
+        "荞花",
+        "砂叶"
+      ],
+      "scope": "空线辅助程序",
+      "arbitrary_loss_allowance": false,
+      "default_reaches_set": null
+    },
+    "MIXED-Z": {
+      "Z0": -50,
+      "safe_integer_D": [
+        -48,
+        99
+      ],
+      "AAB_all_rotations_D": [
+        -2,
+        2
+      ],
+      "Z_range": [
+        -52,
+        -48
+      ],
+      "distance_to_bad_boundaries": [
+        47,
+        98
+      ],
+      "scope": "单保序混线永久输入互等排除；不单独给目标率"
+    }
+  },
+  "warehouse_recovery": {
+    "same_state_types": true,
+    "same_exact_default_start_subset_proved": false,
+    "short_blockage": "在制批次及全部进度保留",
+    "both_products_fully_blocked_long_enough": "专线无其他外流且正势函数时有限物料静止，无在制批次",
+    "box_cooldown": "零传输也5tick；恢复保留既有剩余冷却",
+    "environment": "仓库收得下成品",
+    "reentry_to_sufficient_sets": "unproved"
+  },
+  "old_injection": {
+    "n_survives_threshold_change": true,
+    "resume_conditions": [
+      "identity_matches",
+      "n<C<=5000",
+      "five_tick_allowance_available",
+      "physical_slot_service"
+    ],
+    "received_is_delivered": false,
+    "one_shot_before_cycle_allowed": true,
+    "default_program_uses_old_injection": false
+  },
+  "open_items": [
+    {
+      "id": "DR-01",
+      "category": "缺构造与推导",
+      "description": "实际路径及默认后置集合关联不变量",
+      "handoff": "任务5/7; PR-01/05; U3"
+    },
+    {
+      "id": "DR-02",
+      "category": "缺推导",
+      "description": "实际E、反复拒收服务、逐根收支和Dmax",
+      "handoff": "任务4/5/6; PR-02/03; U4"
+    },
+    {
+      "id": "DR-03",
+      "category": "缺推导",
+      "description": "默认释放进入或扩大安全集合、共同下游服务",
+      "handoff": "任务4—7; PR-04/06; U5"
+    },
+    {
+      "id": "DR-04",
+      "category": "缺构造与推导",
+      "description": "217换种、A两路、B三路、220输入3:2:1",
+      "handoff": "任务4/6/7; PR-06"
+    },
+    {
+      "id": "DR-05",
+      "category": "缺推导",
+      "description": "接收恢复状态的安全集合包含及循环对应",
+      "handoff": "任务2/5/6"
+    },
+    {
+      "id": "DR-06",
+      "category": "缺推导",
+      "description": "全起法覆盖或无损变换",
+      "handoff": "任务5/汇总"
+    },
+    {
+      "id": "DR-07",
+      "category": "缺复核",
+      "description": "本席新增条件证明和接口的独立复核",
+      "handoff": "独立复核席"
+    }
+  ],
+  "for_owner": [],
+  "for_owner_reason": "现行规则与owner裁定给出动作事实；剩余为构造、推导和复核。",
+  "default_start_certified": false,
+  "full_layout_certified": false,
+  "full_start_search_lossless": false,
+  "search_losslessness_status": "unproved"
+}

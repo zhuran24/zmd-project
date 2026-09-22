@@ -1,0 +1,15 @@
+{
+  "status": "pass",
+  "report": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/复核-r5-规格保真与工程.md",
+  "report_sha256": "e8adedd35baf06455f50d9ec449051aac11662555c3395089a24a75632942115",
+  "findings": 3,
+  "machine_json_equal": true,
+  "links_checked": 26,
+  "checks": [
+    "全文自审：论证自包含并区分事实、代码推演及影响边界",
+    "抬头严重度与3条发现一致",
+    "独立CLI次数纠正为29，未将4刻检查点试样冒称末尾delta残段验证",
+    "全部交叉引用存在，JSON精确匹配，枚举合法",
+    "未将K6、性能或全称覆盖未决重复列为新发现"
+  ]
+}

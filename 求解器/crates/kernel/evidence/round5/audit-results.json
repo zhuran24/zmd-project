@@ -1,0 +1,1883 @@
+{
+  "status": "pass",
+  "records": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-v3-kernel.json",
+      "ticks": 4,
+      "ledger": "逐事件/逐物种通过",
+      "rust_replay": "整份记录逐字段通过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-v3-kernel.json",
+      "ticks": 12,
+      "ledger": "逐事件/逐物种通过",
+      "rust_replay": "整份记录逐字段通过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/桥接器双通路-运行记录-v3-kernel.json",
+      "ticks": 30,
+      "ledger": "逐事件/逐物种通过",
+      "rust_replay": "整份记录逐字段通过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/传输拒收与暂停核验-运行记录-v3-kernel.json",
+      "ticks": 12,
+      "ledger": "逐事件/逐物种通过",
+      "rust_replay": "整份记录逐字段通过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/研磨混做核验-运行记录-v3-kernel.json",
+      "ticks": 20,
+      "ledger": "逐事件/逐物种通过",
+      "rust_replay": "整份记录逐字段通过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/阻尼切支恢复核验-运行记录-v3-kernel.json",
+      "ticks": 18,
+      "ledger": "逐事件/逐物种通过",
+      "rust_replay": "整份记录逐字段通过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/阻尼连续带核验-运行记录-v3-kernel.json",
+      "ticks": 18,
+      "ledger": "逐事件/逐物种通过",
+      "rust_replay": "整份记录逐字段通过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/生产循环环带-运行记录-v3-kernel.json",
+      "ticks": 50,
+      "ledger": "逐事件/逐物种通过",
+      "rust_replay": "整份记录逐字段通过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分核验-运行记录-v3-kernel.json",
+      "ticks": 100,
+      "ledger": "逐事件/逐物种通过",
+      "rust_replay": "整份记录逐字段通过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点核验-运行记录-v3-kernel.json",
+      "ticks": 60,
+      "ledger": "逐事件/逐物种通过",
+      "rust_replay": "整份记录逐字段通过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点闭环核验-运行记录-v3-kernel.json",
+      "ticks": 240,
+      "ledger": "逐事件/逐物种通过",
+      "rust_replay": "整份记录逐字段通过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点循环种子核验-运行记录-v3-kernel.json",
+      "ticks": 100,
+      "ledger": "逐事件/逐物种通过",
+      "rust_replay": "整份记录逐字段通过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序0核验-运行记录-v3-kernel.json",
+      "ticks": 40,
+      "ledger": "逐事件/逐物种通过",
+      "rust_replay": "整份记录逐字段通过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序1核验-运行记录-v3-kernel.json",
+      "ticks": 40,
+      "ledger": "逐事件/逐物种通过",
+      "rust_replay": "整份记录逐字段通过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序2核验-运行记录-v3-kernel.json",
+      "ticks": 40,
+      "ledger": "逐事件/逐物种通过",
+      "rust_replay": "整份记录逐字段通过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序3核验-运行记录-v3-kernel.json",
+      "ticks": 40,
+      "ledger": "逐事件/逐物种通过",
+      "rust_replay": "整份记录逐字段通过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序4核验-运行记录-v3-kernel.json",
+      "ticks": 40,
+      "ledger": "逐事件/逐物种通过",
+      "rust_replay": "整份记录逐字段通过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序5核验-运行记录-v3-kernel.json",
+      "ticks": 40,
+      "ledger": "逐事件/逐物种通过",
+      "rust_replay": "整份记录逐字段通过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序0核验-运行记录-v3-kernel.json",
+      "ticks": 263,
+      "ledger": "逐事件/逐物种通过",
+      "rust_replay": "整份记录逐字段通过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序1核验-运行记录-v3-kernel.json",
+      "ticks": 466,
+      "ledger": "逐事件/逐物种通过",
+      "rust_replay": "整份记录逐字段通过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序2核验-运行记录-v3-kernel.json",
+      "ticks": 1000,
+      "ledger": "逐事件/逐物种通过",
+      "rust_replay": "整份记录逐字段通过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序3核验-运行记录-v3-kernel.json",
+      "ticks": 455,
+      "ledger": "逐事件/逐物种通过",
+      "rust_replay": "整份记录逐字段通过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序4核验-运行记录-v3-kernel.json",
+      "ticks": 522,
+      "ledger": "逐事件/逐物种通过",
+      "rust_replay": "整份记录逐字段通过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序5核验-运行记录-v3-kernel.json",
+      "ticks": 1000,
+      "ledger": "逐事件/逐物种通过",
+      "rust_replay": "整份记录逐字段通过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-checkpoint_delta-v3-kernel.json",
+      "ticks": 4,
+      "ledger": "逐事件/逐物种通过",
+      "rust_replay": "整份记录逐字段通过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-checkpoint_delta-v3-kernel.json",
+      "ticks": 12,
+      "ledger": "逐事件/逐物种通过",
+      "rust_replay": "整份记录逐字段通过"
+    }
+  ],
+  "cycles": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/生产循环环带-周期证书-kernel.json",
+      "status": "counterexample",
+      "verification": {
+        "checks": [
+          "完整前缀事件身份与时序独立检查",
+          "完整结果逐字段重算",
+          "循环起点重新装载",
+          "P次step_tick事件/状态/台账/闭包逐字段相等",
+          "终态完整键相等"
+        ],
+        "cycle_replayed": true,
+        "period": 20,
+        "start_time": 0,
+        "status": "input_checked"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点核验-周期证书-kernel.json",
+      "status": "inconclusive",
+      "verification": {
+        "cycle_replayed": false,
+        "reason": "技术停止或预算未决，无周期可重跑",
+        "status": "input_checked"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点闭环核验-周期证书-kernel.json",
+      "status": "inconclusive",
+      "verification": {
+        "cycle_replayed": false,
+        "reason": "技术停止或预算未决，无周期可重跑",
+        "status": "input_checked"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点循环种子核验-周期证书-kernel.json",
+      "status": "inconclusive",
+      "verification": {
+        "cycle_replayed": false,
+        "reason": "技术停止或预算未决，无周期可重跑",
+        "status": "input_checked"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序0核验-周期证书-kernel.json",
+      "status": "counterexample",
+      "verification": {
+        "checks": [
+          "完整前缀事件身份与时序独立检查",
+          "完整结果逐字段重算",
+          "循环起点重新装载",
+          "P次step_tick事件/状态/台账/闭包逐字段相等",
+          "终态完整键相等"
+        ],
+        "cycle_replayed": true,
+        "period": 190,
+        "start_time": 72,
+        "status": "input_checked"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序1核验-周期证书-kernel.json",
+      "status": "counterexample",
+      "verification": {
+        "checks": [
+          "完整前缀事件身份与时序独立检查",
+          "完整结果逐字段重算",
+          "循环起点重新装载",
+          "P次step_tick事件/状态/台账/闭包逐字段相等",
+          "终态完整键相等"
+        ],
+        "cycle_replayed": true,
+        "period": 190,
+        "start_time": 275,
+        "status": "input_checked"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序2核验-周期证书-kernel.json",
+      "status": "inconclusive",
+      "verification": {
+        "cycle_replayed": false,
+        "reason": "技术停止或预算未决，无周期可重跑",
+        "status": "input_checked"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序3核验-周期证书-kernel.json",
+      "status": "counterexample",
+      "verification": {
+        "checks": [
+          "完整前缀事件身份与时序独立检查",
+          "完整结果逐字段重算",
+          "循环起点重新装载",
+          "P次step_tick事件/状态/台账/闭包逐字段相等",
+          "终态完整键相等"
+        ],
+        "cycle_replayed": true,
+        "period": 105,
+        "start_time": 349,
+        "status": "input_checked"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序4核验-周期证书-kernel.json",
+      "status": "counterexample",
+      "verification": {
+        "checks": [
+          "完整前缀事件身份与时序独立检查",
+          "完整结果逐字段重算",
+          "循环起点重新装载",
+          "P次step_tick事件/状态/台账/闭包逐字段相等",
+          "终态完整键相等"
+        ],
+        "cycle_replayed": true,
+        "period": 395,
+        "start_time": 126,
+        "status": "input_checked"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序5核验-周期证书-kernel.json",
+      "status": "inconclusive",
+      "verification": {
+        "cycle_replayed": false,
+        "reason": "技术停止或预算未决，无周期可重跑",
+        "status": "input_checked"
+      }
+    }
+  ],
+  "coverage": {
+    "manufacturing.port_slot_relation": [
+      "混做粉碎机两下游",
+      "研磨混做核验",
+      "轮询均分核验",
+      "轮询均分序0核验",
+      "轮询均分序1核验",
+      "轮询均分序2核验",
+      "轮询均分序3核验",
+      "轮询均分序4核验",
+      "轮询均分序5核验",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ],
+    "manufacturing.output_blocked": [
+      "混做粉碎机两下游",
+      "研磨混做核验",
+      "轮询均分核验",
+      "轮询均分序0核验",
+      "轮询均分序1核验",
+      "轮询均分序2核验",
+      "轮询均分序3核验",
+      "轮询均分序4核验",
+      "轮询均分序5核验",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ],
+    "time.domain": [
+      "混做粉碎机两下游",
+      "分流器三路轮询",
+      "桥接器双通路",
+      "传输拒收与暂停核验",
+      "研磨混做核验",
+      "阻尼切支恢复核验",
+      "阻尼连续带核验",
+      "生产循环环带",
+      "轮询均分核验",
+      "密集结点核验",
+      "密集结点闭环核验",
+      "密集结点循环种子核验",
+      "轮询均分序0核验",
+      "轮询均分序1核验",
+      "轮询均分序2核验",
+      "轮询均分序3核验",
+      "轮询均分序4核验",
+      "轮询均分序5核验",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ],
+    "time.instant_order": [
+      "混做粉碎机两下游",
+      "分流器三路轮询",
+      "桥接器双通路",
+      "传输拒收与暂停核验",
+      "研磨混做核验",
+      "阻尼切支恢复核验",
+      "阻尼连续带核验",
+      "生产循环环带",
+      "轮询均分核验",
+      "密集结点核验",
+      "密集结点闭环核验",
+      "密集结点循环种子核验",
+      "轮询均分序0核验",
+      "轮询均分序1核验",
+      "轮询均分序2核验",
+      "轮询均分序3核验",
+      "轮询均分序4核验",
+      "轮询均分序5核验",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ],
+    "time.retry_schedule": [
+      "混做粉碎机两下游",
+      "分流器三路轮询",
+      "桥接器双通路",
+      "传输拒收与暂停核验",
+      "研磨混做核验",
+      "阻尼切支恢复核验",
+      "阻尼连续带核验",
+      "生产循环环带",
+      "轮询均分核验",
+      "密集结点核验",
+      "密集结点闭环核验",
+      "密集结点循环种子核验",
+      "轮询均分序0核验",
+      "轮询均分序1核验",
+      "轮询均分序2核验",
+      "轮询均分序3核验",
+      "轮询均分序4核验",
+      "轮询均分序5核验",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ],
+    "time.instant_end": [
+      "混做粉碎机两下游",
+      "分流器三路轮询",
+      "桥接器双通路",
+      "传输拒收与暂停核验",
+      "研磨混做核验",
+      "阻尼切支恢复核验",
+      "阻尼连续带核验",
+      "生产循环环带",
+      "轮询均分核验",
+      "密集结点核验",
+      "密集结点闭环核验",
+      "密集结点循环种子核验",
+      "轮询均分序0核验",
+      "轮询均分序1核验",
+      "轮询均分序2核验",
+      "轮询均分序3核验",
+      "轮询均分序4核验",
+      "轮询均分序5核验",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ],
+    "time.boundary": [
+      "混做粉碎机两下游",
+      "分流器三路轮询",
+      "桥接器双通路",
+      "传输拒收与暂停核验",
+      "研磨混做核验",
+      "阻尼切支恢复核验",
+      "阻尼连续带核验",
+      "生产循环环带",
+      "轮询均分核验",
+      "密集结点核验",
+      "密集结点闭环核验",
+      "密集结点循环种子核验",
+      "轮询均分序0核验",
+      "轮询均分序1核验",
+      "轮询均分序2核验",
+      "轮询均分序3核验",
+      "轮询均分序4核验",
+      "轮询均分序5核验",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ],
+    "time.manufacture_events": [
+      "混做粉碎机两下游",
+      "研磨混做核验",
+      "轮询均分核验",
+      "轮询均分序0核验",
+      "轮询均分序1核验",
+      "轮询均分序2核验",
+      "轮询均分序3核验",
+      "轮询均分序4核验",
+      "轮询均分序5核验",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ],
+    "judgment.order_scope": [
+      "混做粉碎机两下游",
+      "分流器三路轮询",
+      "桥接器双通路",
+      "传输拒收与暂停核验",
+      "研磨混做核验",
+      "阻尼切支恢复核验",
+      "阻尼连续带核验",
+      "生产循环环带",
+      "轮询均分核验",
+      "密集结点核验",
+      "密集结点闭环核验",
+      "密集结点循环种子核验",
+      "轮询均分序0核验",
+      "轮询均分序1核验",
+      "轮询均分序2核验",
+      "轮询均分序3核验",
+      "轮询均分序4核验",
+      "轮询均分序5核验",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ],
+    "judgment.buffer_event_class": [
+      "混做粉碎机两下游",
+      "研磨混做核验",
+      "轮询均分核验",
+      "轮询均分序0核验",
+      "轮询均分序1核验",
+      "轮询均分序2核验",
+      "轮询均分序3核验",
+      "轮询均分序4核验",
+      "轮询均分序5核验",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ],
+    "polling.ungraded_blocked": [
+      "混做粉碎机两下游",
+      "分流器三路轮询",
+      "桥接器双通路",
+      "传输拒收与暂停核验",
+      "研磨混做核验",
+      "阻尼切支恢复核验",
+      "阻尼连续带核验",
+      "生产循环环带",
+      "轮询均分核验",
+      "密集结点核验",
+      "密集结点闭环核验",
+      "密集结点循环种子核验",
+      "轮询均分序0核验",
+      "轮询均分序1核验",
+      "轮询均分序2核验",
+      "轮询均分序3核验",
+      "轮询均分序4核验",
+      "轮询均分序5核验",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ],
+    "polling.dual_permission": [
+      "混做粉碎机两下游",
+      "分流器三路轮询",
+      "桥接器双通路",
+      "传输拒收与暂停核验",
+      "研磨混做核验",
+      "阻尼切支恢复核验",
+      "阻尼连续带核验",
+      "生产循环环带",
+      "轮询均分核验",
+      "密集结点核验",
+      "密集结点闭环核验",
+      "密集结点循环种子核验",
+      "轮询均分序0核验",
+      "轮询均分序1核验",
+      "轮询均分序2核验",
+      "轮询均分序3核验",
+      "轮询均分序4核验",
+      "轮询均分序5核验",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ],
+    "polling.both_failure": [
+      "混做粉碎机两下游",
+      "分流器三路轮询",
+      "桥接器双通路",
+      "传输拒收与暂停核验",
+      "研磨混做核验",
+      "阻尼切支恢复核验",
+      "阻尼连续带核验",
+      "生产循环环带",
+      "轮询均分核验",
+      "密集结点核验",
+      "密集结点闭环核验",
+      "密集结点循环种子核验",
+      "轮询均分序0核验",
+      "轮询均分序1核验",
+      "轮询均分序2核验",
+      "轮询均分序3核验",
+      "轮询均分序4核验",
+      "轮询均分序5核验",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ],
+    "polling.memory_scope": [
+      "混做粉碎机两下游",
+      "分流器三路轮询",
+      "桥接器双通路",
+      "传输拒收与暂停核验",
+      "研磨混做核验",
+      "阻尼切支恢复核验",
+      "阻尼连续带核验",
+      "生产循环环带",
+      "轮询均分核验",
+      "密集结点核验",
+      "密集结点闭环核验",
+      "密集结点循环种子核验",
+      "轮询均分序0核验",
+      "轮询均分序1核验",
+      "轮询均分序2核验",
+      "轮询均分序3核验",
+      "轮询均分序4核验",
+      "轮询均分序5核验",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ],
+    "polling.eligibility_stage": [
+      "混做粉碎机两下游",
+      "分流器三路轮询",
+      "桥接器双通路",
+      "传输拒收与暂停核验",
+      "研磨混做核验",
+      "阻尼切支恢复核验",
+      "阻尼连续带核验",
+      "生产循环环带",
+      "轮询均分核验",
+      "密集结点核验",
+      "密集结点闭环核验",
+      "密集结点循环种子核验",
+      "轮询均分序0核验",
+      "轮询均分序1核验",
+      "轮询均分序2核验",
+      "轮询均分序3核验",
+      "轮询均分序4核验",
+      "轮询均分序5核验",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ],
+    "manufacturing.input_mixing": [
+      "混做粉碎机两下游",
+      "研磨混做核验",
+      "轮询均分核验",
+      "轮询均分序0核验",
+      "轮询均分序1核验",
+      "轮询均分序2核验",
+      "轮询均分序3核验",
+      "轮询均分序4核验",
+      "轮询均分序5核验",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ],
+    "manufacturing.input_capacity_scope": [
+      "混做粉碎机两下游",
+      "研磨混做核验",
+      "轮询均分核验",
+      "轮询均分序0核验",
+      "轮询均分序1核验",
+      "轮询均分序2核验",
+      "轮询均分序3核验",
+      "轮询均分序4核验",
+      "轮询均分序5核验",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ],
+    "manufacturing.recipe_match_scope": [
+      "混做粉碎机两下游",
+      "研磨混做核验",
+      "轮询均分核验",
+      "轮询均分序0核验",
+      "轮询均分序1核验",
+      "轮询均分序2核验",
+      "轮询均分序3核验",
+      "轮询均分序4核验",
+      "轮询均分序5核验",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ],
+    "manufacturing.recipe_completeness": [
+      "混做粉碎机两下游",
+      "研磨混做核验",
+      "轮询均分核验",
+      "轮询均分序0核验",
+      "轮询均分序1核验",
+      "轮询均分序2核验",
+      "轮询均分序3核验",
+      "轮询均分序4核验",
+      "轮询均分序5核验",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ],
+    "manufacturing.recipe_lock_time": [
+      "混做粉碎机两下游",
+      "研磨混做核验",
+      "轮询均分核验",
+      "轮询均分序0核验",
+      "轮询均分序1核验",
+      "轮询均分序2核验",
+      "轮询均分序3核验",
+      "轮询均分序4核验",
+      "轮询均分序5核验",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ],
+    "manufacturing.empty_slot_identity": [
+      "混做粉碎机两下游",
+      "研磨混做核验",
+      "轮询均分核验",
+      "轮询均分序0核验",
+      "轮询均分序1核验",
+      "轮询均分序2核验",
+      "轮询均分序3核验",
+      "轮询均分序4核验",
+      "轮询均分序5核验",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ],
+    "manufacturing.input_collection": [
+      "混做粉碎机两下游",
+      "研磨混做核验",
+      "轮询均分核验",
+      "轮询均分序0核验",
+      "轮询均分序1核验",
+      "轮询均分序2核验",
+      "轮询均分序3核验",
+      "轮询均分序4核验",
+      "轮询均分序5核验",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ],
+    "manufacturing.buffer_power_gate": [
+      "混做粉碎机两下游",
+      "研磨混做核验",
+      "轮询均分核验",
+      "轮询均分序0核验",
+      "轮询均分序1核验",
+      "轮询均分序2核验",
+      "轮询均分序3核验",
+      "轮询均分序4核验",
+      "轮询均分序5核验",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ],
+    "warehouse.acceptance": [
+      "混做粉碎机两下游",
+      "分流器三路轮询",
+      "桥接器双通路",
+      "传输拒收与暂停核验",
+      "研磨混做核验",
+      "阻尼切支恢复核验",
+      "阻尼连续带核验",
+      "生产循环环带",
+      "轮询均分核验",
+      "密集结点核验",
+      "密集结点闭环核验",
+      "密集结点循环种子核验",
+      "轮询均分序0核验",
+      "轮询均分序1核验",
+      "轮询均分序2核验",
+      "轮询均分序3核验",
+      "轮询均分序4核验",
+      "轮询均分序5核验",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ],
+    "warehouse.acceptance_quantifier": [
+      "混做粉碎机两下游",
+      "分流器三路轮询",
+      "桥接器双通路",
+      "传输拒收与暂停核验",
+      "研磨混做核验",
+      "阻尼切支恢复核验",
+      "阻尼连续带核验",
+      "生产循环环带",
+      "轮询均分核验",
+      "密集结点核验",
+      "密集结点闭环核验",
+      "密集结点循环种子核验",
+      "轮询均分序0核验",
+      "轮询均分序1核验",
+      "轮询均分序2核验",
+      "轮询均分序3核验",
+      "轮询均分序4核验",
+      "轮询均分序5核验",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ],
+    "cascade.buffer": [
+      "混做粉碎机两下游",
+      "研磨混做核验",
+      "轮询均分核验",
+      "轮询均分序0核验",
+      "轮询均分序1核验",
+      "轮询均分序2核验",
+      "轮询均分序3核验",
+      "轮询均分序4核验",
+      "轮询均分序5核验",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ],
+    "judgment.order": [
+      "混做粉碎机两下游",
+      "分流器三路轮询",
+      "桥接器双通路",
+      "传输拒收与暂停核验",
+      "研磨混做核验",
+      "阻尼切支恢复核验",
+      "阻尼连续带核验",
+      "生产循环环带",
+      "轮询均分核验",
+      "密集结点核验",
+      "密集结点闭环核验",
+      "密集结点循环种子核验",
+      "轮询均分序0核验",
+      "轮询均分序1核验",
+      "轮询均分序2核验",
+      "轮询均分序3核验",
+      "轮询均分序4核验",
+      "轮询均分序5核验",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ],
+    "manufacturing.recipe_selection": [
+      "混做粉碎机两下游",
+      "研磨混做核验",
+      "轮询均分核验",
+      "轮询均分序0核验",
+      "轮询均分序1核验",
+      "轮询均分序2核验",
+      "轮询均分序3核验",
+      "轮询均分序4核验",
+      "轮询均分序5核验",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ],
+    "manufacturing.input_slot_selection": [
+      "混做粉碎机两下游",
+      "研磨混做核验",
+      "轮询均分核验",
+      "轮询均分序0核验",
+      "轮询均分序1核验",
+      "轮询均分序2核验",
+      "轮询均分序3核验",
+      "轮询均分序4核验",
+      "轮询均分序5核验",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ],
+    "manufacturing.recipe_quantity_match": [
+      "混做粉碎机两下游",
+      "研磨混做核验",
+      "轮询均分核验",
+      "轮询均分序0核验",
+      "轮询均分序1核验",
+      "轮询均分序2核验",
+      "轮询均分序3核验",
+      "轮询均分序4核验",
+      "轮询均分序5核验",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ],
+    "manufacturing.recipe_extra_items": [
+      "混做粉碎机两下游",
+      "研磨混做核验",
+      "轮询均分核验",
+      "轮询均分序0核验",
+      "轮询均分序1核验",
+      "轮询均分序2核验",
+      "轮询均分序3核验",
+      "轮询均分序4核验",
+      "轮询均分序5核验",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ],
+    "gate.window_recovery": [
+      "分流器三路轮询",
+      "阻尼切支恢复核验",
+      "阻尼连续带核验",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ],
+    "polling.split_merge_start": [
+      "分流器三路轮询",
+      "阻尼切支恢复核验",
+      "阻尼连续带核验",
+      "密集结点核验",
+      "密集结点闭环核验",
+      "密集结点循环种子核验",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ],
+    "polling.split_merge_scope": [
+      "分流器三路轮询",
+      "阻尼切支恢复核验",
+      "阻尼连续带核验",
+      "密集结点核验",
+      "密集结点闭环核验",
+      "密集结点循环种子核验",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ],
+    "polling.split_merge_singleton": [
+      "分流器三路轮询",
+      "阻尼切支恢复核验",
+      "阻尼连续带核验",
+      "密集结点核验",
+      "密集结点闭环核验",
+      "密集结点循环种子核验",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ],
+    "polling.membership_change": [
+      "分流器三路轮询",
+      "阻尼切支恢复核验",
+      "阻尼连续带核验",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ],
+    "polling.level_tie": [
+      "分流器三路轮询",
+      "密集结点核验",
+      "密集结点闭环核验",
+      "密集结点循环种子核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序5核验"
+    ],
+    "gate.window_clock": [
+      "分流器三路轮询",
+      "阻尼切支恢复核验",
+      "阻尼连续带核验",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ],
+    "gate.reconnect_record": [
+      "分流器三路轮询",
+      "阻尼切支恢复核验",
+      "阻尼连续带核验",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ],
+    "gate.concurrent_expiry": [
+      "分流器三路轮询",
+      "阻尼切支恢复核验",
+      "阻尼连续带核验",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ],
+    "transfer.judgment": [
+      "桥接器双通路",
+      "传输拒收与暂停核验",
+      "研磨混做核验",
+      "生产循环环带",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ],
+    "warehouse.delivery_count": [
+      "桥接器双通路",
+      "研磨混做核验",
+      "生产循环环带"
+    ],
+    "bridge.inventory_scope": [
+      "桥接器双通路",
+      "传输拒收与暂停核验",
+      "密集结点闭环核验",
+      "密集结点循环种子核验",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ],
+    "bridge.scheduling_scope": [
+      "桥接器双通路",
+      "传输拒收与暂停核验",
+      "密集结点闭环核验",
+      "密集结点循环种子核验",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ],
+    "transfer.cooldown_scope": [
+      "桥接器双通路",
+      "传输拒收与暂停核验",
+      "研磨混做核验",
+      "生产循环环带",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ],
+    "transfer.failure_cooldown": [
+      "桥接器双通路",
+      "传输拒收与暂停核验",
+      "研磨混做核验",
+      "生产循环环带",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ],
+    "transfer.partial_acceptance": [
+      "桥接器双通路",
+      "传输拒收与暂停核验",
+      "研磨混做核验",
+      "生产循环环带",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ],
+    "warehouse.empty_slot_identity": [
+      "桥接器双通路",
+      "研磨混做核验",
+      "生产循环环带"
+    ],
+    "bridge.capacity": [
+      "桥接器双通路",
+      "传输拒收与暂停核验",
+      "密集结点闭环核验",
+      "密集结点循环种子核验",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ],
+    "transfer.phase": [
+      "桥接器双通路",
+      "传输拒收与暂停核验",
+      "研磨混做核验",
+      "生产循环环带",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ],
+    "transfer.pause": [
+      "传输拒收与暂停核验"
+    ],
+    "damping.branch": [
+      "阻尼切支恢复核验"
+    ],
+    "damping.belt_component_rule": [
+      "阻尼连续带核验"
+    ],
+    "warehouse.external_supply": [
+      "轮询均分核验",
+      "密集结点核验",
+      "轮询均分序0核验",
+      "轮询均分序1核验",
+      "轮询均分序2核验",
+      "轮询均分序3核验",
+      "轮询均分序4核验",
+      "轮询均分序5核验",
+      "密集制造闭环序0核验",
+      "密集制造闭环序1核验",
+      "密集制造闭环序2核验",
+      "密集制造闭环序3核验",
+      "密集制造闭环序4核验",
+      "密集制造闭环序5核验"
+    ]
+  },
+  "required_unexercised": [
+    "transfer.resume_event",
+    "connection.bridge_first_contact",
+    "damping.belt_adjacency"
+  ],
+  "required_unexercised_reasons": {
+    "transfer.resume_event": "运行段供电和开关固定；暂停后重新启用所需的调试/离线后效未实现。",
+    "connection.bridge_first_contact": "运行支持域只接已建成且桥方向已解的布局；先接历史仅作input_checked，需建造/方向变更转移才能取得运行证据。",
+    "damping.belt_adjacency": "本版path_runs只计路径带串，不读取几何邻接轴；须实现geometric_components后才能获得运行证据。"
+  },
+  "bridge_first_contact": [
+    {
+      "name": "混做粉碎机两下游",
+      "bridges": [],
+      "runtime_events": [],
+      "status": "not_exercised"
+    },
+    {
+      "name": "分流器三路轮询",
+      "bridges": [],
+      "runtime_events": [],
+      "status": "not_exercised"
+    },
+    {
+      "name": "桥接器双通路",
+      "bridges": [
+        "bridge"
+      ],
+      "seed_time": 0,
+      "historical_contacts": [
+        {
+          "event": "connect_0",
+          "time": -5,
+          "channel": "PC|south_box:north:2|bridge:south:0"
+        },
+        {
+          "event": "connect_1",
+          "time": -4,
+          "channel": "PC|bridge:north:0|north_box:south:0"
+        },
+        {
+          "event": "connect_2",
+          "time": -2,
+          "channel": "PC|bridge:east:0|east_box:south:0"
+        },
+        {
+          "event": "connect_3",
+          "time": -3,
+          "channel": "PC|west_box:north:2|bridge:west:0"
+        }
+      ],
+      "runtime_events": [],
+      "status": "input_checked",
+      "reason": "固定已建成段未执行先接定向"
+    },
+    {
+      "name": "传输拒收与暂停核验",
+      "bridges": [
+        "bridge"
+      ],
+      "seed_time": 0,
+      "historical_contacts": [
+        {
+          "event": "connect_0",
+          "time": -5,
+          "channel": "PC|south_box:north:2|bridge:south:0"
+        },
+        {
+          "event": "connect_1",
+          "time": -4,
+          "channel": "PC|bridge:north:0|north_box:south:0"
+        },
+        {
+          "event": "connect_2",
+          "time": -2,
+          "channel": "PC|bridge:east:0|east_box:south:0"
+        },
+        {
+          "event": "connect_3",
+          "time": -3,
+          "channel": "PC|west_box:north:2|bridge:west:0"
+        }
+      ],
+      "runtime_events": [],
+      "status": "input_checked",
+      "reason": "固定已建成段未执行先接定向"
+    },
+    {
+      "name": "研磨混做核验",
+      "bridges": [],
+      "runtime_events": [],
+      "status": "not_exercised"
+    },
+    {
+      "name": "阻尼切支恢复核验",
+      "bridges": [],
+      "runtime_events": [],
+      "status": "not_exercised"
+    },
+    {
+      "name": "阻尼连续带核验",
+      "bridges": [],
+      "runtime_events": [],
+      "status": "not_exercised"
+    },
+    {
+      "name": "生产循环环带",
+      "bridges": [],
+      "runtime_events": [],
+      "status": "not_exercised"
+    },
+    {
+      "name": "轮询均分核验",
+      "bridges": [],
+      "runtime_events": [],
+      "status": "not_exercised"
+    },
+    {
+      "name": "密集结点核验",
+      "bridges": [],
+      "runtime_events": [],
+      "status": "not_exercised"
+    },
+    {
+      "name": "密集结点闭环核验",
+      "bridges": [
+        "r5_1"
+      ],
+      "seed_time": 0,
+      "historical_contacts": [
+        {
+          "event": "connect_95",
+          "time": -31,
+          "channel": "PC|r4_1:north:0|r5_1:west:0"
+        },
+        {
+          "event": "connect_96",
+          "time": -17,
+          "channel": "PC|r5_1:south:0|r5_0:south:0"
+        },
+        {
+          "event": "connect_97",
+          "time": -30,
+          "channel": "PC|r5_1:east:0|r6_1:south:0"
+        },
+        {
+          "event": "connect_110",
+          "time": -18,
+          "channel": "PC|r5_2:north:0|r5_1:north:0"
+        }
+      ],
+      "runtime_events": [],
+      "status": "input_checked",
+      "reason": "固定已建成段未执行先接定向"
+    },
+    {
+      "name": "密集结点循环种子核验",
+      "bridges": [
+        "r5_1"
+      ],
+      "seed_time": 239,
+      "historical_contacts": [
+        {
+          "event": "connect_95",
+          "time": -31,
+          "channel": "PC|r4_1:north:0|r5_1:west:0"
+        },
+        {
+          "event": "connect_96",
+          "time": -17,
+          "channel": "PC|r5_1:south:0|r5_0:south:0"
+        },
+        {
+          "event": "connect_97",
+          "time": -30,
+          "channel": "PC|r5_1:east:0|r6_1:south:0"
+        },
+        {
+          "event": "connect_110",
+          "time": -18,
+          "channel": "PC|r5_2:north:0|r5_1:north:0"
+        }
+      ],
+      "runtime_events": [],
+      "status": "input_checked",
+      "reason": "固定已建成段未执行先接定向"
+    },
+    {
+      "name": "轮询均分序0核验",
+      "bridges": [],
+      "runtime_events": [],
+      "status": "not_exercised"
+    },
+    {
+      "name": "轮询均分序1核验",
+      "bridges": [],
+      "runtime_events": [],
+      "status": "not_exercised"
+    },
+    {
+      "name": "轮询均分序2核验",
+      "bridges": [],
+      "runtime_events": [],
+      "status": "not_exercised"
+    },
+    {
+      "name": "轮询均分序3核验",
+      "bridges": [],
+      "runtime_events": [],
+      "status": "not_exercised"
+    },
+    {
+      "name": "轮询均分序4核验",
+      "bridges": [],
+      "runtime_events": [],
+      "status": "not_exercised"
+    },
+    {
+      "name": "轮询均分序5核验",
+      "bridges": [],
+      "runtime_events": [],
+      "status": "not_exercised"
+    },
+    {
+      "name": "密集制造闭环序0核验",
+      "bridges": [
+        "t12_7",
+        "t13_1"
+      ],
+      "seed_time": 0,
+      "historical_contacts": [
+        {
+          "event": "connect_0",
+          "time": -2,
+          "channel": "PC|t13_1:north:0|t13_2:south:0"
+        },
+        {
+          "event": "connect_1",
+          "time": -64,
+          "channel": "PC|t13_1:west:0|t12_1:south:0"
+        },
+        {
+          "event": "connect_2",
+          "time": -79,
+          "channel": "PC|t12_7:south:0|split_e:south:0"
+        },
+        {
+          "event": "connect_3",
+          "time": -46,
+          "channel": "PC|t12_7:east:0|t13_7:south:0"
+        },
+        {
+          "event": "connect_5",
+          "time": -84,
+          "channel": "PC|refine_e:north:1|t12_7:north:0"
+        },
+        {
+          "event": "connect_24",
+          "time": -65,
+          "channel": "PC|t14_1:north:0|t13_1:east:0"
+        },
+        {
+          "event": "connect_42",
+          "time": -47,
+          "channel": "PC|t11_7:east:0|t12_7:west:0"
+        },
+        {
+          "event": "connect_86",
+          "time": -3,
+          "channel": "PC|t13_0:east:0|t13_1:south:0"
+        }
+      ],
+      "runtime_events": [],
+      "status": "input_checked",
+      "reason": "固定已建成段未执行先接定向"
+    },
+    {
+      "name": "密集制造闭环序1核验",
+      "bridges": [
+        "t12_7",
+        "t13_1"
+      ],
+      "seed_time": 0,
+      "historical_contacts": [
+        {
+          "event": "connect_0",
+          "time": -2,
+          "channel": "PC|t13_1:north:0|t13_2:south:0"
+        },
+        {
+          "event": "connect_1",
+          "time": -64,
+          "channel": "PC|t13_1:west:0|t12_1:south:0"
+        },
+        {
+          "event": "connect_2",
+          "time": -79,
+          "channel": "PC|t12_7:south:0|split_e:south:0"
+        },
+        {
+          "event": "connect_3",
+          "time": -46,
+          "channel": "PC|t12_7:east:0|t13_7:south:0"
+        },
+        {
+          "event": "connect_5",
+          "time": -84,
+          "channel": "PC|refine_e:north:1|t12_7:north:0"
+        },
+        {
+          "event": "connect_24",
+          "time": -65,
+          "channel": "PC|t14_1:north:0|t13_1:east:0"
+        },
+        {
+          "event": "connect_42",
+          "time": -47,
+          "channel": "PC|t11_7:east:0|t12_7:west:0"
+        },
+        {
+          "event": "connect_86",
+          "time": -3,
+          "channel": "PC|t13_0:east:0|t13_1:south:0"
+        }
+      ],
+      "runtime_events": [],
+      "status": "input_checked",
+      "reason": "固定已建成段未执行先接定向"
+    },
+    {
+      "name": "密集制造闭环序2核验",
+      "bridges": [
+        "t12_7",
+        "t13_1"
+      ],
+      "seed_time": 0,
+      "historical_contacts": [
+        {
+          "event": "connect_0",
+          "time": -2,
+          "channel": "PC|t13_1:north:0|t13_2:south:0"
+        },
+        {
+          "event": "connect_1",
+          "time": -64,
+          "channel": "PC|t13_1:west:0|t12_1:south:0"
+        },
+        {
+          "event": "connect_2",
+          "time": -79,
+          "channel": "PC|t12_7:south:0|split_e:south:0"
+        },
+        {
+          "event": "connect_3",
+          "time": -46,
+          "channel": "PC|t12_7:east:0|t13_7:south:0"
+        },
+        {
+          "event": "connect_5",
+          "time": -84,
+          "channel": "PC|refine_e:north:1|t12_7:north:0"
+        },
+        {
+          "event": "connect_24",
+          "time": -65,
+          "channel": "PC|t14_1:north:0|t13_1:east:0"
+        },
+        {
+          "event": "connect_42",
+          "time": -47,
+          "channel": "PC|t11_7:east:0|t12_7:west:0"
+        },
+        {
+          "event": "connect_86",
+          "time": -3,
+          "channel": "PC|t13_0:east:0|t13_1:south:0"
+        }
+      ],
+      "runtime_events": [],
+      "status": "input_checked",
+      "reason": "固定已建成段未执行先接定向"
+    },
+    {
+      "name": "密集制造闭环序3核验",
+      "bridges": [
+        "t12_7",
+        "t13_1"
+      ],
+      "seed_time": 0,
+      "historical_contacts": [
+        {
+          "event": "connect_0",
+          "time": -2,
+          "channel": "PC|t13_1:north:0|t13_2:south:0"
+        },
+        {
+          "event": "connect_1",
+          "time": -64,
+          "channel": "PC|t13_1:west:0|t12_1:south:0"
+        },
+        {
+          "event": "connect_2",
+          "time": -79,
+          "channel": "PC|t12_7:south:0|split_e:south:0"
+        },
+        {
+          "event": "connect_3",
+          "time": -46,
+          "channel": "PC|t12_7:east:0|t13_7:south:0"
+        },
+        {
+          "event": "connect_5",
+          "time": -84,
+          "channel": "PC|refine_e:north:1|t12_7:north:0"
+        },
+        {
+          "event": "connect_24",
+          "time": -65,
+          "channel": "PC|t14_1:north:0|t13_1:east:0"
+        },
+        {
+          "event": "connect_42",
+          "time": -47,
+          "channel": "PC|t11_7:east:0|t12_7:west:0"
+        },
+        {
+          "event": "connect_86",
+          "time": -3,
+          "channel": "PC|t13_0:east:0|t13_1:south:0"
+        }
+      ],
+      "runtime_events": [],
+      "status": "input_checked",
+      "reason": "固定已建成段未执行先接定向"
+    },
+    {
+      "name": "密集制造闭环序4核验",
+      "bridges": [
+        "t12_7",
+        "t13_1"
+      ],
+      "seed_time": 0,
+      "historical_contacts": [
+        {
+          "event": "connect_0",
+          "time": -2,
+          "channel": "PC|t13_1:north:0|t13_2:south:0"
+        },
+        {
+          "event": "connect_1",
+          "time": -64,
+          "channel": "PC|t13_1:west:0|t12_1:south:0"
+        },
+        {
+          "event": "connect_2",
+          "time": -79,
+          "channel": "PC|t12_7:south:0|split_e:south:0"
+        },
+        {
+          "event": "connect_3",
+          "time": -46,
+          "channel": "PC|t12_7:east:0|t13_7:south:0"
+        },
+        {
+          "event": "connect_5",
+          "time": -84,
+          "channel": "PC|refine_e:north:1|t12_7:north:0"
+        },
+        {
+          "event": "connect_24",
+          "time": -65,
+          "channel": "PC|t14_1:north:0|t13_1:east:0"
+        },
+        {
+          "event": "connect_42",
+          "time": -47,
+          "channel": "PC|t11_7:east:0|t12_7:west:0"
+        },
+        {
+          "event": "connect_86",
+          "time": -3,
+          "channel": "PC|t13_0:east:0|t13_1:south:0"
+        }
+      ],
+      "runtime_events": [],
+      "status": "input_checked",
+      "reason": "固定已建成段未执行先接定向"
+    },
+    {
+      "name": "密集制造闭环序5核验",
+      "bridges": [
+        "t12_7",
+        "t13_1"
+      ],
+      "seed_time": 0,
+      "historical_contacts": [
+        {
+          "event": "connect_0",
+          "time": -2,
+          "channel": "PC|t13_1:north:0|t13_2:south:0"
+        },
+        {
+          "event": "connect_1",
+          "time": -64,
+          "channel": "PC|t13_1:west:0|t12_1:south:0"
+        },
+        {
+          "event": "connect_2",
+          "time": -79,
+          "channel": "PC|t12_7:south:0|split_e:south:0"
+        },
+        {
+          "event": "connect_3",
+          "time": -46,
+          "channel": "PC|t12_7:east:0|t13_7:south:0"
+        },
+        {
+          "event": "connect_5",
+          "time": -84,
+          "channel": "PC|refine_e:north:1|t12_7:north:0"
+        },
+        {
+          "event": "connect_24",
+          "time": -65,
+          "channel": "PC|t14_1:north:0|t13_1:east:0"
+        },
+        {
+          "event": "connect_42",
+          "time": -47,
+          "channel": "PC|t11_7:east:0|t12_7:west:0"
+        },
+        {
+          "event": "connect_86",
+          "time": -3,
+          "channel": "PC|t13_0:east:0|t13_1:south:0"
+        }
+      ],
+      "runtime_events": [],
+      "status": "input_checked",
+      "reason": "固定已建成段未执行先接定向"
+    }
+  ],
+  "polling": {
+    "status": "pass",
+    "scope": "已记录有限前缀；末刻新收件未观察到未来释放",
+    "groups": 91,
+    "counts": {
+      "a0": 31,
+      "b0": 30,
+      "c0": 30
+    },
+    "one_tick_releases": 90,
+    "supply": "真实仓库蓝铁矿口→运输链→精炼炉；每组1，相邻和2≤3",
+    "remaining": "有限箱容纳不证明无限接收；六局部序不等于全参数族"
+  },
+  "dense": {
+    "status": "conditional_sensitivity_observed",
+    "historical_prefix_flux": {
+      "PC|fork_d:east:0|merge:east:0": 10,
+      "PC|fork_e:north:0|merge:south:0": 14
+    },
+    "manufacturing_cycles": {
+      "status": "pass",
+      "cases": [
+        {
+          "input": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序0核验.json",
+          "status": "period_preconditions_pass",
+          "interval": [
+            72,
+            262
+          ],
+          "period": 190,
+          "direct_count": 20,
+          "competing_count": 20,
+          "d_total": 20,
+          "ratio": "1",
+          "manufacturing_completions": {
+            "crusher_loop": 40,
+            "refine_d": 20,
+            "refine_e": 20
+          },
+          "startup_outbound": {
+            "蓝铁矿": 4
+          },
+          "merger_one_tick_releases": 40,
+          "branch_one_tick_releases": {},
+          "d_services_with_empty_bypasses": 20,
+          "connection_time": -78,
+          "reachability": "空库存条件种子；全部循环物料来自真实仓库4件矿，未证明任意建造/调试史可达"
+        },
+        {
+          "input": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序1核验.json",
+          "status": "period_preconditions_pass",
+          "interval": [
+            275,
+            465
+          ],
+          "period": 190,
+          "direct_count": 20,
+          "competing_count": 20,
+          "d_total": 20,
+          "ratio": "1",
+          "manufacturing_completions": {
+            "crusher_loop": 40,
+            "refine_d": 20,
+            "refine_e": 20
+          },
+          "startup_outbound": {
+            "蓝铁矿": 4
+          },
+          "merger_one_tick_releases": 40,
+          "branch_one_tick_releases": {},
+          "d_services_with_empty_bypasses": 20,
+          "connection_time": -78,
+          "reachability": "空库存条件种子；全部循环物料来自真实仓库4件矿，未证明任意建造/调试史可达"
+        },
+        {
+          "input": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序2核验.json",
+          "status": "inconclusive",
+          "reason": "预算内未取得完整键重复"
+        },
+        {
+          "input": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序3核验.json",
+          "status": "period_preconditions_pass",
+          "interval": [
+            349,
+            454
+          ],
+          "period": 105,
+          "direct_count": 0,
+          "competing_count": 10,
+          "d_total": 10,
+          "ratio": "0",
+          "manufacturing_completions": {
+            "refine_d": 10,
+            "refine_e": 10,
+            "crusher_loop": 20
+          },
+          "startup_outbound": {
+            "蓝铁矿": 4
+          },
+          "merger_one_tick_releases": 10,
+          "branch_one_tick_releases": {
+            "t11_6": 10
+          },
+          "d_services_with_empty_bypasses": 10,
+          "connection_time": -78,
+          "reachability": "空库存条件种子；全部循环物料来自真实仓库4件矿，未证明任意建造/调试史可达"
+        },
+        {
+          "input": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序4核验.json",
+          "status": "period_preconditions_pass",
+          "interval": [
+            126,
+            521
+          ],
+          "period": 395,
+          "direct_count": 0,
+          "competing_count": 20,
+          "d_total": 20,
+          "ratio": "0",
+          "manufacturing_completions": {
+            "crusher_loop": 40,
+            "refine_d": 20,
+            "refine_e": 20
+          },
+          "startup_outbound": {
+            "蓝铁矿": 4
+          },
+          "merger_one_tick_releases": 20,
+          "branch_one_tick_releases": {
+            "t10_5": 20
+          },
+          "d_services_with_empty_bypasses": 20,
+          "connection_time": -78,
+          "reachability": "空库存条件种子；全部循环物料来自真实仓库4件矿，未证明任意建造/调试史可达"
+        },
+        {
+          "input": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序5核验.json",
+          "status": "inconclusive",
+          "reason": "预算内未取得完整键重复"
+        }
+      ],
+      "varied_positions": [
+        16,
+        31,
+        83
+      ],
+      "distinct_ratios": [
+        "0",
+        "1"
+      ],
+      "sensitivity": "observed",
+      "scope": "只枚举D三条模板在固定三个位置的6种序；非全部事件全序，不作普遍约束证明。相同比例不构成正式约束反例。"
+    },
+    "scope": "四份周期核过场景前件，两个局部序仍未决；不证明全参数/种子族或一般相容性。"
+  }
+}

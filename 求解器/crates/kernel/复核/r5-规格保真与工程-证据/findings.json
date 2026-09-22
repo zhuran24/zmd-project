@@ -1,0 +1,26 @@
+{
+  "findings": [
+    {
+      "id": "KR-r5-L2-01",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/main.rs:208；/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/engine.rs:311、350；/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/cycle.rs:594",
+      "claim": "生产域装载在D.2检查前以有限仓库模式计算矿容量和物理可动级，违反回矿候选守卫必须前置的要求。",
+      "evidence": "受限转移定义§6.1 D.2、内核输出§5.1.1/§5.3要求在容量、physical及级排序前检查回矿候选；Engine::new以production_abstraction=false执行rebuild_memory→refresh→physical→plan_deposit。独立回矿试样在矿量79999/80000下先算出不同核心当前级，证据见r5-规格保真与工程-证据/ore-dependent-memory.json及报告§2。",
+      "severity": "重要"
+    },
+    {
+      "id": "KR-r5-L2-02",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/main.rs:138、181；/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/output.rs:566；/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/verify_all.py:53",
+      "claim": "契约允许的相对路径记录虽能通过verify-cycle，却被verify-record、verify-batch和记录checkpoint入口拒收。",
+      "evidence": "内核输出§1、§5.1要求路径按所属文件目录解析；verify-record按cwd装载来源，随后verify_record把相对路径原对象与绝对路径重算对象直接比较。只改路径表示的同一记录通过schema和verify-cycle，但其余三入口退出2；绝对路径对照通过，见r5-规格保真与工程-证据/extra-results.json及relative-record-verify-local.log。",
+      "severity": "重要"
+    },
+    {
+      "id": "KR-r5-L2-03",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/main.rs:164–168",
+      "claim": "checkpoint将诊断复现成功误当作存在可恢复输入，对合法装载失败外壳解引用null并panic。",
+      "evidence": "内核输出§5.1.2允许装载前外壳的replay_input_ref和last_state为null，§5.3区分诊断复现与周期重跑。现有evidence/round6/cli/overflow.json通过verify-cycle且diagnostic_replayed=true，随后checkpoint在main.rs:168的unwrap触发panic、退出101；见r5-规格保真与工程-证据/load-shell-checkpoint.log。",
+      "severity": "重要"
+    }
+  ],
+  "notes": "完整论证：/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/复核-r5-规格保真与工程.md。3条重要发现；当前工具集没有StructuredOutput，提供此合法JSON供机械转录。"
+}

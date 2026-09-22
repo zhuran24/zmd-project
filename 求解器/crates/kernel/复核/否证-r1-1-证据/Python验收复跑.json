@@ -1,0 +1,82 @@
+[
+  {
+    "case": "混做粉碎机两下游运行记录-kernel",
+    "accepted": true,
+    "ticks": 4
+  },
+  {
+    "case": "混做粉碎机两下游运行记录-checkpoint_delta-kernel",
+    "accepted": true,
+    "ticks": 4
+  },
+  {
+    "case": "混做粉碎机两下游-remove-formal",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/混做粉碎机两下游-remove-formal.json",
+    "accepted": true,
+    "error": null
+  },
+  {
+    "case": "混做粉碎机两下游-remove-all",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/混做粉碎机两下游-remove-all.json",
+    "accepted": true,
+    "error": null
+  },
+  {
+    "case": "混做粉碎机两下游-fake-scope",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/混做粉碎机两下游-fake-scope.json",
+    "accepted": true,
+    "error": null
+  },
+  {
+    "case": "混做粉碎机两下游-fake-count",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/混做粉碎机两下游-fake-count.json",
+    "accepted": true,
+    "error": null
+  },
+  {
+    "case": "混做粉碎机两下游-bad-summary",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/混做粉碎机两下游-bad-summary.json",
+    "accepted": false,
+    "error": "AssertionError: /home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/混做粉碎机两下游-bad-summary.json"
+  },
+  {
+    "case": "分流器三路轮询运行记录-kernel",
+    "accepted": true,
+    "ticks": 12
+  },
+  {
+    "case": "分流器三路轮询运行记录-checkpoint_delta-kernel",
+    "accepted": true,
+    "ticks": 12
+  },
+  {
+    "case": "分流器三路轮询-remove-formal",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/分流器三路轮询-remove-formal.json",
+    "accepted": true,
+    "error": null
+  },
+  {
+    "case": "分流器三路轮询-remove-all",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/分流器三路轮询-remove-all.json",
+    "accepted": true,
+    "error": null
+  },
+  {
+    "case": "分流器三路轮询-fake-scope",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/分流器三路轮询-fake-scope.json",
+    "accepted": true,
+    "error": null
+  },
+  {
+    "case": "分流器三路轮询-fake-count",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/分流器三路轮询-fake-count.json",
+    "accepted": true,
+    "error": null
+  },
+  {
+    "case": "分流器三路轮询-bad-summary",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/分流器三路轮询-bad-summary.json",
+    "accepted": false,
+    "error": "AssertionError: /home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/分流器三路轮询-bad-summary.json"
+  }
+]

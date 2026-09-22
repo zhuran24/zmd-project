@@ -1,0 +1,507 @@
+{
+  "schema": "warehouse-proof-check-v1",
+  "status": "pass",
+  "scope": "局部代数和文档绑定；一般证明见正文；非内核运行、非完整布局证书",
+  "source_checks": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+      "expected": "31ced2a24fef738c72dfa406351b6bad5df3e353d6b1c2dfd06ab1febaf566ff",
+      "actual": "31ced2a24fef738c72dfa406351b6bad5df3e353d6b1c2dfd06ab1febaf566ff",
+      "same": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解任务.txt",
+      "expected": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+      "actual": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+      "same": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解约束.txt",
+      "expected": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6",
+      "actual": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6",
+      "same": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7草案.md",
+      "expected": "32acf147e09de04feabfb575dd509a2c5c06b519b2504ba3ff253c3a61816a26",
+      "actual": "32acf147e09de04feabfb575dd509a2c5c06b519b2504ba3ff253c3a61816a26",
+      "same": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md",
+      "expected": "55e3caee8ab40d1003b6002f1283c46734ef77a122e2870a2455fb4f14355450",
+      "actual": "55e3caee8ab40d1003b6002f1283c46734ef77a122e2870a2455fb4f14355450",
+      "same": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/会议2成果修订-v46.md",
+      "expected": "dd873bba256906787359ada38480a0caf4eefd9b2c6bc5b05f135278b7617f5c",
+      "actual": "dd873bba256906787359ada38480a0caf4eefd9b2c6bc5b05f135278b7617f5c",
+      "same": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/主会话三审-0920.md",
+      "expected": "da7d816827a6d66a20def9be982308df0a0e7a8dcb879c6c75ef2c381ef01f87",
+      "actual": "da7d816827a6d66a20def9be982308df0a0e7a8dcb879c6c75ef2c381ef01f87",
+      "same": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/工作/总结-终稿.md",
+      "expected": "101c0ccd64e6ee2cdd3cf5bb52ae89ff1f89d90436a6275645fa64193d743b03",
+      "actual": "101c0ccd64e6ee2cdd3cf5bb52ae89ff1f89d90436a6275645fa64193d743b03",
+      "same": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.md",
+      "expected": "5c2d6530a62a4066c1cc05b8ce95b554dae6059c9c90d107ded9f3e81a570790",
+      "actual": "5c2d6530a62a4066c1cc05b8ce95b554dae6059c9c90d107ded9f3e81a570790",
+      "same": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/候选约束.txt",
+      "expected": "a0ac3f9c82f371132b7de29fe47e4c6c587904680bc2786523de0c825fd5efd9",
+      "actual": "a0ac3f9c82f371132b7de29fe47e4c6c587904680bc2786523de0c825fd5efd9",
+      "same": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.schema.json",
+      "expected": "5033e231db40bab01b0466e3763bc53d6a3e4bc3b7d74c70e30659446e595bfc",
+      "actual": "5033e231db40bab01b0466e3763bc53d6a3e4bc3b7d74c70e30659446e595bfc",
+      "same": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限模型声明.md",
+      "expected": "da0ab2073221bca451c676d54c44c98705bac2886c4ebf7049b7a87fd3509e86",
+      "actual": "da0ab2073221bca451c676d54c44c98705bac2886c4ebf7049b7a87fd3509e86",
+      "same": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点清单.md",
+      "expected": "dda03396a0012f42c41a820adea67b41a19754d60bf63441c6205be29b0555bb",
+      "actual": "dda03396a0012f42c41a820adea67b41a19754d60bf63441c6205be29b0555bb",
+      "same": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "两种物品的最大可接收向量",
+      "cases": 1440,
+      "status": "pass",
+      "coverage": "抽象容量1至5、每种待送0至3；穷举可行接收向量，核最大值与守恒"
+    },
+    {
+      "name": "一满一可收及部分剩余",
+      "status": "pass",
+      "examples": [
+        {
+          "capacity": 4,
+          "stock": [
+            4,
+            0
+          ],
+          "box": [
+            2,
+            3
+          ],
+          "actual_inbound": [
+            0,
+            3
+          ],
+          "residual": [
+            2,
+            0
+          ]
+        },
+        {
+          "capacity": 4,
+          "stock": [
+            3,
+            0
+          ],
+          "box": [
+            2,
+            1
+          ],
+          "actual_inbound": [
+            1,
+            1
+          ],
+          "residual": [
+            1,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "name": "同刻连续入库使用更新后仓存",
+      "status": "pass",
+      "receipts": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "未指派空格更名保持原矿引用及逐种库存",
+      "status": "pass",
+      "permutations": 6
+    },
+    {
+      "name": "箱编号格不可按总数归并",
+      "status": "pass",
+      "states": [
+        [
+          [
+            "高容谷地电池",
+            1
+          ],
+          [
+            "精选荞愈胶囊",
+            1
+          ]
+        ],
+        [
+          [
+            "精选荞愈胶囊",
+            1
+          ],
+          [
+            "高容谷地电池",
+            1
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "两成品分账及重复拿取下的段内库存复原",
+      "status": "pass",
+      "ledger": [
+        {
+          "cycle": 0,
+          "phase": 0,
+          "before": [
+            5,
+            7
+          ],
+          "I": [
+            1,
+            0
+          ],
+          "O": [
+            0,
+            0
+          ],
+          "P": [
+            0,
+            0
+          ],
+          "after": [
+            6,
+            7
+          ]
+        },
+        {
+          "cycle": 0,
+          "phase": 1,
+          "before": [
+            6,
+            7
+          ],
+          "I": [
+            0,
+            1
+          ],
+          "O": [
+            0,
+            0
+          ],
+          "P": [
+            1,
+            0
+          ],
+          "after": [
+            5,
+            8
+          ]
+        },
+        {
+          "cycle": 0,
+          "phase": 2,
+          "before": [
+            5,
+            8
+          ],
+          "I": [
+            1,
+            1
+          ],
+          "O": [
+            0,
+            0
+          ],
+          "P": [
+            0,
+            1
+          ],
+          "after": [
+            6,
+            8
+          ]
+        },
+        {
+          "cycle": 0,
+          "phase": 3,
+          "before": [
+            6,
+            8
+          ],
+          "I": [
+            0,
+            1
+          ],
+          "O": [
+            0,
+            0
+          ],
+          "P": [
+            1,
+            2
+          ],
+          "after": [
+            5,
+            7
+          ]
+        },
+        {
+          "cycle": 1,
+          "phase": 0,
+          "before": [
+            5,
+            7
+          ],
+          "I": [
+            1,
+            0
+          ],
+          "O": [
+            0,
+            0
+          ],
+          "P": [
+            0,
+            0
+          ],
+          "after": [
+            6,
+            7
+          ]
+        },
+        {
+          "cycle": 1,
+          "phase": 1,
+          "before": [
+            6,
+            7
+          ],
+          "I": [
+            0,
+            1
+          ],
+          "O": [
+            0,
+            0
+          ],
+          "P": [
+            1,
+            0
+          ],
+          "after": [
+            5,
+            8
+          ]
+        },
+        {
+          "cycle": 1,
+          "phase": 2,
+          "before": [
+            5,
+            8
+          ],
+          "I": [
+            1,
+            1
+          ],
+          "O": [
+            0,
+            0
+          ],
+          "P": [
+            0,
+            1
+          ],
+          "after": [
+            6,
+            8
+          ]
+        },
+        {
+          "cycle": 1,
+          "phase": 3,
+          "before": [
+            6,
+            8
+          ],
+          "I": [
+            0,
+            1
+          ],
+          "O": [
+            0,
+            0
+          ],
+          "P": [
+            1,
+            2
+          ],
+          "after": [
+            5,
+            7
+          ]
+        },
+        {
+          "cycle": 2,
+          "phase": 0,
+          "before": [
+            5,
+            7
+          ],
+          "I": [
+            1,
+            0
+          ],
+          "O": [
+            0,
+            0
+          ],
+          "P": [
+            0,
+            0
+          ],
+          "after": [
+            6,
+            7
+          ]
+        },
+        {
+          "cycle": 2,
+          "phase": 1,
+          "before": [
+            6,
+            7
+          ],
+          "I": [
+            0,
+            1
+          ],
+          "O": [
+            0,
+            0
+          ],
+          "P": [
+            1,
+            0
+          ],
+          "after": [
+            5,
+            8
+          ]
+        },
+        {
+          "cycle": 2,
+          "phase": 2,
+          "before": [
+            5,
+            8
+          ],
+          "I": [
+            1,
+            1
+          ],
+          "O": [
+            0,
+            0
+          ],
+          "P": [
+            0,
+            1
+          ],
+          "after": [
+            6,
+            8
+          ]
+        },
+        {
+          "cycle": 2,
+          "phase": 3,
+          "before": [
+            6,
+            8
+          ],
+          "I": [
+            0,
+            1
+          ],
+          "O": [
+            0,
+            0
+          ],
+          "P": [
+            1,
+            2
+          ],
+          "after": [
+            5,
+            7
+          ]
+        }
+      ]
+    },
+    {
+      "name": "端点平衡不足以固定段内库存",
+      "status": "pass",
+      "paths": [
+        [
+          6,
+          5
+        ],
+        [
+          5,
+          5
+        ]
+      ]
+    },
+    {
+      "name": "生产周期非零净变及数学调整另记",
+      "status": "pass"
+    }
+  ],
+  "documents": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/仓库接收与循环对应.md",
+      "sha256": "cdc235501fc5ba81f8df0c4ea02396b15b23bb1c6175f9e7a10729d0cab646c1",
+      "line_count": 195
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/受限转移定义-§6.5替换稿.md",
+      "sha256": "531d5195a3c5de8e73bf32f6f47dc17aa0ef15f710c84d9cc9cacb89ec4cd7fd",
+      "line_count": 90
+    }
+  ],
+  "kernel": {
+    "built": false,
+    "loaded": false,
+    "stepped": false,
+    "reason": "本席采用直接证明及局部代数核对"
+  },
+  "independent_review": "pending"
+}

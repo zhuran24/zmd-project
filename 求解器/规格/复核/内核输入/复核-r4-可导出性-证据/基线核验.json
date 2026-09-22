@@ -1,0 +1,424 @@
+{
+  "delivered_record": "通过",
+  "full_recompute_equal": true,
+  "events": [
+    28,
+    42,
+    43,
+    43
+  ],
+  "samples": [
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/桥接器双通路.json",
+      "status": "指定快照静态结构通过",
+      "snapshot": "built_layout",
+      "anchor": {
+        "event": "blueprint_complete",
+        "side": "after"
+      },
+      "units": 7,
+      "occupied_cells": 122,
+      "physical_channels": 4,
+      "buffer_channels": 0,
+      "bridge_first_peers": [
+        {
+          "unit": "bridge",
+          "axis": "vertical",
+          "first_peer": "south_box:north:2",
+          "scope": "两种已登记先接读法的一致唯一非桥见证"
+        },
+        {
+          "unit": "bridge",
+          "axis": "horizontal",
+          "first_peer": "west_box:north:2",
+          "scope": "两种已登记先接读法的一致唯一非桥见证"
+        }
+      ],
+      "counts_category": "算术推论（候选布局）",
+      "validation_category": "实测（工具）"
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询.json",
+      "status": "指定快照静态结构通过",
+      "snapshot": "built_layout",
+      "anchor": {
+        "event": "blueprint_complete",
+        "side": "after"
+      },
+      "units": 9,
+      "occupied_cells": 128,
+      "physical_channels": 4,
+      "buffer_channels": 0,
+      "bridge_first_peers": [],
+      "counts_category": "算术推论（候选布局）",
+      "validation_category": "实测（工具）"
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json",
+      "status": "完整运行输入检查通过（有限合成子集）",
+      "snapshot": "built_layout",
+      "anchor": {
+        "event": "blueprint_complete",
+        "side": "after"
+      },
+      "units": 14,
+      "occupied_cells": 153,
+      "physical_channels": 11,
+      "buffer_channels": 8,
+      "bridge_first_peers": [],
+      "counts_category": "算术推论（候选布局）",
+      "validation_category": "实测（工具）"
+    }
+  ],
+  "coverage_counts": {
+    "exercised": 23,
+    "input_checked": 14,
+    "not_exercised": 44,
+    "stop_not_triggered": 17,
+    "proof_pending": 1
+  },
+  "successful_events": [
+    {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "value": "0",
+          "category": "候选"
+        }
+      },
+      "summary": {
+        "tick": "0",
+        "warehouse_ore": "79999",
+        "nonempty": {
+          "feed_belt:transport:0": [
+            {
+              "item": "源矿",
+              "quantity": "1",
+              "entered_at": "0"
+            }
+          ]
+        },
+        "crusher_phase": "idle",
+        "crusher_remaining": null,
+        "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+        "completed_batches": "0"
+      },
+      "events": [
+        {
+          "event": "J|0|0|0",
+          "operation": "move",
+          "target": "PC|ore_source:north:1|feed_belt:south:0",
+          "outcome": "success",
+          "detail": "",
+          "basis": [
+            "规则 L13、L15–17、L23–25、L29–32",
+            "约束端口速率",
+            "受限模型声明 polling.both_failure",
+            "内核输入 §5.2、§6.3"
+          ]
+        }
+      ]
+    },
+    {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "value": "1",
+          "category": "候选"
+        }
+      },
+      "summary": {
+        "tick": "1",
+        "warehouse_ore": "79998",
+        "nonempty": {
+          "crusher:buffer:0": [
+            {
+              "item": "源矿",
+              "quantity": "1",
+              "entered_at": "1"
+            }
+          ],
+          "feed_belt:transport:0": [
+            {
+              "item": "源矿",
+              "quantity": "1",
+              "entered_at": "1"
+            }
+          ]
+        },
+        "crusher_phase": "working",
+        "crusher_remaining": "1",
+        "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+        "completed_batches": "0"
+      },
+      "events": [
+        {
+          "event": "J|1|0|1",
+          "operation": "move",
+          "target": "PC|feed_belt:north:0|crusher:south:0",
+          "outcome": "success",
+          "detail": "",
+          "basis": [
+            "规则 L13、L15–17、L23–25、L29–32",
+            "约束端口速率",
+            "受限模型声明 polling.both_failure",
+            "内核输入 §5.2、§6.3"
+          ]
+        },
+        {
+          "event": "J|1|0|11",
+          "operation": "manufacture",
+          "target": "crusher",
+          "outcome": "success",
+          "detail": "",
+          "basis": [
+            "规则 L18、L35",
+            "受限转移定义 §4.2",
+            "受限模型声明 manufacture_subactions、atomic_batch、same_instant"
+          ]
+        },
+        {
+          "event": "J|1|1|0",
+          "operation": "move",
+          "target": "PC|ore_source:north:1|feed_belt:south:0",
+          "outcome": "success",
+          "detail": "",
+          "basis": [
+            "规则 L13、L15–17、L23–25、L29–32",
+            "约束端口速率",
+            "受限模型声明 polling.both_failure",
+            "内核输入 §5.2、§6.3"
+          ]
+        }
+      ]
+    },
+    {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "value": "2",
+          "category": "候选"
+        }
+      },
+      "summary": {
+        "tick": "2",
+        "warehouse_ore": "79997",
+        "nonempty": {
+          "crusher:buffer:0": [
+            {
+              "item": "源矿",
+              "quantity": "1",
+              "entered_at": "2"
+            }
+          ],
+          "feed_belt:transport:0": [
+            {
+              "item": "源矿",
+              "quantity": "1",
+              "entered_at": "2"
+            }
+          ],
+          "belt_a0:transport:0": [
+            {
+              "item": "源石粉末",
+              "quantity": "1",
+              "entered_at": "2"
+            }
+          ]
+        },
+        "crusher_phase": "working",
+        "crusher_remaining": "1",
+        "crusher_next_output": "PC|crusher:north:2|belt_b0:south:0",
+        "completed_batches": "1"
+      },
+      "events": [
+        {
+          "event": "C|2|crusher",
+          "operation": "manufacture_complete",
+          "target": "crusher",
+          "outcome": "success",
+          "basis": [
+            "规则 L35",
+            "运行语义 §4.1",
+            "受限模型声明 time.manufacture_events"
+          ]
+        },
+        {
+          "event": "J|2|0|1",
+          "operation": "move",
+          "target": "PC|feed_belt:north:0|crusher:south:0",
+          "outcome": "success",
+          "detail": "",
+          "basis": [
+            "规则 L13、L15–17、L23–25、L29–32",
+            "约束端口速率",
+            "受限模型声明 polling.both_failure",
+            "内核输入 §5.2、§6.3"
+          ]
+        },
+        {
+          "event": "J|2|0|11",
+          "operation": "manufacture",
+          "target": "crusher",
+          "outcome": "success",
+          "detail": "",
+          "basis": [
+            "规则 L18、L35",
+            "受限转移定义 §4.2",
+            "受限模型声明 manufacture_subactions、atomic_batch、same_instant"
+          ]
+        },
+        {
+          "event": "J|2|1|0",
+          "operation": "move",
+          "target": "PC|ore_source:north:1|feed_belt:south:0",
+          "outcome": "success",
+          "detail": "",
+          "basis": [
+            "规则 L13、L15–17、L23–25、L29–32",
+            "约束端口速率",
+            "受限模型声明 polling.both_failure",
+            "内核输入 §5.2、§6.3"
+          ]
+        },
+        {
+          "event": "J|2|1|2",
+          "operation": "move",
+          "target": "PC|crusher:north:0|belt_a0:south:0",
+          "outcome": "success",
+          "detail": "",
+          "basis": [
+            "规则 L13、L15–17、L23–25、L29–32",
+            "约束端口速率",
+            "受限模型声明 polling.both_failure",
+            "内核输入 §5.2、§6.3"
+          ]
+        }
+      ]
+    },
+    {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "value": "3",
+          "category": "候选"
+        }
+      },
+      "summary": {
+        "tick": "3",
+        "warehouse_ore": "79996",
+        "nonempty": {
+          "crusher:buffer:0": [
+            {
+              "item": "源矿",
+              "quantity": "1",
+              "entered_at": "3"
+            }
+          ],
+          "feed_belt:transport:0": [
+            {
+              "item": "源矿",
+              "quantity": "1",
+              "entered_at": "3"
+            }
+          ],
+          "belt_a1:transport:0": [
+            {
+              "item": "源石粉末",
+              "quantity": "1",
+              "entered_at": "3"
+            }
+          ],
+          "belt_b0:transport:0": [
+            {
+              "item": "源石粉末",
+              "quantity": "1",
+              "entered_at": "3"
+            }
+          ]
+        },
+        "crusher_phase": "working",
+        "crusher_remaining": "1",
+        "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+        "completed_batches": "2"
+      },
+      "events": [
+        {
+          "event": "C|3|crusher",
+          "operation": "manufacture_complete",
+          "target": "crusher",
+          "outcome": "success",
+          "basis": [
+            "规则 L35",
+            "运行语义 §4.1",
+            "受限模型声明 time.manufacture_events"
+          ]
+        },
+        {
+          "event": "J|3|0|1",
+          "operation": "move",
+          "target": "PC|feed_belt:north:0|crusher:south:0",
+          "outcome": "success",
+          "detail": "",
+          "basis": [
+            "规则 L13、L15–17、L23–25、L29–32",
+            "约束端口速率",
+            "受限模型声明 polling.both_failure",
+            "内核输入 §5.2、§6.3"
+          ]
+        },
+        {
+          "event": "J|3|0|4",
+          "operation": "move",
+          "target": "PC|belt_a0:north:0|belt_a1:south:0",
+          "outcome": "success",
+          "detail": "",
+          "basis": [
+            "规则 L13、L15–17、L23–25、L29–32",
+            "约束端口速率",
+            "受限模型声明 polling.both_failure",
+            "内核输入 §5.2、§6.3"
+          ]
+        },
+        {
+          "event": "J|3|0|11",
+          "operation": "manufacture",
+          "target": "crusher",
+          "outcome": "success",
+          "detail": "",
+          "basis": [
+            "规则 L18、L35",
+            "受限转移定义 §4.2",
+            "受限模型声明 manufacture_subactions、atomic_batch、same_instant"
+          ]
+        },
+        {
+          "event": "J|3|1|0",
+          "operation": "move",
+          "target": "PC|ore_source:north:1|feed_belt:south:0",
+          "outcome": "success",
+          "detail": "",
+          "basis": [
+            "规则 L13、L15–17、L23–25、L29–32",
+            "约束端口速率",
+            "受限模型声明 polling.both_failure",
+            "内核输入 §5.2、§6.3"
+          ]
+        },
+        {
+          "event": "J|3|1|3",
+          "operation": "move",
+          "target": "PC|crusher:north:2|belt_b0:south:0",
+          "outcome": "success",
+          "detail": "",
+          "basis": [
+            "规则 L13、L15–17、L23–25、L29–32",
+            "约束端口速率",
+            "受限模型声明 polling.both_failure",
+            "内核输入 §5.2、§6.3"
+          ]
+        }
+      ]
+    }
+  ]
+}

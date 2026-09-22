@@ -1,0 +1,23 @@
+{
+  "name": "positive-研磨混做核验",
+  "command": [
+    "/home/zhuran24/zmd-research-fresh/求解器/target/debug/kernel",
+    "run",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/研磨混做核验.json",
+    "--config",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+    "--ticks",
+    "12",
+    "--out",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/positive-研磨混做核验.json"
+  ],
+  "exit_code": 0,
+  "status": "completed",
+  "schema": "kernel-output-v3",
+  "open_items": [
+    "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+    "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+  ],
+  "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/positive-研磨混做核验.json\",\"status\":\"completed\"}\n",
+  "stderr": ""
+}

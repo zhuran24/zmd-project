@@ -1,0 +1,21 @@
+{
+  "command": [
+    "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+    "run",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r5-测试与证据/K6-checkpoint-05.json",
+    "--ticks",
+    "32",
+    "--format",
+    "checkpoint_delta",
+    "--checkpoint-interval",
+    "16",
+    "--out",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r5-测试与证据/K6-temporary-record.json",
+    "--config",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+  ],
+  "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+  "returncode": 0,
+  "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r5-测试与证据/K6-temporary-record.json\",\"status\":\"completed\"}\n",
+  "stderr": ""
+}

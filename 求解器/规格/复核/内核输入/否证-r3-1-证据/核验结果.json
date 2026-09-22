@@ -1,0 +1,788 @@
+{
+  "baseline_disk": {
+    "passed": true,
+    "stdout": "{\"status\": \"通过\", \"tests\": 17, \"axis_count\": 96, \"output\": \"/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r3/运行回归结果.json\"}\n"
+  },
+  "regeneration": {
+    "passed": true,
+    "stdout": "{\"status\": \"通过\", \"golden_match\": true, \"ticks\": 4, \"complete_cycles\": 2, \"events\": [28, 42, 43, 43], \"output\": \"/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录.json\"}\n"
+  },
+  "baseline_regenerated": {
+    "passed": true,
+    "stdout": "{\"status\": \"通过\", \"tests\": 17, \"axis_count\": 96, \"output\": \"/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r3/运行回归结果.json\"}\n"
+  },
+  "original_trace_equals_recalculation": true,
+  "output_mutations": {
+    "K3-r3-L2-01-capacity": {
+      "passed": true,
+      "stdout": "{\"status\": \"通过\", \"tests\": 17, \"axis_count\": 96, \"output\": \"/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r3/运行回归结果.json\"}\n",
+      "tests": 17,
+      "counterexample_file": "输出反例-运输格两件.json"
+    },
+    "K3-r3-L2-01-parameter": {
+      "passed": true,
+      "stdout": "{\"status\": \"通过\", \"tests\": 17, \"axis_count\": 96, \"output\": \"/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r3/运行回归结果.json\"}\n",
+      "tests": 17,
+      "counterexample_file": "输出反例-伪造时间域.json"
+    },
+    "K3-r3-L2-01-events": {
+      "passed": true,
+      "stdout": "{\"status\": \"通过\", \"tests\": 17, \"axis_count\": 96, \"output\": \"/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r3/运行回归结果.json\"}\n",
+      "tests": 17,
+      "counterexample_file": "输出反例-删除末刻事件.json"
+    },
+    "K3-r3-L3-03-capacity": {
+      "passed": true,
+      "stdout": "{\"status\": \"通过\", \"tests\": 17, \"axis_count\": 96, \"output\": \"/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r3/运行回归结果.json\"}\n",
+      "tests": 17,
+      "counterexample_file": "输出反例-制造格999件.json"
+    },
+    "K3-r3-L3-03-summary": {
+      "passed": true,
+      "stdout": "{\"status\": \"通过\", \"tests\": 17, \"axis_count\": 96, \"output\": \"/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r3/运行回归结果.json\"}\n",
+      "tests": 17,
+      "counterexample_file": "输出反例-摘要失配.json"
+    },
+    "K3-r3-L3-03-combined": {
+      "passed": true,
+      "stdout": "{\"status\": \"通过\", \"tests\": 17, \"axis_count\": 96, \"output\": \"/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r3/运行回归结果.json\"}\n",
+      "tests": 17,
+      "counterexample_file": "输出反例-制造格及摘要.json"
+    }
+  },
+  "decision_mutations": {
+    "判定上下文未解": {
+      "accepted": true,
+      "check_status": "完整运行输入检查通过（有限合成子集）",
+      "ticks": 4,
+      "summaries": [
+        {
+          "tick": "0",
+          "warehouse_ore": "79999",
+          "nonempty": {
+            "feed_belt:transport:0": [
+              {
+                "item": "源矿",
+                "quantity": "1",
+                "entered_at": "0"
+              }
+            ]
+          },
+          "crusher_phase": "idle",
+          "crusher_remaining": null,
+          "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+          "completed_batches": "0"
+        },
+        {
+          "tick": "1",
+          "warehouse_ore": "79998",
+          "nonempty": {
+            "crusher:buffer:0": [
+              {
+                "item": "源矿",
+                "quantity": "1",
+                "entered_at": "1"
+              }
+            ],
+            "feed_belt:transport:0": [
+              {
+                "item": "源矿",
+                "quantity": "1",
+                "entered_at": "1"
+              }
+            ]
+          },
+          "crusher_phase": "working",
+          "crusher_remaining": "1",
+          "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+          "completed_batches": "0"
+        },
+        {
+          "tick": "2",
+          "warehouse_ore": "79997",
+          "nonempty": {
+            "crusher:buffer:0": [
+              {
+                "item": "源矿",
+                "quantity": "1",
+                "entered_at": "2"
+              }
+            ],
+            "feed_belt:transport:0": [
+              {
+                "item": "源矿",
+                "quantity": "1",
+                "entered_at": "2"
+              }
+            ],
+            "belt_a0:transport:0": [
+              {
+                "item": "源石粉末",
+                "quantity": "1",
+                "entered_at": "2"
+              }
+            ]
+          },
+          "crusher_phase": "working",
+          "crusher_remaining": "1",
+          "crusher_next_output": "PC|crusher:north:2|belt_b0:south:0",
+          "completed_batches": "1"
+        },
+        {
+          "tick": "3",
+          "warehouse_ore": "79996",
+          "nonempty": {
+            "crusher:buffer:0": [
+              {
+                "item": "源矿",
+                "quantity": "1",
+                "entered_at": "3"
+              }
+            ],
+            "feed_belt:transport:0": [
+              {
+                "item": "源矿",
+                "quantity": "1",
+                "entered_at": "3"
+              }
+            ],
+            "belt_a1:transport:0": [
+              {
+                "item": "源石粉末",
+                "quantity": "1",
+                "entered_at": "3"
+              }
+            ],
+            "belt_b0:transport:0": [
+              {
+                "item": "源石粉末",
+                "quantity": "1",
+                "entered_at": "3"
+              }
+            ]
+          },
+          "crusher_phase": "working",
+          "crusher_remaining": "1",
+          "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+          "completed_batches": "2"
+        }
+      ],
+      "standalone_decision_rejected": true,
+      "standalone_error": "未解/不适用不能偷填值"
+    },
+    "端口上下文未解": {
+      "accepted": true,
+      "check_status": "完整运行输入检查通过（有限合成子集）",
+      "ticks": 4,
+      "summaries": [
+        {
+          "tick": "0",
+          "warehouse_ore": "79999",
+          "nonempty": {
+            "feed_belt:transport:0": [
+              {
+                "item": "源矿",
+                "quantity": "1",
+                "entered_at": "0"
+              }
+            ]
+          },
+          "crusher_phase": "idle",
+          "crusher_remaining": null,
+          "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+          "completed_batches": "0"
+        },
+        {
+          "tick": "1",
+          "warehouse_ore": "79998",
+          "nonempty": {
+            "crusher:buffer:0": [
+              {
+                "item": "源矿",
+                "quantity": "1",
+                "entered_at": "1"
+              }
+            ],
+            "feed_belt:transport:0": [
+              {
+                "item": "源矿",
+                "quantity": "1",
+                "entered_at": "1"
+              }
+            ]
+          },
+          "crusher_phase": "working",
+          "crusher_remaining": "1",
+          "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+          "completed_batches": "0"
+        },
+        {
+          "tick": "2",
+          "warehouse_ore": "79997",
+          "nonempty": {
+            "crusher:buffer:0": [
+              {
+                "item": "源矿",
+                "quantity": "1",
+                "entered_at": "2"
+              }
+            ],
+            "feed_belt:transport:0": [
+              {
+                "item": "源矿",
+                "quantity": "1",
+                "entered_at": "2"
+              }
+            ],
+            "belt_a0:transport:0": [
+              {
+                "item": "源石粉末",
+                "quantity": "1",
+                "entered_at": "2"
+              }
+            ]
+          },
+          "crusher_phase": "working",
+          "crusher_remaining": "1",
+          "crusher_next_output": "PC|crusher:north:2|belt_b0:south:0",
+          "completed_batches": "1"
+        },
+        {
+          "tick": "3",
+          "warehouse_ore": "79996",
+          "nonempty": {
+            "crusher:buffer:0": [
+              {
+                "item": "源矿",
+                "quantity": "1",
+                "entered_at": "3"
+              }
+            ],
+            "feed_belt:transport:0": [
+              {
+                "item": "源矿",
+                "quantity": "1",
+                "entered_at": "3"
+              }
+            ],
+            "belt_a1:transport:0": [
+              {
+                "item": "源石粉末",
+                "quantity": "1",
+                "entered_at": "3"
+              }
+            ],
+            "belt_b0:transport:0": [
+              {
+                "item": "源石粉末",
+                "quantity": "1",
+                "entered_at": "3"
+              }
+            ]
+          },
+          "crusher_phase": "working",
+          "crusher_remaining": "1",
+          "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+          "completed_batches": "2"
+        }
+      ],
+      "standalone_decision_rejected": true,
+      "standalone_error": "未解/不适用不能偷填值"
+    },
+    "拿取记忆非法状态": {
+      "accepted": true,
+      "check_status": "完整运行输入检查通过（有限合成子集）",
+      "ticks": 4,
+      "summaries": [
+        {
+          "tick": "0",
+          "warehouse_ore": "79999",
+          "nonempty": {
+            "feed_belt:transport:0": [
+              {
+                "item": "源矿",
+                "quantity": "1",
+                "entered_at": "0"
+              }
+            ]
+          },
+          "crusher_phase": "idle",
+          "crusher_remaining": null,
+          "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+          "completed_batches": "0"
+        },
+        {
+          "tick": "1",
+          "warehouse_ore": "79998",
+          "nonempty": {
+            "crusher:buffer:0": [
+              {
+                "item": "源矿",
+                "quantity": "1",
+                "entered_at": "1"
+              }
+            ],
+            "feed_belt:transport:0": [
+              {
+                "item": "源矿",
+                "quantity": "1",
+                "entered_at": "1"
+              }
+            ]
+          },
+          "crusher_phase": "working",
+          "crusher_remaining": "1",
+          "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+          "completed_batches": "0"
+        },
+        {
+          "tick": "2",
+          "warehouse_ore": "79997",
+          "nonempty": {
+            "crusher:buffer:0": [
+              {
+                "item": "源矿",
+                "quantity": "1",
+                "entered_at": "2"
+              }
+            ],
+            "feed_belt:transport:0": [
+              {
+                "item": "源矿",
+                "quantity": "1",
+                "entered_at": "2"
+              }
+            ],
+            "belt_a0:transport:0": [
+              {
+                "item": "源石粉末",
+                "quantity": "1",
+                "entered_at": "2"
+              }
+            ]
+          },
+          "crusher_phase": "working",
+          "crusher_remaining": "1",
+          "crusher_next_output": "PC|crusher:north:2|belt_b0:south:0",
+          "completed_batches": "1"
+        },
+        {
+          "tick": "3",
+          "warehouse_ore": "79996",
+          "nonempty": {
+            "crusher:buffer:0": [
+              {
+                "item": "源矿",
+                "quantity": "1",
+                "entered_at": "3"
+              }
+            ],
+            "feed_belt:transport:0": [
+              {
+                "item": "源矿",
+                "quantity": "1",
+                "entered_at": "3"
+              }
+            ],
+            "belt_a1:transport:0": [
+              {
+                "item": "源石粉末",
+                "quantity": "1",
+                "entered_at": "3"
+              }
+            ],
+            "belt_b0:transport:0": [
+              {
+                "item": "源石粉末",
+                "quantity": "1",
+                "entered_at": "3"
+              }
+            ]
+          },
+          "crusher_phase": "working",
+          "crusher_remaining": "1",
+          "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+          "completed_batches": "2"
+        }
+      ],
+      "standalone_decision_rejected": true,
+      "standalone_error": "Decision 状态非法"
+    },
+    "端口上下文缺依据": {
+      "accepted": true,
+      "check_status": "完整运行输入检查通过（有限合成子集）",
+      "ticks": 4,
+      "summaries": [
+        {
+          "tick": "0",
+          "warehouse_ore": "79999",
+          "nonempty": {
+            "feed_belt:transport:0": [
+              {
+                "item": "源矿",
+                "quantity": "1",
+                "entered_at": "0"
+              }
+            ]
+          },
+          "crusher_phase": "idle",
+          "crusher_remaining": null,
+          "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+          "completed_batches": "0"
+        },
+        {
+          "tick": "1",
+          "warehouse_ore": "79998",
+          "nonempty": {
+            "crusher:buffer:0": [
+              {
+                "item": "源矿",
+                "quantity": "1",
+                "entered_at": "1"
+              }
+            ],
+            "feed_belt:transport:0": [
+              {
+                "item": "源矿",
+                "quantity": "1",
+                "entered_at": "1"
+              }
+            ]
+          },
+          "crusher_phase": "working",
+          "crusher_remaining": "1",
+          "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+          "completed_batches": "0"
+        },
+        {
+          "tick": "2",
+          "warehouse_ore": "79997",
+          "nonempty": {
+            "crusher:buffer:0": [
+              {
+                "item": "源矿",
+                "quantity": "1",
+                "entered_at": "2"
+              }
+            ],
+            "feed_belt:transport:0": [
+              {
+                "item": "源矿",
+                "quantity": "1",
+                "entered_at": "2"
+              }
+            ],
+            "belt_a0:transport:0": [
+              {
+                "item": "源石粉末",
+                "quantity": "1",
+                "entered_at": "2"
+              }
+            ]
+          },
+          "crusher_phase": "working",
+          "crusher_remaining": "1",
+          "crusher_next_output": "PC|crusher:north:2|belt_b0:south:0",
+          "completed_batches": "1"
+        },
+        {
+          "tick": "3",
+          "warehouse_ore": "79996",
+          "nonempty": {
+            "crusher:buffer:0": [
+              {
+                "item": "源矿",
+                "quantity": "1",
+                "entered_at": "3"
+              }
+            ],
+            "feed_belt:transport:0": [
+              {
+                "item": "源矿",
+                "quantity": "1",
+                "entered_at": "3"
+              }
+            ],
+            "belt_a1:transport:0": [
+              {
+                "item": "源石粉末",
+                "quantity": "1",
+                "entered_at": "3"
+              }
+            ],
+            "belt_b0:transport:0": [
+              {
+                "item": "源石粉末",
+                "quantity": "1",
+                "entered_at": "3"
+              }
+            ]
+          },
+          "crusher_phase": "working",
+          "crusher_remaining": "1",
+          "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+          "completed_batches": "2"
+        }
+      ],
+      "standalone_decision_rejected": true,
+      "standalone_error": "Decision: 字段缺失或未知"
+    },
+    "接通次序缺依据": {
+      "accepted": true,
+      "check_status": "完整运行输入检查通过（有限合成子集）",
+      "ticks": 4,
+      "summaries": [
+        {
+          "tick": "0",
+          "warehouse_ore": "79999",
+          "nonempty": {
+            "feed_belt:transport:0": [
+              {
+                "item": "源矿",
+                "quantity": "1",
+                "entered_at": "0"
+              }
+            ]
+          },
+          "crusher_phase": "idle",
+          "crusher_remaining": null,
+          "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+          "completed_batches": "0"
+        },
+        {
+          "tick": "1",
+          "warehouse_ore": "79998",
+          "nonempty": {
+            "crusher:buffer:0": [
+              {
+                "item": "源矿",
+                "quantity": "1",
+                "entered_at": "1"
+              }
+            ],
+            "feed_belt:transport:0": [
+              {
+                "item": "源矿",
+                "quantity": "1",
+                "entered_at": "1"
+              }
+            ]
+          },
+          "crusher_phase": "working",
+          "crusher_remaining": "1",
+          "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+          "completed_batches": "0"
+        },
+        {
+          "tick": "2",
+          "warehouse_ore": "79997",
+          "nonempty": {
+            "crusher:buffer:0": [
+              {
+                "item": "源矿",
+                "quantity": "1",
+                "entered_at": "2"
+              }
+            ],
+            "feed_belt:transport:0": [
+              {
+                "item": "源矿",
+                "quantity": "1",
+                "entered_at": "2"
+              }
+            ],
+            "belt_a0:transport:0": [
+              {
+                "item": "源石粉末",
+                "quantity": "1",
+                "entered_at": "2"
+              }
+            ]
+          },
+          "crusher_phase": "working",
+          "crusher_remaining": "1",
+          "crusher_next_output": "PC|crusher:north:2|belt_b0:south:0",
+          "completed_batches": "1"
+        },
+        {
+          "tick": "3",
+          "warehouse_ore": "79996",
+          "nonempty": {
+            "crusher:buffer:0": [
+              {
+                "item": "源矿",
+                "quantity": "1",
+                "entered_at": "3"
+              }
+            ],
+            "feed_belt:transport:0": [
+              {
+                "item": "源矿",
+                "quantity": "1",
+                "entered_at": "3"
+              }
+            ],
+            "belt_a1:transport:0": [
+              {
+                "item": "源石粉末",
+                "quantity": "1",
+                "entered_at": "3"
+              }
+            ],
+            "belt_b0:transport:0": [
+              {
+                "item": "源石粉末",
+                "quantity": "1",
+                "entered_at": "3"
+              }
+            ]
+          },
+          "crusher_phase": "working",
+          "crusher_remaining": "1",
+          "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+          "completed_batches": "2"
+        }
+      ],
+      "standalone_decision_rejected": true,
+      "standalone_error": "Decision: 字段缺失或未知"
+    }
+  },
+  "empty_source_wrong_derived": {
+    "accepted": true,
+    "check_status": "完整运行输入检查通过（有限合成子集）",
+    "ticks": 4,
+    "summaries": [
+      {
+        "tick": "0",
+        "warehouse_ore": "80000",
+        "nonempty": {},
+        "crusher_phase": "idle",
+        "crusher_remaining": null,
+        "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+        "completed_batches": "0"
+      },
+      {
+        "tick": "1",
+        "warehouse_ore": "80000",
+        "nonempty": {},
+        "crusher_phase": "idle",
+        "crusher_remaining": null,
+        "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+        "completed_batches": "0"
+      },
+      {
+        "tick": "2",
+        "warehouse_ore": "80000",
+        "nonempty": {},
+        "crusher_phase": "idle",
+        "crusher_remaining": null,
+        "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+        "completed_batches": "0"
+      },
+      {
+        "tick": "3",
+        "warehouse_ore": "80000",
+        "nonempty": {},
+        "crusher_phase": "idle",
+        "crusher_remaining": null,
+        "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+        "completed_batches": "0"
+      }
+    ]
+  },
+  "empty_source_corrections": {
+    "current_True_arbitration_False": {
+      "accepted": false,
+      "error": "CheckError: 轮询记忆成员/侧/级/位置或当前级不符"
+    },
+    "current_False_arbitration_True": {
+      "accepted": false,
+      "error": "CheckError: 级仲裁/空格选择状态不完整"
+    },
+    "current_True_arbitration_True": {
+      "accepted": false,
+      "error": "CheckError: 轮询记忆成员/侧/级/位置或当前级不符"
+    }
+  },
+  "profile_provenance": {
+    "declared": "c05b2fe73edfb93c2aacba2db0a2412fc850f81700c562f7c42cc5bdc6eeae17",
+    "actual": "e499b39b60200618ab69a0a30a4be29efd29992d64428d9c9647e9c6c8cf236f",
+    "top_level_differences": [
+      "profile_source"
+    ],
+    "source_differences": [
+      "sha256"
+    ],
+    "axis_count": 96,
+    "axes_identical": true,
+    "projection_in_fingerprints": false,
+    "check_examples_in_fingerprints": false,
+    "regenerated_profile_fingerprint": [
+      {
+        "role": "profile",
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限模型声明.md",
+        "sha256": "e499b39b60200618ab69a0a30a4be29efd29992d64428d9c9647e9c6c8cf236f"
+      }
+    ]
+  },
+  "coverage_entries": [
+    {
+      "axis": "time.domain",
+      "reason": "非整数相位、建造/暂停时距",
+      "disposition": "本版选值"
+    },
+    {
+      "axis": "polling.level_tie",
+      "reason": "并列级联合轮询及其他仲裁",
+      "disposition": "本版选值"
+    },
+    {
+      "axis": "damping.belt_component_rule",
+      "reason": "geometric_components",
+      "disposition": "本版选值"
+    },
+    {
+      "axis": "transfer.cooldown_scope",
+      "reason": "按格异相冷却",
+      "disposition": "本版选值"
+    }
+  ],
+  "coverage_structure": {
+    "uncovered_axis_count": 84,
+    "boxes": [],
+    "max_levels_per_side": 1,
+    "validation_scope": {
+      "kind": "finite_trace",
+      "from": {
+        "kind": "rational",
+        "value": {
+          "value": "0",
+          "category": "候选"
+        }
+      },
+      "through": {
+        "kind": "rational",
+        "value": {
+          "value": "3",
+          "category": "候选"
+        }
+      },
+      "golden_match": true,
+      "initial_history": "conditional_witness",
+      "universal_parameters": false,
+      "all_reachable_cycles": false,
+      "target_certified": false,
+      "manufacturing_cycles_completed": {
+        "value": "2",
+        "category": "算术推论"
+      }
+    },
+    "open_items": [
+      "未覆盖实际混做与下游生产",
+      "未覆盖离线、其它初态与判定顺序",
+      "有限重算不替代全部可达循环和完整目标认证"
+    ]
+  },
+  "mid_closure_capture_count": 1,
+  "source_changes_during_probe": []
+}

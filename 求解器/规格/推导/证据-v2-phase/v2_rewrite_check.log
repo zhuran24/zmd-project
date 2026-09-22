@@ -1,0 +1,6 @@
+PASS: specified source hashes match; all source bytes unchanged.
+PASS: all review JSON loaded; generated tick records compared field by field.
+PASS: 625 bounded serial-gate probes reproduced; not a general phase proof.
+PASS: 18 recipes conserve ore content; 0.6*50+0.55*40=52.
+PASS: k=5 cannot reject an otherwise feasible receipt due to its periodic quota.
+No kernel build, simulator access, full-layout or reachability certification.

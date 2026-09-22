@@ -1,0 +1,10 @@
+桥接器双通路 completed 30
+传输拒收与暂停核验 completed 12
+研磨混做核验 completed 20
+阻尼连续带核验 completed 18
+阻尼切支恢复核验 completed 18
+生产循环环带 completed 50
+生产循环环带 cycle 0 counterexample
+轮询均分核验 completed 100
+密集结点核验 completed 60
+密集结点核验 cycle 0 inconclusive

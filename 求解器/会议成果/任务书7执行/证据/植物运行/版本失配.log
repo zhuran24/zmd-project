@@ -1,0 +1,10 @@
+command: /usr/bin/python -B /home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/核验.py
+exit_status: 1
+stdout:
+
+stderr:
+Traceback (most recent call last):
+  File "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/核验.py", line 15, in <module>
+    assert hashlib.sha256(b).hexdigest()==x['sha256'], str(p)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: /home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt

@@ -1,0 +1,22 @@
+{
+  "execution_mode": "finite_concrete",
+  "fingerprints": [],
+  "input_history": null,
+  "open_items": [
+    "invalid_input input @ cycle: 字段须恰为 schema result_id status level execution_mode port_meeting seed parameter_point reading support_domain domain_report fingerprints record_mode replay_input_ref run_record_ref last_state cycle stop budget open_items"
+  ],
+  "parameter_assignment": null,
+  "port_meeting": "shared_edge_opposite",
+  "producer": {
+    "claim": "装载停止，未形成游戏后继",
+    "kind": "kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+  },
+  "profile_id": "kernel_profile_v1",
+  "run_id": "kernel:load-stop",
+  "schema": "kernel-output-v3",
+  "status": "invalid_input",
+  "trace": null,
+  "uncovered_axes": [],
+  "validation_scope": null
+}

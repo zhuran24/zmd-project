@@ -1,0 +1,118 @@
+{
+  "scope": "普通有限执行的局部仓库事务；不是完整布局、可达性或生产周期D域证书",
+  "preconditions": [
+    "箱体有电、传输开关开、冷却为0",
+    "每个新物种各1件，分别占箱体一格",
+    "两成品均无现存或历史目标",
+    "空格身份已解null、空格序完整",
+    "规范新标签无冲突",
+    "区间无改指派、拿取或离线，保留历史身份"
+  ],
+  "answer_source": "已核内核输入请求§5的终态编码：arbitration.level_order与warehouse_empty_slot_order、judgment_context.phase及准入口blocked_reasons已进入输入格式；受限转移定义使用同名字段。仓库单物种落格按当前无身份空格的显式全序，缺序报invalid；成功PC入库/箱体传输与库存、身份原子提交仅保留仍无身份空格的稳定子序，拒收与空箱不改序，重载直接使用后态当前序；整箱至少两种无非空/历史目标物种且有无身份空格时，在任何修改前返回unsupported；保留历史身份不授权修改现存物品。",
+  "transition_source": "2. 若`len(U)>=2 and any(w in assigned_slots for w in E)`（assigned_slots为当前`warehouse_assignments[].slot`集合），立即返回`unsupported(warehouse.empty_slot_identity, competing_new_species)`，保留整个判前状态，不先试某个物种序、不算拒收、不起冷却。只有至少一个无身份空格被端口指派时才触发；给定空格全序仍不决定哪个新物种占据可被取出的格，故不解除此触发。",
+  "cases": [
+    {
+      "case": "两新种一未指派空格",
+      "U": [
+        "高容谷地电池",
+        "精选荞愈胶囊"
+      ],
+      "E": [
+        "E0"
+      ],
+      "O": [
+        "E0"
+      ],
+      "assigned_slots": [
+        "W_ore_a",
+        "W_ore_b"
+      ],
+      "answer_stop": true,
+      "transition_stop": false,
+      "plan": [
+        {
+          "item": "精选荞愈胶囊",
+          "slot": "E0",
+          "quantity": 1
+        },
+        {
+          "item": "高容谷地电池",
+          "slot": "W_new_e9ab98e5aeb9e8b0b7e59cb0e794b5e6b1a0",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "case": "两新种一被指派空格",
+      "U": [
+        "高容谷地电池",
+        "精选荞愈胶囊"
+      ],
+      "E": [
+        "E0"
+      ],
+      "O": [
+        "E0"
+      ],
+      "assigned_slots": [
+        "W_ore_a",
+        "E0"
+      ],
+      "answer_stop": true,
+      "transition_stop": true,
+      "plan": null
+    },
+    {
+      "case": "两新种无空格",
+      "U": [
+        "高容谷地电池",
+        "精选荞愈胶囊"
+      ],
+      "E": [],
+      "O": [],
+      "assigned_slots": [
+        "W_ore_a",
+        "W_ore_b"
+      ],
+      "answer_stop": false,
+      "transition_stop": false,
+      "plan": [
+        {
+          "item": "精选荞愈胶囊",
+          "slot": "W_new_e7b2bee98089e88d9ee68488e883b6e59b8a",
+          "quantity": 1
+        },
+        {
+          "item": "高容谷地电池",
+          "slot": "W_new_e9ab98e5aeb9e8b0b7e59cb0e794b5e6b1a0",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "case": "单新种一被指派空格",
+      "U": [
+        "高容谷地电池"
+      ],
+      "E": [
+        "E0"
+      ],
+      "O": [
+        "E0"
+      ],
+      "assigned_slots": [
+        "E0"
+      ],
+      "answer_stop": false,
+      "transition_stop": false,
+      "plan": [
+        {
+          "item": "高容谷地电池",
+          "slot": "E0",
+          "quantity": 1
+        }
+      ]
+    }
+  ],
+  "result": "PASS：复现了未指派空格时两条件不同"
+}

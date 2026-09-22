@@ -1,0 +1,35 @@
+{
+  "status": "通过",
+  "baseline_files": 3463,
+  "protected_files_unchanged": 3446,
+  "changed_existing_files": [
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/README.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/output.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/input.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/transition.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/interfaces.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/engine.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/warehouse.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/verify_outputs.py",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/实现验证.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/手推桥接轨迹.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核实现-对规格的疑问.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-checkpoint_delta-kernel.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-kernel.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-checkpoint_delta-kernel.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-kernel.json"
+  ],
+  "outside_allowed_changes": [],
+  "workspace_tests_passed": 93,
+  "workspace_tests_failed": 0,
+  "rust_functions_with_section_comments": 180,
+  "documentation_links_checked": 70,
+  "reader_audit": "修订记录、README与规格疑问的范围、时点、数字及交叉引用已重读核对",
+  "golden_and_reference_tests_unchanged": true,
+  "formal_sources_and_candidate_unchanged": true,
+  "open_items": [
+    "KQ-02：after_closure记录起点契约待规格线澄清；当前输出入口明确unresolved"
+  ]
+}

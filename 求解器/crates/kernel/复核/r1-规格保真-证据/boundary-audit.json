@@ -1,0 +1,24 @@
+{
+  "status": "通过",
+  "review_baseline_files": 68,
+  "review_baseline_changes": [],
+  "implementation_baseline_files": 1250,
+  "implementation_baseline_changes": [],
+  "registered_deliverables_checked": 43,
+  "registered_deliverable_changes": [],
+  "documentation_links_checked": 33,
+  "missing_links": [],
+  "findings_by_severity": {
+    "阻断": 2,
+    "重要": 5
+  },
+  "axis_config_declaration_equal": 99,
+  "source_kernel_unit_tests": 45,
+  "source_reference_tests": 3,
+  "observation_probes": 5,
+  "existing_records_rechecked": 4,
+  "report_sha256": "d0d66038191190ebd9e40b7959f76c9112e749f855dd7b2cee98104306a41e64",
+  "findings_sha256": "f588627bb60bf6e1411d43bbc25bad8eea7f6a0cdde272af91d7bec96ca2f2ee",
+  "limits": "未重新运行整个workspace的cargo命令；原79项日志为实现席产物，本次源重编结果按45+3独立报告。观察探针的通过表示现象被复现，不表示实现符合规格。",
+  "reader_review": "已逐段重读主报告，数量、引用、KQ意见与确认或未决边界一致。"
+}

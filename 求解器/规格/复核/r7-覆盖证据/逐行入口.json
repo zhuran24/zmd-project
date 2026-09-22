@@ -1,0 +1,780 @@
+{
+  "《明日方舟：终末地》游戏规则.txt": [
+    {
+      "line": 1,
+      "source": "名词表",
+      "destination": "§2",
+      "coverage_note": "分类/术语入口；标题本身不增添转移"
+    },
+    {
+      "line": 2,
+      "source": "",
+      "destination": "—",
+      "coverage_note": "空白分隔，无规则内容"
+    },
+    {
+      "line": 3,
+      "source": "计量单位",
+      "destination": "§2",
+      "coverage_note": "分类/术语入口；标题本身不增添转移"
+    },
+    {
+      "line": 4,
+      "source": "时间单位：tick",
+      "destination": "§4.1、§4.3",
+      "coverage_note": "时间、原子判定与滞留；T1/T2"
+    },
+    {
+      "line": 5,
+      "source": "空间单位：格",
+      "destination": "§1、§2.1",
+      "coverage_note": "结构及连接输入"
+    },
+    {
+      "line": 6,
+      "source": "",
+      "destination": "—",
+      "coverage_note": "空白分隔，无规则内容"
+    },
+    {
+      "line": 7,
+      "source": "其他",
+      "destination": "§2",
+      "coverage_note": "分类/术语入口；标题本身不增添转移"
+    },
+    {
+      "line": 8,
+      "source": "基地：所有单位都建在基地内，70×70 格",
+      "destination": "§1、§2.1",
+      "coverage_note": "结构及连接输入"
+    },
+    {
+      "line": 9,
+      "source": "蓝图：一次建造一组单位，逐个建成，传送带在其余单位之后建造；除此之外任何两个单位的建造次序无法确定",
+      "destination": "§4.1、§5；T5/T11",
+      "coverage_note": "逐个建成、建造期时钟及判定交织"
+    },
+    {
+      "line": 10,
+      "source": "重建：拆除一个单位后再建造它，它的通道重新接通",
+      "destination": "§3、§5",
+      "coverage_note": "建造/重建与接通历史；T5/T11"
+    },
+    {
+      "line": 11,
+      "source": "旋转：所有单位可以自由旋转",
+      "destination": "§2.1、§3.1、§4.1；T11",
+      "coverage_note": "朝向与调试旋转可变性、通道重接后效"
+    },
+    {
+      "line": 12,
+      "source": "端口：除供电单位外的所有单位的部分边，每个端口占一格宽",
+      "destination": "§1、§2.1",
+      "coverage_note": "结构及连接输入"
+    },
+    {
+      "line": 13,
+      "source": "物品格：部分单位中以虚拟形式存在，只能够放置一种物品的格子，当物品格超过一个时一个单位内一种物品也只能放在一个物品格内（协议储存箱和缓存格除外），且有放置上限，与存货和取货端口相连",
+      "destination": "§2.1、§2.2、§5；T7/T11/T12",
+      "coverage_note": "库存、仓库指派与空格身份；输入第4/6节（item=null指派必须empty_identity）；制造收货及BC出缓存均核全单位非缓存同种单格；内核输出第3节核完整重算记录"
+    },
+    {
+      "line": 14,
+      "source": "仓库：协议核心中的所有物品格的集合",
+      "destination": "§2.1、§2.2、§5、§6；T11/T12",
+      "coverage_note": "仓库单种容量、初始锚点、接收域、实际交付及仓库外计数域"
+    },
+    {
+      "line": 15,
+      "source": "存货/取货端口：把物品存进/取出本单位物品格的端口",
+      "destination": "§2.1、§2.2、§4.1",
+      "coverage_note": "库存、容量、缓存闸门；T7"
+    },
+    {
+      "line": 16,
+      "source": "通道：当一个运输单位的存货端口/取货端口与其他运输单位/其他单位的取货端口/存货端口相遇时将自动形成通道",
+      "destination": "§2.1、§4.1；T5",
+      "coverage_note": "共边相向相遇已定；PC存取互补且至少一端运输，角触/隔格排除"
+    },
+    {
+      "line": 17,
+      "source": "存货/取货物品格：制造单位的物品格，放置上限 50，只与该单位的存货/取货端口和缓存格相连，存货物品格不限制物品种类",
+      "destination": "§2.2、§4.1；T7",
+      "coverage_note": "分配映射已定；混装、容量计数、选格、开闸各轴仍待审；数量at_least/exact及额外物种allow/forbid分轴；收货核取货格同种占位"
+    },
+    {
+      "line": 18,
+      "source": "缓存格：制造单位拥有的一种特殊物品格，每个制造单位只有一个，能存放无限数量、无限种类的物品；存货物品格通往它的通道只在存货物品格中的物品符合某个配方、且上一批已全部进入取货物品格时打开，通过一次制造的用量即关闭；它通往取货物品格的通道只让制造好的一批物品整批通过",
+      "destination": "§2.1–§2.3、§4.1、§4.3；T2/T6/T7/T16/T17",
+      "coverage_note": "缓存无限容量、内部判定、暂停接口、非运输停留与同刻级联；T7匹配数量/额外物种两轴与整批输出同种单格守卫"
+    },
+    {
+      "line": 19,
+      "source": "供电状态：由供电桩赋予的状态",
+      "destination": "§2.1、§4.1；T15",
+      "coverage_note": "供电由格集合及已建桩导出，不能手填布尔量"
+    },
+    {
+      "line": 20,
+      "source": "需电功能：需要供电状态解锁的功能，拥有它的单位称需电单位；不运行时进行中的进度保留，恢复后继续",
+      "destination": "§2.1、§4.1",
+      "coverage_note": "供电/设定/暂停，几何覆盖作为执行输入"
+    },
+    {
+      "line": 21,
+      "source": "开关：需电功能有开关，属可设定项",
+      "destination": "§2.1、§4.1",
+      "coverage_note": "供电/设定/暂停，几何覆盖作为执行输入"
+    },
+    {
+      "line": 22,
+      "source": "设定：可自行设定的项目都可以随时任意更改",
+      "destination": "§2.1、§4.1",
+      "coverage_note": "供电/设定/暂停，几何覆盖作为执行输入"
+    },
+    {
+      "line": 23,
+      "source": "滞留：物品在运输单位的物品格中必须停留至少 1 tick",
+      "destination": "§4.1、§4.3；T1/T16/T17",
+      "coverage_note": "至少1 tick只约束运输格；非运输额外停留与级联分轴；内核输出第3节及runtime_record.py核实际输入与完整重算；schema通过不等于内容通过"
+    },
+    {
+      "line": 24,
+      "source": "移动：物品通过通道的过程，时间为0，整个基地内的所有物品都一直在尝试移动",
+      "destination": "§4.1、§4.3；T1/T16/T17",
+      "coverage_note": "零时移动不裁定同刻闭包或非运输停留"
+    },
+    {
+      "line": 25,
+      "source": "判定：一个单位的一次尝试制造或尝试传输，或一条通道上的一次尝试移动；同一时刻的多个判定逐个进行，先后无法确定",
+      "destination": "§4.1、§4.3；T1/T2/T6",
+      "coverage_note": "传输判定按单位已定；内部事件归类及排序辖域未定；输入第5.2节global/event-order-v1、per_instant/event-order-v2及中途continuation；本版不执行per_instant"
+    },
+    {
+      "line": 26,
+      "source": "元件：一个特别运输单位，或一段连续的传送带",
+      "destination": "§2.2、§3；T4",
+      "coverage_note": "沿路径相继与几何连通块两种连续带读法"
+    },
+    {
+      "line": 27,
+      "source": "阻尼：一条通道从它所在的端口起、到下一个非运输单位为止经过的元件数；中途被分流器分叉时只数其中一条分支，具体哪条无法确定",
+      "destination": "§3、§3.1；T4/T8",
+      "coverage_note": "当前图阻尼、准入口断链与恢复及无终点"
+    },
+    {
+      "line": 28,
+      "source": "接通：通道形成的那一刻，即它两端的单位中较晚建造的那个的建造时刻",
+      "destination": "§3、§4.1、§5；T5/T10/T11",
+      "coverage_note": "建成接通、并列与离线关系域"
+    },
+    {
+      "line": 29,
+      "source": "轮询：一个单位的多个存货端口或多个取货端口都建立了通道时，这些通道按接通先后轮流取得尝试移动的权限，尝试后立刻传给下一条，存货侧和取货侧各自独立；分流器和汇流器从第二条接通的通道起轮",
+      "destination": "§2.1、§3.1、§4.2、§4.4；T3/T14",
+      "coverage_note": "多条已接通即轮询；起轮范围及单成员级、双端失败后效、逐级记忆；同刻恢复图事务按gate.concurrent_expiry；内核输出第3节核指针与实际重算"
+    },
+    {
+      "line": 30,
+      "source": "优先级：通道分级时，移动权只在能移动的通道中级别最高的那一级里轮询",
+      "destination": "§4.2；T3/T14",
+      "coverage_note": "分级时适用最高可移动级；不擅扩至不分级取货侧；内核输出第3节及runtime_record.py核实际输入与完整重算；schema通过不等于内容通过"
+    },
+    {
+      "line": 31,
+      "source": "取货优先级：一个非运输单位的多个取货通道分级，直接接汇流器的通道各自一级，其余通道合为一级；一级的阻尼取其中最大的、接通时刻取其中最早的，阻尼小的级别高，阻尼相同时接通早的级别高",
+      "destination": "§3.1、§4.2；T3/T4/T8",
+      "coverage_note": "只对非运输单位取货分级；直接接和平局、连续带解释分别登记"
+    },
+    {
+      "line": 32,
+      "source": "存货优先级：一个单位的多个存货通道分级，直接接分流器的通道各自一级，其余通道合为一级，各级按其中最早接通的通道排序，接通早的级别高",
+      "destination": "§3.1、§4.2；T14",
+      "coverage_note": "所有单位存货分级接通早的级别高；桥接器两轴共同分级"
+    },
+    {
+      "line": 33,
+      "source": "",
+      "destination": "—",
+      "coverage_note": "空白分隔，无规则内容"
+    },
+    {
+      "line": 34,
+      "source": "需电功能:",
+      "destination": "§2",
+      "coverage_note": "分类/术语入口；标题本身不增添转移"
+    },
+    {
+      "line": 35,
+      "source": "制造：制造单位拥有供电状态时解锁的功能，一次制造的用量进入缓存格后立刻开始制造，制造结束后制造好的物品进入缓存格，无冷却",
+      "destination": "§2.3、§4.1；T2/T6/T7",
+      "coverage_note": "制造启用守卫与缓存接口待审守卫分列"
+    },
+    {
+      "line": 36,
+      "source": "传输：协议储存箱在供电状态时会一直尝试把自身所有物品格内的所有物品立刻无线传输到仓库中，即使那个物品格中没有物品也一样，5 tick 冷却",
+      "destination": "§2.1、§2.2、§4.1；T6",
+      "coverage_note": "单位原子判定已定；按箱/按格冷却、失败/部分接收、暂停及相位未定；T12整箱多新物种竞争无身份空格明确unsupported；空格序不能代物种序"
+    },
+    {
+      "line": 37,
+      "source": "",
+      "destination": "—",
+      "coverage_note": "空白分隔，无规则内容"
+    },
+    {
+      "line": 38,
+      "source": "单位",
+      "destination": "§2",
+      "coverage_note": "分类/术语入口；标题本身不增添转移"
+    },
+    {
+      "line": 39,
+      "source": "",
+      "destination": "—",
+      "coverage_note": "空白分隔，无规则内容"
+    },
+    {
+      "line": 40,
+      "source": "核心单位：",
+      "destination": "§2",
+      "coverage_note": "分类/术语入口；标题本身不增添转移"
+    },
+    {
+      "line": 41,
+      "source": "协议核心：基地内有且只有一个，大小9x9,物品格数量不限、每格上限 80000，一对平行边上各自第 2-8 格各有一个存货端口（共 14 个），另一对平行边上各自第 2、5、8 格各有一个取货端口（共 6 个），每个取货端口各连接仓库的某一物品格（可自行设定）",
+      "destination": "§2.1、§2.2、§4.3、§5、§6；T1/T11/T12",
+      "coverage_note": "核心唯一及六口格指派；80000容量、空格身份、仓库初始锚点与交付；输入第4/6节；T12批量落格竞争停止条件"
+    },
+    {
+      "line": 42,
+      "source": "",
+      "destination": "—",
+      "coverage_note": "空白分隔，无规则内容"
+    },
+    {
+      "line": 43,
+      "source": "制造单位：",
+      "destination": "§2",
+      "coverage_note": "分类/术语入口；标题本身不增添转移"
+    },
+    {
+      "line": 44,
+      "source": "    小制造单位：大小3x3，一条边全为存货端口，对边全为取货端口，1 个存货物品格、1 个取货物品格",
+      "destination": "§2.2",
+      "coverage_note": "单位接口与状态；准入口另见 T8/T9，桥接器另见 T5/T14"
+    },
+    {
+      "line": 45,
+      "source": "    粉碎机",
+      "destination": "§2.2",
+      "coverage_note": "单位接口与状态；准入口另见 T8/T9，桥接器另见 T5/T14"
+    },
+    {
+      "line": 46,
+      "source": "    精炼炉",
+      "destination": "§2.2",
+      "coverage_note": "单位接口与状态；准入口另见 T8/T9，桥接器另见 T5/T14"
+    },
+    {
+      "line": 47,
+      "source": "    配件机",
+      "destination": "§2.2",
+      "coverage_note": "单位接口与状态；准入口另见 T8/T9，桥接器另见 T5/T14"
+    },
+    {
+      "line": 48,
+      "source": "    塑形机",
+      "destination": "§2.2",
+      "coverage_note": "单位接口与状态；准入口另见 T8/T9，桥接器另见 T5/T14"
+    },
+    {
+      "line": 49,
+      "source": "",
+      "destination": "—",
+      "coverage_note": "空白分隔，无规则内容"
+    },
+    {
+      "line": 50,
+      "source": "    中制造单位：大小5x5，一条边全为存货端口，对边全为取货端口，1 个存货物品格、1 个取货物品格",
+      "destination": "§2.2",
+      "coverage_note": "单位接口与状态；准入口另见 T8/T9，桥接器另见 T5/T14"
+    },
+    {
+      "line": 51,
+      "source": "    采种机",
+      "destination": "§2.2",
+      "coverage_note": "单位接口与状态；准入口另见 T8/T9，桥接器另见 T5/T14"
+    },
+    {
+      "line": 52,
+      "source": "    种植机",
+      "destination": "§2.2",
+      "coverage_note": "单位接口与状态；准入口另见 T8/T9，桥接器另见 T5/T14"
+    },
+    {
+      "line": 53,
+      "source": "",
+      "destination": "—",
+      "coverage_note": "空白分隔，无规则内容"
+    },
+    {
+      "line": 54,
+      "source": "    大制造单位：大小6x4，一条长边全为存货端口，对边全为取货端口，2 个存货物品格、1 个取货物品格",
+      "destination": "§2.2",
+      "coverage_note": "单位接口与状态；准入口另见 T8/T9，桥接器另见 T5/T14"
+    },
+    {
+      "line": 55,
+      "source": "    研磨机",
+      "destination": "§2.2",
+      "coverage_note": "单位接口与状态；准入口另见 T8/T9，桥接器另见 T5/T14"
+    },
+    {
+      "line": 56,
+      "source": "    封装机",
+      "destination": "§2.2",
+      "coverage_note": "单位接口与状态；准入口另见 T8/T9，桥接器另见 T5/T14"
+    },
+    {
+      "line": 57,
+      "source": "    灌装机",
+      "destination": "§2.2",
+      "coverage_note": "单位接口与状态；准入口另见 T8/T9，桥接器另见 T5/T14"
+    },
+    {
+      "line": 58,
+      "source": "",
+      "destination": "—",
+      "coverage_note": "空白分隔，无规则内容"
+    },
+    {
+      "line": 59,
+      "source": "运输单位：一个物品格（上限1），桥接器例外",
+      "destination": "§2.2",
+      "coverage_note": "单位接口与状态；准入口另见 T8/T9，桥接器另见 T5/T14；内核输出第3节及runtime_record.py核实际输入与完整重算；schema通过不等于内容通过"
+    },
+    {
+      "line": 60,
+      "source": "传送带：大小1x1，任意一条边为存货端口、其他任意一条边为取货端口",
+      "destination": "§2.2、§4.1；T5/T11",
+      "coverage_note": "三形状×四朝向；connection.belt_shape、initialization.belt_shape_lifecycle；调试经重建可改形，直接改形尚缺授权"
+    },
+    {
+      "line": 61,
+      "source": "",
+      "destination": "—",
+      "coverage_note": "空白分隔，无规则内容"
+    },
+    {
+      "line": 62,
+      "source": "    特别运输单位：",
+      "destination": "§2.2；T4",
+      "coverage_note": "缩进给出桥接器、准入口及物流单位的特别运输分类，决定元件计数"
+    },
+    {
+      "line": 63,
+      "source": "    桥接器：大小1x1，两对平行边，每对独立拥有一个物品格（例外），每对中一边是存货端口、对边是取货端口，端口类型由先接上的那一端所接的单位决定",
+      "destination": "§2.1、§2.2、§3.1、§4.2；T5/T14",
+      "coverage_note": "独立库存与定向；按单位调度；容量例外及记账依据待审"
+    },
+    {
+      "line": 64,
+      "source": "    物品准入口：大小1x1，任意一条边为存货端口、对边为取货端口；可以设定只放行某一种物品，设定后可再各自单独设全时段的累计收下上限（1-5000）和每 5 tick 的收下上限（1-5），该 5 tick 从它收下的第一件物品起算、走完后由下一件物品重新起算；身份不符或任一上限用尽时阻断，断开存货端口通道",
+      "destination": "§2.2、§3.1、§4.1、§4.4；T4/T8/T9",
+      "coverage_note": "窗口原因满5 tick解除；排除永久窗口锁闭与全盘停表；身份/累计恢复仍未定；T1/T3/T8同刻窗口atomic_batch快照维护、最终图一次重算"
+    },
+    {
+      "line": 65,
+      "source": "",
+      "destination": "—",
+      "coverage_note": "空白分隔，无规则内容"
+    },
+    {
+      "line": 66,
+      "source": "        物流单位：",
+      "destination": "§2.2；T4",
+      "coverage_note": "嵌套于特别运输单位，分流器、汇流器各计一个元件"
+    },
+    {
+      "line": 67,
+      "source": "        分流器：大小1x1，任意一条边为存货端口、其余三条边为取货端口",
+      "destination": "§2.2",
+      "coverage_note": "单位接口与状态；准入口另见 T8/T9，桥接器另见 T5/T14"
+    },
+    {
+      "line": 68,
+      "source": "        汇流器：大小1x1，三条边为存货端口、一条边为取货端口",
+      "destination": "§2.2",
+      "coverage_note": "单位接口与状态；准入口另见 T8/T9，桥接器另见 T5/T14"
+    },
+    {
+      "line": 69,
+      "source": "",
+      "destination": "—",
+      "coverage_note": "空白分隔，无规则内容"
+    },
+    {
+      "line": 70,
+      "source": "",
+      "destination": "—",
+      "coverage_note": "空白分隔，无规则内容"
+    },
+    {
+      "line": 71,
+      "source": "仓储单位：",
+      "destination": "§2",
+      "coverage_note": "分类/术语入口；标题本身不增添转移"
+    },
+    {
+      "line": 72,
+      "source": "协议储存箱：大小3x3，任意一条边全为存货端口，对边全为取货端口，6 个有编号的物品格（上限 50），存货端口每次把物品放进编号最小的能放它的物品格，取货端口每次从编号最小的非空物品格取货",
+      "destination": "§2.2",
+      "coverage_note": "单位接口与状态；准入口另见 T8/T9，桥接器另见 T5/T14"
+    },
+    {
+      "line": 73,
+      "source": "仓库取货口：大小3x1，长边贴着基地边界，向内的长边中间有一个连接仓库某一物品格（可自行设定）的取货端口",
+      "destination": "§2.1、§2.2、§5；T7/T11/T12",
+      "coverage_note": "库存、仓库指派与空格身份；输入第4/6节（item=null指派必须empty_identity）"
+    },
+    {
+      "line": 74,
+      "source": "",
+      "destination": "—",
+      "coverage_note": "空白分隔，无规则内容"
+    },
+    {
+      "line": 75,
+      "source": "供电单位",
+      "destination": "§2",
+      "coverage_note": "分类/术语入口；标题本身不增添转移"
+    },
+    {
+      "line": 76,
+      "source": "供电桩：2x2,以自己中心为原点12x12的范围内若有某个需电单位的一部分则为该单位赋予供电状态",
+      "destination": "§1、§2.1、§4.1、§6；T15",
+      "coverage_note": "两种格集合保留，达标供电按positive_area最严读法核验"
+    },
+    {
+      "line": 77,
+      "source": "",
+      "destination": "—",
+      "coverage_note": "空白分隔，无规则内容"
+    },
+    {
+      "line": 78,
+      "source": "配方",
+      "destination": "§2",
+      "coverage_note": "分类/术语入口；标题本身不增添转移"
+    },
+    {
+      "line": 79,
+      "source": "",
+      "destination": "—",
+      "coverage_note": "空白分隔，无规则内容"
+    },
+    {
+      "line": 80,
+      "source": "粉碎机",
+      "destination": "§2.3、§4.1",
+      "coverage_note": "配方归属、批次输入输出与耗时；据：配方"
+    },
+    {
+      "line": 81,
+      "source": "1 源矿 → 1 源石粉末，1 tick",
+      "destination": "§2.3、§4.1",
+      "coverage_note": "配方归属、批次输入输出与耗时；据：配方"
+    },
+    {
+      "line": 82,
+      "source": "1 蓝铁块 → 1 蓝铁粉末，1 tick",
+      "destination": "§2.3、§4.1",
+      "coverage_note": "配方归属、批次输入输出与耗时；据：配方"
+    },
+    {
+      "line": 83,
+      "source": "1 荞花 → 2 荞花粉末，1 tick",
+      "destination": "§2.3、§4.1",
+      "coverage_note": "配方归属、批次输入输出与耗时；据：配方"
+    },
+    {
+      "line": 84,
+      "source": "1 砂叶 → 3 砂叶粉末，1 tick",
+      "destination": "§2.3、§4.1",
+      "coverage_note": "配方归属、批次输入输出与耗时；据：配方"
+    },
+    {
+      "line": 85,
+      "source": "",
+      "destination": "—",
+      "coverage_note": "空白分隔，无规则内容"
+    },
+    {
+      "line": 86,
+      "source": "精炼炉",
+      "destination": "§2.3、§4.1",
+      "coverage_note": "配方归属、批次输入输出与耗时；据：配方"
+    },
+    {
+      "line": 87,
+      "source": "1 蓝铁矿 → 1 蓝铁块，1 tick",
+      "destination": "§2.3、§4.1",
+      "coverage_note": "配方归属、批次输入输出与耗时；据：配方"
+    },
+    {
+      "line": 88,
+      "source": "1 致密蓝铁粉末 → 1 钢块，1 tick",
+      "destination": "§2.3、§4.1",
+      "coverage_note": "配方归属、批次输入输出与耗时；据：配方"
+    },
+    {
+      "line": 89,
+      "source": "1 蓝铁粉末 → 1 蓝铁块，1 tick",
+      "destination": "§2.3、§4.1",
+      "coverage_note": "配方归属、批次输入输出与耗时；据：配方"
+    },
+    {
+      "line": 90,
+      "source": "",
+      "destination": "—",
+      "coverage_note": "空白分隔，无规则内容"
+    },
+    {
+      "line": 91,
+      "source": "研磨机",
+      "destination": "§2.3、§4.1",
+      "coverage_note": "配方归属、批次输入输出与耗时；据：配方"
+    },
+    {
+      "line": 92,
+      "source": "2 蓝铁粉末 ＋ 1 砂叶粉末 → 1 致密蓝铁粉末，1 tick",
+      "destination": "§2.3、§4.1",
+      "coverage_note": "配方归属、批次输入输出与耗时；据：配方"
+    },
+    {
+      "line": 93,
+      "source": "2 源石粉末 ＋ 1 砂叶粉末 → 1 致密源石粉末，1 tick",
+      "destination": "§2.3、§4.1",
+      "coverage_note": "配方归属、批次输入输出与耗时；据：配方"
+    },
+    {
+      "line": 94,
+      "source": "2 荞花粉末 ＋ 1 砂叶粉末 → 1 细磨荞花粉末，1 tick",
+      "destination": "§2.3、§4.1",
+      "coverage_note": "配方归属、批次输入输出与耗时；据：配方"
+    },
+    {
+      "line": 95,
+      "source": "",
+      "destination": "—",
+      "coverage_note": "空白分隔，无规则内容"
+    },
+    {
+      "line": 96,
+      "source": "塑形机",
+      "destination": "§2.3、§4.1",
+      "coverage_note": "配方归属、批次输入输出与耗时；据：配方"
+    },
+    {
+      "line": 97,
+      "source": "2 钢块 → 1 钢质瓶，1 tick",
+      "destination": "§2.3、§4.1",
+      "coverage_note": "配方归属、批次输入输出与耗时；据：配方"
+    },
+    {
+      "line": 98,
+      "source": "",
+      "destination": "—",
+      "coverage_note": "空白分隔，无规则内容"
+    },
+    {
+      "line": 99,
+      "source": "配件机",
+      "destination": "§2.3、§4.1",
+      "coverage_note": "配方归属、批次输入输出与耗时；据：配方"
+    },
+    {
+      "line": 100,
+      "source": "1 钢块 → 1 钢制零件，1 tick",
+      "destination": "§2.3、§4.1",
+      "coverage_note": "配方归属、批次输入输出与耗时；据：配方"
+    },
+    {
+      "line": 101,
+      "source": "",
+      "destination": "—",
+      "coverage_note": "空白分隔，无规则内容"
+    },
+    {
+      "line": 102,
+      "source": "种植机",
+      "destination": "§2.3、§4.1",
+      "coverage_note": "配方归属、批次输入输出与耗时；据：配方"
+    },
+    {
+      "line": 103,
+      "source": "1 荞花种子 → 1 荞花，1 tick",
+      "destination": "§2.3、§4.1",
+      "coverage_note": "配方归属、批次输入输出与耗时；据：配方"
+    },
+    {
+      "line": 104,
+      "source": "1 砂叶种子 → 1 砂叶，1 tick",
+      "destination": "§2.3、§4.1",
+      "coverage_note": "配方归属、批次输入输出与耗时；据：配方"
+    },
+    {
+      "line": 105,
+      "source": "",
+      "destination": "—",
+      "coverage_note": "空白分隔，无规则内容"
+    },
+    {
+      "line": 106,
+      "source": "采种机",
+      "destination": "§2.3、§4.1",
+      "coverage_note": "配方归属、批次输入输出与耗时；据：配方"
+    },
+    {
+      "line": 107,
+      "source": "1 荞花 → 2 荞花种子，1 tick",
+      "destination": "§2.3、§4.1",
+      "coverage_note": "配方归属、批次输入输出与耗时；据：配方"
+    },
+    {
+      "line": 108,
+      "source": "1 砂叶 → 2 砂叶种子，1 tick",
+      "destination": "§2.3、§4.1",
+      "coverage_note": "配方归属、批次输入输出与耗时；据：配方"
+    },
+    {
+      "line": 109,
+      "source": "",
+      "destination": "—",
+      "coverage_note": "空白分隔，无规则内容"
+    },
+    {
+      "line": 110,
+      "source": "封装机",
+      "destination": "§2.3、§4.1",
+      "coverage_note": "配方归属、批次输入输出与耗时；据：配方"
+    },
+    {
+      "line": 111,
+      "source": "10 钢制零件 ＋ 15 致密源石粉末 → 1 高容谷地电池，5 tick",
+      "destination": "§2.3、§4.1",
+      "coverage_note": "配方归属、批次输入输出与耗时；据：配方"
+    },
+    {
+      "line": 112,
+      "source": "",
+      "destination": "—",
+      "coverage_note": "空白分隔，无规则内容"
+    },
+    {
+      "line": 113,
+      "source": "灌装机",
+      "destination": "§2.3、§4.1",
+      "coverage_note": "配方归属、批次输入输出与耗时；据：配方"
+    },
+    {
+      "line": 114,
+      "source": "10 钢质瓶 ＋ 10 细磨荞花粉末 → 1 精选荞愈胶囊，5 tick",
+      "destination": "§2.3、§4.1",
+      "coverage_note": "配方归属、批次输入输出与耗时；据：配方"
+    }
+  ],
+  "求解任务.txt": [
+    {
+      "line": 1,
+      "source": "目标",
+      "destination": "§1",
+      "coverage_note": "目标标题"
+    },
+    {
+      "line": 2,
+      "source": "给出一个在仓库同时可以接受高容谷地电池和精选荞愈胶囊（下称成品）的、自调试期之后每个可到达的循环态中平均每 30 tick 至少向仓库交付前者 18 个、后者 16.5 个（0.6 个/tick 与 0.55 个/tick）、且所含最大空矩形面积最大的布局；空矩形指不含任何单位的矩形区域，面积相等时短边长者优，短边至少 6 格",
+      "destination": "§1、§5；T12",
+      "coverage_note": "率、接收域、全称循环与几何优化目标"
+    },
+    {
+      "line": 3,
+      "source": "",
+      "destination": "—",
+      "coverage_note": "空白分隔，无规则内容"
+    },
+    {
+      "line": 4,
+      "source": "任务条件",
+      "destination": "§5",
+      "coverage_note": "任务条件标题"
+    },
+    {
+      "line": 5,
+      "source": "",
+      "destination": "—",
+      "coverage_note": "空白分隔，无规则内容"
+    },
+    {
+      "line": 6,
+      "source": "仓库物品：仓库中的源矿、蓝铁矿、荞花、砂叶、荞花种子、砂叶种子初始为满，其他物品为空",
+      "destination": "§2.1、§4.1、§5；T5/T11",
+      "coverage_note": "建造历史、运行时钟及仓库初始锚点"
+    },
+    {
+      "line": 7,
+      "source": "外部过程：仓库中的源矿与蓝铁矿持续可得且足够覆盖任意数量的消耗",
+      "destination": "§5；T12",
+      "coverage_note": "矿石外部供给"
+    },
+    {
+      "line": 8,
+      "source": "零干预运行：建造完成且调试期结束后，玩家对基地内的任何单位不再有任何动作，从仓库中拿取成品除外",
+      "destination": "§2.1、§4.1、§5；T9/T11/T12",
+      "coverage_note": "设定冻结、成品拿取转移及库存减量；输入第5.2节中途种子continuation与tick_context；表示不等于已实现通用续跑"
+    },
+    {
+      "line": 9,
+      "source": "循环态：基地的状态以固定周期重复的运行状态",
+      "destination": "§1、§5",
+      "coverage_note": "全状态周期与抽象义务"
+    },
+    {
+      "line": 10,
+      "source": "建造方式：全部单位由蓝图一次建成",
+      "destination": "§2.1、§4.1、§5；T5/T11",
+      "coverage_note": "建造历史、运行时钟及仓库初始锚点"
+    },
+    {
+      "line": 11,
+      "source": "调试期：布局的全部工作可以不用完全依赖蓝图，同样可以由玩家来做部分操作",
+      "destination": "§2.1、§3.1、§4.1、§5；T11",
+      "coverage_note": "调试、旋转候选及可能后置状态；输入第5.2节中途种子continuation与tick_context；表示不等于已实现通用续跑"
+    },
+    {
+      "line": 12,
+      "source": "操作精度：玩家的操作无法精确到某个 tick，也无法精确计时",
+      "destination": "§4.1、§5；T6/T11/T12",
+      "coverage_note": "非精确计时同时约束调试、相位操作与零干预期成品拿取；输入第5.2节中途种子continuation与tick_context；表示不等于已实现通用续跑"
+    },
+    {
+      "line": 13,
+      "source": "离线：离线后任意两条通道的接通先后可能改变",
+      "destination": "§2.1、§3.1、§4.1、§5；T10",
+      "coverage_note": "在线/离线字段、接续转移及派生状态"
+    },
+    {
+      "line": 14,
+      "source": "判定次序：同一时刻多个判定的先后固定",
+      "destination": "§3、§4.1；T2",
+      "coverage_note": "同刻固定已定；全场共序与逐时刻异序分轴；输入第5.2节event-order-v2周期槽函数可表示任意远时刻；本版仍global"
+    },
+    {
+      "line": 15,
+      "source": "仓库取货口位置：只放在基地的左边界或下边界",
+      "destination": "§2.2",
+      "coverage_note": "取货口位置输入；具体排布本步不求解"
+    }
+  ]
+}

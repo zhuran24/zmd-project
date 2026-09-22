@@ -1,0 +1,208 @@
+{
+  "records": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-kernel.json",
+      "ticks": 4,
+      "events": 156,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 41,
+        "exercised": 26,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "bee5c2aa24ad8ea31827a2dbe86a26a20cbf8c37483a1973eecff80f00d6958c"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-checkpoint_delta-kernel.json",
+      "ticks": 4,
+      "events": 156,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 41,
+        "exercised": 26,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "24df3b9a94e29113b03ac5984cd96a86d9ec94980e4a136dc0d563e7793edf0b"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-kernel.json",
+      "ticks": 12,
+      "events": 794,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 44,
+        "exercised": 23,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "692859d0beae1e1dc96b6213c24c18be2b6c47be5b1aa0e7622bb76bd3cf3921"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-checkpoint_delta-kernel.json",
+      "ticks": 12,
+      "events": 794,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 44,
+        "exercised": 23,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "b081795b21f4635c677ac6e7dcda5e83a6fd87ccb3610fba396ba3833f876137"
+    }
+  ],
+  "implementation_evidence": {
+    "baseline.json": {
+      "bytes": 876855,
+      "sha256": "a129455baa057854b0547cea4f144486a26685ddd477a853fb5beca8fb06a281",
+      "top_level": "指纹映射",
+      "status": null,
+      "entries": 3463
+    },
+    "deliverables.json": {
+      "bytes": 7155,
+      "sha256": "2d1aefb7c7f273a820e3ad795cc0f1673e6a2ddd57928b33c68652b3b3fc5a56",
+      "top_level": [
+        "scope",
+        "files",
+        "manifest_path"
+      ],
+      "status": null,
+      "mismatches": []
+    },
+    "final-audit.json": {
+      "bytes": 2208,
+      "sha256": "ec67e2126fce6bf6e401a99f846525c1494b13bc2fa26afcbc3ea1b876865162",
+      "top_level": [
+        "status",
+        "baseline_files",
+        "protected_files_unchanged",
+        "changed_existing_files",
+        "outside_allowed_changes",
+        "workspace_tests_passed",
+        "workspace_tests_failed",
+        "rust_functions_with_section_comments",
+        "documentation_links_checked",
+        "reader_audit",
+        "golden_and_reference_tests_unchanged",
+        "formal_sources_and_candidate_unchanged",
+        "open_items"
+      ],
+      "status": "通过"
+    },
+    "record-validation.json": {
+      "bytes": 2004,
+      "sha256": "74cb85775efbe18255f4fc11cdab0508d89c04a57c6e5a4fb91830a132a880d6",
+      "top_level": [
+        "status",
+        "records"
+      ],
+      "status": "通过"
+    },
+    "regression-results.json": {
+      "bytes": 10407,
+      "sha256": "997c0f781be5292ae46210b82fa9fe4fa6ebbb017c0625f282e218ae4b67be40",
+      "top_level": [
+        "status",
+        "controls",
+        "metadata_negatives",
+        "cli_negatives",
+        "cases"
+      ],
+      "status": "通过"
+    },
+    "review-probe-replay.json": {
+      "bytes": 7747,
+      "sha256": "2ddb96fb0905482304233e2ef26a12d9eac0c622034980ead6455dec0e69381f",
+      "top_level": [
+        "status",
+        "binary",
+        "binary_sha256",
+        "cases"
+      ],
+      "status": "通过"
+    }
+  },
+  "configuration_counts": {
+    "已定": 11,
+    "本版选值": 55,
+    "由输入全称量化": 15,
+    "超出覆盖即停": 18
+  },
+  "stop_axes": {
+    "damping.no_terminal": {
+      "policy": "stop",
+      "trigger": "请求求阻尼而所选路径无下一非运输终点"
+    },
+    "connection.bridge_tie": {
+      "policy": "stop",
+      "trigger": "先接并列或桥互依赖，不能由唯一无环见证定向"
+    },
+    "gate.counter_edit": {
+      "policy": "stop",
+      "trigger": "调试改身份/累计/窗口设定并需确定计数后效"
+    },
+    "gate.cancel_limit": {
+      "policy": "stop",
+      "trigger": "取消已设限额"
+    },
+    "offline.order_domain": {
+      "policy": "stop",
+      "trigger": "请求构造完整离线重排域或离线事件出现"
+    },
+    "offline.events": {
+      "policy": "stop",
+      "trigger": "出现任何离线/上线事件"
+    },
+    "offline.cursor_effect": {
+      "policy": "stop",
+      "trigger": "离线需更新轮询状态"
+    },
+    "offline.inventory_effect": {
+      "policy": "stop",
+      "trigger": "离线需更新库存"
+    },
+    "offline.progress_effect": {
+      "policy": "stop",
+      "trigger": "离线需更新进度/时钟"
+    },
+    "offline.direction_effect": {
+      "policy": "stop",
+      "trigger": "离线需更新桥方向"
+    },
+    "offline.gate_total_effect": {
+      "policy": "stop",
+      "trigger": "离线需更新累计计数"
+    },
+    "offline.gate_window_effect": {
+      "policy": "stop",
+      "trigger": "离线需更新窗口计数"
+    },
+    "offline.gate_window_start_effect": {
+      "policy": "stop",
+      "trigger": "离线需更新窗口起点"
+    },
+    "initialization.debug_actions": {
+      "policy": "stop",
+      "trigger": "运行区间内出现玩家单位操作（种子之前的动作只核证据引用）"
+    },
+    "initialization.rebuild_inventory": {
+      "policy": "stop",
+      "trigger": "拆除或重建需确定库存/进度去向"
+    },
+    "warehouse.withdrawal_policy": {
+      "policy": "stop",
+      "trigger": "需要执行拿取策略或据此认证完整周期"
+    },
+    "warehouse.withdrawal_timing": {
+      "policy": "stop",
+      "trigger": "运行区间出现玩家拿取事件；策略与实际时距未实现"
+    },
+    "warehouse.periodic_lift": {
+      "policy": "stop",
+      "trigger": "把省略仓库/绝对时钟等的抽象周期提升为完整基地周期"
+    }
+  }
+}

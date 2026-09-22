@@ -1,0 +1,46 @@
+[
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md",
+    "before_sha256": "e57a01fc0898977fbad51ecc2c70e1420e76afcc90b71ba3ccae9e790a2c30ef",
+    "after_sha256": "087045a048dadeb4c98a74d5fe65924ed0fa5e56b899dc9180a393bd5c18d8bf",
+    "diff": [
+      "--- ",
+      "+++ ",
+      "@@ -218,4 +218,4 @@",
+      " | `warehouse.delivery_count` | `fixed`；F | T12；known：实际入库件数；不是玩家拿走件数。据：目标、约束·入库途径 |",
+      "-| `warehouse.empty_slot_identity` | `fixedness_unproven`；U | T12；T12；open：retain_history／release_on_empty及再次入库选格关系待审；非空仓库格与在库物种一一对应，新物种可用新格，空格指派须附该格empty_identity决策，未给则拒绝执行。沿用本轴登记批量落格；当前空格序O(S)随成功入库原子稳定删项，失败保留，重载存后态，详见受限转移定义§4.1；空格序不决定物种序，本版len(U)>=2且E中至少一格被warehouse_assignments[].slot引用时返回unsupported，U/E及事务停止见受限转移定义§4.3；未指派格按物种UTF-8字节序选择规范代表是工程编码，非规则物种优先级；覆盖损失仍包括释放身份及有指派格的竞争，等价仅限无改指派/离线且retain_history；成品拿取另核转移§6条件的支持域。零干预运行中玩家单位操作受任务L8限制；调试动作按任务L12记录实际物品变化。据：物品格、仓库、协议核心、设定；T12；规则L13、L41、L73，任务L8 |",
+      "-| `warehouse.periodic_lift` | `fixedness_unproven`；U | T12；obligation：生产部分周期到正式循环的对应由任务2、6证明；接收环境前提为“仓库收得下成品”。旧正式循环对应名目撤下，保留成品格标签、接收边界及拿取收支义务。据：任务L2、L8—10、L13；规则L14、L36、L41、L73；主会话三审 §2.4、§6 |",
+      "+| `warehouse.empty_slot_identity` | `fixedness_unproven`；U | T12；open：retain_history／release_on_empty及再次入库选格关系待审；非空仓库格与在库物种一一对应，新物种可用新格，空格指派须附该格empty_identity决策，未给则拒绝执行。沿用本轴登记批量落格；当前空格序O(S)随成功入库原子稳定删项，失败保留，重载存后态，详见受限转移定义§4.1；空格序不决定物种序，本版len(U)>=2且E中至少一格被warehouse_assignments[].slot引用时返回unsupported，U/E及事务停止见受限转移定义§4.3；未指派格按物种UTF-8字节序选择规范代表是工程编码，非规则物种优先级；覆盖损失仍包括释放身份及有指派格的竞争，等价仅限无改指派/离线且retain_history；成品拿取另核转移§6条件的支持域。零干预运行中玩家单位操作受任务L8限制；调试动作按任务L12记录实际物品变化。据：物品格、仓库、协议核心、设定；T12；规则L13、L41、L73，任务L8 |",
+      "+| `warehouse.periodic_lift` | `fixedness_unproven`；U | T12；obligation：生产部分周期到正式循环的对应由任务2、6证明；接收环境前提为“仓库收得下成品”。旧“级二”名目撤下，保留成品格标签、接收边界及拿取收支义务。据：任务L2、L8—10、L13；规则L14、L36、L41、L73；主会话三审 §2.4、§6 |",
+      " | `bridge.inventory_scope` | `fixed`；F | T14；known：两轴各一独立格，不共库换轴。据：桥接器 |"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+    "before_sha256": "2a95a71bdbce736858474f0673966f1e4b57c399ada4d0565cb68db6908d388b",
+    "after_sha256": "737dcf750563e7f7c0b7d911aed301adf0982191b2be1fd46cde3f9524c74297",
+    "diff": [
+      "--- ",
+      "+++ ",
+      "@@ -104,3 +104,3 @@",
+      " | `warehouse.empty_slot_identity` | T12 | U | T12；open：retain_history／release_on_empty及再次入库选格关系待审；非空仓库格与在库物种一一对应，新物种可用新格，空格指派须附该格empty_identity决策，未给则拒绝执行。沿用本轴登记批量落格；当前空格序O(S)随成功入库原子稳定删项，失败保留，重载存后态，详见受限转移定义§4.1；空格序不决定物种序，本版len(U)>=2且E中至少一格被warehouse_assignments[].slot引用时返回unsupported，U/E及事务停止见受限转移定义§4.3；未指派格按物种UTF-8字节序选择规范代表是工程编码，非规则物种优先级；覆盖损失仍包括释放身份及有指派格的竞争，等价仅限无改指派/离线且retain_history；成品拿取另核转移§6条件的支持域。零干预运行中玩家单位操作受任务L8限制；调试动作按任务L12记录实际物品变化。据：物品格、仓库、协议核心、设定；T12；规则L13、L41、L73，任务L8 |",
+      "-| `warehouse.periodic_lift` | T12 | U | obligation：生产部分周期到正式循环的对应由任务2、6证明；接收环境前提为“仓库收得下成品”。旧正式循环对应名目撤下，保留成品格标签、接收边界及拿取收支义务。据：任务L2、L8—10、L13；规则L14、L36、L41、L73；主会话三审 §2.4、§6 |",
+      "+| `warehouse.periodic_lift` | T12 | U | obligation：生产部分周期到正式循环的对应由任务2、6证明；接收环境前提为“仓库收得下成品”。旧“级二”名目撤下，保留成品格标签、接收边界及拿取收支义务。据：任务L2、L8—10、L13；规则L14、L36、L41、L73；主会话三审 §2.4、§6 |",
+      " | `bridge.inventory_scope` | T14 | F | known：两轴各一独立格，不共库换轴。据：桥接器 |"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.md",
+    "before_sha256": "c7f0b06beb6cbeabd86c262be70c46074bd49be12e48c591b0506a641cee39d9",
+    "after_sha256": "88cef1b2f1c3d47fecb7dc6544a4aecb3d9ae90c740397e026b59bc5a9f3818c",
+    "diff": [
+      "--- ",
+      "+++ ",
+      "@@ -121,3 +121,3 @@",
+      " ",
+      "-15个输入轴为：judgment.order、damping.branch、connection.build_order、connection.order、connection.tie、connection.belt_shape、transfer.phase、manufacturing.recipe_selection、manufacturing.input_slot_selection、initialization.warehouse_anchor、initialization.other_inventory、initialization.switches、initialization.build_timing、initialization.debug_end、warehouse.external_supply。各处置数量按当前内核配置统计，旧55本版选值、18停止轴、11已定属于2026-09-20史料；sufficient是external_supply输入接口的本版模式，备用历史仍显式可选。扫描域由[参数扫描约减](参数扫描约减.md)负责；单份结果不声称覆盖其域。（据：受限模型声明逐项表；第五轮任务书§2.1/§2.6）",
+      "+15个输入轴为：judgment.order、damping.branch、connection.build_order、connection.order、connection.tie、connection.belt_shape、transfer.phase、manufacturing.recipe_selection、manufacturing.input_slot_selection、initialization.warehouse_anchor、initialization.other_inventory、initialization.switches、initialization.build_timing、initialization.debug_end、warehouse.external_supply。当前配置共99轴：18项已定、47项本版选值、19项工程停止、15项输入量化；sufficient是external_supply输入接口的本版模式，备用历史仍显式可选。扫描域由[参数扫描约减](参数扫描约减.md)负责；单份结果不声称覆盖其域。（据：受限模型声明逐项表；第五轮任务书§2.1/§2.6）",
+      " "
+    ]
+  }
+]

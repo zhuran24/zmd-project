@@ -1,0 +1,5 @@
+{
+  "StructuredOutput_available": false,
+  "output_fallback": "result.json and final field-by-field list",
+  "quota_error_observed": false
+}

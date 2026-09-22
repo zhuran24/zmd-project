@@ -1,0 +1,363 @@
+{
+  "original_B_CSV_machine_and_channel_comparison": "219 machines and 315 feeds match",
+  "candidate_A": {
+    "logical_feeds": 314,
+    "plant_and_powder_feeds": 109,
+    "item_edge_counts": {
+      "砂叶": 22,
+      "砂叶种子": 21,
+      "砂叶粉末": 32,
+      "荞花": 12,
+      "荞花种子": 11,
+      "荞花粉末": 11
+    },
+    "raw_plant_logical_feeds": 66,
+    "actual_transport_cells": null,
+    "reason": "源表没有坐标、路径或带长；逻辑边不等于物理格"
+  },
+  "candidate_B": {
+    "logical_feeds": 315,
+    "plant_and_powder_feeds": 110,
+    "item_edge_counts": {
+      "砂叶": 22,
+      "砂叶种子": 21,
+      "砂叶粉末": 33,
+      "荞花": 12,
+      "荞花种子": 11,
+      "荞花粉末": 11
+    },
+    "raw_plant_logical_feeds": 66,
+    "actual_transport_cells": null,
+    "reason": "源表没有坐标、路径或带长；逻辑边不等于物理格"
+  },
+  "raw_graph_cycle_components_A": {
+    "荞花": [
+      {
+        "machines": [
+          "A_M169",
+          "A_M196"
+        ],
+        "incoming": [],
+        "outgoing": [
+          "AF158"
+        ]
+      },
+      {
+        "machines": [
+          "A_M170",
+          "A_M197"
+        ],
+        "incoming": [],
+        "outgoing": [
+          "AF159"
+        ]
+      },
+      {
+        "machines": [
+          "A_M171",
+          "A_M198"
+        ],
+        "incoming": [],
+        "outgoing": [
+          "AF160"
+        ]
+      },
+      {
+        "machines": [
+          "A_M172",
+          "A_M199"
+        ],
+        "incoming": [],
+        "outgoing": [
+          "AF161"
+        ]
+      },
+      {
+        "machines": [
+          "A_M173",
+          "A_M200"
+        ],
+        "incoming": [],
+        "outgoing": [
+          "AF162"
+        ]
+      },
+      {
+        "machines": [
+          "A_M174",
+          "A_M201"
+        ],
+        "incoming": [],
+        "outgoing": [
+          "AF156"
+        ]
+      }
+    ],
+    "砂叶": [
+      {
+        "machines": [
+          "A_M185",
+          "A_M202"
+        ],
+        "incoming": [],
+        "outgoing": [
+          "AF058"
+        ]
+      },
+      {
+        "machines": [
+          "A_M186",
+          "A_M203"
+        ],
+        "incoming": [],
+        "outgoing": [
+          "AF059"
+        ]
+      },
+      {
+        "machines": [
+          "A_M187",
+          "A_M204"
+        ],
+        "incoming": [],
+        "outgoing": [
+          "AF060"
+        ]
+      },
+      {
+        "machines": [
+          "A_M188",
+          "A_M205"
+        ],
+        "incoming": [],
+        "outgoing": [
+          "AF061"
+        ]
+      },
+      {
+        "machines": [
+          "A_M189",
+          "A_M206"
+        ],
+        "incoming": [],
+        "outgoing": [
+          "AF062"
+        ]
+      },
+      {
+        "machines": [
+          "A_M190",
+          "A_M207"
+        ],
+        "incoming": [],
+        "outgoing": [
+          "AF063"
+        ]
+      },
+      {
+        "machines": [
+          "A_M191",
+          "A_M208"
+        ],
+        "incoming": [],
+        "outgoing": [
+          "AF064"
+        ]
+      },
+      {
+        "machines": [
+          "A_M192",
+          "A_M209"
+        ],
+        "incoming": [],
+        "outgoing": [
+          "AF065"
+        ]
+      },
+      {
+        "machines": [
+          "A_M193",
+          "A_M210"
+        ],
+        "incoming": [],
+        "outgoing": [
+          "AF066"
+        ]
+      },
+      {
+        "machines": [
+          "A_M194",
+          "A_M211"
+        ],
+        "incoming": [],
+        "outgoing": [
+          "AF067"
+        ]
+      },
+      {
+        "machines": [
+          "A_M195",
+          "A_M212"
+        ],
+        "incoming": [],
+        "outgoing": [
+          "AF056"
+        ]
+      }
+    ]
+  },
+  "raw_graph_cycle_components_B": {
+    "荞花": [
+      {
+        "machines": [
+          "M173",
+          "M200"
+        ],
+        "incoming": [],
+        "outgoing": [
+          "LF167"
+        ]
+      },
+      {
+        "machines": [
+          "M174",
+          "M201"
+        ],
+        "incoming": [],
+        "outgoing": [
+          "LF157"
+        ]
+      }
+    ],
+    "砂叶": [
+      {
+        "machines": [
+          "M194",
+          "M211"
+        ],
+        "incoming": [],
+        "outgoing": [
+          "LF076"
+        ]
+      },
+      {
+        "machines": [
+          "M195",
+          "M212"
+        ],
+        "incoming": [],
+        "outgoing": [
+          "LF056"
+        ]
+      }
+    ]
+  },
+  "capacities_219": {
+    "荞花": {
+      "planter": 11,
+      "harvester": 6,
+      "crusher": 6,
+      "ordinary_all_materials": 2300,
+      "ordinary_seeds": 1150,
+      "ordinary_seeds_normal_recipe_slots": 850,
+      "ordinary_plants": 1150,
+      "ordinary_seed_plus_plant": 2000,
+      "reachable_normal_cache_all_materials": 35,
+      "reachable_normal_cache_seed_plus_plant": 29,
+      "seed_plus_plant_with_normal_cache": 2029,
+      "transport_slots_to_add": null,
+      "physical_cache_capacity": "infinite"
+    },
+    "砂叶": {
+      "planter": 21,
+      "harvester": 11,
+      "crusher": 11,
+      "ordinary_all_materials": 4300,
+      "ordinary_seeds": 2150,
+      "ordinary_seeds_normal_recipe_slots": 1600,
+      "ordinary_plants": 2150,
+      "ordinary_seed_plus_plant": 3750,
+      "reachable_normal_cache_all_materials": 76,
+      "reachable_normal_cache_seed_plus_plant": 54,
+      "seed_plus_plant_with_normal_cache": 3804,
+      "transport_slots_to_add": null,
+      "physical_cache_capacity": "infinite"
+    }
+  },
+  "C82_adjacent_groups": {
+    "plant_1_to_2": {
+      "sum": 2,
+      "k": 2,
+      "passes_numeric": true
+    },
+    "seed_2_to_2": {
+      "sum": 4,
+      "k": 2,
+      "passes_numeric": false
+    },
+    "buck_powder_2_to_2": {
+      "sum": 4,
+      "k": 2,
+      "passes_numeric": false
+    },
+    "sand_powder_3_to_3": {
+      "sum": 6,
+      "k": 3,
+      "passes_numeric": false
+    }
+  },
+  "one_mixed_inlet_rate_upper": "1/3",
+  "mixed_full_input_D_bounds": [
+    -48,
+    99
+  ],
+  "three_channel_use_ratio": {
+    "two_to_seed_one_to_crush": "2:1",
+    "one_to_seed_two_to_crush": "1:2"
+  },
+  "added_crusher_branch": {
+    "total_machines": 220,
+    "extra_area": 9,
+    "remaining_sand_crusher_rates": [
+      "1/3",
+      "1/6"
+    ],
+    "new_plant_allocation_H_G1_G2": [
+      "1/2",
+      "1/3",
+      "1/6"
+    ]
+  },
+  "scope": "算术、图分量与局部状态检查；不是内核轨迹或完整布局证书",
+  "inventory_definitions": {
+    "machine_group": "每种仅计其P/H/G机器组；其他机器中的调试寄存另计。",
+    "ordinary_all_materials": "R17、44、50：每机两个普通格各50，全部物料的容量预算。",
+    "ordinary_seeds": "R13、17：本组每机普通格同一种种子至多50；全放输入、输出空且关闭可达到。荞花1150、砂叶2150，合3300。",
+    "ordinary_seeds_normal_recipe_slots": "P输入、H输出放本种种子，其他普通格只放其计划配方物品或空；荞花850、砂叶1600，合2450。",
+    "ordinary_plants": "R13、17：本组每机普通格同一种植株至多50；全放输入可达到。正常配方槽位中P输出、H输入、G输入亦给相同容量。",
+    "normal_recipe_slots": "P输入种子/输出植株；H输入植株/输出种子；G输入植株/输出粉末，各格也可为空。",
+    "ordinary_seed_plus_plant": "仅normal_recipe_slots域，100*(P+H)+50*G；两种合5750。",
+    "normal_cache": "R18、35：从空缓存开始且仅经正常制造门流入，单机至多一批，按在制输入或完成产物所在阶段计。",
+    "reachable_normal_cache_all_materials": "normal_cache域下各机最大产物或输入批量之和。",
+    "reachable_normal_cache_seed_plus_plant": "normal_cache域下P+2*H+G；G完成后的粉末不计N。",
+    "seed_plus_plant_with_normal_cache": "normal_recipe_slots与normal_cache共同成立时的联合N上界，荞花2029、砂叶3804，合5833；运输实际格另加。",
+    "safety": "容量上界与充分起动条件分列；默认程序后置状态及充分安全域由PR-01/04承接。"
+  },
+  "修订记录": [
+    {
+      "date": "2026-09-21",
+      "finding": "F13",
+      "change": "ordinary_seeds改为物理种子容量1150/2150；新增ordinary_seeds_normal_recipe_slots保留850/1600；inventory_definitions列R13、17前件及见证。"
+    },
+    {
+      "date": "2026-09-21",
+      "finding": "F14",
+      "change": "明确5833、277及217公式的正常槽位和正常缓存域；额外寄存另计。"
+    },
+    {
+      "date": "2026-09-21",
+      "finding": "F01/F16—F18",
+      "change": "绑定18项处理与修订前独立否证范围；未证项给具体断点，作者修订待独立重核。"
+    }
+  ]
+}

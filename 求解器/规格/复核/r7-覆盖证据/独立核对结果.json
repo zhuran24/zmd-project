@@ -1,0 +1,169 @@
+{
+  "scope": "逐行文本、登记集合、指纹及现有证据范围；语义逐条判断另见复核报告",
+  "line_counts": {
+    "《明日方舟：终末地》游戏规则.txt": 114,
+    "求解任务.txt": 15
+  },
+  "recipes_from_formal_source": 18,
+  "formal_constraint_count": 56,
+  "axis_count": 99,
+  "axis_dispositions": {
+    "本版选值": 54,
+    "由输入全称量化": 15,
+    "已定": 12,
+    "超出覆盖即停": 18
+  },
+  "all_input_descriptions_match_axis_table": true,
+  "previously_missing_axes_now_registered": [
+    "connection.bridge_first_contact",
+    "connection.bridge_tie",
+    "connection.build_order",
+    "connection.order",
+    "connection.port_meeting",
+    "connection.tie",
+    "damping.belt_adjacency",
+    "damping.branch",
+    "damping.no_terminal",
+    "gate.cancel_limit",
+    "gate.counter_edit",
+    "gate.counter_start",
+    "gate.limit_requires_identity",
+    "initialization.build_timing",
+    "initialization.debug_actions",
+    "initialization.debug_end",
+    "initialization.other_inventory",
+    "initialization.rebuild_inventory",
+    "initialization.rotation_stage",
+    "initialization.switches",
+    "initialization.warehouse_anchor",
+    "manufacturing.output_blocked",
+    "offline.cursor_effect",
+    "offline.direction_effect",
+    "offline.events",
+    "offline.gate_total_effect",
+    "offline.gate_window_effect",
+    "offline.gate_window_start_effect",
+    "offline.inventory_effect",
+    "offline.order_domain",
+    "offline.progress_effect",
+    "polling.level_tie",
+    "time.instant_order",
+    "time.manufacture_events",
+    "warehouse.acceptance",
+    "warehouse.acceptance_quantifier",
+    "warehouse.capacity",
+    "warehouse.delivery_count",
+    "warehouse.empty_slot_identity",
+    "warehouse.external_supply",
+    "warehouse.periodic_lift",
+    "warehouse.withdrawal_policy",
+    "warehouse.withdrawal_timing"
+  ],
+  "old_findings_count": 28,
+  "critic_missing_count": 12,
+  "交付指纹.json": {
+    "count": 37,
+    "changed": []
+  },
+  "开工只读指纹.json": {
+    "count": 25037,
+    "changed": []
+  },
+  "start_product_fingerprint_count": 10747,
+  "delivery_list_count": 39,
+  "reviewed_snapshot_count": 62,
+  "changes_since_review_start": [],
+  "rerun": {
+    "规格自查": {
+      "status": "PASS",
+      "checks": 58
+    },
+    "原转移回归": {
+      "status": "PASS",
+      "checks": 16
+    },
+    "本轮局部回归": {
+      "status": "PASS",
+      "checks": 19
+    },
+    "当前样例黄金只读核验": {
+      "status": "PASS",
+      "checks": 0
+    }
+  },
+  "runtime_record_scope": {
+    "kind": "finite_trace",
+    "from": {
+      "kind": "rational",
+      "value": {
+        "value": "0",
+        "category": "候选"
+      }
+    },
+    "through": {
+      "kind": "rational",
+      "value": {
+        "value": "3",
+        "category": "候选"
+      }
+    },
+    "golden_match": true,
+    "initial_history": "conditional_witness",
+    "universal_parameters": false,
+    "all_reachable_cycles": false,
+    "target_certified": false,
+    "manufacturing_cycles_completed": {
+      "value": "2",
+      "category": "算术推论"
+    }
+  },
+  "runtime_axis_coverage": {
+    "exercised": 23,
+    "input_checked": 14,
+    "not_exercised": 44,
+    "stop_not_triggered": 17,
+    "proof_pending": 1
+  },
+  "runtime_ticks": [
+    {
+      "kind": "rational",
+      "value": {
+        "value": "0",
+        "category": "候选"
+      }
+    },
+    {
+      "kind": "rational",
+      "value": {
+        "value": "1",
+        "category": "候选"
+      }
+    },
+    {
+      "kind": "rational",
+      "value": {
+        "value": "2",
+        "category": "候选"
+      }
+    },
+    {
+      "kind": "rational",
+      "value": {
+        "value": "3",
+        "category": "候选"
+      }
+    }
+  ],
+  "cargo_log_results": [
+    "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+    "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+    "test result: ok. 30 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.16s",
+    "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+  ],
+  "candidate_report_sections": [
+    "## 能检且通过（4925 项，算术推论）",
+    "## 能检且不通过（0 项，算术推论）",
+    "## 不能静态检（59 项，算术推论）"
+  ],
+  "status": "PASS"
+}

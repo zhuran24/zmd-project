@@ -1,0 +1,197 @@
+{
+  "status": "done",
+  "error": null,
+  "structured_output_tool_available": false,
+  "format_fallback": "JSON file and final JSON; no callable StructuredOutput tool exists",
+  "record": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/复核/终修记录.md",
+  "path_roots": {
+    "execution": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行",
+    "specification": "/home/zhuran24/zmd-research-fresh/求解器/规格"
+  },
+  "accepted": [
+    {
+      "id": "AX-01",
+      "verdict": "否证成立",
+      "files": [
+        "仓库接收与循环对应.md",
+        "受限转移定义-§6.5替换稿.md",
+        "推导复核范围.md",
+        "规格/推导/回路总数决定论-v2.md"
+      ],
+      "revision_record": "按现行R36和三审L54结清空箱/零发送冷却；保留严格部分扣格事实缺口。"
+    },
+    {
+      "id": "AX-02",
+      "verdict": "否证成立",
+      "files": [
+        "规格/推导/回路总数决定论-v2.md",
+        "规格/推导/三种相位不改产量-v2.md",
+        "规格/推导/总纲-流量存量相位.md",
+        "推导复核范围.md"
+      ],
+      "revision_record": "更新d150b86b398f完整来源及P-E01；旧脚本作为历史原件封存，当前由终修核验替代。"
+    },
+    {
+      "id": "AX-03",
+      "verdict": "否证成立",
+      "files": [
+        "成品输出通路.md",
+        "密排试点.md",
+        "整厂衔接.md",
+        "密排布局.json",
+        "植物运行试点.md",
+        "规格/运行语义.md",
+        "规格/选择点清单.md"
+      ],
+      "revision_record": "补R13同种跨轴守卫；空输出长路到箱/仓改18/23，在途20重证；106恢复界撤回。"
+    },
+    {
+      "id": "AX-04",
+      "verdict": "否证成立，部分范围意见不采纳",
+      "files": [
+        "推导复核范围.md",
+        "相位离线与认证范围.md",
+        "规格/推导/回路总数决定论-v2.md",
+        "规格/推导/三种相位不改产量-v2.md",
+        "规格/推导/总纲-流量存量相位.md"
+      ],
+      "revision_record": "将攻击失败、正面推导、旧审承接和文档事实分开；撤以否证计数承接结论的理由。"
+    },
+    {
+      "id": "IE-03",
+      "verdict": "否证成立",
+      "files": [
+        "成品输出通路.md",
+        "密排试点.md",
+        "整厂衔接.md",
+        "密排布局.json"
+      ],
+      "revision_record": "精确复现17.8/22.7反例；新18/23条件界与实际率null、全厂认证false同步。"
+    },
+    {
+      "id": "IE-07",
+      "verdict": "否证成立",
+      "files": [
+        "规格/受限转移定义.md",
+        "规格/内核输入.md",
+        "规格/内核输出.md",
+        "规格/受限模型声明.md",
+        "规格/运行语义.md",
+        "规格/选择点清单.md",
+        "规格/四件前置义务对照.md",
+        "规格修改稿-任务8.md",
+        "内核验收.md",
+        "规格回填.md"
+      ],
+      "revision_record": "汇入S8-01—07：remaining_work、同种归并、n>C、D.3、当前版本与种子支持；三个新周期重锁重放。"
+    },
+    {
+      "id": "IE-09",
+      "verdict": "否证成立",
+      "files": [
+        "仓库接收与循环对应.md",
+        "受限转移定义-§6.5替换稿.md"
+      ],
+      "revision_record": "撤旧空箱未定及旧来源标签，保留IE-08条件非干扰与循环方向。"
+    }
+  ],
+  "disagreements": [
+    {
+      "id": "AX-04",
+      "reason": "不将L-N03—07笼统降为未重核；r2§2确有独立推导，P-N01有分数复算，P-N05仅为文档事实。"
+    },
+    {
+      "id": "AX-03",
+      "reason": "0.4/0.35<1只给必要容量检查；不持续减产仅在新证出的空输出域内承接，预装恢复仍待证。"
+    }
+  ],
+  "retained": [
+    {
+      "id": "AX-05",
+      "verdict": "无法判定",
+      "reason": "只承接局部部件与出货接口；两圈压缩已核，整体密排和207台装填未完成。"
+    },
+    {
+      "id": "IE-01",
+      "verdict": "否证不成立",
+      "reason": "已定规则、99轴与正式源回填保持原范围。"
+    },
+    {
+      "id": "IE-02",
+      "verdict": "否证不成立",
+      "reason": "静态几何独立复跑一致，运行服务另判。"
+    },
+    {
+      "id": "IE-04",
+      "verdict": "无法判定",
+      "reason": "106tick恢复及恢复后2件队列仍缺联合服务证明，恢复界null。"
+    },
+    {
+      "id": "IE-05",
+      "verdict": "否证不成立",
+      "reason": "交接方向与有箱/无箱分支保持；失效服务数值已改。"
+    },
+    {
+      "id": "IE-06",
+      "verdict": "否证不成立",
+      "reason": "旧定向工程验收按原指纹范围保留，新关联证据另重放。"
+    },
+    {
+      "id": "IE-08",
+      "verdict": "否证不成立",
+      "reason": "同一接收响应、全矿出口的非干扰与投影方向成立。"
+    },
+    {
+      "id": "IE-10",
+      "verdict": "否证不成立",
+      "reason": "条件状态删除及固定参数的证据方向保留。"
+    },
+    {
+      "id": "IE-11",
+      "verdict": "无法判定",
+      "reason": "关闭intake、一般双端协调与失败环真实唤醒仍缺联合推导。"
+    }
+  ],
+  "verification": {
+    "status": "pass",
+    "checks": 270,
+    "modified_existing_files": 22,
+    "original_files_unchanged": 530,
+    "current_cycles_replayed": 3,
+    "old_certificate_fingerprint_rejection": "expected",
+    "kernel_recompiled": false,
+    "full_factory_certified": false,
+    "L": 0,
+    "U": 1113
+  },
+  "for_owner": [
+    "R36只确定无线可送总量，R72只定端口编号顺序；同种多编号格严格部分发送的扣格顺序仍缺事实。现行歧义确定执行在提交前停止；仅登记，不发送询问。"
+  ],
+  "files": [
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/仓库接收与循环对应.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/内核验收.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/受限转移定义-§6.5替换稿.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/密排布局.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/密排试点.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/成品输出通路.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/推导复核范围.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/整厂衔接.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/植物运行试点.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/相位离线与认证范围.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/规格修改稿-任务8.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/规格回填.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/受限模型声明.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/四件前置义务对照.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/三种相位不改产量-v2.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/回路总数决定论-v2.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/总纲-流量存量相位.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/运行语义.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点清单.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/复核/终修记录.md"
+  ],
+  "evidence_directory": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/终修",
+  "manifest": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/终修/交付清单.json"
+}

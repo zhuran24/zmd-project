@@ -1,0 +1,351 @@
+{
+  "scope": "几何和有限函数选点是实测；全时域不可表示由复核报告的代数证明给出。",
+  "independent_geometry": {
+    "桥接器双通路.json": {
+      "units": 7,
+      "occupied": 122,
+      "ports": 48,
+      "channels": 4,
+      "declared_pc_equal": true
+    },
+    "分流器三路轮询.json": {
+      "units": 9,
+      "occupied": 128,
+      "ports": 50,
+      "channels": 4,
+      "declared_pc_equal": true
+    },
+    "混做粉碎机两下游.json": {
+      "units": 14,
+      "occupied": 153,
+      "ports": 67,
+      "channels": 11,
+      "declared_pc_equal": true
+    },
+    "双空箱几何.json": {
+      "units": 4,
+      "occupied": 103,
+      "ports": 32,
+      "channels": 0,
+      "declared_pc_equal": true
+    }
+  },
+  "belt_ordered_pairs": 12,
+  "witness_structure": {
+    "file": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/r4-覆盖证据/双空箱几何.json",
+    "status": "指定快照静态结构通过",
+    "snapshot": "built_layout",
+    "anchor": {
+      "event": "blueprint_complete",
+      "side": "after"
+    },
+    "units": 4,
+    "occupied_cells": 103,
+    "physical_channels": 0,
+    "buffer_channels": 0,
+    "bridge_first_peers": [],
+    "counts_category": "算术推论（候选布局）",
+    "validation_category": "实测（工具）"
+  },
+  "witness_formula": "n为正的2的幂时B先A后，其余A先B后；共同到期t=5n。",
+  "witness_prefix": [
+    {
+      "n": 0,
+      "time": 0,
+      "order": [
+        "box_a",
+        "box_b"
+      ]
+    },
+    {
+      "n": 1,
+      "time": 5,
+      "order": [
+        "box_b",
+        "box_a"
+      ]
+    },
+    {
+      "n": 2,
+      "time": 10,
+      "order": [
+        "box_b",
+        "box_a"
+      ]
+    },
+    {
+      "n": 3,
+      "time": 15,
+      "order": [
+        "box_a",
+        "box_b"
+      ]
+    },
+    {
+      "n": 4,
+      "time": 20,
+      "order": [
+        "box_b",
+        "box_a"
+      ]
+    },
+    {
+      "n": 5,
+      "time": 25,
+      "order": [
+        "box_a",
+        "box_b"
+      ]
+    },
+    {
+      "n": 6,
+      "time": 30,
+      "order": [
+        "box_a",
+        "box_b"
+      ]
+    },
+    {
+      "n": 7,
+      "time": 35,
+      "order": [
+        "box_a",
+        "box_b"
+      ]
+    },
+    {
+      "n": 8,
+      "time": 40,
+      "order": [
+        "box_b",
+        "box_a"
+      ]
+    },
+    {
+      "n": 9,
+      "time": 45,
+      "order": [
+        "box_a",
+        "box_b"
+      ]
+    },
+    {
+      "n": 10,
+      "time": 50,
+      "order": [
+        "box_a",
+        "box_b"
+      ]
+    },
+    {
+      "n": 11,
+      "time": 55,
+      "order": [
+        "box_a",
+        "box_b"
+      ]
+    },
+    {
+      "n": 12,
+      "time": 60,
+      "order": [
+        "box_a",
+        "box_b"
+      ]
+    },
+    {
+      "n": 13,
+      "time": 65,
+      "order": [
+        "box_a",
+        "box_b"
+      ]
+    },
+    {
+      "n": 14,
+      "time": 70,
+      "order": [
+        "box_a",
+        "box_b"
+      ]
+    },
+    {
+      "n": 15,
+      "time": 75,
+      "order": [
+        "box_a",
+        "box_b"
+      ]
+    },
+    {
+      "n": 16,
+      "time": 80,
+      "order": [
+        "box_b",
+        "box_a"
+      ]
+    },
+    {
+      "n": 17,
+      "time": 85,
+      "order": [
+        "box_a",
+        "box_b"
+      ]
+    },
+    {
+      "n": 18,
+      "time": 90,
+      "order": [
+        "box_a",
+        "box_b"
+      ]
+    },
+    {
+      "n": 19,
+      "time": 95,
+      "order": [
+        "box_a",
+        "box_b"
+      ]
+    },
+    {
+      "n": 20,
+      "time": 100,
+      "order": [
+        "box_a",
+        "box_b"
+      ]
+    },
+    {
+      "n": 21,
+      "time": 105,
+      "order": [
+        "box_a",
+        "box_b"
+      ]
+    },
+    {
+      "n": 22,
+      "time": 110,
+      "order": [
+        "box_a",
+        "box_b"
+      ]
+    },
+    {
+      "n": 23,
+      "time": 115,
+      "order": [
+        "box_a",
+        "box_b"
+      ]
+    },
+    {
+      "n": 24,
+      "time": 120,
+      "order": [
+        "box_a",
+        "box_b"
+      ]
+    },
+    {
+      "n": 25,
+      "time": 125,
+      "order": [
+        "box_a",
+        "box_b"
+      ]
+    },
+    {
+      "n": 26,
+      "time": 130,
+      "order": [
+        "box_a",
+        "box_b"
+      ]
+    },
+    {
+      "n": 27,
+      "time": 135,
+      "order": [
+        "box_a",
+        "box_b"
+      ]
+    },
+    {
+      "n": 28,
+      "time": 140,
+      "order": [
+        "box_a",
+        "box_b"
+      ]
+    },
+    {
+      "n": 29,
+      "time": 145,
+      "order": [
+        "box_a",
+        "box_b"
+      ]
+    },
+    {
+      "n": 30,
+      "time": 150,
+      "order": [
+        "box_a",
+        "box_b"
+      ]
+    },
+    {
+      "n": 31,
+      "time": 155,
+      "order": [
+        "box_a",
+        "box_b"
+      ]
+    },
+    {
+      "n": 32,
+      "time": 160,
+      "order": [
+        "box_b",
+        "box_a"
+      ]
+    }
+  ],
+  "finite_table_first_unlisted_time": 325,
+  "finite_table_diagnostic": "unsupported: 有限排序表未覆盖本时刻",
+  "periodic_probe_examples": [
+    {
+      "slot_width": "5",
+      "origin": "0",
+      "orders_count": 2,
+      "sampled_integer_period": 10,
+      "n": 16,
+      "n_plus_period": 26,
+      "implementation_orders_equal": true,
+      "witness_orders_different": true
+    },
+    {
+      "slot_width": "7/3",
+      "origin": "-11/13",
+      "orders_count": 3,
+      "sampled_integer_period": 21,
+      "n": 32,
+      "n_plus_period": 53,
+      "implementation_orders_equal": true,
+      "witness_orders_different": true
+    },
+    {
+      "slot_width": "13/17",
+      "origin": "2/19",
+      "orders_count": 2,
+      "sampled_integer_period": 26,
+      "n": 32,
+      "n_plus_period": 58,
+      "implementation_orders_equal": true,
+      "witness_orders_different": true
+    }
+  ]
+}

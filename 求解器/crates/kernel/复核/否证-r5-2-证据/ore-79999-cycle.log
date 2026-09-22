@@ -1,0 +1,5 @@
+{"name": "ore-79999-cycle", "command": ["/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel", "cycle", "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-2-证据/ore-79999-seed.json", "--max-ticks", "2", "--no-record", "--out", "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-2-证据/ore-79999-cycle.json", "--config", "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"], "cwd": "/home/zhuran24/zmd-research-fresh/求解器", "exit": 2}
+STDOUT
+{"out":"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-2-证据/ore-79999-cycle.json","status":"stopped"}
+
+STDERR

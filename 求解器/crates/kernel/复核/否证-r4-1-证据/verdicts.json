@@ -1,0 +1,39 @@
+{
+  "verdicts": [
+    {
+      "id": "KR-r4-L1-01",
+      "refuted": false,
+      "reason": "未能否证：规则L13限制物种数，转移§6.2要求保留不同年龄；独立实跑两年龄同种记录被报混种，单行两件对照成功。 论证：/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r4-1.md §2.1."
+    },
+    {
+      "id": "KR-r4-L1-02",
+      "refuted": false,
+      "reason": "未能否证：trigger.extra经seed和公开cycle_key均被接受，且成为两键唯一差异，违反输入§6及转移§6.2的封闭字段要求。 论证：/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r4-1.md §2.2."
+    },
+    {
+      "id": "KR-r4-L1-03",
+      "refuted": false,
+      "reason": "未能否证：完整几何图中所有非运输取货侧至多一级，固定段不可能请求阻尼；完整表运行12刻成功，空表却被拒收，超出输入§5.3定义域。 论证：/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r4-1.md §2.3."
+    },
+    {
+      "id": "KR-r4-L1-04",
+      "refuted": false,
+      "reason": "未能否证：path_runs明确不调用几何邻接轴；独立新跑仍将路径连续带标记计为该轴exercised，聚合遗漏该缺口。 论证：/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r4-1.md §2.4."
+    },
+    {
+      "id": "KR-r4-L1-05",
+      "refuted": false,
+      "reason": "未能否证：t=1已闭包检查点通过seed且原样保留，充足预算续跑成功；首刻预算耗尽时两种格式均输出trace=null，违反输出§2的起点与空前缀约定。 论证：/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r4-1.md §2.5."
+    },
+    {
+      "id": "KR-r4-L2-1",
+      "refuted": false,
+      "reason": "未能否证：独立运行3刻及verify-record复现覆盖误报；聚合仅采信exercised标签，没有核到几何邻接轴实际调用。与L1-04同源，分别保留裁决。 论证：/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r4-1.md §2.6."
+    },
+    {
+      "id": "KR-r4-L2-2",
+      "refuted": false,
+      "reason": "未能否证：独立cycle重现装载年龄溢出的inconclusive空上下文，AJV2020确认四个null违反现行schema；KQ-09已有披露，但冲突仍未修复。 论证：/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r4-1.md §2.7."
+    }
+  ]
+}

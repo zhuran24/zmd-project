@@ -1,0 +1,52 @@
+[
+  {
+    "mode": "run",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-工程证据/load-age-overflow.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-工程证据/run-load-age-overflow-result.json"
+    ],
+    "exit_code": 2,
+    "status": "inconclusive",
+    "stop": null,
+    "open_items": [
+      "inconclusive resource.integer @ PC|a:east:0|b:south:0: 时差溢出"
+    ],
+    "stderr": ""
+  },
+  {
+    "mode": "cycle",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "cycle",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-工程证据/load-age-overflow.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-工程证据/cycle-load-age-overflow-result.json"
+    ],
+    "exit_code": 2,
+    "status": "stopped",
+    "stop": {
+      "axis": "resource.integer",
+      "event": "PC|a:east:0|b:south:0",
+      "kind": "resource",
+      "partial_events": [],
+      "reason": "时差溢出",
+      "time": null
+    },
+    "open_items": [
+      "inconclusive resource.integer @ PC|a:east:0|b:south:0: 时差溢出",
+      "技术停止不证明布局无解"
+    ],
+    "stderr": ""
+  }
+]

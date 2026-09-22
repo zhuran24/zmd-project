@@ -1,0 +1,74 @@
+{
+  "type": "StructuredOutput",
+  "status": "done",
+  "error": null,
+  "task": "任务书7 §1.2 任务2：codex仓库证明席",
+  "completion_scope": "本席证明稿、替换稿和小体量证据已交付；独立复核、规格落地及其他任务所列义务另行承接",
+  "files": [
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/仓库接收与循环对应.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/受限转移定义-§6.5替换稿.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/仓库/check_warehouse.py",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/仓库/执行日志.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/仓库/核对结果.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/仓库/核对说明.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/仓库/输入指纹.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/仓库/结构化结果.json"
+  ],
+  "for_owner": [
+    "规则第36行：有电、传输开启且就绪的空箱尝试是否启动5 tick冷却，还是等实际送出才启动？合读第25、20、72行仍未唯一确定；条件证明不受阻，具体箱轨迹需此事实或后果覆盖证明。"
+  ],
+  "open_items": [
+    "任务5：核默认堵满与满仓后拿取恢复状态的共同安全集合，含部分堵塞、单种先恢复和反复中断。",
+    "任务6：核具体生产键对全部正式循环的覆盖、时间表示和参数接续；具体完整周期另核实际仓库及矿库存、身份复原。",
+    "规格席和任务8：落地部分传输后态、台账、schema、配置和旧停止项，完成定向验收。",
+    "独立复核席：按最终文件指纹审查证明和证书接口。"
+  ],
+  "summary": "按现行规则重写仓库接收和成品计数证明。证书使用生产部分周期、无成品计数读出口核查与一句环境前提；已证明正式循环的同率投影，并列出反向复原的充分条件和实际断点。",
+  "verification": {
+    "status": "pass",
+    "arithmetic_cases": 1440,
+    "check_groups": 8,
+    "input_hashes_unchanged": 13,
+    "kernel_steps": 0,
+    "author_reader_review": "complete",
+    "independent_review": "pending"
+  },
+  "artifacts": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/仓库接收与循环对应.md",
+      "sha256": "cdc235501fc5ba81f8df0c4ea02396b15b23bb1c6175f9e7a10729d0cab646c1",
+      "bytes": 29299
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/受限转移定义-§6.5替换稿.md",
+      "sha256": "531d5195a3c5de8e73bf32f6f47dc17aa0ef15f710c84d9cc9cacb89ec4cd7fd",
+      "bytes": 12558
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/仓库/check_warehouse.py",
+      "sha256": "198eef60b4aa49da6d845241bdfe9932da1b5aae67817a4223a93a2f976b8190",
+      "bytes": 8931
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/仓库/执行日志.json",
+      "sha256": "e20e4c567bdf10d25edfea19e0437de4f7ef43097cba09d58b542a82f3dacbb1",
+      "bytes": 575
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/仓库/核对结果.json",
+      "sha256": "0d8ecd140aef3352791f3d6f8b509a80484e64646a749e0e9d3e427fa6495514",
+      "bytes": 11195
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/仓库/核对说明.md",
+      "sha256": "232099c1edf3dbffaa00dc6d90293a8ebea7f1e5be8d8ae572429403c09281f2",
+      "bytes": 5585
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/仓库/输入指纹.json",
+      "sha256": "5be627dc2365359fd35992f7a0e151d460bb07e0369cdc07b47accd907d597e7",
+      "bytes": 3635
+    }
+  ],
+  "bounds_changed": false
+}

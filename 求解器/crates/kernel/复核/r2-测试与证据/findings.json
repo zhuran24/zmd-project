@@ -1,0 +1,12 @@
+{
+  "findings": [
+    {
+      "id": "KR-r2-L2-01",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/verify_outputs.py:63–91（尤其86–90行）；tests/revision_cli.py:50–63",
+      "claim": "Python落盘验收未校验逐轴集合、处置与触发证据及部分顶层身份关联，会接受伪造覆盖报告。",
+      "evidence": "《内核输出》§1要求轴集合与配置、处置及实际事件一致，并要求profile_id和producer路径关联；§3要求核整份记录。本轮两样例×两格式的24项元数据篡改全部被verify接受，4项摘要篡改对照被拒；Rust verify_record对同样六类篡改全部拒绝。证据：/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/record-mutations.json、/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/rust-verifier-controls.json",
+      "severity": "重要"
+    }
+  ],
+  "notes": "完整论证：/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/复核-r2-测试与证据.md。字节一致隔离副本cargo test：93通过、0失败；Clippy通过。黄金和完整Python差分未放宽，6组真实排列、18轴请求、14个旧探针、16刻独立物料账及关闭制造开关的4刻手推通过。KQ-02仍为规格未决，after_closure记录明确unresolved。被保护原文件无变化。"
+}

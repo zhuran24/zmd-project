@@ -1,0 +1,11 @@
+{
+  "args": [
+    "seed",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/证据-v2-phase-否证/head_block.json",
+    "--out",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/证据-v2-phase-否证/head_block-canonical.json"
+  ],
+  "returncode": 2,
+  "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/推导/证据-v2-phase-否证/head_block-canonical.json\",\"status\":\"invalid_input\"}\n",
+  "stderr": ""
+}

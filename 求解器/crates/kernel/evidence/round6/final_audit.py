@@ -1,0 +1,108 @@
+"""第六轮交付审计：大小/保护/完整产物集合/当前覆盖；不刷新被审指纹。"""
+from pathlib import Path
+import hashlib,json,re
+ROOT=Path(__file__).resolve().parents[4];E=Path(__file__).resolve().parent;BASE=ROOT/'数据/样例'
+def read(p):return json.loads(p.read_text())
+def save(p,d):p.write_text(json.dumps(d,ensure_ascii=False,indent=2)+'\n')
+def digest(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+before=read(E/'before.json')['files'];commands=read(E/'validation-commands.json');assert commands[-1]['name']=='reduction-after' and all(r['exit_code']==0 for r in commands)
+batch=read(E/'verify-batch.json');assert batch['audited_tree_unchanged'];assert read(E/'verify-cli-batch.json')['audited_tree_unchanged']
+protected=read(ROOT/'crates/kernel/evidence/round5/protected-baseline.json');assert all(digest(Path(p))==h for p,h in protected.items())
+code_tests=(E/'cargo-test.log').read_text();assert 'FAILED' not in code_tests and 'error:' not in code_tests
+passed=sum(map(int,re.findall(r'test result: ok\. (\d+) passed',code_tests)));assert passed==139
+schema=read(E/'spec-selfcheck.log');assert schema['status']=='PASS' and schema['schema_cases']==76 and schema['specification_checks']==67
+cli=read(E/'cli/results.json');assert cli['status']=='pass' and len(cli['cases'])==46
+for p in E.rglob('*'):
+ if p.is_dir():assert p.name not in ('target','.cargo-home','registry','__pycache__'),p
+ else:assert p.suffix in ('.py','.log','.json','.md'),p
+samples=[p for p in BASE.rglob('*') if p.is_file()];large=[dict(path=str(p),bytes=p.stat().st_size) for p in samples if p.stat().st_size>20_000_000];assert not large,large
+sample_before=sum(v['bytes'] for p,v in before.items() if Path(p).is_relative_to(BASE));sample_after=sum(p.stat().st_size for p in samples)
+outputs=[];coverage={};cycles=[]
+for p in sorted(BASE.glob('*.json')):
+ d=read(p)
+ if not isinstance(d,dict):continue
+ assert d.get('schema')!='kernel-cycle-v1',p
+ if d.get('schema')=='kernel-output-v3':
+  outputs.append(str(p))
+  for row in d['uncovered_axes']:coverage.setdefault(row['axis'],{}).setdefault(row['coverage_status'],[]).append(str(p))
+ if d.get('schema')=='kernel-cycle-v2':cycles.append(dict(path=str(p),status=d['status'],period=d['cycle']['period'] if d['cycle'] else None,record_mode=d['record_mode']))
+assert len(outputs)==29 and len(cycles)==11
+save(E/'coverage.json',dict(axis_count=len(coverage),exercised=sum('exercised' in v for v in coverage.values()),without_exercised={a:v for a,v in coverage.items() if 'exercised' not in v},all_axes=coverage,scope='当前保留的有限记录覆盖并集；输入检查、停止未触发和未决不能冒称实际执行，不替代种子/参数/读法全称。'))
+plan=read(E/'migration-plan.json');replaced=[]
+for row in plan['certificates']+plan['records']:
+ p=Path(row['path']);replaced.append(dict(path=str(p),old_bytes=row['old_bytes'],new_bytes=p.stat().st_size,old_sha256=row['old_sha256'],new_sha256=digest(p),kind='重跑核验后替换旧内嵌证书' if 'budget' in row else '重跑保留小体量前缀',retained_ticks=row.get('ticks'),old_ticks=row.get('old_ticks')))
+deleted=[p for p in before if not Path(p).exists()]
+sizes=dict(before_bytes=sample_before,after_bytes=sample_after,reduction_percent=100*(sample_before-sample_after)/sample_before,oversize_files=large,replaced=replaced,deleted=deleted,notes=['10份旧内嵌式证书重跑后原路径替换，不保留旧字节副本；完整扫描前缀可由输入与预算独立重建。','26份内核记录保留不超过32刻，三份高事件密度记录保留8刻；两份严格参考样例仍保留原4/12刻。','历史v2参考/黄金受12项基线保护；生成器及说明仍作为可跑输入的支持文件保留。'])
+save(E/'storage-final.json',sizes)
+benchmark=read(E/'benchmark-final.json');assert benchmark['status']=='pass';k6=read(E/'K6-result.json')
+summary=dict(status='engineering_checks_pass_K6_target_open',cargo_tests_passed=passed,clippy='pass',schema_cases=76,specification_checks=67,cli_cases=46,records=len(outputs),cycles=cycles,batch_read_only=True,protected_files=len(protected),samples_bytes=dict(before=sample_before,after=sample_after),oversize_files=[],evidence_extensions=['.py','.log','.json','.md'],reduction=read(E/'reduction-lock.json'),K6=dict(status=k6['status'],reason=k6['bottleneck']),open_items=['K6未取得两条率均达标的生产部分周期；试作卡在布局规模、仓库过站及库存闭合。','81单位benchmark_brick及cycle墙钟仍存在性能目标未达项。','级二提升、全部种子/参数/读法、第二相遇读法、前置有限性及语义商接入仍未完成。'])
+save(E/'final-audit.json',summary)
+report=f'''# 第六轮内核实施与验证
+
+日期：2026-09-20。状态：K1–K7按序执行；工程验收通过，K6按任务书的失败分支交付布局卡点，未取得目标率周期。全部结论限所列输入与固定参数点。
+
+## 结果与入口
+
+工作区cargo test共{passed}项通过；clippy全targets零警告。当前schema的76个结构正反例和67项规格自查通过。46个公开CLI案例覆盖真实引用、相对路径/不同cwd、重新封口的篡改记录、两模式、原种子前缀、P刻重跑、检查点及KQ-09两阶段。[命令台账](validation-commands.json)、[测试日志](cargo-test.log)、[Clippy](clippy.log)、[结构自查](spec-selfcheck.log)、[CLI](cli/results.json)分别保存证据。
+
+[只读批量验收](verify-batch.json)覆盖29份v3记录、11份v2循环结果；其中10份是原证书迁移，1份是K6新增未决。两种参考实现仍保留原黄金逐字段/JSON类型比较，共6份参考记录检查。被审树的字节与mtime前后相同；[引用/空前缀材料包批验](verify-cli-batch.json)也通过。三份正式文件、候选约束及历史黄金等12项保护字节未变。
+
+## K1 引用、稀疏检查点和恢复
+
+[cycle.rs](../../src/cycle.rs)的seen为sha256到候选位置数组，检查点表只按正间隔保存完整State，另保留当前与最后完整状态。before_boundary锚点不入seen；after_closure锚点可记位置0。已完成刻的位置单调增加，重放从不晚于候选位置的最近检查点开始，因而既不重放已闭包旧刻，也不跳过before_boundary首刻。命中摘要桶后逐个比较完整规范键，不相等时保留该桶所有位置；强制所有键碰撞的回归仍取得相同周期。测试专用重放耗尽注入只返回未决；公开预算仍为ticks/sweeps。
+
+[cycle_io.rs](../../src/cycle_io.rs)按引用文件原始字节核sha256，再解析format、producer和依赖闭包。默认独立保存v3记录；none模式不留逐刻记录。两个模式均从原种子重建扫描前缀、单独从周期起点重跑P刻，独立事件注册器和仓库前后守恒检查逐刻执行。没有记录并不放宽起点可达位置、账、率、接收域或完整终态。库产证拒绝内存输入与持久输入不一致。
+
+checkpoint命令先验收，再导出已闭包状态；参数、游标、活动待办和账原样保留，续跑首刻t+1。KQ-09装载前失败与已装载零前缀分别保留正确上下文；失败文件可访问时用fingerprints锁定并复现诊断，缺材料不报独立通过。未修改S席契约。S席自查使用的旧v1装载外壳按开工sha256逐字节恢复，当前对应回归输出改放round6，见[恢复记录](historical-fixture-restoration.json)。
+
+样例目录从{sample_before:,}降至{sample_after:,}字节，减少{sizes['reduction_percent']:.2f}%；没有超过20MB的单文件。10份原路径旧证书已替换为新产物，保留5份低产周期与5份未决原结论；26份记录从输入重跑后缩短留存前缀，不修改旧黄金。[体量及删除/替换清单](storage-final.json)逐项列旧新字节、sha256与留存刻数；较长循环核验使用无记录重建路径。
+
+## K2–K4 守卫与静态、批量入口
+
+put先核普通格单物种、正入量及目录容量，单次超容量先拒收，避免把可证明的容量违反降成整数资源耗尽；提交失败不写库存。缓存的多物种/无限容量例外保留。临时双产物配方只在测试内加入，制造完成后两物种留缓存，普通输出格的整批守卫阻止混装。正式目录未改。
+
+check --cycle-domain不推进时钟，D.1–D.5逐条报告scope、位置和依据，首项失败不丢其它项。D.2未来候选与D.4未来无终点请求仍动态核。回归证明起点D.2通过的布局会在之后出现回矿候选时停止；拒收候选也不能等容量/physical/权限检查完再拦。循环成功或低产反例只在完整前缀和P刻重跑均无域停止时给pass/cycle。
+
+verify-batch等价于tests/verify_all.py --dry，结构由AJV2020核验，记录另做逐事务台账和独立参考差分。已被证书完整验过的资源停止记录用证书预算复现；孤立且无法复现的诊断拒收。1250项旧保护清单中1242条退出永久字节保护，8条延续、4条新增，共12条；[逐路径清单](protection-scope.json)说明哪些文件改由当前指纹/重跑保护，不刷新旧基线掩盖变化。
+
+## K5 性能
+
+历史81单位/100PC的benchmark_brick为2.74ms/tick，未达1ms目标。下表是当前release同机实测；run列为引擎内部转移计时，cycle列为含装载、来源指纹、搜索与小证书写入的墙钟，不把两列当同一计时边界。
+
+| 输入 | 单位/PC | run ms/tick | cycle ms/tick | cycle峰值RSS KiB | run阈值通过 |
+|---|---:|---:|---:|---:|---|
+'''
+for r in benchmark['reports']:
+ report+=f"| {r['name']} | {r['shape']['total_units']}/{r['shape']['physical_channels']} | {r['modes']['run']['engine_ms_per_tick']:.3f} | {r['modes']['cycle']['wall_ms_per_tick']:.3f} | {r['modes']['cycle']['max_rss_kb']} | {'是' if r['run_target_met'] else '否'} |\n"
+report+='''
+新制造砖32刻完成35批；12刻留存记录完成18批，电池5件、胶囊4件实际入库，缓存和直接计算路径全记录相等。该输入是有限预装原料压力样例，不充当持续闭环。基准status=pass表示命令和生产断言通过，阈值位单列，未达项不涂绿。
+
+局部优化只把D.2核心入边预索引：固定几何中非核心目标永远不可能读仓库矿容量，故可跳过；核心入边的活动性及源物种每次重新核，断边恢复不使索引失效。索引不缓存“准入通过”的动态结论。候选B档同为12刻，优化前cycle约255、优化后约57ms/tick；见[前测](benchmark-before.json)与[终测](benchmark-final.json)。其余开销仍在模板扫描/授权、同刻闭包序列化、生产键归一和检查点；81单位砖run与各档cycle仍有阈值未达。搜索还有逐刻摘要及事件身份集合，不能称常数内存。
+
+## K6、K7及边界
+
+[K6布局卡点](K6布局卡点.md)给出完整来源、布局和算术：130单位/96PC、19台制造，从L6六类满仓、仓外空开始，512刻完成6783批，电池9、胶囊7实际入库；五项静态D通过且动态未停止，搜索仍未决。仅一封装/一灌装，各率上限1/5小于3/5、11/20，仓库过站另耗矿口预算。未取得两条comparison均非lt的证书，不能把有限正流量冒称目标周期或布局无解。
+
+约减检查先红，重算确认除sources指纹外所有内容逐字段相同，只更新等价类计数.json的6处sha256，再检查通过。两样例语义类数55296、27323180236800，保守类数87178291200、104657538585600，均未改变；[重锁证据](reduction-lock.json)和[最终检查](reduction-after.log)留存。没有改参数扫描约减正文或事件对清单。
+
+级二F提升、四件前置义务、全部种子/参数/读法、第二相遇读法及语义商运行接入均保留原未决。有限记录的99轴覆盖另按当前保留产物重算于[coverage.json](coverage.json)，不沿用旧54/99为当前结论。本轮没有Git提交/推送，没有修改正式文件、候选约束或模拟器；编译只使用共享target。
+'''
+(E/'实施与验证.md').write_text(report)
+entry='''
+## 第六轮内核小收口（2026-09-20）
+
+K1实现kernel-cycle-v2引用装载、无记录核验、摘要候选与稀疏重放、checkpoint导出，并重跑替换10份旧证书及小体量记录。K2添加put提交前单物种/容量检查，缓存例外和测试内双产物配方保留。K3提供五项独立静态D报告，动态D.2继续在容量/权限前守卫。K4提供只读verify-batch及1250→12保护范围逐路径清单。K5新增真实制造/双成品入库砖和两种模式实测，核心入边预索引改善cycle开销，仍如实保留未达性能指标。K6满仓起动试作完成512刻但未取得目标周期，按任务书交布局卡点。K7只重锁约减结果的来源指纹，所有非指纹内容及类数不变。
+
+当前workspace测试139项通过，clippy全targets零警告，批量验收29份v3记录/11份v2循环结果及引用材料包只读通过，76个结构例与67项规格自查通过，46个公开CLI案例通过。KQ-09关闭；KQ-10记录失败输入通过fingerprints寻址的实现解释。数值、失败分支、性能边界、体量与全文件清单以[第六轮报告](evidence/round6/实施与验证.md)、[最终审计](evidence/round6/final-audit.json)和[产物清单](evidence/round6/files.json)为准。级二、全族覆盖及K6目标率仍未完成。
+'''
+p=ROOT/'crates/kernel/修订记录.md';text=p.read_text();marker='\n## 第六轮内核小收口（2026-09-20）';text=text.split(marker)[0]+entry;p.write_text(text)
+# 该清单列出本次授权树内所有最终新增/修改及删除路径；编译产物不作交付物。
+current={}
+for base in [ROOT/'crates/kernel',BASE,ROOT/'规格/复核/约减']:
+ for p in base.rglob('*'):
+  if p.is_file():current[str(p)]=digest(p)
+changed=sorted(p for p,h in current.items() if p in before and h!=before[p]['sha256']);added=sorted(set(current)-set(before))
+question=str(ROOT/'规格/内核实现-对规格的疑问.md');changed.append(question)
+files=sorted(set(changed+added+deleted+[str(E/'files.json'),str(E/'reader-review.json')]))
+save(E/'files.json',dict(files=files,modified=changed,added=added,deleted=deleted,scope='绝对路径；新增/修改交付及已有文件删除。target编译产物不列入交付，写权外源文件仅只读引用。'))
+print(json.dumps(dict(status=summary['status'],tests=passed,files=len(files),samples_before=sample_before,samples_after=sample_after,records=len(outputs),cycles=len(cycles)),ensure_ascii=False))

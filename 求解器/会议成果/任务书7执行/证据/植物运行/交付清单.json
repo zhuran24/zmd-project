@@ -1,0 +1,158 @@
+{
+  "status": "partial",
+  "revision_status": "done",
+  "files": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/植物运行试点.md",
+      "sha256": "6f0b9e1417b0643de66279c4c0643ca3b8af89a9ba391b40151d712e507d6a4e",
+      "bytes": 45742
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/送料与接口.json",
+      "sha256": "f4f3776907ee06ad429e9a250f076056945eea4a6c496cf09163b7048788e36e",
+      "bytes": 500416
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/修订前指纹.json",
+      "sha256": "478d53147f5a45363f71597ff3ca3a093668f0bb5b293ef27dc2b6f651b56f0f",
+      "bytes": 15742
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/修订核验.log",
+      "sha256": "3ecc83f6f026f19ecc1889d0d29aba7f9a0d21699f1e1119aa316a71f3201c1a",
+      "bytes": 2289
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/修订核验.py",
+      "sha256": "cc88e9af6ed5b34a82fbb36e0501160875c65f75c629c989f9048c4f2548ecf2",
+      "bytes": 10263
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/修订核验结果.json",
+      "sha256": "caa3c1deab396ecc60c3cc5f3bc19d824581185e176bdf42ac345788143af36d",
+      "bytes": 4391
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/修订结果.json",
+      "sha256": "ee9f9f424a7eb17c70abaf57333b42e7b7bd8707d41b381f0ab8718be40e428d",
+      "bytes": 10543
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/候选A原脚本重放.log",
+      "sha256": "294860774a149c0cb38c4454a560ba4d4af0caa736c9da3c88c409f03ac47c12",
+      "bytes": 2010
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/否证逐项处理.json",
+      "sha256": "64a7a380b1b99e092bb7d2663d338047ecb4b277788b50c67d4bcd4c7bba1632",
+      "bytes": 9540
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/局部时间表核对.json",
+      "sha256": "4d6f0f414e40c58efc92ae2d3f6992ef4a990fe9cf43713554e70373d1e32e50",
+      "bytes": 79787
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/局部结构.json",
+      "sha256": "f686d6a9970ca613f8a37c8dc1cb1d7b0d8b9d06d9b35bb3f8b0540edb82b4db",
+      "bytes": 12305
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/提取与算术.py",
+      "sha256": "37b3e9683f3986c19959aea94a71773845117cb484698d0dd493028e245bf2ef",
+      "bytes": 18235
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/来源增量.json",
+      "sha256": "78f39c22901fd879314e292933fd3d34ae2fa6f622e5d60fe28774e8813adb01",
+      "bytes": 1555
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/来源增量核查.py",
+      "sha256": "ec3e008f49cb3ec739579a7646b74c2c5e5f5f79513273aca3631de4c30398a6",
+      "bytes": 3130
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/核验.log",
+      "sha256": "ee19efd40d46208783d8df656d7696d63acb55bd37b9647d16d2f34b96bf29fe",
+      "bytes": 962
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/核验.py",
+      "sha256": "a61957ad21db5bfc660dce3072a8bdb263f4d2f762722d7064c3ac86b3b9b4dd",
+      "bytes": 11341
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/核验结果.json",
+      "sha256": "f4e4d36a6e3b096fd51b09755bc3715fecc5fc797082fab784d3a83646d0b890",
+      "bytes": 1482
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/版本失配.log",
+      "sha256": "8067155588f37e929061b14aaed4974ea892b21b8e514683b28de5d2a2b02c87",
+      "bytes": 547
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/算术与图核验.json",
+      "sha256": "85e9872d21feebcdd10a46fb1a0b452b6fe4a3fe7ce5122e42769183f64a5cb6",
+      "bytes": 8754
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/读者自审.md",
+      "sha256": "0c2c1e2e3b3a2d17c3e5c0921b811ce0dec665cc20ee39e55a433c4f608f75f4",
+      "bytes": 4957
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/输入当前指纹.json",
+      "sha256": "bfbdc6514bce7b1e0e4ac51c7fdc9e596d8104bca4ac1ee8a55ebdccb77eef89",
+      "bytes": 4858
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/输入指纹.json",
+      "sha256": "c2b60e4148618bb031b5ed1876c4ebeb8676951968a1012e8db18131cd2c292c",
+      "bytes": 4858
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/逐机逐口清单.md",
+      "sha256": "e5171055c9f243dab72b3ba93e086c294d6ea1cc5506c7fe2fe617e29747ad05",
+      "bytes": 18079
+    }
+  ],
+  "self_path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/交付清单.json",
+  "self_sha256": "omitted to avoid self reference",
+  "changed_files_this_revision": [
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/植物运行试点.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/送料与接口.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/交付清单.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/修订前指纹.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/修订核验.log",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/修订核验.py",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/修订核验结果.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/修订结果.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/否证逐项处理.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/提取与算术.py",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/核验.py",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/核验结果.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/算术与图核验.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/读者自审.md"
+  ],
+  "current_rule_sha256": "d150b86b398f8e73e57bee1598020e6bcd895e5a13a254b4b11dd1e4416c325a",
+  "validation_exit_status": 0,
+  "revision_validation_exit_status": 0,
+  "for_owner": [],
+  "new_proofs_independent_review": {
+    "prior_report": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/复核/否证-任务4.md",
+    "prior_report_sha256": "12eb21c9bff08c2e824e712a38edc624ffd5c69f28cec435d65ea9790599e486",
+    "prior_scope": "F01—F18逐项判定",
+    "current_revision": "作者核验通过，独立重核待交"
+  },
+  "L": 0,
+  "U": 1113,
+  "修订记录": [
+    {
+      "date": "2026-09-21",
+      "finding": "F01/F13/F14/F16—F18",
+      "change": "更新容量修订、逐项处理及本轮核验的完整文件指纹；列14份新增/修改文件，区分修订完成与任务partial。"
+    }
+  ]
+}

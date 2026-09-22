@@ -1,0 +1,19 @@
+{
+  "findings": [
+    {
+      "id": "K3-r3-L1-01",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md:250（§5.2 EventOrder）",
+      "claim": "per_instant 仅支持有限 instant_overrides，缺少周期或函数编码，无法表示两个独立空箱在每次共同到期时交替先后的完整合法排序。",
+      "evidence": "规则 L25 要求同刻判定逐个进行；任务 L14 仅规定“同一时刻多个判定的先后固定”；求解约束 L3、L10 要求覆盖每种判定先后。两空箱按规则 L36 每 5 tick 尝试，交替其共同到期时的先后不改变冷却、库存或任何物流守卫；有限 overrides 必在后续未列时刻停止。完整历史及编码排除论证见报告 §2。",
+      "severity": "重要"
+    },
+    {
+      "id": "K3-r3-L1-02",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md:252（judgment_context.phase）；§6 StateSeed",
+      "claim": "phase 只有 before_boundary/after_closure，无法完整编码边界已处理、判定闭包尚未结束时的调试结束状态。",
+      "evidence": "规则 L25 规定同刻判定逐个进行，规则 L22 允许设定随时更改；任务 L11–12 允许不精确调试，L8 未把结束点限定在扫描边界。已捕获原参考执行 J|2|0|1 之后的实际中间状态：第一批完成、下一件矿入格、端口额度已用，制造模板尚未执行；两个现有 phase 均不能准确表示该恢复位置。见报告 §2 及覆盖反例证据.json。",
+      "severity": "重要"
+    }
+  ],
+  "notes": "完整论证：/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/复核-r3-覆盖.md。三个样例、原91轴及新增5轴、指定StateSeed和源矿来源核验通过；完整0–3 tick轨迹与现存记录一致。两项发现均为通用表示缺口，未判现有有限样例执行错误。"
+}

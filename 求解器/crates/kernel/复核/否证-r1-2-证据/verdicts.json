@@ -1,0 +1,74 @@
+{
+  "verdicts": [
+    {
+      "id": "KR-r1-L1-01",
+      "refuted": false,
+      "reason": "未能否证。《求解任务》L7要求“源矿与蓝铁矿持续可得且足够覆盖任意数量的消耗”；《受限转移定义》§2.1第23行明确“空历史只有在当前库存足够覆盖整个被测段消耗且未违持续可得时才可作该段见证”。interfaces.rs:169–221只核历史形状、时间范围、两矿正量及runtime引用，transition.rs:267–278只检查t是否越过through；engine.rs:737–752、869–870将空矿源当普通source_empty。本席用当前源码重编CLI，对ore-shortage-input.json执行4刻：退出0/completed，t=0取走唯一源矿，四刻仓库源矿均为0，仅完成1批；足量对照同期出库4件、完成2批。t=1送料带腾空后仍不能补料，已经影响后继，不是段末恰好耗尽。completed虽不代表达标，也不能豁免外部历史的合法性前提。输入、命令、记录见否证-r1-2-证据/cli-results.json、机制核验.json。"
+    },
+    {
+      "id": "KR-r1-L1-02",
+      "refuted": false,
+      "reason": "未能否证。《内核输入》§3.1第90行规定occurs_before为执行先后，并要求“所有来源的偏序……取交集，冲突拒收”；《受限转移定义》§2.1要求按输入显式顺序回放补矿。input.rs:84–134只对timeline.relations单独核时间和无环，interfaces.rs:189–221只核补矿时刻非递减，transition.rs:464–505直接按补矿数组执行。独立负例当前源矿79990，t=1数组[supply_a,supply_b]，另规定supply_b occurs_before supply_a；重编CLI运行4刻仍退出0/completed，日志依次supply_a、supply_b。把关系改为a先b的相容对照同样成功。两次增量可交换只保证终态数相同，不能使相反事件先后满足输入；KQ-01临时编码也未授权忽略统一关系。见否证-r1-2-证据/supply-order-conflict-record.json及cli-results.json。"
+    },
+    {
+      "id": "KR-r1-L1-03",
+      "refuted": false,
+      "reason": "未能否证。《内核输入》§3.1第88行规定“引用同一事件是共用同一实例，不能复制成另一个事件”；《内核输出》§2第33行要求拒绝历史别名，且“跨集合唯一性必须由语义验收器独立核，不能仅靠重算相等”。engine.rs:136–159把timeline与pending的ID并入集合并将executed置空；626–670核待办自身唯一性、目标和进度，未核与历史事件的类型/时刻冲突。transition.rs:371–395消费待办ID；output.rs:390–394仅重算比较。本席以新跑出的t=1闭包为种子，将C|2|crusher改名build_0；后者原是t=-13的build，CLI仍completed，并在t=2记录build_0为manufacture_complete。重新编译的Rust verify_record接受；独立validate_event_identity拒绝“待事件与输入历史身份冲突: build_0”，未改名对照通过。新生成ID查重确实存在，但没有覆盖恢复待办的历史别名。见否证-r1-2-证据/rust-verifier-results.json、机制核验.json。"
+    },
+    {
+      "id": "KR-r1-L1-04",
+      "refuted": false,
+      "reason": "未能否证。《内核输入》§3.3第106行明确selected_events[].event“指offline”，§3.1要求统一事件身份及相应记录拥有。interfaces.rs:267–274只核offline/product_withdrawal对象的顶层键，没有逐项核selected_events引用；transition.rs:280–318按timeline.kind触发停止并直接跳过runtime。本席给离线记录一个t=1、kind=runtime的review_offline引用，重编CLI运行4刻退出0/completed；仅将同一事件kind改回offline，对照退出2/unsupported，轴为offline.events，保留t=0前缀。因此现有offline停止分支只能覆盖正确登记的事件，不能替代坏引用拒收。未将本例扩大为“合法offline也漏停”或“已分别证明所有外部动作表都有漏洞”。见否证-r1-2-证据/offline-wrong-kind-record.json、offline-control-record.json及cli-results.json。"
+    },
+    {
+      "id": "KR-r1-L1-05",
+      "refuted": false,
+      "reason": "未能否证。《内核输入》§5.3第295行要求fork_unit是查询方向实际遇到的分流器，并明确“禁止把任一无关分流器、断边或非出支塞入表”。input.rs:657–687只核查询边存在、fork_unit机型、所选出边源单位及键唯一；polling.rs:140–161仅在遍历真正遇到分叉时取对应项，未拒绝多余无关项。本席将查询PC|probe_left:west:0|probe_gate_a:south:0绑定主splitter的北出边，并同步当前参数，公开CLI运行2刻仍退出0/completed，已实际经过Input::load和Engine::new。独立PC图核查表明查询所在整个无向连通分量都不含主splitter。原报告“从probe_gate_a去probe_merger”的描述不准确：该门下游实际无PC；这不改变无关性的结论。即使该项未参与求值，也违反输入表项的明确约束。见否证-r1-2-证据/unrelated-fork-input.json、机制核验.json。"
+    },
+    {
+      "id": "KR-r1-L1-06",
+      "refuted": false,
+      "reason": "未能否证。《受限模型声明》§2第96–97行及《内核配置-v1.json》570–589行，明确warehouse.acceptance=capacity_and_path须“分别记录两成品容量许可及存在物理入库途径”，per_instant须“在每个观察边界报告接收域”；依据是任务L2及约束“入库途径”。代码中两轴仅在config.rs枚举/名称映射和通用配置核验出现；transition.rs:672–719各summary分支、output.rs:327–357的记录组装均未计算或输出两成品的接收结果。本席逐份解码四份原内核记录，确实只有参数和not_exercised标签，没有逐边界容量许可、物理途径及接收域报告。完整StateSeed可供日后推导，不等于已分别报告；尚未做目标认证也不解除本版选值的报告义务。schema的summary允许对象字段，并非格式禁止补报。见否证-r1-2-证据/机制核验.json的original_records。"
+    },
+    {
+      "id": "KR-r1-L1-07",
+      "refuted": false,
+      "reason": "未能否证，但限定为现行规格/输出接口冲突。《受限转移定义》§1第7行明确step_tick从已闭包t到t+1；《内核输出》§2第27行同时要求“首项起于start_state.environment.time”，§2.1第37行又称start_state是“首次边界前完整种子”。transition.rs:568–576对after_closure推进一刻，output.rs:261原样保存种子、336–339取实际首刻为from。本席用真实t=1闭包续跑1刻，得到start_state.time=1、ticks[0].time=2、validation_scope.from=2、completed。KQ-02已准确登记该冲突，推进算法有转移规格依据；但登记疑问没有修订现行输出契约或赋予例外。因此不能否证“与当前输出契约不一致”，也不能据此要求重跑t或补造旧事件。见否证-r1-2-证据/after-closure-control-record.json。"
+    },
+    {
+      "id": "KR-r1-L2-01",
+      "refuted": false,
+      "reason": "未能否证。独立回源确认任务L7要求两矿“持续可得且足够覆盖任意数量的消耗”，《受限转移定义》§2.1明确空历史必须足够覆盖被测段且不违持续可得。transition.rs:267–278仅用through检查时间覆盖，engine.rs:869–870把取空矿源作为普通无货，未把外部条件失效转换成Stop。本席重新构造当前源矿1、events=[]、through=3的输入，保留任务初始六类满仓，重编CLI执行4刻退出0/completed：仅t=0出库1件，t=1起停供，四刻余额均0，仅完成1批；足量对照实际出库4件、完成2批。重新编译调用Rust verify_record也接受这份缺矿记录。守恒成立及未越过through均不能证明供应充分，低产坏布局不能作为接纳非法外部历史的理由。与L1-01重叠，但本条另核了公开记录自验。见否证-r1-2-证据/cli-results.json、rust-verifier-results.json、机制核验.json。"
+    },
+    {
+      "id": "KR-r1-L2-02",
+      "refuted": false,
+      "reason": "未能否证。《内核输出》§1第15行要求“依赖清单由校验器重建后与记录严格比较，禁止删掉某个依赖以绕过核验”；§3第47行要求validation_scope逐字段、逐JSON类型严格比较。tests/verify_outputs.py:27–28仅遍历记录自报指纹，43–45仅核三个认证布尔为false，未核范围、批数及golden_match。本席直接调用未修改的verify：两样例各删除三份formal_source指纹，或把through和完成批数改为999并翻转golden_match，共4份负例全被接受；只改末刻summary.warehouse_ore的2份对照均被拒绝。重新编译的Rust verify_record拒绝上述4份元数据负例，故问题确实限于Python落盘入口；强入口存在不能否证弱入口漏验。原四份记录的重算通过也不受此结论否定。见否证-r1-2-证据/python-verifier-results.json、rust-verifier-results.json。"
+    },
+    {
+      "id": "KR-r1-L2-03",
+      "refuted": false,
+      "reason": "未能否证。《内核输出》§1第18行将exercised定义为“实际执行”，第56行要求未给本次行为证据的轴保守标未触发；《受限转移定义》§4.2第79行的整批输出守卫仅在completed时进入，来源是规则L18整批通过及L13物品格约束。output.rs:220、234只要存在一次manufacture/success，就将全部manufacturing.*标为exercised；transition.rs:12–50才是实际completed输出分支。本席重编CLI只跑粉碎机0、1两刻，所有制造机起始idle，粉碎机后态依次idle、working，完成事件0个；唯一成功J|1|0|11只是归集/开工，却被列作manufacturing.output_blocked的exercised证据。已有其它测试检查受阻保批，不是本次记录的执行证据；已定轴也须如实标触发范围。见否证-r1-2-证据/start-only-record.json、机制核验.json。"
+    },
+    {
+      "id": "KR-r1-L3-01",
+      "refuted": false,
+      "reason": "未能否证。《内核输入》§2第43行规定snapshots[]每项为{id,anchor,units,physical_channels,buffer_channels}对象；《受限转移定义》§1第7行规定非法输入返回invalid(field,reason)。input.rs:208–214只确认snapshots外层为数组，随后直接对克隆成员执行s[\"base\"]=...；value.rs:281–315的通用遍历只校Decision和浮点，不拒绝此布尔成员。本席仅将样例snapshots改为[false]，以当前源码重编CLI执行2刻，实测退出101，stderr为cannot access key \"base\" in JSON boolean，指定record文件不存在。main.rs:87–93只能处理Err(Stop)，没有捕获该panic。非零退出不等价于带位置的Stop/停止记录，因此发现成立；它属于坏输入错误通路，未扩大成合法布局转移反例。见否证-r1-2-证据/cli-results.json的snapshot-bool。"
+    },
+    {
+      "id": "KR-r1-L3-02",
+      "refuted": false,
+      "reason": "未能否证。《内核输入》§4第117行明定item为“物品名或null（未设）”，正式规则L64的设定对象是“某一种物品”。input.rs:500–525检查键集合、门单位、重复和限额，却仅用item.is_null()判断身份前提，没有校验字符串类型；polling.rs:343–348直接将JSON Value与货物名比较。本席把probe_gate_a.item改为整数7，当前源码重编CLI跑2刻仍退出0/completed；该门total_received=0并锁存identity_mismatch，未改的probe_gate_b正常收1件。原样例对照两门均收1件后window_exhausted。整数类型本应装载拒收，不能解释成一种永不匹配的合法物品；本结论只涉及非法类型漏验。见否证-r1-2-证据/gate-numeric-item-record.json、机制核验.json。"
+    },
+    {
+      "id": "KR-r1-L3-03",
+      "refuted": false,
+      "reason": "未能否证。《内核输入》§2.3第80行要求仓库标签“在仓库表内唯一”，并明确“该义务适用于任务初值、每个StateSeed”；§6第309行要求六类满额物品分别一格，依据为任务L6及规则L13、L41。interfaces.rs:227–249仅收集六物种及检查各80000，没有检查slot集合。Engine::validate_seed在engine.rs:304–308确实核当前StateSeed.warehouse的重复标签，但其对象不是initial_state.warehouse。本席只把任务初值第二行slot改成首行warehouse_0，保留运行种子不变，重编CLI跑2刻退出0/completed；把同类重复改到当前种子的对照则退出2/invalid_input，报告warehouse格标签重复。当前种子的防线不能覆盖任务锚点，本条不要求两时刻仓库相等或先证明可达性。见否证-r1-2-证据/cli-results.json及initial-duplicate-slot-input.json。"
+    },
+    {
+      "id": "KR-r1-L3-04",
+      "refuted": false,
+      "reason": "未能否证。《内核输出》§1第15行要求重建完整依赖清单，§3第47行要求validation_scope严格比较。tests/verify_outputs.py:27–28只循环待验记录自报的fingerprints，空表使检查空过；43–45仅核三个认证布尔，未重算核对manufacturing_cycles_completed。本席对两份全状态样例分别设置fingerprints=[]或完成批数value=\"999\"，共4份副本均通过未修改的verify()；实际完成数分别是粉碎机2批、分流器0批，篡改摘要的对照被拒绝。Rust verify_record对这4份元数据变异全部拒绝，故仅保留Python入口漏验这一边界；该入口还有schema和完整轨迹检查，不能把“只检查”扩大解释成它完全不验轨迹。全部逐条论证、命令和边界核验见/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-2.md；本条证据为同目录否证-r1-2-证据/python-verifier-results.json、rust-verifier-results.json。"
+    }
+  ]
+}

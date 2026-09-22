@@ -1,0 +1,3097 @@
+{
+  "scope": "固定布局及本版单级不请求阻尼；有限实跑不替代结构归纳",
+  "sources_before": {
+    "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt": "abc7a5867f6477eedb619c63a21c4a77144c57ad4567fdcfb696b3049d66a670",
+    "/home/zhuran24/zmd-research-fresh/求解任务.txt": "10abf80fe6eefe647471eabe78da4053f77b489d3806722c501c6acb405a2864",
+    "/home/zhuran24/zmd-research-fresh/求解约束.txt": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/参数扫描约减.md": "2fd206e60a3e2bac6d5d3700aab8df450ae1a521e412a7bdee99076b6693097f",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md": "36bfc4d83363cf482bc2d6b7068e38c921a937b19182157ad4aa87770b5abefa",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md": "ad868c6c4c102ddadc7a8e2d566bea65763a350cf330f6fd9b11f9f27630e805",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md": "d4a2b567d0861876964c6a968d6b9e052eef74860324e28e86ea20cd6e5a03f7",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/受限模型声明.md": "fd6a18dbcd805414234e9dd00916eff5fc4811a7ebd0d9eb74ac6b80f63eba34",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json": "397c1ce98e2faa6acd391e0fc7405da25c6c93aa07175795b84830b0ca6d4cd9",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json": "74d21a5bd37c6178f988a86a4aa78a03d1e4244ecff26f133bb5e700ada82e43",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/review_r1_coverage.py": "1bc48540491d7835bd3303a3783ddefeab2f79c88849b49bef6eeab3fa7edb1f",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/check_branch_projection.py": "b8f187f9deb479cb6662697befa57a6c9b183670b6b060815c270c684fc5b92d",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/debug/kernel": "290e7dfddc9b5bad52aa9f2f2d3e8e42cc293508f3c85fe108d58feecd89d953",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/model.rs": "6f4d3dfb5133b834ef52dba2fa398cee3f6e3f88f1da77630aaf66326e81a842",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/event_identity.rs": "f3615f3503914461db784f405c9799e717a85060cf1e99a4162662299b3644b3",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/output.rs": "299ee2a0ffcea19b671de7c34d76485cded8891cbd50707e3b4ce2a6a115a2ae",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/input.rs": "4d5e627e135d1bea81aa88b3efe1ea4db8883775e546fd7d98f731676cbf12bf",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/config.rs": "f2a22d1bbc264a75179fa45d41b03cce33f6e44d197112ba84486446d3df20ad",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/main.rs": "55f473734dad39f209178ca825e5e00e662c6115d790b5c9774080de01a80f38",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/value.rs": "0cd34a9c7877861580caa0711e643575cbb9ce631a445919c69f093c2392d32b",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/transition.rs": "6f926aec8b454fd989139185edd88daa152b8a522f3c5be8179dc6f69fd04eae",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/interfaces.rs": "89ae6e4fe38e166ab7382fec01ec87a7c83da48e408abf587ed6dfbf96f7184d",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests.rs": "cd71bb3bf820087e8e0153e05f0ba624bf30619fefc0ae250edc6ca6361fb82b",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/cycle.rs": "1e3d278b6f93db1e7aeaffb046797fea5d9fcb80545039990e86878753065992",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/catalog.rs": "3a0a7c3e21b46d626928fca81e90a617bd55189b8e3f357019c529109510636f",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/engine.rs": "64ff9249f7bec607cdd9735bb1392dc83adfb9128acc8c3e48428bd0c80753b8",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/ledger.rs": "94502ac533ac9b086358832b1805d50462378f299dc90b1803eb7db0e6c9b49a",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/seed.rs": "5a512a2e0485ca74b7c2eb4eedfc14c8b0d98242b2b0facb6c4895ac15256c98",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs": "c99a5573e107cc886a0f6f4ed95b70d4517ecd1d9289aa7c73d9646cec798697",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/polling.rs": "8fb84535b4aa030b6dda820ccfb9dadb8cc969e714b4cd94e2350f589b95a59f",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests_revision.rs": "97bfc175dfeab33833c0d2f39268ef925081469269fb5e605451fec654d465ec",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests_revision_r2.rs": "0de7d37fa7f276de370f703b45ca34b46637a7ed071fa97e2555833d102f1247",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/warehouse.rs": "5976dbb53ebbf27013e95c51812cecd958e67246bcdabb196be0040596da3c0b",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json": "988ac30253bf1d4803f0f1eed23b5029db1033dcf391f2b7c324c5d9e27ee144",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询.json": "a8303054aaf7dde1af2a9f33d468a6c05c5d115ee2ee5ba5f5f07887a3dcc13a"
+  },
+  "normalization": "仅把trace内axis=damping.branch的value替换成同一外部参数标记",
+  "examples": [
+    {
+      "name": "混做粉碎机两下游",
+      "independent": {
+        "gate_input_edges": [],
+        "gate_subgraphs": [
+          {
+            "active_channels": [
+              "PC|belt_a0:north:0|belt_a1:south:0",
+              "PC|belt_a1:north:0|belt_a2:south:0",
+              "PC|belt_a2:north:0|grinder_a:south:5",
+              "PC|belt_b0:east:0|belt_b1:south:0",
+              "PC|belt_b1:west:0|belt_b2:south:0",
+              "PC|belt_b2:north:0|belt_b3:south:0",
+              "PC|belt_b3:north:0|grinder_b:south:0",
+              "PC|crusher:north:0|belt_a0:south:0",
+              "PC|crusher:north:2|belt_b0:south:0",
+              "PC|feed_belt:north:0|crusher:south:0",
+              "PC|ore_source:north:1|feed_belt:south:0"
+            ],
+            "nontransport_output_levels": {
+              "core": [],
+              "crusher": [
+                "other"
+              ],
+              "grinder_a": [],
+              "grinder_b": [],
+              "power": [],
+              "ore_source": [
+                "other"
+              ]
+            },
+            "damping_query_sides": []
+          }
+        ],
+        "forks": [],
+        "complete_table_product": 1,
+        "projected_table_product": 1,
+        "no_damping_queries_in_all_gate_subgraphs": true,
+        "behavior_representatives_under_kq04": 1
+      },
+      "cited_function_reproduced": {
+        "nontransport_output_max_levels": {
+          "core": 0,
+          "crusher": 1,
+          "grinder_a": 0,
+          "grinder_b": 0,
+          "power": 0,
+          "ore_source": 1
+        },
+        "gate_input_edges": [],
+        "forks": [],
+        "full_geometric_table_product": 1,
+        "no_damping_query_in_any_gate_subgraph": true,
+        "behavior_representatives_if_no_query": 1
+      },
+      "kernel": {
+        "requested_ticks_each": 4,
+        "runs": [
+          {
+            "index": 0,
+            "choices": [],
+            "input_sha256": "4520c61931ffb1974d437646c5f79a4130339645d3438541435144d8f6c94d50",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "ea951acc017b4b1ba31a2a65ea6ba88e33706d582452ea4630471e9b46fd4321",
+            "ticks_recorded": 4
+          }
+        ],
+        "variants_planned": 1,
+        "variants_completed": 1,
+        "trace_classes_except_scanned_parameter": 1,
+        "all_completed_and_equal": true
+      }
+    },
+    {
+      "name": "分流器三路轮询",
+      "independent": {
+        "gate_input_edges": [
+          "PC|probe_bottom:east:0|probe_gate_b:south:0",
+          "PC|probe_left:west:0|probe_gate_a:south:0"
+        ],
+        "gate_subgraphs": [
+          {
+            "active_channels": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|ore_source:north:1|feed_splitter:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom_source:north:1|probe_bottom:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left_source:north:1|probe_left:south:0",
+              "PC|probe_merger:north:0|probe_box:south:2",
+              "PC|south_box:north:2|splitter:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0"
+            ],
+            "nontransport_output_levels": {
+              "core": [],
+              "south_box": [
+                "other"
+              ],
+              "north_box": [],
+              "east_box": [],
+              "west_box": [],
+              "power": [],
+              "ore_source": [
+                "other"
+              ],
+              "probe_left_source": [
+                "other"
+              ],
+              "probe_bottom_source": [
+                "other"
+              ],
+              "probe_box": []
+            },
+            "damping_query_sides": []
+          },
+          {
+            "active_channels": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|ore_source:north:1|feed_splitter:south:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom_source:north:1|probe_bottom:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left_source:north:1|probe_left:south:0",
+              "PC|probe_merger:north:0|probe_box:south:2",
+              "PC|south_box:north:2|splitter:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0"
+            ],
+            "nontransport_output_levels": {
+              "core": [],
+              "south_box": [
+                "other"
+              ],
+              "north_box": [],
+              "east_box": [],
+              "west_box": [],
+              "power": [],
+              "ore_source": [
+                "other"
+              ],
+              "probe_left_source": [
+                "other"
+              ],
+              "probe_bottom_source": [
+                "other"
+              ],
+              "probe_box": []
+            },
+            "damping_query_sides": []
+          },
+          {
+            "active_channels": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|ore_source:north:1|feed_splitter:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom_source:north:1|probe_bottom:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left_source:north:1|probe_left:south:0",
+              "PC|probe_merger:north:0|probe_box:south:2",
+              "PC|south_box:north:2|splitter:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0"
+            ],
+            "nontransport_output_levels": {
+              "core": [],
+              "south_box": [
+                "other"
+              ],
+              "north_box": [],
+              "east_box": [],
+              "west_box": [],
+              "power": [],
+              "ore_source": [
+                "other"
+              ],
+              "probe_left_source": [
+                "other"
+              ],
+              "probe_bottom_source": [
+                "other"
+              ],
+              "probe_box": []
+            },
+            "damping_query_sides": []
+          },
+          {
+            "active_channels": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|ore_source:north:1|feed_splitter:south:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom_source:north:1|probe_bottom:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left_source:north:1|probe_left:south:0",
+              "PC|probe_merger:north:0|probe_box:south:2",
+              "PC|south_box:north:2|splitter:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0"
+            ],
+            "nontransport_output_levels": {
+              "core": [],
+              "south_box": [
+                "other"
+              ],
+              "north_box": [],
+              "east_box": [],
+              "west_box": [],
+              "power": [],
+              "ore_source": [
+                "other"
+              ],
+              "probe_left_source": [
+                "other"
+              ],
+              "probe_bottom_source": [
+                "other"
+              ],
+              "probe_box": []
+            },
+            "damping_query_sides": []
+          }
+        ],
+        "forks": [
+          {
+            "unit": "feed_splitter",
+            "outgoing": [
+              "PC|feed_splitter:north:0|south_box:south:1"
+            ],
+            "targets": {
+              "PC|feed_splitter:north:0|south_box:south:1": {
+                "unit": "south_box",
+                "kind": "协议储存箱"
+              }
+            },
+            "permanent_outgoing": [
+              "PC|feed_splitter:north:0|south_box:south:1"
+            ],
+            "rows": [
+              [
+                "PC|feed_splitter:north:0|south_box:south:1"
+              ]
+            ],
+            "kept_rows": [
+              [
+                "PC|feed_splitter:north:0|south_box:south:1"
+              ]
+            ],
+            "complete_tables": 1,
+            "projected_tables": 1,
+            "representative_queries_checked": 4
+          },
+          {
+            "unit": "probe_bottom",
+            "outgoing": [
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0"
+            ],
+            "targets": {
+              "PC|probe_bottom:east:0|probe_gate_b:south:0": {
+                "unit": "probe_gate_b",
+                "kind": "物品准入口"
+              },
+              "PC|probe_bottom:north:0|probe_merger:east:0": {
+                "unit": "probe_merger",
+                "kind": "汇流器"
+              }
+            },
+            "permanent_outgoing": [
+              "PC|probe_bottom:north:0|probe_merger:east:0"
+            ],
+            "rows": [
+              [
+                "PC|probe_bottom:east:0|probe_gate_b:south:0"
+              ],
+              [
+                "PC|probe_bottom:north:0|probe_merger:east:0"
+              ],
+              [
+                "PC|probe_bottom:east:0|probe_gate_b:south:0",
+                "PC|probe_bottom:north:0|probe_merger:east:0"
+              ]
+            ],
+            "kept_rows": [
+              [
+                "PC|probe_bottom:east:0|probe_gate_b:south:0",
+                "PC|probe_bottom:north:0|probe_merger:east:0"
+              ],
+              [
+                "PC|probe_bottom:north:0|probe_merger:east:0"
+              ]
+            ],
+            "complete_tables": 2,
+            "projected_tables": 2,
+            "representative_queries_checked": 8
+          },
+          {
+            "unit": "probe_left",
+            "outgoing": [
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0"
+            ],
+            "targets": {
+              "PC|probe_left:north:0|probe_merger:south:0": {
+                "unit": "probe_merger",
+                "kind": "汇流器"
+              },
+              "PC|probe_left:west:0|probe_gate_a:south:0": {
+                "unit": "probe_gate_a",
+                "kind": "物品准入口"
+              }
+            },
+            "permanent_outgoing": [
+              "PC|probe_left:north:0|probe_merger:south:0"
+            ],
+            "rows": [
+              [
+                "PC|probe_left:north:0|probe_merger:south:0"
+              ],
+              [
+                "PC|probe_left:west:0|probe_gate_a:south:0"
+              ],
+              [
+                "PC|probe_left:north:0|probe_merger:south:0",
+                "PC|probe_left:west:0|probe_gate_a:south:0"
+              ]
+            ],
+            "kept_rows": [
+              [
+                "PC|probe_left:north:0|probe_merger:south:0"
+              ],
+              [
+                "PC|probe_left:north:0|probe_merger:south:0",
+                "PC|probe_left:west:0|probe_gate_a:south:0"
+              ]
+            ],
+            "complete_tables": 2,
+            "projected_tables": 2,
+            "representative_queries_checked": 8
+          },
+          {
+            "unit": "splitter",
+            "outgoing": [
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0"
+            ],
+            "targets": {
+              "PC|splitter:east:0|east_box:south:0": {
+                "unit": "east_box",
+                "kind": "协议储存箱"
+              },
+              "PC|splitter:north:0|north_box:south:0": {
+                "unit": "north_box",
+                "kind": "协议储存箱"
+              },
+              "PC|splitter:west:0|west_box:south:0": {
+                "unit": "west_box",
+                "kind": "协议储存箱"
+              }
+            },
+            "permanent_outgoing": [
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0"
+            ],
+            "rows": [
+              [
+                "PC|splitter:east:0|east_box:south:0"
+              ],
+              [
+                "PC|splitter:north:0|north_box:south:0"
+              ],
+              [
+                "PC|splitter:west:0|west_box:south:0"
+              ],
+              [
+                "PC|splitter:east:0|east_box:south:0",
+                "PC|splitter:north:0|north_box:south:0"
+              ],
+              [
+                "PC|splitter:east:0|east_box:south:0",
+                "PC|splitter:west:0|west_box:south:0"
+              ],
+              [
+                "PC|splitter:north:0|north_box:south:0",
+                "PC|splitter:west:0|west_box:south:0"
+              ],
+              [
+                "PC|splitter:east:0|east_box:south:0",
+                "PC|splitter:north:0|north_box:south:0",
+                "PC|splitter:west:0|west_box:south:0"
+              ]
+            ],
+            "kept_rows": [
+              [
+                "PC|splitter:east:0|east_box:south:0",
+                "PC|splitter:north:0|north_box:south:0",
+                "PC|splitter:west:0|west_box:south:0"
+              ]
+            ],
+            "complete_tables": 24,
+            "projected_tables": 3,
+            "representative_queries_checked": 96
+          }
+        ],
+        "complete_table_product": 96,
+        "projected_table_product": 12,
+        "no_damping_queries_in_all_gate_subgraphs": true,
+        "behavior_representatives_under_kq04": 1
+      },
+      "cited_function_reproduced": {
+        "nontransport_output_max_levels": {
+          "core": 0,
+          "south_box": 1,
+          "north_box": 0,
+          "east_box": 0,
+          "west_box": 0,
+          "power": 0,
+          "ore_source": 1,
+          "probe_left_source": 1,
+          "probe_bottom_source": 1,
+          "probe_box": 0
+        },
+        "gate_input_edges": [
+          [
+            "PC|probe_left:west:0|probe_gate_a:south:0",
+            "probe_left",
+            "probe_gate_a"
+          ],
+          [
+            "PC|probe_bottom:east:0|probe_gate_b:south:0",
+            "probe_bottom",
+            "probe_gate_b"
+          ]
+        ],
+        "forks": [
+          {
+            "unit": "splitter",
+            "degree": 3,
+            "full_tables": 24,
+            "permanent_outgoing": [
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0"
+            ],
+            "mutable_outgoing": [],
+            "static_subset_projection_tables": 3,
+            "exhaustive_projection_checks": 24
+          },
+          {
+            "unit": "feed_splitter",
+            "degree": 1,
+            "full_tables": 1,
+            "permanent_outgoing": [
+              "PC|feed_splitter:north:0|south_box:south:1"
+            ],
+            "mutable_outgoing": [],
+            "static_subset_projection_tables": 1,
+            "exhaustive_projection_checks": 1
+          },
+          {
+            "unit": "probe_left",
+            "degree": 2,
+            "full_tables": 2,
+            "permanent_outgoing": [
+              "PC|probe_left:north:0|probe_merger:south:0"
+            ],
+            "mutable_outgoing": [
+              "PC|probe_left:west:0|probe_gate_a:south:0"
+            ],
+            "static_subset_projection_tables": 2,
+            "exhaustive_projection_checks": 2
+          },
+          {
+            "unit": "probe_bottom",
+            "degree": 2,
+            "full_tables": 2,
+            "permanent_outgoing": [
+              "PC|probe_bottom:north:0|probe_merger:east:0"
+            ],
+            "mutable_outgoing": [
+              "PC|probe_bottom:east:0|probe_gate_b:south:0"
+            ],
+            "static_subset_projection_tables": 2,
+            "exhaustive_projection_checks": 2
+          }
+        ],
+        "full_geometric_table_product": 96,
+        "no_damping_query_in_any_gate_subgraph": true,
+        "behavior_representatives_if_no_query": 1
+      },
+      "kernel": {
+        "requested_ticks_each": 12,
+        "runs": [
+          {
+            "index": 0,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:east:0|east_box:south:0"
+            ],
+            "input_sha256": "4fecbf60292f82390bcb6feecb7691af671280fae39ba6a5703482ab24b68861",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 1,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:north:0|north_box:south:0"
+            ],
+            "input_sha256": "f64fcd50bc58fca391f04be468428dabdbbaeb760c9d0900b6b3577307406713",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 2,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0"
+            ],
+            "input_sha256": "9d30be5ccc724ea2d0bffbc1a82d7640f769c450bce31450556de059f251243d",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 3,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0"
+            ],
+            "input_sha256": "2758c83eb2dee803ebb07bc1c46991b2556c5c0c8f9bb7325786c4a3d1514dcf",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 4,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0"
+            ],
+            "input_sha256": "49da962c452d9f3dd0a7783dd8696799b0bf856ac16313b1b11e0f4e9b200d8c",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 5,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:west:0|west_box:south:0"
+            ],
+            "input_sha256": "77d3e566bea1cc4f27609c6c572b180b4592c05a9f19f09fe1c3a8a27b5b2115",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 6,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:east:0|east_box:south:0"
+            ],
+            "input_sha256": "863cb5e49c0478a742411ff564e6cd9a120196b6309ad249d53e9fa02ee6b7e4",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 7,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:north:0|north_box:south:0"
+            ],
+            "input_sha256": "a8694c490ca04cdbf2b09e6dc07da45bc8a814ef32b4f0a43c70fe607e68d429",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 8,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0"
+            ],
+            "input_sha256": "ea10bafe493d2155a8252929bd35ced2070474cee670617f38a558023ea3c26c",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 9,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0"
+            ],
+            "input_sha256": "e040990c16bfd90576444369fb5ade2400ca3ab83c7607e8ab6fb52be8aacd5b",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 10,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0"
+            ],
+            "input_sha256": "4dbdd81d509c4576a3d93805880e8e0ecdfb19675bc1ab417a88b3926601d2f7",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 11,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:west:0|west_box:south:0"
+            ],
+            "input_sha256": "d600cc6a416a2ed511a40f1b5a47a2007102e65a979613d6a493076d6a2b7e78",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 12,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:east:0|east_box:south:0"
+            ],
+            "input_sha256": "bc12f80fbf234e695621c41b4f9765946564acf4285d3fe46dc65bac315ea378",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 13,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:north:0|north_box:south:0"
+            ],
+            "input_sha256": "394d8ce26776676c6944e02a411505c1cdfd324974082d90578edef57071d64b",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 14,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0"
+            ],
+            "input_sha256": "7b5754a672c0e078d77a6e30b630a8ec62c7713733feb849fd2740d45282563b",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 15,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0"
+            ],
+            "input_sha256": "fa8d3f186267a03d448e6635033743fdd4a1e8c85672f572a22b13bf949705f5",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 16,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0"
+            ],
+            "input_sha256": "c455efd7f70d6ddcf7168c3e588f0a05a57cfecd73a3441fd8907de322387f7b",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 17,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:west:0|west_box:south:0"
+            ],
+            "input_sha256": "6c755fa2a2e56cb73a4ba54c666fc4ea2e5c6611e5d60162f9b76cfc7a85608d",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 18,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:east:0|east_box:south:0"
+            ],
+            "input_sha256": "c2fa6d32a8fabe1d5e4f00f78090aeb4a8b7d39dd86022c136a16e87da8ff47f",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 19,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:north:0|north_box:south:0"
+            ],
+            "input_sha256": "5a3bf54e5f3e5f188a225971195689a056f2af0fe4c6a6ae9abb320e905c5a57",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 20,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0"
+            ],
+            "input_sha256": "44daa9578e59ca24b1cb9e033c36c60e15d7b92b50a16b216dd36671d8fe0d41",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 21,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0"
+            ],
+            "input_sha256": "b1f4a3f5b9b7a48b459779925d84950a5893909f817729e99249b86de63a60b4",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 22,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0"
+            ],
+            "input_sha256": "a790eae086e6fe0604e6458b1d0e65897ccdcec5f08e910dde5d8ba33e820687",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 23,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:west:0|west_box:south:0"
+            ],
+            "input_sha256": "2286c14ff4d2120e08a991dd3a805921db301be01989c4175083ea3e63994f3f",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 24,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:east:0|east_box:south:0"
+            ],
+            "input_sha256": "6c02ac3f6ac0a5b6cf7be929c10b52b766b2d8caf8ab94f2f57da71e77ef81f3",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 25,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:north:0|north_box:south:0"
+            ],
+            "input_sha256": "e26fbb5ab7c8d843997a798829f1c9234ad4719cbe9046b2182811f6d140768c",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 26,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0"
+            ],
+            "input_sha256": "be7722f06a88a7dd66059712ecde3ef66c40a5eebd48a84a88cbf266e4168e4b",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 27,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0"
+            ],
+            "input_sha256": "45e7454df0864865e55a13f2636360c8fcb9bb417b54822f0cafdfdfb77ddf43",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 28,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0"
+            ],
+            "input_sha256": "750065b89fc5db5f49cd2ca18c2fd6996a4fd65443aed55af4d7f5fb29de077a",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 29,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:west:0|west_box:south:0"
+            ],
+            "input_sha256": "5d77944c67717ef9989e4e15716ae815554f547f85cca332fcbc87b0965fc3bc",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 30,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:east:0|east_box:south:0"
+            ],
+            "input_sha256": "ef05f6f7eb8635470e22ae6cc8deb7052bb19ac5c945823cbefc66bd7ed1e0b2",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 31,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:north:0|north_box:south:0"
+            ],
+            "input_sha256": "8e7e54be8f68be560ee4a78375ea98ac5702dbc66c3ca5b6b0e3772ab41e1e17",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 32,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0"
+            ],
+            "input_sha256": "f64460e32722bf73722aa869fd4cc3581dc4e13d4e51c0a289f814e671b60f01",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 33,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0"
+            ],
+            "input_sha256": "1365072850cb069f387ea5cb8590b785674297f7c0139072341387497b85ba06",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 34,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0"
+            ],
+            "input_sha256": "39b4acf0c0385d5d482f88e4759b3fa968dc8deee755ebb601fab72916af6673",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 35,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:west:0|west_box:south:0"
+            ],
+            "input_sha256": "16c4e874434dd330f5a3bd97323a2fc32313b6124c8093643dcc4d058e532fcd",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 36,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:east:0|east_box:south:0"
+            ],
+            "input_sha256": "efc46efc6088ffd117a9a467ab37122e7ad8d456932d0f4ba8f6be1d3eae12e7",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 37,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:north:0|north_box:south:0"
+            ],
+            "input_sha256": "e25dfb55dd5db8e78f1f42e00a567c34e07f2998dae87799861b0d16b033f33e",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 38,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0"
+            ],
+            "input_sha256": "e13f5abe6091f4e53e03f70395c14386a1411b879f784ec0adce2fb21e14d0bd",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 39,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0"
+            ],
+            "input_sha256": "6bae30b36c53daa1221621160c6a82dd527276421c20a7f6656a1c82d851f861",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 40,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0"
+            ],
+            "input_sha256": "38dd7a493e304c1e99f3fb9644ae361b04592b00d1f2db49c2cb2d21e4f2ba43",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 41,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:west:0|west_box:south:0"
+            ],
+            "input_sha256": "20c0c0a5e906fe3ab09834cb729dfe97312196654ec0f827bcfd3f79366b915b",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 42,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:east:0|east_box:south:0"
+            ],
+            "input_sha256": "3557f905c11aac1ec0ef0a8cc3b969d5671069e9070301eb62e9eb9196ae62cf",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 43,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:north:0|north_box:south:0"
+            ],
+            "input_sha256": "bfce62b8bce3d536ac56a32c72e356125e66a5387de88fc86cbc74e58dc54400",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 44,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0"
+            ],
+            "input_sha256": "01d54130812c1c43857ca6bc55ee3d87fd80d7f8420eebfc1ee7231f0b5d4fad",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 45,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0"
+            ],
+            "input_sha256": "acec04fc28070e4c10d03fe7c5379b9ce4d6683e7c1002f5991e641f8c58d019",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 46,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0"
+            ],
+            "input_sha256": "4d0986ddfd8e336ef59b7ef624fada3eefef02380fd32df955c76f0336c47f41",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 47,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:west:0|west_box:south:0"
+            ],
+            "input_sha256": "9c33a12958343ea1b3ef7450d325775b2b96c972d81b500aa91fbca8b71754ef",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 48,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:east:0|east_box:south:0"
+            ],
+            "input_sha256": "19998591bffde1cfc9da7399951966e29b498fc0980fd19ded09011b7d522526",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 49,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:north:0|north_box:south:0"
+            ],
+            "input_sha256": "1d0a039f99ba2c7dba0f5bbf79cc8d3c012f9d31008b3c41baf6e323c79295e4",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 50,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0"
+            ],
+            "input_sha256": "05caabae9e94defc46f28921d57ce738c3dc64613e825da13d5303193c131789",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 51,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0"
+            ],
+            "input_sha256": "8ed74ecd0e2db323a63442bd05716c70c4bad7155a24ae203776638e6ef31a3d",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 52,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0"
+            ],
+            "input_sha256": "f6635538b9d8a5b0543d1c6eb99a2aa10a742000594483f3be09d9af1a47a23d",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 53,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:west:0|west_box:south:0"
+            ],
+            "input_sha256": "4354c887419ca94f76e29e572894cba81c347a3ebdb1fa829febe419cec5b5a5",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 54,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:east:0|east_box:south:0"
+            ],
+            "input_sha256": "8fb601e71783adfafe27f366479e8109bf586480214bd4a45369942258e82238",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 55,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:north:0|north_box:south:0"
+            ],
+            "input_sha256": "86ac66801eb4b947df0e623e7cc1e5114d7cae2a00ddc6cbd1ef3f113a97bf97",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 56,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0"
+            ],
+            "input_sha256": "da16dd57397ba1777f152f583fb3cc2d338fc8cc3334e4de1a799d68543659c6",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 57,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0"
+            ],
+            "input_sha256": "74f216d7007e0a52bfac3275c952d8b7335b5228734a7d0bc7c22306a5d49b68",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 58,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0"
+            ],
+            "input_sha256": "109df136cb730c3895deef15c3644ddab265c80d65154c5b5871dc72eceef618",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 59,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:west:0|west_box:south:0"
+            ],
+            "input_sha256": "a70e6ca5aa7e9e9b7c6080608f6db1c8cbc5a0419b76f86857e67a100775dfdb",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 60,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:east:0|east_box:south:0"
+            ],
+            "input_sha256": "96d7cd74a4a3cd14615d86a57a900bb0bca1f1ef06fb9990cc6c5543b0ee3c87",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 61,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:north:0|north_box:south:0"
+            ],
+            "input_sha256": "27f213eb47bf63e23b4ea2c88c4f162a84b1c355220d5a161d148d9fb57cacb9",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 62,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0"
+            ],
+            "input_sha256": "ced901b76f148ff7d3cd261526a119da1969947fa2b96f515d13bead8224d62d",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 63,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0"
+            ],
+            "input_sha256": "dfacdecc77f13b8c74bc8b6855aa47e3cb1ec82374893c93f5cd067bc7538b46",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 64,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0"
+            ],
+            "input_sha256": "70d56f54dd7e2140f35bf8612a36cab059334c5923c39b9234d5460a3f48a83e",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 65,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:west:0|west_box:south:0"
+            ],
+            "input_sha256": "7f5481afd1262062d996743ac997be4f30d48aed55add64a76ce1569dca294ec",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 66,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:east:0|east_box:south:0"
+            ],
+            "input_sha256": "f523e4a5b89b3ba2ccc868158df92d686178abca28d762c4448dfb6e4941a034",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 67,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:north:0|north_box:south:0"
+            ],
+            "input_sha256": "d38c7f122d3b55252362d0079f06664cde213a8f3a2e6a9fb9462c6ed9aa8bd2",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 68,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0"
+            ],
+            "input_sha256": "2741e04f2fdfa80aae3f0e092362cba50edb9109b0a5553c8bc2a220908b2976",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 69,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0"
+            ],
+            "input_sha256": "2b5c328d6f97d52d62e18bedc010350c564bb2ceb53e32c7d59d40d98b0ac8c5",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 70,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0"
+            ],
+            "input_sha256": "9672c678032d2e2fcaee11c010c76371c3bcad4dbdb64048b72f6438ec55a006",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 71,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:west:0|west_box:south:0"
+            ],
+            "input_sha256": "141ce995eb031a97c4cb256186593c9c2960e3e6844fdf50761528247a4d5309",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 72,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:east:0|east_box:south:0"
+            ],
+            "input_sha256": "d40abc0714f775cfba558863113d207c69781c71cdb8e2defc916e722a1cfdf7",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 73,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:north:0|north_box:south:0"
+            ],
+            "input_sha256": "9050557cbffefade6b9d6471aad97386cb712325254f34102f283a1d70ce3e0e",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 74,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0"
+            ],
+            "input_sha256": "0dcbf808d0243d1c1825eca0c7b6460fe2421a1944fcceb54afaf45a45c10266",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 75,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0"
+            ],
+            "input_sha256": "538829346db7555f6704c9b8bf083f1714479f986b57518997722a03c151e8d3",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 76,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0"
+            ],
+            "input_sha256": "9707a4fa669543b49db7d1ac1fac3bdc8674c5c17f16225970b91ed60904884b",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 77,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:west:0|west_box:south:0"
+            ],
+            "input_sha256": "cfc94ccbff3ba80ebeaf6ffc8f9877eab43a78a5d2c1056f01ea4a3fc41e2796",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 78,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:east:0|east_box:south:0"
+            ],
+            "input_sha256": "9622c17c9f0917afbb83ed0dd8f1a0166a51611ddf8f4d78bbe314da65631894",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 79,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:north:0|north_box:south:0"
+            ],
+            "input_sha256": "f463f7af1c93885a6bed31f667518bd67458db645ffaf8d7ad0f02292f0e5233",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 80,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0"
+            ],
+            "input_sha256": "04993c5b6b2b6f5df9a77e8d12ab2902fd2c0d53ac3b43889df0fec31c594b6d",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 81,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0"
+            ],
+            "input_sha256": "0b756e09313eca338a0f5f1fb85bba8a2d64ab426c5fc2c428d614defb9df6ed",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 82,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0"
+            ],
+            "input_sha256": "9461431d186b682016b23d442b82fd071c5024add8ad51e671c7e9d94f105a80",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 83,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:west:0|west_box:south:0"
+            ],
+            "input_sha256": "73a098e686151943827306ac1fd46125c3ac9fa48694889ffc0efb26ab5ff637",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 84,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:east:0|east_box:south:0"
+            ],
+            "input_sha256": "f17af5f5c31fd3f5701a99a69bb766750e586c6a67f9bfabf15de67aeda5e1fc",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 85,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:north:0|north_box:south:0"
+            ],
+            "input_sha256": "150754c53df5f809b5d59e4761a2d402c95a174752e9b5e4ea27820ed185cf32",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 86,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0"
+            ],
+            "input_sha256": "c34d9b85abb247fb65c13df76e0599ccc2dbea9a79e506987a4ce4ad3b56a94c",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 87,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0"
+            ],
+            "input_sha256": "664a7eb8e4158dce183c0c3f3fefb11cb90b7e6a7aefc18670ef125ed9ea5dac",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 88,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0"
+            ],
+            "input_sha256": "9fda1a970f7e2e9f77f17e5166839de8efd76a30098f8fd82b4a819fa5cc0601",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 89,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:west:0|west_box:south:0"
+            ],
+            "input_sha256": "0b8ec66f604795d9989fcd2bc67f2524bc18be9118836c87e87aa9df75c98d8b",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 90,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:east:0|east_box:south:0"
+            ],
+            "input_sha256": "405c9baf1338798bdedcf5d61ff47fa4ca4ccb077d058056ae3a37c0e1ca8619",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 91,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:north:0|north_box:south:0"
+            ],
+            "input_sha256": "1d0da76e2f7d00b33ccd752af2324190f3633610e52203f67f099926d22431f1",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 92,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0"
+            ],
+            "input_sha256": "4b628a31d71a168872ef3e341fba1e29a271805dd8107e1cfc98ed17bf36a8ab",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 93,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:east:0|east_box:south:0"
+            ],
+            "input_sha256": "0703c9cfd6fe73f82ef28ebe0db2ac2c21921906ed1797b764b52477ecde064b",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 94,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0"
+            ],
+            "input_sha256": "ca231797dc5d6706e807813dc9981095d05847670abbccaaf5bf87268f93f39f",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          },
+          {
+            "index": 95,
+            "choices": [
+              "PC|feed_splitter:north:0|south_box:south:1",
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0",
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0",
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:west:0|west_box:south:0",
+              "PC|splitter:west:0|west_box:south:0"
+            ],
+            "input_sha256": "d264d364d3a684d7bdc410607a9163a6419140664fe7c3c0773261428b457e9b",
+            "exit_code": 0,
+            "status": "completed",
+            "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/current-record.json\",\"status\":\"completed\"}\n",
+            "stderr": "",
+            "trace_sha256_except_scanned_parameter": "5d09c802caad05a543cf3d3f2cef928dea32727170646a7236da18253a8b35e6",
+            "ticks_recorded": 12
+          }
+        ],
+        "variants_planned": 96,
+        "variants_completed": 96,
+        "trace_classes_except_scanned_parameter": 1,
+        "all_completed_and_equal": true
+      }
+    }
+  ],
+  "sources_after": {
+    "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt": "abc7a5867f6477eedb619c63a21c4a77144c57ad4567fdcfb696b3049d66a670",
+    "/home/zhuran24/zmd-research-fresh/求解任务.txt": "10abf80fe6eefe647471eabe78da4053f77b489d3806722c501c6acb405a2864",
+    "/home/zhuran24/zmd-research-fresh/求解约束.txt": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/参数扫描约减.md": "2fd206e60a3e2bac6d5d3700aab8df450ae1a521e412a7bdee99076b6693097f",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md": "36bfc4d83363cf482bc2d6b7068e38c921a937b19182157ad4aa87770b5abefa",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md": "ad868c6c4c102ddadc7a8e2d566bea65763a350cf330f6fd9b11f9f27630e805",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md": "d4a2b567d0861876964c6a968d6b9e052eef74860324e28e86ea20cd6e5a03f7",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/受限模型声明.md": "fd6a18dbcd805414234e9dd00916eff5fc4811a7ebd0d9eb74ac6b80f63eba34",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json": "397c1ce98e2faa6acd391e0fc7405da25c6c93aa07175795b84830b0ca6d4cd9",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json": "74d21a5bd37c6178f988a86a4aa78a03d1e4244ecff26f133bb5e700ada82e43",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/review_r1_coverage.py": "1bc48540491d7835bd3303a3783ddefeab2f79c88849b49bef6eeab3fa7edb1f",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-2-证据/check_branch_projection.py": "b8f187f9deb479cb6662697befa57a6c9b183670b6b060815c270c684fc5b92d",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/debug/kernel": "290e7dfddc9b5bad52aa9f2f2d3e8e42cc293508f3c85fe108d58feecd89d953",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/model.rs": "6f4d3dfb5133b834ef52dba2fa398cee3f6e3f88f1da77630aaf66326e81a842",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/event_identity.rs": "f3615f3503914461db784f405c9799e717a85060cf1e99a4162662299b3644b3",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/output.rs": "299ee2a0ffcea19b671de7c34d76485cded8891cbd50707e3b4ce2a6a115a2ae",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/input.rs": "4d5e627e135d1bea81aa88b3efe1ea4db8883775e546fd7d98f731676cbf12bf",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/config.rs": "f2a22d1bbc264a75179fa45d41b03cce33f6e44d197112ba84486446d3df20ad",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/main.rs": "55f473734dad39f209178ca825e5e00e662c6115d790b5c9774080de01a80f38",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/value.rs": "0cd34a9c7877861580caa0711e643575cbb9ce631a445919c69f093c2392d32b",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/transition.rs": "6f926aec8b454fd989139185edd88daa152b8a522f3c5be8179dc6f69fd04eae",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/interfaces.rs": "89ae6e4fe38e166ab7382fec01ec87a7c83da48e408abf587ed6dfbf96f7184d",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests.rs": "cd71bb3bf820087e8e0153e05f0ba624bf30619fefc0ae250edc6ca6361fb82b",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/cycle.rs": "1e3d278b6f93db1e7aeaffb046797fea5d9fcb80545039990e86878753065992",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/catalog.rs": "3a0a7c3e21b46d626928fca81e90a617bd55189b8e3f357019c529109510636f",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/engine.rs": "64ff9249f7bec607cdd9735bb1392dc83adfb9128acc8c3e48428bd0c80753b8",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/ledger.rs": "94502ac533ac9b086358832b1805d50462378f299dc90b1803eb7db0e6c9b49a",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/seed.rs": "5a512a2e0485ca74b7c2eb4eedfc14c8b0d98242b2b0facb6c4895ac15256c98",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs": "c99a5573e107cc886a0f6f4ed95b70d4517ecd1d9289aa7c73d9646cec798697",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/polling.rs": "8fb84535b4aa030b6dda820ccfb9dadb8cc969e714b4cd94e2350f589b95a59f",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests_revision.rs": "97bfc175dfeab33833c0d2f39268ef925081469269fb5e605451fec654d465ec",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests_revision_r2.rs": "0de7d37fa7f276de370f703b45ca34b46637a7ed071fa97e2555833d102f1247",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/warehouse.rs": "5976dbb53ebbf27013e95c51812cecd958e67246bcdabb196be0040596da3c0b",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json": "988ac30253bf1d4803f0f1eed23b5029db1033dcf391f2b7c324c5d9e27ee144",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询.json": "a8303054aaf7dde1af2a9f33d468a6c05c5d115ee2ee5ba5f5f07887a3dcc13a"
+  },
+  "sources_stable": true,
+  "executable": {
+    "method": "持有共享target可执行文件inode，通过/proc/self/fd执行",
+    "sha256_before": "290e7dfddc9b5bad52aa9f2f2d3e8e42cc293508f3c85fe108d58feecd89d953",
+    "sha256_after": "290e7dfddc9b5bad52aa9f2f2d3e8e42cc293508f3c85fe108d58feecd89d953",
+    "stable": true,
+    "shared_path_unchanged": true
+  },
+  "all_runtime_checks_passed": true
+}

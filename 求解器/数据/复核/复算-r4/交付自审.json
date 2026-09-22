@@ -1,0 +1,11 @@
+{
+  "document": "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复核-r4-数值复算.md",
+  "document_sha256": "dd6d752e5e9a77da023d6564d493be8c90655396a0c333c4607630116180768f",
+  "links_checked": 21,
+  "missing_links": [],
+  "multi_material_rows": 38,
+  "non_english_code_identifiers": [],
+  "changed_reviewed_or_source_files": [],
+  "findings": [],
+  "reader_review": "全文重读完成；修正了一处送料契约行号引用为节名；数字口径、表格、范围与证据链接一致。"
+}

@@ -1,0 +1,7 @@
+{
+  "canonical_records_equal": true,
+  "unchanged_trace": true,
+  "source_fingerprints_unchanged": true,
+  "raw_record_sha256_before": "3bf914b69287fb3cfac5dd230ed01f17106fe3ce32ed67a695e78f188a332a23",
+  "raw_record_sha256_after": "0d86569ff238c28b8c8720390e0ac5221dd102970f6f9870c72318196c7a69c8"
+}

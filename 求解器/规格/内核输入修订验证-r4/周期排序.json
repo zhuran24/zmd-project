@@ -1,0 +1,54 @@
+{
+  "schema": "event-order-v2",
+  "scope": "per_instant",
+  "template_order": [
+    {
+      "operation": "transfer",
+      "target": "box_a"
+    },
+    {
+      "operation": "transfer",
+      "target": "box_b"
+    }
+  ],
+  "repeat_embedding": "scan_round_then_template",
+  "schedule": {
+    "kind": "periodic",
+    "origin": {
+      "kind": "rational",
+      "value": {
+        "value": "0",
+        "category": "候选"
+      }
+    },
+    "slot_width": {
+      "kind": "rational",
+      "value": {
+        "value": "5",
+        "category": "候选"
+      }
+    },
+    "orders": [
+      [
+        {
+          "operation": "transfer",
+          "target": "box_a"
+        },
+        {
+          "operation": "transfer",
+          "target": "box_b"
+        }
+      ],
+      [
+        {
+          "operation": "transfer",
+          "target": "box_b"
+        },
+        {
+          "operation": "transfer",
+          "target": "box_a"
+        }
+      ]
+    ]
+  }
+}

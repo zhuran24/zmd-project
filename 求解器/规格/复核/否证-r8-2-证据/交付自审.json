@@ -1,0 +1,35 @@
+{
+  "status": "PASS",
+  "verdict_ids": [
+    "S5-r8-L1-01",
+    "S5-r8-L2-01",
+    "S5-r8-L2-02"
+  ],
+  "all_refuted_false": true,
+  "json_structure_valid": true,
+  "local_links_checked": 18,
+  "missing_links": [],
+  "source_fingerprints_checked": 93,
+  "unchanged_count": 83,
+  "kernel_source_changes_after_tests": 10,
+  "reviewed_spec_and_formal_sources_unchanged": true,
+  "evidence_files": [
+    "independent_verify.py",
+    "交付指纹核对.json",
+    "仓库Rust定向测试.log",
+    "停止条件独立复算.json",
+    "字段名最小试样.json",
+    "字段名独立校验.json",
+    "核验前指纹.json",
+    "核验后指纹.json",
+    "独立核验.log"
+  ],
+  "report_sha256": "2cc6a251fce814abc033c3d50603102f4119fc80540b97a686524010d5878ee3",
+  "review": [
+    "逐条有独立判决及来源",
+    "区分普通有限执行与生产键D域",
+    "区分源码的已测试字节与交付观测的变更后字节",
+    "结构试样不冒充语义轨迹",
+    "文末JSON完整可解析，结论没有因源码并行变化改变"
+  ]
+}

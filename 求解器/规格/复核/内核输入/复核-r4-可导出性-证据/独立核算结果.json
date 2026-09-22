@@ -1,0 +1,88 @@
+{
+  "geometry": {
+    "桥接器双通路": {
+      "units": 7,
+      "occupied_cells": 122,
+      "physical_channels": 4
+    },
+    "分流器三路轮询": {
+      "units": 9,
+      "occupied_cells": 128,
+      "physical_channels": 4
+    },
+    "混做粉碎机两下游": {
+      "units": 14,
+      "occupied_cells": 153,
+      "physical_channels": 11
+    }
+  },
+  "prefix": [
+    {
+      "time": 0,
+      "events_verified": 28,
+      "successful_moves": [
+        "J|0|0|0"
+      ],
+      "internal_passages": [],
+      "completed_batches": 0
+    },
+    {
+      "time": 1,
+      "events_verified": 42,
+      "successful_moves": [
+        "J|1|0|1",
+        "J|1|1|0"
+      ],
+      "internal_passages": [
+        [
+          "J|1|0|11",
+          "input"
+        ]
+      ],
+      "completed_batches": 0
+    },
+    {
+      "time": 2,
+      "events_verified": 43,
+      "successful_moves": [
+        "J|2|0|1",
+        "J|2|1|0",
+        "J|2|1|2"
+      ],
+      "internal_passages": [
+        [
+          "J|2|0|11",
+          "output"
+        ],
+        [
+          "J|2|0|11",
+          "input"
+        ]
+      ],
+      "completed_batches": 1
+    },
+    {
+      "time": 3,
+      "events_verified": 43,
+      "successful_moves": [
+        "J|3|0|1",
+        "J|3|0|4",
+        "J|3|1|0",
+        "J|3|1|3"
+      ],
+      "internal_passages": [
+        [
+          "J|3|0|11",
+          "output"
+        ],
+        [
+          "J|3|0|11",
+          "input"
+        ]
+      ],
+      "completed_batches": 2
+    }
+  ],
+  "status": "通过",
+  "scope": "独立核指定156条记录的守卫、权限、后效、闭包、库存和端口账；不是通用执行器或全称证明。"
+}

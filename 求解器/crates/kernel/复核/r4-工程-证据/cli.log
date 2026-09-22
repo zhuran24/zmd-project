@@ -1,0 +1,2 @@
+{"status": "pass", "cases": 59, "result": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/results.json"}
+{"status": "passed_with_schema_gap", "passed": 57, "open_schema_gaps": 1}

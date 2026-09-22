@@ -1,0 +1,59 @@
+{
+  "status": "通过",
+  "records": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-v3-kernel.json",
+      "ticks": 4,
+      "events": 156,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 36,
+        "exercised": 31,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "d2623e4643c8a2187d6e804fc0b10de6219617251a6ae12576efa7cfd5d55aa5"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-checkpoint_delta-v3-kernel.json",
+      "ticks": 4,
+      "events": 156,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 36,
+        "exercised": 31,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "c3b36ed6854d78a17a7cbfbf779e22a32e0716f73ef9cc52f7f610af9d8a483e"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-v3-kernel.json",
+      "ticks": 12,
+      "events": 794,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 44,
+        "exercised": 23,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "7a404c1a775247ac400d9be4e6f9e4c69314a211e2d6defbf5e5de85df410fe9"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-checkpoint_delta-v3-kernel.json",
+      "ticks": 12,
+      "events": 794,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 44,
+        "exercised": 23,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "1009a12c68a2e77f2970b71c98a0ebd98f9c7e11325bb397e3540a1f461cec55"
+    }
+  ],
+  "read_only_baseline_files": 12,
+  "baseline_changes": []
+}

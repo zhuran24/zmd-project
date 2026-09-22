@@ -1,0 +1,45 @@
+{
+  "time": "2026-09-21T08:44:17.141679-04:00",
+  "steps": [
+    {
+      "step": "规则第36行恢复",
+      "before": "31ced2a24fef738c72dfa406351b6bad5df3e353d6b1c2dfd06ab1febaf566ff",
+      "after": "d150b86b398f8e73e57bee1598020e6bcd895e5a13a254b4b11dd1e4416c325a",
+      "line36": "传输：协议储存箱在供电状态时会一直尝试把自身物品格内的所有物品立刻无线传输到仓库中，即使那个物品格中没有物品也一样，能送多少送多少，5 tick 冷却"
+    },
+    {
+      "step": "正式静态目录同步",
+      "catalog_before": "5d0c7e09d87180b851cdc0763fd5098c527657b0c62971791f9bf6ced8264cd7",
+      "catalog_after": "39105d320e55b4d357cd95b47c840a6bd4127afcb94d3f98b1c2997c56efddd3"
+    },
+    {
+      "step": "check_examples.py SOURCE_HASHES",
+      "replaced": "31ced2a24fef738c72dfa406351b6bad5df3e353d6b1c2dfd06ab1febaf566ff",
+      "with": "d150b86b398f8e73e57bee1598020e6bcd895e5a13a254b4b11dd1e4416c325a"
+    }
+  ],
+  "commands": [
+    {
+      "name": "cargo-build",
+      "command": "cargo build --release -p kernel --target-dir '/home/zhuran24/zmd-research-fresh/求解器/target'",
+      "exit_code": 0,
+      "stdout_tail": "",
+      "stderr_tail": "   Compiling kernel v0.1.0 (/home/zhuran24/zmd-research-fresh/求解器/crates/kernel)\n    Finished `release` profile [optimized] target(s) in 5.58s\n"
+    },
+    {
+      "name": "kernel-seed",
+      "command": "'/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel' seed '/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/规格/r36恢复/装载样例-r36.json' --config '/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json' --out '/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/规格/r36恢复/seed-output.json'",
+      "exit_code": 0,
+      "stdout_tail": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/规格/r36恢复/seed-output.json\",\"status\":null}\n",
+      "stderr_tail": ""
+    },
+    {
+      "name": "kernel-check",
+      "command": "'/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel' check '/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/规格/r36恢复/seed-output.json' --config '/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json'",
+      "exit_code": 0,
+      "stdout_tail": "{\n  \"buffer_channels\": 8,\n  \"catalog_sha256\": \"39105d320e55b4d357cd95b47c840a6bd4127afcb94d3f98b1c2997c56efddd3\",\n  \"physical_channels\": 11,\n  \"status\": \"input_checked\",\n  \"units\": 14\n}\n",
+      "stderr_tail": ""
+    }
+  ],
+  "result": "passed"
+}

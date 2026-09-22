@@ -1,0 +1,88 @@
+[
+  {
+    "case": "bridge-same",
+    "t0_bridge_count": 1,
+    "t0_inventory": {
+      "cross:horizontal:0": [
+        {
+          "entered_at": {
+            "kind": "rational",
+            "value": {
+              "category": "候选",
+              "value": "0"
+            }
+          },
+          "item": "高容谷地电池",
+          "quantity": {
+            "category": "算术推论",
+            "value": "1"
+          }
+        }
+      ],
+      "cross:vertical:0": [],
+      "east:transport:0": [],
+      "north:transport:0": [],
+      "south:transport:0": [
+        {
+          "entered_at": {
+            "kind": "rational",
+            "value": {
+              "category": "候选",
+              "value": "-1"
+            }
+          },
+          "item": "高容谷地电池",
+          "quantity": {
+            "category": "候选",
+            "value": "1"
+          }
+        }
+      ],
+      "west:transport:0": []
+    },
+    "trace_scope": "fixed integer engineering point; rule-level exclusion independently follows R13/R23/R63"
+  },
+  {
+    "case": "bridge-different",
+    "t0_bridge_count": 2,
+    "t0_inventory": {
+      "cross:horizontal:0": [
+        {
+          "entered_at": {
+            "kind": "rational",
+            "value": {
+              "category": "候选",
+              "value": "0"
+            }
+          },
+          "item": "高容谷地电池",
+          "quantity": {
+            "category": "算术推论",
+            "value": "1"
+          }
+        }
+      ],
+      "cross:vertical:0": [
+        {
+          "entered_at": {
+            "kind": "rational",
+            "value": {
+              "category": "候选",
+              "value": "0"
+            }
+          },
+          "item": "精选荞愈胶囊",
+          "quantity": {
+            "category": "算术推论",
+            "value": "1"
+          }
+        }
+      ],
+      "east:transport:0": [],
+      "north:transport:0": [],
+      "south:transport:0": [],
+      "west:transport:0": []
+    },
+    "trace_scope": "fixed integer engineering point; rule-level exclusion independently follows R13/R23/R63"
+  }
+]

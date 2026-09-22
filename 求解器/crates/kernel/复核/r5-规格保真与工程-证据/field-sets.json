@@ -1,0 +1,54 @@
+{
+  "top_level_fields": [
+    "budget",
+    "cycle",
+    "domain_report",
+    "execution_mode",
+    "fingerprints",
+    "last_state",
+    "level",
+    "open_items",
+    "parameter_point",
+    "port_meeting",
+    "reading",
+    "record_mode",
+    "replay_input_ref",
+    "result_id",
+    "run_record_ref",
+    "schema",
+    "seed",
+    "status",
+    "stop",
+    "support_domain"
+  ],
+  "count": 20,
+  "required_equal": true,
+  "cycle_fields": [
+    "acceptance",
+    "end_key",
+    "end_state",
+    "end_time",
+    "ledger",
+    "lift",
+    "normalization",
+    "period",
+    "rates",
+    "start_key",
+    "start_state",
+    "start_time",
+    "totals"
+  ],
+  "input_reference_fields": [
+    "format",
+    "path",
+    "producer",
+    "sha256"
+  ],
+  "domain_fields": [
+    "condition",
+    "evidence",
+    "locations",
+    "scope",
+    "status"
+  ]
+}

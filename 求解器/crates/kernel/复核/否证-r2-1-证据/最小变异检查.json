@@ -1,0 +1,35 @@
+{
+  "phase_control_conflict_diff": [
+    "$.timeline.relations[26].after",
+    "$.timeline.relations[26].before"
+  ],
+  "branch_cut_retained_diff": [
+    "$.settings.gates[0].total_limit"
+  ],
+  "reachability-null_diff": [
+    "$.initial_state.reachability"
+  ],
+  "reachability-number_diff": [
+    "$.initial_state.reachability"
+  ],
+  "reachability-object_diff": [
+    "$.initial_state.reachability.basis",
+    "$.initial_state.reachability.status",
+    "$.initial_state.reachability.value"
+  ],
+  "reachability-string_diff": [
+    "$.initial_state.reachability"
+  ],
+  "initial-unlisted-missing_diff": [
+    "$.initial_state.warehouse.unlisted"
+  ],
+  "initial-unlisted-filled_diff": [
+    "$.initial_state.warehouse.unlisted"
+  ],
+  "unowned-runtime_references": [
+    "$.timeline.events[27].id"
+  ],
+  "unowned-connection_close_references": [
+    "$.timeline.events[27].id"
+  ]
+}

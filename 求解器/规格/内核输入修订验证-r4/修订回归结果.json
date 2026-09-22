@@ -1,0 +1,279 @@
+{
+  "status": "通过",
+  "tests": [
+    {
+      "name": "负序号至1024逐到期独立倍增期望",
+      "status": "通过"
+    },
+    {
+      "name": "2的128/1024/4096次幂及相邻到期与新判定嵌入",
+      "status": "通过"
+    },
+    {
+      "name": "非整数槽边界和负时间向下取整",
+      "status": "通过"
+    },
+    {
+      "name": "全时域表达式文件往返和同刻重复稳定",
+      "status": "通过"
+    },
+    {
+      "name": "函数排序/未选分支漏模板",
+      "status": "正确拒绝",
+      "reason": "表达式排序模板集合变化"
+    },
+    {
+      "name": "函数排序/未选分支重复模板",
+      "status": "正确拒绝",
+      "reason": "排序模板重复"
+    },
+    {
+      "name": "函数排序/缺else",
+      "status": "正确拒绝",
+      "reason": "排序条件分支: 字段缺失或未知"
+    },
+    {
+      "name": "函数排序/条件类型错",
+      "status": "正确拒绝",
+      "reason": "排序表达式类型不符"
+    },
+    {
+      "name": "函数排序/零槽宽",
+      "status": "正确拒绝",
+      "reason": "表达式槽宽必须为正"
+    },
+    {
+      "name": "函数排序/负槽宽",
+      "status": "正确拒绝",
+      "reason": "表达式槽宽必须为正"
+    },
+    {
+      "name": "函数排序/未知版本",
+      "status": "正确拒绝",
+      "reason": "unsupported: 排序表达式语言版本"
+    },
+    {
+      "name": "函数排序/旧schema不能偷带表达式",
+      "status": "正确拒绝",
+      "reason": "unsupported: 表达式需要 event-order-v3"
+    },
+    {
+      "name": "函数排序/隐藏状态自由变量",
+      "status": "正确拒绝",
+      "reason": "unsupported: 未实现排序表达式运算 inventory"
+    },
+    {
+      "name": "函数排序/零除数",
+      "status": "正确拒绝",
+      "reason": "取模除数须为正整数常量"
+    },
+    {
+      "name": "函数排序/布尔整数",
+      "status": "正确拒绝",
+      "reason": "整数常量非法"
+    },
+    {
+      "name": "函数排序/符号时间不近似",
+      "status": "正确拒绝",
+      "reason": "unsupported: 排序求值需要已解释的有理时刻"
+    },
+    {
+      "name": "通用整数运算与逻辑组合",
+      "status": "通过"
+    },
+    {
+      "name": "仓库碰撞/crusher:input:0",
+      "status": "正确拒绝",
+      "reason": "仓库格占用单位槽位命名域: crusher:input:0"
+    },
+    {
+      "name": "仓库碰撞/crusher:output:0",
+      "status": "正确拒绝",
+      "reason": "仓库格占用单位槽位命名域: crusher:output:0"
+    },
+    {
+      "name": "仓库碰撞/crusher:buffer:0",
+      "status": "正确拒绝",
+      "reason": "仓库格占用单位槽位命名域: crusher:buffer:0"
+    },
+    {
+      "name": "仓库碰撞/grinder_a:input:0",
+      "status": "正确拒绝",
+      "reason": "仓库格占用单位槽位命名域: grinder_a:input:0"
+    },
+    {
+      "name": "仓库碰撞/grinder_a:input:1",
+      "status": "正确拒绝",
+      "reason": "仓库格占用单位槽位命名域: grinder_a:input:1"
+    },
+    {
+      "name": "仓库碰撞/grinder_a:output:0",
+      "status": "正确拒绝",
+      "reason": "仓库格占用单位槽位命名域: grinder_a:output:0"
+    },
+    {
+      "name": "仓库碰撞/grinder_a:buffer:0",
+      "status": "正确拒绝",
+      "reason": "仓库格占用单位槽位命名域: grinder_a:buffer:0"
+    },
+    {
+      "name": "仓库碰撞/grinder_b:input:0",
+      "status": "正确拒绝",
+      "reason": "仓库格占用单位槽位命名域: grinder_b:input:0"
+    },
+    {
+      "name": "仓库碰撞/grinder_b:input:1",
+      "status": "正确拒绝",
+      "reason": "仓库格占用单位槽位命名域: grinder_b:input:1"
+    },
+    {
+      "name": "仓库碰撞/grinder_b:output:0",
+      "status": "正确拒绝",
+      "reason": "仓库格占用单位槽位命名域: grinder_b:output:0"
+    },
+    {
+      "name": "仓库碰撞/grinder_b:buffer:0",
+      "status": "正确拒绝",
+      "reason": "仓库格占用单位槽位命名域: grinder_b:buffer:0"
+    },
+    {
+      "name": "仓库碰撞/feed_belt:transport:0",
+      "status": "正确拒绝",
+      "reason": "仓库格占用单位槽位命名域: feed_belt:transport:0"
+    },
+    {
+      "name": "仓库碰撞/belt_a0:transport:0",
+      "status": "正确拒绝",
+      "reason": "仓库格占用单位槽位命名域: belt_a0:transport:0"
+    },
+    {
+      "name": "仓库碰撞/belt_a1:transport:0",
+      "status": "正确拒绝",
+      "reason": "仓库格占用单位槽位命名域: belt_a1:transport:0"
+    },
+    {
+      "name": "仓库碰撞/belt_a2:transport:0",
+      "status": "正确拒绝",
+      "reason": "仓库格占用单位槽位命名域: belt_a2:transport:0"
+    },
+    {
+      "name": "仓库碰撞/belt_b0:transport:0",
+      "status": "正确拒绝",
+      "reason": "仓库格占用单位槽位命名域: belt_b0:transport:0"
+    },
+    {
+      "name": "仓库碰撞/belt_b1:transport:0",
+      "status": "正确拒绝",
+      "reason": "仓库格占用单位槽位命名域: belt_b1:transport:0"
+    },
+    {
+      "name": "仓库碰撞/belt_b2:transport:0",
+      "status": "正确拒绝",
+      "reason": "仓库格占用单位槽位命名域: belt_b2:transport:0"
+    },
+    {
+      "name": "仓库碰撞/belt_b3:transport:0",
+      "status": "正确拒绝",
+      "reason": "仓库格占用单位槽位命名域: belt_b3:transport:0"
+    },
+    {
+      "name": "仓库碰撞/future_unit:input:0",
+      "status": "正确拒绝",
+      "reason": "仓库格占用单位槽位命名域: future_unit:input:0"
+    },
+    {
+      "name": "静态仓库命名域/桥接器双通路.json",
+      "status": "正确拒绝",
+      "reason": "仓库格占用单位槽位命名域: future_unit:buffer:0"
+    },
+    {
+      "name": "静态仓库命名域/分流器三路轮询.json",
+      "status": "正确拒绝",
+      "reason": "仓库格占用单位槽位命名域: future_unit:buffer:0"
+    },
+    {
+      "name": "不冲突仓库更名不改库存收支",
+      "status": "通过"
+    },
+    {
+      "name": "四次出库恰扣四件且制造存货清空",
+      "status": "通过"
+    },
+    {
+      "name": "输出状态命名域",
+      "status": "正确拒绝",
+      "reason": "仓库格占用单位槽位命名域: crusher:input:0"
+    },
+    {
+      "name": "输出仓库重复标签",
+      "status": "正确拒绝",
+      "reason": "仓库格 id 重复或非法"
+    },
+    {
+      "name": "输入历史占运行ID/J|0|0|0",
+      "status": "正确拒绝",
+      "reason": "非运行事件占用运行事件保留前缀: J|0|0|0"
+    },
+    {
+      "name": "生成器全局注册/J|0|0|0",
+      "status": "正确拒绝",
+      "reason": "新运行事件与全局注册冲突: J|0|0|0"
+    },
+    {
+      "name": "输入历史占运行ID/C|2|crusher",
+      "status": "正确拒绝",
+      "reason": "非运行事件占用运行事件保留前缀: C|2|crusher"
+    },
+    {
+      "name": "生成器全局注册/C|2|crusher",
+      "status": "正确拒绝",
+      "reason": "新运行事件与全局注册冲突: C|2|crusher"
+    },
+    {
+      "name": "正常pending跨状态引用及一次消费",
+      "status": "通过"
+    },
+    {
+      "name": "事件验收/历史与新事件碰撞",
+      "status": "正确拒绝",
+      "reason": "非运行事件占用运行事件保留前缀: J|0|0|0"
+    },
+    {
+      "name": "事件验收/跨tick重复",
+      "status": "正确拒绝",
+      "reason": "跨时刻运行事件重复: J|0|0|0"
+    },
+    {
+      "name": "事件验收/pending碰历史",
+      "status": "正确拒绝",
+      "reason": "待事件与输入历史身份冲突: build_13"
+    },
+    {
+      "name": "事件验收/已办又待办",
+      "status": "正确拒绝",
+      "reason": "已执行事件又列为待事件: C|2|crusher"
+    },
+    {
+      "name": "事件验收/完成改目标",
+      "status": "正确拒绝",
+      "reason": "已登记事件的操作/目标冲突: C|2|crusher"
+    },
+    {
+      "name": "完整验收/跨tick重复",
+      "status": "正确拒绝",
+      "reason": "跨时刻运行事件重复: J|0|0|0"
+    },
+    {
+      "name": "完整验收/建造冒充移动",
+      "status": "正确拒绝",
+      "reason": "运行事件与输入历史身份冲突: build_13"
+    }
+  ],
+  "count": 55,
+  "finding_ids": [
+    "K3-r4-L1-01",
+    "K3-r4-L3-01",
+    "K3-r4-L3-02"
+  ],
+  "scope": "函数全域定义性见处理报告；选点回归不当作穷尽证明。命名与事件反例在输入和独立记录层均核验。"
+}

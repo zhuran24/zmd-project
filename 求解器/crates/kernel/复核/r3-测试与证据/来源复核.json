@@ -1,0 +1,30 @@
+{
+  "manifest_entries": 172,
+  "manifest_mismatches": [
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/prior-regression-results.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/regression-results.json"
+  ],
+  "baseline_entries": 1710,
+  "baseline_changes": [
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/prior-regression-results.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/regression-results.json"
+  ],
+  "manifest_at_review_start_mismatches": [],
+  "changed_files": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/prior-regression-results.json",
+      "manifest": "8136bf0a9ef278b116b5b22d0b454becf5429e7c7b22294f67233b8df7b24f45",
+      "review_start": "8136bf0a9ef278b116b5b22d0b454becf5429e7c7b22294f67233b8df7b24f45",
+      "current": "7eddb70f93bbb257a4311752d916da688b55028b14d6c1389d138ef78230feb7",
+      "mtime_ns": 1789880330438969897
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/regression-results.json",
+      "manifest": "a40607fc4f1f56cfc9367e5f65bdb55d348dfc98ff37b94a5ee5bc27dbe55ccd",
+      "review_start": "a40607fc4f1f56cfc9367e5f65bdb55d348dfc98ff37b94a5ee5bc27dbe55ccd",
+      "current": "c49cb975e319efc1309268b3ac698a7f554fa57d113ae56fc2b031324f34cb0b",
+      "mtime_ns": 1789880337282278233
+    }
+  ],
+  "interpretation": "172项交付清单在本席开工时全部相符。开工后仅两份可重跑CLI汇总被改写；本席不归责原实现。本席cargo在只读根命名空间内将输出目录挂到复核目录，自己的同名结果具有不同inode、mtime和随机目录。其余170项清单和1708份开工指纹无差异。"
+}

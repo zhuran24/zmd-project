@@ -1,0 +1,15 @@
+command: /usr/bin/python -B /home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/来源增量核查.py
+exit_status: 0
+stdout:
+PASS: 16份来源不变；R36、任务书L13/L29/L67、三审新增L54的逆差异各自恢复原SHA-256；绑定19份现行输入。
+
+stderr:
+
+command: /usr/bin/python -B /home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/核验.py
+exit_status: 0
+stdout:
+PASS: A=314 B=315; 两候选原株与种子各66条逻辑边；219普通格6600、正常缓存111、植物计数容量5833+实际运输格。
+PASS: 19份现行只读输入重绑定后字节及mtime不变（原始16份不变、3份外部更新已核）；A/B实际速率保留null；局部共边/供电/格数核验；8份局部时间表、N恒等式及Z界核对。
+SCOPE: 未编译、装载、步进游戏内核；数值时间表不是全参数执行器；完整任务4状态partial。
+
+stderr:

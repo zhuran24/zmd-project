@@ -1,0 +1,19 @@
+{
+  "name": "boolean-seed",
+  "command": [
+    "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+    "seed",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r3-1-证据/boolean-seed-input.json",
+    "--config",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+    "--out",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r3-1-证据/boolean-seed.json"
+  ],
+  "exit_code": 101,
+  "output_exists": false,
+  "stdout": "",
+  "stderr": "\nthread 'main' (686150) panicked at /home/zhuran24/zmd-research-fresh/求解器/.cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/serde_json-1.0.151/src/value/index.rs:102:18:\ncannot access key \"semantic_context\" in JSON boolean\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n",
+  "status": null,
+  "stop": null,
+  "open_items": null
+}

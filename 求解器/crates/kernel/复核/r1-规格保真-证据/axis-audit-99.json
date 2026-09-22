@@ -1,0 +1,791 @@
+{
+  "counts": {
+    "已定": 11,
+    "本版选值": 55,
+    "由输入全称量化": 15,
+    "超出覆盖即停": 18
+  },
+  "scope": "逐轴值来自本次读取的配置；代码位置为保真审查索引，不表示该轴全部行为已独立验证。",
+  "axes": [
+    {
+      "axis": "polling.direct_peer",
+      "disposition": "已定",
+      "value": "physical_peer",
+      "where": "polling.rs:6-94、170-335；transition.rs:125-264",
+      "review": "分级/起轮/授权/后效已对照；KQ-04单级前件仍待澄清"
+    },
+    {
+      "axis": "connection.port_meeting",
+      "disposition": "本版选值",
+      "value": "shared_edge_opposite",
+      "where": "input.rs:216-373、613-618、689-695；catalog.rs:503-535",
+      "review": "几何、建造与接通值显式；历史完整性见04"
+    },
+    {
+      "axis": "initialization.rotation_stage",
+      "disposition": "已定",
+      "value": "build_and_debug",
+      "where": "interfaces.rs:9-53、222-255；input.rs:271-318；engine.rs:185-682；transition.rs:279-319",
+      "review": "有限完整种子及初值限制已对照；历史身份见03、04，after_closure契约见07"
+    },
+    {
+      "axis": "gate.window_recovery",
+      "disposition": "已定",
+      "value": "on_expiry_if_other_guards",
+      "where": "input.rs:499-534；engine.rs:349-384；polling.rs:297-362；transition.rs:199-250、406-447",
+      "review": "原因/计数/原子批维护已对照；编辑/取消由玩家操作入口提前停止，引用漏洞见04"
+    },
+    {
+      "axis": "transfer.judgment",
+      "disposition": "已定",
+      "value": "unit",
+      "where": "interfaces.rs:119-168；engine.rs:522-540；warehouse.rs:188-226；transition.rs:345-348",
+      "review": "单位传输、冷却及相位已对照"
+    },
+    {
+      "axis": "manufacturing.port_slot_relation",
+      "disposition": "已定",
+      "value": "distributed",
+      "where": "input.rs:619-639；engine.rs:543-619、784-861；transition.rs:7-114",
+      "review": "选择器/整批/立即开工/输出守卫已对照"
+    },
+    {
+      "axis": "manufacturing.output_blocked",
+      "disposition": "已定",
+      "value": "retain_whole_batch",
+      "where": "input.rs:619-639；engine.rs:543-619、784-861；transition.rs:7-114",
+      "review": "选择器/整批/立即开工/输出守卫已对照"
+    },
+    {
+      "axis": "gate.limit_requires_identity",
+      "disposition": "已定",
+      "value": true,
+      "where": "input.rs:499-534；engine.rs:349-384；polling.rs:297-362；transition.rs:199-250、406-447",
+      "review": "原因/计数/原子批维护已对照；编辑/取消由玩家操作入口提前停止，引用漏洞见04"
+    },
+    {
+      "axis": "warehouse.capacity",
+      "disposition": "已定",
+      "value": {
+        "value": "80000",
+        "category": "条文直引"
+      },
+      "where": "warehouse.rs:10-185；engine.rs:926-940",
+      "review": "容量、交付、身份、E/O及批量竞争已对照；KQ-03标签接口保守停止"
+    },
+    {
+      "axis": "warehouse.delivery_count",
+      "disposition": "已定",
+      "value": "actual_inbound",
+      "where": "warehouse.rs:10-185；engine.rs:926-940",
+      "review": "容量、交付、身份、E/O及批量竞争已对照；KQ-03标签接口保守停止"
+    },
+    {
+      "axis": "bridge.inventory_scope",
+      "disposition": "已定",
+      "value": "two_independent_axis_slots",
+      "where": "catalog.rs:224-250、370-411；engine.rs:737-861；polling.rs:23-50",
+      "review": "双轴库存、容量及按单位两侧调度已对照"
+    },
+    {
+      "axis": "bridge.scheduling_scope",
+      "disposition": "已定",
+      "value": "unit",
+      "where": "catalog.rs:224-250、370-411；engine.rs:737-861；polling.rs:23-50",
+      "review": "双轴库存、容量及按单位两侧调度已对照"
+    },
+    {
+      "axis": "time.domain",
+      "disposition": "本版选值",
+      "value": "integer_ticks",
+      "where": "transition.rs:335-448、508-669",
+      "review": "已对照边界/闭包；补给顺序及充分性见01、02"
+    },
+    {
+      "axis": "time.instant_order",
+      "disposition": "本版选值",
+      "value": "chronological_phases",
+      "where": "transition.rs:335-448、508-669",
+      "review": "已对照边界/闭包；补给顺序及充分性见01、02"
+    },
+    {
+      "axis": "time.retry_schedule",
+      "disposition": "本版选值",
+      "value": "ordered_sweeps",
+      "where": "transition.rs:335-448、508-669",
+      "review": "已对照边界/闭包；补给顺序及充分性见01、02"
+    },
+    {
+      "axis": "time.instant_end",
+      "disposition": "本版选值",
+      "value": "repeat_scheduler_state",
+      "where": "transition.rs:335-448、508-669",
+      "review": "已对照边界/闭包；补给顺序及充分性见01、02"
+    },
+    {
+      "axis": "time.boundary",
+      "disposition": "本版选值",
+      "value": "elapsed_inclusive",
+      "where": "transition.rs:335-448、508-669",
+      "review": "已对照边界/闭包；补给顺序及充分性见01、02"
+    },
+    {
+      "axis": "time.manufacture_events",
+      "disposition": "本版选值",
+      "value": "completion_before_closure",
+      "where": "transition.rs:335-448、508-669",
+      "review": "已对照边界/闭包；补给顺序及充分性见01、02"
+    },
+    {
+      "axis": "judgment.order_scope",
+      "disposition": "本版选值",
+      "value": "global",
+      "where": "input.rs:559-604；transition.rs:591-627",
+      "review": "模板/固定嵌入已对照；事件身份见03"
+    },
+    {
+      "axis": "judgment.buffer_event_class",
+      "disposition": "本版选值",
+      "value": "manufacture_subactions",
+      "where": "input.rs:559-604；transition.rs:591-627",
+      "review": "模板/固定嵌入已对照；事件身份见03"
+    },
+    {
+      "axis": "polling.initial_cursor",
+      "disposition": "本版选值",
+      "value": "first_connected",
+      "where": "polling.rs:6-94、170-335；transition.rs:125-264",
+      "review": "分级/起轮/授权/后效已对照；KQ-04单级前件仍待澄清"
+    },
+    {
+      "axis": "polling.split_merge_start",
+      "disposition": "本版选值",
+      "value": "second_cursor",
+      "where": "polling.rs:6-94、170-335；transition.rs:125-264",
+      "review": "分级/起轮/授权/后效已对照；KQ-04单级前件仍待澄清"
+    },
+    {
+      "axis": "polling.split_merge_scope",
+      "disposition": "本版选值",
+      "value": "per_level",
+      "where": "polling.rs:6-94、170-335；transition.rs:125-264",
+      "review": "分级/起轮/授权/后效已对照；KQ-04单级前件仍待澄清"
+    },
+    {
+      "axis": "polling.split_merge_singleton",
+      "disposition": "本版选值",
+      "value": "sole_member",
+      "where": "polling.rs:6-94、170-335；transition.rs:125-264",
+      "review": "分级/起轮/授权/后效已对照；KQ-04单级前件仍待澄清"
+    },
+    {
+      "axis": "polling.ungraded_blocked",
+      "disposition": "本版选值",
+      "value": "empty_turn",
+      "where": "polling.rs:6-94、170-335；transition.rs:125-264",
+      "review": "分级/起轮/授权/后效已对照；KQ-04单级前件仍待澄清"
+    },
+    {
+      "axis": "polling.dual_permission",
+      "disposition": "本版选值",
+      "value": "both",
+      "where": "polling.rs:6-94、170-335；transition.rs:125-264",
+      "review": "分级/起轮/授权/后效已对照；KQ-04单级前件仍待澄清"
+    },
+    {
+      "axis": "polling.both_failure",
+      "disposition": "本版选值",
+      "value": "advance_authorized",
+      "where": "polling.rs:6-94、170-335；transition.rs:125-264",
+      "review": "分级/起轮/授权/后效已对照；KQ-04单级前件仍待澄清"
+    },
+    {
+      "axis": "polling.memory_scope",
+      "disposition": "本版选值",
+      "value": "per_level",
+      "where": "polling.rs:6-94、170-335；transition.rs:125-264",
+      "review": "分级/起轮/授权/后效已对照；KQ-04单级前件仍待澄清"
+    },
+    {
+      "axis": "polling.resume",
+      "disposition": "本版选值",
+      "value": "retain_position",
+      "where": "polling.rs:6-94、170-335；transition.rs:125-264",
+      "review": "分级/起轮/授权/后效已对照；KQ-04单级前件仍待澄清"
+    },
+    {
+      "axis": "polling.eligibility_stage",
+      "disposition": "本版选值",
+      "value": "pre_filter",
+      "where": "polling.rs:6-94、170-335；transition.rs:125-264",
+      "review": "分级/起轮/授权/后效已对照；KQ-04单级前件仍待澄清"
+    },
+    {
+      "axis": "polling.membership_change",
+      "disposition": "本版选值",
+      "value": "retain_survivors",
+      "where": "polling.rs:6-94、170-335；transition.rs:125-264",
+      "review": "分级/起轮/授权/后效已对照；KQ-04单级前件仍待澄清"
+    },
+    {
+      "axis": "polling.internal_scope",
+      "disposition": "本版选值",
+      "value": "external_only",
+      "where": "polling.rs:6-94、170-335；transition.rs:125-264",
+      "review": "分级/起轮/授权/后效已对照；KQ-04单级前件仍待澄清"
+    },
+    {
+      "axis": "polling.level_tie",
+      "disposition": "本版选值",
+      "value": "fixed_arbitration",
+      "where": "polling.rs:6-94、170-335；transition.rs:125-264",
+      "review": "分级/起轮/授权/后效已对照；KQ-04单级前件仍待澄清"
+    },
+    {
+      "axis": "damping.belt_component_rule",
+      "disposition": "本版选值",
+      "value": "path_runs",
+      "where": "polling.rs:96-168；input.rs:640-688",
+      "review": "无终点显式停止；分支输入校验见05，唯一活路退化见未决"
+    },
+    {
+      "axis": "damping.belt_adjacency",
+      "disposition": "本版选值",
+      "value": "shared_edge",
+      "where": "polling.rs:96-168；input.rs:640-688",
+      "review": "无终点显式停止；分支输入校验见05，唯一活路退化见未决"
+    },
+    {
+      "axis": "connection.bridge_first_contact",
+      "disposition": "本版选值",
+      "value": "physical_contact",
+      "where": "catalog.rs:370-411；input.rs:374-422",
+      "review": "唯一非桥先接校验；平局/互依赖停止"
+    },
+    {
+      "axis": "transfer.cooldown_scope",
+      "disposition": "本版选值",
+      "value": "box",
+      "where": "interfaces.rs:119-168；engine.rs:522-540；warehouse.rs:188-226；transition.rs:345-348",
+      "review": "单位传输、冷却及相位已对照"
+    },
+    {
+      "axis": "transfer.pause",
+      "disposition": "本版选值",
+      "value": "pause_with_function",
+      "where": "interfaces.rs:119-168；engine.rs:522-540；warehouse.rs:188-226；transition.rs:345-348",
+      "review": "单位传输、冷却及相位已对照"
+    },
+    {
+      "axis": "transfer.failure_cooldown",
+      "disposition": "本版选值",
+      "value": "every_attempt",
+      "where": "interfaces.rs:119-168；engine.rs:522-540；warehouse.rs:188-226；transition.rs:345-348",
+      "review": "单位传输、冷却及相位已对照"
+    },
+    {
+      "axis": "transfer.partial_acceptance",
+      "disposition": "本版选值",
+      "value": "all_or_nothing",
+      "where": "interfaces.rs:119-168；engine.rs:522-540；warehouse.rs:188-226；transition.rs:345-348",
+      "review": "单位传输、冷却及相位已对照"
+    },
+    {
+      "axis": "transfer.resume_event",
+      "disposition": "本版选值",
+      "value": "ready_in_closure",
+      "where": "interfaces.rs:119-168；engine.rs:522-540；warehouse.rs:188-226；transition.rs:345-348",
+      "review": "单位传输、冷却及相位已对照"
+    },
+    {
+      "axis": "manufacturing.input_mixing",
+      "disposition": "本版选值",
+      "value": "single_kind",
+      "where": "input.rs:619-639；engine.rs:543-619、784-861；transition.rs:7-114",
+      "review": "选择器/整批/立即开工/输出守卫已对照"
+    },
+    {
+      "axis": "manufacturing.input_capacity_scope",
+      "disposition": "本版选值",
+      "value": "per_slot_total",
+      "where": "input.rs:619-639；engine.rs:543-619、784-861；transition.rs:7-114",
+      "review": "选择器/整批/立即开工/输出守卫已对照"
+    },
+    {
+      "axis": "manufacturing.recipe_match_scope",
+      "disposition": "本版选值",
+      "value": "input_union",
+      "where": "input.rs:619-639；engine.rs:543-619、784-861；transition.rs:7-114",
+      "review": "选择器/整批/立即开工/输出守卫已对照"
+    },
+    {
+      "axis": "manufacturing.recipe_completeness",
+      "disposition": "本版选值",
+      "value": "full_batch",
+      "where": "input.rs:619-639；engine.rs:543-619、784-861；transition.rs:7-114",
+      "review": "选择器/整批/立即开工/输出守卫已对照"
+    },
+    {
+      "axis": "manufacturing.recipe_lock_time",
+      "disposition": "本版选值",
+      "value": "on_gate_open",
+      "where": "input.rs:619-639；engine.rs:543-619、784-861；transition.rs:7-114",
+      "review": "选择器/整批/立即开工/输出守卫已对照"
+    },
+    {
+      "axis": "manufacturing.empty_slot_identity",
+      "disposition": "本版选值",
+      "value": "release_on_empty",
+      "where": "input.rs:619-639；engine.rs:543-619、784-861；transition.rs:7-114",
+      "review": "选择器/整批/立即开工/输出守卫已对照"
+    },
+    {
+      "axis": "manufacturing.input_collection",
+      "disposition": "本版选值",
+      "value": "atomic_batch",
+      "where": "input.rs:619-639；engine.rs:543-619、784-861；transition.rs:7-114",
+      "review": "选择器/整批/立即开工/输出守卫已对照"
+    },
+    {
+      "axis": "manufacturing.buffer_power_gate",
+      "disposition": "本版选值",
+      "value": "manufacturing_only",
+      "where": "input.rs:619-639；engine.rs:543-619、784-861；transition.rs:7-114",
+      "review": "选择器/整批/立即开工/输出守卫已对照"
+    },
+    {
+      "axis": "gate.identity_subject",
+      "disposition": "本版选值",
+      "value": "candidate_item",
+      "where": "input.rs:499-534；engine.rs:349-384；polling.rs:297-362；transition.rs:199-250、406-447",
+      "review": "原因/计数/原子批维护已对照；编辑/取消由玩家操作入口提前停止，引用漏洞见04"
+    },
+    {
+      "axis": "gate.identity_recovery",
+      "disposition": "本版选值",
+      "value": "latched",
+      "where": "input.rs:499-534；engine.rs:349-384；polling.rs:297-362；transition.rs:199-250、406-447",
+      "review": "原因/计数/原子批维护已对照；编辑/取消由玩家操作入口提前停止，引用漏洞见04"
+    },
+    {
+      "axis": "gate.total_recovery",
+      "disposition": "本版选值",
+      "value": "latched",
+      "where": "input.rs:499-534；engine.rs:349-384；polling.rs:297-362；transition.rs:199-250、406-447",
+      "review": "原因/计数/原子批维护已对照；编辑/取消由玩家操作入口提前停止，引用漏洞见04"
+    },
+    {
+      "axis": "gate.window_clock",
+      "disposition": "本版选值",
+      "value": "wall_clock",
+      "where": "input.rs:499-534；engine.rs:349-384；polling.rs:297-362；transition.rs:199-250、406-447",
+      "review": "原因/计数/原子批维护已对照；编辑/取消由玩家操作入口提前停止，引用漏洞见04"
+    },
+    {
+      "axis": "gate.reconnect_record",
+      "disposition": "本版选值",
+      "value": "original_build_record",
+      "where": "input.rs:499-534；engine.rs:349-384；polling.rs:297-362；transition.rs:199-250、406-447",
+      "review": "原因/计数/原子批维护已对照；编辑/取消由玩家操作入口提前停止，引用漏洞见04"
+    },
+    {
+      "axis": "gate.counter_start",
+      "disposition": "本版选值",
+      "value": "since_build",
+      "where": "input.rs:499-534；engine.rs:349-384；polling.rs:297-362；transition.rs:199-250、406-447",
+      "review": "原因/计数/原子批维护已对照；编辑/取消由玩家操作入口提前停止，引用漏洞见04"
+    },
+    {
+      "axis": "initialization.belt_shape_lifecycle",
+      "disposition": "本版选值",
+      "value": "fixed_between_builds",
+      "where": "interfaces.rs:9-53、222-255；input.rs:271-318；engine.rs:185-682；transition.rs:279-319",
+      "review": "有限完整种子及初值限制已对照；历史身份见03、04，after_closure契约见07"
+    },
+    {
+      "axis": "warehouse.acceptance",
+      "disposition": "本版选值",
+      "value": "capacity_and_path",
+      "where": "config.rs:120-123、267-268；transition.rs:672-719；output.rs:327-357",
+      "review": "未实现每观察边界接收域报告，见06"
+    },
+    {
+      "axis": "warehouse.acceptance_quantifier",
+      "disposition": "本版选值",
+      "value": "per_instant",
+      "where": "config.rs:120-123、267-268；transition.rs:672-719；output.rs:327-357",
+      "review": "未实现每观察边界接收域报告，见06"
+    },
+    {
+      "axis": "warehouse.empty_slot_identity",
+      "disposition": "本版选值",
+      "value": "retain_history",
+      "where": "warehouse.rs:10-185；engine.rs:926-940",
+      "review": "容量、交付、身份、E/O及批量竞争已对照；KQ-03标签接口保守停止"
+    },
+    {
+      "axis": "bridge.capacity",
+      "disposition": "本版选值",
+      "value": 1,
+      "where": "catalog.rs:224-250、370-411；engine.rs:737-861；polling.rs:23-50",
+      "review": "双轴库存、容量及按单位两侧调度已对照"
+    },
+    {
+      "axis": "power.cell_rule",
+      "disposition": "本版选值",
+      "value": "positive_area",
+      "where": "catalog.rs:580-595；engine.rs:732-735",
+      "review": "正面积几何与开关联合守卫"
+    },
+    {
+      "axis": "residence.nontransport",
+      "disposition": "本版选值",
+      "value": "zero",
+      "where": "engine.rs:895-911",
+      "review": "只对运输源检查滞留，非运输无额外等待"
+    },
+    {
+      "axis": "cascade.buffer",
+      "disposition": "本版选值",
+      "value": "same_instant",
+      "where": "transition.rs:7-114、335-405",
+      "review": "同一制造模板内旧批输出再输入，不零时完成新批"
+    },
+    {
+      "axis": "judgment.order",
+      "disposition": "由输入全称量化",
+      "value": {
+        "interface": "event-order-v1"
+      },
+      "where": "input.rs:559-604；transition.rs:591-627",
+      "review": "模板/固定嵌入已对照；事件身份见03"
+    },
+    {
+      "axis": "damping.branch",
+      "disposition": "由输入全称量化",
+      "value": {
+        "interface": "damping-branch-v1"
+      },
+      "where": "polling.rs:96-168；input.rs:640-688",
+      "review": "无终点显式停止；分支输入校验见05，唯一活路退化见未决"
+    },
+    {
+      "axis": "connection.build_order",
+      "disposition": "由输入全称量化",
+      "value": {
+        "interface": "construction.selected_order"
+      },
+      "where": "input.rs:216-373、613-618、689-695；catalog.rs:503-535",
+      "review": "几何、建造与接通值显式；历史完整性见04"
+    },
+    {
+      "axis": "connection.order",
+      "disposition": "由输入全称量化",
+      "value": {
+        "interface": "timeline_connection_history"
+      },
+      "where": "input.rs:216-373、613-618、689-695；catalog.rs:503-535",
+      "review": "几何、建造与接通值显式；历史完整性见04"
+    },
+    {
+      "axis": "connection.tie",
+      "disposition": "由输入全称量化",
+      "value": {
+        "interface": "explicit_channel_order"
+      },
+      "where": "input.rs:216-373、613-618、689-695；catalog.rs:503-535",
+      "review": "几何、建造与接通值显式；历史完整性见04"
+    },
+    {
+      "axis": "connection.belt_shape",
+      "disposition": "由输入全称量化",
+      "value": {
+        "interface": "per_build_shape_map"
+      },
+      "where": "interfaces.rs:54-118",
+      "review": "形状与建造段核对"
+    },
+    {
+      "axis": "transfer.phase",
+      "disposition": "由输入全称量化",
+      "value": {
+        "interface": "progress.cooldowns"
+      },
+      "where": "interfaces.rs:119-168；engine.rs:522-540；warehouse.rs:188-226；transition.rs:345-348",
+      "review": "单位传输、冷却及相位已对照"
+    },
+    {
+      "axis": "manufacturing.recipe_selection",
+      "disposition": "由输入全称量化",
+      "value": {
+        "interface": "explicit_recipe_order"
+      },
+      "where": "input.rs:619-639；engine.rs:543-619、784-861；transition.rs:7-114",
+      "review": "选择器/整批/立即开工/输出守卫已对照"
+    },
+    {
+      "axis": "manufacturing.input_slot_selection",
+      "disposition": "由输入全称量化",
+      "value": {
+        "interface": "explicit_slot_order"
+      },
+      "where": "input.rs:619-639；engine.rs:543-619、784-861；transition.rs:7-114",
+      "review": "选择器/整批/立即开工/输出守卫已对照"
+    },
+    {
+      "axis": "initialization.warehouse_anchor",
+      "disposition": "由输入全称量化",
+      "value": {
+        "interface": "initial_state.anchor"
+      },
+      "where": "interfaces.rs:9-53、222-255；input.rs:271-318；engine.rs:185-682；transition.rs:279-319",
+      "review": "有限完整种子及初值限制已对照；历史身份见03、04，after_closure契约见07"
+    },
+    {
+      "axis": "initialization.other_inventory",
+      "disposition": "由输入全称量化",
+      "value": {
+        "interface": "initial_state.nonwarehouse"
+      },
+      "where": "interfaces.rs:9-53、222-255；input.rs:271-318；engine.rs:185-682；transition.rs:279-319",
+      "review": "有限完整种子及初值限制已对照；历史身份见03、04，after_closure契约见07"
+    },
+    {
+      "axis": "initialization.switches",
+      "disposition": "由输入全称量化",
+      "value": {
+        "interface": "settings_at_seed"
+      },
+      "where": "interfaces.rs:9-53、222-255；input.rs:271-318；engine.rs:185-682；transition.rs:279-319",
+      "review": "有限完整种子及初值限制已对照；历史身份见03、04，after_closure契约见07"
+    },
+    {
+      "axis": "initialization.build_timing",
+      "disposition": "由输入全称量化",
+      "value": {
+        "interface": "timeline"
+      },
+      "where": "interfaces.rs:9-53、222-255；input.rs:271-318；engine.rs:185-682；transition.rs:279-319",
+      "review": "有限完整种子及初值限制已对照；历史身份见03、04，after_closure契约见07"
+    },
+    {
+      "axis": "initialization.debug_end",
+      "disposition": "由输入全称量化",
+      "value": {
+        "interface": "initial_state.reachability"
+      },
+      "where": "interfaces.rs:9-53、222-255；input.rs:271-318；engine.rs:185-682；transition.rs:279-319",
+      "review": "有限完整种子及初值限制已对照；历史身份见03、04，after_closure契约见07"
+    },
+    {
+      "axis": "warehouse.external_supply",
+      "disposition": "由输入全称量化",
+      "value": {
+        "interface": "explicit_ore_history"
+      },
+      "where": "interfaces.rs:169-221、262-265；transition.rs:267-277、451-506",
+      "review": "已实现事件回放但充分性/同刻关系缺检查，见01、02"
+    },
+    {
+      "axis": "damping.no_terminal",
+      "disposition": "超出覆盖即停",
+      "value": {
+        "policy": "stop",
+        "trigger": "请求求阻尼而所选路径无下一非运输终点"
+      },
+      "where": "polling.rs:96-168；input.rs:640-688",
+      "review": "无终点显式停止；分支输入校验见05，唯一活路退化见未决"
+    },
+    {
+      "axis": "connection.bridge_tie",
+      "disposition": "超出覆盖即停",
+      "value": {
+        "policy": "stop",
+        "trigger": "先接并列或桥互依赖，不能由唯一无环见证定向"
+      },
+      "where": "catalog.rs:370-411；input.rs:374-422",
+      "review": "唯一非桥先接校验；平局/互依赖停止"
+    },
+    {
+      "axis": "gate.counter_edit",
+      "disposition": "超出覆盖即停",
+      "value": {
+        "policy": "stop",
+        "trigger": "调试改身份/累计/窗口设定并需确定计数后效"
+      },
+      "where": "input.rs:499-534；engine.rs:349-384；polling.rs:297-362；transition.rs:199-250、406-447",
+      "review": "原因/计数/原子批维护已对照；编辑/取消由玩家操作入口提前停止，引用漏洞见04"
+    },
+    {
+      "axis": "gate.cancel_limit",
+      "disposition": "超出覆盖即停",
+      "value": {
+        "policy": "stop",
+        "trigger": "取消已设限额"
+      },
+      "where": "input.rs:499-534；engine.rs:349-384；polling.rs:297-362；transition.rs:199-250、406-447",
+      "review": "原因/计数/原子批维护已对照；编辑/取消由玩家操作入口提前停止，引用漏洞见04"
+    },
+    {
+      "axis": "offline.order_domain",
+      "disposition": "超出覆盖即停",
+      "value": {
+        "policy": "stop",
+        "trigger": "请求构造完整离线重排域或离线事件出现"
+      },
+      "where": "transition.rs:279-319；engine.rs:273-278；config.rs:462-467",
+      "review": "正确登记的offline在执行前停止；后效轴由父级停止拦截，引用漏洞见04"
+    },
+    {
+      "axis": "offline.events",
+      "disposition": "超出覆盖即停",
+      "value": {
+        "policy": "stop",
+        "trigger": "出现任何离线/上线事件"
+      },
+      "where": "transition.rs:279-319；engine.rs:273-278；config.rs:462-467",
+      "review": "正确登记的offline在执行前停止；后效轴由父级停止拦截，引用漏洞见04"
+    },
+    {
+      "axis": "offline.cursor_effect",
+      "disposition": "超出覆盖即停",
+      "value": {
+        "policy": "stop",
+        "trigger": "离线需更新轮询状态"
+      },
+      "where": "transition.rs:279-319；engine.rs:273-278；config.rs:462-467",
+      "review": "正确登记的offline在执行前停止；后效轴由父级停止拦截，引用漏洞见04"
+    },
+    {
+      "axis": "offline.inventory_effect",
+      "disposition": "超出覆盖即停",
+      "value": {
+        "policy": "stop",
+        "trigger": "离线需更新库存"
+      },
+      "where": "transition.rs:279-319；engine.rs:273-278；config.rs:462-467",
+      "review": "正确登记的offline在执行前停止；后效轴由父级停止拦截，引用漏洞见04"
+    },
+    {
+      "axis": "offline.progress_effect",
+      "disposition": "超出覆盖即停",
+      "value": {
+        "policy": "stop",
+        "trigger": "离线需更新进度/时钟"
+      },
+      "where": "transition.rs:279-319；engine.rs:273-278；config.rs:462-467",
+      "review": "正确登记的offline在执行前停止；后效轴由父级停止拦截，引用漏洞见04"
+    },
+    {
+      "axis": "offline.direction_effect",
+      "disposition": "超出覆盖即停",
+      "value": {
+        "policy": "stop",
+        "trigger": "离线需更新桥方向"
+      },
+      "where": "transition.rs:279-319；engine.rs:273-278；config.rs:462-467",
+      "review": "正确登记的offline在执行前停止；后效轴由父级停止拦截，引用漏洞见04"
+    },
+    {
+      "axis": "offline.gate_total_effect",
+      "disposition": "超出覆盖即停",
+      "value": {
+        "policy": "stop",
+        "trigger": "离线需更新累计计数"
+      },
+      "where": "transition.rs:279-319；engine.rs:273-278；config.rs:462-467",
+      "review": "正确登记的offline在执行前停止；后效轴由父级停止拦截，引用漏洞见04"
+    },
+    {
+      "axis": "offline.gate_window_effect",
+      "disposition": "超出覆盖即停",
+      "value": {
+        "policy": "stop",
+        "trigger": "离线需更新窗口计数"
+      },
+      "where": "transition.rs:279-319；engine.rs:273-278；config.rs:462-467",
+      "review": "正确登记的offline在执行前停止；后效轴由父级停止拦截，引用漏洞见04"
+    },
+    {
+      "axis": "offline.gate_window_start_effect",
+      "disposition": "超出覆盖即停",
+      "value": {
+        "policy": "stop",
+        "trigger": "离线需更新窗口起点"
+      },
+      "where": "transition.rs:279-319；engine.rs:273-278；config.rs:462-467",
+      "review": "正确登记的offline在执行前停止；后效轴由父级停止拦截，引用漏洞见04"
+    },
+    {
+      "axis": "initialization.debug_actions",
+      "disposition": "超出覆盖即停",
+      "value": {
+        "policy": "stop",
+        "trigger": "运行区间内出现玩家单位操作（种子之前的动作只核证据引用）"
+      },
+      "where": "interfaces.rs:9-53、222-255；input.rs:271-318；engine.rs:185-682；transition.rs:279-319",
+      "review": "有限完整种子及初值限制已对照；历史身份见03、04，after_closure契约见07"
+    },
+    {
+      "axis": "initialization.rebuild_inventory",
+      "disposition": "超出覆盖即停",
+      "value": {
+        "policy": "stop",
+        "trigger": "拆除或重建需确定库存/进度去向"
+      },
+      "where": "interfaces.rs:9-53、222-255；input.rs:271-318；engine.rs:185-682；transition.rs:279-319",
+      "review": "有限完整种子及初值限制已对照；历史身份见03、04，after_closure契约见07"
+    },
+    {
+      "axis": "warehouse.withdrawal_policy",
+      "disposition": "超出覆盖即停",
+      "value": {
+        "policy": "stop",
+        "trigger": "需要执行拿取策略或据此认证完整周期"
+      },
+      "where": "transition.rs:295-331；engine.rs:257-271；config.rs:462-467",
+      "review": "正确登记的拿取及显式义务请求停止；动作引用校验见04"
+    },
+    {
+      "axis": "warehouse.withdrawal_timing",
+      "disposition": "超出覆盖即停",
+      "value": {
+        "policy": "stop",
+        "trigger": "运行区间出现玩家拿取事件；策略与实际时距未实现"
+      },
+      "where": "transition.rs:295-331；engine.rs:257-271；config.rs:462-467",
+      "review": "正确登记的拿取及显式义务请求停止；动作引用校验见04"
+    },
+    {
+      "axis": "warehouse.periodic_lift",
+      "disposition": "超出覆盖即停",
+      "value": {
+        "policy": "stop",
+        "trigger": "把省略仓库/绝对时钟等的抽象周期提升为完整基地周期"
+      },
+      "where": "transition.rs:295-331；engine.rs:257-271；config.rs:462-467",
+      "review": "正确登记的拿取及显式义务请求停止；动作引用校验见04"
+    },
+    {
+      "axis": "gate.concurrent_expiry",
+      "disposition": "本版选值",
+      "value": "atomic_batch",
+      "where": "input.rs:499-534；engine.rs:349-384；polling.rs:297-362；transition.rs:199-250、406-447",
+      "review": "原因/计数/原子批维护已对照；编辑/取消由玩家操作入口提前停止，引用漏洞见04"
+    },
+    {
+      "axis": "manufacturing.recipe_quantity_match",
+      "disposition": "本版选值",
+      "value": "at_least",
+      "where": "input.rs:619-639；engine.rs:543-619、784-861；transition.rs:7-114",
+      "review": "选择器/整批/立即开工/输出守卫已对照"
+    },
+    {
+      "axis": "manufacturing.recipe_extra_items",
+      "disposition": "本版选值",
+      "value": "allow",
+      "where": "input.rs:619-639；engine.rs:543-619、784-861；transition.rs:7-114",
+      "review": "选择器/整批/立即开工/输出守卫已对照"
+    }
+  ]
+}

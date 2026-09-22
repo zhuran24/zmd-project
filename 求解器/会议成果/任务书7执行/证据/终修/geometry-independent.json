@@ -1,0 +1,2572 @@
+{
+  "input_sha256": "7e7dae5f1ff28f389a7a9bcba9acc6eee71054926e588b41ceb3e2de24ac1fda",
+  "checks": [
+    {
+      "name": "size:M174",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:M201",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:M057",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:POWER_荞花_a",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:POWER_荞花_b",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:M195",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:M212",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:M068",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:POWER_砂叶_a",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:POWER_砂叶_b",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:M213",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:M214",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:M215",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:BOX_B",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:POWER_电池输出_0",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:POWER_电池输出_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:M216",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:M217",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:M218",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:BOX_C",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:POWER_胶囊输出_0",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:POWER_胶囊输出_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:CORE",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_W_00",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_S_00",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_W_01",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_S_01",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_W_02",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_S_02",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_W_03",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_S_03",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_W_04",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_S_04",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_W_05",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_S_05",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_W_06",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_S_06",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_W_07",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_S_07",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_W_08",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_S_08",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_W_09",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_S_09",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_W_10",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_S_10",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_W_11",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_S_11",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_W_12",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_S_12",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_W_13",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_S_13",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_W_14",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_S_14",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_W_15",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_S_15",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_W_16",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_S_16",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_W_17",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_S_17",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_W_18",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_S_18",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_W_19",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_S_19",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_W_20",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_S_20",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_W_21",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_S_21",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_W_22",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_S_22",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_1_2",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_1_5",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_1_8",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_1_11",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_1_14",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_1_17",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_1_20",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_1_23",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_1_26",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_1_29",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_1_32",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_1_35",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_1_38",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_1_41",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_1_44",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_1_47",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_1_50",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_1_53",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_1_56",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_1_59",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_1_62",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_1_65",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_1_68",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_2_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_5_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_7_7",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_7_8",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_7_9",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_7_10",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_7_11",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_7_12",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_7_13",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_7_14",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_7_15",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_7_16",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_7_17",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_7_18",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_7_19",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_7_38",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_7_39",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_7_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_7_41",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_8_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_8_7",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_8_19",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_8_41",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_9_13",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_9_41",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_10_41",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_11_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_11_41",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_12_13",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_12_41",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_13_13",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_13_14",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_13_41",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_14_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_14_41",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_15_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_15_41",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_15_42",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_15_43",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_16_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_16_41",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_16_42",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_16_43",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_17_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_17_14",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_17_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_17_42",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_17_43",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_18_38",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_18_39",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_18_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_18_41",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_18_42",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_19_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_20_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_20_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_21_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_22_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_23_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_23_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_24_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_25_38",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_25_39",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_25_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_26_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_27_7",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_27_8",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_27_9",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_27_10",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_27_11",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_27_12",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_27_13",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_27_14",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_27_15",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_27_16",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_27_17",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_27_18",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_27_19",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_28_7",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_28_19",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_29_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_29_13",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_32_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_32_13",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_33_13",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_33_14",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_35_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_37_14",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_37_15",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_37_16",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_38_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_41_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_41_38",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_41_39",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_41_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_41_41",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_42_41",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_43_41",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_44_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_44_41",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_45_41",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_46_41",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_47_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_47_41",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_48_9",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_48_12",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_48_15",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_48_41",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_49_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_49_41",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_49_42",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_49_43",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_50_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_50_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_50_41",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_50_42",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_50_43",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_51_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_51_42",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_51_43",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_52_38",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_52_39",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_52_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_52_41",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_52_42",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_53_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_53_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_54_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_55_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_56_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_56_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_57_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_58_9",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_58_12",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_58_15",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_58_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_59_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_59_38",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_59_39",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_59_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_62_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_65_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_68_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "all_declared_ports_equal_rule_reconstruction",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "all_automatic_channels_equal",
+      "passed": true,
+      "details": {
+        "independent": 182,
+        "reported": 182
+      }
+    },
+    {
+      "name": "routes_cover_all_automatic_channels",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "all_14_powered",
+      "passed": true,
+      "details": {
+        "M174": [
+          "POWER_荞花_a"
+        ],
+        "M201": [
+          "POWER_荞花_a",
+          "POWER_荞花_b"
+        ],
+        "M057": [
+          "POWER_荞花_b"
+        ],
+        "M195": [
+          "POWER_砂叶_a"
+        ],
+        "M212": [
+          "POWER_砂叶_a",
+          "POWER_砂叶_b"
+        ],
+        "M068": [
+          "POWER_砂叶_b"
+        ],
+        "M213": [
+          "POWER_电池输出_0"
+        ],
+        "M214": [
+          "POWER_电池输出_0"
+        ],
+        "M215": [
+          "POWER_电池输出_1"
+        ],
+        "BOX_B": [
+          "POWER_电池输出_0"
+        ],
+        "M216": [
+          "POWER_胶囊输出_0"
+        ],
+        "M217": [
+          "POWER_胶囊输出_0"
+        ],
+        "M218": [
+          "POWER_胶囊输出_1"
+        ],
+        "BOX_C": [
+          "POWER_胶囊输出_0"
+        ]
+      }
+    },
+    {
+      "name": "bridge_directions_all_orders",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "all_nontransport_outputs_only_one_priority_group",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "actual_guaranteed_factory_rates_remain_null",
+      "passed": true,
+      "details": null
+    }
+  ],
+  "summary": {
+    "units": 235,
+    "occupied_cells": 697,
+    "ports": 542,
+    "channels": 182,
+    "routes": 68,
+    "kinds": {
+      "种植机": 2,
+      "采种机": 2,
+      "粉碎机": 2,
+      "供电桩": 8,
+      "封装机": 3,
+      "协议储存箱": 2,
+      "灌装机": 3,
+      "协议核心": 1,
+      "仓库取货口": 46,
+      "传送带": 162,
+      "桥接器": 4
+    },
+    "transport_cells": 166,
+    "structural_transport_slots": 170,
+    "planned_species_simultaneous_capacity": 166,
+    "product_structural_slots": 76,
+    "product_planned_species_capacity": 72
+  },
+  "routes": [
+    {
+      "id": "荞花_PH",
+      "slots": 1,
+      "components": 1,
+      "item": "荞花"
+    },
+    {
+      "id": "荞花_PG",
+      "slots": 3,
+      "components": 1,
+      "item": "荞花"
+    },
+    {
+      "id": "荞花_HP",
+      "slots": 15,
+      "components": 1,
+      "item": "荞花种子"
+    },
+    {
+      "id": "荞花_粉末1",
+      "slots": 1,
+      "components": 1,
+      "item": "荞花粉末"
+    },
+    {
+      "id": "砂叶_PH",
+      "slots": 1,
+      "components": 1,
+      "item": "砂叶"
+    },
+    {
+      "id": "砂叶_PG",
+      "slots": 3,
+      "components": 1,
+      "item": "砂叶"
+    },
+    {
+      "id": "砂叶_HP",
+      "slots": 15,
+      "components": 1,
+      "item": "砂叶种子"
+    },
+    {
+      "id": "砂叶_粉末1",
+      "slots": 1,
+      "components": 1,
+      "item": "砂叶粉末"
+    },
+    {
+      "id": "砂叶_粉末2",
+      "slots": 1,
+      "components": 1,
+      "item": "砂叶粉末"
+    },
+    {
+      "id": "砂叶_粉末3",
+      "slots": 1,
+      "components": 1,
+      "item": "砂叶粉末"
+    },
+    {
+      "id": "M213_成品",
+      "slots": 15,
+      "components": 3,
+      "item": "高容谷地电池"
+    },
+    {
+      "id": "M214_成品",
+      "slots": 7,
+      "components": 3,
+      "item": "高容谷地电池"
+    },
+    {
+      "id": "M215_成品",
+      "slots": 16,
+      "components": 5,
+      "item": "高容谷地电池"
+    },
+    {
+      "id": "M216_成品",
+      "slots": 15,
+      "components": 3,
+      "item": "精选荞愈胶囊"
+    },
+    {
+      "id": "M217_成品",
+      "slots": 7,
+      "components": 3,
+      "item": "精选荞愈胶囊"
+    },
+    {
+      "id": "M218_成品",
+      "slots": 16,
+      "components": 5,
+      "item": "精选荞愈胶囊"
+    },
+    {
+      "id": "CORE_W_1",
+      "slots": 1,
+      "components": 1,
+      "item": "蓝铁矿"
+    },
+    {
+      "id": "CORE_W_4",
+      "slots": 1,
+      "components": 1,
+      "item": "蓝铁矿"
+    },
+    {
+      "id": "CORE_W_7",
+      "slots": 1,
+      "components": 1,
+      "item": "蓝铁矿"
+    },
+    {
+      "id": "CORE_E_1",
+      "slots": 1,
+      "components": 1,
+      "item": "蓝铁矿"
+    },
+    {
+      "id": "CORE_E_4",
+      "slots": 1,
+      "components": 1,
+      "item": "蓝铁矿"
+    },
+    {
+      "id": "CORE_E_7",
+      "slots": 1,
+      "components": 1,
+      "item": "蓝铁矿"
+    },
+    {
+      "id": "ORE_W_00_边界",
+      "slots": 1,
+      "components": 1,
+      "item": "蓝铁矿"
+    },
+    {
+      "id": "ORE_S_00_边界",
+      "slots": 1,
+      "components": 1,
+      "item": "蓝铁矿"
+    },
+    {
+      "id": "ORE_W_01_边界",
+      "slots": 1,
+      "components": 1,
+      "item": "蓝铁矿"
+    },
+    {
+      "id": "ORE_S_01_边界",
+      "slots": 1,
+      "components": 1,
+      "item": "蓝铁矿"
+    },
+    {
+      "id": "ORE_W_02_边界",
+      "slots": 1,
+      "components": 1,
+      "item": "蓝铁矿"
+    },
+    {
+      "id": "ORE_S_02_边界",
+      "slots": 1,
+      "components": 1,
+      "item": "蓝铁矿"
+    },
+    {
+      "id": "ORE_W_03_边界",
+      "slots": 1,
+      "components": 1,
+      "item": "蓝铁矿"
+    },
+    {
+      "id": "ORE_S_03_边界",
+      "slots": 1,
+      "components": 1,
+      "item": "蓝铁矿"
+    },
+    {
+      "id": "ORE_W_04_边界",
+      "slots": 1,
+      "components": 1,
+      "item": "蓝铁矿"
+    },
+    {
+      "id": "ORE_S_04_边界",
+      "slots": 1,
+      "components": 1,
+      "item": "蓝铁矿"
+    },
+    {
+      "id": "ORE_W_05_边界",
+      "slots": 1,
+      "components": 1,
+      "item": "蓝铁矿"
+    },
+    {
+      "id": "ORE_S_05_边界",
+      "slots": 1,
+      "components": 1,
+      "item": "源矿"
+    },
+    {
+      "id": "ORE_W_06_边界",
+      "slots": 1,
+      "components": 1,
+      "item": "蓝铁矿"
+    },
+    {
+      "id": "ORE_S_06_边界",
+      "slots": 1,
+      "components": 1,
+      "item": "源矿"
+    },
+    {
+      "id": "ORE_W_07_边界",
+      "slots": 1,
+      "components": 1,
+      "item": "蓝铁矿"
+    },
+    {
+      "id": "ORE_S_07_边界",
+      "slots": 1,
+      "components": 1,
+      "item": "源矿"
+    },
+    {
+      "id": "ORE_W_08_边界",
+      "slots": 1,
+      "components": 1,
+      "item": "蓝铁矿"
+    },
+    {
+      "id": "ORE_S_08_边界",
+      "slots": 1,
+      "components": 1,
+      "item": "源矿"
+    },
+    {
+      "id": "ORE_W_09_边界",
+      "slots": 1,
+      "components": 1,
+      "item": "蓝铁矿"
+    },
+    {
+      "id": "ORE_S_09_边界",
+      "slots": 1,
+      "components": 1,
+      "item": "源矿"
+    },
+    {
+      "id": "ORE_W_10_边界",
+      "slots": 1,
+      "components": 1,
+      "item": "蓝铁矿"
+    },
+    {
+      "id": "ORE_S_10_边界",
+      "slots": 1,
+      "components": 1,
+      "item": "源矿"
+    },
+    {
+      "id": "ORE_W_11_边界",
+      "slots": 1,
+      "components": 1,
+      "item": "蓝铁矿"
+    },
+    {
+      "id": "ORE_S_11_边界",
+      "slots": 1,
+      "components": 1,
+      "item": "源矿"
+    },
+    {
+      "id": "ORE_W_12_边界",
+      "slots": 1,
+      "components": 1,
+      "item": "蓝铁矿"
+    },
+    {
+      "id": "ORE_S_12_边界",
+      "slots": 1,
+      "components": 1,
+      "item": "源矿"
+    },
+    {
+      "id": "ORE_W_13_边界",
+      "slots": 1,
+      "components": 1,
+      "item": "蓝铁矿"
+    },
+    {
+      "id": "ORE_S_13_边界",
+      "slots": 1,
+      "components": 1,
+      "item": "源矿"
+    },
+    {
+      "id": "ORE_W_14_边界",
+      "slots": 1,
+      "components": 1,
+      "item": "蓝铁矿"
+    },
+    {
+      "id": "ORE_S_14_边界",
+      "slots": 1,
+      "components": 1,
+      "item": "源矿"
+    },
+    {
+      "id": "ORE_W_15_边界",
+      "slots": 1,
+      "components": 1,
+      "item": "蓝铁矿"
+    },
+    {
+      "id": "ORE_S_15_边界",
+      "slots": 1,
+      "components": 1,
+      "item": "源矿"
+    },
+    {
+      "id": "ORE_W_16_边界",
+      "slots": 1,
+      "components": 1,
+      "item": "蓝铁矿"
+    },
+    {
+      "id": "ORE_S_16_边界",
+      "slots": 1,
+      "components": 1,
+      "item": "源矿"
+    },
+    {
+      "id": "ORE_W_17_边界",
+      "slots": 1,
+      "components": 1,
+      "item": "蓝铁矿"
+    },
+    {
+      "id": "ORE_S_17_边界",
+      "slots": 1,
+      "components": 1,
+      "item": "源矿"
+    },
+    {
+      "id": "ORE_W_18_边界",
+      "slots": 1,
+      "components": 1,
+      "item": "蓝铁矿"
+    },
+    {
+      "id": "ORE_S_18_边界",
+      "slots": 1,
+      "components": 1,
+      "item": "源矿"
+    },
+    {
+      "id": "ORE_W_19_边界",
+      "slots": 1,
+      "components": 1,
+      "item": "蓝铁矿"
+    },
+    {
+      "id": "ORE_S_19_边界",
+      "slots": 1,
+      "components": 1,
+      "item": "源矿"
+    },
+    {
+      "id": "ORE_W_20_边界",
+      "slots": 1,
+      "components": 1,
+      "item": "蓝铁矿"
+    },
+    {
+      "id": "ORE_S_20_边界",
+      "slots": 1,
+      "components": 1,
+      "item": "源矿"
+    },
+    {
+      "id": "ORE_W_21_边界",
+      "slots": 1,
+      "components": 1,
+      "item": "蓝铁矿"
+    },
+    {
+      "id": "ORE_S_21_边界",
+      "slots": 1,
+      "components": 1,
+      "item": "源矿"
+    },
+    {
+      "id": "ORE_W_22_边界",
+      "slots": 1,
+      "components": 1,
+      "item": "蓝铁矿"
+    },
+    {
+      "id": "ORE_S_22_边界",
+      "slots": 1,
+      "components": 1,
+      "item": "源矿"
+    }
+  ],
+  "power": {
+    "M174": [
+      "POWER_荞花_a"
+    ],
+    "M201": [
+      "POWER_荞花_a",
+      "POWER_荞花_b"
+    ],
+    "M057": [
+      "POWER_荞花_b"
+    ],
+    "M195": [
+      "POWER_砂叶_a"
+    ],
+    "M212": [
+      "POWER_砂叶_a",
+      "POWER_砂叶_b"
+    ],
+    "M068": [
+      "POWER_砂叶_b"
+    ],
+    "M213": [
+      "POWER_电池输出_0"
+    ],
+    "M214": [
+      "POWER_电池输出_0"
+    ],
+    "M215": [
+      "POWER_电池输出_1"
+    ],
+    "BOX_B": [
+      "POWER_电池输出_0"
+    ],
+    "M216": [
+      "POWER_胶囊输出_0"
+    ],
+    "M217": [
+      "POWER_胶囊输出_0"
+    ],
+    "M218": [
+      "POWER_胶囊输出_1"
+    ],
+    "BOX_C": [
+      "POWER_胶囊输出_0"
+    ]
+  },
+  "bridges": [
+    {
+      "unit": "T_15_41",
+      "all_local_first_contact_orders": 24,
+      "axes": [
+        {
+          "axis": "horizontal",
+          "input": "W",
+          "output": "E",
+          "item": "高容谷地电池",
+          "route": "M213_成品",
+          "slot_capacity": 1
+        },
+        {
+          "axis": "vertical",
+          "input": "S",
+          "output": "N",
+          "item": "高容谷地电池",
+          "route": "M215_成品",
+          "slot_capacity": 1
+        }
+      ],
+      "same_species_exclusion": true,
+      "rule_13_aggregate_capacity_for_planned_species": 1
+    },
+    {
+      "unit": "T_18_40",
+      "all_local_first_contact_orders": 24,
+      "axes": [
+        {
+          "axis": "vertical",
+          "input": "S",
+          "output": "N",
+          "item": "高容谷地电池",
+          "route": "M214_成品",
+          "slot_capacity": 1
+        },
+        {
+          "axis": "horizontal",
+          "input": "E",
+          "output": "W",
+          "item": "高容谷地电池",
+          "route": "M215_成品",
+          "slot_capacity": 1
+        }
+      ],
+      "same_species_exclusion": true,
+      "rule_13_aggregate_capacity_for_planned_species": 1
+    },
+    {
+      "unit": "T_49_41",
+      "all_local_first_contact_orders": 24,
+      "axes": [
+        {
+          "axis": "horizontal",
+          "input": "W",
+          "output": "E",
+          "item": "精选荞愈胶囊",
+          "route": "M216_成品",
+          "slot_capacity": 1
+        },
+        {
+          "axis": "vertical",
+          "input": "S",
+          "output": "N",
+          "item": "精选荞愈胶囊",
+          "route": "M218_成品",
+          "slot_capacity": 1
+        }
+      ],
+      "same_species_exclusion": true,
+      "rule_13_aggregate_capacity_for_planned_species": 1
+    },
+    {
+      "unit": "T_52_40",
+      "all_local_first_contact_orders": 24,
+      "axes": [
+        {
+          "axis": "vertical",
+          "input": "S",
+          "output": "N",
+          "item": "精选荞愈胶囊",
+          "route": "M217_成品",
+          "slot_capacity": 1
+        },
+        {
+          "axis": "horizontal",
+          "input": "E",
+          "output": "W",
+          "item": "精选荞愈胶囊",
+          "route": "M218_成品",
+          "slot_capacity": 1
+        }
+      ],
+      "same_species_exclusion": true,
+      "rule_13_aggregate_capacity_for_planned_species": 1
+    }
+  ],
+  "channels": [
+    [
+      "M174:N:9:12",
+      "T_9_13:S:9:13"
+    ],
+    [
+      "M174:N:12:12",
+      "T_12_13:S:12:13"
+    ],
+    [
+      "M201:N:8:18",
+      "T_8_19:S:8:19"
+    ],
+    [
+      "M057:E:16:14",
+      "T_17_14:W:17:14"
+    ],
+    [
+      "M195:N:29:12",
+      "T_29_13:S:29:13"
+    ],
+    [
+      "M195:N:32:12",
+      "T_32_13:S:32:13"
+    ],
+    [
+      "M212:N:28:18",
+      "T_28_19:S:28:19"
+    ],
+    [
+      "M068:E:36:14",
+      "T_37_14:W:37:14"
+    ],
+    [
+      "M068:E:36:15",
+      "T_37_15:W:37:15"
+    ],
+    [
+      "M068:E:36:16",
+      "T_37_16:W:37:16"
+    ],
+    [
+      "M213:N:7:37",
+      "T_7_38:S:7:38"
+    ],
+    [
+      "M214:N:18:37",
+      "T_18_38:S:18:38"
+    ],
+    [
+      "M215:N:25:37",
+      "T_25_38:S:25:38"
+    ],
+    [
+      "M216:N:41:37",
+      "T_41_38:S:41:38"
+    ],
+    [
+      "M217:N:52:37",
+      "T_52_38:S:52:38"
+    ],
+    [
+      "M218:N:59:37",
+      "T_59_38:S:59:38"
+    ],
+    [
+      "CORE:E:57:9",
+      "T_58_9:W:58:9"
+    ],
+    [
+      "CORE:E:57:12",
+      "T_58_12:W:58:12"
+    ],
+    [
+      "CORE:E:57:15",
+      "T_58_15:W:58:15"
+    ],
+    [
+      "CORE:W:49:9",
+      "T_48_9:E:48:9"
+    ],
+    [
+      "CORE:W:49:12",
+      "T_48_12:E:48:12"
+    ],
+    [
+      "CORE:W:49:15",
+      "T_48_15:E:48:15"
+    ],
+    [
+      "ORE_W_00:E:0:2",
+      "T_1_2:W:1:2"
+    ],
+    [
+      "ORE_S_00:N:2:0",
+      "T_2_1:S:2:1"
+    ],
+    [
+      "ORE_W_01:E:0:5",
+      "T_1_5:W:1:5"
+    ],
+    [
+      "ORE_S_01:N:5:0",
+      "T_5_1:S:5:1"
+    ],
+    [
+      "ORE_W_02:E:0:8",
+      "T_1_8:W:1:8"
+    ],
+    [
+      "ORE_S_02:N:8:0",
+      "T_8_1:S:8:1"
+    ],
+    [
+      "ORE_W_03:E:0:11",
+      "T_1_11:W:1:11"
+    ],
+    [
+      "ORE_S_03:N:11:0",
+      "T_11_1:S:11:1"
+    ],
+    [
+      "ORE_W_04:E:0:14",
+      "T_1_14:W:1:14"
+    ],
+    [
+      "ORE_S_04:N:14:0",
+      "T_14_1:S:14:1"
+    ],
+    [
+      "ORE_W_05:E:0:17",
+      "T_1_17:W:1:17"
+    ],
+    [
+      "ORE_S_05:N:17:0",
+      "T_17_1:S:17:1"
+    ],
+    [
+      "ORE_W_06:E:0:20",
+      "T_1_20:W:1:20"
+    ],
+    [
+      "ORE_S_06:N:20:0",
+      "T_20_1:S:20:1"
+    ],
+    [
+      "ORE_W_07:E:0:23",
+      "T_1_23:W:1:23"
+    ],
+    [
+      "ORE_S_07:N:23:0",
+      "T_23_1:S:23:1"
+    ],
+    [
+      "ORE_W_08:E:0:26",
+      "T_1_26:W:1:26"
+    ],
+    [
+      "ORE_S_08:N:26:0",
+      "T_26_1:S:26:1"
+    ],
+    [
+      "ORE_W_09:E:0:29",
+      "T_1_29:W:1:29"
+    ],
+    [
+      "ORE_S_09:N:29:0",
+      "T_29_1:S:29:1"
+    ],
+    [
+      "ORE_W_10:E:0:32",
+      "T_1_32:W:1:32"
+    ],
+    [
+      "ORE_S_10:N:32:0",
+      "T_32_1:S:32:1"
+    ],
+    [
+      "ORE_W_11:E:0:35",
+      "T_1_35:W:1:35"
+    ],
+    [
+      "ORE_S_11:N:35:0",
+      "T_35_1:S:35:1"
+    ],
+    [
+      "ORE_W_12:E:0:38",
+      "T_1_38:W:1:38"
+    ],
+    [
+      "ORE_S_12:N:38:0",
+      "T_38_1:S:38:1"
+    ],
+    [
+      "ORE_W_13:E:0:41",
+      "T_1_41:W:1:41"
+    ],
+    [
+      "ORE_S_13:N:41:0",
+      "T_41_1:S:41:1"
+    ],
+    [
+      "ORE_W_14:E:0:44",
+      "T_1_44:W:1:44"
+    ],
+    [
+      "ORE_S_14:N:44:0",
+      "T_44_1:S:44:1"
+    ],
+    [
+      "ORE_W_15:E:0:47",
+      "T_1_47:W:1:47"
+    ],
+    [
+      "ORE_S_15:N:47:0",
+      "T_47_1:S:47:1"
+    ],
+    [
+      "ORE_W_16:E:0:50",
+      "T_1_50:W:1:50"
+    ],
+    [
+      "ORE_S_16:N:50:0",
+      "T_50_1:S:50:1"
+    ],
+    [
+      "ORE_W_17:E:0:53",
+      "T_1_53:W:1:53"
+    ],
+    [
+      "ORE_S_17:N:53:0",
+      "T_53_1:S:53:1"
+    ],
+    [
+      "ORE_W_18:E:0:56",
+      "T_1_56:W:1:56"
+    ],
+    [
+      "ORE_S_18:N:56:0",
+      "T_56_1:S:56:1"
+    ],
+    [
+      "ORE_W_19:E:0:59",
+      "T_1_59:W:1:59"
+    ],
+    [
+      "ORE_S_19:N:59:0",
+      "T_59_1:S:59:1"
+    ],
+    [
+      "ORE_W_20:E:0:62",
+      "T_1_62:W:1:62"
+    ],
+    [
+      "ORE_S_20:N:62:0",
+      "T_62_1:S:62:1"
+    ],
+    [
+      "ORE_W_21:E:0:65",
+      "T_1_65:W:1:65"
+    ],
+    [
+      "ORE_S_21:N:65:0",
+      "T_65_1:S:65:1"
+    ],
+    [
+      "ORE_W_22:E:0:68",
+      "T_1_68:W:1:68"
+    ],
+    [
+      "ORE_S_22:N:68:0",
+      "T_68_1:S:68:1"
+    ],
+    [
+      "T_7_7:E:7:7",
+      "T_8_7:W:8:7"
+    ],
+    [
+      "T_7_8:S:7:8",
+      "T_7_7:N:7:7"
+    ],
+    [
+      "T_7_9:S:7:9",
+      "T_7_8:N:7:8"
+    ],
+    [
+      "T_7_10:S:7:10",
+      "T_7_9:N:7:9"
+    ],
+    [
+      "T_7_11:S:7:11",
+      "T_7_10:N:7:10"
+    ],
+    [
+      "T_7_12:S:7:12",
+      "T_7_11:N:7:11"
+    ],
+    [
+      "T_7_13:S:7:13",
+      "T_7_12:N:7:12"
+    ],
+    [
+      "T_7_14:S:7:14",
+      "T_7_13:N:7:13"
+    ],
+    [
+      "T_7_15:S:7:15",
+      "T_7_14:N:7:14"
+    ],
+    [
+      "T_7_16:S:7:16",
+      "T_7_15:N:7:15"
+    ],
+    [
+      "T_7_17:S:7:17",
+      "T_7_16:N:7:16"
+    ],
+    [
+      "T_7_18:S:7:18",
+      "T_7_17:N:7:17"
+    ],
+    [
+      "T_7_19:S:7:19",
+      "T_7_18:N:7:18"
+    ],
+    [
+      "T_7_38:N:7:38",
+      "T_7_39:S:7:39"
+    ],
+    [
+      "T_7_39:N:7:39",
+      "T_7_40:S:7:40"
+    ],
+    [
+      "T_7_40:N:7:40",
+      "T_7_41:S:7:41"
+    ],
+    [
+      "T_7_41:E:7:41",
+      "T_8_41:W:8:41"
+    ],
+    [
+      "T_8_7:N:8:7",
+      "M174:S:8:8"
+    ],
+    [
+      "T_8_19:W:8:19",
+      "T_7_19:E:7:19"
+    ],
+    [
+      "T_8_41:E:8:41",
+      "T_9_41:W:9:41"
+    ],
+    [
+      "T_9_13:N:9:13",
+      "M201:S:9:14"
+    ],
+    [
+      "T_9_41:E:9:41",
+      "T_10_41:W:10:41"
+    ],
+    [
+      "T_10_41:E:10:41",
+      "T_11_41:W:11:41"
+    ],
+    [
+      "T_11_41:E:11:41",
+      "T_12_41:W:12:41"
+    ],
+    [
+      "T_12_13:E:12:13",
+      "T_13_13:W:13:13"
+    ],
+    [
+      "T_12_41:E:12:41",
+      "T_13_41:W:13:41"
+    ],
+    [
+      "T_13_13:N:13:13",
+      "T_13_14:S:13:14"
+    ],
+    [
+      "T_13_14:E:13:14",
+      "M057:W:14:14"
+    ],
+    [
+      "T_13_41:E:13:41",
+      "T_14_41:W:14:41"
+    ],
+    [
+      "T_14_41:E:14:41",
+      "T_15_41:W:15:41"
+    ],
+    [
+      "T_15_40:N:15:40",
+      "T_15_41:S:15:41"
+    ],
+    [
+      "T_15_41:E:15:41",
+      "T_16_41:W:16:41"
+    ],
+    [
+      "T_15_41:N:15:41",
+      "T_15_42:S:15:42"
+    ],
+    [
+      "T_15_42:N:15:42",
+      "T_15_43:S:15:43"
+    ],
+    [
+      "T_15_43:N:15:43",
+      "BOX_B:S:15:44"
+    ],
+    [
+      "T_16_40:W:16:40",
+      "T_15_40:E:15:40"
+    ],
+    [
+      "T_16_41:N:16:41",
+      "T_16_42:S:16:42"
+    ],
+    [
+      "T_16_42:N:16:42",
+      "T_16_43:S:16:43"
+    ],
+    [
+      "T_16_43:N:16:43",
+      "BOX_B:S:16:44"
+    ],
+    [
+      "T_17_40:W:17:40",
+      "T_16_40:E:16:40"
+    ],
+    [
+      "T_17_42:N:17:42",
+      "T_17_43:S:17:43"
+    ],
+    [
+      "T_17_43:N:17:43",
+      "BOX_B:S:17:44"
+    ],
+    [
+      "T_18_38:N:18:38",
+      "T_18_39:S:18:39"
+    ],
+    [
+      "T_18_39:N:18:39",
+      "T_18_40:S:18:40"
+    ],
+    [
+      "T_18_40:N:18:40",
+      "T_18_41:S:18:41"
+    ],
+    [
+      "T_18_40:W:18:40",
+      "T_17_40:E:17:40"
+    ],
+    [
+      "T_18_41:N:18:41",
+      "T_18_42:S:18:42"
+    ],
+    [
+      "T_18_42:W:18:42",
+      "T_17_42:E:17:42"
+    ],
+    [
+      "T_19_40:W:19:40",
+      "T_18_40:E:18:40"
+    ],
+    [
+      "T_20_40:W:20:40",
+      "T_19_40:E:19:40"
+    ],
+    [
+      "T_21_40:W:21:40",
+      "T_20_40:E:20:40"
+    ],
+    [
+      "T_22_40:W:22:40",
+      "T_21_40:E:21:40"
+    ],
+    [
+      "T_23_40:W:23:40",
+      "T_22_40:E:22:40"
+    ],
+    [
+      "T_24_40:W:24:40",
+      "T_23_40:E:23:40"
+    ],
+    [
+      "T_25_38:N:25:38",
+      "T_25_39:S:25:39"
+    ],
+    [
+      "T_25_39:N:25:39",
+      "T_25_40:S:25:40"
+    ],
+    [
+      "T_25_40:W:25:40",
+      "T_24_40:E:24:40"
+    ],
+    [
+      "T_27_7:E:27:7",
+      "T_28_7:W:28:7"
+    ],
+    [
+      "T_27_8:S:27:8",
+      "T_27_7:N:27:7"
+    ],
+    [
+      "T_27_9:S:27:9",
+      "T_27_8:N:27:8"
+    ],
+    [
+      "T_27_10:S:27:10",
+      "T_27_9:N:27:9"
+    ],
+    [
+      "T_27_11:S:27:11",
+      "T_27_10:N:27:10"
+    ],
+    [
+      "T_27_12:S:27:12",
+      "T_27_11:N:27:11"
+    ],
+    [
+      "T_27_13:S:27:13",
+      "T_27_12:N:27:12"
+    ],
+    [
+      "T_27_14:S:27:14",
+      "T_27_13:N:27:13"
+    ],
+    [
+      "T_27_15:S:27:15",
+      "T_27_14:N:27:14"
+    ],
+    [
+      "T_27_16:S:27:16",
+      "T_27_15:N:27:15"
+    ],
+    [
+      "T_27_17:S:27:17",
+      "T_27_16:N:27:16"
+    ],
+    [
+      "T_27_18:S:27:18",
+      "T_27_17:N:27:17"
+    ],
+    [
+      "T_27_19:S:27:19",
+      "T_27_18:N:27:18"
+    ],
+    [
+      "T_28_7:N:28:7",
+      "M195:S:28:8"
+    ],
+    [
+      "T_28_19:W:28:19",
+      "T_27_19:E:27:19"
+    ],
+    [
+      "T_29_13:N:29:13",
+      "M212:S:29:14"
+    ],
+    [
+      "T_32_13:E:32:13",
+      "T_33_13:W:33:13"
+    ],
+    [
+      "T_33_13:N:33:13",
+      "T_33_14:S:33:14"
+    ],
+    [
+      "T_33_14:E:33:14",
+      "M068:W:34:14"
+    ],
+    [
+      "T_41_38:N:41:38",
+      "T_41_39:S:41:39"
+    ],
+    [
+      "T_41_39:N:41:39",
+      "T_41_40:S:41:40"
+    ],
+    [
+      "T_41_40:N:41:40",
+      "T_41_41:S:41:41"
+    ],
+    [
+      "T_41_41:E:41:41",
+      "T_42_41:W:42:41"
+    ],
+    [
+      "T_42_41:E:42:41",
+      "T_43_41:W:43:41"
+    ],
+    [
+      "T_43_41:E:43:41",
+      "T_44_41:W:44:41"
+    ],
+    [
+      "T_44_41:E:44:41",
+      "T_45_41:W:45:41"
+    ],
+    [
+      "T_45_41:E:45:41",
+      "T_46_41:W:46:41"
+    ],
+    [
+      "T_46_41:E:46:41",
+      "T_47_41:W:47:41"
+    ],
+    [
+      "T_47_41:E:47:41",
+      "T_48_41:W:48:41"
+    ],
+    [
+      "T_48_41:E:48:41",
+      "T_49_41:W:49:41"
+    ],
+    [
+      "T_49_40:N:49:40",
+      "T_49_41:S:49:41"
+    ],
+    [
+      "T_49_41:E:49:41",
+      "T_50_41:W:50:41"
+    ],
+    [
+      "T_49_41:N:49:41",
+      "T_49_42:S:49:42"
+    ],
+    [
+      "T_49_42:N:49:42",
+      "T_49_43:S:49:43"
+    ],
+    [
+      "T_49_43:N:49:43",
+      "BOX_C:S:49:44"
+    ],
+    [
+      "T_50_40:W:50:40",
+      "T_49_40:E:49:40"
+    ],
+    [
+      "T_50_41:N:50:41",
+      "T_50_42:S:50:42"
+    ],
+    [
+      "T_50_42:N:50:42",
+      "T_50_43:S:50:43"
+    ],
+    [
+      "T_50_43:N:50:43",
+      "BOX_C:S:50:44"
+    ],
+    [
+      "T_51_40:W:51:40",
+      "T_50_40:E:50:40"
+    ],
+    [
+      "T_51_42:N:51:42",
+      "T_51_43:S:51:43"
+    ],
+    [
+      "T_51_43:N:51:43",
+      "BOX_C:S:51:44"
+    ],
+    [
+      "T_52_38:N:52:38",
+      "T_52_39:S:52:39"
+    ],
+    [
+      "T_52_39:N:52:39",
+      "T_52_40:S:52:40"
+    ],
+    [
+      "T_52_40:N:52:40",
+      "T_52_41:S:52:41"
+    ],
+    [
+      "T_52_40:W:52:40",
+      "T_51_40:E:51:40"
+    ],
+    [
+      "T_52_41:N:52:41",
+      "T_52_42:S:52:42"
+    ],
+    [
+      "T_52_42:W:52:42",
+      "T_51_42:E:51:42"
+    ],
+    [
+      "T_53_40:W:53:40",
+      "T_52_40:E:52:40"
+    ],
+    [
+      "T_54_40:W:54:40",
+      "T_53_40:E:53:40"
+    ],
+    [
+      "T_55_40:W:55:40",
+      "T_54_40:E:54:40"
+    ],
+    [
+      "T_56_40:W:56:40",
+      "T_55_40:E:55:40"
+    ],
+    [
+      "T_57_40:W:57:40",
+      "T_56_40:E:56:40"
+    ],
+    [
+      "T_58_40:W:58:40",
+      "T_57_40:E:57:40"
+    ],
+    [
+      "T_59_38:N:59:38",
+      "T_59_39:S:59:39"
+    ],
+    [
+      "T_59_39:N:59:39",
+      "T_59_40:S:59:40"
+    ],
+    [
+      "T_59_40:W:59:40",
+      "T_58_40:E:58:40"
+    ]
+  ]
+}

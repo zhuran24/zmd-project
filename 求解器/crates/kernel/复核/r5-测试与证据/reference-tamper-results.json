@@ -1,0 +1,181 @@
+[
+  {
+    "case": "record",
+    "changed_byte": 1,
+    "parsed_json_equal": true,
+    "result": {
+      "execution_mode": "finite_concrete",
+      "fingerprints": [],
+      "input_history": null,
+      "open_items": [
+        "invalid_input input @ artifact_ref.sha256: 引用原始字节指纹不符"
+      ],
+      "parameter_assignment": null,
+      "port_meeting": "shared_edge_opposite",
+      "producer": {
+        "claim": "装载停止，未形成游戏后继",
+        "kind": "kernel",
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+      },
+      "profile_id": "kernel_profile_v1",
+      "run_id": "kernel:load-stop",
+      "schema": "kernel-output-v3",
+      "status": "invalid_input",
+      "trace": null,
+      "uncovered_axes": [],
+      "validation_scope": null
+    }
+  },
+  {
+    "case": "input",
+    "changed_byte": 1,
+    "parsed_json_equal": true,
+    "result": {
+      "execution_mode": "finite_concrete",
+      "fingerprints": [],
+      "input_history": null,
+      "open_items": [
+        "invalid_input input @ /home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r5-测试与证据/reference-input.json: 来源指纹不符，须重验而非刷新"
+      ],
+      "parameter_assignment": null,
+      "port_meeting": "shared_edge_opposite",
+      "producer": {
+        "claim": "装载停止，未形成游戏后继",
+        "kind": "kernel",
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+      },
+      "profile_id": "kernel_profile_v1",
+      "run_id": "kernel:load-stop",
+      "schema": "kernel-output-v3",
+      "status": "invalid_input",
+      "trace": null,
+      "uncovered_axes": [],
+      "validation_scope": null
+    }
+  },
+  {
+    "case": "input_reference_hash_isolated",
+    "result": {
+      "execution_mode": "finite_concrete",
+      "fingerprints": [],
+      "input_history": null,
+      "open_items": [
+        "invalid_input input @ artifact_ref.sha256: 引用原始字节指纹不符"
+      ],
+      "parameter_assignment": null,
+      "port_meeting": "shared_edge_opposite",
+      "producer": {
+        "claim": "装载停止，未形成游戏后继",
+        "kind": "kernel",
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+      },
+      "profile_id": "kernel_profile_v1",
+      "run_id": "kernel:load-stop",
+      "schema": "kernel-output-v3",
+      "status": "invalid_input",
+      "trace": null,
+      "uncovered_axes": [],
+      "validation_scope": null
+    }
+  },
+  {
+    "case": "semantic_record_resealed",
+    "result": {
+      "execution_mode": "finite_concrete",
+      "fingerprints": [],
+      "input_history": null,
+      "open_items": [
+        "invalid_input input @ run_record_ref: 完整v3前缀与独立重算逐字段不符"
+      ],
+      "parameter_assignment": null,
+      "port_meeting": "shared_edge_opposite",
+      "producer": {
+        "claim": "装载停止，未形成游戏后继",
+        "kind": "kernel",
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+      },
+      "profile_id": "kernel_profile_v1",
+      "run_id": "kernel:load-stop",
+      "schema": "kernel-output-v3",
+      "status": "invalid_input",
+      "trace": null,
+      "uncovered_axes": [],
+      "validation_scope": null
+    }
+  },
+  {
+    "case": "missing_record",
+    "result": {
+      "execution_mode": "finite_concrete",
+      "fingerprints": [],
+      "input_history": null,
+      "open_items": [
+        "invalid_input input @ artifact_ref.path: No such file or directory (os error 2)"
+      ],
+      "parameter_assignment": null,
+      "port_meeting": "shared_edge_opposite",
+      "producer": {
+        "claim": "装载停止，未形成游戏后继",
+        "kind": "kernel",
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+      },
+      "profile_id": "kernel_profile_v1",
+      "run_id": "kernel:load-stop",
+      "schema": "kernel-output-v3",
+      "status": "invalid_input",
+      "trace": null,
+      "uncovered_axes": [],
+      "validation_scope": null
+    }
+  },
+  {
+    "case": "wrong_format",
+    "result": {
+      "execution_mode": "finite_concrete",
+      "fingerprints": [],
+      "input_history": null,
+      "open_items": [
+        "invalid_input input @ run_record_ref: 格式或producer与目标不符"
+      ],
+      "parameter_assignment": null,
+      "port_meeting": "shared_edge_opposite",
+      "producer": {
+        "claim": "装载停止，未形成游戏后继",
+        "kind": "kernel",
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+      },
+      "profile_id": "kernel_profile_v1",
+      "run_id": "kernel:load-stop",
+      "schema": "kernel-output-v3",
+      "status": "invalid_input",
+      "trace": null,
+      "uncovered_axes": [],
+      "validation_scope": null
+    }
+  },
+  {
+    "case": "wrong_producer",
+    "result": {
+      "execution_mode": "finite_concrete",
+      "fingerprints": [],
+      "input_history": null,
+      "open_items": [
+        "invalid_input input @ run_record_ref: 格式或producer与目标不符"
+      ],
+      "parameter_assignment": null,
+      "port_meeting": "shared_edge_opposite",
+      "producer": {
+        "claim": "装载停止，未形成游戏后继",
+        "kind": "kernel",
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+      },
+      "profile_id": "kernel_profile_v1",
+      "run_id": "kernel:load-stop",
+      "schema": "kernel-output-v3",
+      "status": "invalid_input",
+      "trace": null,
+      "uncovered_axes": [],
+      "validation_scope": null
+    }
+  }
+]

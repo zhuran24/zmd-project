@@ -1,0 +1,9 @@
+{
+  "status": "通过",
+  "source_count": 60,
+  "source_changes": [],
+  "missing_links": [],
+  "finding_count": 4,
+  "reader_review": "逐项理由、适用边界、来源位置、复现入口与现有结果相符；结论均为未能否证。",
+  "report_sha256": "d519408ebfbdebd9576e9b92ba8f93c7a5dc842c282dcbf84a89c247a9017a72"
+}

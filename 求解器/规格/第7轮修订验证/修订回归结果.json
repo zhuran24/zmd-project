@@ -1,0 +1,380 @@
+{
+  "status": "PASS",
+  "scope": "局部仓库事务的连续/重载验证及几何读法门禁；非完整StateSeed内核续跑或全规则认证",
+  "checks": [
+    "S3-r7-L3-1：轴表、生命周期、配置均不再把相遇谓词标成已定",
+    "角点反例：不重叠格(0,0)/(1,1)的东/西端口仅交一点，法向相反仍不全长重合",
+    "几何入口拒绝未支持/未解相遇谓词：closed_segment_touch",
+    "几何入口拒绝未支持/未解相遇谓词：None",
+    "显式shared_edge_opposite仍重算黄金布局11条PC",
+    "三个样例迁移前后实际参数值、几何、建造历史和物理初态逐字段相同",
+    "请求§7：非周期纯函数在负时刻、0、正二次幂及远期非幂槽按完整模板序求值",
+    "表达式即使本次选then，也拒绝未访问otherwise的漏模板错误",
+    "S3-r7-L3-2：两空格序×两物种先后，连续两批与JSON重载逐字段一致",
+    "真实Warehouse/Decision及arbitration编码往返后连续结果相同；非空格empty_identity为not_applicable",
+    "5 tick冷却未到不产生额外传输或改序",
+    "旧固定母序负例由独立后态检查拒绝，调用方不能偷偷修序",
+    "转移入口同样拒绝继承旧母序的错误输入",
+    "稳定删项不按id重排幸存空格",
+    "已用格清空保留身份且不回候选序，同种再入用历史格",
+    "容量拒收整箱回滚：不因已拟分配W0而删序或写身份",
+    "多物种竞争仍先停：仓库、序、冷却及交付账零副作用",
+    "空箱尝试起冷却而不改候选序",
+    "无匿名格时规范新格带种创建，不加入当前空格序",
+    "连续序列独立核仓库单种单格、80000容量、交付守恒及取货指派保持"
+  ],
+  "warehouse_traces": [
+    {
+      "order": [
+        "W0",
+        "W1"
+      ],
+      "species": [
+        "高容谷地电池",
+        "精选荞愈胶囊"
+      ],
+      "initial": {
+        "time": 0,
+        "box": {
+          "高容谷地电池": 1
+        },
+        "warehouse": {
+          "W0": {
+            "item": null,
+            "quantity": 0,
+            "identity": null
+          },
+          "W1": {
+            "item": null,
+            "quantity": 0,
+            "identity": null
+          }
+        },
+        "warehouse_empty_slot_order": [
+          "W0",
+          "W1"
+        ],
+        "cooldown": 0,
+        "delivered": {},
+        "assignments": {
+          "source_port": "W0"
+        }
+      },
+      "after_first": {
+        "time": 0,
+        "box": {},
+        "warehouse": {
+          "W0": {
+            "item": "高容谷地电池",
+            "quantity": 1,
+            "identity": "高容谷地电池"
+          },
+          "W1": {
+            "item": null,
+            "quantity": 0,
+            "identity": null
+          }
+        },
+        "warehouse_empty_slot_order": [
+          "W1"
+        ],
+        "cooldown": 5,
+        "delivered": {
+          "高容谷地电池": 1
+        },
+        "assignments": {
+          "source_port": "W0"
+        }
+      },
+      "after_second": {
+        "time": 5,
+        "box": {},
+        "warehouse": {
+          "W0": {
+            "item": "高容谷地电池",
+            "quantity": 1,
+            "identity": "高容谷地电池"
+          },
+          "W1": {
+            "item": "精选荞愈胶囊",
+            "quantity": 1,
+            "identity": "精选荞愈胶囊"
+          }
+        },
+        "warehouse_empty_slot_order": [],
+        "cooldown": 5,
+        "delivered": {
+          "高容谷地电池": 1,
+          "精选荞愈胶囊": 1
+        },
+        "assignments": {
+          "source_port": "W0"
+        }
+      }
+    },
+    {
+      "order": [
+        "W0",
+        "W1"
+      ],
+      "species": [
+        "精选荞愈胶囊",
+        "高容谷地电池"
+      ],
+      "initial": {
+        "time": 0,
+        "box": {
+          "精选荞愈胶囊": 1
+        },
+        "warehouse": {
+          "W0": {
+            "item": null,
+            "quantity": 0,
+            "identity": null
+          },
+          "W1": {
+            "item": null,
+            "quantity": 0,
+            "identity": null
+          }
+        },
+        "warehouse_empty_slot_order": [
+          "W0",
+          "W1"
+        ],
+        "cooldown": 0,
+        "delivered": {},
+        "assignments": {
+          "source_port": "W0"
+        }
+      },
+      "after_first": {
+        "time": 0,
+        "box": {},
+        "warehouse": {
+          "W0": {
+            "item": "精选荞愈胶囊",
+            "quantity": 1,
+            "identity": "精选荞愈胶囊"
+          },
+          "W1": {
+            "item": null,
+            "quantity": 0,
+            "identity": null
+          }
+        },
+        "warehouse_empty_slot_order": [
+          "W1"
+        ],
+        "cooldown": 5,
+        "delivered": {
+          "精选荞愈胶囊": 1
+        },
+        "assignments": {
+          "source_port": "W0"
+        }
+      },
+      "after_second": {
+        "time": 5,
+        "box": {},
+        "warehouse": {
+          "W0": {
+            "item": "精选荞愈胶囊",
+            "quantity": 1,
+            "identity": "精选荞愈胶囊"
+          },
+          "W1": {
+            "item": "高容谷地电池",
+            "quantity": 1,
+            "identity": "高容谷地电池"
+          }
+        },
+        "warehouse_empty_slot_order": [],
+        "cooldown": 5,
+        "delivered": {
+          "精选荞愈胶囊": 1,
+          "高容谷地电池": 1
+        },
+        "assignments": {
+          "source_port": "W0"
+        }
+      }
+    },
+    {
+      "order": [
+        "W1",
+        "W0"
+      ],
+      "species": [
+        "高容谷地电池",
+        "精选荞愈胶囊"
+      ],
+      "initial": {
+        "time": 0,
+        "box": {
+          "高容谷地电池": 1
+        },
+        "warehouse": {
+          "W1": {
+            "item": null,
+            "quantity": 0,
+            "identity": null
+          },
+          "W0": {
+            "item": null,
+            "quantity": 0,
+            "identity": null
+          }
+        },
+        "warehouse_empty_slot_order": [
+          "W1",
+          "W0"
+        ],
+        "cooldown": 0,
+        "delivered": {},
+        "assignments": {
+          "source_port": "W1"
+        }
+      },
+      "after_first": {
+        "time": 0,
+        "box": {},
+        "warehouse": {
+          "W1": {
+            "item": "高容谷地电池",
+            "quantity": 1,
+            "identity": "高容谷地电池"
+          },
+          "W0": {
+            "item": null,
+            "quantity": 0,
+            "identity": null
+          }
+        },
+        "warehouse_empty_slot_order": [
+          "W0"
+        ],
+        "cooldown": 5,
+        "delivered": {
+          "高容谷地电池": 1
+        },
+        "assignments": {
+          "source_port": "W1"
+        }
+      },
+      "after_second": {
+        "time": 5,
+        "box": {},
+        "warehouse": {
+          "W1": {
+            "item": "高容谷地电池",
+            "quantity": 1,
+            "identity": "高容谷地电池"
+          },
+          "W0": {
+            "item": "精选荞愈胶囊",
+            "quantity": 1,
+            "identity": "精选荞愈胶囊"
+          }
+        },
+        "warehouse_empty_slot_order": [],
+        "cooldown": 5,
+        "delivered": {
+          "高容谷地电池": 1,
+          "精选荞愈胶囊": 1
+        },
+        "assignments": {
+          "source_port": "W1"
+        }
+      }
+    },
+    {
+      "order": [
+        "W1",
+        "W0"
+      ],
+      "species": [
+        "精选荞愈胶囊",
+        "高容谷地电池"
+      ],
+      "initial": {
+        "time": 0,
+        "box": {
+          "精选荞愈胶囊": 1
+        },
+        "warehouse": {
+          "W1": {
+            "item": null,
+            "quantity": 0,
+            "identity": null
+          },
+          "W0": {
+            "item": null,
+            "quantity": 0,
+            "identity": null
+          }
+        },
+        "warehouse_empty_slot_order": [
+          "W1",
+          "W0"
+        ],
+        "cooldown": 0,
+        "delivered": {},
+        "assignments": {
+          "source_port": "W1"
+        }
+      },
+      "after_first": {
+        "time": 0,
+        "box": {},
+        "warehouse": {
+          "W1": {
+            "item": "精选荞愈胶囊",
+            "quantity": 1,
+            "identity": "精选荞愈胶囊"
+          },
+          "W0": {
+            "item": null,
+            "quantity": 0,
+            "identity": null
+          }
+        },
+        "warehouse_empty_slot_order": [
+          "W0"
+        ],
+        "cooldown": 5,
+        "delivered": {
+          "精选荞愈胶囊": 1
+        },
+        "assignments": {
+          "source_port": "W1"
+        }
+      },
+      "after_second": {
+        "time": 5,
+        "box": {},
+        "warehouse": {
+          "W1": {
+            "item": "精选荞愈胶囊",
+            "quantity": 1,
+            "identity": "精选荞愈胶囊"
+          },
+          "W0": {
+            "item": "高容谷地电池",
+            "quantity": 1,
+            "identity": "高容谷地电池"
+          }
+        },
+        "warehouse_empty_slot_order": [],
+        "cooldown": 5,
+        "delivered": {
+          "精选荞愈胶囊": 1,
+          "高容谷地电池": 1
+        },
+        "assignments": {
+          "source_port": "W1"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,107 @@
+{
+  "schema": "task6-independent-review-delivery-v1",
+  "status": "done",
+  "report_sha256": "1326124027e79372d12ea6c3d5f114e307c994ff6ad729d4123129a42a1f7917",
+  "findings": {
+    "否证成立": 0,
+    "否证不成立": 21,
+    "无法判定": 8
+  },
+  "files": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/复核/否证-任务6.md",
+      "sha256": "1326124027e79372d12ea6c3d5f114e307c994ff6ad729d4123129a42a1f7917",
+      "bytes": 45094
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/否证/任务6/交付自核.py",
+      "sha256": "6baa256e119d8670d2dc205b88ffa74f1e7be3728743b9edb3989ccc6e491539",
+      "bytes": 2796
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/否证/任务6/作者重放/核验结果.json",
+      "sha256": "d39748e1afab522d168553ad62be7ecad996b1e736989cefea7bb5b87389054e",
+      "bytes": 5264
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/否证/任务6/作者重放/窗口与算术.json",
+      "sha256": "e9863819d16497db226a5991b7029aae3db5475e55121bddedb56fb53fd65c2e",
+      "bytes": 20563
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/否证/任务6/作者重放/设计律核查.json",
+      "sha256": "f0bda2532245ad4981f4543b9d6880ef41c4e47a9906638f35736b240575a101",
+      "bytes": 1946
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/否证/任务6/作者重放/读取核查.json",
+      "sha256": "18179da516f878450df09bf57e56864843274cdbcd67701c98aa577b4a732148",
+      "bytes": 27540
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/否证/任务6/作者重放.log",
+      "sha256": "2de10ca0a5bfa6ec44186254e45244b37b17172deaa1177c390f6b5aa93ce92c",
+      "bytes": 136
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/否证/任务6/审查输入指纹.json",
+      "sha256": "408bb6e2432e101a7f871a82f54ae339244eb19fcd91302f14de74fb0c1d7532",
+      "bytes": 10354
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/否证/任务6/工具可用性.json",
+      "sha256": "c5d5ed9f096001cca8b957b1c8cd91ba52909d88f9fda249ceaac9d1fe22dae3",
+      "bytes": 220
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/否证/任务6/独立核验.log",
+      "sha256": "721f4f8f84d7327d6e22060b4373dd670ab73daaf76cab333bb60a251a5e95c6",
+      "bytes": 120
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/否证/任务6/独立核验.py",
+      "sha256": "18fd89f2c75a50598f29dfc02f0aa1a5cd2bcc3f18615e96e5c5ceae65dae65f",
+      "bytes": 11296
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/否证/任务6/独立核验结果.json",
+      "sha256": "bc7ebb892b6ef30d0b6cd8de461aebd67f1c8b26c524c6a65aaee2d9caa83371",
+      "bytes": 3420
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/否证/任务6/生成报告.py",
+      "sha256": "5f9a24b36502a1a3c77c0d0a4a2592a5f1daaa51e69042712afcf45e9d7b67a7",
+      "bytes": 44382
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/否证/任务6/结构化结果.json",
+      "sha256": "648c4435f2e373197ab6e3bd0e279decd030ef6326f81c0d53400554596d82a4",
+      "bytes": 11601
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/否证/任务6/规则独推.md",
+      "sha256": "be00b866b37fa93ad5e99197ec3b721f89c0f18f0480ad59cdb22fd432fa071b",
+      "bytes": 3613
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/否证/任务6/读者自审.md",
+      "sha256": "6fb4521a0e02709634cfdcd4b23ae48d691ffcdc6577b5eab28f08b63f41dc61",
+      "bytes": 1636
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/否证/任务6/逐项论证.json",
+      "sha256": "b73c739b24362ecc2c1a1ca81faf059b3c924fba456ee91d02686c51eee5df1b",
+      "bytes": 30968
+    }
+  ],
+  "self_hash": "omitted to avoid self-reference",
+  "checks": {
+    "report_json_findings_equal": 29,
+    "review_inputs_unchanged": 32,
+    "author_inputs_unchanged": 93,
+    "links_exist": true,
+    "file_extensions_allowed": true,
+    "reader_self_review": "读者自审.md"
+  },
+  "exit_status": 0
+}

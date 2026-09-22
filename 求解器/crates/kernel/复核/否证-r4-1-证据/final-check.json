@@ -1,0 +1,26 @@
+{
+  "status": "pass",
+  "protected_files": 155,
+  "changed_files": [],
+  "missing_links": [],
+  "forbidden_evidence_paths": [],
+  "report_sha256": "64f949470ec8dc3ebc302faa3004ab9651d617a94268f9a9e0aefb2d4d5d1d6c",
+  "verdict_count": 7,
+  "independent_external_calls": 19,
+  "reader_review": {
+    "self_contained": true,
+    "current_and_prior_results_separate": true,
+    "seven_ids_covered": true,
+    "cross_references_checked": true,
+    "scope_limitations_stated": true,
+    "unnecessary_instruction_echo_removed": true
+  },
+  "age_control_build_time": {
+    "kind": "rational",
+    "value": {
+      "category": "候选",
+      "value": "-13"
+    }
+  },
+  "old_belt_record_ticks": 18
+}

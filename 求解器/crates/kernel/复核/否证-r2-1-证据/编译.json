@@ -1,0 +1,68 @@
+[
+  {
+    "command": [
+      "rustc",
+      "--edition=2021",
+      "-L",
+      "dependency=/home/zhuran24/zmd-research-fresh/求解器/target/debug/deps",
+      "--extern",
+      "serde=/home/zhuran24/zmd-research-fresh/求解器/target/debug/deps/libserde-bda080004035699a.rlib",
+      "--extern",
+      "serde_json=/home/zhuran24/zmd-research-fresh/求解器/target/debug/deps/libserde_json-0ab88e76c2088d71.rlib",
+      "--crate-name",
+      "kernel",
+      "--crate-type",
+      "rlib",
+      "crates/kernel/src/lib.rs",
+      "-o",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/libkernel.rlib"
+    ],
+    "returncode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "rustc",
+      "--edition=2021",
+      "-L",
+      "dependency=/home/zhuran24/zmd-research-fresh/求解器/target/debug/deps",
+      "--extern",
+      "serde=/home/zhuran24/zmd-research-fresh/求解器/target/debug/deps/libserde-bda080004035699a.rlib",
+      "--extern",
+      "serde_json=/home/zhuran24/zmd-research-fresh/求解器/target/debug/deps/libserde_json-0ab88e76c2088d71.rlib",
+      "--crate-name",
+      "kernel_cli",
+      "--extern",
+      "kernel=/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/libkernel.rlib",
+      "crates/kernel/src/main.rs",
+      "-o",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/kernel"
+    ],
+    "returncode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "rustc",
+      "--edition=2021",
+      "-L",
+      "dependency=/home/zhuran24/zmd-research-fresh/求解器/target/debug/deps",
+      "--extern",
+      "serde=/home/zhuran24/zmd-research-fresh/求解器/target/debug/deps/libserde-bda080004035699a.rlib",
+      "--extern",
+      "serde_json=/home/zhuran24/zmd-research-fresh/求解器/target/debug/deps/libserde_json-0ab88e76c2088d71.rlib",
+      "--crate-name",
+      "review_probe",
+      "--extern",
+      "kernel=/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/libkernel.rlib",
+      "crates/kernel/复核/复核-r2-规格保真-证据/probe/src/main.rs",
+      "-o",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/probe"
+    ],
+    "returncode": 0,
+    "stdout": "",
+    "stderr": ""
+  }
+]

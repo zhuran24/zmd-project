@@ -1,0 +1,463 @@
+{
+  "time_utc": "2026-09-20T01:58:55.657779+00:00",
+  "examples": {
+    "混做粉碎机两下游": {
+      "geometry_channels": [
+        [
+          "PC|belt_a0:north:0|belt_a1:south:0",
+          "belt_a0",
+          "belt_a1"
+        ],
+        [
+          "PC|belt_a1:north:0|belt_a2:south:0",
+          "belt_a1",
+          "belt_a2"
+        ],
+        [
+          "PC|belt_a2:north:0|grinder_a:south:5",
+          "belt_a2",
+          "grinder_a"
+        ],
+        [
+          "PC|belt_b0:east:0|belt_b1:south:0",
+          "belt_b0",
+          "belt_b1"
+        ],
+        [
+          "PC|belt_b1:west:0|belt_b2:south:0",
+          "belt_b1",
+          "belt_b2"
+        ],
+        [
+          "PC|belt_b2:north:0|belt_b3:south:0",
+          "belt_b2",
+          "belt_b3"
+        ],
+        [
+          "PC|belt_b3:north:0|grinder_b:south:0",
+          "belt_b3",
+          "grinder_b"
+        ],
+        [
+          "PC|crusher:north:0|belt_a0:south:0",
+          "crusher",
+          "belt_a0"
+        ],
+        [
+          "PC|crusher:north:2|belt_b0:south:0",
+          "crusher",
+          "belt_b0"
+        ],
+        [
+          "PC|feed_belt:north:0|crusher:south:0",
+          "feed_belt",
+          "crusher"
+        ],
+        [
+          "PC|ore_source:north:1|feed_belt:south:0",
+          "ore_source",
+          "feed_belt"
+        ]
+      ],
+      "geometry_matches_declared": true,
+      "gate_subgraphs": [
+        {
+          "cut": [],
+          "levels": {
+            "core": [],
+            "crusher": [
+              "other"
+            ],
+            "grinder_a": [],
+            "grinder_b": [],
+            "ore_source": [
+              "other"
+            ]
+          }
+        }
+      ],
+      "max_output_levels": {
+        "core": 0,
+        "crusher": 1,
+        "grinder_a": 0,
+        "grinder_b": 0,
+        "ore_source": 1
+      },
+      "forks": [],
+      "full_tables": 1,
+      "projected_tables": 1,
+      "projection_class_sizes": [
+        1
+      ],
+      "full_table_graph_pairs": 1,
+      "no_damping_query_in_all_gate_subgraphs": true,
+      "behavior_representatives_under_spec_call_guard": 1,
+      "review_function_rerun_agrees": true
+    },
+    "分流器三路轮询": {
+      "geometry_channels": [
+        [
+          "PC|feed_splitter:north:0|south_box:south:1",
+          "feed_splitter",
+          "south_box"
+        ],
+        [
+          "PC|ore_source:north:1|feed_splitter:south:0",
+          "ore_source",
+          "feed_splitter"
+        ],
+        [
+          "PC|probe_bottom:east:0|probe_gate_b:south:0",
+          "probe_bottom",
+          "probe_gate_b"
+        ],
+        [
+          "PC|probe_bottom:north:0|probe_merger:east:0",
+          "probe_bottom",
+          "probe_merger"
+        ],
+        [
+          "PC|probe_bottom_source:north:1|probe_bottom:south:0",
+          "probe_bottom_source",
+          "probe_bottom"
+        ],
+        [
+          "PC|probe_left:north:0|probe_merger:south:0",
+          "probe_left",
+          "probe_merger"
+        ],
+        [
+          "PC|probe_left:west:0|probe_gate_a:south:0",
+          "probe_left",
+          "probe_gate_a"
+        ],
+        [
+          "PC|probe_left_source:north:1|probe_left:south:0",
+          "probe_left_source",
+          "probe_left"
+        ],
+        [
+          "PC|probe_merger:north:0|probe_box:south:2",
+          "probe_merger",
+          "probe_box"
+        ],
+        [
+          "PC|south_box:north:2|splitter:south:0",
+          "south_box",
+          "splitter"
+        ],
+        [
+          "PC|splitter:east:0|east_box:south:0",
+          "splitter",
+          "east_box"
+        ],
+        [
+          "PC|splitter:north:0|north_box:south:0",
+          "splitter",
+          "north_box"
+        ],
+        [
+          "PC|splitter:west:0|west_box:south:0",
+          "splitter",
+          "west_box"
+        ]
+      ],
+      "geometry_matches_declared": true,
+      "gate_subgraphs": [
+        {
+          "cut": [],
+          "levels": {
+            "core": [],
+            "south_box": [
+              "other"
+            ],
+            "north_box": [],
+            "east_box": [],
+            "west_box": [],
+            "ore_source": [
+              "other"
+            ],
+            "probe_left_source": [
+              "other"
+            ],
+            "probe_bottom_source": [
+              "other"
+            ],
+            "probe_box": []
+          }
+        },
+        {
+          "cut": [
+            "PC|probe_bottom:east:0|probe_gate_b:south:0"
+          ],
+          "levels": {
+            "core": [],
+            "south_box": [
+              "other"
+            ],
+            "north_box": [],
+            "east_box": [],
+            "west_box": [],
+            "ore_source": [
+              "other"
+            ],
+            "probe_left_source": [
+              "other"
+            ],
+            "probe_bottom_source": [
+              "other"
+            ],
+            "probe_box": []
+          }
+        },
+        {
+          "cut": [
+            "PC|probe_left:west:0|probe_gate_a:south:0"
+          ],
+          "levels": {
+            "core": [],
+            "south_box": [
+              "other"
+            ],
+            "north_box": [],
+            "east_box": [],
+            "west_box": [],
+            "ore_source": [
+              "other"
+            ],
+            "probe_left_source": [
+              "other"
+            ],
+            "probe_bottom_source": [
+              "other"
+            ],
+            "probe_box": []
+          }
+        },
+        {
+          "cut": [
+            "PC|probe_bottom:east:0|probe_gate_b:south:0",
+            "PC|probe_left:west:0|probe_gate_a:south:0"
+          ],
+          "levels": {
+            "core": [],
+            "south_box": [
+              "other"
+            ],
+            "north_box": [],
+            "east_box": [],
+            "west_box": [],
+            "ore_source": [
+              "other"
+            ],
+            "probe_left_source": [
+              "other"
+            ],
+            "probe_bottom_source": [
+              "other"
+            ],
+            "probe_box": []
+          }
+        }
+      ],
+      "max_output_levels": {
+        "core": 0,
+        "south_box": 1,
+        "north_box": 0,
+        "east_box": 0,
+        "west_box": 0,
+        "ore_source": 1,
+        "probe_left_source": 1,
+        "probe_bottom_source": 1,
+        "probe_box": 0
+      },
+      "forks": [
+        {
+          "unit": "feed_splitter",
+          "outgoing": [
+            "PC|feed_splitter:north:0|south_box:south:1"
+          ],
+          "permanent": [
+            "PC|feed_splitter:north:0|south_box:south:1"
+          ],
+          "full_tables": 1,
+          "projected_tables": 1,
+          "kept_rows": [
+            [
+              "PC|feed_splitter:north:0|south_box:south:1"
+            ]
+          ],
+          "unread_rows": []
+        },
+        {
+          "unit": "probe_bottom",
+          "outgoing": [
+            "PC|probe_bottom:east:0|probe_gate_b:south:0",
+            "PC|probe_bottom:north:0|probe_merger:east:0"
+          ],
+          "permanent": [
+            "PC|probe_bottom:north:0|probe_merger:east:0"
+          ],
+          "full_tables": 2,
+          "projected_tables": 2,
+          "kept_rows": [
+            [
+              "PC|probe_bottom:north:0|probe_merger:east:0"
+            ],
+            [
+              "PC|probe_bottom:east:0|probe_gate_b:south:0",
+              "PC|probe_bottom:north:0|probe_merger:east:0"
+            ]
+          ],
+          "unread_rows": [
+            [
+              "PC|probe_bottom:east:0|probe_gate_b:south:0"
+            ]
+          ]
+        },
+        {
+          "unit": "probe_left",
+          "outgoing": [
+            "PC|probe_left:north:0|probe_merger:south:0",
+            "PC|probe_left:west:0|probe_gate_a:south:0"
+          ],
+          "permanent": [
+            "PC|probe_left:north:0|probe_merger:south:0"
+          ],
+          "full_tables": 2,
+          "projected_tables": 2,
+          "kept_rows": [
+            [
+              "PC|probe_left:north:0|probe_merger:south:0"
+            ],
+            [
+              "PC|probe_left:north:0|probe_merger:south:0",
+              "PC|probe_left:west:0|probe_gate_a:south:0"
+            ]
+          ],
+          "unread_rows": [
+            [
+              "PC|probe_left:west:0|probe_gate_a:south:0"
+            ]
+          ]
+        },
+        {
+          "unit": "splitter",
+          "outgoing": [
+            "PC|splitter:east:0|east_box:south:0",
+            "PC|splitter:north:0|north_box:south:0",
+            "PC|splitter:west:0|west_box:south:0"
+          ],
+          "permanent": [
+            "PC|splitter:east:0|east_box:south:0",
+            "PC|splitter:north:0|north_box:south:0",
+            "PC|splitter:west:0|west_box:south:0"
+          ],
+          "full_tables": 24,
+          "projected_tables": 3,
+          "kept_rows": [
+            [
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0"
+            ]
+          ],
+          "unread_rows": [
+            [
+              "PC|splitter:east:0|east_box:south:0"
+            ],
+            [
+              "PC|splitter:north:0|north_box:south:0"
+            ],
+            [
+              "PC|splitter:west:0|west_box:south:0"
+            ],
+            [
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0"
+            ],
+            [
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:west:0|west_box:south:0"
+            ],
+            [
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0"
+            ]
+          ]
+        }
+      ],
+      "full_tables": 96,
+      "projected_tables": 12,
+      "projection_class_sizes": [
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8
+      ],
+      "full_table_graph_pairs": 384,
+      "no_damping_query_in_all_gate_subgraphs": true,
+      "behavior_representatives_under_spec_call_guard": 1,
+      "review_function_rerun_agrees": true
+    }
+  },
+  "sources_before": {
+    "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt": "abc7a5867f6477eedb619c63a21c4a77144c57ad4567fdcfb696b3049d66a670",
+    "/home/zhuran24/zmd-research-fresh/求解任务.txt": "10abf80fe6eefe647471eabe78da4053f77b489d3806722c501c6acb405a2864",
+    "/home/zhuran24/zmd-research-fresh/求解约束.txt": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6",
+    "/tmp/claude-1000/-home-zhuran24-zmd-research-fresh/2a1af1b1-ede2-4b4a-8f95-41e78df48af0/scratchpad/step1/任务书.md": "7d9a2b0701fd6c3fa44a16a62e6e7f5ffc048e191a1763fb337bfb9ffdfac407",
+    "/tmp/claude-1000/-home-zhuran24-zmd-research-fresh/2a1af1b1-ede2-4b4a-8f95-41e78df48af0/scratchpad/step1/任务书2.md": "e62e31d5c807a0674d3f8579e246b729ab82b81a9d8bb05ef4a7f4d360b6193e",
+    "/tmp/claude-1000/-home-zhuran24-zmd-research-fresh/2a1af1b1-ede2-4b4a-8f95-41e78df48af0/scratchpad/step1/任务书3.md": "2657ee86178800af4b2076485b82c771f2368823d391531789af36185209cba2",
+    "/tmp/claude-1000/-home-zhuran24-zmd-research-fresh/2a1af1b1-ede2-4b4a-8f95-41e78df48af0/scratchpad/step1/任务书4.md": "8dbf65a07725c60a5e87edaab2d35f9018d97346e44ff4f940827297b0997ba5",
+    "/tmp/claude-1000/-home-zhuran24-zmd-research-fresh/2a1af1b1-ede2-4b4a-8f95-41e78df48af0/scratchpad/step1/任务书5.md": "397949140d016b7af1ddda25becf4e823be9af198108f87dcd0c303f25f75766",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json": "74d21a5bd37c6178f988a86a4aa78a03d1e4244ecff26f133bb5e700ada82e43",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/参数扫描约减.md": "2fd206e60a3e2bac6d5d3700aab8df450ae1a521e412a7bdee99076b6693097f",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md": "36bfc4d83363cf482bc2d6b7068e38c921a937b19182157ad4aa87770b5abefa",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md": "ad868c6c4c102ddadc7a8e2d566bea65763a350cf330f6fd9b11f9f27630e805",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/受限模型声明.md": "fd6a18dbcd805414234e9dd00916eff5fc4811a7ebd0d9eb74ac6b80f63eba34",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json": "397c1ce98e2faa6acd391e0fc7405da25c6c93aa07175795b84830b0ca6d4cd9",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/polling.rs": "8fb84535b4aa030b6dda820ccfb9dadb8cc969e714b4cd94e2350f589b95a59f",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/input.rs": "4d5e627e135d1bea81aa88b3efe1ea4db8883775e546fd7d98f731676cbf12bf",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json": "988ac30253bf1d4803f0f1eed23b5029db1033dcf391f2b7c324c5d9e27ee144",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询.json": "a8303054aaf7dde1af2a9f33d468a6c05c5d115ee2ee5ba5f5f07887a3dcc13a",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/review_r1_coverage.py": "1bc48540491d7835bd3303a3783ddefeab2f79c88849b49bef6eeab3fa7edb1f",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/复核-r1-覆盖.md": "886e34acf5a8830d9441e009d15349a0c44d943dcbe4d3a14268177be6146b29",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/复核-r1-覆盖-独立复算.json": "d371ab687439cc15046da6136e4baf27acbcc7d25db769674247d046bb9d78a7",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-1-证据/check_branch_projection.py": "75ed503410e1201b95ebac14f06b8069182053bd6331383f2a8ae673fa094cf9"
+  },
+  "sources_after": {
+    "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt": "abc7a5867f6477eedb619c63a21c4a77144c57ad4567fdcfb696b3049d66a670",
+    "/home/zhuran24/zmd-research-fresh/求解任务.txt": "10abf80fe6eefe647471eabe78da4053f77b489d3806722c501c6acb405a2864",
+    "/home/zhuran24/zmd-research-fresh/求解约束.txt": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6",
+    "/tmp/claude-1000/-home-zhuran24-zmd-research-fresh/2a1af1b1-ede2-4b4a-8f95-41e78df48af0/scratchpad/step1/任务书.md": "7d9a2b0701fd6c3fa44a16a62e6e7f5ffc048e191a1763fb337bfb9ffdfac407",
+    "/tmp/claude-1000/-home-zhuran24-zmd-research-fresh/2a1af1b1-ede2-4b4a-8f95-41e78df48af0/scratchpad/step1/任务书2.md": "e62e31d5c807a0674d3f8579e246b729ab82b81a9d8bb05ef4a7f4d360b6193e",
+    "/tmp/claude-1000/-home-zhuran24-zmd-research-fresh/2a1af1b1-ede2-4b4a-8f95-41e78df48af0/scratchpad/step1/任务书3.md": "2657ee86178800af4b2076485b82c771f2368823d391531789af36185209cba2",
+    "/tmp/claude-1000/-home-zhuran24-zmd-research-fresh/2a1af1b1-ede2-4b4a-8f95-41e78df48af0/scratchpad/step1/任务书4.md": "8dbf65a07725c60a5e87edaab2d35f9018d97346e44ff4f940827297b0997ba5",
+    "/tmp/claude-1000/-home-zhuran24-zmd-research-fresh/2a1af1b1-ede2-4b4a-8f95-41e78df48af0/scratchpad/step1/任务书5.md": "397949140d016b7af1ddda25becf4e823be9af198108f87dcd0c303f25f75766",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json": "74d21a5bd37c6178f988a86a4aa78a03d1e4244ecff26f133bb5e700ada82e43",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/参数扫描约减.md": "2fd206e60a3e2bac6d5d3700aab8df450ae1a521e412a7bdee99076b6693097f",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md": "36bfc4d83363cf482bc2d6b7068e38c921a937b19182157ad4aa87770b5abefa",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md": "ad868c6c4c102ddadc7a8e2d566bea65763a350cf330f6fd9b11f9f27630e805",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/受限模型声明.md": "fd6a18dbcd805414234e9dd00916eff5fc4811a7ebd0d9eb74ac6b80f63eba34",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json": "397c1ce98e2faa6acd391e0fc7405da25c6c93aa07175795b84830b0ca6d4cd9",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/polling.rs": "8fb84535b4aa030b6dda820ccfb9dadb8cc969e714b4cd94e2350f589b95a59f",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/input.rs": "4d5e627e135d1bea81aa88b3efe1ea4db8883775e546fd7d98f731676cbf12bf",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json": "988ac30253bf1d4803f0f1eed23b5029db1033dcf391f2b7c324c5d9e27ee144",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询.json": "a8303054aaf7dde1af2a9f33d468a6c05c5d115ee2ee5ba5f5f07887a3dcc13a",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/review_r1_coverage.py": "1bc48540491d7835bd3303a3783ddefeab2f79c88849b49bef6eeab3fa7edb1f",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/复核-r1-覆盖.md": "886e34acf5a8830d9441e009d15349a0c44d943dcbe4d3a14268177be6146b29",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/复核-r1-覆盖-独立复算.json": "d371ab687439cc15046da6136e4baf27acbcc7d25db769674247d046bb9d78a7",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-1-证据/check_branch_projection.py": "75ed503410e1201b95ebac14f06b8069182053bd6331383f2a8ae673fa094cf9"
+  },
+  "sources_stable": true,
+  "status": "通过",
+  "scope": "几何、表行投影和所有门控子图的级数；未执行内核轨迹，未证明初态可达"
+}

@@ -1,0 +1,770 @@
+{
+  "recipes": [
+    {
+      "line": 81,
+      "mass": [
+        0,
+        1
+      ]
+    },
+    {
+      "line": 82,
+      "mass": [
+        1,
+        0
+      ]
+    },
+    {
+      "line": 83,
+      "mass": [
+        0,
+        0
+      ]
+    },
+    {
+      "line": 84,
+      "mass": [
+        0,
+        0
+      ]
+    },
+    {
+      "line": 87,
+      "mass": [
+        1,
+        0
+      ]
+    },
+    {
+      "line": 88,
+      "mass": [
+        2,
+        0
+      ]
+    },
+    {
+      "line": 89,
+      "mass": [
+        1,
+        0
+      ]
+    },
+    {
+      "line": 92,
+      "mass": [
+        2,
+        0
+      ]
+    },
+    {
+      "line": 93,
+      "mass": [
+        0,
+        2
+      ]
+    },
+    {
+      "line": 94,
+      "mass": [
+        0,
+        0
+      ]
+    },
+    {
+      "line": 97,
+      "mass": [
+        4,
+        0
+      ]
+    },
+    {
+      "line": 100,
+      "mass": [
+        2,
+        0
+      ]
+    },
+    {
+      "line": 103,
+      "mass": [
+        0,
+        0
+      ]
+    },
+    {
+      "line": 104,
+      "mass": [
+        0,
+        0
+      ]
+    },
+    {
+      "line": 107,
+      "mass": [
+        0,
+        0
+      ]
+    },
+    {
+      "line": 108,
+      "mass": [
+        0,
+        0
+      ]
+    },
+    {
+      "line": 111,
+      "mass": [
+        20,
+        30
+      ]
+    },
+    {
+      "line": 114,
+      "mass": [
+        40,
+        0
+      ]
+    }
+  ],
+  "target_mass": 52,
+  "third_filler": {
+    "starts": [
+      {
+        "tick": 0,
+        "before": [
+          10,
+          10
+        ]
+      },
+      {
+        "tick": 7,
+        "before": [
+          11,
+          10
+        ]
+      },
+      {
+        "tick": 14,
+        "before": [
+          11,
+          11
+        ]
+      },
+      {
+        "tick": 20,
+        "before": [
+          10,
+          10
+        ]
+      },
+      {
+        "tick": 27,
+        "before": [
+          11,
+          10
+        ]
+      },
+      {
+        "tick": 34,
+        "before": [
+          11,
+          11
+        ]
+      },
+      {
+        "tick": 40,
+        "before": [
+          10,
+          10
+        ]
+      }
+    ],
+    "done": [
+      5,
+      12,
+      19,
+      25,
+      32,
+      39
+    ]
+  },
+  "continuous_filler": {
+    "starts": [
+      {
+        "tick": 0,
+        "before": [
+          12,
+          12
+        ]
+      },
+      {
+        "tick": 5,
+        "before": [
+          13,
+          13
+        ]
+      },
+      {
+        "tick": 10,
+        "before": [
+          12,
+          12
+        ]
+      },
+      {
+        "tick": 15,
+        "before": [
+          13,
+          13
+        ]
+      },
+      {
+        "tick": 20,
+        "before": [
+          12,
+          12
+        ]
+      },
+      {
+        "tick": 25,
+        "before": [
+          13,
+          13
+        ]
+      },
+      {
+        "tick": 30,
+        "before": [
+          12,
+          12
+        ]
+      },
+      {
+        "tick": 35,
+        "before": [
+          13,
+          13
+        ]
+      },
+      {
+        "tick": 40,
+        "before": [
+          12,
+          12
+        ]
+      }
+    ],
+    "done": [
+      5,
+      10,
+      15,
+      20,
+      25,
+      30,
+      35,
+      40
+    ]
+  },
+  "recycle_trace": [
+    {
+      "tick": 0,
+      "stage": "crusher_in_process",
+      "blue_mass": 1
+    },
+    {
+      "tick": 1,
+      "stage": "n1_blue_powder",
+      "blue_mass": 1
+    },
+    {
+      "tick": 2,
+      "stage": "n2_blue_powder",
+      "blue_mass": 1
+    },
+    {
+      "tick": 3,
+      "stage": "n3_blue_powder",
+      "blue_mass": 1
+    },
+    {
+      "tick": 4,
+      "stage": "furnace_in_process",
+      "blue_mass": 1
+    },
+    {
+      "tick": 5,
+      "stage": "s1_blue_block",
+      "blue_mass": 1
+    },
+    {
+      "tick": 6,
+      "stage": "s2_blue_block",
+      "blue_mass": 1
+    },
+    {
+      "tick": 7,
+      "stage": "s3_blue_block",
+      "blue_mass": 1
+    },
+    {
+      "tick": 8,
+      "stage": "crusher_in_process",
+      "blue_mass": 1
+    },
+    {
+      "tick": 9,
+      "stage": "n1_blue_powder",
+      "blue_mass": 1
+    },
+    {
+      "tick": 10,
+      "stage": "n2_blue_powder",
+      "blue_mass": 1
+    },
+    {
+      "tick": 11,
+      "stage": "n3_blue_powder",
+      "blue_mass": 1
+    },
+    {
+      "tick": 12,
+      "stage": "furnace_in_process",
+      "blue_mass": 1
+    },
+    {
+      "tick": 13,
+      "stage": "s1_blue_block",
+      "blue_mass": 1
+    },
+    {
+      "tick": 14,
+      "stage": "s2_blue_block",
+      "blue_mass": 1
+    },
+    {
+      "tick": 15,
+      "stage": "s3_blue_block",
+      "blue_mass": 1
+    },
+    {
+      "tick": 16,
+      "stage": "crusher_in_process",
+      "blue_mass": 1
+    },
+    {
+      "tick": 17,
+      "stage": "n1_blue_powder",
+      "blue_mass": 1
+    },
+    {
+      "tick": 18,
+      "stage": "n2_blue_powder",
+      "blue_mass": 1
+    },
+    {
+      "tick": 19,
+      "stage": "n3_blue_powder",
+      "blue_mass": 1
+    },
+    {
+      "tick": 20,
+      "stage": "furnace_in_process",
+      "blue_mass": 1
+    },
+    {
+      "tick": 21,
+      "stage": "s1_blue_block",
+      "blue_mass": 1
+    },
+    {
+      "tick": 22,
+      "stage": "s2_blue_block",
+      "blue_mass": 1
+    },
+    {
+      "tick": 23,
+      "stage": "s3_blue_block",
+      "blue_mass": 1
+    },
+    {
+      "tick": 24,
+      "stage": "crusher_in_process",
+      "blue_mass": 1
+    },
+    {
+      "tick": 25,
+      "stage": "n1_blue_powder",
+      "blue_mass": 1
+    },
+    {
+      "tick": 26,
+      "stage": "n2_blue_powder",
+      "blue_mass": 1
+    },
+    {
+      "tick": 27,
+      "stage": "n3_blue_powder",
+      "blue_mass": 1
+    },
+    {
+      "tick": 28,
+      "stage": "furnace_in_process",
+      "blue_mass": 1
+    },
+    {
+      "tick": 29,
+      "stage": "s1_blue_block",
+      "blue_mass": 1
+    },
+    {
+      "tick": 30,
+      "stage": "s2_blue_block",
+      "blue_mass": 1
+    },
+    {
+      "tick": 31,
+      "stage": "s3_blue_block",
+      "blue_mass": 1
+    },
+    {
+      "tick": 32,
+      "stage": "crusher_in_process",
+      "blue_mass": 1
+    },
+    {
+      "tick": 33,
+      "stage": "n1_blue_powder",
+      "blue_mass": 1
+    },
+    {
+      "tick": 34,
+      "stage": "n2_blue_powder",
+      "blue_mass": 1
+    },
+    {
+      "tick": 35,
+      "stage": "n3_blue_powder",
+      "blue_mass": 1
+    },
+    {
+      "tick": 36,
+      "stage": "furnace_in_process",
+      "blue_mass": 1
+    },
+    {
+      "tick": 37,
+      "stage": "s1_blue_block",
+      "blue_mass": 1
+    },
+    {
+      "tick": 38,
+      "stage": "s2_blue_block",
+      "blue_mass": 1
+    },
+    {
+      "tick": 39,
+      "stage": "s3_blue_block",
+      "blue_mass": 1
+    },
+    {
+      "tick": 40,
+      "stage": "crusher_in_process",
+      "blue_mass": 1
+    },
+    {
+      "tick": 41,
+      "stage": "n1_blue_powder",
+      "blue_mass": 1
+    },
+    {
+      "tick": 42,
+      "stage": "n2_blue_powder",
+      "blue_mass": 1
+    },
+    {
+      "tick": 43,
+      "stage": "n3_blue_powder",
+      "blue_mass": 1
+    },
+    {
+      "tick": 44,
+      "stage": "furnace_in_process",
+      "blue_mass": 1
+    },
+    {
+      "tick": 45,
+      "stage": "s1_blue_block",
+      "blue_mass": 1
+    },
+    {
+      "tick": 46,
+      "stage": "s2_blue_block",
+      "blue_mass": 1
+    },
+    {
+      "tick": 47,
+      "stage": "s3_blue_block",
+      "blue_mass": 1
+    },
+    {
+      "tick": 48,
+      "stage": "crusher_in_process",
+      "blue_mass": 1
+    },
+    {
+      "tick": 49,
+      "stage": "n1_blue_powder",
+      "blue_mass": 1
+    },
+    {
+      "tick": 50,
+      "stage": "n2_blue_powder",
+      "blue_mass": 1
+    },
+    {
+      "tick": 51,
+      "stage": "n3_blue_powder",
+      "blue_mass": 1
+    },
+    {
+      "tick": 52,
+      "stage": "furnace_in_process",
+      "blue_mass": 1
+    },
+    {
+      "tick": 53,
+      "stage": "s1_blue_block",
+      "blue_mass": 1
+    },
+    {
+      "tick": 54,
+      "stage": "s2_blue_block",
+      "blue_mass": 1
+    },
+    {
+      "tick": 55,
+      "stage": "s3_blue_block",
+      "blue_mass": 1
+    },
+    {
+      "tick": 56,
+      "stage": "crusher_in_process",
+      "blue_mass": 1
+    },
+    {
+      "tick": 57,
+      "stage": "n1_blue_powder",
+      "blue_mass": 1
+    },
+    {
+      "tick": 58,
+      "stage": "n2_blue_powder",
+      "blue_mass": 1
+    },
+    {
+      "tick": 59,
+      "stage": "n3_blue_powder",
+      "blue_mass": 1
+    },
+    {
+      "tick": 60,
+      "stage": "furnace_in_process",
+      "blue_mass": 1
+    },
+    {
+      "tick": 61,
+      "stage": "s1_blue_block",
+      "blue_mass": 1
+    },
+    {
+      "tick": 62,
+      "stage": "s2_blue_block",
+      "blue_mass": 1
+    },
+    {
+      "tick": 63,
+      "stage": "s3_blue_block",
+      "blue_mass": 1
+    },
+    {
+      "tick": 64,
+      "stage": "crusher_in_process",
+      "blue_mass": 1
+    },
+    {
+      "tick": 65,
+      "stage": "n1_blue_powder",
+      "blue_mass": 1
+    },
+    {
+      "tick": 66,
+      "stage": "n2_blue_powder",
+      "blue_mass": 1
+    },
+    {
+      "tick": 67,
+      "stage": "n3_blue_powder",
+      "blue_mass": 1
+    },
+    {
+      "tick": 68,
+      "stage": "furnace_in_process",
+      "blue_mass": 1
+    },
+    {
+      "tick": 69,
+      "stage": "s1_blue_block",
+      "blue_mass": 1
+    },
+    {
+      "tick": 70,
+      "stage": "s2_blue_block",
+      "blue_mass": 1
+    },
+    {
+      "tick": 71,
+      "stage": "s3_blue_block",
+      "blue_mass": 1
+    },
+    {
+      "tick": 72,
+      "stage": "crusher_in_process",
+      "blue_mass": 1
+    },
+    {
+      "tick": 73,
+      "stage": "n1_blue_powder",
+      "blue_mass": 1
+    },
+    {
+      "tick": 74,
+      "stage": "n2_blue_powder",
+      "blue_mass": 1
+    },
+    {
+      "tick": 75,
+      "stage": "n3_blue_powder",
+      "blue_mass": 1
+    },
+    {
+      "tick": 76,
+      "stage": "furnace_in_process",
+      "blue_mass": 1
+    },
+    {
+      "tick": 77,
+      "stage": "s1_blue_block",
+      "blue_mass": 1
+    },
+    {
+      "tick": 78,
+      "stage": "s2_blue_block",
+      "blue_mass": 1
+    },
+    {
+      "tick": 79,
+      "stage": "s3_blue_block",
+      "blue_mass": 1
+    },
+    {
+      "tick": 80,
+      "stage": "crusher_in_process",
+      "blue_mass": 1
+    }
+  ],
+  "geometry_verified": true,
+  "gate_k5_opportunity_histories": 32768,
+  "non_sliding_receipts": [
+    0,
+    4,
+    5,
+    6
+  ],
+  "deadlock": {
+    "blue_input": 50,
+    "sand_input": 0,
+    "merger": "蓝铁粉末",
+    "upstream": "砂叶粉末"
+  },
+  "alive_after_sand": {
+    "blue_input_after_recipe": 48,
+    "sand_input_after_recipe": 0,
+    "cache_output_after_one_tick": 1
+  },
+  "kernel": {
+    "recycle": {
+      "status": "seed_failed",
+      "detail": {
+        "args": [
+          "seed",
+          "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/证据-v2-phase-否证/recycle.json",
+          "--out",
+          "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/证据-v2-phase-否证/recycle-canonical.json"
+        ],
+        "returncode": 2,
+        "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/推导/证据-v2-phase-否证/recycle-canonical.json\",\"status\":\"invalid_input\"}\n",
+        "stderr": ""
+      }
+    },
+    "head_block": {
+      "status": "seed_failed",
+      "detail": {
+        "args": [
+          "seed",
+          "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/证据-v2-phase-否证/head_block.json",
+          "--out",
+          "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/证据-v2-phase-否证/head_block-canonical.json"
+        ],
+        "returncode": 2,
+        "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/推导/证据-v2-phase-否证/head_block-canonical.json\",\"status\":\"invalid_input\"}\n",
+        "stderr": ""
+      }
+    },
+    "head_release": {
+      "status": "seed_failed",
+      "detail": {
+        "args": [
+          "seed",
+          "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/证据-v2-phase-否证/head_release.json",
+          "--out",
+          "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/证据-v2-phase-否证/head_release-canonical.json"
+        ],
+        "returncode": 2,
+        "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/推导/证据-v2-phase-否证/head_release-canonical.json\",\"status\":\"invalid_input\"}\n",
+        "stderr": ""
+      }
+    },
+    "gate0": {
+      "status": "seed_failed",
+      "detail": {
+        "args": [
+          "seed",
+          "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/证据-v2-phase-否证/gate0.json",
+          "--out",
+          "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/证据-v2-phase-否证/gate0-canonical.json"
+        ],
+        "returncode": 2,
+        "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/推导/证据-v2-phase-否证/gate0-canonical.json\",\"status\":\"invalid_input\"}\n",
+        "stderr": ""
+      }
+    },
+    "gate5": {
+      "status": "seed_failed",
+      "detail": {
+        "args": [
+          "seed",
+          "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/证据-v2-phase-否证/gate5.json",
+          "--out",
+          "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/证据-v2-phase-否证/gate5-canonical.json"
+        ],
+        "returncode": 2,
+        "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/推导/证据-v2-phase-否证/gate5-canonical.json\",\"status\":\"invalid_input\"}\n",
+        "stderr": ""
+      }
+    }
+  },
+  "kernel_steps_executed": 0,
+  "inputs_unchanged": true,
+  "complete_layout_certified": false
+}

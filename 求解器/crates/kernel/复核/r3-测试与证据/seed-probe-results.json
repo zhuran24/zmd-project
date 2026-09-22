@@ -1,0 +1,196 @@
+[
+  {
+    "case": "control",
+    "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/seed-control-input.json",
+    "original_phase": "after_closure",
+    "time": {
+      "kind": "rational",
+      "value": {
+        "category": "候选",
+        "value": "5"
+      }
+    },
+    "run": {
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/seed-control-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/seed-control-run.json",
+        "--ticks",
+        "2"
+      ],
+      "code": 0,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/seed-control-run.json\",\"status\":\"completed\"}\n",
+      "stderr": "",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/seed-control-run.json"
+    },
+    "seed": {
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "seed",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/seed-control-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/seed-control-seed.json"
+      ],
+      "code": 0,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/seed-control-seed.json\",\"status\":null}\n",
+      "stderr": "",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/seed-control-seed.json",
+      "state_equal": true,
+      "changed_top_fields": [],
+      "parameter_values_equal": true
+    }
+  },
+  {
+    "case": "missing",
+    "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/seed-missing-input.json",
+    "original_phase": "after_closure",
+    "time": {
+      "kind": "rational",
+      "value": {
+        "category": "候选",
+        "value": "5"
+      }
+    },
+    "run": {
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/seed-missing-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/seed-missing-run.json",
+        "--ticks",
+        "2"
+      ],
+      "code": 2,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/seed-missing-run.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": "",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/seed-missing-run.json"
+    },
+    "seed": {
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "seed",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/seed-missing-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/seed-missing-seed.json"
+      ],
+      "code": 0,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/seed-missing-seed.json\",\"status\":null}\n",
+      "stderr": "",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/seed-missing-seed.json",
+      "state_equal": false,
+      "changed_top_fields": [
+        "semantic_context"
+      ],
+      "parameter_values_equal": false
+    }
+  },
+  {
+    "case": "conflicting",
+    "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/seed-conflicting-input.json",
+    "original_phase": "after_closure",
+    "time": {
+      "kind": "rational",
+      "value": {
+        "category": "候选",
+        "value": "5"
+      }
+    },
+    "run": {
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/seed-conflicting-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/seed-conflicting-run.json",
+        "--ticks",
+        "2"
+      ],
+      "code": 2,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/seed-conflicting-run.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": "",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/seed-conflicting-run.json"
+    },
+    "seed": {
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "seed",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/seed-conflicting-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/seed-conflicting-seed.json"
+      ],
+      "code": 0,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/seed-conflicting-seed.json\",\"status\":null}\n",
+      "stderr": "",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/seed-conflicting-seed.json",
+      "state_equal": false,
+      "changed_top_fields": [
+        "semantic_context"
+      ],
+      "parameter_values_equal": false
+    }
+  },
+  {
+    "case": "changed_input_phase",
+    "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/seed-changed_input_phase-input.json",
+    "original_phase": "after_closure",
+    "time": {
+      "kind": "rational",
+      "value": {
+        "category": "候选",
+        "value": "5"
+      }
+    },
+    "run": {
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/seed-changed_input_phase-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/seed-changed_input_phase-run.json",
+        "--ticks",
+        "2"
+      ],
+      "code": 2,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/seed-changed_input_phase-run.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": "",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/seed-changed_input_phase-run.json"
+    },
+    "seed": {
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "seed",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/seed-changed_input_phase-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/seed-changed_input_phase-seed.json"
+      ],
+      "code": 0,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/seed-changed_input_phase-seed.json\",\"status\":null}\n",
+      "stderr": "",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/seed-changed_input_phase-seed.json",
+      "state_equal": false,
+      "changed_top_fields": [
+        "semantic_context"
+      ],
+      "parameter_values_equal": false
+    }
+  }
+]

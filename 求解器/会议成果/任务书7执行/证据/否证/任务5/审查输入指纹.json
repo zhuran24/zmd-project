@@ -1,0 +1,96 @@
+{
+  "timestamp": "2026-09-21T14:06:06.423276+00:00",
+  "phase": "before reading reviewed artifacts",
+  "files": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+      "exists": true,
+      "sha256": "d150b86b398f8e73e57bee1598020e6bcd895e5a13a254b4b11dd1e4416c325a"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解任务.txt",
+      "exists": true,
+      "sha256": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解约束.txt",
+      "exists": true,
+      "sha256": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/候选约束.txt",
+      "exists": true,
+      "sha256": "a0ac3f9c82f371132b7de29fe47e4c6c587904680bc2786523de0c825fd5efd9"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7草案.md",
+      "exists": true,
+      "sha256": "6394c5ee4214a7b48057dcd3e916b59e55085895dff06f93b86a00f139d01620"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/主会话三审-0920.md",
+      "exists": true,
+      "sha256": "8710bebae67f41b4f323570a54f046bfed71bc28d3c2e2bc4efa002ee20020a2"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/调试与释放.md",
+      "exists": true,
+      "sha256": "13f4c246f3c2dc660886abcd91253a0e544d6d6a85f7cadc0e31fd2410d16853"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/调试后状态.json",
+      "exists": true,
+      "sha256": "0e3735e5c382eb97c5ef4d84032db61057b1d8914bf792f59a02173075f71c89"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/调试释放/输入指纹.json",
+      "exists": true,
+      "sha256": "1231b8d4fd9b0cea86775f31356838d3d9e7f8c1152a4e6736cafac00390e362"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/调试释放/生成状态.py",
+      "exists": true,
+      "sha256": "2665d062b9c7f872c6a55bf53ac4d23f1486fb6b02974d226d89c2a65e1bc6ef"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/调试释放/势函数与条件算术.json",
+      "exists": true,
+      "sha256": "3dcdb5b8c5b146b52637a425ddb8b7ac9c1c7353020c7300eddeff766121f4d8"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/调试释放/核验.py",
+      "exists": true,
+      "sha256": "8f317d94c9970632be718444f884509f0c155b6772846147a8aad8da7e25b349"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/调试释放/输入读取核查.json",
+      "exists": true,
+      "sha256": "c018dc9dabda9b48027c3bc1116f9339b43eca60a7613ed3d39b92b2dc064950"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/调试释放/局部静止见证.json",
+      "exists": true,
+      "sha256": "f60778e30dd06a18756b8608e5889c112057423e415f2f3bc3e5be98e3967a91"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/调试释放/核验结果.json",
+      "exists": true,
+      "sha256": "6d9d09ac54e2065d77747c77c25fe13b0983a01d55994e3bb3f9db9e54a4a8c5"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/调试释放/核验.log",
+      "exists": true,
+      "sha256": "69dfc3ea9cdd47a0a925e6c9f472e0758f524ecd40c8afc230e7be5e28459316"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/调试释放/读者自审.md",
+      "exists": true,
+      "sha256": "0d0928e04ed8496f877dbb0828ca7f513b8c6a3c43c45d60de524e15eb90a91e"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/调试释放/交付清单.json",
+      "exists": true,
+      "sha256": "5e8a2d932eecbd17f77abedbf9dd64e684b84d9ebe81d600c17c91f9ee626296"
+    }
+  ]
+}

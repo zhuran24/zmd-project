@@ -1,0 +1,36 @@
+{
+  "status": "PASS",
+  "meaning": "本席局部检查的断言通过；不是被审规格无缺陷",
+  "local_transaction": {
+    "reply_stop": true,
+    "transition_stop": false
+  },
+  "guard_cases": 21,
+  "guard_mismatches": 2,
+  "schema_probe": {
+    "original_valid": true,
+    "renamed_valid": false,
+    "extra_alias_valid": false,
+    "run_record_rename_errors": [
+      {
+        "instancePath": "",
+        "schemaPath": "#/required",
+        "keyword": "required",
+        "params": {
+          "missingProperty": "validation_scope"
+        },
+        "message": "must have required property 'validation_scope'"
+      },
+      {
+        "instancePath": "",
+        "schemaPath": "#/additionalProperties",
+        "keyword": "additionalProperties",
+        "params": {
+          "additionalProperty": "verification_scope"
+        },
+        "message": "must NOT have additional properties"
+      }
+    ]
+  },
+  "source_files_unchanged": 23
+}

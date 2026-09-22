@@ -1,0 +1,21 @@
+{
+  "name": "tiny-embedded-verification",
+  "command": [
+    "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+    "verify-record",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r3-1-证据/tiny-embedded-record.json",
+    "--config",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+    "--out",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r3-1-证据/tiny-embedded-verification.json"
+  ],
+  "exit_code": 2,
+  "output_exists": true,
+  "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r3-1-证据/tiny-embedded-verification.json\",\"status\":\"invalid_input\"}\n",
+  "stderr": "",
+  "status": "invalid_input",
+  "stop": null,
+  "open_items": [
+    "invalid_input input @ W|5|gate: 执行的操作/目标/时刻与待事件登记不符"
+  ]
+}

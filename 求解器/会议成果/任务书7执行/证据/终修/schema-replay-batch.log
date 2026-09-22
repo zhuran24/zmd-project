@@ -1,0 +1,61 @@
+{
+  "status": "input_checked",
+  "read_only": true,
+  "records": [],
+  "cycles": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/终修/runs/分组合并-cycle.json",
+      "verification": {
+        "checks": [
+          "引用原始字节/format/producer和完整来源链",
+          "原种子到达前缀及跨刻事件身份",
+          "独立重建D动态前件及周期账/率/接收域",
+          "从周期起点P次step_tick及完整终态"
+        ],
+        "cycle_replayed": true,
+        "period": 1,
+        "prefix_replayed": 2,
+        "start_time": 0,
+        "status": "input_checked"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/终修/runs/暂停键-cycle.json",
+      "verification": {
+        "checks": [
+          "引用原始字节/format/producer和完整来源链",
+          "原种子到达前缀及跨刻事件身份",
+          "独立重建D动态前件及周期账/率/接收域",
+          "从周期起点P次step_tick及完整终态"
+        ],
+        "cycle_replayed": true,
+        "period": 1,
+        "prefix_replayed": 2,
+        "start_time": 0,
+        "status": "input_checked"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/终修/runs/累计调低-cycle.json",
+      "verification": {
+        "checks": [
+          "引用原始字节/format/producer和完整来源链",
+          "原种子到达前缀及跨刻事件身份",
+          "独立重建D动态前件及周期账/率/接收域",
+          "从周期起点P次step_tick及完整终态"
+        ],
+        "cycle_replayed": true,
+        "period": 1,
+        "prefix_replayed": 2,
+        "start_time": 0,
+        "status": "input_checked"
+      }
+    }
+  ],
+  "reference_records": 0,
+  "historical_records": [],
+  "scope": "当前v4记录和v3周期按现行源、schema、Rust重放及Python部分接收账验收；旧版本列作史料。"
+}
+已核 分组合并-cycle.json
+已核 暂停键-cycle.json
+已核 累计调低-cycle.json

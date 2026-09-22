@@ -1,0 +1,271 @@
+{
+  "status": "input_checked",
+  "read_only": true,
+  "records": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/传输拒收与暂停核验-运行记录-v3-kernel.json",
+      "ticks": 12
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-checkpoint_delta-v3-kernel.json",
+      "ticks": 12
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-v3-kernel.json",
+      "ticks": 12
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-v3.json",
+      "ticks": 12
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/双成品制造砖-运行记录-v3-kernel.json",
+      "ticks": 12
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序0核验-运行记录-v3-kernel.json",
+      "ticks": 32
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序1核验-运行记录-v3-kernel.json",
+      "ticks": 32
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序2核验-运行记录-v3-kernel.json",
+      "ticks": 32
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序3核验-运行记录-v3-kernel.json",
+      "ticks": 32
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序4核验-运行记录-v3-kernel.json",
+      "ticks": 32
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序5核验-运行记录-v3-kernel.json",
+      "ticks": 32
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点循环种子核验-运行记录-v3-kernel.json",
+      "ticks": 8
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点核验-运行记录-v3-kernel.json",
+      "ticks": 8
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点闭环核验-运行记录-v3-kernel.json",
+      "ticks": 8
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/桥接器双通路-运行记录-v3-kernel.json",
+      "ticks": 30
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-checkpoint_delta-v3-kernel.json",
+      "ticks": 4
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-v3-kernel.json",
+      "ticks": 4
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-v3.json",
+      "ticks": 4
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/生产循环环带-运行记录-v3-kernel.json",
+      "ticks": 32
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/研磨混做核验-运行记录-v3-kernel.json",
+      "ticks": 20
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序0核验-运行记录-v3-kernel.json",
+      "ticks": 32
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序1核验-运行记录-v3-kernel.json",
+      "ticks": 32
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序2核验-运行记录-v3-kernel.json",
+      "ticks": 32
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序3核验-运行记录-v3-kernel.json",
+      "ticks": 32
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序4核验-运行记录-v3-kernel.json",
+      "ticks": 32
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序5核验-运行记录-v3-kernel.json",
+      "ticks": 32
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分核验-运行记录-v3-kernel.json",
+      "ticks": 32
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/阻尼切支恢复核验-运行记录-v3-kernel.json",
+      "ticks": 18
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/阻尼连续带核验-运行记录-v3-kernel.json",
+      "ticks": 18
+    }
+  ],
+  "cycles": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/双成品满仓起动试作-周期证书-kernel.json",
+      "verification": {
+        "cycle_replayed": false,
+        "prefix_replayed": 512,
+        "reason": "原种子前缀及停止/预算位置已复现，无周期",
+        "status": "input_checked"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序0核验-周期证书-kernel.json",
+      "verification": {
+        "checks": [
+          "引用原始字节/format/producer和完整来源链",
+          "原种子到达前缀及跨刻事件身份",
+          "独立重建D动态前件及周期账/率/接收域",
+          "从周期起点P次step_tick及完整终态"
+        ],
+        "cycle_replayed": true,
+        "period": 190,
+        "prefix_replayed": 263,
+        "start_time": 72,
+        "status": "input_checked"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序1核验-周期证书-kernel.json",
+      "verification": {
+        "checks": [
+          "引用原始字节/format/producer和完整来源链",
+          "原种子到达前缀及跨刻事件身份",
+          "独立重建D动态前件及周期账/率/接收域",
+          "从周期起点P次step_tick及完整终态"
+        ],
+        "cycle_replayed": true,
+        "period": 190,
+        "prefix_replayed": 466,
+        "start_time": 275,
+        "status": "input_checked"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序2核验-周期证书-kernel.json",
+      "verification": {
+        "cycle_replayed": false,
+        "prefix_replayed": 1000,
+        "reason": "原种子前缀及停止/预算位置已复现，无周期",
+        "status": "input_checked"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序3核验-周期证书-kernel.json",
+      "verification": {
+        "checks": [
+          "引用原始字节/format/producer和完整来源链",
+          "原种子到达前缀及跨刻事件身份",
+          "独立重建D动态前件及周期账/率/接收域",
+          "从周期起点P次step_tick及完整终态"
+        ],
+        "cycle_replayed": true,
+        "period": 105,
+        "prefix_replayed": 455,
+        "start_time": 349,
+        "status": "input_checked"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序4核验-周期证书-kernel.json",
+      "verification": {
+        "checks": [
+          "引用原始字节/format/producer和完整来源链",
+          "原种子到达前缀及跨刻事件身份",
+          "独立重建D动态前件及周期账/率/接收域",
+          "从周期起点P次step_tick及完整终态"
+        ],
+        "cycle_replayed": true,
+        "period": 395,
+        "prefix_replayed": 522,
+        "start_time": 126,
+        "status": "input_checked"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序5核验-周期证书-kernel.json",
+      "verification": {
+        "cycle_replayed": false,
+        "prefix_replayed": 1000,
+        "reason": "原种子前缀及停止/预算位置已复现，无周期",
+        "status": "input_checked"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点循环种子核验-周期证书-kernel.json",
+      "verification": {
+        "cycle_replayed": false,
+        "prefix_replayed": 100,
+        "reason": "原种子前缀及停止/预算位置已复现，无周期",
+        "status": "input_checked"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点核验-周期证书-kernel.json",
+      "verification": {
+        "cycle_replayed": false,
+        "prefix_replayed": 60,
+        "reason": "原种子前缀及停止/预算位置已复现，无周期",
+        "status": "input_checked"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点闭环核验-周期证书-kernel.json",
+      "verification": {
+        "cycle_replayed": false,
+        "prefix_replayed": 240,
+        "reason": "原种子前缀及停止/预算位置已复现，无周期",
+        "status": "input_checked"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/生产循环环带-周期证书-kernel.json",
+      "verification": {
+        "checks": [
+          "引用原始字节/format/producer和完整来源链",
+          "原种子到达前缀及跨刻事件身份",
+          "独立重建D动态前件及周期账/率/接收域",
+          "从周期起点P次step_tick及完整终态"
+        ],
+        "cycle_replayed": true,
+        "period": 20,
+        "prefix_replayed": 21,
+        "start_time": 0,
+        "status": "input_checked"
+      }
+    }
+  ],
+  "reference_records": 6,
+  "protected_baseline_files": 12,
+  "historical_records": [
+    "数据/样例/分流器三路轮询-运行记录-checkpoint_delta-kernel.json",
+    "数据/样例/分流器三路轮询-运行记录-checkpoint_delta.json",
+    "数据/样例/分流器三路轮询-运行记录-kernel.json",
+    "数据/样例/分流器三路轮询-运行记录.json",
+    "数据/样例/混做粉碎机两下游-运行记录-checkpoint_delta-kernel.json",
+    "数据/样例/混做粉碎机两下游-运行记录-checkpoint_delta.json",
+    "数据/样例/混做粉碎机两下游-运行记录-kernel.json",
+    "数据/样例/混做粉碎机两下游-运行记录.json"
+  ],
+  "scope": "全部当前v3记录和v2循环独立验收；历史v1/v2记录仅列出，固定基线另核字节。"
+}

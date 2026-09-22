@@ -1,0 +1,74 @@
+{
+  "verdicts": [
+    {
+      "id": "KR-r1-L1-01",
+      "refuted": false,
+      "reason": "未能否证：代码仅核补矿史上界和事件格式；独立复跑在t=0耗尽源矿、t=1已有可补货机会后仍completed。任务L7及受限转移§2.1的持续充分性未落实。全部论证文件：/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1.md。"
+    },
+    {
+      "id": "KR-r1-L1-02",
+      "refuted": false,
+      "reason": "未能否证：补矿数组为a先b，统一关系要求b先a，公开入口仍completed并输出a、b；同种增量可交换不能消除事件历史违反内核输入§3.1的问题。"
+    },
+    {
+      "id": "KR-r1-L1-03",
+      "refuted": false,
+      "reason": "未能否证：恢复日程未核同名历史类型；t=-13的build_0被用于t=2制造完成，Rust verify_record接受，独立身份检查拒绝。新事件分配防冲突未覆盖该恢复入口。"
+    },
+    {
+      "id": "KR-r1-L1-04",
+      "refuted": false,
+      "reason": "未能否证：离线记录误指runtime的负例完成4刻，唯一改动kind为offline的对照在t=1正常停止。确认的是引用漏拒收，不是合法离线漏停。"
+    },
+    {
+      "id": "KR-r1-L1-05",
+      "refuted": false,
+      "reason": "未能否证：公开装载、Engine构造及运行均接受无关splitter表项。原报告称查询经过probe_merger不准确，实际准入口无出边，但仍确定不经过所填splitter，不影响核心发现。"
+    },
+    {
+      "id": "KR-r1-L1-06",
+      "refuted": false,
+      "reason": "未能否证：声明及配置要求每观察边界分别报告两成品容量许可与物理入库途径；代码和四份记录仅保留参数及not_exercised，没有该报告。"
+    },
+    {
+      "id": "KR-r1-L1-07",
+      "refuted": false,
+      "reason": "未能否证：实测start_state时刻1、首项2，与现行输出§2不一致。转移§1支持推进至下一刻，KQ-02已披露；本项是待统一的规格接口冲突，不能据此认定step_tick推进错误。"
+    },
+    {
+      "id": "KR-r1-L2-01",
+      "refuted": false,
+      "reason": "未能否证：单独复跑该席缺矿输入，四刻源矿均为0，仅出库1件，仍退出0/completed且通过Rust重算；正常对照出库4件。守恒和through检查不证明持续供应。"
+    },
+    {
+      "id": "KR-r1-L2-02",
+      "refuted": false,
+      "reason": "未能否证：两样例删除正式源指纹或伪造范围、批数及golden_match的4份新负例全部通过Python入口；摘要篡改被拒绝。Rust拒绝这些元数据负例，发现限于Python入口。"
+    },
+    {
+      "id": "KR-r1-L2-03",
+      "refuted": false,
+      "reason": "未能否证：两刻记录无制造完成，唯一制造成功仅归集开工；output.rs按manufacturing前缀仍把output_blocked标exercised，未执行受限转移§4.2的completed输出分支。"
+    },
+    {
+      "id": "KR-r1-L3-01",
+      "refuted": false,
+      "reason": "未能否证：新构建CLI对snapshots=[false]退出101，报cannot access key \"base\" in JSON boolean，未生成停止记录；可变索引发生在成员对象校验之前。"
+    },
+    {
+      "id": "KR-r1-L3-02",
+      "refuted": false,
+      "reason": "未能否证：item=7未被类型检查拒绝，两刻运行completed并将该门记为identity_mismatch；违反内核输入§4的物品名或null要求。"
+    },
+    {
+      "id": "KR-r1-L3-03",
+      "refuted": false,
+      "reason": "未能否证：仅将任务初仓第二行slot改成warehouse_0即复现接受；当前StateSeed仓库未改。interfaces.rs只核六物种及满额，没有落实初值格标签唯一性。"
+    },
+    {
+      "id": "KR-r1-L3-04",
+      "refuted": false,
+      "reason": "未能否证：两样例清空fingerprints或单改完成批数为999的4份负例均通过Python验收，Rust均拒绝。漏验限于来源及范围元数据；该Python函数仍有轨迹、状态和身份检查。"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "command": [
+    "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+    "cycle",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/桥接器双通路.json",
+    "--max-ticks",
+    "120",
+    "--no-record",
+    "--out",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r5-测试与证据/桥接器双通路-cycle.json",
+    "--config",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+  ],
+  "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+  "returncode": 0,
+  "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r5-测试与证据/桥接器双通路-cycle.json\",\"status\":\"counterexample\"}\n",
+  "stderr": ""
+}

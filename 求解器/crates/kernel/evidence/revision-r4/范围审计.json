@@ -1,0 +1,68 @@
+{
+  "status": "pass",
+  "protected_files": 2362,
+  "protected_changes": [],
+  "build_target": "/home/zhuran24/zmd-research-fresh/求解器/target",
+  "forbidden_evidence_directories": [],
+  "unexpected_evidence_files": [],
+  "full_kernel_evidence_scan": {
+    "binaries": [],
+    "forbidden_directories": [],
+    "cargo_manifests": []
+  },
+  "unchanged_explicit_sources": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/reference.rs",
+      "sha256": "2efc6e98295f769700baa4cd1d97fd4ecec11647e3a28432eba1218c960530bc"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+      "sha256": "abc7a5867f6477eedb619c63a21c4a77144c57ad4567fdcfb696b3049d66a670"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解任务.txt",
+      "sha256": "10abf80fe6eefe647471eabe78da4053f77b489d3806722c501c6acb405a2864"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解约束.txt",
+      "sha256": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/候选约束.txt",
+      "sha256": "a0ac3f9c82f371132b7de29fe47e4c6c587904680bc2786523de0c825fd5efd9"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-黄金轨迹.json",
+      "sha256": "bf0e705f9a92712cd495ae9fabebe95d910eac38ff825b6dc52da04f5b4b3959"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-黄金轨迹.md",
+      "sha256": "1aa028fcfe4f89844372cb8e96e684f43c238487033aa07ba5a6397944ad7e4d"
+    }
+  ],
+  "scope": "比较仓库根普通文件与求解器普通文件；共享target/.cargo-home及__pycache__排除。模拟器未运行或改写。",
+  "document_reader_review": {
+    "status": "pass",
+    "documents": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/README.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/修订记录.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r4/修订与验证.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/实施与验证.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/第五轮样例说明-kernel.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核实现-对规格的疑问.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/证据维护说明.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/legacy_probes/README.md"
+    ],
+    "broken_links": [],
+    "checks": [
+      "7个ID逐项有据",
+      "当前与历史分区",
+      "库存年龄与计数路径完整",
+      "KQ-09与已装载空前缀区分",
+      "3个覆盖缺口有明确原因",
+      "黄金及严格差分未放宽",
+      "条件证书不升级全称",
+      "数字与实测一致"
+    ]
+  }
+}

@@ -1,0 +1,463 @@
+[
+  {
+    "name": "none-1",
+    "exit": 0,
+    "result": {
+      "out": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r5-规格保真与工程-证据/none-1.json",
+      "status": "counterexample"
+    },
+    "stderr": "",
+    "log": "none-1.log"
+  },
+  {
+    "name": "none-1-verify",
+    "exit": 0,
+    "result": {
+      "checks": [
+        "引用原始字节/format/producer和完整来源链",
+        "原种子到达前缀及跨刻事件身份",
+        "独立重建D动态前件及周期账/率/接收域",
+        "从周期起点P次step_tick及完整终态"
+      ],
+      "cycle_replayed": true,
+      "period": 20,
+      "prefix_replayed": 21,
+      "start_time": 0,
+      "status": "input_checked"
+    },
+    "stderr": "",
+    "log": "none-1-verify.log"
+  },
+  {
+    "name": "none-7",
+    "exit": 0,
+    "result": {
+      "out": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r5-规格保真与工程-证据/none-7.json",
+      "status": "counterexample"
+    },
+    "stderr": "",
+    "log": "none-7.log"
+  },
+  {
+    "name": "none-7-verify",
+    "exit": 0,
+    "result": {
+      "checks": [
+        "引用原始字节/format/producer和完整来源链",
+        "原种子到达前缀及跨刻事件身份",
+        "独立重建D动态前件及周期账/率/接收域",
+        "从周期起点P次step_tick及完整终态"
+      ],
+      "cycle_replayed": true,
+      "period": 20,
+      "prefix_replayed": 21,
+      "start_time": 0,
+      "status": "input_checked"
+    },
+    "stderr": "",
+    "log": "none-7-verify.log"
+  },
+  {
+    "name": "referenced-7",
+    "exit": 0,
+    "result": {
+      "out": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r5-规格保真与工程-证据/referenced-7.json",
+      "status": "counterexample"
+    },
+    "stderr": "",
+    "log": "referenced-7.log"
+  },
+  {
+    "name": "referenced-7-verify",
+    "exit": 0,
+    "result": {
+      "checks": [
+        "引用原始字节/format/producer和完整来源链",
+        "原种子到达前缀及跨刻事件身份",
+        "独立重建D动态前件及周期账/率/接收域",
+        "从周期起点P次step_tick及完整终态"
+      ],
+      "cycle_replayed": true,
+      "period": 20,
+      "prefix_replayed": 21,
+      "start_time": 0,
+      "status": "input_checked"
+    },
+    "stderr": "",
+    "log": "referenced-7-verify.log"
+  },
+  {
+    "name": "checkpoint-valid",
+    "exit": 0,
+    "result": {
+      "out": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r5-规格保真与工程-证据/checkpoint.json",
+      "status": null
+    },
+    "stderr": "",
+    "log": "checkpoint-valid.log"
+  },
+  {
+    "name": "continued",
+    "exit": 0,
+    "result": {
+      "out": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r5-规格保真与工程-证据/continued.json",
+      "status": "counterexample"
+    },
+    "stderr": "",
+    "log": "continued.log"
+  },
+  {
+    "name": "continued-verify",
+    "exit": 0,
+    "result": {
+      "checks": [
+        "引用原始字节/format/producer和完整来源链",
+        "原种子到达前缀及跨刻事件身份",
+        "独立重建D动态前件及周期账/率/接收域",
+        "从周期起点P次step_tick及完整终态"
+      ],
+      "cycle_replayed": true,
+      "period": 20,
+      "prefix_replayed": 20,
+      "start_time": 20,
+      "status": "input_checked"
+    },
+    "stderr": "",
+    "log": "continued-verify.log"
+  },
+  {
+    "name": "load-shell-verify",
+    "exit": 0,
+    "result": {
+      "cycle_replayed": false,
+      "diagnostic_replayed": true,
+      "reason": "失败输入及依赖指纹已核，复现同一装载停止；无游戏转移或周期",
+      "status": "input_checked"
+    },
+    "stderr": "",
+    "log": "load-shell-verify.log"
+  },
+  {
+    "name": "load-shell-checkpoint",
+    "exit": 101,
+    "result": null,
+    "stderr": "\nthread 'main' (973003) panicked at crates/kernel/src/main.rs:168:77:\ncalled `Option::unwrap()` on a `None` value\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n",
+    "log": "load-shell-checkpoint.log"
+  },
+  {
+    "name": "relative-cycle-verify",
+    "exit": 0,
+    "result": {
+      "checks": [
+        "引用原始字节/format/producer和完整来源链",
+        "原种子到达前缀及跨刻事件身份",
+        "独立重建D动态前件及周期账/率/接收域",
+        "从周期起点P次step_tick及完整终态"
+      ],
+      "cycle_replayed": true,
+      "period": 20,
+      "prefix_replayed": 21,
+      "start_time": 0,
+      "status": "input_checked"
+    },
+    "stderr": "",
+    "log": "relative-cycle-verify.log"
+  },
+  {
+    "name": "relative-record-verify-root",
+    "exit": 2,
+    "result": {
+      "execution_mode": "finite_concrete",
+      "fingerprints": [],
+      "input_history": null,
+      "open_items": [
+        "invalid_input input @ ../../../../数据/样例/生产循环环带.json: No such file or directory (os error 2)"
+      ],
+      "parameter_assignment": null,
+      "port_meeting": "shared_edge_opposite",
+      "producer": {
+        "claim": "装载停止，未形成游戏后继",
+        "kind": "kernel",
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+      },
+      "profile_id": "kernel_profile_v1",
+      "run_id": "kernel:load-stop",
+      "schema": "kernel-output-v3",
+      "status": "invalid_input",
+      "trace": null,
+      "uncovered_axes": [],
+      "validation_scope": null
+    },
+    "stderr": "",
+    "log": "relative-record-verify-root.log"
+  },
+  {
+    "name": "relative-record-verify-local",
+    "exit": 2,
+    "result": {
+      "execution_mode": "finite_concrete",
+      "fingerprints": [],
+      "input_history": null,
+      "open_items": [
+        "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      ],
+      "parameter_assignment": null,
+      "port_meeting": "shared_edge_opposite",
+      "producer": {
+        "claim": "装载停止，未形成游戏后继",
+        "kind": "kernel",
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+      },
+      "profile_id": "kernel_profile_v1",
+      "run_id": "kernel:load-stop",
+      "schema": "kernel-output-v3",
+      "status": "invalid_input",
+      "trace": null,
+      "uncovered_axes": [],
+      "validation_scope": null
+    },
+    "stderr": "",
+    "log": "relative-record-verify-local.log"
+  },
+  {
+    "name": "relative-record-checkpoint",
+    "exit": 2,
+    "result": {
+      "out": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r5-规格保真与工程-证据/relative-checkpoint.json",
+      "status": "invalid_input"
+    },
+    "stderr": "",
+    "log": "relative-record-checkpoint.log"
+  },
+  {
+    "name": "ore-79999-seed",
+    "exit": 0,
+    "result": {
+      "out": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r5-规格保真与工程-证据/ore-79999-seed.json",
+      "status": null
+    },
+    "stderr": "",
+    "log": "ore-79999-seed.log"
+  },
+  {
+    "name": "ore-79999-finite-check",
+    "exit": 0,
+    "result": {
+      "buffer_channels": 0,
+      "catalog_sha256": "74d21a5bd37c6178f988a86a4aa78a03d1e4244ecff26f133bb5e700ada82e43",
+      "physical_channels": 2,
+      "status": "input_checked",
+      "units": 3
+    },
+    "stderr": "",
+    "log": "ore-79999-finite-check.log"
+  },
+  {
+    "name": "ore-79999-domain",
+    "exit": 2,
+    "result": {
+      "domain_report": [
+        {
+          "condition": "D.1",
+          "evidence": [
+            "已装载固定布局、设定、global/v1、在线零干预、sufficient；无未来历史/玩家策略"
+          ],
+          "locations": [],
+          "scope": "static",
+          "status": "pass"
+        },
+        {
+          "condition": "D.2",
+          "evidence": [
+            "现存回矿候选读取被抽象容量，先于physical/级排序/授权停止"
+          ],
+          "locations": [
+            "PC|belt:north:0|core:south:1"
+          ],
+          "scope": "static",
+          "status": "fail"
+        },
+        {
+          "condition": "D.3",
+          "evidence": [
+            "O为空；成品格无取货指派；新格标签无冲突；retain_history保持该不变量"
+          ],
+          "locations": [],
+          "scope": "static",
+          "status": "pass"
+        },
+        {
+          "condition": "D.4",
+          "evidence": [
+            "全部输入/种子/分支表已装载；未来无终点请求仍动态停止；不证明种子可达"
+          ],
+          "locations": [],
+          "scope": "static",
+          "status": "pass"
+        },
+        {
+          "condition": "D.5",
+          "evidence": [
+            "结构界B=1+300*0=1 <80000；每PC每刻至多1、每箱每刻至多一次全箱300"
+          ],
+          "locations": [],
+          "scope": "static",
+          "status": "pass"
+        }
+      ],
+      "status": "unsupported",
+      "trajectory_executed": false
+    },
+    "stderr": "",
+    "log": "ore-79999-domain.log"
+  },
+  {
+    "name": "ore-80000-seed",
+    "exit": 0,
+    "result": {
+      "out": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r5-规格保真与工程-证据/ore-80000-seed.json",
+      "status": null
+    },
+    "stderr": "",
+    "log": "ore-80000-seed.log"
+  },
+  {
+    "name": "ore-80000-finite-check",
+    "exit": 0,
+    "result": {
+      "buffer_channels": 0,
+      "catalog_sha256": "74d21a5bd37c6178f988a86a4aa78a03d1e4244ecff26f133bb5e700ada82e43",
+      "physical_channels": 2,
+      "status": "input_checked",
+      "units": 3
+    },
+    "stderr": "",
+    "log": "ore-80000-finite-check.log"
+  },
+  {
+    "name": "ore-80000-domain",
+    "exit": 2,
+    "result": {
+      "domain_report": [
+        {
+          "condition": "D.1",
+          "evidence": [
+            "已装载固定布局、设定、global/v1、在线零干预、sufficient；无未来历史/玩家策略"
+          ],
+          "locations": [],
+          "scope": "static",
+          "status": "pass"
+        },
+        {
+          "condition": "D.2",
+          "evidence": [
+            "现存回矿候选读取被抽象容量，先于physical/级排序/授权停止"
+          ],
+          "locations": [
+            "PC|belt:north:0|core:south:1"
+          ],
+          "scope": "static",
+          "status": "fail"
+        },
+        {
+          "condition": "D.3",
+          "evidence": [
+            "O为空；成品格无取货指派；新格标签无冲突；retain_history保持该不变量"
+          ],
+          "locations": [],
+          "scope": "static",
+          "status": "pass"
+        },
+        {
+          "condition": "D.4",
+          "evidence": [
+            "全部输入/种子/分支表已装载；未来无终点请求仍动态停止；不证明种子可达"
+          ],
+          "locations": [],
+          "scope": "static",
+          "status": "pass"
+        },
+        {
+          "condition": "D.5",
+          "evidence": [
+            "结构界B=1+300*0=1 <80000；每PC每刻至多1、每箱每刻至多一次全箱300"
+          ],
+          "locations": [],
+          "scope": "static",
+          "status": "pass"
+        }
+      ],
+      "status": "unsupported",
+      "trajectory_executed": false
+    },
+    "stderr": "",
+    "log": "ore-80000-domain.log"
+  },
+  {
+    "name": "ore-capacity-changed-domain",
+    "exit": 2,
+    "result": {
+      "domain_report": [
+        {
+          "condition": "D.1",
+          "evidence": [
+            "未完成装载：成员、接通环、级或当前可动级不符"
+          ],
+          "locations": [
+            "poll_memory"
+          ],
+          "scope": "not_checked",
+          "status": "unresolved"
+        },
+        {
+          "condition": "D.2",
+          "evidence": [
+            "未完成装载：成员、接通环、级或当前可动级不符"
+          ],
+          "locations": [
+            "poll_memory"
+          ],
+          "scope": "not_checked",
+          "status": "unresolved"
+        },
+        {
+          "condition": "D.3",
+          "evidence": [
+            "未完成装载：成员、接通环、级或当前可动级不符"
+          ],
+          "locations": [
+            "poll_memory"
+          ],
+          "scope": "not_checked",
+          "status": "unresolved"
+        },
+        {
+          "condition": "D.4",
+          "evidence": [
+            "未完成装载：成员、接通环、级或当前可动级不符"
+          ],
+          "locations": [
+            "poll_memory"
+          ],
+          "scope": "not_checked",
+          "status": "unresolved"
+        },
+        {
+          "condition": "D.5",
+          "evidence": [
+            "未完成装载：成员、接通环、级或当前可动级不符"
+          ],
+          "locations": [
+            "poll_memory"
+          ],
+          "scope": "not_checked",
+          "status": "unresolved"
+        }
+      ],
+      "status": "invalid_input",
+      "trajectory_executed": false
+    },
+    "stderr": "",
+    "log": "ore-capacity-changed-domain.log"
+  }
+]

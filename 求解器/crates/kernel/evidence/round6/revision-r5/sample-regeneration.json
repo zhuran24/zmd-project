@@ -1,0 +1,463 @@
+{
+  "status": "pass",
+  "files": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/传输拒收与暂停核验-运行记录-v3-kernel.json",
+      "before_sha256": "35734f2ce814ed306516b120a95ff19aa674d69d83fdc8a844c569f695d495ae",
+      "after_sha256": "74cf5753affa6ab92771917fcbaece0f2a31ca6d3b890d38535a36e3804ed5fe",
+      "verification": {
+        "status": "input_checked",
+        "verified_record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/regenerated/传输拒收与暂停核验-运行记录-v3-kernel.json"
+      },
+      "semantic_content_unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-checkpoint_delta-v3-kernel.json",
+      "before_sha256": "bcb31fec22a61ca6195c5a8ffab738ad13ae5396e3faea5edf0fedbff94c23d9",
+      "after_sha256": "712ef7bbedb4b9b5a3d1897976f3968e697a92af9a3b5e2a0ff387802bb9ad77",
+      "verification": {
+        "status": "input_checked",
+        "verified_record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/regenerated/分流器三路轮询-运行记录-checkpoint_delta-v3-kernel.json"
+      },
+      "semantic_content_unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-v3-kernel.json",
+      "before_sha256": "981d0409d7eee3db25aae93233b44b0e949d88ba619826affdfd5248ac141de4",
+      "after_sha256": "6b1932067958528eeabb961fd2f08a6c8f605243767efa2f3e496d778b4d430c",
+      "verification": {
+        "status": "input_checked",
+        "verified_record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/regenerated/分流器三路轮询-运行记录-v3-kernel.json"
+      },
+      "semantic_content_unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-v3.json",
+      "before_sha256": "3a4c1222bb2eba9c2e7236d9f75b5e3371396c09b56da291520444fe5aa36086",
+      "after_sha256": "3a4c1222bb2eba9c2e7236d9f75b5e3371396c09b56da291520444fe5aa36086",
+      "verification": {
+        "independent_reference": true
+      },
+      "semantic_content_unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/双成品制造砖-运行记录-v3-kernel.json",
+      "before_sha256": "bf8e2f538483dfeea6bf4b6f7e6ba1970b42be4d9ec82c1b8445f3d487e6506b",
+      "after_sha256": "9bdbe8aa924abc7c56b307d11edddf54a9b12a71dc681b9820cf8a84d5bfcd89",
+      "verification": {
+        "status": "input_checked",
+        "verified_record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/regenerated/双成品制造砖-运行记录-v3-kernel.json"
+      },
+      "semantic_content_unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/双成品满仓起动试作-周期证书-kernel.json",
+      "before_sha256": "d398260bc7fc9885a7532de8cfcd5ad974a90ab4e582941f02cbf31df919e23d",
+      "after_sha256": "937268d6594ddbbfc1b4973bebeb3733a947e0b15e55df6ee531c35a7bec1c23",
+      "verification": {
+        "cycle_replayed": false,
+        "prefix_replayed": 512,
+        "reason": "原种子前缀及停止/预算位置已复现，无周期",
+        "status": "input_checked"
+      },
+      "semantic_content_unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序0核验-周期证书-kernel.json",
+      "before_sha256": "f7570b5688c26f215f3f94c59a525c225cb1e1fb825397434584c8d79f669235",
+      "after_sha256": "e4c5479cceec4545f7e4ffba34e02f1c824534748928dddf34ca6927a056246e",
+      "verification": {
+        "checks": [
+          "引用原始字节/format/producer和完整来源链",
+          "原种子到达前缀及跨刻事件身份",
+          "独立重建D动态前件及周期账/率/接收域",
+          "从周期起点P次step_tick及完整终态"
+        ],
+        "cycle_replayed": true,
+        "period": 190,
+        "prefix_replayed": 263,
+        "start_time": 72,
+        "status": "input_checked"
+      },
+      "semantic_content_unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序0核验-运行记录-v3-kernel.json",
+      "before_sha256": "68bb6f7b3f6d5c8e6fed8852d5d82e1691c2556d7fadde36c9f3d8db7b42e259",
+      "after_sha256": "1507e4d3b213878b217bb24f13a576e2515651856fecbe08fc2dac1a5161c1d9",
+      "verification": {
+        "status": "input_checked",
+        "verified_record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/regenerated/密集制造闭环序0核验-运行记录-v3-kernel.json"
+      },
+      "semantic_content_unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序1核验-周期证书-kernel.json",
+      "before_sha256": "c8a5e8ce33cfafd28fe9a7575190680ed2a0921d0469337d01452fd2e25ac470",
+      "after_sha256": "b8af33eba9c0d4c8adc9bec6e78262d147bd0c3ea83c4091a401f6d741e3b002",
+      "verification": {
+        "checks": [
+          "引用原始字节/format/producer和完整来源链",
+          "原种子到达前缀及跨刻事件身份",
+          "独立重建D动态前件及周期账/率/接收域",
+          "从周期起点P次step_tick及完整终态"
+        ],
+        "cycle_replayed": true,
+        "period": 190,
+        "prefix_replayed": 466,
+        "start_time": 275,
+        "status": "input_checked"
+      },
+      "semantic_content_unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序1核验-运行记录-v3-kernel.json",
+      "before_sha256": "4dd3e17ee60b50dbc4c92954184ddc8b3ce8a41490546045f24dc46b8e7c66b7",
+      "after_sha256": "752c0c305e9310e2403398cdc9b014dfdc09e21eda05bbbb6633bbf152ccb020",
+      "verification": {
+        "status": "input_checked",
+        "verified_record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/regenerated/密集制造闭环序1核验-运行记录-v3-kernel.json"
+      },
+      "semantic_content_unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序2核验-周期证书-kernel.json",
+      "before_sha256": "b64e5bd729849a7cd96c63a41742efe0c37cc1d3064bb25d0e80106289f8b815",
+      "after_sha256": "7ca5d9700844673de472e7867ce7b529e5dc43963285daf187b768e6f3906fcf",
+      "verification": {
+        "cycle_replayed": false,
+        "prefix_replayed": 1000,
+        "reason": "原种子前缀及停止/预算位置已复现，无周期",
+        "status": "input_checked"
+      },
+      "semantic_content_unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序2核验-运行记录-v3-kernel.json",
+      "before_sha256": "e9b6eb283cd9627ba97d78cda0987cfa4b7c794340f0eb6a75cffd1a5da829e7",
+      "after_sha256": "195d198d159a499dca77cac228037ef1a7c39f744c9fb2cf709f7903d335aa96",
+      "verification": {
+        "status": "input_checked",
+        "verified_record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/regenerated/密集制造闭环序2核验-运行记录-v3-kernel.json"
+      },
+      "semantic_content_unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序3核验-周期证书-kernel.json",
+      "before_sha256": "0c08a7f34bfe7d9ede54df8104a4ab3dcb129a1c1b41c846637461e555efd770",
+      "after_sha256": "4c8a75a48c70e5c28af7709c4afa72eec94de8608218a241ab304efe649d0d1b",
+      "verification": {
+        "checks": [
+          "引用原始字节/format/producer和完整来源链",
+          "原种子到达前缀及跨刻事件身份",
+          "独立重建D动态前件及周期账/率/接收域",
+          "从周期起点P次step_tick及完整终态"
+        ],
+        "cycle_replayed": true,
+        "period": 105,
+        "prefix_replayed": 455,
+        "start_time": 349,
+        "status": "input_checked"
+      },
+      "semantic_content_unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序3核验-运行记录-v3-kernel.json",
+      "before_sha256": "2cdfb4a5385117e0e96c20cf8664fcb2cad559b70257689038f09649d1abea50",
+      "after_sha256": "90b0dfa32c0e64272528a7a4b8bcaa4490b77d51edd7d7ae5efbd885778a6a79",
+      "verification": {
+        "status": "input_checked",
+        "verified_record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/regenerated/密集制造闭环序3核验-运行记录-v3-kernel.json"
+      },
+      "semantic_content_unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序4核验-周期证书-kernel.json",
+      "before_sha256": "6763742463f1b20064daebe5dccd5def9a78ced3007a2046a6115cc857ab7647",
+      "after_sha256": "91f5e294e195074671374ba87d8d53926a58f09410ad037da2fa542796dc2d91",
+      "verification": {
+        "checks": [
+          "引用原始字节/format/producer和完整来源链",
+          "原种子到达前缀及跨刻事件身份",
+          "独立重建D动态前件及周期账/率/接收域",
+          "从周期起点P次step_tick及完整终态"
+        ],
+        "cycle_replayed": true,
+        "period": 395,
+        "prefix_replayed": 522,
+        "start_time": 126,
+        "status": "input_checked"
+      },
+      "semantic_content_unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序4核验-运行记录-v3-kernel.json",
+      "before_sha256": "8d8fef3a40f69711290e0eae86700c34635f9e9a2975c6f4952398f3a12f1735",
+      "after_sha256": "26adaf28719e8b288327d2f7e93a0721557b8676c0b29dadf46e0ec93b553517",
+      "verification": {
+        "status": "input_checked",
+        "verified_record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/regenerated/密集制造闭环序4核验-运行记录-v3-kernel.json"
+      },
+      "semantic_content_unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序5核验-周期证书-kernel.json",
+      "before_sha256": "18da276b6c9ba54402f6ffbdfaa874ded93fe4852273b3279aeeda5299576957",
+      "after_sha256": "ac5b28e1bf5f1dd9baf8313e6eae604e5f446167bb66eb040b5e3f744e8383e0",
+      "verification": {
+        "cycle_replayed": false,
+        "prefix_replayed": 1000,
+        "reason": "原种子前缀及停止/预算位置已复现，无周期",
+        "status": "input_checked"
+      },
+      "semantic_content_unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序5核验-运行记录-v3-kernel.json",
+      "before_sha256": "9956dd4755ddbcb28e48d46028c2d27f0d55bc2fb43155ffca15c9873aa275e3",
+      "after_sha256": "48216e6567d8e45138b7aa3ec6a632fb22f5ac3fb1df8d8a17abb984b916694d",
+      "verification": {
+        "status": "input_checked",
+        "verified_record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/regenerated/密集制造闭环序5核验-运行记录-v3-kernel.json"
+      },
+      "semantic_content_unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点循环种子核验-周期证书-kernel.json",
+      "before_sha256": "86150aa2f7d6663f1df4eaef4a72f4ae599590aa70febf17341d4261a5baab08",
+      "after_sha256": "a43f6d5c0043bda4c17ad1c04d74da9fa9b0d10a39f34df7f4717da9a0b9c80b",
+      "verification": {
+        "cycle_replayed": false,
+        "prefix_replayed": 100,
+        "reason": "原种子前缀及停止/预算位置已复现，无周期",
+        "status": "input_checked"
+      },
+      "semantic_content_unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点循环种子核验-运行记录-v3-kernel.json",
+      "before_sha256": "fac9960ed09e077ac0bc09a5b651efae00aeba8b31d79d0c9eb1ef4def47440f",
+      "after_sha256": "369e2882c1c6e7598b2b5869f897044e561cfe6059e741217df229e939ac9cc7",
+      "verification": {
+        "status": "input_checked",
+        "verified_record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/regenerated/密集结点循环种子核验-运行记录-v3-kernel.json"
+      },
+      "semantic_content_unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点核验-周期证书-kernel.json",
+      "before_sha256": "166a62a6f105386924d96d24f1bac24fb9e6753002e5526612ae98c766134132",
+      "after_sha256": "be497432565c5992f0cedac4ee9162095580c74906223664ed5991570f734b90",
+      "verification": {
+        "cycle_replayed": false,
+        "prefix_replayed": 60,
+        "reason": "原种子前缀及停止/预算位置已复现，无周期",
+        "status": "input_checked"
+      },
+      "semantic_content_unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点核验-运行记录-v3-kernel.json",
+      "before_sha256": "969a06affa7c6b66e852d9ec7e0e6165c85c99907d1f586bf5671b48f90c60ea",
+      "after_sha256": "d977b323c9f18ed74f478a776e3f5706eea21a7fc5cfc8609815c14926098d73",
+      "verification": {
+        "status": "input_checked",
+        "verified_record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/regenerated/密集结点核验-运行记录-v3-kernel.json"
+      },
+      "semantic_content_unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点闭环核验-周期证书-kernel.json",
+      "before_sha256": "29dbd7b14390a79e73f161633243a9ae98d87b65d8a15dc03b2e036b8920341f",
+      "after_sha256": "ea2e79f374a23765950370fa6e4b7d0ce5a080ab7f387ae25a91db3d7309e096",
+      "verification": {
+        "cycle_replayed": false,
+        "prefix_replayed": 240,
+        "reason": "原种子前缀及停止/预算位置已复现，无周期",
+        "status": "input_checked"
+      },
+      "semantic_content_unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点闭环核验-运行记录-v3-kernel.json",
+      "before_sha256": "5e8036852545563d54853af763b19514b7b4f745268fda3bbb0932d24f4633ba",
+      "after_sha256": "643751148f212ce240b34d5dd0c86f6d93db32e59f2054dff0df7d8350d0d799",
+      "verification": {
+        "status": "input_checked",
+        "verified_record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/regenerated/密集结点闭环核验-运行记录-v3-kernel.json"
+      },
+      "semantic_content_unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/桥接器双通路-运行记录-v3-kernel.json",
+      "before_sha256": "e02f96fecda14ace6c5f75edbbd19138b263624128054c986adb08ce727714a9",
+      "after_sha256": "8408bea6a6883e6f9bb5ab6b6c8e5fd4582eee707ef45f6536ac8d72dd0491c7",
+      "verification": {
+        "status": "input_checked",
+        "verified_record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/regenerated/桥接器双通路-运行记录-v3-kernel.json"
+      },
+      "semantic_content_unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-checkpoint_delta-v3-kernel.json",
+      "before_sha256": "7459ee9bc2cfdfae708b35b70688d6015d452e4019b577a75f38a1357c705d16",
+      "after_sha256": "5e969931f9fcadc7de63a03bebfab1f0081ca6ad1ecdca1ce24a6e0e5df1f404",
+      "verification": {
+        "status": "input_checked",
+        "verified_record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/regenerated/混做粉碎机两下游-运行记录-checkpoint_delta-v3-kernel.json"
+      },
+      "semantic_content_unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-v3-kernel.json",
+      "before_sha256": "ae134b6e398bb4701299af3000093af70b90929e76167ee8e163981d721c0bc6",
+      "after_sha256": "84eada0a052e34c4b1360241f08acf3544ca3bf722b2f9fc1de304a51dd2a234",
+      "verification": {
+        "status": "input_checked",
+        "verified_record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/regenerated/混做粉碎机两下游-运行记录-v3-kernel.json"
+      },
+      "semantic_content_unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-v3.json",
+      "before_sha256": "6f280ceda0fbf6e5f0d8342bce3297b723517539dd08e6edef91a66fabf22bc0",
+      "after_sha256": "6f280ceda0fbf6e5f0d8342bce3297b723517539dd08e6edef91a66fabf22bc0",
+      "verification": {
+        "independent_reference": true
+      },
+      "semantic_content_unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/生产循环环带-周期证书-kernel.json",
+      "before_sha256": "92500e01d5e5918e066818aa5eac6beb925c54574b409eadf135b63595af6f1f",
+      "after_sha256": "61d1e7d1545bcbbc5bdcc0674a5d5320d4c44d84bde9d1e779a19e8fe0e32d8c",
+      "verification": {
+        "checks": [
+          "引用原始字节/format/producer和完整来源链",
+          "原种子到达前缀及跨刻事件身份",
+          "独立重建D动态前件及周期账/率/接收域",
+          "从周期起点P次step_tick及完整终态"
+        ],
+        "cycle_replayed": true,
+        "period": 20,
+        "prefix_replayed": 21,
+        "start_time": 0,
+        "status": "input_checked"
+      },
+      "semantic_content_unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/生产循环环带-运行记录-v3-kernel.json",
+      "before_sha256": "4619d9c1a78ab2cfa75a47f5362af8fa0925ffa2453af473fd86bd3d7572731c",
+      "after_sha256": "efdbcef723b1071bbf5626fe71453208912e3787d4a4188a3b8f655be0bdd540",
+      "verification": {
+        "status": "input_checked",
+        "verified_record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/regenerated/生产循环环带-运行记录-v3-kernel.json"
+      },
+      "semantic_content_unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/研磨混做核验-运行记录-v3-kernel.json",
+      "before_sha256": "ce9e7d171ca65bf70ffec6e7f2fc9ce78ebd485eed4f0b0ba110f4a01a77d95e",
+      "after_sha256": "bf9d5a66416c425af19358a5d19d23d29918a6d46e4adbaa7b2c6b1869f3dc00",
+      "verification": {
+        "status": "input_checked",
+        "verified_record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/regenerated/研磨混做核验-运行记录-v3-kernel.json"
+      },
+      "semantic_content_unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序0核验-运行记录-v3-kernel.json",
+      "before_sha256": "b94407333f4c275091a9501dc2e536017bb6968c9e08f17ae83ead9dc605383f",
+      "after_sha256": "0590653e8930a97e0c921413123020be45ad686606d9c081f0a45a38f7268a83",
+      "verification": {
+        "status": "input_checked",
+        "verified_record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/regenerated/轮询均分序0核验-运行记录-v3-kernel.json"
+      },
+      "semantic_content_unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序1核验-运行记录-v3-kernel.json",
+      "before_sha256": "8386ed054fd866f5b64e1c11badfadf6444b44e69a7e7ded7bfd4214fec9af5e",
+      "after_sha256": "1ecdce7a6b1240dfc9f8fa853ac9c535107b3d56f86d6842086e41334dd40298",
+      "verification": {
+        "status": "input_checked",
+        "verified_record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/regenerated/轮询均分序1核验-运行记录-v3-kernel.json"
+      },
+      "semantic_content_unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序2核验-运行记录-v3-kernel.json",
+      "before_sha256": "36b3cd5151548010291977f4a669f36c13041531537086412668fda3e595c970",
+      "after_sha256": "d032b0dfbf20135ea720d694abd93b740f56d9373dcf779e219ae1f3a252a948",
+      "verification": {
+        "status": "input_checked",
+        "verified_record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/regenerated/轮询均分序2核验-运行记录-v3-kernel.json"
+      },
+      "semantic_content_unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序3核验-运行记录-v3-kernel.json",
+      "before_sha256": "283c2dbae45fe37101921bd903c3604d80187f5d583e412d0e83b1a8c818c83c",
+      "after_sha256": "13d6ce1386ce83251fccf329e61844e1afded2e5286bd682301fb0f80786fd5d",
+      "verification": {
+        "status": "input_checked",
+        "verified_record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/regenerated/轮询均分序3核验-运行记录-v3-kernel.json"
+      },
+      "semantic_content_unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序4核验-运行记录-v3-kernel.json",
+      "before_sha256": "5220761705ffac22c4ca27befaf495e213aed6106732a6079db880ae795a6e09",
+      "after_sha256": "2fa2f3ad70a2d541636d299bac4bdca49b863e7f59a380e98a3f31e3fe30000d",
+      "verification": {
+        "status": "input_checked",
+        "verified_record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/regenerated/轮询均分序4核验-运行记录-v3-kernel.json"
+      },
+      "semantic_content_unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序5核验-运行记录-v3-kernel.json",
+      "before_sha256": "f59c48323e4a2ea38cd8b51b33e506f8914910db62ef861b99794a815b074ef4",
+      "after_sha256": "d44c4d50633483ff525b6d6b5a5b29dfea7aa5cdcb57c2cb922a34b6b4a22568",
+      "verification": {
+        "status": "input_checked",
+        "verified_record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/regenerated/轮询均分序5核验-运行记录-v3-kernel.json"
+      },
+      "semantic_content_unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分核验-运行记录-v3-kernel.json",
+      "before_sha256": "2192d408723a314a5f3d338f778aaaeb28349d8795e7b3c20487c34530f18207",
+      "after_sha256": "fe204c033c3969d79efcb121429a53ad959228ddd7b2ec918720e1124aa87189",
+      "verification": {
+        "status": "input_checked",
+        "verified_record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/regenerated/轮询均分核验-运行记录-v3-kernel.json"
+      },
+      "semantic_content_unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/阻尼切支恢复核验-运行记录-v3-kernel.json",
+      "before_sha256": "7f61d4f0e8f2a2682462b21c47a11aad382238638df6124daa2f904fdc794ab0",
+      "after_sha256": "1d660498147ab8f5dc6c821e8abb691a73a655277ee73421feacbc0a96e4559e",
+      "verification": {
+        "status": "input_checked",
+        "verified_record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/regenerated/阻尼切支恢复核验-运行记录-v3-kernel.json"
+      },
+      "semantic_content_unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/阻尼连续带核验-运行记录-v3-kernel.json",
+      "before_sha256": "88fd3b7533037fb2cfcf02efce24aaa19728d3ad34585caeabf44ce2f3d0691d",
+      "after_sha256": "be8472d98b3894b587e05e39ae7ddfea2f3ace8ba8d52a7c52037795fc596268",
+      "verification": {
+        "status": "input_checked",
+        "verified_record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/regenerated/阻尼连续带核验-运行记录-v3-kernel.json"
+      },
+      "semantic_content_unchanged": true
+    }
+  ],
+  "records": 29,
+  "cycles": 11,
+  "scope": "保持输入、预算、完整轨迹/周期及结论；按当前实现从源重跑，非刷新旧哈希"
+}

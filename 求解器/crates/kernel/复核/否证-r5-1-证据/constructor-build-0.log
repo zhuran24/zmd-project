@@ -1,0 +1,25 @@
+{
+  "name": "constructor-build-0",
+  "command": [
+    "rustc",
+    "--edition=2021",
+    "--crate-name",
+    "r5_seat1_constructor_probe",
+    "-",
+    "-L",
+    "dependency=/home/zhuran24/zmd-research-fresh/求解器/target/release/deps",
+    "--extern",
+    "kernel=/home/zhuran24/zmd-research-fresh/求解器/target/release/libkernel.rlib",
+    "--extern",
+    "serde_json=/home/zhuran24/zmd-research-fresh/求解器/target/release/deps/libserde_json-3f2317e8f192de6d.rlib",
+    "-o",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/r5_seat1_constructor_probe"
+  ],
+  "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+  "exit_code": 0,
+  "result": null,
+  "stderr": ""
+}
+STDOUT
+
+STDERR

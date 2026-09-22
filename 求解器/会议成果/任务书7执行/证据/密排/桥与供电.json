@@ -1,0 +1,186 @@
+{
+  "bridges": [
+    {
+      "id": "T_15_41",
+      "xy": [
+        15,
+        41
+      ],
+      "axes": [
+        {
+          "axis": "horizontal",
+          "input": "W",
+          "output": "E",
+          "item": "高容谷地电池",
+          "route": "M213_成品",
+          "slot_capacity": 1
+        },
+        {
+          "axis": "vertical",
+          "input": "S",
+          "output": "N",
+          "item": "高容谷地电池",
+          "route": "M215_成品",
+          "slot_capacity": 1
+        }
+      ],
+      "all_local_first_contact_orders": 24,
+      "neighbor_types": [
+        "传送带",
+        "传送带",
+        "传送带",
+        "传送带"
+      ],
+      "shared_material_slot": false,
+      "blueprint_order_safe": true
+    },
+    {
+      "id": "T_18_40",
+      "xy": [
+        18,
+        40
+      ],
+      "axes": [
+        {
+          "axis": "vertical",
+          "input": "S",
+          "output": "N",
+          "item": "高容谷地电池",
+          "route": "M214_成品",
+          "slot_capacity": 1
+        },
+        {
+          "axis": "horizontal",
+          "input": "E",
+          "output": "W",
+          "item": "高容谷地电池",
+          "route": "M215_成品",
+          "slot_capacity": 1
+        }
+      ],
+      "all_local_first_contact_orders": 24,
+      "neighbor_types": [
+        "传送带",
+        "传送带",
+        "传送带",
+        "传送带"
+      ],
+      "shared_material_slot": false,
+      "blueprint_order_safe": true
+    },
+    {
+      "id": "T_49_41",
+      "xy": [
+        49,
+        41
+      ],
+      "axes": [
+        {
+          "axis": "horizontal",
+          "input": "W",
+          "output": "E",
+          "item": "精选荞愈胶囊",
+          "route": "M216_成品",
+          "slot_capacity": 1
+        },
+        {
+          "axis": "vertical",
+          "input": "S",
+          "output": "N",
+          "item": "精选荞愈胶囊",
+          "route": "M218_成品",
+          "slot_capacity": 1
+        }
+      ],
+      "all_local_first_contact_orders": 24,
+      "neighbor_types": [
+        "传送带",
+        "传送带",
+        "传送带",
+        "传送带"
+      ],
+      "shared_material_slot": false,
+      "blueprint_order_safe": true
+    },
+    {
+      "id": "T_52_40",
+      "xy": [
+        52,
+        40
+      ],
+      "axes": [
+        {
+          "axis": "vertical",
+          "input": "S",
+          "output": "N",
+          "item": "精选荞愈胶囊",
+          "route": "M217_成品",
+          "slot_capacity": 1
+        },
+        {
+          "axis": "horizontal",
+          "input": "E",
+          "output": "W",
+          "item": "精选荞愈胶囊",
+          "route": "M218_成品",
+          "slot_capacity": 1
+        }
+      ],
+      "all_local_first_contact_orders": 24,
+      "neighbor_types": [
+        "传送带",
+        "传送带",
+        "传送带",
+        "传送带"
+      ],
+      "shared_material_slot": false,
+      "blueprint_order_safe": true
+    }
+  ],
+  "power": {
+    "M174": [
+      "POWER_荞花_a"
+    ],
+    "M201": [
+      "POWER_荞花_a",
+      "POWER_荞花_b"
+    ],
+    "M057": [
+      "POWER_荞花_b"
+    ],
+    "M195": [
+      "POWER_砂叶_a"
+    ],
+    "M212": [
+      "POWER_砂叶_a",
+      "POWER_砂叶_b"
+    ],
+    "M068": [
+      "POWER_砂叶_b"
+    ],
+    "M213": [
+      "POWER_电池输出_0"
+    ],
+    "M214": [
+      "POWER_电池输出_0"
+    ],
+    "M215": [
+      "POWER_电池输出_1"
+    ],
+    "BOX_B": [
+      "POWER_电池输出_0"
+    ],
+    "M216": [
+      "POWER_胶囊输出_0"
+    ],
+    "M217": [
+      "POWER_胶囊输出_0"
+    ],
+    "M218": [
+      "POWER_胶囊输出_1"
+    ],
+    "BOX_C": [
+      "POWER_胶囊输出_0"
+    ]
+  }
+}

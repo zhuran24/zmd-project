@@ -1,0 +1,33 @@
+{
+  "findings": [
+    {
+      "id": "KR-r2-L3-01",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/interfaces.rs:282；/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/value.rs:281；/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/output.rs:485",
+      "claim": "initial_state.reachability未按Decision强制解码，非法类型仍生成completed记录并通过Rust重算验收。",
+      "evidence": "内核输入§1.1、§6要求reachability为Decision；内核输出§1、§3要求结构/schema与重算分别验收。改为null、7、空对象或字符串的4例均退出0/completed，输出schema均拒绝，verify_record却均接受；见复核/r2-工程证据/input-probes.json及library-probes.json。",
+      "severity": "重要"
+    },
+    {
+      "id": "KR-r2-L3-02",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/engine.rs:465、136、159；/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/event_identity.rs:15",
+      "claim": "恢复装载未核成功移动的全局身份，也未继承种子已消费身份，允许历史冒名和后续重复执行。",
+      "evidence": "内核输入§3.1、§5.2、§6及内核输出§2要求runtime引用、身份同域且只消费一次。t=1闭包种子的movement.event改为build_0仍成功续跑；改为J|2|0|0后下一刻再次执行同名事件1次；见复核/r2-工程证据/library-probes.json及movement-future-id-tick.json。",
+      "severity": "重要"
+    },
+    {
+      "id": "KR-r2-L3-03",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/interfaces.rs:227–281",
+      "claim": "任务初始仓库忽略必填的unlisted=empty，删除该字段或改为filled仍被接受为completed。",
+      "evidence": "求解任务L6规定其他物品为空；内核输入§1.2、§6规定warehouse={slots,unlisted}且unlisted=empty。保持运行种子不变的两项独立CLI负例均退出0/completed；见复核/r2-工程证据/input-probes.json的initial-unlisted-missing与initial-unlisted-filled。",
+      "severity": "重要"
+    },
+    {
+      "id": "KR-r2-L3-04",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/verify_outputs.py:86–90；/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/revision_audit.py:34",
+      "claim": "Python落盘验收未核覆盖轴全集和触发证据，伪造轴名、事件证据或exercised状态仍可通过。",
+      "evidence": "内核输出§1要求uncovered_axes恰覆盖全部轴，exercised必须有实际执行证据。双样例双编码的12项覆盖表变异全部通过verify()，包括关闭的transfer.cooldown_scope冒报exercised并引用不存在的J|999|0|999；见复核/r2-工程证据/artifact-audit.json。",
+      "severity": "重要"
+    }
+  ],
+  "notes": "完整论证：/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/复核-r2-工程.md。确认4条重要发现；92项Cargo测试通过，原CLI/Python集成主体重定向后4个有效对照、40个篡改负例、6个CLI负例通过，Clippy零告警。1000 tick release单次实测：引擎0.467412662秒，完整进程0.478037924秒；小样例后段阻塞，非满载性能。KQ-02仍待规格线澄清。"
+}

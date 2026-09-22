@@ -1,0 +1,5 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.01s
+     Running unittests src/lib.rs (求解器/target/debug/deps/topology-958a7a196b95191c)
+     Running unittests src/main.rs (求解器/target/debug/deps/topology-232d29a62249f608)
+     Running tests/validation.rs (求解器/target/debug/deps/validation-55f92a55e3fc13c3)
+   Doc-tests topology

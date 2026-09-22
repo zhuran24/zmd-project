@@ -1,0 +1,339 @@
+{
+  "schema": "phase-certification-scope-v1",
+  "date": "2026-09-21",
+  "status": "partial",
+  "rule_sha256": "d150b86b398f8e73e57bee1598020e6bcd895e5a13a254b4b11dd1e4416c325a",
+  "task_sha256": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+  "constraints_sha256": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6",
+  "L": 0,
+  "U": 1113,
+  "full_layout_certified": false,
+  "default_start_certified": false,
+  "certificate_instantiated": false,
+  "global_finite_state_abstraction_proved": false,
+  "independent_review": "pending_for_this_delivery",
+  "claims": [
+    {
+      "id": "PA-01",
+      "conclusion": "非运输输出零或一级时阻尼及分支持续方式不进入比较",
+      "conditions": "全部实际出口对端非汇流器；门维护不新增直接汇流",
+      "evidence_layer": "规则条件充分证明",
+      "reference": "§2.1"
+    },
+    {
+      "id": "PA-02",
+      "conclusion": "无分流器直连汇流器时C16指定竞争构型消失",
+      "conditions": "逐条实际通道检查；其他共享争用继续核",
+      "evidence_layer": "结构充分证明",
+      "reference": "§2.2"
+    },
+    {
+      "id": "PA-03",
+      "conclusion": "末端箱在C80完整前件下不因容量阻塞且周期入量等于交付",
+      "conditions": "有电开传输、仓全收、无取货外送、至多六种；精确相位仍保存",
+      "evidence_layer": "条件周期率投影",
+      "reference": "§2.3"
+    },
+    {
+      "id": "PA-04",
+      "conclusion": "C82同段给总件数差，恰k件对恰k可用首格给逐批每口1",
+      "conditions": "逐物种/成功组/服务和初态前件；离线多段误差另计",
+      "evidence_layer": "承接并细分条件定理",
+      "reference": "§3.1"
+    },
+    {
+      "id": "PA-05",
+      "conclusion": "准备静止可去非零制造剩余，逐台释放后相对进度保留",
+      "conditions": "任务5闭端专线、清缓存与充分等待；全后置集合尚未实例化",
+      "evidence_layer": "匹配版本的条件承接",
+      "reference": "§3.2"
+    },
+    {
+      "id": "PA-06",
+      "conclusion": "k=5周期额度对本门可成功收件的数量守卫冗余",
+      "conditions": "合法历史、单格及滞留；断边对其他环/级作用继续保留",
+      "evidence_layer": "局部守卫证明",
+      "reference": "§4.1"
+    },
+    {
+      "id": "PA-07",
+      "conclusion": "k<5第n件收件不晚于t0+6+5floor((n-1)/k)+(n-1)%k",
+      "conditions": "单门持续成熟备货、身份相符、无累计、恰1tick排空、无权限争用",
+      "evidence_layer": "条件到货充分界",
+      "reference": "§4.2"
+    },
+    {
+      "id": "PA-08",
+      "conclusion": "纯离线重排保持物料/进度/计数，重算环和两侧级序；共同S可接续",
+      "conditions": "正时长段另核；一般指针精确映射尚未给出",
+      "evidence_layer": "保持量证明及条件接续定理",
+      "reference": "§5"
+    },
+    {
+      "id": "PA-09",
+      "conclusion": "成熟年龄、特定累计数和无读取审计时间可按域删除",
+      "conditions": "完整未来读取前件、固定设定与时间平移；连续残余仍保留",
+      "evidence_layer": "条件逐事件状态等价",
+      "reference": "§6"
+    },
+    {
+      "id": "PA-10",
+      "conclusion": "直接链工作表闭包覆盖后来可动旧货；一般失败环保留出口义务",
+      "conditions": "无争用有限带链；多口仅对明示协调分析有限控制环",
+      "evidence_layer": "局部完整推进与工程边界",
+      "reference": "§7"
+    },
+    {
+      "id": "PA-11",
+      "conclusion": "D域六类恰下限连续制造与达标等价；A=1113达标分支r=0",
+      "conditions": "D含真实周期、零非成品入库、只取原矿、完整库存复原等；219另按实际机型",
+      "evidence_layer": "条件正反向配方证明",
+      "reference": "§8.1"
+    },
+    {
+      "id": "PA-12",
+      "conclusion": "共同S及交付势差不等式保证所有真实可达目标循环达标",
+      "conditions": "初始化、正常转移、离线/接收恢复均保持，耗时和真实入库完整",
+      "evidence_layer": "通用充分认证准则；候选未实例化",
+      "reference": "§8.2—9"
+    }
+  ],
+  "state_ledger": [
+    {
+      "state": "物种/数量/顺序/桥轴",
+      "disposition": "retain",
+      "basis": "R13,17-18,23,63",
+      "domain": "全部运行",
+      "lifecycle": "状态演化",
+      "direction": "精确后继"
+    },
+    {
+      "state": "正常缓存",
+      "disposition": "retain_phase_and_recipe",
+      "basis": "R18,35;任务5§2-4",
+      "domain": "从空缓存正常制造",
+      "lifecycle": "状态演化",
+      "direction": "单批可达界，不是物理容量"
+    },
+    {
+      "state": "制造剩余",
+      "disposition": "retain_after_serial_release",
+      "basis": "R20,111,114;T13",
+      "domain": "准备静止可为零，释放保留实数",
+      "lifecycle": "状态演化",
+      "direction": "精确时间"
+    },
+    {
+      "state": "运输年龄",
+      "disposition": "residual=max(0,1-age)",
+      "basis": "R23",
+      "domain": "仅成熟守卫读取",
+      "lifecycle": "状态演化",
+      "direction": "后继及耗时保持"
+    },
+    {
+      "state": "非运输entered_at/过期日志",
+      "disposition": "audit_only_if_unread",
+      "basis": "R18,24,35",
+      "domain": "无未来时间读取或事件引用",
+      "lifecycle": "审计",
+      "direction": "行为保持"
+    },
+    {
+      "state": "k<5窗口",
+      "disposition": "retain_idle_or_active(j,w)",
+      "basis": "R64",
+      "domain": "固定身份/阈值",
+      "lifecycle": "状态演化",
+      "direction": "精确后继或PA-07界"
+    },
+    {
+      "state": "k=5窗口",
+      "disposition": "drop_acceptance_guard_only",
+      "basis": "R23,59,64",
+      "domain": "图与指针维护继续保存或另证无关",
+      "lifecycle": "状态演化",
+      "direction": "局部门槛冗余"
+    },
+    {
+      "state": "有限累计n",
+      "disposition": "min(n,C)",
+      "basis": "R64;C62",
+      "domain": "零干预固定C，仅读n<C",
+      "lifecycle": "状态演化",
+      "direction": "后继保持"
+    },
+    {
+      "state": "无限累计n",
+      "disposition": "audit_only_if_unread",
+      "basis": "R64;T8",
+      "domain": "永不设累计、无其他读取",
+      "lifecycle": "审计",
+      "direction": "去无界观察计数"
+    },
+    {
+      "state": "指针/环/级",
+      "disposition": "retain",
+      "basis": "R29-32",
+      "domain": "单成员环位置唯一；其它保留",
+      "lifecycle": "演化+离线重算",
+      "direction": "精确后继"
+    },
+    {
+      "state": "阻尼分支",
+      "disposition": "not_read_on_proved_single_level_sides",
+      "basis": "R27,30-31;三审L19",
+      "domain": "逐台PA-01；全厂需完整几何",
+      "lifecycle": "覆盖所有持续方式",
+      "direction": "行为无关"
+    },
+    {
+      "state": "箱冷却/编号格",
+      "disposition": "retain_or_rate_projection",
+      "basis": "R36,72;C80",
+      "domain": "无箱可删；末端箱率投影具完整前件",
+      "lifecycle": "5tick推进",
+      "direction": "精确状态/率分层"
+    },
+    {
+      "state": "绝对time",
+      "disposition": "relative_with_future_events",
+      "basis": "R20,23,35,36,64;T15",
+      "domain": "所有时差及外部日程一起处理",
+      "lifecycle": "时间演化",
+      "direction": "平移保持"
+    },
+    {
+      "state": "判定序",
+      "disposition": "retain_fixed_context",
+      "basis": "T15;C10",
+      "domain": "整场固定，不随探索路径变",
+      "lifecycle": "整场固定",
+      "direction": "合法参数约束"
+    },
+    {
+      "state": "成品仓数",
+      "disposition": "task2_response_projection",
+      "basis": "T2,9-10;R36,41",
+      "domain": "保留接收响应、无成品取货读取",
+      "lifecycle": "环境",
+      "direction": "完整周期前向投影"
+    },
+    {
+      "state": "N/K/Z及流量",
+      "disposition": "invariants_not_tick_key",
+      "basis": "C70;任务4/5",
+      "domain": "逐位置供排义务另核",
+      "lifecycle": "状态观察",
+      "direction": "充分集合候选坐标"
+    }
+  ],
+  "parameter_lifecycles": {
+    "judgment.order": "fixed_run_parameter",
+    "connection.order": "initial_build_correlations_then_offline_relation",
+    "damping.branch": "all_continuations_covered_only_where_not_read_or_separately_proved",
+    "transfer.phase": "initial_residual_then_5tick_attempt_cooldowns",
+    "manufacture.remaining": "actual_work_and_pause_progress",
+    "gate.window": "receipt_started_wall_clock_5ticks",
+    "gate.total": "preserved_counter_fixed_threshold_in_zero_intervention",
+    "settings": "fixed_after_debug",
+    "offline.cursor": "precise_mapping_unproved;overapprox_for_sufficiency_only"
+  },
+  "cyclic_equivalence": {
+    "domain": "正文§8.1 D",
+    "continuous_types_at_minimum": {
+      "粉碎机": 68,
+      "精炼炉": 51,
+      "配件机": 6,
+      "种植机": 32,
+      "采种机": 16,
+      "封装机": 3
+    },
+    "extra_conditions": [
+      "实际完整周期",
+      "只取原矿",
+      "仓库收得下成品",
+      "周期非成品零入库",
+      "全部有效厂内物料/批次首尾复原",
+      "仅正式配方"
+    ],
+    "reverse_equation": "16=25*(3/5)/3+20*c -> c=11/20",
+    "A1113_r0_scope": "达标必要分支；反向认证先核D或实际路由"
+  },
+  "open_items": [
+    {
+      "id": "PC-01",
+      "category": "缺构造",
+      "description": "A/B实际几何、自动通道、核心矿口及桥共同调度逐台验证",
+      "handoff": "任务7;PR-05",
+      "reference": "§2.4"
+    },
+    {
+      "id": "PC-02",
+      "category": "缺推导",
+      "description": "默认满首格到安全集合、反复拒收E、跨根账及实际Dmax",
+      "handoff": "任务4/5/6;PR-01—04;DR-02/03",
+      "reference": "§3/5"
+    },
+    {
+      "id": "PC-03",
+      "category": "缺构造与推导",
+      "description": "A两路差与Q、B三路及M150/M151、217换种、220实际3:2:1",
+      "handoff": "任务4/6/7;PR-06;DR-04",
+      "reference": "§3.1/4.2"
+    },
+    {
+      "id": "PC-04",
+      "category": "缺推导",
+      "description": "离线的精确指针/并列接续关系及共同S闭合",
+      "handoff": "任务6;U6;N-F34",
+      "reference": "§5"
+    },
+    {
+      "id": "PC-05",
+      "category": "缺推导",
+      "description": "竞争图中k=5断边及环/级维护删除；k<5服务前件实例化",
+      "handoff": "任务4/6/7;N-F25",
+      "reference": "§4"
+    },
+    {
+      "id": "PC-06",
+      "category": "缺推导与复核",
+      "description": "双端尝试、门恢复事务、失败环唤醒出口及一般完整事件推进；关闭intake接口核对",
+      "handoff": "任务6/8;N-F37",
+      "reference": "§7"
+    },
+    {
+      "id": "PC-07",
+      "category": "缺推导",
+      "description": "任意实数释放后态的耗时保持有限表示与循环覆盖",
+      "handoff": "任务6;N-F35/37",
+      "reference": "§6/9"
+    },
+    {
+      "id": "PC-08",
+      "category": "缺联合推导",
+      "description": "完整候选S/V及全参数逐物品供排；仓库恢复安全与全起法覆盖",
+      "handoff": "任务2/4—7;DR-01/03/05/06",
+      "reference": "§8/9"
+    },
+    {
+      "id": "PC-09",
+      "category": "缺复核",
+      "description": "本席新增PA证明、状态/参数台账和规格修改稿独立复核",
+      "handoff": "独立复核席；任务4F13重核保持原登记",
+      "reference": "§11"
+    }
+  ],
+  "for_owner": [],
+  "for_owner_reason": "现行规则与owner裁定足够支持本轮条件推导；剩余为构造、推导或独立复核。",
+  "input_consistency": {
+    "rule_old_prefix": "31ced2a24fef superseded by d150b86b398f",
+    "task4_F13_recheck": "pending",
+    "task5_review": "已交24项，20未击中、4未判定；审查指纹由核验脚本匹配"
+  },
+  "tool_delivery": {
+    "StructuredOutput_available": false,
+    "output_format": "同schema JSON文件及最终消息，供上游StructuredOutput提交"
+  }
+}

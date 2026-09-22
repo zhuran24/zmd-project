@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "report": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/复核-r7-覆盖.md",
+  "report_sha256": "db159666eedbb303cb0f7c608c042bec89a986e628025951e9fb0a4340f405c0",
+  "rule_rows": 114,
+  "task_rows": 15,
+  "old_findings_rows": 28,
+  "critic_rows": 12,
+  "new_findings": 0,
+  "missing_links": [],
+  "changes_to_reviewed_snapshot": [],
+  "reader_review": "全文复读；局部库存例补明不是任务初态可达性证明；修正受限转移引用及两条轴的全名。",
+  "scope": "只检查本次报告和被审字节一致性，不外推全称认证"
+}

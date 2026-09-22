@@ -1,0 +1,21 @@
+{
+  "structured_output_tool_available": false,
+  "return_format": "final JSON + evidence JSON",
+  "full_read_sources": 19,
+  "candidate_summary": [
+    {
+      "id": "A219",
+      "machines": 219,
+      "feeds": 314,
+      "all_actual_rates_null": true
+    },
+    {
+      "id": "B219",
+      "machines": 219,
+      "feeds": 315,
+      "all_actual_rates_null": true
+    }
+  ],
+  "no_kernel_build": true,
+  "no_kernel_execution": true
+}

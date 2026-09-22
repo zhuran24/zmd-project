@@ -1,0 +1,39 @@
+{
+  "schema": "pass",
+  "original_entries": 67,
+  "added_entries": 2,
+  "reader_entries_covered": 164,
+  "owner_utterances_covered": 24,
+  "disputes_adjudicated": 16,
+  "counts": {
+    "已定": 20,
+    "未定": 26,
+    "已推翻": 11,
+    "工作纪律": 12
+  },
+  "verdict_counts": {
+    "改写": 24,
+    "维持": 30,
+    "改状态": 15
+  },
+  "all_input_hashes_unchanged": true,
+  "links_exist": true,
+  "outputs": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/工作/总结-否证.md",
+      "sha256": "2ad1e3e6d058e47ef6e9659a9bc1419d2386669365bb52968b9242ef1cd76116",
+      "bytes": 70699
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/工作/总结-终稿.md",
+      "sha256": "101c0ccd64e6ee2cdd3cf5bb52ae89ff1f89d90436a6275645fa64193d743b03",
+      "bytes": 75628
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/工作/总结-复核-证据/回复.json",
+      "sha256": "04b2ad00f32a6ed638747475f1cab75a3793858e50bf3a44d8d3b4092a67f7cf",
+      "bytes": 16613
+    }
+  ],
+  "limits": "结构、覆盖、引用文件存在性与字节未变的核验；数学判定由逐条人工复核承担，不是整厂运行认证。"
+}

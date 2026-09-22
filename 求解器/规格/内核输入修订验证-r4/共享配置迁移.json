@@ -1,0 +1,54 @@
+{
+  "before_sha256": "3df82c49ab2dcd44abc7a1f36334130787bd557b898743c22cbb97b1be1ee800",
+  "after_sha256": "6a741030785fbf2772495e80b886769faa4fa8b9527e6ed2270b7ff8c8b48d0f",
+  "axis_changes": [
+    {
+      "axis": "connection.port_meeting",
+      "before": {
+        "disposition": "已定",
+        "value": "shared_edge_opposite",
+        "meaning": "共边相向、存取互补且至少一端运输",
+        "coverage_loss": "该已定范围无读法损失；关联未定轴另记",
+        "extension_gate": "不补已排除值；输入不匹配即invalid",
+        "choice": "T5",
+        "lifetime": "F",
+        "basis": "端口、通道、约束·端口对接、约束·四通结点、约束·边带排布、约束·核心邻格"
+      },
+      "after": {
+        "disposition": "本版选值",
+        "value": "shared_edge_opposite",
+        "meaning": "共边全长重合且法向相反、存取互补且至少一端运输；其它相遇谓词不支持",
+        "coverage_loss": "角点相遇及其新增通道、共享端口和调度后效待审，未获准也未被排除；不适用行为单调简化",
+        "extension_gate": "启用其它相遇谓词或据本版认证全称行为前，审查全规则相容性并实现成边及后效",
+        "choice": "T5",
+        "lifetime": "U",
+        "basis": "端口、通道、约束·端口对接；几何相遇非唯一解释，选择点T5"
+      }
+    },
+    {
+      "axis": "warehouse.empty_slot_identity",
+      "before": {
+        "disposition": "本版选值",
+        "value": "retain_history",
+        "meaning": "保留历史身份；单物种按空格序落格；多种新物种竞争任一无身份空格即unsupported，见转移§4.3",
+        "coverage_loss": "释放身份、其它落格关系；至少两种无既有/历史目标物种且存在无身份空格的整箱传输未覆盖",
+        "extension_gate": "仓库抽象/空格指派认证前",
+        "choice": "T12",
+        "lifetime": "U",
+        "basis": "物品格、仓库、协议核心、设定；T12"
+      },
+      "after": {
+        "disposition": "本版选值",
+        "value": "retain_history",
+        "meaning": "保留历史身份；单物种按当前空格序落格，成功时原子提交幸存空格稳定子序；多种新物种竞争任一无身份空格即unsupported，见转移§4.1/§4.3",
+        "coverage_loss": "释放身份、其它落格关系；至少两种无既有/历史目标物种且存在无身份空格的整箱传输未覆盖",
+        "extension_gate": "仓库抽象/空格指派认证前",
+        "choice": "T12",
+        "lifetime": "U",
+        "basis": "物品格、仓库、协议核心、设定；T12"
+      }
+    }
+  ],
+  "axis_count": 99,
+  "basis": "当前共享选择点T5、受限模型声明和规格线维护的实现支持指纹。共边运行值不变；从已定F迁到未定U，其它相遇读法待审。"
+}

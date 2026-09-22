@@ -1,0 +1,48 @@
+[
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/prior-regression-results.json",
+    "before_sha256": "8136bf0a9ef278b116b5b22d0b454becf5429e7c7b22294f67233b8df7b24f45",
+    "after_sha256": "7eddb70f93bbb257a4311752d916da688b55028b14d6c1389d138ef78230feb7",
+    "before_bytes": 10171,
+    "after_bytes": 10171,
+    "mtime_utc": "2026-09-20T04:58:50.438970+00:00",
+    "keys": [
+      "status",
+      "controls",
+      "metadata_negatives",
+      "cli_negatives",
+      "checkpoint_resume_controls",
+      "cases"
+    ],
+    "status": "通过",
+    "summary": {
+      "status": "通过",
+      "controls": 4,
+      "metadata_negatives": 40,
+      "cli_negatives": 5,
+      "checkpoint_resume_controls": 1
+    }
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/regression-results.json",
+    "before_sha256": "a40607fc4f1f56cfc9367e5f65bdb55d348dfc98ff37b94a5ee5bc27dbe55ccd",
+    "after_sha256": "c49cb975e319efc1309268b3ac698a7f554fa57d113ae56fc2b031324f34cb0b",
+    "before_bytes": 19353,
+    "after_bytes": 19353,
+    "mtime_utc": "2026-09-20T04:58:57.282278+00:00",
+    "keys": [
+      "status",
+      "controls",
+      "metadata_mutations",
+      "input_cases",
+      "metadata_rejected",
+      "input_case_count"
+    ],
+    "status": "通过",
+    "summary": {
+      "status": "通过",
+      "metadata_rejected": 64,
+      "input_case_count": 18
+    }
+  }
+]

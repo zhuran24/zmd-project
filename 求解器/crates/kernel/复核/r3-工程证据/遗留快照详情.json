@@ -1,0 +1,65 @@
+{
+  "snapshot": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/snapshot",
+  "is_symlink": false,
+  "files": 193,
+  "bytes": 33425957,
+  "top_level": [
+    "求解约束.txt",
+    "《明日方舟：终末地》游戏规则.txt",
+    "求解任务.txt",
+    "候选约束.txt",
+    "求解器"
+  ],
+  "target_is_symlink": false,
+  "target_entries": [],
+  "largest": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/snapshot/求解器/规格/第6轮修订验证/开工只读指纹.json",
+      "bytes": 4334306
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/snapshot/求解器/规格/第7轮修订验证/开工只读指纹.json",
+      "bytes": 4334306
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/snapshot/求解器/规格/第三轮任务验证/开工只读指纹.json",
+      "bytes": 4334306
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/snapshot/求解器/规格/第7轮修订验证/开工产物指纹.json",
+      "bytes": 2798223
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/snapshot/求解器/规格/第6轮修订验证/开工产物指纹.json",
+      "bytes": 2621535
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/snapshot/求解器/数据/样例/分流器三路轮询-运行记录-kernel.json",
+      "bytes": 1940935
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/snapshot/求解器/数据/样例/分流器三路轮询-运行记录.json",
+      "bytes": 1914670
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/snapshot/求解器/数据/样例/分流器三路轮询-运行记录-checkpoint_delta-kernel.json",
+      "bytes": 1222633
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/snapshot/求解器/数据/样例/分流器三路轮询-运行记录-checkpoint_delta.json",
+      "bytes": 1124114
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/snapshot/求解器/数据/样例/混做粉碎机两下游-运行记录-kernel.json",
+      "bytes": 654148
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/snapshot/求解器/数据/样例/混做粉碎机两下游-运行记录.json",
+      "bytes": 651322
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/snapshot/求解器/规格/第7轮修订验证/迁移前样例/混做粉碎机两下游-运行记录.json",
+      "bytes": 647110
+    }
+  ]
+}

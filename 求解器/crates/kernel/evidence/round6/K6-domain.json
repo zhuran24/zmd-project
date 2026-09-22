@@ -1,0 +1,55 @@
+{
+  "exit_code": 0,
+  "stdout": {
+    "domain_report": [
+      {
+        "condition": "D.1",
+        "evidence": [
+          "已装载固定布局、设定、global/v1、在线零干预、sufficient；无未来历史/玩家策略"
+        ],
+        "locations": [],
+        "scope": "static",
+        "status": "pass"
+      },
+      {
+        "condition": "D.2",
+        "evidence": [
+          "当前两矿唯一正库存且无可检查回矿候选；未来PC及有资格全箱仍在容量/physical/权限前动态核验"
+        ],
+        "locations": [],
+        "scope": "static",
+        "status": "pass"
+      },
+      {
+        "condition": "D.3",
+        "evidence": [
+          "O为空；成品格无取货指派；新格标签无冲突；retain_history保持该不变量"
+        ],
+        "locations": [],
+        "scope": "static",
+        "status": "pass"
+      },
+      {
+        "condition": "D.4",
+        "evidence": [
+          "全部输入/种子/分支表已装载；未来无终点请求仍动态停止；不证明种子可达"
+        ],
+        "locations": [],
+        "scope": "static",
+        "status": "pass"
+      },
+      {
+        "condition": "D.5",
+        "evidence": [
+          "结构界B=0+300*19=5700 <80000；每PC每刻至多1、每箱每刻至多一次全箱300"
+        ],
+        "locations": [],
+        "scope": "static",
+        "status": "pass"
+      }
+    ],
+    "status": "input_checked",
+    "trajectory_executed": false
+  },
+  "stderr": ""
+}

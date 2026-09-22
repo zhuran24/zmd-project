@@ -1,0 +1,26 @@
+{
+  "findings": [
+    {
+      "id": "K3-r4-L3-01",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/check_golden_trace.py:39–43、85–90；/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md:80、290",
+      "claim": "装载检查放过与普通格同名的仓库格，重算据字符串归属寻址，导致制造入缓存误扣仓库而未扣制造存货格。",
+      "evidence": "规则L14将仓库限定为协议核心物品格，L17规定制造格只连本单位对应端口及缓存，L18要求存货格向缓存通过一次用量；仅将warehouse_0改名为crusher:input:0即可通过完整输入检查，但4次实际出库后仓库减少7件、制造输入残留3件。原黄金比对会拒绝该变体，原交付样例未触发。",
+      "severity": "阻断"
+    },
+    {
+      "id": "K3-r4-L3-02",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/check_golden_trace.py:114、122；/home/zhuran24/zmd-research-fresh/求解器/数据/样例/runtime_record.py:157–164",
+      "claim": "运行事件生成未避开输入全局事件ID，验收仅做单tick去重，使建造与成功移动同名的记录仍可通过完整验收。",
+      "evidence": "规则L25要求判定逐个进行，L28按建造事件确定接通，任务L14要求同刻判定先后固定；内核输入§3.1规定事件共用全局身份，内核输出§2要求新实例ID唯一且不重用。将build_13及全部引用改为J|0|0|0后，该ID同时表示建造和首件成功移动，隔离副本的生成、schema和validate_record均通过。",
+      "severity": "重要"
+    },
+    {
+      "id": "K3-r4-L3-03",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r3/交付清单.json:57、61、90",
+      "claim": "交付清单中内核输入.md与混做粉碎机两下游-运行记录.json的SHA-256不等于当前实际字节。",
+      "evidence": "第三轮任务书§3.C要求可复核输出及来源指纹，清单第90行称其余交付物均按实际字节锁定；41项哈希实核有2项失配，且起点快照已经失配。当前运行记录内部22项依赖指纹和完整重算通过，缺陷限于外层清单过期。",
+      "severity": "次要"
+    }
+  ],
+  "notes": "完整论证：/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/复核-r4-一致性.md；证据：/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/复核-r4-一致性-证据。原三例几何、99轴对照及0–3 tick独立重算一致；新增发现不等于原始黄金轨迹错误。"
+}

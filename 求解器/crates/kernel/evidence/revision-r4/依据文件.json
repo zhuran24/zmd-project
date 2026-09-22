@@ -1,0 +1,90 @@
+{
+  "files": [
+    {
+      "path": "/tmp/claude-1000/-home-zhuran24-zmd-research-fresh/2a1af1b1-ede2-4b4a-8f95-41e78df48af0/scratchpad/step1/任务书5.md",
+      "bytes": 17556,
+      "sha256": "397949140d016b7af1ddda25becf4e823be9af198108f87dcd0c303f25f75766"
+    },
+    {
+      "path": "/tmp/claude-1000/-home-zhuran24-zmd-research-fresh/2a1af1b1-ede2-4b4a-8f95-41e78df48af0/scratchpad/step1/任务书.md",
+      "bytes": 10978,
+      "sha256": "7d9a2b0701fd6c3fa44a16a62e6e7f5ffc048e191a1763fb337bfb9ffdfac407"
+    },
+    {
+      "path": "/tmp/claude-1000/-home-zhuran24-zmd-research-fresh/2a1af1b1-ede2-4b4a-8f95-41e78df48af0/scratchpad/step1/任务书2.md",
+      "bytes": 8537,
+      "sha256": "e62e31d5c807a0674d3f8579e246b729ab82b81a9d8bb05ef4a7f4d360b6193e"
+    },
+    {
+      "path": "/tmp/claude-1000/-home-zhuran24-zmd-research-fresh/2a1af1b1-ede2-4b4a-8f95-41e78df48af0/scratchpad/step1/任务书3.md",
+      "bytes": 8200,
+      "sha256": "2657ee86178800af4b2076485b82c771f2368823d391531789af36185209cba2"
+    },
+    {
+      "path": "/tmp/claude-1000/-home-zhuran24-zmd-research-fresh/2a1af1b1-ede2-4b4a-8f95-41e78df48af0/scratchpad/step1/任务书4.md",
+      "bytes": 7485,
+      "sha256": "8dbf65a07725c60a5e87edaab2d35f9018d97346e44ff4f940827297b0997ba5"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+      "bytes": 7220,
+      "sha256": "abc7a5867f6477eedb619c63a21c4a77144c57ad4567fdcfb696b3049d66a670"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解任务.txt",
+      "bytes": 1275,
+      "sha256": "10abf80fe6eefe647471eabe78da4053f77b489d3806722c501c6acb405a2864"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解约束.txt",
+      "bytes": 24783,
+      "sha256": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/对内核的修改请求.md",
+      "bytes": 6679,
+      "sha256": "f8f26dcde2b72c2358cb24dd1e7ab43ce56c0d40b2da6ab92e8928c88592adde"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md",
+      "bytes": 96870,
+      "sha256": "0ca6312ed5142008d136f2d298bf23937dfbcb4cc80b7e3bfc023278833e9ec9"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.md",
+      "bytes": 24455,
+      "sha256": "07de6c939938b88f0165fb1c02b1d96c19fd519453af54ce33ab9aa95b88d52c"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.schema.json",
+      "bytes": 68098,
+      "sha256": "5c3cb1ace272c34439381ba770b000b26bdb745db20e52ca4008ff13be0d657e"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md",
+      "bytes": 54501,
+      "sha256": "55e3caee8ab40d1003b6002f1283c46734ef77a122e2870a2455fb4f14355450"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+      "bytes": 35741,
+      "sha256": "37427b530246a263018fa44a826893b46032c9d97eb8db1b6be06c7bcada080d"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限模型声明.md",
+      "bytes": 43098,
+      "sha256": "da0ab2073221bca451c676d54c44c98705bac2886c4ebf7049b7a87fd3509e86"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/运行语义.md",
+      "bytes": 44819,
+      "sha256": "1ce70540bd9f82e6fb0d1661ded855c7c723abccc4f9c13d646753cbece5a02c"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/普遍审查场景.md",
+      "bytes": 6729,
+      "sha256": "5d08beced7a77cfcd622fc3c42eb5419fd4d83bb27688190eddc985a84560ce0"
+    }
+  ],
+  "scope": "本轮直接文件读取依据；三份正式文件不由记忆或任务摘要替代。"
+}

@@ -1,0 +1,18 @@
+{
+  "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+  "diff": [
+    "--- ",
+    "+++ ",
+    "@@ -3372,7 +3372,7 @@",
+    "         \"switch_settable\": true,",
+    "         \"judgment_scope\": \"unit\",",
+    "-        \"cooldown_scope\": \"unresolved\",",
+    "-        \"basis\": \"游戏规则·传输、判定、开关、设定\",",
+    "-        \"note\": \"全箱一次判定已定；冷却按箱还是按格仍未定，见 T6。\"",
+    "+        \"cooldown_scope\": \"box\",",
+    "+        \"basis\": \"游戏规则L25、L36；任务书7 §1.1；主会话三审 §6\",",
+    "+        \"note\": \"一次单位判定按仓库可收余量尽量传输，余货留箱；箱级5 tick冷却已定，零传输时的冷却触发见规格T6。\"",
+    "       },",
+    "       \"switches\": ["
+  ]
+}

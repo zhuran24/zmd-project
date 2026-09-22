@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "report_rows": 74,
+  "axis_rows": 96,
+  "findings": 3,
+  "severity_counts": {
+    "阻断": 1,
+    "重要": 2
+  },
+  "source_and_reviewed_hashes_unchanged": 29,
+  "source_protection_check": "只读文件 25037 份指纹未变",
+  "existing_spec_checks": 53,
+  "existing_regression_checks": 16,
+  "readability_review": "已复读发现论证及74项对照，核对引用、前件、证据边界、链接、数字和JSON字段；条件探针未作为发现。"
+}

@@ -1,0 +1,45 @@
+{
+  "next_time": {
+    "kind": "rational",
+    "value": {
+      "category": "候选",
+      "value": "2"
+    }
+  },
+  "record_verifier": [
+    {
+      "accepted": true,
+      "case": "control",
+      "error": null
+    },
+    {
+      "accepted": true,
+      "case": "reachability-null",
+      "error": null
+    },
+    {
+      "accepted": true,
+      "case": "reachability-number",
+      "error": null
+    },
+    {
+      "accepted": true,
+      "case": "reachability-object",
+      "error": null
+    },
+    {
+      "accepted": true,
+      "case": "reachability-string",
+      "error": null
+    }
+  ],
+  "same_id_executed_again": 1,
+  "seed_executed_event": "J|2|0|0",
+  "seed_time": {
+    "kind": "rational",
+    "value": {
+      "category": "候选",
+      "value": "1"
+    }
+  }
+}

@@ -1,0 +1,311 @@
+[
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/cargo-test.txt",
+    "bytes": 5652
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/release-build.txt",
+    "bytes": 149
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/clippy.txt",
+    "bytes": 159
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r1/cargo-test.txt",
+    "bytes": 6716
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r1/release-build.txt",
+    "bytes": 149
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r1/clippy.txt",
+    "bytes": 159
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/cargo-test.txt",
+    "bytes": 7524
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/release-build.txt",
+    "bytes": 149
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/clippy.txt",
+    "bytes": 159
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/libkernel.rlib",
+    "bytes": 25318414
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/kernel",
+    "bytes": 9491360
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/probe",
+    "bytes": 9467160
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-2-证据/libkernel.rlib",
+    "bytes": 23805784
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-2-证据/verify-probe",
+    "bytes": 8985168
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-2-证据/kernel",
+    "bytes": 9056592
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-2-证据/kernel-tests",
+    "bytes": 9669352
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-工程-evidence/cargo-test.txt",
+    "bytes": 6468
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-工程-evidence/release-build.txt",
+    "bytes": 477
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-工程-evidence/clippy.txt",
+    "bytes": 332
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-工程-evidence/reproduce.txt",
+    "bytes": 7815
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/复核-r2-规格保真-证据/cargo-test.txt",
+    "bytes": 4091
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/复核-r2-规格保真-证据/check-artifacts.txt",
+    "bytes": 228
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/复核-r2-规格保真-证据/probe-build.txt",
+    "bytes": 213
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/复核-r2-规格保真-证据/probe/Cargo.toml",
+    "bytes": 149
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/复核-r2-规格保真-证据/probe/Cargo.lock",
+    "bytes": 2766
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/cargo-test.txt",
+    "bytes": 7499
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/library-probes.txt",
+    "bytes": 1350
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/release-build.txt",
+    "bytes": 477
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/clippy.txt",
+    "bytes": 332
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/library-probe/Cargo.toml",
+    "bytes": 155
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/library-probe/Cargo.lock",
+    "bytes": 2774
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/libkernel.rlib",
+    "bytes": 25321542
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/identity-control",
+    "bytes": 8920976
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/kernel",
+    "bytes": 9491936
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/probe",
+    "bytes": 9467672
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-规格保真-证据/libkernel.rlib",
+    "bytes": 23805784
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-规格保真-证据/source-tests.txt",
+    "bytes": 3262
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-规格保真-证据/compile.txt",
+    "bytes": 330
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-规格保真-证据/reference-tests",
+    "bytes": 9124648
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-规格保真-证据/review-kernel-tests",
+    "bytes": 9825616
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/public-verify",
+    "bytes": 28144960
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/cargo-test.txt",
+    "bytes": 7998
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/audit-stdout.txt",
+    "bytes": 359
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/手推首次投影检查.txt",
+    "bytes": 910
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/clippy.txt",
+    "bytes": 391
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/stops-stdout.txt",
+    "bytes": 75
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/probe-build.txt",
+    "bytes": 618
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/snapshot/求解约束.txt",
+    "bytes": 24783
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/snapshot/《明日方舟：终末地》游戏规则.txt",
+    "bytes": 7220
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/snapshot/求解任务.txt",
+    "bytes": 1275
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/snapshot/候选约束.txt",
+    "bytes": 244240
+  },
+  {
+    "kind": "forbidden_directory",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/snapshot/求解器/target"
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/snapshot/求解器/Cargo.toml",
+    "bytes": 74
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/snapshot/求解器/Cargo.lock",
+    "bytes": 3955
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/snapshot/求解器/crates/kernel/Cargo.toml",
+    "bytes": 143
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/snapshot/求解器/crates/topology/Cargo.toml",
+    "bytes": 204
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/probe/Cargo.toml",
+    "bytes": 183
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/probe/Cargo.lock",
+    "bytes": 2773
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-测试与证据/cargo-test.txt",
+    "bytes": 6468
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-测试与证据/record-probe-build.txt",
+    "bytes": 501
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-测试与证据/record-probe/Cargo.toml",
+    "bytes": 159
+  },
+  {
+    "kind": "other_extension",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-测试与证据/record-probe/Cargo.lock",
+    "bytes": 2775
+  }
+]

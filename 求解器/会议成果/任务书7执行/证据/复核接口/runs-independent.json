@@ -1,0 +1,207 @@
+[
+  {
+    "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/cache-off.json",
+    "ticks": 2,
+    "actual_inbound": {},
+    "wireless_attempts": [],
+    "warehouse_balance": true
+  },
+  {
+    "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/cache-on.json",
+    "ticks": 2,
+    "actual_inbound": {},
+    "wireless_attempts": [],
+    "warehouse_balance": true
+  },
+  {
+    "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/checkpoint-record.json",
+    "ticks": 1,
+    "actual_inbound": {},
+    "wireless_attempts": [],
+    "warehouse_balance": true
+  },
+  {
+    "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/identity-full.json",
+    "ticks": 2,
+    "actual_inbound": {},
+    "wireless_attempts": [],
+    "warehouse_balance": true
+  },
+  {
+    "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/双门窗口恢复.json",
+    "ticks": 12,
+    "actual_inbound": {},
+    "wireless_attempts": [],
+    "warehouse_balance": true
+  },
+  {
+    "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/同刻双箱争余量.json",
+    "ticks": 1,
+    "actual_inbound": {
+      "高容谷地电池": "1"
+    },
+    "wireless_attempts": [
+      {
+        "unit": "first",
+        "time": "0",
+        "sent": {
+          "高容谷地电池": "1"
+        }
+      },
+      {
+        "unit": "second",
+        "time": "0",
+        "sent": {}
+      }
+    ],
+    "warehouse_balance": true
+  },
+  {
+    "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/成熟旧货重试.json",
+    "ticks": 1,
+    "actual_inbound": {},
+    "wireless_attempts": [],
+    "warehouse_balance": true
+  },
+  {
+    "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/无线一满一可收.json",
+    "ticks": 1,
+    "actual_inbound": {
+      "精选荞愈胶囊": "3"
+    },
+    "wireless_attempts": [
+      {
+        "unit": "box",
+        "time": "0",
+        "sent": {
+          "精选荞愈胶囊": "3"
+        }
+      }
+    ],
+    "warehouse_balance": true
+  },
+  {
+    "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/无线全拒收.json",
+    "ticks": 6,
+    "actual_inbound": {},
+    "wireless_attempts": [
+      {
+        "unit": "box",
+        "time": "0",
+        "sent": {}
+      },
+      {
+        "unit": "box",
+        "time": "5",
+        "sent": {}
+      }
+    ],
+    "warehouse_balance": true
+  },
+  {
+    "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/无线多格全收.json",
+    "ticks": 1,
+    "actual_inbound": {
+      "高容谷地电池": "5"
+    },
+    "wireless_attempts": [
+      {
+        "unit": "box",
+        "time": "0",
+        "sent": {
+          "高容谷地电池": "5"
+        }
+      }
+    ],
+    "warehouse_balance": true
+  },
+  {
+    "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/无线空箱.json",
+    "ticks": 6,
+    "actual_inbound": {},
+    "wireless_attempts": [
+      {
+        "unit": "box",
+        "time": "0",
+        "sent": {}
+      },
+      {
+        "unit": "box",
+        "time": "5",
+        "sent": {}
+      }
+    ],
+    "warehouse_balance": true
+  },
+  {
+    "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/无线部分接收.json",
+    "ticks": 6,
+    "actual_inbound": {
+      "高容谷地电池": "1"
+    },
+    "wireless_attempts": [
+      {
+        "unit": "box",
+        "time": "0",
+        "sent": {
+          "高容谷地电池": "1"
+        }
+      },
+      {
+        "unit": "box",
+        "time": "5",
+        "sent": {}
+      }
+    ],
+    "warehouse_balance": true
+  },
+  {
+    "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/累计调低保留.json",
+    "ticks": 6,
+    "actual_inbound": {},
+    "wireless_attempts": [],
+    "warehouse_balance": true
+  },
+  {
+    "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/累计调高资格.json",
+    "ticks": 6,
+    "actual_inbound": {},
+    "wireless_attempts": [],
+    "warehouse_balance": true
+  },
+  {
+    "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/装载与普通制造.json",
+    "ticks": 4,
+    "actual_inbound": {},
+    "wireless_attempts": [],
+    "warehouse_balance": true
+  },
+  {
+    "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/身份实际切换.json",
+    "ticks": 6,
+    "actual_inbound": {},
+    "wireless_attempts": [],
+    "warehouse_balance": true
+  },
+  {
+    "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/身份断边恢复.json",
+    "ticks": 6,
+    "actual_inbound": {},
+    "wireless_attempts": [],
+    "warehouse_balance": true
+  },
+  {
+    "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/阻尼恢复.json",
+    "ticks": 12,
+    "actual_inbound": {},
+    "wireless_attempts": [],
+    "warehouse_balance": true
+  },
+  {
+    "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/静止成熟与暂停键-cycle.record.json",
+    "ticks": 2,
+    "actual_inbound": {},
+    "wireless_attempts": [],
+    "warehouse_balance": true
+  }
+]

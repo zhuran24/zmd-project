@@ -1,0 +1,65 @@
+{"name": "ore-crossed-domain", "command": ["/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel", "check", "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-2-证据/ore-crossed-invalid-memory.json", "--cycle-domain", "--config", "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"], "cwd": "/home/zhuran24/zmd-research-fresh/求解器", "exit": 2}
+STDOUT
+{
+  "domain_report": [
+    {
+      "condition": "D.1",
+      "evidence": [
+        "未完成装载：成员、接通环、级或当前可动级不符"
+      ],
+      "locations": [
+        "poll_memory"
+      ],
+      "scope": "not_checked",
+      "status": "unresolved"
+    },
+    {
+      "condition": "D.2",
+      "evidence": [
+        "未完成装载：成员、接通环、级或当前可动级不符"
+      ],
+      "locations": [
+        "poll_memory"
+      ],
+      "scope": "not_checked",
+      "status": "unresolved"
+    },
+    {
+      "condition": "D.3",
+      "evidence": [
+        "未完成装载：成员、接通环、级或当前可动级不符"
+      ],
+      "locations": [
+        "poll_memory"
+      ],
+      "scope": "not_checked",
+      "status": "unresolved"
+    },
+    {
+      "condition": "D.4",
+      "evidence": [
+        "未完成装载：成员、接通环、级或当前可动级不符"
+      ],
+      "locations": [
+        "poll_memory"
+      ],
+      "scope": "not_checked",
+      "status": "unresolved"
+    },
+    {
+      "condition": "D.5",
+      "evidence": [
+        "未完成装载：成员、接通环、级或当前可动级不符"
+      ],
+      "locations": [
+        "poll_memory"
+      ],
+      "scope": "not_checked",
+      "status": "unresolved"
+    }
+  ],
+  "status": "invalid_input",
+  "trajectory_executed": false
+}
+
+STDERR

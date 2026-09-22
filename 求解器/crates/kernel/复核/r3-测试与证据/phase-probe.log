@@ -1,0 +1,6 @@
+valid_0 0 completed
+negative 0 completed
+too_large 0 completed
+fractional 0 completed
+malformed 0 completed
+malformed phase cycle 0 counterexample verify 0

@@ -1,0 +1,26 @@
+{
+  "comparisons_with_r6": {
+    "规格检查": true,
+    "原转移回归": true,
+    "第6轮回归": true,
+    "样例与黄金完整核验": true
+  },
+  "candidate_report_rows": {
+    "能检且通过（4925 项，算术推论）": 4925,
+    "能检且不通过（0 项，算术推论）": 0,
+    "不能静态检（59 项，算术推论）": 59
+  },
+  "run_record_axis_coverage": {
+    "exercised": 23,
+    "input_checked": 14,
+    "not_exercised": 44,
+    "stop_not_triggered": 17,
+    "proof_pending": 1
+  },
+  "old_43_axis_check": {
+    "old_missing_count": 43,
+    "still_missing": []
+  },
+  "r6_delivery_fingerprint_count": 37,
+  "r6_delivery_drift": []
+}

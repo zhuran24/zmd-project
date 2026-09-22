@@ -1,0 +1,91 @@
+{
+  "status": "通过",
+  "binary": "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+  "binary_sha256": "668d4b4f43bd1beb419603eb182c2811d9ffb9d69e8af4c3c6878a4816dc6714",
+  "records": [
+    {
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--ticks",
+        "4",
+        "--format",
+        "full_state_each_instant",
+        "--checkpoint-interval",
+        "10",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-kernel.json"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-kernel.json\",\"status\":\"completed\"}\n",
+      "sha256": "fb4d7e283e21c0d02aa715ddcb97581edf9782babd867d3a78186da7f989c2fb",
+      "bytes": 654148
+    },
+    {
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--ticks",
+        "4",
+        "--format",
+        "checkpoint_delta",
+        "--checkpoint-interval",
+        "3",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-checkpoint_delta-kernel.json"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-checkpoint_delta-kernel.json\",\"status\":\"completed\"}\n",
+      "sha256": "34e4781cd0e08b18c66ce7160c153a09876519a1771b5bea3ed67116cfa3a1ed",
+      "bytes": 504272
+    },
+    {
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--ticks",
+        "12",
+        "--format",
+        "full_state_each_instant",
+        "--checkpoint-interval",
+        "10",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-kernel.json"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-kernel.json\",\"status\":\"completed\"}\n",
+      "sha256": "03ed4f43bd20095694f8a24bcd999bc0cb2ab31f969fa056d0ef0ee89943ceae",
+      "bytes": 1940935
+    },
+    {
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--ticks",
+        "12",
+        "--format",
+        "checkpoint_delta",
+        "--checkpoint-interval",
+        "3",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-checkpoint_delta-kernel.json"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-checkpoint_delta-kernel.json\",\"status\":\"completed\"}\n",
+      "sha256": "4979a3ec65fb50e3cba3655969162e0142d6191d5ad452a5b1931920ada23c90",
+      "bytes": 1222633
+    }
+  ]
+}

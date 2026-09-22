@@ -1,0 +1,163 @@
+{
+  "status": "KNOWN_UNCOVERED_CASE_CONFIRMED",
+  "scope": "仅核同一已给输入下两个未排序的批内落格补全；不是执行器或全规则反例认证",
+  "given": {
+    "warehouse_empty_slot_order": [
+      "WA",
+      "WB"
+    ],
+    "empty_identity": {
+      "WA": null,
+      "WB": null
+    },
+    "warehouse_empty_slot_identity": "retain_history",
+    "transfer_partial_acceptance": "all_or_nothing",
+    "box_slots": [
+      {
+        "number": 1,
+        "item": "源石粉末",
+        "quantity": 1
+      },
+      {
+        "number": 2,
+        "item": "蓝铁粉末",
+        "quantity": 1
+      }
+    ],
+    "box_powered_and_enabled": true,
+    "box_cooldown_before": 0,
+    "port_assignment": "WA"
+  },
+  "missing": "同一单位原子传输中多个新物种的落格先后或明确的整批分配函数",
+  "outcomes": [
+    {
+      "unprovided_item_order": [
+        "源石粉末",
+        "蓝铁粉末"
+      ],
+      "atomic_allocation_plan": [
+        {
+          "item": "源石粉末",
+          "slot": "WA",
+          "quantity": 1
+        },
+        {
+          "item": "蓝铁粉末",
+          "slot": "WB",
+          "quantity": 1
+        }
+      ],
+      "warehouse_after": {
+        "W0": {
+          "item": "源矿",
+          "quantity": 80000,
+          "empty_identity": null
+        },
+        "W1": {
+          "item": "蓝铁矿",
+          "quantity": 80000,
+          "empty_identity": null
+        },
+        "W2": {
+          "item": "荞花",
+          "quantity": 80000,
+          "empty_identity": null
+        },
+        "W3": {
+          "item": "砂叶",
+          "quantity": 80000,
+          "empty_identity": null
+        },
+        "W4": {
+          "item": "荞花种子",
+          "quantity": 80000,
+          "empty_identity": null
+        },
+        "W5": {
+          "item": "砂叶种子",
+          "quantity": 80000,
+          "empty_identity": null
+        },
+        "WA": {
+          "item": "源石粉末",
+          "quantity": 1,
+          "empty_identity": null
+        },
+        "WB": {
+          "item": "蓝铁粉末",
+          "quantity": 1,
+          "empty_identity": null
+        }
+      },
+      "box_remaining": 0,
+      "cooldown_after": 5,
+      "fixed_port_assignment": "WA",
+      "assigned_port_item_after": "源石粉末"
+    },
+    {
+      "unprovided_item_order": [
+        "蓝铁粉末",
+        "源石粉末"
+      ],
+      "atomic_allocation_plan": [
+        {
+          "item": "蓝铁粉末",
+          "slot": "WA",
+          "quantity": 1
+        },
+        {
+          "item": "源石粉末",
+          "slot": "WB",
+          "quantity": 1
+        }
+      ],
+      "warehouse_after": {
+        "W0": {
+          "item": "源矿",
+          "quantity": 80000,
+          "empty_identity": null
+        },
+        "W1": {
+          "item": "蓝铁矿",
+          "quantity": 80000,
+          "empty_identity": null
+        },
+        "W2": {
+          "item": "荞花",
+          "quantity": 80000,
+          "empty_identity": null
+        },
+        "W3": {
+          "item": "砂叶",
+          "quantity": 80000,
+          "empty_identity": null
+        },
+        "W4": {
+          "item": "荞花种子",
+          "quantity": 80000,
+          "empty_identity": null
+        },
+        "W5": {
+          "item": "砂叶种子",
+          "quantity": 80000,
+          "empty_identity": null
+        },
+        "WA": {
+          "item": "蓝铁粉末",
+          "quantity": 1,
+          "empty_identity": null
+        },
+        "WB": {
+          "item": "源石粉末",
+          "quantity": 1,
+          "empty_identity": null
+        }
+      },
+      "box_remaining": 0,
+      "cooldown_after": 5,
+      "fixed_port_assignment": "WA",
+      "assigned_port_item_after": "蓝铁粉末"
+    }
+  ],
+  "safe_fallback": "受限转移定义第79行允许落格关系未解时unsupported；本例不能由现有选值推出ok后继"
+}

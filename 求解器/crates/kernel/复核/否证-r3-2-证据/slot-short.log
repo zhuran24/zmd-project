@@ -1,0 +1,22 @@
+{
+  "name": "slot-short",
+  "command": [
+    "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+    "run",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r3-2-证据/slot-short-input.json",
+    "--config",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+    "--out",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r3-2-证据/slot-short-result.json",
+    "--ticks",
+    "1"
+  ],
+  "exit_code": 101,
+  "stdout": "",
+  "stderr": "\nthread 'main' (684928) panicked at crates/kernel/src/engine.rs:170:47:\nindex out of bounds: the len is 1 but the index is 1\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n",
+  "result_path": null,
+  "status": null,
+  "schema": null,
+  "stop": null,
+  "open_items": null
+}

@@ -1,0 +1,95 @@
+{
+  "source": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/送料与接口.json",
+  "sha256": "f4f3776907ee06ad429e9a250f076056945eea4a6c496cf09163b7048788e36e",
+  "schema": "plant-pilot-v2",
+  "status": "partial",
+  "default_start_certified": false,
+  "full_layout_certified": false,
+  "open_items": [
+    {
+      "id": "PR-01",
+      "owner": "任务5",
+      "breakpoint": "默认清缓存、填满、开机、末级最后的全部后置状态；每一根回路的可用物料与释放接收前缀",
+      "status": "unproved",
+      "missing_category": "缺构造与推导",
+      "review_findings": [
+        "F03",
+        "F09",
+        "F10",
+        "F17"
+      ]
+    },
+    {
+      "id": "PR-02",
+      "owner": "任务4及任务6",
+      "breakpoint": "实际通行下的偏采种/偏粉碎拒收调节、最终完成率及全段最大净损失",
+      "status": "unproved",
+      "missing_category": "缺构造与推导",
+      "review_findings": [
+        "F06",
+        "F18"
+      ]
+    },
+    {
+      "id": "PR-03",
+      "owner": "任务6",
+      "breakpoint": "M174/M195 从满首格到 C82 起点，全部离线顺序、失败扫描与逐种成功字序",
+      "status": "unproved",
+      "missing_category": "缺构造与推导",
+      "review_findings": [
+        "F04",
+        "F17"
+      ]
+    },
+    {
+      "id": "PR-04",
+      "owner": "任务5—7联合",
+      "breakpoint": "本文局部安全集合与堵满释放、实际带长、下游服务之间的联合保持性",
+      "status": "unproved",
+      "missing_category": "缺构造与推导",
+      "review_findings": [
+        "F04",
+        "F08",
+        "F09",
+        "F10",
+        "F17"
+      ]
+    },
+    {
+      "id": "PR-05",
+      "owner": "任务7",
+      "breakpoint": "全部路径、格数、桥轴方向、自动通道、供电；A/B逐机逐口服务能力",
+      "status": "unproved",
+      "missing_category": "缺构造与推导",
+      "review_findings": [
+        "F11",
+        "F17"
+      ]
+    },
+    {
+      "id": "PR-06",
+      "owner": "任务4、6、7",
+      "breakpoint": "A两路D高−2D低及Q全前缀界；B三首格与M150/M151共享同种输入的服务；220实际3:2:1路径与突发排出；217输入/输出清旧种字序",
+      "status": "unproved",
+      "missing_category": "缺构造与推导",
+      "review_findings": [
+        "F04",
+        "F08",
+        "F15",
+        "F16"
+      ]
+    },
+    {
+      "id": "PR-07",
+      "owner": "任务4—7",
+      "breakpoint": "完整基地同总数产率命题、完整反例或充分证明；局部同N反例的独立审查见F12，分别相等种子/植株的加强命题仍开放",
+      "status": "unproved",
+      "missing_category": "缺构造与推导",
+      "review_findings": [
+        "F12",
+        "F18"
+      ]
+    }
+  ],
+  "reading_scope": "JSON全文解码；状态和证明范围按对应正文核读，原数据仍在source路径。"
+}

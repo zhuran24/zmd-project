@@ -1,0 +1,1178 @@
+[
+  {
+    "axis": "polling.direct_peer",
+    "declaration_line": 37,
+    "disposition": "已定",
+    "value": "physical_peer",
+    "basis": "通道、端口、取货优先级、存货优先级",
+    "coverage_loss": "该已定范围无读法损失；关联未定轴另记",
+    "extension_gate": "不补已排除值；输入不匹配即invalid",
+    "review_section": "§3.1",
+    "review_boundary": "核到已定范围，关联未定不随之裁掉"
+  },
+  {
+    "axis": "connection.port_meeting",
+    "declaration_line": 46,
+    "disposition": "已定",
+    "value": "shared_edge_opposite",
+    "basis": "端口、通道、约束·端口对接、约束·四通结点、约束·边带排布、约束·核心邻格",
+    "coverage_loss": "该已定范围无读法损失；关联未定轴另记",
+    "extension_gate": "不补已排除值；输入不匹配即invalid",
+    "review_section": "§3.1",
+    "review_boundary": "核到已定范围，关联未定不随之裁掉"
+  },
+  {
+    "axis": "initialization.rotation_stage",
+    "declaration_line": 92,
+    "disposition": "已定",
+    "value": "build_and_debug",
+    "basis": "旋转、调试期、零干预运行",
+    "coverage_loss": "该已定范围无读法损失；关联未定轴另记",
+    "extension_gate": "不补已排除值；输入不匹配即invalid",
+    "review_section": "§3.1",
+    "review_boundary": "核到已定范围，关联未定不随之裁掉"
+  },
+  {
+    "axis": "gate.window_recovery",
+    "declaration_line": 70,
+    "disposition": "已定",
+    "value": "on_expiry_if_other_guards",
+    "basis": "物品准入口、约束·准入累计、约束·来源定序",
+    "coverage_loss": "该已定范围无读法损失；关联未定轴另记",
+    "extension_gate": "不补已排除值；输入不匹配即invalid",
+    "review_section": "§3.1",
+    "review_boundary": "核到已定范围，关联未定不随之裁掉"
+  },
+  {
+    "axis": "transfer.judgment",
+    "declaration_line": 49,
+    "disposition": "已定",
+    "value": "unit",
+    "basis": "判定（一个单位一次）、传输（自身所有格所有物品）",
+    "coverage_loss": "该已定范围无读法损失；关联未定轴另记",
+    "extension_gate": "不补已排除值；输入不匹配即invalid",
+    "review_section": "§3.1",
+    "review_boundary": "核到已定范围，关联未定不随之裁掉"
+  },
+  {
+    "axis": "manufacturing.port_slot_relation",
+    "declaration_line": 56,
+    "disposition": "已定",
+    "value": "distributed",
+    "basis": "存货/取货端口、通道、存货/取货物品格",
+    "coverage_loss": "该已定范围无读法损失；关联未定轴另记",
+    "extension_gate": "不补已排除值；输入不匹配即invalid",
+    "review_section": "§3.1",
+    "review_boundary": "核到已定范围，关联未定不随之裁掉"
+  },
+  {
+    "axis": "manufacturing.output_blocked",
+    "declaration_line": 67,
+    "disposition": "已定",
+    "value": "retain_whole_batch",
+    "basis": "缓存格、物品格",
+    "coverage_loss": "该已定范围无读法损失；关联未定轴另记",
+    "extension_gate": "不补已排除值；输入不匹配即invalid",
+    "review_section": "§3.1",
+    "review_boundary": "核到已定范围，关联未定不随之裁掉"
+  },
+  {
+    "axis": "gate.limit_requires_identity",
+    "declaration_line": 74,
+    "disposition": "已定",
+    "value": true,
+    "basis": "物品准入口",
+    "coverage_loss": "该已定范围无读法损失；关联未定轴另记",
+    "extension_gate": "不补已排除值；输入不匹配即invalid",
+    "review_section": "§3.1",
+    "review_boundary": "核到已定范围，关联未定不随之裁掉"
+  },
+  {
+    "axis": "warehouse.capacity",
+    "declaration_line": 95,
+    "disposition": "已定",
+    "value": {
+      "value": "80000",
+      "category": "条文直引"
+    },
+    "basis": "物品格、协议核心、仓库物品",
+    "coverage_loss": "该已定范围无读法损失；关联未定轴另记",
+    "extension_gate": "不补已排除值；输入不匹配即invalid",
+    "review_section": "§3.1",
+    "review_boundary": "核到已定范围，关联未定不随之裁掉"
+  },
+  {
+    "axis": "warehouse.delivery_count",
+    "declaration_line": 101,
+    "disposition": "已定",
+    "value": "actual_inbound",
+    "basis": "目标、约束·入库途径",
+    "coverage_loss": "该已定范围无读法损失；关联未定轴另记",
+    "extension_gate": "不补已排除值；输入不匹配即invalid",
+    "review_section": "§3.1",
+    "review_boundary": "核到已定范围，关联未定不随之裁掉"
+  },
+  {
+    "axis": "bridge.inventory_scope",
+    "declaration_line": 104,
+    "disposition": "已定",
+    "value": "two_independent_axis_slots",
+    "basis": "桥接器",
+    "coverage_loss": "该已定范围无读法损失；关联未定轴另记",
+    "extension_gate": "不补已排除值；输入不匹配即invalid",
+    "review_section": "§3.1",
+    "review_boundary": "核到已定范围，关联未定不随之裁掉"
+  },
+  {
+    "axis": "bridge.scheduling_scope",
+    "declaration_line": 106,
+    "disposition": "已定",
+    "value": "unit",
+    "basis": "轮询、存货/取货优先级、桥接器",
+    "coverage_loss": "该已定范围无读法损失；关联未定轴另记",
+    "extension_gate": "不补已排除值；输入不匹配即invalid",
+    "review_section": "§3.1",
+    "review_boundary": "核到已定范围，关联未定不随之裁掉"
+  },
+  {
+    "axis": "time.domain",
+    "declaration_line": 19,
+    "disposition": "本版选值",
+    "value": "integer_ticks",
+    "basis": "时间单位、判定、传输、操作精度",
+    "coverage_loss": "非整数相位、建造/暂停时距",
+    "extension_gate": "时间或相位认证前",
+    "review_section": "§2、§3.2",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "time.instant_order",
+    "declaration_line": 20,
+    "disposition": "本版选值",
+    "value": "chronological_phases",
+    "basis": "滞留、制造、判定；细化见受限转移定义§2",
+    "coverage_loss": "同刻完成/环境/判定的其他交织",
+    "extension_gate": "边界敏感轨迹用于规则结论前",
+    "review_section": "§2、§3.2",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "time.retry_schedule",
+    "declaration_line": 21,
+    "disposition": "本版选值",
+    "value": "ordered_sweeps",
+    "basis": "移动、轮询",
+    "coverage_loss": "其他重试嵌入和逐时刻异序",
+    "extension_gate": "吞吐或分流性质认证前",
+    "review_section": "§2、§3.2",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "time.instant_end",
+    "declaration_line": 22,
+    "disposition": "本版选值",
+    "value": "repeat_scheduler_state",
+    "basis": "判定、移动、轮询",
+    "coverage_loss": "有隐藏失败次数后效及其他空转归约",
+    "extension_gate": "推广到其他机制/全运行域前",
+    "review_section": "§2、§3.2",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "time.boundary",
+    "declaration_line": 23,
+    "disposition": "本版选值",
+    "value": "elapsed_inclusive",
+    "basis": "滞留、配方、传输、物品准入口",
+    "coverage_loss": "其他边界组织",
+    "extension_gate": "边界敏感认证前",
+    "review_section": "§2、§3.2",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "time.manufacture_events",
+    "declaration_line": 24,
+    "disposition": "本版选值",
+    "value": "completion_before_closure",
+    "basis": "制造、需电功能、配方、判定",
+    "coverage_loss": "完成穿插判定、其他同刻位置",
+    "extension_gate": "制造时序或混做认证前",
+    "review_section": "§2、§3.2",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "judgment.order_scope",
+    "declaration_line": 25,
+    "disposition": "本版选值",
+    "value": "global",
+    "basis": "判定、判定次序",
+    "coverage_loss": "per_instant时刻异序",
+    "extension_gate": "判定先后完整覆盖前",
+    "review_section": "§3.2、§3.4",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "judgment.buffer_event_class",
+    "declaration_line": 27,
+    "disposition": "本版选值",
+    "value": "manufacture_subactions",
+    "basis": "缓存格、通道、判定",
+    "coverage_loss": "BC独立移动判定与其交织",
+    "extension_gate": "内部通道语义认证前",
+    "review_section": "§3.2、§3.4",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "polling.initial_cursor",
+    "declaration_line": 28,
+    "disposition": "本版选值",
+    "value": "first_connected",
+    "basis": "轮询、接通",
+    "coverage_loss": "其他普通起点",
+    "extension_gate": "建造/起动全称覆盖前",
+    "review_section": "§2、§3.2",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "polling.split_merge_start",
+    "declaration_line": 29,
+    "disposition": "本版选值",
+    "value": "second_cursor",
+    "basis": "轮询",
+    "coverage_loss": "exclude_first及start_on_second",
+    "extension_gate": "分汇流鲁棒认证前",
+    "review_section": "§2、§3.2",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "polling.split_merge_scope",
+    "declaration_line": 110,
+    "disposition": "本版选值",
+    "value": "per_level",
+    "basis": "轮询、优先级、存货优先级、分流器、汇流器",
+    "coverage_loss": "全侧计数再投影",
+    "extension_gate": "含分流器直连汇流器的认证前",
+    "review_section": "§2、§3.2",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "polling.split_merge_singleton",
+    "declaration_line": 111,
+    "disposition": "本版选值",
+    "value": "sole_member",
+    "basis": "轮询、移动",
+    "coverage_loss": "延后多口模式等起动组织",
+    "extension_gate": "单成员级/新建通道覆盖前",
+    "review_section": "§2、§3.2",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "polling.ungraded_blocked",
+    "declaration_line": 30,
+    "disposition": "本版选值",
+    "value": "empty_turn",
+    "basis": "轮询、优先级、取货优先级",
+    "coverage_loss": "skip前瞻跳过",
+    "extension_gate": "分流序列认证前",
+    "review_section": "§2、§3.2",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "polling.dual_permission",
+    "declaration_line": 31,
+    "disposition": "本版选值",
+    "value": "both",
+    "basis": "轮询、优先级、判定",
+    "coverage_loss": "either_trigger及其他请求协调",
+    "extension_gate": "调度鲁棒性结论前",
+    "review_section": "§2、§3.2",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "polling.both_failure",
+    "declaration_line": 112,
+    "disposition": "本版选值",
+    "value": "advance_authorized",
+    "basis": "轮询、判定；T3",
+    "coverage_loss": "no_attempt_hold及advance_both（仍待规则审查）",
+    "extension_gate": "更换双端解释前",
+    "review_section": "§2、§3.2",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "polling.memory_scope",
+    "declaration_line": 32,
+    "disposition": "本版选值",
+    "value": "per_level",
+    "basis": "轮询、优先级",
+    "coverage_loss": "per_side全局位置投影",
+    "extension_gate": "级间抢占覆盖前",
+    "review_section": "§2、§3.2",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "polling.resume",
+    "declaration_line": 33,
+    "disposition": "本版选值",
+    "value": "retain_position",
+    "basis": "轮询、优先级、约束·轮询均分",
+    "coverage_loss": "回级重置及全侧投影",
+    "extension_gate": "轮询均分全前件核验前",
+    "review_section": "§2、§3.2",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "polling.eligibility_stage",
+    "declaration_line": 34,
+    "disposition": "本版选值",
+    "value": "pre_filter",
+    "basis": "优先级、判定",
+    "coverage_loss": "探测后筛级的组织",
+    "extension_gate": "优先级语义覆盖前",
+    "review_section": "§2、§3.2",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "polling.membership_change",
+    "declaration_line": 35,
+    "disposition": "本版选值",
+    "value": "retain_survivors",
+    "basis": "通道、物品准入口、轮询、离线",
+    "coverage_loss": "重新起轮与其他映射",
+    "extension_gate": "准入口恢复/结构切换认证前",
+    "review_section": "§2、§3.2",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "polling.internal_scope",
+    "declaration_line": 36,
+    "disposition": "本版选值",
+    "value": "external_only",
+    "basis": "缓存格、轮询、取货优先级、存货优先级",
+    "coverage_loss": "include_buffer_levels的归级机制尚缺",
+    "extension_gate": "内部通道分级覆盖前",
+    "review_section": "§2、§3.2",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "polling.level_tie",
+    "declaration_line": 38,
+    "disposition": "本版选值",
+    "value": "fixed_arbitration",
+    "basis": "取货优先级、存货优先级、接通",
+    "coverage_loss": "并列级联合轮询及其他仲裁",
+    "extension_gate": "级平局鲁棒覆盖前",
+    "review_section": "§2、§3.2",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "damping.belt_component_rule",
+    "declaration_line": 39,
+    "disposition": "本版选值",
+    "value": "path_runs",
+    "basis": "元件、阻尼；T4",
+    "coverage_loss": "geometric_components",
+    "extension_gate": "阻尼几何解释覆盖前",
+    "review_section": "§3.4",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "damping.belt_adjacency",
+    "declaration_line": 40,
+    "disposition": "本版选值",
+    "value": "shared_edge",
+    "basis": "元件的“连续”",
+    "coverage_loss": "角触连通的待审域",
+    "extension_gate": "启用geometric_components前",
+    "review_section": "§3.4",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "connection.bridge_first_contact",
+    "declaration_line": 47,
+    "disposition": "本版选值",
+    "value": "physical_contact",
+    "basis": "桥接器、通道、接通",
+    "coverage_loss": "有向成边先接及递归定向",
+    "extension_gate": "桥互依赖实例运行前",
+    "review_section": "§2、§3.4",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "transfer.cooldown_scope",
+    "declaration_line": 50,
+    "disposition": "本版选值",
+    "value": "box",
+    "basis": "传输、协议储存箱",
+    "coverage_loss": "按格异相冷却",
+    "extension_gate": "箱体语义认证前",
+    "review_section": "§3.3",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "transfer.pause",
+    "declaration_line": 52,
+    "disposition": "本版选值",
+    "value": "pause_with_function",
+    "basis": "需电功能、传输",
+    "coverage_loss": "墙钟继续计冷却",
+    "extension_gate": "断电/开关认证前",
+    "review_section": "§3.3",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "transfer.failure_cooldown",
+    "declaration_line": 53,
+    "disposition": "本版选值",
+    "value": "every_attempt",
+    "basis": "传输、物品格",
+    "coverage_loss": "只成功才冷却等",
+    "extension_gate": "拒收/空箱相位认证前",
+    "review_section": "§3.3",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "transfer.partial_acceptance",
+    "declaration_line": 54,
+    "disposition": "本版选值",
+    "value": "all_or_nothing",
+    "basis": "传输、协议核心、物品格",
+    "coverage_loss": "单位判定内部分物种/格/件接收",
+    "extension_gate": "仓库拒收覆盖前",
+    "review_section": "§3.3",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "transfer.resume_event",
+    "declaration_line": 55,
+    "disposition": "本版选值",
+    "value": "ready_in_closure",
+    "basis": "需电功能、传输",
+    "coverage_loss": "其他恢复日程",
+    "extension_gate": "停用/恢复认证前",
+    "review_section": "§3.3",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "manufacturing.input_mixing",
+    "declaration_line": 57,
+    "disposition": "本版选值",
+    "value": "single_kind",
+    "basis": "物品格、存货/取货物品格",
+    "coverage_loss": "乙混装与多候选竞争",
+    "extension_gate": "混装覆盖前",
+    "review_section": "§3.3",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "manufacturing.input_capacity_scope",
+    "declaration_line": 58,
+    "disposition": "本版选值",
+    "value": "per_slot_total",
+    "basis": "存货/取货物品格",
+    "coverage_loss": "per_kind",
+    "extension_gate": "启用混装时",
+    "review_section": "§3.3",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "manufacturing.recipe_match_scope",
+    "declaration_line": 59,
+    "disposition": "本版选值",
+    "value": "input_union",
+    "basis": "缓存格、大制造单位",
+    "coverage_loss": "per_slot",
+    "extension_gate": "开闸语义覆盖前",
+    "review_section": "§3.3",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "manufacturing.recipe_completeness",
+    "declaration_line": 60,
+    "disposition": "本版选值",
+    "value": "full_batch",
+    "basis": "缓存格、制造、配方",
+    "coverage_loss": "all_kinds/partial_kinds",
+    "extension_gate": "部分归集及缓存抽象前",
+    "review_section": "§3.3",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "manufacturing.recipe_lock_time",
+    "declaration_line": 62,
+    "disposition": "本版选值",
+    "value": "on_gate_open",
+    "basis": "缓存格、制造",
+    "coverage_loss": "首件/齐料后锁定",
+    "extension_gate": "允许分步归集前",
+    "review_section": "§3.3",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "manufacturing.empty_slot_identity",
+    "declaration_line": 64,
+    "disposition": "本版选值",
+    "value": "release_on_empty",
+    "basis": "物品格、约束·满载配置",
+    "coverage_loss": "保留历史身份",
+    "extension_gate": "混做/选格覆盖前",
+    "review_section": "§3.3",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "manufacturing.input_collection",
+    "declaration_line": 65,
+    "disposition": "本版选值",
+    "value": "atomic_batch",
+    "basis": "缓存格、判定",
+    "coverage_loss": "分步归集与暂停状态",
+    "extension_gate": "部分开闸覆盖前",
+    "review_section": "§3.3",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "manufacturing.buffer_power_gate",
+    "declaration_line": 66,
+    "disposition": "本版选值",
+    "value": "manufacturing_only",
+    "basis": "需电功能、制造、缓存格",
+    "coverage_loss": "内部搬运随功能停用",
+    "extension_gate": "断电缓存覆盖前",
+    "review_section": "§3.3",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "gate.identity_subject",
+    "declaration_line": 68,
+    "disposition": "本版选值",
+    "value": "candidate_item",
+    "basis": "物品准入口",
+    "coverage_loss": "上游可能种类集合及其他有据观察机制",
+    "extension_gate": "身份恢复认证前",
+    "review_section": "§3.3",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "gate.identity_recovery",
+    "declaration_line": 69,
+    "disposition": "本版选值",
+    "value": "latched",
+    "basis": "物品准入口、设定",
+    "coverage_loss": "条件恢复",
+    "extension_gate": "依赖动态身份恢复的起动认证前",
+    "review_section": "§3.3",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "gate.total_recovery",
+    "declaration_line": 71,
+    "disposition": "本版选值",
+    "value": "latched",
+    "basis": "物品准入口、设定",
+    "coverage_loss": "条件恢复",
+    "extension_gate": "调试改累计方案运行前",
+    "review_section": "§3.3",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "gate.window_clock",
+    "declaration_line": 72,
+    "disposition": "本版选值",
+    "value": "wall_clock",
+    "basis": "物品准入口、约束·准入累计、约束·来源定序",
+    "coverage_loss": "仅身份原因停表方向仍待审；全盘停表已排除",
+    "extension_gate": "身份停表解释认证前",
+    "review_section": "§3.3",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "gate.reconnect_record",
+    "declaration_line": 73,
+    "disposition": "本版选值",
+    "value": "original_build_record",
+    "basis": "接通、物品准入口",
+    "coverage_loss": "恢复新记录与建造时刻衔接",
+    "extension_gate": "准入口重接解释覆盖前",
+    "review_section": "§3.3",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "gate.counter_start",
+    "declaration_line": 76,
+    "disposition": "本版选值",
+    "value": "since_build",
+    "basis": "物品准入口",
+    "coverage_loss": "设限后才计累计等",
+    "extension_gate": "带设定变化的准入口认证前",
+    "review_section": "§3.3",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "initialization.belt_shape_lifecycle",
+    "declaration_line": 114,
+    "disposition": "本版选值",
+    "value": "fixed_between_builds",
+    "basis": "传送带、旋转、重建、设定、调试期、零干预运行",
+    "coverage_loss": "direct_change无正面授权，留待审不执行",
+    "extension_gate": "直接改形运行或全阶段覆盖前",
+    "review_section": "§3.4",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "warehouse.acceptance",
+    "declaration_line": 96,
+    "disposition": "本版选值",
+    "value": "capacity_and_path",
+    "basis": "目标、约束·入库途径",
+    "coverage_loss": "仅容量/仅路径等目标读法",
+    "extension_gate": "完整目标认证前",
+    "review_section": "§3.3、§5",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "warehouse.acceptance_quantifier",
+    "declaration_line": 97,
+    "disposition": "本版选值",
+    "value": "per_instant",
+    "basis": "目标、循环态",
+    "coverage_loss": "验收状态条件及环境量词",
+    "extension_gate": "完整目标认证前",
+    "review_section": "§3.3、§5",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "warehouse.empty_slot_identity",
+    "declaration_line": 102,
+    "disposition": "本版选值",
+    "value": "retain_history",
+    "basis": "物品格、仓库、协议核心、设定；T12",
+    "coverage_loss": "释放身份、其它落格关系；至少两种无既有/历史目标物种且存在无身份空格的整箱传输未覆盖",
+    "extension_gate": "仓库抽象/空格指派认证前",
+    "review_section": "§3.3、§5",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "bridge.capacity",
+    "declaration_line": 105,
+    "disposition": "本版选值",
+    "value": 1,
+    "basis": "运输单位、桥接器、约束·箱体过站/约束·运输下限",
+    "coverage_loss": "容量也例外的未定域",
+    "extension_gate": "桥接容量完整覆盖前",
+    "review_section": "§3.1、§3.4",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "power.cell_rule",
+    "declaration_line": 107,
+    "disposition": "本版选值",
+    "value": "positive_area",
+    "basis": "供电桩、供电状态、约束·不得依赖的量；受限模型声明§3",
+    "coverage_loss": "closed_touch可多解锁功能，行为轨迹未覆盖；达标供电必要条件无额外前件",
+    "extension_gate": "依赖额外供电的行为结论前",
+    "review_section": "§3.4",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "residence.nontransport",
+    "declaration_line": 108,
+    "disposition": "本版选值",
+    "value": "zero",
+    "basis": "滞留、制造、缓存格",
+    "coverage_loss": "合法正停留域尚待界定",
+    "extension_gate": "停留语义完整覆盖前",
+    "review_section": "§3.2、§3.3",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "cascade.buffer",
+    "declaration_line": 109,
+    "disposition": "本版选值",
+    "value": "same_instant",
+    "basis": "缓存格、判定、移动、配方",
+    "coverage_loss": "next_instant及独立BC交织",
+    "extension_gate": "内部级联认证前",
+    "review_section": "§3.2、§3.3",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "judgment.order",
+    "declaration_line": 26,
+    "disposition": "由输入全称量化",
+    "value": {
+      "interface": "event-order-v1"
+    },
+    "basis": "判定、判定次序、约束·判定先后",
+    "coverage_loss": "只运行给定序列不等于全称覆盖；本版仅global模板序",
+    "extension_gate": "首次对该输入族作全称结论前，证明域与覆盖；缺具体值则拒绝运行",
+    "review_section": "§3.2、§3.4",
+    "review_boundary": "具体输入可验，全称域与历史覆盖未自动完成"
+  },
+  {
+    "axis": "damping.branch",
+    "declaration_line": 41,
+    "disposition": "由输入全称量化",
+    "value": {
+      "interface": "damping-branch-v1"
+    },
+    "basis": "阻尼、约束·分叉分支",
+    "coverage_loss": "运行中分支变化和其他固定性未覆盖",
+    "extension_gate": "首次对该输入族作全称结论前，证明域与覆盖；缺具体值则拒绝运行",
+    "review_section": "§3.4",
+    "review_boundary": "具体输入可验，全称域与历史覆盖未自动完成"
+  },
+  {
+    "axis": "connection.build_order",
+    "declaration_line": 43,
+    "disposition": "由输入全称量化",
+    "value": {
+      "interface": "construction.selected_order"
+    },
+    "basis": "蓝图、建造方式",
+    "coverage_loss": "未回放的其他建造史仍欠覆盖",
+    "extension_gate": "首次对该输入族作全称结论前，证明域与覆盖；缺具体值则拒绝运行",
+    "review_section": "§2、§3.4",
+    "review_boundary": "具体输入可验，全称域与历史覆盖未自动完成"
+  },
+  {
+    "axis": "connection.order",
+    "declaration_line": 44,
+    "disposition": "由输入全称量化",
+    "value": {
+      "interface": "timeline_connection_history"
+    },
+    "basis": "接通、离线、约束·接通先后",
+    "coverage_loss": "离线接续触发即停",
+    "extension_gate": "首次对该输入族作全称结论前，证明域与覆盖；缺具体值则拒绝运行",
+    "review_section": "§2、§3.4",
+    "review_boundary": "具体输入可验，全称域与历史覆盖未自动完成"
+  },
+  {
+    "axis": "connection.tie",
+    "declaration_line": 45,
+    "disposition": "由输入全称量化",
+    "value": {
+      "interface": "explicit_channel_order"
+    },
+    "basis": "接通、轮询",
+    "coverage_loss": "不遍历仲裁不等于仲裁鲁棒",
+    "extension_gate": "首次对该输入族作全称结论前，证明域与覆盖；缺具体值则拒绝运行",
+    "review_section": "§2、§3.4",
+    "review_boundary": "具体输入可验，全称域与历史覆盖未自动完成"
+  },
+  {
+    "axis": "connection.belt_shape",
+    "declaration_line": 113,
+    "disposition": "由输入全称量化",
+    "value": {
+      "interface": "per_build_shape_map"
+    },
+    "basis": "传送带、旋转、重建",
+    "coverage_loss": "未枚举形状/建造史不算覆盖",
+    "extension_gate": "首次对该输入族作全称结论前，证明域与覆盖；缺具体值则拒绝运行",
+    "review_section": "§2、§3.4",
+    "review_boundary": "具体输入可验，全称域与历史覆盖未自动完成"
+  },
+  {
+    "axis": "transfer.phase",
+    "declaration_line": 51,
+    "disposition": "由输入全称量化",
+    "value": {
+      "interface": "progress.cooldowns"
+    },
+    "basis": "传输、约束·传输相位",
+    "coverage_loss": "非整数残余、按格相位及未验证初态史",
+    "extension_gate": "首次对该输入族作全称结论前，证明域与覆盖；缺具体值则拒绝运行",
+    "review_section": "§3.3",
+    "review_boundary": "具体输入可验，全称域与历史覆盖未自动完成"
+  },
+  {
+    "axis": "manufacturing.recipe_selection",
+    "declaration_line": 61,
+    "disposition": "由输入全称量化",
+    "value": {
+      "interface": "explicit_recipe_order"
+    },
+    "basis": "缓存格、配方、设定",
+    "coverage_loss": "到达史/接通派生选择；本版通常不激活竞争",
+    "extension_gate": "首次对该输入族作全称结论前，证明域与覆盖；缺具体值则拒绝运行",
+    "review_section": "§3.3",
+    "review_boundary": "具体输入可验，全称域与历史覆盖未自动完成"
+  },
+  {
+    "axis": "manufacturing.input_slot_selection",
+    "declaration_line": 63,
+    "disposition": "由输入全称量化",
+    "value": {
+      "interface": "explicit_slot_order"
+    },
+    "basis": "物品格、大制造单位、协议储存箱",
+    "coverage_loss": "端口关联、先空、接通派生选择",
+    "extension_gate": "首次对该输入族作全称结论前，证明域与覆盖；缺具体值则拒绝运行",
+    "review_section": "§3.3",
+    "review_boundary": "具体输入可验，全称域与历史覆盖未自动完成"
+  },
+  {
+    "axis": "initialization.warehouse_anchor",
+    "declaration_line": 87,
+    "disposition": "由输入全称量化",
+    "value": {
+      "interface": "initial_state.anchor"
+    },
+    "basis": "仓库物品、蓝图、协议核心",
+    "coverage_loss": "未验证的锚点/建造关联不算可达证据",
+    "extension_gate": "首次对该输入族作全称结论前，证明域与覆盖；缺具体值则拒绝运行",
+    "review_section": "§3.4",
+    "review_boundary": "具体输入可验，全称域与历史覆盖未自动完成"
+  },
+  {
+    "axis": "initialization.other_inventory",
+    "declaration_line": 88,
+    "disposition": "由输入全称量化",
+    "value": {
+      "interface": "initial_state.nonwarehouse"
+    },
+    "basis": "物品格、缓存格、调试期",
+    "coverage_loss": "未覆盖初态/缓存内容及可达性",
+    "extension_gate": "首次对该输入族作全称结论前，证明域与覆盖；缺具体值则拒绝运行",
+    "review_section": "§3.4",
+    "review_boundary": "具体输入可验，全称域与历史覆盖未自动完成"
+  },
+  {
+    "axis": "initialization.switches",
+    "declaration_line": 89,
+    "disposition": "由输入全称量化",
+    "value": {
+      "interface": "settings_at_seed"
+    },
+    "basis": "开关、设定、蓝图",
+    "coverage_loss": "未覆盖初值与调试史",
+    "extension_gate": "首次对该输入族作全称结论前，证明域与覆盖；缺具体值则拒绝运行",
+    "review_section": "§3.4",
+    "review_boundary": "具体输入可验，全称域与历史覆盖未自动完成"
+  },
+  {
+    "axis": "initialization.build_timing",
+    "declaration_line": 90,
+    "disposition": "由输入全称量化",
+    "value": {
+      "interface": "timeline"
+    },
+    "basis": "蓝图、接通、移动",
+    "coverage_loss": "建造期间全部运行/非整数时距",
+    "extension_gate": "首次对该输入族作全称结论前，证明域与覆盖；缺具体值则拒绝运行",
+    "review_section": "§3.4",
+    "review_boundary": "具体输入可验，全称域与历史覆盖未自动完成"
+  },
+  {
+    "axis": "initialization.debug_end",
+    "declaration_line": 94,
+    "disposition": "由输入全称量化",
+    "value": {
+      "interface": "initial_state.reachability"
+    },
+    "basis": "调试期、操作精度、目标",
+    "coverage_loss": "其他可能调试后态仍待覆盖",
+    "extension_gate": "首次对该输入族作全称结论前，证明域与覆盖；缺具体值则拒绝运行",
+    "review_section": "§3.4",
+    "review_boundary": "具体输入可验，全称域与历史覆盖未自动完成"
+  },
+  {
+    "axis": "warehouse.external_supply",
+    "declaration_line": 100,
+    "disposition": "由输入全称量化",
+    "value": {
+      "interface": "explicit_ore_history"
+    },
+    "basis": "外部过程、物品格",
+    "coverage_loss": "单一环境史不证明全环境覆盖",
+    "extension_gate": "首次对该输入族作全称结论前，证明域与覆盖；缺具体值则拒绝运行",
+    "review_section": "§3.3、§5",
+    "review_boundary": "具体输入可验，全称域与历史覆盖未自动完成"
+  },
+  {
+    "axis": "damping.no_terminal",
+    "declaration_line": 42,
+    "disposition": "超出覆盖即停",
+    "value": {
+      "policy": "stop",
+      "trigger": "请求求阻尼而所选路径无下一非运输终点"
+    },
+    "basis": "阻尼、取货优先级、约束·回路转弯",
+    "coverage_loss": "该事件/证明域全部未覆盖；stop是工程处置，不是游戏枚举值",
+    "extension_gate": "实现有据后效或提供提升证明并更新配置版本后才恢复",
+    "review_section": "§3.4",
+    "review_boundary": "工具停止政策，不能作为游戏取值或删除反例"
+  },
+  {
+    "axis": "connection.bridge_tie",
+    "declaration_line": 48,
+    "disposition": "超出覆盖即停",
+    "value": {
+      "policy": "stop",
+      "trigger": "先接并列或桥互依赖，不能由唯一无环见证定向"
+    },
+    "basis": "桥接器、蓝图、通道",
+    "coverage_loss": "该事件/证明域全部未覆盖；stop是工程处置，不是游戏枚举值",
+    "extension_gate": "实现有据后效或提供提升证明并更新配置版本后才恢复",
+    "review_section": "§2、§3.4",
+    "review_boundary": "工具停止政策，不能作为游戏取值或删除反例"
+  },
+  {
+    "axis": "gate.counter_edit",
+    "declaration_line": 75,
+    "disposition": "超出覆盖即停",
+    "value": {
+      "policy": "stop",
+      "trigger": "调试改身份/累计/窗口设定并需确定计数后效"
+    },
+    "basis": "物品准入口、设定、约束·准入累计",
+    "coverage_loss": "该事件/证明域全部未覆盖；stop是工程处置，不是游戏枚举值",
+    "extension_gate": "实现有据后效或提供提升证明并更新配置版本后才恢复",
+    "review_section": "§3.3",
+    "review_boundary": "工具停止政策，不能作为游戏取值或删除反例"
+  },
+  {
+    "axis": "gate.cancel_limit",
+    "declaration_line": 77,
+    "disposition": "超出覆盖即停",
+    "value": {
+      "policy": "stop",
+      "trigger": "取消已设限额"
+    },
+    "basis": "物品准入口、设定",
+    "coverage_loss": "该事件/证明域全部未覆盖；stop是工程处置，不是游戏枚举值",
+    "extension_gate": "实现有据后效或提供提升证明并更新配置版本后才恢复",
+    "review_section": "§3.3",
+    "review_boundary": "工具停止政策，不能作为游戏取值或删除反例"
+  },
+  {
+    "axis": "offline.order_domain",
+    "declaration_line": 78,
+    "disposition": "超出覆盖即停",
+    "value": {
+      "policy": "stop",
+      "trigger": "请求构造完整离线重排域或离线事件出现"
+    },
+    "basis": "离线、接通",
+    "coverage_loss": "该事件/证明域全部未覆盖；stop是工程处置，不是游戏枚举值",
+    "extension_gate": "实现有据后效或提供提升证明并更新配置版本后才恢复",
+    "review_section": "§3.4",
+    "review_boundary": "工具停止政策，不能作为游戏取值或删除反例"
+  },
+  {
+    "axis": "offline.events",
+    "declaration_line": 79,
+    "disposition": "超出覆盖即停",
+    "value": {
+      "policy": "stop",
+      "trigger": "出现任何离线/上线事件"
+    },
+    "basis": "离线、目标、零干预运行",
+    "coverage_loss": "该事件/证明域全部未覆盖；stop是工程处置，不是游戏枚举值",
+    "extension_gate": "实现有据后效或提供提升证明并更新配置版本后才恢复",
+    "review_section": "§3.4",
+    "review_boundary": "工具停止政策，不能作为游戏取值或删除反例"
+  },
+  {
+    "axis": "offline.cursor_effect",
+    "declaration_line": 80,
+    "disposition": "超出覆盖即停",
+    "value": {
+      "policy": "stop",
+      "trigger": "离线需更新轮询状态"
+    },
+    "basis": "离线、轮询",
+    "coverage_loss": "该事件/证明域全部未覆盖；stop是工程处置，不是游戏枚举值",
+    "extension_gate": "实现有据后效或提供提升证明并更新配置版本后才恢复",
+    "review_section": "§3.4",
+    "review_boundary": "工具停止政策，不能作为游戏取值或删除反例"
+  },
+  {
+    "axis": "offline.inventory_effect",
+    "declaration_line": 81,
+    "disposition": "超出覆盖即停",
+    "value": {
+      "policy": "stop",
+      "trigger": "离线需更新库存"
+    },
+    "basis": "离线、物品格、仓库物品",
+    "coverage_loss": "该事件/证明域全部未覆盖；stop是工程处置，不是游戏枚举值",
+    "extension_gate": "实现有据后效或提供提升证明并更新配置版本后才恢复",
+    "review_section": "§3.4",
+    "review_boundary": "工具停止政策，不能作为游戏取值或删除反例"
+  },
+  {
+    "axis": "offline.progress_effect",
+    "declaration_line": 82,
+    "disposition": "超出覆盖即停",
+    "value": {
+      "policy": "stop",
+      "trigger": "离线需更新进度/时钟"
+    },
+    "basis": "离线、需电功能",
+    "coverage_loss": "该事件/证明域全部未覆盖；stop是工程处置，不是游戏枚举值",
+    "extension_gate": "实现有据后效或提供提升证明并更新配置版本后才恢复",
+    "review_section": "§3.4",
+    "review_boundary": "工具停止政策，不能作为游戏取值或删除反例"
+  },
+  {
+    "axis": "offline.direction_effect",
+    "declaration_line": 83,
+    "disposition": "超出覆盖即停",
+    "value": {
+      "policy": "stop",
+      "trigger": "离线需更新桥方向"
+    },
+    "basis": "离线、桥接器、通道",
+    "coverage_loss": "该事件/证明域全部未覆盖；stop是工程处置，不是游戏枚举值",
+    "extension_gate": "实现有据后效或提供提升证明并更新配置版本后才恢复",
+    "review_section": "§3.4",
+    "review_boundary": "工具停止政策，不能作为游戏取值或删除反例"
+  },
+  {
+    "axis": "offline.gate_total_effect",
+    "declaration_line": 84,
+    "disposition": "超出覆盖即停",
+    "value": {
+      "policy": "stop",
+      "trigger": "离线需更新累计计数"
+    },
+    "basis": "离线、物品准入口、约束·准入累计",
+    "coverage_loss": "该事件/证明域全部未覆盖；stop是工程处置，不是游戏枚举值",
+    "extension_gate": "实现有据后效或提供提升证明并更新配置版本后才恢复",
+    "review_section": "§3.4",
+    "review_boundary": "工具停止政策，不能作为游戏取值或删除反例"
+  },
+  {
+    "axis": "offline.gate_window_effect",
+    "declaration_line": 85,
+    "disposition": "超出覆盖即停",
+    "value": {
+      "policy": "stop",
+      "trigger": "离线需更新窗口计数"
+    },
+    "basis": "离线、物品准入口",
+    "coverage_loss": "该事件/证明域全部未覆盖；stop是工程处置，不是游戏枚举值",
+    "extension_gate": "实现有据后效或提供提升证明并更新配置版本后才恢复",
+    "review_section": "§3.4",
+    "review_boundary": "工具停止政策，不能作为游戏取值或删除反例"
+  },
+  {
+    "axis": "offline.gate_window_start_effect",
+    "declaration_line": 86,
+    "disposition": "超出覆盖即停",
+    "value": {
+      "policy": "stop",
+      "trigger": "离线需更新窗口起点"
+    },
+    "basis": "离线、物品准入口",
+    "coverage_loss": "该事件/证明域全部未覆盖；stop是工程处置，不是游戏枚举值",
+    "extension_gate": "实现有据后效或提供提升证明并更新配置版本后才恢复",
+    "review_section": "§3.4",
+    "review_boundary": "工具停止政策，不能作为游戏取值或删除反例"
+  },
+  {
+    "axis": "initialization.debug_actions",
+    "declaration_line": 91,
+    "disposition": "超出覆盖即停",
+    "value": {
+      "policy": "stop",
+      "trigger": "运行区间内出现玩家单位操作（种子之前的动作只核证据引用）"
+    },
+    "basis": "调试期、设定、旋转、重建、操作精度",
+    "coverage_loss": "该事件/证明域全部未覆盖；stop是工程处置，不是游戏枚举值",
+    "extension_gate": "实现有据后效或提供提升证明并更新配置版本后才恢复",
+    "review_section": "§3.4",
+    "review_boundary": "工具停止政策，不能作为游戏取值或删除反例"
+  },
+  {
+    "axis": "initialization.rebuild_inventory",
+    "declaration_line": 93,
+    "disposition": "超出覆盖即停",
+    "value": {
+      "policy": "stop",
+      "trigger": "拆除或重建需确定库存/进度去向"
+    },
+    "basis": "重建、物品格、调试期",
+    "coverage_loss": "该事件/证明域全部未覆盖；stop是工程处置，不是游戏枚举值",
+    "extension_gate": "实现有据后效或提供提升证明并更新配置版本后才恢复",
+    "review_section": "§3.4",
+    "review_boundary": "工具停止政策，不能作为游戏取值或删除反例"
+  },
+  {
+    "axis": "warehouse.withdrawal_policy",
+    "declaration_line": 98,
+    "disposition": "超出覆盖即停",
+    "value": {
+      "policy": "stop",
+      "trigger": "需要执行拿取策略或据此认证完整周期"
+    },
+    "basis": "零干预运行、操作精度",
+    "coverage_loss": "该事件/证明域全部未覆盖；stop是工程处置，不是游戏枚举值",
+    "extension_gate": "实现有据后效或提供提升证明并更新配置版本后才恢复",
+    "review_section": "§3.3、§5",
+    "review_boundary": "工具停止政策，不能作为游戏取值或删除反例"
+  },
+  {
+    "axis": "warehouse.withdrawal_timing",
+    "declaration_line": 99,
+    "disposition": "超出覆盖即停",
+    "value": {
+      "policy": "stop",
+      "trigger": "运行区间出现玩家拿取事件；策略与实际时距未实现"
+    },
+    "basis": "操作精度、判定、循环态",
+    "coverage_loss": "该事件/证明域全部未覆盖；stop是工程处置，不是游戏枚举值",
+    "extension_gate": "实现有据后效或提供提升证明并更新配置版本后才恢复",
+    "review_section": "§3.3、§5",
+    "review_boundary": "工具停止政策，不能作为游戏取值或删除反例"
+  },
+  {
+    "axis": "warehouse.periodic_lift",
+    "declaration_line": 103,
+    "disposition": "超出覆盖即停",
+    "value": {
+      "policy": "stop",
+      "trigger": "把省略仓库/绝对时钟等的抽象周期提升为完整基地周期"
+    },
+    "basis": "循环态、操作精度、目标",
+    "coverage_loss": "该事件/证明域全部未覆盖；stop是工程处置，不是游戏枚举值",
+    "extension_gate": "实现有据后效或提供提升证明并更新配置版本后才恢复",
+    "review_section": "§3.3、§5",
+    "review_boundary": "工具停止政策，不能作为游戏取值或删除反例"
+  },
+  {
+    "axis": "gate.concurrent_expiry",
+    "declaration_line": 115,
+    "disposition": "本版选值",
+    "value": "atomic_batch",
+    "basis": "物品准入口、轮询、判定次序；受限转移定义§2.1/§3.4",
+    "coverage_loss": "逐边恢复及其显式排序、与判定交织均未覆盖；批处理不是规则唯一裁定",
+    "extension_gate": "同刻多门恢复的全称行为认证前",
+    "review_section": "§3.3",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "manufacturing.recipe_quantity_match",
+    "declaration_line": 116,
+    "disposition": "本版选值",
+    "value": "at_least",
+    "basis": "缓存格、存货/取货物品格、配方；一批通过量不等于开闸前数量恰等",
+    "coverage_loss": "exact（配方物种数量须恰一批）方向待审，不自动获准，也未被满载条件直接排除",
+    "extension_gate": "开闸匹配的完整覆盖前；非full_batch组合须另定义数量关系",
+    "review_section": "§3.3",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  },
+  {
+    "axis": "manufacturing.recipe_extra_items",
+    "declaration_line": 117,
+    "disposition": "本版选值",
+    "value": "allow",
+    "basis": "缓存格、存货/取货物品格、配方；与物种完备度及数量关系分开",
+    "coverage_loss": "forbid（求值论域中存在额外物种则拒配）方向待审；混装多候选例依赖allow",
+    "extension_gate": "混装及额外物种开闸覆盖前",
+    "review_section": "§3.3",
+    "review_boundary": "受限选值，保留损失与补齐节点"
+  }
+]

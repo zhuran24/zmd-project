@@ -1,0 +1,710 @@
+{
+  "status": "通过",
+  "tests": [
+    {
+      "name": "桥接器双通路.json：即使附加法向相反仍存在端点差异，禁止假报集合相同",
+      "status": "通过"
+    },
+    {
+      "name": "分流器三路轮询.json：即使附加法向相反仍存在端点差异，禁止假报集合相同",
+      "status": "通过"
+    },
+    {
+      "name": "混做粉碎机两下游.json：即使附加法向相反仍存在端点差异，禁止假报集合相同",
+      "status": "通过"
+    },
+    {
+      "name": "分流器重复运行逐字段确定",
+      "status": "通过"
+    },
+    {
+      "name": "分流器t=0与手工递推收支一致",
+      "status": "通过"
+    },
+    {
+      "name": "分流器t=0仓库扣料与全部格守恒",
+      "status": "通过"
+    },
+    {
+      "name": "分流器t=1与手工递推收支一致",
+      "status": "通过"
+    },
+    {
+      "name": "分流器t=1仓库扣料与全部格守恒",
+      "status": "通过"
+    },
+    {
+      "name": "分流器t=2与手工递推收支一致",
+      "status": "通过"
+    },
+    {
+      "name": "分流器t=2仓库扣料与全部格守恒",
+      "status": "通过"
+    },
+    {
+      "name": "分流器t=3与手工递推收支一致",
+      "status": "通过"
+    },
+    {
+      "name": "分流器t=3仓库扣料与全部格守恒",
+      "status": "通过"
+    },
+    {
+      "name": "分流器t=4与手工递推收支一致",
+      "status": "通过"
+    },
+    {
+      "name": "分流器t=4仓库扣料与全部格守恒",
+      "status": "通过"
+    },
+    {
+      "name": "分流器t=5与手工递推收支一致",
+      "status": "通过"
+    },
+    {
+      "name": "分流器t=5仓库扣料与全部格守恒",
+      "status": "通过"
+    },
+    {
+      "name": "分流器t=6与手工递推收支一致",
+      "status": "通过"
+    },
+    {
+      "name": "分流器t=6仓库扣料与全部格守恒",
+      "status": "通过"
+    },
+    {
+      "name": "分流器t=7与手工递推收支一致",
+      "status": "通过"
+    },
+    {
+      "name": "分流器t=7仓库扣料与全部格守恒",
+      "status": "通过"
+    },
+    {
+      "name": "分流器t=8与手工递推收支一致",
+      "status": "通过"
+    },
+    {
+      "name": "分流器t=8仓库扣料与全部格守恒",
+      "status": "通过"
+    },
+    {
+      "name": "分流器t=9与手工递推收支一致",
+      "status": "通过"
+    },
+    {
+      "name": "分流器t=9仓库扣料与全部格守恒",
+      "status": "通过"
+    },
+    {
+      "name": "分流器t=10与手工递推收支一致",
+      "status": "通过"
+    },
+    {
+      "name": "分流器t=10仓库扣料与全部格守恒",
+      "status": "通过"
+    },
+    {
+      "name": "分流器t=11与手工递推收支一致",
+      "status": "通过"
+    },
+    {
+      "name": "分流器t=11仓库扣料与全部格守恒",
+      "status": "通过"
+    },
+    {
+      "name": "三成员环初态second_cursor",
+      "status": "通过"
+    },
+    {
+      "name": "单成员环初态sole_member",
+      "status": "通过"
+    },
+    {
+      "name": "首刻按第二条起轮，真实失败前移到第三条；不把起点冒充首件出口",
+      "status": "通过"
+    },
+    {
+      "name": "t=6两门从同一快照批到期",
+      "status": "通过"
+    },
+    {
+      "name": "批到期完整先于同刻判定",
+      "status": "通过"
+    },
+    {
+      "name": "满五tick清窗口原因、保留累计和库存",
+      "status": "通过"
+    },
+    {
+      "name": "窗口到期不清累计",
+      "status": "通过"
+    },
+    {
+      "name": "汇流器两个直接单成员级",
+      "status": "通过"
+    },
+    {
+      "name": "只交换独立级仲裁序即可交换首个汇流胜者，确实执行level_tie",
+      "status": "通过"
+    },
+    {
+      "name": "拒绝伪造第一条起轮种子",
+      "status": "正确拒绝",
+      "reason": "轮询记忆成员/侧/级/位置或当前级不符"
+    },
+    {
+      "name": "开启未实现无线传输须拒绝",
+      "status": "正确拒绝",
+      "reason": "unsupported: 本轨迹制造须开、箱体传输须关"
+    },
+    {
+      "name": "未支持门额度不能静默沿用本例后效",
+      "status": "正确拒绝",
+      "reason": "unsupported: 门控参考只覆盖源矿/窗口1/无累计限制"
+    },
+    {
+      "name": "未实现身份不符维护的来源须明确拒收",
+      "status": "正确拒绝",
+      "reason": "unsupported: 参考未执行身份不符的维护分支"
+    },
+    {
+      "name": "窗口事件不能与非runtime历史别名",
+      "status": "正确拒绝",
+      "reason": "非运行事件占用运行事件保留前缀: W|6|probe_gate_a"
+    },
+    {
+      "name": "混做粉碎机两下游：k=1含末尾残段的无损往返",
+      "status": "通过"
+    },
+    {
+      "name": "混做粉碎机两下游：k=2含末尾残段的无损往返",
+      "status": "通过"
+    },
+    {
+      "name": "混做粉碎机两下游：k=4含末尾残段的无损往返",
+      "status": "通过"
+    },
+    {
+      "name": "混做粉碎机两下游：k=5含末尾残段的无损往返",
+      "status": "通过"
+    },
+    {
+      "name": "混做粉碎机两下游：非法零间隔",
+      "status": "正确拒绝",
+      "reason": "$.trace: anyOf 不匹配"
+    },
+    {
+      "name": "混做粉碎机两下游：bool不能充当间隔",
+      "status": "正确拒绝",
+      "reason": "$.trace: anyOf 不匹配"
+    },
+    {
+      "name": "混做粉碎机两下游：遗漏增量",
+      "status": "正确拒绝",
+      "reason": "$.trace: anyOf 不匹配"
+    },
+    {
+      "name": "混做粉碎机两下游：检查点漂移",
+      "status": "正确拒绝",
+      "reason": "交付记录与输入/完整重算不符: trace"
+    },
+    {
+      "name": "混做粉碎机两下游：增量改时间",
+      "status": "正确拒绝",
+      "reason": "成功移动缺对应事件"
+    },
+    {
+      "name": "混做粉碎机两下游：重复增量路径",
+      "status": "正确拒绝",
+      "reason": "增量路径重复或前缀冲突"
+    },
+    {
+      "name": "混做粉碎机两下游：不存在的路径",
+      "status": "正确拒绝",
+      "reason": "增量路径不存在或穿越数组"
+    },
+    {
+      "name": "混做粉碎机两下游：跨段省略事件",
+      "status": "正确拒绝",
+      "reason": "交付记录与输入/完整重算不符: trace"
+    },
+    {
+      "name": "混做粉碎机两下游：未知增量操作",
+      "status": "正确拒绝",
+      "reason": "$.trace: anyOf 不匹配"
+    },
+    {
+      "name": "混做粉碎机两下游：增量与全状态并存",
+      "status": "正确拒绝",
+      "reason": "$.trace: anyOf 不匹配"
+    },
+    {
+      "name": "分流器三路轮询：k=1含末尾残段的无损往返",
+      "status": "通过"
+    },
+    {
+      "name": "分流器三路轮询：k=2含末尾残段的无损往返",
+      "status": "通过"
+    },
+    {
+      "name": "分流器三路轮询：k=4含末尾残段的无损往返",
+      "status": "通过"
+    },
+    {
+      "name": "分流器三路轮询：k=5含末尾残段的无损往返",
+      "status": "通过"
+    },
+    {
+      "name": "五条指定轴全部有真实运行事件证据",
+      "status": "通过"
+    },
+    {
+      "name": "分流器三路轮询：非法零间隔",
+      "status": "正确拒绝",
+      "reason": "$.trace: anyOf 不匹配"
+    },
+    {
+      "name": "分流器三路轮询：bool不能充当间隔",
+      "status": "正确拒绝",
+      "reason": "$.trace: anyOf 不匹配"
+    },
+    {
+      "name": "分流器三路轮询：遗漏增量",
+      "status": "正确拒绝",
+      "reason": "$.trace: anyOf 不匹配"
+    },
+    {
+      "name": "分流器三路轮询：检查点漂移",
+      "status": "正确拒绝",
+      "reason": "交付记录与输入/完整重算不符: trace"
+    },
+    {
+      "name": "分流器三路轮询：增量改时间",
+      "status": "正确拒绝",
+      "reason": "成功移动缺对应事件"
+    },
+    {
+      "name": "分流器三路轮询：重复增量路径",
+      "status": "正确拒绝",
+      "reason": "增量路径重复或前缀冲突"
+    },
+    {
+      "name": "分流器三路轮询：不存在的路径",
+      "status": "正确拒绝",
+      "reason": "增量路径不存在或穿越数组"
+    },
+    {
+      "name": "分流器三路轮询：跨段省略事件",
+      "status": "正确拒绝",
+      "reason": "交付记录与输入/完整重算不符: trace"
+    },
+    {
+      "name": "分流器三路轮询：未知增量操作",
+      "status": "正确拒绝",
+      "reason": "$.trace: anyOf 不匹配"
+    },
+    {
+      "name": "分流器三路轮询：增量与全状态并存",
+      "status": "正确拒绝",
+      "reason": "$.trace: anyOf 不匹配"
+    },
+    {
+      "name": "增量严格保留JSON类型及数组整体替换",
+      "status": "通过"
+    },
+    {
+      "name": "祖先后代路径冲突",
+      "status": "正确拒绝",
+      "reason": "增量路径重复或前缀冲突"
+    },
+    {
+      "name": "数组索引不属于对象路径",
+      "status": "正确拒绝",
+      "reason": "增量路径不存在或穿越数组"
+    }
+  ],
+  "test_count": 74,
+  "port_meeting": {
+    "桥接器双通路.json": {
+      "shared_edge_opposite": [
+        "PC|bridge:east:0|east_box:south:0",
+        "PC|bridge:north:0|north_box:south:0",
+        "PC|south_box:north:2|bridge:south:0",
+        "PC|west_box:north:2|bridge:west:0"
+      ],
+      "closed_segment_touch": [
+        "PC|bridge:east:0|east_box:south:0",
+        "PC|bridge:east:0|east_box:south:1",
+        "PC|bridge:east:0|north_box:south:0",
+        "PC|bridge:east:0|north_box:south:1",
+        "PC|bridge:north:0|east_box:south:0",
+        "PC|bridge:north:0|north_box:south:0",
+        "PC|bridge:north:0|north_box:south:1",
+        "PC|south_box:north:1|bridge:south:0",
+        "PC|south_box:north:1|bridge:west:0",
+        "PC|south_box:north:2|bridge:south:0",
+        "PC|south_box:north:2|bridge:west:0",
+        "PC|west_box:north:1|bridge:west:0",
+        "PC|west_box:north:2|bridge:south:0",
+        "PC|west_box:north:2|bridge:west:0"
+      ],
+      "closed_touch_with_opposite_normals": [
+        "PC|bridge:east:0|east_box:south:0",
+        "PC|bridge:east:0|east_box:south:1",
+        "PC|bridge:north:0|north_box:south:0",
+        "PC|bridge:north:0|north_box:south:1",
+        "PC|south_box:north:1|bridge:south:0",
+        "PC|south_box:north:2|bridge:south:0",
+        "PC|west_box:north:1|bridge:west:0",
+        "PC|west_box:north:2|bridge:west:0"
+      ],
+      "same_pc_set": false,
+      "corner_pairs": [
+        "PC|bridge:east:0|east_box:south:1",
+        "PC|bridge:east:0|north_box:south:0",
+        "PC|bridge:east:0|north_box:south:1",
+        "PC|bridge:north:0|east_box:south:0",
+        "PC|bridge:north:0|north_box:south:1",
+        "PC|south_box:north:1|bridge:south:0",
+        "PC|south_box:north:1|bridge:west:0",
+        "PC|south_box:north:2|bridge:west:0",
+        "PC|west_box:north:1|bridge:west:0",
+        "PC|west_box:north:2|bridge:south:0"
+      ],
+      "status": "两读法下PC集合不同，不能登记为共同轨迹",
+      "scope": "谓词算术比较；closed_segment_touch仍待全规则审查"
+    },
+    "分流器三路轮询.json": {
+      "shared_edge_opposite": [
+        "PC|feed_splitter:north:0|south_box:south:1",
+        "PC|ore_source:north:1|feed_splitter:south:0",
+        "PC|probe_bottom:east:0|probe_gate_b:south:0",
+        "PC|probe_bottom:north:0|probe_merger:east:0",
+        "PC|probe_bottom_source:north:1|probe_bottom:south:0",
+        "PC|probe_left:north:0|probe_merger:south:0",
+        "PC|probe_left:west:0|probe_gate_a:south:0",
+        "PC|probe_left_source:north:1|probe_left:south:0",
+        "PC|probe_merger:north:0|probe_box:south:2",
+        "PC|south_box:north:2|splitter:south:0",
+        "PC|splitter:east:0|east_box:south:0",
+        "PC|splitter:north:0|north_box:south:0",
+        "PC|splitter:west:0|west_box:south:0"
+      ],
+      "closed_segment_touch": [
+        "PC|feed_splitter:east:0|south_box:south:1",
+        "PC|feed_splitter:east:0|south_box:south:2",
+        "PC|feed_splitter:north:0|south_box:south:0",
+        "PC|feed_splitter:north:0|south_box:south:1",
+        "PC|feed_splitter:north:0|south_box:south:2",
+        "PC|feed_splitter:west:0|south_box:south:0",
+        "PC|feed_splitter:west:0|south_box:south:1",
+        "PC|ore_source:north:1|feed_splitter:south:0",
+        "PC|probe_bottom:east:0|probe_box:south:2",
+        "PC|probe_bottom:east:0|probe_gate_b:south:0",
+        "PC|probe_bottom:east:0|probe_merger:east:0",
+        "PC|probe_bottom:north:0|probe_box:south:2",
+        "PC|probe_bottom:north:0|probe_gate_b:south:0",
+        "PC|probe_bottom:north:0|probe_merger:east:0",
+        "PC|probe_bottom:north:0|probe_merger:south:0",
+        "PC|probe_bottom:west:0|probe_merger:east:0",
+        "PC|probe_bottom:west:0|probe_merger:south:0",
+        "PC|probe_bottom_source:north:1|probe_bottom:south:0",
+        "PC|probe_bottom_source:north:1|probe_gate_b:south:0",
+        "PC|probe_left:east:0|probe_merger:east:0",
+        "PC|probe_left:east:0|probe_merger:south:0",
+        "PC|probe_left:north:0|probe_gate_a:south:0",
+        "PC|probe_left:north:0|probe_merger:east:0",
+        "PC|probe_left:north:0|probe_merger:south:0",
+        "PC|probe_left:north:0|probe_merger:west:0",
+        "PC|probe_left:west:0|probe_gate_a:south:0",
+        "PC|probe_left:west:0|probe_merger:south:0",
+        "PC|probe_left:west:0|probe_merger:west:0",
+        "PC|probe_left_source:north:1|probe_gate_a:south:0",
+        "PC|probe_left_source:north:1|probe_left:south:0",
+        "PC|probe_merger:north:0|probe_box:south:1",
+        "PC|probe_merger:north:0|probe_box:south:2",
+        "PC|probe_merger:north:0|probe_gate_b:south:0",
+        "PC|south_box:north:1|splitter:south:0",
+        "PC|south_box:north:2|splitter:south:0",
+        "PC|splitter:east:0|east_box:south:0",
+        "PC|splitter:east:0|east_box:south:1",
+        "PC|splitter:east:0|north_box:south:0",
+        "PC|splitter:east:0|north_box:south:1",
+        "PC|splitter:north:0|east_box:south:0",
+        "PC|splitter:north:0|north_box:south:0",
+        "PC|splitter:north:0|north_box:south:1",
+        "PC|splitter:north:0|west_box:south:0",
+        "PC|splitter:north:0|west_box:south:1",
+        "PC|splitter:west:0|north_box:south:0",
+        "PC|splitter:west:0|west_box:south:0",
+        "PC|splitter:west:0|west_box:south:1"
+      ],
+      "closed_touch_with_opposite_normals": [
+        "PC|feed_splitter:north:0|south_box:south:0",
+        "PC|feed_splitter:north:0|south_box:south:1",
+        "PC|feed_splitter:north:0|south_box:south:2",
+        "PC|ore_source:north:1|feed_splitter:south:0",
+        "PC|probe_bottom:east:0|probe_box:south:2",
+        "PC|probe_bottom:east:0|probe_gate_b:south:0",
+        "PC|probe_bottom:north:0|probe_merger:east:0",
+        "PC|probe_bottom_source:north:1|probe_bottom:south:0",
+        "PC|probe_left:north:0|probe_merger:south:0",
+        "PC|probe_left:west:0|probe_gate_a:south:0",
+        "PC|probe_left_source:north:1|probe_left:south:0",
+        "PC|probe_merger:north:0|probe_box:south:1",
+        "PC|probe_merger:north:0|probe_box:south:2",
+        "PC|probe_merger:north:0|probe_gate_b:south:0",
+        "PC|south_box:north:1|splitter:south:0",
+        "PC|south_box:north:2|splitter:south:0",
+        "PC|splitter:east:0|east_box:south:0",
+        "PC|splitter:east:0|east_box:south:1",
+        "PC|splitter:north:0|north_box:south:0",
+        "PC|splitter:north:0|north_box:south:1",
+        "PC|splitter:west:0|west_box:south:0",
+        "PC|splitter:west:0|west_box:south:1"
+      ],
+      "same_pc_set": false,
+      "corner_pairs": [
+        "PC|feed_splitter:east:0|south_box:south:1",
+        "PC|feed_splitter:east:0|south_box:south:2",
+        "PC|feed_splitter:north:0|south_box:south:0",
+        "PC|feed_splitter:north:0|south_box:south:2",
+        "PC|feed_splitter:west:0|south_box:south:0",
+        "PC|feed_splitter:west:0|south_box:south:1",
+        "PC|probe_bottom:east:0|probe_box:south:2",
+        "PC|probe_bottom:east:0|probe_merger:east:0",
+        "PC|probe_bottom:north:0|probe_box:south:2",
+        "PC|probe_bottom:north:0|probe_gate_b:south:0",
+        "PC|probe_bottom:north:0|probe_merger:south:0",
+        "PC|probe_bottom:west:0|probe_merger:east:0",
+        "PC|probe_bottom:west:0|probe_merger:south:0",
+        "PC|probe_bottom_source:north:1|probe_gate_b:south:0",
+        "PC|probe_left:east:0|probe_merger:east:0",
+        "PC|probe_left:east:0|probe_merger:south:0",
+        "PC|probe_left:north:0|probe_gate_a:south:0",
+        "PC|probe_left:north:0|probe_merger:east:0",
+        "PC|probe_left:north:0|probe_merger:west:0",
+        "PC|probe_left:west:0|probe_merger:south:0",
+        "PC|probe_left:west:0|probe_merger:west:0",
+        "PC|probe_left_source:north:1|probe_gate_a:south:0",
+        "PC|probe_merger:north:0|probe_box:south:1",
+        "PC|probe_merger:north:0|probe_gate_b:south:0",
+        "PC|south_box:north:1|splitter:south:0",
+        "PC|splitter:east:0|east_box:south:1",
+        "PC|splitter:east:0|north_box:south:0",
+        "PC|splitter:east:0|north_box:south:1",
+        "PC|splitter:north:0|east_box:south:0",
+        "PC|splitter:north:0|north_box:south:1",
+        "PC|splitter:north:0|west_box:south:0",
+        "PC|splitter:north:0|west_box:south:1",
+        "PC|splitter:west:0|north_box:south:0",
+        "PC|splitter:west:0|west_box:south:1"
+      ],
+      "status": "两读法下PC集合不同，不能登记为共同轨迹",
+      "scope": "谓词算术比较；closed_segment_touch仍待全规则审查"
+    },
+    "混做粉碎机两下游.json": {
+      "shared_edge_opposite": [
+        "PC|belt_a0:north:0|belt_a1:south:0",
+        "PC|belt_a1:north:0|belt_a2:south:0",
+        "PC|belt_a2:north:0|grinder_a:south:5",
+        "PC|belt_b0:east:0|belt_b1:south:0",
+        "PC|belt_b1:west:0|belt_b2:south:0",
+        "PC|belt_b2:north:0|belt_b3:south:0",
+        "PC|belt_b3:north:0|grinder_b:south:0",
+        "PC|crusher:north:0|belt_a0:south:0",
+        "PC|crusher:north:2|belt_b0:south:0",
+        "PC|feed_belt:north:0|crusher:south:0",
+        "PC|ore_source:north:1|feed_belt:south:0"
+      ],
+      "closed_segment_touch": [
+        "PC|belt_a0:north:0|belt_a1:south:0",
+        "PC|belt_a1:north:0|belt_a2:south:0",
+        "PC|belt_a2:north:0|grinder_a:south:4",
+        "PC|belt_a2:north:0|grinder_a:south:5",
+        "PC|belt_b0:east:0|belt_b1:south:0",
+        "PC|belt_b0:east:0|belt_b2:south:0",
+        "PC|belt_b1:west:0|belt_b2:south:0",
+        "PC|belt_b2:north:0|belt_b3:south:0",
+        "PC|belt_b3:north:0|grinder_b:south:0",
+        "PC|belt_b3:north:0|grinder_b:south:1",
+        "PC|crusher:north:0|belt_a0:south:0",
+        "PC|crusher:north:1|belt_a0:south:0",
+        "PC|crusher:north:1|belt_b0:south:0",
+        "PC|crusher:north:2|belt_b0:south:0",
+        "PC|crusher:north:2|belt_b1:south:0",
+        "PC|feed_belt:north:0|crusher:south:0",
+        "PC|feed_belt:north:0|crusher:south:1",
+        "PC|ore_source:north:1|feed_belt:south:0"
+      ],
+      "closed_touch_with_opposite_normals": [
+        "PC|belt_a0:north:0|belt_a1:south:0",
+        "PC|belt_a1:north:0|belt_a2:south:0",
+        "PC|belt_a2:north:0|grinder_a:south:4",
+        "PC|belt_a2:north:0|grinder_a:south:5",
+        "PC|belt_b0:east:0|belt_b1:south:0",
+        "PC|belt_b1:west:0|belt_b2:south:0",
+        "PC|belt_b2:north:0|belt_b3:south:0",
+        "PC|belt_b3:north:0|grinder_b:south:0",
+        "PC|belt_b3:north:0|grinder_b:south:1",
+        "PC|crusher:north:0|belt_a0:south:0",
+        "PC|crusher:north:1|belt_a0:south:0",
+        "PC|crusher:north:1|belt_b0:south:0",
+        "PC|crusher:north:2|belt_b0:south:0",
+        "PC|feed_belt:north:0|crusher:south:0",
+        "PC|feed_belt:north:0|crusher:south:1",
+        "PC|ore_source:north:1|feed_belt:south:0"
+      ],
+      "same_pc_set": false,
+      "corner_pairs": [
+        "PC|belt_a2:north:0|grinder_a:south:4",
+        "PC|belt_b0:east:0|belt_b2:south:0",
+        "PC|belt_b3:north:0|grinder_b:south:1",
+        "PC|crusher:north:1|belt_a0:south:0",
+        "PC|crusher:north:1|belt_b0:south:0",
+        "PC|crusher:north:2|belt_b1:south:0",
+        "PC|feed_belt:north:0|crusher:south:1"
+      ],
+      "status": "两读法下PC集合不同，不能登记为共同轨迹",
+      "scope": "谓词算术比较；closed_segment_touch仍待全规则审查"
+    }
+  },
+  "runs": {
+    "混做粉碎机两下游": {
+      "ticks": 4,
+      "last_summary": {
+        "tick": "3",
+        "warehouse_ore": "79996",
+        "nonempty": {
+          "crusher:buffer:0": [
+            {
+              "item": "源矿",
+              "quantity": "1",
+              "entered_at": "3"
+            }
+          ],
+          "feed_belt:transport:0": [
+            {
+              "item": "源矿",
+              "quantity": "1",
+              "entered_at": "3"
+            }
+          ],
+          "belt_a1:transport:0": [
+            {
+              "item": "源石粉末",
+              "quantity": "1",
+              "entered_at": "3"
+            }
+          ],
+          "belt_b0:transport:0": [
+            {
+              "item": "源石粉末",
+              "quantity": "1",
+              "entered_at": "3"
+            }
+          ]
+        },
+        "crusher_phase": "working",
+        "crusher_remaining": "1",
+        "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+        "completed_batches": "2"
+      },
+      "coverage": {
+        "polling.split_merge_start": "not_exercised",
+        "polling.level_tie": "not_exercised",
+        "polling.split_merge_scope": "not_exercised",
+        "polling.split_merge_singleton": "not_exercised",
+        "gate.concurrent_expiry": "not_exercised"
+      }
+    },
+    "分流器三路轮询": {
+      "ticks": 12,
+      "last_summary": {
+        "tick": "11",
+        "warehouse_ore": "79974",
+        "nonempty": {
+          "splitter:transport:0": [
+            {
+              "item": "源矿",
+              "quantity": "1",
+              "entered_at": "11"
+            }
+          ],
+          "north_box:storage:0": [
+            {
+              "item": "源矿",
+              "quantity": "10",
+              "entered_at": "2"
+            }
+          ],
+          "feed_splitter:transport:0": [
+            {
+              "item": "源矿",
+              "quantity": "1",
+              "entered_at": "11"
+            }
+          ],
+          "probe_merger:transport:0": [
+            {
+              "item": "源矿",
+              "quantity": "1",
+              "entered_at": "11"
+            }
+          ],
+          "probe_box:storage:0": [
+            {
+              "item": "源矿",
+              "quantity": "9",
+              "entered_at": "3"
+            }
+          ],
+          "probe_gate_a:transport:0": [
+            {
+              "item": "源矿",
+              "quantity": "1",
+              "entered_at": "1"
+            }
+          ],
+          "probe_gate_b:transport:0": [
+            {
+              "item": "源矿",
+              "quantity": "1",
+              "entered_at": "1"
+            }
+          ],
+          "probe_left:transport:0": [
+            {
+              "item": "源矿",
+              "quantity": "1",
+              "entered_at": "1"
+            }
+          ],
+          "probe_bottom:transport:0": [
+            {
+              "item": "源矿",
+              "quantity": "1",
+              "entered_at": "11"
+            }
+          ]
+        },
+        "splitter_next_output": "PC|splitter:north:0|north_box:south:0",
+        "delivered_to_boxes": {
+          "north_box": "10",
+          "east_box": "0",
+          "west_box": "0"
+        }
+      },
+      "coverage": {
+        "polling.split_merge_start": "exercised",
+        "polling.level_tie": "exercised",
+        "polling.split_merge_scope": "exercised",
+        "polling.split_merge_singleton": "exercised",
+        "gate.concurrent_expiry": "exercised"
+      }
+    }
+  },
+  "scope": "有限参考轨迹和编码验收；集合相同未成立；所列轮询与门控分支有有限执行证据，不是全称认证"
+}

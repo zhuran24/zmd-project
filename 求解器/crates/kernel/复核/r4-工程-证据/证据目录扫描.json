@@ -1,0 +1,31 @@
+{
+  "evidence": {
+    "forbidden": [],
+    "unusual": [],
+    "compiled": [],
+    "snapshot_named": [],
+    "suffixes": {
+      ".json": 134,
+      ".txt": 9,
+      ".md": 4,
+      ".log": 43
+    }
+  },
+  "复核": {
+    "forbidden": [],
+    "unusual": [
+      "crates/kernel/复核/r4-测试与证据/bin/python"
+    ],
+    "compiled": [],
+    "snapshot_named": [],
+    "suffixes": {
+      ".md": 17,
+      ".json": 958,
+      ".log": 169,
+      ".py": 35,
+      ".txt": 21,
+      ".rs": 3,
+      "": 1
+    }
+  }
+}

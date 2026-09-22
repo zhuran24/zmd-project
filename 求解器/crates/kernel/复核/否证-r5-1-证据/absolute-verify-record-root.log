@@ -1,0 +1,24 @@
+{
+  "name": "absolute-verify-record-root",
+  "command": [
+    "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+    "verify-record",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-1-证据/absolute-package/certificate.record.json",
+    "--config",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+  ],
+  "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+  "exit_code": 0,
+  "result": {
+    "status": "input_checked",
+    "verified_record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-1-证据/absolute-package/certificate.record.json"
+  },
+  "stderr": ""
+}
+STDOUT
+{
+  "status": "input_checked",
+  "verified_record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-1-证据/absolute-package/certificate.record.json"
+}
+
+STDERR

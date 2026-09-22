@@ -1,0 +1,60 @@
+{
+  "time": "2026-09-22T10:10:38.849657-04:00",
+  "steps": [
+    {
+      "step": "规则第13行例外加桥接器",
+      "before": "d150b86b398f8e73e57bee1598020e6bcd895e5a13a254b4b11dd1e4416c325a",
+      "after": "5aed27ab588fd34a75ac68262c54156b3eee0f45ff998e70a2f037806e7505ff",
+      "line13": "物品格：部分单位中以虚拟形式存在，只能够放置一种物品的格子，当物品格超过一个时一个单位内一种物品也只能放在一个物品格内（协议储存箱、缓存格和桥接器除外），且有放置上限，与存货和取货端口相连"
+    }
+  ],
+  "commands": [
+    {
+      "name": "cargo-build",
+      "command": "cargo build --release -p kernel --target-dir '/home/zhuran24/zmd-research-fresh/求解器/target'",
+      "exit_code": 0
+    },
+    {
+      "name": "kernel-seed",
+      "command": "'/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel' seed '/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/规格/r13桥接器例外/装载样例-r13.json' --config '/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json' --out '/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/规格/r13桥接器例外/seed-output.json'",
+      "exit_code": 2
+    },
+    {
+      "name": "kernel-check",
+      "command": "'/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel' check '/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/规格/r13桥接器例外/seed-output.json' --config '/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json'",
+      "exit_code": 2
+    }
+  ],
+  "result": "passed",
+  "catalog": {
+    "before": "39105d320e55b4d357cd95b47c840a6bd4127afcb94d3f98b1c2997c56efddd3",
+    "after": "6e1d59212bd93c718f5010681f65a2281ddd26de928461a53fea224b238ea186"
+  },
+  "second_attempt": {
+    "source_sample": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/negative/判定排序错组-input.json",
+    "derived": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/规格/r13桥接器例外/装载样例-r13b.json",
+    "results": [
+      [
+        "kernel-seed-b",
+        2
+      ]
+    ],
+    "note": "第一次装载失败原因是 r36 时派生的样例参数轴分组早于任务8改的配置（轴生命周期错组），与指纹无关；改用任务8验收过的样例只换目录哈希。"
+  },
+  "fourth_attempt": {
+    "source_sample": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/无线多格全收.json",
+    "source_catalog_sha_old": "39105d320e55b4d357cd95b47c840a6bd4127afcb94d3f98b1c2997c56efddd3",
+    "derived": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/规格/r13桥接器例外/装载样例-r13d.json",
+    "results": [
+      [
+        "kernel-seed-d",
+        0
+      ],
+      [
+        "kernel-check-d",
+        0
+      ]
+    ],
+    "note": "用任务8新建的正向机制样例，只换目录与轴表哈希。"
+  }
+}

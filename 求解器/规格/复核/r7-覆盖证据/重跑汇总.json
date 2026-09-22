@@ -1,0 +1,38 @@
+[
+  {
+    "name": "规格自查",
+    "command": [
+      "/usr/bin/python3",
+      "-B",
+      "求解器/规格/check_revision.py"
+    ],
+    "returncode": 0
+  },
+  {
+    "name": "原转移回归",
+    "command": [
+      "/usr/bin/python3",
+      "-B",
+      "求解器/规格/第三轮任务验证/核对转移回归.py"
+    ],
+    "returncode": 0
+  },
+  {
+    "name": "本轮局部回归",
+    "command": [
+      "/usr/bin/python3",
+      "-B",
+      "求解器/规格/第6轮修订验证/核对修订回归.py"
+    ],
+    "returncode": 0
+  },
+  {
+    "name": "当前样例黄金只读核验",
+    "command": [
+      "/usr/bin/python3",
+      "-B",
+      "求解器/规格/第6轮修订验证/核对样例兼容.py"
+    ],
+    "returncode": 0
+  }
+]

@@ -1,0 +1,249 @@
+{
+  "scope": "仅枚举两个停止谓词的有限布尔分界，不穷尽游戏状态",
+  "cases": [
+    {
+      "new_species_count": 0,
+      "empty": [],
+      "assigned_empty": [],
+      "reply_stop": false,
+      "transition_stop": false
+    },
+    {
+      "new_species_count": 0,
+      "empty": [
+        "E0"
+      ],
+      "assigned_empty": [],
+      "reply_stop": false,
+      "transition_stop": false
+    },
+    {
+      "new_species_count": 0,
+      "empty": [
+        "E0"
+      ],
+      "assigned_empty": [
+        "E0"
+      ],
+      "reply_stop": false,
+      "transition_stop": false
+    },
+    {
+      "new_species_count": 0,
+      "empty": [
+        "E0",
+        "E1"
+      ],
+      "assigned_empty": [],
+      "reply_stop": false,
+      "transition_stop": false
+    },
+    {
+      "new_species_count": 0,
+      "empty": [
+        "E0",
+        "E1"
+      ],
+      "assigned_empty": [
+        "E1"
+      ],
+      "reply_stop": false,
+      "transition_stop": false
+    },
+    {
+      "new_species_count": 0,
+      "empty": [
+        "E0",
+        "E1"
+      ],
+      "assigned_empty": [
+        "E0"
+      ],
+      "reply_stop": false,
+      "transition_stop": false
+    },
+    {
+      "new_species_count": 0,
+      "empty": [
+        "E0",
+        "E1"
+      ],
+      "assigned_empty": [
+        "E0",
+        "E1"
+      ],
+      "reply_stop": false,
+      "transition_stop": false
+    },
+    {
+      "new_species_count": 1,
+      "empty": [],
+      "assigned_empty": [],
+      "reply_stop": false,
+      "transition_stop": false
+    },
+    {
+      "new_species_count": 1,
+      "empty": [
+        "E0"
+      ],
+      "assigned_empty": [],
+      "reply_stop": false,
+      "transition_stop": false
+    },
+    {
+      "new_species_count": 1,
+      "empty": [
+        "E0"
+      ],
+      "assigned_empty": [
+        "E0"
+      ],
+      "reply_stop": false,
+      "transition_stop": false
+    },
+    {
+      "new_species_count": 1,
+      "empty": [
+        "E0",
+        "E1"
+      ],
+      "assigned_empty": [],
+      "reply_stop": false,
+      "transition_stop": false
+    },
+    {
+      "new_species_count": 1,
+      "empty": [
+        "E0",
+        "E1"
+      ],
+      "assigned_empty": [
+        "E1"
+      ],
+      "reply_stop": false,
+      "transition_stop": false
+    },
+    {
+      "new_species_count": 1,
+      "empty": [
+        "E0",
+        "E1"
+      ],
+      "assigned_empty": [
+        "E0"
+      ],
+      "reply_stop": false,
+      "transition_stop": false
+    },
+    {
+      "new_species_count": 1,
+      "empty": [
+        "E0",
+        "E1"
+      ],
+      "assigned_empty": [
+        "E0",
+        "E1"
+      ],
+      "reply_stop": false,
+      "transition_stop": false
+    },
+    {
+      "new_species_count": 2,
+      "empty": [],
+      "assigned_empty": [],
+      "reply_stop": false,
+      "transition_stop": false
+    },
+    {
+      "new_species_count": 2,
+      "empty": [
+        "E0"
+      ],
+      "assigned_empty": [],
+      "reply_stop": true,
+      "transition_stop": false
+    },
+    {
+      "new_species_count": 2,
+      "empty": [
+        "E0"
+      ],
+      "assigned_empty": [
+        "E0"
+      ],
+      "reply_stop": true,
+      "transition_stop": true
+    },
+    {
+      "new_species_count": 2,
+      "empty": [
+        "E0",
+        "E1"
+      ],
+      "assigned_empty": [],
+      "reply_stop": true,
+      "transition_stop": false
+    },
+    {
+      "new_species_count": 2,
+      "empty": [
+        "E0",
+        "E1"
+      ],
+      "assigned_empty": [
+        "E1"
+      ],
+      "reply_stop": true,
+      "transition_stop": true
+    },
+    {
+      "new_species_count": 2,
+      "empty": [
+        "E0",
+        "E1"
+      ],
+      "assigned_empty": [
+        "E0"
+      ],
+      "reply_stop": true,
+      "transition_stop": true
+    },
+    {
+      "new_species_count": 2,
+      "empty": [
+        "E0",
+        "E1"
+      ],
+      "assigned_empty": [
+        "E0",
+        "E1"
+      ],
+      "reply_stop": true,
+      "transition_stop": true
+    }
+  ],
+  "case_count": 21,
+  "mismatches": [
+    {
+      "new_species_count": 2,
+      "empty": [
+        "E0"
+      ],
+      "assigned_empty": [],
+      "reply_stop": true,
+      "transition_stop": false
+    },
+    {
+      "new_species_count": 2,
+      "empty": [
+        "E0",
+        "E1"
+      ],
+      "assigned_empty": [],
+      "reply_stop": true,
+      "transition_stop": false
+    }
+  ]
+}

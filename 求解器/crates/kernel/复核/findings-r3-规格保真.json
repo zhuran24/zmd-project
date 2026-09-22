@@ -1,0 +1,33 @@
+{
+  "findings": [
+    {
+      "id": "KR-r3-L1-01",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/seed.rs:9–36、58–61；内核输入.md §6.4",
+      "claim": "种子派生器无条件重写parameter_values，使参数缺失或冲突的after_closure检查点被错误接受并继续运行。",
+      "evidence": "内核输入§6.4要求已闭包检查点保留参数且“缺失或冲突即拒收”；seed.rs先按顶层Parameters重建当前值，随后才判断after_closure。checkpoint-parameter-drift-input.json直接run退出2，经seed退出0后可运行；parameter_values=[]也被补全。完整证据见复核报告§2的01。",
+      "severity": "阻断"
+    },
+    {
+      "id": "KR-r3-L1-02",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/engine.rs:764–765；src/transition.rs:480–510；受限转移定义.md §2.1",
+      "claim": "窗口日程校验对after_closure仍允许deadline等于当前时刻，将本应完成的到期维护延至下一刻执行。",
+      "evidence": "规则L64规定窗口走完由下一件重新起算；转移§2.1要求边界维护全部到期窗口，after_closure表示该维护已完成。代码只拒绝deadline<t；t=5/start=0/deadline=5的检查点被seed/run接受，在t=6执行W|5事件，生成记录被verify-record判时刻不符。详见报告02。",
+      "severity": "阻断"
+    },
+    {
+      "id": "KR-r3-L1-03",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/cycle.rs:602–675；内核输出.md §2、§5.3.1",
+      "claim": "周期验收未执行全前缀事件身份和时序独立检查，接受了内嵌运行记录已被verify-record判非法的周期结果。",
+      "evidence": "输出§2明确跨集合验收“不能仅靠重算相等”；verify_cycle仅重算结果和周期段，没有调用validate_event_identity。tiny-expired-cycle.json在t=6执行W|5|gate并产生P=1条件反例，verify-cycle返回cycle_replayed=true；其原样内嵌run_record经verify-record退出2。详见报告03。",
+      "severity": "阻断"
+    },
+    {
+      "id": "KR-r3-L1-04",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/seed.rs:34–41；src/engine.rs:275–781；内核输入.md §5.4",
+      "claim": "sufficient模式的种子派生未检查两矿正库存，成功导出源矿为零且随后必然拒绝运行的规范化输入。",
+      "evidence": "任务L7要求两矿持续可得；输入§5.4要求种子两矿各有唯一正库存。zero-ore-sufficient-input.json将源矿设为零和历史空身份，seed仍退出0；执行导出输入才在boundary的check_ore_availability返回invalid_input。详见报告04。",
+      "severity": "重要"
+    }
+  ],
+  "notes": "完整论证：/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/复核-r3-规格保真.md。既有10份循环结果、26份记录的字段与台账检查通过。范围偏差：旧CLI回归意外改写evidence/revision-r2/prior-regression-results.json和regression-results.json，已停止整包测试并在报告§5及范围审计中记录；源码、规格和正式文件未改。"
+}

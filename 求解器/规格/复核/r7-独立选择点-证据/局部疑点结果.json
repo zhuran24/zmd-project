@@ -1,0 +1,235 @@
+{
+  "warehouse_sequence": {
+    "scope": "第6轮局部回归函数的连续消费；不是生产内核轨迹",
+    "original_order": [
+      "W0",
+      "W1"
+    ],
+    "initial_warehouse": {
+      "W0": {
+        "item": null,
+        "quantity": 0,
+        "identity": null
+      },
+      "W1": {
+        "item": null,
+        "quantity": 0,
+        "identity": null
+      }
+    },
+    "first_status": "success",
+    "first_state": {
+      "box": {},
+      "warehouse": {
+        "W0": {
+          "item": "高容谷地电池",
+          "quantity": 1,
+          "identity": "高容谷地电池"
+        },
+        "W1": {
+          "item": null,
+          "quantity": 0,
+          "identity": null
+        }
+      },
+      "cooldown": 5,
+      "delivered": {
+        "高容谷地电池": 1
+      }
+    },
+    "second_status_with_unchanged_order": "invalid",
+    "second_state_with_unchanged_order": {
+      "box": {
+        "精选荞愈胶囊": 1
+      },
+      "warehouse": {
+        "W0": {
+          "item": "高容谷地电池",
+          "quantity": 1,
+          "identity": "高容谷地电池"
+        },
+        "W1": {
+          "item": null,
+          "quantity": 0,
+          "identity": null
+        }
+      },
+      "cooldown": 0,
+      "delivered": {}
+    },
+    "current_empty_order": [
+      "W1"
+    ],
+    "second_status_with_explicit_projection": "success",
+    "second_state_with_explicit_projection": {
+      "box": {},
+      "warehouse": {
+        "W0": {
+          "item": "高容谷地电池",
+          "quantity": 1,
+          "identity": "高容谷地电池"
+        },
+        "W1": {
+          "item": "精选荞愈胶囊",
+          "quantity": 1,
+          "identity": "精选荞愈胶囊"
+        }
+      },
+      "cooldown": 5,
+      "delivered": {
+        "精选荞愈胶囊": 1
+      }
+    },
+    "question": "仲裁表属于固定母序还是当前空格投影；若后者，成功落格时需明写更新后效。"
+  },
+  "ungraded_schedule": {
+    "scope": "固定三路无分级轮询的局部扫描；不是完整可达布局或已证规则反例",
+    "rows": [
+      {
+        "template_order": [
+          0,
+          1,
+          2
+        ],
+        "successes": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "cursor_after_six_groups": 0
+      },
+      {
+        "template_order": [
+          0,
+          2,
+          1
+        ],
+        "successes": [
+          1,
+          2,
+          0,
+          2,
+          0,
+          2
+        ],
+        "cursor_after_six_groups": 0
+      },
+      {
+        "template_order": [
+          1,
+          0,
+          2
+        ],
+        "successes": [
+          1,
+          0,
+          1,
+          0,
+          1,
+          0
+        ],
+        "cursor_after_six_groups": 1
+      },
+      {
+        "template_order": [
+          1,
+          2,
+          0
+        ],
+        "successes": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "cursor_after_six_groups": 1
+      },
+      {
+        "template_order": [
+          2,
+          0,
+          1
+        ],
+        "successes": [
+          1,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "cursor_after_six_groups": 2
+      },
+      {
+        "template_order": [
+          2,
+          1,
+          0
+        ],
+        "successes": [
+          1,
+          2,
+          1,
+          2,
+          1,
+          2
+        ],
+        "cursor_after_six_groups": 1
+      }
+    ],
+    "disposition": "不列finding：未证明正式轮询均分的同级与无其他移动障碍前件适用。"
+  },
+  "corner_geometry": {
+    "units": [
+      {
+        "id": "A",
+        "cell": [
+          10,
+          10
+        ],
+        "output": "east"
+      },
+      {
+        "id": "B",
+        "cell": [
+          11,
+          11
+        ],
+        "input": "south"
+      }
+    ],
+    "source_segment": [
+      [
+        11,
+        10
+      ],
+      [
+        11,
+        11
+      ]
+    ],
+    "target_segment": [
+      [
+        11,
+        11
+      ],
+      [
+        12,
+        11
+      ]
+    ],
+    "common_endpoints": [
+      [
+        11,
+        11
+      ]
+    ],
+    "shared_full_edge": false,
+    "scope": "只证角点相交与共边重合是不同谓词，不宣称角接通已获全规则许可。"
+  }
+}

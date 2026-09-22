@@ -1,0 +1,3997 @@
+{
+  "status": "pass",
+  "budgets": [
+    {
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/生产循环环带.json",
+        "--ticks",
+        "2",
+        "--max-sweeps",
+        "1",
+        "--no-output",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+      ],
+      "exit_code": 2,
+      "stdout": "{\n  \"completed_ticks\": 0,\n  \"elapsed_ns\": \"60221\",\n  \"output\": \"disabled\",\n  \"statistics\": {\n    \"completed\": 0,\n    \"inconclusive\": 1,\n    \"stopped\": 0\n  },\n  \"status\": \"inconclusive\",\n  \"stop\": {\n    \"axis\": \"resource.sweeps\",\n    \"location\": \"J|0|0|4: instant=0 sweep=1\",\n    \"reason\": \"未见完整状态重复，不能推进时刻\",\n    \"status\": \"inconclusive\"\n  },\n  \"ticks\": 2\n}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/生产循环环带.json",
+        "--ticks",
+        "2",
+        "--max-sweeps",
+        "0",
+        "--no-output",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+      ],
+      "exit_code": 2,
+      "stdout": "",
+      "stderr": "invalid_input input @ max_sweeps: 须为正整数\n"
+    },
+    {
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/生产循环环带.json",
+        "--ticks",
+        "2",
+        "--max-sweeps",
+        "-1",
+        "--no-output",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+      ],
+      "exit_code": 2,
+      "stdout": "",
+      "stderr": "invalid_input input @ max_sweeps: 须为正整数\n"
+    },
+    {
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/生产循环环带.json",
+        "--ticks",
+        "2",
+        "--max-sweeps",
+        "not-integer",
+        "--no-output",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+      ],
+      "exit_code": 2,
+      "stdout": "",
+      "stderr": "invalid_input input @ max_sweeps: 须为正整数\n"
+    },
+    {
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/生产循环环带.json",
+        "--ticks",
+        "2",
+        "--max-sweeps",
+        "100000",
+        "--no-output",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+      ],
+      "exit_code": 0,
+      "stdout": "{\n  \"completed_batches\": 0,\n  \"elapsed_ns\": \"165117\",\n  \"final_inventory\": {\n    \"源矿\": 80000,\n    \"砂叶\": 80000,\n    \"砂叶种子\": 80000,\n    \"精选荞愈胶囊\": 5,\n    \"荞花\": 80000,\n    \"荞花种子\": 80000,\n    \"蓝铁矿\": 80000,\n    \"高容谷地电池\": 1\n  },\n  \"output\": \"disabled\",\n  \"statistics\": {\n    \"completed\": 1,\n    \"inconclusive\": 0,\n    \"stopped\": 0\n  },\n  \"status\": \"completed\",\n  \"ticks\": 2\n}\n",
+      "stderr": ""
+    }
+  ],
+  "structural_mutations": [
+    {
+      "pointer": [
+        "layout"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-0.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ layout: 须为对象"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "layout",
+        "anchor"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-1.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ layout.anchor: 须为对象"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "layout",
+        "snapshots"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-2.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ layout.snapshots: 须为数组"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "layout",
+        "post_debug"
+      ],
+      "exit_code": 0,
+      "status": "kernel-input-v3",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-3.json",
+      "result": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "pointer": [
+        "layout",
+        "post_debug",
+        "basis"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-4.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ input.layout.post_debug: invalid type: boolean `true`, expected a sequence"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "layout",
+        "base"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-5.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ layout.base.width: invalid type: null, expected struct Quantity"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "layout",
+        "base",
+        "width"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-6.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ layout.base.width: invalid type: boolean `true`, expected struct Quantity"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "layout",
+        "base",
+        "height"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-7.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ layout.base.height: invalid type: boolean `true`, expected struct Quantity"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "layout",
+        "units"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-8.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ layout.units: 须为数组"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "layout",
+        "units",
+        0
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-9.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ layout.units[]: 须为对象"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "layout",
+        "units",
+        0,
+        "origin"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-10.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ core: invalid type: null, expected struct Quantity"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "layout",
+        "units",
+        0,
+        "origin",
+        0
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-11.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ core: invalid type: boolean `true`, expected struct Quantity"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "layout",
+        "physical_channels"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-12.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ physical_channels: invalid type: boolean `true`, expected a sequence"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "layout",
+        "physical_channels",
+        0
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-13.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ physical_channels: invalid type: boolean `true`, expected struct Channel"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "layout",
+        "buffer_channels"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-14.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ buffer_channels: 须为数组"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "layout",
+        "buffer_channels",
+        0
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-15.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ buffer_channel: 须为对象"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-16.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ initial_state.anchor: 须为对象"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "anchor"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-17.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ initial_state.anchor: 须为对象"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "anchor",
+        "value"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-18.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ initial_state.anchor: 须为对象"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "anchor",
+        "basis"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-19.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ input.initial_state.anchor: invalid type: boolean `true`, expected a sequence"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "warehouse"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-20.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ initial_state.warehouse: 须为对象"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "warehouse",
+        "slots"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-21.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ initial_state.warehouse: 缺初始仓库"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "warehouse",
+        "slots",
+        0
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-22.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ initial_state.warehouse.slots[0]: 须为对象"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "warehouse",
+        "slots",
+        0,
+        "quantity"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-23.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ initial_state.warehouse.slots[0]: invalid type: boolean `true`, expected struct Quantity"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "warehouse",
+        "slots",
+        0,
+        "empty_identity"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-24.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ initial_state.warehouse: 任务初始锚点非每种满仓或重复物种"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "warehouse",
+        "slots",
+        0,
+        "empty_identity",
+        "basis"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-25.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ input.initial_state.warehouse.slots[0].empty_identity: invalid type: boolean `true`, expected a sequence"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-26.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ seed.time: invalid type: null, expected struct Time"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-27.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ seed.time: invalid type: null, expected struct Time"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "settings_anchor"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-28.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ StateSeed: 布局或设定锚点不符"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "warehouse"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-29.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ initial_state.nonwarehouse.value: invalid type: boolean `true`, expected struct Warehouse"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "warehouse",
+        "slots"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-30.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ initial_state.nonwarehouse.value: invalid type: boolean `true`, expected a sequence"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "warehouse",
+        "slots",
+        0
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-31.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ initial_state.nonwarehouse.value: invalid type: boolean `true`, expected struct WarehouseSlot"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "warehouse",
+        "slots",
+        0,
+        "quantity"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-32.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ initial_state.nonwarehouse.value: invalid type: boolean `true`, expected struct Quantity"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "warehouse",
+        "slots",
+        0,
+        "empty_identity"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-33.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ initial_state.nonwarehouse.value: invalid type: boolean `true`, expected struct Decision"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "warehouse",
+        "slots",
+        0,
+        "empty_identity",
+        "basis"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-34.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ input.initial_state.nonwarehouse.value.warehouse.slots[0].empty_identity: invalid type: boolean `true`, expected a sequence"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "inventory"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-35.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ StateSeed.inventory: 须为数组"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "inventory",
+        0
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-36.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ initial_state.nonwarehouse.value: invalid type: boolean `true`, expected struct Inventory"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "inventory",
+        0,
+        "contents"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-37.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ initial_state.nonwarehouse.value: invalid type: boolean `true`, expected a sequence"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "progress"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-38.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ initial_state.nonwarehouse.value: invalid type: boolean `true`, expected a sequence"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "progress",
+        0
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-39.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ initial_state.nonwarehouse.value: invalid type: boolean `true`, expected struct Progress"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "progress",
+        0,
+        "candidate_recipes"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-40.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ initial_state.nonwarehouse.value: invalid type: boolean `true`, expected a sequence"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "progress",
+        0,
+        "cooldowns"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-41.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ initial_state.nonwarehouse.value: invalid type: boolean `true`, expected a sequence"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "logistics"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-42.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ initial_state.nonwarehouse.value: invalid type: boolean `true`, expected struct Logistics"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "logistics",
+        "active_channels"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-43.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ initial_state.nonwarehouse.value: invalid type: boolean `true`, expected a sequence"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "logistics",
+        "blocked_channels"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-44.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ initial_state.nonwarehouse.value: invalid type: boolean `true`, expected a sequence"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "logistics",
+        "poll_memory"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-45.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ initial_state.nonwarehouse.value: invalid type: boolean `true`, expected struct Decision"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "logistics",
+        "poll_memory",
+        "value"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-46.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ poll_memory: invalid type: boolean `true`, expected struct PollMemory"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "logistics",
+        "poll_memory",
+        "value",
+        "sides"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-47.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ poll_memory: invalid type: boolean `true`, expected a sequence"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "logistics",
+        "poll_memory",
+        "value",
+        "sides",
+        0
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-48.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ poll_memory: invalid type: boolean `true`, expected struct Side"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "logistics",
+        "poll_memory",
+        "value",
+        "sides",
+        0,
+        "levels"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-49.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ poll_memory: invalid type: boolean `true`, expected a sequence"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "logistics",
+        "poll_memory",
+        "basis"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-50.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ input.initial_state.nonwarehouse.value.logistics.poll_memory: invalid type: boolean `true`, expected a sequence"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "logistics",
+        "gate_counters"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-51.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ initial_state.nonwarehouse.value: invalid type: boolean `true`, expected a sequence"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "logistics",
+        "connection_order"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-52.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ initial_state.nonwarehouse.value: invalid type: boolean `true`, expected struct Decision"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "logistics",
+        "connection_order",
+        "basis"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-53.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ input.initial_state.nonwarehouse.value.logistics.connection_order: invalid type: boolean `true`, expected a sequence"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "environment"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-54.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ seed.time: invalid type: null, expected struct Time"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "environment",
+        "time"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-55.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ seed.time: invalid type: boolean `true`, expected struct Time"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "environment",
+        "time",
+        "value"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-56.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ seed.time: invalid type: boolean `true`, expected struct Quantity"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "environment",
+        "withdrawal_memory"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-57.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ initial_state.nonwarehouse.value: invalid type: boolean `true`, expected struct Decision"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "environment",
+        "withdrawal_memory",
+        "value"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-58.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ withdrawal_memory: 须为对象"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "environment",
+        "withdrawal_memory",
+        "value",
+        "once_fired"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-59.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ withdrawal_memory: 策略记忆须为数组"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "environment",
+        "withdrawal_memory",
+        "value",
+        "pending_rules"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-60.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ withdrawal_memory: 策略记忆须为数组"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "environment",
+        "withdrawal_memory",
+        "basis"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-61.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ input.initial_state.nonwarehouse.value.environment.withdrawal_memory: invalid type: boolean `true`, expected a sequence"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "semantic_context"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-62.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ pending_events: 须为已解数组"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "semantic_context",
+        "arbitration"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-63.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ initial_state.nonwarehouse.value: invalid type: boolean `true`, expected struct Arbitration"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "semantic_context",
+        "arbitration",
+        "level_order"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-64.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ initial_state.nonwarehouse.value: invalid type: boolean `true`, expected a sequence"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "semantic_context",
+        "arbitration",
+        "warehouse_empty_slot_order"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-65.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ initial_state.nonwarehouse.value: invalid type: boolean `true`, expected a sequence"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "semantic_context",
+        "parameter_values"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-66.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ initial_state.nonwarehouse.value: invalid type: boolean `true`, expected a sequence"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "semantic_context",
+        "parameter_values",
+        0
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-67.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ initial_state.nonwarehouse.value: invalid type: boolean `true`, expected struct ParameterValue"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "semantic_context",
+        "parameter_values",
+        0,
+        "value"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-68.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ initial_state.nonwarehouse.value: invalid type: boolean `true`, expected struct Decision"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "semantic_context",
+        "parameter_values",
+        0,
+        "value",
+        "value"
+      ],
+      "exit_code": 0,
+      "status": "kernel-input-v3",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-69.json",
+      "result": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "semantic_context",
+        "parameter_values",
+        0,
+        "value",
+        "value",
+        "template_order"
+      ],
+      "exit_code": 0,
+      "status": "kernel-input-v3",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-70.json",
+      "result": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "semantic_context",
+        "parameter_values",
+        0,
+        "value",
+        "value",
+        "template_order",
+        0
+      ],
+      "exit_code": 0,
+      "status": "kernel-input-v3",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-71.json",
+      "result": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "semantic_context",
+        "parameter_values",
+        0,
+        "value",
+        "value",
+        "instant_overrides"
+      ],
+      "exit_code": 0,
+      "status": "kernel-input-v3",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-72.json",
+      "result": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "semantic_context",
+        "parameter_values",
+        0,
+        "value",
+        "basis"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-73.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ input.initial_state.nonwarehouse.value.semantic_context.parameter_values[0].value: invalid type: boolean `true`, expected a sequence"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "semantic_context",
+        "judgment_context"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-74.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ initial_state.nonwarehouse.value: invalid type: boolean `true`, expected struct Decision"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "semantic_context",
+        "judgment_context",
+        "value"
+      ],
+      "exit_code": 2,
+      "status": "unsupported",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-75.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "unsupported initialization.other_inventory @ judgment_context.phase: 只从完整边界锚点续跑；中途 continuation 未执行"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "unsupported",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "semantic_context",
+        "judgment_context",
+        "value",
+        "instant"
+      ],
+      "exit_code": 0,
+      "status": "kernel-input-v3",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-76.json",
+      "result": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "semantic_context",
+        "judgment_context",
+        "value",
+        "instant",
+        "value"
+      ],
+      "exit_code": 0,
+      "status": "kernel-input-v3",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-77.json",
+      "result": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "semantic_context",
+        "judgment_context",
+        "value",
+        "ordered_events"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-78.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ ordered_events: 须为数组"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "semantic_context",
+        "judgment_context",
+        "basis"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-79.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ input.initial_state.nonwarehouse.value.semantic_context.judgment_context: invalid type: boolean `true`, expected a sequence"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "semantic_context",
+        "pending_events"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-80.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ pending_events: 须为已解数组"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "semantic_context",
+        "pending_events",
+        "value"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-81.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ pending_events: 须为已解数组"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "semantic_context",
+        "pending_events",
+        "basis"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-82.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ input.initial_state.nonwarehouse.value.semantic_context.pending_events: invalid type: boolean `true`, expected a sequence"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "semantic_context",
+        "tick_context"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-83.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ movements: 须为数组"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "semantic_context",
+        "tick_context",
+        "value"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-84.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ movements: 须为数组"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "semantic_context",
+        "tick_context",
+        "value",
+        "window_start"
+      ],
+      "exit_code": 0,
+      "status": "kernel-input-v3",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-85.json",
+      "result": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "semantic_context",
+        "tick_context",
+        "value",
+        "window_start",
+        "value"
+      ],
+      "exit_code": 0,
+      "status": "kernel-input-v3",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-86.json",
+      "result": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "semantic_context",
+        "tick_context",
+        "value",
+        "window_end"
+      ],
+      "exit_code": 0,
+      "status": "kernel-input-v3",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-87.json",
+      "result": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "semantic_context",
+        "tick_context",
+        "value",
+        "window_end",
+        "value"
+      ],
+      "exit_code": 0,
+      "status": "kernel-input-v3",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-88.json",
+      "result": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "semantic_context",
+        "tick_context",
+        "value",
+        "movements"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-89.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ movements: 须为数组"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "semantic_context",
+        "tick_context",
+        "value",
+        "port_usage"
+      ],
+      "exit_code": 0,
+      "status": "kernel-input-v3",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-90.json",
+      "result": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "semantic_context",
+        "tick_context",
+        "value",
+        "internal_passages"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-91.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ internal_passages: 须为数组"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "value",
+        "semantic_context",
+        "tick_context",
+        "basis"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-92.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ input.initial_state.nonwarehouse.value.semantic_context.tick_context: invalid type: boolean `true`, expected a sequence"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "nonwarehouse",
+        "basis"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-93.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ input.initial_state.nonwarehouse: invalid type: boolean `true`, expected a sequence"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "reachability"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-94.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ initial_state.reachability: invalid type: boolean `true`, expected struct Decision"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "reachability",
+        "value"
+      ],
+      "exit_code": 0,
+      "status": "kernel-input-v3",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-95.json",
+      "result": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "pointer": [
+        "initial_state",
+        "reachability",
+        "basis"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-96.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ input.initial_state.reachability: invalid type: boolean `true`, expected a sequence"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "settings"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-97.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ settings.anchor: 须为对象"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "settings",
+        "anchor"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-98.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ settings.anchor: 须为对象"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "settings",
+        "switches"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-99.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ switches: 须为数组"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "settings",
+        "switches",
+        0
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-100.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ switch: 须为对象"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "settings",
+        "gates"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-101.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ gates: 须为数组"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "settings",
+        "warehouse_assignments"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-102.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ warehouse_assignments: 须为数组"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "settings",
+        "warehouse_assignments",
+        0
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-103.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ warehouse_assignment: 须为对象"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "timeline"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-104.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ timeline: 须为对象"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "timeline",
+        "events"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-105.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ timeline.events: invalid type: boolean `true`, expected a sequence"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "timeline",
+        "events",
+        0
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-106.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ timeline.events[]: 须为对象"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "timeline",
+        "events",
+        0,
+        "time"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-107.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ build_0: invalid type: boolean `true`, expected struct Time"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "timeline",
+        "events",
+        0,
+        "time",
+        "value"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-108.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ build_0: invalid type: boolean `true`, expected struct Quantity"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "timeline",
+        "relations"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-109.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ timeline.relations: 须为数组"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "timeline",
+        "relations",
+        0
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-110.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ relation: 须为对象"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "timeline",
+        "relations",
+        0,
+        "basis"
+      ],
+      "exit_code": 0,
+      "status": "kernel-input-v3",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-111.json",
+      "result": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "pointer": [
+        "timeline",
+        "connection_events"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-112.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ timeline.connection_events: 须为数组"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "timeline",
+        "connection_events",
+        0
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-113.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ : 关系引用悬空"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "timeline",
+        "connection_events",
+        0,
+        "construction_basis"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-114.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ PC|crusher:north:0|belt_a0:south:0: invalid type: boolean `true`, expected struct Decision"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "timeline",
+        "connection_events",
+        0,
+        "construction_basis",
+        "value"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-115.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ PC|crusher:north:0|belt_a0:south:0: 接通记录不来自两端较晚建成"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "timeline",
+        "connection_events",
+        0,
+        "construction_basis",
+        "basis"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-116.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ input.timeline.connection_events[0].construction_basis: invalid type: boolean `true`, expected a sequence"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "construction"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-117.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ : 关系引用悬空"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "construction",
+        "selected_order"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-118.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ construction.selected_order: invalid type: boolean `true`, expected a sequence"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "construction",
+        "moments"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-119.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ construction.moments: 须为数组"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "construction",
+        "moments",
+        0
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-120.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "invalid_input input @ construction.selected_order: 建造项缺失"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "invalid_input",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "construction",
+        "moments",
+        0,
+        "placement"
+      ],
+      "exit_code": 2,
+      "status": "unsupported",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-121.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "unsupported initialization.debug_actions @ core: 当前几何不同于首次建造；须核历史后效"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "unsupported",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "construction",
+        "moments",
+        0,
+        "placement",
+        "origin"
+      ],
+      "exit_code": 2,
+      "status": "unsupported",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-122.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "unsupported initialization.debug_actions @ core: 当前几何不同于首次建造；须核历史后效"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "unsupported",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    },
+    {
+      "pointer": [
+        "construction",
+        "moments",
+        0,
+        "placement",
+        "origin",
+        0
+      ],
+      "exit_code": 2,
+      "status": "unsupported",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli-edges/structure-123.json",
+      "result": {
+        "execution_mode": "finite_concrete",
+        "fingerprints": [],
+        "input_history": null,
+        "open_items": [
+          "unsupported initialization.debug_actions @ core: 当前几何不同于首次建造；须核历史后效"
+        ],
+        "parameter_assignment": null,
+        "port_meeting": "shared_edge_opposite",
+        "producer": {
+          "claim": "装载停止，未形成游戏后继",
+          "kind": "kernel",
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+        },
+        "profile_id": "kernel_profile_v1",
+        "run_id": "kernel:load-stop",
+        "schema": "kernel-output-v3",
+        "status": "unsupported",
+        "trace": null,
+        "uncovered_axes": [],
+        "validation_scope": null
+      }
+    }
+  ],
+  "scope": "结构变异只查无panic和可解析响应；接受不参与机制的元数据不据此判错"
+}

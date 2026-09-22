@@ -1,0 +1,239 @@
+{
+  "status": "pass",
+  "stage": "final",
+  "platform": "Linux-7.2.6-1-cachyos-x86_64-with-glibc2.44",
+  "binary_sha256": "53a68ff1c201d1ac2b28b35e9d43eb8d3f5819db6f73006a82a55d6f8e6ba13f",
+  "reports": [
+    {
+      "name": "benchmark_brick_60",
+      "shape": {
+        "total_units": 57,
+        "physical_channels": 97,
+        "manufacturing_units": 0
+      },
+      "ticks": 12,
+      "input_sha256": "6129cf2ece47c144520107193df19f419203a81de5d03da2aac430b32493b022",
+      "modes": {
+        "run": {
+          "command": [
+            "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+            "run",
+            "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/fixtures/benchmark_brick_60.json",
+            "--config",
+            "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+            "--ticks",
+            "12",
+            "--no-output"
+          ],
+          "wall_ms_per_tick": 2.611803,
+          "max_rss_kb": 14940,
+          "completed_ticks": 12,
+          "result_status": "completed",
+          "engine_ms_per_tick": 0.849742,
+          "completed_batches": 0
+        },
+        "cycle": {
+          "command": [
+            "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+            "cycle",
+            "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/fixtures/benchmark_brick_60.json",
+            "--config",
+            "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+            "--ticks",
+            "12",
+            "--no-record",
+            "--search-checkpoint-interval",
+            "32",
+            "--out",
+            "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/benchmark_brick_60-benchmark-cycle.json"
+          ],
+          "wall_ms_per_tick": 7.269010833333333,
+          "max_rss_kb": 18848,
+          "completed_ticks": 12,
+          "result_status": "inconclusive",
+          "certificate_bytes": 404306
+        }
+      },
+      "target_ms_per_tick": 1,
+      "run_target_met": true,
+      "cycle_wall_target_met": false
+    },
+    {
+      "name": "benchmark_brick",
+      "shape": {
+        "total_units": 81,
+        "physical_channels": 100,
+        "manufacturing_units": 30
+      },
+      "ticks": 12,
+      "input_sha256": "ba51cd30be879860d09e517970cbcf3ba643b3f97eaa4030c234f37f222f2cbf",
+      "modes": {
+        "run": {
+          "command": [
+            "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+            "run",
+            "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/fixtures/benchmark_brick.json",
+            "--config",
+            "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+            "--ticks",
+            "12",
+            "--no-output"
+          ],
+          "wall_ms_per_tick": 4.58787775,
+          "max_rss_kb": 14940,
+          "completed_ticks": 12,
+          "result_status": "completed",
+          "engine_ms_per_tick": 2.6667248333333333,
+          "completed_batches": 0
+        },
+        "cycle": {
+          "command": [
+            "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+            "cycle",
+            "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/fixtures/benchmark_brick.json",
+            "--config",
+            "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+            "--ticks",
+            "12",
+            "--no-record",
+            "--search-checkpoint-interval",
+            "32",
+            "--out",
+            "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/benchmark_brick-benchmark-cycle.json"
+          ],
+          "wall_ms_per_tick": 10.050498750000001,
+          "max_rss_kb": 24116,
+          "completed_ticks": 12,
+          "result_status": "inconclusive",
+          "certificate_bytes": 491167
+        }
+      },
+      "target_ms_per_tick": 1,
+      "run_target_met": false,
+      "cycle_wall_target_met": false
+    },
+    {
+      "name": "benchmark_candidate_b",
+      "shape": {
+        "total_units": 535,
+        "physical_channels": 630,
+        "manufacturing_units": 219
+      },
+      "ticks": 12,
+      "input_sha256": "b66b4d69d7b930a27a6ef7879ab104afa39cfaa33348eccddd3d40f6840d52a8",
+      "modes": {
+        "run": {
+          "command": [
+            "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+            "run",
+            "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/fixtures/benchmark_candidate_b.json",
+            "--config",
+            "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+            "--ticks",
+            "12",
+            "--no-output"
+          ],
+          "wall_ms_per_tick": 37.23547958333334,
+          "max_rss_kb": 49148,
+          "completed_ticks": 12,
+          "result_status": "completed",
+          "engine_ms_per_tick": 18.304913250000002,
+          "completed_batches": 0
+        },
+        "cycle": {
+          "command": [
+            "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+            "cycle",
+            "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/fixtures/benchmark_candidate_b.json",
+            "--config",
+            "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+            "--ticks",
+            "12",
+            "--no-record",
+            "--search-checkpoint-interval",
+            "32",
+            "--out",
+            "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/benchmark_candidate_b-benchmark-cycle.json"
+          ],
+          "wall_ms_per_tick": 56.69586891666666,
+          "max_rss_kb": 112244,
+          "completed_ticks": 12,
+          "result_status": "inconclusive",
+          "certificate_bytes": 2735631
+        }
+      },
+      "target_ms_per_tick": 20,
+      "run_target_met": true,
+      "cycle_wall_target_met": false
+    },
+    {
+      "name": "双成品制造砖",
+      "shape": {
+        "total_units": 55,
+        "physical_channels": 54,
+        "manufacturing_units": 9
+      },
+      "ticks": 32,
+      "input_sha256": "7f1b8e8d595c5231f6abf54b16f0d4bfd19f7269e8cc74a25715374bdaad26da",
+      "modes": {
+        "run": {
+          "command": [
+            "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+            "run",
+            "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/双成品制造砖.json",
+            "--config",
+            "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+            "--ticks",
+            "32",
+            "--no-output"
+          ],
+          "wall_ms_per_tick": 1.032357625,
+          "max_rss_kb": 14944,
+          "completed_ticks": 32,
+          "result_status": "completed",
+          "engine_ms_per_tick": 0.5070409375,
+          "completed_batches": 35
+        },
+        "cycle": {
+          "command": [
+            "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+            "cycle",
+            "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/双成品制造砖.json",
+            "--config",
+            "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+            "--ticks",
+            "32",
+            "--no-record",
+            "--search-checkpoint-interval",
+            "32",
+            "--out",
+            "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/双成品制造砖-benchmark-cycle.json"
+          ],
+          "wall_ms_per_tick": 3.08027896875,
+          "max_rss_kb": 16080,
+          "completed_ticks": 32,
+          "result_status": "inconclusive",
+          "certificate_bytes": 237075
+        }
+      },
+      "target_ms_per_tick": 1,
+      "run_target_met": true,
+      "cycle_wall_target_met": false
+    }
+  ],
+  "production_audit": {
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/双成品制造砖-运行记录-v3-kernel.json",
+    "completed_batches": {
+      "category": "算术推论",
+      "value": "18"
+    },
+    "actual_inbound": {
+      "高容谷地电池": 5,
+      "精选荞愈胶囊": 4
+    },
+    "cache_differential": "逐字段相同"
+  },
+  "historical_benchmark_brick_ms_per_tick": 2.74,
+  "historical_target_met": false,
+  "scope": "目标达标位与基准执行通过分开；cycle墙钟包含装载、指纹、搜索和写小证书，run engine只含转移；条件预装原料不证明闭环或任务可达性。"
+}

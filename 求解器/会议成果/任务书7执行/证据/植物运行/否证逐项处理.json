@@ -1,0 +1,232 @@
+{
+  "date": "2026-09-21",
+  "status": "revision_complete_task_partial",
+  "review": "../../复核/否证-任务4.md",
+  "review_sha256": "12eb21c9bff08c2e824e712a38edc624ffd5c69f28cec435d65ea9790599e486",
+  "findings": [
+    {
+      "id": "F01",
+      "verdict": "否证不成立",
+      "agree": true,
+      "action": "同意；保留证据分层结论，更新当前审查状态。",
+      "reason": "18份旧产物及19份来源的字节和指纹已全量读取匹配；历史命令报告按执行记录使用。",
+      "location": "植物运行试点.md §1、§9、§10；修订前指纹.json",
+      "remaining_unproved": [],
+      "missing_category": null
+    },
+    {
+      "id": "F02",
+      "verdict": "否证不成立",
+      "agree": true,
+      "action": "同意；保留逐机逐口配平与循环根结论。",
+      "reason": "A/B各219台、314/315条边；期望率与实际率null继续分列。",
+      "location": "植物运行试点.md §2；送料与接口.json candidates",
+      "remaining_unproved": [],
+      "missing_category": null
+    },
+    {
+      "id": "F03",
+      "verdict": "否证不成立",
+      "agree": true,
+      "action": "同意；保留全空根持续为空和有限下游库存的推导。",
+      "reason": "适用条件为含在制物料全空、无跨入、有限初存；默认程序是否留下该状态归PR-01。",
+      "location": "植物运行试点.md §2.2、§8 PR-01",
+      "remaining_unproved": [
+        "PR-01"
+      ],
+      "missing_category": "缺构造与推导"
+    },
+    {
+      "id": "F04",
+      "verdict": "否证不成立",
+      "agree": true,
+      "action": "同意；保留C82前件表及逐批占格引理。",
+      "reason": "2:1用途由成功叶流相加；恰k可用独占首格承接恰k件时每批各一件。实际服务归PR-03/04/06。",
+      "location": "植物运行试点.md §2.3、§3、§8",
+      "remaining_unproved": [
+        "PR-03",
+        "PR-04",
+        "PR-06"
+      ],
+      "missing_category": "缺构造与推导"
+    },
+    {
+      "id": "F05",
+      "verdict": "否证不成立",
+      "agree": true,
+      "action": "同意；保留逐事件N和K恒等式。",
+      "reason": "单次用途边界、在制计数及跨圈/入库收支的前件完整。",
+      "location": "植物运行试点.md §3.2",
+      "remaining_unproved": [],
+      "missing_category": null
+    },
+    {
+      "id": "F06",
+      "verdict": "否证不成立",
+      "agree": true,
+      "action": "同意；保留固定偏向的有限轮次界。",
+      "reason": "耗尽结论继续要求每份剩余物料有限时间继续周转；首次拒收后的分配为未证。",
+      "location": "植物运行试点.md §5.1、§8 PR-02",
+      "remaining_unproved": [
+        "PR-02"
+      ],
+      "missing_category": "缺构造与推导"
+    },
+    {
+      "id": "F07",
+      "verdict": "否证不成立",
+      "agree": true,
+      "action": "同意；保留混线Z界、轮相与停流对照。",
+      "reason": "单保序混线、2A+B配方、全前缀安全及有限时间供排共同推出无限开工；平均率另需时间界。",
+      "location": "植物运行试点.md §4.1",
+      "remaining_unproved": [],
+      "missing_category": null
+    },
+    {
+      "id": "F08",
+      "verdict": "否证不成立",
+      "agree": true,
+      "action": "同意；保留M150/M151条件时间接口。",
+      "reason": "严格隔tick时间表是前件；默认释放的到货前缀与共享输入余量仍未证。",
+      "location": "植物运行试点.md §4.2、§8 PR-04/06",
+      "remaining_unproved": [
+        "PR-04",
+        "PR-06"
+      ],
+      "missing_category": "缺构造与推导"
+    },
+    {
+      "id": "F09",
+      "verdict": "否证不成立",
+      "agree": true,
+      "action": "同意；保留满速树局部充分族。",
+      "reason": "同步工作截面、逐机输入0…49和逐路粉末服务给一步归纳；默认起法进入该集合仍未证。",
+      "location": "植物运行试点.md §5.2、§8 PR-01/04",
+      "remaining_unproved": [
+        "PR-01",
+        "PR-04"
+      ],
+      "missing_category": "缺构造与推导"
+    },
+    {
+      "id": "F10",
+      "verdict": "否证不成立",
+      "agree": true,
+      "action": "同意；保留半分根起动定理。",
+      "reason": "空线、P输入q且l_H+l_S+3≤q≤50与持续粉末服务给首返闭合；默认满态另由PR-01/04承接。",
+      "location": "植物运行试点.md §5.3、§8 PR-01/04",
+      "remaining_unproved": [
+        "PR-01",
+        "PR-04"
+      ],
+      "missing_category": "缺构造与推导"
+    },
+    {
+      "id": "F11",
+      "verdict": "否证不成立",
+      "agree": true,
+      "action": "同意；保留三机几何与23/24/26运输格结论。",
+      "reason": "两种植物分别实例化；完整基地的共同粉末接收与落格仍未证。",
+      "location": "植物运行试点.md §5.3、§8 PR-05",
+      "remaining_unproved": [
+        "PR-05"
+      ],
+      "missing_category": "缺构造与推导"
+    },
+    {
+      "id": "F12",
+      "verdict": "否证不成立",
+      "agree": true,
+      "action": "同意；保留同N=50的三机长期后果对照。",
+      "reason": "开放粉末服务下长期G率分别1/2与0；完整基地和种子/植株分别相等的加强命题仍未证。",
+      "location": "植物运行试点.md §5.4、§8 PR-07",
+      "remaining_unproved": [
+        "PR-07"
+      ],
+      "missing_category": "缺构造与推导"
+    },
+    {
+      "id": "F13",
+      "verdict": "否证成立",
+      "agree": true,
+      "action": "同意；完成容量正文、机读字段、生成脚本及核验修订。",
+      "reason": "R13、17给每台普通格同种种子至多50；T6、12及R21允许全放输入且关闭，23/43台上限1150/2150可达到。850/1600保留为P输入与H输出的正常种子槽位容量。",
+      "location": "植物运行试点.md §6、§10；送料与接口.json inventory、inventory_definitions及修订记录；提取与算术.py、算术与图核验.json末尾修订记录",
+      "remaining_unproved": [],
+      "missing_category": null
+    },
+    {
+      "id": "F14",
+      "verdict": "否证不成立",
+      "agree": true,
+      "action": "同意；保留正常域数值并将存放条件写到每个公式之前。",
+      "reason": "5833、6711、277、4864+51g+L植及5680+L植继续用于正常配方槽位与正常单批缓存；额外调试寄存按实际位置另计。",
+      "location": "植物运行试点.md §6；送料与接口.json inventory_definitions、local_geometry、other_configurations；§10",
+      "remaining_unproved": [],
+      "missing_category": null
+    },
+    {
+      "id": "F15",
+      "verdict": "否证不成立",
+      "agree": true,
+      "action": "同意；保留217/219/220配方、台数和通道算术。",
+      "reason": "精炼恰51给r=0；220新增3:2:1分配、217混做清空及219出口服务归PR-06。",
+      "location": "植物运行试点.md §7、§8 PR-06",
+      "remaining_unproved": [
+        "PR-06"
+      ],
+      "missing_category": "缺构造与推导"
+    },
+    {
+      "id": "F16",
+      "verdict": "无法判定",
+      "agree": true,
+      "action": "同意缺口；登记未证，细分PR-06的四个实现义务。",
+      "reason": "R17“上限50”、R18“整批通过”、R23“至少1 tick”、R64整数窗口及C72清空只给容量/门控；A缺D高−2D低和Q全前缀界，B缺三首格及M150/M151服务，220缺实际3:2:1路径，217缺清旧种字序。",
+      "location": "植物运行试点.md §8 PR-06、§10；送料与接口.json open_items；本文件",
+      "remaining_unproved": [
+        "PR-06"
+      ],
+      "missing_category": "缺构造与推导"
+    },
+    {
+      "id": "F17",
+      "verdict": "无法判定",
+      "agree": true,
+      "action": "同意缺口；登记默认后置集合与全参数联合运行未证。",
+      "reason": "R18“上一批已全部进入”给单批门控，R20“进度保留”、T13操作精度及T15固定顺序仍留下开机迟延状态；由T2、10和C3—10，认证须覆盖默认后置集合、不得依赖量及目标内可达循环。缺逐格路径与相互保持的下游服务。",
+      "location": "植物运行试点.md §8 PR-01/03/04/05、§10；送料与接口.json open_items及两个certified=false",
+      "remaining_unproved": [
+        "PR-01",
+        "PR-03",
+        "PR-04",
+        "PR-05"
+      ],
+      "missing_category": "缺构造与推导"
+    },
+    {
+      "id": "F18",
+      "verdict": "无法判定",
+      "agree": true,
+      "action": "同意缺口；登记一般偏向终点及完整基地同总数命题未证。",
+      "reason": "C70“完成的批次”与R29—32的移动资格只给收支/分配约束；首次拒收后的逐格后继尚缺。T2完整基地还需同一下游服务及两成品全部目标内循环，三机反例的接收边界尚待实现。",
+      "location": "植物运行试点.md §8 PR-02/07、§10；送料与接口.json open_items；本文件",
+      "remaining_unproved": [
+        "PR-02",
+        "PR-07"
+      ],
+      "missing_category": "缺构造与推导"
+    }
+  ],
+  "for_owner": [],
+  "independent_recheck_of_revision": "pending",
+  "L": 0,
+  "U": 1113,
+  "修订记录": [
+    {
+      "date": "2026-09-21",
+      "finding": "F01—F18",
+      "change": "逐项记作者处理：F13修订，14项保留所述结论及适用范围，F16—F18登记具体未证义务。"
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+{"command": ["/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel", "run", "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/生产循环环带.json", "--ticks", "4", "--format", "checkpoint_delta", "--checkpoint-interval", "3", "--out", "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r5-规格保真与工程-证据/checkpoint-delta-record.json", "--config", "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"], "cwd": "/home/zhuran24/zmd-research-fresh/求解器", "exit": 0}
+STDOUT
+{"out":"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r5-规格保真与工程-证据/checkpoint-delta-record.json","status":"completed"}
+
+STDERR

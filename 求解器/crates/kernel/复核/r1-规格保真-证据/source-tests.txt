@@ -1,0 +1,60 @@
+
+running 50 tests
+test review_probes::review_alias_record_self_verifies ... historical_alias_self_verify=Ok(())
+ok
+test review_probes::review_dynamic_fixed_branch ... dynamic_fixed_branch before=2 after=Ok(3) blocked=["PC|splitter:north:0|gate_n:south:0", "PC|splitter:west:0|gate_w:south:0"]
+ok
+test review_probes::review_fixed_branch_after_edge_removal ... fixed_branch chosen=PC|splitter:north:0|north_box:south:0 two_remaining=Err(Stop { status: "unresolved", axis: "damping.branch", location: "PC|south_box:north:2|splitter:south:0", reason: "所选分支当前不在图中" }) one_remaining=Ok(1)
+ok
+test review_probes::review_single_level_no_terminal_continues ... single_level direct_query=Err(Stop { status: "unresolved", axis: "damping.no_terminal", location: "PC|crusher:north:0|belt_a0:south:0", reason: "路径在 belt_a2 无终点" }) refresh=Ok(())
+ok
+test review_probes::review_unrelated_fork_choice_accepted ... unrelated_fork accepted=true
+ok
+test tests::after_closure_restart ... ok
+test tests::box_selectors ... ok
+test tests::bridge_same_item_cannot_occupy_both_axes ... ok
+test tests::bridge_two_independent_slots_run ... ok
+test tests::byte_determinism_and_layout_permutation ... ok
+test tests::catalog_and_geometry ... ok
+test tests::checkpoint_delta_negative_cases ... ok
+test tests::closure_and_resources ... ok
+test tests::completed_output_conflict_retains_batch ... ok
+test tests::config_axes_and_all_stop_values ... ok
+test tests::core_inbound_physical_deposit ... ok
+test tests::coverage_five_states ... ok
+test tests::damping_no_terminal ... ok
+test tests::damping_paths_and_missing_branch ... ok
+test tests::explicit_ore_supply ... ok
+test tests::explicit_step_anchors ... ok
+test tests::external_stop_positions ... ok
+test tests::five_tick_recipe_completes_only_at_boundary ... ok
+test tests::full_and_delta_record_recompute ... ok
+test tests::identity_latch_and_no_cross_disconnected_observation ... ok
+test tests::integer_validation ... ok
+test tests::level_tie_reversal_changes_winner ... ok
+test tests::malformed_state_rejected ... ok
+test tests::manufacture_disabled_intake_and_pause ... ok
+test tests::manufacturing_two_material_batch ... ok
+test tests::membership_projection ... ok
+test tests::ore_history_horizon_stop ... ok
+test tests::output_level_damping_priority ... ok
+test tests::output_off_preserves_game_state ... ok
+test tests::projections ... ok
+test tests::seed_and_parameter_negatives ... ok
+test tests::simultaneous_ring_restoration ... ok
+test tests::stopped_engine_cannot_continue ... ok
+test tests::three_examples_static ... ok
+test tests::total_exhaustion_survives_window_expiry ... ok
+test tests::transfer_capacity_and_empty_cooldown ... ok
+test tests::transfer_conservation ... ok
+test tests::transfer_cooldown_pause ... ok
+test tests::transport_wrong_item_rejects ... ok
+test tests::warehouse_80000_and_recipe_conservation ... ok
+test tests::warehouse_competition_atomic_stop ... ok
+test tests::warehouse_identity_monotone ... ok
+test tests::warehouse_invalid_identity_and_order ... ok
+test tests::warehouse_single_unknown_with_assigned_empty ... ok
+test tests::warehouse_unassigned_species_order ... ok
+
+test result: ok. 50 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.06s
+

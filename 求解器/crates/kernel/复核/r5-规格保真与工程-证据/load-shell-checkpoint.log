@@ -1,0 +1,8 @@
+{"command": ["/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel", "checkpoint", "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/cli/overflow.json", "--out", "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r5-规格保真与工程-证据/invalid-checkpoint.json", "--config", "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"], "cwd": "/home/zhuran24/zmd-research-fresh/求解器", "exit": 101}
+STDOUT
+
+STDERR
+
+thread 'main' (973003) panicked at crates/kernel/src/main.rs:168:77:
+called `Option::unwrap()` on a `None` value
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

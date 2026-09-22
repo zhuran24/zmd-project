@@ -1,0 +1,68 @@
+[
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/送料契约.md",
+    "sha256": "90b8db0295aca96d45e6811bfaa4f9c17e87bd3340e56368773139b63e483bea",
+    "snapshot": "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复算-r4/被审快照/求解器/数据/送料契约.md",
+    "bytes": 22542
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+    "sha256": "74d21a5bd37c6178f988a86a4aa78a03d1e4244ecff26f133bb5e700ada82e43",
+    "snapshot": "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复算-r4/被审快照/求解器/数据/正式静态目录.json",
+    "bytes": 156881
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/规则覆盖表.md",
+    "sha256": "c845fe89d663626f708ebbfce169808dbad8f762a594d449041c755183d7c47d",
+    "snapshot": "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复算-r4/被审快照/求解器/数据/规则覆盖表.md",
+    "bytes": 32211
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/修订记录.md",
+    "sha256": "3f7bbaecbb174d8ce673b1180bdf21c52c90e7ba1cd975978c88af4bd0b168b5",
+    "snapshot": "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复算-r4/被审快照/求解器/数据/修订记录.md",
+    "bytes": 18636
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/工具/convert_candidate_b.py",
+    "sha256": "8d112e314160143599c1cda15695010a3c15b4fbfe06a87484bf79a5ef7798aa",
+    "snapshot": "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复算-r4/被审快照/求解器/数据/工具/convert_candidate_b.py",
+    "bytes": 9589
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/工具/formal_catalog.py",
+    "sha256": "57240c4159fb227fc3617a879f35bd7a2d614d911ba3e3b1a4ed575137ddcf87",
+    "snapshot": "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复算-r4/被审快照/求解器/数据/工具/formal_catalog.py",
+    "bytes": 7682
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/topology/src/lib.rs",
+    "sha256": "bcfefa3afdd4481a900f902f6cb8f32292a94a5bd686748ba4f6a2aff2f847ff",
+    "snapshot": "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复算-r4/被审快照/求解器/crates/topology/src/lib.rs",
+    "bytes": 57245
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/topology/tests/validation.rs",
+    "sha256": "06d290b9215e04649fc0a8f72a4b4398f1d29e7f14f5c88748d50bb3f2f19abc",
+    "snapshot": "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复算-r4/被审快照/求解器/crates/topology/tests/validation.rs",
+    "bytes": 23504
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/contract.json",
+    "sha256": "a555045972861bc60a84ade0cfaf81a037a1abfff89be1aeee578b9ef0e1a2db",
+    "snapshot": "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复算-r4/被审快照/求解器/数据/候选B/contract.json",
+    "bytes": 356212
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/校验报告.md",
+    "sha256": "4dedc1ca41876e1b618b02b4c1d59b53d1e400fce52165e4208dc546f71c2ddb",
+    "snapshot": "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复算-r4/被审快照/求解器/数据/候选B/校验报告.md",
+    "bytes": 618071
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/验证记录.md",
+    "sha256": "69112e30d7f45f63c08b5f3f0e389efb24abedc02ca0047b82039a37e523d82f",
+    "snapshot": "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复算-r4/被审快照/求解器/数据/候选B/验证记录.md",
+    "bytes": 3223
+  }
+]

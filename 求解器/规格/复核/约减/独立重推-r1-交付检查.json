@@ -1,0 +1,44 @@
+{
+  "schema": "independent-review-r1-delivery-v1",
+  "findings": [],
+  "protected_files_unchanged": true,
+  "local_links_valid": true,
+  "reader_review": "已全文重读两份报告，校正模板全集引用行号及指纹稳定性范围。",
+  "artifacts": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/独立重推-r1.md",
+      "sha256": "c2e084a32096ef190550cac189b0579847daabe9022192bc78665c8120a7bc77",
+      "bytes": 10562
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/复核-r1-独立重推.md",
+      "sha256": "71c362e91d9b70dd985f770d30fa1ce3a90ec371a6bfb44d869cea45b0496bfb",
+      "bytes": 15469
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/check_independent_r1.py",
+      "sha256": "ba8de13c33c59970c6673cfd2347d7dbf4f1f10fa9579683997d43de772ec254",
+      "bytes": 8644
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/独立重推-r1-起点指纹.json",
+      "sha256": "44074a439f2075d68666881cee23a60d34cb97adb04f6d628fbda3532e29a22d",
+      "bytes": 1776
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/独立重推-r1-核验结果.json",
+      "sha256": "bea04ae49f628b7827feef118200856411a36609519b3875dc9b66e852378e52",
+      "bytes": 9482
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/独立重推-r1-核验.log",
+      "sha256": "311dbf1c7ea4a7024d063f1beb12c681229e44ff24745416ffe35e9fd22797ba",
+      "bytes": 1439
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/复核-r1-独立重推.json",
+      "sha256": "74de11ddb68915fcc9f888317b0735f7275962c03ea3d20bc5e6e469aaba0742",
+      "bytes": 539
+    }
+  ]
+}

@@ -1,0 +1,136 @@
+[
+  {
+    "case": "valid_0",
+    "value": {
+      "kind": "rational",
+      "value": {
+        "category": "候选",
+        "value": "0"
+      }
+    },
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/phase-valid_0-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/phase-valid_0-record.json"
+    ],
+    "exit_code": 0,
+    "status": "completed",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/phase-valid_0-record.json",
+    "diagnostics": [
+      "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+      "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+    ]
+  },
+  {
+    "case": "negative",
+    "value": {
+      "kind": "rational",
+      "value": {
+        "category": "候选",
+        "value": "-1"
+      }
+    },
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/phase-negative-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/phase-negative-record.json"
+    ],
+    "exit_code": 0,
+    "status": "completed",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/phase-negative-record.json",
+    "diagnostics": [
+      "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+      "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+    ]
+  },
+  {
+    "case": "too_large",
+    "value": {
+      "kind": "rational",
+      "value": {
+        "category": "候选",
+        "value": "6"
+      }
+    },
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/phase-too_large-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/phase-too_large-record.json"
+    ],
+    "exit_code": 0,
+    "status": "completed",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/phase-too_large-record.json",
+    "diagnostics": [
+      "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+      "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+    ]
+  },
+  {
+    "case": "fractional",
+    "value": {
+      "kind": "rational",
+      "value": {
+        "category": "候选",
+        "value": "1/2"
+      }
+    },
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/phase-fractional-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/phase-fractional-record.json"
+    ],
+    "exit_code": 0,
+    "status": "completed",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/phase-fractional-record.json",
+    "diagnostics": [
+      "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+      "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+    ]
+  },
+  {
+    "case": "malformed",
+    "value": "not-a-Time",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/phase-malformed-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/phase-malformed-record.json"
+    ],
+    "exit_code": 0,
+    "status": "completed",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/phase-malformed-record.json",
+    "diagnostics": [
+      "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+      "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+    ]
+  }
+]

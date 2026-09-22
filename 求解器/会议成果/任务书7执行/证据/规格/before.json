@@ -1,0 +1,126 @@
+{
+  "time": "2026-09-21T10:49:35.517564+00:00",
+  "files": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/运行语义.md",
+      "sha256": "1ce70540bd9f82e6fb0d1661ded855c7c723abccc4f9c13d646753cbece5a02c",
+      "lines": 216
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点清单.md",
+      "sha256": "dda03396a0012f42c41a820adea67b41a19754d60bf63441c6205be29b0555bb",
+      "lines": 192
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+      "sha256": "37427b530246a263018fa44a826893b46032c9d97eb8db1b6be06c7bcada080d",
+      "lines": 187
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限模型声明.md",
+      "sha256": "da0ab2073221bca451c676d54c44c98705bac2886c4ebf7049b7a87fd3509e86",
+      "lines": 145
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md",
+      "sha256": "55e3caee8ab40d1003b6002f1283c46734ef77a122e2870a2455fb4f14355450",
+      "lines": 222
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md",
+      "sha256": "0ca6312ed5142008d136f2d298bf23937dfbcb4cc80b7e3bfc023278833e9ec9",
+      "lines": 414
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.md",
+      "sha256": "5c2d6530a62a4066c1cc05b8ce95b554dae6059c9c90d107ded9f3e81a570790",
+      "lines": 158
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "sha256": "bb0864eec811a6a77065ede33af165ced5e31e384afb166eaa30af554589e34a",
+      "lines": 1086
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/四件前置义务对照.md",
+      "sha256": "a53e6ea0b6ecef38d8c009e66a80f5b0d04d3b5803d3270af68cc30cb19f9dde",
+      "lines": 61
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+      "sha256": "74d21a5bd37c6178f988a86a4aa78a03d1e4244ecff26f133bb5e700ada82e43",
+      "lines": 4198
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7草案.md",
+      "sha256": "32acf147e09de04feabfb575dd509a2c5c06b519b2504ba3ff253c3a61816a26",
+      "lines": 252
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/主会话三审-0920.md",
+      "sha256": "da7d816827a6d66a20def9be982308df0a0e7a8dcb879c6c75ef2c381ef01f87",
+      "lines": 53
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/会议2成果修订-v46.md",
+      "sha256": "dd873bba256906787359ada38480a0caf4eefd9b2c6bc5b05f135278b7617f5c",
+      "lines": 1008
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/工作/总结-终稿.md",
+      "sha256": "101c0ccd64e6ee2cdd3cf5bb52ae89ff1f89d90436a6275645fa64193d743b03",
+      "lines": 909
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/input.rs",
+      "sha256": "d40bf539f789708e64e3a52d909a9a4a96819545a384b3906acba91f1e3d7c79",
+      "lines": 998
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/catalog.rs",
+      "sha256": "3a0a7c3e21b46d626928fca81e90a617bd55189b8e3f357019c529109510636f",
+      "lines": 604
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/config.rs",
+      "sha256": "f2a22d1bbc264a75179fa45d41b03cce33f6e44d197112ba84486446d3df20ad",
+      "lines": 494
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/main.rs",
+      "sha256": "2572e0796e9edb0ca2aa39c0a1c19159d99eb483dba8b96b559297951533de73",
+      "lines": 349
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/transition.rs",
+      "sha256": "3cc3c75c3ad325f7ab4cc77a66468e733b867ac05e56f2607f34a64e7888769c",
+      "lines": 861
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+      "sha256": "31ced2a24fef738c72dfa406351b6bad5df3e353d6b1c2dfd06ab1febaf566ff",
+      "lines": 114
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解任务.txt",
+      "sha256": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+      "lines": 16
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解约束.txt",
+      "sha256": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6",
+      "lines": 126
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/候选约束.txt",
+      "sha256": "a0ac3f9c82f371132b7de29fe47e4c6c587904680bc2786523de0c825fd5efd9",
+      "lines": 862
+    }
+  ],
+  "protected": [
+    "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+    "/home/zhuran24/zmd-research-fresh/求解任务.txt",
+    "/home/zhuran24/zmd-research-fresh/求解约束.txt",
+    "/home/zhuran24/zmd-research-fresh/候选约束.txt"
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt": "abc7a5867f6477eedb619c63a21c4a77144c57ad4567fdcfb696b3049d66a670",
+  "/home/zhuran24/zmd-research-fresh/求解任务.txt": "10abf80fe6eefe647471eabe78da4053f77b489d3806722c501c6acb405a2864",
+  "/home/zhuran24/zmd-research-fresh/求解约束.txt": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6",
+  "/home/zhuran24/zmd-research-fresh/候选约束.txt": "a0ac3f9c82f371132b7de29fe47e4c6c587904680bc2786523de0c825fd5efd9",
+  "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/model.rs": "6f4d3dfb5133b834ef52dba2fa398cee3f6e3f88f1da77630aaf66326e81a842",
+  "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/event_identity.rs": "d8e0231b2dfbd951cfe9257778540824cf212937e7265302246faa10d53b251d",
+  "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/output.rs": "afc3135f9737b2f267f0340bcda24741158724a162daeb4ae935b3e87a040c32",
+  "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/input.rs": "bfd155109980550ac75c970dd8d2148e9926e8253d2d4845883a162b146e25c0",
+  "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/config.rs": "f2a22d1bbc264a75179fa45d41b03cce33f6e44d197112ba84486446d3df20ad",
+  "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/main.rs": "f5731efa721ecc32497d647c9c25379ce9dde06995085981881cb1962d1123c6",
+  "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/value.rs": "0cd34a9c7877861580caa0711e643575cbb9ce631a445919c69f093c2392d32b",
+  "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/transition.rs": "092e2bdedfa9cbd84eb6d6911d410fe4b4a0ae9004e6c0dff6c6d24354744c47",
+  "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/interfaces.rs": "bf9d731d8fa3c84f9622f840dae741d269eb98b5019b66f9b752b4da5f4e4503",
+  "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests.rs": "65033ae054e595230c2a4658f999eb47bbfb432156b660fc9f8ccab2a2969253",
+  "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/catalog.rs": "3a0a7c3e21b46d626928fca81e90a617bd55189b8e3f357019c529109510636f",
+  "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/engine.rs": "060dbf928a016a3b334ccd1cf5bd59e239643797cd7405ac8db387c6150678af",
+  "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs": "77c62cd43a7718d558fc5e0f9d28513ca988ebcc52b903e1db54c28259cd7d33",
+  "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/polling.rs": "b23c21541ba72555ef9f99f46a22569ea3907e09a92713b93155d64f24d1dffd",
+  "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests_revision.rs": "4ef018d8568554c521a2d8acd8a059dfa3c4923a5804f50fd6aa292c5d30c07e",
+  "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests_revision_r2.rs": "9eb98d70c50ce80b22de5d993a4f9301622ccab866f4c9f5757c675f20b096d3",
+  "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/warehouse.rs": "74f4d828f10825538b3449e01dfec30c1498f6d1cd0402ddbc1c0da0769ca572"
+}

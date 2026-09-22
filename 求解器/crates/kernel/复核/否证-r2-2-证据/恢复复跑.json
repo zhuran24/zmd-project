@@ -1,0 +1,180 @@
+[
+  {
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/probe",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/复核-r2-规格保真-证据/branch-cut-input.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "1",
+      "PC|source:north:0|merge_a:south:0"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "case": "branch-cut",
+    "summary": [
+      {
+        "damping": {
+          "Ok": 3
+        },
+        "when": "loaded"
+      },
+      {
+        "damping": {
+          "Ok": 2
+        },
+        "reload": {
+          "Err": "invalid_input input @ damping.branch.choices: 所选出支不在查询的当前图中"
+        }
+      }
+    ]
+  },
+  {
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/probe",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/复核-r2-规格保真-证据/branch-retained-input.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "1",
+      "PC|source:north:0|merge_a:south:0"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "case": "branch-retained",
+    "summary": [
+      {
+        "damping": {
+          "Ok": 3
+        },
+        "when": "loaded"
+      },
+      {
+        "damping": {
+          "Ok": 3
+        },
+        "reload": {
+          "Ok": "ok"
+        }
+      }
+    ]
+  },
+  {
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/probe",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/restart-control-input.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "1"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "case": "restart-control",
+    "summary": {
+      "load_error": null,
+      "seed_time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "1"
+        }
+      },
+      "seed_movement_ids": [
+        "J|1|0|1",
+        "J|1|1|0"
+      ],
+      "next_tick_times": [
+        {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "2"
+          }
+        }
+      ],
+      "ids_executed_again": [],
+      "stops": []
+    }
+  },
+  {
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/probe",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/movement-build-alias-input.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "1"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "case": "movement-build-alias",
+    "summary": {
+      "load_error": null,
+      "seed_time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "1"
+        }
+      },
+      "seed_movement_ids": [
+        "build_0",
+        "J|1|1|0"
+      ],
+      "next_tick_times": [
+        {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "2"
+          }
+        }
+      ],
+      "ids_executed_again": [],
+      "stops": []
+    }
+  },
+  {
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/probe",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/movement-future-id-input.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "1"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "case": "movement-future-id",
+    "summary": {
+      "load_error": null,
+      "seed_time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "1"
+        }
+      },
+      "seed_movement_ids": [
+        "J|2|0|0",
+        "J|1|1|0"
+      ],
+      "next_tick_times": [
+        {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "2"
+          }
+        }
+      ],
+      "ids_executed_again": [
+        {
+          "basis": [
+            "规则 L13、L15–17、L23–25、L29–32",
+            "约束端口速率",
+            "受限模型声明 polling.both_failure",
+            "内核输入 §5.2、§6.3"
+          ],
+          "detail": "neither_authorized",
+          "event": "J|2|0|0",
+          "operation": "move",
+          "outcome": "no_request",
+          "target": "PC|ore_source:north:1|feed_belt:south:0"
+        }
+      ],
+      "stops": []
+    }
+  }
+]

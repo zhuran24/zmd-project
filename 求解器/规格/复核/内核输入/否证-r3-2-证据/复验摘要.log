@@ -1,0 +1,107 @@
+{
+  "baseline": true,
+  "original_full_ticks_equal_recompute": true,
+  "output_mutations_accepted": {
+    "transport_overflow": true,
+    "wrong_parameter": true,
+    "missing_events": true,
+    "manufacturing_overflow": true,
+    "wrong_summary": true
+  },
+  "decision_mutations_accepted": {
+    "judgment_unresolved": true,
+    "tick_unresolved": true,
+    "withdrawal_unknown": true,
+    "tick_missing_basis": true,
+    "connection_missing_basis": true
+  },
+  "empty_source": {
+    "inconsistent_seed": {
+      "accepted": true,
+      "check": {
+        "file": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json",
+        "status": "完整运行输入检查通过（有限合成子集）",
+        "snapshot": "built_layout",
+        "anchor": {
+          "event": "blueprint_complete",
+          "side": "after"
+        },
+        "units": 14,
+        "occupied_cells": 153,
+        "physical_channels": 11,
+        "buffer_channels": 8,
+        "bridge_first_peers": [],
+        "counts_category": "算术推论（候选布局）",
+        "validation_category": "实测（工具）"
+      },
+      "ticks": 4,
+      "completed_batches": "0"
+    },
+    "correct_levels_only": {
+      "accepted": false,
+      "error_type": "CheckError",
+      "error": "轮询记忆成员/侧/级/位置或当前级不符"
+    },
+    "correct_arbitration_only": {
+      "accepted": false,
+      "error_type": "CheckError",
+      "error": "级仲裁/空格选择状态不完整"
+    },
+    "fully_corrected": {
+      "accepted": false,
+      "error_type": "CheckError",
+      "error": "轮询记忆成员/侧/级/位置或当前级不符"
+    },
+    "after_refresh": [
+      {
+        "unit": "ore_source",
+        "side": "output",
+        "graded": true,
+        "current_level": null,
+        "levels": [
+          {
+            "id": "L|ore_source|output|other",
+            "members": [
+              "PC|ore_source:north:1|feed_belt:south:0"
+            ],
+            "next_channel": "PC|ore_source:north:1|feed_belt:south:0"
+          }
+        ]
+      },
+      {
+        "unit": "feed_belt",
+        "side": "input",
+        "graded": true,
+        "current_level": null,
+        "levels": [
+          {
+            "id": "L|feed_belt|input|other",
+            "members": [
+              "PC|ore_source:north:1|feed_belt:south:0"
+            ],
+            "next_channel": "PC|ore_source:north:1|feed_belt:south:0"
+          }
+        ]
+      }
+    ]
+  },
+  "profile_provenance": {
+    "declared": {
+      "path": "../../规格/受限模型声明.md",
+      "sha256": "c05b2fe73edfb93c2aacba2db0a2412fc850f81700c562f7c42cc5bdc6eeae17"
+    },
+    "current_sha256": "e499b39b60200618ab69a0a30a4be29efd29992d64428d9c9647e9c6c8cf236f",
+    "same_except_profile_source_sha256": true,
+    "axes_count": 96,
+    "projection_fingerprinted": false,
+    "check_examples_fingerprinted": false,
+    "fresh_output_profile_fingerprint": [
+      {
+        "role": "profile",
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限模型声明.md",
+        "sha256": "e499b39b60200618ab69a0a30a4be29efd29992d64428d9c9647e9c6c8cf236f"
+      }
+    ]
+  },
+  "source_changes": []
+}

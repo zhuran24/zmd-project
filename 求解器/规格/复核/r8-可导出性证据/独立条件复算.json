@@ -1,0 +1,28 @@
+{
+  "product_capacity": {
+    "quantity": 79999,
+    "incoming": 2,
+    "capacity_one": true,
+    "concrete_whole_batch": false,
+    "representative_whole_batch": true
+  },
+  "ore_return": {
+    "q79999_accepts_one": true,
+    "q80000_accepts_one": false
+  },
+  "unassigned_empty_slot_stop": {
+    "new_species_count": 2,
+    "anonymous_slots": [
+      "E0"
+    ],
+    "assigned_anonymous_slots": [],
+    "transfer_4_3_stop": false,
+    "reply_line24_stop": true
+  },
+  "product_emptying": {
+    "key_preserved": true,
+    "empty_order_unchanged": true,
+    "retained_identity": "高容谷地电池"
+  },
+  "scope": "局部条件算术、字段映射及停止谓词；不是 Rust 运行或完整可达布局证明"
+}

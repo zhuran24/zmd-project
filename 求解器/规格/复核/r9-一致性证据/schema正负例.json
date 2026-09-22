@@ -1,0 +1,1041 @@
+{
+  "count": 71,
+  "cases": [
+    {
+      "label": "CoreInbound结构正例",
+      "expected": true,
+      "actual": true,
+      "errors": null
+    },
+    {
+      "label": "CoreInbound缺字段 event",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "event"
+          },
+          "message": "must have required property 'event'"
+        }
+      ]
+    },
+    {
+      "label": "CoreInbound缺字段 channel",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "channel"
+          },
+          "message": "must have required property 'channel'"
+        }
+      ]
+    },
+    {
+      "label": "CoreInbound缺字段 port",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "port"
+          },
+          "message": "must have required property 'port'"
+        }
+      ]
+    },
+    {
+      "label": "CoreInbound缺字段 item",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "item"
+          },
+          "message": "must have required property 'item'"
+        }
+      ]
+    },
+    {
+      "label": "CoreInbound缺字段 quantity",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "quantity"
+          },
+          "message": "must have required property 'quantity'"
+        }
+      ]
+    },
+    {
+      "label": "CoreInbound未知字段",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/additionalProperties",
+          "keyword": "additionalProperties",
+          "params": {
+            "additionalProperty": "unknown_field"
+          },
+          "message": "must NOT have additional properties"
+        }
+      ]
+    },
+    {
+      "label": "WirelessInbound结构正例",
+      "expected": true,
+      "actual": true,
+      "errors": null
+    },
+    {
+      "label": "WirelessInbound缺字段 event",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "event"
+          },
+          "message": "must have required property 'event'"
+        }
+      ]
+    },
+    {
+      "label": "WirelessInbound缺字段 unit",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "unit"
+          },
+          "message": "must have required property 'unit'"
+        }
+      ]
+    },
+    {
+      "label": "WirelessInbound缺字段 item",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "item"
+          },
+          "message": "must have required property 'item'"
+        }
+      ]
+    },
+    {
+      "label": "WirelessInbound缺字段 quantity",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "quantity"
+          },
+          "message": "must have required property 'quantity'"
+        }
+      ]
+    },
+    {
+      "label": "WirelessInbound未知字段",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/additionalProperties",
+          "keyword": "additionalProperties",
+          "params": {
+            "additionalProperty": "unknown_field"
+          },
+          "message": "must NOT have additional properties"
+        }
+      ]
+    },
+    {
+      "label": "PortOutbound结构正例",
+      "expected": true,
+      "actual": true,
+      "errors": null
+    },
+    {
+      "label": "PortOutbound缺字段 event",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "event"
+          },
+          "message": "must have required property 'event'"
+        }
+      ]
+    },
+    {
+      "label": "PortOutbound缺字段 channel",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "channel"
+          },
+          "message": "must have required property 'channel'"
+        }
+      ]
+    },
+    {
+      "label": "PortOutbound缺字段 port",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "port"
+          },
+          "message": "must have required property 'port'"
+        }
+      ]
+    },
+    {
+      "label": "PortOutbound缺字段 slot",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "slot"
+          },
+          "message": "must have required property 'slot'"
+        }
+      ]
+    },
+    {
+      "label": "PortOutbound缺字段 item",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "item"
+          },
+          "message": "must have required property 'item'"
+        }
+      ]
+    },
+    {
+      "label": "PortOutbound缺字段 quantity",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "quantity"
+          },
+          "message": "must have required property 'quantity'"
+        }
+      ]
+    },
+    {
+      "label": "PortOutbound未知字段",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/additionalProperties",
+          "keyword": "additionalProperties",
+          "params": {
+            "additionalProperty": "unknown_field"
+          },
+          "message": "must NOT have additional properties"
+        }
+      ]
+    },
+    {
+      "label": "ExternalSupply结构正例",
+      "expected": true,
+      "actual": true,
+      "errors": null
+    },
+    {
+      "label": "ExternalSupply缺字段 event",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "event"
+          },
+          "message": "must have required property 'event'"
+        }
+      ]
+    },
+    {
+      "label": "ExternalSupply缺字段 mode",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "mode"
+          },
+          "message": "must have required property 'mode'"
+        }
+      ]
+    },
+    {
+      "label": "ExternalSupply缺字段 item",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "item"
+          },
+          "message": "must have required property 'item'"
+        }
+      ]
+    },
+    {
+      "label": "ExternalSupply缺字段 quantity",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "quantity"
+          },
+          "message": "must have required property 'quantity'"
+        }
+      ]
+    },
+    {
+      "label": "ExternalSupply未知字段",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/additionalProperties",
+          "keyword": "additionalProperties",
+          "params": {
+            "additionalProperty": "unknown_field"
+          },
+          "message": "must NOT have additional properties"
+        }
+      ]
+    },
+    {
+      "label": "PlayerWithdrawal结构正例",
+      "expected": true,
+      "actual": true,
+      "errors": null
+    },
+    {
+      "label": "PlayerWithdrawal缺字段 event",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "event"
+          },
+          "message": "must have required property 'event'"
+        }
+      ]
+    },
+    {
+      "label": "PlayerWithdrawal缺字段 slot",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "slot"
+          },
+          "message": "must have required property 'slot'"
+        }
+      ]
+    },
+    {
+      "label": "PlayerWithdrawal缺字段 item",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "item"
+          },
+          "message": "must have required property 'item'"
+        }
+      ]
+    },
+    {
+      "label": "PlayerWithdrawal缺字段 quantity",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "quantity"
+          },
+          "message": "must have required property 'quantity'"
+        }
+      ]
+    },
+    {
+      "label": "PlayerWithdrawal未知字段",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/additionalProperties",
+          "keyword": "additionalProperties",
+          "params": {
+            "additionalProperty": "unknown_field"
+          },
+          "message": "must NOT have additional properties"
+        }
+      ]
+    },
+    {
+      "label": "RepresentativeAdjustment结构正例",
+      "expected": true,
+      "actual": true,
+      "errors": null
+    },
+    {
+      "label": "RepresentativeAdjustment缺字段 item",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "item"
+          },
+          "message": "must have required property 'item'"
+        }
+      ]
+    },
+    {
+      "label": "RepresentativeAdjustment缺字段 quantity",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "quantity"
+          },
+          "message": "must have required property 'quantity'"
+        }
+      ]
+    },
+    {
+      "label": "RepresentativeAdjustment缺字段 reason",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "reason"
+          },
+          "message": "must have required property 'reason'"
+        }
+      ]
+    },
+    {
+      "label": "RepresentativeAdjustment未知字段",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/additionalProperties",
+          "keyword": "additionalProperties",
+          "params": {
+            "additionalProperty": "unknown_field"
+          },
+          "message": "must NOT have additional properties"
+        }
+      ]
+    },
+    {
+      "label": "WarehouseTotal结构正例",
+      "expected": true,
+      "actual": true,
+      "errors": null
+    },
+    {
+      "label": "WarehouseTotal缺字段 item",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "item"
+          },
+          "message": "must have required property 'item'"
+        }
+      ]
+    },
+    {
+      "label": "WarehouseTotal缺字段 core_inbound",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "core_inbound"
+          },
+          "message": "must have required property 'core_inbound'"
+        }
+      ]
+    },
+    {
+      "label": "WarehouseTotal缺字段 wireless_inbound",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "wireless_inbound"
+          },
+          "message": "must have required property 'wireless_inbound'"
+        }
+      ]
+    },
+    {
+      "label": "WarehouseTotal缺字段 port_outbound",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "port_outbound"
+          },
+          "message": "must have required property 'port_outbound'"
+        }
+      ]
+    },
+    {
+      "label": "WarehouseTotal缺字段 external_supply",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "external_supply"
+          },
+          "message": "must have required property 'external_supply'"
+        }
+      ]
+    },
+    {
+      "label": "WarehouseTotal缺字段 player_withdrawal",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "player_withdrawal"
+          },
+          "message": "must have required property 'player_withdrawal'"
+        }
+      ]
+    },
+    {
+      "label": "WarehouseTotal缺字段 representative_adjustment",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "representative_adjustment"
+          },
+          "message": "must have required property 'representative_adjustment'"
+        }
+      ]
+    },
+    {
+      "label": "WarehouseTotal缺字段 actual_inbound",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "actual_inbound"
+          },
+          "message": "must have required property 'actual_inbound'"
+        }
+      ]
+    },
+    {
+      "label": "WarehouseTotal未知字段",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/additionalProperties",
+          "keyword": "additionalProperties",
+          "params": {
+            "additionalProperty": "unknown_field"
+          },
+          "message": "must NOT have additional properties"
+        }
+      ]
+    },
+    {
+      "label": "WarehouseLedger结构正例",
+      "expected": true,
+      "actual": true,
+      "errors": null
+    },
+    {
+      "label": "WarehouseLedger缺字段 core_inbound",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "core_inbound"
+          },
+          "message": "must have required property 'core_inbound'"
+        }
+      ]
+    },
+    {
+      "label": "WarehouseLedger缺字段 wireless_inbound",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "wireless_inbound"
+          },
+          "message": "must have required property 'wireless_inbound'"
+        }
+      ]
+    },
+    {
+      "label": "WarehouseLedger缺字段 port_outbound",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "port_outbound"
+          },
+          "message": "must have required property 'port_outbound'"
+        }
+      ]
+    },
+    {
+      "label": "WarehouseLedger缺字段 external_supply",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "external_supply"
+          },
+          "message": "must have required property 'external_supply'"
+        }
+      ]
+    },
+    {
+      "label": "WarehouseLedger缺字段 player_withdrawal",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "player_withdrawal"
+          },
+          "message": "must have required property 'player_withdrawal'"
+        }
+      ]
+    },
+    {
+      "label": "WarehouseLedger缺字段 representative_adjustment",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "representative_adjustment"
+          },
+          "message": "must have required property 'representative_adjustment'"
+        }
+      ]
+    },
+    {
+      "label": "WarehouseLedger缺字段 totals",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "totals"
+          },
+          "message": "must have required property 'totals'"
+        }
+      ]
+    },
+    {
+      "label": "WarehouseLedger未知字段",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/additionalProperties",
+          "keyword": "additionalProperties",
+          "params": {
+            "additionalProperty": "unknown_field"
+          },
+          "message": "must NOT have additional properties"
+        }
+      ]
+    },
+    {
+      "label": "CycleRate结构正例",
+      "expected": true,
+      "actual": true,
+      "errors": null
+    },
+    {
+      "label": "CycleRate缺字段 item",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "item"
+          },
+          "message": "must have required property 'item'"
+        }
+      ]
+    },
+    {
+      "label": "CycleRate缺字段 inbound",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "inbound"
+          },
+          "message": "must have required property 'inbound'"
+        }
+      ]
+    },
+    {
+      "label": "CycleRate缺字段 period",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "period"
+          },
+          "message": "must have required property 'period'"
+        }
+      ]
+    },
+    {
+      "label": "CycleRate缺字段 average",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "average"
+          },
+          "message": "must have required property 'average'"
+        }
+      ]
+    },
+    {
+      "label": "CycleRate缺字段 target",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "target"
+          },
+          "message": "must have required property 'target'"
+        }
+      ]
+    },
+    {
+      "label": "CycleRate缺字段 comparison",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "comparison"
+          },
+          "message": "must have required property 'comparison'"
+        }
+      ]
+    },
+    {
+      "label": "CycleRate未知字段",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/additionalProperties",
+          "keyword": "additionalProperties",
+          "params": {
+            "additionalProperty": "unknown_field"
+          },
+          "message": "must NOT have additional properties"
+        }
+      ]
+    },
+    {
+      "label": "Acceptance结构正例",
+      "expected": true,
+      "actual": true,
+      "errors": null
+    },
+    {
+      "label": "Acceptance缺字段 time",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "time"
+          },
+          "message": "must have required property 'time'"
+        }
+      ]
+    },
+    {
+      "label": "Acceptance缺字段 products",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "products"
+          },
+          "message": "must have required property 'products'"
+        }
+      ]
+    },
+    {
+      "label": "Acceptance未知字段",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/additionalProperties",
+          "keyword": "additionalProperties",
+          "params": {
+            "additionalProperty": "unknown_field"
+          },
+          "message": "must NOT have additional properties"
+        }
+      ]
+    },
+    {
+      "label": "RunRecord结构正例",
+      "expected": true,
+      "actual": true,
+      "errors": null
+    },
+    {
+      "label": "验证范围旧字段拒收",
+      "expected": false,
+      "actual": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "validation_scope"
+          },
+          "message": "must have required property 'validation_scope'"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/additionalProperties",
+          "keyword": "additionalProperties",
+          "params": {
+            "additionalProperty": "verification_scope"
+          },
+          "message": "must NOT have additional properties"
+        }
+      ]
+    }
+  ],
+  "scope": "局部形状核验，不核数量合法性、跨字段守恒或独立运行"
+}

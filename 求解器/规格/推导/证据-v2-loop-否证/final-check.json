@@ -1,0 +1,26 @@
+{
+  "status": "pass",
+  "verdict_count": 30,
+  "input_hashes_unchanged": true,
+  "markdown_links_exist": [
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/回路总数决定论-v2.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/证据-v2-loop-否证/inputs.json",
+    "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+    "/home/zhuran24/zmd-research-fresh/求解任务.txt",
+    "/home/zhuran24/zmd-research-fresh/求解约束.txt",
+    "/tmp/claude-1000/-home-zhuran24-zmd-research-fresh/786b1aaa-8792-43fd-afbc-2a7361543a07/scratchpad/总结/对话-0920-主线.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/证据-v2-loop-否证"
+  ],
+  "evidence_extensions_allowed": true,
+  "kernel_scope": "build succeeded; 4 seed loads rejected; no executed trajectory",
+  "report_sha256": "39b06051993e834b5b0adf0149c9ad9cfd8ec69633296d7365db7ebfa1464c2d",
+  "reader_review": [
+    "报告独立定义对象、符号、枚举含义及局部反例范围。",
+    "源文状态与数学否证分列；U8 交付状态与 U1-U7 证明状态分列。",
+    "头部与总评一致，L=0、U=1113 保留必要条件上界含义。",
+    "失败内核输入未称运行证据；独立 FIFO 模型的供料和出货假设写明。",
+    "算术、引用位置与全部链接已核。自审修正了 catalog.rs 行号及无外补条件。",
+    "没有借 owner 13:40 给主会话两条件背书，也未把无错料误写成有足够配料。",
+    "保护文件、受审文件及指定对话指纹未变。"
+  ]
+}

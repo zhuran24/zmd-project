@@ -1,0 +1,1560 @@
+[
+  {
+    "tick": 0,
+    "incoming_each": [
+      null,
+      null,
+      null
+    ],
+    "stock_each_after": [
+      0,
+      0,
+      0
+    ],
+    "starts": [
+      true,
+      true,
+      true
+    ],
+    "before_start_each": [
+      10,
+      10,
+      10
+    ],
+    "completions": [
+      false,
+      false,
+      false
+    ],
+    "due": [
+      5,
+      5,
+      5
+    ],
+    "completed_totals": [
+      0,
+      0,
+      0
+    ]
+  },
+  {
+    "tick": 1,
+    "incoming_each": [
+      2,
+      2,
+      2
+    ],
+    "stock_each_after": [
+      2,
+      2,
+      2
+    ],
+    "starts": [
+      false,
+      false,
+      false
+    ],
+    "before_start_each": [
+      null,
+      null,
+      null
+    ],
+    "completions": [
+      false,
+      false,
+      false
+    ],
+    "due": [
+      5,
+      5,
+      5
+    ],
+    "completed_totals": [
+      0,
+      0,
+      0
+    ]
+  },
+  {
+    "tick": 2,
+    "incoming_each": [
+      2,
+      2,
+      1
+    ],
+    "stock_each_after": [
+      4,
+      4,
+      3
+    ],
+    "starts": [
+      false,
+      false,
+      false
+    ],
+    "before_start_each": [
+      null,
+      null,
+      null
+    ],
+    "completions": [
+      false,
+      false,
+      false
+    ],
+    "due": [
+      5,
+      5,
+      5
+    ],
+    "completed_totals": [
+      0,
+      0,
+      0
+    ]
+  },
+  {
+    "tick": 3,
+    "incoming_each": [
+      2,
+      2,
+      2
+    ],
+    "stock_each_after": [
+      6,
+      6,
+      5
+    ],
+    "starts": [
+      false,
+      false,
+      false
+    ],
+    "before_start_each": [
+      null,
+      null,
+      null
+    ],
+    "completions": [
+      false,
+      false,
+      false
+    ],
+    "due": [
+      5,
+      5,
+      5
+    ],
+    "completed_totals": [
+      0,
+      0,
+      0
+    ]
+  },
+  {
+    "tick": 4,
+    "incoming_each": [
+      2,
+      2,
+      1
+    ],
+    "stock_each_after": [
+      8,
+      8,
+      6
+    ],
+    "starts": [
+      false,
+      false,
+      false
+    ],
+    "before_start_each": [
+      null,
+      null,
+      null
+    ],
+    "completions": [
+      false,
+      false,
+      false
+    ],
+    "due": [
+      5,
+      5,
+      5
+    ],
+    "completed_totals": [
+      0,
+      0,
+      0
+    ]
+  },
+  {
+    "tick": 5,
+    "incoming_each": [
+      2,
+      2,
+      2
+    ],
+    "stock_each_after": [
+      0,
+      0,
+      8
+    ],
+    "starts": [
+      true,
+      true,
+      false
+    ],
+    "before_start_each": [
+      10,
+      10,
+      null
+    ],
+    "completions": [
+      true,
+      true,
+      true
+    ],
+    "due": [
+      10,
+      10,
+      null
+    ],
+    "completed_totals": [
+      1,
+      1,
+      1
+    ]
+  },
+  {
+    "tick": 6,
+    "incoming_each": [
+      2,
+      2,
+      1
+    ],
+    "stock_each_after": [
+      2,
+      2,
+      9
+    ],
+    "starts": [
+      false,
+      false,
+      false
+    ],
+    "before_start_each": [
+      null,
+      null,
+      null
+    ],
+    "completions": [
+      false,
+      false,
+      false
+    ],
+    "due": [
+      10,
+      10,
+      null
+    ],
+    "completed_totals": [
+      1,
+      1,
+      1
+    ]
+  },
+  {
+    "tick": 7,
+    "incoming_each": [
+      2,
+      2,
+      2
+    ],
+    "stock_each_after": [
+      4,
+      4,
+      1
+    ],
+    "starts": [
+      false,
+      false,
+      true
+    ],
+    "before_start_each": [
+      null,
+      null,
+      11
+    ],
+    "completions": [
+      false,
+      false,
+      false
+    ],
+    "due": [
+      10,
+      10,
+      12
+    ],
+    "completed_totals": [
+      1,
+      1,
+      1
+    ]
+  },
+  {
+    "tick": 8,
+    "incoming_each": [
+      2,
+      2,
+      1
+    ],
+    "stock_each_after": [
+      6,
+      6,
+      2
+    ],
+    "starts": [
+      false,
+      false,
+      false
+    ],
+    "before_start_each": [
+      null,
+      null,
+      null
+    ],
+    "completions": [
+      false,
+      false,
+      false
+    ],
+    "due": [
+      10,
+      10,
+      12
+    ],
+    "completed_totals": [
+      1,
+      1,
+      1
+    ]
+  },
+  {
+    "tick": 9,
+    "incoming_each": [
+      2,
+      2,
+      2
+    ],
+    "stock_each_after": [
+      8,
+      8,
+      4
+    ],
+    "starts": [
+      false,
+      false,
+      false
+    ],
+    "before_start_each": [
+      null,
+      null,
+      null
+    ],
+    "completions": [
+      false,
+      false,
+      false
+    ],
+    "due": [
+      10,
+      10,
+      12
+    ],
+    "completed_totals": [
+      1,
+      1,
+      1
+    ]
+  },
+  {
+    "tick": 10,
+    "incoming_each": [
+      2,
+      2,
+      1
+    ],
+    "stock_each_after": [
+      0,
+      0,
+      5
+    ],
+    "starts": [
+      true,
+      true,
+      false
+    ],
+    "before_start_each": [
+      10,
+      10,
+      null
+    ],
+    "completions": [
+      true,
+      true,
+      false
+    ],
+    "due": [
+      15,
+      15,
+      12
+    ],
+    "completed_totals": [
+      2,
+      2,
+      1
+    ]
+  },
+  {
+    "tick": 11,
+    "incoming_each": [
+      2,
+      2,
+      2
+    ],
+    "stock_each_after": [
+      2,
+      2,
+      7
+    ],
+    "starts": [
+      false,
+      false,
+      false
+    ],
+    "before_start_each": [
+      null,
+      null,
+      null
+    ],
+    "completions": [
+      false,
+      false,
+      false
+    ],
+    "due": [
+      15,
+      15,
+      12
+    ],
+    "completed_totals": [
+      2,
+      2,
+      1
+    ]
+  },
+  {
+    "tick": 12,
+    "incoming_each": [
+      2,
+      2,
+      1
+    ],
+    "stock_each_after": [
+      4,
+      4,
+      8
+    ],
+    "starts": [
+      false,
+      false,
+      false
+    ],
+    "before_start_each": [
+      null,
+      null,
+      null
+    ],
+    "completions": [
+      false,
+      false,
+      true
+    ],
+    "due": [
+      15,
+      15,
+      null
+    ],
+    "completed_totals": [
+      2,
+      2,
+      2
+    ]
+  },
+  {
+    "tick": 13,
+    "incoming_each": [
+      2,
+      2,
+      2
+    ],
+    "stock_each_after": [
+      6,
+      6,
+      0
+    ],
+    "starts": [
+      false,
+      false,
+      true
+    ],
+    "before_start_each": [
+      null,
+      null,
+      10
+    ],
+    "completions": [
+      false,
+      false,
+      false
+    ],
+    "due": [
+      15,
+      15,
+      18
+    ],
+    "completed_totals": [
+      2,
+      2,
+      2
+    ]
+  },
+  {
+    "tick": 14,
+    "incoming_each": [
+      2,
+      2,
+      1
+    ],
+    "stock_each_after": [
+      8,
+      8,
+      1
+    ],
+    "starts": [
+      false,
+      false,
+      false
+    ],
+    "before_start_each": [
+      null,
+      null,
+      null
+    ],
+    "completions": [
+      false,
+      false,
+      false
+    ],
+    "due": [
+      15,
+      15,
+      18
+    ],
+    "completed_totals": [
+      2,
+      2,
+      2
+    ]
+  },
+  {
+    "tick": 15,
+    "incoming_each": [
+      2,
+      2,
+      2
+    ],
+    "stock_each_after": [
+      0,
+      0,
+      3
+    ],
+    "starts": [
+      true,
+      true,
+      false
+    ],
+    "before_start_each": [
+      10,
+      10,
+      null
+    ],
+    "completions": [
+      true,
+      true,
+      false
+    ],
+    "due": [
+      20,
+      20,
+      18
+    ],
+    "completed_totals": [
+      3,
+      3,
+      2
+    ]
+  },
+  {
+    "tick": 16,
+    "incoming_each": [
+      2,
+      2,
+      1
+    ],
+    "stock_each_after": [
+      2,
+      2,
+      4
+    ],
+    "starts": [
+      false,
+      false,
+      false
+    ],
+    "before_start_each": [
+      null,
+      null,
+      null
+    ],
+    "completions": [
+      false,
+      false,
+      false
+    ],
+    "due": [
+      20,
+      20,
+      18
+    ],
+    "completed_totals": [
+      3,
+      3,
+      2
+    ]
+  },
+  {
+    "tick": 17,
+    "incoming_each": [
+      2,
+      2,
+      2
+    ],
+    "stock_each_after": [
+      4,
+      4,
+      6
+    ],
+    "starts": [
+      false,
+      false,
+      false
+    ],
+    "before_start_each": [
+      null,
+      null,
+      null
+    ],
+    "completions": [
+      false,
+      false,
+      false
+    ],
+    "due": [
+      20,
+      20,
+      18
+    ],
+    "completed_totals": [
+      3,
+      3,
+      2
+    ]
+  },
+  {
+    "tick": 18,
+    "incoming_each": [
+      2,
+      2,
+      1
+    ],
+    "stock_each_after": [
+      6,
+      6,
+      7
+    ],
+    "starts": [
+      false,
+      false,
+      false
+    ],
+    "before_start_each": [
+      null,
+      null,
+      null
+    ],
+    "completions": [
+      false,
+      false,
+      true
+    ],
+    "due": [
+      20,
+      20,
+      null
+    ],
+    "completed_totals": [
+      3,
+      3,
+      3
+    ]
+  },
+  {
+    "tick": 19,
+    "incoming_each": [
+      2,
+      2,
+      2
+    ],
+    "stock_each_after": [
+      8,
+      8,
+      9
+    ],
+    "starts": [
+      false,
+      false,
+      false
+    ],
+    "before_start_each": [
+      null,
+      null,
+      null
+    ],
+    "completions": [
+      false,
+      false,
+      false
+    ],
+    "due": [
+      20,
+      20,
+      null
+    ],
+    "completed_totals": [
+      3,
+      3,
+      3
+    ]
+  },
+  {
+    "tick": 20,
+    "incoming_each": [
+      2,
+      2,
+      1
+    ],
+    "stock_each_after": [
+      0,
+      0,
+      0
+    ],
+    "starts": [
+      true,
+      true,
+      true
+    ],
+    "before_start_each": [
+      10,
+      10,
+      10
+    ],
+    "completions": [
+      true,
+      true,
+      false
+    ],
+    "due": [
+      25,
+      25,
+      25
+    ],
+    "completed_totals": [
+      4,
+      4,
+      3
+    ]
+  },
+  {
+    "tick": 21,
+    "incoming_each": [
+      2,
+      2,
+      2
+    ],
+    "stock_each_after": [
+      2,
+      2,
+      2
+    ],
+    "starts": [
+      false,
+      false,
+      false
+    ],
+    "before_start_each": [
+      null,
+      null,
+      null
+    ],
+    "completions": [
+      false,
+      false,
+      false
+    ],
+    "due": [
+      25,
+      25,
+      25
+    ],
+    "completed_totals": [
+      4,
+      4,
+      3
+    ]
+  },
+  {
+    "tick": 22,
+    "incoming_each": [
+      2,
+      2,
+      1
+    ],
+    "stock_each_after": [
+      4,
+      4,
+      3
+    ],
+    "starts": [
+      false,
+      false,
+      false
+    ],
+    "before_start_each": [
+      null,
+      null,
+      null
+    ],
+    "completions": [
+      false,
+      false,
+      false
+    ],
+    "due": [
+      25,
+      25,
+      25
+    ],
+    "completed_totals": [
+      4,
+      4,
+      3
+    ]
+  },
+  {
+    "tick": 23,
+    "incoming_each": [
+      2,
+      2,
+      2
+    ],
+    "stock_each_after": [
+      6,
+      6,
+      5
+    ],
+    "starts": [
+      false,
+      false,
+      false
+    ],
+    "before_start_each": [
+      null,
+      null,
+      null
+    ],
+    "completions": [
+      false,
+      false,
+      false
+    ],
+    "due": [
+      25,
+      25,
+      25
+    ],
+    "completed_totals": [
+      4,
+      4,
+      3
+    ]
+  },
+  {
+    "tick": 24,
+    "incoming_each": [
+      2,
+      2,
+      1
+    ],
+    "stock_each_after": [
+      8,
+      8,
+      6
+    ],
+    "starts": [
+      false,
+      false,
+      false
+    ],
+    "before_start_each": [
+      null,
+      null,
+      null
+    ],
+    "completions": [
+      false,
+      false,
+      false
+    ],
+    "due": [
+      25,
+      25,
+      25
+    ],
+    "completed_totals": [
+      4,
+      4,
+      3
+    ]
+  },
+  {
+    "tick": 25,
+    "incoming_each": [
+      2,
+      2,
+      2
+    ],
+    "stock_each_after": [
+      0,
+      0,
+      8
+    ],
+    "starts": [
+      true,
+      true,
+      false
+    ],
+    "before_start_each": [
+      10,
+      10,
+      null
+    ],
+    "completions": [
+      true,
+      true,
+      true
+    ],
+    "due": [
+      30,
+      30,
+      null
+    ],
+    "completed_totals": [
+      5,
+      5,
+      4
+    ]
+  },
+  {
+    "tick": 26,
+    "incoming_each": [
+      2,
+      2,
+      1
+    ],
+    "stock_each_after": [
+      2,
+      2,
+      9
+    ],
+    "starts": [
+      false,
+      false,
+      false
+    ],
+    "before_start_each": [
+      null,
+      null,
+      null
+    ],
+    "completions": [
+      false,
+      false,
+      false
+    ],
+    "due": [
+      30,
+      30,
+      null
+    ],
+    "completed_totals": [
+      5,
+      5,
+      4
+    ]
+  },
+  {
+    "tick": 27,
+    "incoming_each": [
+      2,
+      2,
+      2
+    ],
+    "stock_each_after": [
+      4,
+      4,
+      1
+    ],
+    "starts": [
+      false,
+      false,
+      true
+    ],
+    "before_start_each": [
+      null,
+      null,
+      11
+    ],
+    "completions": [
+      false,
+      false,
+      false
+    ],
+    "due": [
+      30,
+      30,
+      32
+    ],
+    "completed_totals": [
+      5,
+      5,
+      4
+    ]
+  },
+  {
+    "tick": 28,
+    "incoming_each": [
+      2,
+      2,
+      1
+    ],
+    "stock_each_after": [
+      6,
+      6,
+      2
+    ],
+    "starts": [
+      false,
+      false,
+      false
+    ],
+    "before_start_each": [
+      null,
+      null,
+      null
+    ],
+    "completions": [
+      false,
+      false,
+      false
+    ],
+    "due": [
+      30,
+      30,
+      32
+    ],
+    "completed_totals": [
+      5,
+      5,
+      4
+    ]
+  },
+  {
+    "tick": 29,
+    "incoming_each": [
+      2,
+      2,
+      2
+    ],
+    "stock_each_after": [
+      8,
+      8,
+      4
+    ],
+    "starts": [
+      false,
+      false,
+      false
+    ],
+    "before_start_each": [
+      null,
+      null,
+      null
+    ],
+    "completions": [
+      false,
+      false,
+      false
+    ],
+    "due": [
+      30,
+      30,
+      32
+    ],
+    "completed_totals": [
+      5,
+      5,
+      4
+    ]
+  },
+  {
+    "tick": 30,
+    "incoming_each": [
+      2,
+      2,
+      1
+    ],
+    "stock_each_after": [
+      0,
+      0,
+      5
+    ],
+    "starts": [
+      true,
+      true,
+      false
+    ],
+    "before_start_each": [
+      10,
+      10,
+      null
+    ],
+    "completions": [
+      true,
+      true,
+      false
+    ],
+    "due": [
+      35,
+      35,
+      32
+    ],
+    "completed_totals": [
+      6,
+      6,
+      4
+    ]
+  },
+  {
+    "tick": 31,
+    "incoming_each": [
+      2,
+      2,
+      2
+    ],
+    "stock_each_after": [
+      2,
+      2,
+      7
+    ],
+    "starts": [
+      false,
+      false,
+      false
+    ],
+    "before_start_each": [
+      null,
+      null,
+      null
+    ],
+    "completions": [
+      false,
+      false,
+      false
+    ],
+    "due": [
+      35,
+      35,
+      32
+    ],
+    "completed_totals": [
+      6,
+      6,
+      4
+    ]
+  },
+  {
+    "tick": 32,
+    "incoming_each": [
+      2,
+      2,
+      1
+    ],
+    "stock_each_after": [
+      4,
+      4,
+      8
+    ],
+    "starts": [
+      false,
+      false,
+      false
+    ],
+    "before_start_each": [
+      null,
+      null,
+      null
+    ],
+    "completions": [
+      false,
+      false,
+      true
+    ],
+    "due": [
+      35,
+      35,
+      null
+    ],
+    "completed_totals": [
+      6,
+      6,
+      5
+    ]
+  },
+  {
+    "tick": 33,
+    "incoming_each": [
+      2,
+      2,
+      2
+    ],
+    "stock_each_after": [
+      6,
+      6,
+      0
+    ],
+    "starts": [
+      false,
+      false,
+      true
+    ],
+    "before_start_each": [
+      null,
+      null,
+      10
+    ],
+    "completions": [
+      false,
+      false,
+      false
+    ],
+    "due": [
+      35,
+      35,
+      38
+    ],
+    "completed_totals": [
+      6,
+      6,
+      5
+    ]
+  },
+  {
+    "tick": 34,
+    "incoming_each": [
+      2,
+      2,
+      1
+    ],
+    "stock_each_after": [
+      8,
+      8,
+      1
+    ],
+    "starts": [
+      false,
+      false,
+      false
+    ],
+    "before_start_each": [
+      null,
+      null,
+      null
+    ],
+    "completions": [
+      false,
+      false,
+      false
+    ],
+    "due": [
+      35,
+      35,
+      38
+    ],
+    "completed_totals": [
+      6,
+      6,
+      5
+    ]
+  },
+  {
+    "tick": 35,
+    "incoming_each": [
+      2,
+      2,
+      2
+    ],
+    "stock_each_after": [
+      0,
+      0,
+      3
+    ],
+    "starts": [
+      true,
+      true,
+      false
+    ],
+    "before_start_each": [
+      10,
+      10,
+      null
+    ],
+    "completions": [
+      true,
+      true,
+      false
+    ],
+    "due": [
+      40,
+      40,
+      38
+    ],
+    "completed_totals": [
+      7,
+      7,
+      5
+    ]
+  },
+  {
+    "tick": 36,
+    "incoming_each": [
+      2,
+      2,
+      1
+    ],
+    "stock_each_after": [
+      2,
+      2,
+      4
+    ],
+    "starts": [
+      false,
+      false,
+      false
+    ],
+    "before_start_each": [
+      null,
+      null,
+      null
+    ],
+    "completions": [
+      false,
+      false,
+      false
+    ],
+    "due": [
+      40,
+      40,
+      38
+    ],
+    "completed_totals": [
+      7,
+      7,
+      5
+    ]
+  },
+  {
+    "tick": 37,
+    "incoming_each": [
+      2,
+      2,
+      2
+    ],
+    "stock_each_after": [
+      4,
+      4,
+      6
+    ],
+    "starts": [
+      false,
+      false,
+      false
+    ],
+    "before_start_each": [
+      null,
+      null,
+      null
+    ],
+    "completions": [
+      false,
+      false,
+      false
+    ],
+    "due": [
+      40,
+      40,
+      38
+    ],
+    "completed_totals": [
+      7,
+      7,
+      5
+    ]
+  },
+  {
+    "tick": 38,
+    "incoming_each": [
+      2,
+      2,
+      1
+    ],
+    "stock_each_after": [
+      6,
+      6,
+      7
+    ],
+    "starts": [
+      false,
+      false,
+      false
+    ],
+    "before_start_each": [
+      null,
+      null,
+      null
+    ],
+    "completions": [
+      false,
+      false,
+      true
+    ],
+    "due": [
+      40,
+      40,
+      null
+    ],
+    "completed_totals": [
+      7,
+      7,
+      6
+    ]
+  },
+  {
+    "tick": 39,
+    "incoming_each": [
+      2,
+      2,
+      2
+    ],
+    "stock_each_after": [
+      8,
+      8,
+      9
+    ],
+    "starts": [
+      false,
+      false,
+      false
+    ],
+    "before_start_each": [
+      null,
+      null,
+      null
+    ],
+    "completions": [
+      false,
+      false,
+      false
+    ],
+    "due": [
+      40,
+      40,
+      null
+    ],
+    "completed_totals": [
+      7,
+      7,
+      6
+    ]
+  },
+  {
+    "tick": 40,
+    "incoming_each": [
+      2,
+      2,
+      1
+    ],
+    "stock_each_after": [
+      0,
+      0,
+      0
+    ],
+    "starts": [
+      true,
+      true,
+      true
+    ],
+    "before_start_each": [
+      10,
+      10,
+      10
+    ],
+    "completions": [
+      true,
+      true,
+      false
+    ],
+    "due": [
+      45,
+      45,
+      45
+    ],
+    "completed_totals": [
+      8,
+      8,
+      6
+    ]
+  }
+]

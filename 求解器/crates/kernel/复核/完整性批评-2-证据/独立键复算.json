@@ -1,0 +1,166 @@
+{
+  "schema": "critic2-independent-key-v1",
+  "certificates": [
+    {
+      "certificate": "生产循环环带-周期证书-kernel.json",
+      "status": "counterexample",
+      "level": "production_part",
+      "period": "20",
+      "start_key_matches_recomputed": true,
+      "end_key_matches_recomputed": true,
+      "start_key_equals_end_key": true,
+      "start_time": 0,
+      "end_time": 20,
+      "period_matches_times": true,
+      "ledger_rows": 20,
+      "ledger_rows_match_period": true,
+      "ledger_totals_mismatch": [],
+      "rates": [
+        {
+          "item": "高容谷地电池",
+          "declared": "lt",
+          "recomputed": "lt",
+          "average_ok": true,
+          "inbound_matches_totals": true
+        },
+        {
+          "item": "精选荞愈胶囊",
+          "declared": "lt",
+          "recomputed": "lt",
+          "average_ok": true,
+          "inbound_matches_totals": true
+        }
+      ],
+      "all_pass": true
+    },
+    {
+      "certificate": "密集制造闭环序0核验-周期证书-kernel.json",
+      "status": "counterexample",
+      "level": "production_part",
+      "period": "190",
+      "start_key_matches_recomputed": true,
+      "end_key_matches_recomputed": true,
+      "start_key_equals_end_key": true,
+      "start_time": 72,
+      "end_time": 262,
+      "period_matches_times": true,
+      "ledger_rows": 190,
+      "ledger_rows_match_period": true,
+      "ledger_totals_mismatch": [],
+      "rates": [
+        {
+          "item": "高容谷地电池",
+          "declared": "lt",
+          "recomputed": "lt",
+          "average_ok": true,
+          "inbound_matches_totals": true
+        },
+        {
+          "item": "精选荞愈胶囊",
+          "declared": "lt",
+          "recomputed": "lt",
+          "average_ok": true,
+          "inbound_matches_totals": true
+        }
+      ],
+      "all_pass": true
+    },
+    {
+      "certificate": "密集制造闭环序1核验-周期证书-kernel.json",
+      "status": "counterexample",
+      "level": "production_part",
+      "period": "190",
+      "start_key_matches_recomputed": true,
+      "end_key_matches_recomputed": true,
+      "start_key_equals_end_key": true,
+      "start_time": 275,
+      "end_time": 465,
+      "period_matches_times": true,
+      "ledger_rows": 190,
+      "ledger_rows_match_period": true,
+      "ledger_totals_mismatch": [],
+      "rates": [
+        {
+          "item": "高容谷地电池",
+          "declared": "lt",
+          "recomputed": "lt",
+          "average_ok": true,
+          "inbound_matches_totals": true
+        },
+        {
+          "item": "精选荞愈胶囊",
+          "declared": "lt",
+          "recomputed": "lt",
+          "average_ok": true,
+          "inbound_matches_totals": true
+        }
+      ],
+      "all_pass": true
+    },
+    {
+      "certificate": "密集制造闭环序3核验-周期证书-kernel.json",
+      "status": "counterexample",
+      "level": "production_part",
+      "period": "105",
+      "start_key_matches_recomputed": true,
+      "end_key_matches_recomputed": true,
+      "start_key_equals_end_key": true,
+      "start_time": 349,
+      "end_time": 454,
+      "period_matches_times": true,
+      "ledger_rows": 105,
+      "ledger_rows_match_period": true,
+      "ledger_totals_mismatch": [],
+      "rates": [
+        {
+          "item": "高容谷地电池",
+          "declared": "lt",
+          "recomputed": "lt",
+          "average_ok": true,
+          "inbound_matches_totals": true
+        },
+        {
+          "item": "精选荞愈胶囊",
+          "declared": "lt",
+          "recomputed": "lt",
+          "average_ok": true,
+          "inbound_matches_totals": true
+        }
+      ],
+      "all_pass": true
+    },
+    {
+      "certificate": "密集制造闭环序4核验-周期证书-kernel.json",
+      "status": "counterexample",
+      "level": "production_part",
+      "period": "395",
+      "start_key_matches_recomputed": true,
+      "end_key_matches_recomputed": true,
+      "start_key_equals_end_key": true,
+      "start_time": 126,
+      "end_time": 521,
+      "period_matches_times": true,
+      "ledger_rows": 395,
+      "ledger_rows_match_period": true,
+      "ledger_totals_mismatch": [],
+      "rates": [
+        {
+          "item": "高容谷地电池",
+          "declared": "lt",
+          "recomputed": "lt",
+          "average_ok": true,
+          "inbound_matches_totals": true
+        },
+        {
+          "item": "精选荞愈胶囊",
+          "declared": "lt",
+          "recomputed": "lt",
+          "average_ok": true,
+          "inbound_matches_totals": true
+        }
+      ],
+      "all_pass": true
+    }
+  ],
+  "all_pass": true
+}

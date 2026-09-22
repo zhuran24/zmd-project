@@ -1,0 +1,165 @@
+{
+  "status": "engineering_checks_pass_K6_target_open",
+  "cargo_tests_passed": 139,
+  "clippy": "pass",
+  "schema_cases": 76,
+  "specification_checks": 67,
+  "cli_cases": 46,
+  "records": 29,
+  "cycles": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/双成品满仓起动试作-周期证书-kernel.json",
+      "status": "inconclusive",
+      "period": null,
+      "record_mode": "none"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序0核验-周期证书-kernel.json",
+      "status": "counterexample",
+      "period": {
+        "category": "算术推论",
+        "value": "190"
+      },
+      "record_mode": "none"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序1核验-周期证书-kernel.json",
+      "status": "counterexample",
+      "period": {
+        "category": "算术推论",
+        "value": "190"
+      },
+      "record_mode": "none"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序2核验-周期证书-kernel.json",
+      "status": "inconclusive",
+      "period": null,
+      "record_mode": "none"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序3核验-周期证书-kernel.json",
+      "status": "counterexample",
+      "period": {
+        "category": "算术推论",
+        "value": "105"
+      },
+      "record_mode": "none"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序4核验-周期证书-kernel.json",
+      "status": "counterexample",
+      "period": {
+        "category": "算术推论",
+        "value": "395"
+      },
+      "record_mode": "none"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序5核验-周期证书-kernel.json",
+      "status": "inconclusive",
+      "period": null,
+      "record_mode": "none"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点循环种子核验-周期证书-kernel.json",
+      "status": "inconclusive",
+      "period": null,
+      "record_mode": "none"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点核验-周期证书-kernel.json",
+      "status": "inconclusive",
+      "period": null,
+      "record_mode": "none"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点闭环核验-周期证书-kernel.json",
+      "status": "inconclusive",
+      "period": null,
+      "record_mode": "none"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/生产循环环带-周期证书-kernel.json",
+      "status": "counterexample",
+      "period": {
+        "category": "算术推论",
+        "value": "20"
+      },
+      "record_mode": "none"
+    }
+  ],
+  "batch_read_only": true,
+  "protected_files": 12,
+  "samples_bytes": {
+    "before": 2210033140,
+    "after": 190721105
+  },
+  "oversize_files": [],
+  "evidence_extensions": [
+    ".py",
+    ".log",
+    ".json",
+    ".md"
+  ],
+  "reduction": {
+    "status": "pass",
+    "before_exit": 1,
+    "after_exit": 0,
+    "changed_fingerprints": [
+      {
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+        "before": "e4123a73b1b0bd815e42f705c56a77f14a4368d95d52a1442b270c282b9e0637",
+        "after": "37427b530246a263018fa44a826893b46032c9d97eb8db1b6be06c7bcada080d"
+      },
+      {
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/transition.rs",
+        "before": "e298ac43f509561bcf15ebfe3a7bf5abba57133cc2561782ec397f6592ceeedd",
+        "after": "3cc3c75c3ad325f7ab4cc77a66468e733b867ac05e56f2607f34a64e7888769c"
+      },
+      {
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/polling.rs",
+        "before": "11168c6648e3a78074814b5740833a7952299f959161d6bd16bd1f127d369aa7",
+        "after": "b303c7ecc7ad6e1fb352a98bbd2c5d9d2dea16ec8a0a208c719fc8d8c215ecb1"
+      },
+      {
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/input.rs",
+        "before": "ecf8754d2c424f2f8970e606ef8dc5db5a220dcf61c81845947225f236df199e",
+        "after": "d40bf539f789708e64e3a52d909a9a4a96819545a384b3906acba91f1e3d7c79"
+      },
+      {
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json",
+        "before": "988ac30253bf1d4803f0f1eed23b5029db1033dcf391f2b7c324c5d9e27ee144",
+        "after": "2942f3916d63c41d600d8226046cbd2a5bc05439161cfa1c2abd1702b75dd590"
+      },
+      {
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询.json",
+        "before": "a8303054aaf7dde1af2a9f33d468a6c05c5d115ee2ee5ba5f5f07887a3dcc13a",
+        "after": "02ad753b54f31d04390b8672ebd4e316cef91d931fd96fec252c2fed82e863ee"
+      }
+    ],
+    "non_fingerprint_content_equal": true,
+    "classes": {
+      "混做粉碎机两下游": {
+        "semantic_sweep": 55296,
+        "operational_conservative": 87178291200
+      },
+      "分流器三路轮询": {
+        "semantic_sweep": 27323180236800,
+        "operational_conservative": 104657538585600
+      }
+    },
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/等价类计数.json",
+    "before_sha256": "c26b2fc41810feeb365790bf55176bb8950336675f1b5a5ed8e05f63efe61ce7",
+    "after_sha256": "2e3e4a8e9f5d20a886968b16b6b1986b51114b88a157b1596eb096592935d0e6"
+  },
+  "K6": {
+    "status": "attempt_completed_target_not_met",
+    "reason": "仅1封装、1灌装，每台5tick一件，故即使无限齐料也分别至多1/5，严格低于3/5及11/20；仓库中转还占用矿石所需的出库端口。本布局不能达到K6目标。D五项静态通过，512刻动态无D停止，台账真实记录两成品。"
+  },
+  "open_items": [
+    "K6未取得两条率均达标的生产部分周期；试作卡在布局规模、仓库过站及库存闭合。",
+    "81单位benchmark_brick及cycle墙钟仍存在性能目标未达项。",
+    "级二提升、全部种子/参数/读法、第二相遇读法、前置有限性及语义商接入仍未完成。"
+  ]
+}

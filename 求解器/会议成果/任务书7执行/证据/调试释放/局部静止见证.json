@@ -1,0 +1,439 @@
+{
+  "initial_N": 273,
+  "final_N": 275,
+  "rows": [
+    {
+      "time": -2,
+      "action": "initial: all correct ordinary/plant paths full; G stays off",
+      "ordinary": {
+        "P_in": 50,
+        "P_out": 50,
+        "H_in": 50,
+        "H_out": 50,
+        "G_in": 50
+      },
+      "cache": {
+        "P": null,
+        "H": null,
+        "G": null
+      },
+      "H_completed": 0,
+      "N": 273
+    },
+    {
+      "time": -2,
+      "action": "start H",
+      "ordinary": {
+        "P_in": 50,
+        "P_out": 50,
+        "H_in": 49,
+        "H_out": 50,
+        "G_in": 50
+      },
+      "cache": {
+        "P": null,
+        "H": [
+          "work",
+          -1
+        ],
+        "G": null
+      },
+      "H_completed": 0,
+      "N": 273
+    },
+    {
+      "time": -2,
+      "action": "mature full path vacancy wave PH",
+      "ordinary": {
+        "P_in": 50,
+        "P_out": 49,
+        "H_in": 50,
+        "H_out": 50,
+        "G_in": 50
+      },
+      "cache": {
+        "P": null,
+        "H": [
+          "work",
+          -1
+        ],
+        "G": null
+      },
+      "H_completed": 0,
+      "N": 273
+    },
+    {
+      "time": -1,
+      "action": "finish H",
+      "ordinary": {
+        "P_in": 50,
+        "P_out": 49,
+        "H_in": 50,
+        "H_out": 50,
+        "G_in": 50
+      },
+      "cache": {
+        "P": null,
+        "H": [
+          "done",
+          null
+        ],
+        "G": null
+      },
+      "H_completed": 1,
+      "N": 274
+    },
+    {
+      "time": 0,
+      "action": "start P",
+      "ordinary": {
+        "P_in": 49,
+        "P_out": 49,
+        "H_in": 50,
+        "H_out": 50,
+        "G_in": 50
+      },
+      "cache": {
+        "P": [
+          "work",
+          1
+        ],
+        "H": [
+          "done",
+          null
+        ],
+        "G": null
+      },
+      "H_completed": 1,
+      "N": 274
+    },
+    {
+      "time": 0,
+      "action": "mature full path vacancy wave HP",
+      "ordinary": {
+        "P_in": 50,
+        "P_out": 49,
+        "H_in": 50,
+        "H_out": 49,
+        "G_in": 50
+      },
+      "cache": {
+        "P": [
+          "work",
+          1
+        ],
+        "H": [
+          "done",
+          null
+        ],
+        "G": null
+      },
+      "H_completed": 1,
+      "N": 274
+    },
+    {
+      "time": 1,
+      "action": "finish P",
+      "ordinary": {
+        "P_in": 50,
+        "P_out": 49,
+        "H_in": 50,
+        "H_out": 49,
+        "G_in": 50
+      },
+      "cache": {
+        "P": [
+          "done",
+          null
+        ],
+        "H": [
+          "done",
+          null
+        ],
+        "G": null
+      },
+      "H_completed": 1,
+      "N": 274
+    },
+    {
+      "time": 1,
+      "action": "cache to output P",
+      "ordinary": {
+        "P_in": 50,
+        "P_out": 50,
+        "H_in": 50,
+        "H_out": 49,
+        "G_in": 50
+      },
+      "cache": {
+        "P": null,
+        "H": [
+          "done",
+          null
+        ],
+        "G": null
+      },
+      "H_completed": 1,
+      "N": 274
+    },
+    {
+      "time": 1,
+      "action": "start P",
+      "ordinary": {
+        "P_in": 49,
+        "P_out": 50,
+        "H_in": 50,
+        "H_out": 49,
+        "G_in": 50
+      },
+      "cache": {
+        "P": [
+          "work",
+          2
+        ],
+        "H": [
+          "done",
+          null
+        ],
+        "G": null
+      },
+      "H_completed": 1,
+      "N": 274
+    },
+    {
+      "time": 1,
+      "action": "mature full path vacancy wave HP",
+      "ordinary": {
+        "P_in": 50,
+        "P_out": 50,
+        "H_in": 50,
+        "H_out": 48,
+        "G_in": 50
+      },
+      "cache": {
+        "P": [
+          "work",
+          2
+        ],
+        "H": [
+          "done",
+          null
+        ],
+        "G": null
+      },
+      "H_completed": 1,
+      "N": 274
+    },
+    {
+      "time": 1,
+      "action": "cache to output H",
+      "ordinary": {
+        "P_in": 50,
+        "P_out": 50,
+        "H_in": 50,
+        "H_out": 50,
+        "G_in": 50
+      },
+      "cache": {
+        "P": [
+          "work",
+          2
+        ],
+        "H": null,
+        "G": null
+      },
+      "H_completed": 1,
+      "N": 274
+    },
+    {
+      "time": 1,
+      "action": "start H",
+      "ordinary": {
+        "P_in": 50,
+        "P_out": 50,
+        "H_in": 49,
+        "H_out": 50,
+        "G_in": 50
+      },
+      "cache": {
+        "P": [
+          "work",
+          2
+        ],
+        "H": [
+          "work",
+          2
+        ],
+        "G": null
+      },
+      "H_completed": 1,
+      "N": 274
+    },
+    {
+      "time": 1,
+      "action": "mature full path vacancy wave PH",
+      "ordinary": {
+        "P_in": 50,
+        "P_out": 49,
+        "H_in": 50,
+        "H_out": 50,
+        "G_in": 50
+      },
+      "cache": {
+        "P": [
+          "work",
+          2
+        ],
+        "H": [
+          "work",
+          2
+        ],
+        "G": null
+      },
+      "H_completed": 1,
+      "N": 274
+    },
+    {
+      "time": 2,
+      "action": "finish P",
+      "ordinary": {
+        "P_in": 50,
+        "P_out": 49,
+        "H_in": 50,
+        "H_out": 50,
+        "G_in": 50
+      },
+      "cache": {
+        "P": [
+          "done",
+          null
+        ],
+        "H": [
+          "work",
+          2
+        ],
+        "G": null
+      },
+      "H_completed": 1,
+      "N": 274
+    },
+    {
+      "time": 2,
+      "action": "cache to output P",
+      "ordinary": {
+        "P_in": 50,
+        "P_out": 50,
+        "H_in": 50,
+        "H_out": 50,
+        "G_in": 50
+      },
+      "cache": {
+        "P": null,
+        "H": [
+          "work",
+          2
+        ],
+        "G": null
+      },
+      "H_completed": 1,
+      "N": 274
+    },
+    {
+      "time": 2,
+      "action": "finish H",
+      "ordinary": {
+        "P_in": 50,
+        "P_out": 50,
+        "H_in": 50,
+        "H_out": 50,
+        "G_in": 50
+      },
+      "cache": {
+        "P": null,
+        "H": [
+          "done",
+          null
+        ],
+        "G": null
+      },
+      "H_completed": 2,
+      "N": 275
+    },
+    {
+      "time": 2,
+      "action": "start P",
+      "ordinary": {
+        "P_in": 49,
+        "P_out": 50,
+        "H_in": 50,
+        "H_out": 50,
+        "G_in": 50
+      },
+      "cache": {
+        "P": [
+          "work",
+          3
+        ],
+        "H": [
+          "done",
+          null
+        ],
+        "G": null
+      },
+      "H_completed": 2,
+      "N": 275
+    },
+    {
+      "time": 2,
+      "action": "mature full path vacancy wave HP",
+      "ordinary": {
+        "P_in": 50,
+        "P_out": 50,
+        "H_in": 50,
+        "H_out": 49,
+        "G_in": 50
+      },
+      "cache": {
+        "P": [
+          "work",
+          3
+        ],
+        "H": [
+          "done",
+          null
+        ],
+        "G": null
+      },
+      "H_completed": 2,
+      "N": 275
+    },
+    {
+      "time": 3,
+      "action": "finish P",
+      "ordinary": {
+        "P_in": 50,
+        "P_out": 50,
+        "H_in": 50,
+        "H_out": 49,
+        "G_in": 50
+      },
+      "cache": {
+        "P": [
+          "done",
+          null
+        ],
+        "H": [
+          "done",
+          null
+        ],
+        "G": null
+      },
+      "H_completed": 2,
+      "N": 275
+    }
+  ],
+  "geometry_reference": "证据/植物运行/局部结构.json",
+  "raw_transport_cells": 23,
+  "fixed_service": "G关闭，PH/HP满专线成熟后同刻传空位",
+  "scope": "局部库存和缓存事件；不是完整布局或通用执行器；H提前开、P后开不要求精确间隔"
+}

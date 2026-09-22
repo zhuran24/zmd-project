@@ -1,0 +1,9 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.01s
+     Running unittests src/lib.rs (target/debug/deps/kernel-26241e85d1128675)
+
+running 2 tests
+test tests::round6::round6_static_domain_reports_all_without_tick ... ok
+test tests::round6::round6_static_pass_does_not_replace_dynamic_d2 ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 97 filtered out; finished in 0.11s
+

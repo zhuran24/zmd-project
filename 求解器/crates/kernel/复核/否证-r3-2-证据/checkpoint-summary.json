@@ -1,0 +1,30 @@
+[
+  {
+    "case": "control",
+    "direct_status": "completed",
+    "seed_schema": "kernel-input-v3",
+    "state_preserved": true,
+    "resumed_status": "completed"
+  },
+  {
+    "case": "missing",
+    "direct_status": "invalid_input",
+    "seed_schema": "kernel-input-v3",
+    "state_preserved": false,
+    "resumed_status": "completed"
+  },
+  {
+    "case": "snapshot-conflict",
+    "direct_status": "invalid_input",
+    "seed_schema": "kernel-input-v3",
+    "state_preserved": false,
+    "resumed_status": "completed"
+  },
+  {
+    "case": "top-conflict",
+    "direct_status": "invalid_input",
+    "seed_schema": "kernel-input-v3",
+    "state_preserved": false,
+    "resumed_status": "completed"
+  }
+]

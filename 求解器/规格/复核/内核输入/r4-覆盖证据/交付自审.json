@@ -1,0 +1,18 @@
+{
+  "status": "通过",
+  "report": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/复核-r4-覆盖.md",
+  "findings": 1,
+  "local_links": 12,
+  "all_links_exist": true,
+  "audited_files_unchanged": true,
+  "file_count": 65,
+  "reader_review": [
+    "结论与发现数量一致",
+    "正式依据与实现范围分开",
+    "代数证明与有限选点分开",
+    "当前计数与历史计数分开",
+    "未把缺执行误写为缺表示",
+    "明确旧清单两处指纹差异"
+  ],
+  "report_sha256": "24557e59c75b6496228b6655db5cae626c9da0b74478b808b1edb44c15e697aa"
+}

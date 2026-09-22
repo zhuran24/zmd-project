@@ -1,0 +1,13 @@
+[
+  "state.warehouse",
+  "state.inventory",
+  "state.progress",
+  "memory",
+  "state.logistics.active_channels",
+  "state.logistics.blocked_channels",
+  "state.logistics.gate_counters",
+  "state.logistics.connection_order",
+  "state.semantic_context.arbitration",
+  "pending",
+  "usage"
+]

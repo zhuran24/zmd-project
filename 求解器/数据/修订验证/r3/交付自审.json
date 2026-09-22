@@ -1,0 +1,51 @@
+{
+  "status": "通过",
+  "scope": "交付前机械核对与读者自审记录；非独立异源复核",
+  "r3_findings": [
+    "C2-r3-L1-1",
+    "C2-r3-L1-2",
+    "C2-r3-L1-3",
+    "C2-r3-L2-1",
+    "C2-r3-L2-2",
+    "C2-r3-L2-3",
+    "C2-r3-L3-1",
+    "C2-r3-L3-2",
+    "C2-r3-L3-3",
+    "C2-r3-L3-4",
+    "C2-r3-L3-5"
+  ],
+  "r2_survivors": [
+    "C2-r2-L1-1",
+    "C2-r2-L1-2",
+    "C2-r2-L1-3",
+    "C2-r2-L1-4",
+    "C2-r2-L1-5",
+    "C2-r2-L1-6",
+    "C2-r2-L1-7",
+    "C2-r2-L2-1",
+    "C2-r2-L2-2",
+    "C2-r2-L2-3",
+    "C2-r2-L2-4",
+    "C2-r2-L2-5",
+    "C2-r2-L2-6",
+    "C2-r2-L2-7",
+    "C2-r2-L3-2",
+    "C2-r2-L3-3",
+    "C2-r2-L3-4",
+    "C2-r2-L3-5",
+    "C2-r2-L3-6"
+  ],
+  "cargo_tests_passed": 29,
+  "catalog_negative_tests_passed": 3,
+  "report_pass": 4925,
+  "report_fail": 0,
+  "report_unknown": 59,
+  "sample_checks": "3正例与11负例通过",
+  "readonly_sources_unchanged": true,
+  "reader_audit": "契约、转换说明、验证记录、覆盖表及修订记录的当前数字、条件前件、据、链接、未决和历史范围已回读。",
+  "open_items": [
+    "停派解释最终需主席/owner确认",
+    "A线旧53文件保护快照失效，须由A线刷新依赖后重跑",
+    "完整带箱、来源指派、几何布线、起动及全称运行认证未实现"
+  ]
+}

@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/r8-独立推演证据/recheck.py", line 34, in <module>
+    exec(compile(filename.read_text(), str(filename), 'exec'), namespace)
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zhuran24/zmd-research-fresh/求解器/规格/check_revision.py", line 44, in <module>
+    check(all(hashlib.sha256(Path(path).read_bytes()).hexdigest() == digest for path, digest in fingerprints.items()), f'只读文件 {len(fingerprints)} 份指纹未变')
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zhuran24/zmd-research-fresh/求解器/规格/check_revision.py", line 18, in check
+    raise AssertionError(label)
+AssertionError: 只读文件 21 份指纹未变

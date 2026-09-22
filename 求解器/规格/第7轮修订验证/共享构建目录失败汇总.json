@@ -1,0 +1,129 @@
+{
+  "status": "FAIL",
+  "scope": "规格本轮检查与C线原产物均实测；不从有限轨迹外推全称认证",
+  "commands": [
+    {
+      "name": "规格自查",
+      "command": [
+        "/usr/bin/python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/check_revision.py"
+      ],
+      "exit_code": 0,
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/规格/第7轮修订验证/规格自查结果.json",
+      "stderr": ""
+    },
+    {
+      "name": "原转移回归",
+      "command": [
+        "/usr/bin/python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/第三轮任务验证/核对转移回归.py"
+      ],
+      "exit_code": 0,
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/规格/第7轮修订验证/原转移回归结果.json",
+      "stderr": ""
+    },
+    {
+      "name": "前轮修订回归",
+      "command": [
+        "/usr/bin/python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/核对修订回归.py"
+      ],
+      "exit_code": 0,
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/规格/第7轮修订验证/前轮修订回归结果.json",
+      "stderr": ""
+    },
+    {
+      "name": "修订回归",
+      "command": [
+        "/usr/bin/python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/第7轮修订验证/核对修订回归.py"
+      ],
+      "exit_code": 0,
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/规格/第7轮修订验证/修订回归结果.json",
+      "stderr": ""
+    },
+    {
+      "name": "正式目录",
+      "command": [
+        "/usr/bin/python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/工具/formal_catalog.py"
+      ],
+      "exit_code": 0,
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/规格/第7轮修订验证/正式目录.log",
+      "stderr": ""
+    },
+    {
+      "name": "cargo-test",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "/home/zhuran24/zmd-research-fresh/求解器/Cargo.toml"
+      ],
+      "exit_code": 1,
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/规格/第7轮修订验证/cargo-test.log",
+      "stderr": "    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.01s\n     Running unittests src/lib.rs (求解器/target/debug/deps/topology-958a7a196b95191c)\n     Running unittests src/main.rs (求解器/target/debug/deps/topology-232d29a62249f608)\n     Running tests/validation.rs (求解器/target/debug/deps/validation-55f92a55e3fc13c3)\n   Doc-tests topology\nerror: extern location for serde does not exist: /home/zhuran24/zmd-research-fresh/求解器/target/debug/deps/libserde-bda080004035699a.rlib\n --> crates/topology/src/lib.rs:4:5\n  |\n4 | use serde::{Deserialize, Deserializer};\n  |     ^^^^^\n\nerror: aborting due to 1 previous error\n\nerror: doctest failed, to rerun pass `--doc`\n\nCaused by:\n  process didn't exit successfully: `rustdoc --edition=2021 --crate-type lib --color auto --crate-name topology --test crates/topology/src/lib.rs --test-run-directory '/home/zhuran24/zmd-research-fresh/求解器/crates/topology' --extern 'num_bigint=/home/zhuran24/zmd-research-fresh/求解器/target/debug/deps/libnum_bigint-7995233795dbbb85.rlib' --extern 'num_rational=/home/zhuran24/zmd-research-fresh/求解器/target/debug/deps/libnum_rational-762db1e517510b91.rlib' --extern 'num_traits=/home/zhuran24/zmd-research-fresh/求解器/target/debug/deps/libnum_traits-0914af2f97d56ad3.rlib' --extern 'serde=/home/zhuran24/zmd-research-fresh/求解器/target/debug/deps/libserde-bda080004035699a.rlib' --extern 'serde_json=/home/zhuran24/zmd-research-fresh/求解器/target/debug/deps/libserde_json-0ab88e76c2088d71.rlib' --extern 'topology=/home/zhuran24/zmd-research-fresh/求解器/target/debug/deps/libtopology-8578b156a094fd66.rlib' -L 'dependency=/home/zhuran24/zmd-research-fresh/求解器/target/debug/deps' -C embed-bitcode=no --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' --error-format human` (exit status: 1)\nnote: test exited abnormally; to see the full output pass --no-capture to the harness.\n"
+    },
+    {
+      "name": "候选B校验",
+      "command": [
+        "cargo",
+        "run",
+        "--locked",
+        "--offline",
+        "--quiet",
+        "--manifest-path",
+        "/home/zhuran24/zmd-research-fresh/求解器/Cargo.toml",
+        "--",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/contract.json"
+      ],
+      "exit_code": 0,
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/规格/第7轮修订验证/候选B校验报告.md",
+      "stderr": ""
+    },
+    {
+      "name": "样例检查",
+      "command": [
+        "/usr/bin/python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/check_examples.py",
+        "--self-test"
+      ],
+      "exit_code": 0,
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/规格/第7轮修订验证/样例检查结果.json",
+      "stderr": ""
+    },
+    {
+      "name": "黄金记录再生成",
+      "command": [
+        "/usr/bin/python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/check_golden_trace.py"
+      ],
+      "exit_code": 0,
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/规格/第7轮修订验证/黄金记录重算结果.json",
+      "stderr": ""
+    },
+    {
+      "name": "样例黄金完整核验",
+      "command": [
+        "/usr/bin/python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/第7轮修订验证/核对样例兼容.py"
+      ],
+      "exit_code": 0,
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/规格/第7轮修订验证/黄金完整核验结果.json",
+      "stderr": ""
+    }
+  ],
+  "readonly_count": 25037,
+  "readonly_changes": [],
+  "simulator_file_set_unchanged": true
+}

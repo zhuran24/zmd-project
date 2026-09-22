@@ -1,0 +1,3408 @@
+[
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+    "sha256": "abc7a5867f6477eedb619c63a21c4a77144c57ad4567fdcfb696b3049d66a670",
+    "excerpts": [
+      {
+        "start": 13,
+        "end": 18,
+        "lines": [
+          {
+            "line": 13,
+            "text": "物品格：部分单位中以虚拟形式存在，只能够放置一种物品的格子，当物品格超过一个时一个单位内一种物品也只能放在一个物品格内（协议储存箱和缓存格除外），且有放置上限，与存货和取货端口相连"
+          },
+          {
+            "line": 14,
+            "text": "仓库：协议核心中的所有物品格的集合"
+          },
+          {
+            "line": 15,
+            "text": "存货/取货端口：把物品存进/取出本单位物品格的端口"
+          },
+          {
+            "line": 16,
+            "text": "通道：当一个运输单位的存货端口/取货端口与其他运输单位/其他单位的取货端口/存货端口相遇时将自动形成通道"
+          },
+          {
+            "line": 17,
+            "text": "存货/取货物品格：制造单位的物品格，放置上限 50，只与该单位的存货/取货端口和缓存格相连，存货物品格不限制物品种类"
+          },
+          {
+            "line": 18,
+            "text": "缓存格：制造单位拥有的一种特殊物品格，每个制造单位只有一个，能存放无限数量、无限种类的物品；存货物品格通往它的通道只在存货物品格中的物品符合某个配方、且上一批已全部进入取货物品格时打开，通过一次制造的用量即关闭；它通往取货物品格的通道只让制造好的一批物品整批通过"
+          }
+        ]
+      },
+      {
+        "start": 20,
+        "end": 32,
+        "lines": [
+          {
+            "line": 20,
+            "text": "需电功能：需要供电状态解锁的功能，拥有它的单位称需电单位；不运行时进行中的进度保留，恢复后继续"
+          },
+          {
+            "line": 21,
+            "text": "开关：需电功能有开关，属可设定项"
+          },
+          {
+            "line": 22,
+            "text": "设定：可自行设定的项目都可以随时任意更改"
+          },
+          {
+            "line": 23,
+            "text": "滞留：物品在运输单位的物品格中必须停留至少 1 tick"
+          },
+          {
+            "line": 24,
+            "text": "移动：物品通过通道的过程，时间为0，整个基地内的所有物品都一直在尝试移动"
+          },
+          {
+            "line": 25,
+            "text": "判定：一个单位的一次尝试制造或尝试传输，或一条通道上的一次尝试移动；同一时刻的多个判定逐个进行，先后无法确定"
+          },
+          {
+            "line": 26,
+            "text": "元件：一个特别运输单位，或一段连续的传送带"
+          },
+          {
+            "line": 27,
+            "text": "阻尼：一条通道从它所在的端口起、到下一个非运输单位为止经过的元件数；中途被分流器分叉时只数其中一条分支，具体哪条无法确定"
+          },
+          {
+            "line": 28,
+            "text": "接通：通道形成的那一刻，即它两端的单位中较晚建造的那个的建造时刻"
+          },
+          {
+            "line": 29,
+            "text": "轮询：一个单位的多个存货端口或多个取货端口都建立了通道时，这些通道按接通先后轮流取得尝试移动的权限，尝试后立刻传给下一条，存货侧和取货侧各自独立；分流器和汇流器从第二条接通的通道起轮"
+          },
+          {
+            "line": 30,
+            "text": "优先级：通道分级时，移动权只在能移动的通道中级别最高的那一级里轮询"
+          },
+          {
+            "line": 31,
+            "text": "取货优先级：一个非运输单位的多个取货通道分级，直接接汇流器的通道各自一级，其余通道合为一级；一级的阻尼取其中最大的、接通时刻取其中最早的，阻尼小的级别高，阻尼相同时接通早的级别高"
+          },
+          {
+            "line": 32,
+            "text": "存货优先级：一个单位的多个存货通道分级，直接接分流器的通道各自一级，其余通道合为一级，各级按其中最早接通的通道排序，接通早的级别高"
+          }
+        ]
+      },
+      {
+        "start": 35,
+        "end": 41,
+        "lines": [
+          {
+            "line": 35,
+            "text": "制造：制造单位拥有供电状态时解锁的功能，一次制造的用量进入缓存格后立刻开始制造，制造结束后制造好的物品进入缓存格，无冷却"
+          },
+          {
+            "line": 36,
+            "text": "传输：协议储存箱在供电状态时会一直尝试把自身所有物品格内的所有物品立刻无线传输到仓库中，即使那个物品格中没有物品也一样，5 tick 冷却"
+          },
+          {
+            "line": 37,
+            "text": ""
+          },
+          {
+            "line": 38,
+            "text": "单位"
+          },
+          {
+            "line": 39,
+            "text": ""
+          },
+          {
+            "line": 40,
+            "text": "核心单位："
+          },
+          {
+            "line": 41,
+            "text": "协议核心：基地内有且只有一个，大小9x9,物品格数量不限、每格上限 80000，一对平行边上各自第 2-8 格各有一个存货端口（共 14 个），另一对平行边上各自第 2、5、8 格各有一个取货端口（共 6 个），每个取货端口各连接仓库的某一物品格（可自行设定）"
+          }
+        ]
+      },
+      {
+        "start": 59,
+        "end": 76,
+        "lines": [
+          {
+            "line": 59,
+            "text": "运输单位：一个物品格（上限1），桥接器例外"
+          },
+          {
+            "line": 60,
+            "text": "传送带：大小1x1，任意一条边为存货端口、其他任意一条边为取货端口"
+          },
+          {
+            "line": 61,
+            "text": ""
+          },
+          {
+            "line": 62,
+            "text": "    特别运输单位："
+          },
+          {
+            "line": 63,
+            "text": "    桥接器：大小1x1，两对平行边，每对独立拥有一个物品格（例外），每对中一边是存货端口、对边是取货端口，端口类型由先接上的那一端所接的单位决定"
+          },
+          {
+            "line": 64,
+            "text": "    物品准入口：大小1x1，任意一条边为存货端口、对边为取货端口；可以设定只放行某一种物品，设定后可再各自单独设全时段的累计收下上限（1-5000）和每 5 tick 的收下上限（1-5），该 5 tick 从它收下的第一件物品起算、走完后由下一件物品重新起算；身份不符或任一上限用尽时阻断，断开存货端口通道"
+          },
+          {
+            "line": 65,
+            "text": ""
+          },
+          {
+            "line": 66,
+            "text": "        物流单位："
+          },
+          {
+            "line": 67,
+            "text": "        分流器：大小1x1，任意一条边为存货端口、其余三条边为取货端口"
+          },
+          {
+            "line": 68,
+            "text": "        汇流器：大小1x1，三条边为存货端口、一条边为取货端口"
+          },
+          {
+            "line": 69,
+            "text": ""
+          },
+          {
+            "line": 70,
+            "text": ""
+          },
+          {
+            "line": 71,
+            "text": "仓储单位："
+          },
+          {
+            "line": 72,
+            "text": "协议储存箱：大小3x3，任意一条边全为存货端口，对边全为取货端口，6 个有编号的物品格（上限 50），存货端口每次把物品放进编号最小的能放它的物品格，取货端口每次从编号最小的非空物品格取货"
+          },
+          {
+            "line": 73,
+            "text": "仓库取货口：大小3x1，长边贴着基地边界，向内的长边中间有一个连接仓库某一物品格（可自行设定）的取货端口"
+          },
+          {
+            "line": 74,
+            "text": ""
+          },
+          {
+            "line": 75,
+            "text": "供电单位"
+          },
+          {
+            "line": 76,
+            "text": "供电桩：2x2,以自己中心为原点12x12的范围内若有某个需电单位的一部分则为该单位赋予供电状态"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解任务.txt",
+    "sha256": "10abf80fe6eefe647471eabe78da4053f77b489d3806722c501c6acb405a2864",
+    "excerpts": [
+      {
+        "start": 1,
+        "end": 15,
+        "lines": [
+          {
+            "line": 1,
+            "text": "目标"
+          },
+          {
+            "line": 2,
+            "text": "给出一个在仓库同时可以接受高容谷地电池和精选荞愈胶囊（下称成品）的、自调试期之后每个可到达的循环态中平均每 30 tick 至少向仓库交付前者 18 个、后者 16.5 个（0.6 个/tick 与 0.55 个/tick）、且所含最大空矩形面积最大的布局；空矩形指不含任何单位的矩形区域，面积相等时短边长者优，短边至少 6 格"
+          },
+          {
+            "line": 3,
+            "text": ""
+          },
+          {
+            "line": 4,
+            "text": "任务条件"
+          },
+          {
+            "line": 5,
+            "text": ""
+          },
+          {
+            "line": 6,
+            "text": "仓库物品：仓库中的源矿、蓝铁矿、荞花、砂叶、荞花种子、砂叶种子初始为满，其他物品为空"
+          },
+          {
+            "line": 7,
+            "text": "外部过程：仓库中的源矿与蓝铁矿持续可得且足够覆盖任意数量的消耗"
+          },
+          {
+            "line": 8,
+            "text": "零干预运行：建造完成且调试期结束后，玩家对基地内的任何单位不再有任何动作，从仓库中拿取成品除外"
+          },
+          {
+            "line": 9,
+            "text": "循环态：基地的状态以固定周期重复的运行状态"
+          },
+          {
+            "line": 10,
+            "text": "建造方式：全部单位由蓝图一次建成"
+          },
+          {
+            "line": 11,
+            "text": "调试期：布局的全部工作可以不用完全依赖蓝图，同样可以由玩家来做部分操作"
+          },
+          {
+            "line": 12,
+            "text": "操作精度：玩家的操作无法精确到某个 tick，也无法精确计时"
+          },
+          {
+            "line": 13,
+            "text": "离线：离线后任意两条通道的接通先后可能改变"
+          },
+          {
+            "line": 14,
+            "text": "判定次序：同一时刻多个判定的先后固定"
+          },
+          {
+            "line": 15,
+            "text": "仓库取货口位置：只放在基地的左边界或下边界"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md",
+    "sha256": "0ca6312ed5142008d136f2d298bf23937dfbcb4cc80b7e3bfc023278833e9ec9",
+    "excerpts": [
+      {
+        "start": 292,
+        "end": 299,
+        "lines": [
+          {
+            "line": 292,
+            "text": ""
+          },
+          {
+            "line": 293,
+            "text": "### 5.3 阻尼分支 DampingBranch"
+          },
+          {
+            "line": 294,
+            "text": ""
+          },
+          {
+            "line": 295,
+            "text": "`damping.branch` 的 specified.value=`{schema,fixedness,choices,evaluations,on_missing}`，schema=`damping-branch-v2`，fixedness=`by_available_set`，evaluations=[]，on_missing=`unresolved`。choices[] 恰为 `{fork_unit,available_channels,outgoing_channel}`。fork_unit 必须是分流器；available_channels 是其几何可能出支的一个非空子集，按PC id排序作集合编码；所选outgoing_channel必须属于该集合。键(fork_unit,available_channels)唯一；本版要求对每个可能被阻尼查询触达的分流器列全体非空子集（含单成员集），不会因运行中断边才临时补策略。不能把缺表项当随机选择或默取首支。（据：规则L27阻尼、L64准入口；表为工程受限读法）"
+          },
+          {
+            "line": 296,
+            "text": ""
+          },
+          {
+            "line": 297,
+            "text": "求值时只以**现存图的出边**构造可用集合，不以货物、端口额度、physical或对端授权筛边；图变更事务提交后按新集合重查，同一集合重现必同选。空集合无可选支，沿途无下一非运输终点仍`unresolved(damping.no_terminal)`；选中有向环也不虚构终点。完整表可包含当前失活子集的行，装载不因那一行的边当前断开拒收。每次查询只数所选支，不相加。（据：规则L16、L27、L31、L64；受限转移§3.1、§3.4）"
+          },
+          {
+            "line": 298,
+            "text": ""
+          },
+          {
+            "line": 299,
+            "text": "整段锁定出支是v2的部分子族：包含固定支的集合都选该支；不含固定支的集合必须由输入补全其它选择，不能自动补。v1的`(channel,fork_unit)`表若同一fork在不同查询起点选不同支，不能直接迁为该子族，应报告未覆盖；否则先核一致再显式扩表。采用主席建议的局部表未与L27“只数其中一条”或约束·分叉分支冲突，但**只覆盖出支集合可观察的局部确定性无记忆策略**。它未覆盖依赖查询起点、图的其它部分或历史的确定性策略；“全部确定性无记忆策略”只有限定到此函数定义域才成立。规则没要求整场固定，故这仍是工程分期，不是游戏唯一机制。（据：规则L27、约束·分叉分支；函数定义域的逻辑区分）"
+          }
+        ]
+      },
+      {
+        "start": 313,
+        "end": 337,
+        "lines": [
+          {
+            "line": 313,
+            "text": "在任务初始锚点，六类满额物品分别一格 80000，其他为空；unlisted=empty 是“其他物品为空”的符号规则，不截断仓库格数/物品域。多个 item=null 的空格不算同种重复；非空同物种不能占两仓库格。空格数量与容量仍核目录。settings.warehouse_assignments 只把端口连到格标签，不改变其中物品。以后出现的新格在状态仓库表登记，不能当新增物品操作。样例只列六种初始满格，不预设空成品格。据：任务仓库物品；规则 L13–14、L41、L73。"
+          },
+          {
+            "line": 314,
+            "text": ""
+          },
+          {
+            "line": 315,
+            "text": "`nonwarehouse` 为 Decision；specified.value=`StateSeed={layout_snapshot,settings_anchor,warehouse,inventory,progress,logistics,environment,semantic_context}`。虽沿用字段名 nonwarehouse，完整种子必须带当前 warehouse（同上编码）；initial_state.warehouse 是任务锚点条件，两者在不同时刻不能强制相等。reachability 为 Decision，登记从任务条件经历史产生该状态域的证据，不能只填“合法”。据：运行语义 §2/§5、仓库物品、调试期。"
+          },
+          {
+            "line": 316,
+            "text": ""
+          },
+          {
+            "line": 317,
+            "text": "| StateSeed 字段 | 表示与依据 |"
+          },
+          {
+            "line": 318,
+            "text": "|---|---|"
+          },
+          {
+            "line": 319,
+            "text": "| `layout_snapshot`、`settings_anchor` | 前者引 §2 快照 id；后者 `{event,side}` 必须能从 settings.anchor 和已记录操作重建当时设定，未定义的后效拒绝运行。据：设定、蓝图、重建 |"
+          },
+          {
+            "line": 320,
+            "text": "| `warehouse` | 当前格表及 empty_identity，同本节；不得把任务锚点的 80000 在调试后重新灌满。据：仓库物品、物品格 |"
+          },
+          {
+            "line": 321,
+            "text": "| `inventory[]` | `{slot,contents}`，contents 为 `{item,quantity,entered_at}` 数组；entered_at 为 Time 或 null，运输逐件年龄必须可核；缓存无限、桥两格、制造混装依轴，非运输额外停留依 residence.nontransport。据：物品格、缓存格、滞留 |"
+          },
+          {
+            "line": 322,
+            "text": "| `progress[]` | `{unit,phase,recipe,candidate_recipes,locked_recipe,remaining,cooldowns}`；phase 包括 idle/intake/working/completed；recipe/locked_recipe 可 null；remaining 为非负时长 Time 或 null；cooldowns 是 `{slot,remaining}` 数组，slot=null 表示单位冷却。部分缓存与候选配方不能硬压成一批。据：缓存格、需电功能、制造、传输 |"
+          },
+          {
+            "line": 323,
+            "text": "| `logistics` | `{active_channels,blocked_channels,poll_memory,gate_counters,connection_order}`；前两项 PC 集合；poll_memory 为 Decision，specified.value 必须为 §6.3 PollMemory；gate_counters[] 为 `{unit,total_received,window_received,window_started_at,blocked_reasons}`；v3 的 blocked_reasons 是 identity_mismatch/total_exhausted/window_exhausted 的无重复子集，分别保留阻断原因，v2 静态旧记录不推定原因，计数 Quantity，起点 Time/null；connection_order 为 Decision，引用统一接通历史。据：接通、轮询、优先级、物品准入口 |"
+          },
+          {
+            "line": 324,
+            "text": "| `environment` | `{time,stage,online,withdrawal_memory}`；withdrawal_memory 为 Decision，specified.value=`{once_fired,pending_rules}`，分别存已执行 once 规则 id 集合及 `{rule,event}` 待响应实例；它是策略历史而非新玩家设定。stage 包括 building/debug/zero_intervention，online 布尔。供电由快照及 power.cell_rule 导出，不由输入改写。据：供电桩、调试期、离线 |"
+          },
+          {
+            "line": 325,
+            "text": "| `semantic_context` | 下段字段全部必填；未解用 Decision，不省略成空数组。据：判定、判定次序、端口速率 |"
+          },
+          {
+            "line": 326,
+            "text": ""
+          },
+          {
+            "line": 327,
+            "text": "`semantic_context={arbitration,parameter_values,judgment_context,pending_events,tick_context}`：arbitration=`{level_order,warehouse_empty_slot_order}`，显式给当前布局全部几何可能级标签的固定全序及已声明无身份空仓库格顺序；level_order的全集由未阻断几何PC分组导出，阻断期间暂时为空的级标签仍保留以供恢复；它不是当前活跃级的投影，不按容器顺序补回新标签。仅活跃级参与比较；level_order 只在正式级排序键全等时使用，不能反转已定优先级。两张表须不重不漏；无身份空格集合从当前 warehouse 中 item=null 且已解 empty_identity.value=null 的记录派生，已指派取货口也不删去。空表只有实际无相应对象才合法。warehouse_empty_slot_order是当前候选序O(S)，不是固定母序或配置常量；一次成功PC入库或箱体传输与库存、历史身份原子提交O(S')=[w∈O(S): w在S'仍是无身份空格]，保持幸存项相对顺序；失败/容量拒收/空箱尝试保持该表，invalid/unsupported不产生后继。retain_history下清空的已用格保留该物种身份，不回入此表；规范新格创建时已绑定物种，也不入表。本版运行区间无新建匿名格或释放身份事件，遇此类事件按受限转移定义§1停止，不能私自补序。所有恢复锚点都保存当前表，读回严格核其定义域；一般完整闭包键及continuation调度投影包含它（§5.2仅在E/O恒定的参考子集有明确省略前件），不能在重载时从母序重算。完整维护见受限转移定义§4.1、§4.3及§5。parameter_values[] 为 `{axis,value,lifetime}`（当前 Decision 与 F/O/U，须与参数轴及当前历史一致）；judgment_context 为 Decision；v3 的完整结构及扫描阶段见 §5.2，v2 旧四字段表示不作为运行恢复输入。pending_events 为 Decision，specified.value 是 `{event,operation,target,trigger,predecessors,status}` 数组：event 指 runtime 等全局事件，operation 包括 manufacture/transfer/move/internal_move/manufacture_complete/gate_window_expiry；后两者是非判定制造完成/窗口到期事件，target 对应单位或 PC/BC，trigger 为 `{kind,value}`，kind 包括 at_time(Time)、after_event(事件 id)、condition(本节谓词)，predecessors 为事件 id 数组，status=waiting/ready。日程是机制/历史产物，at_time 不授予玩家定时能力。"
+          },
+          {
+            "line": 328,
+            "text": ""
+          },
+          {
+            "line": 329,
+            "text": "`tick_context` 为 Decision，specified.value=`{window_start,window_end,movements,port_usage,internal_passages}`：两边界为 Time，具体 tick 窗口划分须由 time.* 给出；movements[] 为 `{event,channel,item,quantity}` 的已成功移动记录，event 指 runtime，channel 为 PC/BC；port_usage[] 为 `{port,quantity}`，是窗口内 PC 成功件数对两端的聚合，每口 ≤1，须与 movements 对齐，未列口在完整 specified 记录内计零；internal_passages[] 为 `{event,batch,channel}`，channel 为 BC，记录同刻缓存穿越依赖，不套端口额度。失败事件留在判定上下文和轮询记忆。调试可能结束在 tick 中途，不能无证明清空这些记录。窗口归属、日程或事件类未审时拒绝恢复运行。据：规则 L18、L24–25、L29；约束端口速率；T1/T2/T17。"
+          },
+          {
+            "line": 330,
+            "text": ""
+          },
+          {
+            "line": 331,
+            "text": "### 6.1 有限调试程序"
+          },
+          {
+            "line": 332,
+            "text": ""
+          },
+          {
+            "line": 333,
+            "text": "`debug_operations[]={event,action,target,payload,when,effects}`，event 指 debug_operation，全数组有限且其相邻操作有 occurs_before 关系。action 包括 set_switch（§4 switch 记录）、assign_warehouse_slot（恰 `{port,slot}`）、set_gate（§4 gate 记录）、rotate/rebuild（§3.2 payload）、withdraw_product（下节 WithdrawalAction）。target 为所操作单位，拿取时为核心；端口寻址在 payload 内，无“改写格物种”动作。when 见 §3.1；effects 为 Decision，derived.value=`{axes:[轴名]}` 或已审机制引用 `{schema,path,sha256}`。可表达不等于已证阶段授权和后效；rotation_stage/rebuild_inventory 等未解时不得执行。据：重建、旋转、设定、开关、准入口、核心、调试期。"
+          },
+          {
+            "line": 334,
+            "text": ""
+          },
+          {
+            "line": 335,
+            "text": "### 6.2 零干预期成品拿取"
+          },
+          {
+            "line": 336,
+            "text": ""
+          },
+          {
+            "line": 337,
+            "text": "`environment={ore_supply,offline,product_withdrawal,debug_end_event,zero_intervention_after_debug}`；ore_supply=task_continuous_sufficient，debug_end_event 指 debug_end，且不早于蓝图完成和所有调试操作/其后效完成；zero_intervention_after_debug=true。`product_withdrawal={policy,selected_events}`，不能以裸 Decision 替代。policy 是 Decision，specified.value 为下面策略结构；selected_events[]=`{event,rule,action}`，event 指 withdraw_product，rule 为策略规则 id 或 null（仅历史见证），action 为实测/候选发生的具体拿取。其与离线、建成、调试、运行判定的先后/同刻交织均进 timeline.relations。每次零干预拿取须在 debug_end 之后；调试拿取则进入 debug_operations，二者不可重复记账。据：任务 L7–9、L12–14。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md",
+    "sha256": "55e3caee8ab40d1003b6002f1283c46734ef77a122e2870a2455fb4f14355450",
+    "excerpts": [
+      {
+        "start": 5,
+        "end": 13,
+        "lines": [
+          {
+            "line": 5,
+            "text": "## 1. 输入、支持域和返回值"
+          },
+          {
+            "line": 6,
+            "text": ""
+          },
+          {
+            "line": 7,
+            "text": "输入为完整`StateSeed`、[受限模型声明](受限模型声明.md)全部轴的处置与实际参数、有限回放区间及该区间的外部历史。返回`ok(next_state, events)`、`invalid(field, reason)`、`unsupported(field, trigger)`、`unresolved(field, reason)`或`inconclusive(resource)`。后三种不能当作一次游戏转移，不能删除该输入后声称全称覆盖。`step_instant`从某整数时刻的边界前状态处理至该时刻闭包；`step_tick`从已闭包时刻t处理到t+1的闭包。种子在同刻中途时必须给扫描位置、边界阶段和去重状态，缺失时只接受显式`before_boundary`或`after_closure`锚点，不猜测重放位置。（据：判定、判定次序、移动、循环态；输入锚点为工程编码）"
+          },
+          {
+            "line": 8,
+            "text": ""
+          },
+          {
+            "line": 9,
+            "text": "支持域是有限已建成、占格不重叠、显式选connection.port_meeting=shared_edge_opposite的布局（共边全长重合且法向相反；其它相遇谓词见T5，未选/不支持值返回unsupported）；端口/桥方向已解；运行区间无玩家单位操作、离线、拿取或新增/拆除单位；外部矿石过程显式选sufficient或explicit_ore_history，见§2.1；普通有限执行仍不执行玩家拿取。§6生产抽象另有严格准入域，不把代表化当玩家操作。它是单段实验域，不能排除真实离线或拿取。解出具体建造/调试后态不在本算法里，种子的可达性另记。（据：基地、通道、蓝图、离线、零干预运行、外部过程、操作精度；最严可建造依据见运行语义§1）"
+          },
+          {
+            "line": 10,
+            "text": ""
+          },
+          {
+            "line": 11,
+            "text": "本版甲读法、整批归集要求制造种子的缓存内容与批次描述一致：idle为空，intake为恰一批已锁原料且功能停用，working为一批在制原料和正的剩余工作量，completed为恰一批成品且剩余0；取货格可保留过去同种批次。与此不符的有限缓存种子返回unsupported(initialization.other_inventory)，**不**把缓存容量改成一批；部分归集和其它初态属于未覆盖域。transport每格≤1，普通格单种与同种单格、箱体例外、制造容量50及仓库80000照正式规则核；在制原料保留物料账到完成时才变为产物。（据：物品格、缓存格、制造、配方、运输单位；本版初态限制）"
+          },
+          {
+            "line": 12,
+            "text": ""
+          },
+          {
+            "line": 13,
+            "text": "排序及选择数据必须完整：事件模板全序、同接通时刻的通道仲裁序、同级排序键的级仲裁序（semantic_context.arbitration.level_order，定义域为该布局全部几何可能级，断边期间保留暂空级的仲裁标签，仅活跃级参与比较）、制造输入格全序和配方全序、需要求值的每个阻尼分叉选择、每箱冷却余量、空仓库格身份及当前无身份空格序O(S)，它是随库存更新的状态字段，不是固定母序。缺少必需数据为invalid；已知但本版不支持为unsupported。不得把数组顺序、单位id或目录排列暗当语义优先序。相同字符串排序仅用于无物理差异的事件/级标签规范化；真正的顺序均明示输入。（据：轮询、两种优先级、阻尼、判定先后、物品格）"
+          }
+        ]
+      },
+      {
+        "start": 31,
+        "end": 36,
+        "lines": [
+          {
+            "line": 31,
+            "text": "每次访问前刷新本地计时阈值及现存PC上的身份检查：有源候选货而身份不符时，准入口记录identity_mismatch并断入边；它读取的是仍存在的PC，断边后不再观察对端。没有候选货不产生身份不符。此维护从本次访问前同一快照收集全部现存PC上的身份不符，统一增加原因并一次提交最终图，按§3.4一次映射；不按容器顺序边删边重算。窗口到期只在§2.1处理，不在访问时重复恢复。此维护落实规则64的阻断，不是跨断边的信息通路；它的同刻位置属于本版chronological_phases的维护子阶段。实际增加身份原因时记录独立非判定事件gate_identity_maintenance，含本次快照中全部受影响门与最终删边集；无变化不编造维护事件，不能冒名move或gate_window_expiry。随后执行模板。（据：物品准入口、通道；本版candidate_item与身份锁存读法；输出§2，KQ-05）"
+          },
+          {
+            "line": 32,
+            "text": ""
+          },
+          {
+            "line": 33,
+            "text": "## 3. 两端权限与轮询后效"
+          },
+          {
+            "line": 34,
+            "text": ""
+          },
+          {
+            "line": 35,
+            "text": "### 3.1 先定义物理可动，避免循环守卫"
+          },
+          {
+            "line": 36,
+            "text": ""
+          }
+        ]
+      },
+      {
+        "start": 49,
+        "end": 54,
+        "lines": [
+          {
+            "line": 49,
+            "text": "先取判定前授权集合`A(c)⊆{source_output,target_input}`。A为空：本次访问不是判定，库存/指针均不变。A非空：产生一次c的通道尝试；成功当且仅当physical(c,s)且A含两端。成功时源减1、目标增1，两端端口预算各增1，目标运输格记entered_at=t；失败不改库存和预算。无论成败，**只对判前A内各侧**把其所属环next_channel置为c的下一成员（取完整该级环的后继；下一次筛选可跳不可动成员）；A外的侧保持。成功时A必为两端，故两侧均前移。这就是both＋advance_authorized的全部失败后效。（据：判定、移动、轮询、优先级、滞留、约束·端口速率；工程选值）"
+          },
+          {
+            "line": 50,
+            "text": ""
+          },
+          {
+            "line": 51,
+            "text": "示例：源环[a,b]当前a，目标给a所属侧的授权是d；访问a时A仅源侧，失败、源前移b、目标保持d。若后来两侧都授权a且physical=true，则a成功、两侧均沿各自环前移。若一端高级物理可动而授权别边，本边不能借对端授权越级成功。此定义没有证明全部参数下无饥饿，合法低产轨迹不删；一般both的其它失败后效仍见T3。（据：轮询、优先级、约束·密集结点）"
+          },
+          {
+            "line": 52,
+            "text": ""
+          },
+          {
+            "line": 53,
+            "text": "### 3.4 断边和恢复"
+          },
+          {
+            "line": 54,
+            "text": ""
+          }
+        ]
+      },
+      {
+        "start": 139,
+        "end": 191,
+        "lines": [
+          {
+            "line": 139,
+            "text": ""
+          },
+          {
+            "line": 140,
+            "text": "**生产抽象转移**记为G：在after_closure状态中，把成品代表库存取为0，已有成品格按retain_history编码为空的历史格；矿量保留正的代表值；然后执行§2–5得到下一after_closure完整代表状态。下一次G再取代表。代表化记在执行模式`production_abstraction`及证书normalization里，不是player_action、不是实际拿取账，也不是“每次入库自动消失”的游戏机制。各tick记录G内实际成功的端口/无线入库件数，代表化扣除量另列`representative_adjustment`用于代表库存守恒；普通finite_concrete记录该数组为空。由B<80000，整个tick内各成品每次完整批入库都有容量。比较两键时成品数量不参与，因此代表可有不同数值，不能以这些代表状态声称级二获证。（据：第五轮任务书§2.1抽象的工程分级；规则L13/L36/L41；T12已排除项；级二义务见§6.5）"
+          },
+          {
+            "line": 141,
+            "text": ""
+          },
+          {
+            "line": 142,
+            "text": "若坚持把G的代表化当具体游戏动作，证明立即卡在任务L12，不能使用这种解释。这里证明的是生产投影的转移与率，完整合法环境提升尚未成立。"
+          },
+          {
+            "line": 143,
+            "text": ""
+          },
+          {
+            "line": 144,
+            "text": "### 6.2 StateSeed逐字段键与closure_key逐项对照"
+          },
+          {
+            "line": 145,
+            "text": ""
+          },
+          {
+            "line": 146,
+            "text": "下表中的“保留”是保留语义值；Quantity使用约分整数/有理数，不比较category文案；Decision须先验证status/value/basis，再保存状态和值，basis为证据附件，不作为物理守卫。无序集合按稳定身份排序，**语义有序数组不得排序**。完整状态和证据文案仍原样保存在证书。时间基点t为该state.environment.time；不饱和年龄，不截断累计计数。（据：内核输入§1.1/§6；§5.1已排除纯审计标签；规则L23/L29/L64）"
+          },
+          {
+            "line": 147,
+            "text": ""
+          },
+          {
+            "line": 148,
+            "text": "| StateSeed字段（逐叶字段/明确数组成员） | 生产键处理 | 现有私有closure_key位置及依据 |"
+          },
+          {
+            "line": 149,
+            "text": "|---|---|---|"
+          },
+          {
+            "line": 150,
+            "text": "| layout_snapshot | 保留锚点id；比较前锁定对应完整layout内容、端口/桥方向 | 不在元组；Engine固定input。跨运行不能省上下文（输入§2；通道/桥接器） |"
+          },
+          {
+            "line": 151,
+            "text": "| settings_anchor.event、side | 保留，且锁定完整settings（switches、gates、warehouse_assignments） | 不在元组；固定input。规则L21/L22/L41/L73，§1 |"
+          },
+          {
+            "line": 152,
+            "text": "| warehouse.unlisted | 保留empty | 元组1 warehouse；输入§6 |"
+          },
+          {
+            "line": 153,
+            "text": "| warehouse.slots[].slot、item、quantity、empty_identity.status/value | 两矿保留slot/item/身份，quantity改为sufficient标记；两成品整行移出键，只保留两个物种的under_capacity抽象接收标记；其余逐项保留，slots按slot排序 | 元组1全保留；级一删除的合法性限§6.1 D，不能直接复用闭包键 |"
+          },
+          {
+            "line": 154,
+            "text": "| warehouse.slots[].quantity.category、empty_identity.basis | 不入物理键，完整原证据保留 | 元组1当前按序列化字节保留，类别/据不参与§4选择器 |"
+          },
+          {
+            "line": 155,
+            "text": "| inventory[].slot | 保留，数组按slot排序 | 元组2 inventory；规则L13/L17/L18/L63/L72 |"
+          },
+          {
+            "line": 156,
+            "text": "| inventory[].contents[].item、quantity | 全部保留，按(item,年龄)规范多重集，同种年龄不同不能合并；category不入物理键 | 元组2；物品格/批次/容量，§3.1/§4 |"
+          },
+          {
+            "line": 157,
+            "text": "| inventory[].contents[].entered_at | 非null变`age=t-entered_at`（包括非运输格）；null仍null。无年龄饱和 | 元组2含绝对时刻；规则L23，输入§6；非运输记录虽不读仍保守保留 |"
+          },
+          {
+            "line": 158,
+            "text": "| progress[].unit、phase、recipe、candidate_recipes、locked_recipe | 全保留；progress按unit，candidate_recipes为已核集合按id，配方优先序在参数里保留原序 | 元组3 progress；§4.2、输入§6 |"
+          },
+          {
+            "line": 159,
+            "text": "| progress[].remaining | 剩余工作量本就是时长，保留，null不改为0 | 元组3；规则L20/L35及§2.1 |"
+          },
+          {
+            "line": 160,
+            "text": "| progress[].cooldowns[].slot、remaining | 保留slot及剩余时长，按slot（null在前）规范排序 | 元组3；规则L20/L36、transfer.* |"
+          },
+          {
+            "line": 161,
+            "text": "| logistics.active_channels、blocked_channels | 保留PC集合，分别排序 | 元组5、6；规则L16/L64，§3.4 |"
+          },
+          {
+            "line": 162,
+            "text": "| logistics.poll_memory.status、value.schema | 保留，必须已解poll-memory-v1 | 元组4 `self.memory`是Decision解码结果；输入§6.3 |"
+          },
+          {
+            "line": 163,
+            "text": "| logistics.poll_memory.value.sides[].unit、side、graded、current_level | 全保留，sides按(unit,side)排序 | 元组4；规则L29–32，§3.2 |"
+          },
+          {
+            "line": 164,
+            "text": "| logistics.poll_memory.value.sides[].levels[].id、members、next_channel | 全保留；级数组按id作记录索引，members的接通环原序不能排序；current_level/游标不能只留成功移动投影 | 元组4；§3.1–3.4；失败会改游标 |"
+          },
+          {
+            "line": 165,
+            "text": "| logistics.gate_counters[].unit、total_received、window_received、blocked_reasons | 全保留；按unit排序，原因作集合；即使没设累计上限也不擅自删total_received | 元组7；规则L64、输入§6；精确累计可能导致永不重键，是检测不完备而非无循环 |"
+          },
+          {
+            "line": 166,
+            "text": "| logistics.gate_counters[].window_started_at | null保留，否则变elapsed=t-start，禁止只取模5 | 元组7含绝对起点；规则L64，§2.1/§3.4 |"
+          },
+          {
+            "line": 167,
+            "text": "| logistics.connection_order.status/value | 保留当前PC有序分组及历史引用；静态接通时刻/建造时刻保留原常量，不减t | 元组8；§3.1只比较接通先后。固定建造史若每刻减t会制造无意义漂移 |"
+          },
+          {
+            "line": 168,
+            "text": "| environment.time | 改为0，时差由上述年龄/剩余与以下相对域承载 | 不在元组（本刻t固定）；§2.1、任务L9 |"
+          },
+          {
+            "line": 169,
+            "text": "| environment.stage、online | 保留zero_intervention、true | 不在元组，D限定；输入§6、任务L8/L13 |"
+          },
+          {
+            "line": 170,
+            "text": "| environment.withdrawal_memory.status/value.once_fired、pending_rules[].rule/event | G中须为空无动作/不适用，保留此标记；不接受未来玩家事件；级二独立量化F，不把无限玩家历史塞进生产状态 | 不在元组；输入§6.2，D及§6.5 |"
+          },
+          {
+            "line": 171,
+            "text": "| semantic_context.arbitration.level_order | 完整保留有序列表，包括当前暂空级标签 | 元组9 arbitration；§1、§3.1、输入§6 |"
+          },
+          {
+            "line": 172,
+            "text": "| semantic_context.arbitration.warehouse_empty_slot_order | D下必须[]，规范为[]；不许丢掉非空O后继续比较。成品历史格不回O | 元组9完整保留；§4.1稳定子序，§6.1 D.3 |"
+          },
+          {
+            "line": 173,
+            "text": "| semantic_context.parameter_values[].axis、lifetime、value.status/value | 99轴逐项保留，按axis排序；固定表/历史常量原样，不把参数里的初始化时间随t平移；basis在附件 | 不在元组，Engine参数常量；输入§5–6；跨参数点不比较 |"
+          },
+          {
+            "line": 174,
+            "text": "| judgment_context.status/value.instant、phase、order_scope | 保留after_closure/global，instant归0 | 不在元组；§1、§2.2及D |"
+          },
+          {
+            "line": 175,
+            "text": "| judgment_context.value.round、next_template、ordered_events、next_event、continuation | after_closure中前三者是已完成扫描的审计，移出物理键；next_event须null，continuation须不存在，否则拒收。完整原值入状态和日志 | 不在元组；下一step_tick重新从轮0开始；不可对中途种子照此删除（输入§5.2） |"
+          },
+          {
+            "line": 176,
+            "text": "| pending_events.status/value[].operation、target、status、predecessors | 保留活动类型/目标/waiting；本版predecessors须[]，after_event/condition非空依赖不在D，不能删除后续依赖 | 元组10 `self.pending`；输入§6，§2.1 |"
+          },
+          {
+            "line": 177,
+            "text": "| pending_events.value[].trigger.kind/value | 仅at_time，值改deadline−t；制造完成另由remaining判，预计deadline仅审计，仍保守保留偏移；窗口deadline必须等start+5 | 元组10含绝对截止；规则L20/L35/L64，§2.1 |"
+          },
+          {
+            "line": 178,
+            "text": "| pending_events.value[].event | `C\\|deadline\\|unit`/`W\\|deadline\\|unit`规范为(operation,target,deadline−t)，保留同一事件的引用一致性，不以字符串相等阻断时间平移 | 元组10原id全保留；输入§3.1保留域，D无未来历史别名；不得把两个同目标未办实例误合并 |"
+          },
+          {
+            "line": 179,
+            "text": "| tick_context.status/value.window_start、window_end | 保留相对偏移start−t=0、end−t=1 | 元组不含此封套；§2.1，输入§6 |"
+          },
+          {
+            "line": 180,
+            "text": "| tick_context.value.port_usage[].port、quantity | 保留按port排序的额度图，未列口按已校验的0，不得将1抹去 | 元组11 `self.usage`；约束·端口速率；虽下刻清零仍保守保留 |"
+          },
+          {
+            "line": 181,
+            "text": "| tick_context.value.movements[].event/channel/item/quantity | 原始已成功账移出物理键，全量留证书；额度已保留、库存已提交，无后续守卫再读这些已办事件 | 元组不含movements；§3.3/§5.1；输入§6与输出§2核账 |"
+          },
+          {
+            "line": 182,
+            "text": "| tick_context.value.internal_passages[].event/batch/channel | 已办BC账移出物理键；batch里的绝对开工/出库时刻是审计身份，不是未完批次状态，后者在progress | 元组不含passages；§4.2、§5.1 |"
+          },
+          {
+            "line": 183,
+            "text": "| 所有Decision.basis、Quantity.category、纯日志/累计交付账/扫描计数器 | 只作为附件，不影响物理键；若未来实现读取它们作守卫，此键版本失效，须升版 | §5.1明确排除纯审计；同刻closure_key当前包含部分文案是保守实现 |"
+          },
+          {
+            "line": 184,
+            "text": ""
+          },
+          {
+            "line": 185,
+            "text": "该表穷尽当前StateSeed八个顶层及model.rs的Content/WarehouseSlot/Cooldown/Progress/Side/Level/Gate/Environment/Arbitration/ParameterValue/SemanticContext字段；Decision中未知扩展或新触发类型拒收，不以“其它字段忽略”兜底。私有closure_key实际11个元组项依次为warehouse、inventory、progress、memory、active_channels、blocked_channels、gate_counters、connection_order、arbitration、pending、usage；它用于同刻闭包，**不得直接更换成生产键**。新增键由独立public接口实现，旧闭包仍保留真实仓库存量/身份。（据：transition.rs::closure_key；内核输入§6；本文§5.1）"
+          },
+          {
+            "line": 186,
+            "text": ""
+          },
+          {
+            "line": 187,
+            "text": "精确JSON编码为`{schema,domain,state,product_acceptance}`，其中state维持StateSeed八个顶层字段；上述表的局部规范化用`entered_at={age:{value:\"有理数\"}}`、`window_started_at={elapsed:{value:\"有理数\"}}`、两矿`quantity={value:\"sufficient\"}`表示。其它Quantity删除category并约分，Decision删除basis；after_closure的judgment_context只留instant/phase/order_scope，tick_context移去movements/internal_passages；pending.event改为`[operation,target,\"deadline−t\"]`，trigger仍为相对Time。product_acceptance按电池、胶囊顺序各记`{item,state:\"under_capacity\"}`。对象键按UTF-8字典序编码，紧凑JSON、ensure_ascii=false；数组按本表规定排序，时间/物种/接通环不凭序列化容器序推语义。可执行的逐字段编码参考为[cycle_key_reference.py](第五轮规格修订/cycle_key_reference.py)，它只核局部可编码前件，**不能代替D准入、输入合法性或Rust实现**。所有完整证据仍保留在原StateSeed，不把规范键作为恢复状态。（据：输入§1.1/§6；本文§6.2；工程编码）"
+          },
+          {
+            "line": 188,
+            "text": ""
+          },
+          {
+            "line": 189,
+            "text": "### 6.3 良定义证明（限D与生产抽象G）"
+          },
+          {
+            "line": 190,
+            "text": ""
+          },
+          {
+            "line": 191,
+            "text": "设K(S)=K(T)、两者属于同一固定三元组的D，时间差δ。下述每步同时保持投影与入库标签；证明不是“略去仓库显然不影响”。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.md",
+    "sha256": "07de6c939938b88f0165fb1c02b1d96c19fd519453af54ce33ab9aa95b88d52c",
+    "excerpts": [
+      {
+        "start": 5,
+        "end": 31,
+        "lines": [
+          {
+            "line": 5,
+            "text": "## 1. 顶层契约"
+          },
+          {
+            "line": 6,
+            "text": ""
+          },
+          {
+            "line": 7,
+            "text": "所有字段必填，明确标为可空的字段也不可省略，未知键拒收。装载前失败而无法形成合法参数、历史、种子或验证范围时，parameter_assignment/input_history/trace/validation_scope可为null，并在open_items给停止位置；completed时这四项均必须非空，不能伪造未发生的状态。物理数字沿用 Quantity，时刻沿用有理 Time；本版 schema 只接有理轨迹，非有理事件输入输出为 unsupported，不用浮点近似替代。Decision 的 value 形状由轴/状态所属接口继续校验，单靠 JSON Schema 不证明它可执行。"
+          },
+          {
+            "line": 8,
+            "text": ""
+          },
+          {
+            "line": 9,
+            "text": "| 字段 | 类型与语义 |"
+          },
+          {
+            "line": 10,
+            "text": "|---|---|"
+          },
+          {
+            "line": 11,
+            "text": "| schema、run_id | kernel-output-v3、唯一运行标识。 |"
+          },
+          {
+            "line": 12,
+            "text": "| execution_mode | finite_concrete或production_abstraction；后者仅按受限转移§6代表化，不能报为玩家真实运行。 |"
+          },
+          {
+            "line": 13,
+            "text": "| port_meeting | shared_edge_opposite或closed_segment_touch的明确读法；须等于参数点。当前内核只实现前者，后者仅用于表达带该前提的停止/待实现记录。 |"
+          },
+          {
+            "line": 14,
+            "text": "| profile_id | 必须等于输入与 parameter_assignment.profile_id，例如 kernel_profile_v1；不能仅凭此名字认定相同解释，仍核源指纹及逐字段值。 |"
+          },
+          {
+            "line": 15,
+            "text": "| producer | `{kind,path,claim}`；kind=kernel、bounded_reference_checker 或 manual_expected，明确产物由内核、有限重算还是手算产生。工具路径也入指纹。手算期望不能标成实际内核输出。 |"
+          },
+          {
+            "line": 16,
+            "text": "| status | completed（所请求有限前缀完成）、invalid_input、unsupported（实现不支持）、unresolved（规格或输入义务未解）、inconclusive（资源不足）。任何状态都不自动表示达标或全题无解。 |"
+          },
+          {
+            "line": 17,
+            "text": "| fingerprints[] | `{role,path,sha256}`；至少含 input、catalog、axis_registry、profile、三份 formal_source、实现 checker/kernel 对应 checker 角色，实际读取的 parameter_projection 及其声明/配置/轴表来源，以及本记录使用的 semantics、schema；若比较黄金结果，另有 golden。依赖清单由校验器重建后与记录严格比较，禁止删掉某个依赖以绕过核验；Python 实现包括 check_golden_trace、runtime_example、check_examples、runtime_record、event_order 和运行回归入口。参数投影在消费前还要核其内部来源哈希、逐轴决定、处置及覆盖说明。哈希针对原始字节，path 绝对路径或相对记录文件；指纹不匹配需重新核验，不允许刷新后沿用旧结论。 |"
+          },
+          {
+            "line": 18,
+            "text": "| parameter_assignment | 原样保存完整 Parameters 的三个生命周期对象和轴表引用；字段集合严格等于被锁定轴表，禁止漏轴、重复轴或悄悄默认。输入历史产生的当前值也存入每个 StateSeed.semantic_context。 |"
+          },
+          {
+            "line": 19,
+            "text": "| input_history | `{timeline,construction,debug_operations,environment,reachability}`，完整保留输入的事件、关系、接通、建成、调试、离线、补矿、拿取历史/策略及初態可达性证据；结构分别按内核输入 §3、§6 校验，不以文件名代替内容。 |"
+          },
+          {
+            "line": 20,
+            "text": "| uncovered_axes[] | `{axis,reason,disposition,coverage_status,evidence,other_values}`，恰覆盖本次全部轴。reason 是配置的通用损失，disposition 是配置处置；coverage_status 单独记录 exercised（实际执行）、input_checked（仅输入/结构检查）、not_exercised（未触发）、stop_not_triggered（停止条件未触及）、proof_pending（证明未完成）。evidence 为事件 id 或结构/未触发原因，other_values 明记其它值及联合组合未覆盖。填了本版值不等于已验证该机制。 |"
+          },
+          {
+            "line": 21,
+            "text": "| trace | `{start_state,ticks,end_time,format}`，format=full_state_each_instant时或checkpoint_delta（见§2.1）。时间推进、同刻顺序及中止点均不得跳步冒充已运行。 |"
+          },
+          {
+            "line": 22,
+            "text": "| validation_scope | 有限区间 from/through、golden_match、conditional_witness 起点、已完成批次数；universal_parameters/all_reachable_cycles/target_certified 必须 false。后续认证需要新版本证据结构，不能将这些位自行改 true。 |"
+          },
+          {
+            "line": 23,
+            "text": "| open_items[] | 未完成义务、超范围和解释冲突；若 status 非 completed，必须注明首个停止事件与原因，允许只保留合法前缀。 |"
+          },
+          {
+            "line": 24,
+            "text": ""
+          },
+          {
+            "line": 25,
+            "text": "原 91 轴全有值是本轮历史验收要求。当前共享表先新增 5 轴、第6轮再增 3 轴后为 99 项，本例 99 项全填；该数字不是 schema 常量，字段集合由指纹锁定的轴表定义。据：第三轮任务书 §3.C、运行语义 §3；记录接口为工程编码。"
+          },
+          {
+            "line": 26,
+            "text": ""
+          },
+          {
+            "line": 27,
+            "text": "## 2. 逐事件、逐时刻内容"
+          },
+          {
+            "line": 28,
+            "text": ""
+          },
+          {
+            "line": 29,
+            "text": "`ticks[]={time,events,state,summary,closure,warehouse_ledger}`；time严格递增，state为该时刻闭包后的完整StateSeed。首项起于本次执行产生的第一个时刻：before_boundary种子为t，after_closure种子为t+1。start_state原样保留及phase=after_closure，不补一条未由本次执行产生的t记录，也不重放t的事件。空前缀的end_time为start_state.environment.time。（据：受限转移§1；KQ-02；同一事件不可重放）summary 只是可读投影，以完整状态为准，校验器必须核两者一致。每个 state 的参数、物品格、在制、轮询记忆、待事件、端口额度都保存，不用状态哈希代替内容。据：运行语义 §2；内核输入 §6。"
+          },
+          {
+            "line": 30,
+            "text": ""
+          },
+          {
+            "line": 31,
+            "text": "`events[]={event,operation,target,outcome,detail?,basis}`。operation 分 move/internal_move/manufacture/transfer、非判定制造完成、gate_window_expiry窗口到期、gate_identity_maintenance身份维护、时间推进、补矿、离线、玩家动作；判定与非判定不能互相冒名。event 是实际实例 id；判定扫描机会由 EventOrder 规则生成，no_request 只是未获授权的扫描观测，不是已经发生的判定，不能以观测数统计规则判定数。失败须记录原因和真实权限后效，成功有库存增减；具体成功物流和端口计量保存在 state.semantic_context.tick_context，同步核对 event 引用。据：规则 L18、L23–25、L29、L35–36；约束端口速率。"
+          }
+        ]
+      },
+      {
+        "start": 76,
+        "end": 97,
+        "lines": [
+          {
+            "line": 76,
+            "text": "v1/v2记录不能机械增列后沿用旧“通过”；须重新校验来源投影、完整回放并生成v3。验证入口 [runtime_record.py](../数据/样例/runtime_record.py) 不改写被读记录；生成入口与验收入口分开，篡改的交付记录必须失败。"
+          },
+          {
+            "line": 77,
+            "text": ""
+          },
+          {
+            "line": 78,
+            "text": "## 4. 版本、覆盖与复核边界"
+          },
+          {
+            "line": 79,
+            "text": ""
+          },
+          {
+            "line": 80,
+            "text": "schema根以oneOf区分RunRecord与CycleResult，两者不得混填。运行记录schema=kernel-output-v3，循环结果schema=kernel-cycle-v1。后者内含可独立验收的v3记录，StateSeed/台账/事件定义共用。历史v2不在本版本的成功验收域；历史回放差异必须报告为迁移，不改旧黄金结果掩盖新选值。来源、参数投影、指纹和实际轨迹须整链更新，执行器不应把停止当游戏反例。（据：运行语义§6，受限模型声明§1/§4）"
+          },
+          {
+            "line": 81,
+            "text": ""
+          },
+          {
+            "line": 82,
+            "text": "## 5. 循环证书、反例和未决结果"
+          },
+          {
+            "line": 83,
+            "text": ""
+          },
+          {
+            "line": 84,
+            "text": "### 5.1 共用对象"
+          },
+          {
+            "line": 85,
+            "text": ""
+          },
+          {
+            "line": 86,
+            "text": "所有结果必填`schema,result_id,status,level,execution_mode,port_meeting,seed,parameter_point,reading,support_domain,replay_input,run_record,cycle,stop,budget,open_items`；未知键拒收，允许null者也必须给。完整StateSeed、Parameters和读取的原始输入在文件内，不以不可访问的路径替代重跑材料；外部目录/规则/实现用fingerprints锁定，缺失必须报无法核验。"
+          },
+          {
+            "line": 87,
+            "text": ""
+          },
+          {
+            "line": 88,
+            "text": "| 字段 | 值与语义 |"
+          },
+          {
+            "line": 89,
+            "text": "|---|---|"
+          },
+          {
+            "line": 90,
+            "text": "| status | cycle_found、counterexample、stopped、inconclusive、invalid_input。cycle_found只表示找到已核的特定级周期，不等于达标；低产周期可为counterexample，但受限语义未获许可/种子未证可达时只为条件反例。 |"
+          },
+          {
+            "line": 91,
+            "text": "| level | production_part（生产部分）或full_base（完整基地）；尚无周期可为null。full_base语法保留，当前periodic_lift未过时不能成功发证。 |"
+          },
+          {
+            "line": 92,
+            "text": "| seed | `{state,reachability,source_event}`；state为此次扫描起点完整状态，reachability为有据Decision；source_event为种子来源或检查点身份。 |"
+          },
+          {
+            "line": 93,
+            "text": "| parameter_point | `{assignment,input_axes}`；assignment完整99轴三个生命周期对象，input_axes必须恰含以下15轴的实际Decision，逐项与assignment一致，不只给域名。 |"
+          },
+          {
+            "line": 94,
+            "text": "| reading | `{port_meeting,warehouse_acceptance,acceptance_quantifier,cycle_interpretation,remaining_assumptions}`，前几项须与参数和证书级一致；完整正式源/规格指纹在run_record。 |"
+          },
+          {
+            "line": 95,
+            "text": "| support_domain | `{name,checks,uncovered}`，checks为`{condition,status,evidence}`数组，status=pass/fail/unresolved，逐项含转移§6.1 D.1–D.5（production_part）；证书不得以未知状态继续发出cycle_found。 |"
+          },
+          {
+            "line": 96,
+            "text": "| replay_input | 完整kernel-input-v3对象；循环起点重跑时仅替换initial_state.nonwarehouse为cycle.start_state，补齐活动事件注册，保留layout、settings、历史、99轴及种子来源。参数变化必须重新派生种子，不能手填游标骗过校验。 |"
+          },
+          {
+            "line": 97,
+            "text": "| run_record | 已核v3有限前缀；若装载前失败可null。中途停止必须保留所有已闭包时刻，不提交半刻StateSeed。 |"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限模型声明.md",
+    "sha256": "da0ab2073221bca451c676d54c44c98705bac2886c4ebf7049b7a87fd3509e86",
+    "excerpts": [
+      {
+        "start": 39,
+        "end": 40,
+        "lines": [
+          {
+            "line": 39,
+            "text": "| `damping.belt_component_rule` | 本版选值 | `\"path_runs\"`：按实际选中路径的极大连续带串计元件 | 据：元件、阻尼；T4；完整转移见受限转移定义 | geometric_components | 阻尼几何解释覆盖前 |"
+          },
+          {
+            "line": 40,
+            "text": "| `damping.belt_adjacency` | 本版选值 | `\"shared_edge\"`：几何连续时采用共边；本版path_runs不调用此值，显式保存以便迁移 | 据：元件的“连续”；完整转移见受限转移定义 | 角触连通的待审域 | 启用geometric_components前 |"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+    "sha256": "37427b530246a263018fa44a826893b46032c9d97eb8db1b6be06c7bcada080d",
+    "excerpts": [
+      {
+        "start": 39,
+        "end": 40,
+        "lines": [
+          {
+            "line": 39,
+            "text": "| `damping.belt_component_rule` | T4 | U | open：path_runs／geometric_components；几何块按共边邻接，一段内部逐格重复计数排除。据：元件、阻尼；T4 |"
+          },
+          {
+            "line": 40,
+            "text": "| `damping.belt_adjacency` | T4 | U | open：共边／包含角触；只在 geometric_components 解释中使用，是否允许角触未获证。据：元件的“连续” |"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.schema.json",
+    "sha256": "5c3cb1ace272c34439381ba770b000b26bdb745db20e52ca4008ff13be0d657e",
+    "excerpts": [
+      {
+        "start": 2527,
+        "end": 2555,
+        "lines": [
+          {
+            "line": 2527,
+            "text": "        {"
+          },
+          {
+            "line": 2528,
+            "text": "          \"if\": {"
+          },
+          {
+            "line": 2529,
+            "text": "            \"properties\": {"
+          },
+          {
+            "line": 2530,
+            "text": "              \"status\": {"
+          },
+          {
+            "line": 2531,
+            "text": "                \"const\": \"inconclusive\""
+          },
+          {
+            "line": 2532,
+            "text": "              }"
+          },
+          {
+            "line": 2533,
+            "text": "            }"
+          },
+          {
+            "line": 2534,
+            "text": "          },"
+          },
+          {
+            "line": 2535,
+            "text": "          \"then\": {"
+          },
+          {
+            "line": 2536,
+            "text": "            \"properties\": {"
+          },
+          {
+            "line": 2537,
+            "text": "              \"stop\": {"
+          },
+          {
+            "line": 2538,
+            "text": "                \"properties\": {"
+          },
+          {
+            "line": 2539,
+            "text": "                  \"kind\": {"
+          },
+          {
+            "line": 2540,
+            "text": "                    \"const\": \"resource\""
+          },
+          {
+            "line": 2541,
+            "text": "                  }"
+          },
+          {
+            "line": 2542,
+            "text": "                }"
+          },
+          {
+            "line": 2543,
+            "text": "              },"
+          },
+          {
+            "line": 2544,
+            "text": "              \"seed\": {"
+          },
+          {
+            "line": 2545,
+            "text": "                \"type\": \"object\""
+          },
+          {
+            "line": 2546,
+            "text": "              },"
+          },
+          {
+            "line": 2547,
+            "text": "              \"parameter_point\": {"
+          },
+          {
+            "line": 2548,
+            "text": "                \"type\": \"object\","
+          },
+          {
+            "line": 2549,
+            "text": "                \"properties\": {"
+          },
+          {
+            "line": 2550,
+            "text": "                  \"assignment\": {"
+          },
+          {
+            "line": 2551,
+            "text": "                    \"$ref\": \"#/$defs/Parameters\""
+          },
+          {
+            "line": 2552,
+            "text": "                  },"
+          },
+          {
+            "line": 2553,
+            "text": "                  \"input_axes\": {"
+          },
+          {
+            "line": 2554,
+            "text": "                    \"type\": \"object\","
+          },
+          {
+            "line": 2555,
+            "text": "                    \"properties\": {"
+          }
+        ]
+      },
+      {
+        "start": 2620,
+        "end": 2635,
+        "lines": [
+          {
+            "line": 2620,
+            "text": "                  }"
+          },
+          {
+            "line": 2621,
+            "text": "                },"
+          },
+          {
+            "line": 2622,
+            "text": "                \"required\": ["
+          },
+          {
+            "line": 2623,
+            "text": "                  \"assignment\","
+          },
+          {
+            "line": 2624,
+            "text": "                  \"input_axes\""
+          },
+          {
+            "line": 2625,
+            "text": "                ],"
+          },
+          {
+            "line": 2626,
+            "text": "                \"additionalProperties\": false"
+          },
+          {
+            "line": 2627,
+            "text": "              },"
+          },
+          {
+            "line": 2628,
+            "text": "              \"replay_input\": {"
+          },
+          {
+            "line": 2629,
+            "text": "                \"type\": \"object\""
+          },
+          {
+            "line": 2630,
+            "text": "              },"
+          },
+          {
+            "line": 2631,
+            "text": "              \"run_record\": {"
+          },
+          {
+            "line": 2632,
+            "text": "                \"$ref\": \"#/$defs/RunRecord\""
+          },
+          {
+            "line": 2633,
+            "text": "              }"
+          },
+          {
+            "line": 2634,
+            "text": "            }"
+          },
+          {
+            "line": 2635,
+            "text": "          }"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核实现-对规格的疑问.md",
+    "sha256": "2561791e9f20984e4bfe66d23555f82c004a81992e39b7757fd7f6119ed522fd",
+    "excerpts": [
+      {
+        "start": 83,
+        "end": 95,
+        "lines": [
+          {
+            "line": 83,
+            "text": "据：规则L13/L36/L41；规格§6.5已列79999与80000矿石回箱反例，同理适用于核心PC。"
+          },
+          {
+            "line": 84,
+            "text": ""
+          },
+          {
+            "line": 85,
+            "text": "## KQ-09（内核第3轮修订）：装载资源未决的空循环外壳被schema拒收"
+          },
+          {
+            "line": 86,
+            "text": ""
+          },
+          {
+            "line": 87,
+            "text": "位置：[内核输出](内核输出.md)§5.1；[内核输出.schema.json](内核输出.schema.json)的`/$defs/CycleResult/allOf/4/then/properties`；`cycle.rs::load_stopped_cycle`。"
+          },
+          {
+            "line": 88,
+            "text": ""
+          },
+          {
+            "line": 89,
+            "text": "问题：正文允许装载前失败时run_record等字段为null，受限转移§1与输出§1/§5要求资源不足为inconclusive(resource)。但schema的inconclusive分支不区分装载阶段和已运行前缀，强制seed、parameter_point、replay_input、run_record为非空对象。装载阶段可能在Time解码、整数资源检查或构造StateSeed时失败，不能假造已通过校验的种子/参数/运行记录来填这些字段。"
+          },
+          {
+            "line": 90,
+            "text": ""
+          },
+          {
+            "line": 91,
+            "text": "实测：生产循环环带的非空运输格entered_at取i64最小值；年龄差在装载时溢出。run与cycle均退出2、status=inconclusive；cycle.stop.kind=resource、axis=resource.integer、completed_ticks=0、cycle/run_record/seed/parameter_point/replay_input均null。正文所需分类已保持，但当前schema拒收，首先报告parameter_point类型不符。原始结果见[循环装载溢出](../crates/kernel/evidence/revision-r3/cli/age-overflow-cycle-result.json)，完整逐例schema核验见[CLI schema审计](../crates/kernel/evidence/revision-r3/cli-schema-audit.json)。"
+          },
+          {
+            "line": 92,
+            "text": ""
+          },
+          {
+            "line": 93,
+            "text": "当前处理：保留真实inconclusive分类和明确空外壳；不退回stopped，不把资源不足伪装invalid_input，不提供未获验证的完整对象。KR-r3-L3-02的状态分类已修复，但该装载结果的schema兼容性仍开放；其余正常周期/未决前缀仍按现行schema验收。K线没有schema写权，未修改规格文件。"
+          },
+          {
+            "line": 94,
+            "text": ""
+          },
+          {
+            "line": 95,
+            "text": "给S线的具体请求：将inconclusive条件中的非空上下文要求限定到已形成run_record的分支；允许装载资源未决使用正文既有nullable字段，同时要求stop.kind=resource、cycle=null、completed_ticks=0。非空run_record的运行中未决仍保留完整参数、种子与合法前缀，不能借装载例外删除已完成时刻。依据：输出§5.1“若装载前失败可null”、§5.3.5资源未决分类、受限转移§1、KR-r3-L3-02；数值资源上限不是游戏后继或无解证据。"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/engine.rs",
+    "sha256": "3af1fffb2171b03a58cfa61037f482ca09374e34188c8e80e785cc9f34e1b085",
+    "excerpts": [
+      {
+        "start": 768,
+        "end": 826,
+        "lines": [
+          {
+            "line": 768,
+            "text": "        for p in &self.pending {"
+          },
+          {
+            "line": 769,
+            "text": "            if p.event.is_empty() {"
+          },
+          {
+            "line": 770,
+            "text": "                return Err(Stop::invalid(\"pending_events.event\", \"待事件身份不能为空\"));"
+          },
+          {
+            "line": 771,
+            "text": "            }"
+          },
+          {
+            "line": 772,
+            "text": "            if let Some(event) = timeline.iter().find(|event| event[\"id\"] == p.event) {"
+          },
+          {
+            "line": 773,
+            "text": "                if event[\"kind\"] != \"runtime\" || event[\"time\"] != p.trigger[\"value\"] {"
+          },
+          {
+            "line": 774,
+            "text": "                    return Err(Stop::invalid("
+          },
+          {
+            "line": 775,
+            "text": "                        format!(\"pending_events.{}\", p.event),"
+          },
+          {
+            "line": 776,
+            "text": "                        \"待事件与历史类型或时刻冲突\","
+          },
+          {
+            "line": 777,
+            "text": "                    ));"
+          },
+          {
+            "line": 778,
+            "text": "                }"
+          },
+          {
+            "line": 779,
+            "text": "            }"
+          },
+          {
+            "line": 780,
+            "text": "            if !pending_keys.insert((p.operation.clone(), p.target.clone()))"
+          },
+          {
+            "line": 781,
+            "text": "                || !pending_ids.insert(p.event.clone())"
+          },
+          {
+            "line": 782,
+            "text": "                || p.status != \"waiting\""
+          },
+          {
+            "line": 783,
+            "text": "                || p.trigger[\"kind\"] != \"at_time\""
+          },
+          {
+            "line": 784,
+            "text": "                || !p.predecessors.is_empty()"
+          },
+          {
+            "line": 785,
+            "text": "            {"
+          },
+          {
+            "line": 786,
+            "text": "                return Err(Stop::invalid(\"pending_events\", \"重复/未支持的日程\"));"
+          },
+          {
+            "line": 787,
+            "text": "            }"
+          },
+          {
+            "line": 788,
+            "text": "            let deadline = instant(&p.trigger[\"value\"], &p.event)?;"
+          },
+          {
+            "line": 789,
+            "text": "            let expected = if p.operation == \"manufacture_complete\" {"
+          },
+          {
+            "line": 790,
+            "text": "                let pr = &self.state.progress[*self"
+          },
+          {
+            "line": 791,
+            "text": "                    .progress"
+          },
+          {
+            "line": 792,
+            "text": "                    .get(&p.target)"
+          },
+          {
+            "line": 793,
+            "text": "                    .ok_or_else(|| Stop::invalid(&p.event, \"未知制造目标\"))?];"
+          },
+          {
+            "line": 794,
+            "text": "                let n = pr"
+          },
+          {
+            "line": 795,
+            "text": "                    .remaining"
+          },
+          {
+            "line": 796,
+            "text": "                    .as_ref()"
+          },
+          {
+            "line": 797,
+            "text": "                    .ok_or_else(|| Stop::invalid(&p.event, \"无在制时长\"))?"
+          },
+          {
+            "line": 798,
+            "text": "                    .integer(&p.event)?;"
+          },
+          {
+            "line": 799,
+            "text": "                add(self.t, n, &p.event)?"
+          },
+          {
+            "line": 800,
+            "text": "            } else if p.operation == \"gate_window_expiry\" {"
+          },
+          {
+            "line": 801,
+            "text": "                let g = &self.state.logistics.gate_counters[*self"
+          },
+          {
+            "line": 802,
+            "text": "                    .gate_index"
+          },
+          {
+            "line": 803,
+            "text": "                    .get(&p.target)"
+          },
+          {
+            "line": 804,
+            "text": "                    .ok_or_else(|| Stop::invalid(&p.event, \"未知准入口\"))?];"
+          },
+          {
+            "line": 805,
+            "text": "                add("
+          },
+          {
+            "line": 806,
+            "text": "                    g.window_started_at"
+          },
+          {
+            "line": 807,
+            "text": "                        .as_ref()"
+          },
+          {
+            "line": 808,
+            "text": "                        .ok_or_else(|| Stop::invalid(&p.event, \"无窗口\"))?"
+          },
+          {
+            "line": 809,
+            "text": "                        .integer(&p.event)?,"
+          },
+          {
+            "line": 810,
+            "text": "                    self.input.catalog.kinds[\"物品准入口\"].window,"
+          },
+          {
+            "line": 811,
+            "text": "                    &p.event,"
+          },
+          {
+            "line": 812,
+            "text": "                )?"
+          },
+          {
+            "line": 813,
+            "text": "            } else {"
+          },
+          {
+            "line": 814,
+            "text": "                return Err(Stop::invalid(&p.event, \"待事件不是完成/窗口\"));"
+          },
+          {
+            "line": 815,
+            "text": "            };"
+          },
+          {
+            "line": 816,
+            "text": "            if p.operation == \"gate_window_expiry\""
+          },
+          {
+            "line": 817,
+            "text": "                && (deadline != expected"
+          },
+          {
+            "line": 818,
+            "text": "                    || deadline < self.t"
+          },
+          {
+            "line": 819,
+            "text": "                    || (deadline == self.t && phase == \"after_closure\"))"
+          },
+          {
+            "line": 820,
+            "text": "            {"
+          },
+          {
+            "line": 821,
+            "text": "                return Err(Stop::invalid(&p.event, \"待事件时刻与进度不符\"));"
+          },
+          {
+            "line": 822,
+            "text": "            }"
+          },
+          {
+            "line": 823,
+            "text": "        }"
+          },
+          {
+            "line": 824,
+            "text": "        if pending_keys != expected_pending {"
+          },
+          {
+            "line": 825,
+            "text": "            return Err(Stop::invalid(\"pending_events\", \"日程与在制/开窗集合不符\"));"
+          },
+          {
+            "line": 826,
+            "text": "        }"
+          }
+        ]
+      },
+      {
+        "start": 838,
+        "end": 884,
+        "lines": [
+          {
+            "line": 838,
+            "text": "    }"
+          },
+          {
+            "line": 839,
+            "text": "    /// 运行语义§2.2、受限转移§4.1：普通格单种、同种单格、数量容量与运输时间。"
+          },
+          {
+            "line": 840,
+            "text": "    pub fn validate_inventory(&self) -> Result<()> {"
+          },
+          {
+            "line": 841,
+            "text": "        let mut occupied = BTreeSet::new();"
+          },
+          {
+            "line": 842,
+            "text": "        for row in &self.state.inventory {"
+          },
+          {
+            "line": 843,
+            "text": "            let mut sum = 0;"
+          },
+          {
+            "line": 844,
+            "text": "            let mut items = BTreeSet::new();"
+          },
+          {
+            "line": 845,
+            "text": "            let mut parts = row.slot.split(':');"
+          },
+          {
+            "line": 846,
+            "text": "            let uid = parts.next().unwrap_or(\"\");"
+          },
+          {
+            "line": 847,
+            "text": "            let role = parts.next().unwrap_or(\"\");"
+          },
+          {
+            "line": 848,
+            "text": "            let unit = self"
+          },
+          {
+            "line": 849,
+            "text": "                .input"
+          },
+          {
+            "line": 850,
+            "text": "                .geometry"
+          },
+          {
+            "line": 851,
+            "text": "                .units"
+          },
+          {
+            "line": 852,
+            "text": "                .get(uid)"
+          },
+          {
+            "line": 853,
+            "text": "                .ok_or_else(|| Stop::invalid(&row.slot, \"未知单位格\"))?;"
+          },
+          {
+            "line": 854,
+            "text": "            let kind = &self.input.catalog.kinds[&unit.kind];"
+          },
+          {
+            "line": 855,
+            "text": "            if role != \"buffer\" && row.contents.len() > 1 {"
+          },
+          {
+            "line": 856,
+            "text": "                return Err(Stop::invalid(&row.slot, \"普通格不能混种\"));"
+          },
+          {
+            "line": 857,
+            "text": "            }"
+          },
+          {
+            "line": 858,
+            "text": "            for c in &row.contents {"
+          },
+          {
+            "line": 859,
+            "text": "                let n = c.quantity.integer(&row.slot)?;"
+          },
+          {
+            "line": 860,
+            "text": "                if n <= 0 || c.item.is_empty() || !items.insert(&c.item) {"
+          },
+          {
+            "line": 861,
+            "text": "                    return Err(Stop::invalid(&row.slot, \"库存数量/物种非法\"));"
+          },
+          {
+            "line": 862,
+            "text": "                }"
+          },
+          {
+            "line": 863,
+            "text": "                sum = add(sum, n, &row.slot)?;"
+          },
+          {
+            "line": 864,
+            "text": "                if let Some(t) = &c.entered_at {"
+          },
+          {
+            "line": 865,
+            "text": "                    if t.integer(&row.slot)? > self.t {"
+          },
+          {
+            "line": 866,
+            "text": "                        return Err(Stop::invalid(&row.slot, \"入格时刻在未来\"));"
+          },
+          {
+            "line": 867,
+            "text": "                    }"
+          },
+          {
+            "line": 868,
+            "text": "                } else if kind.family == \"transport\" {"
+          },
+          {
+            "line": 869,
+            "text": "                    return Err(Stop::invalid(&row.slot, \"运输格缺滞留起点\"));"
+          },
+          {
+            "line": 870,
+            "text": "                }"
+          },
+          {
+            "line": 871,
+            "text": "                if role != \"buffer\""
+          },
+          {
+            "line": 872,
+            "text": "                    && kind.same_item_unique"
+          },
+          {
+            "line": 873,
+            "text": "                    && !occupied.insert((uid, c.item.as_str()))"
+          },
+          {
+            "line": 874,
+            "text": "                {"
+          },
+          {
+            "line": 875,
+            "text": "                    return Err(Stop::invalid(&row.slot, \"同单位同种跨普通格\"));"
+          },
+          {
+            "line": 876,
+            "text": "                }"
+          },
+          {
+            "line": 877,
+            "text": "            }"
+          },
+          {
+            "line": 878,
+            "text": "            if let Some(cap) = self.caps.get(&row.slot).and_then(|c| *c) {"
+          },
+          {
+            "line": 879,
+            "text": "                if sum > cap {"
+          },
+          {
+            "line": 880,
+            "text": "                    return Err(Stop::invalid(&row.slot, \"超格容量\"));"
+          },
+          {
+            "line": 881,
+            "text": "                }"
+          },
+          {
+            "line": 882,
+            "text": "            }"
+          },
+          {
+            "line": 883,
+            "text": "        }"
+          },
+          {
+            "line": 884,
+            "text": "        Ok(())"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/input.rs",
+    "sha256": "ecf8754d2c424f2f8970e606ef8dc5db5a220dcf61c81845947225f236df199e",
+    "excerpts": [
+      {
+        "start": 852,
+        "end": 930,
+        "lines": [
+          {
+            "line": 852,
+            "text": "        Ok(())"
+          },
+          {
+            "line": 853,
+            "text": "    }"
+          },
+          {
+            "line": 854,
+            "text": "    /// 内核输入§5.3：按局部可用集登记所有非空子集，失活行仍有定义。"
+          },
+          {
+            "line": 855,
+            "text": "    fn validate_branches(&mut self) -> Result<()> {"
+          },
+          {
+            "line": 856,
+            "text": "        let branch = self.parameters.value(Axis::DampingBranch)?;"
+          },
+          {
+            "line": 857,
+            "text": "        fields("
+          },
+          {
+            "line": 858,
+            "text": "            branch,"
+          },
+          {
+            "line": 859,
+            "text": "            \"schema fixedness choices evaluations on_missing\","
+          },
+          {
+            "line": 860,
+            "text": "            \"damping.branch\","
+          },
+          {
+            "line": 861,
+            "text": "        )?;"
+          },
+          {
+            "line": 862,
+            "text": "        if branch[\"schema\"] != \"damping-branch-v2\""
+          },
+          {
+            "line": 863,
+            "text": "            || branch[\"fixedness\"] != \"by_available_set\""
+          },
+          {
+            "line": 864,
+            "text": "            || branch[\"evaluations\"] != serde_json::json!([])"
+          },
+          {
+            "line": 865,
+            "text": "            || branch[\"on_missing\"] != \"unresolved\""
+          },
+          {
+            "line": 866,
+            "text": "        {"
+          },
+          {
+            "line": 867,
+            "text": "            return Err(Stop::unsupported("
+          },
+          {
+            "line": 868,
+            "text": "                \"damping.branch\","
+          },
+          {
+            "line": 869,
+            "text": "                \"parameters\","
+          },
+          {
+            "line": 870,
+            "text": "                \"须显式迁移为局部可用集表v2\","
+          },
+          {
+            "line": 871,
+            "text": "            ));"
+          },
+          {
+            "line": 872,
+            "text": "        }"
+          },
+          {
+            "line": 873,
+            "text": "        let mut expected = BTreeSet::new();"
+          },
+          {
+            "line": 874,
+            "text": "        for (uid, u) in &self.geometry.units {"
+          },
+          {
+            "line": 875,
+            "text": "            if u.kind != \"分流器\" {"
+          },
+          {
+            "line": 876,
+            "text": "                continue;"
+          },
+          {
+            "line": 877,
+            "text": "            }"
+          },
+          {
+            "line": 878,
+            "text": "            let outgoing: Vec<_> = self"
+          },
+          {
+            "line": 879,
+            "text": "                .geometry"
+          },
+          {
+            "line": 880,
+            "text": "                .channels"
+          },
+          {
+            "line": 881,
+            "text": "                .iter()"
+          },
+          {
+            "line": 882,
+            "text": "                .filter(|(_, c)| self.geometry.ports[&c.source_port].unit == *uid)"
+          },
+          {
+            "line": 883,
+            "text": "                .map(|(id, _)| id.clone())"
+          },
+          {
+            "line": 884,
+            "text": "                .collect();"
+          },
+          {
+            "line": 885,
+            "text": "            for mask in 1..(1usize << outgoing.len()) {"
+          },
+          {
+            "line": 886,
+            "text": "                expected.insert(("
+          },
+          {
+            "line": 887,
+            "text": "                    uid.clone(),"
+          },
+          {
+            "line": 888,
+            "text": "                    outgoing"
+          },
+          {
+            "line": 889,
+            "text": "                        .iter()"
+          },
+          {
+            "line": 890,
+            "text": "                        .enumerate()"
+          },
+          {
+            "line": 891,
+            "text": "                        .filter(|(i, _)| mask & (1 << i) != 0)"
+          },
+          {
+            "line": 892,
+            "text": "                        .map(|(_, id)| id.clone())"
+          },
+          {
+            "line": 893,
+            "text": "                        .collect::<Vec<_>>(),"
+          },
+          {
+            "line": 894,
+            "text": "                ));"
+          },
+          {
+            "line": 895,
+            "text": "            }"
+          },
+          {
+            "line": 896,
+            "text": "        }"
+          },
+          {
+            "line": 897,
+            "text": "        for row in branch[\"choices\"]"
+          },
+          {
+            "line": 898,
+            "text": "            .as_array()"
+          },
+          {
+            "line": 899,
+            "text": "            .ok_or_else(|| Stop::invalid(\"damping.branch.choices\", \"须为数组\"))?"
+          },
+          {
+            "line": 900,
+            "text": "        {"
+          },
+          {
+            "line": 901,
+            "text": "            fields("
+          },
+          {
+            "line": 902,
+            "text": "                row,"
+          },
+          {
+            "line": 903,
+            "text": "                \"fork_unit available_channels outgoing_channel\","
+          },
+          {
+            "line": 904,
+            "text": "                \"damping.branch.choice\","
+          },
+          {
+            "line": 905,
+            "text": "            )?;"
+          },
+          {
+            "line": 906,
+            "text": "            let uid = row[\"fork_unit\"].as_str().unwrap_or(\"\").to_string();"
+          },
+          {
+            "line": 907,
+            "text": "            let channels: Vec<String> ="
+          },
+          {
+            "line": 908,
+            "text": "                decode(row[\"available_channels\"].clone(), \"available_channels\")?;"
+          },
+          {
+            "line": 909,
+            "text": "            let selected = row[\"outgoing_channel\"].as_str().unwrap_or(\"\").to_string();"
+          },
+          {
+            "line": 910,
+            "text": "            let key = (uid, channels);"
+          },
+          {
+            "line": 911,
+            "text": "            if !expected.contains(&key)"
+          },
+          {
+            "line": 912,
+            "text": "                || !key.1.contains(&selected)"
+          },
+          {
+            "line": 913,
+            "text": "                || self.branches.insert(key, selected).is_some()"
+          },
+          {
+            "line": 914,
+            "text": "            {"
+          },
+          {
+            "line": 915,
+            "text": "                return Err(Stop::invalid("
+          },
+          {
+            "line": 916,
+            "text": "                    \"damping.branch\","
+          },
+          {
+            "line": 917,
+            "text": "                    \"非规范集合、重复键或所选支不在集合\","
+          },
+          {
+            "line": 918,
+            "text": "                ));"
+          },
+          {
+            "line": 919,
+            "text": "            }"
+          },
+          {
+            "line": 920,
+            "text": "        }"
+          },
+          {
+            "line": 921,
+            "text": "        if self.branches.keys().cloned().collect::<BTreeSet<_>>() != expected {"
+          },
+          {
+            "line": 922,
+            "text": "            return Err(Stop::new("
+          },
+          {
+            "line": 923,
+            "text": "                \"unresolved\","
+          },
+          {
+            "line": 924,
+            "text": "                \"damping.branch\","
+          },
+          {
+            "line": 925,
+            "text": "                \"choices\","
+          },
+          {
+            "line": 926,
+            "text": "                \"未列全几何分流器的非空出支子集\","
+          },
+          {
+            "line": 927,
+            "text": "            ));"
+          },
+          {
+            "line": 928,
+            "text": "        }"
+          },
+          {
+            "line": 929,
+            "text": "        Ok(())"
+          },
+          {
+            "line": 930,
+            "text": "    }"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/polling.rs",
+    "sha256": "93198482832582239a9d2b4e3ebcd0941e91d228d36ba3626076e977db0a833b",
+    "excerpts": [
+      {
+        "start": 94,
+        "end": 167,
+        "lines": [
+          {
+            "line": 94,
+            "text": "    }"
+          },
+          {
+            "line": 95,
+            "text": "    /// 受限转移§3.1、运行语义§2.2：路径带串计一次，特别运输计一元件，桥只沿本轴。"
+          },
+          {
+            "line": 96,
+            "text": "    pub fn damping(&self, origin: &str) -> Result<i64> {"
+          },
+          {
+            "line": 97,
+            "text": "        self.damping_used.borrow_mut().insert(origin.into());"
+          },
+          {
+            "line": 98,
+            "text": "        let mut current = origin.to_string();"
+          },
+          {
+            "line": 99,
+            "text": "        let mut seen = BTreeSet::new();"
+          },
+          {
+            "line": 100,
+            "text": "        let mut count = 0;"
+          },
+          {
+            "line": 101,
+            "text": "        let mut previous_belt = false;"
+          },
+          {
+            "line": 102,
+            "text": "        loop {"
+          },
+          {
+            "line": 103,
+            "text": "            if !self.active.contains(&current) || !seen.insert(current.clone()) {"
+          },
+          {
+            "line": 104,
+            "text": "                return Err(Stop::new("
+          },
+          {
+            "line": 105,
+            "text": "                    \"unresolved\","
+          },
+          {
+            "line": 106,
+            "text": "                    \"damping.no_terminal\","
+          },
+          {
+            "line": 107,
+            "text": "                    origin,"
+          },
+          {
+            "line": 108,
+            "text": "                    \"所选路径无下一非运输终点\","
+          },
+          {
+            "line": 109,
+            "text": "                ));"
+          },
+          {
+            "line": 110,
+            "text": "            }"
+          },
+          {
+            "line": 111,
+            "text": "            let c = &self.input.geometry.channels[&current];"
+          },
+          {
+            "line": 112,
+            "text": "            let target = &self.input.geometry.ports[&c.target_port];"
+          },
+          {
+            "line": 113,
+            "text": "            let unit = &self.input.geometry.units[&target.unit];"
+          },
+          {
+            "line": 114,
+            "text": "            let kind = &self.input.catalog.kinds[&unit.kind];"
+          },
+          {
+            "line": 115,
+            "text": "            if kind.family != \"transport\" {"
+          },
+          {
+            "line": 116,
+            "text": "                return Ok(count);"
+          },
+          {
+            "line": 117,
+            "text": "            }"
+          },
+          {
+            "line": 118,
+            "text": "            let belt = unit.kind == \"传送带\";"
+          },
+          {
+            "line": 119,
+            "text": "            if belt {"
+          },
+          {
+            "line": 120,
+            "text": "                self.damping_used"
+          },
+          {
+            "line": 121,
+            "text": "                    .borrow_mut()"
+          },
+          {
+            "line": 122,
+            "text": "                    .insert(format!(\"belt_component:{origin}\"));"
+          },
+          {
+            "line": 123,
+            "text": "            }"
+          },
+          {
+            "line": 124,
+            "text": "            if belt && previous_belt {"
+          },
+          {
+            "line": 125,
+            "text": "                self.damping_used"
+          },
+          {
+            "line": 126,
+            "text": "                    .borrow_mut()"
+          },
+          {
+            "line": 127,
+            "text": "                    .insert(format!(\"belt_adjacency:{origin}\"));"
+          },
+          {
+            "line": 128,
+            "text": "            }"
+          },
+          {
+            "line": 129,
+            "text": "            if unit.kind == \"分流器\" {"
+          },
+          {
+            "line": 130,
+            "text": "                self.damping_used"
+          },
+          {
+            "line": 131,
+            "text": "                    .borrow_mut()"
+          },
+          {
+            "line": 132,
+            "text": "                    .insert(format!(\"branch:{origin}\"));"
+          },
+          {
+            "line": 133,
+            "text": "            }"
+          },
+          {
+            "line": 134,
+            "text": "            if !belt || !previous_belt {"
+          },
+          {
+            "line": 135,
+            "text": "                count = add(count, 1, origin)?"
+          },
+          {
+            "line": 136,
+            "text": "            }"
+          },
+          {
+            "line": 137,
+            "text": "            previous_belt = belt;"
+          },
+          {
+            "line": 138,
+            "text": "            let outgoing: Vec<_> = self"
+          },
+          {
+            "line": 139,
+            "text": "                .active"
+          },
+          {
+            "line": 140,
+            "text": "                .iter()"
+          },
+          {
+            "line": 141,
+            "text": "                .filter(|id| {"
+          },
+          {
+            "line": 142,
+            "text": "                    let p ="
+          },
+          {
+            "line": 143,
+            "text": "                        &self.input.geometry.ports[&self.input.geometry.channels[*id].source_port];"
+          },
+          {
+            "line": 144,
+            "text": "                    p.unit == target.unit && (unit.kind != \"桥接器\" || p.axis == target.axis)"
+          },
+          {
+            "line": 145,
+            "text": "                })"
+          },
+          {
+            "line": 146,
+            "text": "                .cloned()"
+          },
+          {
+            "line": 147,
+            "text": "                .collect();"
+          },
+          {
+            "line": 148,
+            "text": "            if outgoing.is_empty() {"
+          },
+          {
+            "line": 149,
+            "text": "                return Err(Stop::new("
+          },
+          {
+            "line": 150,
+            "text": "                    \"unresolved\","
+          },
+          {
+            "line": 151,
+            "text": "                    \"damping.no_terminal\","
+          },
+          {
+            "line": 152,
+            "text": "                    origin,"
+          },
+          {
+            "line": 153,
+            "text": "                    format!(\"路径在 {} 无终点\", target.unit),"
+          },
+          {
+            "line": 154,
+            "text": "                ));"
+          },
+          {
+            "line": 155,
+            "text": "            }"
+          },
+          {
+            "line": 156,
+            "text": "            current = if unit.kind == \"分流器\" {"
+          },
+          {
+            "line": 157,
+            "text": "                self.input"
+          },
+          {
+            "line": 158,
+            "text": "                    .branches"
+          },
+          {
+            "line": 159,
+            "text": "                    .get(&(target.unit.clone(), outgoing.clone()))"
+          },
+          {
+            "line": 160,
+            "text": "                    .cloned()"
+          },
+          {
+            "line": 161,
+            "text": "                    .ok_or_else(|| {"
+          },
+          {
+            "line": 162,
+            "text": "                        Stop::new(\"unresolved\", \"damping.branch\", origin, \"缺当前可用集表项\")"
+          },
+          {
+            "line": 163,
+            "text": "                    })?"
+          },
+          {
+            "line": 164,
+            "text": "            } else if outgoing.len() == 1 {"
+          },
+          {
+            "line": 165,
+            "text": "                outgoing[0].clone()"
+          },
+          {
+            "line": 166,
+            "text": "            } else {"
+          },
+          {
+            "line": 167,
+            "text": "                return Err(Stop::invalid(origin, \"非分流器出现多条同路径出边\"));"
+          }
+        ]
+      },
+      {
+        "start": 230,
+        "end": 260,
+        "lines": [
+          {
+            "line": 230,
+            "text": "                    self.level_keys.borrow().get(&l.id).copied()"
+          },
+          {
+            "line": 231,
+            "text": "                } else {"
+          },
+          {
+            "line": 232,
+            "text": "                    None"
+          },
+          {
+            "line": 233,
+            "text": "                };"
+          },
+          {
+            "line": 234,
+            "text": "                let key = if let Some(key) = cached {"
+          },
+          {
+            "line": 235,
+            "text": "                    key"
+          },
+          {
+            "line": 236,
+            "text": "                } else {"
+          },
+          {
+            "line": 237,
+            "text": "                    let mut damping = 0;"
+          },
+          {
+            "line": 238,
+            "text": "                    if s.side == \"output\" && s.levels.len() > 1 {"
+          },
+          {
+            "line": 239,
+            "text": "                        for c in &l.members {"
+          },
+          {
+            "line": 240,
+            "text": "                            damping = damping.max(self.damping(c)?);"
+          },
+          {
+            "line": 241,
+            "text": "                        }"
+          },
+          {
+            "line": 242,
+            "text": "                    }"
+          },
+          {
+            "line": 243,
+            "text": "                    let connected = l"
+          },
+          {
+            "line": 244,
+            "text": "                        .members"
+          },
+          {
+            "line": 245,
+            "text": "                        .iter()"
+          },
+          {
+            "line": 246,
+            "text": "                        .map(|c| self.input.connection_times[c])"
+          },
+          {
+            "line": 247,
+            "text": "                        .min()"
+          },
+          {
+            "line": 248,
+            "text": "                        .ok_or_else(|| Stop::invalid(&l.id, \"空级\"))?;"
+          },
+          {
+            "line": 249,
+            "text": "                    let key = (damping, connected);"
+          },
+          {
+            "line": 250,
+            "text": "                    if self.cache_enabled {"
+          },
+          {
+            "line": 251,
+            "text": "                        self.level_keys.borrow_mut().insert(l.id.clone(), key);"
+          },
+          {
+            "line": 252,
+            "text": "                    }"
+          },
+          {
+            "line": 253,
+            "text": "                    key"
+          },
+          {
+            "line": 254,
+            "text": "                };"
+          },
+          {
+            "line": 255,
+            "text": "                if s.side == \"output\" && s.levels.len() > 1 {"
+          },
+          {
+            "line": 256,
+            "text": "                    self.damping_used"
+          },
+          {
+            "line": 257,
+            "text": "                        .borrow_mut()"
+          },
+          {
+            "line": 258,
+            "text": "                        .extend(l.members.iter().cloned());"
+          },
+          {
+            "line": 259,
+            "text": "                }"
+          },
+          {
+            "line": 260,
+            "text": "                static_keys.insert(l.id.clone(), key);"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/output.rs",
+    "sha256": "1059aa56201b8f3e8a48059df05a7129dede713dcb12a3f0768a4b349655f992",
+    "excerpts": [
+      {
+        "start": 270,
+        "end": 276,
+        "lines": [
+          {
+            "line": 270,
+            "text": "            let ids:Vec<_>=events.iter().filter(|e|e[\"operation\"]==\"move\"&&e[\"outcome\"]==\"success\").filter(|e|input.geometry.channels.get(e[\"target\"].as_str().unwrap_or(\"\")).is_some_and(|c|[&c.source_port,&c.target_port].iter().any(|p|input.geometry.units[&input.geometry.ports[*p].unit].kind==\"桥接器\"))).filter_map(|e|e[\"event\"].as_str().map(str::to_string)).collect();"
+          },
+          {
+            "line": 271,
+            "text": "            if !ids.is_empty(){status=\"exercised\";ev=ids;}"
+          },
+          {
+            "line": 272,
+            "text": "        }"
+          },
+          {
+            "line": 273,
+            "text": "        if [\"damping.branch\",\"damping.belt_adjacency\",\"damping.belt_component_rule\"].contains(&name){"
+          },
+          {
+            "line": 274,
+            "text": "            let ids:Vec<_>=events.iter().filter(|e|e[\"basis\"].as_array().is_some_and(|a|a.iter().any(|b|b.as_str().is_some_and(|s|s.strip_prefix(\"damping.evaluated:\").is_some_and(|list|list.split(';').any(|part|part.starts_with(if name==\"damping.branch\" {\"branch:\"}else if name==\"damping.belt_adjacency\" {\"belt_adjacency:\"}else{\"belt_component:\"}))))))).filter_map(|e|e[\"event\"].as_str().map(str::to_string)).collect();"
+          },
+          {
+            "line": 275,
+            "text": "            if !ids.is_empty(){status=\"exercised\";ev=ids;}"
+          },
+          {
+            "line": 276,
+            "text": "        }"
+          }
+        ]
+      },
+      {
+        "start": 380,
+        "end": 403,
+        "lines": [
+          {
+            "line": 380,
+            "text": "    config_path: &Path,"
+          },
+          {
+            "line": 381,
+            "text": "    ticks: usize,"
+          },
+          {
+            "line": 382,
+            "text": "    format: &str,"
+          },
+          {
+            "line": 383,
+            "text": "    interval: usize,"
+          },
+          {
+            "line": 384,
+            "text": ") -> Result<Value> {"
+          },
+          {
+            "line": 385,
+            "text": "    if ticks == 0 {"
+          },
+          {
+            "line": 386,
+            "text": "        return Err(Stop::invalid(\"ticks\", \"记录至少需要一个时刻\"));"
+          },
+          {
+            "line": 387,
+            "text": "    }"
+          },
+          {
+            "line": 388,
+            "text": "    if ![\"full_state_each_instant\", \"checkpoint_delta\"].contains(&format) || interval == 0 {"
+          },
+          {
+            "line": 389,
+            "text": "        return Err(Stop::invalid(\"format\", \"格式或检查点间隔非法\"));"
+          },
+          {
+            "line": 390,
+            "text": "    }"
+          },
+          {
+            "line": 391,
+            "text": "    let start = json!(engine.state);"
+          },
+          {
+            "line": 392,
+            "text": "    let mut previous = start.clone();"
+          },
+          {
+            "line": 393,
+            "text": "    let mut rows = Vec::new();"
+          },
+          {
+            "line": 394,
+            "text": "    let mut acceptance = Vec::new();"
+          },
+          {
+            "line": 395,
+            "text": "    let mut manufacturing = BTreeMap::<String, Vec<String>>::new();"
+          },
+          {
+            "line": 396,
+            "text": "    let mut phases = manufacturing_phases(&engine.input);"
+          },
+          {
+            "line": 397,
+            "text": "    let mut stop = None;"
+          },
+          {
+            "line": 398,
+            "text": "    for index in 0..ticks {"
+          },
+          {
+            "line": 399,
+            "text": "        match engine.step(true) {"
+          },
+          {
+            "line": 400,
+            "text": "            Ok(Some(mut t)) => {"
+          },
+          {
+            "line": 401,
+            "text": "                acceptance.push("
+          },
+          {
+            "line": 402,
+            "text": "                    serde_json::to_string(&engine.acceptance_report()?)"
+          },
+          {
+            "line": 403,
+            "text": "                        .map_err(|e| Stop::invalid(\"warehouse.acceptance\", e.to_string()))?,"
+          }
+        ]
+      },
+      {
+        "start": 480,
+        "end": 510,
+        "lines": [
+          {
+            "line": 480,
+            "text": "    let end = rows"
+          },
+          {
+            "line": 481,
+            "text": "        .last()"
+          },
+          {
+            "line": 482,
+            "text": "        .map(|t| t[\"time\"].clone())"
+          },
+          {
+            "line": 483,
+            "text": "        .unwrap_or(start[\"environment\"][\"time\"].clone());"
+          },
+          {
+            "line": 484,
+            "text": "    let from = rows"
+          },
+          {
+            "line": 485,
+            "text": "        .first()"
+          },
+          {
+            "line": 486,
+            "text": "        .map(|t| t[\"time\"].clone())"
+          },
+          {
+            "line": 487,
+            "text": "        .unwrap_or(start[\"environment\"][\"time\"].clone());"
+          },
+          {
+            "line": 488,
+            "text": "    let mut trace = json!({\"start_state\":start,\"ticks\":rows,\"end_time\":end,\"format\":format});"
+          },
+          {
+            "line": 489,
+            "text": "    if format == \"checkpoint_delta\" {"
+          },
+          {
+            "line": 490,
+            "text": "        trace[\"checkpoint_interval\"] = json!(interval);"
+          },
+          {
+            "line": 491,
+            "text": "        trace[\"delta_encoding\"] = json!(\"object_replace_v1\");"
+          },
+          {
+            "line": 492,
+            "text": "    }"
+          },
+          {
+            "line": 493,
+            "text": "    let status = stop"
+          },
+          {
+            "line": 494,
+            "text": "        .as_ref()"
+          },
+          {
+            "line": 495,
+            "text": "        .map(|s| s.status.as_str())"
+          },
+          {
+            "line": 496,
+            "text": "        .unwrap_or(\"completed\");"
+          },
+          {
+            "line": 497,
+            "text": "    let mut open = vec!["
+          },
+          {
+            "line": 498,
+            "text": "        \"有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。\".into(),"
+          },
+          {
+            "line": 499,
+            "text": "        \"规格疑问见 求解器/规格/内核实现-对规格的疑问.md。\".into(),"
+          },
+          {
+            "line": 500,
+            "text": "    ];"
+          },
+          {
+            "line": 501,
+            "text": "    if let Some(e) = &stop {"
+          },
+          {
+            "line": 502,
+            "text": "        open.push(e.to_string());"
+          },
+          {
+            "line": 503,
+            "text": "    }"
+          },
+          {
+            "line": 504,
+            "text": "    Ok("
+          },
+          {
+            "line": 505,
+            "text": "        json!({\"schema\":\"kernel-output-v3\",\"execution_mode\":if engine.production_abstraction {\"production_abstraction\"}else{\"finite_concrete\"},\"port_meeting\":engine.input.parameters.value(Axis::ConnectionPortMeeting)?,\"run_id\":format!(\"kernel:{}:{}:{}\",engine.input.path.file_stem().and_then(|s|s.to_str()).unwrap_or(\"input\"),from[\"value\"][\"value\"].as_str().unwrap_or(\"?\"),ticks),\"profile_id\":config.profile_id,\"producer\":{\"kind\":\"kernel\",\"path\":root.join(\"crates/kernel/src/lib.rs\").canonicalize().map_err(|e|Stop::invalid(\"producer\",e.to_string()))?,\"claim\":\"Rust 受限内核的有限条件轨迹；不作全称或完整目标认证\"},\"status\":status,\"fingerprints\":fingerprints(&engine.input,config_path,&extra)?,\"parameter_assignment\":engine.input.raw[\"parameters\"],\"input_history\":{\"timeline\":engine.input.raw[\"timeline\"],\"construction\":engine.input.raw[\"construction\"],\"debug_operations\":engine.input.raw[\"debug_operations\"],\"environment\":engine.input.raw[\"environment\"],\"reachability\":engine.input.raw[\"initial_state\"][\"reachability\"]},\"uncovered_axes\":uncovered,\"trace\":if rows.is_empty(){Value::Null}else{trace},\"validation_scope\":if rows.is_empty(){Value::Null}else{json!({\"kind\":\"finite_trace\",\"from\":from,\"through\":end,\"golden_match\":golden_match,\"initial_history\":\"conditional_witness\",\"universal_parameters\":false,\"all_reachable_cycles\":false,\"target_certified\":false,\"manufacturing_cycles_completed\":q(completed)})},\"open_items\":open}),"
+          },
+          {
+            "line": 506,
+            "text": "    )"
+          },
+          {
+            "line": 507,
+            "text": "}"
+          },
+          {
+            "line": 508,
+            "text": "/// 内核输出§1：装载失败不制造非法的“完整参数/轨迹”对象。"
+          },
+          {
+            "line": 509,
+            "text": "pub fn stopped_record(stop: &Stop) -> Value {"
+          },
+          {
+            "line": 510,
+            "text": "    json!({\"schema\":\"kernel-output-v3\",\"execution_mode\":\"finite_concrete\",\"port_meeting\":\"shared_edge_opposite\",\"run_id\":\"kernel:load-stop\",\"profile_id\":\"kernel_profile_v1\",\"producer\":{\"kind\":\"kernel\",\"path\":concat!(env!(\"CARGO_MANIFEST_DIR\"),\"/src/lib.rs\"),\"claim\":\"装载停止，未形成游戏后继\"},\"status\":stop.status,\"fingerprints\":[],\"parameter_assignment\":null,\"input_history\":null,\"uncovered_axes\":[],\"trace\":null,\"validation_scope\":null,\"open_items\":[stop.to_string()]})"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/cycle.rs",
+    "sha256": "b6d063001223122ce28f594f773b86d1dad6c36993dab1df3eb5ab6da907e01e",
+    "excerpts": [
+      {
+        "start": 240,
+        "end": 286,
+        "lines": [
+          {
+            "line": 240,
+            "text": "    /// 转移§6.2：独立于同刻closure_key，完整规范键按内容相等。"
+          },
+          {
+            "line": 241,
+            "text": "    pub fn cycle_key(&self) -> Result<Value> {"
+          },
+          {
+            "line": 242,
+            "text": "        self.production_domain()?;"
+          },
+          {
+            "line": 243,
+            "text": "        encode_key(&self.state, &self.input)"
+          },
+          {
+            "line": 244,
+            "text": "    }"
+          },
+          {
+            "line": 245,
+            "text": "}"
+          },
+          {
+            "line": 246,
+            "text": ""
+          },
+          {
+            "line": 247,
+            "text": "/// 转移§6.2：公开状态接口显式绑定完整上下文；调用前须通过Engine的D准入与状态验证。"
+          },
+          {
+            "line": 248,
+            "text": "pub fn cycle_key(state: &State, input: &Input) -> Result<Value> {"
+          },
+          {
+            "line": 249,
+            "text": "    let mut bound = input.clone();"
+          },
+          {
+            "line": 250,
+            "text": "    bound.raw[\"initial_state\"][\"nonwarehouse\"][\"value\"] = json!(state);"
+          },
+          {
+            "line": 251,
+            "text": "    let validated = Engine::new(bound)?;"
+          },
+          {
+            "line": 252,
+            "text": "    validated.production_domain()?;"
+          },
+          {
+            "line": 253,
+            "text": "    encode_key(&validated.state, &validated.input)"
+          },
+          {
+            "line": 254,
+            "text": "}"
+          },
+          {
+            "line": 255,
+            "text": "fn encode_key(state: &State, input: &Input) -> Result<Value> {"
+          },
+          {
+            "line": 256,
+            "text": "    if state.layout_snapshot != input.raw[\"layout\"][\"id\"]"
+          },
+          {
+            "line": 257,
+            "text": "        || state.settings_anchor != input.raw[\"settings\"][\"anchor\"]"
+          },
+          {
+            "line": 258,
+            "text": "    {"
+          },
+          {
+            "line": 259,
+            "text": "        return Err(Stop::invalid(\"cycle_key.context\", \"布局/设定上下文不符\"));"
+          },
+          {
+            "line": 260,
+            "text": "    }"
+          },
+          {
+            "line": 261,
+            "text": "    let t = state.environment.time.integer(\"cycle_key.time\")?;"
+          },
+          {
+            "line": 262,
+            "text": "    let jc = &state.semantic_context.judgment_context.value;"
+          },
+          {
+            "line": 263,
+            "text": "    if jc[\"phase\"] != \"after_closure\""
+          },
+          {
+            "line": 264,
+            "text": "        || jc[\"order_scope\"] != \"global\""
+          },
+          {
+            "line": 265,
+            "text": "        || !jc[\"next_event\"].is_null()"
+          },
+          {
+            "line": 266,
+            "text": "        || jc.get(\"continuation\").is_some()"
+          },
+          {
+            "line": 267,
+            "text": "        || !state"
+          },
+          {
+            "line": 268,
+            "text": "            .semantic_context"
+          },
+          {
+            "line": 269,
+            "text": "            .arbitration"
+          },
+          {
+            "line": 270,
+            "text": "            .warehouse_empty_slot_order"
+          },
+          {
+            "line": 271,
+            "text": "            .is_empty()"
+          },
+          {
+            "line": 272,
+            "text": "    {"
+          },
+          {
+            "line": 273,
+            "text": "        return Err(Stop::unsupported("
+          },
+          {
+            "line": 274,
+            "text": "            \"cycle.domain\","
+          },
+          {
+            "line": 275,
+            "text": "            \"cycle_key\","
+          },
+          {
+            "line": 276,
+            "text": "            \"仅接已核D域的after_closure\","
+          },
+          {
+            "line": 277,
+            "text": "        ));"
+          },
+          {
+            "line": 278,
+            "text": "    }"
+          },
+          {
+            "line": 279,
+            "text": "    let mut s = json!(state);"
+          },
+          {
+            "line": 280,
+            "text": "    let slots = s[\"warehouse\"][\"slots\"].as_array_mut().unwrap();"
+          },
+          {
+            "line": 281,
+            "text": "    slots.retain(|r| {"
+          },
+          {
+            "line": 282,
+            "text": "        !PRODUCTS.contains("
+          },
+          {
+            "line": 283,
+            "text": "            &r[\"item\"]"
+          },
+          {
+            "line": 284,
+            "text": "                .as_str()"
+          },
+          {
+            "line": 285,
+            "text": "                .or_else(|| r[\"empty_identity\"][\"value\"].as_str())"
+          },
+          {
+            "line": 286,
+            "text": "                .unwrap_or(\"\"),"
+          }
+        ]
+      },
+      {
+        "start": 344,
+        "end": 368,
+        "lines": [
+          {
+            "line": 344,
+            "text": "    sc[\"judgment_context\"][\"value\"] ="
+          },
+          {
+            "line": 345,
+            "text": "        json!({\"instant\":tv(0),\"phase\":\"after_closure\",\"order_scope\":\"global\"});"
+          },
+          {
+            "line": 346,
+            "text": "    for r in sc[\"pending_events\"][\"value\"].as_array_mut().unwrap() {"
+          },
+          {
+            "line": 347,
+            "text": "        if r[\"trigger\"][\"kind\"] != \"at_time\""
+          },
+          {
+            "line": 348,
+            "text": "            || r[\"predecessors\"] != json!([])"
+          },
+          {
+            "line": 349,
+            "text": "            || r[\"status\"] != \"waiting\""
+          },
+          {
+            "line": 350,
+            "text": "            || ![\"manufacture_complete\", \"gate_window_expiry\"]"
+          },
+          {
+            "line": 351,
+            "text": "                .contains(&r[\"operation\"].as_str().unwrap_or(\"\"))"
+          },
+          {
+            "line": 352,
+            "text": "        {"
+          },
+          {
+            "line": 353,
+            "text": "            return Err(Stop::unsupported("
+          },
+          {
+            "line": 354,
+            "text": "                \"cycle.domain.D4\","
+          },
+          {
+            "line": 355,
+            "text": "                \"pending_events\","
+          },
+          {
+            "line": 356,
+            "text": "                \"待办超出生产键定义域\","
+          },
+          {
+            "line": 357,
+            "text": "            ));"
+          },
+          {
+            "line": 358,
+            "text": "        }"
+          },
+          {
+            "line": 359,
+            "text": "        let remaining = difference("
+          },
+          {
+            "line": 360,
+            "text": "            instant(&r[\"trigger\"][\"value\"], \"pending\")?,"
+          },
+          {
+            "line": 361,
+            "text": "            t,"
+          },
+          {
+            "line": 362,
+            "text": "            \"cycle.pending\","
+          },
+          {
+            "line": 363,
+            "text": "        )?;"
+          },
+          {
+            "line": 364,
+            "text": "        r[\"event\"] = json!([r[\"operation\"], r[\"target\"], remaining.to_string()]);"
+          },
+          {
+            "line": 365,
+            "text": "        r[\"trigger\"][\"value\"] = tv(remaining);"
+          },
+          {
+            "line": 366,
+            "text": "    }"
+          },
+          {
+            "line": 367,
+            "text": "    sc[\"pending_events\"][\"value\"]"
+          },
+          {
+            "line": 368,
+            "text": "        .as_array_mut()"
+          }
+        ]
+      },
+      {
+        "start": 675,
+        "end": 692,
+        "lines": [
+          {
+            "line": 675,
+            "text": "        json!({\"status\":\"input_checked\",\"cycle_replayed\":true,\"period\":period,\"start_time\":a,\"checks\":[\"完整前缀事件身份与时序独立检查\",\"完整结果逐字段重算\",\"循环起点重新装载\",\"P次step_tick事件/状态/台账/闭包逐字段相等\",\"终态完整键相等\"]}),"
+          },
+          {
+            "line": 676,
+            "text": "    )"
+          },
+          {
+            "line": 677,
+            "text": "}"
+          },
+          {
+            "line": 678,
+            "text": ""
+          },
+          {
+            "line": 679,
+            "text": "/// 输出§5.1：装载未成立时仍交付循环结果外壳，不把技术停止冒充低产反例。"
+          },
+          {
+            "line": 680,
+            "text": "pub fn load_stopped_cycle("
+          },
+          {
+            "line": 681,
+            "text": "    stop: &Stop,"
+          },
+          {
+            "line": 682,
+            "text": "    max_ticks: usize,"
+          },
+          {
+            "line": 683,
+            "text": "    max_sweeps: usize,"
+          },
+          {
+            "line": 684,
+            "text": "    port_meeting: &str,"
+          },
+          {
+            "line": 685,
+            "text": ") -> Value {"
+          },
+          {
+            "line": 686,
+            "text": "    let status = match stop.status.as_str() {"
+          },
+          {
+            "line": 687,
+            "text": "        \"invalid_input\" => \"invalid_input\","
+          },
+          {
+            "line": 688,
+            "text": "        \"inconclusive\" => \"inconclusive\","
+          },
+          {
+            "line": 689,
+            "text": "        _ => \"stopped\","
+          },
+          {
+            "line": 690,
+            "text": "    };"
+          },
+          {
+            "line": 691,
+            "text": "    json!({\"schema\":\"kernel-cycle-v1\",\"result_id\":\"cycle:load-stop\",\"status\":status,\"level\":null,\"execution_mode\":\"production_abstraction\",\"port_meeting\":port_meeting,\"seed\":null,\"parameter_point\":null,\"reading\":{\"port_meeting\":port_meeting,\"warehouse_acceptance\":\"unresolved\",\"acceptance_quantifier\":\"unresolved\",\"cycle_interpretation\":\"production_projection\",\"remaining_assumptions\":[\"装载未成立，未形成可认证参数点\"]},\"support_domain\":{\"name\":\"production_v1\",\"checks\":[],\"uncovered\":[\"完整输入未通过装载\"]},\"replay_input\":null,\"run_record\":null,\"cycle\":null,\"stop\":{\"kind\":if stop.status==\"inconclusive\"{\"resource\"}else{stop.status.as_str()},\"axis\":stop.axis,\"event\":stop.location,\"time\":null,\"reason\":stop.reason,\"partial_events\":[]},\"budget\":{\"max_ticks\":max_ticks.max(1),\"max_sweeps\":max_sweeps.max(1),\"completed_ticks\":0},\"open_items\":[stop.to_string(),\"技术停止不证明布局无解\"]})"
+          },
+          {
+            "line": 692,
+            "text": "}"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/model.rs",
+    "sha256": "6f4d3dfb5133b834ef52dba2fa398cee3f6e3f88f1da77630aaf66326e81a842",
+    "excerpts": [
+      {
+        "start": 148,
+        "end": 157,
+        "lines": [
+          {
+            "line": 148,
+            "text": "#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Eq)]"
+          },
+          {
+            "line": 149,
+            "text": "#[serde(deny_unknown_fields)]"
+          },
+          {
+            "line": 150,
+            "text": "pub struct Pending {"
+          },
+          {
+            "line": 151,
+            "text": "    pub event: String,"
+          },
+          {
+            "line": 152,
+            "text": "    pub operation: String,"
+          },
+          {
+            "line": 153,
+            "text": "    pub target: String,"
+          },
+          {
+            "line": 154,
+            "text": "    pub trigger: Value,"
+          },
+          {
+            "line": 155,
+            "text": "    pub predecessors: Vec<String>,"
+          },
+          {
+            "line": 156,
+            "text": "    pub status: String,"
+          },
+          {
+            "line": 157,
+            "text": "}"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/value.rs",
+    "sha256": "0cd34a9c7877861580caa0711e643575cbb9ce631a445919c69f093c2392d32b",
+    "excerpts": [
+      {
+        "start": 281,
+        "end": 316,
+        "lines": [
+          {
+            "line": 281,
+            "text": "pub fn validate_tree(v: &Value, path: &str) -> Result<()> {"
+          },
+          {
+            "line": 282,
+            "text": "    if let Some(o) = v.as_object() {"
+          },
+          {
+            "line": 283,
+            "text": "        if o.contains_key(\"status\")"
+          },
+          {
+            "line": 284,
+            "text": "            && (o.contains_key(\"value\") || o.contains_key(\"basis\"))"
+          },
+          {
+            "line": 285,
+            "text": "            && !path.contains(\".bridge_axes.\")"
+          },
+          {
+            "line": 286,
+            "text": "        {"
+          },
+          {
+            "line": 287,
+            "text": "            let d: Decision = decode(v.clone(), path)?;"
+          },
+          {
+            "line": 288,
+            "text": "            if d.basis.is_empty() || d.basis.iter().any(String::is_empty) {"
+          },
+          {
+            "line": 289,
+            "text": "                return Err(Stop::invalid(path, \"Decision 缺依据\"));"
+          },
+          {
+            "line": 290,
+            "text": "            }"
+          },
+          {
+            "line": 291,
+            "text": "            match d.status.as_str() {"
+          },
+          {
+            "line": 292,
+            "text": "                \"unresolved\" | \"not_applicable\" => {"
+          },
+          {
+            "line": 293,
+            "text": "                    if !d.value.is_null() {"
+          },
+          {
+            "line": 294,
+            "text": "                        return Err(Stop::invalid(path, \"未解封套带值\"));"
+          },
+          {
+            "line": 295,
+            "text": "                    }"
+          },
+          {
+            "line": 296,
+            "text": "                }"
+          },
+          {
+            "line": 297,
+            "text": "                \"specified\" | \"derived\" => {"
+          },
+          {
+            "line": 298,
+            "text": "                    if d.value.is_null() && !path.ends_with(\"empty_identity\") {"
+          },
+          {
+            "line": 299,
+            "text": "                        return Err(Stop::invalid(path, \"已解封套无值\"));"
+          },
+          {
+            "line": 300,
+            "text": "                    }"
+          },
+          {
+            "line": 301,
+            "text": "                }"
+          },
+          {
+            "line": 302,
+            "text": "                _ => return Err(Stop::invalid(path, \"未知 Decision 状态\")),"
+          },
+          {
+            "line": 303,
+            "text": "            }"
+          },
+          {
+            "line": 304,
+            "text": "        }"
+          },
+          {
+            "line": 305,
+            "text": "        for (k, x) in o {"
+          },
+          {
+            "line": 306,
+            "text": "            validate_tree(x, &format!(\"{path}.{k}\"))?"
+          },
+          {
+            "line": 307,
+            "text": "        }"
+          },
+          {
+            "line": 308,
+            "text": "    } else if let Some(a) = v.as_array() {"
+          },
+          {
+            "line": 309,
+            "text": "        for (i, x) in a.iter().enumerate() {"
+          },
+          {
+            "line": 310,
+            "text": "            validate_tree(x, &format!(\"{path}[{i}]\"))?"
+          },
+          {
+            "line": 311,
+            "text": "        }"
+          },
+          {
+            "line": 312,
+            "text": "    } else if v.is_f64() {"
+          },
+          {
+            "line": 313,
+            "text": "        return Err(Stop::invalid(path, \"禁止浮点\"));"
+          },
+          {
+            "line": 314,
+            "text": "    }"
+          },
+          {
+            "line": 315,
+            "text": "    Ok(())"
+          },
+          {
+            "line": 316,
+            "text": "}"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/audit_round5.py",
+    "sha256": "bdc4ffe9889204722a695c893e1efa05acd405d7c4e56ed9062f7f33c5f976dc",
+    "excerpts": [
+      {
+        "start": 164,
+        "end": 176,
+        "lines": [
+          {
+            "line": 164,
+            "text": "    coverage={};bridge_audit=[]"
+          },
+          {
+            "line": 165,
+            "text": "    for name in names:"
+          },
+          {
+            "line": 166,
+            "text": "        r=read(BASE/(name+'-运行记录-v3-kernel.json'))"
+          },
+          {
+            "line": 167,
+            "text": "        bridge_audit.append(dict(name=name,**audit_bridge_first_contact(r,read(BASE/(name+'.json')))))"
+          },
+          {
+            "line": 168,
+            "text": "        for a in r['uncovered_axes']:"
+          },
+          {
+            "line": 169,
+            "text": "            if a['coverage_status']=='exercised':coverage.setdefault(a['axis'],[]).append(name)"
+          },
+          {
+            "line": 170,
+            "text": "    config=read(CFG);required=[a for a in config['axes']if a.startswith(('transfer.','bridge.'))]+['connection.bridge_first_contact','warehouse.delivery_count','warehouse.empty_slot_identity','warehouse.external_supply','damping.branch','damping.belt_adjacency','damping.belt_component_rule']+[a for a in config['axes']if a.startswith('manufacturing.')]"
+          },
+          {
+            "line": 171,
+            "text": "    missing=[a for a in required if a not in coverage]"
+          },
+          {
+            "line": 172,
+            "text": "    reasons={'connection.bridge_first_contact':'运行支持域只接已建成且桥方向已解的布局；先接历史仅作input_checked，需建造/方向变更转移才能取得运行证据。',"
+          },
+          {
+            "line": 173,
+            "text": "             'transfer.resume_event':'运行段供电和开关固定；暂停后重新启用所需的调试/离线后效未实现。'}"
+          },
+          {
+            "line": 174,
+            "text": "    assert set(missing)<=reasons.keys(), missing"
+          },
+          {
+            "line": 175,
+            "text": "    write(E/'bridge-first-contact-audit.json',dict(status='pass',cases=bridge_audit,"
+          },
+          {
+            "line": 176,
+            "text": "          missing_reason=reasons['connection.bridge_first_contact']))"
+          }
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,134 @@
+[
+  {
+    "case": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-kernel.json",
+    "result": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-kernel.json",
+      "ticks": 4,
+      "events": 156,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 38,
+        "exercised": 29,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "900848d0b61812caecf02e9095c44034dc3e678f80b3f72419763b718823f4e9"
+    }
+  },
+  {
+    "case": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-checkpoint_delta-kernel.json",
+    "result": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-checkpoint_delta-kernel.json",
+      "ticks": 4,
+      "events": 156,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 38,
+        "exercised": 29,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "4c7746c322822c3431f6878c3e86c553be57bfb33a97cd5cd49d4c7f1b25c3ea"
+    }
+  },
+  {
+    "case": "混做粉碎机两下游:missing-fingerprints",
+    "accepted": true,
+    "result": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-工程-evidence/混做粉碎机两下游-missing-fingerprints.json",
+      "ticks": 4,
+      "events": 156,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 38,
+        "exercised": 29,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "622bb712c632c31e9ed3d8c12e1537db72a44301d7f6fd03e9305c849364633b"
+    }
+  },
+  {
+    "case": "混做粉碎机两下游:false-validation-count",
+    "accepted": true,
+    "result": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-工程-evidence/混做粉碎机两下游-false-validation-count.json",
+      "ticks": 4,
+      "events": 156,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 38,
+        "exercised": 29,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "e9281602f7653d24531dc29990d1a638478ad852ad9510fc9abeecae31d8ac04"
+    }
+  },
+  {
+    "case": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-kernel.json",
+    "result": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-kernel.json",
+      "ticks": 12,
+      "events": 794,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 46,
+        "exercised": 21,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "f33dbc46456126d572d9a49120fd87783160891679cc9429d9334401ad793ef9"
+    }
+  },
+  {
+    "case": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-checkpoint_delta-kernel.json",
+    "result": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-checkpoint_delta-kernel.json",
+      "ticks": 12,
+      "events": 794,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 46,
+        "exercised": 21,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "0d819dcfb6c7a6f898f0689e6a225e4358b2a7fca34e06238173d0d9d1c0a513"
+    }
+  },
+  {
+    "case": "分流器三路轮询:missing-fingerprints",
+    "accepted": true,
+    "result": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-工程-evidence/分流器三路轮询-missing-fingerprints.json",
+      "ticks": 12,
+      "events": 794,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 46,
+        "exercised": 21,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "804f39a332863d0b4df41b58dde2f29718e0023ba596bc2143e95ef8286753a9"
+    }
+  },
+  {
+    "case": "分流器三路轮询:false-validation-count",
+    "accepted": true,
+    "result": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-工程-evidence/分流器三路轮询-false-validation-count.json",
+      "ticks": 12,
+      "events": 794,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 46,
+        "exercised": 21,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "850f89b58d1d27fdff1601a7be37cd861b0055f70cbe9dd2b7a6a184093b1a56"
+    }
+  }
+]

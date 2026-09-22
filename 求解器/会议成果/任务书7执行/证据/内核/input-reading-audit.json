@@ -1,0 +1,261 @@
+{
+  "inputs": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/规格回填.md",
+      "sha256": "68c2419fa738e079ee75cb4dd67d0b48534de005cd8cb82937677c8cc268ce4a",
+      "lines": 199,
+      "json_parsed": false
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/受限转移定义-§6.5替换稿.md",
+      "sha256": "531d5195a3c5de8e73bf32f6f47dc17aa0ef15f710c84d9cc9cacb89ec4cd7fd",
+      "lines": 90,
+      "json_parsed": false
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/推导复核范围.md",
+      "sha256": "1654c6dc0fcbd2ab5c5e66372a2f72651c0ec0f49c04d9ba1fd46b7ec281cf35",
+      "lines": 148,
+      "json_parsed": false
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/植物运行试点.md",
+      "sha256": "6f0b9e1417b0643de66279c4c0643ca3b8af89a9ba391b40151d712e507d6a4e",
+      "lines": 309,
+      "json_parsed": false
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/送料与接口.json",
+      "sha256": "f4f3776907ee06ad429e9a250f076056945eea4a6c496cf09163b7048788e36e",
+      "lines": 15480,
+      "json_parsed": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/调试与释放.md",
+      "sha256": "13f4c246f3c2dc660886abcd91253a0e544d6d6a85f7cadc0e31fd2410d16853",
+      "lines": 231,
+      "json_parsed": false
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/调试后状态.json",
+      "sha256": "0e3735e5c382eb97c5ef4d84032db61057b1d8914bf792f59a02173075f71c89",
+      "lines": 504,
+      "json_parsed": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/相位离线与认证范围.md",
+      "sha256": "c93001128a1fce740320ece07eb7d7cb7954b4be7e23d4c4749cc4bedea1e5e4",
+      "lines": 214,
+      "json_parsed": false
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/规格修改稿-任务6.md",
+      "sha256": "732a8edef1bed49ef28a47d77c81fd57ca78823bccdf320742ab3f1a2af32a03",
+      "lines": 122,
+      "json_parsed": false
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/仓库接收与循环对应.md",
+      "sha256": "cdc235501fc5ba81f8df0c4ea02396b15b23bb1c6175f9e7a10729d0cab646c1",
+      "lines": 195,
+      "json_parsed": false
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/cache.rs",
+      "sha256": "3278f432f020daa2eef8b234a844b5b665f81cabce695ff1346205d729ef47c7",
+      "lines": 81,
+      "kind": "Rust source or historical tests; cargo test not invoked"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/catalog.rs",
+      "sha256": "3a0a7c3e21b46d626928fca81e90a617bd55189b8e3f357019c529109510636f",
+      "lines": 604,
+      "kind": "Rust source or historical tests; cargo test not invoked"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/config.rs",
+      "sha256": "69676c866f8030ea877e662fdb85f600618f23edd99e4262699997adf9786f5a",
+      "lines": 485,
+      "kind": "Rust source or historical tests; cargo test not invoked"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/cycle.rs",
+      "sha256": "d169699dde2e0e0a18b0ae8a441c9923811c0bc5330e317ed02ba5c68449200b",
+      "lines": 873,
+      "kind": "Rust source or historical tests; cargo test not invoked"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/cycle_io.rs",
+      "sha256": "93afc189315738f11780b04ac4ff5cbabf93afb2fabc04233ef5c3dd63f4de30",
+      "lines": 436,
+      "kind": "Rust source or historical tests; cargo test not invoked"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/digest.rs",
+      "sha256": "e8d8d5c8df1f7124ec5739fa158a41b4d7ca662f1b246d3604994cbe81eb1ef0",
+      "lines": 76,
+      "kind": "Rust source or historical tests; cargo test not invoked"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/engine.rs",
+      "sha256": "1c0f7bd68fef463bee4780f90be237e540f5e6fda680553a9fac9aa8933ec6d7",
+      "lines": 1241,
+      "kind": "Rust source or historical tests; cargo test not invoked"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/event_identity.rs",
+      "sha256": "25a4f4442232845d2fedf80ed368fb02ce502f2c350e16e73355296183f3e70e",
+      "lines": 267,
+      "kind": "Rust source or historical tests; cargo test not invoked"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/input.rs",
+      "sha256": "d40bf539f789708e64e3a52d909a9a4a96819545a384b3906acba91f1e3d7c79",
+      "lines": 998,
+      "kind": "Rust source or historical tests; cargo test not invoked"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/interfaces.rs",
+      "sha256": "3ee13ba29adc7ae58abf29e09f938900895f12908fa5b428b261b9909da9d919",
+      "lines": 534,
+      "kind": "Rust source or historical tests; cargo test not invoked"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/ledger.rs",
+      "sha256": "f85ecea3240dd1ec0598a026bafe3b863c13220c7bdb7cdb0aa24c1e2577d9e7",
+      "lines": 146,
+      "kind": "Rust source or historical tests; cargo test not invoked"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs",
+      "sha256": "5d63008aa0f7b9c8a1da93dc96b13496398cc3fbad93c3775d709d77340b4c6a",
+      "lines": 27,
+      "kind": "Rust source or historical tests; cargo test not invoked"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/main.rs",
+      "sha256": "b38a6cf3afd455a7b440f4e86bb3c27e5684ff872d4c0a2bfa8b84368f9f651d",
+      "lines": 349,
+      "kind": "Rust source or historical tests; cargo test not invoked"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/model.rs",
+      "sha256": "6f4d3dfb5133b834ef52dba2fa398cee3f6e3f88f1da77630aaf66326e81a842",
+      "lines": 157,
+      "kind": "Rust source or historical tests; cargo test not invoked"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/output.rs",
+      "sha256": "059ad007e43a2df0ab3a4d59a9264a6fd8371be75e08eb26d9f070f6738d12b2",
+      "lines": 621,
+      "kind": "Rust source or historical tests; cargo test not invoked"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/polling.rs",
+      "sha256": "7d75aa6d73d0a76aaace36581e5aba0457db239cb7f3d59bb13c1610e551d26c",
+      "lines": 473,
+      "kind": "Rust source or historical tests; cargo test not invoked"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/seed.rs",
+      "sha256": "35f7a669eba69516a2eeef9b66291ab1b5841ff79d7c165388bfd1bf8f6b03a5",
+      "lines": 220,
+      "kind": "Rust source or historical tests; cargo test not invoked"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests.rs",
+      "sha256": "b6eef060d7d8497eb4840c11d2da2055a19e109ce8a00205bb9d2f3a65f547b1",
+      "lines": 1095,
+      "kind": "Rust source or historical tests; cargo test not invoked"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests_revision.rs",
+      "sha256": "fdbec222b970566f88a7d711e44f6e46fbd7dc0062ba5bbf584159ca0217c0c1",
+      "lines": 418,
+      "kind": "Rust source or historical tests; cargo test not invoked"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests_revision_r2.rs",
+      "sha256": "e42da5328e9946f8e745cdbf361b06e006fcb28e54656488e8f53346697f4377",
+      "lines": 283,
+      "kind": "Rust source or historical tests; cargo test not invoked"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests_revision_r3.rs",
+      "sha256": "d67ebdbb093af916766fc35930b0bf31d2bfcf162de97d84f122ed5f0609d049",
+      "lines": 267,
+      "kind": "Rust source or historical tests; cargo test not invoked"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests_revision_r4.rs",
+      "sha256": "ac9fad84090f652a7e36240ea500a5aa1a4aa26f35640e133927a82645b341ed",
+      "lines": 317,
+      "kind": "Rust source or historical tests; cargo test not invoked"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests_revision_r5.rs",
+      "sha256": "0b3d61ac0291913fe0d24bd5160a266b0ddc393eeeeddabfbb9c09c87293297b",
+      "lines": 77,
+      "kind": "Rust source or historical tests; cargo test not invoked"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests_round5.rs",
+      "sha256": "db6588fd4c08764e54da2e9b4d5489442513af159384fbbd8c738a2839e1fc27",
+      "lines": 306,
+      "kind": "Rust source or historical tests; cargo test not invoked"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests_round6.rs",
+      "sha256": "66ce1f93167843132c2d31f3aed736409c61d4781828bf917689b94ee2547d7a",
+      "lines": 172,
+      "kind": "Rust source or historical tests; cargo test not invoked"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/transition.rs",
+      "sha256": "8d2d45792827cd813efd3fd38a39dee0318b999c9d3c7262bea9203c61f1bbb8",
+      "lines": 861,
+      "kind": "Rust source or historical tests; cargo test not invoked"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/value.rs",
+      "sha256": "0cd34a9c7877861580caa0711e643575cbb9ce631a445919c69f093c2392d32b",
+      "lines": 324,
+      "kind": "Rust source or historical tests; cargo test not invoked"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/warehouse.rs",
+      "sha256": "6d50eb1678921d2f3621149d60766463e6c4ce4fd57e0978ae1af7253557d5f5",
+      "lines": 376,
+      "kind": "Rust source or historical tests; cargo test not invoked"
+    }
+  ],
+  "plant_candidates": [
+    {
+      "candidate": "A219",
+      "machines_read": 219,
+      "feeds_read": 314,
+      "keys_read": [
+        "id",
+        "source",
+        "machines",
+        "feeds",
+        "audit"
+      ],
+      "geometry_certified": false
+    },
+    {
+      "candidate": "B219",
+      "machines_read": 219,
+      "feeds_read": 315,
+      "keys_read": [
+        "id",
+        "source",
+        "machines",
+        "feeds",
+        "audit"
+      ],
+      "geometry_certified": false
+    }
+  ],
+  "semantic_scope": "正文按机制及支持域核读；重复轴行和完整JSON由程序逐项对照。源读取和结构核对不宣称游戏步进或独立席复核。"
+}

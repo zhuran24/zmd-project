@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "finding_counts": {
+    "否证不成立": 14,
+    "否证成立": 1,
+    "无法判定": 3
+  },
+  "findings_match": true,
+  "links": 10,
+  "source_recheck_exit_status": 0,
+  "protected_and_reviewed_inputs_unchanged": true,
+  "for_owner": []
+}

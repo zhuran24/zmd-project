@@ -1,0 +1,39 @@
+{
+  "files": {
+    "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt": "abc7a5867f6477eedb619c63a21c4a77144c57ad4567fdcfb696b3049d66a670",
+    "/home/zhuran24/zmd-research-fresh/求解任务.txt": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+    "/home/zhuran24/zmd-research-fresh/求解约束.txt": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6",
+    "/home/zhuran24/zmd-research-fresh/候选约束.txt": "a0ac3f9c82f371132b7de29fe47e4c6c587904680bc2786523de0c825fd5efd9",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/三种相位不改产量.md": "3786fa29935a854a0eedb9ce877f565e9b7db17f8b0f0851cd0d988cc2d85a2f",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/总纲-流量存量相位.md": "24587afeeb7875a5b6a9a68c7ea5e04bddd5e701416e0e8ec3d438e8679a2321",
+    "/tmp/claude-1000/-home-zhuran24-zmd-research-fresh/786b1aaa-8792-43fd-afbc-2a7361543a07/scratchpad/总结/对话-0920-主线.md": "1b4b8caa005ab05dcd88529a0cbf458de65e567386d701c5b855ab91ecab6c51",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/独立推导-相位-opus.md": "51b84696107958836ab49c890cbdc7bffa62608dd37e2de13261d5276f392adf",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-相位-1.md": "0dda3f83383b8a3f32bc4a036188e33885adb8ef9588ba54e3df5c94af4c23e3",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-相位-2.md": "ca7e3420f0117a52214ed361d6561abdcccc0bd4bb88ddaaca9111583593e070",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/回路总数决定论.md": "bf56998b6396118df3f8e7d6fbf4dcea6a7f0e31fbaeb14a4ff558c7e74215d1",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-相位-1-证据/check_traces.py": "c3b66fae1f6868ff948b11e76943a9bfc4e6bb54dfeebc267dac2f4d9f5c158b",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-相位-1-证据/checks.json": "c9aea938f4ea2cf5bd5fb1676b765a931b05fbc914004506ea33e9f57ca111d6",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-相位-1-证据/checks.log": "9e8a6837a5436756713a7ed28a699e7ed3e9cc5b32243c7bf4da74227e036b0d",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-相位-1-证据/continuous_filler.json": "527bd153654204ab91a90c1716c04b6fe35fccc0bea0f1d0ccc6181e8b01c83a",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-相位-1-证据/gate_intermittent.json": "8a3fb42c661621fb0ee647cd8ead375c9737a1af20183f4d506f46f2b5b47105",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-相位-1-证据/gate_sliding_window.json": "3ff732b480d870892f395d4e8a3be1c7f163e4143a25cefb7ae7122bf8380ddb",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-相位-1-证据/inputs.json": "9cea97e073413cbea80193641d733610c51ee2a9fdfcde888cb16eb7b033abbc",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-相位-1-证据/parts_backlog.json": "55726808bb31e162b715c2d570562d2a0e527cd82e0564f8e5021a1e0516eb9c",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-相位-1-证据/reader_audit.log": "0e7059a73329f5b5d9cc78d0e90824589a6445bd8155145beb4a4685110e8941",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-相位-1-证据/serial_gates.json": "bbb505f6877684f4f51bb0d07266d7a3f3bfe0e164a27b44696194b5d5c1801e",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-相位-1-证据/three_fillers.json": "47fe523f0ea760a9ddb3e591c2242c904697f54786647b818dcebfa5b21a92ce",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-相位-1-证据/verdicts.json": "28e30fcb94686e4c7d5fc86660e0404414360f21aac22d5e3ef474507a456b29",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-相位-2-证据/核算.log": "9bc99a17ea6cb8512d7adf7b6721d6d19ccf2247b4c9fa131b514310adce3ef8",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-相位-2-证据/输入与结果.json": "fccd32b81ea02c15123877b7f3a20859f3f86fb716103177e398783e6eb07636",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-相位-2-证据/逐tick核算.py": "b055043e48925101d25fde6f6727ee46f2f9fb3494c8388e932eaaa2c1fc9843"
+  },
+  "snapshot_copied": false,
+  "dialogue_initial_full_read": {
+    "path": "/tmp/claude-1000/-home-zhuran24-zmd-research-fresh/786b1aaa-8792-43fd-afbc-2a7361543a07/scratchpad/总结/对话-0920-精简.md",
+    "sha256_at_initial_full_read": "ef0dc268fd3c06eaa1ea95fcda41022b2d51cf113ac30a34a4f715f6556efc8a",
+    "lines_at_initial_full_read": 756,
+    "available_now": false,
+    "quoted_owner_records": "owner-quotes.md"
+  },
+  "opus_phase_separate_evidence_directory": null
+}

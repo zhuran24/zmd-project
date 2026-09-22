@@ -1,0 +1,384 @@
+{
+  "status": "pass",
+  "random_seed": 20260920,
+  "cases": [
+    {
+      "name": "混做粉碎机两下游",
+      "variant": 0,
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cache-cli/case-0-0-input.json",
+      "seed_exit": 0,
+      "exit_codes": [
+        2,
+        2
+      ],
+      "status": "unsupported",
+      "all_fields_equal": true,
+      "cached_sha256": "a50214fef00a05fab2f0994f46b446283aff189562924aefef84d488c9f646fb",
+      "direct_sha256": "a50214fef00a05fab2f0994f46b446283aff189562924aefef84d488c9f646fb"
+    },
+    {
+      "name": "混做粉碎机两下游",
+      "variant": 1,
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cache-cli/case-0-1-input.json",
+      "seed_exit": 0,
+      "exit_codes": [
+        2,
+        2
+      ],
+      "status": "unsupported",
+      "all_fields_equal": true,
+      "cached_sha256": "00a9dc645450802a56fadcefdf00bf0dd59afd34ce733e7405b7e9798b0caf27",
+      "direct_sha256": "00a9dc645450802a56fadcefdf00bf0dd59afd34ce733e7405b7e9798b0caf27"
+    },
+    {
+      "name": "混做粉碎机两下游",
+      "variant": 2,
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cache-cli/case-0-2-input.json",
+      "seed_exit": 0,
+      "exit_codes": [
+        2,
+        2
+      ],
+      "status": "unsupported",
+      "all_fields_equal": true,
+      "cached_sha256": "6513c1a367141af2eb709935c88f1f4ce66660050dbc0ccf10778a79e961a9e9",
+      "direct_sha256": "6513c1a367141af2eb709935c88f1f4ce66660050dbc0ccf10778a79e961a9e9"
+    },
+    {
+      "name": "分流器三路轮询",
+      "variant": 0,
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cache-cli/case-1-0-input.json",
+      "seed_exit": 0,
+      "exit_codes": [
+        0,
+        0
+      ],
+      "status": "completed",
+      "all_fields_equal": true,
+      "cached_sha256": "7e0a99492cfa956914e9b711beafe0143cf6ed0513801b808b44fea8ccf103a2",
+      "direct_sha256": "7e0a99492cfa956914e9b711beafe0143cf6ed0513801b808b44fea8ccf103a2"
+    },
+    {
+      "name": "分流器三路轮询",
+      "variant": 1,
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cache-cli/case-1-1-input.json",
+      "seed_exit": 0,
+      "exit_codes": [
+        0,
+        0
+      ],
+      "status": "completed",
+      "all_fields_equal": true,
+      "cached_sha256": "31adff59e533b55c3d87a95f16f333a3df1130327d8a910335047c7f591d5230",
+      "direct_sha256": "31adff59e533b55c3d87a95f16f333a3df1130327d8a910335047c7f591d5230"
+    },
+    {
+      "name": "分流器三路轮询",
+      "variant": 2,
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cache-cli/case-1-2-input.json",
+      "seed_exit": 0,
+      "exit_codes": [
+        0,
+        0
+      ],
+      "status": "completed",
+      "all_fields_equal": true,
+      "cached_sha256": "4b0adb458d56fb4124bb4188c0840577e8d40cca9cea8584598820c3206a7e35",
+      "direct_sha256": "4b0adb458d56fb4124bb4188c0840577e8d40cca9cea8584598820c3206a7e35"
+    },
+    {
+      "name": "桥接器双通路",
+      "variant": 0,
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cache-cli/case-2-0-input.json",
+      "seed_exit": 0,
+      "exit_codes": [
+        0,
+        0
+      ],
+      "status": "completed",
+      "all_fields_equal": true,
+      "cached_sha256": "d0bb7d86c93478508ff12cd4fa5fb47fa9ab5faec5128722cc3bcb6a5b44dc13",
+      "direct_sha256": "d0bb7d86c93478508ff12cd4fa5fb47fa9ab5faec5128722cc3bcb6a5b44dc13"
+    },
+    {
+      "name": "桥接器双通路",
+      "variant": 1,
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cache-cli/case-2-1-input.json",
+      "seed_exit": 0,
+      "exit_codes": [
+        0,
+        0
+      ],
+      "status": "completed",
+      "all_fields_equal": true,
+      "cached_sha256": "442919b179ef167755f4c86732a80ae5eb97decc1299e6bada6b77367628fb0a",
+      "direct_sha256": "442919b179ef167755f4c86732a80ae5eb97decc1299e6bada6b77367628fb0a"
+    },
+    {
+      "name": "桥接器双通路",
+      "variant": 2,
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cache-cli/case-2-2-input.json",
+      "seed_exit": 0,
+      "exit_codes": [
+        0,
+        0
+      ],
+      "status": "completed",
+      "all_fields_equal": true,
+      "cached_sha256": "2a476f854d45124b79b884fc0edee86e4d4c45568d3606633128c3617ae4f49f",
+      "direct_sha256": "2a476f854d45124b79b884fc0edee86e4d4c45568d3606633128c3617ae4f49f"
+    },
+    {
+      "name": "传输拒收与暂停核验",
+      "variant": 0,
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cache-cli/case-3-0-input.json",
+      "seed_exit": 0,
+      "exit_codes": [
+        0,
+        0
+      ],
+      "status": "completed",
+      "all_fields_equal": true,
+      "cached_sha256": "663c046aed59cd17072d614c87fab668ff192cba33d25d0397b65495cbaff88c",
+      "direct_sha256": "663c046aed59cd17072d614c87fab668ff192cba33d25d0397b65495cbaff88c"
+    },
+    {
+      "name": "传输拒收与暂停核验",
+      "variant": 1,
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cache-cli/case-3-1-input.json",
+      "seed_exit": 0,
+      "exit_codes": [
+        0,
+        0
+      ],
+      "status": "completed",
+      "all_fields_equal": true,
+      "cached_sha256": "c6d26c66064761d3a83a7387657d25c900432c277c0f68fe435a18fc8de82030",
+      "direct_sha256": "c6d26c66064761d3a83a7387657d25c900432c277c0f68fe435a18fc8de82030"
+    },
+    {
+      "name": "传输拒收与暂停核验",
+      "variant": 2,
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cache-cli/case-3-2-input.json",
+      "seed_exit": 0,
+      "exit_codes": [
+        0,
+        0
+      ],
+      "status": "completed",
+      "all_fields_equal": true,
+      "cached_sha256": "4fe235437d2718c4ed9df184c00b4f25cdd48dec302f4757aefab9c3be37e107",
+      "direct_sha256": "4fe235437d2718c4ed9df184c00b4f25cdd48dec302f4757aefab9c3be37e107"
+    },
+    {
+      "name": "研磨混做核验",
+      "variant": 0,
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cache-cli/case-4-0-input.json",
+      "seed_exit": 0,
+      "exit_codes": [
+        0,
+        0
+      ],
+      "status": "completed",
+      "all_fields_equal": true,
+      "cached_sha256": "5be56d9c27fe379d75fb0e691a407d80a601f40d5c019049bbef4f5331860933",
+      "direct_sha256": "5be56d9c27fe379d75fb0e691a407d80a601f40d5c019049bbef4f5331860933"
+    },
+    {
+      "name": "研磨混做核验",
+      "variant": 1,
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cache-cli/case-4-1-input.json",
+      "seed_exit": 0,
+      "exit_codes": [
+        0,
+        0
+      ],
+      "status": "completed",
+      "all_fields_equal": true,
+      "cached_sha256": "a48f99429ed651ca2eddc1a0c04c5f1a5568d499984723a345bfadcb901faa18",
+      "direct_sha256": "a48f99429ed651ca2eddc1a0c04c5f1a5568d499984723a345bfadcb901faa18"
+    },
+    {
+      "name": "研磨混做核验",
+      "variant": 2,
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cache-cli/case-4-2-input.json",
+      "seed_exit": 0,
+      "exit_codes": [
+        0,
+        0
+      ],
+      "status": "completed",
+      "all_fields_equal": true,
+      "cached_sha256": "72e8701d6c12dda917c98bd0c775fd80047e2fcdc930f126eebcc9b2e0041987",
+      "direct_sha256": "72e8701d6c12dda917c98bd0c775fd80047e2fcdc930f126eebcc9b2e0041987"
+    },
+    {
+      "name": "阻尼切支恢复核验",
+      "variant": 0,
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cache-cli/case-5-0-input.json",
+      "seed_exit": 0,
+      "exit_codes": [
+        0,
+        0
+      ],
+      "status": "completed",
+      "all_fields_equal": true,
+      "cached_sha256": "245b07b35a0601f8ff0b8f5c6c20a2e1df863a3c397b074c268f50e4b44d921e",
+      "direct_sha256": "245b07b35a0601f8ff0b8f5c6c20a2e1df863a3c397b074c268f50e4b44d921e"
+    },
+    {
+      "name": "阻尼切支恢复核验",
+      "variant": 1,
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cache-cli/case-5-1-input.json",
+      "seed_exit": 0,
+      "exit_codes": [
+        0,
+        0
+      ],
+      "status": "completed",
+      "all_fields_equal": true,
+      "cached_sha256": "b55f2388d7b03b08cc0da8187343cf6028fecec7e547495256af6d740ac94b35",
+      "direct_sha256": "b55f2388d7b03b08cc0da8187343cf6028fecec7e547495256af6d740ac94b35"
+    },
+    {
+      "name": "阻尼切支恢复核验",
+      "variant": 2,
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cache-cli/case-5-2-input.json",
+      "seed_exit": 0,
+      "exit_codes": [
+        0,
+        0
+      ],
+      "status": "completed",
+      "all_fields_equal": true,
+      "cached_sha256": "b6e16e8a06580f2b1b0ee4ffdfde2c882c0d43fb6c6a7cd069d4f2cd633a2f8a",
+      "direct_sha256": "b6e16e8a06580f2b1b0ee4ffdfde2c882c0d43fb6c6a7cd069d4f2cd633a2f8a"
+    },
+    {
+      "name": "阻尼连续带核验",
+      "variant": 0,
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cache-cli/case-6-0-input.json",
+      "seed_exit": 0,
+      "exit_codes": [
+        0,
+        0
+      ],
+      "status": "completed",
+      "all_fields_equal": true,
+      "cached_sha256": "d2e891cf6083ca122f7caeb7925ae885de0b714642e43c49e020a69c1629f59b",
+      "direct_sha256": "d2e891cf6083ca122f7caeb7925ae885de0b714642e43c49e020a69c1629f59b"
+    },
+    {
+      "name": "阻尼连续带核验",
+      "variant": 1,
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cache-cli/case-6-1-input.json",
+      "seed_exit": 0,
+      "exit_codes": [
+        0,
+        0
+      ],
+      "status": "completed",
+      "all_fields_equal": true,
+      "cached_sha256": "89595376f7dc3df4e02a59878e7e744efba11b203c1793ae794eebcc863d59f0",
+      "direct_sha256": "89595376f7dc3df4e02a59878e7e744efba11b203c1793ae794eebcc863d59f0"
+    },
+    {
+      "name": "阻尼连续带核验",
+      "variant": 2,
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cache-cli/case-6-2-input.json",
+      "seed_exit": 0,
+      "exit_codes": [
+        0,
+        0
+      ],
+      "status": "completed",
+      "all_fields_equal": true,
+      "cached_sha256": "a55850de5c110d4c8d74864aba3ddf2794e8542b1a34400aee95071f7f9ab52a",
+      "direct_sha256": "a55850de5c110d4c8d74864aba3ddf2794e8542b1a34400aee95071f7f9ab52a"
+    },
+    {
+      "name": "生产循环环带",
+      "variant": 0,
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cache-cli/case-7-0-input.json",
+      "seed_exit": 0,
+      "exit_codes": [
+        0,
+        0
+      ],
+      "status": "completed",
+      "all_fields_equal": true,
+      "cached_sha256": "cc46cb6b5b408f81790f8c0a017d39042ce1593000019c104cd337f841afd0e4",
+      "direct_sha256": "cc46cb6b5b408f81790f8c0a017d39042ce1593000019c104cd337f841afd0e4"
+    },
+    {
+      "name": "生产循环环带",
+      "variant": 1,
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cache-cli/case-7-1-input.json",
+      "seed_exit": 0,
+      "exit_codes": [
+        0,
+        0
+      ],
+      "status": "completed",
+      "all_fields_equal": true,
+      "cached_sha256": "97d7bcba281de527714d29d07a38a30f6cf51bac150bfe56496fd4f713f2a20c",
+      "direct_sha256": "97d7bcba281de527714d29d07a38a30f6cf51bac150bfe56496fd4f713f2a20c"
+    },
+    {
+      "name": "生产循环环带",
+      "variant": 2,
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cache-cli/case-7-2-input.json",
+      "seed_exit": 0,
+      "exit_codes": [
+        0,
+        0
+      ],
+      "status": "completed",
+      "all_fields_equal": true,
+      "cached_sha256": "ccd8f1a5cbaa8fbb0367b1d7300924dcd5bf393107045494efd9b1456495d913",
+      "direct_sha256": "ccd8f1a5cbaa8fbb0367b1d7300924dcd5bf393107045494efd9b1456495d913"
+    },
+    {
+      "name": "轮询均分核验",
+      "variant": 0,
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cache-cli/case-8-0-input.json",
+      "seed_exit": 0,
+      "exit_codes": [
+        0,
+        0
+      ],
+      "status": "completed",
+      "all_fields_equal": true,
+      "cached_sha256": "25058e1dc97437849e05ea5960a4cf37b8729d3e180843e0e5cb60f0e3a1af18",
+      "direct_sha256": "25058e1dc97437849e05ea5960a4cf37b8729d3e180843e0e5cb60f0e3a1af18"
+    },
+    {
+      "name": "轮询均分核验",
+      "variant": 1,
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cache-cli/case-8-1-input.json",
+      "seed_exit": 0,
+      "exit_codes": [
+        0,
+        0
+      ],
+      "status": "completed",
+      "all_fields_equal": true,
+      "cached_sha256": "f4608bf6aec99157c312f9293ddfd636b9b627d82e3f41df2832b175d4dfe2e4",
+      "direct_sha256": "f4608bf6aec99157c312f9293ddfd636b9b627d82e3f41df2832b175d4dfe2e4"
+    },
+    {
+      "name": "轮询均分核验",
+      "variant": 2,
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cache-cli/case-8-2-input.json",
+      "seed_exit": 0,
+      "exit_codes": [
+        0,
+        0
+      ],
+      "status": "completed",
+      "all_fields_equal": true,
+      "cached_sha256": "5adf062a66f9de00b57d05fd79570c73d52f35841303a99b266155c32c8a9f60",
+      "direct_sha256": "5adf062a66f9de00b57d05fd79570c73d52f35841303a99b266155c32c8a9f60"
+    }
+  ]
+}

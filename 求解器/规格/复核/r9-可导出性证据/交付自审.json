@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "report": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/复核-r9-可导出性.md",
+  "report_sha256": "3b3e0748a2341f3a0ef1fe849b69615ddb63d537fe2857e8c5eb12361755525a",
+  "local_links_checked": 20,
+  "missing_links": [],
+  "protected_files_unchanged": 69,
+  "changed_files": [],
+  "reader_review": [
+    "判等键逐字段均附范围和依据",
+    "级一与级二结论分开",
+    "条件容量反例未冒称完整可达周期反例",
+    "轮询均分及密集结点完整前件逐项核查",
+    "恢复与新起轮区分",
+    "22及183未合计为独立语义证明",
+    "正式行号与本地链接复核"
+  ],
+  "scope": "仅本席报告与证据；未编译、未commit/push、未改被审文件"
+}

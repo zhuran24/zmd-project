@@ -1,0 +1,2 @@
+{"command": ["cargo", "build", "-p", "kernel", "--release", "--locked", "--offline"], "exit": 0, "CARGO_HOME": "/home/zhuran24/zmd-research-fresh/求解器/.cargo-home", "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target"}
+    Finished `release` profile [optimized] target(s) in 0.01s

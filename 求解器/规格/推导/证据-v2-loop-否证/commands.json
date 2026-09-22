@@ -1,0 +1,62 @@
+[
+  {
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "seed",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/证据-v2-loop-否证/head-block-seed.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/证据-v2-loop-否证/head-block-canonical.json"
+    ],
+    "exit": 2,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/推导/证据-v2-loop-否证/head-block-canonical.json\",\"status\":\"invalid_input\"}\n",
+    "stderr": "",
+    "status": "invalid_input"
+  },
+  {
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "seed",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/证据-v2-loop-否证/head-release-seed.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/证据-v2-loop-否证/head-release-canonical.json"
+    ],
+    "exit": 2,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/推导/证据-v2-loop-否证/head-release-canonical.json\",\"status\":\"invalid_input\"}\n",
+    "stderr": "",
+    "status": "invalid_input"
+  },
+  {
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "seed",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/证据-v2-loop-否证/full-inputs-seed.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/证据-v2-loop-否证/full-inputs-canonical.json"
+    ],
+    "exit": 2,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/推导/证据-v2-loop-否证/full-inputs-canonical.json\",\"status\":\"invalid_input\"}\n",
+    "stderr": "",
+    "status": "invalid_input"
+  },
+  {
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "seed",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/证据-v2-loop-否证/gate-first-release-seed.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/证据-v2-loop-否证/gate-first-release-canonical.json"
+    ],
+    "exit": 2,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/规格/推导/证据-v2-loop-否证/gate-first-release-canonical.json\",\"status\":\"invalid_input\"}\n",
+    "stderr": "",
+    "status": "invalid_input"
+  }
+]

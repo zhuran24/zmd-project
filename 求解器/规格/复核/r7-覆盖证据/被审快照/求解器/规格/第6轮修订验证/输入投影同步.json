@@ -1,0 +1,16 @@
+{
+  "file": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md",
+  "before_sha256": "08991e07b792f82ecf6f98a0bcbd663ecc7caa2b534ac5379c6805a14f78c413",
+  "after_sha256": "a180570ac7507e9711eeeb6d0dbcc21205aa136c8694634d0cb2d7e536b2486b",
+  "fields": [
+    "time.instant_order",
+    "judgment.order",
+    "polling.memory_scope",
+    "polling.membership_change",
+    "damping.branch",
+    "manufacturing.recipe_completeness",
+    "manufacturing.output_blocked",
+    "warehouse.empty_slot_identity"
+  ],
+  "scope": "仅投影A线现行行，不改C线事件/状态接口或源码"
+}

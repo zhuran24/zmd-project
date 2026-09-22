@@ -1,0 +1,37 @@
+{
+  "current": {
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/model.rs": "6f4d3dfb5133b834ef52dba2fa398cee3f6e3f88f1da77630aaf66326e81a842",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/event_identity.rs": "0a4629ba1c0ba0fea4101a229698cc8bfbe776e4a74885142286e6d1f15b6406",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/output.rs": "b98d41d3fc1b1e9c9855ba3158d71f4e9a8ed10370bf2a36fd7c4d9a101bc684",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/input.rs": "ecf8754d2c424f2f8970e606ef8dc5db5a220dcf61c81845947225f236df199e",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/config.rs": "f2a22d1bbc264a75179fa45d41b03cce33f6e44d197112ba84486446d3df20ad",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/main.rs": "42dd0c122eca5adf7069c6ab5fed4569ba105e1a2e6954769494ce7e89ddfe33",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/value.rs": "0cd34a9c7877861580caa0711e643575cbb9ce631a445919c69f093c2392d32b",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/transition.rs": "e298ac43f509561bcf15ebfe3a7bf5abba57133cc2561782ec397f6592ceeedd",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/interfaces.rs": "26ae828a14fe77db7625de901b35d48d47dc1d39993b67f0df11b5c2dbd542ba",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests.rs": "94a853a4b134c00b37cc0b7186e35b205d0dbeb1527a587e8af96fa157ef20a3",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/catalog.rs": "3a0a7c3e21b46d626928fca81e90a617bd55189b8e3f357019c529109510636f",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/engine.rs": "aa831e99a9517c1d2f9328a2a540d0b2f0f955ed286760f942dfaf6298ecf84a",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs": "514709029ca3f049e27fa05dbe1a39c0cab62bb523de1cba6bdec10b9fbfe480",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/polling.rs": "11168c6648e3a78074814b5740833a7952299f959161d6bd16bd1f127d369aa7",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests_revision.rs": "fdbec222b970566f88a7d711e44f6e46fbd7dc0062ba5bbf584159ca0217c0c1",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests_revision_r2.rs": "e42da5328e9946f8e745cdbf361b06e006fcb28e54656488e8f53346697f4377",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/warehouse.rs": "aa5b1505d447b378a4cbb015f758c4ae5403b6201895db80576be4e0c8d22082"
+  },
+  "changed_since_round5_start": [
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/event_identity.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/output.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/input.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/main.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/transition.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/interfaces.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/engine.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/polling.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests_revision.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests_revision_r2.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/warehouse.rs"
+  ],
+  "scope": "K线活动源码只读观测；不以旧轮次字节限制本轮实现"
+}

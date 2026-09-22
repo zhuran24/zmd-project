@@ -1,0 +1,60 @@
+{
+  "name": "relative-verify-record-root",
+  "command": [
+    "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+    "verify-record",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-1-证据/relative-package/record.json",
+    "--config",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+  ],
+  "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+  "exit_code": 2,
+  "result": {
+    "execution_mode": "finite_concrete",
+    "fingerprints": [],
+    "input_history": null,
+    "open_items": [
+      "invalid_input input @ ../../../../../数据/样例/生产循环环带.json: No such file or directory (os error 2)"
+    ],
+    "parameter_assignment": null,
+    "port_meeting": "shared_edge_opposite",
+    "producer": {
+      "claim": "装载停止，未形成游戏后继",
+      "kind": "kernel",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+    },
+    "profile_id": "kernel_profile_v1",
+    "run_id": "kernel:load-stop",
+    "schema": "kernel-output-v3",
+    "status": "invalid_input",
+    "trace": null,
+    "uncovered_axes": [],
+    "validation_scope": null
+  },
+  "stderr": ""
+}
+STDOUT
+{
+  "execution_mode": "finite_concrete",
+  "fingerprints": [],
+  "input_history": null,
+  "open_items": [
+    "invalid_input input @ ../../../../../数据/样例/生产循环环带.json: No such file or directory (os error 2)"
+  ],
+  "parameter_assignment": null,
+  "port_meeting": "shared_edge_opposite",
+  "producer": {
+    "claim": "装载停止，未形成游戏后继",
+    "kind": "kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+  },
+  "profile_id": "kernel_profile_v1",
+  "run_id": "kernel:load-stop",
+  "schema": "kernel-output-v3",
+  "status": "invalid_input",
+  "trace": null,
+  "uncovered_axes": [],
+  "validation_scope": null
+}
+
+STDERR

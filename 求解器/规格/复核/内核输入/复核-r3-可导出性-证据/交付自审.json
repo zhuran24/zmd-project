@@ -1,0 +1,21 @@
+{
+  "status": "通过",
+  "date": "2026-09-19",
+  "finding_count": 3,
+  "severity_counts": {
+    "阻断": 0,
+    "重要": 3,
+    "次要": 0
+  },
+  "report_links_missing": [],
+  "final_json_shape_valid": true,
+  "reader_review": {
+    "自包含": true,
+    "头部与正文一致": true,
+    "历史快照与现行变化分开": true,
+    "数字口径一致": true,
+    "引用存在且对应": true,
+    "不将合成前缀提升为全称": true
+  },
+  "evidence_boundary": "独立核算为几何及本前缀指定量；完整ticks相等属于被审执行器复现。"
+}

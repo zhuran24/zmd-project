@@ -1,0 +1,204 @@
+{
+  "status": "通过",
+  "scope": "静态结构及指定运行种子检查，不是全称运行认证",
+  "results": [
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/桥接器双通路.json",
+      "status": "指定快照静态结构通过",
+      "snapshot": "built_layout",
+      "anchor": {
+        "event": "blueprint_complete",
+        "side": "after"
+      },
+      "units": 7,
+      "occupied_cells": 122,
+      "physical_channels": 4,
+      "buffer_channels": 0,
+      "bridge_first_peers": [
+        {
+          "unit": "bridge",
+          "axis": "vertical",
+          "first_peer": "south_box:north:2",
+          "scope": "两种已登记先接读法的一致唯一非桥见证"
+        },
+        {
+          "unit": "bridge",
+          "axis": "horizontal",
+          "first_peer": "west_box:north:2",
+          "scope": "两种已登记先接读法的一致唯一非桥见证"
+        }
+      ],
+      "counts_category": "算术推论（候选布局）",
+      "validation_category": "实测（工具）"
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询.json",
+      "status": "指定快照静态结构通过",
+      "snapshot": "built_layout",
+      "anchor": {
+        "event": "blueprint_complete",
+        "side": "after"
+      },
+      "units": 9,
+      "occupied_cells": 128,
+      "physical_channels": 4,
+      "buffer_channels": 0,
+      "bridge_first_peers": [],
+      "counts_category": "算术推论（候选布局）",
+      "validation_category": "实测（工具）"
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json",
+      "status": "完整运行输入检查通过（有限合成子集）",
+      "snapshot": "built_layout",
+      "anchor": {
+        "event": "blueprint_complete",
+        "side": "after"
+      },
+      "units": 14,
+      "occupied_cells": 153,
+      "physical_channels": 11,
+      "buffer_channels": 8,
+      "bridge_first_peers": [],
+      "counts_category": "算术推论（候选布局）",
+      "validation_category": "实测（工具）"
+    }
+  ],
+  "negative_tests": [
+    {
+      "name": "占格重叠",
+      "status": "正确拒绝",
+      "reason": "占格重叠: south_box 与 core"
+    },
+    {
+      "name": "基地越界",
+      "status": "正确拒绝",
+      "reason": "越界: core"
+    },
+    {
+      "name": "伪造或遗漏实体通道",
+      "status": "正确拒绝",
+      "reason": "physical_channels: 必须等于全部导出通道，不能遗漏/伪造"
+    },
+    {
+      "name": "核心指派遗漏",
+      "status": "正确拒绝",
+      "reason": "须逐一指派核心及全部仓库取货口"
+    },
+    {
+      "name": "错误配方机型",
+      "status": "正确拒绝",
+      "reason": "配方 id 与机型不匹配"
+    },
+    {
+      "name": "传送带抢先建造",
+      "status": "正确拒绝",
+      "reason": "蓝图传送带必须最后建造"
+    },
+    {
+      "name": "未知参数轴",
+      "status": "正确拒绝",
+      "reason": "fixedness_unproven: 字段缺失或未知"
+    },
+    {
+      "name": "未知顶层字段",
+      "status": "正确拒绝",
+      "reason": "root: 字段缺失或未知"
+    },
+    {
+      "name": "桥接器按轴调度",
+      "status": "正确拒绝",
+      "reason": "已定轴值不符: bridge.scheduling_scope"
+    },
+    {
+      "name": "仓库非六类满",
+      "status": "正确拒绝",
+      "reason": "任务仓库初态不符"
+    },
+    {
+      "name": "桥接器路径跨轴",
+      "status": "正确拒绝",
+      "reason": "桥接器路径跨轴"
+    },
+    {
+      "name": "未给完整建造见证属于超子集",
+      "status": "正确拒绝",
+      "reason": "unsupported: 最小程序要求完整 selected_order 见证"
+    },
+    {
+      "name": "全局事件身份冲突",
+      "status": "正确拒绝",
+      "reason": "全局事件 id 重复或非法"
+    },
+    {
+      "name": "接通记录不可省略",
+      "status": "正确拒绝",
+      "reason": "首次接通事件记录缺边"
+    },
+    {
+      "name": "接通原因不能沿用无关建成",
+      "status": "正确拒绝",
+      "reason": "首次接通原因不是较晚建成端"
+    },
+    {
+      "name": "隐含蓝图序与显式关系冲突",
+      "status": "正确拒绝",
+      "reason": "事件执行先后成环"
+    },
+    {
+      "name": "调试前快照不得冒充最终验收",
+      "status": "正确拒绝",
+      "reason": "unsupported: 此检查子集不解释该 Decision 状态"
+    },
+    {
+      "name": "未知桥轴不能静默缺边",
+      "status": "正确拒绝",
+      "reason": "unsupported: 有邻口但桥轴方向未解决"
+    },
+    {
+      "name": "最早邻接与最早有向边分歧",
+      "status": "正确拒绝",
+      "reason": "unsupported: 桥先接读法分歧，不能无条件判桥方向非法"
+    }
+  ],
+  "representation_tests": [
+    "一致的冗余时刻关系通过",
+    "一个及两个无物种空格均通过，不按 null 判同物种",
+    "只接一轴的桥保留另一轴 pending 并通过结构检查",
+    "建成、离线、改设定共用引用域且两种相反次序可分别保存",
+    "同刻交织可保存，等时与严格先后冲突会拒绝",
+    "新旋转快照可独立重算 PC，首次 placement 保持独立；未认证动作可达性",
+    "同一 PC 的开闭再开保留三个独立事件及新的建成依据；仅表示测试",
+    "候选文件不可读时样例及正式来源检查仍通过"
+  ],
+  "readonly_source_hashes": {
+    "《明日方舟：终末地》游戏规则.txt": "abc7a5867f6477eedb619c63a21c4a77144c57ad4567fdcfb696b3049d66a670",
+    "求解任务.txt": "10abf80fe6eefe647471eabe78da4053f77b489d3806722c501c6acb405a2864",
+    "求解约束.txt": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6"
+  },
+  "axis_registry_sha256": "aacade17b417a65e1b7d7846615978defcd510bf3f490ae8fdb9e86ce36bd7a9",
+  "axis_count": 99,
+  "axis_alignment": "全部字段名、已定值和生命周期逐项检查",
+  "document_checks": {
+    "axis_names_match": true,
+    "local_links_resolve": true
+  },
+  "artifact_sha256": {
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/桥接器双通路.json": "c2b91c234a7606be590a826a96b5db71a3be06f4c4bdf16767516bd7608105ce",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询.json": "7c15088160ba6abae71bc8de73168b64c393d68e39dc5a357adacc1d496504e1",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json": "105838b00abf675ac8e576a23b1c2c20ce9870b6e8419c7a62e54f83eac98a45",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md": "a180570ac7507e9711eeeb6d0dbcc21205aa136c8694634d0cb2d7e536b2486b",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/check_examples.py": "a5acb5c71d17917ac636d3026360f22a0dc12f1326b570e46d94aeba0a030fcc",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/generate_examples.py": "b5e4d4198bf8c2c84acfa1ff643b4bb1334a387635d0a909bd75311c20300b2c"
+  },
+  "unverified": [
+    "供电覆盖格集合",
+    "实际库存与进度",
+    "调试可达性",
+    "轮询与均分",
+    "实际混做及物流分配",
+    "离线接续",
+    "吞吐及全部可达循环达标",
+    "外部契约绑定与非空调试程序"
+  ]
+}

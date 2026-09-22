@@ -1,0 +1,9 @@
+{
+  "protected_files": 272,
+  "changed_original_files": [],
+  "snapshot_files": 192,
+  "snapshot_source_drift": [],
+  "cargo_passed": 93,
+  "cargo_failed": 0,
+  "clippy_passed": true
+}

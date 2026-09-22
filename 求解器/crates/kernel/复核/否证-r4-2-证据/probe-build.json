@@ -1,0 +1,19 @@
+{
+  "command": [
+    "rustc",
+    "--edition=2021",
+    "--crate-name",
+    "refutation_r4_2_key_probe",
+    "-",
+    "--extern",
+    "kernel=/home/zhuran24/zmd-research-fresh/求解器/target/debug/libkernel.rlib",
+    "--extern",
+    "serde_json=/home/zhuran24/zmd-research-fresh/求解器/target/debug/deps/libserde_json-0ab88e76c2088d71.rlib",
+    "-L",
+    "dependency=/home/zhuran24/zmd-research-fresh/求解器/target/debug/deps",
+    "-o",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/refutation-r4-2-key-probe"
+  ],
+  "exit_code": 0,
+  "kernel_rlib_sha256": "d43cf1b631b2f46128d51b4a4b18ef3ba4580d51158546f263bc4e98740fc570"
+}

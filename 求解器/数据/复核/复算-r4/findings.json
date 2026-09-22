@@ -1,0 +1,4 @@
+{
+  "findings": [],
+  "notes": "完整论证：/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复核-r4-数值复算.md；脚本、逐台逐通道结果及隔离验证：/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复算-r4/。本轮独立复算与逐项对照未发现不一致；不构成几何或运行认证。"
+}

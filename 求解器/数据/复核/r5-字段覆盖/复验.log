@@ -1,0 +1,1 @@
+{"status": "通过", "checks": [{"check": "规格自查.log", "exit_code": 0}, {"check": "样例检查.log", "exit_code": 0}, {"check": "黄金轨迹运行记录.json", "byte_equal_to_r4": true}, {"check": "运行输入回归结果.json", "byte_equal_to_r4": true}], "protected_count": 55}

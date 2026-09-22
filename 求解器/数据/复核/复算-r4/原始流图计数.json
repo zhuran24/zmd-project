@@ -1,0 +1,43 @@
+{
+  "raw_nodes": 221,
+  "logical_records": 315,
+  "simple_edges": 313,
+  "strongly_connected_components": 217,
+  "nontrivial_components": [
+    [
+      "M173",
+      "M200"
+    ],
+    [
+      "M174",
+      "M201"
+    ],
+    [
+      "M194",
+      "M211"
+    ],
+    [
+      "M195",
+      "M212"
+    ]
+  ],
+  "parallel_pairs": [
+    {
+      "source": "M068",
+      "target": "M150",
+      "records": [
+        "C109",
+        "C110"
+      ]
+    },
+    {
+      "source": "M054",
+      "target": "M150",
+      "records": [
+        "C174",
+        "C175"
+      ]
+    }
+  ],
+  "scope": "矿石来源沿用原始CSV的单一匿名节点；有向环不构成运行活性检查范围。"
+}

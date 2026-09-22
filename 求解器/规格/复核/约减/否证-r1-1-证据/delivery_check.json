@@ -1,0 +1,8 @@
+{
+  "status": "通过",
+  "report_sha256": "ac0b42c44fa29a44b21a01ccd70bba253dcad27275c483cb98e020c4f842064e",
+  "links_checked": 10,
+  "reviewed_sources_unchanged": true,
+  "evidence_types_allowed": true,
+  "reader_review": "全文自审通过；结论与证据和适用边界一致"
+}

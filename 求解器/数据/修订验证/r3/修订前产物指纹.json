@@ -1,0 +1,17 @@
+{
+  "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json": "63acbb92067fd9ba4229f7b83de8b5054023b6b4e520f9e7077d48b562896230",
+  "/home/zhuran24/zmd-research-fresh/求解器/数据/送料契约.md": "138ba7f15059de5bbe49615fa466880db3a0a415f7c054c024e7347d08635922",
+  "/home/zhuran24/zmd-research-fresh/求解器/数据/修订记录.md": "996c707fba81b97585865441847963373250bc1c0a39293c75f50a95b77ec223",
+  "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/校验报告.md": "e9f9236fbcc54a5caf14034fec60702e0a3c47c28a9379c314b7c95667ca67cb",
+  "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/contract.json": "d0c887c73674a58424d05257f002953a2ee4d0b888614d52cc0b2b60ebd58ff2",
+  "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/来源清单.json": "0d6c55f896e7b406c36e22ae6646c4b228fee82d5abac91e31c2b76375775611",
+  "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/验证记录.md": "d367913d0b0f0809de9c6d8abba5e2352ac5eccd7e59a25e2e388bd9a49ba3bc",
+  "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/转换说明.md": "861382b5f5a7d33adfb5601d23cb14dd6e705a4e62ebd3e8aa2574f6316b62c6",
+  "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/cargo-test.log": "96a92adcc0fd5e820a55850c3cde4903ec5ee6d0edf11dfb2b922099023dbc5e",
+  "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/交付哈希.json": "e450d00a44d28d080ef9012892fcecb63a7dd157f274a35dd1f2a1472915162b",
+  "/home/zhuran24/zmd-research-fresh/求解器/crates/topology/src/main.rs": "c10cc32045da0d2af89e45ee6ff95dd645813bf602f3d44e14977c9ccd0bf9f2",
+  "/home/zhuran24/zmd-research-fresh/求解器/crates/topology/src/lib.rs": "593b3e62c88629c82e22816b74e75b2e1e57eb2e690d077f7664d0a0c8ac1286",
+  "/home/zhuran24/zmd-research-fresh/求解器/crates/topology/tests/validation.rs": "3ca31c3c16455a461a86d2b02ac98cfc6ce8fb4b6d25b193d0c3e43451b280c3",
+  "/home/zhuran24/zmd-research-fresh/求解器/数据/工具/check_revision.py": "83e3be4a68258e2923bf5198c363825eec21d1f058d1846052f48af9ea8e752b",
+  "/home/zhuran24/zmd-research-fresh/求解器/数据/工具/convert_candidate_b.py": "01f0b75c44f7ecf1b21a180271870b6bfcfa3a4da6bc9bb0087f4d8be786703e"
+}

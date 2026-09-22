@@ -1,0 +1,316 @@
+{
+  "date": "2026-09-20",
+  "scope": "文档结构、输入保护、版本对应和所列局部算术；不是内核或整厂认证",
+  "pass": true,
+  "readonly_inputs": {
+    "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt": {
+      "before": "abc7a5867f6477eedb619c63a21c4a77144c57ad4567fdcfb696b3049d66a670",
+      "after": "abc7a5867f6477eedb619c63a21c4a77144c57ad4567fdcfb696b3049d66a670"
+    },
+    "/home/zhuran24/zmd-research-fresh/求解任务.txt": {
+      "before": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+      "after": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac"
+    },
+    "/home/zhuran24/zmd-research-fresh/求解约束.txt": {
+      "before": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6",
+      "after": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6"
+    },
+    "/home/zhuran24/zmd-research-fresh/候选约束.txt": {
+      "before": "a0ac3f9c82f371132b7de29fe47e4c6c587904680bc2786523de0c825fd5efd9",
+      "after": "a0ac3f9c82f371132b7de29fe47e4c6c587904680bc2786523de0c825fd5efd9"
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/工作/查漏.md": {
+      "before": "5a89abbf38f69e1696d59f1cb0f6d3e7ca3a46a890b04553846c98f6bee000c9",
+      "after": "5a89abbf38f69e1696d59f1cb0f6d3e7ca3a46a890b04553846c98f6bee000c9"
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/总纲-流量存量相位.md": {
+      "before": "24587afeeb7875a5b6a9a68c7ea5e04bddd5e701416e0e8ec3d438e8679a2321",
+      "after": "24587afeeb7875a5b6a9a68c7ea5e04bddd5e701416e0e8ec3d438e8679a2321"
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/工作/总结-终稿.md": {
+      "before": "101c0ccd64e6ee2cdd3cf5bb52ae89ff1f89d90436a6275645fa64193d743b03",
+      "after": "101c0ccd64e6ee2cdd3cf5bb52ae89ff1f89d90436a6275645fa64193d743b03"
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-v2-phase.md": {
+      "before": "4c7082a570988c31557b4905ea2772bb1fcd5ce62f4be954946bc6b0937d2c34",
+      "after": "4c7082a570988c31557b4905ea2772bb1fcd5ce62f4be954946bc6b0937d2c34"
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/Cargo.toml": {
+      "before": "279ef923475621d73a24e2d04781ae126c93fbfc82f9646947aee8025e96de95",
+      "after": "279ef923475621d73a24e2d04781ae126c93fbfc82f9646947aee8025e96de95"
+    },
+    "/tmp/claude-1000/-home-zhuran24-zmd-research-fresh/786b1aaa-8792-43fd-afbc-2a7361543a07/scratchpad/总结/对话-0920-主线.md": {
+      "before": "1b4b8caa005ab05dcd88529a0cbf458de65e567386d701c5b855ab91ecab6c51",
+      "after": "1b4b8caa005ab05dcd88529a0cbf458de65e567386d701c5b855ab91ecab6c51"
+    }
+  },
+  "modified_outputs": {
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/会议2成果修订-v46.md": {
+      "sha256": "351e7dc3e2e4c4bbb0e58568f496af7e2b6974a06bd974b2df939b16f1e23a93",
+      "lines": 1005
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7草案.md": {
+      "sha256": "be50ced3b09818a8ad52b402f6f506b192a97c364d356363517f0442d8d5f35b",
+      "lines": 243
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/回路总数决定论-v2.md": {
+      "sha256": "74c6308420c02491fda55e742896ab1fccf712756d36f5b0c6e6bd719cf14986",
+      "lines": 331
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/三种相位不改产量-v2.md": {
+      "sha256": "53cc75c3e645c1d975b2c4094e2f75ef23908b6729fdd2eb224696eedd787705",
+      "lines": 300
+    }
+  },
+  "record_sha256": "778e039ce5eeb10e040040af65fa90916e565eea51a6eaa9d6d6ec6994b2d1ae",
+  "checks": [
+    {
+      "name": "只读输入保持原字节",
+      "pass": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt"
+    },
+    {
+      "name": "只读输入保持原字节",
+      "pass": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解任务.txt"
+    },
+    {
+      "name": "只读输入保持原字节",
+      "pass": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解约束.txt"
+    },
+    {
+      "name": "只读输入保持原字节",
+      "pass": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/候选约束.txt"
+    },
+    {
+      "name": "只读输入保持原字节",
+      "pass": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/工作/查漏.md"
+    },
+    {
+      "name": "只读输入保持原字节",
+      "pass": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/总纲-流量存量相位.md"
+    },
+    {
+      "name": "只读输入保持原字节",
+      "pass": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/工作/总结-终稿.md"
+    },
+    {
+      "name": "只读输入保持原字节",
+      "pass": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-v2-phase.md"
+    },
+    {
+      "name": "只读输入保持原字节",
+      "pass": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/Cargo.toml"
+    },
+    {
+      "name": "只读输入保持原字节",
+      "pass": true,
+      "detail": "/tmp/claude-1000/-home-zhuran24-zmd-research-fresh/786b1aaa-8792-43fd-afbc-2a7361543a07/scratchpad/总结/对话-0920-主线.md"
+    },
+    {
+      "name": "指定正文确有改动",
+      "pass": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/会议2成果修订-v46.md"
+    },
+    {
+      "name": "指定正文确有改动",
+      "pass": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7草案.md"
+    },
+    {
+      "name": "指定正文确有改动",
+      "pass": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/回路总数决定论-v2.md"
+    },
+    {
+      "name": "指定正文确有改动",
+      "pass": true,
+      "detail": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/三种相位不改产量-v2.md"
+    },
+    {
+      "name": "登记计数",
+      "pass": true,
+      "detail": {
+        "replaced": 14,
+        "added": 55,
+        "old_h_rows": 23,
+        "old_h_open": 12,
+        "main_open": 26,
+        "mapping": 69,
+        "tasks": 8,
+        "task_open_mapping": 26,
+        "cost_rows": 8,
+        "roles": 13
+      }
+    },
+    {
+      "name": "F1至F69映射完整",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "19条处理记录完整且无重复",
+      "pass": true,
+      "detail": [
+        "漏-1",
+        "漏-2",
+        "漏-3",
+        "漏-4",
+        "漏-5",
+        "错-1",
+        "错-2",
+        "错-3",
+        "错-4",
+        "头-1",
+        "头-2",
+        "头-3",
+        "头-4",
+        "据-1",
+        "据-2",
+        "他-1",
+        "他-2",
+        "他-3",
+        "他-4"
+      ]
+    },
+    {
+      "name": "回路指纹同步",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "两份第二版均有终修记录",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "没有虚构回路独立复核文件",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "相位已有复核绑定本次修订前版本",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "相位旧缺件状态已更新",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "范围外旧任务书引用已删除",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "对用户回退原因的无据解释已删除",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "旧owner问题引用已同步",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "成品通路有任务与产物承接",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "回路公式排版已修正",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "加工与目标算术",
+      "pass": true,
+      "detail": {
+        "crush_base_batches": "68",
+        "refine_base_batches": "51",
+        "mineral_target": "52",
+        "product_rate": "23/20",
+        "bottling_three_input_bound": "11/20",
+        "ordinary_plant_slots": "4800",
+        "normal_plant_cache": "64"
+      }
+    },
+    {
+      "name": "首次清出需求",
+      "pass": true,
+      "detail": [
+        32,
+        80,
+        800
+      ]
+    },
+    {
+      "name": "清出量与必要数的算术差",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "D2直接界",
+      "pass": true,
+      "detail": [
+        1133,
+        1117,
+        1108,
+        1010,
+        1070,
+        962
+      ]
+    },
+    {
+      "name": "D2无桥217与D1预算",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "修正计数消项",
+      "pass": true,
+      "detail": {
+        "I": -1,
+        "AH": 1,
+        "IH": -1,
+        "AG": -1,
+        "IG": 1
+      }
+    },
+    {
+      "name": "非滑动窗口例",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "四通结点整理",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "Markdown文件链接存在",
+      "pass": true,
+      "detail": []
+    }
+  ],
+  "link_count": 59,
+  "cargo_entry_check": {
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "command": "cargo locate-project --workspace --message-format plain",
+    "exit_status": 0,
+    "stdout": "/home/zhuran24/zmd-research-fresh/求解器/Cargo.toml",
+    "build_executed": false
+  },
+  "simulator_accessed": false,
+  "game_runtime_verification": "not run",
+  "independent_loop_review": "not delivered",
+  "reader_self_review": "完成；不冒称独立读者复核"
+}

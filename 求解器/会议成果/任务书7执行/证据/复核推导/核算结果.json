@@ -1,0 +1,131 @@
+{
+  "status": "pass",
+  "scope": "局部库存算术、归纳基和必要产能；无游戏调度、无参数扫描、无整厂证书",
+  "inventory_and_head_cases": 5202,
+  "invariant_transitions_checked": 7550,
+  "deadlock_count_states": [
+    {
+      "a": 0,
+      "b": 50,
+      "head": "B",
+      "Z": -100
+    },
+    {
+      "a": 1,
+      "b": 50,
+      "head": "B",
+      "Z": -99
+    },
+    {
+      "a": 50,
+      "b": 0,
+      "head": "A",
+      "Z": 50
+    }
+  ],
+  "rotations": {
+    "AAB": {
+      "prefix": [
+        0,
+        1,
+        2,
+        0
+      ],
+      "range": [
+        0,
+        2
+      ]
+    },
+    "ABA": {
+      "prefix": [
+        0,
+        1,
+        -1,
+        0
+      ],
+      "range": [
+        -1,
+        1
+      ]
+    },
+    "BAA": {
+      "prefix": [
+        0,
+        -2,
+        -1,
+        0
+      ],
+      "range": [
+        -2,
+        0
+      ]
+    }
+  },
+  "full_input_Z0": -50,
+  "full_input_safe_integer_D": [
+    -48,
+    99
+  ],
+  "safe_boundary_BAA_count_path": [
+    [
+      50,
+      0
+    ],
+    [
+      48,
+      0
+    ],
+    [
+      49,
+      0
+    ],
+    [
+      50,
+      0
+    ]
+  ],
+  "net_rates": {
+    "battery": "3/5",
+    "capsule": "11/20",
+    "parts": "6",
+    "dense_source": "9",
+    "bottles": "11/2",
+    "fine_flower": "11/2",
+    "steel": "17",
+    "blue_dust": "34",
+    "source_dust": "18",
+    "flower_dust": "11",
+    "sand_dust": "63/2",
+    "flower_crush": "11/2",
+    "sand_crush": "21/2",
+    "base_crush": "68",
+    "base_refine": "51"
+  },
+  "capacity_cases": [
+    {
+      "crushers": 68,
+      "refiners": 51,
+      "r_upper_bound": "0"
+    },
+    {
+      "crushers": 68,
+      "refiners": 52,
+      "r_upper_bound": "0"
+    },
+    {
+      "crushers": 69,
+      "refiners": 51,
+      "r_upper_bound": "0"
+    },
+    {
+      "crushers": 69,
+      "refiners": 52,
+      "r_upper_bound": "1"
+    }
+  ],
+  "kernel": {
+    "compiled": false,
+    "loaded": false,
+    "stepped": false
+  }
+}

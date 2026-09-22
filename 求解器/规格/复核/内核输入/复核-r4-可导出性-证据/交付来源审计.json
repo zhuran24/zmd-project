@@ -1,0 +1,193 @@
+{
+  "manifest_file_count": 42,
+  "manifest_hash_count": 41,
+  "manifest_hash_mismatches": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录.json",
+      "recorded": "97562091ec78c7994ea0a53a07778260878c2c172a4dce9c6c32de2bfea05e47",
+      "actual": "b664ed551271e1fbe895821de5041a8c96d29e97d51da353114abf5a403734aa"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md",
+      "recorded": "08991e07b792f82ecf6f98a0bcbd663ecc7caa2b534ac5379c6805a14f78c413",
+      "actual": "a180570ac7507e9711eeeb6d0dbcc21205aa136c8694634d0cb2d7e536b2486b"
+    }
+  ],
+  "delivered_record_dependency_count": 22,
+  "record_fingerprint_mismatches": [],
+  "current_changes_from_review_snapshot": [],
+  "golden_original": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-黄金轨迹.md",
+      "unchanged_from_revision_baseline": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-黄金轨迹.json",
+      "unchanged_from_revision_baseline": true
+    }
+  ],
+  "json_inventory": {
+    "交付清单.json": {
+      "kind": "dict",
+      "count": 7,
+      "status": null
+    },
+    "中途种子.json": {
+      "kind": "dict",
+      "count": 8,
+      "status": null
+    },
+    "并行配置迁移.json": {
+      "kind": "dict",
+      "count": 9,
+      "status": null
+    },
+    "运行回归结果.json": {
+      "kind": "dict",
+      "count": 7,
+      "status": "通过"
+    },
+    "交付自审.json": {
+      "kind": "dict",
+      "count": 15,
+      "status": "通过"
+    },
+    "本次修订前产物指纹.json": {
+      "kind": "dict",
+      "count": 10741,
+      "status": null
+    },
+    "规则覆盖自查.json": {
+      "kind": "dict",
+      "count": 3,
+      "status": "通过"
+    },
+    "只读指纹.json": {
+      "kind": "dict",
+      "count": 25037,
+      "status": null
+    },
+    "修订前产物指纹.json": {
+      "kind": "dict",
+      "count": 1468,
+      "status": null
+    },
+    "自查结果.json": {
+      "kind": "dict",
+      "count": 10,
+      "status": "通过"
+    },
+    "周期排序.json": {
+      "kind": "dict",
+      "count": 5,
+      "status": null
+    }
+  },
+  "logs": {
+    "生成样例.log": {
+      "lines": 3,
+      "sha256": "08503fa964aa20fe9d6a79a66cb9fa0d102478d4cc112e1a989d05d19617fec2",
+      "last_lines": [
+        "{\"file\": \"/home/zhuran24/zmd-research-fresh/求解器/数据/样例/桥接器双通路.json\", \"status\": \"指定快照静态结构通过\", \"snapshot\": \"built_layout\", \"anchor\": {\"event\": \"blueprint_complete\", \"side\": \"after\"}, \"units\": 7, \"occupied_cells\": 122, \"physical_channels\": 4, \"buffer_channels\": 0, \"bridge_first_peers\": [{\"unit\": \"bridge\", \"axis\": \"vertical\", \"first_peer\": \"south_box:north:2\", \"scope\": \"两种已登记先接读法的一致唯一非桥见证\"}, {\"unit\": \"bridge\", \"axis\": \"horizontal\", \"first_peer\": \"west_box:north:2\", \"scope\": \"两种已登记先接读法的一致唯一非桥见证\"}], \"counts_category\": \"算术推论（候选布局）\", \"validation_category\": \"实测（工具）\"}",
+        "{\"file\": \"/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询.json\", \"status\": \"指定快照静态结构通过\", \"snapshot\": \"built_layout\", \"anchor\": {\"event\": \"blueprint_complete\", \"side\": \"after\"}, \"units\": 9, \"occupied_cells\": 128, \"physical_channels\": 4, \"buffer_channels\": 0, \"bridge_first_peers\": [], \"counts_category\": \"算术推论（候选布局）\", \"validation_category\": \"实测（工具）\"}",
+        "{\"file\": \"/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json\", \"status\": \"完整运行输入检查通过（有限合成子集）\", \"snapshot\": \"built_layout\", \"anchor\": {\"event\": \"blueprint_complete\", \"side\": \"after\"}, \"units\": 14, \"occupied_cells\": 153, \"physical_channels\": 11, \"buffer_channels\": 8, \"bridge_first_peers\": [], \"counts_category\": \"算术推论（候选布局）\", \"validation_category\": \"实测（工具）\"}"
+      ]
+    },
+    "规则覆盖自查.log": {
+      "lines": 1,
+      "sha256": "2f64096e10d27c0a6e6c81224f58a4a5cbba2d1ba9252b32e1470b92ad230bf7",
+      "last_lines": [
+        "{\"status\": \"通过\", \"checks\": [{\"table\": \"/home/zhuran24/zmd-research-fresh/求解器/规格/规则覆盖表.md\", \"source\": \"《明日方舟：终末地》游戏规则.txt\", \"lines\": 114, \"status\": \"逐行通过\"}, {\"table\": \"/home/zhuran24/zmd-research-fresh/求解器/规格/规则覆盖表.md\", \"source\": \"求解任务.txt\", \"lines\": 15, \"status\": \"逐行通过\"}, {\"table\": \"/home/zhuran24/zmd-research-fresh/求解器/数据/规则覆盖表.md\", \"source\": \"《明日方舟：终末地》游戏规则.txt\", \"lines\": 114, \"status\": \"逐行通过\"}, {\"table\": \"/home/zhuran24/zmd-research-fresh/求解器/数据/规则覆盖表.md\", \"source\": \"求解任务.txt\", \"lines\": 15, \"status\": \"逐行通过\"}, {\"table\": \"规格/规则覆盖表.md\", \"clauses\": 56, \"status\": \"约束名及源行通过\"}, {\"table\": \"数据/规则覆盖表.md\", \"clauses\": 56, \"status\": \"目录条目映射通过\"}, {\"axis_count\": 99, \"findings\": 9, \"status\": \"全集、修订记录及已定位旧句检查通过\"}], \"scope\": \"逐行覆盖/引用与已定位旧句，不是语义穷尽证明；共享§6请求已有第6轮答复，本检查不替代语义穷尽证明\"}"
+      ]
+    },
+    "规格线自查.log": {
+      "lines": 83,
+      "sha256": "008dca391be76a9c0de3b0587f7ff36c086a0f156f9136fe241e1a629d9ea823",
+      "last_lines": [
+        "    \"两条旧覆盖发现归因在历史行及JSON均已纠正\",",
+        "    \"内核输入请求新增第6节在共享正文并入\"",
+        "  ]",
+        "}"
+      ]
+    },
+    "样例检查.log": {
+      "lines": 204,
+      "sha256": "6fe88851887da00a1ea7a12b93f6bcbc4bbb140c5b00fc15bd37b553e84f4d5a",
+      "last_lines": [
+        "    \"吞吐及全部可达循环达标\",",
+        "    \"外部契约绑定与非空调试程序\"",
+        "  ]",
+        "}"
+      ]
+    },
+    "候选B校验.log": {
+      "lines": 5006,
+      "sha256": "484bf8047e0d0e3836408cc5be1789b7f76379e0474721c3317b4853a5cb5f4d",
+      "last_lines": [
+        "| 多料接口/全称目标 | 多料三栏全部待验；也不能把单料机或环外机器从活性义务中删去。接收环境、合法可达循环态、全部参数与离线变化均未认证。 |",
+        "",
+        "    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.01s",
+        "     Running `求解器/target/debug/topology '/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/contract.json'`"
+      ]
+    },
+    "配置迁移前拒收.log": {
+      "lines": 27,
+      "sha256": "56fa96e1ac136aa70870f3d293be2ab17080f516ea74e4c67cc44c6b953d4421",
+      "last_lines": [
+        "    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/home/zhuran24/zmd-research-fresh/求解器/数据/样例/check_examples.py\", line 72, in require",
+        "    raise CheckError(message)",
+        "check_examples.CheckError: unsupported: 受限配置字节已改变，须核对解释并迁移实现"
+      ]
+    },
+    "黄金重算.log": {
+      "lines": 1,
+      "sha256": "5cad1196d5e014be529cc9906012efa3cb62a2f62618bccae9ce985d23c4bbbc",
+      "last_lines": [
+        "{\"status\": \"通过\", \"golden_match\": true, \"ticks\": 4, \"complete_cycles\": \"2\", \"events\": [28, 42, 43, 43], \"output\": \"/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录.json\"}"
+      ]
+    },
+    "运行回归.log": {
+      "lines": 1,
+      "sha256": "68e2738fd08fadfd494af498138e0def00cddc631dc0d2d34ed9efcf664a3ca0",
+      "last_lines": [
+        "{\"status\": \"通过\", \"tests\": 72, \"axis_count\": 99, \"output\": \"/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r3/运行回归结果.json\"}"
+      ]
+    },
+    "正式目录回源.log": {
+      "lines": 1,
+      "sha256": "dcfc82323619a613c73d7f13e1583a544a4344a8d139d84cdbb556c880fefead",
+      "last_lines": [
+        "三份正式来源指纹与全文、56 条约束上下文、任务与阈值、18 条配方、18 类单位全部字段及数字类别一致。"
+      ]
+    },
+    "输出schema生成.log": {
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "last_lines": []
+    },
+    "cargo-test.log": {
+      "lines": 56,
+      "sha256": "c9792af16f15ec358f4309de8ec7c64a47866fbf9db6ab35526222bbf215410d",
+      "last_lines": [
+        "     Running unittests src/lib.rs (求解器/target/debug/deps/topology-958a7a196b95191c)",
+        "     Running unittests src/main.rs (求解器/target/debug/deps/topology-232d29a62249f608)",
+        "     Running tests/validation.rs (求解器/target/debug/deps/validation-55f92a55e3fc13c3)",
+        "   Doc-tests topology"
+      ]
+    }
+  },
+  "scope": "读取并核对修订席日志与指纹；本席未重跑Cargo及候选B，此处不是新的运行认证。",
+  "stale_manifest_resolution": {
+    "classification": "C线较早封存记录，由A线第6轮同步及重算记录接续；不据此认定当前轨迹或来源失配",
+    "current_paths_match_later_manifest": true,
+    "input_projection_before_matches_older_manifest": true,
+    "evidence_files": [
+      "求解器/规格/第6轮修订验证/输入投影同步.json",
+      "求解器/规格/第6轮修订验证/交付指纹.json",
+      "求解器/规格/第6轮修订验证/黄金完整核验结果.json",
+      "求解器/规格/第6轮修订验证/自查报告.md",
+      "求解器/规格/第6轮修订验证/交付自审.json"
+    ]
+  }
+}

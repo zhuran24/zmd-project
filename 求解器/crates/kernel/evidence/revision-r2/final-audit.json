@@ -1,0 +1,51 @@
+{
+  "status": "通过",
+  "baseline_files": 4222,
+  "protected_files_unchanged": 4205,
+  "changed_existing_files": [
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/README.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/engine.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/event_identity.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/input.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/interfaces.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/polling.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests_revision.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/transition.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/revision_cli.py",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/verify_outputs.py",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/修订记录.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-checkpoint_delta-kernel.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-kernel.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-checkpoint_delta-kernel.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-kernel.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核实现-对规格的疑问.md"
+  ],
+  "outside_allowed_changes": [],
+  "workspace_tests_passed": 102,
+  "workspace_tests_failed": 0,
+  "original_golden_and_reference_bytes_unchanged": true,
+  "formal_sources_and_candidate_bytes_unchanged": true,
+  "prior_review_and_evidence_bytes_unchanged": true,
+  "records_recomputed_and_verified": 4,
+  "python_metadata_negatives": 60,
+  "python_summary_controls": 4,
+  "rust_metadata_negatives": 32,
+  "findings_addressed": [
+    "KR-r2-L1-01",
+    "KR-r2-L1-02",
+    "KR-r2-L1-03",
+    "KR-r2-L2-01",
+    "KR-r2-L3-01",
+    "KR-r2-L3-02",
+    "KR-r2-L3-03",
+    "KR-r2-L3-04"
+  ],
+  "rust_functions_with_section_comments": 192,
+  "documentation_links_checked": 77,
+  "reader_audit": "已重读README、按轮追记的修订记录与规格疑问；现行数字、历史时点、条件论证、停止范围及交叉引用一致。",
+  "open_items": [
+    "KQ-06：固定分支失活后的绑定及后继机制未定；当前明确unresolved，不交付不闭合后态。",
+    "既有KQ-01至KQ-05继续保留；尤其KQ-02的after_closure输出仍unresolved。"
+  ]
+}

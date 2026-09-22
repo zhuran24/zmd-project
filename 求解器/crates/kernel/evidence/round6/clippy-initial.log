@@ -1,0 +1,26 @@
+   Compiling autocfg v1.5.1
+    Checking kernel v0.1.0 (/home/zhuran24/zmd-research-fresh/求解器/crates/kernel)
+   Compiling num-traits v0.2.19
+    Checking num-integer v0.1.47
+    Checking num-bigint v0.4.8
+error: using `chunks_exact` with a constant chunk size
+  --> crates/kernel/src/digest.rs:17:25
+   |
+17 |     for block in padded.chunks_exact(64) {
+   |                         ^^^^^^^^^^^^^^^^ help: consider using `as_chunks` instead: `as_chunks::<64>().0`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#chunks_exact_to_as_chunks
+   = note: `-D clippy::chunks-exact-to-as-chunks` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[allow(clippy::chunks_exact_to_as_chunks)]`
+
+error: using `chunks_exact` with a constant chunk size
+  --> crates/kernel/src/digest.rs:19:33
+   |
+19 |         for (i, chunk) in block.chunks_exact(4).enumerate() { w[i]=u32::from_be_bytes(chunk.try_into().unwrap()); }
+   |                                 ^^^^^^^^^^^^^^^ help: consider using `as_chunks` instead: `as_chunks::<4>().0.iter()`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#chunks_exact_to_as_chunks
+
+error: could not compile `kernel` (lib) due to 2 previous errors
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `kernel` (lib test) due to 2 previous errors

@@ -1,0 +1,205 @@
+{
+  "81": {
+    "machine_type": "粉碎机",
+    "inputs": {
+      "源矿": 1
+    },
+    "outputs": {
+      "源石粉末": 1
+    },
+    "ticks": 1,
+    "rule_line": 81
+  },
+  "82": {
+    "machine_type": "粉碎机",
+    "inputs": {
+      "蓝铁块": 1
+    },
+    "outputs": {
+      "蓝铁粉末": 1
+    },
+    "ticks": 1,
+    "rule_line": 82
+  },
+  "83": {
+    "machine_type": "粉碎机",
+    "inputs": {
+      "荞花": 1
+    },
+    "outputs": {
+      "荞花粉末": 2
+    },
+    "ticks": 1,
+    "rule_line": 83
+  },
+  "84": {
+    "machine_type": "粉碎机",
+    "inputs": {
+      "砂叶": 1
+    },
+    "outputs": {
+      "砂叶粉末": 3
+    },
+    "ticks": 1,
+    "rule_line": 84
+  },
+  "87": {
+    "machine_type": "精炼炉",
+    "inputs": {
+      "蓝铁矿": 1
+    },
+    "outputs": {
+      "蓝铁块": 1
+    },
+    "ticks": 1,
+    "rule_line": 87
+  },
+  "88": {
+    "machine_type": "精炼炉",
+    "inputs": {
+      "致密蓝铁粉末": 1
+    },
+    "outputs": {
+      "钢块": 1
+    },
+    "ticks": 1,
+    "rule_line": 88
+  },
+  "89": {
+    "machine_type": "精炼炉",
+    "inputs": {
+      "蓝铁粉末": 1
+    },
+    "outputs": {
+      "蓝铁块": 1
+    },
+    "ticks": 1,
+    "rule_line": 89
+  },
+  "92": {
+    "machine_type": "研磨机",
+    "inputs": {
+      "蓝铁粉末": 2,
+      "砂叶粉末": 1
+    },
+    "outputs": {
+      "致密蓝铁粉末": 1
+    },
+    "ticks": 1,
+    "rule_line": 92
+  },
+  "93": {
+    "machine_type": "研磨机",
+    "inputs": {
+      "源石粉末": 2,
+      "砂叶粉末": 1
+    },
+    "outputs": {
+      "致密源石粉末": 1
+    },
+    "ticks": 1,
+    "rule_line": 93
+  },
+  "94": {
+    "machine_type": "研磨机",
+    "inputs": {
+      "荞花粉末": 2,
+      "砂叶粉末": 1
+    },
+    "outputs": {
+      "细磨荞花粉末": 1
+    },
+    "ticks": 1,
+    "rule_line": 94
+  },
+  "97": {
+    "machine_type": "塑形机",
+    "inputs": {
+      "钢块": 2
+    },
+    "outputs": {
+      "钢质瓶": 1
+    },
+    "ticks": 1,
+    "rule_line": 97
+  },
+  "100": {
+    "machine_type": "配件机",
+    "inputs": {
+      "钢块": 1
+    },
+    "outputs": {
+      "钢制零件": 1
+    },
+    "ticks": 1,
+    "rule_line": 100
+  },
+  "103": {
+    "machine_type": "种植机",
+    "inputs": {
+      "荞花种子": 1
+    },
+    "outputs": {
+      "荞花": 1
+    },
+    "ticks": 1,
+    "rule_line": 103
+  },
+  "104": {
+    "machine_type": "种植机",
+    "inputs": {
+      "砂叶种子": 1
+    },
+    "outputs": {
+      "砂叶": 1
+    },
+    "ticks": 1,
+    "rule_line": 104
+  },
+  "107": {
+    "machine_type": "采种机",
+    "inputs": {
+      "荞花": 1
+    },
+    "outputs": {
+      "荞花种子": 2
+    },
+    "ticks": 1,
+    "rule_line": 107
+  },
+  "108": {
+    "machine_type": "采种机",
+    "inputs": {
+      "砂叶": 1
+    },
+    "outputs": {
+      "砂叶种子": 2
+    },
+    "ticks": 1,
+    "rule_line": 108
+  },
+  "111": {
+    "machine_type": "封装机",
+    "inputs": {
+      "钢制零件": 10,
+      "致密源石粉末": 15
+    },
+    "outputs": {
+      "高容谷地电池": 1
+    },
+    "ticks": 5,
+    "rule_line": 111
+  },
+  "114": {
+    "machine_type": "灌装机",
+    "inputs": {
+      "钢质瓶": 10,
+      "细磨荞花粉末": 10
+    },
+    "outputs": {
+      "精选荞愈胶囊": 1
+    },
+    "ticks": 5,
+    "rule_line": 114
+  }
+}

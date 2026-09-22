@@ -1,0 +1,65 @@
+[
+  {
+    "name": "benchmark_brick_60",
+    "shape": {
+      "manufacturing_units": 0,
+      "total_units": 57,
+      "logical_channels": 0,
+      "physical_channels": 97,
+      "inventory_slots": 56
+    },
+    "json_equal_to_reviewed_fixture": true,
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "seed",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/generated-benchmarks/benchmark_brick_60.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/generated-benchmarks/benchmark_brick_60.json"
+    ],
+    "generated_sha256": "6129cf2ece47c144520107193df19f419203a81de5d03da2aac430b32493b022"
+  },
+  {
+    "name": "benchmark_brick",
+    "shape": {
+      "manufacturing_units": 30,
+      "total_units": 81,
+      "logical_channels": 50,
+      "physical_channels": 100,
+      "inventory_slots": 140
+    },
+    "json_equal_to_reviewed_fixture": true,
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "seed",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/generated-benchmarks/benchmark_brick.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/generated-benchmarks/benchmark_brick.json"
+    ],
+    "generated_sha256": "ba51cd30be879860d09e517970cbcf3ba643b3f97eaa4030c234f37f222f2cbf"
+  },
+  {
+    "name": "benchmark_candidate_b",
+    "shape": {
+      "manufacturing_units": 219,
+      "total_units": 535,
+      "logical_channels": 315,
+      "physical_channels": 630,
+      "inventory_slots": 972
+    },
+    "json_equal_to_reviewed_fixture": true,
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "seed",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/generated-benchmarks/benchmark_candidate_b.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/generated-benchmarks/benchmark_candidate_b.json"
+    ],
+    "generated_sha256": "b66b4d69d7b930a27a6ef7879ab104afa39cfaa33348eccddd3d40f6840d52a8"
+  }
+]

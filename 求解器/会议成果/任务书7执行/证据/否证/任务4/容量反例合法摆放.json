@@ -1,0 +1,1075 @@
+{
+  "scope": "66台植物机器及核心的容量见证；全关机无运输单位，R16不形成机器直连；非目标达标布局",
+  "units": [
+    {
+      "id": "CORE",
+      "kind": "协议核心",
+      "x": 0,
+      "y": 0,
+      "w": 9,
+      "h": 9
+    },
+    {
+      "id": "荞花-种植机-0",
+      "kind": "种植机",
+      "x": 10,
+      "y": 0,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "荞花种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "荞花-种植机-1",
+      "kind": "种植机",
+      "x": 15,
+      "y": 0,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "荞花种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "荞花-种植机-2",
+      "kind": "种植机",
+      "x": 20,
+      "y": 0,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "荞花种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "荞花-种植机-3",
+      "kind": "种植机",
+      "x": 25,
+      "y": 0,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "荞花种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "荞花-种植机-4",
+      "kind": "种植机",
+      "x": 30,
+      "y": 0,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "荞花种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "荞花-种植机-5",
+      "kind": "种植机",
+      "x": 35,
+      "y": 0,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "荞花种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "荞花-种植机-6",
+      "kind": "种植机",
+      "x": 40,
+      "y": 0,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "荞花种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "荞花-种植机-7",
+      "kind": "种植机",
+      "x": 45,
+      "y": 0,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "荞花种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "荞花-种植机-8",
+      "kind": "种植机",
+      "x": 50,
+      "y": 0,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "荞花种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "荞花-种植机-9",
+      "kind": "种植机",
+      "x": 55,
+      "y": 0,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "荞花种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "荞花-种植机-10",
+      "kind": "种植机",
+      "x": 60,
+      "y": 0,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "荞花种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "荞花-采种机-0",
+      "kind": "采种机",
+      "x": 65,
+      "y": 0,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "荞花种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "荞花-采种机-1",
+      "kind": "采种机",
+      "x": 10,
+      "y": 5,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "荞花种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "荞花-采种机-2",
+      "kind": "采种机",
+      "x": 15,
+      "y": 5,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "荞花种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "荞花-采种机-3",
+      "kind": "采种机",
+      "x": 20,
+      "y": 5,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "荞花种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "荞花-采种机-4",
+      "kind": "采种机",
+      "x": 25,
+      "y": 5,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "荞花种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "荞花-采种机-5",
+      "kind": "采种机",
+      "x": 30,
+      "y": 5,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "荞花种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "砂叶-种植机-0",
+      "kind": "种植机",
+      "x": 35,
+      "y": 5,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "砂叶种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "砂叶-种植机-1",
+      "kind": "种植机",
+      "x": 40,
+      "y": 5,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "砂叶种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "砂叶-种植机-2",
+      "kind": "种植机",
+      "x": 45,
+      "y": 5,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "砂叶种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "砂叶-种植机-3",
+      "kind": "种植机",
+      "x": 50,
+      "y": 5,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "砂叶种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "砂叶-种植机-4",
+      "kind": "种植机",
+      "x": 55,
+      "y": 5,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "砂叶种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "砂叶-种植机-5",
+      "kind": "种植机",
+      "x": 60,
+      "y": 5,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "砂叶种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "砂叶-种植机-6",
+      "kind": "种植机",
+      "x": 65,
+      "y": 5,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "砂叶种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "砂叶-种植机-7",
+      "kind": "种植机",
+      "x": 10,
+      "y": 10,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "砂叶种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "砂叶-种植机-8",
+      "kind": "种植机",
+      "x": 15,
+      "y": 10,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "砂叶种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "砂叶-种植机-9",
+      "kind": "种植机",
+      "x": 20,
+      "y": 10,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "砂叶种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "砂叶-种植机-10",
+      "kind": "种植机",
+      "x": 25,
+      "y": 10,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "砂叶种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "砂叶-种植机-11",
+      "kind": "种植机",
+      "x": 30,
+      "y": 10,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "砂叶种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "砂叶-种植机-12",
+      "kind": "种植机",
+      "x": 35,
+      "y": 10,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "砂叶种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "砂叶-种植机-13",
+      "kind": "种植机",
+      "x": 40,
+      "y": 10,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "砂叶种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "砂叶-种植机-14",
+      "kind": "种植机",
+      "x": 45,
+      "y": 10,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "砂叶种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "砂叶-种植机-15",
+      "kind": "种植机",
+      "x": 50,
+      "y": 10,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "砂叶种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "砂叶-种植机-16",
+      "kind": "种植机",
+      "x": 55,
+      "y": 10,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "砂叶种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "砂叶-种植机-17",
+      "kind": "种植机",
+      "x": 60,
+      "y": 10,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "砂叶种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "砂叶-种植机-18",
+      "kind": "种植机",
+      "x": 65,
+      "y": 10,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "砂叶种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "砂叶-种植机-19",
+      "kind": "种植机",
+      "x": 10,
+      "y": 15,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "砂叶种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "砂叶-种植机-20",
+      "kind": "种植机",
+      "x": 15,
+      "y": 15,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "砂叶种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "砂叶-采种机-0",
+      "kind": "采种机",
+      "x": 20,
+      "y": 15,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "砂叶种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "砂叶-采种机-1",
+      "kind": "采种机",
+      "x": 25,
+      "y": 15,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "砂叶种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "砂叶-采种机-2",
+      "kind": "采种机",
+      "x": 30,
+      "y": 15,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "砂叶种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "砂叶-采种机-3",
+      "kind": "采种机",
+      "x": 35,
+      "y": 15,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "砂叶种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "砂叶-采种机-4",
+      "kind": "采种机",
+      "x": 40,
+      "y": 15,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "砂叶种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "砂叶-采种机-5",
+      "kind": "采种机",
+      "x": 45,
+      "y": 15,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "砂叶种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "砂叶-采种机-6",
+      "kind": "采种机",
+      "x": 50,
+      "y": 15,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "砂叶种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "砂叶-采种机-7",
+      "kind": "采种机",
+      "x": 55,
+      "y": 15,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "砂叶种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "砂叶-采种机-8",
+      "kind": "采种机",
+      "x": 60,
+      "y": 15,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "砂叶种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "砂叶-采种机-9",
+      "kind": "采种机",
+      "x": 65,
+      "y": 15,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "砂叶种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "砂叶-采种机-10",
+      "kind": "采种机",
+      "x": 10,
+      "y": 20,
+      "w": 5,
+      "h": 5,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "砂叶种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "荞花-粉碎机-0",
+      "kind": "粉碎机",
+      "x": 10,
+      "y": 25,
+      "w": 3,
+      "h": 3,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "荞花种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "荞花-粉碎机-1",
+      "kind": "粉碎机",
+      "x": 13,
+      "y": 25,
+      "w": 3,
+      "h": 3,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "荞花种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "荞花-粉碎机-2",
+      "kind": "粉碎机",
+      "x": 16,
+      "y": 25,
+      "w": 3,
+      "h": 3,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "荞花种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "荞花-粉碎机-3",
+      "kind": "粉碎机",
+      "x": 19,
+      "y": 25,
+      "w": 3,
+      "h": 3,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "荞花种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "荞花-粉碎机-4",
+      "kind": "粉碎机",
+      "x": 22,
+      "y": 25,
+      "w": 3,
+      "h": 3,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "荞花种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "荞花-粉碎机-5",
+      "kind": "粉碎机",
+      "x": 25,
+      "y": 25,
+      "w": 3,
+      "h": 3,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "荞花种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "砂叶-粉碎机-0",
+      "kind": "粉碎机",
+      "x": 28,
+      "y": 25,
+      "w": 3,
+      "h": 3,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "砂叶种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "砂叶-粉碎机-1",
+      "kind": "粉碎机",
+      "x": 31,
+      "y": 25,
+      "w": 3,
+      "h": 3,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "砂叶种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "砂叶-粉碎机-2",
+      "kind": "粉碎机",
+      "x": 34,
+      "y": 25,
+      "w": 3,
+      "h": 3,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "砂叶种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "砂叶-粉碎机-3",
+      "kind": "粉碎机",
+      "x": 37,
+      "y": 25,
+      "w": 3,
+      "h": 3,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "砂叶种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "砂叶-粉碎机-4",
+      "kind": "粉碎机",
+      "x": 40,
+      "y": 25,
+      "w": 3,
+      "h": 3,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "砂叶种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "砂叶-粉碎机-5",
+      "kind": "粉碎机",
+      "x": 43,
+      "y": 25,
+      "w": 3,
+      "h": 3,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "砂叶种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "砂叶-粉碎机-6",
+      "kind": "粉碎机",
+      "x": 46,
+      "y": 25,
+      "w": 3,
+      "h": 3,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "砂叶种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "砂叶-粉碎机-7",
+      "kind": "粉碎机",
+      "x": 49,
+      "y": 25,
+      "w": 3,
+      "h": 3,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "砂叶种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "砂叶-粉碎机-8",
+      "kind": "粉碎机",
+      "x": 52,
+      "y": 25,
+      "w": 3,
+      "h": 3,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "砂叶种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "砂叶-粉碎机-9",
+      "kind": "粉碎机",
+      "x": 55,
+      "y": 25,
+      "w": 3,
+      "h": 3,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "砂叶种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    },
+    {
+      "id": "砂叶-粉碎机-10",
+      "kind": "粉碎机",
+      "x": 58,
+      "y": 25,
+      "w": 3,
+      "h": 3,
+      "input": "S",
+      "output": "N",
+      "switch": "off",
+      "input_inventory": {
+        "砂叶种子": 50
+      },
+      "output_inventory": {},
+      "cache": {}
+    }
+  ],
+  "seed_totals": {
+    "荞花种子": 1150,
+    "砂叶种子": 2150
+  },
+  "normal_caches_empty": true,
+  "occupied_cells": 1459
+}

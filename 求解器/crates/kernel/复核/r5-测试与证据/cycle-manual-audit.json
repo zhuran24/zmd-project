@@ -1,0 +1,155 @@
+{
+  "桥接器双通路": {
+    "status": "counterexample",
+    "start": "10",
+    "end": "15",
+    "period": "5",
+    "rates": [
+      {
+        "item": "高容谷地电池",
+        "inbound": "0",
+        "period": "5",
+        "average": "0",
+        "target": "3/5",
+        "comparison": "lt"
+      },
+      {
+        "item": "精选荞愈胶囊",
+        "inbound": "0",
+        "period": "5",
+        "average": "0",
+        "target": "11/20",
+        "comparison": "lt"
+      }
+    ],
+    "detail_totals": [
+      {
+        "item": "精选荞愈胶囊",
+        "route": "representative_adjustment",
+        "quantity": "3"
+      },
+      {
+        "item": "高容谷地电池",
+        "route": "representative_adjustment",
+        "quantity": "3"
+      }
+    ]
+  },
+  "研磨混做核验": {
+    "status": "counterexample",
+    "start": "10",
+    "end": "15",
+    "period": "5",
+    "rates": [
+      {
+        "item": "高容谷地电池",
+        "inbound": "0",
+        "period": "5",
+        "average": "0",
+        "target": "3/5",
+        "comparison": "lt"
+      },
+      {
+        "item": "精选荞愈胶囊",
+        "inbound": "0",
+        "period": "5",
+        "average": "0",
+        "target": "11/20",
+        "comparison": "lt"
+      }
+    ],
+    "detail_totals": []
+  },
+  "生产循环环带": {
+    "status": "counterexample",
+    "start": "0",
+    "end": "20",
+    "period": "20",
+    "rates": [
+      {
+        "item": "高容谷地电池",
+        "inbound": "0",
+        "period": "20",
+        "average": "0",
+        "target": "3/5",
+        "comparison": "lt"
+      },
+      {
+        "item": "精选荞愈胶囊",
+        "inbound": "0",
+        "period": "20",
+        "average": "0",
+        "target": "11/20",
+        "comparison": "lt"
+      }
+    ],
+    "detail_totals": [
+      {
+        "item": "精选荞愈胶囊",
+        "route": "representative_adjustment",
+        "quantity": "5"
+      }
+    ]
+  },
+  "双成品满仓起动试作": {
+    "status": "inconclusive",
+    "cycle": null,
+    "budget": {
+      "completed_ticks": 512,
+      "max_sweeps": 100000,
+      "max_ticks": 512
+    }
+  },
+  "K6有限运行": {
+    "actual_inbound": {
+      "源石粉末": 508,
+      "砂叶": 1016,
+      "砂叶种子": 1016,
+      "砂叶粉末": 1524,
+      "精选荞愈胶囊": 7,
+      "细磨荞花粉末": 251,
+      "致密源石粉末": 250,
+      "致密蓝铁粉末": 247,
+      "荞花": 1016,
+      "荞花种子": 1016,
+      "荞花粉末": 1016,
+      "蓝铁块": 508,
+      "蓝铁粉末": 501,
+      "钢制零件": 96,
+      "钢块": 244,
+      "钢质瓶": 73,
+      "高容谷地电池": 9
+    },
+    "completed_batches": 6783,
+    "elapsed_ns": "1651038946",
+    "final_inventory": {
+      "源石粉末": 8,
+      "源矿": 80002,
+      "砂叶": 80000,
+      "砂叶种子": 80000,
+      "砂叶粉末": 779,
+      "精选荞愈胶囊": 7,
+      "细磨荞花粉末": 182,
+      "致密源石粉末": 116,
+      "致密蓝铁粉末": 4,
+      "荞花": 80000,
+      "荞花种子": 80000,
+      "荞花粉末": 516,
+      "蓝铁块": 7,
+      "蓝铁矿": 80002,
+      "蓝铁粉末": 7,
+      "钢制零件": 6,
+      "钢块": 2,
+      "钢质瓶": 3,
+      "高容谷地电池": 9
+    },
+    "output": "disabled",
+    "statistics": {
+      "completed": 1,
+      "inconclusive": 0,
+      "stopped": 0
+    },
+    "status": "completed",
+    "ticks": 512
+  }
+}

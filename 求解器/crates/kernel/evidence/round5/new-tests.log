@@ -1,0 +1,21 @@
+   Compiling itoa v1.0.18
+   Compiling memchr v2.8.3
+   Compiling serde_core v1.0.229
+   Compiling zmij v1.0.23
+   Compiling serde v1.0.229
+   Compiling serde_json v1.0.151
+   Compiling kernel v0.1.0 (/home/zhuran24/zmd-research-fresh/求解器/crates/kernel)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.89s
+     Running unittests src/lib.rs (求解器/target/debug/deps/kernel-26241e85d1128675)
+
+running 7 tests
+test tests::round5::round5_completion_after_pause ... ok
+test tests::round5::round5_seed_tie_changes_rebuild_ring ... ok
+test tests::round5::round5_supply_differential_and_last_ore ... ok
+test tests::round5::round5_seed_roundtrip ... ok
+test tests::round5::round5_ledgers_conserve_every_species ... ok
+test tests::round5::round5_cycle_certificate_replay_and_tamper ... ok
+test tests::round5::round5_cache_differential ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 66 filtered out; finished in 26.81s
+

@@ -1,0 +1,30 @@
+{
+  "changed_axes": [
+    "time.retry_schedule",
+    "time.instant_end",
+    "judgment.order_scope",
+    "transfer.failure_cooldown",
+    "warehouse.acceptance",
+    "warehouse.acceptance_quantifier",
+    "judgment.order",
+    "initialization.other_inventory",
+    "damping.no_terminal",
+    "offline.cursor_effect",
+    "offline.inventory_effect",
+    "offline.progress_effect",
+    "offline.direction_effect",
+    "offline.gate_total_effect",
+    "offline.gate_window_effect",
+    "offline.gate_window_start_effect",
+    "warehouse.withdrawal_policy",
+    "warehouse.periodic_lift"
+  ],
+  "axis_count": 99,
+  "dispositions": {
+    "已定": 22,
+    "本版选值": 44,
+    "由输入全称量化": 15,
+    "超出覆盖即停": 18
+  },
+  "implementation_status": "task8_pending"
+}

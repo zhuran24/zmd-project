@@ -1,0 +1,13 @@
+{
+  "captured_at": "2026-09-19T18:14:54.108114+00:00",
+  "catalog_sha256": "74d21a5bd37c6178f988a86a4aa78a03d1e4244ecff26f133bb5e700ada82e43",
+  "protected_count": 25037,
+  "shared_not_readonly": [
+    "求解器/数据",
+    "求解器/crates",
+    "求解器/规格/内核输入.md",
+    "求解器/规格/内核输入-修订记录.md",
+    "求解器/规格/内核输入-对参数轴的修改请求.md"
+  ],
+  "request_existed": false
+}

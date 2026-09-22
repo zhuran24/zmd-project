@@ -1,0 +1,7 @@
+{
+  "requested": "StructuredOutput",
+  "discovery": "ALL_TOOLS名称和描述按structuredoutput匹配",
+  "matches": [],
+  "delivery": "以结构化结果.json和最终JSON文字交付；type字段只标结构格式，不声称调用了不存在的工具。",
+  "quota_error": false
+}

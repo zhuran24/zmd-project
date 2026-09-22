@@ -1,0 +1,7 @@
+{
+  "requested_tool": "StructuredOutput",
+  "name_and_description_matches": [],
+  "callable": false,
+  "fallback": "结构化结果.json与最终回复列出同一findings",
+  "quota_error_observed": false
+}

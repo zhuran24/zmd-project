@@ -1,0 +1,255 @@
+[
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/budget-cycle.json",
+    "status": "inconclusive",
+    "completed_ticks": 1,
+    "period": null,
+    "rates": null,
+    "universal_claim": false
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/同种年龄分组-cycle.json",
+    "status": "diagnostic_cycle",
+    "completed_ticks": 2,
+    "period": "1",
+    "rates": [
+      {
+        "average": {
+          "category": "算术推论",
+          "value": "0"
+        },
+        "comparison": "lt",
+        "inbound": {
+          "category": "算术推论",
+          "value": "0"
+        },
+        "item": "高容谷地电池",
+        "period": {
+          "category": "算术推论",
+          "value": "1"
+        },
+        "target": {
+          "category": "条文直引",
+          "value": "3/5"
+        }
+      },
+      {
+        "average": {
+          "category": "算术推论",
+          "value": "0"
+        },
+        "comparison": "lt",
+        "inbound": {
+          "category": "算术推论",
+          "value": "0"
+        },
+        "item": "精选荞愈胶囊",
+        "period": {
+          "category": "算术推论",
+          "value": "1"
+        },
+        "target": {
+          "category": "条文直引",
+          "value": "11/20"
+        }
+      }
+    ],
+    "universal_claim": false
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/生产环带-cycle.json",
+    "status": "diagnostic_cycle",
+    "completed_ticks": 21,
+    "period": "20",
+    "rates": [
+      {
+        "average": {
+          "category": "算术推论",
+          "value": "0"
+        },
+        "comparison": "lt",
+        "inbound": {
+          "category": "算术推论",
+          "value": "0"
+        },
+        "item": "高容谷地电池",
+        "period": {
+          "category": "算术推论",
+          "value": "20"
+        },
+        "target": {
+          "category": "条文直引",
+          "value": "3/5"
+        }
+      },
+      {
+        "average": {
+          "category": "算术推论",
+          "value": "0"
+        },
+        "comparison": "lt",
+        "inbound": {
+          "category": "算术推论",
+          "value": "0"
+        },
+        "item": "精选荞愈胶囊",
+        "period": {
+          "category": "算术推论",
+          "value": "20"
+        },
+        "target": {
+          "category": "条文直引",
+          "value": "11/20"
+        }
+      }
+    ],
+    "universal_claim": false
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/累计审计与窗口周期-cycle.json",
+    "status": "diagnostic_cycle",
+    "completed_ticks": 7,
+    "period": "6",
+    "rates": [
+      {
+        "average": {
+          "category": "算术推论",
+          "value": "0"
+        },
+        "comparison": "lt",
+        "inbound": {
+          "category": "算术推论",
+          "value": "0"
+        },
+        "item": "高容谷地电池",
+        "period": {
+          "category": "算术推论",
+          "value": "6"
+        },
+        "target": {
+          "category": "条文直引",
+          "value": "3/5"
+        }
+      },
+      {
+        "average": {
+          "category": "算术推论",
+          "value": "0"
+        },
+        "comparison": "lt",
+        "inbound": {
+          "category": "算术推论",
+          "value": "0"
+        },
+        "item": "精选荞愈胶囊",
+        "period": {
+          "category": "算术推论",
+          "value": "6"
+        },
+        "target": {
+          "category": "条文直引",
+          "value": "11/20"
+        }
+      }
+    ],
+    "universal_claim": false
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/累计调低保留-cycle.json",
+    "status": "diagnostic_cycle",
+    "completed_ticks": 2,
+    "period": "1",
+    "rates": [
+      {
+        "average": {
+          "category": "算术推论",
+          "value": "0"
+        },
+        "comparison": "lt",
+        "inbound": {
+          "category": "算术推论",
+          "value": "0"
+        },
+        "item": "高容谷地电池",
+        "period": {
+          "category": "算术推论",
+          "value": "1"
+        },
+        "target": {
+          "category": "条文直引",
+          "value": "3/5"
+        }
+      },
+      {
+        "average": {
+          "category": "算术推论",
+          "value": "0"
+        },
+        "comparison": "lt",
+        "inbound": {
+          "category": "算术推论",
+          "value": "0"
+        },
+        "item": "精选荞愈胶囊",
+        "period": {
+          "category": "算术推论",
+          "value": "1"
+        },
+        "target": {
+          "category": "条文直引",
+          "value": "11/20"
+        }
+      }
+    ],
+    "universal_claim": false
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/静止成熟与暂停键-cycle.json",
+    "status": "diagnostic_cycle",
+    "completed_ticks": 2,
+    "period": "1",
+    "rates": [
+      {
+        "average": {
+          "category": "算术推论",
+          "value": "0"
+        },
+        "comparison": "lt",
+        "inbound": {
+          "category": "算术推论",
+          "value": "0"
+        },
+        "item": "高容谷地电池",
+        "period": {
+          "category": "算术推论",
+          "value": "1"
+        },
+        "target": {
+          "category": "条文直引",
+          "value": "3/5"
+        }
+      },
+      {
+        "average": {
+          "category": "算术推论",
+          "value": "0"
+        },
+        "comparison": "lt",
+        "inbound": {
+          "category": "算术推论",
+          "value": "0"
+        },
+        "item": "精选荞愈胶囊",
+        "period": {
+          "category": "算术推论",
+          "value": "1"
+        },
+        "target": {
+          "category": "条文直引",
+          "value": "11/20"
+        }
+      }
+    ],
+    "universal_claim": false
+  }
+]

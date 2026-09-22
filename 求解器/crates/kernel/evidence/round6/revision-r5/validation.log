@@ -1,0 +1,12 @@
+开始 cargo-test
+完成 cargo-test 0
+开始 clippy
+完成 clippy 0
+开始 build
+完成 build 0
+开始 release-cli
+完成 release-cli 0
+开始 regenerate
+完成 regenerate 0
+开始 benchmark
+完成 benchmark 0

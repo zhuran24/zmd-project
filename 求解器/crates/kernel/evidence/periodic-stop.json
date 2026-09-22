@@ -1,0 +1,20 @@
+{
+  "fingerprints": [],
+  "input_history": null,
+  "open_items": [
+    "unsupported warehouse.periodic_lift @ cli.request: 把省略仓库/绝对时钟等的抽象周期提升为完整基地周期时返回unsupported；无终点返回unresolved，周期提升为待证义务"
+  ],
+  "parameter_assignment": null,
+  "producer": {
+    "claim": "装载停止，未形成游戏后继",
+    "kind": "kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+  },
+  "profile_id": "kernel_profile_v1",
+  "run_id": "kernel:load-stop",
+  "schema": "kernel-output-v2",
+  "status": "unsupported",
+  "trace": null,
+  "uncovered_axes": [],
+  "validation_scope": null
+}

@@ -1,0 +1,12 @@
+[
+  {
+    "name": "pending-historical-alias",
+    "status": "CheckError",
+    "reason": "待事件与输入历史身份冲突: build_0"
+  },
+  {
+    "name": "after-closure-control",
+    "status": "passed",
+    "reason": ""
+  }
+]

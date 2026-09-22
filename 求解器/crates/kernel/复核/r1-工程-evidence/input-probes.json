@@ -1,0 +1,130 @@
+[
+  {
+    "case": "missing-judgment-context",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-工程-evidence/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-工程-evidence/missing-judgment-context-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-工程-evidence/missing-judgment-context-record.json"
+    ],
+    "returncode": 2,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-工程-evidence/missing-judgment-context-record.json\",\"status\":\"invalid_input\"}\n",
+    "stderr": "",
+    "record_exists": true,
+    "status": "invalid_input",
+    "open_items": [
+      "invalid_input input @ judgment_context: 字段须恰为 instant phase order_scope round next_template ordered_events next_event"
+    ],
+    "schema": "accepted"
+  },
+  {
+    "case": "snapshot-bool",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-工程-evidence/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-工程-evidence/snapshot-bool-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-工程-evidence/snapshot-bool-record.json"
+    ],
+    "returncode": 101,
+    "stdout": "",
+    "stderr": "\nthread 'main' (369700) panicked at /home/zhuran24/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_json-1.0.151/src/value/index.rs:102:18:\ncannot access key \"base\" in JSON boolean\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n",
+    "record_exists": false
+  },
+  {
+    "case": "gate-numeric-item",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-工程-evidence/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-工程-evidence/gate-numeric-item-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-工程-evidence/gate-numeric-item-record.json"
+    ],
+    "returncode": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-工程-evidence/gate-numeric-item-record.json\",\"status\":\"completed\"}\n",
+    "stderr": "",
+    "record_exists": true,
+    "status": "completed",
+    "open_items": [
+      "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+      "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+    ],
+    "schema": "accepted",
+    "gate_states": [
+      {
+        "blocked_reasons": [
+          "identity_mismatch"
+        ],
+        "total_received": {
+          "category": "候选",
+          "value": "0"
+        },
+        "unit": "probe_gate_a",
+        "window_received": {
+          "category": "候选",
+          "value": "0"
+        },
+        "window_started_at": null
+      },
+      {
+        "blocked_reasons": [
+          "window_exhausted"
+        ],
+        "total_received": {
+          "category": "算术推论",
+          "value": "1"
+        },
+        "unit": "probe_gate_b",
+        "window_received": {
+          "category": "算术推论",
+          "value": "1"
+        },
+        "window_started_at": {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "1"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "case": "initial-duplicate-slot",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-工程-evidence/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-工程-evidence/initial-duplicate-slot-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-工程-evidence/initial-duplicate-slot-record.json"
+    ],
+    "returncode": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-工程-evidence/initial-duplicate-slot-record.json\",\"status\":\"completed\"}\n",
+    "stderr": "",
+    "record_exists": true,
+    "status": "completed",
+    "open_items": [
+      "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+      "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+    ],
+    "schema": "accepted",
+    "gate_states": []
+  }
+]

@@ -1,0 +1,12 @@
+{
+  "findings": [
+    {
+      "id": "C3-r4-L1-01",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/数据/工具/formal_catalog.py#107–132；/home/zhuran24/zmd-research-fresh/求解器/crates/topology/tests/validation.rs#231–565,741–757；/home/zhuran24/zmd-research-fresh/求解器/数据/送料契约.md#165–171",
+      "claim": "独立回源检查及 cargo 一致性测试漏验配方与部分单位属性、类别，使违背正式原文的目录变异仍全部通过，不能充当完整的共享目录一致性门禁。",
+      "evidence": "第二轮任务书 §3.B.1 要求目录作为规格、契约、Rust 三方唯一真源并加逐项一致性测试；首轮 §3.B.1 要求每个数字标类别。规则 L89 明写“1 蓝铁粉末 → 1 蓝铁块，1 tick”，L76 明写供电范围“12x12”，L41 明写核心存货端口“共 14 个”。隔离副本中分别将该未用配方耗时 1→2、供电覆盖宽度 12→13、核心端口数类别“条文直引”→“候选”，三次均通过 formal_catalog.verify 和全部 29 项 Rust 测试。verify 未比较 recipes，单位固定对照漏 coverage 和类别；完整配方比较仅在转换器，独立回源及 cargo 不调用它。当前目录原值正确；问题是校验覆盖缺口。完整重现与日志见复核报告 §5。",
+      "severity": "重要"
+    }
+  ],
+  "notes": "完整论证：/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复核-r4-字段覆盖.md。当前候选 B 字段、件数及目录原值核对一致；第 3 轮 11 条修订逐项结果和隔离变异证据均已入报告。被复核生产文件及正式源未修改。"
+}

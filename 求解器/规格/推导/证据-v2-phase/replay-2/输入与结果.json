@@ -1,0 +1,2584 @@
+{
+  "scope": "局部条目核算；未调用kernel；外部供料表和及时出货是明列的边界，不是70x70整厂布局证书。",
+  "source_sha256": {
+    "《明日方舟：终末地》游戏规则.txt": "abc7a5867f6477eedb619c63a21c4a77144c57ad4567fdcfb696b3049d66a670",
+    "求解任务.txt": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+    "求解约束.txt": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6",
+    "求解器/规格/推导/三种相位不改产量.md": "3786fa29935a854a0eedb9ce877f565e9b7db17f8b0f0851cd0d988cc2d85a2f"
+  },
+  "three_fillers": {
+    "boundary": "机器1、2各两条瓶线两条粉线；机器3一条瓶线一条粉线一条瓶粉交替混线；成品及时取走。到货表不是完整上游布局。",
+    "rows": [
+      {
+        "tick": 0,
+        "machines": [
+          {
+            "machine": 1,
+            "arrival": [
+              0,
+              0
+            ],
+            "before_start_check": [
+              10,
+              10
+            ],
+            "start": true,
+            "end_stock": [
+              0,
+              0
+            ],
+            "finish_due": 5
+          },
+          {
+            "machine": 2,
+            "arrival": [
+              0,
+              0
+            ],
+            "before_start_check": [
+              10,
+              10
+            ],
+            "start": true,
+            "end_stock": [
+              0,
+              0
+            ],
+            "finish_due": 5
+          },
+          {
+            "machine": 3,
+            "arrival": [
+              0,
+              0
+            ],
+            "before_start_check": [
+              10,
+              10
+            ],
+            "start": true,
+            "end_stock": [
+              0,
+              0
+            ],
+            "finish_due": 5
+          }
+        ]
+      },
+      {
+        "tick": 1,
+        "machines": [
+          {
+            "machine": 1,
+            "arrival": [
+              2,
+              2
+            ],
+            "before_start_check": [
+              2,
+              2
+            ],
+            "start": false,
+            "end_stock": [
+              2,
+              2
+            ],
+            "finish_due": 5
+          },
+          {
+            "machine": 2,
+            "arrival": [
+              2,
+              2
+            ],
+            "before_start_check": [
+              2,
+              2
+            ],
+            "start": false,
+            "end_stock": [
+              2,
+              2
+            ],
+            "finish_due": 5
+          },
+          {
+            "machine": 3,
+            "arrival": [
+              2,
+              1
+            ],
+            "before_start_check": [
+              2,
+              1
+            ],
+            "start": false,
+            "end_stock": [
+              2,
+              1
+            ],
+            "finish_due": 5
+          }
+        ]
+      },
+      {
+        "tick": 2,
+        "machines": [
+          {
+            "machine": 1,
+            "arrival": [
+              2,
+              2
+            ],
+            "before_start_check": [
+              4,
+              4
+            ],
+            "start": false,
+            "end_stock": [
+              4,
+              4
+            ],
+            "finish_due": 5
+          },
+          {
+            "machine": 2,
+            "arrival": [
+              2,
+              2
+            ],
+            "before_start_check": [
+              4,
+              4
+            ],
+            "start": false,
+            "end_stock": [
+              4,
+              4
+            ],
+            "finish_due": 5
+          },
+          {
+            "machine": 3,
+            "arrival": [
+              1,
+              2
+            ],
+            "before_start_check": [
+              3,
+              3
+            ],
+            "start": false,
+            "end_stock": [
+              3,
+              3
+            ],
+            "finish_due": 5
+          }
+        ]
+      },
+      {
+        "tick": 3,
+        "machines": [
+          {
+            "machine": 1,
+            "arrival": [
+              2,
+              2
+            ],
+            "before_start_check": [
+              6,
+              6
+            ],
+            "start": false,
+            "end_stock": [
+              6,
+              6
+            ],
+            "finish_due": 5
+          },
+          {
+            "machine": 2,
+            "arrival": [
+              2,
+              2
+            ],
+            "before_start_check": [
+              6,
+              6
+            ],
+            "start": false,
+            "end_stock": [
+              6,
+              6
+            ],
+            "finish_due": 5
+          },
+          {
+            "machine": 3,
+            "arrival": [
+              2,
+              1
+            ],
+            "before_start_check": [
+              5,
+              4
+            ],
+            "start": false,
+            "end_stock": [
+              5,
+              4
+            ],
+            "finish_due": 5
+          }
+        ]
+      },
+      {
+        "tick": 4,
+        "machines": [
+          {
+            "machine": 1,
+            "arrival": [
+              2,
+              2
+            ],
+            "before_start_check": [
+              8,
+              8
+            ],
+            "start": false,
+            "end_stock": [
+              8,
+              8
+            ],
+            "finish_due": 5
+          },
+          {
+            "machine": 2,
+            "arrival": [
+              2,
+              2
+            ],
+            "before_start_check": [
+              8,
+              8
+            ],
+            "start": false,
+            "end_stock": [
+              8,
+              8
+            ],
+            "finish_due": 5
+          },
+          {
+            "machine": 3,
+            "arrival": [
+              1,
+              2
+            ],
+            "before_start_check": [
+              6,
+              6
+            ],
+            "start": false,
+            "end_stock": [
+              6,
+              6
+            ],
+            "finish_due": 5
+          }
+        ]
+      },
+      {
+        "tick": 5,
+        "machines": [
+          {
+            "machine": 1,
+            "arrival": [
+              2,
+              2
+            ],
+            "before_start_check": [
+              10,
+              10
+            ],
+            "start": true,
+            "end_stock": [
+              0,
+              0
+            ],
+            "finish_due": 10
+          },
+          {
+            "machine": 2,
+            "arrival": [
+              2,
+              2
+            ],
+            "before_start_check": [
+              10,
+              10
+            ],
+            "start": true,
+            "end_stock": [
+              0,
+              0
+            ],
+            "finish_due": 10
+          },
+          {
+            "machine": 3,
+            "arrival": [
+              2,
+              1
+            ],
+            "before_start_check": [
+              8,
+              7
+            ],
+            "start": false,
+            "end_stock": [
+              8,
+              7
+            ],
+            "finish_due": null
+          }
+        ]
+      },
+      {
+        "tick": 6,
+        "machines": [
+          {
+            "machine": 1,
+            "arrival": [
+              2,
+              2
+            ],
+            "before_start_check": [
+              2,
+              2
+            ],
+            "start": false,
+            "end_stock": [
+              2,
+              2
+            ],
+            "finish_due": 10
+          },
+          {
+            "machine": 2,
+            "arrival": [
+              2,
+              2
+            ],
+            "before_start_check": [
+              2,
+              2
+            ],
+            "start": false,
+            "end_stock": [
+              2,
+              2
+            ],
+            "finish_due": 10
+          },
+          {
+            "machine": 3,
+            "arrival": [
+              1,
+              2
+            ],
+            "before_start_check": [
+              9,
+              9
+            ],
+            "start": false,
+            "end_stock": [
+              9,
+              9
+            ],
+            "finish_due": null
+          }
+        ]
+      },
+      {
+        "tick": 7,
+        "machines": [
+          {
+            "machine": 1,
+            "arrival": [
+              2,
+              2
+            ],
+            "before_start_check": [
+              4,
+              4
+            ],
+            "start": false,
+            "end_stock": [
+              4,
+              4
+            ],
+            "finish_due": 10
+          },
+          {
+            "machine": 2,
+            "arrival": [
+              2,
+              2
+            ],
+            "before_start_check": [
+              4,
+              4
+            ],
+            "start": false,
+            "end_stock": [
+              4,
+              4
+            ],
+            "finish_due": 10
+          },
+          {
+            "machine": 3,
+            "arrival": [
+              2,
+              1
+            ],
+            "before_start_check": [
+              11,
+              10
+            ],
+            "start": true,
+            "end_stock": [
+              1,
+              0
+            ],
+            "finish_due": 12
+          }
+        ]
+      },
+      {
+        "tick": 8,
+        "machines": [
+          {
+            "machine": 1,
+            "arrival": [
+              2,
+              2
+            ],
+            "before_start_check": [
+              6,
+              6
+            ],
+            "start": false,
+            "end_stock": [
+              6,
+              6
+            ],
+            "finish_due": 10
+          },
+          {
+            "machine": 2,
+            "arrival": [
+              2,
+              2
+            ],
+            "before_start_check": [
+              6,
+              6
+            ],
+            "start": false,
+            "end_stock": [
+              6,
+              6
+            ],
+            "finish_due": 10
+          },
+          {
+            "machine": 3,
+            "arrival": [
+              1,
+              2
+            ],
+            "before_start_check": [
+              2,
+              2
+            ],
+            "start": false,
+            "end_stock": [
+              2,
+              2
+            ],
+            "finish_due": 12
+          }
+        ]
+      },
+      {
+        "tick": 9,
+        "machines": [
+          {
+            "machine": 1,
+            "arrival": [
+              2,
+              2
+            ],
+            "before_start_check": [
+              8,
+              8
+            ],
+            "start": false,
+            "end_stock": [
+              8,
+              8
+            ],
+            "finish_due": 10
+          },
+          {
+            "machine": 2,
+            "arrival": [
+              2,
+              2
+            ],
+            "before_start_check": [
+              8,
+              8
+            ],
+            "start": false,
+            "end_stock": [
+              8,
+              8
+            ],
+            "finish_due": 10
+          },
+          {
+            "machine": 3,
+            "arrival": [
+              2,
+              1
+            ],
+            "before_start_check": [
+              4,
+              3
+            ],
+            "start": false,
+            "end_stock": [
+              4,
+              3
+            ],
+            "finish_due": 12
+          }
+        ]
+      },
+      {
+        "tick": 10,
+        "machines": [
+          {
+            "machine": 1,
+            "arrival": [
+              2,
+              2
+            ],
+            "before_start_check": [
+              10,
+              10
+            ],
+            "start": true,
+            "end_stock": [
+              0,
+              0
+            ],
+            "finish_due": 15
+          },
+          {
+            "machine": 2,
+            "arrival": [
+              2,
+              2
+            ],
+            "before_start_check": [
+              10,
+              10
+            ],
+            "start": true,
+            "end_stock": [
+              0,
+              0
+            ],
+            "finish_due": 15
+          },
+          {
+            "machine": 3,
+            "arrival": [
+              1,
+              2
+            ],
+            "before_start_check": [
+              5,
+              5
+            ],
+            "start": false,
+            "end_stock": [
+              5,
+              5
+            ],
+            "finish_due": 12
+          }
+        ]
+      },
+      {
+        "tick": 11,
+        "machines": [
+          {
+            "machine": 1,
+            "arrival": [
+              2,
+              2
+            ],
+            "before_start_check": [
+              2,
+              2
+            ],
+            "start": false,
+            "end_stock": [
+              2,
+              2
+            ],
+            "finish_due": 15
+          },
+          {
+            "machine": 2,
+            "arrival": [
+              2,
+              2
+            ],
+            "before_start_check": [
+              2,
+              2
+            ],
+            "start": false,
+            "end_stock": [
+              2,
+              2
+            ],
+            "finish_due": 15
+          },
+          {
+            "machine": 3,
+            "arrival": [
+              2,
+              1
+            ],
+            "before_start_check": [
+              7,
+              6
+            ],
+            "start": false,
+            "end_stock": [
+              7,
+              6
+            ],
+            "finish_due": 12
+          }
+        ]
+      },
+      {
+        "tick": 12,
+        "machines": [
+          {
+            "machine": 1,
+            "arrival": [
+              2,
+              2
+            ],
+            "before_start_check": [
+              4,
+              4
+            ],
+            "start": false,
+            "end_stock": [
+              4,
+              4
+            ],
+            "finish_due": 15
+          },
+          {
+            "machine": 2,
+            "arrival": [
+              2,
+              2
+            ],
+            "before_start_check": [
+              4,
+              4
+            ],
+            "start": false,
+            "end_stock": [
+              4,
+              4
+            ],
+            "finish_due": 15
+          },
+          {
+            "machine": 3,
+            "arrival": [
+              1,
+              2
+            ],
+            "before_start_check": [
+              8,
+              8
+            ],
+            "start": false,
+            "end_stock": [
+              8,
+              8
+            ],
+            "finish_due": null
+          }
+        ]
+      },
+      {
+        "tick": 13,
+        "machines": [
+          {
+            "machine": 1,
+            "arrival": [
+              2,
+              2
+            ],
+            "before_start_check": [
+              6,
+              6
+            ],
+            "start": false,
+            "end_stock": [
+              6,
+              6
+            ],
+            "finish_due": 15
+          },
+          {
+            "machine": 2,
+            "arrival": [
+              2,
+              2
+            ],
+            "before_start_check": [
+              6,
+              6
+            ],
+            "start": false,
+            "end_stock": [
+              6,
+              6
+            ],
+            "finish_due": 15
+          },
+          {
+            "machine": 3,
+            "arrival": [
+              2,
+              1
+            ],
+            "before_start_check": [
+              10,
+              9
+            ],
+            "start": false,
+            "end_stock": [
+              10,
+              9
+            ],
+            "finish_due": null
+          }
+        ]
+      },
+      {
+        "tick": 14,
+        "machines": [
+          {
+            "machine": 1,
+            "arrival": [
+              2,
+              2
+            ],
+            "before_start_check": [
+              8,
+              8
+            ],
+            "start": false,
+            "end_stock": [
+              8,
+              8
+            ],
+            "finish_due": 15
+          },
+          {
+            "machine": 2,
+            "arrival": [
+              2,
+              2
+            ],
+            "before_start_check": [
+              8,
+              8
+            ],
+            "start": false,
+            "end_stock": [
+              8,
+              8
+            ],
+            "finish_due": 15
+          },
+          {
+            "machine": 3,
+            "arrival": [
+              1,
+              2
+            ],
+            "before_start_check": [
+              11,
+              11
+            ],
+            "start": true,
+            "end_stock": [
+              1,
+              1
+            ],
+            "finish_due": 19
+          }
+        ]
+      },
+      {
+        "tick": 15,
+        "machines": [
+          {
+            "machine": 1,
+            "arrival": [
+              2,
+              2
+            ],
+            "before_start_check": [
+              10,
+              10
+            ],
+            "start": true,
+            "end_stock": [
+              0,
+              0
+            ],
+            "finish_due": 20
+          },
+          {
+            "machine": 2,
+            "arrival": [
+              2,
+              2
+            ],
+            "before_start_check": [
+              10,
+              10
+            ],
+            "start": true,
+            "end_stock": [
+              0,
+              0
+            ],
+            "finish_due": 20
+          },
+          {
+            "machine": 3,
+            "arrival": [
+              2,
+              1
+            ],
+            "before_start_check": [
+              3,
+              2
+            ],
+            "start": false,
+            "end_stock": [
+              3,
+              2
+            ],
+            "finish_due": 19
+          }
+        ]
+      },
+      {
+        "tick": 16,
+        "machines": [
+          {
+            "machine": 1,
+            "arrival": [
+              2,
+              2
+            ],
+            "before_start_check": [
+              2,
+              2
+            ],
+            "start": false,
+            "end_stock": [
+              2,
+              2
+            ],
+            "finish_due": 20
+          },
+          {
+            "machine": 2,
+            "arrival": [
+              2,
+              2
+            ],
+            "before_start_check": [
+              2,
+              2
+            ],
+            "start": false,
+            "end_stock": [
+              2,
+              2
+            ],
+            "finish_due": 20
+          },
+          {
+            "machine": 3,
+            "arrival": [
+              1,
+              2
+            ],
+            "before_start_check": [
+              4,
+              4
+            ],
+            "start": false,
+            "end_stock": [
+              4,
+              4
+            ],
+            "finish_due": 19
+          }
+        ]
+      },
+      {
+        "tick": 17,
+        "machines": [
+          {
+            "machine": 1,
+            "arrival": [
+              2,
+              2
+            ],
+            "before_start_check": [
+              4,
+              4
+            ],
+            "start": false,
+            "end_stock": [
+              4,
+              4
+            ],
+            "finish_due": 20
+          },
+          {
+            "machine": 2,
+            "arrival": [
+              2,
+              2
+            ],
+            "before_start_check": [
+              4,
+              4
+            ],
+            "start": false,
+            "end_stock": [
+              4,
+              4
+            ],
+            "finish_due": 20
+          },
+          {
+            "machine": 3,
+            "arrival": [
+              2,
+              1
+            ],
+            "before_start_check": [
+              6,
+              5
+            ],
+            "start": false,
+            "end_stock": [
+              6,
+              5
+            ],
+            "finish_due": 19
+          }
+        ]
+      },
+      {
+        "tick": 18,
+        "machines": [
+          {
+            "machine": 1,
+            "arrival": [
+              2,
+              2
+            ],
+            "before_start_check": [
+              6,
+              6
+            ],
+            "start": false,
+            "end_stock": [
+              6,
+              6
+            ],
+            "finish_due": 20
+          },
+          {
+            "machine": 2,
+            "arrival": [
+              2,
+              2
+            ],
+            "before_start_check": [
+              6,
+              6
+            ],
+            "start": false,
+            "end_stock": [
+              6,
+              6
+            ],
+            "finish_due": 20
+          },
+          {
+            "machine": 3,
+            "arrival": [
+              1,
+              2
+            ],
+            "before_start_check": [
+              7,
+              7
+            ],
+            "start": false,
+            "end_stock": [
+              7,
+              7
+            ],
+            "finish_due": 19
+          }
+        ]
+      },
+      {
+        "tick": 19,
+        "machines": [
+          {
+            "machine": 1,
+            "arrival": [
+              2,
+              2
+            ],
+            "before_start_check": [
+              8,
+              8
+            ],
+            "start": false,
+            "end_stock": [
+              8,
+              8
+            ],
+            "finish_due": 20
+          },
+          {
+            "machine": 2,
+            "arrival": [
+              2,
+              2
+            ],
+            "before_start_check": [
+              8,
+              8
+            ],
+            "start": false,
+            "end_stock": [
+              8,
+              8
+            ],
+            "finish_due": 20
+          },
+          {
+            "machine": 3,
+            "arrival": [
+              2,
+              1
+            ],
+            "before_start_check": [
+              9,
+              8
+            ],
+            "start": false,
+            "end_stock": [
+              9,
+              8
+            ],
+            "finish_due": null
+          }
+        ]
+      },
+      {
+        "tick": 20,
+        "machines": [
+          {
+            "machine": 1,
+            "arrival": [
+              2,
+              2
+            ],
+            "before_start_check": [
+              10,
+              10
+            ],
+            "start": true,
+            "end_stock": [
+              0,
+              0
+            ],
+            "finish_due": 25
+          },
+          {
+            "machine": 2,
+            "arrival": [
+              2,
+              2
+            ],
+            "before_start_check": [
+              10,
+              10
+            ],
+            "start": true,
+            "end_stock": [
+              0,
+              0
+            ],
+            "finish_due": 25
+          },
+          {
+            "machine": 3,
+            "arrival": [
+              1,
+              2
+            ],
+            "before_start_check": [
+              10,
+              10
+            ],
+            "start": true,
+            "end_stock": [
+              0,
+              0
+            ],
+            "finish_due": 25
+          }
+        ]
+      }
+    ],
+    "starts": [
+      [
+        {
+          "tick": 0,
+          "before": [
+            10,
+            10
+          ]
+        },
+        {
+          "tick": 5,
+          "before": [
+            10,
+            10
+          ]
+        },
+        {
+          "tick": 10,
+          "before": [
+            10,
+            10
+          ]
+        },
+        {
+          "tick": 15,
+          "before": [
+            10,
+            10
+          ]
+        },
+        {
+          "tick": 20,
+          "before": [
+            10,
+            10
+          ]
+        }
+      ],
+      [
+        {
+          "tick": 0,
+          "before": [
+            10,
+            10
+          ]
+        },
+        {
+          "tick": 5,
+          "before": [
+            10,
+            10
+          ]
+        },
+        {
+          "tick": 10,
+          "before": [
+            10,
+            10
+          ]
+        },
+        {
+          "tick": 15,
+          "before": [
+            10,
+            10
+          ]
+        },
+        {
+          "tick": 20,
+          "before": [
+            10,
+            10
+          ]
+        }
+      ],
+      [
+        {
+          "tick": 0,
+          "before": [
+            10,
+            10
+          ]
+        },
+        {
+          "tick": 7,
+          "before": [
+            11,
+            10
+          ]
+        },
+        {
+          "tick": 14,
+          "before": [
+            11,
+            11
+          ]
+        },
+        {
+          "tick": 20,
+          "before": [
+            10,
+            10
+          ]
+        }
+      ]
+    ],
+    "completions_in_0_open_20_closed": [
+      [
+        5,
+        10,
+        15,
+        20
+      ],
+      [
+        5,
+        10,
+        15,
+        20
+      ],
+      [
+        5,
+        12,
+        19
+      ]
+    ]
+  },
+  "round_robin_item_types": {
+    "boundary": "种植机逐tick交替出两种植株；两个同级首带只收该机、收后恰1tick腾空。各接可加工两种植株的粉碎机。",
+    "runs": [
+      {
+        "initial_pointer": 1,
+        "rows": [
+          {
+            "tick": 0,
+            "item": "荞花",
+            "port": 1,
+            "next_pointer": 2
+          },
+          {
+            "tick": 1,
+            "item": "砂叶",
+            "port": 2,
+            "next_pointer": 1
+          },
+          {
+            "tick": 2,
+            "item": "荞花",
+            "port": 1,
+            "next_pointer": 2
+          },
+          {
+            "tick": 3,
+            "item": "砂叶",
+            "port": 2,
+            "next_pointer": 1
+          },
+          {
+            "tick": 4,
+            "item": "荞花",
+            "port": 1,
+            "next_pointer": 2
+          },
+          {
+            "tick": 5,
+            "item": "砂叶",
+            "port": 2,
+            "next_pointer": 1
+          },
+          {
+            "tick": 6,
+            "item": "荞花",
+            "port": 1,
+            "next_pointer": 2
+          },
+          {
+            "tick": 7,
+            "item": "砂叶",
+            "port": 2,
+            "next_pointer": 1
+          },
+          {
+            "tick": 8,
+            "item": "荞花",
+            "port": 1,
+            "next_pointer": 2
+          },
+          {
+            "tick": 9,
+            "item": "砂叶",
+            "port": 2,
+            "next_pointer": 1
+          },
+          {
+            "tick": 10,
+            "item": "荞花",
+            "port": 1,
+            "next_pointer": 2
+          },
+          {
+            "tick": 11,
+            "item": "砂叶",
+            "port": 2,
+            "next_pointer": 1
+          }
+        ],
+        "counts": [
+          {
+            "荞花": 6,
+            "砂叶": 0
+          },
+          {
+            "荞花": 0,
+            "砂叶": 6
+          }
+        ]
+      },
+      {
+        "initial_pointer": 2,
+        "rows": [
+          {
+            "tick": 0,
+            "item": "荞花",
+            "port": 2,
+            "next_pointer": 1
+          },
+          {
+            "tick": 1,
+            "item": "砂叶",
+            "port": 1,
+            "next_pointer": 2
+          },
+          {
+            "tick": 2,
+            "item": "荞花",
+            "port": 2,
+            "next_pointer": 1
+          },
+          {
+            "tick": 3,
+            "item": "砂叶",
+            "port": 1,
+            "next_pointer": 2
+          },
+          {
+            "tick": 4,
+            "item": "荞花",
+            "port": 2,
+            "next_pointer": 1
+          },
+          {
+            "tick": 5,
+            "item": "砂叶",
+            "port": 1,
+            "next_pointer": 2
+          },
+          {
+            "tick": 6,
+            "item": "荞花",
+            "port": 2,
+            "next_pointer": 1
+          },
+          {
+            "tick": 7,
+            "item": "砂叶",
+            "port": 1,
+            "next_pointer": 2
+          },
+          {
+            "tick": 8,
+            "item": "荞花",
+            "port": 2,
+            "next_pointer": 1
+          },
+          {
+            "tick": 9,
+            "item": "砂叶",
+            "port": 1,
+            "next_pointer": 2
+          },
+          {
+            "tick": 10,
+            "item": "荞花",
+            "port": 2,
+            "next_pointer": 1
+          },
+          {
+            "tick": 11,
+            "item": "砂叶",
+            "port": 1,
+            "next_pointer": 2
+          }
+        ],
+        "counts": [
+          {
+            "荞花": 0,
+            "砂叶": 6
+          },
+          {
+            "荞花": 6,
+            "砂叶": 0
+          }
+        ]
+      }
+    ]
+  },
+  "head_of_line": {
+    "boundary": "三个源经独立首带给汇流器供A1、A2、B；源持续可供仅用于局部活分支周期；死锁分支不需要持续供给。",
+    "pointer_A1": [
+      {
+        "tick": 0,
+        "delivered": null,
+        "start": false,
+        "completed": false,
+        "admitted_to_merger": "A1",
+        "merger": "A1",
+        "stock_A_B": [
+          50,
+          0
+        ],
+        "completed_total": 0
+      },
+      {
+        "tick": 1,
+        "delivered": null,
+        "start": false,
+        "completed": false,
+        "admitted_to_merger": null,
+        "merger": "A1",
+        "stock_A_B": [
+          50,
+          0
+        ],
+        "completed_total": 0
+      },
+      {
+        "tick": 2,
+        "delivered": null,
+        "start": false,
+        "completed": false,
+        "admitted_to_merger": null,
+        "merger": "A1",
+        "stock_A_B": [
+          50,
+          0
+        ],
+        "completed_total": 0
+      },
+      {
+        "tick": 3,
+        "delivered": null,
+        "start": false,
+        "completed": false,
+        "admitted_to_merger": null,
+        "merger": "A1",
+        "stock_A_B": [
+          50,
+          0
+        ],
+        "completed_total": 0
+      },
+      {
+        "tick": 4,
+        "delivered": null,
+        "start": false,
+        "completed": false,
+        "admitted_to_merger": null,
+        "merger": "A1",
+        "stock_A_B": [
+          50,
+          0
+        ],
+        "completed_total": 0
+      },
+      {
+        "tick": 5,
+        "delivered": null,
+        "start": false,
+        "completed": false,
+        "admitted_to_merger": null,
+        "merger": "A1",
+        "stock_A_B": [
+          50,
+          0
+        ],
+        "completed_total": 0
+      },
+      {
+        "tick": 6,
+        "delivered": null,
+        "start": false,
+        "completed": false,
+        "admitted_to_merger": null,
+        "merger": "A1",
+        "stock_A_B": [
+          50,
+          0
+        ],
+        "completed_total": 0
+      },
+      {
+        "tick": 7,
+        "delivered": null,
+        "start": false,
+        "completed": false,
+        "admitted_to_merger": null,
+        "merger": "A1",
+        "stock_A_B": [
+          50,
+          0
+        ],
+        "completed_total": 0
+      },
+      {
+        "tick": 8,
+        "delivered": null,
+        "start": false,
+        "completed": false,
+        "admitted_to_merger": null,
+        "merger": "A1",
+        "stock_A_B": [
+          50,
+          0
+        ],
+        "completed_total": 0
+      },
+      {
+        "tick": 9,
+        "delivered": null,
+        "start": false,
+        "completed": false,
+        "admitted_to_merger": null,
+        "merger": "A1",
+        "stock_A_B": [
+          50,
+          0
+        ],
+        "completed_total": 0
+      },
+      {
+        "tick": 10,
+        "delivered": null,
+        "start": false,
+        "completed": false,
+        "admitted_to_merger": null,
+        "merger": "A1",
+        "stock_A_B": [
+          50,
+          0
+        ],
+        "completed_total": 0
+      },
+      {
+        "tick": 11,
+        "delivered": null,
+        "start": false,
+        "completed": false,
+        "admitted_to_merger": null,
+        "merger": "A1",
+        "stock_A_B": [
+          50,
+          0
+        ],
+        "completed_total": 0
+      },
+      {
+        "tick": 12,
+        "delivered": null,
+        "start": false,
+        "completed": false,
+        "admitted_to_merger": null,
+        "merger": "A1",
+        "stock_A_B": [
+          50,
+          0
+        ],
+        "completed_total": 0
+      }
+    ],
+    "pointer_B": [
+      {
+        "tick": 0,
+        "delivered": null,
+        "start": false,
+        "completed": false,
+        "admitted_to_merger": "B",
+        "merger": "B",
+        "stock_A_B": [
+          50,
+          0
+        ],
+        "completed_total": 0
+      },
+      {
+        "tick": 1,
+        "delivered": "B",
+        "start": true,
+        "completed": false,
+        "admitted_to_merger": "A1",
+        "merger": "A1",
+        "stock_A_B": [
+          48,
+          0
+        ],
+        "completed_total": 0
+      },
+      {
+        "tick": 2,
+        "delivered": "A1",
+        "start": false,
+        "completed": true,
+        "admitted_to_merger": "A2",
+        "merger": "A2",
+        "stock_A_B": [
+          49,
+          0
+        ],
+        "completed_total": 1
+      },
+      {
+        "tick": 3,
+        "delivered": "A2",
+        "start": false,
+        "completed": false,
+        "admitted_to_merger": "B",
+        "merger": "B",
+        "stock_A_B": [
+          50,
+          0
+        ],
+        "completed_total": 1
+      },
+      {
+        "tick": 4,
+        "delivered": "B",
+        "start": true,
+        "completed": false,
+        "admitted_to_merger": "A1",
+        "merger": "A1",
+        "stock_A_B": [
+          48,
+          0
+        ],
+        "completed_total": 1
+      },
+      {
+        "tick": 5,
+        "delivered": "A1",
+        "start": false,
+        "completed": true,
+        "admitted_to_merger": "A2",
+        "merger": "A2",
+        "stock_A_B": [
+          49,
+          0
+        ],
+        "completed_total": 2
+      },
+      {
+        "tick": 6,
+        "delivered": "A2",
+        "start": false,
+        "completed": false,
+        "admitted_to_merger": "B",
+        "merger": "B",
+        "stock_A_B": [
+          50,
+          0
+        ],
+        "completed_total": 2
+      },
+      {
+        "tick": 7,
+        "delivered": "B",
+        "start": true,
+        "completed": false,
+        "admitted_to_merger": "A1",
+        "merger": "A1",
+        "stock_A_B": [
+          48,
+          0
+        ],
+        "completed_total": 2
+      },
+      {
+        "tick": 8,
+        "delivered": "A1",
+        "start": false,
+        "completed": true,
+        "admitted_to_merger": "A2",
+        "merger": "A2",
+        "stock_A_B": [
+          49,
+          0
+        ],
+        "completed_total": 3
+      },
+      {
+        "tick": 9,
+        "delivered": "A2",
+        "start": false,
+        "completed": false,
+        "admitted_to_merger": "B",
+        "merger": "B",
+        "stock_A_B": [
+          50,
+          0
+        ],
+        "completed_total": 3
+      },
+      {
+        "tick": 10,
+        "delivered": "B",
+        "start": true,
+        "completed": false,
+        "admitted_to_merger": "A1",
+        "merger": "A1",
+        "stock_A_B": [
+          48,
+          0
+        ],
+        "completed_total": 3
+      },
+      {
+        "tick": 11,
+        "delivered": "A1",
+        "start": false,
+        "completed": true,
+        "admitted_to_merger": "A2",
+        "merger": "A2",
+        "stock_A_B": [
+          49,
+          0
+        ],
+        "completed_total": 4
+      },
+      {
+        "tick": 12,
+        "delivered": "A2",
+        "start": false,
+        "completed": false,
+        "admitted_to_merger": "B",
+        "merger": "B",
+        "stock_A_B": [
+          50,
+          0
+        ],
+        "completed_total": 4
+      }
+    ]
+  },
+  "gate_non_sliding_window": [
+    {
+      "tick": 0,
+      "anchor": 0,
+      "used": 1,
+      "leave": 1
+    },
+    {
+      "tick": 4,
+      "anchor": 0,
+      "used": 2,
+      "leave": 5
+    },
+    {
+      "tick": 5,
+      "anchor": 5,
+      "used": 1,
+      "leave": 6
+    },
+    {
+      "tick": 6,
+      "anchor": 5,
+      "used": 2,
+      "leave": 7
+    }
+  ],
+  "gate_sparse_input": [
+    {
+      "tick": 0,
+      "anchor": 0,
+      "used": 1,
+      "leave": 1
+    },
+    {
+      "tick": 10,
+      "anchor": 10,
+      "used": 1,
+      "leave": 11
+    },
+    {
+      "tick": 20,
+      "anchor": 20,
+      "used": 1,
+      "leave": 21
+    },
+    {
+      "tick": 30,
+      "anchor": 30,
+      "used": 1,
+      "leave": 31
+    },
+    {
+      "tick": 40,
+      "anchor": 40,
+      "used": 1,
+      "leave": 41
+    },
+    {
+      "tick": 50,
+      "anchor": 50,
+      "used": 1,
+      "leave": 51
+    },
+    {
+      "tick": 60,
+      "anchor": 60,
+      "used": 1,
+      "leave": 61
+    },
+    {
+      "tick": 70,
+      "anchor": 70,
+      "used": 1,
+      "leave": 71
+    },
+    {
+      "tick": 80,
+      "anchor": 80,
+      "used": 1,
+      "leave": 81
+    },
+    {
+      "tick": 90,
+      "anchor": 90,
+      "used": 1,
+      "leave": 91
+    },
+    {
+      "tick": 100,
+      "anchor": 100,
+      "used": 1,
+      "leave": 101
+    }
+  ],
+  "two_serial_gates_delay": [
+    {
+      "tick": 0,
+      "source_pending": false,
+      "gate1_accept": null,
+      "gate1_to_gate2": null,
+      "sink_receives": null,
+      "gate1_item": "I0",
+      "gate2_item": null,
+      "anchors": [
+        0,
+        -1
+      ]
+    },
+    {
+      "tick": 1,
+      "source_pending": true,
+      "gate1_accept": null,
+      "gate1_to_gate2": null,
+      "sink_receives": null,
+      "gate1_item": "I0",
+      "gate2_item": null,
+      "anchors": [
+        0,
+        -1
+      ]
+    },
+    {
+      "tick": 2,
+      "source_pending": true,
+      "gate1_accept": null,
+      "gate1_to_gate2": null,
+      "sink_receives": null,
+      "gate1_item": "I0",
+      "gate2_item": null,
+      "anchors": [
+        0,
+        -1
+      ]
+    },
+    {
+      "tick": 3,
+      "source_pending": true,
+      "gate1_accept": null,
+      "gate1_to_gate2": null,
+      "sink_receives": null,
+      "gate1_item": "I0",
+      "gate2_item": null,
+      "anchors": [
+        0,
+        -1
+      ]
+    },
+    {
+      "tick": 4,
+      "source_pending": true,
+      "gate1_accept": null,
+      "gate1_to_gate2": "I0",
+      "sink_receives": null,
+      "gate1_item": null,
+      "gate2_item": "I0",
+      "anchors": [
+        0,
+        4
+      ]
+    },
+    {
+      "tick": 5,
+      "source_pending": false,
+      "gate1_accept": "I1",
+      "gate1_to_gate2": null,
+      "sink_receives": "I0",
+      "gate1_item": "I1",
+      "gate2_item": null,
+      "anchors": [
+        5,
+        4
+      ]
+    },
+    {
+      "tick": 6,
+      "source_pending": false,
+      "gate1_accept": null,
+      "gate1_to_gate2": null,
+      "sink_receives": null,
+      "gate1_item": "I1",
+      "gate2_item": null,
+      "anchors": [
+        5,
+        4
+      ]
+    },
+    {
+      "tick": 7,
+      "source_pending": false,
+      "gate1_accept": null,
+      "gate1_to_gate2": null,
+      "sink_receives": null,
+      "gate1_item": "I1",
+      "gate2_item": null,
+      "anchors": [
+        5,
+        4
+      ]
+    },
+    {
+      "tick": 8,
+      "source_pending": false,
+      "gate1_accept": null,
+      "gate1_to_gate2": null,
+      "sink_receives": null,
+      "gate1_item": "I1",
+      "gate2_item": null,
+      "anchors": [
+        5,
+        4
+      ]
+    },
+    {
+      "tick": 9,
+      "source_pending": false,
+      "gate1_accept": null,
+      "gate1_to_gate2": "I1",
+      "sink_receives": null,
+      "gate1_item": null,
+      "gate2_item": "I1",
+      "anchors": [
+        5,
+        9
+      ]
+    },
+    {
+      "tick": 10,
+      "source_pending": false,
+      "gate1_accept": null,
+      "gate1_to_gate2": null,
+      "sink_receives": "I1",
+      "gate1_item": null,
+      "gate2_item": null,
+      "anchors": [
+        5,
+        9
+      ]
+    }
+  ],
+  "two_serial_gates_saturated_probe": {
+    "cases": 625,
+    "ticks_per_case": 2000,
+    "count_interval": "1000 <= t < 2000",
+    "deviations": [],
+    "limitation": "只覆盖这个局部贪心次序、初始两格为空且旧窗口额度用尽的625例；不是一般证明。"
+  },
+  "crusher_before_k1_gate": [
+    {
+      "tick": 0,
+      "gate_accept": 1,
+      "output_stock": 0,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 1,
+      "gate_accept": 0,
+      "output_stock": 1,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 2,
+      "gate_accept": 0,
+      "output_stock": 2,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 3,
+      "gate_accept": 0,
+      "output_stock": 3,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 4,
+      "gate_accept": 0,
+      "output_stock": 4,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 5,
+      "gate_accept": 1,
+      "output_stock": 4,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 6,
+      "gate_accept": 0,
+      "output_stock": 5,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 7,
+      "gate_accept": 0,
+      "output_stock": 6,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 8,
+      "gate_accept": 0,
+      "output_stock": 7,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 9,
+      "gate_accept": 0,
+      "output_stock": 8,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 10,
+      "gate_accept": 1,
+      "output_stock": 8,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 11,
+      "gate_accept": 0,
+      "output_stock": 9,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 12,
+      "gate_accept": 0,
+      "output_stock": 10,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 13,
+      "gate_accept": 0,
+      "output_stock": 11,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 14,
+      "gate_accept": 0,
+      "output_stock": 12,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 15,
+      "gate_accept": 1,
+      "output_stock": 12,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 16,
+      "gate_accept": 0,
+      "output_stock": 13,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 17,
+      "gate_accept": 0,
+      "output_stock": 14,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 18,
+      "gate_accept": 0,
+      "output_stock": 15,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 19,
+      "gate_accept": 0,
+      "output_stock": 16,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 20,
+      "gate_accept": 1,
+      "output_stock": 16,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 21,
+      "gate_accept": 0,
+      "output_stock": 17,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 22,
+      "gate_accept": 0,
+      "output_stock": 18,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 23,
+      "gate_accept": 0,
+      "output_stock": 19,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 24,
+      "gate_accept": 0,
+      "output_stock": 20,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 25,
+      "gate_accept": 1,
+      "output_stock": 20,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 26,
+      "gate_accept": 0,
+      "output_stock": 21,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 27,
+      "gate_accept": 0,
+      "output_stock": 22,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 28,
+      "gate_accept": 0,
+      "output_stock": 23,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 29,
+      "gate_accept": 0,
+      "output_stock": 24,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 30,
+      "gate_accept": 1,
+      "output_stock": 24,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 31,
+      "gate_accept": 0,
+      "output_stock": 25,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 32,
+      "gate_accept": 0,
+      "output_stock": 26,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 33,
+      "gate_accept": 0,
+      "output_stock": 27,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 34,
+      "gate_accept": 0,
+      "output_stock": 28,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 35,
+      "gate_accept": 1,
+      "output_stock": 28,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 36,
+      "gate_accept": 0,
+      "output_stock": 29,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 37,
+      "gate_accept": 0,
+      "output_stock": 30,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 38,
+      "gate_accept": 0,
+      "output_stock": 31,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 39,
+      "gate_accept": 0,
+      "output_stock": 32,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 40,
+      "gate_accept": 1,
+      "output_stock": 32,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 41,
+      "gate_accept": 0,
+      "output_stock": 33,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 42,
+      "gate_accept": 0,
+      "output_stock": 34,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 43,
+      "gate_accept": 0,
+      "output_stock": 35,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 44,
+      "gate_accept": 0,
+      "output_stock": 36,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 45,
+      "gate_accept": 1,
+      "output_stock": 36,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 46,
+      "gate_accept": 0,
+      "output_stock": 37,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 47,
+      "gate_accept": 0,
+      "output_stock": 38,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 48,
+      "gate_accept": 0,
+      "output_stock": 39,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 49,
+      "gate_accept": 0,
+      "output_stock": 40,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 50,
+      "gate_accept": 1,
+      "output_stock": 40,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 51,
+      "gate_accept": 0,
+      "output_stock": 41,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 52,
+      "gate_accept": 0,
+      "output_stock": 42,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 53,
+      "gate_accept": 0,
+      "output_stock": 43,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 54,
+      "gate_accept": 0,
+      "output_stock": 44,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 55,
+      "gate_accept": 1,
+      "output_stock": 44,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 56,
+      "gate_accept": 0,
+      "output_stock": 45,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 57,
+      "gate_accept": 0,
+      "output_stock": 46,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 58,
+      "gate_accept": 0,
+      "output_stock": 47,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 59,
+      "gate_accept": 0,
+      "output_stock": 48,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 60,
+      "gate_accept": 1,
+      "output_stock": 48,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 61,
+      "gate_accept": 0,
+      "output_stock": 49,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 62,
+      "gate_accept": 0,
+      "output_stock": 50,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": false
+    },
+    {
+      "tick": 63,
+      "gate_accept": 0,
+      "output_stock": 50,
+      "completed_batch_in_cache": 1,
+      "blocked_on_completion": true
+    },
+    {
+      "tick": 64,
+      "gate_accept": 0,
+      "output_stock": 50,
+      "completed_batch_in_cache": 1,
+      "blocked_on_completion": true
+    },
+    {
+      "tick": 65,
+      "gate_accept": 1,
+      "output_stock": 50,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": true
+    },
+    {
+      "tick": 66,
+      "gate_accept": 0,
+      "output_stock": 50,
+      "completed_batch_in_cache": 1,
+      "blocked_on_completion": true
+    },
+    {
+      "tick": 67,
+      "gate_accept": 0,
+      "output_stock": 50,
+      "completed_batch_in_cache": 1,
+      "blocked_on_completion": true
+    },
+    {
+      "tick": 68,
+      "gate_accept": 0,
+      "output_stock": 50,
+      "completed_batch_in_cache": 1,
+      "blocked_on_completion": true
+    },
+    {
+      "tick": 69,
+      "gate_accept": 0,
+      "output_stock": 50,
+      "completed_batch_in_cache": 1,
+      "blocked_on_completion": true
+    },
+    {
+      "tick": 70,
+      "gate_accept": 1,
+      "output_stock": 50,
+      "completed_batch_in_cache": 0,
+      "blocked_on_completion": true
+    }
+  ]
+}

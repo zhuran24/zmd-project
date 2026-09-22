@@ -1,0 +1,11 @@
+{"name": "ore-79999-finite-check", "command": ["/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel", "check", "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-2-证据/ore-79999-seed.json", "--config", "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"], "cwd": "/home/zhuran24/zmd-research-fresh/求解器", "exit": 0}
+STDOUT
+{
+  "buffer_channels": 0,
+  "catalog_sha256": "74d21a5bd37c6178f988a86a4aa78a03d1e4244ecff26f133bb5e700ada82e43",
+  "physical_channels": 2,
+  "status": "input_checked",
+  "units": 3
+}
+
+STDERR

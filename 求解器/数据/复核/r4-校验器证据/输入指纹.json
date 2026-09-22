@@ -1,0 +1,21 @@
+{
+  "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt": "abc7a5867f6477eedb619c63a21c4a77144c57ad4567fdcfb696b3049d66a670",
+  "/home/zhuran24/zmd-research-fresh/求解任务.txt": "10abf80fe6eefe647471eabe78da4053f77b489d3806722c501c6acb405a2864",
+  "/home/zhuran24/zmd-research-fresh/求解约束.txt": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6",
+  "/home/zhuran24/zmd-research-fresh/候选约束.txt": "a0ac3f9c82f371132b7de29fe47e4c6c587904680bc2786523de0c825fd5efd9",
+  "/home/zhuran24/zmd-research-fresh/求解器/Cargo.toml": "46b4c141f2e4aab517477f8167ea9970d5ce6245c9286c0f645d33937ca9ea2a",
+  "/home/zhuran24/zmd-research-fresh/求解器/Cargo.lock": "e10730c1ff159d0b4b1524fb186cf09d25f08e075173eb6bb32adf15dcbf92a5",
+  "/home/zhuran24/zmd-research-fresh/求解器/数据/送料契约.md": "90b8db0295aca96d45e6811bfaa4f9c17e87bd3340e56368773139b63e483bea",
+  "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json": "74d21a5bd37c6178f988a86a4aa78a03d1e4244ecff26f133bb5e700ada82e43",
+  "/home/zhuran24/zmd-research-fresh/求解器/数据/规则覆盖表.md": "c845fe89d663626f708ebbfce169808dbad8f762a594d449041c755183d7c47d",
+  "/home/zhuran24/zmd-research-fresh/求解器/数据/修订记录.md": "3f7bbaecbb174d8ce673b1180bdf21c52c90e7ba1cd975978c88af4bd0b168b5",
+  "/home/zhuran24/zmd-research-fresh/求解器/数据/工具/convert_candidate_b.py": "8d112e314160143599c1cda15695010a3c15b4fbfe06a87484bf79a5ef7798aa",
+  "/home/zhuran24/zmd-research-fresh/求解器/数据/工具/formal_catalog.py": "57240c4159fb227fc3617a879f35bd7a2d614d911ba3e3b1a4ed575137ddcf87",
+  "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/contract.json": "a555045972861bc60a84ade0cfaf81a037a1abfff89be1aeee578b9ef0e1a2db",
+  "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/校验报告.md": "4dedc1ca41876e1b618b02b4c1d59b53d1e400fce52165e4208dc546f71c2ddb",
+  "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/验证记录.md": "69112e30d7f45f63c08b5f3f0e389efb24abedc02ca0047b82039a37e523d82f",
+  "/home/zhuran24/zmd-research-fresh/求解器/crates/topology/src/main.rs": "c10cc32045da0d2af89e45ee6ff95dd645813bf602f3d44e14977c9ccd0bf9f2",
+  "/home/zhuran24/zmd-research-fresh/求解器/crates/topology/src/lib.rs": "bcfefa3afdd4481a900f902f6cb8f32292a94a5bd686748ba4f6a2aff2f847ff",
+  "/home/zhuran24/zmd-research-fresh/求解器/crates/topology/tests/validation.rs": "06d290b9215e04649fc0a8f72a4b4398f1d29e7f14f5c88748d50bb3f2f19abc",
+  "/home/zhuran24/zmd-research-fresh/求解器/crates/topology/Cargo.toml": "93b265469a57d17d5d97444d6234c5129ae06523321a8f6dedf858effd0bc525"
+}

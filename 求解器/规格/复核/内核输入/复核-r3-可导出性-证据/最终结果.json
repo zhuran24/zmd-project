@@ -1,0 +1,26 @@
+{
+  "findings": [
+    {
+      "id": "K3-r3-L2-01",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/test_runtime_input.py:131-153；/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.md:27-37",
+      "claim": "输出回归未将被读取记录的参数、完整状态和事件与输入及重算关联，错误运行记录仍可报告通过。",
+      "evidence": "规则L59规定运输物品格上限1；第三轮任务书§3.C要求保存逐字段赋值、实际轨迹和验证范围；内核输出L27要求核对summary与完整状态一致。隔离实测将tick 0进料带库存改为2、将记录time.domain改为invented_domain、或删除tick 3全部事件，三个独立反例均仍通过17项回归。",
+      "severity": "重要"
+    },
+    {
+      "id": "K3-r3-L2-02",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/check_golden_trace.py:172-179；/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.md:18-20",
+      "claim": "未覆盖清单仅复制配置的通用覆盖损失，没有区分本次未触发机制与实际验证过的本版选值。",
+      "evidence": "第三轮任务书§3.C要求记录未覆盖轴和验证范围，本次任务要求区分已证组合与未跑到组合；内核输出L18明确要求分别写明其它值未覆盖、未触发、超出覆盖即停和待证明。实际无箱体、无多级平局、参考执行无阻尼求值，但transfer.cooldown_scope、polling.level_tie、damping.belt_component_rule均仅记“本版选值”及其它读法损失，没有本次未触发标记。",
+      "severity": "重要"
+    },
+    {
+      "id": "K3-r3-L2-03",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/check_golden_trace.py:7-8、172-177；/home/zhuran24/zmd-research-fresh/求解器/数据/样例/kernel_profile_v1参数赋值.json:4-6",
+      "claim": "运行记录未校验或指纹绑定实际读取的参数投影及检查器依赖，使旧profile投影可以混入标注新规格指纹的已通过结果。",
+      "evidence": "第三轮任务书§3.C要求保存来源指纹和未覆盖轴；内核输出L15要求指纹不匹配时重新核验。参数投影声明来源哈希c05b2fe73edfb93c2aacba2db0a2412fc850f81700c562f7c42cc5bdc6eeae17，实际受限模型声明为e499b39b60200618ab69a0a30a4be29efd29992d64428d9c9647e9c6c8cf236f；保持此不一致重新生成记录后17项回归仍通过。生成器读取该投影构造覆盖清单，且依赖check_examples.py，但两者均未进入运行记录fingerprints。",
+      "severity": "重要"
+    }
+  ],
+  "notes": "机器可读结果：/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/复核-r3-可导出性-证据/最终结果.json；完整论证：/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/复核-r3-可导出性.md。复核脚本与结果：/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/复核-r3-可导出性-证据/复核检查.py、/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/复核-r3-可导出性-证据/复核结果.json；96轴逐字段核对：/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/复核-r3-可导出性-证据/96项参数逐字段核对.json；全部写入文件路径：/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/复核-r3-可导出性-证据/交付文件清单.json。三个样例几何通过，0–3 tick黄金成功步骤可导出，完整轨迹重算一致；3条发现均为重要，无阻断项。全部写入限指定复核目录，未改被审原件，未commit/push。"
+}

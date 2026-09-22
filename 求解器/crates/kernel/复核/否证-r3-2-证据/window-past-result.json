@@ -1,0 +1,22 @@
+{
+  "execution_mode": "finite_concrete",
+  "fingerprints": [],
+  "input_history": null,
+  "open_items": [
+    "invalid_input input @ W|4|probe_gate_a: 待事件时刻与进度不符"
+  ],
+  "parameter_assignment": null,
+  "port_meeting": "shared_edge_opposite",
+  "producer": {
+    "claim": "装载停止，未形成游戏后继",
+    "kind": "kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+  },
+  "profile_id": "kernel_profile_v1",
+  "run_id": "kernel:load-stop",
+  "schema": "kernel-output-v3",
+  "status": "invalid_input",
+  "trace": null,
+  "uncovered_axes": [],
+  "validation_scope": null
+}

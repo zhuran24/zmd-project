@@ -1,0 +1,21 @@
+{
+  "status": "pass",
+  "before_hash_reconstructed": "c26b2fc41810feeb365790bf55176bb8950336675f1b5a5ed8e05f63efe61ce7",
+  "after_hash": "2e3e4a8e9f5d20a886968b16b6b1986b51114b88a157b1596eb096592935d0e6",
+  "changed_files": [
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/等价类计数.json"
+  ],
+  "unchanged_count": 78,
+  "changed_sha256_entries": 6,
+  "non_source_content_equal": true,
+  "classes": {
+    "混做粉碎机两下游": {
+      "semantic_sweep": 55296,
+      "operational_conservative": 87178291200
+    },
+    "分流器三路轮询": {
+      "semantic_sweep": 27323180236800,
+      "operational_conservative": 104657538585600
+    }
+  }
+}

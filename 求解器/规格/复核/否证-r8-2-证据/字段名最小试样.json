@@ -1,0 +1,69 @@
+{
+  "original": {
+    "schema": "kernel-output-v3",
+    "run_id": "r8-seat2-schema-fixture",
+    "profile_id": "kernel_profile_v1",
+    "execution_mode": "finite_concrete",
+    "port_meeting": "shared_edge_opposite",
+    "producer": {
+      "kind": "manual_expected",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/否证-r8-2-证据/independent_verify.py",
+      "claim": "仅字段形状试样，不是游戏执行记录"
+    },
+    "status": "invalid_input",
+    "fingerprints": [],
+    "parameter_assignment": null,
+    "input_history": null,
+    "uncovered_axes": [],
+    "trace": null,
+    "validation_scope": null,
+    "open_items": [
+      "手工字段试样：没有装载输入或执行游戏转移"
+    ]
+  },
+  "renamed": {
+    "schema": "kernel-output-v3",
+    "run_id": "r8-seat2-schema-fixture",
+    "profile_id": "kernel_profile_v1",
+    "execution_mode": "finite_concrete",
+    "port_meeting": "shared_edge_opposite",
+    "producer": {
+      "kind": "manual_expected",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/否证-r8-2-证据/independent_verify.py",
+      "claim": "仅字段形状试样，不是游戏执行记录"
+    },
+    "status": "invalid_input",
+    "fingerprints": [],
+    "parameter_assignment": null,
+    "input_history": null,
+    "uncovered_axes": [],
+    "trace": null,
+    "open_items": [
+      "手工字段试样：没有装载输入或执行游戏转移"
+    ],
+    "verification_scope": null
+  },
+  "both": {
+    "schema": "kernel-output-v3",
+    "run_id": "r8-seat2-schema-fixture",
+    "profile_id": "kernel_profile_v1",
+    "execution_mode": "finite_concrete",
+    "port_meeting": "shared_edge_opposite",
+    "producer": {
+      "kind": "manual_expected",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/否证-r8-2-证据/independent_verify.py",
+      "claim": "仅字段形状试样，不是游戏执行记录"
+    },
+    "status": "invalid_input",
+    "fingerprints": [],
+    "parameter_assignment": null,
+    "input_history": null,
+    "uncovered_axes": [],
+    "trace": null,
+    "validation_scope": null,
+    "open_items": [
+      "手工字段试样：没有装载输入或执行游戏转移"
+    ],
+    "verification_scope": null
+  }
+}

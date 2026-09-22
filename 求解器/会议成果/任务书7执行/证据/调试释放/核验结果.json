@@ -1,0 +1,62 @@
+{
+  "status": "PASS",
+  "exit_status": 0,
+  "scope": "作者源码/算术/局部事件/接口检查，无游戏内核步进、无全参数枚举",
+  "read_only_inputs_unchanged": 49,
+  "input_JSON_and_scripts_read_in_full": true,
+  "candidate_checks": [
+    {
+      "id": "A219",
+      "machines": 219,
+      "feeds": 314
+    },
+    {
+      "id": "B219",
+      "machines": 219,
+      "feeds": 315
+    }
+  ],
+  "machine_balance_checks": 438,
+  "plant_feed_rows_checked": 219,
+  "positive_recipe_checks": 17,
+  "minimum_recipe_increase": 1,
+  "excluded_R89_increase": -1,
+  "first_clear_cases": 306,
+  "local_event_rows": 19,
+  "local_quiescent_witness": {
+    "H_output": 49,
+    "final_N": 275,
+    "completed_H_batches": 2
+  },
+  "loss_identity_coefficient_check": true,
+  "conditional_loss_examples": [
+    {
+      "species": "荞花",
+      "completed_full_N0_excluding_transport": 2023,
+      "E1_no_leak_bound_excluding_G_path": 307
+    },
+    {
+      "species": "砂叶",
+      "completed_full_N0_excluding_transport": 3793,
+      "E1_no_leak_bound_excluding_G_path": 562
+    }
+  ],
+  "mixed_tail_counts": [
+    152,
+    203
+  ],
+  "half_loop_seed_margin_q50": 27,
+  "mixed_Z_distances": [
+    47,
+    98
+  ],
+  "source_scripts_executed": false,
+  "source_bytes_and_mtime_unchanged": true,
+  "links_checked": true,
+  "exact_reachable_set_enumerated": false,
+  "full_layout_certified": false,
+  "new_proofs_independent_review": "pending",
+  "L": 0,
+  "U": 1113,
+  "for_owner": []
+}

@@ -1,0 +1,7 @@
+$ cargo build --release -p kernel --target-dir '/home/zhuran24/zmd-research-fresh/求解器/target'
+CWD=/home/zhuran24/zmd-research-fresh/求解器
+EXIT_CODE=0
+STDOUT:
+
+STDERR:
+    Finished `release` profile [optimized] target(s) in 0.01s

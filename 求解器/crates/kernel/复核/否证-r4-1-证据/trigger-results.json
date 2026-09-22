@@ -1,0 +1,9 @@
+{
+  "seed_accepted": true,
+  "public_key_accepted": [
+    true,
+    true
+  ],
+  "only_difference": "/state/semantic_context/pending_events/value/0/trigger/extra",
+  "extra": "未定义扩展"
+}

@@ -1,0 +1,21 @@
+{
+  "name": "gate-expired-after-closure-no-output",
+  "command": [
+    "/home/zhuran24/zmd-research-fresh/求解器/target/debug/kernel",
+    "run",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/gate-expired-after-closure-input.json",
+    "--config",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+    "--ticks",
+    "1",
+    "--no-output",
+    "--out",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/gate-expired-after-closure-no-output.json"
+  ],
+  "exit_code": 0,
+  "status": "completed",
+  "schema": null,
+  "open_items": null,
+  "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/gate-expired-after-closure-no-output.json\",\"status\":\"completed\"}\n",
+  "stderr": ""
+}

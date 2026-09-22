@@ -1,0 +1,60 @@
+{
+  "captured_utc": "2026-09-21T10:34:46.237103+00:00",
+  "files": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+      "sha256": "31ced2a24fef738c72dfa406351b6bad5df3e353d6b1c2dfd06ab1febaf566ff",
+      "lines": 114
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解任务.txt",
+      "sha256": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+      "lines": 16
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解约束.txt",
+      "sha256": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6",
+      "lines": 126
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/候选约束.txt",
+      "sha256": "a0ac3f9c82f371132b7de29fe47e4c6c587904680bc2786523de0c825fd5efd9",
+      "lines": 862
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7草案.md",
+      "sha256": "32acf147e09de04feabfb575dd509a2c5c06b519b2504ba3ff253c3a61816a26",
+      "lines": 252
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/主会话三审-0920.md",
+      "sha256": "da7d816827a6d66a20def9be982308df0a0e7a8dcb879c6c75ef2c381ef01f87",
+      "lines": 53
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/回路总数决定论-v2.md",
+      "sha256": "e3c1c80e97688cb28042d7ef86f90645b8dc4272f5a28d13f141e4924fd5ca8e",
+      "lines": 397
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/三种相位不改产量-v2.md",
+      "sha256": "53cc75c3e645c1d975b2c4094e2f75ef23908b6729fdd2eb224696eedd787705",
+      "lines": 300
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/总纲-流量存量相位.md",
+      "sha256": "625ce76821eae837fb636d699f221d4a813570be1766c33081df5c97993dd2dd",
+      "lines": 44
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-v2-loop.md",
+      "sha256": "39b06051993e834b5b0adf0149c9ad9cfd8ec69633296d7365db7ebfa1464c2d",
+      "lines": 216
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-v2-phase.md",
+      "sha256": "4c7082a570988c31557b4905ea2772bb1fcd5ce62f4be954946bc6b0937d2c34",
+      "lines": 217
+    }
+  ]
+}

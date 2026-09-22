@@ -1,0 +1,6565 @@
+{
+  "scope": "一个固定合法次序的局部见证；三个开启间隔；不是全参数执行器",
+  "paths": {
+    "PH": 3,
+    "HP": 17,
+    "PG": 3
+  },
+  "traces": [
+    {
+      "opening_lead": 2,
+      "fixed_priority": [
+        [
+          "finish",
+          "P",
+          null
+        ],
+        [
+          "transfer",
+          "P",
+          null
+        ],
+        [
+          "finish",
+          "H",
+          null
+        ],
+        [
+          "start",
+          "P",
+          null
+        ],
+        [
+          "move",
+          "HP",
+          17
+        ],
+        [
+          "move",
+          "HP",
+          16
+        ],
+        [
+          "move",
+          "HP",
+          15
+        ],
+        [
+          "move",
+          "HP",
+          14
+        ],
+        [
+          "move",
+          "HP",
+          13
+        ],
+        [
+          "move",
+          "HP",
+          12
+        ],
+        [
+          "move",
+          "HP",
+          11
+        ],
+        [
+          "move",
+          "HP",
+          10
+        ],
+        [
+          "move",
+          "HP",
+          9
+        ],
+        [
+          "move",
+          "HP",
+          8
+        ],
+        [
+          "move",
+          "HP",
+          7
+        ],
+        [
+          "move",
+          "HP",
+          6
+        ],
+        [
+          "move",
+          "HP",
+          5
+        ],
+        [
+          "move",
+          "HP",
+          4
+        ],
+        [
+          "move",
+          "HP",
+          3
+        ],
+        [
+          "move",
+          "HP",
+          2
+        ],
+        [
+          "move",
+          "HP",
+          1
+        ],
+        [
+          "move",
+          "HP",
+          0
+        ],
+        [
+          "transfer",
+          "H",
+          null
+        ],
+        [
+          "start",
+          "H",
+          null
+        ],
+        [
+          "move",
+          "PH",
+          3
+        ],
+        [
+          "move",
+          "PH",
+          2
+        ],
+        [
+          "move",
+          "PH",
+          1
+        ],
+        [
+          "move",
+          "PH",
+          0
+        ],
+        [
+          "move",
+          "PG",
+          3
+        ],
+        [
+          "move",
+          "PG",
+          2
+        ],
+        [
+          "move",
+          "PG",
+          1
+        ],
+        [
+          "move",
+          "PG",
+          0
+        ]
+      ],
+      "events": [
+        {
+          "time": -2,
+          "event": [
+            "start",
+            "H",
+            null
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 49,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": null,
+            "H": [
+              "work",
+              -1
+            ],
+            "G": null
+          },
+          "N": 273
+        },
+        {
+          "time": -2,
+          "event": [
+            "move",
+            "PH",
+            3
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": null,
+            "H": [
+              "work",
+              -1
+            ],
+            "G": null
+          },
+          "N": 273
+        },
+        {
+          "time": -2,
+          "event": [
+            "move",
+            "PH",
+            2
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": null,
+            "H": [
+              "work",
+              -1
+            ],
+            "G": null
+          },
+          "N": 273
+        },
+        {
+          "time": -2,
+          "event": [
+            "move",
+            "PH",
+            1
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": null,
+            "H": [
+              "work",
+              -1
+            ],
+            "G": null
+          },
+          "N": 273
+        },
+        {
+          "time": -2,
+          "event": [
+            "move",
+            "PH",
+            0
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": null,
+            "H": [
+              "work",
+              -1
+            ],
+            "G": null
+          },
+          "N": 273
+        },
+        {
+          "time": -1,
+          "event": [
+            "finish",
+            "H",
+            null
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": null,
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "start",
+            "P",
+            null
+          ],
+          "ordinary": {
+            "P_in": 49,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            17
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            16
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            15
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            14
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            13
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            12
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            11
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            10
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            9
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            8
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            7
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            6
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            5
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            4
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            3
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            2
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            1
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            0
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "finish",
+            "P",
+            null
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "done",
+              null
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "transfer",
+            "P",
+            null
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": null,
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "start",
+            "P",
+            null
+          ],
+          "ordinary": {
+            "P_in": 49,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            17
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            16
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            15
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            14
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            13
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            12
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            11
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            10
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            9
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            8
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            7
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            6
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            5
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            4
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            3
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            2
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            1
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            0
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 48,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "transfer",
+            "H",
+            null
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": null,
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "start",
+            "H",
+            null
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 49,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "work",
+              2
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "PH",
+            3
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "work",
+              2
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "PH",
+            2
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "work",
+              2
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "PH",
+            1
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "work",
+              2
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "PH",
+            0
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "work",
+              2
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 2,
+          "event": [
+            "finish",
+            "P",
+            null
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "done",
+              null
+            ],
+            "H": [
+              "work",
+              2
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 2,
+          "event": [
+            "transfer",
+            "P",
+            null
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": null,
+            "H": [
+              "work",
+              2
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 2,
+          "event": [
+            "finish",
+            "H",
+            null
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": null,
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "start",
+            "P",
+            null
+          ],
+          "ordinary": {
+            "P_in": 49,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            17
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            16
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            15
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            14
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            13
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            12
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            11
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            10
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            9
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            8
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            7
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            6
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            5
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            4
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            3
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            2
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            1
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            0
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 3,
+          "event": [
+            "finish",
+            "P",
+            null
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "done",
+              null
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        }
+      ],
+      "ordinary_final": {
+        "P_in": 50,
+        "P_out": 50,
+        "H_in": 50,
+        "H_out": 49,
+        "G_in": 50
+      },
+      "cache_final": {
+        "P": [
+          "done",
+          null
+        ],
+        "H": [
+          "done",
+          null
+        ],
+        "G": null
+      },
+      "N_final": 275,
+      "completed_batches": {
+        "H": 2,
+        "P": 3
+      }
+    },
+    {
+      "opening_lead": 3,
+      "fixed_priority": [
+        [
+          "finish",
+          "P",
+          null
+        ],
+        [
+          "transfer",
+          "P",
+          null
+        ],
+        [
+          "finish",
+          "H",
+          null
+        ],
+        [
+          "start",
+          "P",
+          null
+        ],
+        [
+          "move",
+          "HP",
+          17
+        ],
+        [
+          "move",
+          "HP",
+          16
+        ],
+        [
+          "move",
+          "HP",
+          15
+        ],
+        [
+          "move",
+          "HP",
+          14
+        ],
+        [
+          "move",
+          "HP",
+          13
+        ],
+        [
+          "move",
+          "HP",
+          12
+        ],
+        [
+          "move",
+          "HP",
+          11
+        ],
+        [
+          "move",
+          "HP",
+          10
+        ],
+        [
+          "move",
+          "HP",
+          9
+        ],
+        [
+          "move",
+          "HP",
+          8
+        ],
+        [
+          "move",
+          "HP",
+          7
+        ],
+        [
+          "move",
+          "HP",
+          6
+        ],
+        [
+          "move",
+          "HP",
+          5
+        ],
+        [
+          "move",
+          "HP",
+          4
+        ],
+        [
+          "move",
+          "HP",
+          3
+        ],
+        [
+          "move",
+          "HP",
+          2
+        ],
+        [
+          "move",
+          "HP",
+          1
+        ],
+        [
+          "move",
+          "HP",
+          0
+        ],
+        [
+          "transfer",
+          "H",
+          null
+        ],
+        [
+          "start",
+          "H",
+          null
+        ],
+        [
+          "move",
+          "PH",
+          3
+        ],
+        [
+          "move",
+          "PH",
+          2
+        ],
+        [
+          "move",
+          "PH",
+          1
+        ],
+        [
+          "move",
+          "PH",
+          0
+        ],
+        [
+          "move",
+          "PG",
+          3
+        ],
+        [
+          "move",
+          "PG",
+          2
+        ],
+        [
+          "move",
+          "PG",
+          1
+        ],
+        [
+          "move",
+          "PG",
+          0
+        ]
+      ],
+      "events": [
+        {
+          "time": -3,
+          "event": [
+            "start",
+            "H",
+            null
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 49,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": null,
+            "H": [
+              "work",
+              -2
+            ],
+            "G": null
+          },
+          "N": 273
+        },
+        {
+          "time": -3,
+          "event": [
+            "move",
+            "PH",
+            3
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": null,
+            "H": [
+              "work",
+              -2
+            ],
+            "G": null
+          },
+          "N": 273
+        },
+        {
+          "time": -3,
+          "event": [
+            "move",
+            "PH",
+            2
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": null,
+            "H": [
+              "work",
+              -2
+            ],
+            "G": null
+          },
+          "N": 273
+        },
+        {
+          "time": -3,
+          "event": [
+            "move",
+            "PH",
+            1
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": null,
+            "H": [
+              "work",
+              -2
+            ],
+            "G": null
+          },
+          "N": 273
+        },
+        {
+          "time": -3,
+          "event": [
+            "move",
+            "PH",
+            0
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": null,
+            "H": [
+              "work",
+              -2
+            ],
+            "G": null
+          },
+          "N": 273
+        },
+        {
+          "time": -2,
+          "event": [
+            "finish",
+            "H",
+            null
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": null,
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "start",
+            "P",
+            null
+          ],
+          "ordinary": {
+            "P_in": 49,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            17
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            16
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            15
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            14
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            13
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            12
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            11
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            10
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            9
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            8
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            7
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            6
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            5
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            4
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            3
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            2
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            1
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            0
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "finish",
+            "P",
+            null
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "done",
+              null
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "transfer",
+            "P",
+            null
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": null,
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "start",
+            "P",
+            null
+          ],
+          "ordinary": {
+            "P_in": 49,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            17
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            16
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            15
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            14
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            13
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            12
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            11
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            10
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            9
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            8
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            7
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            6
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            5
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            4
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            3
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            2
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            1
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            0
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 48,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "transfer",
+            "H",
+            null
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": null,
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "start",
+            "H",
+            null
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 49,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "work",
+              2
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "PH",
+            3
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "work",
+              2
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "PH",
+            2
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "work",
+              2
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "PH",
+            1
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "work",
+              2
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "PH",
+            0
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "work",
+              2
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 2,
+          "event": [
+            "finish",
+            "P",
+            null
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "done",
+              null
+            ],
+            "H": [
+              "work",
+              2
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 2,
+          "event": [
+            "transfer",
+            "P",
+            null
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": null,
+            "H": [
+              "work",
+              2
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 2,
+          "event": [
+            "finish",
+            "H",
+            null
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": null,
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "start",
+            "P",
+            null
+          ],
+          "ordinary": {
+            "P_in": 49,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            17
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            16
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            15
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            14
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            13
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            12
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            11
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            10
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            9
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            8
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            7
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            6
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            5
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            4
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            3
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            2
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            1
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            0
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 3,
+          "event": [
+            "finish",
+            "P",
+            null
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "done",
+              null
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        }
+      ],
+      "ordinary_final": {
+        "P_in": 50,
+        "P_out": 50,
+        "H_in": 50,
+        "H_out": 49,
+        "G_in": 50
+      },
+      "cache_final": {
+        "P": [
+          "done",
+          null
+        ],
+        "H": [
+          "done",
+          null
+        ],
+        "G": null
+      },
+      "N_final": 275,
+      "completed_batches": {
+        "H": 2,
+        "P": 3
+      }
+    },
+    {
+      "opening_lead": 11,
+      "fixed_priority": [
+        [
+          "finish",
+          "P",
+          null
+        ],
+        [
+          "transfer",
+          "P",
+          null
+        ],
+        [
+          "finish",
+          "H",
+          null
+        ],
+        [
+          "start",
+          "P",
+          null
+        ],
+        [
+          "move",
+          "HP",
+          17
+        ],
+        [
+          "move",
+          "HP",
+          16
+        ],
+        [
+          "move",
+          "HP",
+          15
+        ],
+        [
+          "move",
+          "HP",
+          14
+        ],
+        [
+          "move",
+          "HP",
+          13
+        ],
+        [
+          "move",
+          "HP",
+          12
+        ],
+        [
+          "move",
+          "HP",
+          11
+        ],
+        [
+          "move",
+          "HP",
+          10
+        ],
+        [
+          "move",
+          "HP",
+          9
+        ],
+        [
+          "move",
+          "HP",
+          8
+        ],
+        [
+          "move",
+          "HP",
+          7
+        ],
+        [
+          "move",
+          "HP",
+          6
+        ],
+        [
+          "move",
+          "HP",
+          5
+        ],
+        [
+          "move",
+          "HP",
+          4
+        ],
+        [
+          "move",
+          "HP",
+          3
+        ],
+        [
+          "move",
+          "HP",
+          2
+        ],
+        [
+          "move",
+          "HP",
+          1
+        ],
+        [
+          "move",
+          "HP",
+          0
+        ],
+        [
+          "transfer",
+          "H",
+          null
+        ],
+        [
+          "start",
+          "H",
+          null
+        ],
+        [
+          "move",
+          "PH",
+          3
+        ],
+        [
+          "move",
+          "PH",
+          2
+        ],
+        [
+          "move",
+          "PH",
+          1
+        ],
+        [
+          "move",
+          "PH",
+          0
+        ],
+        [
+          "move",
+          "PG",
+          3
+        ],
+        [
+          "move",
+          "PG",
+          2
+        ],
+        [
+          "move",
+          "PG",
+          1
+        ],
+        [
+          "move",
+          "PG",
+          0
+        ]
+      ],
+      "events": [
+        {
+          "time": -11,
+          "event": [
+            "start",
+            "H",
+            null
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 49,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": null,
+            "H": [
+              "work",
+              -10
+            ],
+            "G": null
+          },
+          "N": 273
+        },
+        {
+          "time": -11,
+          "event": [
+            "move",
+            "PH",
+            3
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": null,
+            "H": [
+              "work",
+              -10
+            ],
+            "G": null
+          },
+          "N": 273
+        },
+        {
+          "time": -11,
+          "event": [
+            "move",
+            "PH",
+            2
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": null,
+            "H": [
+              "work",
+              -10
+            ],
+            "G": null
+          },
+          "N": 273
+        },
+        {
+          "time": -11,
+          "event": [
+            "move",
+            "PH",
+            1
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": null,
+            "H": [
+              "work",
+              -10
+            ],
+            "G": null
+          },
+          "N": 273
+        },
+        {
+          "time": -11,
+          "event": [
+            "move",
+            "PH",
+            0
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": null,
+            "H": [
+              "work",
+              -10
+            ],
+            "G": null
+          },
+          "N": 273
+        },
+        {
+          "time": -10,
+          "event": [
+            "finish",
+            "H",
+            null
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": null,
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "start",
+            "P",
+            null
+          ],
+          "ordinary": {
+            "P_in": 49,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            17
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            16
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            15
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            14
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            13
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            12
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            11
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            10
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            9
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            8
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            7
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            6
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            5
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            4
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            3
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            2
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            1
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 0,
+          "event": [
+            "move",
+            "HP",
+            0
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              1
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "finish",
+            "P",
+            null
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "done",
+              null
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "transfer",
+            "P",
+            null
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": null,
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "start",
+            "P",
+            null
+          ],
+          "ordinary": {
+            "P_in": 49,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            17
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            16
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            15
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            14
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            13
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            12
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            11
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            10
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            9
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            8
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            7
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            6
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            5
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            4
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            3
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            2
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            1
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "HP",
+            0
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 48,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "transfer",
+            "H",
+            null
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": null,
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "start",
+            "H",
+            null
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 49,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "work",
+              2
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "PH",
+            3
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "work",
+              2
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "PH",
+            2
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "work",
+              2
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "PH",
+            1
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "work",
+              2
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 1,
+          "event": [
+            "move",
+            "PH",
+            0
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              2
+            ],
+            "H": [
+              "work",
+              2
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 2,
+          "event": [
+            "finish",
+            "P",
+            null
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 49,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "done",
+              null
+            ],
+            "H": [
+              "work",
+              2
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 2,
+          "event": [
+            "transfer",
+            "P",
+            null
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": null,
+            "H": [
+              "work",
+              2
+            ],
+            "G": null
+          },
+          "N": 274
+        },
+        {
+          "time": 2,
+          "event": [
+            "finish",
+            "H",
+            null
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": null,
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "start",
+            "P",
+            null
+          ],
+          "ordinary": {
+            "P_in": 49,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            17
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            16
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            15
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            14
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            13
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            12
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            11
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            10
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            9
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            8
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            7
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            6
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            5
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            4
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            3
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            2
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            1
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 50,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 2,
+          "event": [
+            "move",
+            "HP",
+            0
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "work",
+              3
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        },
+        {
+          "time": 3,
+          "event": [
+            "finish",
+            "P",
+            null
+          ],
+          "ordinary": {
+            "P_in": 50,
+            "P_out": 50,
+            "H_in": 50,
+            "H_out": 49,
+            "G_in": 50
+          },
+          "cache": {
+            "P": [
+              "done",
+              null
+            ],
+            "H": [
+              "done",
+              null
+            ],
+            "G": null
+          },
+          "N": 275
+        }
+      ],
+      "ordinary_final": {
+        "P_in": 50,
+        "P_out": 50,
+        "H_in": 50,
+        "H_out": 49,
+        "G_in": 50
+      },
+      "cache_final": {
+        "P": [
+          "done",
+          null
+        ],
+        "H": [
+          "done",
+          null
+        ],
+        "G": null
+      },
+      "N_final": 275,
+      "completed_batches": {
+        "H": 2,
+        "P": 3
+      }
+    }
+  ]
+}

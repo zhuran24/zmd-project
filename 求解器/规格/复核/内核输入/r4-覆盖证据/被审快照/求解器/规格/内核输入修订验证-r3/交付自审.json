@@ -1,0 +1,31 @@
+{
+  "status": "通过",
+  "date": "2026-09-19",
+  "findings_revised": 9,
+  "axis_count": 99,
+  "runtime_regressions": 72,
+  "cargo_tests": 31,
+  "candidate_b": {
+    "passed": 4925,
+    "failed": 0,
+    "not_static": 59
+  },
+  "protected_files": 25037,
+  "protected_unchanged": true,
+  "golden_original_bytes_unchanged": true,
+  "stored_record_schema_and_complete_replay": "通过",
+  "checkpoint_roundtrip": "通过",
+  "reader_review": {
+    "history_and_current_separated": true,
+    "versions_and_counts_consistent": true,
+    "current_scope_old_phrases_removed": true,
+    "links_resolve": true,
+    "representation_not_claimed_as_general_execution": true
+  },
+  "shared_interface": "已读并核规格线第6轮§6答复；99轴及共享规格自查通过",
+  "open_items": [
+    "per_instant通用运行与非周期函数/非有理求值",
+    "任意中途种子直接续跑和边界内部队列回放",
+    "实际混做、下游生产、离线和玩家动作、全历史族、全部解释及目标认证"
+  ]
+}

@@ -1,0 +1,62 @@
+[
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+    "sha256": "abc7a5867f6477eedb619c63a21c4a77144c57ad4567fdcfb696b3049d66a670",
+    "lines": 114
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解任务.txt",
+    "sha256": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+    "lines": 16
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解约束.txt",
+    "sha256": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6",
+    "lines": 126
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/候选约束.txt",
+    "sha256": "a0ac3f9c82f371132b7de29fe47e4c6c587904680bc2786523de0c825fd5efd9",
+    "lines": 862
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/回路总数决定论-v2.md",
+    "sha256": "74c6308420c02491fda55e742896ab1fccf712756d36f5b0c6e6bd719cf14986",
+    "lines": 331
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/回路总数决定论.md",
+    "sha256": "bf56998b6396118df3f8e7d6fbf4dcea6a7f0e31fbaeb14a4ff558c7e74215d1",
+    "lines": 77
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/总纲-流量存量相位.md",
+    "sha256": "625ce76821eae837fb636d699f221d4a813570be1766c33081df5c97993dd2dd",
+    "lines": 44
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/独立推导-opus.md",
+    "sha256": "ac0dc90d30b032edbc32e359ecdec3ac89e64cc88f4f4379aca39f6da2e58e95",
+    "lines": 583
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-1.md",
+    "sha256": "044082a8948c670ecd46eb45279839d8fe2e59c151d9c01e8ae1d09ae55ee172",
+    "lines": 292
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-2.md",
+    "sha256": "dde3eaf805a514fd2dd72e782e01213a493d1defda44325643f3aebe94eaeb40",
+    "lines": 290
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/主会话三审-0920.md",
+    "sha256": "a9442af102c8c49da56999679bc415cf9cce01d5cac6037935e44f56c6298bbd",
+    "lines": 41
+  },
+  {
+    "path": "/tmp/claude-1000/-home-zhuran24-zmd-research-fresh/786b1aaa-8792-43fd-afbc-2a7361543a07/scratchpad/总结/对话-0920-主线.md",
+    "sha256": "1b4b8caa005ab05dcd88529a0cbf458de65e567386d701c5b855ab91ecab6c51",
+    "lines": 627
+  }
+]

@@ -1,0 +1,23 @@
+{
+  "command": [
+    "rustc",
+    "--edition=2021",
+    "--test",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-规格保真-证据/review-tests.rs",
+    "--crate-name",
+    "review_kernel",
+    "--extern",
+    "serde=/home/zhuran24/zmd-research-fresh/求解器/target/debug/deps/libserde-bda080004035699a.rlib",
+    "--extern",
+    "serde_json=/home/zhuran24/zmd-research-fresh/求解器/target/debug/deps/libserde_json-0ab88e76c2088d71.rlib",
+    "-L",
+    "dependency=/home/zhuran24/zmd-research-fresh/求解器/target/debug/deps",
+    "-o",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-规格保真-证据/review-kernel-tests"
+  ],
+  "env": {
+    "CARGO_MANIFEST_DIR": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel",
+    "TMPDIR": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-规格保真-证据/tmp"
+  },
+  "exit_code": 0
+}

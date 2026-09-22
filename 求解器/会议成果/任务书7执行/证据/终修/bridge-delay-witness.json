@@ -1,0 +1,2563 @@
+{
+  "scope": "Rational-time local transport witness. R13 same species exclusion; R23 residence.\nThree independent 5-tick producer streams, empty output/routes, always-receiving box.\nAt every bridge entry in the reported prefix only one input is physically eligible;\nzero-time failed polling attempts can be inserted to realize the same fixed-order moves.\nThis is a local conditional trace, not a whole-factory certificate.\n",
+  "first_completions": {
+    "M213": "14/5",
+    "M214": "19/10",
+    "M215": "5"
+  },
+  "recurrence": "3 completions per source, separated by 5 ticks; then source stops",
+  "wireless_phase": "27/10 + 5k",
+  "fixed_move_order": "route id then path edge; repeat while enabled; unique eligible bridge input at every admitted event",
+  "all_bridge_entries_unique_eligible": true,
+  "counterexample": {
+    "token": [
+      "M215",
+      "5"
+    ],
+    "box_time": "114/5",
+    "warehouse_time": "277/10",
+    "completion_to_box": "89/5",
+    "completion_to_warehouse": "227/10",
+    "claimed_upper_bounds": {
+      "box": 17,
+      "warehouse": 22
+    }
+  },
+  "target_token_moves": [
+    {
+      "time": "5",
+      "kind": "completion",
+      "route": "M215",
+      "token": [
+        "M215",
+        "5"
+      ]
+    },
+    {
+      "time": "5",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "5"
+      ],
+      "source": "output",
+      "target": [
+        25,
+        38
+      ]
+    },
+    {
+      "time": "6",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "5"
+      ],
+      "source": [
+        25,
+        38
+      ],
+      "target": [
+        25,
+        39
+      ]
+    },
+    {
+      "time": "7",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "5"
+      ],
+      "source": [
+        25,
+        39
+      ],
+      "target": [
+        25,
+        40
+      ]
+    },
+    {
+      "time": "8",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "5"
+      ],
+      "source": [
+        25,
+        40
+      ],
+      "target": [
+        24,
+        40
+      ]
+    },
+    {
+      "time": "9",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "5"
+      ],
+      "source": [
+        24,
+        40
+      ],
+      "target": [
+        23,
+        40
+      ]
+    },
+    {
+      "time": "10",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "5"
+      ],
+      "source": [
+        23,
+        40
+      ],
+      "target": [
+        22,
+        40
+      ]
+    },
+    {
+      "time": "11",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "5"
+      ],
+      "source": [
+        22,
+        40
+      ],
+      "target": [
+        21,
+        40
+      ]
+    },
+    {
+      "time": "12",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "5"
+      ],
+      "source": [
+        21,
+        40
+      ],
+      "target": [
+        20,
+        40
+      ]
+    },
+    {
+      "time": "13",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "5"
+      ],
+      "source": [
+        20,
+        40
+      ],
+      "target": [
+        19,
+        40
+      ]
+    },
+    {
+      "time": "149/10",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "5"
+      ],
+      "source": [
+        19,
+        40
+      ],
+      "target": [
+        18,
+        40
+      ]
+    },
+    {
+      "time": "159/10",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "5"
+      ],
+      "source": [
+        18,
+        40
+      ],
+      "target": [
+        17,
+        40
+      ]
+    },
+    {
+      "time": "169/10",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "5"
+      ],
+      "source": [
+        17,
+        40
+      ],
+      "target": [
+        16,
+        40
+      ]
+    },
+    {
+      "time": "179/10",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "5"
+      ],
+      "source": [
+        16,
+        40
+      ],
+      "target": [
+        15,
+        40
+      ]
+    },
+    {
+      "time": "99/5",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "5"
+      ],
+      "source": [
+        15,
+        40
+      ],
+      "target": [
+        15,
+        41
+      ]
+    },
+    {
+      "time": "104/5",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "5"
+      ],
+      "source": [
+        15,
+        41
+      ],
+      "target": [
+        15,
+        42
+      ]
+    },
+    {
+      "time": "109/5",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "5"
+      ],
+      "source": [
+        15,
+        42
+      ],
+      "target": [
+        15,
+        43
+      ]
+    },
+    {
+      "time": "114/5",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "5"
+      ],
+      "source": [
+        15,
+        43
+      ],
+      "target": "BOX_B"
+    }
+  ],
+  "bridge_eligibility": [
+    {
+      "time": "39/10",
+      "bridge": "T_18_40",
+      "eligible_inputs": [
+        "M214"
+      ]
+    },
+    {
+      "time": "89/10",
+      "bridge": "T_18_40",
+      "eligible_inputs": [
+        "M214"
+      ]
+    },
+    {
+      "time": "69/5",
+      "bridge": "T_15_41",
+      "eligible_inputs": [
+        "M213"
+      ]
+    },
+    {
+      "time": "139/10",
+      "bridge": "T_18_40",
+      "eligible_inputs": [
+        "M214"
+      ]
+    },
+    {
+      "time": "149/10",
+      "bridge": "T_18_40",
+      "eligible_inputs": [
+        "M215"
+      ]
+    },
+    {
+      "time": "94/5",
+      "bridge": "T_15_41",
+      "eligible_inputs": [
+        "M213"
+      ]
+    },
+    {
+      "time": "19",
+      "bridge": "T_18_40",
+      "eligible_inputs": [
+        "M215"
+      ]
+    },
+    {
+      "time": "99/5",
+      "bridge": "T_15_41",
+      "eligible_inputs": [
+        "M215"
+      ]
+    },
+    {
+      "time": "23",
+      "bridge": "T_15_41",
+      "eligible_inputs": [
+        "M215"
+      ]
+    },
+    {
+      "time": "24",
+      "bridge": "T_18_40",
+      "eligible_inputs": [
+        "M215"
+      ]
+    },
+    {
+      "time": "24",
+      "bridge": "T_15_41",
+      "eligible_inputs": [
+        "M213"
+      ]
+    },
+    {
+      "time": "28",
+      "bridge": "T_15_41",
+      "eligible_inputs": [
+        "M215"
+      ]
+    }
+  ],
+  "all_moves": [
+    {
+      "time": "19/10",
+      "kind": "completion",
+      "route": "M214",
+      "token": [
+        "M214",
+        "19/10"
+      ]
+    },
+    {
+      "time": "19/10",
+      "kind": "move",
+      "route": "M214",
+      "token": [
+        "M214",
+        "19/10"
+      ],
+      "source": "output",
+      "target": [
+        18,
+        38
+      ]
+    },
+    {
+      "time": "14/5",
+      "kind": "completion",
+      "route": "M213",
+      "token": [
+        "M213",
+        "14/5"
+      ]
+    },
+    {
+      "time": "14/5",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "14/5"
+      ],
+      "source": "output",
+      "target": [
+        7,
+        38
+      ]
+    },
+    {
+      "time": "29/10",
+      "kind": "move",
+      "route": "M214",
+      "token": [
+        "M214",
+        "19/10"
+      ],
+      "source": [
+        18,
+        38
+      ],
+      "target": [
+        18,
+        39
+      ]
+    },
+    {
+      "time": "19/5",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "14/5"
+      ],
+      "source": [
+        7,
+        38
+      ],
+      "target": [
+        7,
+        39
+      ]
+    },
+    {
+      "time": "39/10",
+      "kind": "move",
+      "route": "M214",
+      "token": [
+        "M214",
+        "19/10"
+      ],
+      "source": [
+        18,
+        39
+      ],
+      "target": [
+        18,
+        40
+      ]
+    },
+    {
+      "time": "24/5",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "14/5"
+      ],
+      "source": [
+        7,
+        39
+      ],
+      "target": [
+        7,
+        40
+      ]
+    },
+    {
+      "time": "49/10",
+      "kind": "move",
+      "route": "M214",
+      "token": [
+        "M214",
+        "19/10"
+      ],
+      "source": [
+        18,
+        40
+      ],
+      "target": [
+        18,
+        41
+      ]
+    },
+    {
+      "time": "5",
+      "kind": "completion",
+      "route": "M215",
+      "token": [
+        "M215",
+        "5"
+      ]
+    },
+    {
+      "time": "5",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "5"
+      ],
+      "source": "output",
+      "target": [
+        25,
+        38
+      ]
+    },
+    {
+      "time": "29/5",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "14/5"
+      ],
+      "source": [
+        7,
+        40
+      ],
+      "target": [
+        7,
+        41
+      ]
+    },
+    {
+      "time": "59/10",
+      "kind": "move",
+      "route": "M214",
+      "token": [
+        "M214",
+        "19/10"
+      ],
+      "source": [
+        18,
+        41
+      ],
+      "target": [
+        18,
+        42
+      ]
+    },
+    {
+      "time": "6",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "5"
+      ],
+      "source": [
+        25,
+        38
+      ],
+      "target": [
+        25,
+        39
+      ]
+    },
+    {
+      "time": "34/5",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "14/5"
+      ],
+      "source": [
+        7,
+        41
+      ],
+      "target": [
+        8,
+        41
+      ]
+    },
+    {
+      "time": "69/10",
+      "kind": "completion",
+      "route": "M214",
+      "token": [
+        "M214",
+        "69/10"
+      ]
+    },
+    {
+      "time": "69/10",
+      "kind": "move",
+      "route": "M214",
+      "token": [
+        "M214",
+        "69/10"
+      ],
+      "source": "output",
+      "target": [
+        18,
+        38
+      ]
+    },
+    {
+      "time": "69/10",
+      "kind": "move",
+      "route": "M214",
+      "token": [
+        "M214",
+        "19/10"
+      ],
+      "source": [
+        18,
+        42
+      ],
+      "target": [
+        17,
+        42
+      ]
+    },
+    {
+      "time": "7",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "5"
+      ],
+      "source": [
+        25,
+        39
+      ],
+      "target": [
+        25,
+        40
+      ]
+    },
+    {
+      "time": "39/5",
+      "kind": "completion",
+      "route": "M213",
+      "token": [
+        "M213",
+        "39/5"
+      ]
+    },
+    {
+      "time": "39/5",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "39/5"
+      ],
+      "source": "output",
+      "target": [
+        7,
+        38
+      ]
+    },
+    {
+      "time": "39/5",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "14/5"
+      ],
+      "source": [
+        8,
+        41
+      ],
+      "target": [
+        9,
+        41
+      ]
+    },
+    {
+      "time": "79/10",
+      "kind": "move",
+      "route": "M214",
+      "token": [
+        "M214",
+        "69/10"
+      ],
+      "source": [
+        18,
+        38
+      ],
+      "target": [
+        18,
+        39
+      ]
+    },
+    {
+      "time": "79/10",
+      "kind": "move",
+      "route": "M214",
+      "token": [
+        "M214",
+        "19/10"
+      ],
+      "source": [
+        17,
+        42
+      ],
+      "target": [
+        17,
+        43
+      ]
+    },
+    {
+      "time": "8",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "5"
+      ],
+      "source": [
+        25,
+        40
+      ],
+      "target": [
+        24,
+        40
+      ]
+    },
+    {
+      "time": "44/5",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "39/5"
+      ],
+      "source": [
+        7,
+        38
+      ],
+      "target": [
+        7,
+        39
+      ]
+    },
+    {
+      "time": "44/5",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "14/5"
+      ],
+      "source": [
+        9,
+        41
+      ],
+      "target": [
+        10,
+        41
+      ]
+    },
+    {
+      "time": "89/10",
+      "kind": "move",
+      "route": "M214",
+      "token": [
+        "M214",
+        "69/10"
+      ],
+      "source": [
+        18,
+        39
+      ],
+      "target": [
+        18,
+        40
+      ]
+    },
+    {
+      "time": "89/10",
+      "kind": "move",
+      "route": "M214",
+      "token": [
+        "M214",
+        "19/10"
+      ],
+      "source": [
+        17,
+        43
+      ],
+      "target": "BOX_B"
+    },
+    {
+      "time": "9",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "5"
+      ],
+      "source": [
+        24,
+        40
+      ],
+      "target": [
+        23,
+        40
+      ]
+    },
+    {
+      "time": "49/5",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "39/5"
+      ],
+      "source": [
+        7,
+        39
+      ],
+      "target": [
+        7,
+        40
+      ]
+    },
+    {
+      "time": "49/5",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "14/5"
+      ],
+      "source": [
+        10,
+        41
+      ],
+      "target": [
+        11,
+        41
+      ]
+    },
+    {
+      "time": "99/10",
+      "kind": "move",
+      "route": "M214",
+      "token": [
+        "M214",
+        "69/10"
+      ],
+      "source": [
+        18,
+        40
+      ],
+      "target": [
+        18,
+        41
+      ]
+    },
+    {
+      "time": "10",
+      "kind": "completion",
+      "route": "M215",
+      "token": [
+        "M215",
+        "10"
+      ]
+    },
+    {
+      "time": "10",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "10"
+      ],
+      "source": "output",
+      "target": [
+        25,
+        38
+      ]
+    },
+    {
+      "time": "10",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "5"
+      ],
+      "source": [
+        23,
+        40
+      ],
+      "target": [
+        22,
+        40
+      ]
+    },
+    {
+      "time": "54/5",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "39/5"
+      ],
+      "source": [
+        7,
+        40
+      ],
+      "target": [
+        7,
+        41
+      ]
+    },
+    {
+      "time": "54/5",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "14/5"
+      ],
+      "source": [
+        11,
+        41
+      ],
+      "target": [
+        12,
+        41
+      ]
+    },
+    {
+      "time": "109/10",
+      "kind": "move",
+      "route": "M214",
+      "token": [
+        "M214",
+        "69/10"
+      ],
+      "source": [
+        18,
+        41
+      ],
+      "target": [
+        18,
+        42
+      ]
+    },
+    {
+      "time": "11",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "10"
+      ],
+      "source": [
+        25,
+        38
+      ],
+      "target": [
+        25,
+        39
+      ]
+    },
+    {
+      "time": "11",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "5"
+      ],
+      "source": [
+        22,
+        40
+      ],
+      "target": [
+        21,
+        40
+      ]
+    },
+    {
+      "time": "59/5",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "39/5"
+      ],
+      "source": [
+        7,
+        41
+      ],
+      "target": [
+        8,
+        41
+      ]
+    },
+    {
+      "time": "59/5",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "14/5"
+      ],
+      "source": [
+        12,
+        41
+      ],
+      "target": [
+        13,
+        41
+      ]
+    },
+    {
+      "time": "119/10",
+      "kind": "completion",
+      "route": "M214",
+      "token": [
+        "M214",
+        "119/10"
+      ]
+    },
+    {
+      "time": "119/10",
+      "kind": "move",
+      "route": "M214",
+      "token": [
+        "M214",
+        "119/10"
+      ],
+      "source": "output",
+      "target": [
+        18,
+        38
+      ]
+    },
+    {
+      "time": "119/10",
+      "kind": "move",
+      "route": "M214",
+      "token": [
+        "M214",
+        "69/10"
+      ],
+      "source": [
+        18,
+        42
+      ],
+      "target": [
+        17,
+        42
+      ]
+    },
+    {
+      "time": "12",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "10"
+      ],
+      "source": [
+        25,
+        39
+      ],
+      "target": [
+        25,
+        40
+      ]
+    },
+    {
+      "time": "12",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "5"
+      ],
+      "source": [
+        21,
+        40
+      ],
+      "target": [
+        20,
+        40
+      ]
+    },
+    {
+      "time": "64/5",
+      "kind": "completion",
+      "route": "M213",
+      "token": [
+        "M213",
+        "64/5"
+      ]
+    },
+    {
+      "time": "64/5",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "64/5"
+      ],
+      "source": "output",
+      "target": [
+        7,
+        38
+      ]
+    },
+    {
+      "time": "64/5",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "39/5"
+      ],
+      "source": [
+        8,
+        41
+      ],
+      "target": [
+        9,
+        41
+      ]
+    },
+    {
+      "time": "64/5",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "14/5"
+      ],
+      "source": [
+        13,
+        41
+      ],
+      "target": [
+        14,
+        41
+      ]
+    },
+    {
+      "time": "129/10",
+      "kind": "move",
+      "route": "M214",
+      "token": [
+        "M214",
+        "119/10"
+      ],
+      "source": [
+        18,
+        38
+      ],
+      "target": [
+        18,
+        39
+      ]
+    },
+    {
+      "time": "129/10",
+      "kind": "move",
+      "route": "M214",
+      "token": [
+        "M214",
+        "69/10"
+      ],
+      "source": [
+        17,
+        42
+      ],
+      "target": [
+        17,
+        43
+      ]
+    },
+    {
+      "time": "13",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "10"
+      ],
+      "source": [
+        25,
+        40
+      ],
+      "target": [
+        24,
+        40
+      ]
+    },
+    {
+      "time": "13",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "5"
+      ],
+      "source": [
+        20,
+        40
+      ],
+      "target": [
+        19,
+        40
+      ]
+    },
+    {
+      "time": "69/5",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "64/5"
+      ],
+      "source": [
+        7,
+        38
+      ],
+      "target": [
+        7,
+        39
+      ]
+    },
+    {
+      "time": "69/5",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "39/5"
+      ],
+      "source": [
+        9,
+        41
+      ],
+      "target": [
+        10,
+        41
+      ]
+    },
+    {
+      "time": "69/5",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "14/5"
+      ],
+      "source": [
+        14,
+        41
+      ],
+      "target": [
+        15,
+        41
+      ]
+    },
+    {
+      "time": "139/10",
+      "kind": "move",
+      "route": "M214",
+      "token": [
+        "M214",
+        "119/10"
+      ],
+      "source": [
+        18,
+        39
+      ],
+      "target": [
+        18,
+        40
+      ]
+    },
+    {
+      "time": "139/10",
+      "kind": "move",
+      "route": "M214",
+      "token": [
+        "M214",
+        "69/10"
+      ],
+      "source": [
+        17,
+        43
+      ],
+      "target": "BOX_B"
+    },
+    {
+      "time": "14",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "10"
+      ],
+      "source": [
+        24,
+        40
+      ],
+      "target": [
+        23,
+        40
+      ]
+    },
+    {
+      "time": "74/5",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "64/5"
+      ],
+      "source": [
+        7,
+        39
+      ],
+      "target": [
+        7,
+        40
+      ]
+    },
+    {
+      "time": "74/5",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "39/5"
+      ],
+      "source": [
+        10,
+        41
+      ],
+      "target": [
+        11,
+        41
+      ]
+    },
+    {
+      "time": "74/5",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "14/5"
+      ],
+      "source": [
+        15,
+        41
+      ],
+      "target": [
+        16,
+        41
+      ]
+    },
+    {
+      "time": "149/10",
+      "kind": "move",
+      "route": "M214",
+      "token": [
+        "M214",
+        "119/10"
+      ],
+      "source": [
+        18,
+        40
+      ],
+      "target": [
+        18,
+        41
+      ]
+    },
+    {
+      "time": "149/10",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "5"
+      ],
+      "source": [
+        19,
+        40
+      ],
+      "target": [
+        18,
+        40
+      ]
+    },
+    {
+      "time": "15",
+      "kind": "completion",
+      "route": "M215",
+      "token": [
+        "M215",
+        "15"
+      ]
+    },
+    {
+      "time": "15",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "15"
+      ],
+      "source": "output",
+      "target": [
+        25,
+        38
+      ]
+    },
+    {
+      "time": "15",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "10"
+      ],
+      "source": [
+        23,
+        40
+      ],
+      "target": [
+        22,
+        40
+      ]
+    },
+    {
+      "time": "79/5",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "64/5"
+      ],
+      "source": [
+        7,
+        40
+      ],
+      "target": [
+        7,
+        41
+      ]
+    },
+    {
+      "time": "79/5",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "39/5"
+      ],
+      "source": [
+        11,
+        41
+      ],
+      "target": [
+        12,
+        41
+      ]
+    },
+    {
+      "time": "79/5",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "14/5"
+      ],
+      "source": [
+        16,
+        41
+      ],
+      "target": [
+        16,
+        42
+      ]
+    },
+    {
+      "time": "159/10",
+      "kind": "move",
+      "route": "M214",
+      "token": [
+        "M214",
+        "119/10"
+      ],
+      "source": [
+        18,
+        41
+      ],
+      "target": [
+        18,
+        42
+      ]
+    },
+    {
+      "time": "159/10",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "5"
+      ],
+      "source": [
+        18,
+        40
+      ],
+      "target": [
+        17,
+        40
+      ]
+    },
+    {
+      "time": "16",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "15"
+      ],
+      "source": [
+        25,
+        38
+      ],
+      "target": [
+        25,
+        39
+      ]
+    },
+    {
+      "time": "16",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "10"
+      ],
+      "source": [
+        22,
+        40
+      ],
+      "target": [
+        21,
+        40
+      ]
+    },
+    {
+      "time": "84/5",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "64/5"
+      ],
+      "source": [
+        7,
+        41
+      ],
+      "target": [
+        8,
+        41
+      ]
+    },
+    {
+      "time": "84/5",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "39/5"
+      ],
+      "source": [
+        12,
+        41
+      ],
+      "target": [
+        13,
+        41
+      ]
+    },
+    {
+      "time": "84/5",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "14/5"
+      ],
+      "source": [
+        16,
+        42
+      ],
+      "target": [
+        16,
+        43
+      ]
+    },
+    {
+      "time": "169/10",
+      "kind": "move",
+      "route": "M214",
+      "token": [
+        "M214",
+        "119/10"
+      ],
+      "source": [
+        18,
+        42
+      ],
+      "target": [
+        17,
+        42
+      ]
+    },
+    {
+      "time": "169/10",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "5"
+      ],
+      "source": [
+        17,
+        40
+      ],
+      "target": [
+        16,
+        40
+      ]
+    },
+    {
+      "time": "17",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "15"
+      ],
+      "source": [
+        25,
+        39
+      ],
+      "target": [
+        25,
+        40
+      ]
+    },
+    {
+      "time": "17",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "10"
+      ],
+      "source": [
+        21,
+        40
+      ],
+      "target": [
+        20,
+        40
+      ]
+    },
+    {
+      "time": "89/5",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "64/5"
+      ],
+      "source": [
+        8,
+        41
+      ],
+      "target": [
+        9,
+        41
+      ]
+    },
+    {
+      "time": "89/5",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "39/5"
+      ],
+      "source": [
+        13,
+        41
+      ],
+      "target": [
+        14,
+        41
+      ]
+    },
+    {
+      "time": "89/5",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "14/5"
+      ],
+      "source": [
+        16,
+        43
+      ],
+      "target": "BOX_B"
+    },
+    {
+      "time": "179/10",
+      "kind": "move",
+      "route": "M214",
+      "token": [
+        "M214",
+        "119/10"
+      ],
+      "source": [
+        17,
+        42
+      ],
+      "target": [
+        17,
+        43
+      ]
+    },
+    {
+      "time": "179/10",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "5"
+      ],
+      "source": [
+        16,
+        40
+      ],
+      "target": [
+        15,
+        40
+      ]
+    },
+    {
+      "time": "18",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "15"
+      ],
+      "source": [
+        25,
+        40
+      ],
+      "target": [
+        24,
+        40
+      ]
+    },
+    {
+      "time": "18",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "10"
+      ],
+      "source": [
+        20,
+        40
+      ],
+      "target": [
+        19,
+        40
+      ]
+    },
+    {
+      "time": "94/5",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "64/5"
+      ],
+      "source": [
+        9,
+        41
+      ],
+      "target": [
+        10,
+        41
+      ]
+    },
+    {
+      "time": "94/5",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "39/5"
+      ],
+      "source": [
+        14,
+        41
+      ],
+      "target": [
+        15,
+        41
+      ]
+    },
+    {
+      "time": "189/10",
+      "kind": "move",
+      "route": "M214",
+      "token": [
+        "M214",
+        "119/10"
+      ],
+      "source": [
+        17,
+        43
+      ],
+      "target": "BOX_B"
+    },
+    {
+      "time": "19",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "15"
+      ],
+      "source": [
+        24,
+        40
+      ],
+      "target": [
+        23,
+        40
+      ]
+    },
+    {
+      "time": "19",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "10"
+      ],
+      "source": [
+        19,
+        40
+      ],
+      "target": [
+        18,
+        40
+      ]
+    },
+    {
+      "time": "99/5",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "64/5"
+      ],
+      "source": [
+        10,
+        41
+      ],
+      "target": [
+        11,
+        41
+      ]
+    },
+    {
+      "time": "99/5",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "39/5"
+      ],
+      "source": [
+        15,
+        41
+      ],
+      "target": [
+        16,
+        41
+      ]
+    },
+    {
+      "time": "99/5",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "5"
+      ],
+      "source": [
+        15,
+        40
+      ],
+      "target": [
+        15,
+        41
+      ]
+    },
+    {
+      "time": "20",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "15"
+      ],
+      "source": [
+        23,
+        40
+      ],
+      "target": [
+        22,
+        40
+      ]
+    },
+    {
+      "time": "20",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "10"
+      ],
+      "source": [
+        18,
+        40
+      ],
+      "target": [
+        17,
+        40
+      ]
+    },
+    {
+      "time": "104/5",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "64/5"
+      ],
+      "source": [
+        11,
+        41
+      ],
+      "target": [
+        12,
+        41
+      ]
+    },
+    {
+      "time": "104/5",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "39/5"
+      ],
+      "source": [
+        16,
+        41
+      ],
+      "target": [
+        16,
+        42
+      ]
+    },
+    {
+      "time": "104/5",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "5"
+      ],
+      "source": [
+        15,
+        41
+      ],
+      "target": [
+        15,
+        42
+      ]
+    },
+    {
+      "time": "21",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "15"
+      ],
+      "source": [
+        22,
+        40
+      ],
+      "target": [
+        21,
+        40
+      ]
+    },
+    {
+      "time": "21",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "10"
+      ],
+      "source": [
+        17,
+        40
+      ],
+      "target": [
+        16,
+        40
+      ]
+    },
+    {
+      "time": "109/5",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "64/5"
+      ],
+      "source": [
+        12,
+        41
+      ],
+      "target": [
+        13,
+        41
+      ]
+    },
+    {
+      "time": "109/5",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "39/5"
+      ],
+      "source": [
+        16,
+        42
+      ],
+      "target": [
+        16,
+        43
+      ]
+    },
+    {
+      "time": "109/5",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "5"
+      ],
+      "source": [
+        15,
+        42
+      ],
+      "target": [
+        15,
+        43
+      ]
+    },
+    {
+      "time": "22",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "15"
+      ],
+      "source": [
+        21,
+        40
+      ],
+      "target": [
+        20,
+        40
+      ]
+    },
+    {
+      "time": "22",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "10"
+      ],
+      "source": [
+        16,
+        40
+      ],
+      "target": [
+        15,
+        40
+      ]
+    },
+    {
+      "time": "114/5",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "64/5"
+      ],
+      "source": [
+        13,
+        41
+      ],
+      "target": [
+        14,
+        41
+      ]
+    },
+    {
+      "time": "114/5",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "39/5"
+      ],
+      "source": [
+        16,
+        43
+      ],
+      "target": "BOX_B"
+    },
+    {
+      "time": "114/5",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "5"
+      ],
+      "source": [
+        15,
+        43
+      ],
+      "target": "BOX_B"
+    },
+    {
+      "time": "23",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "15"
+      ],
+      "source": [
+        20,
+        40
+      ],
+      "target": [
+        19,
+        40
+      ]
+    },
+    {
+      "time": "23",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "10"
+      ],
+      "source": [
+        15,
+        40
+      ],
+      "target": [
+        15,
+        41
+      ]
+    },
+    {
+      "time": "24",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "15"
+      ],
+      "source": [
+        19,
+        40
+      ],
+      "target": [
+        18,
+        40
+      ]
+    },
+    {
+      "time": "24",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "10"
+      ],
+      "source": [
+        15,
+        41
+      ],
+      "target": [
+        15,
+        42
+      ]
+    },
+    {
+      "time": "24",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "64/5"
+      ],
+      "source": [
+        14,
+        41
+      ],
+      "target": [
+        15,
+        41
+      ]
+    },
+    {
+      "time": "25",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "64/5"
+      ],
+      "source": [
+        15,
+        41
+      ],
+      "target": [
+        16,
+        41
+      ]
+    },
+    {
+      "time": "25",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "15"
+      ],
+      "source": [
+        18,
+        40
+      ],
+      "target": [
+        17,
+        40
+      ]
+    },
+    {
+      "time": "25",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "10"
+      ],
+      "source": [
+        15,
+        42
+      ],
+      "target": [
+        15,
+        43
+      ]
+    },
+    {
+      "time": "26",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "64/5"
+      ],
+      "source": [
+        16,
+        41
+      ],
+      "target": [
+        16,
+        42
+      ]
+    },
+    {
+      "time": "26",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "15"
+      ],
+      "source": [
+        17,
+        40
+      ],
+      "target": [
+        16,
+        40
+      ]
+    },
+    {
+      "time": "26",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "10"
+      ],
+      "source": [
+        15,
+        43
+      ],
+      "target": "BOX_B"
+    },
+    {
+      "time": "27",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "64/5"
+      ],
+      "source": [
+        16,
+        42
+      ],
+      "target": [
+        16,
+        43
+      ]
+    },
+    {
+      "time": "27",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "15"
+      ],
+      "source": [
+        16,
+        40
+      ],
+      "target": [
+        15,
+        40
+      ]
+    },
+    {
+      "time": "28",
+      "kind": "move",
+      "route": "M213",
+      "token": [
+        "M213",
+        "64/5"
+      ],
+      "source": [
+        16,
+        43
+      ],
+      "target": "BOX_B"
+    },
+    {
+      "time": "28",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "15"
+      ],
+      "source": [
+        15,
+        40
+      ],
+      "target": [
+        15,
+        41
+      ]
+    },
+    {
+      "time": "29",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "15"
+      ],
+      "source": [
+        15,
+        41
+      ],
+      "target": [
+        15,
+        42
+      ]
+    },
+    {
+      "time": "30",
+      "kind": "move",
+      "route": "M215",
+      "token": [
+        "M215",
+        "15"
+      ],
+      "source": [
+        15,
+        42
+      ],
+      "target": [
+        15,
+        43
+      ]
+    }
+  ],
+  "deliveries": [
+    {
+      "token": [
+        "M214",
+        "19/10"
+      ],
+      "wireless_time": "127/10"
+    },
+    {
+      "token": [
+        "M214",
+        "69/10"
+      ],
+      "wireless_time": "177/10"
+    },
+    {
+      "token": [
+        "M213",
+        "14/5"
+      ],
+      "wireless_time": "227/10"
+    },
+    {
+      "token": [
+        "M214",
+        "119/10"
+      ],
+      "wireless_time": "227/10"
+    },
+    {
+      "token": [
+        "M213",
+        "39/5"
+      ],
+      "wireless_time": "277/10"
+    },
+    {
+      "token": [
+        "M215",
+        "5"
+      ],
+      "wireless_time": "277/10"
+    },
+    {
+      "token": [
+        "M215",
+        "10"
+      ],
+      "wireless_time": "277/10"
+    }
+  ]
+}

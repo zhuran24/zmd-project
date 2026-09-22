@@ -1,0 +1,55 @@
+{
+  "status": "input_checked",
+  "read_only": true,
+  "records": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/cli/package/checkpoint_delta/records/record.json",
+      "ticks": 21
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/cli/package/full_state_each_instant/records/record.json",
+      "ticks": 21
+    }
+  ],
+  "cycles": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/cli/package/checkpoint_delta/certificates/cycle.json",
+      "verification": {
+        "checks": [
+          "引用原始字节/format/producer和完整来源链",
+          "原种子到达前缀及跨刻事件身份",
+          "独立重建D动态前件及周期账/率/接收域",
+          "从周期起点P次step_tick及完整终态"
+        ],
+        "cycle_replayed": true,
+        "period": 20,
+        "prefix_replayed": 21,
+        "start_time": 0,
+        "status": "input_checked"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/cli/package/full_state_each_instant/certificates/cycle.json",
+      "verification": {
+        "checks": [
+          "引用原始字节/format/producer和完整来源链",
+          "原种子到达前缀及跨刻事件身份",
+          "独立重建D动态前件及周期账/率/接收域",
+          "从周期起点P次step_tick及完整终态"
+        ],
+        "cycle_replayed": true,
+        "period": 20,
+        "prefix_replayed": 21,
+        "start_time": 0,
+        "status": "input_checked"
+      }
+    }
+  ],
+  "reference_records": 0,
+  "protected_baseline_files": 12,
+  "historical_records": [],
+  "scope": "全部当前v3记录和v2循环独立验收；历史v1/v2记录仅列出，固定基线另核字节。",
+  "audited_tree_unchanged": true,
+  "checked_files": 4,
+  "checked_bytes": 3659727
+}

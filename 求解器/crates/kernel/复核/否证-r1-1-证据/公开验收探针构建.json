@@ -1,0 +1,21 @@
+{
+  "source": "use kernel::{Config,Engine,Input,output::verify_record,value::read_json};\nuse serde_json::json;\nuse std::path::PathBuf;\nfn main() {\n    let args:Vec<_>=std::env::args().collect();\n    let input_path=PathBuf::from(&args[1]);let record_path=PathBuf::from(&args[2]);let config_path=PathBuf::from(&args[3]);\n    let config=Config::parse(read_json(&config_path).unwrap()).unwrap();\n    let input=Input::load(&input_path,&config,false);\n    if let Err(e)=input {println!(\"{}\",json!({\"input_loaded\":false,\"error\":e.to_string()}));return;}\n    let seed=Engine::new(input.as_ref().unwrap().clone());\n    let result=verify_record(&read_json(&record_path).unwrap(),input.unwrap(),&config,&config_path);\n    println!(\"{}\",json!({\"input_loaded\":true,\"engine_created\":seed.is_ok(),\"engine_error\":seed.err().map(|e|e.to_string()),\"verify_accepted\":result.is_ok(),\"verify_error\":result.err().map(|e|e.to_string())}));\n}\n",
+  "command": [
+    "rustc",
+    "--edition=2021",
+    "--crate-name",
+    "refutation_public_probe",
+    "-",
+    "-L",
+    "dependency=/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/target/debug/deps",
+    "--extern",
+    "kernel=/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/target/debug/deps/libkernel-6a71311666a7168e.rlib",
+    "--extern",
+    "serde_json=/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/target/debug/deps/libserde_json-0ab88e76c2088d71.rlib",
+    "-o",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/public-verify"
+  ],
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": ""
+}

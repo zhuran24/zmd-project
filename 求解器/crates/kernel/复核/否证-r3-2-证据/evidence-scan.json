@@ -1,0 +1,891 @@
+{
+  "binary_count": 15,
+  "binary_bytes": 219896964,
+  "binaries": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-规格保真-证据/libkernel.rlib",
+      "bytes": 23805784,
+      "magic": "213c617263683e0a",
+      "sha256": "e5202040e1bdeb8c9acc4fd0b709683c17a8c14d8515fa330badf778a1a2947c"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-规格保真-证据/reference-tests",
+      "bytes": 9124648,
+      "magic": "7f454c4602010100",
+      "sha256": "ba1b888be2af7ee6a6eb5bd6d8b0860679f3d08b5bb815b2c28727c235dffef4"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-规格保真-证据/review-kernel-tests",
+      "bytes": 9825616,
+      "magic": "7f454c4602010100",
+      "sha256": "d3c00661992de20cace944670d630f4a610d86c24a56a5eac40c9966dfd0cd6e"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/public-verify",
+      "bytes": 28144960,
+      "magic": "7f454c4602010100",
+      "sha256": "5d892ffa4d34d1033841eb2eed3fc366eb36917e574a962678b007771e2823a2"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-2-证据/kernel",
+      "bytes": 9056592,
+      "magic": "7f454c4602010100",
+      "sha256": "40cdbfe7a4ce2423a5a2f714cf6efc5444d658c52b16dc7511cce1bf803e4725"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-2-证据/kernel-tests",
+      "bytes": 9669352,
+      "magic": "7f454c4602010100",
+      "sha256": "260004f5d97d604da702d59d99d80bd3d8bd78688775f06308095f3bde6e8367"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-2-证据/libkernel.rlib",
+      "bytes": 23805784,
+      "magic": "213c617263683e0a",
+      "sha256": "e5202040e1bdeb8c9acc4fd0b709683c17a8c14d8515fa330badf778a1a2947c"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-2-证据/verify-probe",
+      "bytes": 8985168,
+      "magic": "7f454c4602010100",
+      "sha256": "5fc510d4ed19d000fe988cd4206c6a7989e46a793231a116115a3efea0c0bde7"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/kernel",
+      "bytes": 9491360,
+      "magic": "7f454c4602010100",
+      "sha256": "181aebb734a3be05b1418420af7d1b022c5de5b62f82db919aeff84e9b49ffd1"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/libkernel.rlib",
+      "bytes": 25318414,
+      "magic": "213c617263683e0a",
+      "sha256": "55248a68f5a91d81ee55ed5d331583321e528c39a30060697551cfc2a4c667ac"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/probe",
+      "bytes": 9467160,
+      "magic": "7f454c4602010100",
+      "sha256": "dbdb8b3300f78578bb7db65b3585b45921254b0e01a5414a187d19d3c086ecfe"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/identity-control",
+      "bytes": 8920976,
+      "magic": "7f454c4602010100",
+      "sha256": "cedcf6722403d711b3bb188cf57268446f55d9b12112836b54146c57a30e6f9e"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/kernel",
+      "bytes": 9491936,
+      "magic": "7f454c4602010100",
+      "sha256": "573223119f741dbc86d867608c3e1309b6a4a258da478a0312f79ee92a016b83"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/libkernel.rlib",
+      "bytes": 25321542,
+      "magic": "213c617263683e0a",
+      "sha256": "317be907d75eb36f02a20b7fb22171e491a3b8cd7a4481def170202b9a94a2e7"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/probe",
+      "bytes": 9467672,
+      "magic": "7f454c4602010100",
+      "sha256": "038892337bb63385a4e45fea520849ce82754f33e43b595b747437fa2d7fa289"
+    }
+  ],
+  "directories": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/snapshot",
+      "symlink": false,
+      "resolved": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/snapshot"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/snapshot/求解器/target",
+      "symlink": false,
+      "resolved": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/snapshot/求解器/target"
+    }
+  ],
+  "snapshot_files": [
+    {
+      "path": "《明日方舟：终末地》游戏规则.txt",
+      "bytes": 7220
+    },
+    {
+      "path": "候选约束.txt",
+      "bytes": 244240
+    },
+    {
+      "path": "求解任务.txt",
+      "bytes": 1275
+    },
+    {
+      "path": "求解器/Cargo.lock",
+      "bytes": 3955
+    },
+    {
+      "path": "求解器/Cargo.toml",
+      "bytes": 74
+    },
+    {
+      "path": "求解器/crates/kernel/Cargo.toml",
+      "bytes": 143
+    },
+    {
+      "path": "求解器/crates/kernel/evidence/revision-r1/regression-results.json",
+      "bytes": 10643
+    },
+    {
+      "path": "求解器/crates/kernel/src/catalog.rs",
+      "bytes": 23150
+    },
+    {
+      "path": "求解器/crates/kernel/src/config.rs",
+      "bytes": 21733
+    },
+    {
+      "path": "求解器/crates/kernel/src/engine.rs",
+      "bytes": 39786
+    },
+    {
+      "path": "求解器/crates/kernel/src/event_identity.rs",
+      "bytes": 6410
+    },
+    {
+      "path": "求解器/crates/kernel/src/input.rs",
+      "bytes": 35554
+    },
+    {
+      "path": "求解器/crates/kernel/src/interfaces.rs",
+      "bytes": 15768
+    },
+    {
+      "path": "求解器/crates/kernel/src/lib.rs",
+      "bytes": 442
+    },
+    {
+      "path": "求解器/crates/kernel/src/main.rs",
+      "bytes": 4961
+    },
+    {
+      "path": "求解器/crates/kernel/src/model.rs",
+      "bytes": 4757
+    },
+    {
+      "path": "求解器/crates/kernel/src/output.rs",
+      "bytes": 24455
+    },
+    {
+      "path": "求解器/crates/kernel/src/polling.rs",
+      "bytes": 14187
+    },
+    {
+      "path": "求解器/crates/kernel/src/tests.rs",
+      "bytes": 40110
+    },
+    {
+      "path": "求解器/crates/kernel/src/tests_revision.rs",
+      "bytes": 16864
+    },
+    {
+      "path": "求解器/crates/kernel/src/transition.rs",
+      "bytes": 33347
+    },
+    {
+      "path": "求解器/crates/kernel/src/value.rs",
+      "bytes": 12269
+    },
+    {
+      "path": "求解器/crates/kernel/src/warehouse.rs",
+      "bytes": 13094
+    },
+    {
+      "path": "求解器/crates/kernel/tests/build_fixtures.py",
+      "bytes": 8351
+    },
+    {
+      "path": "求解器/crates/kernel/tests/final_audit.py",
+      "bytes": 3847
+    },
+    {
+      "path": "求解器/crates/kernel/tests/fixtures/benchmark_1000.json",
+      "bytes": 170234
+    },
+    {
+      "path": "求解器/crates/kernel/tests/fixtures/bridge.json",
+      "bytes": 141432
+    },
+    {
+      "path": "求解器/crates/kernel/tests/fixtures/core_inbound.json",
+      "bytes": 124903
+    },
+    {
+      "path": "求解器/crates/kernel/tests/fixtures/priority.json",
+      "bytes": 146749
+    },
+    {
+      "path": "求解器/crates/kernel/tests/reference.rs",
+      "bytes": 4125
+    },
+    {
+      "path": "求解器/crates/kernel/tests/revision_audit.py",
+      "bytes": 7752
+    },
+    {
+      "path": "求解器/crates/kernel/tests/revision_cli.py",
+      "bytes": 6151
+    },
+    {
+      "path": "求解器/crates/kernel/tests/revision_cli.rs",
+      "bytes": 755
+    },
+    {
+      "path": "求解器/crates/kernel/tests/verify_outputs.py",
+      "bytes": 6630
+    },
+    {
+      "path": "求解器/crates/topology/Cargo.toml",
+      "bytes": 204
+    },
+    {
+      "path": "求解器/crates/topology/src/lib.rs",
+      "bytes": 57328
+    },
+    {
+      "path": "求解器/crates/topology/src/main.rs",
+      "bytes": 700
+    },
+    {
+      "path": "求解器/crates/topology/tests/validation.rs",
+      "bytes": 26498
+    },
+    {
+      "path": "求解器/数据/候选B/cargo-test.log",
+      "bytes": 2674
+    },
+    {
+      "path": "求解器/数据/候选B/contract.json",
+      "bytes": 356212
+    },
+    {
+      "path": "求解器/数据/候选B/交付哈希.json",
+      "bytes": 9365
+    },
+    {
+      "path": "求解器/数据/候选B/来源清单.json",
+      "bytes": 2930
+    },
+    {
+      "path": "求解器/数据/候选B/校验报告.md",
+      "bytes": 618154
+    },
+    {
+      "path": "求解器/数据/候选B/转换说明.md",
+      "bytes": 8622
+    },
+    {
+      "path": "求解器/数据/候选B/验证记录.md",
+      "bytes": 3675
+    },
+    {
+      "path": "求解器/数据/工具/check_revision.py",
+      "bytes": 7058
+    },
+    {
+      "path": "求解器/数据/工具/convert_candidate_b.py",
+      "bytes": 8521
+    },
+    {
+      "path": "求解器/数据/工具/formal_catalog.py",
+      "bytes": 9829
+    },
+    {
+      "path": "求解器/数据/工具/formal_units.py",
+      "bytes": 10224
+    },
+    {
+      "path": "求解器/数据/工具/test_formal_catalog.py",
+      "bytes": 5396
+    },
+    {
+      "path": "求解器/数据/样例/check_examples.py",
+      "bytes": 50928
+    },
+    {
+      "path": "求解器/数据/样例/check_golden_trace.py",
+      "bytes": 21173
+    },
+    {
+      "path": "求解器/数据/样例/check_port_meeting.py",
+      "bytes": 2430
+    },
+    {
+      "path": "求解器/数据/样例/check_splitter_trace.py",
+      "bytes": 1207
+    },
+    {
+      "path": "求解器/数据/样例/checkpoint_delta.py",
+      "bytes": 3899
+    },
+    {
+      "path": "求解器/数据/样例/event_order.py",
+      "bytes": 8741
+    },
+    {
+      "path": "求解器/数据/样例/generate_examples.py",
+      "bytes": 11006
+    },
+    {
+      "path": "求解器/数据/样例/kernel_profile_v1参数赋值.json",
+      "bytes": 61336
+    },
+    {
+      "path": "求解器/数据/样例/polling_reference.py",
+      "bytes": 3694
+    },
+    {
+      "path": "求解器/数据/样例/runtime_example.py",
+      "bytes": 27243
+    },
+    {
+      "path": "求解器/数据/样例/runtime_record.py",
+      "bytes": 17670
+    },
+    {
+      "path": "求解器/数据/样例/test_round4.py",
+      "bytes": 10201
+    },
+    {
+      "path": "求解器/数据/样例/test_runtime_input.py",
+      "bytes": 22066
+    },
+    {
+      "path": "求解器/数据/样例/分流器三路轮询-参数赋值.json",
+      "bytes": 62231
+    },
+    {
+      "path": "求解器/数据/样例/分流器三路轮询-运行记录-checkpoint_delta-kernel.json",
+      "bytes": 1222633
+    },
+    {
+      "path": "求解器/数据/样例/分流器三路轮询-运行记录-checkpoint_delta.json",
+      "bytes": 1124114
+    },
+    {
+      "path": "求解器/数据/样例/分流器三路轮询-运行记录-kernel.json",
+      "bytes": 1940935
+    },
+    {
+      "path": "求解器/数据/样例/分流器三路轮询-运行记录.json",
+      "bytes": 1914670
+    },
+    {
+      "path": "求解器/数据/样例/分流器三路轮询-运行说明.md",
+      "bytes": 7009
+    },
+    {
+      "path": "求解器/数据/样例/分流器三路轮询.json",
+      "bytes": 185480
+    },
+    {
+      "path": "求解器/数据/样例/桥接器双通路.json",
+      "bytes": 57329
+    },
+    {
+      "path": "求解器/数据/样例/检查结果.json",
+      "bytes": 7451
+    },
+    {
+      "path": "求解器/数据/样例/混做粉碎机两下游-运行记录-checkpoint_delta-kernel.json",
+      "bytes": 504272
+    },
+    {
+      "path": "求解器/数据/样例/混做粉碎机两下游-运行记录-checkpoint_delta.json",
+      "bytes": 501384
+    },
+    {
+      "path": "求解器/数据/样例/混做粉碎机两下游-运行记录-kernel.json",
+      "bytes": 654148
+    },
+    {
+      "path": "求解器/数据/样例/混做粉碎机两下游-运行记录.json",
+      "bytes": 651322
+    },
+    {
+      "path": "求解器/数据/样例/混做粉碎机两下游-黄金轨迹.json",
+      "bytes": 3067
+    },
+    {
+      "path": "求解器/数据/样例/混做粉碎机两下游-黄金轨迹.md",
+      "bytes": 9861
+    },
+    {
+      "path": "求解器/数据/样例/混做粉碎机两下游.json",
+      "bytes": 170176
+    },
+    {
+      "path": "求解器/数据/正式静态目录.json",
+      "bytes": 156881
+    },
+    {
+      "path": "求解器/规格/check_revision.py",
+      "bytes": 25657
+    },
+    {
+      "path": "求解器/规格/修订前只读文件指纹.json",
+      "bytes": 1302
+    },
+    {
+      "path": "求解器/规格/修订记录.md",
+      "bytes": 37713
+    },
+    {
+      "path": "求解器/规格/内核实现-对规格的疑问.md",
+      "bytes": 6886
+    },
+    {
+      "path": "求解器/规格/内核输入-修订记录.md",
+      "bytes": 20502
+    },
+    {
+      "path": "求解器/规格/内核输入-对参数轴的修改请求.md",
+      "bytes": 8791
+    },
+    {
+      "path": "求解器/规格/内核输入.md",
+      "bytes": 91532
+    },
+    {
+      "path": "求解器/规格/内核输出.md",
+      "bytes": 12470
+    },
+    {
+      "path": "求解器/规格/内核输出.schema.json",
+      "bytes": 26104
+    },
+    {
+      "path": "求解器/规格/内核配置-v1.json",
+      "bytes": 48996
+    },
+    {
+      "path": "求解器/规格/参数轴-对内核输入请求的答复.md",
+      "bytes": 9542
+    },
+    {
+      "path": "求解器/规格/受限模型声明.md",
+      "bytes": 42172
+    },
+    {
+      "path": "求解器/规格/受限转移定义.md",
+      "bytes": 26809
+    },
+    {
+      "path": "求解器/规格/四件前置义务对照.md",
+      "bytes": 11626
+    },
+    {
+      "path": "求解器/规格/第1轮修订自查.md",
+      "bytes": 3515
+    },
+    {
+      "path": "求解器/规格/第2轮修订自查.md",
+      "bytes": 2334
+    },
+    {
+      "path": "求解器/规格/第2轮自查结果.json",
+      "bytes": 839
+    },
+    {
+      "path": "求解器/规格/第3轮修订自查.md",
+      "bytes": 2265
+    },
+    {
+      "path": "求解器/规格/第3轮自查结果.json",
+      "bytes": 1615
+    },
+    {
+      "path": "求解器/规格/第6轮修订验证/cargo-test.log",
+      "bytes": 3159
+    },
+    {
+      "path": "求解器/规格/第6轮修订验证/run_checks.py",
+      "bytes": 3466
+    },
+    {
+      "path": "求解器/规格/第6轮修订验证/交付指纹.json",
+      "bytes": 5888
+    },
+    {
+      "path": "求解器/规格/第6轮修订验证/交付文件清单.json",
+      "bytes": 3566
+    },
+    {
+      "path": "求解器/规格/第6轮修订验证/交付自审.json",
+      "bytes": 577
+    },
+    {
+      "path": "求解器/规格/第6轮修订验证/修订回归结果.json",
+      "bytes": 3079
+    },
+    {
+      "path": "求解器/规格/第6轮修订验证/修订论证.md",
+      "bytes": 9350
+    },
+    {
+      "path": "求解器/规格/第6轮修订验证/候选B校验报告.md",
+      "bytes": 618154
+    },
+    {
+      "path": "求解器/规格/第6轮修订验证/原转移回归结果.json",
+      "bytes": 2111
+    },
+    {
+      "path": "求解器/规格/第6轮修订验证/发现处置.json",
+      "bytes": 1838
+    },
+    {
+      "path": "求解器/规格/第6轮修订验证/开工产物指纹.json",
+      "bytes": 2621535
+    },
+    {
+      "path": "求解器/规格/第6轮修订验证/开工只读指纹.json",
+      "bytes": 4334306
+    },
+    {
+      "path": "求解器/规格/第6轮修订验证/接口快照.json",
+      "bytes": 995
+    },
+    {
+      "path": "求解器/规格/第6轮修订验证/样例检查结果.json",
+      "bytes": 7425
+    },
+    {
+      "path": "求解器/规格/第6轮修订验证/核对修订回归.py",
+      "bytes": 11499
+    },
+    {
+      "path": "求解器/规格/第6轮修订验证/核对样例兼容.py",
+      "bytes": 3062
+    },
+    {
+      "path": "求解器/规格/第6轮修订验证/检查汇总.json",
+      "bytes": 4623
+    },
+    {
+      "path": "求解器/规格/第6轮修订验证/正式目录.log",
+      "bytes": 142
+    },
+    {
+      "path": "求解器/规格/第6轮修订验证/自查报告.md",
+      "bytes": 6422
+    },
+    {
+      "path": "求解器/规格/第6轮修订验证/规格自查结果.json",
+      "bytes": 4667
+    },
+    {
+      "path": "求解器/规格/第6轮修订验证/输入投影同步.json",
+      "bytes": 597
+    },
+    {
+      "path": "求解器/规格/第6轮修订验证/黄金完整核验结果.json",
+      "bytes": 9013
+    },
+    {
+      "path": "求解器/规格/第6轮修订验证/黄金记录重算结果.json",
+      "bytes": 221
+    },
+    {
+      "path": "求解器/规格/第7轮修订验证/cargo-test.log",
+      "bytes": 3183
+    },
+    {
+      "path": "求解器/规格/第7轮修订验证/finalize_delivery.py",
+      "bytes": 7802
+    },
+    {
+      "path": "求解器/规格/第7轮修订验证/run_checks.py",
+      "bytes": 3658
+    },
+    {
+      "path": "求解器/规格/第7轮修订验证/交付指纹.json",
+      "bytes": 8808
+    },
+    {
+      "path": "求解器/规格/第7轮修订验证/交付文件清单.json",
+      "bytes": 5866
+    },
+    {
+      "path": "求解器/规格/第7轮修订验证/交付自审.json",
+      "bytes": 956
+    },
+    {
+      "path": "求解器/规格/第7轮修订验证/修订回归结果.json",
+      "bytes": 9505
+    },
+    {
+      "path": "求解器/规格/第7轮修订验证/修订论证.md",
+      "bytes": 9944
+    },
+    {
+      "path": "求解器/规格/第7轮修订验证/候选B校验报告.md",
+      "bytes": 618154
+    },
+    {
+      "path": "求解器/规格/第7轮修订验证/全文辖域扫描.json",
+      "bytes": 29183
+    },
+    {
+      "path": "求解器/规格/第7轮修订验证/共享构建目录失败.log",
+      "bytes": 4040
+    },
+    {
+      "path": "求解器/规格/第7轮修订验证/共享构建目录失败汇总.json",
+      "bytes": 6035
+    },
+    {
+      "path": "求解器/规格/第7轮修订验证/前轮修订回归结果.json",
+      "bytes": 3079
+    },
+    {
+      "path": "求解器/规格/第7轮修订验证/原转移回归结果.json",
+      "bytes": 2111
+    },
+    {
+      "path": "求解器/规格/第7轮修订验证/发现处置.json",
+      "bytes": 1711
+    },
+    {
+      "path": "求解器/规格/第7轮修订验证/开工产物指纹.json",
+      "bytes": 2798223
+    },
+    {
+      "path": "求解器/规格/第7轮修订验证/开工只读指纹.json",
+      "bytes": 4334306
+    },
+    {
+      "path": "求解器/规格/第7轮修订验证/接口快照.json",
+      "bytes": 6158
+    },
+    {
+      "path": "求解器/规格/第7轮修订验证/样例检查结果.json",
+      "bytes": 7425
+    },
+    {
+      "path": "求解器/规格/第7轮修订验证/核对修订回归.py",
+      "bytes": 13734
+    },
+    {
+      "path": "求解器/规格/第7轮修订验证/核对样例兼容.py",
+      "bytes": 3288
+    },
+    {
+      "path": "求解器/规格/第7轮修订验证/检查汇总.json",
+      "bytes": 5069
+    },
+    {
+      "path": "求解器/规格/第7轮修订验证/正式目录.log",
+      "bytes": 142
+    },
+    {
+      "path": "求解器/规格/第7轮修订验证/自查报告.md",
+      "bytes": 6732
+    },
+    {
+      "path": "求解器/规格/第7轮修订验证/规格自查结果.json",
+      "bytes": 5053
+    },
+    {
+      "path": "求解器/规格/第7轮修订验证/输入投影同步.json",
+      "bytes": 1545
+    },
+    {
+      "path": "求解器/规格/第7轮修订验证/迁移前样例/kernel_profile_v1参数赋值.json",
+      "bytes": 60808
+    },
+    {
+      "path": "求解器/规格/第7轮修订验证/迁移前样例/分流器三路轮询.json",
+      "bytes": 59402
+    },
+    {
+      "path": "求解器/规格/第7轮修订验证/迁移前样例/桥接器双通路.json",
+      "bytes": 56939
+    },
+    {
+      "path": "求解器/规格/第7轮修订验证/迁移前样例/混做粉碎机两下游-运行记录.json",
+      "bytes": 647110
+    },
+    {
+      "path": "求解器/规格/第7轮修订验证/迁移前样例/混做粉碎机两下游.json",
+      "bytes": 169390
+    },
+    {
+      "path": "求解器/规格/第7轮修订验证/黄金完整核验结果.json",
+      "bytes": 9332
+    },
+    {
+      "path": "求解器/规格/第7轮修订验证/黄金记录重算结果.json",
+      "bytes": 221
+    },
+    {
+      "path": "求解器/规格/第三轮任务验证/交付指纹.json",
+      "bytes": 3607
+    },
+    {
+      "path": "求解器/规格/第三轮任务验证/交付文件清单.json",
+      "bytes": 2241
+    },
+    {
+      "path": "求解器/规格/第三轮任务验证/任务依据.md",
+      "bytes": 8484
+    },
+    {
+      "path": "求解器/规格/第三轮任务验证/任务发现输入.json",
+      "bytes": 56972
+    },
+    {
+      "path": "求解器/规格/第三轮任务验证/发现处置.json",
+      "bytes": 13107
+    },
+    {
+      "path": "求解器/规格/第三轮任务验证/开工上下文.json",
+      "bytes": 440
+    },
+    {
+      "path": "求解器/规格/第三轮任务验证/开工只读指纹.json",
+      "bytes": 4334306
+    },
+    {
+      "path": "求解器/规格/第三轮任务验证/开工规格指纹.json",
+      "bytes": 12472
+    },
+    {
+      "path": "求解器/规格/第三轮任务验证/接口对接.md",
+      "bytes": 1470
+    },
+    {
+      "path": "求解器/规格/第三轮任务验证/接口快照.json",
+      "bytes": 991
+    },
+    {
+      "path": "求解器/规格/第三轮任务验证/核对转移回归.py",
+      "bytes": 7440
+    },
+    {
+      "path": "求解器/规格/第三轮任务验证/自查报告.md",
+      "bytes": 5067
+    },
+    {
+      "path": "求解器/规格/第三轮任务验证/自查结果.json",
+      "bytes": 4247
+    },
+    {
+      "path": "求解器/规格/第三轮任务验证/转移回归结果.json",
+      "bytes": 2111
+    },
+    {
+      "path": "求解器/规格/第二轮任务修订前只读指纹.json",
+      "bytes": 7900
+    },
+    {
+      "path": "求解器/规格/第二轮任务修订自查.md",
+      "bytes": 4563
+    },
+    {
+      "path": "求解器/规格/第二轮任务自查结果.json",
+      "bytes": 2467
+    },
+    {
+      "path": "求解器/规格/第四轮前置-疑问记录.md",
+      "bytes": 4987
+    },
+    {
+      "path": "求解器/规格/第四轮前置验证/examples.log",
+      "bytes": 7451
+    },
+    {
+      "path": "求解器/规格/第四轮前置验证/generate.log",
+      "bytes": 1637
+    },
+    {
+      "path": "求解器/规格/第四轮前置验证/golden.log",
+      "bytes": 221
+    },
+    {
+      "path": "求解器/规格/第四轮前置验证/port_meeting.log",
+      "bytes": 222
+    },
+    {
+      "path": "求解器/规格/第四轮前置验证/round4.log",
+      "bytes": 138
+    },
+    {
+      "path": "求解器/规格/第四轮前置验证/runtime.log",
+      "bytes": 168
+    },
+    {
+      "path": "求解器/规格/第四轮前置验证/rust.log",
+      "bytes": 2553
+    },
+    {
+      "path": "求解器/规格/第四轮前置验证/spec.log",
+      "bytes": 5053
+    },
+    {
+      "path": "求解器/规格/第四轮前置验证/splitter.log",
+      "bytes": 1183
+    },
+    {
+      "path": "求解器/规格/第四轮前置验证/交付清单.json",
+      "bytes": 18102
+    },
+    {
+      "path": "求解器/规格/第四轮前置验证/回归结果.json",
+      "bytes": 24411
+    },
+    {
+      "path": "求解器/规格/第四轮前置验证/开工指纹.json",
+      "bytes": 7041
+    },
+    {
+      "path": "求解器/规格/第四轮前置验证/样例检查.json",
+      "bytes": 7451
+    },
+    {
+      "path": "求解器/规格/第四轮前置验证/端口相遇比较.json",
+      "bytes": 10893
+    },
+    {
+      "path": "求解器/规格/第四轮前置验证/验证报告.md",
+      "bytes": 6137
+    },
+    {
+      "path": "求解器/规格/规则覆盖表.md",
+      "bytes": 33906
+    },
+    {
+      "path": "求解器/规格/运行语义.md",
+      "bytes": 44360
+    },
+    {
+      "path": "求解器/规格/选择点参数轴.md",
+      "bytes": 35040
+    },
+    {
+      "path": "求解器/规格/选择点清单.md",
+      "bytes": 49745
+    },
+    {
+      "path": "求解约束.txt",
+      "bytes": 24783
+    }
+  ],
+  "snapshot_count": 193,
+  "snapshot_bytes": 33425957,
+  "target": {
+    "exists": true,
+    "is_dir": true,
+    "is_symlink": false,
+    "entries": []
+  },
+  "round5_binaries": []
+}

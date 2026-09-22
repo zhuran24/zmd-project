@@ -1,0 +1,1471 @@
+{
+  "status": "pass",
+  "binary": "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+  "binary_sha256": "6fec86994d899dd58ee666d46ebb5c6f0be0c3d076efac0685f40452781fb41f",
+  "cases": [
+    {
+      "case": "bridge-control",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/bridge-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/bridge-control-result.json",
+        "--ticks",
+        "7"
+      ],
+      "exit_code": 0,
+      "status": "completed",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/bridge-control-result.json",
+      "open_items": [
+        "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+        "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+      ],
+      "stop": null,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/bridge-control-result.json\",\"status\":\"completed\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "checkpoint-seed",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "seed",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/checkpoint-control.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/checkpoint-seed-result.json"
+      ],
+      "exit_code": 0,
+      "status": "kernel-input-v3",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/checkpoint-seed-result.json",
+      "open_items": [],
+      "stop": null,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/checkpoint-seed-result.json\",\"status\":null}\n",
+      "stderr": ""
+    },
+    {
+      "case": "checkpoint-run",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/checkpoint-control.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/checkpoint-run-result.json",
+        "--ticks",
+        "1"
+      ],
+      "exit_code": 0,
+      "status": "completed",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/checkpoint-run-result.json",
+      "open_items": [
+        "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+        "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+      ],
+      "stop": null,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/checkpoint-run-result.json\",\"status\":\"completed\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "checkpoint-derived-run",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/checkpoint-seed-result.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/checkpoint-derived-run-result.json",
+        "--ticks",
+        "1"
+      ],
+      "exit_code": 0,
+      "status": "completed",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/checkpoint-derived-run-result.json",
+      "open_items": [
+        "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+        "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+      ],
+      "stop": null,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/checkpoint-derived-run-result.json\",\"status\":\"completed\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "parameter-missing-run",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-missing-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-missing-run-result.json",
+        "--ticks",
+        "2"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-missing-run-result.json",
+      "open_items": [
+        "invalid_input input @ parameter_values: 当前值/生命周期与参数向量不符"
+      ],
+      "stop": null,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-missing-run-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "parameter-missing-seed",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "seed",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-missing-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-missing-seed-result.json"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-missing-seed-result.json",
+      "open_items": [
+        "invalid_input input @ parameter_values: 当前值/生命周期与参数向量不符"
+      ],
+      "stop": null,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-missing-seed-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "parameter-missing-cycle",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "cycle",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-missing-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-missing-cycle-result.json",
+        "--ticks",
+        "2"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-missing-cycle-result.json",
+      "open_items": [
+        "invalid_input input @ parameter_values: 当前值/生命周期与参数向量不符",
+        "技术停止不证明布局无解"
+      ],
+      "stop": {
+        "axis": "input",
+        "event": "parameter_values",
+        "kind": "invalid_input",
+        "partial_events": [],
+        "reason": "当前值/生命周期与参数向量不符",
+        "time": null
+      },
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-missing-cycle-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "parameter-conflict-run",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-conflict-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-conflict-run-result.json",
+        "--ticks",
+        "2"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-conflict-run-result.json",
+      "open_items": [
+        "invalid_input input @ parameter_values: 当前值/生命周期与参数向量不符"
+      ],
+      "stop": null,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-conflict-run-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "parameter-conflict-seed",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "seed",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-conflict-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-conflict-seed-result.json"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-conflict-seed-result.json",
+      "open_items": [
+        "invalid_input input @ parameter_values: 当前值/生命周期与参数向量不符"
+      ],
+      "stop": null,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-conflict-seed-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "parameter-conflict-cycle",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "cycle",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-conflict-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-conflict-cycle-result.json",
+        "--ticks",
+        "2"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-conflict-cycle-result.json",
+      "open_items": [
+        "invalid_input input @ parameter_values: 当前值/生命周期与参数向量不符",
+        "技术停止不证明布局无解"
+      ],
+      "stop": {
+        "axis": "input",
+        "event": "parameter_values",
+        "kind": "invalid_input",
+        "partial_events": [],
+        "reason": "当前值/生命周期与参数向量不符",
+        "time": null
+      },
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-conflict-cycle-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "parameter-top_only-run",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-top_only-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-top_only-run-result.json",
+        "--ticks",
+        "2"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-top_only-run-result.json",
+      "open_items": [
+        "invalid_input input @ parameter_values: 当前值/生命周期与参数向量不符"
+      ],
+      "stop": null,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-top_only-run-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "parameter-top_only-seed",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "seed",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-top_only-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-top_only-seed-result.json"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-top_only-seed-result.json",
+      "open_items": [
+        "invalid_input input @ parameter_values: 当前值/生命周期与参数向量不符"
+      ],
+      "stop": null,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-top_only-seed-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "parameter-top_only-cycle",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "cycle",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-top_only-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-top_only-cycle-result.json",
+        "--ticks",
+        "2"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-top_only-cycle-result.json",
+      "open_items": [
+        "invalid_input input @ parameter_values: 当前值/生命周期与参数向量不符",
+        "技术停止不证明布局无解"
+      ],
+      "stop": {
+        "axis": "input",
+        "event": "parameter_values",
+        "kind": "invalid_input",
+        "partial_events": [],
+        "reason": "当前值/生命周期与参数向量不符",
+        "time": null
+      },
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-top_only-cycle-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "parameter-lifetime-run",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-lifetime-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-lifetime-run-result.json",
+        "--ticks",
+        "2"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-lifetime-run-result.json",
+      "open_items": [
+        "invalid_input input @ parameter_values: 当前值/生命周期与参数向量不符"
+      ],
+      "stop": null,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-lifetime-run-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "parameter-lifetime-seed",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "seed",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-lifetime-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-lifetime-seed-result.json"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-lifetime-seed-result.json",
+      "open_items": [
+        "invalid_input input @ parameter_values: 当前值/生命周期与参数向量不符"
+      ],
+      "stop": null,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-lifetime-seed-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "parameter-lifetime-cycle",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "cycle",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-lifetime-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-lifetime-cycle-result.json",
+        "--ticks",
+        "2"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-lifetime-cycle-result.json",
+      "open_items": [
+        "invalid_input input @ parameter_values: 当前值/生命周期与参数向量不符",
+        "技术停止不证明布局无解"
+      ],
+      "stop": {
+        "axis": "input",
+        "event": "parameter_values",
+        "kind": "invalid_input",
+        "partial_events": [],
+        "reason": "当前值/生命周期与参数向量不符",
+        "time": null
+      },
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/parameter-lifetime-cycle-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "phase--1-run",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase--1-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase--1-run-result.json",
+        "--ticks",
+        "2"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase--1-run-result.json",
+      "open_items": [
+        "invalid_input input @ transfer.phase.values[0].remaining: 初相位超出箱体冷却范围"
+      ],
+      "stop": null,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase--1-run-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "phase--1-seed",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "seed",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase--1-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase--1-seed-result.json"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase--1-seed-result.json",
+      "open_items": [
+        "invalid_input input @ transfer.phase.values[0].remaining: 初相位超出箱体冷却范围"
+      ],
+      "stop": null,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase--1-seed-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "phase--1-cycle",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "cycle",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase--1-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase--1-cycle-result.json",
+        "--ticks",
+        "2"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase--1-cycle-result.json",
+      "open_items": [
+        "invalid_input input @ transfer.phase.values[0].remaining: 初相位超出箱体冷却范围",
+        "技术停止不证明布局无解"
+      ],
+      "stop": {
+        "axis": "input",
+        "event": "transfer.phase.values[0].remaining",
+        "kind": "invalid_input",
+        "partial_events": [],
+        "reason": "初相位超出箱体冷却范围",
+        "time": null
+      },
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase--1-cycle-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "phase-6-run",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase-6-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase-6-run-result.json",
+        "--ticks",
+        "2"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase-6-run-result.json",
+      "open_items": [
+        "invalid_input input @ transfer.phase.values[0].remaining: 初相位超出箱体冷却范围"
+      ],
+      "stop": null,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase-6-run-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "phase-6-seed",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "seed",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase-6-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase-6-seed-result.json"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase-6-seed-result.json",
+      "open_items": [
+        "invalid_input input @ transfer.phase.values[0].remaining: 初相位超出箱体冷却范围"
+      ],
+      "stop": null,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase-6-seed-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "phase-6-cycle",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "cycle",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase-6-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase-6-cycle-result.json",
+        "--ticks",
+        "2"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase-6-cycle-result.json",
+      "open_items": [
+        "invalid_input input @ transfer.phase.values[0].remaining: 初相位超出箱体冷却范围",
+        "技术停止不证明布局无解"
+      ],
+      "stop": {
+        "axis": "input",
+        "event": "transfer.phase.values[0].remaining",
+        "kind": "invalid_input",
+        "partial_events": [],
+        "reason": "初相位超出箱体冷却范围",
+        "time": null
+      },
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase-6-cycle-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "phase-1_2-run",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase-1_2-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase-1_2-run-result.json",
+        "--ticks",
+        "2"
+      ],
+      "exit_code": 2,
+      "status": "unsupported",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase-1_2-run-result.json",
+      "open_items": [
+        "unsupported time.domain @ transfer.phase.values[0].remaining: 本配置只支持整数数量/时刻"
+      ],
+      "stop": null,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase-1_2-run-result.json\",\"status\":\"unsupported\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "phase-1_2-seed",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "seed",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase-1_2-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase-1_2-seed-result.json"
+      ],
+      "exit_code": 2,
+      "status": "unsupported",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase-1_2-seed-result.json",
+      "open_items": [
+        "unsupported time.domain @ transfer.phase.values[0].remaining: 本配置只支持整数数量/时刻"
+      ],
+      "stop": null,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase-1_2-seed-result.json\",\"status\":\"unsupported\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "phase-1_2-cycle",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "cycle",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase-1_2-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase-1_2-cycle-result.json",
+        "--ticks",
+        "2"
+      ],
+      "exit_code": 2,
+      "status": "stopped",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase-1_2-cycle-result.json",
+      "open_items": [
+        "unsupported time.domain @ transfer.phase.values[0].remaining: 本配置只支持整数数量/时刻",
+        "技术停止不证明布局无解"
+      ],
+      "stop": {
+        "axis": "time.domain",
+        "event": "transfer.phase.values[0].remaining",
+        "kind": "unsupported",
+        "partial_events": [],
+        "reason": "本配置只支持整数数量/时刻",
+        "time": null
+      },
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase-1_2-cycle-result.json\",\"status\":\"stopped\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "phase-not-a-Time-run",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase-not-a-Time-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase-not-a-Time-run-result.json",
+        "--ticks",
+        "2"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase-not-a-Time-run-result.json",
+      "open_items": [
+        "invalid_input input @ transfer.phase.values[0].remaining: invalid type: string \"not-a-Time\", expected struct Time"
+      ],
+      "stop": null,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase-not-a-Time-run-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "phase-not-a-Time-seed",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "seed",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase-not-a-Time-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase-not-a-Time-seed-result.json"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase-not-a-Time-seed-result.json",
+      "open_items": [
+        "invalid_input input @ transfer.phase.values[0].remaining: invalid type: string \"not-a-Time\", expected struct Time"
+      ],
+      "stop": null,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase-not-a-Time-seed-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "phase-not-a-Time-cycle",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "cycle",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase-not-a-Time-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase-not-a-Time-cycle-result.json",
+        "--ticks",
+        "2"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase-not-a-Time-cycle-result.json",
+      "open_items": [
+        "invalid_input input @ transfer.phase.values[0].remaining: invalid type: string \"not-a-Time\", expected struct Time",
+        "技术停止不证明布局无解"
+      ],
+      "stop": {
+        "axis": "input",
+        "event": "transfer.phase.values[0].remaining",
+        "kind": "invalid_input",
+        "partial_events": [],
+        "reason": "invalid type: string \"not-a-Time\", expected struct Time",
+        "time": null
+      },
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/phase-not-a-Time-cycle-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "slot_short-run",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/slot_short-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/slot_short-run-result.json",
+        "--ticks",
+        "2"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/slot_short-run-result.json",
+      "open_items": [
+        "invalid_input input @ StateSeed.inventory[0].slot: 未知或重复的目录格身份：bad"
+      ],
+      "stop": null,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/slot_short-run-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "slot_short-seed",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "seed",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/slot_short-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/slot_short-seed-result.json"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/slot_short-seed-result.json",
+      "open_items": [
+        "invalid_input input @ StateSeed.inventory[0].slot: 未知或重复的目录格身份：bad"
+      ],
+      "stop": null,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/slot_short-seed-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "slot_short-cycle",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "cycle",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/slot_short-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/slot_short-cycle-result.json",
+        "--ticks",
+        "2"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/slot_short-cycle-result.json",
+      "open_items": [
+        "invalid_input input @ StateSeed.inventory[0].slot: 未知或重复的目录格身份：bad",
+        "技术停止不证明布局无解"
+      ],
+      "stop": {
+        "axis": "input",
+        "event": "StateSeed.inventory[0].slot",
+        "kind": "invalid_input",
+        "partial_events": [],
+        "reason": "未知或重复的目录格身份：bad",
+        "time": null
+      },
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/slot_short-cycle-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "slot_unknown-run",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/slot_unknown-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/slot_unknown-run-result.json",
+        "--ticks",
+        "2"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/slot_unknown-run-result.json",
+      "open_items": [
+        "invalid_input input @ StateSeed.inventory[0].slot: 未知或重复的目录格身份：bad:input:0"
+      ],
+      "stop": null,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/slot_unknown-run-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "slot_unknown-seed",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "seed",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/slot_unknown-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/slot_unknown-seed-result.json"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/slot_unknown-seed-result.json",
+      "open_items": [
+        "invalid_input input @ StateSeed.inventory[0].slot: 未知或重复的目录格身份：bad:input:0"
+      ],
+      "stop": null,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/slot_unknown-seed-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "slot_unknown-cycle",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "cycle",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/slot_unknown-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/slot_unknown-cycle-result.json",
+        "--ticks",
+        "2"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/slot_unknown-cycle-result.json",
+      "open_items": [
+        "invalid_input input @ StateSeed.inventory[0].slot: 未知或重复的目录格身份：bad:input:0",
+        "技术停止不证明布局无解"
+      ],
+      "stop": {
+        "axis": "input",
+        "event": "StateSeed.inventory[0].slot",
+        "kind": "invalid_input",
+        "partial_events": [],
+        "reason": "未知或重复的目录格身份：bad:input:0",
+        "time": null
+      },
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/slot_unknown-cycle-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "boolean_seed-run",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/boolean_seed-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/boolean_seed-run-result.json",
+        "--ticks",
+        "2"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/boolean_seed-run-result.json",
+      "open_items": [
+        "invalid_input input @ seed.time: invalid type: null, expected struct Time"
+      ],
+      "stop": null,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/boolean_seed-run-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "boolean_seed-seed",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "seed",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/boolean_seed-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/boolean_seed-seed-result.json"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/boolean_seed-seed-result.json",
+      "open_items": [
+        "invalid_input input @ seed.time: invalid type: null, expected struct Time"
+      ],
+      "stop": null,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/boolean_seed-seed-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "boolean_seed-cycle",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "cycle",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/boolean_seed-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/boolean_seed-cycle-result.json",
+        "--ticks",
+        "2"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/boolean_seed-cycle-result.json",
+      "open_items": [
+        "invalid_input input @ seed.time: invalid type: null, expected struct Time",
+        "技术停止不证明布局无解"
+      ],
+      "stop": {
+        "axis": "input",
+        "event": "seed.time",
+        "kind": "invalid_input",
+        "partial_events": [],
+        "reason": "invalid type: null, expected struct Time",
+        "time": null
+      },
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/boolean_seed-cycle-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "boolean_context-run",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/boolean_context-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/boolean_context-run-result.json",
+        "--ticks",
+        "2"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/boolean_context-run-result.json",
+      "open_items": [
+        "invalid_input input @ pending_events: 须为已解数组"
+      ],
+      "stop": null,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/boolean_context-run-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "boolean_context-seed",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "seed",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/boolean_context-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/boolean_context-seed-result.json"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/boolean_context-seed-result.json",
+      "open_items": [
+        "invalid_input input @ pending_events: 须为已解数组"
+      ],
+      "stop": null,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/boolean_context-seed-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "boolean_context-cycle",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "cycle",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/boolean_context-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/boolean_context-cycle-result.json",
+        "--ticks",
+        "2"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/boolean_context-cycle-result.json",
+      "open_items": [
+        "invalid_input input @ pending_events: 须为已解数组",
+        "技术停止不证明布局无解"
+      ],
+      "stop": {
+        "axis": "input",
+        "event": "pending_events",
+        "kind": "invalid_input",
+        "partial_events": [],
+        "reason": "须为已解数组",
+        "time": null
+      },
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/boolean_context-cycle-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "missing_inventory-run",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/missing_inventory-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/missing_inventory-run-result.json",
+        "--ticks",
+        "2"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/missing_inventory-run-result.json",
+      "open_items": [
+        "invalid_input input @ StateSeed.inventory: 缺少目录格"
+      ],
+      "stop": null,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/missing_inventory-run-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "missing_inventory-seed",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "seed",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/missing_inventory-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/missing_inventory-seed-result.json"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/missing_inventory-seed-result.json",
+      "open_items": [
+        "invalid_input input @ StateSeed.inventory: 缺少目录格"
+      ],
+      "stop": null,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/missing_inventory-seed-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "missing_inventory-cycle",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "cycle",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/missing_inventory-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/missing_inventory-cycle-result.json",
+        "--ticks",
+        "2"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/missing_inventory-cycle-result.json",
+      "open_items": [
+        "invalid_input input @ StateSeed.inventory: 缺少目录格",
+        "技术停止不证明布局无解"
+      ],
+      "stop": {
+        "axis": "input",
+        "event": "StateSeed.inventory",
+        "kind": "invalid_input",
+        "partial_events": [],
+        "reason": "缺少目录格",
+        "time": null
+      },
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/missing_inventory-cycle-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "unknown_progress-run",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/unknown_progress-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/unknown_progress-run-result.json",
+        "--ticks",
+        "2"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/unknown_progress-run-result.json",
+      "open_items": [
+        "invalid_input input @ StateSeed.progress: 顺序须不重不漏覆盖定义域"
+      ],
+      "stop": null,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/unknown_progress-run-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "unknown_progress-seed",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "seed",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/unknown_progress-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/unknown_progress-seed-result.json"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/unknown_progress-seed-result.json",
+      "open_items": [
+        "invalid_input input @ StateSeed.progress: 顺序须不重不漏覆盖定义域"
+      ],
+      "stop": null,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/unknown_progress-seed-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "unknown_progress-cycle",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "cycle",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/unknown_progress-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/unknown_progress-cycle-result.json",
+        "--ticks",
+        "2"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/unknown_progress-cycle-result.json",
+      "open_items": [
+        "invalid_input input @ StateSeed.progress: 顺序须不重不漏覆盖定义域",
+        "技术停止不证明布局无解"
+      ],
+      "stop": {
+        "axis": "input",
+        "event": "StateSeed.progress",
+        "kind": "invalid_input",
+        "partial_events": [],
+        "reason": "顺序须不重不漏覆盖定义域",
+        "time": null
+      },
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/unknown_progress-cycle-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "zero-ore-origin-run",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/zero-ore-origin-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/zero-ore-origin-run-result.json",
+        "--ticks",
+        "2"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/zero-ore-origin-run-result.json",
+      "open_items": [
+        "invalid_input warehouse.external_supply @ instant=0: 源矿无正库存，不满足两矿持续可得"
+      ],
+      "stop": null,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/zero-ore-origin-run-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "zero-ore-origin-seed",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "seed",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/zero-ore-origin-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/zero-ore-origin-seed-result.json"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/zero-ore-origin-seed-result.json",
+      "open_items": [
+        "invalid_input warehouse.external_supply @ instant=0: 源矿无正库存，不满足两矿持续可得"
+      ],
+      "stop": null,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/zero-ore-origin-seed-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "zero-ore-origin-cycle",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "cycle",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/zero-ore-origin-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/zero-ore-origin-cycle-result.json",
+        "--ticks",
+        "2"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/zero-ore-origin-cycle-result.json",
+      "open_items": [
+        "invalid_input warehouse.external_supply @ instant=0: 源矿无正库存，不满足两矿持续可得",
+        "技术停止不证明布局无解"
+      ],
+      "stop": {
+        "axis": "warehouse.external_supply",
+        "event": "instant=0",
+        "kind": "invalid_input",
+        "partial_events": [],
+        "reason": "源矿无正库存，不满足两矿持续可得",
+        "time": null
+      },
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/zero-ore-origin-cycle-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "zero-ore-iron-run",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/zero-ore-iron-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/zero-ore-iron-run-result.json",
+        "--ticks",
+        "2"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/zero-ore-iron-run-result.json",
+      "open_items": [
+        "invalid_input warehouse.external_supply @ instant=0: 蓝铁矿无正库存，不满足两矿持续可得"
+      ],
+      "stop": null,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/zero-ore-iron-run-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "zero-ore-iron-seed",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "seed",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/zero-ore-iron-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/zero-ore-iron-seed-result.json"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/zero-ore-iron-seed-result.json",
+      "open_items": [
+        "invalid_input warehouse.external_supply @ instant=0: 蓝铁矿无正库存，不满足两矿持续可得"
+      ],
+      "stop": null,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/zero-ore-iron-seed-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "zero-ore-iron-cycle",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "cycle",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/zero-ore-iron-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/zero-ore-iron-cycle-result.json",
+        "--ticks",
+        "2"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/zero-ore-iron-cycle-result.json",
+      "open_items": [
+        "invalid_input warehouse.external_supply @ instant=0: 蓝铁矿无正库存，不满足两矿持续可得",
+        "技术停止不证明布局无解"
+      ],
+      "stop": {
+        "axis": "warehouse.external_supply",
+        "event": "instant=0",
+        "kind": "invalid_input",
+        "partial_events": [],
+        "reason": "蓝铁矿无正库存，不满足两矿持续可得",
+        "time": null
+      },
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/zero-ore-iron-cycle-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "age-overflow-run",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/age-overflow-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/age-overflow-run-result.json",
+        "--ticks",
+        "2"
+      ],
+      "exit_code": 2,
+      "status": "inconclusive",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/age-overflow-run-result.json",
+      "open_items": [
+        "inconclusive resource.integer @ PC|a:east:0|b:south:0: 时差溢出"
+      ],
+      "stop": null,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/age-overflow-run-result.json\",\"status\":\"inconclusive\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "age-overflow-cycle",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "cycle",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/age-overflow-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/age-overflow-cycle-result.json",
+        "--ticks",
+        "2"
+      ],
+      "exit_code": 2,
+      "status": "inconclusive",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/age-overflow-cycle-result.json",
+      "open_items": [
+        "inconclusive resource.integer @ PC|a:east:0|b:south:0: 时差溢出",
+        "技术停止不证明布局无解"
+      ],
+      "stop": {
+        "axis": "resource.integer",
+        "event": "PC|a:east:0|b:south:0",
+        "kind": "resource",
+        "partial_events": [],
+        "reason": "时差溢出",
+        "time": null
+      },
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/age-overflow-cycle-result.json\",\"status\":\"inconclusive\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "expired-after-closure-run",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/expired-after-closure-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/expired-after-closure-run-result.json",
+        "--ticks",
+        "2"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/expired-after-closure-run-result.json",
+      "open_items": [
+        "invalid_input input @ W|5|probe_gate_a: 待事件时刻与进度不符"
+      ],
+      "stop": null,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/expired-after-closure-run-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "expired-after-closure-seed",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "seed",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/expired-after-closure-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/expired-after-closure-seed-result.json"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/expired-after-closure-seed-result.json",
+      "open_items": [
+        "invalid_input input @ W|5|probe_gate_a: 待事件时刻与进度不符"
+      ],
+      "stop": null,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/expired-after-closure-seed-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "expired-after-closure-cycle",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "cycle",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/expired-after-closure-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/expired-after-closure-cycle-result.json",
+        "--ticks",
+        "2"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/expired-after-closure-cycle-result.json",
+      "open_items": [
+        "invalid_input input @ W|5|probe_gate_a: 待事件时刻与进度不符",
+        "技术停止不证明布局无解"
+      ],
+      "stop": {
+        "axis": "input",
+        "event": "W|5|probe_gate_a",
+        "kind": "invalid_input",
+        "partial_events": [],
+        "reason": "待事件时刻与进度不符",
+        "time": null
+      },
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/expired-after-closure-cycle-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "legacy-late-window-cycle",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "verify-cycle",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/tiny-expired-cycle.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/legacy-late-window-cycle-result.json"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/legacy-late-window-cycle-result.json",
+      "open_items": [
+        "invalid_input input @ W|5|gate: 执行的操作/目标/时刻与待事件登记不符"
+      ],
+      "stop": null,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/legacy-late-window-cycle-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    },
+    {
+      "case": "legacy-late-window-record",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "verify-record",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/legacy-late-window-record.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/legacy-late-window-record-result.json"
+      ],
+      "exit_code": 2,
+      "status": "invalid_input",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/legacy-late-window-record-result.json",
+      "open_items": [
+        "invalid_input input @ W|5|gate: 执行的操作/目标/时刻与待事件登记不符"
+      ],
+      "stop": null,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-工程-证据/cli/legacy-late-window-record-result.json\",\"status\":\"invalid_input\"}\n",
+      "stderr": ""
+    }
+  ],
+  "checkpoint_state_preserved": true,
+  "checkpoint_resume_fields_equal": true
+}

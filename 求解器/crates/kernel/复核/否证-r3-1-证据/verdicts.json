@@ -1,0 +1,54 @@
+{
+  "verdicts": [
+    {
+      "id": "KR-r3-L1-01",
+      "refuted": false,
+      "reason": "未能否证：输入§6.4要求原样保留检查点参数；独立实测缺失/冲突输入直接run拒收，经seed覆盖后续跑成功。完整论证：/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r3-1.md §2.1。"
+    },
+    {
+      "id": "KR-r3-L1-02",
+      "refuted": false,
+      "reason": "未能否证：after_closure的t=5仍接受deadline=5，并在t=6执行W|5事件，verify-record拒收；before_boundary同值则在t=5合法执行。见论证文件§2.2。"
+    },
+    {
+      "id": "KR-r3-L1-03",
+      "refuted": false,
+      "reason": "未能否证：新跑P=1结果的verify-cycle返回cycle_replayed=true，原样提取run_record却因前缀窗口时序非法被verify-record拒收；代码未调用全记录独立事件检查。见§2.3。"
+    },
+    {
+      "id": "KR-r3-L1-04",
+      "refuted": false,
+      "reason": "未能否证：sufficient明确要求种子两矿正库存；源矿为空而仅留历史身份时seed仍成功，导出输入推进一刻才invalid_input。见§2.4。"
+    },
+    {
+      "id": "KR-r3-L2-01",
+      "refuted": false,
+      "reason": "未能否证：新生成桥检查点的参数清空、镜像冲突、仅改顶层相位三例均run拒收、seed覆盖成功；合法对照状态完整保留。见§2.5。"
+    },
+    {
+      "id": "KR-r3-L2-02",
+      "refuted": false,
+      "reason": "未能否证：同步参数与镜像后，-1、6、1/2及not-a-Time均被run接受；非法字符串还进入P=20周期并通过verify-cycle，超出Time及整数0…5支持域。见§2.6。"
+    },
+    {
+      "id": "KR-r3-L2-03",
+      "refuted": false,
+      "reason": "未能否证：新跑桥记录把32条成功搬运标作先接覆盖，但方向在输入中已resolved、先接历史早于记录；聚合所列10份证据也全部是move。见§2.7。"
+    },
+    {
+      "id": "KR-r3-L3-01",
+      "refuted": false,
+      "reason": "未能否证：slot=bad及nonwarehouse.value=true分别复现run/seed退出101、stdout为空且无结果文件；正常非法标签对照能返回invalid_input，证实并非约定Stop。见§2.8。"
+    },
+    {
+      "id": "KR-r3-L3-02",
+      "refuted": false,
+      "reason": "未能否证：同源时差溢出输入的run为inconclusive，cycle却为stopped且内层仍是resource；装载外壳丢失顶层资源未决分类。见§2.9。"
+    },
+    {
+      "id": "KR-r3-L3-03",
+      "refuted": false,
+      "reason": "未能否证：独立扫描仍有15个ELF/ar共219896964字节及193文件的仓库式快照，内含独立空target；遗留属性不消除证据类型违纪，不归责本轮新增。见§2.10。"
+    }
+  ]
+}

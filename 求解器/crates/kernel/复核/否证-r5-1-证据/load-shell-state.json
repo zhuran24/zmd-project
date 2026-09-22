@@ -1,0 +1,17 @@
+{
+  "source": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/cli/overflow.json",
+  "sha256": "5dafe7e264eef6ad796ec580d5e15162dddf244edffe665301d97adb74f55179",
+  "status": "inconclusive",
+  "stop": {
+    "axis": "resource.integer",
+    "event": "PC|a:east:0|b:south:0",
+    "kind": "resource",
+    "partial_events": [],
+    "reason": "时差溢出",
+    "time": null
+  },
+  "replay_input_ref": null,
+  "last_state": null,
+  "cycle": null,
+  "checkpoint_created": false
+}

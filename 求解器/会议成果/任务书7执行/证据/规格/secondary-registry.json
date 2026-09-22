@@ -1,0 +1,19 @@
+{
+  "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/check_examples.py",
+  "original_sha256": "c4ee485b645ef82c7823a9f3dae12a90c4ad00d13c3e98c3f84dac769b2e016f",
+  "final_sha256": "c93df97cf743e66a61423bc066fb2abe667cb1dde2feb1f78e698278b8f17b1a",
+  "reason": "SOURCE_HASHES是仍执行的正式源比对登记（原L58—62，读取在L720、L734—735）；按任务1同步全部现行登记，仅替换规则/任务两个哈希字面量，其余字节及算法保持。原样例、投影和历史结果不重生成。",
+  "diff": [
+    "--- ",
+    "+++ ",
+    "@@ -57,6 +57,6 @@",
+    " NAMES = [\"桥接器双通路.json\", \"分流器三路轮询.json\", \"混做粉碎机两下游.json\"]",
+    " SOURCE_HASHES = {",
+    "-    \"《明日方舟：终末地》游戏规则.txt\": \"abc7a5867f6477eedb619c63a21c4a77144c57ad4567fdcfb696b3049d66a670\",",
+    "-    \"求解任务.txt\": \"10abf80fe6eefe647471eabe78da4053f77b489d3806722c501c6acb405a2864\",",
+    "+    \"《明日方舟：终末地》游戏规则.txt\": \"31ced2a24fef738c72dfa406351b6bad5df3e353d6b1c2dfd06ab1febaf566ff\",",
+    "+    \"求解任务.txt\": \"1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac\",",
+    "     \"求解约束.txt\": \"f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6\",",
+    " }"
+  ]
+}

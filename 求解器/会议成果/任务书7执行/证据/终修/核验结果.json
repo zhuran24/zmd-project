@@ -1,0 +1,1486 @@
+{
+  "status": "pass",
+  "checks": [
+    {
+      "name": "modified_paths_unique",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "write_scope:/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/仓库接收与循环对应.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "write_scope:/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/内核验收.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "write_scope:/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/受限转移定义-§6.5替换稿.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "write_scope:/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/密排布局.json",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "write_scope:/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/密排试点.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "write_scope:/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/成品输出通路.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "write_scope:/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/推导复核范围.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "write_scope:/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/整厂衔接.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "write_scope:/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/植物运行试点.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "write_scope:/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/相位离线与认证范围.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "write_scope:/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/规格修改稿-任务8.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "write_scope:/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/规格回填.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "write_scope:/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "write_scope:/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "write_scope:/home/zhuran24/zmd-research-fresh/求解器/规格/受限模型声明.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "write_scope:/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "write_scope:/home/zhuran24/zmd-research-fresh/求解器/规格/四件前置义务对照.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "write_scope:/home/zhuran24/zmd-research-fresh/求解器/规格/推导/三种相位不改产量-v2.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "write_scope:/home/zhuran24/zmd-research-fresh/求解器/规格/推导/回路总数决定论-v2.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "write_scope:/home/zhuran24/zmd-research-fresh/求解器/规格/推导/总纲-流量存量相位.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "write_scope:/home/zhuran24/zmd-research-fresh/求解器/规格/运行语义.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "write_scope:/home/zhuran24/zmd-research-fresh/求解器/规格/选择点清单.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "all_declared_changes_present",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "no_evidence_artifact_other_formats",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "formal:《明日方舟：终末地》游戏规则.txt",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "formal:求解任务.txt",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "formal:求解约束.txt",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "R36_current_quote",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "R13_bridge_scope",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "end_record:受限模型声明.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "end_record:受限转移定义-§6.5替换稿.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "end_record:规格修改稿-任务8.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "end_record:回路总数决定论-v2.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "end_record:选择点清单.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "end_record:植物运行试点.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "end_record:推导复核范围.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "end_record:运行语义.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "end_record:内核输出.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "end_record:仓库接收与循环对应.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "end_record:受限转移定义.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "end_record:规格回填.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "end_record:四件前置义务对照.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "end_record:密排试点.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "end_record:整厂衔接.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "end_record:内核输入.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "end_record:内核验收.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "end_record:三种相位不改产量-v2.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "end_record:成品输出通路.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "end_record:相位离线与认证范围.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "end_record:总纲-流量存量相位.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "current_source:回路总数决定论-v2.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "current_source:总纲-流量存量相位.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "phase_current_source",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "no_obsolete_cooling:仓库接收与循环对应.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "no_obsolete_cooling:受限转移定义-§6.5替换稿.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "exact_manufacturing_key",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "exact_same_species_merge",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "proof_vs_attempt_separated",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "product_contracts",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "no_promoted_layout",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "new_waiting_bounds",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "json:送料与接口.json",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "json:调试后状态.json",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "json:内核配置-v1.json",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "json:内核输出.schema.json",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "bridge_targeted_cases",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "ore_ceiling",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "capacity_arithmetic",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "Z_three_boundaries",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "Z_safe_integer_prefix",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "same_kernel_binary",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "command:暂停键-cycle",
+      "pass": true,
+      "detail": {
+        "exit_code": 0
+      }
+    },
+    {
+      "name": "command:暂停键-verify",
+      "pass": true,
+      "detail": {
+        "exit_code": 0
+      }
+    },
+    {
+      "name": "diagnostic:暂停键",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "period_rates:暂停键",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:暂停键:/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/静止成熟与暂停键.json",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:暂停键:/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:暂停键:/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:暂停键:/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:暂停键:/home/zhuran24/zmd-research-fresh/求解任务.txt",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:暂停键:/home/zhuran24/zmd-research-fresh/求解约束.txt",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:暂停键:/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:暂停键:/home/zhuran24/zmd-research-fresh/求解器/规格/受限模型声明.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:暂停键:/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:暂停键:/home/zhuran24/zmd-research-fresh/求解器/规格/运行语义.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:暂停键:/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:暂停键:/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:暂停键:/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.schema.json",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:暂停键:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/周期键读取审计.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:暂停键:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/value.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:暂停键:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/config.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:暂停键:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/model.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:暂停键:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/catalog.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:暂停键:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/input.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:暂停键:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/interfaces.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:暂停键:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/engine.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:暂停键:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/event_identity.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:暂停键:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/warehouse.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:暂停键:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/polling.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:暂停键:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/transition.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:暂停键:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/output.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:暂停键:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/ledger.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:暂停键:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/cycle.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:暂停键:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/cycle_io.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:暂停键:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/digest.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:暂停键:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/seed.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:暂停键:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/cache.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:暂停键:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:暂停键:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/main.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:暂停键:/home/zhuran24/zmd-research-fresh/求解器/Cargo.toml",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:暂停键:/home/zhuran24/zmd-research-fresh/求解器/Cargo.lock",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:暂停键:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/Cargo.toml",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "remaining_work:暂停键start",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:暂停键startbox:storage:0",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:暂停键startbox:storage:1",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:暂停键startbox:storage:2",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:暂停键startbox:storage:3",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:暂停键startbox:storage:4",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:暂停键startbox:storage:5",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:暂停键startmachine:buffer:0",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:暂停键startmachine:input:0",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:暂停键startmachine:output:0",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "remaining_work:暂停键end",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:暂停键endbox:storage:0",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:暂停键endbox:storage:1",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:暂停键endbox:storage:2",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:暂停键endbox:storage:3",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:暂停键endbox:storage:4",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:暂停键endbox:storage:5",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:暂停键endmachine:buffer:0",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:暂停键endmachine:input:0",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:暂停键endmachine:output:0",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "forward_unresolved:暂停键",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "command:分组合并-cycle",
+      "pass": true,
+      "detail": {
+        "exit_code": 0
+      }
+    },
+    {
+      "name": "command:分组合并-verify",
+      "pass": true,
+      "detail": {
+        "exit_code": 0
+      }
+    },
+    {
+      "name": "diagnostic:分组合并",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "period_rates:分组合并",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:分组合并:/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/negative/同种年龄分组-input.json",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:分组合并:/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:分组合并:/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:分组合并:/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:分组合并:/home/zhuran24/zmd-research-fresh/求解任务.txt",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:分组合并:/home/zhuran24/zmd-research-fresh/求解约束.txt",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:分组合并:/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:分组合并:/home/zhuran24/zmd-research-fresh/求解器/规格/受限模型声明.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:分组合并:/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:分组合并:/home/zhuran24/zmd-research-fresh/求解器/规格/运行语义.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:分组合并:/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:分组合并:/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:分组合并:/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.schema.json",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:分组合并:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/周期键读取审计.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:分组合并:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/value.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:分组合并:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/config.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:分组合并:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/model.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:分组合并:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/catalog.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:分组合并:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/input.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:分组合并:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/interfaces.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:分组合并:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/engine.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:分组合并:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/event_identity.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:分组合并:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/warehouse.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:分组合并:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/polling.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:分组合并:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/transition.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:分组合并:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/output.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:分组合并:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/ledger.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:分组合并:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/cycle.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:分组合并:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/cycle_io.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:分组合并:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/digest.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:分组合并:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/seed.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:分组合并:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/cache.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:分组合并:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:分组合并:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/main.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:分组合并:/home/zhuran24/zmd-research-fresh/求解器/Cargo.toml",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:分组合并:/home/zhuran24/zmd-research-fresh/求解器/Cargo.lock",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:分组合并:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/Cargo.toml",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "remaining_work:分组合并start",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:分组合并startbox:storage:0",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:分组合并startbox:storage:1",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:分组合并startbox:storage:2",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:分组合并startbox:storage:3",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:分组合并startbox:storage:4",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:分组合并startbox:storage:5",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:分组合并startmachine:buffer:0",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:分组合并startmachine:input:0",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:分组合并startmachine:output:0",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "remaining_work:分组合并end",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:分组合并endbox:storage:0",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:分组合并endbox:storage:1",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:分组合并endbox:storage:2",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:分组合并endbox:storage:3",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:分组合并endbox:storage:4",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:分组合并endbox:storage:5",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:分组合并endmachine:buffer:0",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:分组合并endmachine:input:0",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:分组合并endmachine:output:0",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "forward_unresolved:分组合并",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "command:累计调低-cycle",
+      "pass": true,
+      "detail": {
+        "exit_code": 0
+      }
+    },
+    {
+      "name": "command:累计调低-verify",
+      "pass": true,
+      "detail": {
+        "exit_code": 0
+      }
+    },
+    {
+      "name": "diagnostic:累计调低",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "period_rates:累计调低",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:累计调低:/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/累计调低保留.json",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:累计调低:/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:累计调低:/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:累计调低:/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:累计调低:/home/zhuran24/zmd-research-fresh/求解任务.txt",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:累计调低:/home/zhuran24/zmd-research-fresh/求解约束.txt",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:累计调低:/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:累计调低:/home/zhuran24/zmd-research-fresh/求解器/规格/受限模型声明.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:累计调低:/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:累计调低:/home/zhuran24/zmd-research-fresh/求解器/规格/运行语义.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:累计调低:/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:累计调低:/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:累计调低:/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.schema.json",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:累计调低:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/周期键读取审计.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:累计调低:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/value.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:累计调低:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/config.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:累计调低:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/model.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:累计调低:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/catalog.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:累计调低:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/input.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:累计调低:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/interfaces.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:累计调低:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/engine.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:累计调低:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/event_identity.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:累计调低:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/warehouse.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:累计调低:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/polling.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:累计调低:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/transition.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:累计调低:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/output.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:累计调低:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/ledger.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:累计调低:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/cycle.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:累计调低:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/cycle_io.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:累计调低:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/digest.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:累计调低:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/seed.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:累计调低:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/cache.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:累计调低:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:累计调低:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/main.rs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:累计调低:/home/zhuran24/zmd-research-fresh/求解器/Cargo.toml",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:累计调低:/home/zhuran24/zmd-research-fresh/求解器/Cargo.lock",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fingerprint:累计调低:/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/Cargo.toml",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:累计调低startbelt:transport:0",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:累计调低startgate:transport:0",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:累计调低startsink:storage:0",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:累计调低startsink:storage:1",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:累计调低startsink:storage:2",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:累计调低startsink:storage:3",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:累计调低startsink:storage:4",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:累计调低startsink:storage:5",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:累计调低startsource:storage:0",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:累计调低startsource:storage:1",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:累计调低startsource:storage:2",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:累计调低startsource:storage:3",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:累计调低startsource:storage:4",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:累计调低startsource:storage:5",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:累计调低endbelt:transport:0",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:累计调低endgate:transport:0",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:累计调低endsink:storage:0",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:累计调低endsink:storage:1",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:累计调低endsink:storage:2",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:累计调低endsink:storage:3",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:累计调低endsink:storage:4",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:累计调低endsink:storage:5",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:累计调低endsource:storage:0",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:累计调低endsource:storage:1",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:累计调低endsource:storage:2",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:累计调低endsource:storage:3",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:累计调低endsource:storage:4",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "merged:累计调低endsource:storage:5",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "forward_unresolved:累计调低",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "command:schema-replay-batch",
+      "pass": true,
+      "detail": {
+        "exit_code": 0
+      }
+    },
+    {
+      "name": "command:old-certificate-rejected",
+      "pass": true,
+      "detail": {
+        "exit_code": 2
+      }
+    },
+    {
+      "name": "old_rejection_is_fingerprint",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "local_links",
+      "pass": true,
+      "detail": []
+    }
+  ],
+  "check_count": 270,
+  "changed_files": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/仓库接收与循环对应.md",
+      "before": "cdc235501fc5ba81f8df0c4ea02396b15b23bb1c6175f9e7a10729d0cab646c1",
+      "after": "f2eba5430659315030034ed4795359f885c049a07d07da326d7a96296fc9edbb"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/内核验收.md",
+      "before": "8d7048e1e30ee525259c677b82ce9852db04fb33b2fc5cf7cf0599d6880a3d85",
+      "after": "2354082216d7e43e269999bbd293f6be273ce7eafcef066db633583a031aea86"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/受限转移定义-§6.5替换稿.md",
+      "before": "531d5195a3c5de8e73bf32f6f47dc17aa0ef15f710c84d9cc9cacb89ec4cd7fd",
+      "after": "eaf224ec5eeb3dbf7d2e7d22448d861bfcd08ebf82c3f7d6212ab5135925d550"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/密排布局.json",
+      "before": "a2daaf14d1cd2160f6d1614bfd5542e678fa6d0ce0b532256088f0968ec6bc98",
+      "after": "7e7dae5f1ff28f389a7a9bcba9acc6eee71054926e588b41ceb3e2de24ac1fda"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/密排试点.md",
+      "before": "ea2978e654dee2e3c4fa80ec54a81d0721b15e2fb415654e3c34e4b133017bd4",
+      "after": "7538edae18c9f121245d600336955a3834ed5473db131dda86bf034b23850631"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/成品输出通路.md",
+      "before": "6ab47587816b34286c505bc132cdd687df91f85c3dc57f75e187686a496264f1",
+      "after": "51bc8f76c987348037a79fcbe395e4c536b7d1871a955b2bab2eb8e84561525a"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/推导复核范围.md",
+      "before": "1654c6dc0fcbd2ab5c5e66372a2f72651c0ec0f49c04d9ba1fd46b7ec281cf35",
+      "after": "67a883998792253b317bfeb6c75cdb679a968c5a069a5a0e7b2af44f8b38a00d"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/整厂衔接.md",
+      "before": "9151dc4109d2edc0783f82ce3f696c061dc1a5e5998ee09f596f65413209c13b",
+      "after": "a507409237a724c41bb40b192b98e0ae32dbd778913d17eabb56a2d442468233"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/植物运行试点.md",
+      "before": "6f0b9e1417b0643de66279c4c0643ca3b8af89a9ba391b40151d712e507d6a4e",
+      "after": "fd9d55901a63b32d54519527a601d6141596e85c6a93fc57deddb3e811c68918"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/相位离线与认证范围.md",
+      "before": "c93001128a1fce740320ece07eb7d7cb7954b4be7e23d4c4749cc4bedea1e5e4",
+      "after": "938bb68c5cb13bc32ca3287008eb63fd7579f325ad83089a8297f764b7b9e21f"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/规格修改稿-任务8.md",
+      "before": "ddf2cfa572b89a4632b27a2c90242cf27f0fb063959bec39c4bcb2cd18323831",
+      "after": "e3938cc48b1f8afa63f6c1eab8bd26b55a019a556934d0a3ddef53918941ac4c"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/规格回填.md",
+      "before": "68c2419fa738e079ee75cb4dd67d0b48534de005cd8cb82937677c8cc268ce4a",
+      "after": "bc0f660e4e09b399539b96a2bb8ef363abaad2066867273de9c01737c71c5aa5"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md",
+      "before": "fbcddab1b0868024ab03084c40ab506014d831ea096bdb1b9776262140dbdcb2",
+      "after": "4e19faa38b979fac58b5b7910248c255689c2da4ac2b6e974f47e5a0daa1cff6"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.md",
+      "before": "ea3456fe26a641012b840e65f75b51b9f498259f14e1ca13caccc7171b57b753",
+      "after": "6c83a0204d48255fcf8e797950258dffbb613743fdf62871e7c6a8d1c7634454"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限模型声明.md",
+      "before": "a6820246109e22901333890207a28344885cdd59a5af003e22329d270fdc0cb7",
+      "after": "beca7dd638b255a66d82b9a94c7efdf0389bba778fb55adf547015a14b875b2c"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md",
+      "before": "ad11e6e0f5091a33bf76dba5d86a1c4b0639f9ed1bcb56db2d34cfaa40f788c6",
+      "after": "13f806a3c8e91e4550812d03a47bd5cb5943ba30584eb6cab8a9ccb659585cd2"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/四件前置义务对照.md",
+      "before": "a80af53d6c201322ce6c680d3c4b7174203d19273690c28a537fdd0a0af32800",
+      "after": "be76e6c9024dbc3837cf41432833063d1b3d47c28bcd98ca944efefddf2c8ac6"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/三种相位不改产量-v2.md",
+      "before": "217c9a2046da9e70b1a934eeeb5f70539e564def8149937611f1b80903239d88",
+      "after": "56d06cff4ea36cc177a797aa8c5f9ea90234245544ea8d5ed226624c91367731"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/回路总数决定论-v2.md",
+      "before": "040202154ecfb327c75db45bfc217d88f372ea84d0b41a5bce138ee3ae7f70b1",
+      "after": "2a6a73a1629cba671fab0abf0d6fba291392cf194114e1945ce3f5088e28c3ed"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/总纲-流量存量相位.md",
+      "before": "35bc7bc8d3d710019049ff7612dbbd647246b6392409eaabe226c0f1511275ff",
+      "after": "5b55ce2bc86cd6b8186442f7d67cbd8047ffabd894eec6763917c69f64035a8a"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/运行语义.md",
+      "before": "6ac0bcadeb1da43db706271ba8fc88c2218616d3f475bfcd8b760ff045d0c9b8",
+      "after": "9c3ae9f97e03eb237ec45a684d58e605f54080e431b95c2e62603e5422e96c81"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点清单.md",
+      "before": "1a85bee10bd1d376345a1379127cd0378b70be651ae0d59e5528ab01333627b1",
+      "after": "14206a51614cc169d5ad5c16a20ef863c06bca3e341691ba52197f3546114570"
+    }
+  ],
+  "unchanged_count": 530,
+  "scope": "正文/版本/受保护文件、静态几何、局部精确分数见证及三个当前诊断周期；无全厂认证"
+}

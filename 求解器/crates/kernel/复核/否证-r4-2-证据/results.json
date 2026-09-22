@@ -1,0 +1,309 @@
+{
+  "branch_scope": {
+    "control_ticks": 12,
+    "full_geometry_output_levels": {
+      "core": [],
+      "south_box": [
+        "other"
+      ],
+      "north_box": [],
+      "east_box": [],
+      "west_box": [],
+      "ore_source": [
+        "other"
+      ],
+      "probe_left_source": [
+        "other"
+      ],
+      "probe_bottom_source": [
+        "other"
+      ],
+      "probe_box": []
+    },
+    "input_differences": [
+      "/initial_state/nonwarehouse/value/semantic_context/parameter_values/36/value/value/choices",
+      "/parameters/fixedness_unproven/damping.branch/value/choices"
+    ],
+    "empty_status": "unresolved",
+    "empty_reason": [
+      "unresolved damping.branch @ choices: 未列全几何分流器的非空出支子集"
+    ]
+  },
+  "age_cohorts": [
+    {
+      "case": "age-single",
+      "exit_code": 0,
+      "status": "kernel-input-v3",
+      "reason": null,
+      "contents": [
+        {
+          "item": "高容谷地电池",
+          "quantity": {
+            "value": "2",
+            "category": "候选"
+          },
+          "entered_at": {
+            "kind": "rational",
+            "value": {
+              "value": "-2",
+              "category": "候选"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "case": "age-cohorts",
+      "exit_code": 2,
+      "status": "invalid_input",
+      "reason": [
+        "invalid_input input @ south_box:storage:0: 普通格不能混种"
+      ],
+      "contents": [
+        {
+          "item": "高容谷地电池",
+          "quantity": {
+            "value": "1",
+            "category": "候选"
+          },
+          "entered_at": {
+            "kind": "rational",
+            "value": {
+              "value": "-2",
+              "category": "候选"
+            }
+          }
+        },
+        {
+          "item": "高容谷地电池",
+          "quantity": {
+            "value": "1",
+            "category": "候选"
+          },
+          "entered_at": {
+            "kind": "rational",
+            "value": {
+              "value": "-1",
+              "category": "候选"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "case": "age-mixed-control",
+      "exit_code": 2,
+      "status": "invalid_input",
+      "reason": [
+        "invalid_input input @ south_box:storage:0: 普通格不能混种"
+      ],
+      "contents": [
+        {
+          "item": "高容谷地电池",
+          "quantity": {
+            "value": "1",
+            "category": "候选"
+          },
+          "entered_at": {
+            "kind": "rational",
+            "value": {
+              "value": "-2",
+              "category": "候选"
+            }
+          }
+        },
+        {
+          "item": "精选荞愈胶囊",
+          "quantity": {
+            "value": "1",
+            "category": "候选"
+          },
+          "entered_at": {
+            "kind": "rational",
+            "value": {
+              "value": "-2",
+              "category": "候选"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "checkpoint_budget": {
+    "seed_verified_unchanged": true,
+    "start_time": {
+      "kind": "rational",
+      "value": {
+        "category": "候选",
+        "value": "1"
+      }
+    },
+    "phase": "after_closure",
+    "successful_control_first_time": {
+      "kind": "rational",
+      "value": {
+        "category": "候选",
+        "value": "2"
+      }
+    },
+    "status": "inconclusive",
+    "trace": null,
+    "reason": [
+      "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+      "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。",
+      "inconclusive resource.sweeps @ J|2|0|13: instant=2 sweep=1: 未见完整状态重复，不能推进时刻"
+    ],
+    "delta_trace": null
+  },
+  "unknown_trigger": {
+    "seed_cli_accepted": true,
+    "both_public_key_interfaces_accepted": true,
+    "only_key_differences": [
+      "/state/semantic_context/pending_events/value/0/trigger/extra"
+    ],
+    "known_kind_check_control": "invalid_input"
+  },
+  "adjacency": {
+    "new_axis": {
+      "axis": "damping.belt_adjacency",
+      "coverage_status": "exercised",
+      "disposition": "本版选值",
+      "evidence": [
+        "J|0|0|0",
+        "J|0|0|1",
+        "J|0|0|2",
+        "J|0|0|3",
+        "J|0|0|4",
+        "J|0|0|5",
+        "J|0|1|0",
+        "J|0|1|1",
+        "J|0|1|2",
+        "J|0|1|3",
+        "J|0|1|4",
+        "J|0|1|5",
+        "J|0|2|0",
+        "J|0|2|1",
+        "J|0|2|2",
+        "J|0|2|3",
+        "J|0|2|4",
+        "J|0|2|5",
+        "J|1|0|0",
+        "J|1|0|1",
+        "J|1|0|2",
+        "J|1|0|3",
+        "J|1|0|4",
+        "J|1|0|5",
+        "J|1|1|0",
+        "J|1|1|1",
+        "J|1|1|2",
+        "J|1|1|3",
+        "J|1|1|4",
+        "J|1|1|5",
+        "J|1|2|0",
+        "J|1|2|1",
+        "J|1|2|2",
+        "J|1|2|3",
+        "J|1|2|4",
+        "J|1|2|5",
+        "J|1|3|0",
+        "J|1|3|1",
+        "J|1|3|2",
+        "J|1|3|3",
+        "J|1|3|4",
+        "J|1|3|5",
+        "J|2|0|0",
+        "J|2|0|1",
+        "J|2|0|2",
+        "J|2|0|3",
+        "J|2|0|4",
+        "J|2|0|5",
+        "J|2|1|0",
+        "J|2|1|1",
+        "J|2|1|2",
+        "J|2|1|3",
+        "J|2|1|4",
+        "J|2|1|5",
+        "J|2|2|0",
+        "J|2|2|1",
+        "J|2|2|2",
+        "J|2|2|3",
+        "J|2|2|4",
+        "J|2|2|5",
+        "J|2|3|0",
+        "J|2|3|1",
+        "J|2|3|2",
+        "J|2|3|3",
+        "J|2|3|4",
+        "J|2|3|5",
+        "J|2|4|0",
+        "J|2|4|1",
+        "J|2|4|2",
+        "J|2|4|3",
+        "J|2|4|4",
+        "J|2|4|5"
+      ],
+      "other_values": "其它值及其联合组合未覆盖",
+      "reason": "角触连通的待审域"
+    },
+    "first_event": {
+      "basis": [
+        "规则 L13、L15–17、L23–25、L29–32",
+        "约束端口速率",
+        "受限模型声明 polling.both_failure",
+        "内核输入 §5.2、§6.3",
+        "damping.evaluated:PC|source:north:0|merger:south:0;PC|source:north:2|belt_1:south:0;belt_adjacency:PC|source:north:2|belt_1:south:0;belt_component:PC|source:north:2|belt_1:south:0"
+      ],
+      "detail": "dual_permission",
+      "event": "J|0|0|0",
+      "operation": "move",
+      "outcome": "failure",
+      "target": "PC|source:north:0|merger:south:0"
+    },
+    "verify": {
+      "status": "input_checked",
+      "verified_record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r4-2-证据/adjacency-three-ticks-result.json"
+    },
+    "selected_component_rule": {
+      "basis": [
+        "受限模型声明；内核输入 §5.2–5.4；open：path_runs／geometric_components；几何块按共边邻接，一段内部逐格重复计数排除。据：元件、阻尼；T4"
+      ],
+      "status": "specified",
+      "value": "path_runs"
+    },
+    "original_evidence_count": 252,
+    "aggregate_coverage": [
+      "阻尼连续带核验"
+    ],
+    "aggregate_missing": [
+      "transfer.resume_event",
+      "connection.bridge_first_contact"
+    ]
+  },
+  "load_resource_schema": {
+    "status": "inconclusive",
+    "stop": {
+      "axis": "resource.integer",
+      "event": "PC|a:east:0|b:south:0",
+      "kind": "resource",
+      "partial_events": [],
+      "reason": "时差溢出",
+      "time": null
+    },
+    "budget": {
+      "completed_ticks": 0,
+      "max_sweeps": 100000,
+      "max_ticks": 2
+    },
+    "null_context": [
+      "seed",
+      "parameter_point",
+      "replay_input",
+      "run_record"
+    ],
+    "schema_valid": false,
+    "ordinary_budget_schema_valid": true,
+    "input_differences": [
+      "/initial_state/nonwarehouse/value/inventory/0/contents/0/entered_at/value/value"
+    ]
+  }
+}

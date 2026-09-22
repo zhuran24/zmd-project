@@ -1,0 +1,6 @@
+$ '/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel' seed '/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/规格/r13桥接器例外/装载样例-r13b.json' --config '/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json' --out '/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/规格/r13桥接器例外/seed-output-b.json'
+EXIT_CODE=2
+STDOUT:
+{"out":"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/规格/r13桥接器例外/seed-output-b.json","status":"invalid_input"}
+
+STDERR:

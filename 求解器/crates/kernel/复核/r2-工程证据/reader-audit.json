@@ -1,0 +1,19 @@
+{
+  "status": "通过",
+  "report": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/复核-r2-工程.md",
+  "links_checked": 31,
+  "missing_links": [],
+  "findings": 4,
+  "reader_checks": [
+    "日期和已完成状态一致",
+    "92项Cargo与另行重定向的集成主体分别计数",
+    "性能分循环与完整进程并限定阻塞小样例",
+    "非法输入及漏验不冒称合法输入物理反例",
+    "规格未决不冒充新规则",
+    "代码位置、证据路径及ID一致"
+  ],
+  "scope_unchanged": true,
+  "report_sha256": "096f34ffb51cd1f81e74557761df3d9abc903d742cd0aeede5d5ed1e8f0aba5c",
+  "findings_sha256": "3d07abd4bbe346b0d9ff6c8a55790ca14fcc4af73a5c82fb034b78bfe7e39504",
+  "final_line_references_checked": true
+}

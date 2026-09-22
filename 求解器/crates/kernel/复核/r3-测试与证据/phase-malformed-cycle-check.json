@@ -1,0 +1,38 @@
+{
+  "command": [
+    "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+    "cycle",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/phase-malformed-cycle-input.json",
+    "--config",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+    "--max-ticks",
+    "25",
+    "--out",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/phase-malformed-cycle-result.json"
+  ],
+  "exit_code": 0,
+  "status": "counterexample",
+  "period": {
+    "category": "算术推论",
+    "value": "20"
+  },
+  "input_axis": {
+    "basis": [
+      "受限模型声明；内核输入 §5.2–5.4；open：服从5 tick的到期时刻/残余量，按箱或六格记录；不能未证即量化为五整数相位。据：传输、约束·传输相位"
+    ],
+    "status": "specified",
+    "value": {
+      "kind": "explicit_residuals",
+      "values": [
+        {
+          "remaining": "not-a-Time",
+          "slot": null,
+          "unit": "box"
+        }
+      ]
+    }
+  },
+  "verify_exit_code": 0,
+  "verify_stdout": "{\n  \"checks\": [\n    \"完整结果逐字段重算\",\n    \"循环起点重新装载\",\n    \"P次step_tick事件/状态/台账/闭包逐字段相等\",\n    \"终态完整键相等\"\n  ],\n  \"cycle_replayed\": true,\n  \"period\": 20,\n  \"start_time\": 0,\n  \"status\": \"input_checked\"\n}\n",
+  "verify_stderr": ""
+}

@@ -1,0 +1,27 @@
+{
+  "checked_at": "2026-09-19T18:43:05.455277+00:00",
+  "request_path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入-对参数轴的修改请求.md",
+  "request_sha256": "1ea4d3b37ec4cf3aa4a3fb6101d4c314af9bcd1bf6bd51e10e39ca900ca548d9",
+  "request_sections_incorporated": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "response_path": "/home/zhuran24/zmd-research-fresh/求解器/规格/参数轴-对内核输入请求的答复.md",
+  "axis_count": 96,
+  "shared_interface": {
+    "axis_set_matches": true,
+    "missing_in_input": [],
+    "extra_in_input": [],
+    "lifetime_mismatches": [],
+    "schemas_present": {
+      "event-order-v1": true,
+      "damping-branch-v1": true,
+      "poll-memory-v1": true
+    },
+    "note": "共享文件为运行时观测，不冻结为A线只读；样例及黄金轨迹由C线另验"
+  },
+  "boundary": "A线只维护共享三表及规格正文；C线输入、样例、黄金轨迹和输出schema独立交付，不计为A线修改"
+}

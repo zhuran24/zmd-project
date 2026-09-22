@@ -1,0 +1,5 @@
+{"command": ["/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel", "cycle", "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r5-规格保真与工程-证据/checkpoint.json", "--max-ticks", "25", "--no-record", "--out", "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r5-规格保真与工程-证据/continued.json", "--config", "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"], "cwd": "/home/zhuran24/zmd-research-fresh/求解器", "exit": 0}
+STDOUT
+{"out":"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r5-规格保真与工程-证据/continued.json","status":"counterexample"}
+
+STDERR

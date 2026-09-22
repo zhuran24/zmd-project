@@ -1,0 +1,9 @@
+{
+  "review_sha256": "4c7082a570988c31557b4905ea2772bb1fcd5ce62f4be954946bc6b0937d2c34",
+  "verdict_count": 29,
+  "reasons_and_overall_match_json": true,
+  "links_exist": true,
+  "inputs_unchanged": true,
+  "kernel_steps_executed": 0,
+  "reader_audit_completed": true
+}

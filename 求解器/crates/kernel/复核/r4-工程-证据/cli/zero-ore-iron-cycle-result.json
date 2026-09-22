@@ -1,0 +1,46 @@
+{
+  "budget": {
+    "completed_ticks": 0,
+    "max_sweeps": 100000,
+    "max_ticks": 2
+  },
+  "cycle": null,
+  "execution_mode": "production_abstraction",
+  "level": null,
+  "open_items": [
+    "invalid_input warehouse.external_supply @ instant=0: 蓝铁矿无正库存，不满足两矿持续可得",
+    "技术停止不证明布局无解"
+  ],
+  "parameter_point": null,
+  "port_meeting": "shared_edge_opposite",
+  "reading": {
+    "acceptance_quantifier": "unresolved",
+    "cycle_interpretation": "production_projection",
+    "port_meeting": "shared_edge_opposite",
+    "remaining_assumptions": [
+      "装载未成立，未形成可认证参数点"
+    ],
+    "warehouse_acceptance": "unresolved"
+  },
+  "replay_input": null,
+  "result_id": "cycle:load-stop",
+  "run_record": null,
+  "schema": "kernel-cycle-v1",
+  "seed": null,
+  "status": "invalid_input",
+  "stop": {
+    "axis": "warehouse.external_supply",
+    "event": "instant=0",
+    "kind": "invalid_input",
+    "partial_events": [],
+    "reason": "蓝铁矿无正库存，不满足两矿持续可得",
+    "time": null
+  },
+  "support_domain": {
+    "checks": [],
+    "name": "production_v1",
+    "uncovered": [
+      "完整输入未通过装载"
+    ]
+  }
+}

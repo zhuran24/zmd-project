@@ -1,0 +1,122 @@
+{
+  "status": "pass",
+  "report": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/复核-r5-测试与证据.md",
+  "links_checked": 25,
+  "links": [
+    {
+      "link": "../../../规格/受限转移定义.md",
+      "exists": true
+    },
+    {
+      "link": "../../../规格/内核输出.md",
+      "exists": true
+    },
+    {
+      "link": "../../../规格/对内核的修改请求.md",
+      "exists": true
+    },
+    {
+      "link": "完整性批评-内核-2.md",
+      "exists": true
+    },
+    {
+      "link": "r5-测试与证据/",
+      "exists": true
+    },
+    {
+      "link": "r5-测试与证据/review_probe.py",
+      "exists": true
+    },
+    {
+      "link": "r5-测试与证据/k6_ledger.py",
+      "exists": true
+    },
+    {
+      "link": "r5-测试与证据/storage_audit.py",
+      "exists": true
+    },
+    {
+      "link": "r5-测试与证据/read-only-audit.json",
+      "exists": true
+    },
+    {
+      "link": "r5-测试与证据/snapshot-before.json",
+      "exists": true
+    },
+    {
+      "link": "r5-测试与证据/verify-batch.json",
+      "exists": true
+    },
+    {
+      "link": "r5-测试与证据/verify-batch.log",
+      "exists": true
+    },
+    {
+      "link": "r5-测试与证据/cargo-round6.log",
+      "exists": true
+    },
+    {
+      "link": "r5-测试与证据/benchmark-review.json",
+      "exists": true
+    },
+    {
+      "link": "r5-测试与证据/cycle-manual-audit.json",
+      "exists": true
+    },
+    {
+      "link": "r5-测试与证据/双成品满仓起动试作-search.json",
+      "exists": true
+    },
+    {
+      "link": "r5-测试与证据/双成品满仓起动试作-cycle.json",
+      "exists": true
+    },
+    {
+      "link": "r5-测试与证据/双成品满仓起动试作-verify.json",
+      "exists": true
+    },
+    {
+      "link": "r5-测试与证据/K6-domain.json",
+      "exists": true
+    },
+    {
+      "link": "../evidence/round6/K6布局卡点.md",
+      "exists": true
+    },
+    {
+      "link": "r5-测试与证据/K6-finite-ledger.json",
+      "exists": true
+    },
+    {
+      "link": "r5-测试与证据/K6-ledger-audit.json",
+      "exists": true
+    },
+    {
+      "link": "r5-测试与证据/reference-tamper-results.json",
+      "exists": true
+    },
+    {
+      "link": "../src/cycle_io.rs:38",
+      "exists": true
+    },
+    {
+      "link": "r5-测试与证据/storage-audit.json",
+      "exists": true
+    }
+  ],
+  "checks": [
+    "结论与状态一致：无新增发现，K6及性能仍未决",
+    "已区分当前复跑与原交付测试日志",
+    "单次计时边界明确；12刻与32刻数字不混用",
+    "K6无周期，未用有限前缀代替周期率",
+    "旧体量仅可回核清单；当前字节现场复算",
+    "引文与路径有效；报告可脱离对话单独阅读",
+    "正式文件和被审树829项字节及mtime保持"
+  ],
+  "historical_cycle_status_counts": {
+    "inconclusive": 5,
+    "counterexample": 5
+  },
+  "negative_reference_cases": 7,
+  "report_sha256": "85e2653100c72faf6ac5ffe555cd3c3f78a1de88fa10ac154eef698a720d4cba"
+}

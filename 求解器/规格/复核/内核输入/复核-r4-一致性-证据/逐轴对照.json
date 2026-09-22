@@ -1,0 +1,845 @@
+[
+  {
+    "axis": "time.domain",
+    "disposition": "本版选值",
+    "value": "integer_ticks",
+    "projection_equal": true
+  },
+  {
+    "axis": "time.instant_order",
+    "disposition": "本版选值",
+    "value": "chronological_phases",
+    "projection_equal": true
+  },
+  {
+    "axis": "time.retry_schedule",
+    "disposition": "本版选值",
+    "value": "ordered_sweeps",
+    "projection_equal": true
+  },
+  {
+    "axis": "time.instant_end",
+    "disposition": "本版选值",
+    "value": "repeat_scheduler_state",
+    "projection_equal": true
+  },
+  {
+    "axis": "time.boundary",
+    "disposition": "本版选值",
+    "value": "elapsed_inclusive",
+    "projection_equal": true
+  },
+  {
+    "axis": "time.manufacture_events",
+    "disposition": "本版选值",
+    "value": "completion_before_closure",
+    "projection_equal": true
+  },
+  {
+    "axis": "judgment.order_scope",
+    "disposition": "本版选值",
+    "value": "global",
+    "projection_equal": true
+  },
+  {
+    "axis": "judgment.order",
+    "disposition": "由输入全称量化",
+    "value": {
+      "schema": "event-order-v1",
+      "scope": "global",
+      "template_order": [
+        {
+          "operation": "move",
+          "target": "PC|ore_source:north:1|feed_belt:south:0"
+        },
+        {
+          "operation": "move",
+          "target": "PC|feed_belt:north:0|crusher:south:0"
+        },
+        {
+          "operation": "move",
+          "target": "PC|crusher:north:0|belt_a0:south:0"
+        },
+        {
+          "operation": "move",
+          "target": "PC|crusher:north:2|belt_b0:south:0"
+        },
+        {
+          "operation": "move",
+          "target": "PC|belt_a0:north:0|belt_a1:south:0"
+        },
+        {
+          "operation": "move",
+          "target": "PC|belt_a1:north:0|belt_a2:south:0"
+        },
+        {
+          "operation": "move",
+          "target": "PC|belt_a2:north:0|grinder_a:south:4"
+        },
+        {
+          "operation": "move",
+          "target": "PC|belt_b0:east:0|belt_b1:south:0"
+        },
+        {
+          "operation": "move",
+          "target": "PC|belt_b1:west:0|belt_b2:south:0"
+        },
+        {
+          "operation": "move",
+          "target": "PC|belt_b2:north:0|belt_b3:south:0"
+        },
+        {
+          "operation": "move",
+          "target": "PC|belt_b3:north:0|grinder_b:south:0"
+        },
+        {
+          "operation": "manufacture",
+          "target": "crusher"
+        },
+        {
+          "operation": "manufacture",
+          "target": "grinder_a"
+        },
+        {
+          "operation": "manufacture",
+          "target": "grinder_b"
+        }
+      ],
+      "repeat_embedding": "scan_round_then_template",
+      "instant_overrides": []
+    },
+    "projection_equal": true
+  },
+  {
+    "axis": "judgment.buffer_event_class",
+    "disposition": "本版选值",
+    "value": "manufacture_subactions",
+    "projection_equal": true
+  },
+  {
+    "axis": "polling.initial_cursor",
+    "disposition": "本版选值",
+    "value": "first_connected",
+    "projection_equal": true
+  },
+  {
+    "axis": "polling.split_merge_start",
+    "disposition": "本版选值",
+    "value": "second_cursor",
+    "projection_equal": true
+  },
+  {
+    "axis": "polling.ungraded_blocked",
+    "disposition": "本版选值",
+    "value": "empty_turn",
+    "projection_equal": true
+  },
+  {
+    "axis": "polling.dual_permission",
+    "disposition": "本版选值",
+    "value": "both",
+    "projection_equal": true
+  },
+  {
+    "axis": "polling.memory_scope",
+    "disposition": "本版选值",
+    "value": "per_level",
+    "projection_equal": true
+  },
+  {
+    "axis": "polling.resume",
+    "disposition": "本版选值",
+    "value": "retain_position",
+    "projection_equal": true
+  },
+  {
+    "axis": "polling.eligibility_stage",
+    "disposition": "本版选值",
+    "value": "pre_filter",
+    "projection_equal": true
+  },
+  {
+    "axis": "polling.membership_change",
+    "disposition": "本版选值",
+    "value": "retain_survivors",
+    "projection_equal": true
+  },
+  {
+    "axis": "polling.internal_scope",
+    "disposition": "本版选值",
+    "value": "external_only",
+    "projection_equal": true
+  },
+  {
+    "axis": "polling.direct_peer",
+    "disposition": "已定",
+    "value": "physical_peer",
+    "projection_equal": true
+  },
+  {
+    "axis": "polling.level_tie",
+    "disposition": "本版选值",
+    "value": "fixed_arbitration",
+    "projection_equal": true
+  },
+  {
+    "axis": "damping.belt_component_rule",
+    "disposition": "本版选值",
+    "value": "path_runs",
+    "projection_equal": true
+  },
+  {
+    "axis": "damping.belt_adjacency",
+    "disposition": "本版选值",
+    "value": "shared_edge",
+    "projection_equal": true
+  },
+  {
+    "axis": "damping.branch",
+    "disposition": "由输入全称量化",
+    "value": {
+      "schema": "damping-branch-v1",
+      "fixedness": "fixed_for_run",
+      "choices": [],
+      "evaluations": [],
+      "on_missing": "unresolved"
+    },
+    "projection_equal": true
+  },
+  {
+    "axis": "damping.no_terminal",
+    "disposition": "超出覆盖即停",
+    "value": {
+      "policy": "stop",
+      "trigger": "请求求阻尼而所选路径无下一非运输终点"
+    },
+    "projection_equal": true
+  },
+  {
+    "axis": "connection.build_order",
+    "disposition": "由输入全称量化",
+    "value": "construction.selected_order",
+    "projection_equal": true
+  },
+  {
+    "axis": "connection.order",
+    "disposition": "由输入全称量化",
+    "value": "timeline_connection_history",
+    "projection_equal": true
+  },
+  {
+    "axis": "connection.tie",
+    "disposition": "由输入全称量化",
+    "value": {
+      "kind": "explicit_order",
+      "channels": [
+        "PC|crusher:north:0|belt_a0:south:0",
+        "PC|crusher:north:2|belt_b0:south:0",
+        "PC|ore_source:north:1|feed_belt:south:0",
+        "PC|feed_belt:north:0|crusher:south:0",
+        "PC|belt_a0:north:0|belt_a1:south:0",
+        "PC|belt_a1:north:0|belt_a2:south:0",
+        "PC|belt_a2:north:0|grinder_a:south:4",
+        "PC|belt_b0:east:0|belt_b1:south:0",
+        "PC|belt_b1:west:0|belt_b2:south:0",
+        "PC|belt_b2:north:0|belt_b3:south:0",
+        "PC|belt_b3:north:0|grinder_b:south:0"
+      ]
+    },
+    "projection_equal": true
+  },
+  {
+    "axis": "connection.port_meeting",
+    "disposition": "已定",
+    "value": "shared_edge_opposite",
+    "projection_equal": true
+  },
+  {
+    "axis": "connection.bridge_first_contact",
+    "disposition": "本版选值",
+    "value": "physical_contact",
+    "projection_equal": true
+  },
+  {
+    "axis": "connection.bridge_tie",
+    "disposition": "超出覆盖即停",
+    "value": {
+      "policy": "stop",
+      "trigger": "先接并列或桥互依赖，不能由唯一无环见证定向"
+    },
+    "projection_equal": true
+  },
+  {
+    "axis": "transfer.judgment",
+    "disposition": "已定",
+    "value": "unit",
+    "projection_equal": true
+  },
+  {
+    "axis": "transfer.cooldown_scope",
+    "disposition": "本版选值",
+    "value": "box",
+    "projection_equal": true
+  },
+  {
+    "axis": "transfer.phase",
+    "disposition": "由输入全称量化",
+    "value": {
+      "kind": "explicit_residuals",
+      "values": []
+    },
+    "projection_equal": true
+  },
+  {
+    "axis": "transfer.pause",
+    "disposition": "本版选值",
+    "value": "pause_with_function",
+    "projection_equal": true
+  },
+  {
+    "axis": "transfer.failure_cooldown",
+    "disposition": "本版选值",
+    "value": "every_attempt",
+    "projection_equal": true
+  },
+  {
+    "axis": "transfer.partial_acceptance",
+    "disposition": "本版选值",
+    "value": "all_or_nothing",
+    "projection_equal": true
+  },
+  {
+    "axis": "transfer.resume_event",
+    "disposition": "本版选值",
+    "value": "ready_in_closure",
+    "projection_equal": true
+  },
+  {
+    "axis": "manufacturing.port_slot_relation",
+    "disposition": "已定",
+    "value": "distributed",
+    "projection_equal": true
+  },
+  {
+    "axis": "manufacturing.input_mixing",
+    "disposition": "本版选值",
+    "value": "single_kind",
+    "projection_equal": true
+  },
+  {
+    "axis": "manufacturing.input_capacity_scope",
+    "disposition": "本版选值",
+    "value": "per_slot_total",
+    "projection_equal": true
+  },
+  {
+    "axis": "manufacturing.recipe_match_scope",
+    "disposition": "本版选值",
+    "value": "input_union",
+    "projection_equal": true
+  },
+  {
+    "axis": "manufacturing.recipe_completeness",
+    "disposition": "本版选值",
+    "value": "full_batch",
+    "projection_equal": true
+  },
+  {
+    "axis": "manufacturing.recipe_selection",
+    "disposition": "由输入全称量化",
+    "value": {
+      "kind": "explicit_order",
+      "recipes": [
+        "粉碎-源矿",
+        "粉碎-蓝铁块",
+        "粉碎-荞花",
+        "粉碎-砂叶",
+        "精炼-蓝铁矿",
+        "精炼-致密蓝铁",
+        "精炼-蓝铁粉末",
+        "研磨-致密蓝铁",
+        "研磨-致密源石",
+        "研磨-细磨荞花",
+        "塑形-钢质瓶",
+        "配件-钢制零件",
+        "种植-荞花",
+        "种植-砂叶",
+        "采种-荞花",
+        "采种-砂叶",
+        "封装-电池",
+        "灌装-胶囊"
+      ]
+    },
+    "projection_equal": true
+  },
+  {
+    "axis": "manufacturing.recipe_lock_time",
+    "disposition": "本版选值",
+    "value": "on_gate_open",
+    "projection_equal": true
+  },
+  {
+    "axis": "manufacturing.input_slot_selection",
+    "disposition": "由输入全称量化",
+    "value": {
+      "kind": "explicit_order",
+      "slots": [
+        "crusher:input:0",
+        "grinder_a:input:0",
+        "grinder_a:input:1",
+        "grinder_b:input:0",
+        "grinder_b:input:1"
+      ]
+    },
+    "projection_equal": true
+  },
+  {
+    "axis": "manufacturing.empty_slot_identity",
+    "disposition": "本版选值",
+    "value": "release_on_empty",
+    "projection_equal": true
+  },
+  {
+    "axis": "manufacturing.input_collection",
+    "disposition": "本版选值",
+    "value": "atomic_batch",
+    "projection_equal": true
+  },
+  {
+    "axis": "manufacturing.buffer_power_gate",
+    "disposition": "本版选值",
+    "value": "manufacturing_only",
+    "projection_equal": true
+  },
+  {
+    "axis": "manufacturing.output_blocked",
+    "disposition": "已定",
+    "value": "retain_whole_batch",
+    "projection_equal": true
+  },
+  {
+    "axis": "gate.identity_subject",
+    "disposition": "本版选值",
+    "value": "candidate_item",
+    "projection_equal": true
+  },
+  {
+    "axis": "gate.identity_recovery",
+    "disposition": "本版选值",
+    "value": "latched",
+    "projection_equal": true
+  },
+  {
+    "axis": "gate.window_recovery",
+    "disposition": "已定",
+    "value": "on_expiry_if_other_guards",
+    "projection_equal": true
+  },
+  {
+    "axis": "gate.total_recovery",
+    "disposition": "本版选值",
+    "value": "latched",
+    "projection_equal": true
+  },
+  {
+    "axis": "gate.window_clock",
+    "disposition": "本版选值",
+    "value": "wall_clock",
+    "projection_equal": true
+  },
+  {
+    "axis": "gate.reconnect_record",
+    "disposition": "本版选值",
+    "value": "original_build_record",
+    "projection_equal": true
+  },
+  {
+    "axis": "gate.limit_requires_identity",
+    "disposition": "已定",
+    "value": true,
+    "projection_equal": true
+  },
+  {
+    "axis": "gate.counter_edit",
+    "disposition": "超出覆盖即停",
+    "value": {
+      "policy": "stop",
+      "trigger": "调试改身份/累计/窗口设定并需确定计数后效"
+    },
+    "projection_equal": true
+  },
+  {
+    "axis": "gate.counter_start",
+    "disposition": "本版选值",
+    "value": "since_build",
+    "projection_equal": true
+  },
+  {
+    "axis": "gate.cancel_limit",
+    "disposition": "超出覆盖即停",
+    "value": {
+      "policy": "stop",
+      "trigger": "取消已设限额"
+    },
+    "projection_equal": true
+  },
+  {
+    "axis": "offline.order_domain",
+    "disposition": "超出覆盖即停",
+    "value": {
+      "policy": "stop",
+      "trigger": "请求构造完整离线重排域或离线事件出现"
+    },
+    "projection_equal": true
+  },
+  {
+    "axis": "offline.events",
+    "disposition": "超出覆盖即停",
+    "value": {
+      "policy": "stop",
+      "trigger": "出现任何离线/上线事件"
+    },
+    "projection_equal": true
+  },
+  {
+    "axis": "offline.cursor_effect",
+    "disposition": "超出覆盖即停",
+    "value": {
+      "policy": "stop",
+      "trigger": "离线需更新轮询状态"
+    },
+    "projection_equal": true
+  },
+  {
+    "axis": "offline.inventory_effect",
+    "disposition": "超出覆盖即停",
+    "value": {
+      "policy": "stop",
+      "trigger": "离线需更新库存"
+    },
+    "projection_equal": true
+  },
+  {
+    "axis": "offline.progress_effect",
+    "disposition": "超出覆盖即停",
+    "value": {
+      "policy": "stop",
+      "trigger": "离线需更新进度/时钟"
+    },
+    "projection_equal": true
+  },
+  {
+    "axis": "offline.direction_effect",
+    "disposition": "超出覆盖即停",
+    "value": {
+      "policy": "stop",
+      "trigger": "离线需更新桥方向"
+    },
+    "projection_equal": true
+  },
+  {
+    "axis": "offline.gate_total_effect",
+    "disposition": "超出覆盖即停",
+    "value": {
+      "policy": "stop",
+      "trigger": "离线需更新累计计数"
+    },
+    "projection_equal": true
+  },
+  {
+    "axis": "offline.gate_window_effect",
+    "disposition": "超出覆盖即停",
+    "value": {
+      "policy": "stop",
+      "trigger": "离线需更新窗口计数"
+    },
+    "projection_equal": true
+  },
+  {
+    "axis": "offline.gate_window_start_effect",
+    "disposition": "超出覆盖即停",
+    "value": {
+      "policy": "stop",
+      "trigger": "离线需更新窗口起点"
+    },
+    "projection_equal": true
+  },
+  {
+    "axis": "initialization.warehouse_anchor",
+    "disposition": "由输入全称量化",
+    "value": {
+      "kind": "input_anchor",
+      "event": "build_0",
+      "side": "after"
+    },
+    "projection_equal": true
+  },
+  {
+    "axis": "initialization.other_inventory",
+    "disposition": "由输入全称量化",
+    "value": {
+      "kind": "synthetic_seed",
+      "path": "initial_state.nonwarehouse",
+      "inventory_assumption": "empty_on_build"
+    },
+    "projection_equal": true
+  },
+  {
+    "axis": "initialization.switches",
+    "disposition": "由输入全称量化",
+    "value": {
+      "kind": "input_settings",
+      "path": "settings",
+      "initial_values": "explicit_at_build"
+    },
+    "projection_equal": true
+  },
+  {
+    "axis": "initialization.build_timing",
+    "disposition": "由输入全称量化",
+    "value": {
+      "kind": "input_history",
+      "path": "timeline"
+    },
+    "projection_equal": true
+  },
+  {
+    "axis": "initialization.debug_actions",
+    "disposition": "超出覆盖即停",
+    "value": {
+      "policy": "stop",
+      "trigger": "运行区间内出现玩家单位操作（种子之前的动作只核证据引用）"
+    },
+    "projection_equal": true
+  },
+  {
+    "axis": "initialization.rotation_stage",
+    "disposition": "已定",
+    "value": "build_and_debug",
+    "projection_equal": true
+  },
+  {
+    "axis": "initialization.rebuild_inventory",
+    "disposition": "超出覆盖即停",
+    "value": {
+      "policy": "stop",
+      "trigger": "拆除或重建需确定库存/进度去向"
+    },
+    "projection_equal": true
+  },
+  {
+    "axis": "initialization.debug_end",
+    "disposition": "由输入全称量化",
+    "value": {
+      "kind": "input_witness",
+      "event": "debug_end",
+      "not_a_timing_strategy": true
+    },
+    "projection_equal": true
+  },
+  {
+    "axis": "warehouse.capacity",
+    "disposition": "已定",
+    "value": {
+      "value": "80000",
+      "category": "条文直引"
+    },
+    "projection_equal": true
+  },
+  {
+    "axis": "warehouse.acceptance",
+    "disposition": "本版选值",
+    "value": "capacity_and_path",
+    "projection_equal": true
+  },
+  {
+    "axis": "warehouse.acceptance_quantifier",
+    "disposition": "本版选值",
+    "value": "per_instant",
+    "projection_equal": true
+  },
+  {
+    "axis": "warehouse.withdrawal_policy",
+    "disposition": "超出覆盖即停",
+    "value": {
+      "policy": "stop",
+      "trigger": "需要执行拿取策略或据此认证完整周期"
+    },
+    "projection_equal": true
+  },
+  {
+    "axis": "warehouse.withdrawal_timing",
+    "disposition": "超出覆盖即停",
+    "value": {
+      "policy": "stop",
+      "trigger": "运行区间出现玩家拿取事件；策略与实际时距未实现"
+    },
+    "projection_equal": true
+  },
+  {
+    "axis": "warehouse.external_supply",
+    "disposition": "由输入全称量化",
+    "value": {
+      "kind": "explicit_ore_history",
+      "events": [],
+      "through": {
+        "kind": "rational",
+        "value": {
+          "value": "3",
+          "category": "候选"
+        }
+      },
+      "basis": "初始80000足够本次4件出库；区间外补给历史不在本次回放范围"
+    },
+    "projection_equal": true
+  },
+  {
+    "axis": "warehouse.delivery_count",
+    "disposition": "已定",
+    "value": "actual_inbound",
+    "projection_equal": true
+  },
+  {
+    "axis": "warehouse.empty_slot_identity",
+    "disposition": "本版选值",
+    "value": "retain_history",
+    "projection_equal": true
+  },
+  {
+    "axis": "warehouse.periodic_lift",
+    "disposition": "超出覆盖即停",
+    "value": {
+      "policy": "stop",
+      "trigger": "把省略仓库/绝对时钟等的抽象周期提升为完整基地周期"
+    },
+    "projection_equal": true
+  },
+  {
+    "axis": "bridge.inventory_scope",
+    "disposition": "已定",
+    "value": "two_independent_axis_slots",
+    "projection_equal": true
+  },
+  {
+    "axis": "bridge.capacity",
+    "disposition": "本版选值",
+    "value": 1,
+    "projection_equal": true
+  },
+  {
+    "axis": "bridge.scheduling_scope",
+    "disposition": "已定",
+    "value": "unit",
+    "projection_equal": true
+  },
+  {
+    "axis": "power.cell_rule",
+    "disposition": "本版选值",
+    "value": "positive_area",
+    "projection_equal": true
+  },
+  {
+    "axis": "residence.nontransport",
+    "disposition": "本版选值",
+    "value": "zero",
+    "projection_equal": true
+  },
+  {
+    "axis": "cascade.buffer",
+    "disposition": "本版选值",
+    "value": "same_instant",
+    "projection_equal": true
+  },
+  {
+    "axis": "polling.split_merge_scope",
+    "disposition": "本版选值",
+    "value": "per_level",
+    "projection_equal": true
+  },
+  {
+    "axis": "polling.split_merge_singleton",
+    "disposition": "本版选值",
+    "value": "sole_member",
+    "projection_equal": true
+  },
+  {
+    "axis": "polling.both_failure",
+    "disposition": "本版选值",
+    "value": "advance_authorized",
+    "projection_equal": true
+  },
+  {
+    "axis": "connection.belt_shape",
+    "disposition": "由输入全称量化",
+    "value": {
+      "kind": "layout_build_history",
+      "values": [
+        {
+          "unit": "feed_belt",
+          "build_event": "build_13",
+          "shape": "straight"
+        },
+        {
+          "unit": "belt_a0",
+          "build_event": "build_6",
+          "shape": "straight"
+        },
+        {
+          "unit": "belt_a1",
+          "build_event": "build_7",
+          "shape": "straight"
+        },
+        {
+          "unit": "belt_a2",
+          "build_event": "build_8",
+          "shape": "straight"
+        },
+        {
+          "unit": "belt_b0",
+          "build_event": "build_9",
+          "shape": "turn_left"
+        },
+        {
+          "unit": "belt_b1",
+          "build_event": "build_10",
+          "shape": "turn_right"
+        },
+        {
+          "unit": "belt_b2",
+          "build_event": "build_11",
+          "shape": "straight"
+        },
+        {
+          "unit": "belt_b3",
+          "build_event": "build_12",
+          "shape": "straight"
+        }
+      ]
+    },
+    "projection_equal": true
+  },
+  {
+    "axis": "initialization.belt_shape_lifecycle",
+    "disposition": "本版选值",
+    "value": "fixed_between_builds",
+    "projection_equal": true
+  },
+  {
+    "axis": "gate.concurrent_expiry",
+    "disposition": "本版选值",
+    "value": "atomic_batch",
+    "projection_equal": true
+  },
+  {
+    "axis": "manufacturing.recipe_quantity_match",
+    "disposition": "本版选值",
+    "value": "at_least",
+    "projection_equal": true
+  },
+  {
+    "axis": "manufacturing.recipe_extra_items",
+    "disposition": "本版选值",
+    "value": "allow",
+    "projection_equal": true
+  }
+]

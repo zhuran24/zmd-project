@@ -1,0 +1,11 @@
+{
+  "report": "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/否证-r4-2.md",
+  "links_resolve": true,
+  "protected_file_count": 21,
+  "originals_unchanged": true,
+  "case_count": 6,
+  "verdicts": {
+    "C3-r4-L1-01": false,
+    "C3-r4-L3-1": false
+  }
+}

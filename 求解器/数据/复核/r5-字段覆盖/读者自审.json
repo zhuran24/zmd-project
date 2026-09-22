@@ -1,0 +1,17 @@
+{
+  "status": "通过",
+  "report": "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复核-r5-字段覆盖.md",
+  "report_sha256": "e20ff5cc5767ac66d92badb7e2f9a2ed994c33e9330f6f74b83da31ee2e19dfa",
+  "links_checked": 19,
+  "findings": [],
+  "protected_files": 55,
+  "changed": [],
+  "reader_review": [
+    "全文重读",
+    "当前与历史范围分开",
+    "字段与代码位置可追溯",
+    "数字口径相符",
+    "有限轨迹未冒称全称证书",
+    "全部本地链接有效"
+  ]
+}

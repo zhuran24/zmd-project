@@ -1,0 +1,26 @@
+{
+  "status": "pass",
+  "report_path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/复核-r3-工程.md",
+  "report_sha256": "1c70b80ce0830426f2e744c08f8f0aecc7ba30000676bad4a84d0d4b361125e1",
+  "report_characters": 8846,
+  "findings_count": 3,
+  "broken_links": [],
+  "new_evidence_extension_violations": [],
+  "checks": [
+    "头部与3条发现一致",
+    "两阻断一重要与结果JSON一致",
+    "缓存结论限定固定参数支持域",
+    "资源停止与游戏反例分开",
+    "110项本席测试不冒称原113项全重跑",
+    "26记录4626时刻与10循环结果口径一致",
+    "独立周期重跑范围明确为环带20刻",
+    "空target与编译文件分开陈述",
+    "历史遗留不归因为第五轮新增",
+    "两历史结果并发变化单列",
+    "链接真实存在",
+    "新证据未含编译产物"
+  ],
+  "final_json_notes_contains_report_verbatim": true,
+  "read_unique_files": 326,
+  "read_unique_bytes": 2189538009
+}

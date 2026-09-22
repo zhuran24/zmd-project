@@ -1,0 +1,577 @@
+{
+  "baseline": {
+    "record_accepted": true,
+    "schema_check": true,
+    "summaries": [
+      {
+        "tick": "0",
+        "warehouse_ore": "79999",
+        "nonempty": {
+          "feed_belt:transport:0": [
+            {
+              "item": "源矿",
+              "quantity": "1",
+              "entered_at": "0"
+            }
+          ]
+        },
+        "crusher_phase": "idle",
+        "crusher_remaining": null,
+        "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+        "completed_batches": "0"
+      },
+      {
+        "tick": "1",
+        "warehouse_ore": "79998",
+        "nonempty": {
+          "crusher:buffer:0": [
+            {
+              "item": "源矿",
+              "quantity": "1",
+              "entered_at": "1"
+            }
+          ],
+          "feed_belt:transport:0": [
+            {
+              "item": "源矿",
+              "quantity": "1",
+              "entered_at": "1"
+            }
+          ]
+        },
+        "crusher_phase": "working",
+        "crusher_remaining": "1",
+        "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+        "completed_batches": "0"
+      },
+      {
+        "tick": "2",
+        "warehouse_ore": "79997",
+        "nonempty": {
+          "crusher:buffer:0": [
+            {
+              "item": "源矿",
+              "quantity": "1",
+              "entered_at": "2"
+            }
+          ],
+          "feed_belt:transport:0": [
+            {
+              "item": "源矿",
+              "quantity": "1",
+              "entered_at": "2"
+            }
+          ],
+          "belt_a0:transport:0": [
+            {
+              "item": "源石粉末",
+              "quantity": "1",
+              "entered_at": "2"
+            }
+          ]
+        },
+        "crusher_phase": "working",
+        "crusher_remaining": "1",
+        "crusher_next_output": "PC|crusher:north:2|belt_b0:south:0",
+        "completed_batches": "1"
+      },
+      {
+        "tick": "3",
+        "warehouse_ore": "79996",
+        "nonempty": {
+          "crusher:buffer:0": [
+            {
+              "item": "源矿",
+              "quantity": "1",
+              "entered_at": "3"
+            }
+          ],
+          "feed_belt:transport:0": [
+            {
+              "item": "源矿",
+              "quantity": "1",
+              "entered_at": "3"
+            }
+          ],
+          "belt_a1:transport:0": [
+            {
+              "item": "源石粉末",
+              "quantity": "1",
+              "entered_at": "3"
+            }
+          ],
+          "belt_b0:transport:0": [
+            {
+              "item": "源石粉末",
+              "quantity": "1",
+              "entered_at": "3"
+            }
+          ]
+        },
+        "crusher_phase": "working",
+        "crusher_remaining": "1",
+        "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+        "completed_batches": "2"
+      }
+    ],
+    "fingerprint_count": 22
+  },
+  "warehouse_collision": {
+    "check": {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json",
+      "status": "完整运行输入检查通过（有限合成子集）",
+      "snapshot": "built_layout",
+      "anchor": {
+        "event": "blueprint_complete",
+        "side": "after"
+      },
+      "units": 14,
+      "occupied_cells": 153,
+      "physical_channels": 11,
+      "buffer_channels": 8,
+      "bridge_first_peers": [],
+      "counts_category": "算术推论（候选布局）",
+      "validation_category": "实测（工具）"
+    },
+    "changes": [
+      {
+        "path": "$.settings.warehouse_assignments[0].slot",
+        "before": "warehouse_0",
+        "after": "crusher:input:0"
+      },
+      {
+        "path": "$.settings.warehouse_assignments[1].slot",
+        "before": "warehouse_0",
+        "after": "crusher:input:0"
+      },
+      {
+        "path": "$.settings.warehouse_assignments[2].slot",
+        "before": "warehouse_0",
+        "after": "crusher:input:0"
+      },
+      {
+        "path": "$.settings.warehouse_assignments[3].slot",
+        "before": "warehouse_0",
+        "after": "crusher:input:0"
+      },
+      {
+        "path": "$.settings.warehouse_assignments[4].slot",
+        "before": "warehouse_0",
+        "after": "crusher:input:0"
+      },
+      {
+        "path": "$.settings.warehouse_assignments[5].slot",
+        "before": "warehouse_0",
+        "after": "crusher:input:0"
+      },
+      {
+        "path": "$.settings.warehouse_assignments[6].slot",
+        "before": "warehouse_0",
+        "after": "crusher:input:0"
+      },
+      {
+        "path": "$.initial_state.warehouse.slots[0].slot",
+        "before": "warehouse_0",
+        "after": "crusher:input:0"
+      },
+      {
+        "path": "$.initial_state.nonwarehouse.value.warehouse.slots[0].slot",
+        "before": "warehouse_0",
+        "after": "crusher:input:0"
+      }
+    ],
+    "states": [
+      {
+        "time": {
+          "kind": "rational",
+          "value": {
+            "value": "0",
+            "category": "候选"
+          }
+        },
+        "warehouse_ore": 79999,
+        "crusher_input": [],
+        "crusher_buffer": []
+      },
+      {
+        "time": {
+          "kind": "rational",
+          "value": {
+            "value": "1",
+            "category": "候选"
+          }
+        },
+        "warehouse_ore": 79997,
+        "crusher_input": [
+          {
+            "item": "源矿",
+            "quantity": {
+              "value": "1",
+              "category": "算术推论"
+            },
+            "entered_at": {
+              "kind": "rational",
+              "value": {
+                "value": "1",
+                "category": "候选"
+              }
+            }
+          }
+        ],
+        "crusher_buffer": [
+          {
+            "item": "源矿",
+            "quantity": {
+              "value": "1",
+              "category": "算术推论"
+            },
+            "entered_at": {
+              "kind": "rational",
+              "value": {
+                "value": "1",
+                "category": "候选"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "time": {
+          "kind": "rational",
+          "value": {
+            "value": "2",
+            "category": "候选"
+          }
+        },
+        "warehouse_ore": 79995,
+        "crusher_input": [
+          {
+            "item": "源矿",
+            "quantity": {
+              "value": "2",
+              "category": "算术推论"
+            },
+            "entered_at": {
+              "kind": "rational",
+              "value": {
+                "value": "1",
+                "category": "候选"
+              }
+            }
+          }
+        ],
+        "crusher_buffer": [
+          {
+            "item": "源矿",
+            "quantity": {
+              "value": "1",
+              "category": "算术推论"
+            },
+            "entered_at": {
+              "kind": "rational",
+              "value": {
+                "value": "2",
+                "category": "候选"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "time": {
+          "kind": "rational",
+          "value": {
+            "value": "3",
+            "category": "候选"
+          }
+        },
+        "warehouse_ore": 79993,
+        "crusher_input": [
+          {
+            "item": "源矿",
+            "quantity": {
+              "value": "3",
+              "category": "算术推论"
+            },
+            "entered_at": {
+              "kind": "rational",
+              "value": {
+                "value": "1",
+                "category": "候选"
+              }
+            }
+          }
+        ],
+        "crusher_buffer": [
+          {
+            "item": "源矿",
+            "quantity": {
+              "value": "1",
+              "category": "算术推论"
+            },
+            "entered_at": {
+              "kind": "rational",
+              "value": {
+                "value": "3",
+                "category": "候选"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "actual_withdrawals": 4,
+    "golden_rejection": "黄金轨迹与有限重算不同"
+  },
+  "event_collision": {
+    "changes": [
+      {
+        "path": "$.timeline.events[13].id",
+        "before": "build_13",
+        "after": "J|0|0|0"
+      },
+      {
+        "path": "$.timeline.relations[12].after",
+        "before": "build_13",
+        "after": "J|0|0|0"
+      },
+      {
+        "path": "$.timeline.relations[13].before",
+        "before": "build_13",
+        "after": "J|0|0|0"
+      },
+      {
+        "path": "$.timeline.connection_events[2].cause",
+        "before": "build_13",
+        "after": "J|0|0|0"
+      },
+      {
+        "path": "$.timeline.connection_events[2].construction_basis.value.target_build",
+        "before": "build_13",
+        "after": "J|0|0|0"
+      },
+      {
+        "path": "$.timeline.connection_events[2].construction_basis.value.later_build",
+        "before": "build_13",
+        "after": "J|0|0|0"
+      },
+      {
+        "path": "$.timeline.connection_events[3].cause",
+        "before": "build_13",
+        "after": "J|0|0|0"
+      },
+      {
+        "path": "$.timeline.connection_events[3].construction_basis.value.source_build",
+        "before": "build_13",
+        "after": "J|0|0|0"
+      },
+      {
+        "path": "$.timeline.connection_events[3].construction_basis.value.later_build",
+        "before": "build_13",
+        "after": "J|0|0|0"
+      },
+      {
+        "path": "$.construction.moments[13].event",
+        "before": "build_13",
+        "after": "J|0|0|0"
+      },
+      {
+        "path": "$.parameters.fixed.connection.belt_shape.value.values[0].build_event",
+        "before": "build_13",
+        "after": "J|0|0|0"
+      },
+      {
+        "path": "$.initial_state.nonwarehouse.value.semantic_context.parameter_values[14].value.value.values[0].build_event",
+        "before": "build_13",
+        "after": "J|0|0|0"
+      }
+    ],
+    "process_returncode": 0,
+    "validation": {
+      "validate_record": true,
+      "schema_check": true,
+      "collisions": [
+        {
+          "history": {
+            "id": "J|0|0|0",
+            "kind": "build",
+            "time": {
+              "kind": "rational",
+              "value": {
+                "value": "0",
+                "category": "候选"
+              }
+            }
+          },
+          "runtime": {
+            "event": "J|0|0|0",
+            "operation": "move",
+            "target": "PC|ore_source:north:1|feed_belt:south:0",
+            "outcome": "success",
+            "detail": "",
+            "basis": [
+              "规则 L13、L15–17、L23–25、L29–32",
+              "约束端口速率",
+              "受限模型声明 polling.both_failure",
+              "内核输入 §5.2、§6.3"
+            ]
+          }
+        }
+      ],
+      "dependencies": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-2-证据/事件碰撞隔离副本/求解器/数据/样例/混做粉碎机两下游.json",
+          "match": true
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-2-证据/事件碰撞隔离副本/求解器/数据/正式静态目录.json",
+          "match": true
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-2-证据/事件碰撞隔离副本/求解器/规格/选择点参数轴.md",
+          "match": true
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-2-证据/事件碰撞隔离副本/求解器/规格/受限模型声明.md",
+          "match": true
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-2-证据/事件碰撞隔离副本/求解器/规格/内核配置-v1.json",
+          "match": true
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-2-证据/事件碰撞隔离副本/求解器/数据/样例/kernel_profile_v1参数赋值.json",
+          "match": true
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-2-证据/事件碰撞隔离副本/求解器/数据/样例/混做粉碎机两下游-黄金轨迹.json",
+          "match": true
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-2-证据/事件碰撞隔离副本/求解器/数据/样例/混做粉碎机两下游-黄金轨迹.md",
+          "match": true
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-2-证据/事件碰撞隔离副本/求解器/规格/受限转移定义.md",
+          "match": true
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-2-证据/事件碰撞隔离副本/求解器/规格/运行语义.md",
+          "match": true
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-2-证据/事件碰撞隔离副本/求解器/规格/内核输入.md",
+          "match": true
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-2-证据/事件碰撞隔离副本/求解器/规格/内核输出.md",
+          "match": true
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-2-证据/事件碰撞隔离副本/求解器/规格/内核输出.schema.json",
+          "match": true
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-2-证据/事件碰撞隔离副本/求解器/数据/样例/check_golden_trace.py",
+          "match": true
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-2-证据/事件碰撞隔离副本/求解器/数据/样例/runtime_example.py",
+          "match": true
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-2-证据/事件碰撞隔离副本/求解器/数据/样例/check_examples.py",
+          "match": true
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-2-证据/事件碰撞隔离副本/求解器/数据/样例/runtime_record.py",
+          "match": true
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-2-证据/事件碰撞隔离副本/求解器/数据/样例/event_order.py",
+          "match": true
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-2-证据/事件碰撞隔离副本/求解器/数据/样例/test_runtime_input.py",
+          "match": true
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-2-证据/事件碰撞隔离副本/《明日方舟：终末地》游戏规则.txt",
+          "match": true
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-2-证据/事件碰撞隔离副本/求解任务.txt",
+          "match": true
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-2-证据/事件碰撞隔离副本/求解约束.txt",
+          "match": true
+        }
+      ],
+      "output_sha256": "998c53ac9df2e3c6741a168d02d17ada165cb669cc5ad39d23cc3bf9cbca3ae4"
+    }
+  },
+  "order_coverage": {
+    "finite_table_t325": "unsupported: 有限排序表未覆盖本时刻",
+    "desired_prefix": [
+      "AB",
+      "BA",
+      "BA",
+      "AB",
+      "BA",
+      "AB",
+      "AB",
+      "AB",
+      "BA"
+    ],
+    "periodic_probes": [
+      {
+        "width": "5",
+        "origin": "0",
+        "slot_count": 2,
+        "Q": 10,
+        "n": 16,
+        "encoded_same": true,
+        "required_same": false
+      },
+      {
+        "width": "7/3",
+        "origin": "-2/7",
+        "slot_count": 3,
+        "Q": 21,
+        "n": 32,
+        "encoded_same": true,
+        "required_same": false
+      },
+      {
+        "width": "13/17",
+        "origin": "3/2",
+        "slot_count": 4,
+        "Q": 52,
+        "n": 64,
+        "encoded_same": true,
+        "required_same": false
+      }
+    ]
+  },
+  "manifest": {
+    "file_count": 42,
+    "hash_count": 41,
+    "mismatches": [
+      {
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录.json",
+        "declared": "97562091ec78c7994ea0a53a07778260878c2c172a4dce9c6c32de2bfea05e47",
+        "actual": "b664ed551271e1fbe895821de5041a8c96d29e97d51da353114abf5a403734aa",
+        "match": false
+      },
+      {
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md",
+        "declared": "08991e07b792f82ecf6f98a0bcbd663ecc7caa2b534ac5379c6805a14f78c413",
+        "actual": "a180570ac7507e9711eeeb6d0dbcc21205aa136c8694634d0cb2d7e536b2486b",
+        "match": false
+      }
+    ],
+    "matches": 39
+  },
+  "source_changes": []
+}

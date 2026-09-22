@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "finding_count": 1,
+  "summary_matches_report": true,
+  "local_links_exist": true,
+  "reviewed_files_still_unchanged": true,
+  "evidence_extensions_allowed": true,
+  "report_sha256": "9aef9c5f6fed906edffcfb3c6fa964b63a0eb6b21e5121136f43c950393707f6"
+}

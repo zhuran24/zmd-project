@@ -1,0 +1,2515 @@
+[
+  {
+    "file": "桥接器双通路.json",
+    "units": 7,
+    "occupied_cells": 122,
+    "physical_channels": [
+      {
+        "id": "PC|south_box:north:2|bridge:south:0",
+        "source_port": "south_box:north:2",
+        "target_port": "bridge:south:0"
+      },
+      {
+        "id": "PC|bridge:north:0|north_box:south:0",
+        "source_port": "bridge:north:0",
+        "target_port": "north_box:south:0"
+      },
+      {
+        "id": "PC|bridge:east:0|east_box:south:0",
+        "source_port": "bridge:east:0",
+        "target_port": "east_box:south:0"
+      },
+      {
+        "id": "PC|west_box:north:2|bridge:west:0",
+        "source_port": "west_box:north:2",
+        "target_port": "bridge:west:0"
+      }
+    ],
+    "buffer_channels": [],
+    "positive_area_power": {
+      "south_box": [
+        "power"
+      ],
+      "north_box": [
+        "power"
+      ],
+      "west_box": [],
+      "east_box": [
+        "power"
+      ]
+    },
+    "ports": {
+      "core:south:1": {
+        "unit": "core",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "103/2",
+          "50"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "core"
+      },
+      "core:south:2": {
+        "unit": "core",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "105/2",
+          "50"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "core"
+      },
+      "core:south:3": {
+        "unit": "core",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "107/2",
+          "50"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "core"
+      },
+      "core:south:4": {
+        "unit": "core",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "109/2",
+          "50"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "core"
+      },
+      "core:south:5": {
+        "unit": "core",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "111/2",
+          "50"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "core"
+      },
+      "core:south:6": {
+        "unit": "core",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "113/2",
+          "50"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "core"
+      },
+      "core:south:7": {
+        "unit": "core",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "115/2",
+          "50"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "core"
+      },
+      "core:north:1": {
+        "unit": "core",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "103/2",
+          "59"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "core"
+      },
+      "core:north:2": {
+        "unit": "core",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "105/2",
+          "59"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "core"
+      },
+      "core:north:3": {
+        "unit": "core",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "107/2",
+          "59"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "core"
+      },
+      "core:north:4": {
+        "unit": "core",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "109/2",
+          "59"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "core"
+      },
+      "core:north:5": {
+        "unit": "core",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "111/2",
+          "59"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "core"
+      },
+      "core:north:6": {
+        "unit": "core",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "113/2",
+          "59"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "core"
+      },
+      "core:north:7": {
+        "unit": "core",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "115/2",
+          "59"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "core"
+      },
+      "core:west:1": {
+        "unit": "core",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "50",
+          "103/2"
+        ],
+        "normal": [
+          -1,
+          0
+        ],
+        "family": "core"
+      },
+      "core:west:4": {
+        "unit": "core",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "50",
+          "109/2"
+        ],
+        "normal": [
+          -1,
+          0
+        ],
+        "family": "core"
+      },
+      "core:west:7": {
+        "unit": "core",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "50",
+          "115/2"
+        ],
+        "normal": [
+          -1,
+          0
+        ],
+        "family": "core"
+      },
+      "core:east:1": {
+        "unit": "core",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "59",
+          "103/2"
+        ],
+        "normal": [
+          1,
+          0
+        ],
+        "family": "core"
+      },
+      "core:east:4": {
+        "unit": "core",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "59",
+          "109/2"
+        ],
+        "normal": [
+          1,
+          0
+        ],
+        "family": "core"
+      },
+      "core:east:7": {
+        "unit": "core",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "59",
+          "115/2"
+        ],
+        "normal": [
+          1,
+          0
+        ],
+        "family": "core"
+      },
+      "south_box:south:0": {
+        "unit": "south_box",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "19/2",
+          "7"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "storage"
+      },
+      "south_box:south:1": {
+        "unit": "south_box",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "21/2",
+          "7"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "storage"
+      },
+      "south_box:south:2": {
+        "unit": "south_box",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "23/2",
+          "7"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "storage"
+      },
+      "south_box:north:0": {
+        "unit": "south_box",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "19/2",
+          "10"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "storage"
+      },
+      "south_box:north:1": {
+        "unit": "south_box",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "21/2",
+          "10"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "storage"
+      },
+      "south_box:north:2": {
+        "unit": "south_box",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "23/2",
+          "10"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "storage"
+      },
+      "bridge:south:0": {
+        "unit": "bridge",
+        "role": "input",
+        "axis": "vertical",
+        "point": [
+          "23/2",
+          "10"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "transport"
+      },
+      "bridge:north:0": {
+        "unit": "bridge",
+        "role": "output",
+        "axis": "vertical",
+        "point": [
+          "23/2",
+          "11"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "transport"
+      },
+      "bridge:west:0": {
+        "unit": "bridge",
+        "role": "input",
+        "axis": "horizontal",
+        "point": [
+          "11",
+          "21/2"
+        ],
+        "normal": [
+          -1,
+          0
+        ],
+        "family": "transport"
+      },
+      "bridge:east:0": {
+        "unit": "bridge",
+        "role": "output",
+        "axis": "horizontal",
+        "point": [
+          "12",
+          "21/2"
+        ],
+        "normal": [
+          1,
+          0
+        ],
+        "family": "transport"
+      },
+      "north_box:south:0": {
+        "unit": "north_box",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "23/2",
+          "11"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "storage"
+      },
+      "north_box:south:1": {
+        "unit": "north_box",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "25/2",
+          "11"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "storage"
+      },
+      "north_box:south:2": {
+        "unit": "north_box",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "27/2",
+          "11"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "storage"
+      },
+      "north_box:north:0": {
+        "unit": "north_box",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "23/2",
+          "14"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "storage"
+      },
+      "north_box:north:1": {
+        "unit": "north_box",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "25/2",
+          "14"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "storage"
+      },
+      "north_box:north:2": {
+        "unit": "north_box",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "27/2",
+          "14"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "storage"
+      },
+      "west_box:south:0": {
+        "unit": "west_box",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "8",
+          "25/2"
+        ],
+        "normal": [
+          -1,
+          0
+        ],
+        "family": "storage"
+      },
+      "west_box:south:1": {
+        "unit": "west_box",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "8",
+          "23/2"
+        ],
+        "normal": [
+          -1,
+          0
+        ],
+        "family": "storage"
+      },
+      "west_box:south:2": {
+        "unit": "west_box",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "8",
+          "21/2"
+        ],
+        "normal": [
+          -1,
+          0
+        ],
+        "family": "storage"
+      },
+      "west_box:north:0": {
+        "unit": "west_box",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "11",
+          "25/2"
+        ],
+        "normal": [
+          1,
+          0
+        ],
+        "family": "storage"
+      },
+      "west_box:north:1": {
+        "unit": "west_box",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "11",
+          "23/2"
+        ],
+        "normal": [
+          1,
+          0
+        ],
+        "family": "storage"
+      },
+      "west_box:north:2": {
+        "unit": "west_box",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "11",
+          "21/2"
+        ],
+        "normal": [
+          1,
+          0
+        ],
+        "family": "storage"
+      },
+      "east_box:south:0": {
+        "unit": "east_box",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "12",
+          "21/2"
+        ],
+        "normal": [
+          -1,
+          0
+        ],
+        "family": "storage"
+      },
+      "east_box:south:1": {
+        "unit": "east_box",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "12",
+          "19/2"
+        ],
+        "normal": [
+          -1,
+          0
+        ],
+        "family": "storage"
+      },
+      "east_box:south:2": {
+        "unit": "east_box",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "12",
+          "17/2"
+        ],
+        "normal": [
+          -1,
+          0
+        ],
+        "family": "storage"
+      },
+      "east_box:north:0": {
+        "unit": "east_box",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "15",
+          "21/2"
+        ],
+        "normal": [
+          1,
+          0
+        ],
+        "family": "storage"
+      },
+      "east_box:north:1": {
+        "unit": "east_box",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "15",
+          "19/2"
+        ],
+        "normal": [
+          1,
+          0
+        ],
+        "family": "storage"
+      },
+      "east_box:north:2": {
+        "unit": "east_box",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "15",
+          "17/2"
+        ],
+        "normal": [
+          1,
+          0
+        ],
+        "family": "storage"
+      }
+    }
+  },
+  {
+    "file": "分流器三路轮询.json",
+    "units": 9,
+    "occupied_cells": 128,
+    "physical_channels": [
+      {
+        "id": "PC|south_box:north:2|splitter:south:0",
+        "source_port": "south_box:north:2",
+        "target_port": "splitter:south:0"
+      },
+      {
+        "id": "PC|splitter:north:0|north_box:south:0",
+        "source_port": "splitter:north:0",
+        "target_port": "north_box:south:0"
+      },
+      {
+        "id": "PC|splitter:east:0|east_box:south:0",
+        "source_port": "splitter:east:0",
+        "target_port": "east_box:south:0"
+      },
+      {
+        "id": "PC|splitter:west:0|west_box:south:0",
+        "source_port": "splitter:west:0",
+        "target_port": "west_box:south:0"
+      }
+    ],
+    "buffer_channels": [],
+    "positive_area_power": {
+      "south_box": [
+        "power"
+      ],
+      "north_box": [
+        "power"
+      ],
+      "east_box": [
+        "power"
+      ],
+      "west_box": [
+        "power"
+      ]
+    },
+    "ports": {
+      "core:south:1": {
+        "unit": "core",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "103/2",
+          "50"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "core"
+      },
+      "core:south:2": {
+        "unit": "core",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "105/2",
+          "50"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "core"
+      },
+      "core:south:3": {
+        "unit": "core",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "107/2",
+          "50"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "core"
+      },
+      "core:south:4": {
+        "unit": "core",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "109/2",
+          "50"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "core"
+      },
+      "core:south:5": {
+        "unit": "core",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "111/2",
+          "50"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "core"
+      },
+      "core:south:6": {
+        "unit": "core",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "113/2",
+          "50"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "core"
+      },
+      "core:south:7": {
+        "unit": "core",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "115/2",
+          "50"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "core"
+      },
+      "core:north:1": {
+        "unit": "core",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "103/2",
+          "59"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "core"
+      },
+      "core:north:2": {
+        "unit": "core",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "105/2",
+          "59"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "core"
+      },
+      "core:north:3": {
+        "unit": "core",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "107/2",
+          "59"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "core"
+      },
+      "core:north:4": {
+        "unit": "core",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "109/2",
+          "59"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "core"
+      },
+      "core:north:5": {
+        "unit": "core",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "111/2",
+          "59"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "core"
+      },
+      "core:north:6": {
+        "unit": "core",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "113/2",
+          "59"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "core"
+      },
+      "core:north:7": {
+        "unit": "core",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "115/2",
+          "59"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "core"
+      },
+      "core:west:1": {
+        "unit": "core",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "50",
+          "103/2"
+        ],
+        "normal": [
+          -1,
+          0
+        ],
+        "family": "core"
+      },
+      "core:west:4": {
+        "unit": "core",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "50",
+          "109/2"
+        ],
+        "normal": [
+          -1,
+          0
+        ],
+        "family": "core"
+      },
+      "core:west:7": {
+        "unit": "core",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "50",
+          "115/2"
+        ],
+        "normal": [
+          -1,
+          0
+        ],
+        "family": "core"
+      },
+      "core:east:1": {
+        "unit": "core",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "59",
+          "103/2"
+        ],
+        "normal": [
+          1,
+          0
+        ],
+        "family": "core"
+      },
+      "core:east:4": {
+        "unit": "core",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "59",
+          "109/2"
+        ],
+        "normal": [
+          1,
+          0
+        ],
+        "family": "core"
+      },
+      "core:east:7": {
+        "unit": "core",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "59",
+          "115/2"
+        ],
+        "normal": [
+          1,
+          0
+        ],
+        "family": "core"
+      },
+      "south_box:south:0": {
+        "unit": "south_box",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "39/2",
+          "17"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "storage"
+      },
+      "south_box:south:1": {
+        "unit": "south_box",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "41/2",
+          "17"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "storage"
+      },
+      "south_box:south:2": {
+        "unit": "south_box",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "43/2",
+          "17"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "storage"
+      },
+      "south_box:north:0": {
+        "unit": "south_box",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "39/2",
+          "20"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "storage"
+      },
+      "south_box:north:1": {
+        "unit": "south_box",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "41/2",
+          "20"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "storage"
+      },
+      "south_box:north:2": {
+        "unit": "south_box",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "43/2",
+          "20"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "storage"
+      },
+      "splitter:south:0": {
+        "unit": "splitter",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "43/2",
+          "20"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "transport"
+      },
+      "splitter:north:0": {
+        "unit": "splitter",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "43/2",
+          "21"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "transport"
+      },
+      "splitter:east:0": {
+        "unit": "splitter",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "22",
+          "41/2"
+        ],
+        "normal": [
+          1,
+          0
+        ],
+        "family": "transport"
+      },
+      "splitter:west:0": {
+        "unit": "splitter",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "21",
+          "41/2"
+        ],
+        "normal": [
+          -1,
+          0
+        ],
+        "family": "transport"
+      },
+      "north_box:south:0": {
+        "unit": "north_box",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "43/2",
+          "21"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "storage"
+      },
+      "north_box:south:1": {
+        "unit": "north_box",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "45/2",
+          "21"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "storage"
+      },
+      "north_box:south:2": {
+        "unit": "north_box",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "47/2",
+          "21"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "storage"
+      },
+      "north_box:north:0": {
+        "unit": "north_box",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "43/2",
+          "24"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "storage"
+      },
+      "north_box:north:1": {
+        "unit": "north_box",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "45/2",
+          "24"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "storage"
+      },
+      "north_box:north:2": {
+        "unit": "north_box",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "47/2",
+          "24"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "storage"
+      },
+      "east_box:south:0": {
+        "unit": "east_box",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "22",
+          "41/2"
+        ],
+        "normal": [
+          -1,
+          0
+        ],
+        "family": "storage"
+      },
+      "east_box:south:1": {
+        "unit": "east_box",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "22",
+          "39/2"
+        ],
+        "normal": [
+          -1,
+          0
+        ],
+        "family": "storage"
+      },
+      "east_box:south:2": {
+        "unit": "east_box",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "22",
+          "37/2"
+        ],
+        "normal": [
+          -1,
+          0
+        ],
+        "family": "storage"
+      },
+      "east_box:north:0": {
+        "unit": "east_box",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "25",
+          "41/2"
+        ],
+        "normal": [
+          1,
+          0
+        ],
+        "family": "storage"
+      },
+      "east_box:north:1": {
+        "unit": "east_box",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "25",
+          "39/2"
+        ],
+        "normal": [
+          1,
+          0
+        ],
+        "family": "storage"
+      },
+      "east_box:north:2": {
+        "unit": "east_box",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "25",
+          "37/2"
+        ],
+        "normal": [
+          1,
+          0
+        ],
+        "family": "storage"
+      },
+      "west_box:south:0": {
+        "unit": "west_box",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "21",
+          "41/2"
+        ],
+        "normal": [
+          1,
+          0
+        ],
+        "family": "storage"
+      },
+      "west_box:south:1": {
+        "unit": "west_box",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "21",
+          "43/2"
+        ],
+        "normal": [
+          1,
+          0
+        ],
+        "family": "storage"
+      },
+      "west_box:south:2": {
+        "unit": "west_box",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "21",
+          "45/2"
+        ],
+        "normal": [
+          1,
+          0
+        ],
+        "family": "storage"
+      },
+      "west_box:north:0": {
+        "unit": "west_box",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "18",
+          "41/2"
+        ],
+        "normal": [
+          -1,
+          0
+        ],
+        "family": "storage"
+      },
+      "west_box:north:1": {
+        "unit": "west_box",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "18",
+          "43/2"
+        ],
+        "normal": [
+          -1,
+          0
+        ],
+        "family": "storage"
+      },
+      "west_box:north:2": {
+        "unit": "west_box",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "18",
+          "45/2"
+        ],
+        "normal": [
+          -1,
+          0
+        ],
+        "family": "storage"
+      },
+      "bottom_source:north:1": {
+        "unit": "bottom_source",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "9/2",
+          "1"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "storage"
+      },
+      "left_source:north:1": {
+        "unit": "left_source",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "1",
+          "9/2"
+        ],
+        "normal": [
+          1,
+          0
+        ],
+        "family": "storage"
+      }
+    }
+  },
+  {
+    "file": "混做粉碎机两下游.json",
+    "units": 14,
+    "occupied_cells": 153,
+    "physical_channels": [
+      {
+        "id": "PC|crusher:north:0|belt_a0:south:0",
+        "source_port": "crusher:north:0",
+        "target_port": "belt_a0:south:0"
+      },
+      {
+        "id": "PC|crusher:north:2|belt_b0:south:0",
+        "source_port": "crusher:north:2",
+        "target_port": "belt_b0:south:0"
+      },
+      {
+        "id": "PC|ore_source:north:1|feed_belt:south:0",
+        "source_port": "ore_source:north:1",
+        "target_port": "feed_belt:south:0"
+      },
+      {
+        "id": "PC|feed_belt:north:0|crusher:south:0",
+        "source_port": "feed_belt:north:0",
+        "target_port": "crusher:south:0"
+      },
+      {
+        "id": "PC|belt_a0:north:0|belt_a1:south:0",
+        "source_port": "belt_a0:north:0",
+        "target_port": "belt_a1:south:0"
+      },
+      {
+        "id": "PC|belt_a1:north:0|belt_a2:south:0",
+        "source_port": "belt_a1:north:0",
+        "target_port": "belt_a2:south:0"
+      },
+      {
+        "id": "PC|belt_a2:north:0|grinder_a:south:4",
+        "source_port": "belt_a2:north:0",
+        "target_port": "grinder_a:south:4"
+      },
+      {
+        "id": "PC|belt_b0:east:0|belt_b1:south:0",
+        "source_port": "belt_b0:east:0",
+        "target_port": "belt_b1:south:0"
+      },
+      {
+        "id": "PC|belt_b1:west:0|belt_b2:south:0",
+        "source_port": "belt_b1:west:0",
+        "target_port": "belt_b2:south:0"
+      },
+      {
+        "id": "PC|belt_b2:north:0|belt_b3:south:0",
+        "source_port": "belt_b2:north:0",
+        "target_port": "belt_b3:south:0"
+      },
+      {
+        "id": "PC|belt_b3:north:0|grinder_b:south:0",
+        "source_port": "belt_b3:north:0",
+        "target_port": "grinder_b:south:0"
+      }
+    ],
+    "buffer_channels": [
+      {
+        "id": "BC|crusher:input:0|crusher:buffer:0",
+        "source_slot": "crusher:input:0",
+        "target_slot": "crusher:buffer:0"
+      },
+      {
+        "id": "BC|crusher:buffer:0|crusher:output:0",
+        "source_slot": "crusher:buffer:0",
+        "target_slot": "crusher:output:0"
+      },
+      {
+        "id": "BC|grinder_a:input:0|grinder_a:buffer:0",
+        "source_slot": "grinder_a:input:0",
+        "target_slot": "grinder_a:buffer:0"
+      },
+      {
+        "id": "BC|grinder_a:input:1|grinder_a:buffer:0",
+        "source_slot": "grinder_a:input:1",
+        "target_slot": "grinder_a:buffer:0"
+      },
+      {
+        "id": "BC|grinder_a:buffer:0|grinder_a:output:0",
+        "source_slot": "grinder_a:buffer:0",
+        "target_slot": "grinder_a:output:0"
+      },
+      {
+        "id": "BC|grinder_b:input:0|grinder_b:buffer:0",
+        "source_slot": "grinder_b:input:0",
+        "target_slot": "grinder_b:buffer:0"
+      },
+      {
+        "id": "BC|grinder_b:input:1|grinder_b:buffer:0",
+        "source_slot": "grinder_b:input:1",
+        "target_slot": "grinder_b:buffer:0"
+      },
+      {
+        "id": "BC|grinder_b:buffer:0|grinder_b:output:0",
+        "source_slot": "grinder_b:buffer:0",
+        "target_slot": "grinder_b:output:0"
+      }
+    ],
+    "positive_area_power": {
+      "crusher": [
+        "power"
+      ],
+      "grinder_a": [
+        "power"
+      ],
+      "grinder_b": [
+        "power"
+      ]
+    },
+    "ports": {
+      "core:south:1": {
+        "unit": "core",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "103/2",
+          "50"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "core"
+      },
+      "core:south:2": {
+        "unit": "core",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "105/2",
+          "50"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "core"
+      },
+      "core:south:3": {
+        "unit": "core",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "107/2",
+          "50"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "core"
+      },
+      "core:south:4": {
+        "unit": "core",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "109/2",
+          "50"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "core"
+      },
+      "core:south:5": {
+        "unit": "core",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "111/2",
+          "50"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "core"
+      },
+      "core:south:6": {
+        "unit": "core",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "113/2",
+          "50"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "core"
+      },
+      "core:south:7": {
+        "unit": "core",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "115/2",
+          "50"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "core"
+      },
+      "core:north:1": {
+        "unit": "core",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "103/2",
+          "59"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "core"
+      },
+      "core:north:2": {
+        "unit": "core",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "105/2",
+          "59"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "core"
+      },
+      "core:north:3": {
+        "unit": "core",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "107/2",
+          "59"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "core"
+      },
+      "core:north:4": {
+        "unit": "core",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "109/2",
+          "59"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "core"
+      },
+      "core:north:5": {
+        "unit": "core",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "111/2",
+          "59"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "core"
+      },
+      "core:north:6": {
+        "unit": "core",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "113/2",
+          "59"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "core"
+      },
+      "core:north:7": {
+        "unit": "core",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "115/2",
+          "59"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "core"
+      },
+      "core:west:1": {
+        "unit": "core",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "50",
+          "103/2"
+        ],
+        "normal": [
+          -1,
+          0
+        ],
+        "family": "core"
+      },
+      "core:west:4": {
+        "unit": "core",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "50",
+          "109/2"
+        ],
+        "normal": [
+          -1,
+          0
+        ],
+        "family": "core"
+      },
+      "core:west:7": {
+        "unit": "core",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "50",
+          "115/2"
+        ],
+        "normal": [
+          -1,
+          0
+        ],
+        "family": "core"
+      },
+      "core:east:1": {
+        "unit": "core",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "59",
+          "103/2"
+        ],
+        "normal": [
+          1,
+          0
+        ],
+        "family": "core"
+      },
+      "core:east:4": {
+        "unit": "core",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "59",
+          "109/2"
+        ],
+        "normal": [
+          1,
+          0
+        ],
+        "family": "core"
+      },
+      "core:east:7": {
+        "unit": "core",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "59",
+          "115/2"
+        ],
+        "normal": [
+          1,
+          0
+        ],
+        "family": "core"
+      },
+      "crusher:south:0": {
+        "unit": "crusher",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "61/2",
+          "2"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "manufacturing"
+      },
+      "crusher:south:1": {
+        "unit": "crusher",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "63/2",
+          "2"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "manufacturing"
+      },
+      "crusher:south:2": {
+        "unit": "crusher",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "65/2",
+          "2"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "manufacturing"
+      },
+      "crusher:north:0": {
+        "unit": "crusher",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "61/2",
+          "5"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "manufacturing"
+      },
+      "crusher:north:1": {
+        "unit": "crusher",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "63/2",
+          "5"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "manufacturing"
+      },
+      "crusher:north:2": {
+        "unit": "crusher",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "65/2",
+          "5"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "manufacturing"
+      },
+      "grinder_a:south:0": {
+        "unit": "grinder_a",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "53/2",
+          "8"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "manufacturing"
+      },
+      "grinder_a:south:1": {
+        "unit": "grinder_a",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "55/2",
+          "8"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "manufacturing"
+      },
+      "grinder_a:south:2": {
+        "unit": "grinder_a",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "57/2",
+          "8"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "manufacturing"
+      },
+      "grinder_a:south:3": {
+        "unit": "grinder_a",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "59/2",
+          "8"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "manufacturing"
+      },
+      "grinder_a:south:4": {
+        "unit": "grinder_a",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "61/2",
+          "8"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "manufacturing"
+      },
+      "grinder_a:south:5": {
+        "unit": "grinder_a",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "63/2",
+          "8"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "manufacturing"
+      },
+      "grinder_a:north:0": {
+        "unit": "grinder_a",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "53/2",
+          "12"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "manufacturing"
+      },
+      "grinder_a:north:1": {
+        "unit": "grinder_a",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "55/2",
+          "12"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "manufacturing"
+      },
+      "grinder_a:north:2": {
+        "unit": "grinder_a",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "57/2",
+          "12"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "manufacturing"
+      },
+      "grinder_a:north:3": {
+        "unit": "grinder_a",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "59/2",
+          "12"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "manufacturing"
+      },
+      "grinder_a:north:4": {
+        "unit": "grinder_a",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "61/2",
+          "12"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "manufacturing"
+      },
+      "grinder_a:north:5": {
+        "unit": "grinder_a",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "63/2",
+          "12"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "manufacturing"
+      },
+      "grinder_b:south:0": {
+        "unit": "grinder_b",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "67/2",
+          "8"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "manufacturing"
+      },
+      "grinder_b:south:1": {
+        "unit": "grinder_b",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "69/2",
+          "8"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "manufacturing"
+      },
+      "grinder_b:south:2": {
+        "unit": "grinder_b",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "71/2",
+          "8"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "manufacturing"
+      },
+      "grinder_b:south:3": {
+        "unit": "grinder_b",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "73/2",
+          "8"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "manufacturing"
+      },
+      "grinder_b:south:4": {
+        "unit": "grinder_b",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "75/2",
+          "8"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "manufacturing"
+      },
+      "grinder_b:south:5": {
+        "unit": "grinder_b",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "77/2",
+          "8"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "manufacturing"
+      },
+      "grinder_b:north:0": {
+        "unit": "grinder_b",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "67/2",
+          "12"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "manufacturing"
+      },
+      "grinder_b:north:1": {
+        "unit": "grinder_b",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "69/2",
+          "12"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "manufacturing"
+      },
+      "grinder_b:north:2": {
+        "unit": "grinder_b",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "71/2",
+          "12"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "manufacturing"
+      },
+      "grinder_b:north:3": {
+        "unit": "grinder_b",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "73/2",
+          "12"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "manufacturing"
+      },
+      "grinder_b:north:4": {
+        "unit": "grinder_b",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "75/2",
+          "12"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "manufacturing"
+      },
+      "grinder_b:north:5": {
+        "unit": "grinder_b",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "77/2",
+          "12"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "manufacturing"
+      },
+      "ore_source:north:1": {
+        "unit": "ore_source",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "61/2",
+          "1"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "storage"
+      },
+      "feed_belt:south:0": {
+        "unit": "feed_belt",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "61/2",
+          "1"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "transport"
+      },
+      "feed_belt:north:0": {
+        "unit": "feed_belt",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "61/2",
+          "2"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "transport"
+      },
+      "belt_a0:south:0": {
+        "unit": "belt_a0",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "61/2",
+          "5"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "transport"
+      },
+      "belt_a0:north:0": {
+        "unit": "belt_a0",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "61/2",
+          "6"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "transport"
+      },
+      "belt_a1:south:0": {
+        "unit": "belt_a1",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "61/2",
+          "6"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "transport"
+      },
+      "belt_a1:north:0": {
+        "unit": "belt_a1",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "61/2",
+          "7"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "transport"
+      },
+      "belt_a2:south:0": {
+        "unit": "belt_a2",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "61/2",
+          "7"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "transport"
+      },
+      "belt_a2:north:0": {
+        "unit": "belt_a2",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "61/2",
+          "8"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "transport"
+      },
+      "belt_b0:south:0": {
+        "unit": "belt_b0",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "65/2",
+          "5"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "transport"
+      },
+      "belt_b0:east:0": {
+        "unit": "belt_b0",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "33",
+          "11/2"
+        ],
+        "normal": [
+          1,
+          0
+        ],
+        "family": "transport"
+      },
+      "belt_b1:south:0": {
+        "unit": "belt_b1",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "33",
+          "11/2"
+        ],
+        "normal": [
+          -1,
+          0
+        ],
+        "family": "transport"
+      },
+      "belt_b1:west:0": {
+        "unit": "belt_b1",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "67/2",
+          "6"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "transport"
+      },
+      "belt_b2:south:0": {
+        "unit": "belt_b2",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "67/2",
+          "6"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "transport"
+      },
+      "belt_b2:north:0": {
+        "unit": "belt_b2",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "67/2",
+          "7"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "transport"
+      },
+      "belt_b3:south:0": {
+        "unit": "belt_b3",
+        "role": "input",
+        "axis": null,
+        "point": [
+          "67/2",
+          "7"
+        ],
+        "normal": [
+          0,
+          -1
+        ],
+        "family": "transport"
+      },
+      "belt_b3:north:0": {
+        "unit": "belt_b3",
+        "role": "output",
+        "axis": null,
+        "point": [
+          "67/2",
+          "8"
+        ],
+        "normal": [
+          0,
+          1
+        ],
+        "family": "transport"
+      }
+    }
+  }
+]

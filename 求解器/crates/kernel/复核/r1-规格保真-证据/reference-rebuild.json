@@ -1,0 +1,56 @@
+[
+  {
+    "command": [
+      "rustc",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs",
+      "--crate-name",
+      "kernel",
+      "--crate-type",
+      "rlib",
+      "--edition=2021",
+      "--extern",
+      "serde=/home/zhuran24/zmd-research-fresh/求解器/target/debug/deps/libserde-bda080004035699a.rlib",
+      "--extern",
+      "serde_json=/home/zhuran24/zmd-research-fresh/求解器/target/debug/deps/libserde_json-0ab88e76c2088d71.rlib",
+      "-L",
+      "dependency=/home/zhuran24/zmd-research-fresh/求解器/target/debug/deps",
+      "-o",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-规格保真-证据/libkernel.rlib"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "rustc",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/reference.rs",
+      "--crate-name",
+      "review_reference",
+      "--test",
+      "--extern",
+      "kernel=/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-规格保真-证据/libkernel.rlib",
+      "--edition=2021",
+      "--extern",
+      "serde=/home/zhuran24/zmd-research-fresh/求解器/target/debug/deps/libserde-bda080004035699a.rlib",
+      "--extern",
+      "serde_json=/home/zhuran24/zmd-research-fresh/求解器/target/debug/deps/libserde_json-0ab88e76c2088d71.rlib",
+      "-L",
+      "dependency=/home/zhuran24/zmd-research-fresh/求解器/target/debug/deps",
+      "-o",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-规格保真-证据/reference-tests"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-规格保真-证据/reference-tests",
+      "--test-threads=1"
+    ],
+    "exit_code": 0,
+    "stdout": "\nrunning 3 tests\ntest crusher_reference ... ok\ntest live_python_differential ... ok\ntest splitter_reference ... ok\n\ntest result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.62s\n\n",
+    "stderr": ""
+  }
+]

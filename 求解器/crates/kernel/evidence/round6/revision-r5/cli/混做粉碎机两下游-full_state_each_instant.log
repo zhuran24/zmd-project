@@ -1,0 +1,5 @@
+{"command": ["/home/zhuran24/zmd-research-fresh/求解器/target/debug/kernel", "verify-record", "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/cli/reference-package/混做粉碎机两下游-full_state_each_instant.json", "--config", "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"], "cwd": "/home/zhuran24/zmd-research-fresh", "exit": 0}
+{
+  "status": "input_checked",
+  "verified_record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/cli/reference-package/混做粉碎机两下游-full_state_each_instant.json"
+}

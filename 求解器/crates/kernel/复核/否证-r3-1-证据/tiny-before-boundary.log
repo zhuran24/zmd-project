@@ -1,0 +1,24 @@
+{
+  "name": "tiny-before-boundary",
+  "command": [
+    "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+    "run",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r3-1-证据/tiny-before-boundary-input.json",
+    "--config",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+    "--ticks",
+    "1",
+    "--out",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r3-1-证据/tiny-before-boundary.json"
+  ],
+  "exit_code": 0,
+  "output_exists": true,
+  "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r3-1-证据/tiny-before-boundary.json\",\"status\":\"completed\"}\n",
+  "stderr": "",
+  "status": "completed",
+  "stop": null,
+  "open_items": [
+    "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+    "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+  ]
+}

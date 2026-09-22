@@ -1,0 +1,130 @@
+{
+  "status": "passed",
+  "axes": 15,
+  "small_graph_validation": {
+    "graphs": 1100,
+    "permutations": 124470,
+    "status": "passed"
+  },
+  "counts": [
+    {
+      "name": "混做粉碎机两下游",
+      "counts": {
+        "semantic_sweep": 55296,
+        "operational_conservative": 87178291200
+      },
+      "tie": 1,
+      "branch": {
+        "nontransport_output_max_levels": {
+          "core": 0,
+          "crusher": 1,
+          "grinder_a": 0,
+          "grinder_b": 0,
+          "power": 0,
+          "ore_source": 1
+        },
+        "gate_input_edges": [],
+        "forks": [],
+        "full_geometric_table_product": 1,
+        "no_damping_query_in_any_gate_subgraph": true,
+        "behavior_representatives_if_no_query": 1
+      }
+    },
+    {
+      "name": "分流器三路轮询",
+      "counts": {
+        "semantic_sweep": 27323180236800,
+        "operational_conservative": 104657538585600
+      },
+      "tie": 8,
+      "branch": {
+        "nontransport_output_max_levels": {
+          "core": 0,
+          "south_box": 1,
+          "north_box": 0,
+          "east_box": 0,
+          "west_box": 0,
+          "power": 0,
+          "ore_source": 1,
+          "probe_left_source": 1,
+          "probe_bottom_source": 1,
+          "probe_box": 0
+        },
+        "gate_input_edges": [
+          [
+            "PC|probe_left:west:0|probe_gate_a:south:0",
+            "probe_left",
+            "probe_gate_a"
+          ],
+          [
+            "PC|probe_bottom:east:0|probe_gate_b:south:0",
+            "probe_bottom",
+            "probe_gate_b"
+          ]
+        ],
+        "forks": [
+          {
+            "unit": "splitter",
+            "degree": 3,
+            "full_tables": 24,
+            "permanent_outgoing": [
+              "PC|splitter:east:0|east_box:south:0",
+              "PC|splitter:north:0|north_box:south:0",
+              "PC|splitter:west:0|west_box:south:0"
+            ],
+            "mutable_outgoing": [],
+            "static_subset_projection_tables": 3,
+            "exhaustive_projection_checks": 24
+          },
+          {
+            "unit": "feed_splitter",
+            "degree": 1,
+            "full_tables": 1,
+            "permanent_outgoing": [
+              "PC|feed_splitter:north:0|south_box:south:1"
+            ],
+            "mutable_outgoing": [],
+            "static_subset_projection_tables": 1,
+            "exhaustive_projection_checks": 1
+          },
+          {
+            "unit": "probe_left",
+            "degree": 2,
+            "full_tables": 2,
+            "permanent_outgoing": [
+              "PC|probe_left:north:0|probe_merger:south:0"
+            ],
+            "mutable_outgoing": [
+              "PC|probe_left:west:0|probe_gate_a:south:0"
+            ],
+            "static_subset_projection_tables": 2,
+            "exhaustive_projection_checks": 2
+          },
+          {
+            "unit": "probe_bottom",
+            "degree": 2,
+            "full_tables": 2,
+            "permanent_outgoing": [
+              "PC|probe_bottom:north:0|probe_merger:east:0"
+            ],
+            "mutable_outgoing": [
+              "PC|probe_bottom:east:0|probe_gate_b:south:0"
+            ],
+            "static_subset_projection_tables": 2,
+            "exhaustive_projection_checks": 2
+          }
+        ],
+        "full_geometric_table_product": 96,
+        "no_damping_query_in_any_gate_subgraph": true,
+        "behavior_representatives_if_no_query": 1
+      }
+    }
+  ],
+  "upstream_fingerprint_changes": [
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/transition.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/polling.rs"
+  ]
+}

@@ -1,0 +1,62 @@
+[
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/生产循环环带-周期证书-kernel.json",
+    "status": "counterexample",
+    "has_cycle": true,
+    "period": 20,
+    "endpoint_key_and_ledger_checks": "pass"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点核验-周期证书-kernel.json",
+    "status": "inconclusive",
+    "has_cycle": false
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点闭环核验-周期证书-kernel.json",
+    "status": "inconclusive",
+    "has_cycle": false
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点循环种子核验-周期证书-kernel.json",
+    "status": "inconclusive",
+    "has_cycle": false
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序0核验-周期证书-kernel.json",
+    "status": "counterexample",
+    "has_cycle": true,
+    "period": 190,
+    "endpoint_key_and_ledger_checks": "pass"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序1核验-周期证书-kernel.json",
+    "status": "counterexample",
+    "has_cycle": true,
+    "period": 190,
+    "endpoint_key_and_ledger_checks": "pass"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序2核验-周期证书-kernel.json",
+    "status": "inconclusive",
+    "has_cycle": false
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序3核验-周期证书-kernel.json",
+    "status": "counterexample",
+    "has_cycle": true,
+    "period": 105,
+    "endpoint_key_and_ledger_checks": "pass"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序4核验-周期证书-kernel.json",
+    "status": "counterexample",
+    "has_cycle": true,
+    "period": 395,
+    "endpoint_key_and_ledger_checks": "pass"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序5核验-周期证书-kernel.json",
+    "status": "inconclusive",
+    "has_cycle": false
+  }
+]

@@ -1,0 +1,20 @@
+{
+  "name": "tiny-expired-embedded-record-verification",
+  "command": [
+    "/home/zhuran24/zmd-research-fresh/求解器/target/debug/kernel",
+    "verify-record",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/tiny-expired-embedded-record.json",
+    "--config",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+    "--out",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/tiny-expired-embedded-record-verification.json"
+  ],
+  "exit_code": 2,
+  "status": "invalid_input",
+  "schema": "kernel-output-v3",
+  "open_items": [
+    "invalid_input input @ W|5|gate: 执行的操作/目标/时刻与待事件登记不符"
+  ],
+  "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/tiny-expired-embedded-record-verification.json\",\"status\":\"invalid_input\"}\n",
+  "stderr": ""
+}

@@ -1,0 +1,33 @@
+{
+  "findings": [
+    {
+      "id": "KR-r1-L3-01",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/input.rs:208–214",
+      "claim": "layout.snapshots 的成员未经对象校验即写入 base，非法布尔成员会触发 panic，无法返回带位置的 Stop 或停止记录。",
+      "evidence": "《内核输入》§2 规定 snapshots[] 每项为对象；《受限转移定义》§1 要求错误返回 invalid(field, reason)。将原粉碎机样例的 snapshots 改为 [false]，release CLI 实测退出101，stderr 为 cannot access key \"base\" in JSON boolean，指定的输出记录未生成，见 r1-工程-evidence/input-probes.json 的 snapshot-bool。",
+      "severity": "重要"
+    },
+    {
+      "id": "KR-r1-L3-02",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/input.rs:500–525；/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/polling.rs:337–360",
+      "claim": "准入口 settings.gates[].item 未校验为物品名或 null，数值7被接受并参与身份比较，运行仍返回 completed。",
+      "evidence": "《内核输入》§4 明定 item 为物品名或 null，规则 L64 的设定对象为某一种物品；将分流器样例 probe_gate_a.item 改为7，执行2刻返回0/completed，并将该门标为 identity_mismatch、total_received=0，见 r1-工程-evidence/input-probes.json 的 gate-numeric-item。",
+      "severity": "重要"
+    },
+    {
+      "id": "KR-r1-L3-03",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/interfaces.rs:227–249",
+      "claim": "initial_state.warehouse 只核六物种及满额数量，不核格标签唯一性，两个物种共用同一初始格标签仍被接受。",
+      "evidence": "《内核输入》§2.3 明定仓库标签唯一且该义务适用于任务初值，§6 要求六类满额物品分别一格；将初始仓库第二行的 slot 改为首行标签 warehouse_0，保留完整运行种子不变，执行2刻返回0/completed，见 r1-工程-evidence/input-probes.json 的 initial-duplicate-slot。",
+      "severity": "重要"
+    },
+    {
+      "id": "KR-r1-L3-04",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/verify_outputs.py:18–46",
+      "claim": "落盘验收只检查记录自报的指纹和三个认证布尔值，删除全部指纹或伪造完成批次数仍可通过验收。",
+      "evidence": "《内核输出》§1 要求依赖清单由校验器重建并严格比较、禁止删依赖绕过；§3 要求 validation_scope 逐字段严格比较。两份原全状态记录分别改成 fingerprints=[] 或 manufacturing_cycles_completed.value=\"999\"，四个副本均被 verify() 接受，见 r1-工程-evidence/record-verifier-probes.json。",
+      "severity": "重要"
+    }
+  ],
+  "notes": "完整报告：/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/复核-r1-工程.md。独立复跑79项测试通过、Clippy零警告；1000 tick release推进循环0.495244862秒，含装载进程0.506659727秒，后段阻塞。"
+}

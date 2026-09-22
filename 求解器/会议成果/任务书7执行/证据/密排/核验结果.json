@@ -1,0 +1,515 @@
+{
+  "status": "pass",
+  "scope": "geometry, source binding, arithmetic; direct arguments in markdown",
+  "checks": [
+    {
+      "name": "all occupied cells unique and within base",
+      "pass_": true,
+      "details": 697
+    },
+    {
+      "name": "saved complete ports equal independently generated ports",
+      "pass_": true,
+      "details": 542
+    },
+    {
+      "name": "all automatically formed channels equal planned full graph",
+      "pass_": true,
+      "details": {
+        "actual": 182,
+        "expected": 182,
+        "extra": [],
+        "missing": []
+      }
+    },
+    {
+      "name": "no duplicate physical channel edges",
+      "pass_": true,
+      "details": 182
+    },
+    {
+      "name": "all fourteen powered units have positive-area coverage",
+      "pass_": true,
+      "details": {
+        "M174": [
+          "POWER_荞花_a"
+        ],
+        "M201": [
+          "POWER_荞花_a",
+          "POWER_荞花_b"
+        ],
+        "M057": [
+          "POWER_荞花_b"
+        ],
+        "M195": [
+          "POWER_砂叶_a"
+        ],
+        "M212": [
+          "POWER_砂叶_a",
+          "POWER_砂叶_b"
+        ],
+        "M068": [
+          "POWER_砂叶_b"
+        ],
+        "M213": [
+          "POWER_电池输出_0"
+        ],
+        "M214": [
+          "POWER_电池输出_0"
+        ],
+        "M215": [
+          "POWER_电池输出_1"
+        ],
+        "BOX_B": [
+          "POWER_电池输出_0"
+        ],
+        "M216": [
+          "POWER_胶囊输出_0"
+        ],
+        "M217": [
+          "POWER_胶囊输出_0"
+        ],
+        "M218": [
+          "POWER_胶囊输出_1"
+        ],
+        "BOX_C": [
+          "POWER_胶囊输出_0"
+        ]
+      }
+    },
+    {
+      "name": "bridge directions and two independent storage axes",
+      "pass_": true,
+      "details": [
+        {
+          "id": "T_15_41",
+          "xy": [
+            15,
+            41
+          ],
+          "axes": [
+            {
+              "axis": "horizontal",
+              "input": "W",
+              "output": "E",
+              "item": "高容谷地电池",
+              "route": "M213_成品",
+              "slot_capacity": 1
+            },
+            {
+              "axis": "vertical",
+              "input": "S",
+              "output": "N",
+              "item": "高容谷地电池",
+              "route": "M215_成品",
+              "slot_capacity": 1
+            }
+          ],
+          "all_local_first_contact_orders": 24,
+          "neighbor_types": [
+            "传送带",
+            "传送带",
+            "传送带",
+            "传送带"
+          ],
+          "shared_material_slot": false,
+          "blueprint_order_safe": true
+        },
+        {
+          "id": "T_18_40",
+          "xy": [
+            18,
+            40
+          ],
+          "axes": [
+            {
+              "axis": "vertical",
+              "input": "S",
+              "output": "N",
+              "item": "高容谷地电池",
+              "route": "M214_成品",
+              "slot_capacity": 1
+            },
+            {
+              "axis": "horizontal",
+              "input": "E",
+              "output": "W",
+              "item": "高容谷地电池",
+              "route": "M215_成品",
+              "slot_capacity": 1
+            }
+          ],
+          "all_local_first_contact_orders": 24,
+          "neighbor_types": [
+            "传送带",
+            "传送带",
+            "传送带",
+            "传送带"
+          ],
+          "shared_material_slot": false,
+          "blueprint_order_safe": true
+        },
+        {
+          "id": "T_49_41",
+          "xy": [
+            49,
+            41
+          ],
+          "axes": [
+            {
+              "axis": "horizontal",
+              "input": "W",
+              "output": "E",
+              "item": "精选荞愈胶囊",
+              "route": "M216_成品",
+              "slot_capacity": 1
+            },
+            {
+              "axis": "vertical",
+              "input": "S",
+              "output": "N",
+              "item": "精选荞愈胶囊",
+              "route": "M218_成品",
+              "slot_capacity": 1
+            }
+          ],
+          "all_local_first_contact_orders": 24,
+          "neighbor_types": [
+            "传送带",
+            "传送带",
+            "传送带",
+            "传送带"
+          ],
+          "shared_material_slot": false,
+          "blueprint_order_safe": true
+        },
+        {
+          "id": "T_52_40",
+          "xy": [
+            52,
+            40
+          ],
+          "axes": [
+            {
+              "axis": "vertical",
+              "input": "S",
+              "output": "N",
+              "item": "精选荞愈胶囊",
+              "route": "M217_成品",
+              "slot_capacity": 1
+            },
+            {
+              "axis": "horizontal",
+              "input": "E",
+              "output": "W",
+              "item": "精选荞愈胶囊",
+              "route": "M218_成品",
+              "slot_capacity": 1
+            }
+          ],
+          "all_local_first_contact_orders": 24,
+          "neighbor_types": [
+            "传送带",
+            "传送带",
+            "传送带",
+            "传送带"
+          ],
+          "shared_material_slot": false,
+          "blueprint_order_safe": true
+        }
+      ]
+    },
+    {
+      "name": "all actual nontransport outputs enter belts",
+      "pass_": true,
+      "details": 61
+    },
+    {
+      "name": "荞花 lengths and startup reserve",
+      "pass_": true,
+      "details": {
+        "first_return_bound": 19,
+        "q_min": 19,
+        "q_max": 50,
+        "margin_at_50": 31,
+        "N_capacity": 273
+      }
+    },
+    {
+      "name": "砂叶 lengths and startup reserve",
+      "pass_": true,
+      "details": {
+        "first_return_bound": 19,
+        "q_min": 19,
+        "q_max": 50,
+        "margin_at_50": 31,
+        "N_capacity": 273
+      }
+    },
+    {
+      "name": "each six-source product path has disjoint material slots",
+      "pass_": true,
+      "details": 76
+    },
+    {
+      "name": "merged source arithmetic",
+      "pass_": true,
+      "details": {
+        "K": 0,
+        "B": 2,
+        "C": 0,
+        "merge_count": 6,
+        "combined_rate": "23/20",
+        "single_common_exit_capacity": "1",
+        "excess": "3/20"
+      }
+    },
+    {
+      "name": "all 219 machines individually registered with slack",
+      "pass_": true,
+      "details": {
+        "counts": {
+          "粉碎机": 69,
+          "精炼炉": 51,
+          "研磨机": 32,
+          "塑形机": 6,
+          "配件机": 6,
+          "种植机": 32,
+          "采种机": 17,
+          "封装机": 3,
+          "灌装机": 3
+        },
+        "nominal_extra": [
+          "M068",
+          "M212"
+        ]
+      }
+    },
+    {
+      "name": "all 315 logical edges retain identities and missing-route status",
+      "pass_": true,
+      "details": {
+        "unrouted": 299,
+        "fully_embedded": 6,
+        "source_stub_only": 4,
+        "changed_terminal_to_wireless_box": 6
+      }
+    },
+    {
+      "name": "ore boundary extraction assignment",
+      "pass_": true,
+      "details": "52 open interfaces, planned 34+18; actual delivery not certified"
+    },
+    {
+      "name": "source unchanged 《明日方舟：终末地》游戏规则.txt",
+      "pass_": true,
+      "details": "d150b86b398f8e73e57bee1598020e6bcd895e5a13a254b4b11dd1e4416c325a"
+    },
+    {
+      "name": "source unchanged 求解任务.txt",
+      "pass_": true,
+      "details": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac"
+    },
+    {
+      "name": "source unchanged 求解约束.txt",
+      "pass_": true,
+      "details": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6"
+    },
+    {
+      "name": "source unchanged 候选约束.txt",
+      "pass_": true,
+      "details": "a0ac3f9c82f371132b7de29fe47e4c6c587904680bc2786523de0c825fd5efd9"
+    },
+    {
+      "name": "source unchanged 任务书7草案.md",
+      "pass_": true,
+      "details": "6394c5ee4214a7b48057dcd3e916b59e55085895dff06f93b86a00f139d01620"
+    },
+    {
+      "name": "source unchanged 主会话三审-0920.md",
+      "pass_": true,
+      "details": "8710bebae67f41b4f323570a54f046bfed71bc28d3c2e2bc4efa002ee20020a2"
+    },
+    {
+      "name": "source unchanged 会议2成果修订-v46.md",
+      "pass_": true,
+      "details": "dd873bba256906787359ada38480a0caf4eefd9b2c6bc5b05f135278b7617f5c"
+    },
+    {
+      "name": "source unchanged 三种相位不改产量-v2.md",
+      "pass_": true,
+      "details": "217c9a2046da9e70b1a934eeeb5f70539e564def8149937611f1b80903239d88"
+    },
+    {
+      "name": "source unchanged 植物运行试点.md",
+      "pass_": true,
+      "details": "6f0b9e1417b0643de66279c4c0643ca3b8af89a9ba391b40151d712e507d6a4e"
+    },
+    {
+      "name": "source unchanged 送料与接口.json",
+      "pass_": true,
+      "details": "f4f3776907ee06ad429e9a250f076056945eea4a6c496cf09163b7048788e36e"
+    },
+    {
+      "name": "source unchanged 调试与释放.md",
+      "pass_": true,
+      "details": "13f4c246f3c2dc660886abcd91253a0e544d6d6a85f7cadc0e31fd2410d16853"
+    },
+    {
+      "name": "source unchanged 调试后状态.json",
+      "pass_": true,
+      "details": "0e3735e5c382eb97c5ef4d84032db61057b1d8914bf792f59a02173075f71c89"
+    },
+    {
+      "name": "source unchanged 相位离线与认证范围.md",
+      "pass_": true,
+      "details": "c93001128a1fce740320ece07eb7d7cb7954b4be7e23d4c4749cc4bedea1e5e4"
+    },
+    {
+      "name": "source unchanged 仓库接收与循环对应.md",
+      "pass_": true,
+      "details": "cdc235501fc5ba81f8df0c4ea02396b15b23bb1c6175f9e7a10729d0cab646c1"
+    },
+    {
+      "name": "source unchanged 否证-任务4.md",
+      "pass_": true,
+      "details": "12eb21c9bff08c2e824e712a38edc624ffd5c69f28cec435d65ea9790599e486"
+    },
+    {
+      "name": "source unchanged 否证-任务5.md",
+      "pass_": true,
+      "details": "2e315ea065e73d67b21e7d03e80ab7eeeb6bd4b6c4503ffee811d10ee59bfb88"
+    },
+    {
+      "name": "source unchanged 否证-任务6.md",
+      "pass_": true,
+      "details": "1326124027e79372d12ea6c3d5f114e307c994ff6ad729d4123129a42a1f7917"
+    },
+    {
+      "name": "source unchanged 局部结构.json",
+      "pass_": true,
+      "details": "f686d6a9970ca613f8a37c8dc1cb1d7b0d8b9d06d9b35bb3f8b0540edb82b4db"
+    },
+    {
+      "name": "source unchanged 否证逐项处理.json",
+      "pass_": true,
+      "details": "64a7a380b1b99e092bb7d2663d338047ecb4b277788b50c67d4bcd4c7bba1632"
+    }
+  ],
+  "metrics": {
+    "unit_counts": {
+      "种植机": 2,
+      "采种机": 2,
+      "粉碎机": 2,
+      "供电桩": 8,
+      "封装机": 3,
+      "协议储存箱": 2,
+      "灌装机": 3,
+      "协议核心": 1,
+      "仓库取货口": 46,
+      "传送带": 162,
+      "桥接器": 4
+    },
+    "occupied_cells": 697,
+    "physical_transport_cells": 166,
+    "transport_slots": 170,
+    "channels": 182,
+    "external_interfaces": 92,
+    "plant_transport_slots": {
+      "荞花": 20,
+      "砂叶": 22
+    },
+    "product_transport_slots": 76,
+    "product_physical_transport_cells": 72,
+    "product_service": [
+      {
+        "route": "M213_成品",
+        "length": 15,
+        "components": 3,
+        "damping": 3,
+        "each_segment_capacity": "1",
+        "source_max_completion_rate": "1/5",
+        "source_queue_empty_start_upper": 2,
+        "in_flight_empty_start_upper": 4,
+        "product_to_box_delay_upper": 16,
+        "product_to_warehouse_delay_upper": 21,
+        "unrestricted_physical_inflight_upper": 15,
+        "full_initial_output_transient": "finite; source output<=50 and cache<=1; after receiver starts service source queue drains"
+      },
+      {
+        "route": "M214_成品",
+        "length": 7,
+        "components": 3,
+        "damping": 3,
+        "each_segment_capacity": "1",
+        "source_max_completion_rate": "1/5",
+        "source_queue_empty_start_upper": 2,
+        "in_flight_empty_start_upper": 2,
+        "product_to_box_delay_upper": 8,
+        "product_to_warehouse_delay_upper": 13,
+        "unrestricted_physical_inflight_upper": 7,
+        "full_initial_output_transient": "finite; source output<=50 and cache<=1; after receiver starts service source queue drains"
+      },
+      {
+        "route": "M215_成品",
+        "length": 16,
+        "components": 5,
+        "damping": 5,
+        "each_segment_capacity": "1",
+        "source_max_completion_rate": "1/5",
+        "source_queue_empty_start_upper": 2,
+        "in_flight_empty_start_upper": 4,
+        "product_to_box_delay_upper": 17,
+        "product_to_warehouse_delay_upper": 22,
+        "unrestricted_physical_inflight_upper": 16,
+        "full_initial_output_transient": "finite; source output<=50 and cache<=1; after receiver starts service source queue drains"
+      },
+      {
+        "route": "M216_成品",
+        "length": 15,
+        "components": 3,
+        "damping": 3,
+        "each_segment_capacity": "1",
+        "source_max_completion_rate": "1/5",
+        "source_queue_empty_start_upper": 2,
+        "in_flight_empty_start_upper": 4,
+        "product_to_box_delay_upper": 16,
+        "product_to_warehouse_delay_upper": 21,
+        "unrestricted_physical_inflight_upper": 15,
+        "full_initial_output_transient": "finite; source output<=50 and cache<=1; after receiver starts service source queue drains"
+      },
+      {
+        "route": "M217_成品",
+        "length": 7,
+        "components": 3,
+        "damping": 3,
+        "each_segment_capacity": "1",
+        "source_max_completion_rate": "1/5",
+        "source_queue_empty_start_upper": 2,
+        "in_flight_empty_start_upper": 2,
+        "product_to_box_delay_upper": 8,
+        "product_to_warehouse_delay_upper": 13,
+        "unrestricted_physical_inflight_upper": 7,
+        "full_initial_output_transient": "finite; source output<=50 and cache<=1; after receiver starts service source queue drains"
+      },
+      {
+        "route": "M218_成品",
+        "length": 16,
+        "components": 5,
+        "damping": 5,
+        "each_segment_capacity": "1",
+        "source_max_completion_rate": "1/5",
+        "source_queue_empty_start_upper": 2,
+        "in_flight_empty_start_upper": 4,
+        "product_to_box_delay_upper": 17,
+        "product_to_warehouse_delay_upper": 22,
+        "unrestricted_physical_inflight_upper": 16,
+        "full_initial_output_transient": "finite; source output<=50 and cache<=1; after receiver starts service source queue drains"
+      }
+    ],
+    "L": 0,
+    "U": 1113,
+    "full_layout_certified": false,
+    "game_execution_performed": false
+  }
+}

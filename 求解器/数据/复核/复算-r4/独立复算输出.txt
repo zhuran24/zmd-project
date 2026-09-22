@@ -1,0 +1,108 @@
+{
+  "machine_count": 219,
+  "machine_area": 3325,
+  "logical_feeds": 315,
+  "manufacturing_source_ports": 263,
+  "manufacturing_target_ports": 309,
+  "ore_ports": 52,
+  "core_input_ports": 6,
+  "S": 315,
+  "R": 315,
+  "type_counts": {
+    "粉碎机": 69,
+    "精炼炉": 51,
+    "研磨机": 32,
+    "塑形机": 6,
+    "配件机": 6,
+    "种植机": 32,
+    "采种机": 17,
+    "封装机": 3,
+    "灌装机": 3
+  },
+  "type_area": {
+    "粉碎机": 621,
+    "精炼炉": 459,
+    "研磨机": 768,
+    "塑形机": 54,
+    "配件机": 54,
+    "种植机": 800,
+    "采种机": 425,
+    "封装机": 72,
+    "灌装机": 72
+  },
+  "type_inputs": {
+    "粉碎机": 69,
+    "精炼炉": 51,
+    "研磨机": 96,
+    "塑形机": 11,
+    "配件机": 6,
+    "种植机": 32,
+    "采种机": 17,
+    "封装机": 15,
+    "灌装机": 12
+  },
+  "type_outputs": {
+    "粉碎机": 96,
+    "精炼炉": 51,
+    "研磨机": 32,
+    "塑形机": 6,
+    "配件机": 6,
+    "种植机": 34,
+    "采种机": 32,
+    "封装机": 3,
+    "灌装机": 3
+  },
+  "grinding_at_least_three": 31,
+  "shaping_at_least_two": 5,
+  "packaging_inputs": [
+    5,
+    5,
+    5
+  ],
+  "filling_inputs": [
+    4,
+    4,
+    4
+  ],
+  "multi_input_machines": 38,
+  "fanout_counts": {
+    "full_speed_fanout": 30,
+    "neither": 1,
+    "round_robin_equal": 2
+  },
+  "material_flow_total": "6113/20",
+  "ore_rates": {
+    "源矿": "18",
+    "蓝铁矿": "34"
+  },
+  "product_rates": {
+    "精选荞愈胶囊": "11/20",
+    "高容谷地电池": "3/5"
+  },
+  "plant_cycles": {
+    "荞花": {
+      "seed_batches": "11/2",
+      "plant_batches": "11",
+      "crush_batches": "11/2",
+      "warehouse_flow": 0
+    },
+    "砂叶": {
+      "seed_batches": "21/2",
+      "plant_batches": "21",
+      "crush_batches": "21/2",
+      "warehouse_flow": 0
+    }
+  },
+  "unit_ore": {
+    "battery_blue": "20",
+    "battery_source": "30",
+    "capsule_blue": "40"
+  },
+  "source_convergence": {
+    "K": 6,
+    "B": 0,
+    "C": 0,
+    "weighted": 6
+  },
+  "errors": []
+}

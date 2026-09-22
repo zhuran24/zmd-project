@@ -1,0 +1,95 @@
+{
+  "date": "2026-09-21",
+  "scope": "任务书7任务3推导修订；候选约束仅核指纹",
+  "readonly": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+      "sha256": "31ced2a24fef738c72dfa406351b6bad5df3e353d6b1c2dfd06ab1febaf566ff",
+      "lines": 114
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解任务.txt",
+      "sha256": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+      "lines": 16
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解约束.txt",
+      "sha256": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6",
+      "lines": 126
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/候选约束.txt",
+      "sha256": "a0ac3f9c82f371132b7de29fe47e4c6c587904680bc2786523de0c825fd5efd9",
+      "lines": 862
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7草案.md",
+      "sha256": "32acf147e09de04feabfb575dd509a2c5c06b519b2504ba3ff253c3a61816a26",
+      "lines": 252
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/主会话三审-0920.md",
+      "sha256": "da7d816827a6d66a20def9be982308df0a0e7a8dcb879c6c75ef2c381ef01f87",
+      "lines": 53
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/会议2成果修订-v46.md",
+      "sha256": "dd873bba256906787359ada38480a0caf4eefd9b2c6bc5b05f135278b7617f5c",
+      "lines": 1008
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/复核/推导.md",
+      "sha256": "20fa05fbd94bf02c23f871751fb27b1d7496da0311e62865758818055c631179",
+      "lines": 97
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-v2-loop-r2.md",
+      "sha256": "f3faf0a4f2fade6555ea43714885ded01a54d4dc0c15c9cb676c6e3627fa1aaf",
+      "lines": 119
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-总纲-1.md",
+      "sha256": "4188a2de00f53e60827dd0e71f84a0deb838fc6bd90fa46e61fc491cf9bb217d",
+      "lines": 78
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-v2-loop.md",
+      "sha256": "39b06051993e834b5b0adf0149c9ad9cfd8ec69633296d7365db7ebfa1464c2d",
+      "lines": 216
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-v2-phase.md",
+      "sha256": "4c7082a570988c31557b4905ea2772bb1fcd5ce62f4be954946bc6b0937d2c34",
+      "lines": 217
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/证据-v2-phase-否证/input_hashes.json",
+      "sha256": "0487f68dbc8a2e1e74a1947706274d4c38f28f09119ec20c1aa11285ebf2df61",
+      "lines": 13
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/证据-v2-loop-否证/inputs.json",
+      "sha256": "92af56da4c563093d4b737f94d44bfb59b26399ec632dbb17dc64cdf567c2056",
+      "lines": 62
+    }
+  ],
+  "manuscripts_before": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/回路总数决定论-v2.md",
+      "sha256": "e3c1c80e97688cb28042d7ef86f90645b8dc4272f5a28d13f141e4924fd5ca8e",
+      "lines": 397
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/三种相位不改产量-v2.md",
+      "sha256": "53cc75c3e645c1d975b2c4094e2f75ef23908b6729fdd2eb224696eedd787705",
+      "lines": 300
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/总纲-流量存量相位.md",
+      "sha256": "625ce76821eae837fb636d699f221d4a813570be1766c33081df5c97993dd2dd",
+      "lines": 44
+    }
+  ],
+  "preserved_phase_line3": "日期：2026-09-20。状态：第二版已有一次独立复核（否证-v2-phase.md，被审SHA-256为51327afa43a98af4a002f1e98f25561159a3855fe8240c77863dc4ab66324753）；§4前六项认证缺口仍待做。本次状态与产能分支修订见§6，改动不冒称已经获得新的独立复核。已证明的是达标循环的平均交付率唯一，不是任意候选布局在任意相位下都会达标。",
+  "preserved_phase_item7": "7. **第二版已有一次独立复核。** [否证-v2-phase](复核/否证-v2-phase.md)§4.7及输入指纹记录确认，对本次修订前SHA-256为`51327afa43a98af4a002f1e98f25561159a3855fe8240c77863dc4ab66324753`的第二版已交付全文独立复核，包含§2.7净需求、局部回转和逐台分工的边界。前六项认证缺口仍待做。本次改动见§6，受影响段落待后续独立复核；不能把修订前已有的那次复核再报成缺件，也不能将它直接当作修订版通过票。"
+}

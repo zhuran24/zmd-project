@@ -1,0 +1,379 @@
+{
+  "recipes": {
+    "粉碎-源矿": {
+      "inputs": {
+        "源矿": 1
+      },
+      "output": {
+        "源石粉末": 1
+      },
+      "ticks": 1,
+      "rule_lines": [
+        81
+      ]
+    },
+    "粉碎-蓝铁块": {
+      "inputs": {
+        "蓝铁块": 1
+      },
+      "output": {
+        "蓝铁粉末": 1
+      },
+      "ticks": 1,
+      "rule_lines": [
+        82
+      ]
+    },
+    "粉碎-荞花": {
+      "inputs": {
+        "荞花": 1
+      },
+      "output": {
+        "荞花粉末": 2
+      },
+      "ticks": 1,
+      "rule_lines": [
+        83
+      ]
+    },
+    "粉碎-砂叶": {
+      "inputs": {
+        "砂叶": 1
+      },
+      "output": {
+        "砂叶粉末": 3
+      },
+      "ticks": 1,
+      "rule_lines": [
+        84
+      ]
+    },
+    "精炼-蓝铁矿": {
+      "inputs": {
+        "蓝铁矿": 1
+      },
+      "output": {
+        "蓝铁块": 1
+      },
+      "ticks": 1,
+      "rule_lines": [
+        87
+      ]
+    },
+    "精炼-致密蓝铁": {
+      "inputs": {
+        "致密蓝铁粉末": 1
+      },
+      "output": {
+        "钢块": 1
+      },
+      "ticks": 1,
+      "rule_lines": [
+        88
+      ]
+    },
+    "研磨-致密蓝铁": {
+      "inputs": {
+        "蓝铁粉末": 2,
+        "砂叶粉末": 1
+      },
+      "output": {
+        "致密蓝铁粉末": 1
+      },
+      "ticks": 1,
+      "rule_lines": [
+        92
+      ]
+    },
+    "研磨-致密源石": {
+      "inputs": {
+        "源石粉末": 2,
+        "砂叶粉末": 1
+      },
+      "output": {
+        "致密源石粉末": 1
+      },
+      "ticks": 1,
+      "rule_lines": [
+        93
+      ]
+    },
+    "研磨-细磨荞花": {
+      "inputs": {
+        "荞花粉末": 2,
+        "砂叶粉末": 1
+      },
+      "output": {
+        "细磨荞花粉末": 1
+      },
+      "ticks": 1,
+      "rule_lines": [
+        94
+      ]
+    },
+    "塑形-钢质瓶": {
+      "inputs": {
+        "钢块": 2
+      },
+      "output": {
+        "钢质瓶": 1
+      },
+      "ticks": 1,
+      "rule_lines": [
+        97
+      ]
+    },
+    "配件-钢制零件": {
+      "inputs": {
+        "钢块": 1
+      },
+      "output": {
+        "钢制零件": 1
+      },
+      "ticks": 1,
+      "rule_lines": [
+        100
+      ]
+    },
+    "种植-荞花": {
+      "inputs": {
+        "荞花种子": 1
+      },
+      "output": {
+        "荞花": 1
+      },
+      "ticks": 1,
+      "rule_lines": [
+        103
+      ]
+    },
+    "种植-砂叶": {
+      "inputs": {
+        "砂叶种子": 1
+      },
+      "output": {
+        "砂叶": 1
+      },
+      "ticks": 1,
+      "rule_lines": [
+        104
+      ]
+    },
+    "采种-荞花": {
+      "inputs": {
+        "荞花": 1
+      },
+      "output": {
+        "荞花种子": 2
+      },
+      "ticks": 1,
+      "rule_lines": [
+        107
+      ]
+    },
+    "采种-砂叶": {
+      "inputs": {
+        "砂叶": 1
+      },
+      "output": {
+        "砂叶种子": 2
+      },
+      "ticks": 1,
+      "rule_lines": [
+        108
+      ]
+    },
+    "封装-电池": {
+      "inputs": {
+        "钢制零件": 10,
+        "致密源石粉末": 15
+      },
+      "output": {
+        "高容谷地电池": 1
+      },
+      "ticks": 5,
+      "rule_lines": [
+        111
+      ]
+    },
+    "灌装-胶囊": {
+      "inputs": {
+        "钢质瓶": 10,
+        "细磨荞花粉末": 10
+      },
+      "output": {
+        "精选荞愈胶囊": 1
+      },
+      "ticks": 5,
+      "rule_lines": [
+        114
+      ]
+    }
+  },
+  "weights": {
+    "源矿": 1,
+    "蓝铁矿": 1,
+    "源石粉末": 2,
+    "蓝铁块": 2,
+    "蓝铁粉末": 3,
+    "荞花种子": 2,
+    "砂叶种子": 2,
+    "荞花": 3,
+    "砂叶": 3,
+    "荞花粉末": 2,
+    "砂叶粉末": 2,
+    "致密蓝铁粉末": 9,
+    "致密源石粉末": 7,
+    "细磨荞花粉末": 7,
+    "钢块": 10,
+    "钢制零件": 11,
+    "钢质瓶": 21,
+    "高容谷地电池": 216,
+    "精选荞愈胶囊": 281
+  },
+  "recipe_increases": [
+    {
+      "recipe": "粉碎-源矿",
+      "input_weight": 1,
+      "output_weight": 2,
+      "increase": 1
+    },
+    {
+      "recipe": "粉碎-蓝铁块",
+      "input_weight": 2,
+      "output_weight": 3,
+      "increase": 1
+    },
+    {
+      "recipe": "粉碎-荞花",
+      "input_weight": 3,
+      "output_weight": 4,
+      "increase": 1
+    },
+    {
+      "recipe": "粉碎-砂叶",
+      "input_weight": 3,
+      "output_weight": 6,
+      "increase": 3
+    },
+    {
+      "recipe": "精炼-蓝铁矿",
+      "input_weight": 1,
+      "output_weight": 2,
+      "increase": 1
+    },
+    {
+      "recipe": "精炼-致密蓝铁",
+      "input_weight": 9,
+      "output_weight": 10,
+      "increase": 1
+    },
+    {
+      "recipe": "研磨-致密蓝铁",
+      "input_weight": 8,
+      "output_weight": 9,
+      "increase": 1
+    },
+    {
+      "recipe": "研磨-致密源石",
+      "input_weight": 6,
+      "output_weight": 7,
+      "increase": 1
+    },
+    {
+      "recipe": "研磨-细磨荞花",
+      "input_weight": 6,
+      "output_weight": 7,
+      "increase": 1
+    },
+    {
+      "recipe": "塑形-钢质瓶",
+      "input_weight": 20,
+      "output_weight": 21,
+      "increase": 1
+    },
+    {
+      "recipe": "配件-钢制零件",
+      "input_weight": 10,
+      "output_weight": 11,
+      "increase": 1
+    },
+    {
+      "recipe": "种植-荞花",
+      "input_weight": 2,
+      "output_weight": 3,
+      "increase": 1
+    },
+    {
+      "recipe": "种植-砂叶",
+      "input_weight": 2,
+      "output_weight": 3,
+      "increase": 1
+    },
+    {
+      "recipe": "采种-荞花",
+      "input_weight": 3,
+      "output_weight": 4,
+      "increase": 1
+    },
+    {
+      "recipe": "采种-砂叶",
+      "input_weight": 3,
+      "output_weight": 4,
+      "increase": 1
+    },
+    {
+      "recipe": "封装-电池",
+      "input_weight": 215,
+      "output_weight": 216,
+      "increase": 1
+    },
+    {
+      "recipe": "灌装-胶囊",
+      "input_weight": 280,
+      "output_weight": 281,
+      "increase": 1
+    }
+  ],
+  "candidates": [
+    {
+      "id": "A219",
+      "machines": 219,
+      "feeds": 314,
+      "terminal_machines": [
+        "A_M213",
+        "A_M214",
+        "A_M215",
+        "A_M216",
+        "A_M217",
+        "A_M218"
+      ],
+      "ordinary_potential_capacity": 166150,
+      "normal_cache_potential_capacity": 2571,
+      "potential_capacity_excluding_transport": 168721,
+      "transport_potential": "sum(l_e * item_weight[e])",
+      "transport_lengths_provided": false,
+      "preparation_proof_realized_in_physical_layout": false
+    },
+    {
+      "id": "B219",
+      "machines": 219,
+      "feeds": 315,
+      "terminal_machines": [
+        "M213",
+        "M214",
+        "M215",
+        "M216",
+        "M217",
+        "M218"
+      ],
+      "ordinary_potential_capacity": 166150,
+      "normal_cache_potential_capacity": 2571,
+      "potential_capacity_excluding_transport": 168721,
+      "transport_potential": "sum(l_e * item_weight[e])",
+      "transport_lengths_provided": false,
+      "preparation_proof_realized_in_physical_layout": false
+    }
+  ],
+  "scope": "有限停止势函数与条件数字，不是内核或整厂运行证书"
+}

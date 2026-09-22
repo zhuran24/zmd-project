@@ -1,0 +1,37 @@
+{
+  "schema": "kernel-revision-artifacts-v1",
+  "scope": "本轮新增或字节变更的源码、文档、样例与证据；不列构建/依赖缓存",
+  "files": {
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/check_examples.py": "33e56f73c251353fe38b188e2889590b75617547929e6cccf0a08c913a73ea27",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/generate_examples.py": "c00489860f769794bed19d820b35bd18f1fa571bc0aafb3b16aee5139b1e19c3",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询.json": "e52816662da460ab8b8cf794daaf87a2f964c5e3cec3f7495617f10b9c134342",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/桥接器双通路.json": "8700e8801dff0b22b75e55512a49c1f4e6ab703c9e4ca202c33a2ecabe5d2724",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/检查结果.json": "02bf8adcd9e5ec486a60a87ea0034c9b278e6ea7008d9218e06f2ea8356428a9",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json": "78af6766decbd7cea9043cad024743eb1bbbdd77daaf3859b8e98d2c833fa8e9",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入-修订记录.md": "9b4ee8b7440dbe44a99426288ddd866a385a5f3020a28ac71f604fc4cba35eed",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md": "87d84874bc479b14cb10091f3fa64fca67a5b299eca97613331754170af2e216",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r2/cargo-test.log": "cb65824b4676c08f20fd8b17b45483dc7b6dfc031972354d1cb26f78242f1326",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r2/cargo-test.stderr.log": "99745d3edf75d9a66e4087b8c7111ee0111018473ab90b222e1f5b4f43bd3d8d",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r2/check_current_coverage.py": "647b6777daff9d803441ba68e44a56749210ccd8a7047f488c7041e677e93e70",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r2/run_checks.py": "5be7480ad3e75a9ac93c5d6d9588876da70ca8b7b2622b29a85b0e6804d156e6",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r2/修订前产物指纹.json": "38b3a95c876724c9f2e633aa87e85e63ef45d431c4441f74cd65dd927628e829",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r2/候选B校验.stderr.log": "e2e50ef0bb8302fa4db6ec6c9f9d5e670b498dc85d09ce176597c6b6d0c07d76",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r2/只读指纹.json": "5dc74c72a7b095925613f4e12fa0ff06bfdde99bb375cbfd95a747fe45204dc8",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r2/样例再生成.log": "e61b8923e1b77dbd61ba1a2165402c17bbccda983b01d1496a4f73eb0702294f",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r2/样例检查.log": "02bf8adcd9e5ec486a60a87ea0034c9b278e6ea7008d9218e06f2ea8356428a9",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r2/正式目录回源.log": "56a7717ba04869b4bb57fc72d453974389d668b6ce53e19533cf50a2f345713b",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r2/现行规则覆盖.json": "a8dac3c1c2a74e2ec147277208a47f40ba290912cab572f4963045f51bd73409",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r2/自查报告.md": "0cf2798b0c052cb624b42ea352670d2fe668ced663391e88ef166fd16d0b983a",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r2/自查结果.json": "e53775ddd367e19329164ae8d1b40a0d24c63ea86893a20efb0912f4d8fc2641",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r2/规则覆盖检查.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r2/规则覆盖检查.stderr.log": "2b4c4becbd8f6441a571ba5c6030fcd0ef6e4aef5eb45ccd64b5e547e4d97ced",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/规则覆盖表.md": "610637b3f162232af309faabbc284c10a1a9fb66c5278eb091adbab240aa96ba",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md": "4bd83570f4117f00eeccca9941501594abb91446c19b5a2d6d409c923846e95d",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点清单.md": "08ed58527adbcee3687ea84437af37cf53dc93260b994f0401ff057b8d1c04a5"
+  },
+  "regenerated_unchanged": [
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/校验报告.md"
+  ],
+  "readonly_verified_count": 25000,
+  "self_excluded_from_hashes": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r2/交付指纹.json"
+}

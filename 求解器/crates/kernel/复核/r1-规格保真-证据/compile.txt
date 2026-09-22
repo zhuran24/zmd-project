@@ -1,0 +1,10 @@
+warning: function `stopped_record` is never used
+   --> /home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/output.rs:361:8
+    |
+361 | pub fn stopped_record(stop: &Stop) -> Value {
+    |        ^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: 1 warning emitted
+

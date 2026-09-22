@@ -1,0 +1,70 @@
+{
+  "schema": "review-delivery-audit-v1",
+  "status": "passed",
+  "read_sources_changed_since_final_independent_check": [],
+  "reviewed_six_files_unchanged_from_initial_check": true,
+  "axis_count": 15,
+  "all_pair_rows_consistent": 244,
+  "finding_schema": "passed",
+  "finding_count": 1,
+  "report_links": "passed",
+  "manual_count_formulas": "passed",
+  "reader_self_review": "完成：定义域、数字、初验与终验边界、证据引用和发现辖域一致",
+  "task_fingerprints": {
+    "/tmp/claude-1000/-home-zhuran24-zmd-research-fresh/2a1af1b1-ede2-4b4a-8f95-41e78df48af0/scratchpad/step1/任务书5.md": "397949140d016b7af1ddda25becf4e823be9af198108f87dcd0c303f25f75766",
+    "/tmp/claude-1000/-home-zhuran24-zmd-research-fresh/2a1af1b1-ede2-4b4a-8f95-41e78df48af0/scratchpad/step1/任务书.md": "7d9a2b0701fd6c3fa44a16a62e6e7f5ffc048e191a1763fb337bfb9ffdfac407",
+    "/tmp/claude-1000/-home-zhuran24-zmd-research-fresh/2a1af1b1-ede2-4b4a-8f95-41e78df48af0/scratchpad/step1/任务书2.md": "e62e31d5c807a0674d3f8579e246b729ab82b81a9d8bb05ef4a7f4d360b6193e",
+    "/tmp/claude-1000/-home-zhuran24-zmd-research-fresh/2a1af1b1-ede2-4b4a-8f95-41e78df48af0/scratchpad/step1/任务书3.md": "2657ee86178800af4b2076485b82c771f2368823d391531789af36185209cba2",
+    "/tmp/claude-1000/-home-zhuran24-zmd-research-fresh/2a1af1b1-ede2-4b4a-8f95-41e78df48af0/scratchpad/step1/任务书4.md": "8dbf65a07725c60a5e87edaab2d35f9018d97346e44ff4f940827297b0997ba5"
+  },
+  "artifacts": {
+    "review_r1_coverage.py": {
+      "sha256": "1bc48540491d7835bd3303a3783ddefeab2f79c88849b49bef6eeab3fa7edb1f",
+      "bytes": 15727
+    },
+    "复核-r1-覆盖-原函数重验-初验.json": {
+      "sha256": "e8bf793d64632b4fb1700d09398aa9f8c0ac868b05b2fd77b03e5a48d2d83f21",
+      "bytes": 3346
+    },
+    "复核-r1-覆盖-原函数重验-初验.log": {
+      "sha256": "e8bf793d64632b4fb1700d09398aa9f8c0ac868b05b2fd77b03e5a48d2d83f21",
+      "bytes": 3346
+    },
+    "复核-r1-覆盖-原函数重验.json": {
+      "sha256": "4db0d07c5691ea1f5e33447a7b718614319d850317474401a1fbee8afebfcae1",
+      "bytes": 4586
+    },
+    "复核-r1-覆盖-原函数重验.log": {
+      "sha256": "4db0d07c5691ea1f5e33447a7b718614319d850317474401a1fbee8afebfcae1",
+      "bytes": 4586
+    },
+    "复核-r1-覆盖-原脚本check.log": {
+      "sha256": "f5f472ab8de1b47551f86c2a174c99f81a71ae49bf18605e3223ee0721b8b6ba",
+      "bytes": 650
+    },
+    "复核-r1-覆盖-发现.json": {
+      "sha256": "6159a55adfe3871e4de2388885a893d12df02fbec3c6277131ea50ad06658b3d",
+      "bytes": 1715
+    },
+    "复核-r1-覆盖-独立复算-初验.json": {
+      "sha256": "6411a42f8cbba726b8bbeaf387515ea38f29773fc2862c44da8a797e3f259050",
+      "bytes": 32275
+    },
+    "复核-r1-覆盖-独立复算-初验.log": {
+      "sha256": "a4c215ef2e3cced4398dcd1aca0337b8956180f76e2d9729b029a8ff00686ffa",
+      "bytes": 3910
+    },
+    "复核-r1-覆盖-独立复算.json": {
+      "sha256": "d371ab687439cc15046da6136e4baf27acbcc7d25db769674247d046bb9d78a7",
+      "bytes": 32462
+    },
+    "复核-r1-覆盖-独立复算.log": {
+      "sha256": "5d970c7769a752817138bd3f70d46985804b58ca5033a5c005801fe09ea32eab",
+      "bytes": 4097
+    },
+    "复核-r1-覆盖.md": {
+      "sha256": "886e34acf5a8830d9441e009d15349a0c44d943dcbe4d3a14268177be6146b29",
+      "bytes": 20881
+    }
+  }
+}

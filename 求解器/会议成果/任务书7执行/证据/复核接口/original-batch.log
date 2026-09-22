@@ -1,0 +1,258 @@
+{
+  "status": "input_checked",
+  "read_only": true,
+  "records": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/cache-off.json",
+      "ticks": {
+        "ticks": 2,
+        "wireless_item_transactions": 0
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/cache-on.json",
+      "ticks": {
+        "ticks": 2,
+        "wireless_item_transactions": 0
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/checkpoint-record.json",
+      "ticks": {
+        "ticks": 1,
+        "wireless_item_transactions": 0
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/identity-full.json",
+      "ticks": {
+        "ticks": 2,
+        "wireless_item_transactions": 0
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/双门窗口恢复.json",
+      "ticks": {
+        "ticks": 12,
+        "wireless_item_transactions": 0
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/同刻双箱争余量.json",
+      "ticks": {
+        "ticks": 1,
+        "wireless_item_transactions": 1
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/成熟旧货重试.json",
+      "ticks": {
+        "ticks": 1,
+        "wireless_item_transactions": 0
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/无线一满一可收.json",
+      "ticks": {
+        "ticks": 1,
+        "wireless_item_transactions": 1
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/无线全拒收.json",
+      "ticks": {
+        "ticks": 6,
+        "wireless_item_transactions": 0
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/无线多格全收.json",
+      "ticks": {
+        "ticks": 1,
+        "wireless_item_transactions": 1
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/无线空箱.json",
+      "ticks": {
+        "ticks": 6,
+        "wireless_item_transactions": 0
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/无线部分接收.json",
+      "ticks": {
+        "ticks": 6,
+        "wireless_item_transactions": 1
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/累计调低保留.json",
+      "ticks": {
+        "ticks": 6,
+        "wireless_item_transactions": 0
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/累计调高资格.json",
+      "ticks": {
+        "ticks": 6,
+        "wireless_item_transactions": 0
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/装载与普通制造.json",
+      "ticks": {
+        "ticks": 4,
+        "wireless_item_transactions": 0
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/身份实际切换.json",
+      "ticks": {
+        "ticks": 6,
+        "wireless_item_transactions": 0
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/身份断边恢复.json",
+      "ticks": {
+        "ticks": 6,
+        "wireless_item_transactions": 0
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/阻尼恢复.json",
+      "ticks": {
+        "ticks": 12,
+        "wireless_item_transactions": 0
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/静止成熟与暂停键-cycle.record.json",
+      "ticks": {
+        "ticks": 2,
+        "wireless_item_transactions": 0
+      }
+    }
+  ],
+  "cycles": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/budget-cycle.json",
+      "verification": {
+        "cycle_replayed": false,
+        "prefix_replayed": 1,
+        "reason": "原种子前缀及停止/预算位置已复现，无周期",
+        "status": "input_checked"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/同种年龄分组-cycle.json",
+      "verification": {
+        "checks": [
+          "引用原始字节/format/producer和完整来源链",
+          "原种子到达前缀及跨刻事件身份",
+          "独立重建D动态前件及周期账/率/接收域",
+          "从周期起点P次step_tick及完整终态"
+        ],
+        "cycle_replayed": true,
+        "period": 1,
+        "prefix_replayed": 2,
+        "start_time": 0,
+        "status": "input_checked"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/生产环带-cycle.json",
+      "verification": {
+        "checks": [
+          "引用原始字节/format/producer和完整来源链",
+          "原种子到达前缀及跨刻事件身份",
+          "独立重建D动态前件及周期账/率/接收域",
+          "从周期起点P次step_tick及完整终态"
+        ],
+        "cycle_replayed": true,
+        "period": 20,
+        "prefix_replayed": 21,
+        "start_time": 0,
+        "status": "input_checked"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/累计审计与窗口周期-cycle.json",
+      "verification": {
+        "checks": [
+          "引用原始字节/format/producer和完整来源链",
+          "原种子到达前缀及跨刻事件身份",
+          "独立重建D动态前件及周期账/率/接收域",
+          "从周期起点P次step_tick及完整终态"
+        ],
+        "cycle_replayed": true,
+        "period": 6,
+        "prefix_replayed": 7,
+        "start_time": 0,
+        "status": "input_checked"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/累计调低保留-cycle.json",
+      "verification": {
+        "checks": [
+          "引用原始字节/format/producer和完整来源链",
+          "原种子到达前缀及跨刻事件身份",
+          "独立重建D动态前件及周期账/率/接收域",
+          "从周期起点P次step_tick及完整终态"
+        ],
+        "cycle_replayed": true,
+        "period": 1,
+        "prefix_replayed": 2,
+        "start_time": 0,
+        "status": "input_checked"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/静止成熟与暂停键-cycle.json",
+      "verification": {
+        "checks": [
+          "引用原始字节/format/producer和完整来源链",
+          "原种子到达前缀及跨刻事件身份",
+          "独立重建D动态前件及周期账/率/接收域",
+          "从周期起点P次step_tick及完整终态"
+        ],
+        "cycle_replayed": true,
+        "period": 1,
+        "prefix_replayed": 2,
+        "start_time": 0,
+        "status": "input_checked"
+      }
+    }
+  ],
+  "reference_records": 0,
+  "historical_records": [],
+  "scope": "当前v4记录和v3周期按现行源、schema、Rust重放及Python部分接收账验收；旧版本列作史料。"
+}
+已核 budget-cycle.json
+已核 cache-off.json
+已核 cache-on.json
+已核 checkpoint-record.json
+已核 identity-full.json
+已核 双门窗口恢复.json
+已核 同刻双箱争余量.json
+已核 同种年龄分组-cycle.json
+已核 成熟旧货重试.json
+已核 无线一满一可收.json
+已核 无线全拒收.json
+已核 无线多格全收.json
+已核 无线空箱.json
+已核 无线部分接收.json
+已核 生产环带-cycle.json
+已核 累计审计与窗口周期-cycle.json
+已核 累计调低保留-cycle.json
+已核 累计调低保留.json
+已核 累计调高资格.json
+已核 装载与普通制造.json
+已核 身份实际切换.json
+已核 身份断边恢复.json
+已核 阻尼恢复.json
+已核 静止成熟与暂停键-cycle.json
+已核 静止成熟与暂停键-cycle.record.json

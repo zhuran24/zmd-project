@@ -1,0 +1,23 @@
+{
+  "name": "bad-unit",
+  "command": [
+    "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+    "run",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r3-1-证据/bad-unit-input.json",
+    "--config",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+    "--ticks",
+    "1",
+    "--out",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r3-1-证据/bad-unit.json"
+  ],
+  "exit_code": 2,
+  "output_exists": true,
+  "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r3-1-证据/bad-unit.json\",\"status\":\"invalid_input\"}\n",
+  "stderr": "",
+  "status": "invalid_input",
+  "stop": null,
+  "open_items": [
+    "invalid_input input @ inventory: 格标签缺失/重复/多余"
+  ]
+}

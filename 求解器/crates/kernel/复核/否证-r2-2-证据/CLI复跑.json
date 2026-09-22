@@ -1,0 +1,345 @@
+[
+  {
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/复核-r2-规格保真-证据/phase-control-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/phase-control-record.json"
+    ],
+    "exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/phase-control-record.json\",\"status\":\"completed\"}\n",
+    "stderr": "",
+    "case": "phase-control",
+    "status": "completed",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/phase-control-record.json",
+    "schema": "通过",
+    "rust_verifier": {
+      "verify": {
+        "Ok": null
+      }
+    },
+    "boundary_ids": [
+      [],
+      [
+        "completion_probe",
+        "supply_probe"
+      ]
+    ]
+  },
+  {
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/复核-r2-规格保真-证据/phase-conflict-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/phase-conflict-record.json"
+    ],
+    "exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/phase-conflict-record.json\",\"status\":\"completed\"}\n",
+    "stderr": "",
+    "case": "phase-conflict",
+    "status": "completed",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/phase-conflict-record.json",
+    "schema": "通过",
+    "rust_verifier": {
+      "verify": {
+        "Ok": null
+      }
+    },
+    "boundary_ids": [
+      [],
+      [
+        "completion_probe",
+        "supply_probe"
+      ]
+    ]
+  },
+  {
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/复核-r2-规格保真-证据/unowned-runtime-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/unowned-runtime-record.json"
+    ],
+    "exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/unowned-runtime-record.json\",\"status\":\"completed\"}\n",
+    "stderr": "",
+    "case": "unowned-runtime",
+    "status": "completed",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/unowned-runtime-record.json",
+    "schema": "通过",
+    "rust_verifier": {
+      "verify": {
+        "Ok": null
+      }
+    },
+    "unowned_in_history": true,
+    "unowned_execution_count": 0
+  },
+  {
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/复核-r2-规格保真-证据/unowned-connection_close-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/unowned-connection_close-record.json"
+    ],
+    "exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/unowned-connection_close-record.json\",\"status\":\"completed\"}\n",
+    "stderr": "",
+    "case": "unowned-connection_close",
+    "status": "completed",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/unowned-connection_close-record.json",
+    "schema": "通过",
+    "rust_verifier": {
+      "verify": {
+        "Ok": null
+      }
+    },
+    "unowned_in_history": true,
+    "unowned_execution_count": 0
+  },
+  {
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/复核-r2-规格保真-证据/branch-cut-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "1",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/branch-cut-record.json"
+    ],
+    "exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/branch-cut-record.json\",\"status\":\"completed\"}\n",
+    "stderr": "",
+    "case": "branch-cut",
+    "status": "completed",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/branch-cut-record.json",
+    "schema": "通过",
+    "rust_verifier": {
+      "verify": {
+        "Ok": null
+      }
+    }
+  },
+  {
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/复核-r2-规格保真-证据/branch-retained-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "1",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/branch-retained-record.json"
+    ],
+    "exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/branch-retained-record.json\",\"status\":\"completed\"}\n",
+    "stderr": "",
+    "case": "branch-retained",
+    "status": "completed",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/branch-retained-record.json",
+    "schema": "通过",
+    "rust_verifier": {
+      "verify": {
+        "Ok": null
+      }
+    }
+  },
+  {
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/control-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/control-record.json"
+    ],
+    "exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/control-record.json\",\"status\":\"completed\"}\n",
+    "stderr": "",
+    "case": "control",
+    "status": "completed",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/control-record.json",
+    "schema": "通过",
+    "rust_verifier": {
+      "verify": {
+        "Ok": null
+      }
+    }
+  },
+  {
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/reachability-null-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/reachability-null-record.json"
+    ],
+    "exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/reachability-null-record.json\",\"status\":\"completed\"}\n",
+    "stderr": "",
+    "case": "reachability-null",
+    "status": "completed",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/reachability-null-record.json",
+    "schema": "$.input_history.reachability: 类型不符",
+    "rust_verifier": {
+      "verify": {
+        "Ok": null
+      }
+    }
+  },
+  {
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/reachability-number-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/reachability-number-record.json"
+    ],
+    "exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/reachability-number-record.json\",\"status\":\"completed\"}\n",
+    "stderr": "",
+    "case": "reachability-number",
+    "status": "completed",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/reachability-number-record.json",
+    "schema": "$.input_history.reachability: 类型不符",
+    "rust_verifier": {
+      "verify": {
+        "Ok": null
+      }
+    }
+  },
+  {
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/reachability-object-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/reachability-object-record.json"
+    ],
+    "exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/reachability-object-record.json\",\"status\":\"completed\"}\n",
+    "stderr": "",
+    "case": "reachability-object",
+    "status": "completed",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/reachability-object-record.json",
+    "schema": "$.input_history.reachability: 必填字段缺失",
+    "rust_verifier": {
+      "verify": {
+        "Ok": null
+      }
+    }
+  },
+  {
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/reachability-string-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/reachability-string-record.json"
+    ],
+    "exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/reachability-string-record.json\",\"status\":\"completed\"}\n",
+    "stderr": "",
+    "case": "reachability-string",
+    "status": "completed",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/reachability-string-record.json",
+    "schema": "$.input_history.reachability: 类型不符",
+    "rust_verifier": {
+      "verify": {
+        "Ok": null
+      }
+    }
+  },
+  {
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/initial-unlisted-missing-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/initial-unlisted-missing-record.json"
+    ],
+    "exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/initial-unlisted-missing-record.json\",\"status\":\"completed\"}\n",
+    "stderr": "",
+    "case": "initial-unlisted-missing",
+    "status": "completed",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/initial-unlisted-missing-record.json",
+    "schema": "通过",
+    "rust_verifier": {
+      "verify": {
+        "Ok": null
+      }
+    }
+  },
+  {
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/initial-unlisted-filled-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/initial-unlisted-filled-record.json"
+    ],
+    "exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/initial-unlisted-filled-record.json\",\"status\":\"completed\"}\n",
+    "stderr": "",
+    "case": "initial-unlisted-filled",
+    "status": "completed",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-2-证据/initial-unlisted-filled-record.json",
+    "schema": "通过",
+    "rust_verifier": {
+      "verify": {
+        "Ok": null
+      }
+    }
+  }
+]

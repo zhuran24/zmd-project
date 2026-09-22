@@ -1,0 +1,22 @@
+   Compiling autocfg v1.5.1
+   Compiling proc-macro2 v1.0.107
+   Compiling unicode-ident v1.0.26
+   Compiling quote v1.0.47
+   Compiling serde_core v1.0.229
+   Compiling zmij v1.0.23
+   Compiling serde v1.0.229
+   Compiling serde_json v1.0.151
+   Compiling itoa v1.0.18
+   Compiling memchr v2.8.3
+   Compiling num-traits v0.2.19
+   Compiling syn v3.0.6
+   Compiling num-integer v0.1.47
+   Compiling num-bigint v0.4.8
+   Compiling num-rational v0.4.2
+   Compiling serde_derive v1.0.229
+   Compiling topology v0.1.0 (/home/zhuran24/zmd-research-fresh/求解器/数据/复核/否证-r4-2-证据/cases/core_port_category/求解器/crates/topology)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.08s
+     Running unittests src/lib.rs (/home/zhuran24/zmd-research-fresh/求解器/数据/复核/否证-r4-2-证据/fresh-targets/core_port_category/debug/deps/topology-958a7a196b95191c)
+     Running unittests src/main.rs (/home/zhuran24/zmd-research-fresh/求解器/数据/复核/否证-r4-2-证据/fresh-targets/core_port_category/debug/deps/topology-232d29a62249f608)
+     Running tests/validation.rs (/home/zhuran24/zmd-research-fresh/求解器/数据/复核/否证-r4-2-证据/fresh-targets/core_port_category/debug/deps/validation-55f92a55e3fc13c3)
+   Doc-tests topology

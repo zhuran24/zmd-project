@@ -1,0 +1,29 @@
+{
+  "status": "PASS",
+  "captured_file_count": 67,
+  "changed_captured_files": [],
+  "independent_count": 62,
+  "axis_count": 99,
+  "unmapped_axes": [],
+  "missing_links": [],
+  "baseline_readonly_reruns": {
+    "规格自查": {
+      "status": "PASS",
+      "check_count": 58
+    },
+    "原转移回归": {
+      "status": "PASS",
+      "check_count": 16
+    },
+    "修订回归": {
+      "status": "PASS",
+      "check_count": 19
+    },
+    "样例兼容": {
+      "status": "PASS",
+      "check_count": 0
+    }
+  },
+  "reader_review": "主报告与独立基线逐段重读；两项发现与条件探针分开，路径行号及数字口径核对。",
+  "scope": "只写本席复核目录；未运行改写黄金记录的run_checks.py；未commit或push。"
+}

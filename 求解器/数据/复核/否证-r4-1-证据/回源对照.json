@@ -1,0 +1,10 @@
+{
+  "mutation": [
+    {
+      "path": "/static_checks/constants/transport_s/quantity/value",
+      "before": "312",
+      "after": "1"
+    }
+  ],
+  "result": "rejected: 目录 static_checks 与正式来源不一致"
+}

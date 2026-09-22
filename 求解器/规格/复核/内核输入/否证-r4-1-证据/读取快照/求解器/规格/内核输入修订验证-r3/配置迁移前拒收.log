@@ -1,0 +1,27 @@
+{"file": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/桥接器双通路.json", "status": "指定快照静态结构通过", "snapshot": "built_layout", "anchor": {"event": "blueprint_complete", "side": "after"}, "units": 7, "occupied_cells": 122, "physical_channels": 4, "buffer_channels": 0, "bridge_first_peers": [{"unit": "bridge", "axis": "vertical", "first_peer": "south_box:north:2", "scope": "两种已登记先接读法的一致唯一非桥见证"}, {"unit": "bridge", "axis": "horizontal", "first_peer": "west_box:north:2", "scope": "两种已登记先接读法的一致唯一非桥见证"}], "counts_category": "算术推论（候选布局）", "validation_category": "实测（工具）"}
+{"file": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询.json", "status": "指定快照静态结构通过", "snapshot": "built_layout", "anchor": {"event": "blueprint_complete", "side": "after"}, "units": 9, "occupied_cells": 128, "physical_channels": 4, "buffer_channels": 0, "bridge_first_peers": [], "counts_category": "算术推论（候选布局）", "validation_category": "实测（工具）"}
+Traceback (most recent call last):
+  File "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/generate_examples.py", line 113, in <module>
+    main()
+    ~~~~^^
+  File "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/generate_examples.py", line 103, in main
+    build('混做粉碎机两下游', [
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^
+        unit('crusher', '粉碎机', 30, 2), unit('grinder_a', '研磨机', 26, 8), unit('grinder_b', '研磨机', 33, 8), unit('power', '供电桩', 34, 3), unit('ore_source', '仓库取货口', 29, 0), unit('feed_belt', '传送带', 30, 1),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+        [('crusher:north:2', 'belt_b0:south:0'), ('belt_b0:east:0', 'belt_b1:south:0'), ('belt_b1:west:0', 'belt_b2:south:0'), ('belt_b2:north:0', 'belt_b3:south:0'), ('belt_b3:north:0', 'grinder_b:south:0')]],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        {'kind': 'mixed_two_downstreams', 'unit': 'crusher'})
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/generate_examples.py", line 82, in build
+    result = checker.check(data, path)
+  File "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/check_examples.py", line 572, in check
+    validate_runtime(data, catalog, ports, channels, buffers)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/runtime_example.py", line 212, in validate_runtime
+    require(hashlib.sha256((BASE.parents[1]/'规格/内核配置-v1.json').read_bytes()).hexdigest()==SUPPORTED_PROFILE_SHA256,'unsupported: 受限配置字节已改变，须核对解释并迁移实现')
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/check_examples.py", line 72, in require
+    raise CheckError(message)
+check_examples.CheckError: unsupported: 受限配置字节已改变，须核对解释并迁移实现

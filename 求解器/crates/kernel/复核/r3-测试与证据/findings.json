@@ -1,0 +1,23 @@
+[
+  {
+    "id": "KR-r3-L2-01",
+    "where": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/seed.rs:13–32；/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md §6.4",
+    "claim": "seed在识别after_closure之前无条件重写parameter_values，因而把缺失或冲突参数的检查点修补成可接受输入，未按最终规格保留并校验原参数。",
+    "evidence": "内核输入§6.4要求after_closure保留游标、参数、账和事件，缺失或冲突即拒收；对内核的修改请求KQ-07重申该要求。seed.rs:19–30先补齐99轴并从顶层参数覆盖全部当前值，derive_context:58的after_closure早退发生在覆盖之后。独立seed_probe.py从桥接器t=5真实检查点构造参数表清空、表内transfer.phase冲突、仅修改顶层初始相位三例：原样run均退出2/invalid_input，seed均退出0且改写semantic_context；合法对照完整状态保持相等。证据：/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/seed-probe-results.json；完整论证：/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/复核-r3-测试与证据.md §2.1。",
+    "severity": "重要"
+  },
+  {
+    "id": "KR-r3-L2-02",
+    "where": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/interfaces.rs:119–158；/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests_round5.rs:146–172",
+    "claim": "after_closure绕过transfer.phase.remaining的独立类型和值域校验，非法相位参数可进入completed记录及通过verify-cycle的生产周期结果。",
+    "evidence": "规则“传输”规定5 tick冷却；内核输入§1.1/§5要求Time与支持域检查，现行配置transfer.phase明确本版整数剩余0…5。interfaces.rs:152–155仅在非after_closure时把该值与当前冷却比较，未单独解码或检查其范围。phase_probe.py同步修改顶层参数和检查点parameter_values以排除参数不一致因素，-1、6、1/2、字符串not-a-Time均run退出0/completed；以四格环的真实循环起点和not-a-Time初相位执行cycle，得到P=20的counterexample，verify-cycle仍退出0、cycle_replayed=true。合法初始相位与当前冷却不同的检查点应继续支持，但这不免除初相位本身的校验。证据：/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/phase-probe-results.json、/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/phase-malformed-cycle-check.json；完整论证：/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/复核-r3-测试与证据.md §2.2。",
+    "severity": "阻断"
+  },
+  {
+    "id": "KR-r3-L2-03",
+    "where": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/output.rs:265–267；/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/audit_round5.py:140–146",
+    "claim": "覆盖报告把已定向桥上的成功搬运当作connection.bridge_first_contact实际执行证据，聚合审计继承该误标而漏列先接定向的运行覆盖缺口。",
+    "evidence": "内核输出§1明确区分exercised实际执行和input_checked仅输入/结构检查，第五轮K6要求逐轴真实执行或逐条说明做不到。output.rs只要任一成功move涉及桥便将先接轴标exercised。桥接器双通路记录从t=0到29，输入两轴早已resolved，四个接通事件发生在-5、-4、-3、-2；所引第一证据J|0|0|0仅是south_box向bridge搬运，不含先接或定向后效。桥两通路各8件及两成品各8件无线入库确实成立，但只能证明运行通路。audit_round5按报告标签直接汇总，未独立核该轴事件。证据：/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-测试与证据/coverage-raw-samples.json；完整论证：/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/复核-r3-测试与证据.md §2.3。",
+    "severity": "重要"
+  }
+]

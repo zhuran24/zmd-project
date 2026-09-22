@@ -1,0 +1,7 @@
+{
+  "command": "sha256sum /home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt /home/zhuran24/zmd-research-fresh/求解任务.txt /home/zhuran24/zmd-research-fresh/求解约束.txt",
+  "cwd": "/home/zhuran24/zmd-research-fresh",
+  "exit_code": 0,
+  "stdout": "31ced2a24fef738c72dfa406351b6bad5df3e353d6b1c2dfd06ab1febaf566ff  /home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt\n1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac  /home/zhuran24/zmd-research-fresh/求解任务.txt\nf6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6  /home/zhuran24/zmd-research-fresh/求解约束.txt\n",
+  "stderr": ""
+}

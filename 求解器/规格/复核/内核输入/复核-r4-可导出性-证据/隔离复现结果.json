@@ -1,0 +1,41 @@
+{
+  "commands": [
+    {
+      "name": "schema生成",
+      "exit_code": 0,
+      "stdout_tail": "",
+      "stderr": ""
+    },
+    {
+      "name": "静态样例",
+      "exit_code": 1,
+      "stdout_tail": "{\"status\": \"invalid\", \"reason\": \"文档存在悬空本地引用\"}\n",
+      "stderr": ""
+    }
+  ],
+  "schema_generator_matches_delivery": true,
+  "jsonschema_available": false,
+  "preparation_missing_links": [
+    "求解器/数据/送料契约.md"
+  ],
+  "retry_commands": [
+    {
+      "name": "静态样例",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout_tail": "\",\n    \"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/复核-r4-可导出性-证据/隔离运行/求解器/数据/样例/check_examples.py\": \"a5acb5c71d17917ac636d3026360f22a0dc12f1326b570e46d94aeba0a030fcc\",\n    \"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/复核-r4-可导出性-证据/隔离运行/求解器/数据/样例/generate_examples.py\": \"b5e4d4198bf8c2c84acfa1ff643b4bb1334a387635d0a909bd75311c20300b2c\"\n  },\n  \"unverified\": [\n    \"供电覆盖格集合\",\n    \"实际库存与进度\",\n    \"调试可达性\",\n    \"轮询与均分\",\n    \"实际混做及物流分配\",\n    \"离线接续\",\n    \"吞吐及全部可达循环达标\",\n    \"外部契约绑定与非空调试程序\"\n  ]\n}\n"
+    },
+    {
+      "name": "黄金重算",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout_tail": "{\"status\": \"通过\", \"golden_match\": true, \"ticks\": 4, \"complete_cycles\": \"2\", \"events\": [28, 42, 43, 43], \"output\": \"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/复核-r4-可导出性-证据/隔离运行/求解器/数据/样例/混做粉碎机两下游-运行记录.json\"}\n"
+    },
+    {
+      "name": "运行回归",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout_tail": "{\"status\": \"通过\", \"tests\": 72, \"axis_count\": 99, \"output\": \"/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/复核-r4-可导出性-证据/隔离运行/求解器/规格/内核输入修订验证-r3/运行回归结果.json\"}\n"
+    }
+  ]
+}

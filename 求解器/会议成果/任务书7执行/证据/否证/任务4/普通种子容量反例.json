@@ -1,0 +1,52 @@
+[
+  {
+    "species": "荞花",
+    "planters": 11,
+    "harvesters": 6,
+    "crushers": 6,
+    "input_each": {
+      "item": "荞花种子",
+      "count": 50
+    },
+    "all_switches": "off",
+    "all_caches": "empty",
+    "all_output_slots": "empty",
+    "all_transport_slots": "empty",
+    "ordinary_seed_count": 1150,
+    "claimed_bound": 850,
+    "excess": 300,
+    "legality": [
+      "R17",
+      "R21",
+      "T6",
+      "T12",
+      "T13"
+    ],
+    "consequence": "开关保持关闭时状态固定；普通输入容量无配方身份限制。此例攻击物理容量标签，未攻击正确原料的运行充分族。"
+  },
+  {
+    "species": "砂叶",
+    "planters": 21,
+    "harvesters": 11,
+    "crushers": 11,
+    "input_each": {
+      "item": "砂叶种子",
+      "count": 50
+    },
+    "all_switches": "off",
+    "all_caches": "empty",
+    "all_output_slots": "empty",
+    "all_transport_slots": "empty",
+    "ordinary_seed_count": 2150,
+    "claimed_bound": 1600,
+    "excess": 550,
+    "legality": [
+      "R17",
+      "R21",
+      "T6",
+      "T12",
+      "T13"
+    ],
+    "consequence": "开关保持关闭时状态固定；普通输入容量无配方身份限制。此例攻击物理容量标签，未攻击正确原料的运行充分族。"
+  }
+]

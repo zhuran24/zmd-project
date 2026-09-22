@@ -1,0 +1,1 @@
+{"controls": 4, "mutations_accepted": 24, "mutations_total": 28, "permutations": 6, "manual": {"status": "通过", "ticks": 4, "inventory_slots_each_tick": 19, "all_inventory_quantities_and_transport_arrival_times": true, "successful_movement_event_ids": true, "internal_passages": true, "closure_rounds": true, "pending": true, "downstream_progress": true}}

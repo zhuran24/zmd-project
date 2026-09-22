@@ -1,0 +1,26 @@
+[
+  {
+    "command": [
+      "/usr/bin/python3",
+      "-B",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/否证/任务2/check_audit.py"
+    ],
+    "cwd": "/home/zhuran24/zmd-research-fresh",
+    "time_utc": "2026-09-21T11:28:37.239828+00:00",
+    "exit_status": 0,
+    "stdout": "{\n  \"status\": \"pass\",\n  \"arithmetic_cases\": 21609,\n  \"dependency_mismatches\": {\n    \"warehouse\": 5,\n    \"derivation\": 0,\n    \"derivation_extra\": 0\n  },\n  \"script_runs\": [\n    {\n      \"mode\": \"warehouse-original\",\n      \"exit_status\": 1,\n      \"error\": \"AssertionError: source bytes changed; review affected claims\"\n    },\n    {\n      \"mode\": \"warehouse-arithmetic\",\n      \"exit_status\": 0,\n      \"error\": null\n    },\n    {\n      \"mode\": \"derivation-arithmetic\",\n      \"exit_status\": 0,\n      \"error\": null\n    },\n    {\n      \"mode\": \"derivation-validation\",\n      \"exit_status\": 0,\n      \"error\": null\n    }\n  ],\n  \"input_files_stable\": 32,\n  \"kernel_steps\": 0\n}\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "/usr/bin/python3",
+      "-B",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/否证/任务2/validate_delivery.py"
+    ],
+    "cwd": "/home/zhuran24/zmd-research-fresh",
+    "time_utc": "2026-09-21T11:28:37.267413+00:00",
+    "exit_status": 0,
+    "stdout": "{\n  \"status\": \"pass\",\n  \"findings\": 13,\n  \"counts\": {\n    \"否证成立\": 0,\n    \"否证不成立\": 8,\n    \"无法判定\": 5\n  },\n  \"source_checks\": 46,\n  \"links\": 8,\n  \"files\": 15,\n  \"main_sha256\": \"eeee4e3f14eca1f57d5cf6cf09fb2d321139dcaa5c25c773ea659eed117507b5\"\n}\n",
+    "stderr": ""
+  }
+]

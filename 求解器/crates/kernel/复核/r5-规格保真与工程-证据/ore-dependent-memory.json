@@ -1,0 +1,161 @@
+{
+  "memory_equal": false,
+  "at_79999": {
+    "schema": "poll-memory-v1",
+    "sides": [
+      {
+        "current_level": "L|core|input|other",
+        "graded": true,
+        "levels": [
+          {
+            "id": "L|core|input|other",
+            "members": [
+              "PC|belt:north:0|core:south:1"
+            ],
+            "next_channel": "PC|belt:north:0|core:south:1"
+          }
+        ],
+        "side": "input",
+        "unit": "core"
+      },
+      {
+        "current_level": null,
+        "graded": true,
+        "levels": [],
+        "side": "output",
+        "unit": "core"
+      },
+      {
+        "current_level": null,
+        "graded": true,
+        "levels": [],
+        "side": "input",
+        "unit": "box"
+      },
+      {
+        "current_level": null,
+        "graded": true,
+        "levels": [
+          {
+            "id": "L|box|output|other",
+            "members": [
+              "PC|box:north:1|belt:south:0"
+            ],
+            "next_channel": "PC|box:north:1|belt:south:0"
+          }
+        ],
+        "side": "output",
+        "unit": "box"
+      },
+      {
+        "current_level": null,
+        "graded": true,
+        "levels": [
+          {
+            "id": "L|belt|input|other",
+            "members": [
+              "PC|box:north:1|belt:south:0"
+            ],
+            "next_channel": "PC|box:north:1|belt:south:0"
+          }
+        ],
+        "side": "input",
+        "unit": "belt"
+      },
+      {
+        "current_level": "L|belt|output|ungraded",
+        "graded": false,
+        "levels": [
+          {
+            "id": "L|belt|output|ungraded",
+            "members": [
+              "PC|belt:north:0|core:south:1"
+            ],
+            "next_channel": "PC|belt:north:0|core:south:1"
+          }
+        ],
+        "side": "output",
+        "unit": "belt"
+      }
+    ]
+  },
+  "at_80000": {
+    "schema": "poll-memory-v1",
+    "sides": [
+      {
+        "current_level": null,
+        "graded": true,
+        "levels": [
+          {
+            "id": "L|core|input|other",
+            "members": [
+              "PC|belt:north:0|core:south:1"
+            ],
+            "next_channel": "PC|belt:north:0|core:south:1"
+          }
+        ],
+        "side": "input",
+        "unit": "core"
+      },
+      {
+        "current_level": null,
+        "graded": true,
+        "levels": [],
+        "side": "output",
+        "unit": "core"
+      },
+      {
+        "current_level": null,
+        "graded": true,
+        "levels": [],
+        "side": "input",
+        "unit": "box"
+      },
+      {
+        "current_level": null,
+        "graded": true,
+        "levels": [
+          {
+            "id": "L|box|output|other",
+            "members": [
+              "PC|box:north:1|belt:south:0"
+            ],
+            "next_channel": "PC|box:north:1|belt:south:0"
+          }
+        ],
+        "side": "output",
+        "unit": "box"
+      },
+      {
+        "current_level": null,
+        "graded": true,
+        "levels": [
+          {
+            "id": "L|belt|input|other",
+            "members": [
+              "PC|box:north:1|belt:south:0"
+            ],
+            "next_channel": "PC|box:north:1|belt:south:0"
+          }
+        ],
+        "side": "input",
+        "unit": "belt"
+      },
+      {
+        "current_level": "L|belt|output|ungraded",
+        "graded": false,
+        "levels": [
+          {
+            "id": "L|belt|output|ungraded",
+            "members": [
+              "PC|belt:north:0|core:south:1"
+            ],
+            "next_channel": "PC|belt:north:0|core:south:1"
+          }
+        ],
+        "side": "output",
+        "unit": "belt"
+      }
+    ]
+  }
+}

@@ -1,0 +1,77 @@
+[
+  {
+    "accepted": true,
+    "case": "混做粉碎机两下游:original",
+    "error": null
+  },
+  {
+    "accepted": false,
+    "case": "混做粉碎机两下游:remove-formal",
+    "error": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+  },
+  {
+    "accepted": false,
+    "case": "混做粉碎机两下游:remove-all",
+    "error": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+  },
+  {
+    "accepted": false,
+    "case": "混做粉碎机两下游:false-scope",
+    "error": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+  },
+  {
+    "accepted": false,
+    "case": "混做粉碎机两下游:false-count",
+    "error": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+  },
+  {
+    "accepted": false,
+    "case": "混做粉碎机两下游:false-summary",
+    "error": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+  },
+  {
+    "accepted": true,
+    "case": "分流器三路轮询:original",
+    "error": null
+  },
+  {
+    "accepted": false,
+    "case": "分流器三路轮询:remove-formal",
+    "error": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+  },
+  {
+    "accepted": false,
+    "case": "分流器三路轮询:remove-all",
+    "error": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+  },
+  {
+    "accepted": false,
+    "case": "分流器三路轮询:false-scope",
+    "error": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+  },
+  {
+    "accepted": false,
+    "case": "分流器三路轮询:false-count",
+    "error": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+  },
+  {
+    "accepted": false,
+    "case": "分流器三路轮询:false-summary",
+    "error": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+  },
+  {
+    "accepted": true,
+    "case": "ore-shortage",
+    "error": null
+  },
+  {
+    "accepted": true,
+    "case": "pending-historical-alias",
+    "error": null
+  },
+  {
+    "accepted": true,
+    "case": "after-closure-control",
+    "error": null
+  }
+]

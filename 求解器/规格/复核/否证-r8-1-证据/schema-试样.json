@@ -1,0 +1,170 @@
+{
+  "scope": "仅结构试样，不满足运行记录全部语义验收义务",
+  "original": {
+    "schema": "kernel-output-v3",
+    "run_id": "r8-seat1-structure-probe",
+    "profile_id": "kernel_profile_v1",
+    "producer": {
+      "kind": "manual_expected",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/否证-r8-1-证据/independent_checks.py",
+      "claim": "仅输出字段结构试样，不是游戏运行证据"
+    },
+    "status": "invalid_input",
+    "fingerprints": [],
+    "parameter_assignment": null,
+    "input_history": null,
+    "uncovered_axes": [],
+    "trace": null,
+    "validation_scope": {
+      "kind": "finite_trace",
+      "from": {
+        "kind": "rational",
+        "value": {
+          "value": "0",
+          "category": "候选"
+        }
+      },
+      "through": {
+        "kind": "rational",
+        "value": {
+          "value": "0",
+          "category": "候选"
+        }
+      },
+      "golden_match": false,
+      "initial_history": "conditional_witness",
+      "universal_parameters": false,
+      "all_reachable_cycles": false,
+      "target_certified": false,
+      "manufacturing_cycles_completed": {
+        "value": "0",
+        "category": "候选"
+      }
+    },
+    "open_items": [
+      "结构试样：输入尚未装载，未产生轨迹"
+    ],
+    "execution_mode": "finite_concrete",
+    "port_meeting": "shared_edge_opposite"
+  },
+  "renamed": {
+    "schema": "kernel-output-v3",
+    "run_id": "r8-seat1-structure-probe",
+    "profile_id": "kernel_profile_v1",
+    "producer": {
+      "kind": "manual_expected",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/否证-r8-1-证据/independent_checks.py",
+      "claim": "仅输出字段结构试样，不是游戏运行证据"
+    },
+    "status": "invalid_input",
+    "fingerprints": [],
+    "parameter_assignment": null,
+    "input_history": null,
+    "uncovered_axes": [],
+    "trace": null,
+    "open_items": [
+      "结构试样：输入尚未装载，未产生轨迹"
+    ],
+    "execution_mode": "finite_concrete",
+    "port_meeting": "shared_edge_opposite",
+    "verification_scope": {
+      "kind": "finite_trace",
+      "from": {
+        "kind": "rational",
+        "value": {
+          "value": "0",
+          "category": "候选"
+        }
+      },
+      "through": {
+        "kind": "rational",
+        "value": {
+          "value": "0",
+          "category": "候选"
+        }
+      },
+      "golden_match": false,
+      "initial_history": "conditional_witness",
+      "universal_parameters": false,
+      "all_reachable_cycles": false,
+      "target_certified": false,
+      "manufacturing_cycles_completed": {
+        "value": "0",
+        "category": "候选"
+      }
+    }
+  },
+  "extra_alias": {
+    "schema": "kernel-output-v3",
+    "run_id": "r8-seat1-structure-probe",
+    "profile_id": "kernel_profile_v1",
+    "producer": {
+      "kind": "manual_expected",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/否证-r8-1-证据/independent_checks.py",
+      "claim": "仅输出字段结构试样，不是游戏运行证据"
+    },
+    "status": "invalid_input",
+    "fingerprints": [],
+    "parameter_assignment": null,
+    "input_history": null,
+    "uncovered_axes": [],
+    "trace": null,
+    "validation_scope": {
+      "kind": "finite_trace",
+      "from": {
+        "kind": "rational",
+        "value": {
+          "value": "0",
+          "category": "候选"
+        }
+      },
+      "through": {
+        "kind": "rational",
+        "value": {
+          "value": "0",
+          "category": "候选"
+        }
+      },
+      "golden_match": false,
+      "initial_history": "conditional_witness",
+      "universal_parameters": false,
+      "all_reachable_cycles": false,
+      "target_certified": false,
+      "manufacturing_cycles_completed": {
+        "value": "0",
+        "category": "候选"
+      }
+    },
+    "open_items": [
+      "结构试样：输入尚未装载，未产生轨迹"
+    ],
+    "execution_mode": "finite_concrete",
+    "port_meeting": "shared_edge_opposite",
+    "verification_scope": {
+      "kind": "finite_trace",
+      "from": {
+        "kind": "rational",
+        "value": {
+          "value": "0",
+          "category": "候选"
+        }
+      },
+      "through": {
+        "kind": "rational",
+        "value": {
+          "value": "0",
+          "category": "候选"
+        }
+      },
+      "golden_match": false,
+      "initial_history": "conditional_witness",
+      "universal_parameters": false,
+      "all_reachable_cycles": false,
+      "target_certified": false,
+      "manufacturing_cycles_completed": {
+        "value": "0",
+        "category": "候选"
+      }
+    }
+  }
+}

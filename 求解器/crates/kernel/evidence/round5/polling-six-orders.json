@@ -1,0 +1,90 @@
+{
+  "status": "pass",
+  "cases": [
+    {
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序0核验.json",
+      "status": "pass",
+      "scope": "已记录有限前缀；末刻新收件未观察到未来释放",
+      "groups": 31,
+      "counts": {
+        "a0": 11,
+        "b0": 10,
+        "c0": 10
+      },
+      "one_tick_releases": 30,
+      "supply": "真实仓库蓝铁矿口→运输链→精炼炉；每组1，相邻和2≤3",
+      "remaining": "有限箱容纳不证明无限接收；六局部序不等于全参数族"
+    },
+    {
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序1核验.json",
+      "status": "pass",
+      "scope": "已记录有限前缀；末刻新收件未观察到未来释放",
+      "groups": 31,
+      "counts": {
+        "a0": 11,
+        "b0": 10,
+        "c0": 10
+      },
+      "one_tick_releases": 30,
+      "supply": "真实仓库蓝铁矿口→运输链→精炼炉；每组1，相邻和2≤3",
+      "remaining": "有限箱容纳不证明无限接收；六局部序不等于全参数族"
+    },
+    {
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序2核验.json",
+      "status": "pass",
+      "scope": "已记录有限前缀；末刻新收件未观察到未来释放",
+      "groups": 31,
+      "counts": {
+        "a0": 11,
+        "b0": 10,
+        "c0": 10
+      },
+      "one_tick_releases": 30,
+      "supply": "真实仓库蓝铁矿口→运输链→精炼炉；每组1，相邻和2≤3",
+      "remaining": "有限箱容纳不证明无限接收；六局部序不等于全参数族"
+    },
+    {
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序3核验.json",
+      "status": "pass",
+      "scope": "已记录有限前缀；末刻新收件未观察到未来释放",
+      "groups": 31,
+      "counts": {
+        "a0": 11,
+        "b0": 10,
+        "c0": 10
+      },
+      "one_tick_releases": 30,
+      "supply": "真实仓库蓝铁矿口→运输链→精炼炉；每组1，相邻和2≤3",
+      "remaining": "有限箱容纳不证明无限接收；六局部序不等于全参数族"
+    },
+    {
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序4核验.json",
+      "status": "pass",
+      "scope": "已记录有限前缀；末刻新收件未观察到未来释放",
+      "groups": 31,
+      "counts": {
+        "a0": 11,
+        "b0": 10,
+        "c0": 10
+      },
+      "one_tick_releases": 30,
+      "supply": "真实仓库蓝铁矿口→运输链→精炼炉；每组1，相邻和2≤3",
+      "remaining": "有限箱容纳不证明无限接收；六局部序不等于全参数族"
+    },
+    {
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序5核验.json",
+      "status": "pass",
+      "scope": "已记录有限前缀；末刻新收件未观察到未来释放",
+      "groups": 31,
+      "counts": {
+        "a0": 11,
+        "b0": 10,
+        "c0": 10
+      },
+      "one_tick_releases": 30,
+      "supply": "真实仓库蓝铁矿口→运输链→精炼炉；每组1，相邻和2≤3",
+      "remaining": "有限箱容纳不证明无限接收；六局部序不等于全参数族"
+    }
+  ],
+  "scope": "当前来源下六局部顺序的实际回放，不代替全局全序约减"
+}

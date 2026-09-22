@@ -1,0 +1,30 @@
+[
+  {
+    "tick": 0,
+    "records": 28,
+    "scan_rounds": 2,
+    "completed_batches": 0,
+    "full_state_projection_match": true
+  },
+  {
+    "tick": 1,
+    "records": 42,
+    "scan_rounds": 3,
+    "completed_batches": 0,
+    "full_state_projection_match": true
+  },
+  {
+    "tick": 2,
+    "records": 43,
+    "scan_rounds": 3,
+    "completed_batches": 1,
+    "full_state_projection_match": true
+  },
+  {
+    "tick": 3,
+    "records": 43,
+    "scan_rounds": 3,
+    "completed_batches": 2,
+    "full_state_projection_match": true
+  }
+]

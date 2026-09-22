@@ -1,0 +1,166 @@
+[
+  {
+    "case": "baseline",
+    "differences": [],
+    "source_snapshots_unchanged": true,
+    "verify": "accepted",
+    "converter_recipe_prefix": "accepted",
+    "cargo_exit_code": 0,
+    "cargo_summaries": [
+      "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+      "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+      "test result: ok. 28 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.31s",
+      "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+    ],
+    "topology_recompiled": true,
+    "cli_exit_code": 0,
+    "cli_counts": {
+      "能检且通过": "4925",
+      "能检且不通过": "0",
+      "不能静态检": "59"
+    },
+    "m120_report": [
+      "| 制造能力/M120 | 各配方批次率×耗时之和 1 ≤1（单位时间占用上限的算术推论）；据：制造、缓存格、配方 |"
+    ],
+    "cli_equal_original_report": true
+  },
+  {
+    "case": "unused_recipe_duration",
+    "differences": [
+      {
+        "path": "/recipes/6/duration/value",
+        "before": "1",
+        "after": "2"
+      }
+    ],
+    "source_snapshots_unchanged": true,
+    "verify": "accepted",
+    "converter_recipe_prefix": "rejected",
+    "converter_recipe_error": "正式配方变动，须先审查并修订单位目录",
+    "cargo_exit_code": 0,
+    "cargo_summaries": [
+      "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+      "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+      "test result: ok. 28 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.36s",
+      "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+    ],
+    "topology_recompiled": true,
+    "cli_exit_code": 0,
+    "cli_counts": {
+      "能检且通过": "4925",
+      "能检且不通过": "0",
+      "不能静态检": "59"
+    },
+    "m120_report": [
+      "| 制造能力/M120 | 各配方批次率×耗时之和 1 ≤1（单位时间占用上限的算术推论）；据：制造、缓存格、配方 |"
+    ],
+    "cli_equal_original_report": true
+  },
+  {
+    "case": "power_coverage",
+    "differences": [
+      {
+        "path": "/units/17/coverage/width/value",
+        "before": "12",
+        "after": "13"
+      }
+    ],
+    "source_snapshots_unchanged": true,
+    "verify": "accepted",
+    "converter_recipe_prefix": "accepted",
+    "cargo_exit_code": 0,
+    "cargo_summaries": [
+      "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+      "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+      "test result: ok. 28 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.31s",
+      "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+    ],
+    "topology_recompiled": true,
+    "cli_exit_code": 0,
+    "cli_counts": {
+      "能检且通过": "4925",
+      "能检且不通过": "0",
+      "不能静态检": "59"
+    },
+    "m120_report": [
+      "| 制造能力/M120 | 各配方批次率×耗时之和 1 ≤1（单位时间占用上限的算术推论）；据：制造、缓存格、配方 |"
+    ],
+    "cli_equal_original_report": true
+  },
+  {
+    "case": "core_port_category",
+    "differences": [
+      {
+        "path": "/units/9/ports/input_count/category",
+        "before": "条文直引",
+        "after": "候选"
+      }
+    ],
+    "source_snapshots_unchanged": true,
+    "verify": "accepted",
+    "converter_recipe_prefix": "accepted",
+    "cargo_exit_code": 0,
+    "cargo_summaries": [
+      "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+      "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+      "test result: ok. 28 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.35s",
+      "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+    ],
+    "topology_recompiled": true,
+    "cli_exit_code": 0,
+    "cli_counts": {
+      "能检且通过": "4925",
+      "能检且不通过": "0",
+      "不能静态检": "59"
+    },
+    "m120_report": [
+      "| 制造能力/M120 | 各配方批次率×耗时之和 1 ≤1（单位时间占用上限的算术推论）；据：制造、缓存格、配方 |"
+    ],
+    "cli_equal_original_report": true
+  },
+  {
+    "case": "used_recipe_duration",
+    "differences": [
+      {
+        "path": "/recipes/7/duration/value",
+        "before": "1",
+        "after": "1/2"
+      }
+    ],
+    "source_snapshots_unchanged": true,
+    "verify": "accepted",
+    "converter_recipe_prefix": "rejected",
+    "converter_recipe_error": "正式配方变动，须先审查并修订单位目录",
+    "cargo_exit_code": 0,
+    "cargo_summaries": [
+      "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+      "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+      "test result: ok. 28 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.32s",
+      "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+    ],
+    "topology_recompiled": true,
+    "cli_exit_code": 0,
+    "cli_counts": {
+      "能检且通过": "4925",
+      "能检且不通过": "0",
+      "不能静态检": "59"
+    },
+    "m120_report": [
+      "| 制造能力/M120 | 各配方批次率×耗时之和 1/2 ≤1（单位时间占用上限的算术推论）；据：制造、缓存格、配方 |"
+    ],
+    "cli_equal_original_report": false
+  },
+  {
+    "case": "cooldown_control",
+    "differences": [
+      {
+        "path": "/units/15/transfer/cooldown_ticks/value",
+        "before": "5",
+        "after": "4"
+      }
+    ],
+    "source_snapshots_unchanged": true,
+    "verify": "rejected",
+    "verify_error": ""
+  }
+]

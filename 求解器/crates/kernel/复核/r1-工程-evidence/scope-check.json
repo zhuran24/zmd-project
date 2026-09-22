@@ -1,0 +1,10 @@
+{
+  "protected_file_count": 2172,
+  "changed": [],
+  "report_missing_links": [],
+  "write_scope": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核",
+  "source_modifications_by_reviewer": false,
+  "simulator_touched": false,
+  "git_commit_or_push": false,
+  "note": "保护集合指纹核对；本轮工具写入均限定本目录，未用既有验收器的写回main入口。"
+}

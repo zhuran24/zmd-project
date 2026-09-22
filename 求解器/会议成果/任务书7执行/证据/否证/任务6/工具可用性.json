@@ -1,0 +1,7 @@
+{
+  "requested": "StructuredOutput",
+  "discovery": "ALL_TOOLS name/description regex StructuredOutput|structured.output",
+  "available": false,
+  "matches": [],
+  "fallback": "结构化结果.json与最终JSON文本"
+}

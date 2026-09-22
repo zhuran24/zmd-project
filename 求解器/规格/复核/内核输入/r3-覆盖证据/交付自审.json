@@ -1,0 +1,13 @@
+{
+  "status": "通过",
+  "reviewed_file_count": 42,
+  "reviewed_file_changes": [],
+  "broken_links": [],
+  "findings_count": 2,
+  "severity_counts": {
+    "重要": 2
+  },
+  "reader_review": "已全文复读，结论与证据范围、当前/历史指纹、计数及交叉引用一致",
+  "report_sha256": "973c51f68928c7057fc7b88e26e4fd13e4c79143b741e649eeb9212494a13978",
+  "result_sha256": "4d3020d253d24444f2d73e8117049eb18bf650dc736cf8fe6a9f85ad9304400f"
+}

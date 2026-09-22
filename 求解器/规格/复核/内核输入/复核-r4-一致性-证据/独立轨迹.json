@@ -1,0 +1,52 @@
+[
+  {
+    "tick": 0,
+    "scan_rounds": 2,
+    "events": 28,
+    "completed_batches": 0,
+    "successful_moves": [
+      "J|0|0|0"
+    ],
+    "warehouse_ore": 79999,
+    "exact_event_inventory_progress_poll_and_port_match": true
+  },
+  {
+    "tick": 1,
+    "scan_rounds": 3,
+    "events": 42,
+    "completed_batches": 0,
+    "successful_moves": [
+      "J|1|0|1",
+      "J|1|1|0"
+    ],
+    "warehouse_ore": 79998,
+    "exact_event_inventory_progress_poll_and_port_match": true
+  },
+  {
+    "tick": 2,
+    "scan_rounds": 3,
+    "events": 43,
+    "completed_batches": 1,
+    "successful_moves": [
+      "J|2|0|1",
+      "J|2|1|0",
+      "J|2|1|2"
+    ],
+    "warehouse_ore": 79997,
+    "exact_event_inventory_progress_poll_and_port_match": true
+  },
+  {
+    "tick": 3,
+    "scan_rounds": 3,
+    "events": 43,
+    "completed_batches": 2,
+    "successful_moves": [
+      "J|3|0|1",
+      "J|3|0|4",
+      "J|3|1|0",
+      "J|3|1|3"
+    ],
+    "warehouse_ore": 79996,
+    "exact_event_inventory_progress_poll_and_port_match": true
+  }
+]

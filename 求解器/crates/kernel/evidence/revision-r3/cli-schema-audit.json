@@ -1,0 +1,304 @@
+{
+  "status": "passed_with_schema_gap",
+  "schema_sha256": "5c3cb1ace272c34439381ba770b000b26bdb745db20e52ca4008ff13be0d657e",
+  "passed": [
+    {
+      "case": "bridge-control",
+      "schema": "kernel-output-v3",
+      "status": "completed"
+    },
+    {
+      "case": "checkpoint-run",
+      "schema": "kernel-output-v3",
+      "status": "completed"
+    },
+    {
+      "case": "checkpoint-derived-run",
+      "schema": "kernel-output-v3",
+      "status": "completed"
+    },
+    {
+      "case": "parameter-missing-run",
+      "schema": "kernel-output-v3",
+      "status": "invalid_input"
+    },
+    {
+      "case": "parameter-missing-seed",
+      "schema": "kernel-output-v3",
+      "status": "invalid_input"
+    },
+    {
+      "case": "parameter-missing-cycle",
+      "schema": "kernel-cycle-v1",
+      "status": "invalid_input"
+    },
+    {
+      "case": "parameter-conflict-run",
+      "schema": "kernel-output-v3",
+      "status": "invalid_input"
+    },
+    {
+      "case": "parameter-conflict-seed",
+      "schema": "kernel-output-v3",
+      "status": "invalid_input"
+    },
+    {
+      "case": "parameter-conflict-cycle",
+      "schema": "kernel-cycle-v1",
+      "status": "invalid_input"
+    },
+    {
+      "case": "parameter-top_only-run",
+      "schema": "kernel-output-v3",
+      "status": "invalid_input"
+    },
+    {
+      "case": "parameter-top_only-seed",
+      "schema": "kernel-output-v3",
+      "status": "invalid_input"
+    },
+    {
+      "case": "parameter-top_only-cycle",
+      "schema": "kernel-cycle-v1",
+      "status": "invalid_input"
+    },
+    {
+      "case": "parameter-lifetime-run",
+      "schema": "kernel-output-v3",
+      "status": "invalid_input"
+    },
+    {
+      "case": "parameter-lifetime-seed",
+      "schema": "kernel-output-v3",
+      "status": "invalid_input"
+    },
+    {
+      "case": "parameter-lifetime-cycle",
+      "schema": "kernel-cycle-v1",
+      "status": "invalid_input"
+    },
+    {
+      "case": "phase--1-run",
+      "schema": "kernel-output-v3",
+      "status": "invalid_input"
+    },
+    {
+      "case": "phase--1-seed",
+      "schema": "kernel-output-v3",
+      "status": "invalid_input"
+    },
+    {
+      "case": "phase--1-cycle",
+      "schema": "kernel-cycle-v1",
+      "status": "invalid_input"
+    },
+    {
+      "case": "phase-6-run",
+      "schema": "kernel-output-v3",
+      "status": "invalid_input"
+    },
+    {
+      "case": "phase-6-seed",
+      "schema": "kernel-output-v3",
+      "status": "invalid_input"
+    },
+    {
+      "case": "phase-6-cycle",
+      "schema": "kernel-cycle-v1",
+      "status": "invalid_input"
+    },
+    {
+      "case": "phase-1_2-run",
+      "schema": "kernel-output-v3",
+      "status": "unsupported"
+    },
+    {
+      "case": "phase-1_2-seed",
+      "schema": "kernel-output-v3",
+      "status": "unsupported"
+    },
+    {
+      "case": "phase-1_2-cycle",
+      "schema": "kernel-cycle-v1",
+      "status": "stopped"
+    },
+    {
+      "case": "phase-not-a-Time-run",
+      "schema": "kernel-output-v3",
+      "status": "invalid_input"
+    },
+    {
+      "case": "phase-not-a-Time-seed",
+      "schema": "kernel-output-v3",
+      "status": "invalid_input"
+    },
+    {
+      "case": "phase-not-a-Time-cycle",
+      "schema": "kernel-cycle-v1",
+      "status": "invalid_input"
+    },
+    {
+      "case": "slot_short-run",
+      "schema": "kernel-output-v3",
+      "status": "invalid_input"
+    },
+    {
+      "case": "slot_short-seed",
+      "schema": "kernel-output-v3",
+      "status": "invalid_input"
+    },
+    {
+      "case": "slot_short-cycle",
+      "schema": "kernel-cycle-v1",
+      "status": "invalid_input"
+    },
+    {
+      "case": "slot_unknown-run",
+      "schema": "kernel-output-v3",
+      "status": "invalid_input"
+    },
+    {
+      "case": "slot_unknown-seed",
+      "schema": "kernel-output-v3",
+      "status": "invalid_input"
+    },
+    {
+      "case": "slot_unknown-cycle",
+      "schema": "kernel-cycle-v1",
+      "status": "invalid_input"
+    },
+    {
+      "case": "boolean_seed-run",
+      "schema": "kernel-output-v3",
+      "status": "invalid_input"
+    },
+    {
+      "case": "boolean_seed-seed",
+      "schema": "kernel-output-v3",
+      "status": "invalid_input"
+    },
+    {
+      "case": "boolean_seed-cycle",
+      "schema": "kernel-cycle-v1",
+      "status": "invalid_input"
+    },
+    {
+      "case": "boolean_context-run",
+      "schema": "kernel-output-v3",
+      "status": "invalid_input"
+    },
+    {
+      "case": "boolean_context-seed",
+      "schema": "kernel-output-v3",
+      "status": "invalid_input"
+    },
+    {
+      "case": "boolean_context-cycle",
+      "schema": "kernel-cycle-v1",
+      "status": "invalid_input"
+    },
+    {
+      "case": "missing_inventory-run",
+      "schema": "kernel-output-v3",
+      "status": "invalid_input"
+    },
+    {
+      "case": "missing_inventory-seed",
+      "schema": "kernel-output-v3",
+      "status": "invalid_input"
+    },
+    {
+      "case": "missing_inventory-cycle",
+      "schema": "kernel-cycle-v1",
+      "status": "invalid_input"
+    },
+    {
+      "case": "unknown_progress-run",
+      "schema": "kernel-output-v3",
+      "status": "invalid_input"
+    },
+    {
+      "case": "unknown_progress-seed",
+      "schema": "kernel-output-v3",
+      "status": "invalid_input"
+    },
+    {
+      "case": "unknown_progress-cycle",
+      "schema": "kernel-cycle-v1",
+      "status": "invalid_input"
+    },
+    {
+      "case": "zero-ore-origin-run",
+      "schema": "kernel-output-v3",
+      "status": "invalid_input"
+    },
+    {
+      "case": "zero-ore-origin-seed",
+      "schema": "kernel-output-v3",
+      "status": "invalid_input"
+    },
+    {
+      "case": "zero-ore-origin-cycle",
+      "schema": "kernel-cycle-v1",
+      "status": "invalid_input"
+    },
+    {
+      "case": "zero-ore-iron-run",
+      "schema": "kernel-output-v3",
+      "status": "invalid_input"
+    },
+    {
+      "case": "zero-ore-iron-seed",
+      "schema": "kernel-output-v3",
+      "status": "invalid_input"
+    },
+    {
+      "case": "zero-ore-iron-cycle",
+      "schema": "kernel-cycle-v1",
+      "status": "invalid_input"
+    },
+    {
+      "case": "age-overflow-run",
+      "schema": "kernel-output-v3",
+      "status": "inconclusive"
+    },
+    {
+      "case": "expired-after-closure-run",
+      "schema": "kernel-output-v3",
+      "status": "invalid_input"
+    },
+    {
+      "case": "expired-after-closure-seed",
+      "schema": "kernel-output-v3",
+      "status": "invalid_input"
+    },
+    {
+      "case": "expired-after-closure-cycle",
+      "schema": "kernel-cycle-v1",
+      "status": "invalid_input"
+    },
+    {
+      "case": "legacy-late-window-cycle",
+      "schema": "kernel-output-v3",
+      "status": "invalid_input"
+    },
+    {
+      "case": "legacy-late-window-record",
+      "schema": "kernel-output-v3",
+      "status": "invalid_input"
+    }
+  ],
+  "open_schema_gaps": [
+    {
+      "case": "age-overflow-cycle",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r3/cli/age-overflow-cycle-result.json",
+      "error": "$: oneOf 匹配数须为1，实为0",
+      "branch_errors": [
+        "$: 必填字段缺失",
+        "$.parameter_point: 类型不符"
+      ],
+      "issue": "KQ-09",
+      "schema_pointer": "/$defs/CycleResult/allOf/4/then/properties"
+    }
+  ]
+}

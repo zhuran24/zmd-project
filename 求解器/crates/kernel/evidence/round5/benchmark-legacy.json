@@ -1,0 +1,36 @@
+{
+  "classification": "实测",
+  "build": "release",
+  "command": [
+    "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+    "run",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/fixtures/benchmark_1000.json",
+    "--config",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+    "--ticks",
+    "1000",
+    "--no-output"
+  ],
+  "process_elapsed_ns": "490328086",
+  "result": {
+    "completed_batches": 158,
+    "elapsed_ns": "478729017",
+    "final_inventory": {
+      "源石粉末": 158,
+      "源矿": 79842,
+      "砂叶": 80000,
+      "砂叶种子": 80000,
+      "荞花": 80000,
+      "荞花种子": 80000,
+      "蓝铁矿": 80000
+    },
+    "output": "disabled",
+    "status": "completed",
+    "ticks": 1000
+  },
+  "platform": "Linux-7.2.6-1-cachyos-x86_64-with-glibc2.44",
+  "rustc": "rustc 1.98.1 (48a229cea 2026-09-01) (Arch Linux rust 1:1.98.1-1.1)",
+  "binary_sha256": "0ed69d5a5753e61ae56467c314ae0698aa6e26d0e09b4afb6c4eb87a77db5319",
+  "input_sha256": "01ecc39beb80e2cfa54aeed9599c9eec0f0b0e70f2e2bb1ebf3dcb5519c143a0",
+  "scope": "单次1000整数时刻、关闭事件输出；不含编译；循环内计时不含装载；样例会进入阻塞，非满载大布局基准"
+}

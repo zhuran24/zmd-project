@@ -1,0 +1,20 @@
+{
+  "status": "PARTIAL",
+  "original_script_failures": [
+    {
+      "script": "check_revision.py",
+      "error": "只读文件 21 份指纹未变"
+    },
+    {
+      "script": "check_round5.py",
+      "error": "三份正式/候选约束及17份内核源码21份指纹未变"
+    }
+  ],
+  "existing_check_count_before_stop": 6,
+  "round5_check_count": 181,
+  "schema_byte_reproduction": true,
+  "reviewed_files_unchanged": true,
+  "fingerprinted_files": 37,
+  "compilation": "未编译",
+  "scope": "机械自查复现与独立局部核算；不等于完整语义认证"
+}

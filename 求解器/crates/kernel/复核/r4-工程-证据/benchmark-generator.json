@@ -1,0 +1,40 @@
+{
+  "reports": [
+    {
+      "name": "benchmark_brick_60",
+      "shape": {
+        "manufacturing_units": 0,
+        "total_units": 57,
+        "logical_channels": 0,
+        "physical_channels": 97,
+        "inventory_slots": 56
+      },
+      "input_equal": true,
+      "sha256": "6129cf2ece47c144520107193df19f419203a81de5d03da2aac430b32493b022"
+    },
+    {
+      "name": "benchmark_brick",
+      "shape": {
+        "manufacturing_units": 30,
+        "total_units": 81,
+        "logical_channels": 50,
+        "physical_channels": 100,
+        "inventory_slots": 140
+      },
+      "input_equal": true,
+      "sha256": "ba51cd30be879860d09e517970cbcf3ba643b3f97eaa4030c234f37f222f2cbf"
+    },
+    {
+      "name": "benchmark_candidate_b",
+      "shape": {
+        "manufacturing_units": 219,
+        "total_units": 535,
+        "logical_channels": 315,
+        "physical_channels": 630,
+        "inventory_slots": 972
+      },
+      "input_equal": true,
+      "sha256": "b66b4d69d7b930a27a6ef7879ab104afa39cfaa33348eccddd3d40f6840d52a8"
+    }
+  ]
+}

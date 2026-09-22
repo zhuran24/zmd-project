@@ -1,0 +1,10 @@
+{
+  "reader_audit": "通过：现状、计数、限制、复现入口及交叉链接已核对",
+  "document": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/复核-r2-测试与证据.md",
+  "document_sha256": "b91994d8d67832cc1184db1806b0f4b66dfbde8c78ec65efb49c6dcbf12ff729",
+  "links_checked": 21,
+  "missing_links": [],
+  "protected_files": 272,
+  "changed_original_files": [],
+  "findings": 1
+}

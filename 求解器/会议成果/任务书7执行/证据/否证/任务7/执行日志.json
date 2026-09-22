@@ -1,0 +1,40 @@
+[
+  {
+    "command": "python -B 会议成果/任务书7执行/证据/否证/任务7/独立核验.py",
+    "chunk_id": "0dc4ce",
+    "wall_time_seconds": 0.000002503,
+    "exit_code": 0,
+    "original_token_count": 281,
+    "output": "{\"status\": \"pass\", \"metrics\": {\"units\": 235, \"kinds\": {\"种植机\": 2, \"采种机\": 2, \"粉碎机\": 2, \"供电桩\": 8, \"封装机\": 3, \"协议储存箱\": 2, \"灌装机\": 3, \"协议核心\": 1, \"仓库取货口\": 46, \"传送带\": 162, \"桥接器\": 4}, \"occupied_cells\": 697, \"ports\": 542, \"channels\": 182, \"routes\": 68, \"transport_cells\": 166, \"transport_slots\": 170, \"product_slots\": 76, \"plant_slots\": {\"荞花\": 20, \"砂叶\": 22}, \"ore_stubs\": {\"蓝铁矿\": 34, \"源矿\": 18}, \"planned_machine_count\": 219, \"planned_machine_area\": 3325, \"planned_machine_counts\": {\"粉碎机\": 69, \"精炼炉\": 51, \"研磨机\": 32, \"塑形机\": 6, \"配件机\": 6, \"种植机\": 32, \"采种机\": 17, \"封装机\": 3, \"灌装机\": 3}, \"edge_statuses\": {\"unrouted\": 299, \"fully_embedded\": 6, \"source_stub_only\": 4, \"changed_terminal_to_wireless_box\": 6}}, \"read_only_replay_status\": [{\"script\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/密排/生成.py\", \"exit_code\": 0}, {\"script\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/密排/核验.py\", \"exit_code\": 0}]}\n"
+  },
+  {
+    "command": "python -B 会议成果/任务书7执行/证据/否证/任务7/写报告.py",
+    "chunk_id": "f8098f",
+    "wall_time_seconds": 0.000001896,
+    "exit_code": 0,
+    "original_token_count": 48,
+    "output": "{\"report\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/复核/否证-任务7.md\", \"findings\": 26, \"verdict_counts\": {\"否证不成立\": 22, \"无法判定\": 4}}\n"
+  },
+  {
+    "command": "python -B 会议成果/任务书7执行/证据/否证/任务7/写报告.py",
+    "chunk_id": "520c1b",
+    "wall_time_seconds": 0.000002609,
+    "exit_code": 0,
+    "original_token_count": 48,
+    "output": "{\"report\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/复核/否证-任务7.md\", \"findings\": 26, \"verdict_counts\": {\"否证不成立\": 22, \"无法判定\": 4}}\n"
+  },
+  {
+    "command": "python -B 会议成果/任务书7执行/证据/否证/任务7/最终核查.py",
+    "exit_code": 1,
+    "stderr_tail": "AssertionError: ['../证据/否证/任务7/最终核查.json']",
+    "interpretation": "本席核查器在生成自己的结果前检查了该结果链接，另有正则转义SyntaxWarning。已改为生成后验证自身链接并使用原始字符串；复核结论未变。普通脚本错误，非额度错误。"
+  },
+  {
+    "command": "python -B 会议成果/任务书7执行/证据/否证/任务7/最终核查.py",
+    "chunk_id": "7315ae",
+    "wall_time_seconds": 0.00000221,
+    "exit_code": 0,
+    "original_token_count": 144,
+    "output": "{\"status\": \"pass\", \"findings_schema_valid\": true, \"report_findings_equal\": true, \"findings_count\": 26, \"verdict_counts\": {\"否证不成立\": 22, \"无法判定\": 4}, \"all_inputs_unchanged\": true, \"report_sha256\": \"ff7367dcb4cff22924f7e78a4f4c8e30df78842e16f653cb08c5605653db563b\", \"structured_result_sha256\": \"38d105fefc81e1d356ce362bf3669f792d369098a0cd2d3c106fae5421c555b1\", \"link_count\": 11, \"missing_links\": [], \"json_parse_count\": 18, \"all_evidence_extensions_allowed\": true, \"game_simulation_performed\": false, \"kernel_build_or_execution\": false, \"quota_error\": false}\n"
+  }
+]

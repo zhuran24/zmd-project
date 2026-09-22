@@ -1,0 +1,30 @@
+{
+  "status": "partial",
+  "files": [
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/密排试点.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/密排布局.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/整厂衔接.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/成品输出通路.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/密排/交付清单.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/密排/工具与输入核查.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/密排/执行日志.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/密排/核验.py",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/密排/核验结果.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/密排/桥与供电.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/密排/生成.py",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/密排/结构化结果.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/密排/自动通道.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/密排/读者自审.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/密排/输入指纹.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/密排/逐单位与路径.md"
+  ],
+  "summary": "任务7部分完成：已写齐四份主交付及证据，235个已放单位、182条自动通道、桥轴与供电核验通过；两植物局部压缩共省8格，辅助空线首返界19tick。六来源经独立通路到双箱，空输出起法下取货队列≤2、入库等待≤22tick。整厂尚缺207台、299条B逻辑边的路线，以及默认释放和离线共同安全证明，L=0、U=1113。新增条件结论待独立复核；未发生额度/配额报错。当前无StructuredOutput专用工具，交JSON文件和最终JSON返回。",
+  "for_owner": [],
+  "open_items": [
+    "DP-01（缺构造与推导）：R16“自动形成通道”、R23“至少1 tick”已用于核182条实际通道；B219余下207台及299条未铺逻辑边尚无带长与服务，完整供料率未定。",
+    "DP-02（缺推导）：C82“从全部首物品格为空”结合R17上限50、R18整批门，已证新几何的辅助空线族；默认满首格及M150/M151共享输入尚无全部前缀服务，默认释放达标未定。",
+    "DP-03（缺推导）：T14“接通先后可能改变”、R29“按接通先后轮流”；同级只消去阻尼比较，任意离线重排后的用途差和共同安全集合仍未定。",
+    "DP-04（缺构造与推导）：C113要求1113分支“没有协议储存箱”；本次双箱出路已核，旧A/B六条直入核心路线未落格，无箱分支出货未定。",
+    "DP-05（缺复核）：当前新增桥局部服务、植物压缩和成品22/106tick界有作者推导与自核，尚缺匹配最终指纹的独立复核；完整T2全部可达循环认证仍开放。"
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "verdicts": [
+    {
+      "id": "KR-r5-L2-01",
+      "refuted": false,
+      "reason": "未能否证：源码确认生产入口先以有限仓库模式构造并计算 physical，后检查 D.2；独立探针复现矿量 79999/80000 导致核心当前级不同。最终拒收及现有测试通过均不能否证前置顺序问题。论证：/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-1.md §2。"
+    },
+    {
+      "id": "KR-r5-L2-02",
+      "refuted": false,
+      "reason": "未能否证：独立生成的相对路径材料通过 schema 和 verify-cycle，规范化后与绝对路径记录完全相同，但 verify-record、verify-batch、记录 checkpoint 均退出 2；绝对路径对照全部通过。论证：/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-1.md §3。"
+    },
+    {
+      "id": "KR-r5-L2-03",
+      "refuted": false,
+      "reason": "未能否证：原始 overflow.json 通过 schema 及诊断复现，checkpoint 随后在 main.rs:168 对合法 null 引用 unwrap，实测 panic、退出 101，未生成检查点。论证：/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-1.md §4。"
+    }
+  ]
+}

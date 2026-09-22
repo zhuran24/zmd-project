@@ -1,0 +1,78 @@
+{
+  "schema": "phase-delivery-manifest-v1",
+  "status": "partial",
+  "validation": "PASS",
+  "validation_exit_status": 0,
+  "files": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/相位离线与认证范围.md",
+      "sha256": "c93001128a1fce740320ece07eb7d7cb7954b4be7e23d4c4749cc4bedea1e5e4",
+      "bytes": 35134
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/规格修改稿-任务6.md",
+      "sha256": "732a8edef1bed49ef28a47d77c81fd57ca78823bccdf320742ab3f1a2af32a03",
+      "bytes": 15587
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/相位认证/工具可用性.json",
+      "sha256": "f12841918a20b776966de60aa1a2dfc82e4a233602c11d2ae72fc764744bc3c5",
+      "bytes": 327
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/相位认证/核验.log",
+      "sha256": "2de10ca0a5bfa6ec44186254e45244b37b17172deaa1177c390f6b5aa93ce92c",
+      "bytes": 136
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/相位认证/核验.py",
+      "sha256": "0cbd4aad3537dd1cb6975f7f21ec447a05f9e018030b054dd61762c9fa4c63fb",
+      "bytes": 14769
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/相位认证/核验结果.json",
+      "sha256": "d39748e1afab522d168553ad62be7ecad996b1e736989cefea7bb5b87389054e",
+      "bytes": 5264
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/相位认证/状态与参数.json",
+      "sha256": "c2b9d031cdebd6cf0d431341daf4b3fe192239ad88f4fea76e649ec7f9e7afe1",
+      "bytes": 12274
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/相位认证/窗口与算术.json",
+      "sha256": "e9863819d16497db226a5991b7029aae3db5475e55121bddedb56fb53fd65c2e",
+      "bytes": 20563
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/相位认证/结果.json",
+      "sha256": "f213dd5e983f529b79713eaaf669e2d70c3ab05e77135ac3f331a41b5bc804f0",
+      "bytes": 7430
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/相位认证/设计律核查.json",
+      "sha256": "f0bda2532245ad4981f4543b9d6880ef41c4e47a9906638f35736b240575a101",
+      "bytes": 1946
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/相位认证/读取核查.json",
+      "sha256": "18179da516f878450df09bf57e56864843274cdbcd67701c98aa577b4a732148",
+      "bytes": 27540
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/相位认证/读者自审.md",
+      "sha256": "17970f7e06a03eb8ae046a02c7bf0fed5216a3929ef4b81e835f2f9afea7488b",
+      "bytes": 3024
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/相位认证/输入指纹.json",
+      "sha256": "96ae1b8acc1f620ce9001534da92471e9e071542469f5d181204b90d6727cf1d",
+      "bytes": 40776
+    }
+  ],
+  "self_path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/相位认证/交付清单.json",
+  "self_hash": "omitted to avoid self-reference",
+  "independent_review": "pending",
+  "L": 0,
+  "U": 1113
+}

@@ -1,0 +1,49 @@
+{
+  "schema": "critic2-evidence-discipline-v1",
+  "forbidden_dirs": [],
+  "extensions": {
+    ".md": 360,
+    ".json": 2282,
+    ".log": 433,
+    ".py": 234,
+    ".txt": 70,
+    ".rs": 4,
+    ".stdout": 3,
+    ".stderr": 3,
+    ".pyc": 1
+  },
+  "sizes": {
+    "crates/kernel/复核": "775M",
+    "crates/kernel/evidence": "21M",
+    "规格/复核": "134M",
+    "规格/第五轮规格修订": "124K",
+    "规格/第五轮规格修订-r8": "316K",
+    "数据/样例": "2.1G"
+  },
+  "largest": [
+    {
+      "mb": 240.2,
+      "path": "数据/样例/密集结点闭环核验-周期证书-kernel.json"
+    },
+    {
+      "mb": 239.7,
+      "path": "数据/样例/密集结点闭环核验-运行记录-v3-kernel.json"
+    },
+    {
+      "mb": 184.8,
+      "path": "数据/样例/密集制造闭环序5核验-周期证书-kernel.json"
+    },
+    {
+      "mb": 184.7,
+      "path": "数据/样例/密集制造闭环序2核验-周期证书-kernel.json"
+    },
+    {
+      "mb": 184.4,
+      "path": "数据/样例/密集制造闭环序5核验-运行记录-v3-kernel.json"
+    },
+    {
+      "mb": 184.3,
+      "path": "数据/样例/密集制造闭环序2核验-运行记录-v3-kernel.json"
+    }
+  ]
+}

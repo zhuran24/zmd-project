@@ -1,0 +1,10 @@
+PASS: four protected file hashes; reviewed source snapshots and verdict duplicates.
+PASS: local footprints within 70x70; no overlap; indicated port-neighbor paths contiguous; three manufacturing units overlap power coverage; gate count and 5-tick spacing consistent; batch-release and inventory arithmetic consistent.
+SCOPE: hand-derived trace checks only. No kernel simulation; no proof of complete-base feasibility or final periodic yield.
+PASS: W accounting; 1:1 / 2:1 / 1:2 complete-round changes.
+PASS: 2 versus 50 output vacancies; 16-machine budget 32+48q. Not a net-loss bound.
+PASS: four-harvester counterexample at t=4 has delta_N=-4.
+PASS: target rate arithmetic; compatible full-machine capacity arithmetic.
+PASS: blue-iron rework preserves net mineral balances while increasing internal production.
+SOURCE NOTE: dialogue hash is from the initial complete read; original temporary path is now absent.
+SCOPE: no kernel execution, no whole-base feasibility or startup certificate.

@@ -1,0 +1,196 @@
+{
+  "status": "pass",
+  "period": 20,
+  "compared_fields": [
+    "time",
+    "state",
+    "events",
+    "warehouse_ledger",
+    "closure"
+  ],
+  "ticks": 20,
+  "events": 200,
+  "table": [
+    {
+      "tick": 1,
+      "move": "PC|b:east:0|c:south:0",
+      "occupied": "c:transport:0",
+      "cooldown": 4,
+      "empty_transfer": false,
+      "inbound": 0,
+      "representative_adjustment": 5
+    },
+    {
+      "tick": 2,
+      "move": "PC|c:east:0|d:south:0",
+      "occupied": "d:transport:0",
+      "cooldown": 3,
+      "empty_transfer": false,
+      "inbound": 0,
+      "representative_adjustment": 0
+    },
+    {
+      "tick": 3,
+      "move": "PC|d:east:0|a:south:0",
+      "occupied": "a:transport:0",
+      "cooldown": 2,
+      "empty_transfer": false,
+      "inbound": 0,
+      "representative_adjustment": 0
+    },
+    {
+      "tick": 4,
+      "move": "PC|a:east:0|b:south:0",
+      "occupied": "b:transport:0",
+      "cooldown": 1,
+      "empty_transfer": false,
+      "inbound": 0,
+      "representative_adjustment": 0
+    },
+    {
+      "tick": 5,
+      "move": "PC|b:east:0|c:south:0",
+      "occupied": "c:transport:0",
+      "cooldown": 5,
+      "empty_transfer": true,
+      "inbound": 0,
+      "representative_adjustment": 0
+    },
+    {
+      "tick": 6,
+      "move": "PC|c:east:0|d:south:0",
+      "occupied": "d:transport:0",
+      "cooldown": 4,
+      "empty_transfer": false,
+      "inbound": 0,
+      "representative_adjustment": 0
+    },
+    {
+      "tick": 7,
+      "move": "PC|d:east:0|a:south:0",
+      "occupied": "a:transport:0",
+      "cooldown": 3,
+      "empty_transfer": false,
+      "inbound": 0,
+      "representative_adjustment": 0
+    },
+    {
+      "tick": 8,
+      "move": "PC|a:east:0|b:south:0",
+      "occupied": "b:transport:0",
+      "cooldown": 2,
+      "empty_transfer": false,
+      "inbound": 0,
+      "representative_adjustment": 0
+    },
+    {
+      "tick": 9,
+      "move": "PC|b:east:0|c:south:0",
+      "occupied": "c:transport:0",
+      "cooldown": 1,
+      "empty_transfer": false,
+      "inbound": 0,
+      "representative_adjustment": 0
+    },
+    {
+      "tick": 10,
+      "move": "PC|c:east:0|d:south:0",
+      "occupied": "d:transport:0",
+      "cooldown": 5,
+      "empty_transfer": true,
+      "inbound": 0,
+      "representative_adjustment": 0
+    },
+    {
+      "tick": 11,
+      "move": "PC|d:east:0|a:south:0",
+      "occupied": "a:transport:0",
+      "cooldown": 4,
+      "empty_transfer": false,
+      "inbound": 0,
+      "representative_adjustment": 0
+    },
+    {
+      "tick": 12,
+      "move": "PC|a:east:0|b:south:0",
+      "occupied": "b:transport:0",
+      "cooldown": 3,
+      "empty_transfer": false,
+      "inbound": 0,
+      "representative_adjustment": 0
+    },
+    {
+      "tick": 13,
+      "move": "PC|b:east:0|c:south:0",
+      "occupied": "c:transport:0",
+      "cooldown": 2,
+      "empty_transfer": false,
+      "inbound": 0,
+      "representative_adjustment": 0
+    },
+    {
+      "tick": 14,
+      "move": "PC|c:east:0|d:south:0",
+      "occupied": "d:transport:0",
+      "cooldown": 1,
+      "empty_transfer": false,
+      "inbound": 0,
+      "representative_adjustment": 0
+    },
+    {
+      "tick": 15,
+      "move": "PC|d:east:0|a:south:0",
+      "occupied": "a:transport:0",
+      "cooldown": 5,
+      "empty_transfer": true,
+      "inbound": 0,
+      "representative_adjustment": 0
+    },
+    {
+      "tick": 16,
+      "move": "PC|a:east:0|b:south:0",
+      "occupied": "b:transport:0",
+      "cooldown": 4,
+      "empty_transfer": false,
+      "inbound": 0,
+      "representative_adjustment": 0
+    },
+    {
+      "tick": 17,
+      "move": "PC|b:east:0|c:south:0",
+      "occupied": "c:transport:0",
+      "cooldown": 3,
+      "empty_transfer": false,
+      "inbound": 0,
+      "representative_adjustment": 0
+    },
+    {
+      "tick": 18,
+      "move": "PC|c:east:0|d:south:0",
+      "occupied": "d:transport:0",
+      "cooldown": 2,
+      "empty_transfer": false,
+      "inbound": 0,
+      "representative_adjustment": 0
+    },
+    {
+      "tick": 19,
+      "move": "PC|d:east:0|a:south:0",
+      "occupied": "a:transport:0",
+      "cooldown": 1,
+      "empty_transfer": false,
+      "inbound": 0,
+      "representative_adjustment": 0
+    },
+    {
+      "tick": 20,
+      "move": "PC|a:east:0|b:south:0",
+      "occupied": "b:transport:0",
+      "cooldown": 5,
+      "empty_transfer": true,
+      "inbound": 0,
+      "representative_adjustment": 0
+    }
+  ],
+  "differences": []
+}

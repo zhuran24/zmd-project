@@ -1,0 +1,955 @@
+{
+  "files": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md",
+      "section": "§2—5、§6.1—6.5",
+      "status": "已回填",
+      "sha256": "ad11e6e0f5091a33bf76dba5d86a1c4b0639f9ed1bcb56db2d34cfaa40f788c6",
+      "confirmed_locations": [
+        {
+          "token": "6.5.1",
+          "lines": [
+            214,
+            226,
+            234,
+            273
+          ]
+        },
+        {
+          "token": "6.5.6",
+          "lines": [
+            269
+          ]
+        },
+        {
+          "token": "部分",
+          "lines": [
+            13,
+            51,
+            70,
+            90,
+            92,
+            95,
+            97,
+            99,
+            101,
+            127,
+            134,
+            182,
+            197,
+            204,
+            212,
+            224,
+            238,
+            253,
+            267,
+            271
+          ]
+        },
+        {
+          "token": "5 tick冷却",
+          "lines": [
+            76,
+            243
+          ]
+        },
+        {
+          "token": "phase-cycle-key-v1",
+          "lines": [
+            129,
+            186
+          ]
+        },
+        {
+          "token": "PC-06",
+          "lines": [
+            115,
+            200
+          ]
+        },
+        {
+          "token": "representative_adjustment",
+          "lines": [
+            139,
+            253
+          ]
+        }
+      ],
+      "meaning": "与汇入记录逐项核对当前文字；工程落实状态另列内核验收，新增证明仍按独立复核范围承接。"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.md",
+      "section": "§1—2、§4—5",
+      "status": "已回填",
+      "sha256": "ea3456fe26a641012b840e65f75b51b9f498259f14e1ca13caccc7171b57b753",
+      "confirmed_locations": [
+        {
+          "token": "kernel-output-v4",
+          "lines": [
+            7,
+            15,
+            66,
+            85,
+            87
+          ]
+        },
+        {
+          "token": "kernel-cycle-v3",
+          "lines": [
+            7,
+            85
+          ]
+        },
+        {
+          "token": "kernel-proof-v1",
+          "lines": [
+            7,
+            85,
+            135
+          ]
+        },
+        {
+          "token": "mapping_proof",
+          "lines": [
+            119
+          ]
+        },
+        {
+          "token": "reverse_reconstruction",
+          "lines": [
+            128,
+            131,
+            145
+          ]
+        },
+        {
+          "token": "all_candidate_and_actual_checks",
+          "lines": [
+            101
+          ]
+        }
+      ],
+      "meaning": "与汇入记录逐项核对当前文字；工程落实状态另列内核验收，新增证明仍按独立复核范围承接。"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.schema.json",
+      "section": "$defs RunRecord/Cycle/CycleResult/ProofCertificate",
+      "status": "已回填",
+      "sha256": "c302365255678e1719ef0fd47cba50936ced68aac64b60bd6162f15a29c27ce8",
+      "confirmed_locations": [
+        {
+          "token": "kernel-output-v4",
+          "lines": [
+            3,
+            1133,
+            3401,
+            3402
+          ]
+        },
+        {
+          "token": "kernel-cycle-v3",
+          "lines": [
+            2037
+          ]
+        },
+        {
+          "token": "kernel-proof-v1",
+          "lines": [
+            4572
+          ]
+        },
+        {
+          "token": "phase-cycle-key-v1",
+          "lines": [
+            1552,
+            1756
+          ]
+        },
+        {
+          "token": "diagnostic_cycle",
+          "lines": [
+            2050,
+            2607,
+            2996,
+            3182,
+            3317
+          ]
+        }
+      ],
+      "meaning": "与汇入记录逐项核对当前文字；工程落实状态另列内核验收，新增证明仍按独立复核范围承接。"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "section": "revision及axes",
+      "status": "已回填",
+      "sha256": "a6ecebadfb0e322726f22dd3967301691063965c45f56bd62e0d84965a810fee",
+      "confirmed_locations": [
+        {
+          "token": "task7-merge-2026-09-21",
+          "lines": [
+            4
+          ]
+        },
+        {
+          "token": "every_attempt",
+          "lines": [
+            392
+          ]
+        },
+        {
+          "token": "fixed_run_order",
+          "lines": [
+            192
+          ]
+        },
+        {
+          "token": "all_candidate_and_actual_checks",
+          "lines": [
+            582
+          ]
+        }
+      ],
+      "meaning": "与汇入记录逐项核对当前文字；工程落实状态另列内核验收，新增证明仍按独立复核范围承接。"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+      "section": "§1—2、§3 A3",
+      "status": "已回填",
+      "sha256": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+      "confirmed_locations": [
+        {
+          "token": "fixed_run_order",
+          "lines": [
+            27
+          ]
+        },
+        {
+          "token": "every_attempt",
+          "lines": [
+            55
+          ]
+        },
+        {
+          "token": "current_conditions",
+          "lines": [
+            71,
+            73
+          ]
+        }
+      ],
+      "meaning": "与汇入记录逐项核对当前文字；工程落实状态另列内核验收，新增证明仍按独立复核范围承接。"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限模型声明.md",
+      "section": "§2、§4—5",
+      "status": "已回填",
+      "sha256": "a6820246109e22901333890207a28344885cdd59a5af003e22329d270fdc0cb7",
+      "confirmed_locations": [
+        {
+          "token": "22",
+          "lines": [
+            71,
+            73,
+            77,
+            79,
+            93,
+            133,
+            153
+          ]
+        },
+        {
+          "token": "44",
+          "lines": [
+            153
+          ]
+        },
+        {
+          "token": "18",
+          "lines": [
+            90,
+            133,
+            153
+          ]
+        },
+        {
+          "token": "15",
+          "lines": [
+            5,
+            27,
+            28,
+            123,
+            153
+          ]
+        },
+        {
+          "token": "PC-06",
+          "lines": [
+            24,
+            90
+          ]
+        },
+        {
+          "token": "every_attempt",
+          "lines": [
+            55,
+            151
+          ]
+        }
+      ],
+      "meaning": "与汇入记录逐项核对当前文字；工程落实状态另列内核验收，新增证明仍按独立复核范围承接。"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md",
+      "section": "§3.3、§5、§10",
+      "status": "已回填",
+      "sha256": "fbcddab1b0868024ab03084c40ab506014d831ea096bdb1b9776262140dbdcb2",
+      "confirmed_locations": [
+        {
+          "token": "fixed_run_order",
+          "lines": [
+            142,
+            251
+          ]
+        },
+        {
+          "token": "全部有限操作迟延",
+          "lines": [
+            401
+          ]
+        },
+        {
+          "token": "intake",
+          "lines": [
+            205,
+            301,
+            403
+          ]
+        },
+        {
+          "token": "phase-cycle-key-v1",
+          "lines": [
+            405
+          ]
+        }
+      ],
+      "meaning": "与汇入记录逐项核对当前文字；工程落实状态另列内核验收，新增证明仍按独立复核范围承接。"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/运行语义.md",
+      "section": "§1—5、§7",
+      "status": "已回填",
+      "sha256": "6ac0bcadeb1da43db706271ba8fc88c2218616d3f475bfcd8b760ff045d0c9b8",
+      "confirmed_locations": [
+        {
+          "token": "d150b86b398f",
+          "lines": [
+            5,
+            13
+          ]
+        },
+        {
+          "token": "PA-11",
+          "lines": [
+            226
+          ]
+        },
+        {
+          "token": "仓库收得下成品",
+          "lines": [
+            193,
+            226
+          ]
+        }
+      ],
+      "meaning": "与汇入记录逐项核对当前文字；工程落实状态另列内核验收，新增证明仍按独立复核范围承接。"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点清单.md",
+      "section": "T2/T6/T10—12",
+      "status": "已回填",
+      "sha256": "1a85bee10bd1d376345a1379127cd0378b70be651ae0d59e5528ab01333627b1",
+      "confirmed_locations": [
+        {
+          "token": "fixed_run_order",
+          "lines": [
+            20
+          ]
+        },
+        {
+          "token": "every_attempt",
+          "lines": [
+            75
+          ]
+        },
+        {
+          "token": "PA-01",
+          "lines": [
+            171
+          ]
+        }
+      ],
+      "meaning": "与汇入记录逐项核对当前文字；工程落实状态另列内核验收，新增证明仍按独立复核范围承接。"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/四件前置义务对照.md",
+      "section": "§1—6",
+      "status": "已回填",
+      "sha256": "a80af53d6c201322ce6c680d3c4b7174203d19273690c28a537fdd0a0af32800",
+      "confirmed_locations": [
+        {
+          "token": "PC-01",
+          "lines": [
+            71
+          ]
+        },
+        {
+          "token": "PC-09",
+          "lines": [
+            79
+          ]
+        },
+        {
+          "token": "for_owner为空",
+          "lines": [
+            81
+          ]
+        }
+      ],
+      "meaning": "与汇入记录逐项核对当前文字；工程落实状态另列内核验收，新增证明仍按独立复核范围承接。"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/参数扫描约减.md",
+      "section": "史料状态及§8",
+      "status": "已回填",
+      "sha256": "487f5fa11a68df772758b07a9233adf6fec0cba3995480c8c7ee69b2e0a9016f",
+      "confirmed_locations": [
+        {
+          "token": "§1—7为原扫描约减及检查记录的史料",
+          "lines": [
+            3
+          ]
+        },
+        {
+          "token": "当前规则下的约减准入",
+          "lines": [
+            237
+          ]
+        },
+        {
+          "token": "门按当前条件恢复",
+          "lines": [
+            239
+          ]
+        }
+      ],
+      "meaning": "与汇入记录逐项核对当前文字；工程落实状态另列内核验收，新增证明仍按独立复核范围承接。"
+    }
+  ],
+  "axis_count": 99,
+  "dispositions": {
+    "已定": 22,
+    "本版选值": 44,
+    "由输入全称量化": 15,
+    "超出覆盖即停": 18
+  },
+  "axis_locations": {
+    "polling.direct_peer": {
+      "内核输入.md": 154,
+      "选择点参数轴.md": 39,
+      "受限模型声明.md": 39
+    },
+    "connection.port_meeting": {
+      "内核输入.md": 163,
+      "选择点参数轴.md": 48,
+      "受限模型声明.md": 48
+    },
+    "initialization.rotation_stage": {
+      "内核输入.md": 209,
+      "选择点参数轴.md": 94,
+      "受限模型声明.md": 94
+    },
+    "gate.window_recovery": {
+      "内核输入.md": 187,
+      "选择点参数轴.md": 72,
+      "受限模型声明.md": 72
+    },
+    "transfer.judgment": {
+      "内核输入.md": 166,
+      "选择点参数轴.md": 51,
+      "受限模型声明.md": 51
+    },
+    "manufacturing.port_slot_relation": {
+      "内核输入.md": 173,
+      "选择点参数轴.md": 58,
+      "受限模型声明.md": 58
+    },
+    "manufacturing.output_blocked": {
+      "内核输入.md": 184,
+      "选择点参数轴.md": 69,
+      "受限模型声明.md": 69
+    },
+    "gate.limit_requires_identity": {
+      "内核输入.md": 191,
+      "选择点参数轴.md": 76,
+      "受限模型声明.md": 76
+    },
+    "warehouse.capacity": {
+      "内核输入.md": 212,
+      "选择点参数轴.md": 97,
+      "受限模型声明.md": 97
+    },
+    "warehouse.delivery_count": {
+      "内核输入.md": 218,
+      "选择点参数轴.md": 103,
+      "受限模型声明.md": 103
+    },
+    "bridge.inventory_scope": {
+      "内核输入.md": 221,
+      "选择点参数轴.md": 106,
+      "受限模型声明.md": 106
+    },
+    "bridge.scheduling_scope": {
+      "内核输入.md": 223,
+      "选择点参数轴.md": 108,
+      "受限模型声明.md": 108
+    },
+    "time.domain": {
+      "内核输入.md": 136,
+      "选择点参数轴.md": 21,
+      "受限模型声明.md": 21
+    },
+    "time.instant_order": {
+      "内核输入.md": 137,
+      "选择点参数轴.md": 22,
+      "受限模型声明.md": 22
+    },
+    "time.retry_schedule": {
+      "内核输入.md": 138,
+      "选择点参数轴.md": 23,
+      "受限模型声明.md": 23
+    },
+    "time.instant_end": {
+      "内核输入.md": 139,
+      "选择点参数轴.md": 24,
+      "受限模型声明.md": 24
+    },
+    "time.boundary": {
+      "内核输入.md": 140,
+      "选择点参数轴.md": 25,
+      "受限模型声明.md": 25
+    },
+    "time.manufacture_events": {
+      "内核输入.md": 141,
+      "选择点参数轴.md": 26,
+      "受限模型声明.md": 26
+    },
+    "judgment.order_scope": {
+      "内核输入.md": 142,
+      "选择点参数轴.md": 27,
+      "受限模型声明.md": 27
+    },
+    "judgment.buffer_event_class": {
+      "内核输入.md": 144,
+      "选择点参数轴.md": 29,
+      "受限模型声明.md": 29
+    },
+    "polling.initial_cursor": {
+      "内核输入.md": 145,
+      "选择点参数轴.md": 30,
+      "受限模型声明.md": 30
+    },
+    "polling.split_merge_start": {
+      "内核输入.md": 146,
+      "选择点参数轴.md": 31,
+      "受限模型声明.md": 31
+    },
+    "polling.split_merge_scope": {
+      "内核输入.md": 227,
+      "选择点参数轴.md": 112,
+      "受限模型声明.md": 112
+    },
+    "polling.split_merge_singleton": {
+      "内核输入.md": 228,
+      "选择点参数轴.md": 113,
+      "受限模型声明.md": 113
+    },
+    "polling.ungraded_blocked": {
+      "内核输入.md": 147,
+      "选择点参数轴.md": 32,
+      "受限模型声明.md": 32
+    },
+    "polling.dual_permission": {
+      "内核输入.md": 148,
+      "选择点参数轴.md": 33,
+      "受限模型声明.md": 33
+    },
+    "polling.both_failure": {
+      "内核输入.md": 229,
+      "选择点参数轴.md": 114,
+      "受限模型声明.md": 114
+    },
+    "polling.memory_scope": {
+      "内核输入.md": 149,
+      "选择点参数轴.md": 34,
+      "受限模型声明.md": 34
+    },
+    "polling.resume": {
+      "内核输入.md": 150,
+      "选择点参数轴.md": 35,
+      "受限模型声明.md": 35
+    },
+    "polling.eligibility_stage": {
+      "内核输入.md": 151,
+      "选择点参数轴.md": 36,
+      "受限模型声明.md": 36
+    },
+    "polling.membership_change": {
+      "内核输入.md": 152,
+      "选择点参数轴.md": 37,
+      "受限模型声明.md": 37
+    },
+    "polling.internal_scope": {
+      "内核输入.md": 153,
+      "选择点参数轴.md": 38,
+      "受限模型声明.md": 38
+    },
+    "polling.level_tie": {
+      "内核输入.md": 155,
+      "选择点参数轴.md": 40,
+      "受限模型声明.md": 40
+    },
+    "damping.belt_component_rule": {
+      "内核输入.md": 156,
+      "选择点参数轴.md": 41,
+      "受限模型声明.md": 41
+    },
+    "damping.belt_adjacency": {
+      "内核输入.md": 157,
+      "选择点参数轴.md": 42,
+      "受限模型声明.md": 42
+    },
+    "connection.bridge_first_contact": {
+      "内核输入.md": 164,
+      "选择点参数轴.md": 49,
+      "受限模型声明.md": 49
+    },
+    "transfer.cooldown_scope": {
+      "内核输入.md": 167,
+      "选择点参数轴.md": 52,
+      "受限模型声明.md": 52
+    },
+    "transfer.pause": {
+      "内核输入.md": 169,
+      "选择点参数轴.md": 54,
+      "受限模型声明.md": 54
+    },
+    "transfer.failure_cooldown": {
+      "内核输入.md": 170,
+      "选择点参数轴.md": 55,
+      "受限模型声明.md": 55
+    },
+    "transfer.partial_acceptance": {
+      "内核输入.md": 171,
+      "选择点参数轴.md": 56,
+      "受限模型声明.md": 56
+    },
+    "transfer.resume_event": {
+      "内核输入.md": 172,
+      "选择点参数轴.md": 57,
+      "受限模型声明.md": 57
+    },
+    "manufacturing.input_mixing": {
+      "内核输入.md": 174,
+      "选择点参数轴.md": 59,
+      "受限模型声明.md": 59
+    },
+    "manufacturing.input_capacity_scope": {
+      "内核输入.md": 175,
+      "选择点参数轴.md": 60,
+      "受限模型声明.md": 60
+    },
+    "manufacturing.recipe_match_scope": {
+      "内核输入.md": 176,
+      "选择点参数轴.md": 61,
+      "受限模型声明.md": 61
+    },
+    "manufacturing.recipe_completeness": {
+      "内核输入.md": 177,
+      "选择点参数轴.md": 62,
+      "受限模型声明.md": 62
+    },
+    "manufacturing.recipe_lock_time": {
+      "内核输入.md": 179,
+      "选择点参数轴.md": 64,
+      "受限模型声明.md": 64
+    },
+    "manufacturing.empty_slot_identity": {
+      "内核输入.md": 181,
+      "选择点参数轴.md": 66,
+      "受限模型声明.md": 66
+    },
+    "manufacturing.input_collection": {
+      "内核输入.md": 182,
+      "选择点参数轴.md": 67,
+      "受限模型声明.md": 67
+    },
+    "manufacturing.buffer_power_gate": {
+      "内核输入.md": 183,
+      "选择点参数轴.md": 68,
+      "受限模型声明.md": 68
+    },
+    "gate.identity_subject": {
+      "内核输入.md": 185,
+      "选择点参数轴.md": 70,
+      "受限模型声明.md": 70
+    },
+    "gate.identity_recovery": {
+      "内核输入.md": 186,
+      "选择点参数轴.md": 71,
+      "受限模型声明.md": 71
+    },
+    "gate.total_recovery": {
+      "内核输入.md": 188,
+      "选择点参数轴.md": 73,
+      "受限模型声明.md": 73
+    },
+    "gate.window_clock": {
+      "内核输入.md": 189,
+      "选择点参数轴.md": 74,
+      "受限模型声明.md": 74
+    },
+    "gate.reconnect_record": {
+      "内核输入.md": 190,
+      "选择点参数轴.md": 75,
+      "受限模型声明.md": 75
+    },
+    "gate.counter_start": {
+      "内核输入.md": 193,
+      "选择点参数轴.md": 78,
+      "受限模型声明.md": 78
+    },
+    "initialization.belt_shape_lifecycle": {
+      "内核输入.md": 231,
+      "选择点参数轴.md": 116,
+      "受限模型声明.md": 116
+    },
+    "warehouse.acceptance": {
+      "内核输入.md": 213,
+      "选择点参数轴.md": 98,
+      "受限模型声明.md": 98
+    },
+    "warehouse.acceptance_quantifier": {
+      "内核输入.md": 214,
+      "选择点参数轴.md": 99,
+      "受限模型声明.md": 99
+    },
+    "warehouse.empty_slot_identity": {
+      "内核输入.md": 219,
+      "选择点参数轴.md": 104,
+      "受限模型声明.md": 104
+    },
+    "bridge.capacity": {
+      "内核输入.md": 222,
+      "选择点参数轴.md": 107,
+      "受限模型声明.md": 107
+    },
+    "power.cell_rule": {
+      "内核输入.md": 224,
+      "选择点参数轴.md": 109,
+      "受限模型声明.md": 109
+    },
+    "residence.nontransport": {
+      "内核输入.md": 225,
+      "选择点参数轴.md": 110,
+      "受限模型声明.md": 110
+    },
+    "cascade.buffer": {
+      "内核输入.md": 226,
+      "选择点参数轴.md": 111,
+      "受限模型声明.md": 111
+    },
+    "judgment.order": {
+      "内核输入.md": 143,
+      "选择点参数轴.md": 28,
+      "受限模型声明.md": 28
+    },
+    "damping.branch": {
+      "内核输入.md": 158,
+      "选择点参数轴.md": 43,
+      "受限模型声明.md": 43
+    },
+    "connection.build_order": {
+      "内核输入.md": 160,
+      "选择点参数轴.md": 45,
+      "受限模型声明.md": 45
+    },
+    "connection.order": {
+      "内核输入.md": 161,
+      "选择点参数轴.md": 46,
+      "受限模型声明.md": 46
+    },
+    "connection.tie": {
+      "内核输入.md": 162,
+      "选择点参数轴.md": 47,
+      "受限模型声明.md": 47
+    },
+    "connection.belt_shape": {
+      "内核输入.md": 230,
+      "选择点参数轴.md": 115,
+      "受限模型声明.md": 115
+    },
+    "transfer.phase": {
+      "内核输入.md": 168,
+      "选择点参数轴.md": 53,
+      "受限模型声明.md": 53
+    },
+    "manufacturing.recipe_selection": {
+      "内核输入.md": 178,
+      "选择点参数轴.md": 63,
+      "受限模型声明.md": 63
+    },
+    "manufacturing.input_slot_selection": {
+      "内核输入.md": 180,
+      "选择点参数轴.md": 65,
+      "受限模型声明.md": 65
+    },
+    "initialization.warehouse_anchor": {
+      "内核输入.md": 204,
+      "选择点参数轴.md": 89,
+      "受限模型声明.md": 89
+    },
+    "initialization.other_inventory": {
+      "内核输入.md": 205,
+      "选择点参数轴.md": 90,
+      "受限模型声明.md": 90
+    },
+    "initialization.switches": {
+      "内核输入.md": 206,
+      "选择点参数轴.md": 91,
+      "受限模型声明.md": 91
+    },
+    "initialization.build_timing": {
+      "内核输入.md": 207,
+      "选择点参数轴.md": 92,
+      "受限模型声明.md": 92
+    },
+    "initialization.debug_end": {
+      "内核输入.md": 211,
+      "选择点参数轴.md": 96,
+      "受限模型声明.md": 96
+    },
+    "warehouse.external_supply": {
+      "内核输入.md": 217,
+      "选择点参数轴.md": 102,
+      "受限模型声明.md": 102
+    },
+    "damping.no_terminal": {
+      "内核输入.md": 159,
+      "选择点参数轴.md": 44,
+      "受限模型声明.md": 44
+    },
+    "connection.bridge_tie": {
+      "内核输入.md": 165,
+      "选择点参数轴.md": 50,
+      "受限模型声明.md": 50
+    },
+    "gate.counter_edit": {
+      "内核输入.md": 192,
+      "选择点参数轴.md": 77,
+      "受限模型声明.md": 77
+    },
+    "gate.cancel_limit": {
+      "内核输入.md": 194,
+      "选择点参数轴.md": 79,
+      "受限模型声明.md": 79
+    },
+    "offline.order_domain": {
+      "内核输入.md": 195,
+      "选择点参数轴.md": 80,
+      "受限模型声明.md": 80
+    },
+    "offline.events": {
+      "内核输入.md": 196,
+      "选择点参数轴.md": 81,
+      "受限模型声明.md": 81
+    },
+    "offline.cursor_effect": {
+      "内核输入.md": 197,
+      "选择点参数轴.md": 82,
+      "受限模型声明.md": 82
+    },
+    "offline.inventory_effect": {
+      "内核输入.md": 198,
+      "选择点参数轴.md": 83,
+      "受限模型声明.md": 83
+    },
+    "offline.progress_effect": {
+      "内核输入.md": 199,
+      "选择点参数轴.md": 84,
+      "受限模型声明.md": 84
+    },
+    "offline.direction_effect": {
+      "内核输入.md": 200,
+      "选择点参数轴.md": 85,
+      "受限模型声明.md": 85
+    },
+    "offline.gate_total_effect": {
+      "内核输入.md": 201,
+      "选择点参数轴.md": 86,
+      "受限模型声明.md": 86
+    },
+    "offline.gate_window_effect": {
+      "内核输入.md": 202,
+      "选择点参数轴.md": 87,
+      "受限模型声明.md": 87
+    },
+    "offline.gate_window_start_effect": {
+      "内核输入.md": 203,
+      "选择点参数轴.md": 88,
+      "受限模型声明.md": 88
+    },
+    "initialization.debug_actions": {
+      "内核输入.md": 208,
+      "选择点参数轴.md": 93,
+      "受限模型声明.md": 93
+    },
+    "initialization.rebuild_inventory": {
+      "内核输入.md": 210,
+      "选择点参数轴.md": 95,
+      "受限模型声明.md": 95
+    },
+    "warehouse.withdrawal_policy": {
+      "内核输入.md": 215,
+      "选择点参数轴.md": 100,
+      "受限模型声明.md": 100
+    },
+    "warehouse.withdrawal_timing": {
+      "内核输入.md": 216,
+      "选择点参数轴.md": 101,
+      "受限模型声明.md": 101
+    },
+    "warehouse.periodic_lift": {
+      "内核输入.md": 220,
+      "选择点参数轴.md": 105,
+      "受限模型声明.md": 105
+    },
+    "gate.concurrent_expiry": {
+      "内核输入.md": 232,
+      "选择点参数轴.md": 117,
+      "受限模型声明.md": 117
+    },
+    "manufacturing.recipe_quantity_match": {
+      "内核输入.md": 233,
+      "选择点参数轴.md": 118,
+      "受限模型声明.md": 118
+    },
+    "manufacturing.recipe_extra_items": {
+      "内核输入.md": 234,
+      "选择点参数轴.md": 119,
+      "受限模型声明.md": 119
+    }
+  },
+  "not_merged": [],
+  "partially_merged": [],
+  "additional_task8_proposals": "规格修改稿-任务8.md"
+}

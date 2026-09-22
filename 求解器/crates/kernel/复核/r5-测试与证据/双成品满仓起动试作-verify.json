@@ -1,0 +1,13 @@
+{
+  "command": [
+    "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+    "verify-cycle",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r5-测试与证据/双成品满仓起动试作-cycle.json",
+    "--config",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+  ],
+  "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+  "returncode": 0,
+  "stdout": "{\n  \"cycle_replayed\": false,\n  \"prefix_replayed\": 512,\n  \"reason\": \"原种子前缀及停止/预算位置已复现，无周期\",\n  \"status\": \"input_checked\"\n}\n",
+  "stderr": ""
+}

@@ -1,0 +1,7 @@
+{"command": ["/home/zhuran24/zmd-research-fresh/求解器/target/debug/kernel", "verify-cycle", "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/cli/ore-80000-cycle.json", "--config", "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"], "cwd": "/home/zhuran24/zmd-research-fresh/求解器", "exit": 0}
+{
+  "cycle_replayed": false,
+  "diagnostic_replayed": true,
+  "reason": "失败输入及依赖指纹已核，复现同一装载停止；无游戏转移或周期",
+  "status": "input_checked"
+}

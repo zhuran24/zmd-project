@@ -1,0 +1,256 @@
+{
+  "simultaneous_gate_recovery": {
+    "connection_order": [
+      "a",
+      "b"
+    ],
+    "before_boundary": {
+      "source_output_quantity": 1,
+      "source_level_members": [],
+      "gate_a": {
+        "quantity": 0,
+        "window_limit": 1,
+        "window_started_at": 0,
+        "window_received": 1
+      },
+      "gate_b": {
+        "quantity": 0,
+        "window_limit": 1,
+        "window_started_at": 0,
+        "window_received": 1
+      }
+    },
+    "instant": 5,
+    "outcomes": [
+      {
+        "unfixed_restoration_order": [
+          "a",
+          "b"
+        ],
+        "restoration_log": [
+          {
+            "restored": "a",
+            "ring": [
+              "a"
+            ],
+            "cursor": "a"
+          },
+          {
+            "restored": "b",
+            "ring": [
+              "a",
+              "b"
+            ],
+            "cursor": "a"
+          }
+        ],
+        "fixed_template_order": [
+          "a",
+          "b"
+        ],
+        "successful_channel": "a",
+        "gate_received_at_t5": {
+          "a": 1,
+          "b": 0
+        },
+        "active_channels_after_closure": [
+          "b"
+        ],
+        "source_next_channel": "b"
+      },
+      {
+        "unfixed_restoration_order": [
+          "b",
+          "a"
+        ],
+        "restoration_log": [
+          {
+            "restored": "b",
+            "ring": [
+              "b"
+            ],
+            "cursor": "b"
+          },
+          {
+            "restored": "a",
+            "ring": [
+              "a",
+              "b"
+            ],
+            "cursor": "b"
+          }
+        ],
+        "fixed_template_order": [
+          "a",
+          "b"
+        ],
+        "successful_channel": "b",
+        "gate_received_at_t5": {
+          "a": 0,
+          "b": 1
+        },
+        "active_channels_after_closure": [
+          "a"
+        ],
+        "source_next_channel": "a"
+      }
+    ],
+    "conclusion": "接通序和判定模板序相同，仅未定的同刻窗口恢复维护序不同，产生两个不同闭包后继。"
+  },
+  "warehouse_witness": {
+    "fixed_slot_order": [
+      "W0",
+      "W1"
+    ],
+    "initial_empty_identity": {
+      "W0": null,
+      "W1": null
+    },
+    "input_box": {
+      "slot_1": {
+        "item": "高容谷地电池",
+        "quantity": 1
+      },
+      "slot_2": {
+        "item": "精选荞愈胶囊",
+        "quantity": 1
+      }
+    },
+    "outcomes": [
+      {
+        "unfixed_item_iteration": [
+          "高容谷地电池",
+          "精选荞愈胶囊"
+        ],
+        "warehouse_after_transfer": {
+          "W0": {
+            "item": "高容谷地电池",
+            "quantity": 1
+          },
+          "W1": {
+            "item": "精选荞愈胶囊",
+            "quantity": 1
+          }
+        },
+        "port_bound_to_W0_observes": "高容谷地电池",
+        "transferred_total": 2,
+        "box_after_transfer": [],
+        "cooldown_after_transfer": 5
+      },
+      {
+        "unfixed_item_iteration": [
+          "精选荞愈胶囊",
+          "高容谷地电池"
+        ],
+        "warehouse_after_transfer": {
+          "W0": {
+            "item": "精选荞愈胶囊",
+            "quantity": 1
+          },
+          "W1": {
+            "item": "高容谷地电池",
+            "quantity": 1
+          }
+        },
+        "port_bound_to_W0_observes": "精选荞愈胶囊",
+        "transferred_total": 2,
+        "box_after_transfer": [],
+        "cooldown_after_transfer": 5
+      }
+    ],
+    "conclusion": "两种物种顺序遵守同一空格序，产生可被既有端口区分的后继；原规格缺少物种分配顺序。"
+  },
+  "recipe_match_witness": {
+    "machine": "粉碎机",
+    "inventory": {
+      "源矿": 2
+    },
+    "recipe_inputs": {
+      "源矿": 1
+    },
+    "shared_axes": {
+      "input_mixing": "single_kind",
+      "recipe_match_scope": "input_union",
+      "recipe_completeness": "full_batch",
+      "input_collection": "atomic_batch"
+    },
+    "at_least_one_batch": true,
+    "exactly_one_batch": false,
+    "conclusion": "物种完备与求值论域相同，数量比较方向仍能改变开闸；严格相等的全规则合法性未获证明。"
+  },
+  "splitter_probe": {
+    "trace": [
+      {
+        "tick": 0,
+        "successful_channels": [
+          "b"
+        ],
+        "closure_cursor": "a",
+        "sweeps": 2
+      },
+      {
+        "tick": 1,
+        "successful_channels": [
+          "a"
+        ],
+        "closure_cursor": "a",
+        "sweeps": 2
+      },
+      {
+        "tick": 2,
+        "successful_channels": [
+          "a"
+        ],
+        "closure_cursor": "a",
+        "sweeps": 2
+      },
+      {
+        "tick": 3,
+        "successful_channels": [
+          "a"
+        ],
+        "closure_cursor": "a",
+        "sweeps": 2
+      },
+      {
+        "tick": 4,
+        "successful_channels": [
+          "a"
+        ],
+        "closure_cursor": "a",
+        "sweeps": 2
+      },
+      {
+        "tick": 5,
+        "successful_channels": [
+          "a"
+        ],
+        "closure_cursor": "a",
+        "sweeps": 2
+      },
+      {
+        "tick": 6,
+        "successful_channels": [
+          "a"
+        ],
+        "closure_cursor": "a",
+        "sweeps": 2
+      },
+      {
+        "tick": 7,
+        "successful_channels": [
+          "a"
+        ],
+        "closure_cursor": "a",
+        "sweeps": 2
+      }
+    ],
+    "counts": [
+      7,
+      1,
+      0
+    ],
+    "status": "条件探针，未列为独立发现",
+    "unresolved_premise": "不分级取货侧是否落在正式轮询均分的同级量词中，三正式文件未显式给该衔接。"
+  }
+}

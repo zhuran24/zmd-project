@@ -1,0 +1,8 @@
+{"name": "absolute-record-root", "command": ["/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel", "verify-record", "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-2-证据/absolute-package/record.json", "--config", "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"], "cwd": "/home/zhuran24/zmd-research-fresh/求解器", "exit": 0}
+STDOUT
+{
+  "status": "input_checked",
+  "verified_record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-2-证据/absolute-package/record.json"
+}
+
+STDERR

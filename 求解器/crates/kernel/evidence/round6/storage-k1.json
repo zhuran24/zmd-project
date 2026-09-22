@@ -1,0 +1,13 @@
+{
+  "before_bytes": 2210033140,
+  "after_bytes": 290503305,
+  "oversize_files": [
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点闭环核验-运行记录-v3-kernel.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点核验-运行记录-v3-kernel.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点循环种子核验-运行记录-v3-kernel.json"
+  ],
+  "deleted_cache_files": [
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/__pycache__/check_examples.cpython-314.pyc"
+  ],
+  "replacement_manifest": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/migration-plan.json"
+}

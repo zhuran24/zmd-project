@@ -1,0 +1,35 @@
+   Compiling topology v0.1.0 (/home/zhuran24/zmd-research-fresh/求解器/target/catalog-gate-53_qfart/求解器/crates/topology)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.41s
+     Running unittests src/lib.rs (求解器/target/r4-isolated-catalog/debug/deps/topology-958a7a196b95191c)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (求解器/target/r4-isolated-catalog/debug/deps/topology-232d29a62249f608)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/validation.rs (求解器/target/r4-isolated-catalog/debug/deps/validation-55f92a55e3fc13c3)
+
+running 1 test
+test catalog_is_checked_against_live_formal_sources ... FAILED
+
+failures:
+
+---- catalog_is_checked_against_live_formal_sources stdout ----
+
+thread 'catalog_is_checked_against_live_formal_sources' (165565) panicked at crates/topology/tests/validation.rs:764:5:
+目录回源失败：recipes.研磨-致密蓝铁.inputs.蓝铁粉末.value 与正式来源投影不一致：'3' / '2'
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    catalog_is_checked_against_live_formal_sources
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 29 filtered out; finished in 0.04s
+
+error: test failed, to rerun pass `--test validation`

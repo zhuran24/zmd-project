@@ -1,0 +1,17 @@
+{
+  "stage": "独立推导落盘前；未阅读被审六文件正文",
+  "time": "2026-09-20T01:39:31.466904+00:00",
+  "files": {
+    "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt": "abc7a5867f6477eedb619c63a21c4a77144c57ad4567fdcfb696b3049d66a670",
+    "/home/zhuran24/zmd-research-fresh/求解任务.txt": "10abf80fe6eefe647471eabe78da4053f77b489d3806722c501c6acb405a2864",
+    "/home/zhuran24/zmd-research-fresh/求解约束.txt": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md": "36bfc4d83363cf482bc2d6b7068e38c921a937b19182157ad4aa87770b5abefa",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md": "ad868c6c4c102ddadc7a8e2d566bea65763a350cf330f6fd9b11f9f27630e805",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/参数扫描约减.md": "2fd206e60a3e2bac6d5d3700aab8df450ae1a521e412a7bdee99076b6693097f",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/count_classes.py": "1a5b407ff506f9403941fe1552b818408460effc899cad04a35b957ee8a21671",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/verify_reduction.py": "eff5daafcc2628b6fc8a8bfab9ce65b29e4b29a5b1094acfc225488bdb59b516",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/等价类计数.json": "d1bf4e652829ce2a718fdb082f230e7038e7b79de61805ebdb8b2fb3f1e9750c",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/事件对清单.md": "24f63baf7f4f0be075cdf26625b9d14a507dd3734b20cb9d35847fe0902cb62a",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/验证结果.json": "b1fe077693fd428f6a12e6ba82170675e340501988fe5da4f1caa2d200a3cff0"
+  }
+}

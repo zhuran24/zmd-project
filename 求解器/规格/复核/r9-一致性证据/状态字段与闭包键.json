@@ -1,0 +1,225 @@
+{
+  "expected_types": {
+    "Content": [
+      "item",
+      "quantity",
+      "entered_at"
+    ],
+    "Inventory": [
+      "slot",
+      "contents"
+    ],
+    "WarehouseSlot": [
+      "slot",
+      "item",
+      "quantity",
+      "empty_identity"
+    ],
+    "Warehouse": [
+      "slots",
+      "unlisted"
+    ],
+    "Cooldown": [
+      "slot",
+      "remaining"
+    ],
+    "Progress": [
+      "unit",
+      "phase",
+      "recipe",
+      "candidate_recipes",
+      "locked_recipe",
+      "remaining",
+      "cooldowns"
+    ],
+    "Level": [
+      "id",
+      "members",
+      "next_channel"
+    ],
+    "Side": [
+      "unit",
+      "side",
+      "graded",
+      "current_level",
+      "levels"
+    ],
+    "PollMemory": [
+      "schema",
+      "sides"
+    ],
+    "Gate": [
+      "unit",
+      "total_received",
+      "window_received",
+      "window_started_at",
+      "blocked_reasons"
+    ],
+    "Logistics": [
+      "active_channels",
+      "blocked_channels",
+      "poll_memory",
+      "gate_counters",
+      "connection_order"
+    ],
+    "Environment": [
+      "time",
+      "stage",
+      "online",
+      "withdrawal_memory"
+    ],
+    "Arbitration": [
+      "level_order",
+      "warehouse_empty_slot_order"
+    ],
+    "ParameterValue": [
+      "axis",
+      "value",
+      "lifetime"
+    ],
+    "SemanticContext": [
+      "arbitration",
+      "parameter_values",
+      "judgment_context",
+      "pending_events",
+      "tick_context"
+    ],
+    "State": [
+      "layout_snapshot",
+      "settings_anchor",
+      "warehouse",
+      "inventory",
+      "progress",
+      "logistics",
+      "environment",
+      "semantic_context"
+    ],
+    "Pending": [
+      "event",
+      "operation",
+      "target",
+      "trigger",
+      "predecessors",
+      "status"
+    ]
+  },
+  "actual_types": {
+    "Content": [
+      "item",
+      "quantity",
+      "entered_at"
+    ],
+    "Inventory": [
+      "slot",
+      "contents"
+    ],
+    "WarehouseSlot": [
+      "slot",
+      "item",
+      "quantity",
+      "empty_identity"
+    ],
+    "Warehouse": [
+      "slots",
+      "unlisted"
+    ],
+    "Cooldown": [
+      "slot",
+      "remaining"
+    ],
+    "Progress": [
+      "unit",
+      "phase",
+      "recipe",
+      "candidate_recipes",
+      "locked_recipe",
+      "remaining",
+      "cooldowns"
+    ],
+    "Level": [
+      "id",
+      "members",
+      "next_channel"
+    ],
+    "Side": [
+      "unit",
+      "side",
+      "graded",
+      "current_level",
+      "levels"
+    ],
+    "PollMemory": [
+      "schema",
+      "sides"
+    ],
+    "Gate": [
+      "unit",
+      "total_received",
+      "window_received",
+      "window_started_at",
+      "blocked_reasons"
+    ],
+    "Logistics": [
+      "active_channels",
+      "blocked_channels",
+      "poll_memory",
+      "gate_counters",
+      "connection_order"
+    ],
+    "Environment": [
+      "time",
+      "stage",
+      "online",
+      "withdrawal_memory"
+    ],
+    "Arbitration": [
+      "level_order",
+      "warehouse_empty_slot_order"
+    ],
+    "ParameterValue": [
+      "axis",
+      "value",
+      "lifetime"
+    ],
+    "SemanticContext": [
+      "arbitration",
+      "parameter_values",
+      "judgment_context",
+      "pending_events",
+      "tick_context"
+    ],
+    "State": [
+      "layout_snapshot",
+      "settings_anchor",
+      "warehouse",
+      "inventory",
+      "progress",
+      "logistics",
+      "environment",
+      "semantic_context"
+    ],
+    "Pending": [
+      "event",
+      "operation",
+      "target",
+      "trigger",
+      "predecessors",
+      "status"
+    ]
+  },
+  "field_count": 68,
+  "closure_components": [
+    "state.warehouse",
+    "state.inventory",
+    "state.progress",
+    "memory",
+    "state.logistics.active_channels",
+    "state.logistics.blocked_channels",
+    "state.logistics.gate_counters",
+    "state.logistics.connection_order",
+    "state.semantic_context.arbitration",
+    "pending",
+    "usage"
+  ],
+  "scope": "类型级字段全集核对；Decision.value的嵌套语法另按正文逐项人工核对"
+}

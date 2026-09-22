@@ -1,0 +1,129 @@
+{
+  "status": "PASS",
+  "exit_status": 0,
+  "command": "python -B /home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/否证/任务6/独立核验.py",
+  "checks": [
+    {
+      "name": "指定14份被审文件完整读取",
+      "result": "PASS",
+      "detail": {
+        "targets": 14,
+        "dependencies": 18
+      }
+    },
+    {
+      "name": "作者交付封存及93份输入读取记录",
+      "result": "PASS",
+      "detail": {
+        "sealed": 13,
+        "inputs": 93
+      }
+    },
+    {
+      "name": "作者核验隔离重放",
+      "result": "PASS",
+      "detail": {
+        "write_redirect_only": true,
+        "checks": 12,
+        "all_four_json_equal": true,
+        "stdout_equal": true,
+        "scope": "作者检查可复现，不替代独立证明"
+      }
+    },
+    {
+      "name": "独立有理数配方消元",
+      "result": "PASS",
+      "detail": {
+        "recipes": 18,
+        "internal_items": 15,
+        "rates_by_rule_line": {
+          "81": "18",
+          "82": "34",
+          "83": "11/2",
+          "84": "21/2",
+          "87": "34",
+          "88": "17",
+          "89": "0",
+          "92": "17",
+          "93": "9",
+          "94": "11/2",
+          "97": "11/2",
+          "100": "6",
+          "103": "11",
+          "104": "21",
+          "107": "11/2",
+          "108": "21/2",
+          "111": "3/5",
+          "114": "11/20"
+        },
+        "D_and_219_same_rates": true,
+        "scope": "只核真实周期、零非成品入库及给定连续制造前件"
+      }
+    },
+    {
+      "name": "独立单门最晚收件及数量界",
+      "result": "PASS",
+      "detail": {
+        "cases": 470,
+        "item_checks": 23500,
+        "count_checks": 19270,
+        "scope": "条件工作过程的有限样本查错；一般证明见报告，不作全参数枚举"
+      }
+    },
+    {
+      "name": "无争用链旧件闭包",
+      "result": "PASS",
+      "detail": {
+        "states": 1092,
+        "lengths": "1..6",
+        "scope": "局部闭包，固定闭边界；不含制造或多口权限"
+      }
+    },
+    {
+      "name": "三席接口的整厂前件状态",
+      "result": "PASS",
+      "detail": {
+        "actual_feed_rates": "629项均为null",
+        "phase_full_layout_certified": false,
+        "phase_certificate_instantiated": false,
+        "debug_top_level_keys": [
+          "type",
+          "schema",
+          "date",
+          "status",
+          "error",
+          "L",
+          "U",
+          "sources",
+          "rule_sha256",
+          "task4_interface_version",
+          "evidence_layers",
+          "default_program",
+          "main_inference",
+          "post_state_set",
+          "potential",
+          "species_accounts",
+          "loss_bound",
+          "release_mechanisms",
+          "sufficient_margins",
+          "warehouse_recovery",
+          "old_injection",
+          "open_items",
+          "for_owner",
+          "for_owner_reason",
+          "default_start_certified",
+          "full_layout_certified",
+          "full_start_search_lossless",
+          "search_losslessness_status"
+        ]
+      }
+    },
+    {
+      "name": "本次核验后全部审查输入字节及mtime保持",
+      "result": "PASS",
+      "detail": 32
+    }
+  ],
+  "scope": "14份交付覆盖、独立算术查错与作者核验重放；未编译或运行游戏内核",
+  "for_owner": []
+}

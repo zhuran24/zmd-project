@@ -1,0 +1,96 @@
+{
+  "binary_sha256": "53a68ff1c201d1ac2b28b35e9d43eb8d3f5819db6f73006a82a55d6f8e6ba13f",
+  "reports": [
+    {
+      "name": "benchmark_brick_60",
+      "ticks": 12,
+      "modes": {
+        "run": {
+          "wall_ms_per_tick": 2.6681447499999997,
+          "max_rss_kb": 14944,
+          "status": "completed",
+          "engine_ms_per_tick": 0.8509495833333333,
+          "completed_batches": 0,
+          "actual_inbound": {}
+        },
+        "cycle": {
+          "wall_ms_per_tick": 7.198318749999999,
+          "max_rss_kb": 18916,
+          "status": "inconclusive"
+        }
+      },
+      "target_ms_per_tick": 1,
+      "run_target_met": true,
+      "cycle_wall_target_met": false
+    },
+    {
+      "name": "benchmark_brick",
+      "ticks": 12,
+      "modes": {
+        "run": {
+          "wall_ms_per_tick": 4.706782333333334,
+          "max_rss_kb": 14908,
+          "status": "completed",
+          "engine_ms_per_tick": 2.749636583333333,
+          "completed_batches": 0,
+          "actual_inbound": {}
+        },
+        "cycle": {
+          "wall_ms_per_tick": 9.165885916666666,
+          "max_rss_kb": 23880,
+          "status": "inconclusive"
+        }
+      },
+      "target_ms_per_tick": 1,
+      "run_target_met": false,
+      "cycle_wall_target_met": false
+    },
+    {
+      "name": "benchmark_candidate_b",
+      "ticks": 12,
+      "modes": {
+        "run": {
+          "wall_ms_per_tick": 37.21711358333334,
+          "max_rss_kb": 49164,
+          "status": "completed",
+          "engine_ms_per_tick": 18.289114083333335,
+          "completed_batches": 0,
+          "actual_inbound": {}
+        },
+        "cycle": {
+          "wall_ms_per_tick": 56.9412825,
+          "max_rss_kb": 112112,
+          "status": "inconclusive"
+        }
+      },
+      "target_ms_per_tick": 20,
+      "run_target_met": true,
+      "cycle_wall_target_met": false
+    },
+    {
+      "name": "双成品制造砖",
+      "ticks": 32,
+      "modes": {
+        "run": {
+          "wall_ms_per_tick": 0.8096516875,
+          "max_rss_kb": 14920,
+          "status": "completed",
+          "engine_ms_per_tick": 0.3453985625,
+          "completed_batches": 35,
+          "actual_inbound": {
+            "精选荞愈胶囊": 20,
+            "高容谷地电池": 15
+          }
+        },
+        "cycle": {
+          "wall_ms_per_tick": 3.06490278125,
+          "max_rss_kb": 16060,
+          "status": "inconclusive"
+        }
+      },
+      "target_ms_per_tick": 1,
+      "run_target_met": true,
+      "cycle_wall_target_met": false
+    }
+  ]
+}

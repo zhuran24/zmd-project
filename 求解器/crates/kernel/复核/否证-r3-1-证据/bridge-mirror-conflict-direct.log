@@ -1,0 +1,23 @@
+{
+  "name": "bridge-mirror-conflict-direct",
+  "command": [
+    "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+    "run",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r3-1-证据/bridge-mirror-conflict-checkpoint.json",
+    "--config",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+    "--ticks",
+    "2",
+    "--out",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r3-1-证据/bridge-mirror-conflict-direct.json"
+  ],
+  "exit_code": 2,
+  "output_exists": true,
+  "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r3-1-证据/bridge-mirror-conflict-direct.json\",\"status\":\"invalid_input\"}\n",
+  "stderr": "",
+  "status": "invalid_input",
+  "stop": null,
+  "open_items": [
+    "invalid_input input @ parameter_values: 当前值/生命周期与参数向量不符"
+  ]
+}

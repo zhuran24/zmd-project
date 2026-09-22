@@ -1,0 +1,10 @@
+{
+  "reviewed_files_unchanged": 25,
+  "report_game_rows": 114,
+  "report_task_rows": 15,
+  "old_findings_rows": 28,
+  "new_findings": 1,
+  "severity": "次要",
+  "report_sha256": "7a8094fbf18255d0d9674c8a72a66724ae11650262849caac81e15428606416f",
+  "links_exist": true
+}

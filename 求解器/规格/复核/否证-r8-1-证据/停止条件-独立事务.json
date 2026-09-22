@@ -1,0 +1,145 @@
+{
+  "scope": "有限具体执行的局部事务推演；不是完整 StateSeed、可达性证明或生产周期证书",
+  "before": {
+    "warehouse": [
+      {
+        "slot": "W_initial_0",
+        "item": "源矿",
+        "quantity": 80000,
+        "empty_identity": null
+      },
+      {
+        "slot": "W_initial_1",
+        "item": "蓝铁矿",
+        "quantity": 80000,
+        "empty_identity": null
+      },
+      {
+        "slot": "W_initial_2",
+        "item": "荞花",
+        "quantity": 80000,
+        "empty_identity": null
+      },
+      {
+        "slot": "W_initial_3",
+        "item": "砂叶",
+        "quantity": 80000,
+        "empty_identity": null
+      },
+      {
+        "slot": "W_initial_4",
+        "item": "荞花种子",
+        "quantity": 80000,
+        "empty_identity": null
+      },
+      {
+        "slot": "W_initial_5",
+        "item": "砂叶种子",
+        "quantity": 80000,
+        "empty_identity": null
+      },
+      {
+        "slot": "E0",
+        "item": null,
+        "quantity": 0,
+        "empty_identity": null
+      }
+    ],
+    "order": [
+      "E0"
+    ],
+    "box": {
+      "高容谷地电池": 1,
+      "精选荞愈胶囊": 1
+    },
+    "assigned_slots": [
+      "W_initial_0",
+      "W_initial_1"
+    ],
+    "powered": true,
+    "transfer_enabled": true,
+    "cooldown": 0
+  },
+  "U": [
+    "精选荞愈胶囊",
+    "高容谷地电池"
+  ],
+  "E": [
+    "E0"
+  ],
+  "reply_stop": true,
+  "transition_stop": false,
+  "plan": [
+    {
+      "item": "精选荞愈胶囊",
+      "slot": "E0",
+      "quantity": 1
+    },
+    {
+      "item": "高容谷地电池",
+      "slot": "W_new_e9ab98e5aeb9e8b0b7e59cb0e794b5e6b1a0",
+      "quantity": 1
+    }
+  ],
+  "after": {
+    "warehouse": [
+      {
+        "slot": "W_initial_0",
+        "item": "源矿",
+        "quantity": 80000,
+        "empty_identity": null
+      },
+      {
+        "slot": "W_initial_1",
+        "item": "蓝铁矿",
+        "quantity": 80000,
+        "empty_identity": null
+      },
+      {
+        "slot": "W_initial_2",
+        "item": "荞花",
+        "quantity": 80000,
+        "empty_identity": null
+      },
+      {
+        "slot": "W_initial_3",
+        "item": "砂叶",
+        "quantity": 80000,
+        "empty_identity": null
+      },
+      {
+        "slot": "W_initial_4",
+        "item": "荞花种子",
+        "quantity": 80000,
+        "empty_identity": null
+      },
+      {
+        "slot": "W_initial_5",
+        "item": "砂叶种子",
+        "quantity": 80000,
+        "empty_identity": null
+      },
+      {
+        "slot": "E0",
+        "item": "精选荞愈胶囊",
+        "quantity": 1,
+        "empty_identity": null
+      },
+      {
+        "slot": "W_new_e9ab98e5aeb9e8b0b7e59cb0e794b5e6b1a0",
+        "item": "高容谷地电池",
+        "quantity": 1,
+        "empty_identity": null
+      }
+    ],
+    "order": [],
+    "box": {},
+    "assigned_slots": [
+      "W_initial_0",
+      "W_initial_1"
+    ],
+    "powered": true,
+    "transfer_enabled": true,
+    "cooldown": 5
+  }
+}

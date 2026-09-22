@@ -1,0 +1,32 @@
+[
+  {
+    "check": "规格自查",
+    "exit_code": 0,
+    "result_file": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/r6-L1-覆盖证据/规格自查.stdout"
+  },
+  {
+    "check": "转移回归",
+    "exit_code": 0,
+    "result_file": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/r6-L1-覆盖证据/转移回归.stdout"
+  },
+  {
+    "check": "正式目录回源",
+    "exit_code": 0,
+    "result_file": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/r6-L1-覆盖证据/正式目录回源.stdout"
+  },
+  {
+    "check": "开工只读指纹.json",
+    "entries": 25037,
+    "mismatches": []
+  },
+  {
+    "check": "交付指纹.json",
+    "entries": 23,
+    "mismatches": []
+  },
+  {
+    "check": "任务发现输入同源",
+    "findings_equal": true,
+    "critic_equal": true
+  }
+]

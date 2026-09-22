@@ -1,0 +1,30 @@
+{
+  "scope": "仅schema结构试样，未声称迁移或轨迹合法",
+  "原字段": {
+    "valid": true,
+    "errors": null
+  },
+  "改名后": {
+    "valid": false,
+    "errors": [
+      {
+        "instancePath": "",
+        "schemaPath": "#/required",
+        "keyword": "required",
+        "params": {
+          "missingProperty": "validation_scope"
+        },
+        "message": "must have required property 'validation_scope'"
+      },
+      {
+        "instancePath": "",
+        "schemaPath": "#/additionalProperties",
+        "keyword": "additionalProperties",
+        "params": {
+          "additionalProperty": "verification_scope"
+        },
+        "message": "must NOT have additional properties"
+      }
+    ]
+  }
+}

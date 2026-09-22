@@ -1,0 +1,13 @@
+{
+  "file": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/三种相位不改产量-v2.md",
+  "sha256": "51327afa43a98af4a002f1e98f25561159a3855fe8240c77863dc4ab66324753",
+  "lines": 296,
+  "main_sections": 6,
+  "unproved_items": 7,
+  "source_hashes_unchanged": 25,
+  "local_links_valid": 14,
+  "quoted_text_check": "passed; rejected interpretation label separately identified",
+  "local_recycle_geometry_check": "passed; no full layout claimed",
+  "reader_audit": "passed",
+  "independent_v2_review": false
+}

@@ -1,0 +1,44 @@
+{
+  "current_read_only_inputs_unchanged_since_rebind": 19,
+  "original_inputs_unchanged": 16,
+  "external_source_updates_reverified": 3,
+  "geometry": {
+    "荞花": {
+      "transport_slots": 24,
+      "raw_plant_slots": 23,
+      "internal_channels": 27,
+      "unexpected_connections": 0
+    },
+    "砂叶": {
+      "transport_slots": 26,
+      "raw_plant_slots": 23,
+      "internal_channels": 29,
+      "unexpected_connections": 0
+    }
+  },
+  "batch_capacity_cases": 22,
+  "half_loop_schedule_checks": 8,
+  "same_N_counterexample": {
+    "initial_N": 50,
+    "active_G": "1/2",
+    "empty_after_finite_G": "0",
+    "buck_total_powder_in_consuming_branch": 100,
+    "sand_total_powder_in_consuming_branch": 150,
+    "scope": "完整三机开放粉末接收边界；完整基地未证"
+  },
+  "mixed_prefix_check": "PASS",
+  "links_checked": true,
+  "new_claims_independent_review": {
+    "prior_version": "否证-任务4 F01—F18已审查；实际范围逐项见报告",
+    "current_revision": "F13容量及相邻范围说明已作者自核，独立重核待交",
+    "report_sha256": "12eb21c9bff08c2e824e712a38edc624ffd5c69f28cec435d65ea9790599e486"
+  },
+  "status": "PASS",
+  "修订记录": [
+    {
+      "date": "2026-09-21",
+      "finding": "F01/F13/F14",
+      "change": "由修订后的生成脚本复算；读取plant-pilot-v2，分别绑定修订前否证与当前作者修订状态。容量上限及合法见证另由修订核验.py逐项验证。"
+    }
+  ]
+}

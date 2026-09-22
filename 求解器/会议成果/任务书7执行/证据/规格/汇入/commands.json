@@ -1,0 +1,36 @@
+{
+  "commands": [
+    {
+      "argv": [
+        "/usr/bin/python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/规格/汇入/audit_merge.py"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh",
+      "exit_code": 0,
+      "stdout": "{\"checks\": 642, \"passed\": 642, \"failed\": 0, \"schema_cases\": 25, \"failed_names\": []}\n",
+      "stderr": "",
+      "interpretation": "作者规格一致性及schema形状验证；无内核装载或步进"
+    }
+  ],
+  "implementation_attempts": [
+    {
+      "command": "python -B .../merge_bodies.py",
+      "exit_code": 1,
+      "error_excerpt": "ValueError: substring not found",
+      "resolution": "T12下一节为T14，修正章标题；已写受限转移的步骤按已落地标记跳过，其余正文完成"
+    },
+    {
+      "command": "python -B .../audit_merge.py",
+      "exit_code": 1,
+      "error_excerpt": "SyntaxError: unterminated string literal (detected at line 71)",
+      "resolution": "修正测试脚本字面量并重跑"
+    },
+    {
+      "command": "python -B .../audit_merge.py",
+      "exit_code": 1,
+      "error_excerpt": "schema:缺反向复原完整周期拒收",
+      "resolution": "负例构造被后续正例原地修改；改为深拷贝后再核，拒收门槛通过"
+    }
+  ]
+}

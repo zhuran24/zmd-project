@@ -1,0 +1,275 @@
+{
+  "validator": "AJV 2020",
+  "module": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/2020.js",
+  "cases": [
+    {
+      "case": "cycle-control",
+      "valid": true,
+      "errors": []
+    },
+    {
+      "case": "cycle-overflow",
+      "valid": false,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "run_id"
+          },
+          "message": "must have required property 'run_id'"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "profile_id"
+          },
+          "message": "must have required property 'profile_id'"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "producer"
+          },
+          "message": "must have required property 'producer'"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "fingerprints"
+          },
+          "message": "must have required property 'fingerprints'"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "parameter_assignment"
+          },
+          "message": "must have required property 'parameter_assignment'"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "input_history"
+          },
+          "message": "must have required property 'input_history'"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "uncovered_axes"
+          },
+          "message": "must have required property 'uncovered_axes'"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "trace"
+          },
+          "message": "must have required property 'trace'"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "validation_scope"
+          },
+          "message": "must have required property 'validation_scope'"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/additionalProperties",
+          "keyword": "additionalProperties",
+          "params": {
+            "additionalProperty": "budget"
+          },
+          "message": "must NOT have additional properties"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/additionalProperties",
+          "keyword": "additionalProperties",
+          "params": {
+            "additionalProperty": "cycle"
+          },
+          "message": "must NOT have additional properties"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/additionalProperties",
+          "keyword": "additionalProperties",
+          "params": {
+            "additionalProperty": "level"
+          },
+          "message": "must NOT have additional properties"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/additionalProperties",
+          "keyword": "additionalProperties",
+          "params": {
+            "additionalProperty": "parameter_point"
+          },
+          "message": "must NOT have additional properties"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/additionalProperties",
+          "keyword": "additionalProperties",
+          "params": {
+            "additionalProperty": "reading"
+          },
+          "message": "must NOT have additional properties"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/additionalProperties",
+          "keyword": "additionalProperties",
+          "params": {
+            "additionalProperty": "replay_input"
+          },
+          "message": "must NOT have additional properties"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/additionalProperties",
+          "keyword": "additionalProperties",
+          "params": {
+            "additionalProperty": "result_id"
+          },
+          "message": "must NOT have additional properties"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/additionalProperties",
+          "keyword": "additionalProperties",
+          "params": {
+            "additionalProperty": "run_record"
+          },
+          "message": "must NOT have additional properties"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/additionalProperties",
+          "keyword": "additionalProperties",
+          "params": {
+            "additionalProperty": "seed"
+          },
+          "message": "must NOT have additional properties"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/additionalProperties",
+          "keyword": "additionalProperties",
+          "params": {
+            "additionalProperty": "stop"
+          },
+          "message": "must NOT have additional properties"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/additionalProperties",
+          "keyword": "additionalProperties",
+          "params": {
+            "additionalProperty": "support_domain"
+          },
+          "message": "must NOT have additional properties"
+        },
+        {
+          "instancePath": "/schema",
+          "schemaPath": "#/properties/schema/const",
+          "keyword": "const",
+          "params": {
+            "allowedValue": "kernel-output-v3"
+          },
+          "message": "must be equal to constant"
+        },
+        {
+          "instancePath": "/seed",
+          "schemaPath": "#/allOf/4/then/properties/seed/type",
+          "keyword": "type",
+          "params": {
+            "type": "object"
+          },
+          "message": "must be object"
+        },
+        {
+          "instancePath": "/parameter_point",
+          "schemaPath": "#/allOf/4/then/properties/parameter_point/type",
+          "keyword": "type",
+          "params": {
+            "type": "object"
+          },
+          "message": "must be object"
+        },
+        {
+          "instancePath": "/replay_input",
+          "schemaPath": "#/allOf/4/then/properties/replay_input/type",
+          "keyword": "type",
+          "params": {
+            "type": "object"
+          },
+          "message": "must be object"
+        },
+        {
+          "instancePath": "/run_record",
+          "schemaPath": "#/type",
+          "keyword": "type",
+          "params": {
+            "type": "object"
+          },
+          "message": "must be object"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/allOf/4/if",
+          "keyword": "if",
+          "params": {
+            "failingKeyword": "then"
+          },
+          "message": "must match \"then\" schema"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/oneOf",
+          "keyword": "oneOf",
+          "params": {
+            "passingSchemas": null
+          },
+          "message": "must match exactly one schema in oneOf"
+        }
+      ]
+    },
+    {
+      "case": "run-overflow",
+      "valid": true,
+      "errors": []
+    },
+    {
+      "case": "checkpoint-budget",
+      "valid": true,
+      "errors": []
+    },
+    {
+      "case": "adjacency-three-ticks",
+      "valid": true,
+      "errors": []
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "command": [
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/probe",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/movement-future-success-input.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+    "1"
+  ],
+  "exit_code": 0,
+  "seed_event": "J|2|0|1",
+  "occurrences": [
+    {
+      "basis": [
+        "规则 L13、L15–17、L23–25、L29–32",
+        "约束端口速率",
+        "受限模型声明 polling.both_failure",
+        "内核输入 §5.2、§6.3"
+      ],
+      "detail": "",
+      "event": "J|2|0|1",
+      "operation": "move",
+      "outcome": "success",
+      "target": "PC|feed_belt:north:0|crusher:south:0"
+    }
+  ]
+}

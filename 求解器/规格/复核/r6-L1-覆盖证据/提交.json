@@ -1,0 +1,12 @@
+{
+  "findings": [
+    {
+      "id": "S3-r6-L1-01",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/规格/修订记录.md#L121、L141；/home/zhuran24/zmd-research-fresh/求解器/规格/第三轮任务验证/发现处置.json#S2-r4-L1-03、S2-r5-L1-04",
+      "claim": "两条旧覆盖发现明确反对直接排除closed_touch，却被处置台账错误记为提出了这种排除结论。",
+      "evidence": "指定round3_state.json.aFindings中，S2-r4-L1-03明确写“这不是对 closed_touch 的演绎排除”，S2-r5-L1-04明确写“不能据以把 closed_touch 移出允许域”；修订记录及发现处置对二者却均写“不采发现中直接排除closed_touch的过强结论”。本项只纠正发现归因，不复议依据约束“目标须对其每种取值都达成”的最严供电裁定。",
+      "severity": "次要"
+    }
+  ],
+  "notes": "完整论证及129行、28条欠账逐项核对：/home/zhuran24/zmd-research-fresh/求解器/规格/复核/复核-r6-覆盖.md。53项自查、16项回归及目录回源复验通过；未发现新增阻断或重要问题，已披露的未覆盖域不重复报缺口。"
+}

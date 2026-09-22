@@ -1,0 +1,12 @@
+[
+  {
+    "case": "historical-alias",
+    "accepted": false,
+    "error": "CheckError: 待事件与输入历史身份冲突: build_0"
+  },
+  {
+    "case": "after-closure",
+    "accepted": true,
+    "error": null
+  }
+]

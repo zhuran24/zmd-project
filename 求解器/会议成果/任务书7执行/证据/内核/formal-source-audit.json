@@ -1,0 +1,27 @@
+{
+  "formal": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+      "sha256": "d150b86b398f8e73e57bee1598020e6bcd895e5a13a254b4b11dd1e4416c325a",
+      "line_count": 114,
+      "registered_hash_matches": true,
+      "all_registered_lines_match": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解任务.txt",
+      "sha256": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+      "line_count": 16,
+      "registered_hash_matches": true,
+      "all_registered_lines_match": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解约束.txt",
+      "sha256": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6",
+      "line_count": 126,
+      "registered_hash_matches": true,
+      "all_registered_lines_match": true
+    }
+  ],
+  "catalog_sha256": "39105d320e55b4d357cd95b47c840a6bd4127afcb94d3f98b1c2997c56efddd3",
+  "conflict_resolution": "31ced2a24fef为09-21中间版本；本轮重读实际第36行并核完整SHA-256，采用d150b86b398f；登记已同步，未修改数据目录。"
+}

@@ -1,0 +1,44 @@
+命令：/usr/bin/python -B 规格/复核/约减/count_classes.py
+{"name": "混做粉碎机两下游", "counts": {"semantic_sweep": 55296, "operational_conservative": 87178291200}, "tie_classes": 1, "branch_counts": {"full_tables": 1, "projected_tables": 1, "no_query_behavior_representatives": 1}}
+{"name": "分流器三路轮询", "counts": {"semantic_sweep": 27323180236800, "operational_conservative": 104657538585600}, "tie_classes": 8, "branch_counts": {"full_tables": 96, "projected_tables": 12, "no_query_behavior_representatives": 1}}
+退出码：0
+
+命令：/usr/bin/python -B 规格/复核/约减/count_classes.py --check
+{"name": "混做粉碎机两下游", "counts": {"semantic_sweep": 55296, "operational_conservative": 87178291200}, "tie_classes": 1, "branch_counts": {"full_tables": 1, "projected_tables": 1, "no_query_behavior_representatives": 1}}
+{"name": "分流器三路轮询", "counts": {"semantic_sweep": 27323180236800, "operational_conservative": 104657538585600}, "tie_classes": 8, "branch_counts": {"full_tables": 96, "projected_tables": 12, "no_query_behavior_representatives": 1}}
+退出码：0
+
+命令：/usr/bin/python -B 规格/复核/约减/verify_reduction.py
+{"status": "passed_with_runtime_limitations", "graphs": 1100, "permutations": 124470, "source_changes": 0, "branch_projection": {"status": "passed", "evidence": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/分支表约减验证.json", "examples": [{"name": "混做粉碎机两下游", "full_tables": 1, "projected_tables": 1, "behavior_representatives": 1, "gate_subgraphs": 1, "hypothetical_local_query_comparisons": 0}, {"name": "分流器三路轮询", "full_tables": 96, "projected_tables": 12, "behavior_representatives": 1, "gate_subgraphs": 4, "hypothetical_local_query_comparisons": 1536}], "negative_checks": {"multi_level_no_query_rejected": true, "all_mutable_rows_retained": 24, "incomplete_table_rejected": true}}, "runtime": [{"name": "混做粉碎机两下游", "status": "baseline_only", "ticks": 4, "interpretation": "仅参考原样例基线；入口逐轴要求固定样例值，未声称任意排序差分通过"}, {"name": "分流器三路轮询", "status": "baseline_only", "ticks": 12, "interpretation": "仅参考原样例基线；入口逐轴要求固定样例值，未声称任意排序差分通过"}]}
+退出码：0
+
+终验：交付复查检测到内核线并行改动transition.rs、polling.rs、input.rs；重新读取分支装载、查询、多级调用前件及事务相关代码后重跑。
+命令：/usr/bin/python -B /home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/count_classes.py
+{"name": "混做粉碎机两下游", "counts": {"semantic_sweep": 55296, "operational_conservative": 87178291200}, "tie_classes": 1, "branch_counts": {"full_tables": 1, "projected_tables": 1, "no_query_behavior_representatives": 1}}
+{"name": "分流器三路轮询", "counts": {"semantic_sweep": 27323180236800, "operational_conservative": 104657538585600}, "tie_classes": 8, "branch_counts": {"full_tables": 96, "projected_tables": 12, "no_query_behavior_representatives": 1}}
+退出码：0
+
+命令：/usr/bin/python -B /home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/count_classes.py --check
+{"name": "混做粉碎机两下游", "counts": {"semantic_sweep": 55296, "operational_conservative": 87178291200}, "tie_classes": 1, "branch_counts": {"full_tables": 1, "projected_tables": 1, "no_query_behavior_representatives": 1}}
+{"name": "分流器三路轮询", "counts": {"semantic_sweep": 27323180236800, "operational_conservative": 104657538585600}, "tie_classes": 8, "branch_counts": {"full_tables": 96, "projected_tables": 12, "no_query_behavior_representatives": 1}}
+退出码：0
+
+命令：/usr/bin/python -B /home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/verify_reduction.py
+{"status": "passed_with_runtime_limitations", "graphs": 1100, "permutations": 124470, "source_changes": 0, "branch_projection": {"status": "passed", "evidence": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/分支表约减验证.json", "examples": [{"name": "混做粉碎机两下游", "full_tables": 1, "projected_tables": 1, "behavior_representatives": 1, "gate_subgraphs": 1, "hypothetical_local_query_comparisons": 0}, {"name": "分流器三路轮询", "full_tables": 96, "projected_tables": 12, "behavior_representatives": 1, "gate_subgraphs": 4, "hypothetical_local_query_comparisons": 1536}], "negative_checks": {"multi_level_no_query_rejected": true, "all_mutable_rows_retained": 24, "incomplete_table_rejected": true}}, "runtime": [{"name": "混做粉碎机两下游", "status": "not_executed", "error_type": "CheckError", "reason": "参数轴表哈希变化，须重新对齐", "interpretation": "原样输入未通过参考入口；未绕过校验，不作换序运行通过声明"}, {"name": "分流器三路轮询", "status": "not_executed", "error_type": "CheckError", "reason": "参数轴表哈希变化，须重新对齐", "interpretation": "原样输入未通过参考入口；未绕过校验，不作换序运行通过声明"}]}
+退出码：0
+
+交付检查：正文及修订记录全文复读完成；引用路径均存在；分支旧结论无残留。
+{"source_fingerprints": [{"file": "等价类计数.json", "source_count": 17, "changed": []}, {"file": "分支表约减验证.json", "source_count": 20, "changed": []}]}
+最终正文同步后复验：运行探针状态以本次JSON为准，结构约减与运行入口分别记账。
+命令：/usr/bin/python -B 规格/复核/约减/count_classes.py
+{"name": "混做粉碎机两下游", "counts": {"semantic_sweep": 55296, "operational_conservative": 87178291200}, "tie_classes": 1, "branch_counts": {"full_tables": 1, "projected_tables": 1, "no_query_behavior_representatives": 1}}
+{"name": "分流器三路轮询", "counts": {"semantic_sweep": 27323180236800, "operational_conservative": 104657538585600}, "tie_classes": 8, "branch_counts": {"full_tables": 96, "projected_tables": 12, "no_query_behavior_representatives": 1}}
+退出码：0
+命令：/usr/bin/python -B 规格/复核/约减/count_classes.py --check
+{"name": "混做粉碎机两下游", "counts": {"semantic_sweep": 55296, "operational_conservative": 87178291200}, "tie_classes": 1, "branch_counts": {"full_tables": 1, "projected_tables": 1, "no_query_behavior_representatives": 1}}
+{"name": "分流器三路轮询", "counts": {"semantic_sweep": 27323180236800, "operational_conservative": 104657538585600}, "tie_classes": 8, "branch_counts": {"full_tables": 96, "projected_tables": 12, "no_query_behavior_representatives": 1}}
+退出码：0
+命令：/usr/bin/python -B 规格/复核/约减/verify_reduction.py
+{"status": "passed_with_runtime_limitations", "graphs": 1100, "permutations": 124470, "source_changes": 0, "branch_projection": {"status": "passed", "evidence": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/分支表约减验证.json", "examples": [{"name": "混做粉碎机两下游", "full_tables": 1, "projected_tables": 1, "behavior_representatives": 1, "gate_subgraphs": 1, "hypothetical_local_query_comparisons": 0}, {"name": "分流器三路轮询", "full_tables": 96, "projected_tables": 12, "behavior_representatives": 1, "gate_subgraphs": 4, "hypothetical_local_query_comparisons": 1536}], "negative_checks": {"multi_level_no_query_rejected": true, "all_mutable_rows_retained": 24, "incomplete_table_rejected": true}}, "runtime": [{"name": "混做粉碎机两下游", "status": "not_executed", "error_type": "CheckError", "reason": "参数轴表哈希变化，须重新对齐", "interpretation": "原样输入未通过参考入口；未绕过校验，不作换序运行通过声明"}, {"name": "分流器三路轮询", "status": "not_executed", "error_type": "CheckError", "reason": "参数轴表哈希变化，须重新对齐", "interpretation": "原样输入未通过参考入口；未绕过校验，不作换序运行通过声明"}]}
+退出码：0
+最终源指纹复查：稳定；正文与修订记录的链接、数量口径及辖域复读通过。

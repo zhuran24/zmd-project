@@ -1,0 +1,28 @@
+   Compiling kernel v0.1.0 (/home/zhuran24/zmd-research-fresh/求解器/crates/kernel)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.43s
+     Running unittests src/lib.rs (target/debug/deps/kernel-26241e85d1128675)
+
+running 7 tests
+test tests::revision_r4::revision_r4_path_runs_never_exercises_geometric_adjacency ... ok
+test tests::revision_r4::revision_r4_pending_trigger_is_closed_before_derivation_and_key ... FAILED
+test tests::revision_r4::revision_r4_cohorts_manufacture_remove_and_arrival_age ... ok
+test tests::revision_r4::revision_r4_age_cohorts_seed_capacity_and_key ... ok
+test tests::revision_r4::revision_r4_multilevel_branch_table_includes_dormant_subsets ... ok
+test tests::revision_r4::revision_r4_first_resumed_sweep_stop_preserves_checkpoint ... ok
+test tests::revision_r4::revision_r4_single_level_empty_branch_table_matches_full_table ... ok
+
+failures:
+
+---- tests::revision_r4::revision_r4_pending_trigger_is_closed_before_derivation_and_key stdout ----
+
+thread 'tests::revision_r4::revision_r4_pending_trigger_is_closed_before_derivation_and_key' (765675) panicked at crates/kernel/src/tests_revision_r4.rs:99:13:
+invalid_input input @ sink: 相位与种子冷却不符
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    tests::revision_r4::revision_r4_pending_trigger_is_closed_before_derivation_and_key
+
+test result: FAILED. 6 passed; 1 failed; 0 ignored; 0 measured; 83 filtered out; finished in 0.31s
+
+error: test failed, to rerun pass `-p kernel --lib`

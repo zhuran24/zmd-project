@@ -1,0 +1,551 @@
+{
+  "name": "constructor-observation",
+  "command": [
+    "/home/zhuran24/zmd-research-fresh/求解器/target/r5_seat1_constructor_probe",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-1-证据/ore-79999-seed.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-1-证据/ore-80000-seed.json"
+  ],
+  "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+  "exit_code": 0,
+  "result": [
+    {
+      "constructor": "ok",
+      "domain_report": [
+        {
+          "condition": "D.1",
+          "evidence": [
+            "已装载固定布局、设定、global/v1、在线零干预、sufficient；无未来历史/玩家策略"
+          ],
+          "locations": [],
+          "scope": "static",
+          "status": "pass"
+        },
+        {
+          "condition": "D.2",
+          "evidence": [
+            "现存回矿候选读取被抽象容量，先于physical/级排序/授权停止"
+          ],
+          "locations": [
+            "PC|belt:north:0|core:south:1"
+          ],
+          "scope": "static",
+          "status": "fail"
+        },
+        {
+          "condition": "D.3",
+          "evidence": [
+            "O为空；成品格无取货指派；新格标签无冲突；retain_history保持该不变量"
+          ],
+          "locations": [],
+          "scope": "static",
+          "status": "pass"
+        },
+        {
+          "condition": "D.4",
+          "evidence": [
+            "全部输入/种子/分支表已装载；未来无终点请求仍动态停止；不证明种子可达"
+          ],
+          "locations": [],
+          "scope": "static",
+          "status": "pass"
+        },
+        {
+          "condition": "D.5",
+          "evidence": [
+            "结构界B=1+300*0=1 <80000；每PC每刻至多1、每箱每刻至多一次全箱300"
+          ],
+          "locations": [],
+          "scope": "static",
+          "status": "pass"
+        }
+      ],
+      "memory": {
+        "schema": "poll-memory-v1",
+        "sides": [
+          {
+            "current_level": "L|core|input|other",
+            "graded": true,
+            "levels": [
+              {
+                "id": "L|core|input|other",
+                "members": [
+                  "PC|belt:north:0|core:south:1"
+                ],
+                "next_channel": "PC|belt:north:0|core:south:1"
+              }
+            ],
+            "side": "input",
+            "unit": "core"
+          },
+          {
+            "current_level": null,
+            "graded": true,
+            "levels": [],
+            "side": "output",
+            "unit": "core"
+          },
+          {
+            "current_level": null,
+            "graded": true,
+            "levels": [],
+            "side": "input",
+            "unit": "box"
+          },
+          {
+            "current_level": null,
+            "graded": true,
+            "levels": [
+              {
+                "id": "L|box|output|other",
+                "members": [
+                  "PC|box:north:1|belt:south:0"
+                ],
+                "next_channel": "PC|box:north:1|belt:south:0"
+              }
+            ],
+            "side": "output",
+            "unit": "box"
+          },
+          {
+            "current_level": null,
+            "graded": true,
+            "levels": [
+              {
+                "id": "L|belt|input|other",
+                "members": [
+                  "PC|box:north:1|belt:south:0"
+                ],
+                "next_channel": "PC|box:north:1|belt:south:0"
+              }
+            ],
+            "side": "input",
+            "unit": "belt"
+          },
+          {
+            "current_level": "L|belt|output|ungraded",
+            "graded": false,
+            "levels": [
+              {
+                "id": "L|belt|output|ungraded",
+                "members": [
+                  "PC|belt:north:0|core:south:1"
+                ],
+                "next_channel": "PC|belt:north:0|core:south:1"
+              }
+            ],
+            "side": "output",
+            "unit": "belt"
+          }
+        ]
+      },
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-1-证据/ore-79999-seed.json",
+      "production_abstraction": false
+    },
+    {
+      "constructor": "ok",
+      "domain_report": [
+        {
+          "condition": "D.1",
+          "evidence": [
+            "已装载固定布局、设定、global/v1、在线零干预、sufficient；无未来历史/玩家策略"
+          ],
+          "locations": [],
+          "scope": "static",
+          "status": "pass"
+        },
+        {
+          "condition": "D.2",
+          "evidence": [
+            "现存回矿候选读取被抽象容量，先于physical/级排序/授权停止"
+          ],
+          "locations": [
+            "PC|belt:north:0|core:south:1"
+          ],
+          "scope": "static",
+          "status": "fail"
+        },
+        {
+          "condition": "D.3",
+          "evidence": [
+            "O为空；成品格无取货指派；新格标签无冲突；retain_history保持该不变量"
+          ],
+          "locations": [],
+          "scope": "static",
+          "status": "pass"
+        },
+        {
+          "condition": "D.4",
+          "evidence": [
+            "全部输入/种子/分支表已装载；未来无终点请求仍动态停止；不证明种子可达"
+          ],
+          "locations": [],
+          "scope": "static",
+          "status": "pass"
+        },
+        {
+          "condition": "D.5",
+          "evidence": [
+            "结构界B=1+300*0=1 <80000；每PC每刻至多1、每箱每刻至多一次全箱300"
+          ],
+          "locations": [],
+          "scope": "static",
+          "status": "pass"
+        }
+      ],
+      "memory": {
+        "schema": "poll-memory-v1",
+        "sides": [
+          {
+            "current_level": null,
+            "graded": true,
+            "levels": [
+              {
+                "id": "L|core|input|other",
+                "members": [
+                  "PC|belt:north:0|core:south:1"
+                ],
+                "next_channel": "PC|belt:north:0|core:south:1"
+              }
+            ],
+            "side": "input",
+            "unit": "core"
+          },
+          {
+            "current_level": null,
+            "graded": true,
+            "levels": [],
+            "side": "output",
+            "unit": "core"
+          },
+          {
+            "current_level": null,
+            "graded": true,
+            "levels": [],
+            "side": "input",
+            "unit": "box"
+          },
+          {
+            "current_level": null,
+            "graded": true,
+            "levels": [
+              {
+                "id": "L|box|output|other",
+                "members": [
+                  "PC|box:north:1|belt:south:0"
+                ],
+                "next_channel": "PC|box:north:1|belt:south:0"
+              }
+            ],
+            "side": "output",
+            "unit": "box"
+          },
+          {
+            "current_level": null,
+            "graded": true,
+            "levels": [
+              {
+                "id": "L|belt|input|other",
+                "members": [
+                  "PC|box:north:1|belt:south:0"
+                ],
+                "next_channel": "PC|box:north:1|belt:south:0"
+              }
+            ],
+            "side": "input",
+            "unit": "belt"
+          },
+          {
+            "current_level": "L|belt|output|ungraded",
+            "graded": false,
+            "levels": [
+              {
+                "id": "L|belt|output|ungraded",
+                "members": [
+                  "PC|belt:north:0|core:south:1"
+                ],
+                "next_channel": "PC|belt:north:0|core:south:1"
+              }
+            ],
+            "side": "output",
+            "unit": "belt"
+          }
+        ]
+      },
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-1-证据/ore-80000-seed.json",
+      "production_abstraction": false
+    }
+  ],
+  "stderr": ""
+}
+STDOUT
+[
+  {
+    "constructor": "ok",
+    "domain_report": [
+      {
+        "condition": "D.1",
+        "evidence": [
+          "已装载固定布局、设定、global/v1、在线零干预、sufficient；无未来历史/玩家策略"
+        ],
+        "locations": [],
+        "scope": "static",
+        "status": "pass"
+      },
+      {
+        "condition": "D.2",
+        "evidence": [
+          "现存回矿候选读取被抽象容量，先于physical/级排序/授权停止"
+        ],
+        "locations": [
+          "PC|belt:north:0|core:south:1"
+        ],
+        "scope": "static",
+        "status": "fail"
+      },
+      {
+        "condition": "D.3",
+        "evidence": [
+          "O为空；成品格无取货指派；新格标签无冲突；retain_history保持该不变量"
+        ],
+        "locations": [],
+        "scope": "static",
+        "status": "pass"
+      },
+      {
+        "condition": "D.4",
+        "evidence": [
+          "全部输入/种子/分支表已装载；未来无终点请求仍动态停止；不证明种子可达"
+        ],
+        "locations": [],
+        "scope": "static",
+        "status": "pass"
+      },
+      {
+        "condition": "D.5",
+        "evidence": [
+          "结构界B=1+300*0=1 <80000；每PC每刻至多1、每箱每刻至多一次全箱300"
+        ],
+        "locations": [],
+        "scope": "static",
+        "status": "pass"
+      }
+    ],
+    "memory": {
+      "schema": "poll-memory-v1",
+      "sides": [
+        {
+          "current_level": "L|core|input|other",
+          "graded": true,
+          "levels": [
+            {
+              "id": "L|core|input|other",
+              "members": [
+                "PC|belt:north:0|core:south:1"
+              ],
+              "next_channel": "PC|belt:north:0|core:south:1"
+            }
+          ],
+          "side": "input",
+          "unit": "core"
+        },
+        {
+          "current_level": null,
+          "graded": true,
+          "levels": [],
+          "side": "output",
+          "unit": "core"
+        },
+        {
+          "current_level": null,
+          "graded": true,
+          "levels": [],
+          "side": "input",
+          "unit": "box"
+        },
+        {
+          "current_level": null,
+          "graded": true,
+          "levels": [
+            {
+              "id": "L|box|output|other",
+              "members": [
+                "PC|box:north:1|belt:south:0"
+              ],
+              "next_channel": "PC|box:north:1|belt:south:0"
+            }
+          ],
+          "side": "output",
+          "unit": "box"
+        },
+        {
+          "current_level": null,
+          "graded": true,
+          "levels": [
+            {
+              "id": "L|belt|input|other",
+              "members": [
+                "PC|box:north:1|belt:south:0"
+              ],
+              "next_channel": "PC|box:north:1|belt:south:0"
+            }
+          ],
+          "side": "input",
+          "unit": "belt"
+        },
+        {
+          "current_level": "L|belt|output|ungraded",
+          "graded": false,
+          "levels": [
+            {
+              "id": "L|belt|output|ungraded",
+              "members": [
+                "PC|belt:north:0|core:south:1"
+              ],
+              "next_channel": "PC|belt:north:0|core:south:1"
+            }
+          ],
+          "side": "output",
+          "unit": "belt"
+        }
+      ]
+    },
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-1-证据/ore-79999-seed.json",
+    "production_abstraction": false
+  },
+  {
+    "constructor": "ok",
+    "domain_report": [
+      {
+        "condition": "D.1",
+        "evidence": [
+          "已装载固定布局、设定、global/v1、在线零干预、sufficient；无未来历史/玩家策略"
+        ],
+        "locations": [],
+        "scope": "static",
+        "status": "pass"
+      },
+      {
+        "condition": "D.2",
+        "evidence": [
+          "现存回矿候选读取被抽象容量，先于physical/级排序/授权停止"
+        ],
+        "locations": [
+          "PC|belt:north:0|core:south:1"
+        ],
+        "scope": "static",
+        "status": "fail"
+      },
+      {
+        "condition": "D.3",
+        "evidence": [
+          "O为空；成品格无取货指派；新格标签无冲突；retain_history保持该不变量"
+        ],
+        "locations": [],
+        "scope": "static",
+        "status": "pass"
+      },
+      {
+        "condition": "D.4",
+        "evidence": [
+          "全部输入/种子/分支表已装载；未来无终点请求仍动态停止；不证明种子可达"
+        ],
+        "locations": [],
+        "scope": "static",
+        "status": "pass"
+      },
+      {
+        "condition": "D.5",
+        "evidence": [
+          "结构界B=1+300*0=1 <80000；每PC每刻至多1、每箱每刻至多一次全箱300"
+        ],
+        "locations": [],
+        "scope": "static",
+        "status": "pass"
+      }
+    ],
+    "memory": {
+      "schema": "poll-memory-v1",
+      "sides": [
+        {
+          "current_level": null,
+          "graded": true,
+          "levels": [
+            {
+              "id": "L|core|input|other",
+              "members": [
+                "PC|belt:north:0|core:south:1"
+              ],
+              "next_channel": "PC|belt:north:0|core:south:1"
+            }
+          ],
+          "side": "input",
+          "unit": "core"
+        },
+        {
+          "current_level": null,
+          "graded": true,
+          "levels": [],
+          "side": "output",
+          "unit": "core"
+        },
+        {
+          "current_level": null,
+          "graded": true,
+          "levels": [],
+          "side": "input",
+          "unit": "box"
+        },
+        {
+          "current_level": null,
+          "graded": true,
+          "levels": [
+            {
+              "id": "L|box|output|other",
+              "members": [
+                "PC|box:north:1|belt:south:0"
+              ],
+              "next_channel": "PC|box:north:1|belt:south:0"
+            }
+          ],
+          "side": "output",
+          "unit": "box"
+        },
+        {
+          "current_level": null,
+          "graded": true,
+          "levels": [
+            {
+              "id": "L|belt|input|other",
+              "members": [
+                "PC|box:north:1|belt:south:0"
+              ],
+              "next_channel": "PC|box:north:1|belt:south:0"
+            }
+          ],
+          "side": "input",
+          "unit": "belt"
+        },
+        {
+          "current_level": "L|belt|output|ungraded",
+          "graded": false,
+          "levels": [
+            {
+              "id": "L|belt|output|ungraded",
+              "members": [
+                "PC|belt:north:0|core:south:1"
+              ],
+              "next_channel": "PC|belt:north:0|core:south:1"
+            }
+          ],
+          "side": "output",
+          "unit": "belt"
+        }
+      ]
+    },
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-1-证据/ore-80000-seed.json",
+    "production_abstraction": false
+  }
+]
+
+STDERR

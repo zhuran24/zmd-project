@@ -1,0 +1,180 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.01s
+     Running unittests src/lib.rs (target/debug/deps/kernel-26241e85d1128675)
+
+running 76 tests
+test tests::checkpoint_delta_negative_cases ... ok
+test tests::integer_validation ... ok
+test tests::config_axes_and_all_stop_values ... ok
+test tests::damping_no_terminal ... ok
+test tests::completed_output_conflict_retains_batch ... ok
+test tests::box_selectors ... ok
+test tests::explicit_step_anchors ... ok
+test tests::membership_projection ... ok
+test tests::catalog_and_geometry ... ok
+test tests::manufacture_disabled_intake_and_pause ... ok
+test tests::damping_paths_and_missing_branch ... ok
+test tests::manufacturing_two_material_batch ... ok
+test tests::bridge_same_item_cannot_occupy_both_axes ... ok
+test tests::explicit_ore_supply ... ok
+test tests::core_inbound_physical_deposit ... ok
+test tests::bridge_two_independent_slots_run ... ok
+test tests::closure_and_resources ... ok
+test tests::ore_history_horizon_stop ... ok
+test tests::after_closure_restart ... ok
+test tests::five_tick_recipe_completes_only_at_boundary ... ok
+test tests::output_level_damping_priority ... ok
+test tests::identity_latch_and_no_cross_disconnected_observation ... ok
+test tests::revision::revision_independent_identity_audit ... ok
+test tests::level_tie_reversal_changes_winner ... ok
+test tests::revision::revision_ore_depletion_is_not_a_movement_guard ... ok
+test tests::revision::revision_branch_relevance ... ok
+test tests::revision_r2::revision_r2_damping_does_not_rebind_singleton ... ok
+test tests::output_off_preserves_game_state ... ok
+test tests::coverage_five_states ... ok
+test tests::projections ... ok
+test tests::external_stop_positions ... ok
+test tests::revision::revision_pending_history_alias ... ok
+test tests::revision::revision_warehouse_acceptance ... ok
+test tests::revision::revision_supply_order_intersection ... ok
+test tests::revision::revision_initial_warehouse_labels ... ok
+test tests::revision::revision_external_action_references ... ok
+test tests::round5::round5_completion_after_pause ... ok
+test tests::revision_r2::revision_r2_internal_passage_identity ... ok
+test tests::revision::revision_gate_item_domain ... ok
+test tests::revision::revision_manufacturing_axis_evidence ... ok
+test tests::revision_r2::revision_r2_phase_intersection ... ok
+test tests::simultaneous_ring_restoration ... ok
+test tests::malformed_state_rejected ... ok
+test tests::revision::revision_snapshot_objects ... ok
+test tests::round5::round5_cycle_age_overflow_is_resource_not_wrap ... ok
+test tests::round5::round5_inventory_order_is_canonical ... ok
+test tests::transfer_conservation ... ok
+test tests::stopped_engine_cannot_continue ... ok
+test tests::transfer_capacity_and_empty_cooldown ... ok
+test tests::revision_r2::revision_r2_fixed_branch_cut_and_reload ... ok
+test tests::transport_wrong_item_rejects ... ok
+test tests::byte_determinism_and_layout_permutation ... ok
+test tests::revision::revision_ore_history_sufficiency ... ok
+test tests::warehouse_identity_monotone ... ok
+test tests::warehouse_invalid_identity_and_order ... ok
+test tests::three_examples_static ... ok
+test tests::transfer_cooldown_pause ... ok
+test tests::warehouse_unassigned_species_order ... ok
+test tests::warehouse_competition_atomic_stop ... ok
+test tests::warehouse_single_unknown_with_assigned_empty ... ok
+test tests::warehouse_80000_and_recipe_conservation ... ok
+test tests::total_exhaustion_survives_window_expiry ... ok
+test tests::round5::round5_seed_tie_changes_rebuild_ring ... ok
+test tests::seed_and_parameter_negatives ... ok
+test tests::round5::round5_supply_differential_and_last_ore ... ok
+test tests::revision_r2::revision_r2_required_input_shapes ... ok
+test tests::revision_r2::revision_r2_seed_consumed_identity ... ok
+test tests::revision_r2::revision_r2_unowned_global_events ... ok
+test tests::round5::round5_ore_return_candidate_stops_before_capacity_or_age ... ok
+test tests::round5::round5_seed_roundtrip ... ok
+test tests::full_and_delta_record_recompute ... ok
+test tests::revision::revision_reports_and_after_closure_stop ... ok
+test tests::round5::round5_ledgers_conserve_every_species ... ok
+test tests::round5::round5_cycle_certificate_replay_and_tamper ... ok
+test tests::revision_r2::revision_r2_rust_metadata_controls ... ok
+test tests::round5::round5_cache_differential ... ok
+
+test result: ok. 76 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 28.73s
+
+     Running unittests src/main.rs (target/debug/deps/kernel-7b5e2fc753826063)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference.rs (target/debug/deps/reference-1613ad1990138602)
+
+running 3 tests
+test crusher_reference ... ok
+test splitter_reference ... ok
+test live_python_differential ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.40s
+
+     Running tests/revision_cli.rs (target/debug/deps/revision_cli-6e74e26d9cc8e0e1)
+
+running 1 test
+test revision_cli_and_python_record_negatives ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 4.19s
+
+     Running tests/revision_r2_cli.rs (target/debug/deps/revision_r2_cli-8728dafa1cffde10)
+
+running 1 test
+test revision_r2_cli_and_python_record_negatives ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 6.72s
+
+     Running tests/round5_cli.rs (target/debug/deps/round5_cli-110510aa32f40868)
+
+running 1 test
+test round5_cli_resource_statistics_and_cycle_load_stop ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.11s
+
+     Running unittests src/lib.rs (target/debug/deps/topology-958a7a196b95191c)
+
+running 1 test
+test catalog_tests::legacy_machine_constants_equal_catalog ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (target/debug/deps/topology-232d29a62249f608)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/validation.rs (target/debug/deps/validation-55f92a55e3fc13c3)
+
+running 30 tests
+test catalog_port_edges_match_formal_reference_layouts ... ok
+test catalog_unit_properties_match_formal_reference_values ... ok
+test storage_split_counts_both_sides_and_deduplicates_item_rows ... ok
+test storage_relay_cannot_double_material_origin_flow ... ok
+test catalog_is_checked_against_live_formal_sources ... ok
+test fabricated_capacity_cannot_relax_rule ... ok
+test multi_material_obligations_cannot_disappear ... ok
+test false_actual_rate_is_not_a_certificate ... ok
+test candidate_passes_static_only ... ok
+test every_formal_constraint_has_coverage_row ... ok
+test legacy_channels_and_storage_shortcut_are_rejected ... ok
+test plant_storage_condition_uses_current_machine_count ... ok
+test unsupported_routing_fails_closed ... ok
+test changed_channel_breaks_local_balance ... ok
+test false_fanout_certification_is_rejected ... ok
+test full_speed_and_transport_projection_are_explicit_but_not_certified ... ok
+test shared_port_rates_are_summed ... ok
+test wrong_target_recipe_is_rejected ... ok
+test duplicate_source_identity_is_rejected ... ok
+test dedicated_ports_cannot_fork_without_transport_model ... ok
+test overload_is_exact_and_not_rounded ... ok
+test wrong_target_cannot_redefine_task ... ok
+test zero_denominator_and_missing_fields_fail_loading ... ok
+test invalid_ore_machine_is_not_counted_as_dedicated ... ok
+test zero_rate_does_not_count_as_live_channel ... ok
+test logical_feed_ids_cannot_be_physical_or_buffer_channels ... ok
+test numeric_categories_have_field_semantics ... ok
+test same_item_multiport_and_mixed_recipe_obligations_are_required ... ok
+test catalog_mutations_are_rejected_by_live_source_gate ... ok
+test catalog_full_field_mutation_regressions_pass ... ok
+
+test result: ok. 30 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.16s
+
+   Doc-tests kernel
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests topology
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

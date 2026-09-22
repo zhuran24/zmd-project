@@ -1,0 +1,69 @@
+{
+  "status": "PASS",
+  "scope": "当前规则覆盖、16条本轮处理、13条前轮映射及接口引用；非语义完备证明",
+  "checks": [
+    {
+      "table": "/home/zhuran24/zmd-research-fresh/求解器/规格/规则覆盖表.md",
+      "source": "《明日方舟：终末地》游戏规则.txt",
+      "lines": 114,
+      "status": "逐行原文、序号与非空去向通过"
+    },
+    {
+      "table": "/home/zhuran24/zmd-research-fresh/求解器/规格/规则覆盖表.md",
+      "source": "求解任务.txt",
+      "lines": 15,
+      "status": "逐行原文、序号与非空去向通过"
+    },
+    {
+      "table": "/home/zhuran24/zmd-research-fresh/求解器/规格/规则覆盖表.md",
+      "source": "求解约束.txt",
+      "clauses": 56,
+      "status": "条款名和源行通过"
+    },
+    {
+      "table": "/home/zhuran24/zmd-research-fresh/求解器/数据/规则覆盖表.md",
+      "source": "《明日方舟：终末地》游戏规则.txt",
+      "lines": 114,
+      "status": "逐行原文、序号与非空去向通过"
+    },
+    {
+      "table": "/home/zhuran24/zmd-research-fresh/求解器/数据/规则覆盖表.md",
+      "source": "求解任务.txt",
+      "lines": 15,
+      "status": "逐行原文、序号与非空去向通过"
+    },
+    {
+      "round": 2,
+      "findings": 16,
+      "status": "逐条处理或映射齐全"
+    },
+    {
+      "round": 1,
+      "findings": 13,
+      "status": "逐条处理或映射齐全"
+    },
+    {
+      "status": "现行接口的旧句、章节及本地链接检查通过"
+    },
+    {
+      "historical_snapshot_differences": [
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/送料契约.md",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/修订记录.md",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/修订验证/自查结果.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/校验报告.md",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/contract.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/来源清单.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/验证记录.md",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/转换说明.md",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/cargo-test.log",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/交付哈希.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/工具/check_revision.py",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/工具/convert_candidate_b.py",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/topology/src/lib.rs",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/topology/tests/validation.rs"
+      ],
+      "status": "全部差异在本轮开工前已存在；旧快照与脚本未修改"
+    }
+  ]
+}

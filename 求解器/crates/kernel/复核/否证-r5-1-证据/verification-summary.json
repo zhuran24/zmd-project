@@ -1,0 +1,19 @@
+{
+  "status": "通过",
+  "scope": "预期故障复现及交付边界检查，不是产品故障已修复",
+  "process_calls": 24,
+  "kernel_cli_calls": 21,
+  "expected_failure_count": 9,
+  "schema_documents": 5,
+  "existing_unit_tests_passed": 3,
+  "protected_files": 1494,
+  "protected_sha256_size_mtime_unchanged": true,
+  "protected_changes": [],
+  "report_links_checked": 27,
+  "missing_links": [],
+  "forbidden_evidence_files": [],
+  "evidence_files_over_20MB": [],
+  "release_binary_sha256": "53a68ff1c201d1ac2b28b35e9d43eb8d3f5819db6f73006a82a55d6f8e6ba13f",
+  "constructor_binary_sha256": "b0e7ef7f14c71e7e95b4396b248b41aa21c93e01636ecc9e4069346bba69f448",
+  "report_sha256": "e61921cfa8da97c1a3cec485fc6e6809ab0623a25f03cd99522c20a4769a28a3"
+}

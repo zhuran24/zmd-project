@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "documents": [
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/README.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/修订记录.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/实施与验证.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/K6布局卡点.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核实现-对规格的疑问.md"
+  ],
+  "checks": {
+    "面向独立读者": "通过；来源、命令、边界及卡点均可独立定位",
+    "当前正文与执行史料分开": "通过；README为当前接口，修订记录及KQ旧段明确为史料",
+    "头部状态": "与K6未取得目标周期及级二未决一致",
+    "无写作要求回声": "通过",
+    "数字口径": "139测试、29记录、11循环结果、46CLI、76结构例和67规格自查一致；2.74ms明确为历史未达标测点",
+    "名称": "新输入区分有限预装性能砖与L6满仓起动试作",
+    "交叉引用": "五份文档的本地链接全部存在"
+  },
+  "open_items": [
+    "K6未取得目标率周期",
+    "81单位砖及cycle墙钟有性能阈值未达项",
+    "级二与全族认证保持开放"
+  ],
+  "corrections": [
+    "将规格疑问文件头部明确标为史料及当前摘要，避免将旧KQ-09状态误读为现状。"
+  ]
+}

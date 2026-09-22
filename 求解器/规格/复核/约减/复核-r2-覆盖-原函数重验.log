@@ -1,0 +1,1 @@
+{"status": "current_mathematics_passed_original_snapshot_check_failed", "original_check_exit_code": 1, "independent_small_graphs": 1100, "runtime": [{"name": "混做粉碎机两下游", "status": "baseline_only", "ticks": 4, "interpretation": "仅参考原样例基线；入口逐轴要求固定样例值，未声称任意排序差分通过"}, {"name": "分流器三路轮询", "status": "baseline_only", "ticks": 12, "interpretation": "仅参考原样例基线；入口逐轴要求固定样例值，未声称任意排序差分通过"}]}

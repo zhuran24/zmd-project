@@ -1,0 +1,500 @@
+{
+  "declaration_config_axes": 99,
+  "declaration_values_and_dispositions_match": true,
+  "lifetimes": [
+    {
+      "file": "桥接器双通路.json",
+      "axes": 99,
+      "all_lifetimes_match": true
+    },
+    {
+      "file": "分流器三路轮询.json",
+      "axes": 99,
+      "all_lifetimes_match": true
+    },
+    {
+      "file": "混做粉碎机两下游.json",
+      "axes": 99,
+      "all_lifetimes_match": true
+    }
+  ],
+  "periodic_tests": [
+    {
+      "time": "-1",
+      "index": 1,
+      "pass": true
+    },
+    {
+      "time": "-5",
+      "index": 1,
+      "pass": true
+    },
+    {
+      "time": "-6",
+      "index": 0,
+      "pass": true
+    },
+    {
+      "time": "0",
+      "index": 0,
+      "pass": true
+    },
+    {
+      "time": "49/10",
+      "index": 0,
+      "pass": true
+    },
+    {
+      "time": "5",
+      "index": 1,
+      "pass": true
+    },
+    {
+      "time": "5000000000005",
+      "index": 1,
+      "pass": true
+    }
+  ],
+  "parsed_json": [
+    {
+      "path": "求解器/数据/样例/桥接器双通路.json",
+      "type": "dict",
+      "entries": 13,
+      "keys": [
+        "schema",
+        "purpose",
+        "catalog",
+        "timeline",
+        "layout",
+        "construction",
+        "settings",
+        "parameters",
+        "initial_state",
+        "debug_operations",
+        "environment",
+        "contract_binding",
+        "scenario"
+      ]
+    },
+    {
+      "path": "求解器/数据/样例/kernel_profile_v1参数赋值.json",
+      "type": "dict",
+      "entries": 6,
+      "keys": [
+        "schema",
+        "profile_id",
+        "profile_source",
+        "configuration_source",
+        "axis_source",
+        "axes"
+      ]
+    },
+    {
+      "path": "求解器/数据/样例/混做粉碎机两下游.json",
+      "type": "dict",
+      "entries": 13,
+      "keys": [
+        "schema",
+        "purpose",
+        "catalog",
+        "timeline",
+        "layout",
+        "construction",
+        "settings",
+        "parameters",
+        "initial_state",
+        "debug_operations",
+        "environment",
+        "contract_binding",
+        "scenario"
+      ]
+    },
+    {
+      "path": "求解器/数据/样例/混做粉碎机两下游-运行记录.json",
+      "type": "dict",
+      "entries": 12,
+      "keys": [
+        "schema",
+        "run_id",
+        "profile_id",
+        "producer",
+        "status",
+        "fingerprints",
+        "parameter_assignment",
+        "input_history",
+        "uncovered_axes",
+        "trace",
+        "validation_scope",
+        "open_items"
+      ]
+    },
+    {
+      "path": "求解器/数据/样例/分流器三路轮询.json",
+      "type": "dict",
+      "entries": 13,
+      "keys": [
+        "schema",
+        "purpose",
+        "catalog",
+        "timeline",
+        "layout",
+        "construction",
+        "settings",
+        "parameters",
+        "initial_state",
+        "debug_operations",
+        "environment",
+        "contract_binding",
+        "scenario"
+      ]
+    },
+    {
+      "path": "求解器/数据/样例/混做粉碎机两下游-黄金轨迹.json",
+      "type": "dict",
+      "entries": 6,
+      "keys": [
+        "schema",
+        "origin",
+        "numeric_category",
+        "input",
+        "ticks",
+        "basis_document"
+      ]
+    },
+    {
+      "path": "求解器/数据/样例/检查结果.json",
+      "type": "dict",
+      "entries": 12,
+      "keys": [
+        "status",
+        "scope",
+        "results",
+        "negative_tests",
+        "representation_tests",
+        "readonly_source_hashes",
+        "axis_registry_sha256",
+        "axis_count",
+        "axis_alignment",
+        "document_checks",
+        "artifact_sha256",
+        "unverified"
+      ]
+    },
+    {
+      "path": "求解器/规格/内核输入修订验证-r3/交付清单.json",
+      "type": "dict",
+      "entries": 7,
+      "keys": [
+        "schema",
+        "files",
+        "sha256",
+        "self_reference",
+        "baseline",
+        "excluded",
+        "summary"
+      ]
+    },
+    {
+      "path": "求解器/规格/内核输入修订验证-r3/中途种子.json",
+      "type": "dict",
+      "entries": 8,
+      "keys": [
+        "layout_snapshot",
+        "settings_anchor",
+        "warehouse",
+        "inventory",
+        "progress",
+        "logistics",
+        "environment",
+        "semantic_context"
+      ]
+    },
+    {
+      "path": "求解器/规格/内核输入修订验证-r3/并行配置迁移.json",
+      "type": "dict",
+      "entries": 9,
+      "keys": [
+        "old_profile_sha256",
+        "new_profile_sha256",
+        "old_axis_count",
+        "new_axis_count",
+        "new_axes",
+        "old_value_changes",
+        "scope",
+        "intermediate_profile_sha256",
+        "final_check"
+      ]
+    },
+    {
+      "path": "求解器/规格/内核输入修订验证-r3/运行回归结果.json",
+      "type": "dict",
+      "entries": 7,
+      "keys": [
+        "status",
+        "axis_count",
+        "golden_match",
+        "schema_validation",
+        "tests",
+        "finite_trace_events",
+        "bounds"
+      ]
+    },
+    {
+      "path": "求解器/规格/内核输入修订验证-r3/交付自审.json",
+      "type": "dict",
+      "entries": 15,
+      "keys": [
+        "status",
+        "date",
+        "findings_revised",
+        "axis_count",
+        "runtime_regressions",
+        "cargo_tests",
+        "candidate_b",
+        "protected_files",
+        "protected_unchanged",
+        "golden_original_bytes_unchanged",
+        "stored_record_schema_and_complete_replay",
+        "checkpoint_roundtrip",
+        "reader_review",
+        "shared_interface",
+        "open_items"
+      ]
+    },
+    {
+      "path": "求解器/规格/内核输入修订验证-r3/本次修订前产物指纹.json",
+      "type": "dict",
+      "entries": 10741,
+      "keys": null
+    },
+    {
+      "path": "求解器/规格/内核输入修订验证-r3/规则覆盖自查.json",
+      "type": "dict",
+      "entries": 3,
+      "keys": [
+        "status",
+        "checks",
+        "scope"
+      ]
+    },
+    {
+      "path": "求解器/规格/内核输入修订验证-r3/只读指纹.json",
+      "type": "dict",
+      "entries": 25037,
+      "keys": null
+    },
+    {
+      "path": "求解器/规格/内核输入修订验证-r3/修订前产物指纹.json",
+      "type": "dict",
+      "entries": 1468,
+      "keys": null
+    },
+    {
+      "path": "求解器/规格/内核输入修订验证-r3/自查结果.json",
+      "type": "dict",
+      "entries": 10,
+      "keys": [
+        "status",
+        "local_status",
+        "shared_spec_status",
+        "commands",
+        "protected_file_count",
+        "protected_changes",
+        "simulator_file_set_unchanged",
+        "broken_links",
+        "shared_tables",
+        "scope"
+      ]
+    },
+    {
+      "path": "求解器/规格/内核输入修订验证-r3/周期排序.json",
+      "type": "dict",
+      "entries": 5,
+      "keys": [
+        "schema",
+        "scope",
+        "template_order",
+        "repeat_embedding",
+        "schedule"
+      ]
+    }
+  ],
+  "logs_read": {
+    "生成样例.log": {
+      "lines": 3,
+      "bytes": 1611
+    },
+    "规则覆盖自查.log": {
+      "lines": 1,
+      "bytes": 1146
+    },
+    "规格线自查.log": {
+      "lines": 83,
+      "bytes": 4593
+    },
+    "样例检查.log": {
+      "lines": 204,
+      "bytes": 7425
+    },
+    "候选B校验.log": {
+      "lines": 5006,
+      "bytes": 618348
+    },
+    "配置迁移前拒收.log": {
+      "lines": 27,
+      "bytes": 3638
+    },
+    "黄金重算.log": {
+      "lines": 1,
+      "bytes": 221
+    },
+    "运行回归.log": {
+      "lines": 1,
+      "bytes": 168
+    },
+    "正式目录回源.log": {
+      "lines": 1,
+      "bytes": 142
+    },
+    "输出schema生成.log": {
+      "lines": 0,
+      "bytes": 0
+    },
+    "cargo-test.log": {
+      "lines": 56,
+      "bytes": 2583
+    }
+  },
+  "stored_record_fingerprints": [
+    {
+      "role": "input",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json",
+      "match": true
+    },
+    {
+      "role": "catalog",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+      "match": true
+    },
+    {
+      "role": "axis_registry",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+      "match": true
+    },
+    {
+      "role": "profile",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限模型声明.md",
+      "match": true
+    },
+    {
+      "role": "profile",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "match": true
+    },
+    {
+      "role": "parameter_projection",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/kernel_profile_v1参数赋值.json",
+      "match": true
+    },
+    {
+      "role": "golden",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-黄金轨迹.json",
+      "match": true
+    },
+    {
+      "role": "golden",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-黄金轨迹.md",
+      "match": true
+    },
+    {
+      "role": "semantics",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md",
+      "match": true
+    },
+    {
+      "role": "semantics",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/运行语义.md",
+      "match": true
+    },
+    {
+      "role": "semantics",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md",
+      "match": true
+    },
+    {
+      "role": "semantics",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.md",
+      "match": true
+    },
+    {
+      "role": "schema",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.schema.json",
+      "match": true
+    },
+    {
+      "role": "checker",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/check_golden_trace.py",
+      "match": true
+    },
+    {
+      "role": "checker",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/runtime_example.py",
+      "match": true
+    },
+    {
+      "role": "checker",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/check_examples.py",
+      "match": true
+    },
+    {
+      "role": "checker",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/runtime_record.py",
+      "match": true
+    },
+    {
+      "role": "checker",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/event_order.py",
+      "match": true
+    },
+    {
+      "role": "checker",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/test_runtime_input.py",
+      "match": true
+    },
+    {
+      "role": "formal_source",
+      "path": "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+      "match": true
+    },
+    {
+      "role": "formal_source",
+      "path": "/home/zhuran24/zmd-research-fresh/求解任务.txt",
+      "match": true
+    },
+    {
+      "role": "formal_source",
+      "path": "/home/zhuran24/zmd-research-fresh/求解约束.txt",
+      "match": true
+    }
+  ],
+  "manifest_mismatches": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录.json",
+      "manifest": "97562091ec78c7994ea0a53a07778260878c2c172a4dce9c6c32de2bfea05e47",
+      "actual": "b664ed551271e1fbe895821de5041a8c96d29e97d51da353114abf5a403734aa"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md",
+      "manifest": "08991e07b792f82ecf6f98a0bcbd663ecc7caa2b534ac5379c6805a14f78c413",
+      "actual": "a180570ac7507e9711eeeb6d0dbcc21205aa136c8694634d0cb2d7e536b2486b"
+    }
+  ],
+  "source_changes_during_review": [],
+  "historical_cargo_passed": 31,
+  "historical_candidate_b_headings": [
+    "## 能检且通过（4925 项，算术推论）",
+    "## 能检且不通过（0 项，算术推论）",
+    "## 不能静态检（59 项，算术推论）"
+  ],
+  "formal_catalog_live_rerun": "三份正式来源指纹与全文、56 条约束上下文、任务与阈值、18 条配方、18 类单位全部字段及数字类别一致。"
+}

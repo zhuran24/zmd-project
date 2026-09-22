@@ -1,0 +1,14 @@
+{
+  "status": "通过",
+  "stdout": "转换完成；逐机端口和物品速率与源 CSV 一致；正式配方与 design.py 一致。\n",
+  "before": {
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json": "63acbb92067fd9ba4229f7b83de8b5054023b6b4e520f9e7077d48b562896230",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/contract.json": "d0c887c73674a58424d05257f002953a2ee4d0b888614d52cc0b2b60ebd58ff2",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/来源清单.json": "0d6c55f896e7b406c36e22ae6646c4b228fee82d5abac91e31c2b76375775611"
+  },
+  "after": {
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json": "63acbb92067fd9ba4229f7b83de8b5054023b6b4e520f9e7077d48b562896230",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/contract.json": "d0c887c73674a58424d05257f002953a2ee4d0b888614d52cc0b2b60ebd58ff2",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/来源清单.json": "0d6c55f896e7b406c36e22ae6646c4b228fee82d5abac91e31c2b76375775611"
+  }
+}

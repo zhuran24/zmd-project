@@ -1,0 +1,973 @@
+{
+  "independent_count": 62,
+  "axis_count": 99,
+  "forward": [
+    {
+      "independent_id": "I01",
+      "axes": [
+        "time.domain"
+      ],
+      "conclusion": "T1明确tick不定义格点，非整数相位未被无据排除。"
+    },
+    {
+      "independent_id": "I02",
+      "axes": [
+        "time.retry_schedule",
+        "time.instant_end"
+      ],
+      "conclusion": "T1一般域开放，本版整轮重复K归约已明选；不能以无库存变化结束。"
+    },
+    {
+      "independent_id": "I03",
+      "axes": [
+        "time.retry_schedule",
+        "time.boundary"
+      ],
+      "conclusion": "T1与运行语义4.3区分端口、同侧、内部通道；H只是达标域条件矛盾。"
+    },
+    {
+      "independent_id": "I04",
+      "axes": [
+        "time.instant_end",
+        "polling.both_failure"
+      ],
+      "conclusion": "尝试和访问分开，失败有指针后效；日志计数不作守卫是显式本版限制。"
+    },
+    {
+      "independent_id": "I05",
+      "axes": [
+        "judgment.order_scope",
+        "judgment.order"
+      ],
+      "conclusion": "global/per_instant分开；v1模板重复嵌入与v2周期函数有语法，后者非本版支持。"
+    },
+    {
+      "independent_id": "I06",
+      "axes": [
+        "time.manufacture_events",
+        "time.instant_order",
+        "judgment.buffer_event_class"
+      ],
+      "conclusion": "完成非判定、先完成再闭包及制造子动作均明选；不压零耗时。"
+    },
+    {
+      "independent_id": "I07",
+      "axes": [
+        "residence.nontransport",
+        "cascade.buffer"
+      ],
+      "conclusion": "T16/T17分开，正停留域仍待审；未由运输滞留推出全部格一tick。"
+    },
+    {
+      "independent_id": "I08",
+      "axes": [
+        "time.boundary",
+        "bridge.capacity"
+      ],
+      "conclusion": "满时长与整数窗口为本版值；运输年龄仍按真实时差核，边界组织有覆盖损失。"
+    },
+    {
+      "independent_id": "I09",
+      "axes": [
+        "polling.dual_permission",
+        "polling.both_failure",
+        "bridge.scheduling_scope"
+      ],
+      "conclusion": "both只管成功，A非空即尝试且已授权侧前移；未采用待审no_attempt_hold。"
+    },
+    {
+      "independent_id": "I10",
+      "axes": [
+        "polling.eligibility_stage",
+        "polling.internal_scope"
+      ],
+      "conclusion": "physical不读权限，避免定义环；内部分级未实现则不执行。"
+    },
+    {
+      "independent_id": "I11",
+      "axes": [
+        "polling.ungraded_blocked"
+      ],
+      "conclusion": "skip/empty_turn分轴；无分级探针的偏流未证明正式均分前件，不升级发现。"
+    },
+    {
+      "independent_id": "I12",
+      "axes": [
+        "polling.initial_cursor",
+        "polling.split_merge_start",
+        "polling.split_merge_scope",
+        "polling.split_merge_singleton"
+      ],
+      "conclusion": "起点、计数域、启动条件、单成员级已拆；本版per_level不再写入错误级成员。"
+    },
+    {
+      "independent_id": "I13",
+      "axes": [
+        "polling.memory_scope",
+        "polling.resume",
+        "bridge.scheduling_scope"
+      ],
+      "conclusion": "每级续接与当前级分开；回级保留，未新增始终最高前件。"
+    },
+    {
+      "independent_id": "I14",
+      "axes": [
+        "polling.level_tie"
+      ],
+      "conclusion": "本版用显式独立级序，不以通道序或id暗补平局。"
+    },
+    {
+      "independent_id": "I15",
+      "axes": [
+        "connection.order",
+        "connection.tie",
+        "offline.order_domain"
+      ],
+      "conclusion": "初建由较晚端导出，离线两两可变不冒称全部排列可达。"
+    },
+    {
+      "independent_id": "I16",
+      "axes": [
+        "offline.cursor_effect",
+        "offline.inventory_effect",
+        "offline.progress_effect",
+        "offline.direction_effect",
+        "offline.gate_total_effect",
+        "offline.gate_window_effect",
+        "offline.gate_window_start_effect"
+      ],
+      "conclusion": "各派生量分别登记，未授权清零；本版离线事件停止。"
+    },
+    {
+      "independent_id": "I17",
+      "axes": [
+        "connection.port_meeting",
+        "polling.direct_peer"
+      ],
+      "conclusion": "相遇排除有发现1；PC另一端为直接接与相遇谓词不同，不重开隔带直接接。"
+    },
+    {
+      "independent_id": "I18",
+      "axes": [
+        "damping.belt_component_rule",
+        "damping.belt_adjacency",
+        "bridge.inventory_scope"
+      ],
+      "conclusion": "路径串/几何块分开，角触连续仍待审，未默认进入允许域。"
+    },
+    {
+      "independent_id": "I19",
+      "axes": [
+        "damping.no_terminal"
+      ],
+      "conclusion": "无终点不默填0；准入断边须重核，明确unresolved停止。"
+    },
+    {
+      "independent_id": "I20",
+      "axes": [
+        "damping.branch"
+      ],
+      "conclusion": "按(channel,fork)表和固定性编码；运行中变化未覆盖，单次选择不证明时间序列有限。"
+    },
+    {
+      "independent_id": "I21",
+      "axes": [
+        "connection.bridge_first_contact",
+        "connection.bridge_tie",
+        "offline.direction_effect",
+        "bridge.inventory_scope",
+        "bridge.scheduling_scope",
+        "bridge.capacity"
+      ],
+      "conclusion": "已知唯一非桥见证可解；并列与递归依赖明确停止，不以联立有解证明历史可达。"
+    },
+    {
+      "independent_id": "I22",
+      "axes": [
+        "connection.belt_shape",
+        "initialization.belt_shape_lifecycle",
+        "initialization.rotation_stage"
+      ],
+      "conclusion": "三轨道与四朝向独立；直接改形无授权不执行；重建库存后效未被补造。"
+    },
+    {
+      "independent_id": "I23",
+      "axes": [
+        "initialization.rotation_stage",
+        "connection.port_meeting"
+      ],
+      "conclusion": "不重叠依主席最严义务，坐标四向为本版输入；相遇谓词另见发现1。"
+    },
+    {
+      "independent_id": "I24",
+      "axes": [
+        "power.cell_rule"
+      ],
+      "conclusion": "positive_area与closed_touch保留；必要供电义务按最严，额外供电行为损失未省略。"
+    },
+    {
+      "independent_id": "I25",
+      "axes": [
+        "connection.build_order",
+        "initialization.build_timing"
+      ],
+      "conclusion": "带最后且有建成标签，非带期间运行未被默认禁止。"
+    },
+    {
+      "independent_id": "I26",
+      "axes": [
+        "manufacturing.input_mixing",
+        "manufacturing.input_capacity_scope",
+        "manufacturing.port_slot_relation"
+      ],
+      "conclusion": "甲乙、合计/逐种分开；端口分配为主席已定，不以混装自动授权逐种容量。"
+    },
+    {
+      "independent_id": "I27",
+      "axes": [
+        "manufacturing.recipe_match_scope"
+      ],
+      "conclusion": "逐格/并集登记；J只证达标条件矛盾，未据有解假设删物理读法。"
+    },
+    {
+      "independent_id": "I28",
+      "axes": [
+        "manufacturing.recipe_completeness",
+        "manufacturing.recipe_quantity_match",
+        "manufacturing.recipe_extra_items"
+      ],
+      "conclusion": "三项已分开；exact/forbid只是待审，未被未定直接授权。"
+    },
+    {
+      "independent_id": "I29",
+      "axes": [
+        "manufacturing.input_collection",
+        "manufacturing.recipe_lock_time",
+        "judgment.buffer_event_class"
+      ],
+      "conclusion": "本版整批制造子动作明选，部分归集缺合法后效不执行。"
+    },
+    {
+      "independent_id": "I30",
+      "axes": [
+        "manufacturing.recipe_selection",
+        "manufacturing.recipe_lock_time"
+      ],
+      "conclusion": "配方非玩家设定；甲下至多一条的物种证明不保证一定可开闸。"
+    },
+    {
+      "independent_id": "I31",
+      "axes": [
+        "manufacturing.input_slot_selection",
+        "manufacturing.empty_slot_identity"
+      ],
+      "conclusion": "已有同种只进原格；新种按显式序；空身份与库存不混。"
+    },
+    {
+      "independent_id": "I32",
+      "axes": [
+        "manufacturing.output_blocked",
+        "bridge.inventory_scope"
+      ],
+      "conclusion": "第6轮已补出缓存及收货跨普通格同种检查；缓存例外保留。"
+    },
+    {
+      "independent_id": "I33",
+      "axes": [
+        "manufacturing.input_collection",
+        "manufacturing.output_blocked"
+      ],
+      "conclusion": "受限缓存种子一批是支持条件，非容量改写；其它缓存状态停止，守恒含在制。"
+    },
+    {
+      "independent_id": "I34",
+      "axes": [
+        "manufacturing.buffer_power_gate"
+      ],
+      "conclusion": "本版只有制造需电、内部搬运独立；停用功能保进度。"
+    },
+    {
+      "independent_id": "I35",
+      "axes": [
+        "time.domain",
+        "time.boundary",
+        "manufacturing.buffer_power_gate"
+      ],
+      "conclusion": "剩余时长/暂停边界进入State；本版整数限制与一般实数有限化区分。"
+    },
+    {
+      "independent_id": "I36",
+      "axes": [
+        "warehouse.capacity",
+        "warehouse.empty_slot_identity"
+      ],
+      "conclusion": "单种80000已定；历史身份/新格关系另轴；连续单物种消费仲裁表有发现2。"
+    },
+    {
+      "independent_id": "I37",
+      "axes": [
+        "warehouse.empty_slot_identity"
+      ],
+      "conclusion": "空指派必须empty_identity已解，按主席要求沿用轴；身份不生成货物。"
+    },
+    {
+      "independent_id": "I38",
+      "axes": [
+        "warehouse.empty_slot_identity",
+        "transfer.partial_acceptance"
+      ],
+      "conclusion": "多新物种争空格已精确停止且零提交；不重复报告旧发现；普通落格更新见发现2。"
+    },
+    {
+      "independent_id": "I39",
+      "axes": [],
+      "conclusion": "箱体按R72编号定收发；空后保留历史禁入身份未单列，本席尚未证明该候选通过C80等联合审查，不把仓库身份轴外推或据此新增finding。"
+    },
+    {
+      "independent_id": "I40",
+      "axes": [
+        "transfer.judgment",
+        "transfer.partial_acceptance",
+        "transfer.failure_cooldown"
+      ],
+      "conclusion": "单位判定已定，整箱成败及每次尝试冷却为明选；其它方向待审。"
+    },
+    {
+      "independent_id": "I41",
+      "axes": [
+        "transfer.cooldown_scope",
+        "transfer.phase"
+      ],
+      "conclusion": "按箱/格冷却与相位另列；0到5残余只属整数试验域，不声称一般相位穷尽。"
+    },
+    {
+      "independent_id": "I42",
+      "axes": [
+        "transfer.pause",
+        "transfer.resume_event"
+      ],
+      "conclusion": "暂停与恢复日程分开；制造进度保留不直接证明冷却计时唯一。"
+    },
+    {
+      "independent_id": "I43",
+      "axes": [
+        "gate.identity_subject",
+        "gate.identity_recovery"
+      ],
+      "conclusion": "当前候选与可能集合分开，身份锁存明选；现PC批维护为显式阶段。"
+    },
+    {
+      "independent_id": "I44",
+      "axes": [
+        "gate.counter_start",
+        "gate.window_clock",
+        "time.boundary"
+      ],
+      "conclusion": "首件起窗与全局切片区分，累计与窗口分计；满5后下件重起。"
+    },
+    {
+      "independent_id": "I45",
+      "axes": [
+        "gate.window_recovery",
+        "gate.identity_recovery",
+        "gate.total_recovery",
+        "gate.window_clock"
+      ],
+      "conclusion": "窗口用尽永闭和全阻断停表未回流；身份专属暂停仍待审。"
+    },
+    {
+      "independent_id": "I46",
+      "axes": [
+        "gate.reconnect_record",
+        "polling.membership_change"
+      ],
+      "conclusion": "当前图重算、保原建造记录及存活指针映射明选；不借恢复伪造新建造。"
+    },
+    {
+      "independent_id": "I47",
+      "axes": [
+        "gate.concurrent_expiry",
+        "time.instant_order"
+      ],
+      "conclusion": "第6轮atomic_batch消除了逐边维护顺序；ordered_recovery须额外序。"
+    },
+    {
+      "independent_id": "I48",
+      "axes": [
+        "gate.counter_edit",
+        "gate.counter_start",
+        "gate.cancel_limit"
+      ],
+      "conclusion": "改值、起算、取消分开；停机不等于重置；本版操作停止。"
+    },
+    {
+      "independent_id": "I49",
+      "axes": [
+        "gate.limit_requires_identity",
+        "gate.cancel_limit"
+      ],
+      "conclusion": "身份后设两限且正整数范围明确；未设不当零，取消另审。"
+    },
+    {
+      "independent_id": "I50",
+      "axes": [
+        "initialization.debug_actions",
+        "initialization.rebuild_inventory",
+        "initialization.rotation_stage",
+        "gate.counter_edit"
+      ],
+      "conclusion": "动作授权与库存/连接后效分开；零干预不借设定权限自动操作。"
+    },
+    {
+      "independent_id": "I51",
+      "axes": [
+        "initialization.other_inventory",
+        "initialization.switches",
+        "initialization.warehouse_anchor",
+        "polling.initial_cursor",
+        "transfer.phase"
+      ],
+      "conclusion": "仓库初始锚点、非仓库内容及相位有入口；完整种子不等于已证可达。"
+    },
+    {
+      "independent_id": "I52",
+      "axes": [
+        "initialization.debug_actions",
+        "initialization.rebuild_inventory",
+        "initialization.build_timing"
+      ],
+      "conclusion": "有限不精确操作族可表示；任意内部状态写入没有被升级为玩家动作。"
+    },
+    {
+      "independent_id": "I53",
+      "axes": [
+        "initialization.debug_end"
+      ],
+      "conclusion": "调试后置域与一个具体快照分开，种子起动义务未省略。"
+    },
+    {
+      "independent_id": "I54",
+      "axes": [
+        "offline.events",
+        "offline.progress_effect",
+        "offline.order_domain"
+      ],
+      "conclusion": "离线次数时刻、时间推进、排序域登记；本版发生即停。"
+    },
+    {
+      "independent_id": "I55",
+      "axes": [
+        "warehouse.external_supply",
+        "warehouse.capacity"
+      ],
+      "conclusion": "两矿补给保持容量与持续充分；本版有限段历史不足不代表一般供给已证。"
+    },
+    {
+      "independent_id": "I56",
+      "axes": [
+        "warehouse.acceptance",
+        "warehouse.acceptance_quantifier",
+        "warehouse.withdrawal_policy",
+        "warehouse.withdrawal_timing",
+        "warehouse.delivery_count"
+      ],
+      "conclusion": "接收谓词、量词、策略、时刻与交付计数分开；非成品无外部拿取授权。"
+    },
+    {
+      "independent_id": "I57",
+      "axes": [
+        "warehouse.periodic_lift",
+        "offline.events"
+      ],
+      "conclusion": "完整循环提升是证明义务，非任选true；冻结段不能替代离线接续覆盖。"
+    },
+    {
+      "independent_id": "I58",
+      "axes": [
+        "warehouse.delivery_count",
+        "warehouse.periodic_lift"
+      ],
+      "conclusion": "Q2平均及C36周期倍数已入正文，未增每滚动30tick半件条件。"
+    },
+    {
+      "independent_id": "I59",
+      "axes": [
+        "time.instant_end",
+        "warehouse.periodic_lift",
+        "bridge.capacity"
+      ],
+      "conclusion": "无周期空真不充当完整目标证书，缓存有限化与本版闭包终止分开。"
+    },
+    {
+      "independent_id": "I60",
+      "axes": [
+        "judgment.order_scope",
+        "damping.branch",
+        "transfer.phase",
+        "offline.order_domain"
+      ],
+      "conclusion": "生命周期与组合关联被明确保留；99轴不宣称任意笛卡儿积合法。"
+    },
+    {
+      "independent_id": "I61",
+      "axes": [],
+      "conclusion": "运行语义1/内核输入2给目标几何接口，最优同分代表无需冒造行为轴。"
+    },
+    {
+      "independent_id": "I62",
+      "axes": [
+        "initialization.other_inventory"
+      ],
+      "conclusion": "四件前置义务3明确完整物种域需证，有限字母表只是受限模型。"
+    }
+  ],
+  "reverse": {
+    "polling.direct_peer": [
+      "I17"
+    ],
+    "connection.port_meeting": [
+      "I17",
+      "I23"
+    ],
+    "initialization.rotation_stage": [
+      "I22",
+      "I23",
+      "I50"
+    ],
+    "gate.window_recovery": [
+      "I45"
+    ],
+    "transfer.judgment": [
+      "I40"
+    ],
+    "manufacturing.port_slot_relation": [
+      "I26"
+    ],
+    "manufacturing.output_blocked": [
+      "I32",
+      "I33"
+    ],
+    "gate.limit_requires_identity": [
+      "I49"
+    ],
+    "warehouse.capacity": [
+      "I36",
+      "I55"
+    ],
+    "warehouse.delivery_count": [
+      "I56",
+      "I58"
+    ],
+    "bridge.inventory_scope": [
+      "I18",
+      "I21",
+      "I32"
+    ],
+    "bridge.scheduling_scope": [
+      "I09",
+      "I13",
+      "I21"
+    ],
+    "time.domain": [
+      "I01",
+      "I35"
+    ],
+    "time.instant_order": [
+      "I06",
+      "I47"
+    ],
+    "time.retry_schedule": [
+      "I02",
+      "I03"
+    ],
+    "time.instant_end": [
+      "I02",
+      "I04",
+      "I59"
+    ],
+    "time.boundary": [
+      "I03",
+      "I08",
+      "I35",
+      "I44"
+    ],
+    "time.manufacture_events": [
+      "I06"
+    ],
+    "judgment.order_scope": [
+      "I05",
+      "I60"
+    ],
+    "judgment.buffer_event_class": [
+      "I06",
+      "I29"
+    ],
+    "polling.initial_cursor": [
+      "I12",
+      "I51"
+    ],
+    "polling.split_merge_start": [
+      "I12"
+    ],
+    "polling.split_merge_scope": [
+      "I12"
+    ],
+    "polling.split_merge_singleton": [
+      "I12"
+    ],
+    "polling.ungraded_blocked": [
+      "I11"
+    ],
+    "polling.dual_permission": [
+      "I09"
+    ],
+    "polling.both_failure": [
+      "I04",
+      "I09"
+    ],
+    "polling.memory_scope": [
+      "I13"
+    ],
+    "polling.resume": [
+      "I13"
+    ],
+    "polling.eligibility_stage": [
+      "I10"
+    ],
+    "polling.membership_change": [
+      "I46"
+    ],
+    "polling.internal_scope": [
+      "I10"
+    ],
+    "polling.level_tie": [
+      "I14"
+    ],
+    "damping.belt_component_rule": [
+      "I18"
+    ],
+    "damping.belt_adjacency": [
+      "I18"
+    ],
+    "connection.bridge_first_contact": [
+      "I21"
+    ],
+    "transfer.cooldown_scope": [
+      "I41"
+    ],
+    "transfer.pause": [
+      "I42"
+    ],
+    "transfer.failure_cooldown": [
+      "I40"
+    ],
+    "transfer.partial_acceptance": [
+      "I38",
+      "I40"
+    ],
+    "transfer.resume_event": [
+      "I42"
+    ],
+    "manufacturing.input_mixing": [
+      "I26"
+    ],
+    "manufacturing.input_capacity_scope": [
+      "I26"
+    ],
+    "manufacturing.recipe_match_scope": [
+      "I27"
+    ],
+    "manufacturing.recipe_completeness": [
+      "I28"
+    ],
+    "manufacturing.recipe_lock_time": [
+      "I29",
+      "I30"
+    ],
+    "manufacturing.empty_slot_identity": [
+      "I31"
+    ],
+    "manufacturing.input_collection": [
+      "I29",
+      "I33"
+    ],
+    "manufacturing.buffer_power_gate": [
+      "I34",
+      "I35"
+    ],
+    "gate.identity_subject": [
+      "I43"
+    ],
+    "gate.identity_recovery": [
+      "I43",
+      "I45"
+    ],
+    "gate.total_recovery": [
+      "I45"
+    ],
+    "gate.window_clock": [
+      "I44",
+      "I45"
+    ],
+    "gate.reconnect_record": [
+      "I46"
+    ],
+    "gate.counter_start": [
+      "I44",
+      "I48"
+    ],
+    "initialization.belt_shape_lifecycle": [
+      "I22"
+    ],
+    "warehouse.acceptance": [
+      "I56"
+    ],
+    "warehouse.acceptance_quantifier": [
+      "I56"
+    ],
+    "warehouse.empty_slot_identity": [
+      "I36",
+      "I37",
+      "I38"
+    ],
+    "bridge.capacity": [
+      "I08",
+      "I21",
+      "I59"
+    ],
+    "power.cell_rule": [
+      "I24"
+    ],
+    "residence.nontransport": [
+      "I07"
+    ],
+    "cascade.buffer": [
+      "I07"
+    ],
+    "judgment.order": [
+      "I05"
+    ],
+    "damping.branch": [
+      "I20",
+      "I60"
+    ],
+    "connection.build_order": [
+      "I25"
+    ],
+    "connection.order": [
+      "I15"
+    ],
+    "connection.tie": [
+      "I15"
+    ],
+    "connection.belt_shape": [
+      "I22"
+    ],
+    "transfer.phase": [
+      "I41",
+      "I51",
+      "I60"
+    ],
+    "manufacturing.recipe_selection": [
+      "I30"
+    ],
+    "manufacturing.input_slot_selection": [
+      "I31"
+    ],
+    "initialization.warehouse_anchor": [
+      "I51"
+    ],
+    "initialization.other_inventory": [
+      "I51",
+      "I62"
+    ],
+    "initialization.switches": [
+      "I51"
+    ],
+    "initialization.build_timing": [
+      "I25",
+      "I52"
+    ],
+    "initialization.debug_end": [
+      "I53"
+    ],
+    "warehouse.external_supply": [
+      "I55"
+    ],
+    "damping.no_terminal": [
+      "I19"
+    ],
+    "connection.bridge_tie": [
+      "I21"
+    ],
+    "gate.counter_edit": [
+      "I48",
+      "I50"
+    ],
+    "gate.cancel_limit": [
+      "I48",
+      "I49"
+    ],
+    "offline.order_domain": [
+      "I15",
+      "I54",
+      "I60"
+    ],
+    "offline.events": [
+      "I54",
+      "I57"
+    ],
+    "offline.cursor_effect": [
+      "I16"
+    ],
+    "offline.inventory_effect": [
+      "I16"
+    ],
+    "offline.progress_effect": [
+      "I16",
+      "I54"
+    ],
+    "offline.direction_effect": [
+      "I16",
+      "I21"
+    ],
+    "offline.gate_total_effect": [
+      "I16"
+    ],
+    "offline.gate_window_effect": [
+      "I16"
+    ],
+    "offline.gate_window_start_effect": [
+      "I16"
+    ],
+    "initialization.debug_actions": [
+      "I50",
+      "I52"
+    ],
+    "initialization.rebuild_inventory": [
+      "I50",
+      "I52"
+    ],
+    "warehouse.withdrawal_policy": [
+      "I56"
+    ],
+    "warehouse.withdrawal_timing": [
+      "I56"
+    ],
+    "warehouse.periodic_lift": [
+      "I57",
+      "I58",
+      "I59"
+    ],
+    "gate.concurrent_expiry": [
+      "I47"
+    ],
+    "manufacturing.recipe_quantity_match": [
+      "I28"
+    ],
+    "manufacturing.recipe_extra_items": [
+      "I28"
+    ]
+  },
+  "axis_lines": {
+    "time.domain": 19,
+    "time.instant_order": 20,
+    "time.retry_schedule": 21,
+    "time.instant_end": 22,
+    "time.boundary": 23,
+    "time.manufacture_events": 24,
+    "judgment.order_scope": 25,
+    "judgment.order": 26,
+    "judgment.buffer_event_class": 27,
+    "polling.initial_cursor": 28,
+    "polling.split_merge_start": 29,
+    "polling.ungraded_blocked": 30,
+    "polling.dual_permission": 31,
+    "polling.memory_scope": 32,
+    "polling.resume": 33,
+    "polling.eligibility_stage": 34,
+    "polling.membership_change": 35,
+    "polling.internal_scope": 36,
+    "polling.direct_peer": 37,
+    "polling.level_tie": 38,
+    "damping.belt_component_rule": 39,
+    "damping.belt_adjacency": 40,
+    "damping.branch": 41,
+    "damping.no_terminal": 42,
+    "connection.build_order": 43,
+    "connection.order": 44,
+    "connection.tie": 45,
+    "connection.port_meeting": 46,
+    "connection.bridge_first_contact": 47,
+    "connection.bridge_tie": 48,
+    "transfer.judgment": 49,
+    "transfer.cooldown_scope": 50,
+    "transfer.phase": 51,
+    "transfer.pause": 52,
+    "transfer.failure_cooldown": 53,
+    "transfer.partial_acceptance": 54,
+    "transfer.resume_event": 55,
+    "manufacturing.port_slot_relation": 56,
+    "manufacturing.input_mixing": 57,
+    "manufacturing.input_capacity_scope": 58,
+    "manufacturing.recipe_match_scope": 59,
+    "manufacturing.recipe_completeness": 60,
+    "manufacturing.recipe_selection": 61,
+    "manufacturing.recipe_lock_time": 62,
+    "manufacturing.input_slot_selection": 63,
+    "manufacturing.empty_slot_identity": 64,
+    "manufacturing.input_collection": 65,
+    "manufacturing.buffer_power_gate": 66,
+    "manufacturing.output_blocked": 67,
+    "gate.identity_subject": 68,
+    "gate.identity_recovery": 69,
+    "gate.window_recovery": 70,
+    "gate.total_recovery": 71,
+    "gate.window_clock": 72,
+    "gate.reconnect_record": 73,
+    "gate.limit_requires_identity": 74,
+    "gate.counter_edit": 75,
+    "gate.counter_start": 76,
+    "gate.cancel_limit": 77,
+    "offline.order_domain": 78,
+    "offline.events": 79,
+    "offline.cursor_effect": 80,
+    "offline.inventory_effect": 81,
+    "offline.progress_effect": 82,
+    "offline.direction_effect": 83,
+    "offline.gate_total_effect": 84,
+    "offline.gate_window_effect": 85,
+    "offline.gate_window_start_effect": 86,
+    "initialization.warehouse_anchor": 87,
+    "initialization.other_inventory": 88,
+    "initialization.switches": 89,
+    "initialization.build_timing": 90,
+    "initialization.debug_actions": 91,
+    "initialization.rotation_stage": 92,
+    "initialization.rebuild_inventory": 93,
+    "initialization.debug_end": 94,
+    "warehouse.capacity": 95,
+    "warehouse.acceptance": 96,
+    "warehouse.acceptance_quantifier": 97,
+    "warehouse.withdrawal_policy": 98,
+    "warehouse.withdrawal_timing": 99,
+    "warehouse.external_supply": 100,
+    "warehouse.delivery_count": 101,
+    "warehouse.empty_slot_identity": 102,
+    "warehouse.periodic_lift": 103,
+    "bridge.inventory_scope": 104,
+    "bridge.capacity": 105,
+    "bridge.scheduling_scope": 106,
+    "power.cell_rule": 107,
+    "residence.nontransport": 108,
+    "cascade.buffer": 109,
+    "polling.split_merge_scope": 110,
+    "polling.split_merge_singleton": 111,
+    "polling.both_failure": 112,
+    "connection.belt_shape": 113,
+    "initialization.belt_shape_lifecycle": 114,
+    "gate.concurrent_expiry": 115,
+    "manufacturing.recipe_quantity_match": 116,
+    "manufacturing.recipe_extra_items": 117
+  }
+}

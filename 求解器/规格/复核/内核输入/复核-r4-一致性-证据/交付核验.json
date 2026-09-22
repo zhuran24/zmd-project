@@ -1,0 +1,15 @@
+{
+  "report": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/复核-r4-一致性.md",
+  "findings": 3,
+  "severities": {
+    "阻断": 1,
+    "重要": 1,
+    "次要": 1
+  },
+  "links_checked": 22,
+  "missing_links": [],
+  "source_files_checked": 76,
+  "changed_source_files": [],
+  "reader_pass": "完成全文复读；修正成品术语与周期槽函数覆盖表述；反例边界、路径和计数一致",
+  "report_sha256": "74562af2f1a9b89233f55dcc80d21df95eea73d89ba18b708420e2dffa281b0f"
+}

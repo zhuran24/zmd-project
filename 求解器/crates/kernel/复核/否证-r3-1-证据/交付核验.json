@@ -1,0 +1,30 @@
+{
+  "status": "pass",
+  "protected_originals": 102,
+  "changed_originals": [],
+  "cli_calls": 45,
+  "asserted_cli_outcomes": 39,
+  "verdict_ids": [
+    "KR-r3-L1-01",
+    "KR-r3-L1-02",
+    "KR-r3-L1-03",
+    "KR-r3-L1-04",
+    "KR-r3-L2-01",
+    "KR-r3-L2-02",
+    "KR-r3-L2-03",
+    "KR-r3-L3-01",
+    "KR-r3-L3-02",
+    "KR-r3-L3-03"
+  ],
+  "missing_links": [],
+  "forbidden_evidence_files": [],
+  "forbidden_evidence_dirs": [],
+  "evidence_files": 130,
+  "evidence_bytes": 21171785,
+  "report_sha256": "084e8c44f01e0ee808a567e24802f1cca6ac908c0cfe3ffd391f122f3b8d0eaa",
+  "reading_review": [
+    "十项均有原文依据、代码与现场证据、可反驳方向及适用边界",
+    "区分历史遗留、当前实现、条件负例与真实任务可达性",
+    "路径与编号齐全；未将完整构建或45次CLI写成完整回归测试"
+  ]
+}

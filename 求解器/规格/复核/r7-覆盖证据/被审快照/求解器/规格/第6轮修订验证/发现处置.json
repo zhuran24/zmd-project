@@ -1,0 +1,37 @@
+[
+  {
+    "id": "S3-r6-L1-01",
+    "status": "已修订",
+    "change": "纠正两条旧发现的归因，保留最严供电裁定",
+    "locations": "修订记录.md第4/5/6轮；第三轮任务验证/发现处置.json",
+    "basis": "回读原aFindings两条非排除措辞；任务书3§2.1"
+  },
+  {
+    "id": "S3-r6-L2-01",
+    "status": "已修订",
+    "change": "出缓存拟提交前核全单位同种单格，冲突整批留缓存；外部收货同查取货格",
+    "locations": "受限转移定义.md§4.1/§4.2；运行语义.md§4.1；配置manufacturing.output_blocked",
+    "basis": "规则L13、L17、L18、L35、L81"
+  },
+  {
+    "id": "S3-r6-L3-01",
+    "status": "已修订",
+    "change": "新增gate.concurrent_expiry=atomic_batch；同时到期先清原因后最终图一次映射，登记串行读法损失",
+    "locations": "受限转移定义.md§2.1/§2.2/§3.4/§5.3；T8；参数轴及配置",
+    "basis": "规则L29–32、L64；任务L14；任务书3§3.A；批事务为受限选择"
+  },
+  {
+    "id": "S3-r6-L3-02",
+    "status": "已修订为显式停止边界",
+    "change": "整箱无既有/历史目标的新物种至少两种且无身份空格至少一个时返回unsupported；库存身份冷却均不变",
+    "locations": "受限转移定义.md§4.3；T12；warehouse.empty_slot_identity配置",
+    "basis": "规则L13、L36、L41；L72编号的端口辖域不覆盖无线物种序"
+  },
+  {
+    "id": "S3-r6-L3-03",
+    "status": "已修订",
+    "change": "新增配方数量at_least/exact、额外物种allow/forbid两轴；本版前者各首值，登记覆盖损失及待审",
+    "locations": "选择点清单.md T7；运行语义.md§2.3；选择点参数轴.md；配置；受限转移定义.md§4.2",
+    "basis": "规则L17、L18、L81；批次通过量不唯一化开闸谓词"
+  }
+]

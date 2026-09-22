@@ -1,0 +1,10 @@
+{
+  "findings": 9,
+  "conclusions": 9,
+  "broken_links": [],
+  "protected_files": 62,
+  "changed_protected_files": [],
+  "report_sha256": "ce0f4d6b9ccc22d380676a4547069fa8c9f29d6e67d063becb1c8495ecc61fad",
+  "evidence_files": 23,
+  "reader_review": "已逐段重读，引用和结论均与本次证据对应"
+}

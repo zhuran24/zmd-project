@@ -1,0 +1,579 @@
+[
+  {
+    "name": "只装载:装载与普通制造",
+    "passed": true,
+    "detail": {
+      "trajectory_executed": false
+    }
+  },
+  {
+    "name": "只装载:无线多格歧义",
+    "passed": true,
+    "detail": {
+      "trajectory_executed": false
+    }
+  },
+  {
+    "name": "schema:装载与普通制造.json",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "name": "独立逐事件账:装载与普通制造.json",
+    "passed": true,
+    "detail": {
+      "ticks": 4,
+      "wireless_item_transactions": 0
+    }
+  },
+  {
+    "name": "普通制造实际完成",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "name": "schema:无线部分接收.json",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "name": "独立逐事件账:无线部分接收.json",
+    "passed": true,
+    "detail": {
+      "ticks": 6,
+      "wireless_item_transactions": 1
+    }
+  },
+  {
+    "name": "实际无线量:无线部分接收",
+    "passed": true,
+    "detail": {
+      "高容谷地电池": 1
+    }
+  },
+  {
+    "name": "部分残留固定原格",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "name": "schema:无线一满一可收.json",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "name": "独立逐事件账:无线一满一可收.json",
+    "passed": true,
+    "detail": {
+      "ticks": 1,
+      "wireless_item_transactions": 1
+    }
+  },
+  {
+    "name": "实际无线量:无线一满一可收",
+    "passed": true,
+    "detail": {
+      "精选荞愈胶囊": 3
+    }
+  },
+  {
+    "name": "schema:无线多格全收.json",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "name": "独立逐事件账:无线多格全收.json",
+    "passed": true,
+    "detail": {
+      "ticks": 1,
+      "wireless_item_transactions": 1
+    }
+  },
+  {
+    "name": "实际无线量:无线多格全收",
+    "passed": true,
+    "detail": {
+      "高容谷地电池": 5
+    }
+  },
+  {
+    "name": "schema:同刻双箱争余量.json",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "name": "独立逐事件账:同刻双箱争余量.json",
+    "passed": true,
+    "detail": {
+      "ticks": 1,
+      "wireless_item_transactions": 1
+    }
+  },
+  {
+    "name": "实际无线量:同刻双箱争余量",
+    "passed": true,
+    "detail": {
+      "高容谷地电池": 1
+    }
+  },
+  {
+    "name": "schema:无线空箱.json",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "name": "独立逐事件账:无线空箱.json",
+    "passed": true,
+    "detail": {
+      "ticks": 6,
+      "wireless_item_transactions": 0
+    }
+  },
+  {
+    "name": "零发送尝试节拍:无线空箱",
+    "passed": true,
+    "detail": [
+      0,
+      5
+    ]
+  },
+  {
+    "name": "schema:无线全拒收.json",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "name": "独立逐事件账:无线全拒收.json",
+    "passed": true,
+    "detail": {
+      "ticks": 6,
+      "wireless_item_transactions": 0
+    }
+  },
+  {
+    "name": "零发送尝试节拍:无线全拒收",
+    "passed": true,
+    "detail": [
+      0,
+      5
+    ]
+  },
+  {
+    "name": "schema:身份断边恢复.json",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "name": "独立逐事件账:身份断边恢复.json",
+    "passed": true,
+    "detail": {
+      "ticks": 6,
+      "wireless_item_transactions": 0
+    }
+  },
+  {
+    "name": "原几何恢复:身份断边恢复",
+    "passed": true,
+    "detail": [
+      {
+        "gates": [
+          "gate"
+        ],
+        "reason_changes": [
+          {
+            "after": [],
+            "before": [
+              "identity_mismatch"
+            ],
+            "unit": "gate"
+          }
+        ],
+        "removed_channels": [],
+        "restored_channels": [
+          "PC|source:north:0|gate:south:0"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "schema:身份实际切换.json",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "name": "独立逐事件账:身份实际切换.json",
+    "passed": true,
+    "detail": {
+      "ticks": 6,
+      "wireless_item_transactions": 0
+    }
+  },
+  {
+    "name": "原几何恢复:身份实际切换",
+    "passed": true,
+    "detail": [
+      {
+        "gates": [
+          "gate"
+        ],
+        "reason_changes": [
+          {
+            "after": [
+              "identity_mismatch"
+            ],
+            "before": [],
+            "unit": "gate"
+          }
+        ],
+        "removed_channels": [
+          "PC|source:north:0|gate:south:0"
+        ],
+        "restored_channels": []
+      },
+      {
+        "gates": [
+          "gate"
+        ],
+        "reason_changes": [
+          {
+            "after": [],
+            "before": [
+              "identity_mismatch"
+            ],
+            "unit": "gate"
+          }
+        ],
+        "removed_channels": [],
+        "restored_channels": [
+          "PC|source:north:0|gate:south:0"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "本次运行先断后恢复",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "name": "schema:累计调低保留.json",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "name": "独立逐事件账:累计调低保留.json",
+    "passed": true,
+    "detail": {
+      "ticks": 6,
+      "wireless_item_transactions": 0
+    }
+  },
+  {
+    "name": "累计真实数:累计调低保留",
+    "passed": true,
+    "detail": {
+      "blocked_reasons": [
+        "total_exhausted"
+      ],
+      "total_received": {
+        "category": "候选",
+        "value": "3"
+      },
+      "unit": "gate",
+      "window_received": {
+        "category": "候选",
+        "value": "0"
+      },
+      "window_started_at": null
+    }
+  },
+  {
+    "name": "schema:累计调高资格.json",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "name": "独立逐事件账:累计调高资格.json",
+    "passed": true,
+    "detail": {
+      "ticks": 6,
+      "wireless_item_transactions": 0
+    }
+  },
+  {
+    "name": "累计真实数:累计调高资格",
+    "passed": true,
+    "detail": {
+      "blocked_reasons": [
+        "total_exhausted"
+      ],
+      "total_received": {
+        "category": "算术推论",
+        "value": "5"
+      },
+      "unit": "gate",
+      "window_received": {
+        "category": "算术推论",
+        "value": "0"
+      },
+      "window_started_at": null
+    }
+  },
+  {
+    "name": "schema:双门窗口恢复.json",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "name": "独立逐事件账:双门窗口恢复.json",
+    "passed": true,
+    "detail": {
+      "ticks": 12,
+      "wireless_item_transactions": 0
+    }
+  },
+  {
+    "name": "schema:阻尼恢复.json",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "name": "独立逐事件账:阻尼恢复.json",
+    "passed": true,
+    "detail": {
+      "ticks": 12,
+      "wireless_item_transactions": 0
+    }
+  },
+  {
+    "name": "schema:成熟旧货重试.json",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "name": "独立逐事件账:成熟旧货重试.json",
+    "passed": true,
+    "detail": {
+      "ticks": 1,
+      "wireless_item_transactions": 0
+    }
+  },
+  {
+    "name": "旧件同刻再尝试而新件停留",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "name": "schema:无线多格歧义.json",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "name": "歧义停止无完成转移",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "name": "schema:cache-on.json",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "name": "独立逐事件账:cache-on.json",
+    "passed": true,
+    "detail": {
+      "ticks": 2,
+      "wireless_item_transactions": 0
+    }
+  },
+  {
+    "name": "schema:cache-off.json",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "name": "独立逐事件账:cache-off.json",
+    "passed": true,
+    "detail": {
+      "ticks": 2,
+      "wireless_item_transactions": 0
+    }
+  },
+  {
+    "name": "缓存开关全记录相同",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "name": "schema:identity-full.json",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "name": "独立逐事件账:identity-full.json",
+    "passed": true,
+    "detail": {
+      "ticks": 2,
+      "wireless_item_transactions": 0
+    }
+  },
+  {
+    "name": "增量完整重建",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "name": "恢复第一刻",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "name": "周期键与范围:生产环带",
+    "passed": true,
+    "detail": {
+      "status": "diagnostic_cycle",
+      "period": {
+        "category": "算术推论",
+        "value": "20"
+      }
+    }
+  },
+  {
+    "name": "正式对应未冒领:生产环带",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "name": "周期键与范围:静止成熟与暂停键",
+    "passed": true,
+    "detail": {
+      "status": "diagnostic_cycle",
+      "period": {
+        "category": "算术推论",
+        "value": "1"
+      }
+    }
+  },
+  {
+    "name": "正式对应未冒领:静止成熟与暂停键",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "name": "成熟残余零且暂停deadline删审计",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "name": "周期键与范围:累计审计与窗口周期",
+    "passed": true,
+    "detail": {
+      "status": "diagnostic_cycle",
+      "period": {
+        "category": "算术推论",
+        "value": "6"
+      }
+    }
+  },
+  {
+    "name": "正式对应未冒领:累计审计与窗口周期",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "name": "累计删除而完整真值递增",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "name": "周期键与范围:累计调低保留",
+    "passed": true,
+    "detail": {
+      "status": "diagnostic_cycle",
+      "period": {
+        "category": "算术推论",
+        "value": "1"
+      }
+    }
+  },
+  {
+    "name": "正式对应未冒领:累计调低保留",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "name": "固定C键饱和",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "name": "预算未决",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "name": "装载失败未步进",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "name": "判定排序错组",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "name": "制造日程过晚",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "name": "非运输同种年龄分组合并",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "name": "篡改入库账",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "name": "篡改固定排序",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "name": "删除证据范围",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "name": "伪造真实反例",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "name": "篡改周期长度",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "name": "篡改证明指纹",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "name": "篡改引用指纹",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "name": "相对引用实际重放",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "name": "批量当前版本",
+    "passed": true,
+    "detail": null
+  }
+]

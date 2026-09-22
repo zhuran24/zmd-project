@@ -1,0 +1,91 @@
+{
+  "schema": "warehouse-proof-inputs-v1",
+  "captured_at": "2026-09-21T10:35:59.360009+00:00",
+  "version": "任务书7执行版 / 规则09-21第36行更新后",
+  "sources": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+      "sha256": "31ced2a24fef738c72dfa406351b6bad5df3e353d6b1c2dfd06ab1febaf566ff",
+      "line_count": 114,
+      "read_scope": "全文"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解任务.txt",
+      "sha256": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+      "line_count": 16,
+      "read_scope": "全文"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解约束.txt",
+      "sha256": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6",
+      "line_count": 126,
+      "read_scope": "全文"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7草案.md",
+      "sha256": "32acf147e09de04feabfb575dd509a2c5c06b519b2504ba3ff253c3a61816a26",
+      "line_count": 252,
+      "read_scope": "全文"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md",
+      "sha256": "55e3caee8ab40d1003b6002f1283c46734ef77a122e2870a2455fb4f14355450",
+      "line_count": 222,
+      "read_scope": "全文"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/会议2成果修订-v46.md",
+      "sha256": "dd873bba256906787359ada38480a0caf4eefd9b2c6bc5b05f135278b7617f5c",
+      "line_count": 1008,
+      "read_scope": "全文"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/主会话三审-0920.md",
+      "sha256": "da7d816827a6d66a20def9be982308df0a0e7a8dcb879c6c75ef2c381ef01f87",
+      "line_count": 53,
+      "read_scope": "全文"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/工作/总结-终稿.md",
+      "sha256": "101c0ccd64e6ee2cdd3cf5bb52ae89ff1f89d90436a6275645fa64193d743b03",
+      "line_count": 909,
+      "read_scope": "全文"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.md",
+      "sha256": "5c2d6530a62a4066c1cc05b8ce95b554dae6059c9c90d107ded9f3e81a570790",
+      "line_count": 158,
+      "read_scope": "全文"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/候选约束.txt",
+      "sha256": "a0ac3f9c82f371132b7de29fe47e4c6c587904680bc2786523de0c825fd5efd9",
+      "line_count": 862,
+      "read_scope": "只核指纹，保护对象"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.schema.json",
+      "sha256": "5033e231db40bab01b0466e3763bc53d6a3e4bc3b7d74c70e30659446e595bfc",
+      "line_count": 3206,
+      "read_scope": "CycleKey、Cycle、CycleResult 的相关字段及 full_base 分支"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限模型声明.md",
+      "sha256": "da0ab2073221bca451c676d54c44c98705bac2886c4ebf7049b7a87fd3509e86",
+      "line_count": 145,
+      "read_scope": "transfer 与 warehouse 相关轴及第141行"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点清单.md",
+      "sha256": "dda03396a0012f42c41a820adea67b41a19754d60bf63441c6205be29b0555bb",
+      "line_count": 192,
+      "read_scope": "第79、149—157行对应条款"
+    }
+  ],
+  "formal_expected_prefixes": [
+    "31ced2a24fef",
+    "1630ca1febec",
+    "f6503e6c1568"
+  ],
+  "scope": "文档推导与局部代数核对；未编译或运行内核；未读取模拟器；未使用git"
+}

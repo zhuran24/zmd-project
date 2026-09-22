@@ -1,0 +1,18 @@
+{
+  "status": "通过",
+  "protected_baseline_files": 71,
+  "changed_protected_files": [],
+  "missing_report_links": [],
+  "report_links_checked": 22,
+  "findings": 3,
+  "severity_counts": {
+    "阻断": 1,
+    "重要": 2
+  },
+  "reader_audit": "已重读报告；核对节号、位置、结论范围、6项探针对照及本席61项cargo测试与实现席93项记录的区别。",
+  "writes_scope": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核",
+  "git_commit_or_push": false,
+  "simulator_touched": false,
+  "report_sha256": "f6a2ba0d7cb8275d03ba93e05ddf5dcd7b76c7c978c5701efb8b8000d09e2e33",
+  "findings_sha256": "d678d14909cc678ba0bc94af26fefa96b7c5af07b744d4163805161795abbd7f"
+}

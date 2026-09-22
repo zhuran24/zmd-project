@@ -1,0 +1,26 @@
+[
+  {
+    "name": "cargo-build",
+    "command": "cargo build --release -p kernel --target-dir '/home/zhuran24/zmd-research-fresh/求解器/target'",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "    Finished `release` profile [optimized] target(s) in 0.01s\n"
+  },
+  {
+    "name": "kernel-seed",
+    "command": "'/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel' seed '/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/规格/装载样例.json' --config '/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json' --out '/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/规格/seed-output.json'",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/规格/seed-output.json\",\"status\":null}\n",
+    "stderr": ""
+  },
+  {
+    "name": "kernel-check",
+    "command": "'/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel' check '/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/规格/seed-output.json' --config '/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json'",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "exit_code": 0,
+    "stdout": "{\n  \"buffer_channels\": 8,\n  \"catalog_sha256\": \"5d0c7e09d87180b851cdc0763fd5098c527657b0c62971791f9bf6ced8264cd7\",\n  \"physical_channels\": 11,\n  \"status\": \"input_checked\",\n  \"units\": 14\n}\n",
+    "stderr": ""
+  }
+]

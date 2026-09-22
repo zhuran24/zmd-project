@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-测试与证据/target/debug/kernel",
+    "run",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-测试与证据/反转-混做粉碎机两下游-input.json",
+    "--config",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+    "--ticks",
+    "4",
+    "--out",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-测试与证据/反转-混做粉碎机两下游-record.json"
+  ],
+  "returncode": 0,
+  "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-测试与证据/反转-混做粉碎机两下游-record.json\",\"status\":\"completed\"}\n",
+  "stderr": ""
+}

@@ -1,0 +1,23 @@
+[
+  {
+    "id": "KR-r2-L1-01",
+    "where": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/input.rs:174–213；/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/transition.rs:377–423；/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/event_identity.rs:118–149",
+    "claim": "统一历史未与固定边界阶段取交集，冲突的同刻先后关系仍可产出completed记录。",
+    "evidence": "内核输入§3.1要求所有顺序来源取交集、冲突拒收；受限转移§2.1规定制造完成先于补矿。phase-conflict输入要求t=1的supply_probe先于completion_probe，CLI却返回0/completed，实际次序为completion_probe、supply_probe，verify_record也接受；反向关系对照正常。详见复核-r2-规格保真-证据/探针结果.json及phase-conflict-record.json。",
+    "severity": "阻断"
+  },
+  {
+    "id": "KR-r2-L1-02",
+    "where": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/polling.rs:140–163；/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/input.rs:865–889；/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/transition.rs:265、676–705",
+    "claim": "固定分支失活后内核继续产出completed后态，而该后态连同原参数无法重新装载，执行与恢复的支持域不闭合。",
+    "evidence": "受限转移§1定义完整after_closure续跑，§3.4要求新图重算；内核输入§5.3规定整段固定表及当前路径有效性。branch-cut中准入口收满切断已选出支后，运行改走唯一余支并completed，阻尼3→2；将完整后态与原参数重载，返回invalid_input damping.branch.choices：所选出支不在查询的当前图中。仅取消累计限额的对照阻尼保持3且重载成功。退化唯一支是否解除绑定仍待规格澄清，本项仅断言已复现的运行/恢复不一致；见branch-cut-library.json。",
+    "severity": "重要"
+  },
+  {
+    "id": "KR-r2-L1-03",
+    "where": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/input.rs:39–80；/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/interfaces.rs:326–381；/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/transition.rs:301–317",
+    "claim": "全局事件仅核正向引用，孤立runtime或connection_close事件可进入运行区间并被静默忽略。",
+    "evidence": "内核输入§3.1要求每个全局事件由相应记录拥有，§3.2要求close记录给出通道及原因；受限转移§1要求缺数据拒收、未支持事件停止。原粉碎机输入仅增加t=1、无人拥有的unowned_probe，kind分别为runtime和connection_close，两者CLI均0/completed，历史保留该事件而实际事件无此项，verify_record仍接受；见unowned-runtime-record.json、unowned-connection_close-record.json。",
+    "severity": "重要"
+  }
+]

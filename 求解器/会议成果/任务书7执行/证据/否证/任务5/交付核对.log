@@ -1,0 +1,6 @@
+command: ["python", "-B", "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/否证/任务5/交付核对.py"]
+exit_status: 0
+stdout:
+PASS: 24条结论、全部详细字段及结构化结果逐条一致；链接存在；23条输入指纹保持；证据仅四种许可类型。
+
+stderr:

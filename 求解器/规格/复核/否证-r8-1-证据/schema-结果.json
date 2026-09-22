@@ -1,0 +1,533 @@
+{
+  "ajv": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/2020.js",
+  "result": {
+    "root": [
+      {
+        "valid": true,
+        "errors": null
+      },
+      {
+        "valid": false,
+        "errors": [
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "validation_scope"
+            },
+            "message": "must have required property 'validation_scope'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/additionalProperties",
+            "keyword": "additionalProperties",
+            "params": {
+              "additionalProperty": "verification_scope"
+            },
+            "message": "must NOT have additional properties"
+          },
+          {
+            "instancePath": "/execution_mode",
+            "schemaPath": "#/allOf/5/then/properties/execution_mode/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "production_abstraction"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/allOf/5/if",
+            "keyword": "if",
+            "params": {
+              "failingKeyword": "then"
+            },
+            "message": "must match \"then\" schema"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "result_id"
+            },
+            "message": "must have required property 'result_id'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "level"
+            },
+            "message": "must have required property 'level'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "seed"
+            },
+            "message": "must have required property 'seed'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "parameter_point"
+            },
+            "message": "must have required property 'parameter_point'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "reading"
+            },
+            "message": "must have required property 'reading'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "support_domain"
+            },
+            "message": "must have required property 'support_domain'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "replay_input"
+            },
+            "message": "must have required property 'replay_input'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "run_record"
+            },
+            "message": "must have required property 'run_record'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "cycle"
+            },
+            "message": "must have required property 'cycle'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "stop"
+            },
+            "message": "must have required property 'stop'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "budget"
+            },
+            "message": "must have required property 'budget'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/additionalProperties",
+            "keyword": "additionalProperties",
+            "params": {
+              "additionalProperty": "run_id"
+            },
+            "message": "must NOT have additional properties"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/additionalProperties",
+            "keyword": "additionalProperties",
+            "params": {
+              "additionalProperty": "profile_id"
+            },
+            "message": "must NOT have additional properties"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/additionalProperties",
+            "keyword": "additionalProperties",
+            "params": {
+              "additionalProperty": "producer"
+            },
+            "message": "must NOT have additional properties"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/additionalProperties",
+            "keyword": "additionalProperties",
+            "params": {
+              "additionalProperty": "fingerprints"
+            },
+            "message": "must NOT have additional properties"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/additionalProperties",
+            "keyword": "additionalProperties",
+            "params": {
+              "additionalProperty": "parameter_assignment"
+            },
+            "message": "must NOT have additional properties"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/additionalProperties",
+            "keyword": "additionalProperties",
+            "params": {
+              "additionalProperty": "input_history"
+            },
+            "message": "must NOT have additional properties"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/additionalProperties",
+            "keyword": "additionalProperties",
+            "params": {
+              "additionalProperty": "uncovered_axes"
+            },
+            "message": "must NOT have additional properties"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/additionalProperties",
+            "keyword": "additionalProperties",
+            "params": {
+              "additionalProperty": "trace"
+            },
+            "message": "must NOT have additional properties"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/additionalProperties",
+            "keyword": "additionalProperties",
+            "params": {
+              "additionalProperty": "verification_scope"
+            },
+            "message": "must NOT have additional properties"
+          },
+          {
+            "instancePath": "/schema",
+            "schemaPath": "#/properties/schema/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "kernel-cycle-v1"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/oneOf",
+            "keyword": "oneOf",
+            "params": {
+              "passingSchemas": null
+            },
+            "message": "must match exactly one schema in oneOf"
+          }
+        ]
+      },
+      {
+        "valid": false,
+        "errors": [
+          {
+            "instancePath": "",
+            "schemaPath": "#/additionalProperties",
+            "keyword": "additionalProperties",
+            "params": {
+              "additionalProperty": "verification_scope"
+            },
+            "message": "must NOT have additional properties"
+          },
+          {
+            "instancePath": "/execution_mode",
+            "schemaPath": "#/allOf/5/then/properties/execution_mode/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "production_abstraction"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/allOf/5/if",
+            "keyword": "if",
+            "params": {
+              "failingKeyword": "then"
+            },
+            "message": "must match \"then\" schema"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "result_id"
+            },
+            "message": "must have required property 'result_id'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "level"
+            },
+            "message": "must have required property 'level'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "seed"
+            },
+            "message": "must have required property 'seed'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "parameter_point"
+            },
+            "message": "must have required property 'parameter_point'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "reading"
+            },
+            "message": "must have required property 'reading'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "support_domain"
+            },
+            "message": "must have required property 'support_domain'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "replay_input"
+            },
+            "message": "must have required property 'replay_input'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "run_record"
+            },
+            "message": "must have required property 'run_record'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "cycle"
+            },
+            "message": "must have required property 'cycle'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "stop"
+            },
+            "message": "must have required property 'stop'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "budget"
+            },
+            "message": "must have required property 'budget'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/additionalProperties",
+            "keyword": "additionalProperties",
+            "params": {
+              "additionalProperty": "run_id"
+            },
+            "message": "must NOT have additional properties"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/additionalProperties",
+            "keyword": "additionalProperties",
+            "params": {
+              "additionalProperty": "profile_id"
+            },
+            "message": "must NOT have additional properties"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/additionalProperties",
+            "keyword": "additionalProperties",
+            "params": {
+              "additionalProperty": "producer"
+            },
+            "message": "must NOT have additional properties"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/additionalProperties",
+            "keyword": "additionalProperties",
+            "params": {
+              "additionalProperty": "fingerprints"
+            },
+            "message": "must NOT have additional properties"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/additionalProperties",
+            "keyword": "additionalProperties",
+            "params": {
+              "additionalProperty": "parameter_assignment"
+            },
+            "message": "must NOT have additional properties"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/additionalProperties",
+            "keyword": "additionalProperties",
+            "params": {
+              "additionalProperty": "input_history"
+            },
+            "message": "must NOT have additional properties"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/additionalProperties",
+            "keyword": "additionalProperties",
+            "params": {
+              "additionalProperty": "uncovered_axes"
+            },
+            "message": "must NOT have additional properties"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/additionalProperties",
+            "keyword": "additionalProperties",
+            "params": {
+              "additionalProperty": "trace"
+            },
+            "message": "must NOT have additional properties"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/additionalProperties",
+            "keyword": "additionalProperties",
+            "params": {
+              "additionalProperty": "validation_scope"
+            },
+            "message": "must NOT have additional properties"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/additionalProperties",
+            "keyword": "additionalProperties",
+            "params": {
+              "additionalProperty": "verification_scope"
+            },
+            "message": "must NOT have additional properties"
+          },
+          {
+            "instancePath": "/schema",
+            "schemaPath": "#/properties/schema/const",
+            "keyword": "const",
+            "params": {
+              "allowedValue": "kernel-cycle-v1"
+            },
+            "message": "must be equal to constant"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/oneOf",
+            "keyword": "oneOf",
+            "params": {
+              "passingSchemas": null
+            },
+            "message": "must match exactly one schema in oneOf"
+          }
+        ]
+      }
+    ],
+    "record_schema": [
+      {
+        "valid": true,
+        "errors": null
+      },
+      {
+        "valid": false,
+        "errors": [
+          {
+            "instancePath": "",
+            "schemaPath": "#/required",
+            "keyword": "required",
+            "params": {
+              "missingProperty": "validation_scope"
+            },
+            "message": "must have required property 'validation_scope'"
+          },
+          {
+            "instancePath": "",
+            "schemaPath": "#/additionalProperties",
+            "keyword": "additionalProperties",
+            "params": {
+              "additionalProperty": "verification_scope"
+            },
+            "message": "must NOT have additional properties"
+          }
+        ]
+      },
+      {
+        "valid": false,
+        "errors": [
+          {
+            "instancePath": "",
+            "schemaPath": "#/additionalProperties",
+            "keyword": "additionalProperties",
+            "params": {
+              "additionalProperty": "verification_scope"
+            },
+            "message": "must NOT have additional properties"
+          }
+        ]
+      }
+    ]
+  },
+  "stderr": ""
+}

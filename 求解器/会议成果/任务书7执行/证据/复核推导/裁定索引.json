@@ -1,0 +1,214 @@
+{
+  "status": "done",
+  "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/复核/推导.md",
+  "files": [
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-v2-loop-r2.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-总纲-1.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/复核/推导.md"
+  ],
+  "findings": [
+    {
+      "id": "L-E01",
+      "target": "回路第二版 §1.1 L15—19、§1.2 L36",
+      "verdict": "否证成立",
+      "reason": "旧规则指纹及整批传输接收前提未同步09-21现行规则；错误限于来源标识与应用域，旧强前提下的数学仍成立。",
+      "locations": [
+        {
+          "file": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-v2-loop-r2.md",
+          "section": "§3 L-E01"
+        },
+        {
+          "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/复核/推导.md",
+          "section": "§2 L-E01"
+        }
+      ]
+    },
+    {
+      "id": "L-E02",
+      "target": "回路第二版 §3.7 L264、L295—301、§7 L393",
+      "verdict": "否证成立",
+      "reason": "三审现文已将两条件说法列为历史并补三条件，回路仍要求替换现行L23，引用对象需明确为旧稿。",
+      "locations": [
+        {
+          "file": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-v2-loop-r2.md",
+          "section": "§3 L-E02"
+        },
+        {
+          "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/复核/推导.md",
+          "section": "§2 L-E02"
+        }
+      ]
+    },
+    {
+      "id": "L-U1",
+      "target": "回路第二版 §4 U1 L308",
+      "verdict": "无法判定",
+      "reason": "单机库存界已证；同布局同植物总数对全部允许初态的长期成品率充分性仍缺完整证明或反例。",
+      "locations": [
+        {
+          "file": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-v2-loop-r2.md",
+          "section": "§4 L-U1"
+        },
+        {
+          "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/复核/推导.md",
+          "section": "§2 L-U1"
+        }
+      ]
+    },
+    {
+      "id": "L-U2",
+      "target": "回路第二版 §4 U2 L309",
+      "verdict": "无法判定",
+      "reason": "条件轮次界与停流后果已证；一般分配网络的恢复、终点及最终产率仍缺逐路径推导。",
+      "locations": [
+        {
+          "file": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-v2-loop-r2.md",
+          "section": "§4 L-U2"
+        },
+        {
+          "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/复核/推导.md",
+          "section": "§2 L-U2"
+        }
+      ]
+    },
+    {
+      "id": "L-U3",
+      "target": "回路第二版 §4 U3 L310及§3.7 L289的默认起法应用",
+      "verdict": "无法判定",
+      "reason": "默认填满至放开末级的全部后置状态、实际来料前缀和释放安全仍缺具体接线证明。",
+      "locations": [
+        {
+          "file": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-v2-loop-r2.md",
+          "section": "§4 L-U3"
+        },
+        {
+          "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/复核/推导.md",
+          "section": "§2 L-U3"
+        }
+      ]
+    },
+    {
+      "id": "L-U4",
+      "target": "回路第二版 §4 U4 L311",
+      "verdict": "无法判定",
+      "reason": "首次清出量已证；全释放段最大净损失、停止时刻及分种库存仍缺推导。",
+      "locations": [
+        {
+          "file": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-v2-loop-r2.md",
+          "section": "§4 L-U4"
+        },
+        {
+          "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/复核/推导.md",
+          "section": "§2 L-U4"
+        }
+      ]
+    },
+    {
+      "id": "L-U5",
+      "target": "回路第二版 §4 U5 L312",
+      "verdict": "无法判定",
+      "reason": "局部Z安全界已证；整厂持续供料和排货的充分状态集合及安全余量仍缺证明。",
+      "locations": [
+        {
+          "file": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-v2-loop-r2.md",
+          "section": "§4 L-U5"
+        },
+        {
+          "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/复核/推导.md",
+          "section": "§2 L-U5"
+        }
+      ]
+    },
+    {
+      "id": "L-U6",
+      "target": "回路第二版 §4 U6 L313",
+      "verdict": "无法判定",
+      "reason": "失败前移已定；一般事件推进、三路补货、窗口历史及离线排序的全范围达标保证仍缺证明。",
+      "locations": [
+        {
+          "file": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-v2-loop-r2.md",
+          "section": "§4 L-U6"
+        },
+        {
+          "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/复核/推导.md",
+          "section": "§2 L-U6"
+        }
+      ]
+    },
+    {
+      "id": "L-U7",
+      "target": "回路第二版 §4 U7 L314",
+      "verdict": "无法判定",
+      "reason": "局部前件尚缺在完整布局上联合成立并覆盖全部相关状态的构造与验证。",
+      "locations": [
+        {
+          "file": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-v2-loop-r2.md",
+          "section": "§4 L-U7"
+        },
+        {
+          "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/复核/推导.md",
+          "section": "§2 L-U7"
+        }
+      ]
+    },
+    {
+      "id": "P-E01",
+      "target": "相位第二版 §1.1 L15—19",
+      "verdict": "否证成立",
+      "reason": "本轮现行规则指纹仍写abc7a5867f64，实际为31ced2a24fef；矿配方及产能分支不受该行修改影响。",
+      "locations": [
+        {
+          "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/复核/推导.md",
+          "section": "§3 P-E01"
+        }
+      ]
+    },
+    {
+      "id": "P-U05",
+      "target": "相位第二版 §4第5项 L230",
+      "verdict": "无法判定",
+      "reason": "r=0的最低产能分支已证；两类均增机时正回转及全部实际送料自由度的完整实现范围仍缺证明。",
+      "locations": [
+        {
+          "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/复核/推导.md",
+          "section": "§3 P-U05"
+        }
+      ]
+    },
+    {
+      "id": "G-U01",
+      "target": "总纲 §3 L25、§4 L31末、§5 L36",
+      "verdict": "无法判定",
+      "reason": "共同净需求平均率已证；全部实际加工、逐机分担与逐通道送料唯一性仍缺完整实现或排除证明。",
+      "locations": [
+        {
+          "file": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-总纲-1.md",
+          "section": "§3 G-U01、§5.1"
+        },
+        {
+          "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/复核/推导.md",
+          "section": "§4 G-U01"
+        }
+      ]
+    },
+    {
+      "id": "G-U02",
+      "target": "总纲 §4 L32、§5 L37",
+      "verdict": "无法判定",
+      "reason": "回路收支、必要存量和单机Z界尚未给整厂持续供料的充分集合与默认释放保证。",
+      "locations": [
+        {
+          "file": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-总纲-1.md",
+          "section": "§4 G-U02、§5.2"
+        },
+        {
+          "file": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/复核/推导.md",
+          "section": "§4 G-U02"
+        }
+      ]
+    }
+  ],
+  "summary": "指定复核完成：3项来源或应用域错误、10项未完命题；混线局部充分界、最低产能r=0及A=1113分支已证，未改变L=0和必要上界U=1113。",
+  "for_owner": [],
+  "error": ""
+}

@@ -1,0 +1,39 @@
+{
+  "maximum_geometric_output_levels": {
+    "core": [],
+    "south_box": [
+      "other"
+    ],
+    "north_box": [],
+    "east_box": [],
+    "west_box": [],
+    "ore_source": [
+      "other"
+    ],
+    "probe_left_source": [
+      "other"
+    ],
+    "probe_bottom_source": [
+      "other"
+    ],
+    "probe_box": []
+  },
+  "original_choices": 14,
+  "full_status": "completed",
+  "completed_ticks": 12,
+  "empty_status": "unresolved",
+  "empty_exit_code": 2,
+  "open_items": [
+    "unresolved damping.branch @ choices: 未列全几何分流器的非空出支子集"
+  ],
+  "control_coverage": {
+    "axis": "damping.branch",
+    "coverage_status": "not_exercised",
+    "disposition": "由输入全称量化",
+    "evidence": [
+      "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+    ],
+    "other_values": "其它值及其联合组合未覆盖",
+    "reason": "覆盖局部出支集上的确定性无记忆策略；依赖查询起点、其它图状态或历史的选择未覆盖；无终点仍停止"
+  }
+}

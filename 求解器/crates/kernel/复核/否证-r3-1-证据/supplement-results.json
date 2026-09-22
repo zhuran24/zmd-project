@@ -1,0 +1,679 @@
+{
+  "before_boundary_status": "completed",
+  "before_boundary_time": {
+    "kind": "rational",
+    "value": {
+      "category": "候选",
+      "value": "5"
+    }
+  },
+  "before_boundary_events": [
+    {
+      "basis": [
+        "规则 L64",
+        "受限转移定义 §2.1、§3.4",
+        "gate.concurrent_expiry=atomic_batch"
+      ],
+      "detail": "atomic_batch:gate",
+      "event": "W|5|gate",
+      "operation": "gate_window_expiry",
+      "outcome": "success",
+      "target": "gate"
+    }
+  ],
+  "before_boundary_verified": "input_checked",
+  "phase_comparison": [
+    {
+      "unit": "south_box",
+      "initial": {
+        "kind": "rational",
+        "value": {
+          "value": "0",
+          "category": "候选"
+        }
+      },
+      "current": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      }
+    },
+    {
+      "unit": "north_box",
+      "initial": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "current": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "5"
+        }
+      }
+    },
+    {
+      "unit": "west_box",
+      "initial": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "current": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      }
+    },
+    {
+      "unit": "east_box",
+      "initial": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "current": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "5"
+        }
+      }
+    }
+  ],
+  "aggregate_bridge_cases": [
+    {
+      "name": "桥接器双通路",
+      "status": "exercised",
+      "first_time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "bridge_axes": [
+        {
+          "horizontal": {
+            "basis": [
+              "候选先接历史：西侧先接"
+            ],
+            "input_side": "west",
+            "status": "resolved"
+          },
+          "vertical": {
+            "basis": [
+              "候选先接历史：南侧先接"
+            ],
+            "input_side": "south",
+            "status": "resolved"
+          }
+        }
+      ],
+      "evidence_count": 32,
+      "operations": [
+        "move"
+      ],
+      "outcomes": [
+        "success"
+      ],
+      "contact_events": [
+        {
+          "id": "connect_0",
+          "kind": "connection_open",
+          "time": {
+            "kind": "rational",
+            "value": {
+              "category": "候选",
+              "value": "-5"
+            }
+          }
+        },
+        {
+          "id": "connect_1",
+          "kind": "connection_open",
+          "time": {
+            "kind": "rational",
+            "value": {
+              "category": "候选",
+              "value": "-4"
+            }
+          }
+        },
+        {
+          "id": "connect_2",
+          "kind": "connection_open",
+          "time": {
+            "kind": "rational",
+            "value": {
+              "category": "候选",
+              "value": "-2"
+            }
+          }
+        },
+        {
+          "id": "connect_3",
+          "kind": "connection_open",
+          "time": {
+            "kind": "rational",
+            "value": {
+              "category": "候选",
+              "value": "-3"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "传输拒收与暂停核验",
+      "status": "exercised",
+      "first_time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "bridge_axes": [
+        {
+          "horizontal": {
+            "basis": [
+              "候选先接历史：西侧先接"
+            ],
+            "input_side": "west",
+            "status": "resolved"
+          },
+          "vertical": {
+            "basis": [
+              "候选先接历史：南侧先接"
+            ],
+            "input_side": "south",
+            "status": "resolved"
+          }
+        }
+      ],
+      "evidence_count": 6,
+      "operations": [
+        "move"
+      ],
+      "outcomes": [
+        "success"
+      ],
+      "contact_events": [
+        {
+          "id": "connect_0",
+          "kind": "connection_open",
+          "time": {
+            "kind": "rational",
+            "value": {
+              "category": "候选",
+              "value": "-5"
+            }
+          }
+        },
+        {
+          "id": "connect_1",
+          "kind": "connection_open",
+          "time": {
+            "kind": "rational",
+            "value": {
+              "category": "候选",
+              "value": "-4"
+            }
+          }
+        },
+        {
+          "id": "connect_2",
+          "kind": "connection_open",
+          "time": {
+            "kind": "rational",
+            "value": {
+              "category": "候选",
+              "value": "-2"
+            }
+          }
+        },
+        {
+          "id": "connect_3",
+          "kind": "connection_open",
+          "time": {
+            "kind": "rational",
+            "value": {
+              "category": "候选",
+              "value": "-3"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "密集结点闭环核验",
+      "status": "exercised",
+      "first_time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "bridge_axes": [
+        {
+          "horizontal": {
+            "basis": [
+              "候选先接历史：西侧先接"
+            ],
+            "input_side": "west",
+            "status": "resolved"
+          },
+          "vertical": {
+            "basis": [
+              "候选先接历史：南侧先接"
+            ],
+            "input_side": "north",
+            "status": "resolved"
+          }
+        }
+      ],
+      "evidence_count": 345,
+      "operations": [
+        "move"
+      ],
+      "outcomes": [
+        "success"
+      ],
+      "contact_events": []
+    },
+    {
+      "name": "密集结点循环种子核验",
+      "status": "exercised",
+      "first_time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "240"
+        }
+      },
+      "bridge_axes": [
+        {
+          "horizontal": {
+            "basis": [
+              "候选先接历史：西侧先接"
+            ],
+            "input_side": "west",
+            "status": "resolved"
+          },
+          "vertical": {
+            "basis": [
+              "候选先接历史：南侧先接"
+            ],
+            "input_side": "north",
+            "status": "resolved"
+          }
+        }
+      ],
+      "evidence_count": 134,
+      "operations": [
+        "move"
+      ],
+      "outcomes": [
+        "success"
+      ],
+      "contact_events": []
+    },
+    {
+      "name": "密集制造闭环序0核验",
+      "status": "exercised",
+      "first_time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "bridge_axes": [
+        {
+          "horizontal": {
+            "basis": [
+              "候选先接历史：西侧先接"
+            ],
+            "input_side": "east",
+            "status": "resolved"
+          },
+          "vertical": {
+            "basis": [
+              "候选先接历史：南侧先接"
+            ],
+            "input_side": "south",
+            "status": "resolved"
+          }
+        },
+        {
+          "horizontal": {
+            "basis": [
+              "候选先接历史：西侧先接"
+            ],
+            "input_side": "west",
+            "status": "resolved"
+          },
+          "vertical": {
+            "basis": [
+              "候选先接历史：南侧先接"
+            ],
+            "input_side": "north",
+            "status": "resolved"
+          }
+        }
+      ],
+      "evidence_count": 106,
+      "operations": [
+        "move"
+      ],
+      "outcomes": [
+        "success"
+      ],
+      "contact_events": []
+    },
+    {
+      "name": "密集制造闭环序1核验",
+      "status": "exercised",
+      "first_time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "bridge_axes": [
+        {
+          "horizontal": {
+            "basis": [
+              "候选先接历史：西侧先接"
+            ],
+            "input_side": "east",
+            "status": "resolved"
+          },
+          "vertical": {
+            "basis": [
+              "候选先接历史：南侧先接"
+            ],
+            "input_side": "south",
+            "status": "resolved"
+          }
+        },
+        {
+          "horizontal": {
+            "basis": [
+              "候选先接历史：西侧先接"
+            ],
+            "input_side": "west",
+            "status": "resolved"
+          },
+          "vertical": {
+            "basis": [
+              "候选先接历史：南侧先接"
+            ],
+            "input_side": "north",
+            "status": "resolved"
+          }
+        }
+      ],
+      "evidence_count": 221,
+      "operations": [
+        "move"
+      ],
+      "outcomes": [
+        "success"
+      ],
+      "contact_events": []
+    },
+    {
+      "name": "密集制造闭环序2核验",
+      "status": "exercised",
+      "first_time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "bridge_axes": [
+        {
+          "horizontal": {
+            "basis": [
+              "候选先接历史：西侧先接"
+            ],
+            "input_side": "east",
+            "status": "resolved"
+          },
+          "vertical": {
+            "basis": [
+              "候选先接历史：南侧先接"
+            ],
+            "input_side": "south",
+            "status": "resolved"
+          }
+        },
+        {
+          "horizontal": {
+            "basis": [
+              "候选先接历史：西侧先接"
+            ],
+            "input_side": "west",
+            "status": "resolved"
+          },
+          "vertical": {
+            "basis": [
+              "候选先接历史：南侧先接"
+            ],
+            "input_side": "north",
+            "status": "resolved"
+          }
+        }
+      ],
+      "evidence_count": 320,
+      "operations": [
+        "move"
+      ],
+      "outcomes": [
+        "success"
+      ],
+      "contact_events": []
+    },
+    {
+      "name": "密集制造闭环序3核验",
+      "status": "exercised",
+      "first_time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "bridge_axes": [
+        {
+          "horizontal": {
+            "basis": [
+              "候选先接历史：西侧先接"
+            ],
+            "input_side": "east",
+            "status": "resolved"
+          },
+          "vertical": {
+            "basis": [
+              "候选先接历史：南侧先接"
+            ],
+            "input_side": "south",
+            "status": "resolved"
+          }
+        },
+        {
+          "horizontal": {
+            "basis": [
+              "候选先接历史：西侧先接"
+            ],
+            "input_side": "west",
+            "status": "resolved"
+          },
+          "vertical": {
+            "basis": [
+              "候选先接历史：南侧先接"
+            ],
+            "input_side": "north",
+            "status": "resolved"
+          }
+        }
+      ],
+      "evidence_count": 252,
+      "operations": [
+        "move"
+      ],
+      "outcomes": [
+        "success"
+      ],
+      "contact_events": []
+    },
+    {
+      "name": "密集制造闭环序4核验",
+      "status": "exercised",
+      "first_time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "bridge_axes": [
+        {
+          "horizontal": {
+            "basis": [
+              "候选先接历史：西侧先接"
+            ],
+            "input_side": "east",
+            "status": "resolved"
+          },
+          "vertical": {
+            "basis": [
+              "候选先接历史：南侧先接"
+            ],
+            "input_side": "south",
+            "status": "resolved"
+          }
+        },
+        {
+          "horizontal": {
+            "basis": [
+              "候选先接历史：西侧先接"
+            ],
+            "input_side": "west",
+            "status": "resolved"
+          },
+          "vertical": {
+            "basis": [
+              "候选先接历史：南侧先接"
+            ],
+            "input_side": "north",
+            "status": "resolved"
+          }
+        }
+      ],
+      "evidence_count": 154,
+      "operations": [
+        "move"
+      ],
+      "outcomes": [
+        "success"
+      ],
+      "contact_events": []
+    },
+    {
+      "name": "密集制造闭环序5核验",
+      "status": "exercised",
+      "first_time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "bridge_axes": [
+        {
+          "horizontal": {
+            "basis": [
+              "候选先接历史：西侧先接"
+            ],
+            "input_side": "east",
+            "status": "resolved"
+          },
+          "vertical": {
+            "basis": [
+              "候选先接历史：南侧先接"
+            ],
+            "input_side": "south",
+            "status": "resolved"
+          }
+        },
+        {
+          "horizontal": {
+            "basis": [
+              "候选先接历史：西侧先接"
+            ],
+            "input_side": "west",
+            "status": "resolved"
+          },
+          "vertical": {
+            "basis": [
+              "候选先接历史：南侧先接"
+            ],
+            "input_side": "north",
+            "status": "resolved"
+          }
+        }
+      ],
+      "evidence_count": 374,
+      "operations": [
+        "move"
+      ],
+      "outcomes": [
+        "success"
+      ],
+      "contact_events": []
+    }
+  ],
+  "source_hashes": {
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r3-1-证据/calls.json": "b9b6f43a47b8d362188132dbb3746ca553a147fa4348d52a9c0ac8f2ee5c1d19",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r3-1-证据/tiny-expired-input.json": "d2001c73a707d00e533606b8b4395ab2334cd10fb8633e00e5e27047a150d130",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/audit-results.json": "0b48fa4db0dfcc1eb23e89bed8cd705baf8c4bc777e91282948e62f134ceeb7c",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/桥接器双通路.json": "efcab7af7aea7ef76687ab570a67e79e5fcef7a4b33348f5c71c3e70d41f98bf",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/桥接器双通路-运行记录-v3-kernel.json": "1d30fae52837f3a80435a45aa63e5bd5bd395bf6df2ab57ce0f49b602ff9e52c",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/传输拒收与暂停核验.json": "3540e7c79427e8779b24d9b0cb64f94534efb1be7cdc668672ce5bdb251f8536",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/传输拒收与暂停核验-运行记录-v3-kernel.json": "ca784decdf8a47e697bef306661284e1f1e96dbe40f06232dbdb19c1eecf7264",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点闭环核验.json": "513adc0b26d79af9ac04bc4946fa1f7ef76d7da9aea39f4fc9a51beff9792cef",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点闭环核验-运行记录-v3-kernel.json": "0f0da394c750634fa7a4dc725c5d29c8f5152250b680d9eb23d5cdc07dbb1eca",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点循环种子核验.json": "b6b8fbc58a15e266953b29bcd80ff99dc3b41eb656104a4636c04c44b6060dc6",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点循环种子核验-运行记录-v3-kernel.json": "c0a3c4a40a54ca4cb1a3ed56a8a384a989cb33ce05aa9fff06b035cb17127f32",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序0核验.json": "2925a08f55d2e36080b81ee757bad2c563c2691637343da20397576acbfabf93",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序0核验-运行记录-v3-kernel.json": "032c7ff0b44cf8213a5fda5b5272bde5b005a46570f86cd293fc16a210deae6f",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序1核验.json": "8f133dc3dd698523e25875dbd931777c2abb47cd124d602b052e61ebfd7877af",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序1核验-运行记录-v3-kernel.json": "19550b58265ceb0f131a2a674433763828a3a69c1f07e27b4019971ce146418d",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序2核验.json": "acd645d8d0a21709ef4fd3565a91e3da29e1190512337f0ec36204c9652a9fc2",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序2核验-运行记录-v3-kernel.json": "7cc97de48ab5c03f5fd5e9f46e2cd3fe736a50ddc44d284be9f8741529dd3736",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序3核验.json": "8d358f99f9c944f3a20af1e0b8d21114a2c8577e95ddc3646c431a5cfb335ccb",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序3核验-运行记录-v3-kernel.json": "2f0a7a7f1339a606cfa8c50d334bc6371dca31e53e06423c8309be23be7cca2e",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序4核验.json": "c373a7e6121c708156900fb08e0e687a09d96e864b898baa32ff10681762705f",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序4核验-运行记录-v3-kernel.json": "97920194595f47e87e86e9d9f441c883490ba58ed2bfbe81c7226880cfdbc6e8",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序5核验.json": "bd12883e08a7b2c0e3b62fc1503411474be98ee60a3bed2815435b60a258c723",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序5核验-运行记录-v3-kernel.json": "869f57deca2ce9842c77f70e569b613feaefe6cf898176ce9307d2c08084a407",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r3-1-证据/phase-valid-zero-input.json": "fbdfd10fa635bfed4e4e55c18c07e209d1c643d5a97b0d9b1300eca91a5a1e0e"
+  }
+}

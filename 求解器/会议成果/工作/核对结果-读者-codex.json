@@ -1,0 +1,24 @@
+{
+  "result": "PASS",
+  "items": 83,
+  "kinds": {
+    "已定": 23,
+    "工作纪律": 8,
+    "已推翻": 32,
+    "未定": 20
+  },
+  "owner_coverage": {
+    "main": 24,
+    "appendix": 8,
+    "total": 32
+  },
+  "checks": [
+    "five-field schema",
+    "continuous unique IDs",
+    "markdown/json same fields",
+    "v45 disposition per item",
+    "unresolved items name missing evidence",
+    "formal and candidate fingerprints unchanged"
+  ],
+  "markdown_sha256": "b9fb9e1009c4f34ecb103b0e9634efb1440d43e155c928319034685b12f4186a"
+}

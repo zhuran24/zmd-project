@@ -1,0 +1,47 @@
+[
+  {
+    "accepted": true,
+    "error": null,
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-kernel.json"
+  },
+  {
+    "accepted": true,
+    "error": null,
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-checkpoint_delta-kernel.json"
+  },
+  {
+    "accepted": false,
+    "error": "invalid_input input @ record: 交付记录与完整重算逐字段不同",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-测试与证据/混做粉碎机两下游-删除三份正式源指纹.json"
+  },
+  {
+    "accepted": false,
+    "error": "invalid_input input @ record: 交付记录与完整重算逐字段不同",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-测试与证据/混做粉碎机两下游-伪造验证范围与批数.json"
+  },
+  {
+    "accepted": true,
+    "error": null,
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-kernel.json"
+  },
+  {
+    "accepted": true,
+    "error": null,
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-checkpoint_delta-kernel.json"
+  },
+  {
+    "accepted": false,
+    "error": "invalid_input input @ record: 交付记录与完整重算逐字段不同",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-测试与证据/分流器三路轮询-删除三份正式源指纹.json"
+  },
+  {
+    "accepted": false,
+    "error": "invalid_input input @ record: 交付记录与完整重算逐字段不同",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-测试与证据/分流器三路轮询-伪造验证范围与批数.json"
+  },
+  {
+    "accepted": true,
+    "error": null,
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-测试与证据/空补矿史耗尽-record.json"
+  }
+]

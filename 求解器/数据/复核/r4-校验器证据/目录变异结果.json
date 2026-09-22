@@ -1,0 +1,15 @@
+{
+  "变异-研磨耗时": {
+    "accepted": true
+  },
+  "变异-供电宽度": {
+    "accepted": true
+  },
+  "变异-机型下限": {
+    "accepted": true
+  },
+  "对照-运输阈值": {
+    "accepted": false,
+    "error": "目录 static_checks 与正式来源不一致"
+  }
+}

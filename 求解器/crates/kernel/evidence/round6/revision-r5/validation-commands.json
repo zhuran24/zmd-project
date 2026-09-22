@@ -1,0 +1,114 @@
+[
+  {
+    "name": "cargo-test",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--offline"
+    ],
+    "exit_code": 0,
+    "seconds": 68.43133507399762,
+    "log": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/cargo-test.log"
+  },
+  {
+    "name": "clippy",
+    "command": [
+      "cargo",
+      "clippy",
+      "--locked",
+      "--offline",
+      "--all-targets",
+      "--",
+      "-D",
+      "warnings"
+    ],
+    "exit_code": 0,
+    "seconds": 0.6314723750110716,
+    "log": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/clippy.log"
+  },
+  {
+    "name": "build",
+    "command": [
+      "cargo",
+      "build",
+      "--release",
+      "--locked",
+      "--offline",
+      "-p",
+      "kernel"
+    ],
+    "exit_code": 0,
+    "seconds": 5.553705703001469,
+    "log": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/build.log"
+  },
+  {
+    "name": "release-cli",
+    "command": [
+      "/usr/bin/python",
+      "-B",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/revision_r5_cli.py"
+    ],
+    "exit_code": 0,
+    "seconds": 7.053364166000392,
+    "log": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/release-cli.log"
+  },
+  {
+    "name": "regenerate",
+    "command": [
+      "/usr/bin/python",
+      "-B",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/refresh_samples.py"
+    ],
+    "exit_code": 0,
+    "seconds": 52.764251316009904,
+    "log": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/regenerate.log"
+  },
+  {
+    "name": "benchmark",
+    "command": [
+      "/usr/bin/python",
+      "-B",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/benchmark_round6.py",
+      "final",
+      "--out-dir",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/benchmark"
+    ],
+    "exit_code": 0,
+    "seconds": 2.1680258379929,
+    "log": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/benchmark.log"
+  },
+  {
+    "name": "verify-readonly",
+    "command": [
+      "/usr/bin/python",
+      "-B",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/verify_readonly.py"
+    ],
+    "exit_code": 0,
+    "seconds": 39.54621553400648,
+    "log": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/verify-readonly.log"
+  },
+  {
+    "name": "spec-selfcheck",
+    "command": [
+      "/usr/bin/python",
+      "-B",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/spec_selfcheck.py"
+    ],
+    "exit_code": 0,
+    "seconds": 0.33225914400827605,
+    "log": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/spec-selfcheck.log"
+  },
+  {
+    "name": "reduction-lock",
+    "command": [
+      "/usr/bin/python",
+      "-B",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/relock_reduction.py"
+    ],
+    "exit_code": 0,
+    "seconds": 9.730599812988658,
+    "log": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/reduction-lock.log"
+  }
+]

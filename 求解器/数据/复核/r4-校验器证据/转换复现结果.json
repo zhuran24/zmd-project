@@ -1,0 +1,10 @@
+{
+  "contract.json": {
+    "byte_identical": true,
+    "sha256": "a555045972861bc60a84ade0cfaf81a037a1abfff89be1aeee578b9ef0e1a2db"
+  },
+  "来源清单.json": {
+    "byte_identical": true,
+    "sha256": "180a10da3cb9730046e17ad575a8006bd0598b36fa6f7205d297ab5c55cae0ba"
+  }
+}

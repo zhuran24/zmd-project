@@ -1,0 +1,13 @@
+$ '/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel' check '/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/规格/seed-output.json' --config '/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json'
+CWD=/home/zhuran24/zmd-research-fresh/求解器
+EXIT_CODE=0
+STDOUT:
+{
+  "buffer_channels": 8,
+  "catalog_sha256": "5d0c7e09d87180b851cdc0763fd5098c527657b0c62971791f9bf6ced8264cd7",
+  "physical_channels": 11,
+  "status": "input_checked",
+  "units": 14
+}
+
+STDERR:

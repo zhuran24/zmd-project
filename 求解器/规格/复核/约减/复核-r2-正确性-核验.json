@@ -1,0 +1,310 @@
+{
+  "schema": "reduction-correctness-review-r2",
+  "findings": [],
+  "reviewed_files": {
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/参数扫描约减.md": "b130439dc970d41923314a992f043dbdc96280c2cf0e653000ce9b6363e94011",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/count_classes.py": "a7d848c10163b3e36e9ff1fe99b6d5a198de21c44bfb77262f3cec3707205208",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/verify_reduction.py": "56417674632c27bbfd4a5269ecbbed17986bb5a9f9d9577c999f5980018b4994",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/verify_branch_projection.py": "d9aba100cb281221944516d63320455b4d555809bbc9f645cced7b6653e16824",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/等价类计数.json": "c26b2fc41810feeb365790bf55176bb8950336675f1b5a5ed8e05f63efe61ce7",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/事件对清单.md": "24f63baf7f4f0be075cdf26625b9d14a507dd3734b20cb9d35847fe0902cb62a",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/验证结果.json": "76ee2d3c27787004540c6fdf75f779cbb7bd5c925c434e5da647fe063e620090",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/分支表约减验证.json": "db45e95e5edf05bcddd289db4f147f90a7152a1719bd38bd66283141415b3073",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/修订记录.md": "5d4f6446f571404af241a4e74ed3187f33db787f8bc95a3b925626bf1507915e",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/修订-r1-自查.log": "db31ad875e018c2aee3685d29173f1341960b88727b852bfd54a30347e04e58a"
+  },
+  "current_sources": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md",
+      "sha256": "55e3caee8ab40d1003b6002f1283c46734ef77a122e2870a2455fb4f14355450"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限模型声明.md",
+      "sha256": "da0ab2073221bca451c676d54c44c98705bac2886c4ebf7049b7a87fd3509e86"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "sha256": "bb0864eec811a6a77065ede33af165ced5e31e384afb166eaa30af554589e34a"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md",
+      "sha256": "0ca6312ed5142008d136f2d298bf23937dfbcb4cc80b7e3bfc023278833e9ec9"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/运行语义.md",
+      "sha256": "1ce70540bd9f82e6fb0d1661ded855c7c723abccc4f9c13d646753cbece5a02c"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+      "sha256": "37427b530246a263018fa44a826893b46032c9d97eb8db1b6be06c7bcada080d"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+      "sha256": "74d21a5bd37c6178f988a86a4aa78a03d1e4244ecff26f133bb5e700ada82e43"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/transition.rs",
+      "sha256": "e298ac43f509561bcf15ebfe3a7bf5abba57133cc2561782ec397f6592ceeedd"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/polling.rs",
+      "sha256": "93198482832582239a9d2b4e3ebcd0941e91d228d36ba3626076e977db0a833b"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/input.rs",
+      "sha256": "ecf8754d2c424f2f8970e606ef8dc5db5a220dcf61c81845947225f236df199e"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/参数扫描约减.md",
+      "sha256": "b130439dc970d41923314a992f043dbdc96280c2cf0e653000ce9b6363e94011"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解任务.txt",
+      "sha256": "10abf80fe6eefe647471eabe78da4053f77b489d3806722c501c6acb405a2864"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解约束.txt",
+      "sha256": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+      "sha256": "abc7a5867f6477eedb619c63a21c4a77144c57ad4567fdcfb696b3049d66a670"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json",
+      "sha256": "2942f3916d63c41d600d8226046cbd2a5bc05439161cfa1c2abd1702b75dd590"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询.json",
+      "sha256": "02ad753b54f31d04390b8672ebd4e316cef91d931fd96fec252c2fed82e863ee"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/count_classes.py",
+      "sha256": "a7d848c10163b3e36e9ff1fe99b6d5a198de21c44bfb77262f3cec3707205208"
+    }
+  ],
+  "stored_source_changes": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+      "stored": "e4123a73b1b0bd815e42f705c56a77f14a4368d95d52a1442b270c282b9e0637",
+      "current": "37427b530246a263018fa44a826893b46032c9d97eb8db1b6be06c7bcada080d"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/polling.rs",
+      "stored": "11168c6648e3a78074814b5740833a7952299f959161d6bd16bd1f127d369aa7",
+      "current": "93198482832582239a9d2b4e3ebcd0941e91d228d36ba3626076e977db0a833b"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json",
+      "stored": "988ac30253bf1d4803f0f1eed23b5029db1033dcf391f2b7c324c5d9e27ee144",
+      "current": "2942f3916d63c41d600d8226046cbd2a5bc05439161cfa1c2abd1702b75dd590"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询.json",
+      "stored": "a8303054aaf7dde1af2a9f33d468a6c05c5d115ee2ee5ba5f5f07887a3dcc13a",
+      "current": "02ad753b54f31d04390b8672ebd4e316cef91d931fd96fec252c2fed82e863ee"
+    }
+  ],
+  "content_equal_excluding_sources": true,
+  "check_command": {
+    "argv": [
+      "/usr/bin/python",
+      "-B",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/count_classes.py",
+      "--check"
+    ],
+    "exit_code": 1
+  },
+  "examples": [
+    {
+      "name": "混做粉碎机两下游",
+      "modes": {
+        "semantic_sweep": {
+          "pairs": 91,
+          "edges": 18,
+          "allowed": 73,
+          "classes": 55296,
+          "pair_types": {
+            "move/move": 55,
+            "manufacture/move": 33,
+            "manufacture/manufacture": 3
+          },
+          "allowed_types": {
+            "move/move": 42,
+            "manufacture/move": 28,
+            "manufacture/manufacture": 3
+          }
+        },
+        "operational_conservative": {
+          "pairs": 91,
+          "edges": 91,
+          "allowed": 0,
+          "classes": 87178291200,
+          "pair_types": {
+            "move/move": 55,
+            "manufacture/move": 33,
+            "manufacture/manufacture": 3
+          },
+          "allowed_types": {
+            "move/move": 0,
+            "manufacture/move": 0,
+            "manufacture/manufacture": 0
+          }
+        }
+      }
+    },
+    {
+      "name": "分流器三路轮询",
+      "modes": {
+        "semantic_sweep": {
+          "pairs": 153,
+          "edges": 95,
+          "allowed": 58,
+          "classes": 27323180236800,
+          "pair_types": {
+            "move/move": 78,
+            "move/transfer": 65,
+            "transfer/transfer": 10
+          },
+          "allowed_types": {
+            "move/move": 13,
+            "move/transfer": 35,
+            "transfer/transfer": 10
+          }
+        },
+        "operational_conservative": {
+          "pairs": 153,
+          "edges": 108,
+          "allowed": 45,
+          "classes": 104657538585600,
+          "pair_types": {
+            "move/move": 78,
+            "move/transfer": 65,
+            "transfer/transfer": 10
+          },
+          "allowed_types": {
+            "move/move": 0,
+            "move/transfer": 35,
+            "transfer/transfer": 10
+          }
+        }
+      }
+    }
+  ],
+  "markdown_pairs": 244,
+  "branch": [
+    {
+      "name": "混做粉碎机两下游",
+      "original_tables": 1,
+      "projected_tables": 1,
+      "behavior_tables": 1,
+      "subgraphs": 1,
+      "local_queries": 0,
+      "status": "passed"
+    },
+    {
+      "name": "分流器三路轮询",
+      "original_tables": 96,
+      "projected_tables": 12,
+      "behavior_tables": 1,
+      "subgraphs": 4,
+      "local_queries": 1536,
+      "status": "passed"
+    }
+  ],
+  "combination_checks": {
+    "graphs": 1100,
+    "permutations": 124470,
+    "adjacent_swap_component_graphs": 76,
+    "status": "passed"
+  },
+  "recipe_checks": {
+    "status": "passed",
+    "rows": [
+      {
+        "kind": "粉碎机",
+        "input_slots": 1,
+        "recipe_count": 4,
+        "support_sets": 5,
+        "max_simultaneous_candidates": 1
+      },
+      {
+        "kind": "精炼炉",
+        "input_slots": 1,
+        "recipe_count": 3,
+        "support_sets": 4,
+        "max_simultaneous_candidates": 1
+      },
+      {
+        "kind": "研磨机",
+        "input_slots": 2,
+        "recipe_count": 3,
+        "support_sets": 11,
+        "max_simultaneous_candidates": 1
+      },
+      {
+        "kind": "塑形机",
+        "input_slots": 1,
+        "recipe_count": 1,
+        "support_sets": 2,
+        "max_simultaneous_candidates": 1
+      },
+      {
+        "kind": "配件机",
+        "input_slots": 1,
+        "recipe_count": 1,
+        "support_sets": 2,
+        "max_simultaneous_candidates": 1
+      },
+      {
+        "kind": "种植机",
+        "input_slots": 1,
+        "recipe_count": 2,
+        "support_sets": 3,
+        "max_simultaneous_candidates": 1
+      },
+      {
+        "kind": "采种机",
+        "input_slots": 1,
+        "recipe_count": 2,
+        "support_sets": 3,
+        "max_simultaneous_candidates": 1
+      },
+      {
+        "kind": "封装机",
+        "input_slots": 2,
+        "recipe_count": 1,
+        "support_sets": 4,
+        "max_simultaneous_candidates": 1
+      },
+      {
+        "kind": "灌装机",
+        "input_slots": 2,
+        "recipe_count": 1,
+        "support_sets": 4,
+        "max_simultaneous_candidates": 1
+      }
+    ],
+    "per_kind_order_product": 3456,
+    "reduced_classes": 1,
+    "scope": "当前目录、单种格、输入并集、全部原料物种齐备；非输入物种不能新增候选"
+  },
+  "runtime_probes": [
+    {
+      "name": "混做粉碎机两下游",
+      "status": "baseline_only",
+      "ticks": 4,
+      "interpretation": "仅参考原样例基线；入口逐轴要求固定样例值，未声称任意排序差分通过"
+    },
+    {
+      "name": "分流器三路轮询",
+      "status": "baseline_only",
+      "ticks": 12,
+      "interpretation": "仅参考原样例基线；入口逐轴要求固定样例值，未声称任意排序差分通过"
+    }
+  ],
+  "scope": "图、字段及有限表核验；没有执行Rust异序差分或全称周期认证",
+  "reviewed_files_unchanged": true,
+  "source_changes_during_review": [],
+  "status": "review_completed_with_declared_runtime_and_fingerprint_limits"
+}

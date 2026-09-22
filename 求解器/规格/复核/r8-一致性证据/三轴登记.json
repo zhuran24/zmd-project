@@ -1,0 +1,40 @@
+{
+  "warehouse.external_supply": {
+    "disposition": "由输入全称量化",
+    "value": {
+      "interface": "ore-supply-v2",
+      "default_mode": "sufficient"
+    },
+    "meaning": "输入显式选sufficient（本版循环选值）或explicit_ore_history（备用差分）；前者每次出矿原子回补取走量，后者按有限历史回放",
+    "coverage_loss": "sufficient只保证取矿充分，不抹去回矿入库的容量依赖；循环抽象须另核转移§6准入条件，显式有限历史不认证无限重复",
+    "extension_gate": "实现两模式、补给分账及循环准入检查后恢复对应运行；其它环境历史另审",
+    "choice": "T12",
+    "lifetime": "U",
+    "basis": "任务L7外部过程；规则L13、L41容量；受限转移定义§2.1、§6"
+  },
+  "warehouse.periodic_lift": {
+    "disposition": "超出覆盖即停",
+    "value": {
+      "policy": "stop",
+      "trigger": "请求级二完整基地周期提升；F仅限制成品未满不足以排除整箱容量拒收"
+    },
+    "meaning": "级一生产部分周期在转移§6准入域可认证；级二因§6.5的批量容量和环境实现义务未闭合而unresolved",
+    "coverage_loss": "级二尚未获证；不得把生产部分重复或单条拿取历史称完整基地循环，精确卡点见转移§6.5",
+    "extension_gate": "补足逐事务容量余量与非精确拿取族可实现性、接收域和标签非干扰证明，并通过普遍规则审查",
+    "choice": "T12",
+    "lifetime": "U",
+    "basis": "任务L2、L8、L9、L12；规则L13、L36、L41；T12；受限转移定义§6.5"
+  },
+  "damping.branch": {
+    "disposition": "由输入全称量化",
+    "value": {
+      "interface": "damping-branch-v2"
+    },
+    "meaning": "输入整场固定的(fork_unit,available_channels)到outgoing_channel表，按当前非空可用出支集合查询；切支与恢复重新查表",
+    "coverage_loss": "覆盖局部出支集上的确定性无记忆策略；依赖查询起点、其它图状态或历史的选择未覆盖；无终点仍停止",
+    "extension_gate": "实现v2总表与图变更重算；旧表须显式扩展，不能默填失活后的选择",
+    "choice": "T4",
+    "lifetime": "U",
+    "basis": "规则L27阻尼、L64准入口；约束·分叉分支；内核输入§5.3"
+  }
+}

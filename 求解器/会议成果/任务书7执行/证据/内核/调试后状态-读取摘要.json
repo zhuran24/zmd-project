@@ -1,0 +1,53 @@
+{
+  "source": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/调试后状态.json",
+  "sha256": "0e3735e5c382eb97c5ef4d84032db61057b1d8914bf792f59a02173075f71c89",
+  "schema": "debug-release-state-v1",
+  "status": "partial",
+  "default_start_certified": false,
+  "full_layout_certified": false,
+  "open_items": [
+    {
+      "id": "DR-01",
+      "category": "缺构造与推导",
+      "description": "实际路径及默认后置集合关联不变量",
+      "handoff": "任务5/7; PR-01/05; U3"
+    },
+    {
+      "id": "DR-02",
+      "category": "缺推导",
+      "description": "实际E、反复拒收服务、逐根收支和Dmax",
+      "handoff": "任务4/5/6; PR-02/03; U4"
+    },
+    {
+      "id": "DR-03",
+      "category": "缺推导",
+      "description": "默认释放进入或扩大安全集合、共同下游服务",
+      "handoff": "任务4—7; PR-04/06; U5"
+    },
+    {
+      "id": "DR-04",
+      "category": "缺构造与推导",
+      "description": "217换种、A两路、B三路、220输入3:2:1",
+      "handoff": "任务4/6/7; PR-06"
+    },
+    {
+      "id": "DR-05",
+      "category": "缺推导",
+      "description": "接收恢复状态的安全集合包含及循环对应",
+      "handoff": "任务2/5/6"
+    },
+    {
+      "id": "DR-06",
+      "category": "缺推导",
+      "description": "全起法覆盖或无损变换",
+      "handoff": "任务5/汇总"
+    },
+    {
+      "id": "DR-07",
+      "category": "缺复核",
+      "description": "本席新增条件证明和接口的独立复核",
+      "handoff": "独立复核席"
+    }
+  ],
+  "reading_scope": "JSON全文解码；状态和证明范围按对应正文核读，原数据仍在source路径。"
+}

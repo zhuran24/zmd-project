@@ -1,0 +1,141 @@
+{
+  "stage": "r4",
+  "platform": "Linux-7.2.6-1-cachyos-x86_64-with-glibc2.44",
+  "binary_sha256": "ebd83d82e2075bb07c562d4aaf6e6365f20569058d7697a0e6fcd582b7b6d754",
+  "reports": [
+    {
+      "name": "benchmark_brick_60",
+      "manufacturing_units": 0,
+      "total_units": 57,
+      "logical_channels": 0,
+      "physical_channels": 97,
+      "inventory_slots": 56,
+      "ticks": 12,
+      "ms_per_tick": 0.8452749166666668,
+      "target_ms": 1,
+      "target_met": true,
+      "engine": {
+        "completed_batches": 0,
+        "elapsed_ns": "10143299",
+        "final_inventory": {
+          "源矿": 80000,
+          "砂叶": 80000,
+          "砂叶种子": 80000,
+          "荞花": 80000,
+          "荞花种子": 80000,
+          "蓝铁矿": 80000,
+          "高容谷地电池": 28
+        },
+        "output": "disabled",
+        "statistics": {
+          "completed": 1,
+          "inconclusive": 0,
+          "stopped": 0
+        },
+        "status": "completed",
+        "ticks": 12
+      },
+      "wall_ns": 30746228,
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/fixtures/benchmark_brick_60.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--ticks",
+        "12",
+        "--no-output"
+      ],
+      "input_sha256": "6129cf2ece47c144520107193df19f419203a81de5d03da2aac430b32493b022"
+    },
+    {
+      "name": "benchmark_brick",
+      "manufacturing_units": 30,
+      "total_units": 81,
+      "logical_channels": 50,
+      "physical_channels": 100,
+      "inventory_slots": 140,
+      "ticks": 12,
+      "ms_per_tick": 2.6731130000000003,
+      "target_ms": 1,
+      "target_met": false,
+      "engine": {
+        "completed_batches": 0,
+        "elapsed_ns": "32077356",
+        "final_inventory": {
+          "源矿": 80900,
+          "砂叶": 80000,
+          "砂叶种子": 80000,
+          "荞花": 80000,
+          "荞花种子": 80000,
+          "蓝铁矿": 80600
+        },
+        "output": "disabled",
+        "statistics": {
+          "completed": 1,
+          "inconclusive": 0,
+          "stopped": 0
+        },
+        "status": "completed",
+        "ticks": 12
+      },
+      "wall_ns": 54127260,
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/fixtures/benchmark_brick.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--ticks",
+        "12",
+        "--no-output"
+      ],
+      "input_sha256": "ba51cd30be879860d09e517970cbcf3ba643b3f97eaa4030c234f37f222f2cbf"
+    },
+    {
+      "name": "benchmark_candidate_b",
+      "manufacturing_units": 219,
+      "total_units": 535,
+      "logical_channels": 315,
+      "physical_channels": 630,
+      "inventory_slots": 972,
+      "ticks": 12,
+      "ms_per_tick": 18.0549995,
+      "target_ms": 20,
+      "target_met": true,
+      "engine": {
+        "completed_batches": 0,
+        "elapsed_ns": "216659994",
+        "final_inventory": {
+          "源矿": 85850,
+          "砂叶": 80000,
+          "砂叶种子": 80000,
+          "荞花": 80000,
+          "荞花种子": 80000,
+          "蓝铁矿": 85100
+        },
+        "output": "disabled",
+        "statistics": {
+          "completed": 1,
+          "inconclusive": 0,
+          "stopped": 0
+        },
+        "status": "completed",
+        "ticks": 12
+      },
+      "wall_ns": 445748024,
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/fixtures/benchmark_candidate_b.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--ticks",
+        "12",
+        "--no-output"
+      ],
+      "input_sha256": "b66b4d69d7b930a27a6ef7879ab104afa39cfaa33348eccddd3d40f6840d52a8"
+    }
+  ],
+  "scope": "合成物流压力测试；砖档57单位/97PC，另保留81单位/100PC的纵向送料对照；候选B档219制造台/315逻辑段/630PC，未声称真实候选B布置可行或制造满载。"
+}

@@ -1,0 +1,369 @@
+[
+  {
+    "case": "valid-control",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-工程证据/valid-control.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "1",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-工程证据/valid-control-result.json"
+    ],
+    "exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-工程证据/valid-control-result.json\",\"status\":\"completed\"}\n",
+    "stderr": "",
+    "result_path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-工程证据/valid-control-result.json",
+    "status": "completed",
+    "stop": null,
+    "statistics": null
+  },
+  {
+    "case": "invalid-slot-label",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-工程证据/invalid-slot-label.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "1",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-工程证据/invalid-slot-label-result.json"
+    ],
+    "exit_code": 101,
+    "stdout": "",
+    "stderr": "\nthread 'main' (675191) panicked at crates/kernel/src/engine.rs:170:47:\nindex out of bounds: the len is 1 but the index is 1\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n",
+    "result_path": null,
+    "status": null,
+    "stop": null,
+    "statistics": null
+  },
+  {
+    "case": "invalid-unit-label",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-工程证据/invalid-unit-label.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "1",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-工程证据/invalid-unit-label-result.json"
+    ],
+    "exit_code": 2,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-工程证据/invalid-unit-label-result.json\",\"status\":\"invalid_input\"}\n",
+    "stderr": "",
+    "result_path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-工程证据/invalid-unit-label-result.json",
+    "status": "invalid_input",
+    "stop": null,
+    "statistics": null
+  },
+  {
+    "case": "invalid-seed-shape",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "seed",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-工程证据/invalid-seed-shape.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-工程证据/invalid-seed-shape-result.json"
+    ],
+    "exit_code": 101,
+    "stdout": "",
+    "stderr": "\nthread 'main' (675217) panicked at /home/zhuran24/zmd-research-fresh/求解器/.cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/serde_json-1.0.151/src/value/index.rs:102:18:\ncannot access key \"semantic_context\" in JSON boolean\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n",
+    "result_path": null,
+    "status": null,
+    "stop": null,
+    "statistics": null
+  },
+  {
+    "case": "run-load-age-overflow",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-工程证据/load-age-overflow.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-工程证据/run-load-age-overflow-result.json"
+    ],
+    "exit_code": 2,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-工程证据/run-load-age-overflow-result.json\",\"status\":\"inconclusive\"}\n",
+    "stderr": "",
+    "result_path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-工程证据/run-load-age-overflow-result.json",
+    "status": "inconclusive",
+    "stop": null,
+    "statistics": null
+  },
+  {
+    "case": "cycle-load-age-overflow",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "cycle",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-工程证据/load-age-overflow.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-工程证据/cycle-load-age-overflow-result.json"
+    ],
+    "exit_code": 2,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-工程证据/cycle-load-age-overflow-result.json\",\"status\":\"stopped\"}\n",
+    "stderr": "",
+    "result_path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-工程证据/cycle-load-age-overflow-result.json",
+    "status": "stopped",
+    "stop": {
+      "axis": "resource.integer",
+      "event": "PC|a:east:0|b:south:0",
+      "kind": "resource",
+      "partial_events": [],
+      "reason": "时差溢出",
+      "time": null
+    },
+    "statistics": null
+  },
+  {
+    "case": "run-one-sweep",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/生产循环环带.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--max-sweeps",
+      "1",
+      "--no-output"
+    ],
+    "exit_code": 2,
+    "stdout": "{\n  \"completed_ticks\": 0,\n  \"elapsed_ns\": \"60595\",\n  \"output\": \"disabled\",\n  \"statistics\": {\n    \"completed\": 0,\n    \"inconclusive\": 1,\n    \"stopped\": 0\n  },\n  \"status\": \"inconclusive\",\n  \"stop\": {\n    \"axis\": \"resource.sweeps\",\n    \"location\": \"J|0|0|4: instant=0 sweep=1\",\n    \"reason\": \"未见完整状态重复，不能推进时刻\",\n    \"status\": \"inconclusive\"\n  },\n  \"ticks\": 2\n}\n",
+    "stderr": "",
+    "result_path": null,
+    "status": "inconclusive",
+    "stop": {
+      "axis": "resource.sweeps",
+      "location": "J|0|0|4: instant=0 sweep=1",
+      "reason": "未见完整状态重复，不能推进时刻",
+      "status": "inconclusive"
+    },
+    "statistics": {
+      "completed": 0,
+      "inconclusive": 1,
+      "stopped": 0
+    }
+  },
+  {
+    "case": "run-adequate-sweeps",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/生产循环环带.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--max-sweeps",
+      "1000",
+      "--no-output"
+    ],
+    "exit_code": 0,
+    "stdout": "{\n  \"completed_batches\": 0,\n  \"elapsed_ns\": \"165385\",\n  \"final_inventory\": {\n    \"源矿\": 80000,\n    \"砂叶\": 80000,\n    \"砂叶种子\": 80000,\n    \"精选荞愈胶囊\": 5,\n    \"荞花\": 80000,\n    \"荞花种子\": 80000,\n    \"蓝铁矿\": 80000,\n    \"高容谷地电池\": 1\n  },\n  \"output\": \"disabled\",\n  \"statistics\": {\n    \"completed\": 1,\n    \"inconclusive\": 0,\n    \"stopped\": 0\n  },\n  \"status\": \"completed\",\n  \"ticks\": 2\n}\n",
+    "stderr": "",
+    "result_path": null,
+    "status": "completed",
+    "stop": null,
+    "statistics": {
+      "completed": 1,
+      "inconclusive": 0,
+      "stopped": 0
+    }
+  },
+  {
+    "case": "cycle-one-sweep",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "cycle",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/生产循环环带.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--max-sweeps",
+      "1",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-工程证据/cycle-one-sweep-result.json"
+    ],
+    "exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-工程证据/cycle-one-sweep-result.json\",\"status\":\"inconclusive\"}\n",
+    "stderr": "",
+    "result_path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-工程证据/cycle-one-sweep-result.json",
+    "status": "inconclusive",
+    "stop": {
+      "axis": "resource.sweeps",
+      "event": "J|0|0|4: instant=0 sweep=1",
+      "kind": "resource",
+      "partial_events": [
+        {
+          "basis": [
+            "规则 L13、L15–17、L23–25、L29–32",
+            "约束端口速率",
+            "受限模型声明 polling.both_failure",
+            "内核输入 §5.2、§6.3"
+          ],
+          "detail": "",
+          "event": "J|0|0|0",
+          "operation": "move",
+          "outcome": "success",
+          "target": "PC|a:east:0|b:south:0"
+        },
+        {
+          "basis": [
+            "规则 L13、L15–17、L23–25、L29–32",
+            "约束端口速率",
+            "受限模型声明 polling.both_failure",
+            "内核输入 §5.2、§6.3"
+          ],
+          "detail": "residence",
+          "event": "J|0|0|1",
+          "operation": "move",
+          "outcome": "failure",
+          "target": "PC|b:east:0|c:south:0"
+        },
+        {
+          "basis": [
+            "规则 L13、L15–17、L23–25、L29–32",
+            "约束端口速率",
+            "受限模型声明 polling.both_failure",
+            "内核输入 §5.2、§6.3"
+          ],
+          "detail": "source_empty",
+          "event": "J|0|0|2",
+          "operation": "move",
+          "outcome": "failure",
+          "target": "PC|c:east:0|d:south:0"
+        },
+        {
+          "basis": [
+            "规则 L13、L15–17、L23–25、L29–32",
+            "约束端口速率",
+            "受限模型声明 polling.both_failure",
+            "内核输入 §5.2、§6.3"
+          ],
+          "detail": "source_empty",
+          "event": "J|0|0|3",
+          "operation": "move",
+          "outcome": "failure",
+          "target": "PC|d:east:0|a:south:0"
+        },
+        {
+          "basis": [
+            "规则 L20–21、L36",
+            "受限转移定义 §4.3"
+          ],
+          "detail": "whole_box",
+          "event": "J|0|0|4",
+          "operation": "transfer",
+          "outcome": "success",
+          "target": "box"
+        }
+      ],
+      "reason": "未见完整状态重复，不能推进时刻",
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      }
+    },
+    "statistics": null
+  },
+  {
+    "case": "cycle-adequate-sweeps",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "cycle",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/生产循环环带.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--max-sweeps",
+      "1000",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-工程证据/cycle-adequate-sweeps-result.json"
+    ],
+    "exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-工程证据/cycle-adequate-sweeps-result.json\",\"status\":\"inconclusive\"}\n",
+    "stderr": "",
+    "result_path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-工程证据/cycle-adequate-sweeps-result.json",
+    "status": "inconclusive",
+    "stop": {
+      "axis": "resource.ticks",
+      "event": null,
+      "kind": "resource",
+      "partial_events": [],
+      "reason": "时刻预算耗尽，未发现重键；不证明无循环",
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "1"
+        }
+      }
+    },
+    "statistics": null
+  },
+  {
+    "case": "relocated-input",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "seed",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-工程证据/relocated-input-result.json"
+    ],
+    "exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-工程证据/relocated-input-result.json\",\"status\":null}\n",
+    "stderr": "",
+    "result_path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-工程证据/relocated-input-result.json",
+    "status": null,
+    "stop": null,
+    "statistics": null
+  },
+  {
+    "case": "relocated-run",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-工程证据/relocated-input-result.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "4",
+      "--no-output"
+    ],
+    "exit_code": 0,
+    "stdout": "{\n  \"completed_batches\": 2,\n  \"elapsed_ns\": \"812268\",\n  \"final_inventory\": {\n    \"源石粉末\": 2,\n    \"源矿\": 79998,\n    \"砂叶\": 80000,\n    \"砂叶种子\": 80000,\n    \"荞花\": 80000,\n    \"荞花种子\": 80000,\n    \"蓝铁矿\": 80000\n  },\n  \"output\": \"disabled\",\n  \"statistics\": {\n    \"completed\": 1,\n    \"inconclusive\": 0,\n    \"stopped\": 0\n  },\n  \"status\": \"completed\",\n  \"ticks\": 4\n}\n",
+    "stderr": "",
+    "result_path": null,
+    "status": "completed",
+    "stop": null,
+    "statistics": {
+      "completed": 1,
+      "inconclusive": 0,
+      "stopped": 0
+    }
+  }
+]

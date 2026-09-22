@@ -1,0 +1,213 @@
+{
+  "status": "PASS",
+  "forbidden_active_assertions": [
+    "**相遇判据已定**",
+    "两端口要相遇只能重合",
+    "共边相向相遇已定",
+    "角触/隔格/同类端口",
+    "按共享选择点 T5 已定",
+    "找第一仍为空且无历史身份的格"
+  ],
+  "forbidden_hits": [],
+  "reviewed_hits": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/运行语义.md",
+      "line": 39,
+      "text": "外部通道按所选相遇谓词由合法存取端口自动形成；本版connection.port_meeting=shared_edge_opposite采用共边全长重合且法向相反，角点相交的其它读法及覆盖损失见T5，不能称本版谓词为规则唯一结论。至少一端属于运输单位；两个非运输单位端口直接相邻不形成送料通道。运输格和制造内部缓存路径分别表示（规则称其为“通道”，判定归类见 T2），不从机器到机器的计划送料边自动生成物理直连。结构输入中的端口方向及桥接器定向须提交建造/接通历史；方向已知且先接关系无环的部分可逐步核验存取相容性，平局或桥接器互依赖的部分须标为待审，不能只用“合法历史”标签宣称验证完成（T5）。（据：通道、约束·端口对接、缓存格、桥接器、接通）",
+      "classification": "现行定义或明确撤回记录，逐条读者自审核过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点清单.md",
+      "line": 71,
+      "text": "**相遇谓词轴**：`connection.port_meeting`为open/U。规则L12只给单位的部分边及一格宽，L16只写存取端口“相遇”自动成通道，没有给相遇必须全长重合的充要条件。本版选`shared_edge_opposite`：格正交相邻，两端口的闭单位边段全长重合且法向相反；另核存取互补、至少一端运输。另一待审方向`closed_segment_touch`把两个闭单位边段非空相交视为几何相遇，仍保留角色和单位类型守卫，因而可能计入仅角点相交。它是待审谓词，未获全规则许可，也未由下述几何论证排除。（据：端口、通道、约束·端口对接）",
+      "classification": "现行定义或明确撤回记录，逐条读者自审核过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点清单.md",
+      "line": 73,
+      "text": "例如占格(0,0)上的东边端口为{1}×[0,1]，占格(1,1)上的西边端口为{1}×[1,2]；占格不重叠、法向相反，两端口仅交于(1,1)。这只反驳“不重叠＋一格宽必推出全长重合”的推理，不构成合法角接通运行见证。约束·端口对接只限制单位类型；约束·边带排布有46取货口配置的前件，约束·核心邻格针对核心，约束·四通结点先限定四邻有通过量，均不能直接把一般相遇谓词唯一化。（据：端口、通道及上述具名约束；坐标交集为算术反例）",
+      "classification": "现行定义或明确撤回记录，逐条读者自审核过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点清单.md",
+      "line": 75,
+      "text": "本版未覆盖角点相遇及由此新增通道、端口共享、轮询/分级和阻尼后效。新增通道可改变行为，不能由最严可建造原则或边集合包含推吞吐单调。启用其它谓词前须完成其全规则审查、完整成边/共享端口后效及参数替换验证；当前加载器对未选/其它值报unsupported，不把它们静默换成本版或宣布物理非法。无交的隔格不满足此处两个相交谓词；同类端口和两非运输端口仍不能成PC。几何连续带的邻接另属T4，不能用该轴替代端口相遇。（据：通道、轮询、两种优先级、阻尼、约束·端口对接、约束·端口速率；受限覆盖登记）",
+      "classification": "现行定义或明确撤回记录，逐条读者自审核过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点清单.md",
+      "line": 157,
+      "text": "仓库空格的历史物种保留/释放及再次入库选格关系另登记 `warehouse.empty_slot_identity`；不借制造格的同名机制扩大辖域，也不授权玩家改写格内容。取货端口指向item=null的仓库格时，该格必须同时给empty_identity决策，否则拒绝执行；空格当下取货必失败，不把历史身份当库存。保留/释放身份只影响未来入库落格及该指派未来取出何物；新物种不与已在库同种重复开格。本版整箱落格须先统计无非空/历史目标的物种U和无身份空格E；len(U)>=2且len(E)>=1时明确unsupported且不改变库存、身份或冷却。空格序是当前无身份空格全序O(S)，成功PC入库/传输同步提交仍为空且无历史身份者的稳定子序；失败/拒收不改序，已用格清空保留身份不回序，新格带种创建不入序。完整后态、闭包和恢复包含该序，详见受限转移定义§4.1/§4.3/§5。空格序不是物种序，箱体编号不授权无线物种排序。实际仓库格内容、成品拿取策略与完整周期收支的编码见[内核输入](内核输入.md)第6节。（据：物品格、仓库、协议核心、零干预运行、操作精度）",
+      "classification": "现行定义或明确撤回记录，逐条读者自审核过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+      "line": 46,
+      "text": "| `connection.port_meeting` | T5 | U | open：shared_edge_opposite（共边全长重合且法向相反，本版选值）／closed_segment_touch（闭边段有非空交集，含仅角点相交，待审方向）；角色仍须存取互补且至少一端运输。一般相遇是否要求全长重合未获证明，不相交占格不能排除角点相遇；不据此准许角接通。两非运输端口、同类端口成PC仍排除。详见T5。据：端口、通道、约束·端口对接；条件几何约束不提供一般相遇的充要定义 |",
+      "classification": "现行定义或明确撤回记录，逐条读者自审核过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+      "line": 102,
+      "text": "| `warehouse.empty_slot_identity` | T12 | U | open：retain_history／release_on_empty及再次入库选格关系待审；非空仓库格与在库物种一一对应，新物种可用新格，空格指派须附该格empty_identity决策，未给则拒绝执行。沿用本轴登记批量落格；当前空格序O(S)随成功入库原子稳定删项，失败保留，重载存后态，详见受限转移定义§4.1；空格序不决定物种序，本版len(U)>=2且len(E)>=1时返回unsupported，U/E及事务停止见受限转移定义§4.3；不授权玩家改物种。据：物品格、仓库、协议核心、设定；T12 |",
+      "classification": "现行定义或明确撤回记录，逐条读者自审核过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+      "line": 154,
+      "text": "| D11 | T5 connection.port_meeting | 本版共边相向；仅角点相交保留待审及覆盖损失，输入须显式选值；据：端口、通道、约束·端口对接 |",
+      "classification": "现行定义或明确撤回记录，逐条读者自审核过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限模型声明.md",
+      "line": 46,
+      "text": "| `connection.port_meeting` | 本版选值 | `\"shared_edge_opposite\"`：共边全长重合且法向相反、存取互补且至少一端运输；其它相遇谓词不支持 | 据：端口、通道、约束·端口对接；几何相遇非唯一解释，选择点T5；完整转移见受限转移定义 | 角点相遇及其新增通道、共享端口和调度后效待审，未获准也未被排除；不适用行为单调简化 | 启用其它相遇谓词或据本版认证全称行为前，审查全规则相容性并实现成边及后效 |",
+      "classification": "现行定义或明确撤回记录，逐条读者自审核过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/规则覆盖表.md",
+      "line": 22,
+      "text": "| 12 | 端口：除供电单位外的所有单位的部分边，每个端口占一格宽 | §1、§2.1；T5 | 一格宽不推出相遇必须全长重合；本版共边谓词及角点方向见T5 |",
+      "classification": "现行定义或明确撤回记录，逐条读者自审核过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/规则覆盖表.md",
+      "line": 26,
+      "text": "| 16 | 通道：当一个运输单位的存货端口/取货端口与其他运输单位/其他单位的取货端口/存货端口相遇时将自动形成通道 | §2.1、§4.1；T5 | 本版共边相向全长重合；角点相遇待审并登记损失；PC存取互补且至少一端运输仍为硬约束 |",
+      "classification": "现行定义或明确撤回记录，逐条读者自审核过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/四件前置义务对照.md",
+      "line": 13,
+      "text": "**未结清**：允许域不能写成四个独立有限数组的全排列。共享端点的接通关系与建造次序有关；离线全序/并列关系域（T10）、桥接器容量例外（T14）、存货格混装/容量、开闸论域及数量/额外物种关系（T7）、成品拿取操作族（T12）、运行期每侧或每级记忆（T3）尚未定义；一般端口相遇是否包含角点（T5）、同刻平局与桥接器互依赖的接通史核验缺规则，离线接续的指针与派生状态缺规则，分支/相位生命周期缺规则，调试后置状态须给具体可达性证明。当前清点不是穷尽性证明。（据：接通、蓝图、离线、轮询、阻尼、传输、操作精度、存货/取货物品格、缓存格、运输单位、桥接器、零干预运行）",
+      "classification": "现行定义或明确撤回记录，逐条读者自审核过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/修订记录.md",
+      "line": 127,
+      "text": "| S2-r4-L3-02 | 当时将相遇误定为F单值并排除角触；该结论已由第7轮S3-r7-L3-1撤回，现行是open/U及本版shared_edge_opposite，角点方向待审 | 选择点清单.md T5；选择点参数轴.md connection.port_meeting/D11；运行语义.md §2.1；规则覆盖表.md L16 | 规则12、16；约束·端口对接、约束·四通结点、约束·边带排布、约束·核心邻格 |",
+      "classification": "现行定义或明确撤回记录，逐条读者自审核过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/修订记录.md",
+      "line": 152,
+      "text": "| S2-r5-L3-03 | 当时将相遇误定为F单值并排除角触；该结论已由第7轮S3-r7-L3-1撤回，现行是open/U及本版shared_edge_opposite，角点方向待审 | 选择点清单.md T5；选择点参数轴.md connection.port_meeting/D11；运行语义.md §2.1；规则覆盖表.md L16 | 规则12、16；约束·端口对接、约束·四通结点、约束·边带排布、约束·核心邻格 |",
+      "classification": "现行定义或明确撤回记录，逐条读者自审核过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/修订记录.md",
+      "line": 200,
+      "text": "| S3-r7-L3-1 | 撤回一般相遇必全长重合及角点已排除的结论；相遇轴改open/U、本版共边相向，角点闭边段相交保留待审并登记行为损失；静态几何与运行输入显式选值，未知/其它值停止；同步全部参数分组、投影和来源锁 | 选择点清单T5；轴表/D11；运行语义§2.1；模型及配置；输入§2.2/5；覆盖表L12/L16；样例检查器/生成器 | 规则L12只给一格宽、L16只给相遇；端口对接仅限类型，三个几何约束各有前件；任务书3§3.A |",
+      "classification": "现行定义或明确撤回记录，逐条读者自审核过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/修订记录.md",
+      "line": 201,
+      "text": "| S3-r7-L3-2 | 当前序O(S)与当前无身份空格E(S)恰等；成功入库/传输原子提交稳定子序，失败保留；清空保历史身份、新格带种、不支持匿名格新增；恢复和闭包涵盖当前序；修正辅助转移并检连续两批及JSON重载 | 转移§1/4.1/4.3/5；输入§5.2/6；T12/轴表/模型/配置；第6轮辅助代码及第7轮回归 | 规则L13/L41物种与容量、L36持续全箱传输；任务书3§3.A唯一后继；retain_history下E单调缩减的条件归纳 |",
+      "classification": "现行定义或明确撤回记录，逐条读者自审核过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md",
+      "line": 9,
+      "text": "支持域是有限已建成、占格不重叠、显式选connection.port_meeting=shared_edge_opposite的布局（共边全长重合且法向相反；其它相遇谓词见T5，未选/不支持值返回unsupported）；端口/桥方向已解；运行区间无玩家单位操作、离线、拿取或新增/拆除单位；外部过程只含输入明确给出的整数时刻两矿补给事件。它是单段实验域，不能排除真实离线或拿取。解出具体建造/调试后态不在本算法里，种子的可达性另记。（据：基地、通道、蓝图、离线、零干预运行、外部过程、操作精度；最严可建造依据见运行语义§1）",
+      "classification": "现行定义或明确撤回记录，逐条读者自审核过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md",
+      "line": 13,
+      "text": "排序及选择数据必须完整：事件模板全序、同接通时刻的通道仲裁序、同级排序键的级仲裁序（semantic_context.arbitration.level_order）、制造输入格全序和配方全序、需要求值的每个阻尼分叉选择、每箱冷却余量、空仓库格身份及当前无身份空格序O(S)，它是随库存更新的状态字段，不是固定母序。缺少必需数据为invalid；已知但本版不支持为unsupported。不得把数组顺序、单位id或目录排列暗当语义优先序。相同字符串排序仅用于无物理差异的事件/级标签规范化；真正的顺序均明示输入。（据：轮询、两种优先级、阻尼、判定先后、物品格）",
+      "classification": "现行定义或明确撤回记录，逐条读者自审核过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md",
+      "line": 65,
+      "text": "仓库已有非空同种格则向该格增量且≤80000；没有时先找保留该物种历史身份的空格，多个候选或与非空同种并存的身份冲突须由输入消歧，否则invalid。令E(S)为当前warehouse中item=null、quantity=0且empty_identity已解为null的全部已声明格；O(S)=semantic_context.arbitration.warehouse_empty_slot_order必须是E(S)的严格全序（集合恰等、无重复），否则invalid。O是当前状态字段，不是固定母序，不允许静默跳过序中的已占格。没有历史格时，O非空就选首项，O为空才创建新格。空格被某端口指派也不跳过，其今后物种由这次分配实际决定；empty_identity=null只表示无历史身份，不等于永久无物种。若没有可用无身份空格，则创建带物种规范标签的新格（例如W_new_加UTF-8十六进制物种名，与既有标签冲突时输入须另给标签）；此编码选择只命名新格，不改已有端口指派。无限格数不解除单种单格容量。单次PC入庫只有一个物种；整箱多物种必须先过§4.3的竞争检测，不能直接遍历本选择器。（据：物品格、仓库、协议核心；空格选择仍待审，明确停止边界）",
+      "classification": "现行定义或明确撤回记录，逐条读者自审核过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md",
+      "line": 67,
+      "text": "**仓库提交及空格序维护**：所有PC入库、单位传输和本版外部补矿都在同一判前快照拟定完整后态；成功提交库存、历史身份及交付/补给账时，同时提交`O(S')=[w∈O(S): w∈E(S')]`，这是保持原相对次序的稳定子序，不按id或warehouse数组顺序重排。选中匿名格后将其item与保留身份绑定实际物种，它立即从O删除；规范新格一创建即绑定物种，不加入O。PC的预算/源扣减和传输的全箱扣减/冷却分别按自身模板提交，不借此把无线传输变成端口移动。（据：物品格、仓库、协议核心、传输、外部过程；本版retain_history及显式空格序的状态编码）",
+      "classification": "现行定义或明确撤回记录，逐条读者自审核过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md",
+      "line": 73,
+      "text": "在支持域内，每个成功入库只会从E删除被赋种的匿名格，其余库存扣减在retain_history下不会新增E，故E(S')⊆E(S)。若O(S)不重不漏，则上述稳定子序仍不重不漏且唯一，连续下一次判定可以直接读取；无需外部维护母序。完整后态、闭包键及任意可恢复锚点都包含O(S')和warehouse/empty_identity，同一JSON重载不得重新初始化O。输入中的错误旧序直接invalid，正确后态无需调用者手工投影。（据：上述更新式的条件归纳；该性质不证明release_on_empty读法）",
+      "classification": "现行定义或明确撤回记录，逐条读者自审核过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md",
+      "line": 89,
+      "text": "1. 按§4.1核身份与空格序完整性，冲突/缺失报invalid。令U为本批中既无非空同种格、也无保留该物种历史身份空格的物种集合；E=E(S)为§4.1定义的当前无身份空格集合，O(S)的定义域恰为E。",
+      "classification": "现行定义或明确撤回记录，逐条读者自审核过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md",
+      "line": 92,
+      "text": "4. 全部容量可收才按§4.1原子提交整箱库存、身份增量及O(S')的稳定子序，按各物种实际入库件数记交付；容量不足则全箱、仓库、身份和O均保留。空箱和已定义的容量拒收仍是一次尝试，cooldown=5；unsupported/invalid不产生游戏后继。",
+      "classification": "现行定义或明确撤回记录，逐条读者自审核过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md",
+      "line": 100,
+      "text": "每轮扫描结束，计算`K`：本时刻全部库存（含warehouse/empty_identity）/批次/冷却、当前无身份仓库空格序O(S)、实际通道和准入口原因/计数/起点、当前接通/分级/阻尼分支、每单位每侧每级位置与current_level、本刻端口额度、尚未处理的同刻外部事件及阶段。绝对本时刻t在本次闭包中固定。扫描轮号、纯日志长度、失败尝试计数是审计标签，不参与守卫、不进入K；若实现让这些标签影响后效，便超出本版，不能继续用此归约。初始扫描边界的K也进入seen。每轮之后：",
+      "classification": "现行定义或明确撤回记录，逐条读者自审核过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md",
+      "line": 118,
+      "text": "归納于扫描访问：阶段顺序及完成顺序由明确选值/输入给定，全部到期窗口从同一快照批处理、图只重算一次；物理守卫不读权限，级排序只在平局用输入序；起轮、回级、授权、失败前移、库存选择、批次归集、原因集合及事务级成员变更均单值，制造收货和出缓存保持同种单格，批量落格的竞争检测给出明确停止点；支持域内每次成功提交后的O(S')仍为E(S')的唯一稳定子序，失败不改序，连续执行与JSON重载使用同一完整后态；模板与重复实例序固定。因此每次访问及每轮后K唯一；首次重复和返回状态唯一。若遇缺定义/不支持，字段及触发位置也由同一序确定。**支持域内后继确定**，不等于允许域穷尽，也不等于本配置已经满足所有已采纳动态约束的普遍后果。（据：以上逐项定义、判定、判定次序；条件归纳）",
+      "classification": "现行定义或明确撤回记录，逐条读者自审核过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/参数轴-对内核输入请求的答复.md",
+      "line": 12,
+      "text": "| 时间与平局 | time.instant_order=chronological_phases；time.manufacture_events=completion_before_closure；polling.level_tie=fixed_arbitration（输入独立级序，不能替代connection.tie）；connection.port_meeting=shared_edge_opposite（本版选值、open/U；角点相遇待审，见T5）。 |",
+      "classification": "现行定义或明确撤回记录，逐条读者自审核过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/参数轴-对内核输入请求的答复.md",
+      "line": 24,
+      "text": "已核内核输入请求§5的终态编码：arbitration.level_order与warehouse_empty_slot_order、judgment_context.phase及准入口blocked_reasons已进入输入格式；受限转移定义使用同名字段。仓库单物种落格按当前无身份空格的显式全序，缺序报invalid；成功PC入库/箱体传输与库存、身份原子提交仅保留仍无身份空格的稳定子序，拒收与空箱不改序，重载直接使用后态当前序；整箱至少两种无非空/历史目标物种且有无身份空格时，在任何修改前返回unsupported；保留历史身份不授权修改现存物品。",
+      "classification": "现行定义或明确撤回记录，逐条读者自审核过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/参数轴-对内核输入请求的答复.md",
+      "line": 48,
+      "text": "相遇轴connection.port_meeting现为open/U，归fixedness_unproven，本版值仍shared_edge_opposite；已定值表不再包含它。closed_segment_touch仅为角点相遇的待审方向，当前几何入口只接受显式本版值，其它值或未解均报unsupported。三个样例、运行种子parameter_values和参数投影同步迁移，物理几何/初态不因生命周期分组变化重选。证据见[第7轮迁移核对](第7轮修订验证/输入投影同步.json)。",
+      "classification": "现行定义或明确撤回记录，逐条读者自审核过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/参数轴-对内核输入请求的答复.md",
+      "line": 50,
+      "text": "warehouse_empty_slot_order按当前E(S)给全序O(S)，成功PC入库/箱传输原子提交仅保留仍无身份空格的稳定子序；拒收、空箱、失败不改序。retain_history下取空仍保历史身份，不回入O，新规范格带种创建不入O；本版不新增匿名空格或释放身份。完整K及恢复状态纳入O；输入§5.2的旧四字段参考投影仅在无仓库入库/身份变更、E/O恒定的子集省略，扩展时须增continuation版本。仓库事务局部连续/JSON重载已回归；C线有限重算仍不支持箱体或入库，不能把局部回归说成通用StateSeed恢复已实现。",
+      "classification": "现行定义或明确撤回记录，逐条读者自审核过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md",
+      "line": 74,
+      "text": "本版按共享选择点 T5 的受限选值表示相遇：两端端口占用相邻格、法向相反且面对同一条格边，一端 output、另一端 input，且至少一端类型的 family 为 transport，导出一条 `PC`。connection.port_meeting=shared_edge_opposite为open/U的本版选值；角点相遇待审及其覆盖损失见共享选择点T5，不宣称已排除。格式检查和几何导出须先读取该轴的显式值，未解或其它值返回unsupported，不按默认共边继续。端口相遇关系与时间变化分别计算：几何相遇生成可能边，实际建成/准入口阻断决定当时存在的边。据：规则 L16、L28、L64；约束端口对接。",
+      "classification": "现行定义或明确撤回记录，逐条读者自审核过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md",
+      "line": 161,
+      "text": "| `connection.port_meeting` | `fixedness_unproven`；U | T5；open：shared_edge_opposite（共边全长重合且法向相反，本版选值）／closed_segment_touch（闭边段有非空交集，含仅角点相交，待审方向）；角色仍须存取互补且至少一端运输。一般相遇是否要求全长重合未获证明，不相交占格不能排除角点相遇；不据此准许角接通。两非运输端口、同类端口成PC仍排除。详见T5。据：端口、通道、约束·端口对接；条件几何约束不提供一般相遇的充要定义 |",
+      "classification": "现行定义或明确撤回记录，逐条读者自审核过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md",
+      "line": 217,
+      "text": "| `warehouse.empty_slot_identity` | `fixedness_unproven`；U | T12；open：retain_history／release_on_empty及再次入库选格关系待审；非空仓库格与在库物种一一对应，新物种可用新格，空格指派须附该格empty_identity决策，未给则拒绝执行。沿用本轴登记批量落格；当前空格序O(S)随成功入库原子稳定删项，失败保留，重载存后态，详见受限转移定义§4.1；空格序不决定物种序，本版len(U)>=2且len(E)>=1时返回unsupported，U/E及事务停止见受限转移定义§4.3；不授权玩家改物种。据：物品格、仓库、协议核心、设定；T12 |",
+      "classification": "现行定义或明确撤回记录，逐条读者自审核过"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md",
+      "line": 323,
+      "text": "`semantic_context={arbitration,parameter_values,judgment_context,pending_events,tick_context}`：arbitration=`{level_order,warehouse_empty_slot_order}`，显式给全部级标签全序及已声明无身份空仓库格顺序；level_order 只在正式级排序键全等时使用，不能反转已定优先级。两张表须不重不漏；无身份空格集合从当前 warehouse 中 item=null 且已解 empty_identity.value=null 的记录派生，已指派取货口也不删去。空表只有实际无相应对象才合法。warehouse_empty_slot_order是当前候选序O(S)，不是固定母序或配置常量；一次成功PC入库或箱体传输与库存、历史身份原子提交O(S')=[w∈O(S): w在S'仍是无身份空格]，保持幸存项相对顺序；失败/容量拒收/空箱尝试保持该表，invalid/unsupported不产生后继。retain_history下清空的已用格保留该物种身份，不回入此表；规范新格创建时已绑定物种，也不入表。本版运行区间无新建匿名格或释放身份事件，遇此类事件按受限转移定义§1停止，不能私自补序。所有恢复锚点都保存当前表，读回严格核其定义域；一般完整闭包键及continuation调度投影包含它（§5.2仅在E/O恒定的参考子集有明确省略前件），不能在重载时从母序重算。完整维护见受限转移定义§4.1、§4.3及§5。parameter_values[] 为 `{axis,value,lifetime}`（当前 Decision 与 F/O/U，须与参数轴及当前历史一致）；judgment_context 为 Decision；v3 的完整结构及扫描阶段见 §5.2，v2 旧四字段表示不作为运行恢复输入。pending_events 为 Decision，specified.value 是 `{event,operation,target,trigger,predecessors,status}` 数组：event 指 runtime 等全局事件，operation 包括 manufacture/transfer/move/internal_move/manufacture_complete；最后者是非判定完成事件，target 对应单位或 PC/BC，trigger 为 `{kind,value}`，kind 包括 at_time(Time)、after_event(事件 id)、condition(本节谓词)，predecessors 为事件 id 数组，status=waiting/ready。日程是机制/历史产物，at_time 不授予玩家定时能力。",
+      "classification": "现行定义或明确撤回记录，逐条读者自审核过"
+    }
+  ],
+  "scope": "现行正文及历史索引全辖域定位；不以字符串扫描证明语义穷尽，旧复核/被审快照保留史料原文"
+}

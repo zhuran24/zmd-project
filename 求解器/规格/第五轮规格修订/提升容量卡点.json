@@ -1,0 +1,8 @@
+{
+  "warehouse_before": 79999,
+  "whole_box": 2,
+  "actual_accepts": false,
+  "representative_accepts": true,
+  "actual_warehouse_after": 79999,
+  "family_under_capacity_holds": true
+}

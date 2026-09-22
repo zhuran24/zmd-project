@@ -1,0 +1,84 @@
+{
+  "certificate": "数据/样例/生产循环环带-周期证书-kernel.json",
+  "genuine_accepted": true,
+  "cases": [
+    {
+      "name": "T1_period_minus_1",
+      "result": "rejected"
+    },
+    {
+      "name": "T2_status_cycle_found",
+      "result": "rejected"
+    },
+    {
+      "name": "T3_rate_gt",
+      "result": "rejected"
+    },
+    {
+      "name": "T4_inbound_inflated",
+      "result": "rejected"
+    },
+    {
+      "name": "T5_end_key_altered",
+      "result": "rejected"
+    },
+    {
+      "name": "T6_ledger_row_dropped",
+      "result": "rejected"
+    },
+    {
+      "name": "T7_level_promoted",
+      "result": "rejected"
+    },
+    {
+      "name": "T8_start_state_inventory",
+      "result": "rejected"
+    },
+    {
+      "name": "T9_end_state_inventory",
+      "result": "rejected"
+    },
+    {
+      "name": "T10_start_key_state",
+      "result": "rejected"
+    },
+    {
+      "name": "T11_acceptance_false",
+      "result": "rejected"
+    },
+    {
+      "name": "T12_normalization_sha",
+      "result": "rejected"
+    },
+    {
+      "name": "T13_support_check_fail",
+      "result": "rejected"
+    },
+    {
+      "name": "T14_port_meeting",
+      "result": "rejected"
+    },
+    {
+      "name": "T15_seed_reachability",
+      "result": "rejected"
+    },
+    {
+      "name": "T16_open_items_removed",
+      "result": "rejected"
+    },
+    {
+      "name": "T17_budget_completed",
+      "result": "rejected"
+    },
+    {
+      "name": "T18_run_record_dropped",
+      "result": "rejected"
+    },
+    {
+      "name": "T19_ledger_inbound_inflate",
+      "result": "rejected"
+    }
+  ],
+  "rejected": 19,
+  "accepted_bad": []
+}

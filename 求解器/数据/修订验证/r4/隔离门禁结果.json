@@ -1,0 +1,61 @@
+{
+  "status": "通过",
+  "scope": "独立命令及 cargo 实时回源单项；完整正常目录测试另见候选B/cargo-test.log",
+  "production_catalog_unchanged": true,
+  "results": [
+    {
+      "case": "baseline",
+      "expected": "接受",
+      "direct_exit_code": 0,
+      "cargo_exit_code": 0,
+      "diagnostic": "",
+      "catalog_sha256": "74d21a5bd37c6178f988a86a4aa78a03d1e4244ecff26f133bb5e700ada82e43",
+      "log": "baseline-cargo-gate.log"
+    },
+    {
+      "case": "unused_recipe_duration",
+      "expected": "拒绝",
+      "direct_exit_code": 1,
+      "cargo_exit_code": 101,
+      "diagnostic": "目录回源失败：recipes.精炼-蓝铁粉末.duration.value 与正式来源投影不一致：'2' / '1'",
+      "catalog_sha256": "251ef49ce632180794bc775672d391d782ae342e87f46459efb15d64eb6a6d3f",
+      "log": "unused_recipe_duration-cargo-gate.log"
+    },
+    {
+      "case": "used_recipe_input",
+      "expected": "拒绝",
+      "direct_exit_code": 1,
+      "cargo_exit_code": 101,
+      "diagnostic": "目录回源失败：recipes.研磨-致密蓝铁.inputs.蓝铁粉末.value 与正式来源投影不一致：'3' / '2'",
+      "catalog_sha256": "f36965914a82120f06de7ed00a4a0f414d78b2eeed30832f88df55dfb4db6845",
+      "log": "used_recipe_input-cargo-gate.log"
+    },
+    {
+      "case": "power_coverage_width",
+      "expected": "拒绝",
+      "direct_exit_code": 1,
+      "cargo_exit_code": 101,
+      "diagnostic": "目录回源失败：units.供电桩.coverage.width.value 与正式来源投影不一致：'13' / '12'",
+      "catalog_sha256": "efc9b2ba8d99cb554715cb80dacd9b6eda88172b9628756386f92b8bb2aa3b0b",
+      "log": "power_coverage_width-cargo-gate.log"
+    },
+    {
+      "case": "core_port_category",
+      "expected": "拒绝",
+      "direct_exit_code": 1,
+      "cargo_exit_code": 101,
+      "diagnostic": "目录回源失败：units.协议核心.ports.input_count.category 与正式来源投影不一致：'候选' / '条文直引'",
+      "catalog_sha256": "622d3dd0b3030a49b2c07f9167cbff4b561a320bb4c2e3a0b96ec22005c47c89",
+      "log": "core_port_category-cargo-gate.log"
+    },
+    {
+      "case": "restored",
+      "expected": "接受",
+      "direct_exit_code": 0,
+      "cargo_exit_code": 0,
+      "diagnostic": "",
+      "catalog_sha256": "74d21a5bd37c6178f988a86a4aa78a03d1e4244ecff26f133bb5e700ada82e43",
+      "log": "restored-cargo-gate.log"
+    }
+  ]
+}

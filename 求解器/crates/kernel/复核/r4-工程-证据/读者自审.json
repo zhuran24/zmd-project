@@ -1,0 +1,15 @@
+{
+  "status": "pass",
+  "document": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/复核-r4-工程.md",
+  "broken_links": [],
+  "checks": [
+    "结论限固定段支持域",
+    "历史121项与本席87项分列",
+    "59次CLI和schema57通过1失败分列",
+    "缓存读取集与写入入口逐项对应",
+    "性能每档五次且说明非独占环境",
+    "KQ09与两项覆盖缺口未隐藏",
+    "脚本不改被审对象"
+  ],
+  "findings_count": 0
+}

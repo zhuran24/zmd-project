@@ -1,0 +1,419 @@
+{
+  "scope": "读当前全部被审文件；原始A只读重放；精确分数配平；实际几何；条件局部算术。无内核轨迹或全厂认证。",
+  "locked_review_files": 18,
+  "manifest_entries_matching": 17,
+  "current_dependencies_matching": 19,
+  "source_reverse_increments": 3,
+  "candidates": {
+    "A219": {
+      "machines": 219,
+      "feeds": 314,
+      "raw_feeds": 66,
+      "powder_feeds": 43,
+      "area": 3325,
+      "roots": 17,
+      "cycles": {
+        "荞花": [
+          {
+            "machines": [
+              "A_M169",
+              "A_M196"
+            ],
+            "incoming": [],
+            "outgoing": [
+              "AF158"
+            ]
+          },
+          {
+            "machines": [
+              "A_M170",
+              "A_M197"
+            ],
+            "incoming": [],
+            "outgoing": [
+              "AF159"
+            ]
+          },
+          {
+            "machines": [
+              "A_M171",
+              "A_M198"
+            ],
+            "incoming": [],
+            "outgoing": [
+              "AF160"
+            ]
+          },
+          {
+            "machines": [
+              "A_M172",
+              "A_M199"
+            ],
+            "incoming": [],
+            "outgoing": [
+              "AF161"
+            ]
+          },
+          {
+            "machines": [
+              "A_M173",
+              "A_M200"
+            ],
+            "incoming": [],
+            "outgoing": [
+              "AF162"
+            ]
+          },
+          {
+            "machines": [
+              "A_M174",
+              "A_M201"
+            ],
+            "incoming": [],
+            "outgoing": [
+              "AF156"
+            ]
+          }
+        ],
+        "砂叶": [
+          {
+            "machines": [
+              "A_M185",
+              "A_M202"
+            ],
+            "incoming": [],
+            "outgoing": [
+              "AF058"
+            ]
+          },
+          {
+            "machines": [
+              "A_M186",
+              "A_M203"
+            ],
+            "incoming": [],
+            "outgoing": [
+              "AF059"
+            ]
+          },
+          {
+            "machines": [
+              "A_M187",
+              "A_M204"
+            ],
+            "incoming": [],
+            "outgoing": [
+              "AF060"
+            ]
+          },
+          {
+            "machines": [
+              "A_M188",
+              "A_M205"
+            ],
+            "incoming": [],
+            "outgoing": [
+              "AF061"
+            ]
+          },
+          {
+            "machines": [
+              "A_M189",
+              "A_M206"
+            ],
+            "incoming": [],
+            "outgoing": [
+              "AF062"
+            ]
+          },
+          {
+            "machines": [
+              "A_M190",
+              "A_M207"
+            ],
+            "incoming": [],
+            "outgoing": [
+              "AF063"
+            ]
+          },
+          {
+            "machines": [
+              "A_M191",
+              "A_M208"
+            ],
+            "incoming": [],
+            "outgoing": [
+              "AF064"
+            ]
+          },
+          {
+            "machines": [
+              "A_M192",
+              "A_M209"
+            ],
+            "incoming": [],
+            "outgoing": [
+              "AF065"
+            ]
+          },
+          {
+            "machines": [
+              "A_M193",
+              "A_M210"
+            ],
+            "incoming": [],
+            "outgoing": [
+              "AF066"
+            ]
+          },
+          {
+            "machines": [
+              "A_M194",
+              "A_M211"
+            ],
+            "incoming": [],
+            "outgoing": [
+              "AF067"
+            ]
+          },
+          {
+            "machines": [
+              "A_M195",
+              "A_M212"
+            ],
+            "incoming": [],
+            "outgoing": [
+              "AF056"
+            ]
+          }
+        ]
+      },
+      "machine_kind_counts": {
+        "粉碎机": 69,
+        "精炼炉": 51,
+        "研磨机": 32,
+        "塑形机": 6,
+        "配件机": 6,
+        "种植机": 32,
+        "采种机": 17,
+        "封装机": 3,
+        "灌装机": 3
+      },
+      "recipe_balances": "全部逐机逐物品以精确分数相等"
+    },
+    "B219": {
+      "machines": 219,
+      "feeds": 315,
+      "raw_feeds": 66,
+      "powder_feeds": 44,
+      "area": 3325,
+      "roots": 4,
+      "cycles": {
+        "荞花": [
+          {
+            "machines": [
+              "M173",
+              "M200"
+            ],
+            "incoming": [],
+            "outgoing": [
+              "LF167"
+            ]
+          },
+          {
+            "machines": [
+              "M174",
+              "M201"
+            ],
+            "incoming": [],
+            "outgoing": [
+              "LF157"
+            ]
+          }
+        ],
+        "砂叶": [
+          {
+            "machines": [
+              "M194",
+              "M211"
+            ],
+            "incoming": [],
+            "outgoing": [
+              "LF076"
+            ]
+          },
+          {
+            "machines": [
+              "M195",
+              "M212"
+            ],
+            "incoming": [],
+            "outgoing": [
+              "LF056"
+            ]
+          }
+        ]
+      },
+      "machine_kind_counts": {
+        "粉碎机": 69,
+        "精炼炉": 51,
+        "研磨机": 32,
+        "塑形机": 6,
+        "配件机": 6,
+        "种植机": 32,
+        "采种机": 17,
+        "封装机": 3,
+        "灌装机": 3
+      },
+      "recipe_balances": "全部逐机逐物品以精确分数相等"
+    }
+  },
+  "source_records_match": true,
+  "geometry": {
+    "荞花": {
+      "transport_slots": 24,
+      "channels": 27,
+      "paths": {
+        "P-H": 3,
+        "P-G": 3,
+        "H-P": 17,
+        "粉末边界": 1
+      },
+      "unexpected_channels": 0
+    },
+    "砂叶": {
+      "transport_slots": 26,
+      "channels": 29,
+      "paths": {
+        "P-H": 3,
+        "P-G": 3,
+        "H-P": 17,
+        "粉末边界": 3
+      },
+      "unexpected_channels": 0
+    }
+  },
+  "saved_schedule_checks": [
+    {
+      "plant": "荞花",
+      "q": 23,
+      "first_h": false,
+      "first_return": 23,
+      "checked_rows": 28
+    },
+    {
+      "plant": "荞花",
+      "q": 23,
+      "first_h": true,
+      "first_return": 22,
+      "checked_rows": 28
+    },
+    {
+      "plant": "荞花",
+      "q": 50,
+      "first_h": false,
+      "first_return": 23,
+      "checked_rows": 28
+    },
+    {
+      "plant": "荞花",
+      "q": 50,
+      "first_h": true,
+      "first_return": 22,
+      "checked_rows": 28
+    },
+    {
+      "plant": "砂叶",
+      "q": 23,
+      "first_h": false,
+      "first_return": 23,
+      "checked_rows": 28
+    },
+    {
+      "plant": "砂叶",
+      "q": 23,
+      "first_h": true,
+      "first_return": 22,
+      "checked_rows": 28
+    },
+    {
+      "plant": "砂叶",
+      "q": 50,
+      "first_h": false,
+      "first_return": 23,
+      "checked_rows": 28
+    },
+    {
+      "plant": "砂叶",
+      "q": 50,
+      "first_h": true,
+      "first_return": 22,
+      "checked_rows": 28
+    }
+  ],
+  "capacities": {
+    "荞花": {
+      "ordinary_all_materials": 2300,
+      "normal_cache": 35,
+      "N_normal": 2029
+    },
+    "砂叶": {
+      "ordinary_all_materials": 4300,
+      "normal_cache": 76,
+      "N_normal": 3804
+    }
+  },
+  "ordinary_seed_capacity_counterexample": [
+    {
+      "species": "荞花",
+      "planters": 11,
+      "harvesters": 6,
+      "crushers": 6,
+      "input_each": {
+        "item": "荞花种子",
+        "count": 50
+      },
+      "all_switches": "off",
+      "all_caches": "empty",
+      "all_output_slots": "empty",
+      "all_transport_slots": "empty",
+      "ordinary_seed_count": 1150,
+      "claimed_bound": 850,
+      "excess": 300,
+      "legality": [
+        "R17",
+        "R21",
+        "T6",
+        "T12",
+        "T13"
+      ],
+      "consequence": "开关保持关闭时状态固定；普通输入容量无配方身份限制。此例攻击物理容量标签，未攻击正确原料的运行充分族。"
+    },
+    {
+      "species": "砂叶",
+      "planters": 21,
+      "harvesters": 11,
+      "crushers": 11,
+      "input_each": {
+        "item": "砂叶种子",
+        "count": 50
+      },
+      "all_switches": "off",
+      "all_caches": "empty",
+      "all_output_slots": "empty",
+      "all_transport_slots": "empty",
+      "ordinary_seed_count": 2150,
+      "claimed_bound": 1600,
+      "excess": 550,
+      "legality": [
+        "R17",
+        "R21",
+        "T6",
+        "T12",
+        "T13"
+      ],
+      "consequence": "开关保持关闭时状态固定；普通输入容量无配方身份限制。此例攻击物理容量标签，未攻击正确原料的运行充分族。"
+    }
+  ],
+  "status": "PASS"
+}

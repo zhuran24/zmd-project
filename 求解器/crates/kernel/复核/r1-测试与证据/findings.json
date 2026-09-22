@@ -1,0 +1,26 @@
+{
+  "findings": [
+    {
+      "id": "KR-r1-L2-01",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/transition.rs:267–278；src/engine.rs:737–752",
+      "claim": "内核未检查空补矿史的持续充分性，源矿耗尽导致停料后仍返回 completed。",
+      "evidence": "受限转移定义§2.1规定空历史须足够覆盖被测段且不违持续可得；r1-测试与证据/空补矿史耗尽-input.json从当前1源矿、无补给运行4刻，退出码0且四刻仓库源矿均为0，Rust重算验收也接受；原同段样例实际出库4件。复现与记录见报告§2 KR-r1-L2-01。",
+      "severity": "阻断"
+    },
+    {
+      "id": "KR-r1-L2-02",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/verify_outputs.py:18–46",
+      "claim": "Python落盘验收入口会放过删除正式源指纹及伪造验证范围、完成批数和黄金匹配标记的记录。",
+      "evidence": "内核输出§1要求重建并严格比较依赖清单，§3要求严格比较validation_scope；两个样例删除三份formal_source指纹或将范围/批数改为999并翻转golden_match，共4份负例仍通过verify，摘要篡改对照则失败；Rust完整验收能拒绝这4份负例。详见报告§2 KR-r1-L2-02及独立检查结果.json。",
+      "severity": "重要"
+    },
+    {
+      "id": "KR-r1-L2-03",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/output.rs:234",
+      "claim": "一次制造启动成功便将全部manufacturing轴标为已执行，包含尚未到达的整批输出受阻分支。",
+      "evidence": "内核输出§1要求逐轴实际执行证据；粉碎机仅运行0–1两刻，无manufacture_complete，阶段为idle、working，却将manufacturing.output_blocked标为exercised并引用仅归集开工的J|1|0|11；受限转移定义§4.2第1步的completed分支尚未执行。详见仅开工未完成-record.json及报告§2 KR-r1-L2-03。",
+      "severity": "重要"
+    }
+  ],
+  "notes": "完整报告：/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/复核-r1-测试与证据.md。cargo test --locked --offline：79通过、0失败；独立手推四刻一致；1250项原基线及43项交付指纹无变化。"
+}

@@ -1,0 +1,68 @@
+{
+  "schema": "event-order-v3",
+  "scope": "per_instant",
+  "template_order": [
+    {
+      "operation": "transfer",
+      "target": "box_a"
+    },
+    {
+      "operation": "transfer",
+      "target": "box_b"
+    }
+  ],
+  "repeat_embedding": "scan_round_then_template",
+  "schedule": {
+    "kind": "expression",
+    "language": "order-expr-v1",
+    "expression": {
+      "op": "if",
+      "condition": {
+        "op": "is_power_of_two",
+        "arg": {
+          "op": "floor_slot",
+          "origin": {
+            "kind": "rational",
+            "value": {
+              "value": "0",
+              "category": "候选"
+            }
+          },
+          "width": {
+            "kind": "rational",
+            "value": {
+              "value": "5",
+              "category": "候选"
+            }
+          }
+        }
+      },
+      "then": {
+        "op": "permutation",
+        "order": [
+          {
+            "operation": "transfer",
+            "target": "box_b"
+          },
+          {
+            "operation": "transfer",
+            "target": "box_a"
+          }
+        ]
+      },
+      "otherwise": {
+        "op": "permutation",
+        "order": [
+          {
+            "operation": "transfer",
+            "target": "box_a"
+          },
+          {
+            "operation": "transfer",
+            "target": "box_b"
+          }
+        ]
+      }
+    }
+  }
+}

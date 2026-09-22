@@ -1,0 +1,138 @@
+{
+  "integrity": {
+    "baseline_count": 1250,
+    "baseline_changes": [],
+    "deliverable_entries": 43,
+    "deliverable_changes": []
+  },
+  "record_checks": [
+    {
+      "case": "混做粉碎机两下游运行记录-kernel",
+      "expected_accept": true,
+      "accepted": true
+    },
+    {
+      "case": "混做粉碎机两下游运行记录-checkpoint_delta-kernel",
+      "expected_accept": true,
+      "accepted": true
+    },
+    {
+      "case": "混做粉碎机两下游删除三份正式源指纹",
+      "expected_accept": false,
+      "accepted": true
+    },
+    {
+      "case": "混做粉碎机两下游伪造验证范围与批数",
+      "expected_accept": false,
+      "accepted": true
+    },
+    {
+      "case": "混做粉碎机两下游篡改轨迹摘要对照",
+      "expected_accept": false,
+      "accepted": false
+    },
+    {
+      "case": "分流器三路轮询运行记录-kernel",
+      "expected_accept": true,
+      "accepted": true
+    },
+    {
+      "case": "分流器三路轮询运行记录-checkpoint_delta-kernel",
+      "expected_accept": true,
+      "accepted": true
+    },
+    {
+      "case": "分流器三路轮询删除三份正式源指纹",
+      "expected_accept": false,
+      "accepted": true
+    },
+    {
+      "case": "分流器三路轮询伪造验证范围与批数",
+      "expected_accept": false,
+      "accepted": true
+    },
+    {
+      "case": "分流器三路轮询篡改轨迹摘要对照",
+      "expected_accept": false,
+      "accepted": false
+    }
+  ],
+  "manual_match": true,
+  "supply_status": "completed",
+  "short_coverage": {
+    "status": "completed",
+    "completed_events": [],
+    "manufacture_success": [
+      {
+        "basis": [
+          "规则 L18、L35",
+          "受限转移定义 §4.2",
+          "受限模型声明 manufacture_subactions、atomic_batch、same_instant"
+        ],
+        "detail": "",
+        "event": "J|1|0|11",
+        "operation": "manufacture",
+        "outcome": "success",
+        "target": "crusher"
+      }
+    ],
+    "claimed_output_blocked": {
+      "axis": "manufacturing.output_blocked",
+      "coverage_status": "exercised",
+      "disposition": "已定",
+      "evidence": [
+        "J|1|0|11"
+      ],
+      "other_values": "已定域无其它值；未执行结构仍未验证",
+      "reason": "该已定范围无读法损失；关联未定轴另记"
+    },
+    "crusher_phases": [
+      "idle",
+      "working"
+    ]
+  },
+  "permutation_checks": [
+    {
+      "name": "混做粉碎机两下游",
+      "ticks": 4,
+      "actual_permutation": {
+        "units": {
+          "length": 14,
+          "changed": true
+        },
+        "physical_channels": {
+          "length": 11,
+          "changed": true
+        },
+        "buffer_channels": {
+          "length": 8,
+          "changed": true
+        }
+      },
+      "repeat_bytes_equal": true,
+      "repeat_trace_equal": true,
+      "permuted_trace_equal": true
+    },
+    {
+      "name": "分流器三路轮询",
+      "ticks": 12,
+      "actual_permutation": {
+        "units": {
+          "length": 17,
+          "changed": true
+        },
+        "physical_channels": {
+          "length": 13,
+          "changed": true
+        },
+        "buffer_channels": {
+          "length": 0,
+          "changed": false
+        }
+      },
+      "repeat_bytes_equal": true,
+      "repeat_trace_equal": true,
+      "permuted_trace_equal": true
+    }
+  ]
+}

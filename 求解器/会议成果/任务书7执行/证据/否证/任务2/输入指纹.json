@@ -1,0 +1,197 @@
+{
+  "read_started_utc": "2026-09-21T11:17:29.036879+00:00",
+  "files": [
+    {
+      "path": "《明日方舟：终末地》游戏规则.txt",
+      "sha256": "31ced2a24fef738c72dfa406351b6bad5df3e353d6b1c2dfd06ab1febaf566ff",
+      "bytes": 7190,
+      "lines": 114
+    },
+    {
+      "path": "求解任务.txt",
+      "sha256": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+      "bytes": 1405,
+      "lines": 16
+    },
+    {
+      "path": "求解约束.txt",
+      "sha256": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6",
+      "bytes": 24783,
+      "lines": 126
+    },
+    {
+      "path": "候选约束.txt",
+      "sha256": "a0ac3f9c82f371132b7de29fe47e4c6c587904680bc2786523de0c825fd5efd9",
+      "bytes": 244240,
+      "lines": 862
+    },
+    {
+      "path": "求解器/会议成果/任务书7草案.md",
+      "sha256": "32acf147e09de04feabfb575dd509a2c5c06b519b2504ba3ff253c3a61816a26",
+      "bytes": 44939,
+      "lines": 252
+    },
+    {
+      "path": "求解器/会议成果/主会话三审-0920.md",
+      "sha256": "da7d816827a6d66a20def9be982308df0a0e7a8dcb879c6c75ef2c381ef01f87",
+      "bytes": 9085,
+      "lines": 53
+    },
+    {
+      "path": "求解器/会议成果/任务书7执行/仓库接收与循环对应.md",
+      "sha256": "cdc235501fc5ba81f8df0c4ea02396b15b23bb1c6175f9e7a10729d0cab646c1",
+      "bytes": 29299,
+      "lines": 195
+    },
+    {
+      "path": "求解器/会议成果/任务书7执行/受限转移定义-§6.5替换稿.md",
+      "sha256": "531d5195a3c5de8e73bf32f6f47dc17aa0ef15f710c84d9cc9cacb89ec4cd7fd",
+      "bytes": 12558,
+      "lines": 90
+    },
+    {
+      "path": "求解器/会议成果/任务书7执行/复核/推导.md",
+      "sha256": "20fa05fbd94bf02c23f871751fb27b1d7496da0311e62865758818055c631179",
+      "bytes": 13479,
+      "lines": 97
+    },
+    {
+      "path": "求解器/会议成果/任务书7执行/证据/仓库/check_warehouse.py",
+      "sha256": "198eef60b4aa49da6d845241bdfe9932da1b5aae67817a4223a93a2f976b8190",
+      "bytes": 8931,
+      "lines": 182
+    },
+    {
+      "path": "求解器/会议成果/任务书7执行/证据/仓库/执行日志.json",
+      "sha256": "e20e4c567bdf10d25edfea19e0437de4f7ef43097cba09d58b542a82f3dacbb1",
+      "bytes": 575,
+      "lines": 13
+    },
+    {
+      "path": "求解器/会议成果/任务书7执行/证据/仓库/核对结果.json",
+      "sha256": "0d8ecd140aef3352791f3d6f8b509a80484e64646a749e0e9d3e427fa6495514",
+      "bytes": 11195,
+      "lines": 507
+    },
+    {
+      "path": "求解器/会议成果/任务书7执行/证据/仓库/核对说明.md",
+      "sha256": "232099c1edf3dbffaa00dc6d90293a8ebea7f1e5be8d8ae572429403c09281f2",
+      "bytes": 5585,
+      "lines": 61
+    },
+    {
+      "path": "求解器/会议成果/任务书7执行/证据/仓库/结构化结果.json",
+      "sha256": "efdcc59116e646e40939b4f2de05997767d358a4fd9f405d1d772289f1dca944",
+      "bytes": 4220,
+      "lines": 74
+    },
+    {
+      "path": "求解器/会议成果/任务书7执行/证据/仓库/输入指纹.json",
+      "sha256": "5be627dc2365359fd35992f7a0e151d460bb07e0369cdc07b47accd907d597e7",
+      "bytes": 3635,
+      "lines": 91
+    },
+    {
+      "path": "求解器/会议成果/任务书7执行/证据/复核推导/README.md",
+      "sha256": "47a6019b63afa0da65e088ef33bdd46591b35b9982498384be392fee288f71b7",
+      "bytes": 2230,
+      "lines": 27
+    },
+    {
+      "path": "求解器/会议成果/任务书7执行/证据/复核推导/check_derivation.py",
+      "sha256": "70c8d1764897fd3e83267e48b9e3fb95eb2909da28fd8415783d57d412a913e7",
+      "bytes": 3823,
+      "lines": 104
+    },
+    {
+      "path": "求解器/会议成果/任务书7执行/证据/复核推导/validate_deliverables.py",
+      "sha256": "c572963aff1816bc4526e10255f94f0546a825be92163d58c4cf3ee902e9242e",
+      "bytes": 3702,
+      "lines": 81
+    },
+    {
+      "path": "求解器/会议成果/任务书7执行/证据/复核推导/交付校验.json",
+      "sha256": "394605dd408d4086f36896585b4bf00b29b5c7f28eb6f8d06c8e6e91862e07c7",
+      "bytes": 7221,
+      "lines": 231
+    },
+    {
+      "path": "求解器/会议成果/任务书7执行/证据/复核推导/交付校验.log",
+      "sha256": "6403bcbe45a71e6cfb374d6dbdce4dc1a6758bf9029915efe427b14689c08518",
+      "bytes": 358,
+      "lines": 16
+    },
+    {
+      "path": "求解器/会议成果/任务书7执行/证据/复核推导/核算.log",
+      "sha256": "7ae91dc99b85fdda484bd7200b973c5038917ad25b247504a8811a1663ce2b63",
+      "bytes": 2147,
+      "lines": 135
+    },
+    {
+      "path": "求解器/会议成果/任务书7执行/证据/复核推导/核算结果.json",
+      "sha256": "3f493df5425c52a689338f58658d067ba028735475530adaab4162379ccc52dc",
+      "bytes": 1977,
+      "lines": 131
+    },
+    {
+      "path": "求解器/会议成果/任务书7执行/证据/复核推导/补充来源指纹.json",
+      "sha256": "504d7c57da36be92cde90cbce0bca2e28a68935e0257da48d94d9cc769300781",
+      "bytes": 787,
+      "lines": 18
+    },
+    {
+      "path": "求解器/会议成果/任务书7执行/证据/复核推导/裁定索引.json",
+      "sha256": "71819d18e8f6f78f9aeffa2bc88b8cfdda9f399699623136a94a6f140e6e0693",
+      "bytes": 8305,
+      "lines": 214
+    },
+    {
+      "path": "求解器/会议成果/任务书7执行/证据/复核推导/规则独推.md",
+      "sha256": "ebf07c6d824976dab03e49ca90ceff8ad14900dcf7ff9e621c6de3cbb8efce17",
+      "bytes": 3170,
+      "lines": 13
+    },
+    {
+      "path": "求解器/会议成果/任务书7执行/证据/复核推导/读者自审.md",
+      "sha256": "2e0ebad6b3c5519fd8f8b81f9f567555b856ed59938ce79844a6237042ceeb0b",
+      "bytes": 1789,
+      "lines": 17
+    },
+    {
+      "path": "求解器/会议成果/任务书7执行/证据/复核推导/输入指纹.json",
+      "sha256": "188b0988b0a7d17a74ea380d9d51ab9279a9ca4d04fb5d277a75e4c81f8bf522",
+      "bytes": 2355,
+      "lines": 60
+    },
+    {
+      "path": "求解器/会议成果/任务书7执行/证据/复核推导/输入指纹.log",
+      "sha256": "767e2ca72297e9ceddd7241bea6d90d199e86fc00ff59c307c678554c7f7c8c2",
+      "bytes": 1670,
+      "lines": 15
+    },
+    {
+      "path": "求解器/会议成果/任务书7执行/证据/规格/before.json",
+      "sha256": "ac0ee5ce99d31ed8919efd9e37f2b5262525f8d368e6565b7477246102f21e1c",
+      "bytes": 5043,
+      "lines": 126
+    },
+    {
+      "path": "求解器/会议成果/任务书7执行/证据/规格/relock_sources.py",
+      "sha256": "c162c00f5512b64988b6ee7264de067a0c925b729d5d83336b715d2e0eb446db",
+      "bytes": 3642,
+      "lines": 37
+    },
+    {
+      "path": "求解器/会议成果/任务书7执行/证据/规格/sha256sum.json",
+      "sha256": "d9f31b52653927876d04ff93f0b96661f444fd2688d0641105433f924efd9c5a",
+      "bytes": 692,
+      "lines": 7
+    },
+    {
+      "path": "求解器/会议成果/任务书7执行/证据/规格/source-relock.json",
+      "sha256": "f96d4d422163f44c06e21c56f36ed6e79ae7e2eef182dc186023e245c5a9f6db",
+      "bytes": 3516,
+      "lines": 61
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "verdicts": [
+    {
+      "id": "KR-r3-L1-01",
+      "refuted": false,
+      "reason": "未能否证：当前seed先覆盖参数再校验；同一after_closure参数冲突输入直接run拒收，经seed后成功续跑，违反输入§6.4。详见/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r3-2.md §2.1。"
+    },
+    {
+      "id": "KR-r3-L1-02",
+      "refuted": false,
+      "reason": "未能否证：独立复现t=5、deadline=5被接受并在t=6执行窗口事件；该记录被verify-record以时序错误拒绝。详见/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r3-2.md §2.2。"
+    },
+    {
+      "id": "KR-r3-L1-03",
+      "refuted": false,
+      "reason": "未能否证：新生成P=1周期结果通过verify-cycle，但原样内嵌记录被verify-record拒绝；周期验收缺少规定的全前缀独立事件检查。详见/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r3-2.md §2.3。"
+    },
+    {
+      "id": "KR-r3-L1-04",
+      "refuted": false,
+      "reason": "未能否证：源矿、蓝铁矿分别清零并保留历史身份时，seed均成功，派生输入run均因缺矿拒收；正库存前提未纳入派生验收。详见/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r3-2.md §2.4。"
+    },
+    {
+      "id": "KR-r3-L2-01",
+      "refuted": false,
+      "reason": "未能否证：参数表清空、快照相位冲突、顶层相位冲突三例均为run拒收而seed覆盖后可续跑；合法对照完整状态保持相等。详见/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r3-2.md §2.5。"
+    },
+    {
+      "id": "KR-r3-L2-02",
+      "refuted": false,
+      "reason": "未能否证：同步参数镜像后，−1、6、1/2及not-a-Time均被run接受；非法字符串相位还通过P=20周期生成及verify-cycle，类型和值域校验确有遗漏。详见/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r3-2.md §2.6。"
+    },
+    {
+      "id": "KR-r3-L2-03",
+      "refuted": false,
+      "reason": "未能否证：新跑桥记录的32条先接覆盖证据全是已定向桥上的搬运；接通发生在记录之前。两轴物流成功不构成先接定向实际执行。详见/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r3-2.md §2.7。"
+    },
+    {
+      "id": "KR-r3-L3-01",
+      "refuted": false,
+      "reason": "未能否证：独立复现短槽位标签触发run越界panic、布尔种子触发seed索引panic；均退出101、stdout为空且无结果文件。详见/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r3-2.md §2.8。"
+    },
+    {
+      "id": "KR-r3-L3-02",
+      "refuted": false,
+      "reason": "未能否证：同源年龄溢出输入在run报告inconclusive，在cycle报告stopped且stop.kind=resource；装载外壳确实改变顶层资源分类。详见/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r3-2.md §2.9。"
+    },
+    {
+      "id": "KR-r3-L3-03",
+      "refuted": false,
+      "reason": "未能否证：实查仍有15个ELF/ar文件共219896964字节，以及193文件的历史快照和独立空target目录；属遗留证据违规，未归责第五轮新增复制。详见/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r3-2.md §2.10。"
+    }
+  ]
+}

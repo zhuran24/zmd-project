@@ -1,0 +1,276 @@
+{
+  "kind": "manual_rule_trace_not_kernel_output",
+  "authority": {
+    "rules": "《明日方舟：终末地》游戏规则.txt:13,17-18,20-25,35,44,50-52,59-60,64,67,76,83-84,103-108",
+    "constraint": "求解约束.txt:70"
+  },
+  "scope": "只否证局部拒收过程的两三件上限，不是全基地目标布局",
+  "geometry": {
+    "coordinate_convention": "每单位的 x,y 为左下格，x 向右，y 向上",
+    "machines": [
+      {
+        "id": "P",
+        "kind": "种植机",
+        "x": 11,
+        "y": 10,
+        "w": 5,
+        "h": 5,
+        "input_edge": "west",
+        "output_edge": "east"
+      },
+      {
+        "id": "S",
+        "kind": "采种机",
+        "x": 17,
+        "y": 10,
+        "w": 5,
+        "h": 5,
+        "input_edge": "west",
+        "output_edge": "east"
+      },
+      {
+        "id": "C",
+        "kind": "粉碎机",
+        "x": 15,
+        "y": 6,
+        "w": 3,
+        "h": 3,
+        "input_edge": "north",
+        "output_edge": "south"
+      },
+      {
+        "id": "power",
+        "kind": "供电桩",
+        "x": 18,
+        "y": 4,
+        "w": 2,
+        "h": 2
+      }
+    ],
+    "splitter": {
+      "x": 16,
+      "y": 12,
+      "input": "west",
+      "outputs": [
+        "east",
+        "south"
+      ],
+      "unused_output": "north"
+    },
+    "gate": {
+      "x": 22,
+      "y": 12,
+      "input": "west",
+      "output": "east",
+      "item": "荞花种子",
+      "limit_per_5_ticks": 1,
+      "total_limit": null
+    },
+    "seed_belts": [
+      [
+        23,
+        12
+      ],
+      [
+        23,
+        13
+      ],
+      [
+        23,
+        14
+      ],
+      [
+        23,
+        15
+      ],
+      [
+        23,
+        16
+      ],
+      [
+        22,
+        16
+      ],
+      [
+        21,
+        16
+      ],
+      [
+        20,
+        16
+      ],
+      [
+        19,
+        16
+      ],
+      [
+        18,
+        16
+      ],
+      [
+        17,
+        16
+      ],
+      [
+        16,
+        16
+      ],
+      [
+        15,
+        16
+      ],
+      [
+        14,
+        16
+      ],
+      [
+        13,
+        16
+      ],
+      [
+        12,
+        16
+      ],
+      [
+        11,
+        16
+      ],
+      [
+        10,
+        16
+      ],
+      [
+        10,
+        15
+      ],
+      [
+        10,
+        14
+      ],
+      [
+        10,
+        13
+      ],
+      [
+        10,
+        12
+      ]
+    ],
+    "crusher_belts": [
+      [
+        16,
+        11
+      ],
+      [
+        16,
+        10
+      ],
+      [
+        16,
+        9
+      ]
+    ]
+  },
+  "initial": {
+    "item_species": "荞花",
+    "P": {
+      "input_seeds": 50,
+      "output_plants": 50,
+      "finished_cache_plants": 1,
+      "powered": true,
+      "enabled": true
+    },
+    "S": {
+      "input_plants": 50,
+      "output_seeds": 50,
+      "finished_cache_seeds": 2,
+      "powered": true,
+      "enabled": true
+    },
+    "C": {
+      "input_plants": 1,
+      "output_powder": 0,
+      "powered": true,
+      "enabled": true
+    },
+    "transport": "分流器、种子回程含准入口、粉碎支路均放对应物品，物品已待满至少 1 tick",
+    "gate_previous_window": "已走完；准入口内旧种子受下游阻挡尚未离开，t=0 腾位并收件开始新窗口",
+    "warehouse_plant_entries_during_trace": 0,
+    "timing": "所有到期制造、移动、开工使用同一固定判定先后；不要求玩家精确 tick 操作"
+  },
+  "rows": [
+    {
+      "tick": 0,
+      "gate_seed_intake": 1,
+      "S_output_before_cache_flush": 49,
+      "S_old_cache_flushed": false,
+      "S_output_after_cache_flush": 49,
+      "S_new_manufacture_started": false,
+      "S_completed_since_start": 0,
+      "C_completed_since_start": 0,
+      "delta_plant_plus_seed_count": 0
+    },
+    {
+      "tick": 1,
+      "gate_seed_intake": 0,
+      "S_output_before_cache_flush": 49,
+      "S_old_cache_flushed": false,
+      "S_output_after_cache_flush": 49,
+      "S_new_manufacture_started": false,
+      "S_completed_since_start": 0,
+      "C_completed_since_start": 1,
+      "delta_plant_plus_seed_count": -1
+    },
+    {
+      "tick": 2,
+      "gate_seed_intake": 0,
+      "S_output_before_cache_flush": 49,
+      "S_old_cache_flushed": false,
+      "S_output_after_cache_flush": 49,
+      "S_new_manufacture_started": false,
+      "S_completed_since_start": 0,
+      "C_completed_since_start": 2,
+      "delta_plant_plus_seed_count": -2
+    },
+    {
+      "tick": 3,
+      "gate_seed_intake": 0,
+      "S_output_before_cache_flush": 49,
+      "S_old_cache_flushed": false,
+      "S_output_after_cache_flush": 49,
+      "S_new_manufacture_started": false,
+      "S_completed_since_start": 0,
+      "C_completed_since_start": 3,
+      "delta_plant_plus_seed_count": -3
+    },
+    {
+      "tick": 4,
+      "gate_seed_intake": 0,
+      "S_output_before_cache_flush": 49,
+      "S_old_cache_flushed": false,
+      "S_output_after_cache_flush": 49,
+      "S_new_manufacture_started": false,
+      "S_completed_since_start": 0,
+      "C_completed_since_start": 4,
+      "delta_plant_plus_seed_count": -4
+    },
+    {
+      "tick": 5,
+      "gate_seed_intake": 1,
+      "S_output_before_cache_flush": 48,
+      "S_old_cache_flushed": true,
+      "S_output_after_cache_flush": 50,
+      "S_new_manufacture_started": true,
+      "S_completed_since_start": 0,
+      "C_completed_since_start": 5,
+      "delta_plant_plus_seed_count": -5
+    }
+  ],
+  "end": "t=5 旧缓存整批转出，采种取一株开工而腾出存货空间；新采种最早 t=6 完成；t=4 已少四件，t=5 可少五件",
+  "limitations": [
+    "不是内核运行结果",
+    "只列局部足以否证的六个时刻",
+    "粉碎机取货格前五批只有十件粉末，无需假定无限粉末出口",
+    "不据此声称未来循环态唯一或全基地目标已达到"
+  ]
+}

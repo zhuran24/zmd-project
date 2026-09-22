@@ -1,0 +1,295 @@
+{
+  "checks": [
+    {
+      "name": "formal_lines:《明日方舟：终末地》游戏规则.txt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "secondary_source_registry:《明日方舟：终末地》游戏规则.txt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "formal_lines:求解任务.txt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "secondary_source_registry:求解任务.txt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "formal_lines:求解约束.txt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "secondary_source_registry:求解约束.txt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "99_axes",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "axis_set:选择点参数轴.md",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "axis_set:受限模型声明.md",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "axis_set:内核输入.md",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "disposition_counts",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "polling.both_failure",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "transfer.failure_cooldown",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "judgment.order_scope",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "connection.port_meeting",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "current_hash:运行语义",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "current_hash:选择点清单",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "current_hash:选择点参数轴",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "current_hash:受限模型声明",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "current_hash:受限转移定义",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "current_hash:内核输入",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "current_hash:内核输出",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "current_hash:四件前置义务对照",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "debug_permissions",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "source_binding:cache.rs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "source_binding:catalog.rs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "source_binding:config.rs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "source_binding:cycle.rs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "source_binding:cycle_io.rs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "source_binding:digest.rs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "source_binding:engine.rs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "source_binding:event_identity.rs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "source_binding:input.rs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "source_binding:interfaces.rs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "source_binding:ledger.rs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "source_binding:lib.rs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "source_binding:main.rs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "source_binding:model.rs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "source_binding:output.rs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "source_binding:polling.rs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "source_binding:seed.rs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "source_binding:tests.rs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "source_binding:tests_revision.rs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "source_binding:tests_revision_r2.rs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "source_binding:tests_revision_r3.rs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "source_binding:tests_revision_r4.rs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "source_binding:tests_revision_r5.rs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "source_binding:tests_round5.rs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "source_binding:tests_round6.rs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "source_binding:transition.rs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "source_binding:value.rs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "source_binding:warehouse.rs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "rebuilt_binary",
+      "passed": true,
+      "detail": null
+    }
+  ],
+  "formal_sources": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+      "sha256": "d150b86b398f8e73e57bee1598020e6bcd895e5a13a254b4b11dd1e4416c325a",
+      "line_count": 114
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解任务.txt",
+      "sha256": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+      "line_count": 16
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解约束.txt",
+      "sha256": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6",
+      "line_count": 126
+    }
+  ],
+  "catalog_sha256": "39105d320e55b4d357cd95b47c840a6bd4127afcb94d3f98b1c2997c56efddd3",
+  "binary_sha256": "eaa6d2653c951b58d3517c0805a84f6af288ca2b40d5524dd9e35d30fff9182a",
+  "dispositions": {
+    "已定": 22,
+    "本版选值": 44,
+    "由输入全称量化": 15,
+    "超出覆盖即停": 18
+  },
+  "scope": "current published contracts and current binary/source; historical references classified in report"
+}

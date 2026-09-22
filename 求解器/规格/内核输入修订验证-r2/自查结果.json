@@ -1,0 +1,93 @@
+{
+  "checks": [
+    {
+      "name": "规则覆盖检查",
+      "command": [
+        "python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/check_revision.py"
+      ],
+      "exit_code": 1,
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r2/规则覆盖检查.log"
+    },
+    {
+      "name": "现行规则覆盖",
+      "command": [
+        "python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r2/check_current_coverage.py"
+      ],
+      "exit_code": 0,
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r2/现行规则覆盖.json"
+    },
+    {
+      "name": "正式目录回源",
+      "command": [
+        "python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/工具/formal_catalog.py"
+      ],
+      "exit_code": 0,
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r2/正式目录回源.log"
+    },
+    {
+      "name": "cargo test",
+      "command": [
+        "cargo",
+        "test",
+        "--offline",
+        "--locked",
+        "--manifest-path",
+        "/home/zhuran24/zmd-research-fresh/求解器/Cargo.toml"
+      ],
+      "exit_code": 0,
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r2/cargo-test.log"
+    },
+    {
+      "name": "候选B校验",
+      "command": [
+        "cargo",
+        "run",
+        "--offline",
+        "--locked",
+        "--manifest-path",
+        "/home/zhuran24/zmd-research-fresh/求解器/Cargo.toml",
+        "-p",
+        "topology",
+        "--",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/contract.json"
+      ],
+      "exit_code": 0,
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/校验报告.md"
+    },
+    {
+      "name": "样例检查",
+      "command": [
+        "python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/check_examples.py",
+        "--self-test",
+        "--report",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/检查结果.json"
+      ],
+      "exit_code": 0,
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r2/样例检查.log"
+    },
+    {
+      "name": "只读文件逐字节指纹",
+      "count": 25000,
+      "changed": [],
+      "exit_code": 0
+    }
+  ],
+  "status": "当前必需检查通过；原A线历史快照检查失败，15项差异已证在本轮之前存在",
+  "required_current_checks_pass": true,
+  "historical_check_failure_preserved": true,
+  "samples": {
+    "count": 3,
+    "negative_tests": 19,
+    "representation_tests": 8,
+    "axes": 91
+  },
+  "protected_file_set_unchanged": true
+}

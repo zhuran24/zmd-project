@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "finding_count": 2,
+  "severity_counts": {
+    "重要": 1,
+    "次要": 1
+  },
+  "links_checked": 14,
+  "reviewed_spec_files_unchanged": 34,
+  "kernel_drift": "见审查后核对.json；旧自查PASS按原观测版本解释",
+  "reader_pass": [
+    "结论和严重度一致",
+    "路径行号核对",
+    "局部试样未称可达见证",
+    "K线变化与验证时点分开",
+    "全部链接存在",
+    "证据只含脚本日志JSON或Markdown"
+  ]
+}

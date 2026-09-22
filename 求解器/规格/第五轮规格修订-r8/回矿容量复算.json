@@ -1,0 +1,21 @@
+{
+  "scope": "核心PC和整箱各回1件矿的局部容量算术；非Rust测试",
+  "cases": [
+    {
+      "warehouse_quantity": 79999,
+      "candidate": "源矿",
+      "inbound_quantity": 1,
+      "concrete_capacity_accepts": true,
+      "concrete_inbound": 1,
+      "production_stop_before_capacity": true
+    },
+    {
+      "warehouse_quantity": 80000,
+      "candidate": "源矿",
+      "inbound_quantity": 1,
+      "concrete_capacity_accepts": false,
+      "concrete_inbound": 0,
+      "production_stop_before_capacity": true
+    }
+  ]
+}

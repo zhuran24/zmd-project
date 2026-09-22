@@ -1,0 +1,15 @@
+   Compiling kernel v0.1.0 (/home/zhuran24/zmd-research-fresh/求解器/crates/kernel)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.07s
+     Running unittests src/lib.rs (target/debug/deps/kernel-26241e85d1128675)
+
+running 7 tests
+test tests::revision_r3::revision_r3_bridge_moves_are_not_first_contact_events ... ok
+test tests::revision_r3::revision_r3_window_deadline_respects_anchor_phase ... ok
+test tests::revision_r3::revision_r3_sufficient_requires_both_positive_ores ... ok
+test tests::revision_r3::revision_r3_checkpoint_parameters_are_not_repaired ... ok
+test tests::revision_r3::revision_r3_cycle_checks_prefix_before_recomputation ... ok
+test tests::revision_r3::revision_r3_phase_type_and_domain_at_both_anchors ... ok
+test tests::revision_r3::revision_r3_malformed_seed_returns_stop_before_indexing ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 76 filtered out; finished in 0.96s
+

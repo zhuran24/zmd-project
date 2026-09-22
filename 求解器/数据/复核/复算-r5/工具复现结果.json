@@ -1,0 +1,213 @@
+{
+  "状态": "通过",
+  "命令结果": [
+    {
+      "项目": "独立回源命令",
+      "命令": [
+        "/usr/bin/python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复算-r5/隔离运行/求解器/数据/工具/formal_catalog.py"
+      ],
+      "退出码": 0,
+      "期望": 0,
+      "正确": true
+    },
+    {
+      "项目": "Python目录负例",
+      "命令": [
+        "/usr/bin/python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复算-r5/隔离运行/求解器/数据/工具/test_formal_catalog.py",
+        "-v"
+      ],
+      "退出码": 0,
+      "期望": 0,
+      "正确": true
+    },
+    {
+      "项目": "门禁变异-未用配方耗时",
+      "命令": [
+        "/usr/bin/python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复算-r5/隔离运行/求解器/数据/工具/formal_catalog.py",
+        "--catalog",
+        "-"
+      ],
+      "退出码": 1,
+      "期望": 1,
+      "正确": true
+    },
+    {
+      "项目": "门禁变异-研磨投入",
+      "命令": [
+        "/usr/bin/python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复算-r5/隔离运行/求解器/数据/工具/formal_catalog.py",
+        "--catalog",
+        "-"
+      ],
+      "退出码": 1,
+      "期望": 1,
+      "正确": true
+    },
+    {
+      "项目": "门禁变异-研磨产出",
+      "命令": [
+        "/usr/bin/python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复算-r5/隔离运行/求解器/数据/工具/formal_catalog.py",
+        "--catalog",
+        "-"
+      ],
+      "退出码": 1,
+      "期望": 1,
+      "正确": true
+    },
+    {
+      "项目": "门禁变异-供电宽度",
+      "命令": [
+        "/usr/bin/python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复算-r5/隔离运行/求解器/数据/工具/formal_catalog.py",
+        "--catalog",
+        "-"
+      ],
+      "退出码": 1,
+      "期望": 1,
+      "正确": true
+    },
+    {
+      "项目": "门禁变异-供电高度",
+      "命令": [
+        "/usr/bin/python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复算-r5/隔离运行/求解器/数据/工具/formal_catalog.py",
+        "--catalog",
+        "-"
+      ],
+      "退出码": 1,
+      "期望": 1,
+      "正确": true
+    },
+    {
+      "项目": "门禁变异-核心类别",
+      "命令": [
+        "/usr/bin/python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复算-r5/隔离运行/求解器/数据/工具/formal_catalog.py",
+        "--catalog",
+        "-"
+      ],
+      "退出码": 1,
+      "期望": 1,
+      "正确": true
+    },
+    {
+      "项目": "门禁变异-未用配方类别",
+      "命令": [
+        "/usr/bin/python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复算-r5/隔离运行/求解器/数据/工具/formal_catalog.py",
+        "--catalog",
+        "-"
+      ],
+      "退出码": 1,
+      "期望": 1,
+      "正确": true
+    },
+    {
+      "项目": "候选CLI",
+      "命令": [
+        "cargo",
+        "run",
+        "--offline",
+        "--locked",
+        "--manifest-path",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复算-r5/隔离运行/求解器/Cargo.toml",
+        "-p",
+        "topology",
+        "--",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复算-r5/隔离运行/求解器/数据/候选B/contract.json"
+      ],
+      "退出码": 0,
+      "期望": 0,
+      "正确": true
+    },
+    {
+      "项目": "原始设计副本",
+      "命令": [
+        "/usr/bin/python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复算-r5/隔离运行/原始候选B/design.py"
+      ],
+      "退出码": 0,
+      "期望": 0,
+      "正确": true
+    },
+    {
+      "项目": "转换器副本",
+      "命令": [
+        "/usr/bin/python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复算-r5/隔离运行/求解器/数据/工具/convert_candidate_b.py"
+      ],
+      "退出码": 0,
+      "期望": 0,
+      "正确": true
+    }
+  ],
+  "门禁负例": [
+    {
+      "反例": "未用配方耗时",
+      "定位": "recipes.精炼-蓝铁粉末.duration.value",
+      "诊断": "目录回源失败：recipes.精炼-蓝铁粉末.duration.value 与正式来源投影不一致：'2' / '1'",
+      "退出码": 1
+    },
+    {
+      "反例": "研磨投入",
+      "定位": "recipes.研磨-致密蓝铁.inputs.蓝铁粉末.value",
+      "诊断": "目录回源失败：recipes.研磨-致密蓝铁.inputs.蓝铁粉末.value 与正式来源投影不一致：'3' / '2'",
+      "退出码": 1
+    },
+    {
+      "反例": "研磨产出",
+      "定位": "recipes.研磨-致密蓝铁.outputs.致密蓝铁粉末.value",
+      "诊断": "目录回源失败：recipes.研磨-致密蓝铁.outputs.致密蓝铁粉末.value 与正式来源投影不一致：'2' / '1'",
+      "退出码": 1
+    },
+    {
+      "反例": "供电宽度",
+      "定位": "units.供电桩.coverage.width.value",
+      "诊断": "目录回源失败：units.供电桩.coverage.width.value 与正式来源投影不一致：'13' / '12'",
+      "退出码": 1
+    },
+    {
+      "反例": "供电高度",
+      "定位": "units.供电桩.coverage.height.value",
+      "诊断": "目录回源失败：units.供电桩.coverage.height.value 与正式来源投影不一致：'13' / '12'",
+      "退出码": 1
+    },
+    {
+      "反例": "核心类别",
+      "定位": "units.协议核心.ports.input_count.category",
+      "诊断": "目录回源失败：units.协议核心.ports.input_count.category 与正式来源投影不一致：'候选' / '条文直引'",
+      "退出码": 1
+    },
+    {
+      "反例": "未用配方类别",
+      "定位": "recipes.精炼-蓝铁粉末.duration.category",
+      "诊断": "目录回源失败：recipes.精炼-蓝铁粉末.duration.category 与正式来源投影不一致：'候选' / '条文直引'",
+      "退出码": 1
+    }
+  ],
+  "原设计输出与原始资产相同": {
+    "machines.csv": true,
+    "channels.csv": true,
+    "fanout.json": true
+  },
+  "CLI报告与被审报告字节相同": true,
+  "副本转换契约字节相同": true,
+  "隔离目录数据未变": true,
+  "报告sha256": "4ca856465096fdcfd79fc7e75ac2500aa3898cb548c2e5cf124d34bb23815f67",
+  "边界": "工具复现用被审实现；独立数值结论来自先行封存的 recompute.py，未借本脚本推导。"
+}

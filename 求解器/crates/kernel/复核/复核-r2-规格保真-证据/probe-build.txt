@@ -1,0 +1,2 @@
+   Compiling spec_review_probe v0.1.0 (/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/复核-r2-规格保真-证据/probe)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.13s

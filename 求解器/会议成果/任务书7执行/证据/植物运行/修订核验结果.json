@@ -1,0 +1,108 @@
+{
+  "status": "PASS",
+  "scope": "作者修订定向核验；实际游戏转移及修订后独立重核分别按交付范围保留",
+  "command": "python -B /home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/修订核验.py",
+  "exit_status": 0,
+  "read_only_inputs_matched": 24,
+  "protected_sources": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+      "sha256": "d150b86b398f8e73e57bee1598020e6bcd895e5a13a254b4b11dd1e4416c325a",
+      "bytes": 7238,
+      "lines": 114,
+      "mtime_ns": 1789994657141826862
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解任务.txt",
+      "sha256": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+      "bytes": 1405,
+      "lines": 16,
+      "mtime_ns": 1789930680631466015
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解约束.txt",
+      "sha256": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6",
+      "bytes": 24783,
+      "lines": 126,
+      "mtime_ns": 1789830612828187342
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/候选约束.txt",
+      "sha256": "a0ac3f9c82f371132b7de29fe47e4c6c587904680bc2786523de0c825fd5efd9",
+      "bytes": 244240,
+      "lines": 862,
+      "mtime_ns": 1789697228449586698
+    }
+  ],
+  "single_kind_ordinary_states_checked": 101,
+  "witness_units": 67,
+  "witness_machine_count": 66,
+  "witness_unexpected_overlap": 0,
+  "capacities": {
+    "荞花": {
+      "ordinary_seeds": 1150,
+      "ordinary_seeds_normal_recipe_slots": 850,
+      "ordinary_all_materials": 2300,
+      "ordinary_plants": 1150,
+      "ordinary_seed_plus_plant": 2000,
+      "reachable_normal_cache_all_materials": 35,
+      "reachable_normal_cache_seed_plus_plant": 29,
+      "seed_plus_plant_with_normal_cache": 2029
+    },
+    "砂叶": {
+      "ordinary_seeds": 2150,
+      "ordinary_seeds_normal_recipe_slots": 1600,
+      "ordinary_all_materials": 4300,
+      "ordinary_plants": 2150,
+      "ordinary_seed_plus_plant": 3750,
+      "reachable_normal_cache_all_materials": 76,
+      "reachable_normal_cache_seed_plus_plant": 54,
+      "seed_plus_plant_with_normal_cache": 3804
+    }
+  },
+  "ordinary_seed_physical_total": 3300,
+  "normal_recipe_seed_total": 2450,
+  "normal_N_total": 5833,
+  "normal_all_materials_total": 6711,
+  "unchanged_candidates": {
+    "machines": 438,
+    "feeds": 629
+  },
+  "conditional_guarantees_unchanged": true,
+  "preserved_old_files": [
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/候选A原脚本重放.log",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/局部时间表核对.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/局部结构.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/来源增量.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/来源增量核查.py",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/核验.log",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/版本失配.log",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/输入当前指纹.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/输入指纹.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/逐机逐口清单.md"
+  ],
+  "findings": {
+    "accepted": 18,
+    "upheld": 1,
+    "not_upheld": 14,
+    "undecided": 3
+  },
+  "open_items": 7,
+  "independent_recheck": "pending",
+  "links_checked": true,
+  "for_owner": [],
+  "L": 0,
+  "U": 1113,
+  "修订记录": [
+    {
+      "date": "2026-09-21",
+      "finding": "F13/F14",
+      "change": "逐格重核既有容量见证；分别核普通物理种子与正常配方槽位、缓存和联合N，保持其他候选及定理字段。"
+    },
+    {
+      "date": "2026-09-21",
+      "finding": "F01/F16—F18",
+      "change": "核输入指纹、18项处理及7项未证登记；修订后独立复核仍待交。"
+    }
+  ]
+}

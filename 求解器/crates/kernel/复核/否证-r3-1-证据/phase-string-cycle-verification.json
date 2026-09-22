@@ -1,0 +1,12 @@
+{
+  "checks": [
+    "完整结果逐字段重算",
+    "循环起点重新装载",
+    "P次step_tick事件/状态/台账/闭包逐字段相等",
+    "终态完整键相等"
+  ],
+  "cycle_replayed": true,
+  "period": 20,
+  "start_time": 0,
+  "status": "input_checked"
+}

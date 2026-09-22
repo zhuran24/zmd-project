@@ -1,0 +1,68 @@
+{
+  "date": "2026-09-21",
+  "status": "completed",
+  "scope": "任务书7任务3文本修订完成；新文字待独立复核；运行证明缺口保持",
+  "verification_exit_status": 0,
+  "error": null,
+  "for_owner": [
+    "R36空箱尝试（实际传输0件）是否启动或重置5tick冷却，缺游戏事实；本次收支和产能结论独立于该细节。"
+  ],
+  "files": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/回路总数决定论-v2.md",
+      "sha256": "040202154ecfb327c75db45bfc217d88f372ea84d0b41a5bce138ee3ae7f70b1",
+      "bytes": 74014
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/三种相位不改产量-v2.md",
+      "sha256": "217c9a2046da9e70b1a934eeeb5f70539e564def8149937611f1b80903239d88",
+      "bytes": 56665
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/总纲-流量存量相位.md",
+      "sha256": "35bc7bc8d3d710019049ff7612dbbd647246b6392409eaabe226c0f1511275ff",
+      "bytes": 12462
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/推导复核范围.md",
+      "sha256": "1654c6dc0fcbd2ab5c5e66372a2f72651c0ec0f49c04d9ba1fd46b7ec281cf35",
+      "bytes": 20645
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/推导修订/修订差异.md",
+      "sha256": "00cda5eac8164484f75d6b055216c22553ab97aaa97b30b59c33b1c0b9b2a43d",
+      "bytes": 67507
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/推导修订/核验.log",
+      "sha256": "63d94f048a517d5f5fd3c8f5abe70e603be4a01c343b5f60824d4c7d3e3460d8",
+      "bytes": 896
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/推导修订/核验.py",
+      "sha256": "e48a9f1465a62a2dad0f9c2e3da8ba5f17efa9fb49c7defef65824fdea6b89e8",
+      "bytes": 10797
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/推导修订/核验结果.json",
+      "sha256": "abde88b1dec56df3a4a961487cfbb05064a74c300c66526e5324ce83c686514f",
+      "bytes": 5395
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/推导修订/裁定处理.json",
+      "sha256": "e1c7350390a991f205a70621db9591ba334f22e916cd37b145a23d6575ee60be",
+      "bytes": 14230
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/推导修订/读者自审.md",
+      "sha256": "798663ee9acd7677628840578d56923d2d4c30b0444da0133f78a318f6eda161",
+      "bytes": 2727
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/推导修订/输入指纹.json",
+      "sha256": "d074a8c2e8ea6ae13da7abb6a9a229839500c51fbf82deac23ef6c7bb61367c9",
+      "bytes": 4752
+    }
+  ],
+  "manifest_self_hash": "最终文字回传提供；本清单不收录自身指纹。"
+}

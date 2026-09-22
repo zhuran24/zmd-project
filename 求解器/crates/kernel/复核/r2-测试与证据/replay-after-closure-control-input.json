@@ -1,0 +1,20 @@
+{
+  "fingerprints": [],
+  "input_history": null,
+  "open_items": [
+    "unresolved output.start_anchor @ trace.start_state.semantic_context.judgment_context: KQ-02：step_tick须推进至下一时刻，但内核输出§2要求首项等于种子时刻；输出契约澄清前不生成completed记录"
+  ],
+  "parameter_assignment": null,
+  "producer": {
+    "claim": "装载停止，未形成游戏后继",
+    "kind": "kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/snapshot/求解器/crates/kernel/src/lib.rs"
+  },
+  "profile_id": "kernel_profile_v1",
+  "run_id": "kernel:load-stop",
+  "schema": "kernel-output-v2",
+  "status": "unresolved",
+  "trace": null,
+  "uncovered_axes": [],
+  "validation_scope": null
+}

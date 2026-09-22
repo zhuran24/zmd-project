@@ -1,0 +1,4 @@
+{
+  "findings": [],
+  "notes": "完整论证：/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/复核-r2-独立重推.md；独立推导：/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/独立重推-r2.md。结构复算通过，分支表97点映射一致。旧证据的上游指纹变化及运行接入限制已在报告第7节列明；未修改被复核文件。"
+}

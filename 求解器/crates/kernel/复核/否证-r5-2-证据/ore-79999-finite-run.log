@@ -1,0 +1,27 @@
+{"name": "ore-79999-finite-run", "command": ["/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel", "run", "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-2-证据/ore-79999-seed.json", "--ticks", "1", "--no-output", "--config", "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"], "cwd": "/home/zhuran24/zmd-research-fresh/求解器", "exit": 0}
+STDOUT
+{
+  "actual_inbound": {
+    "源矿": 1
+  },
+  "completed_batches": 0,
+  "elapsed_ns": "50748",
+  "final_inventory": {
+    "源矿": 80000,
+    "砂叶": 80000,
+    "砂叶种子": 80000,
+    "荞花": 80000,
+    "荞花种子": 80000,
+    "蓝铁矿": 80000
+  },
+  "output": "disabled",
+  "statistics": {
+    "completed": 1,
+    "inconclusive": 0,
+    "stopped": 0
+  },
+  "status": "completed",
+  "ticks": 1
+}
+
+STDERR

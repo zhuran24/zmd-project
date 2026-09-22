@@ -1,0 +1,20 @@
+[
+  {
+    "path": "求解器/数据/样例/桥接器双通路.json",
+    "previous_catalog": "63acbb92067fd9ba4229f7b83de8b5054023b6b4e520f9e7077d48b562896230",
+    "current_catalog": "74d21a5bd37c6178f988a86a4aa78a03d1e4244ecff26f133bb5e700ada82e43",
+    "only_catalog_reference_changed": true
+  },
+  {
+    "path": "求解器/数据/样例/分流器三路轮询.json",
+    "previous_catalog": "63acbb92067fd9ba4229f7b83de8b5054023b6b4e520f9e7077d48b562896230",
+    "current_catalog": "74d21a5bd37c6178f988a86a4aa78a03d1e4244ecff26f133bb5e700ada82e43",
+    "only_catalog_reference_changed": true
+  },
+  {
+    "path": "求解器/数据/样例/混做粉碎机两下游.json",
+    "previous_catalog": "63acbb92067fd9ba4229f7b83de8b5054023b6b4e520f9e7077d48b562896230",
+    "current_catalog": "74d21a5bd37c6178f988a86a4aa78a03d1e4244ecff26f133bb5e700ada82e43",
+    "only_catalog_reference_changed": true
+  }
+]

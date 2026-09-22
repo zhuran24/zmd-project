@@ -1,0 +1,30 @@
+{
+  "status": "PASS",
+  "axis_count": 99,
+  "request_sha256": "ef6fa51c1942fb1ddb2b4f3270449a3c6b207718c0334f3b46fe840f20a3d134",
+  "request_sections_read": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "input_sha256": "a180570ac7507e9711eeeb6d0dbcc21205aa136c8694634d0cb2d7e536b2486b",
+  "profile_sha256": "3df82c49ab2dcd44abc7a1f36334130787bd557b898743c22cbb97b1be1ee800",
+  "matched_description_fields": [
+    "time.instant_order",
+    "judgment.order",
+    "polling.memory_scope",
+    "polling.membership_change",
+    "damping.branch",
+    "manufacturing.recipe_completeness",
+    "manufacturing.output_blocked",
+    "warehouse.empty_slot_identity",
+    "gate.concurrent_expiry",
+    "manufacturing.recipe_quantity_match",
+    "manufacturing.recipe_extra_items"
+  ],
+  "c_runtime_verification": "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/黄金完整核验结果.json",
+  "note": "本席补同步输入表投影及重算记录；其它C线改动不冒领"
+}

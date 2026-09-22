@@ -1,0 +1,12 @@
+{
+  "findings": [
+    {
+      "id": "C3-r4-L3-1",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/数据/工具/formal_catalog.py:104-132；/home/zhuran24/zmd-research-fresh/求解器/crates/topology/tests/validation.rs:425-474、740-756；/home/zhuran24/zmd-research-fresh/求解器/数据/送料契约.md:156、165",
+      "claim": "独立回源核验遗漏配方数值及供电覆盖尺寸，违背正式原文的目录副本仍可通过全部 cargo test 和候选 B 校验。",
+      "evidence": "《明日方舟：终末地》游戏规则.txt L92：「2 蓝铁粉末 ＋ 1 砂叶粉末 → 1 致密蓝铁粉末，1 tick」；L76：「供电桩：2x2,以自己中心为原点12x12的范围内若有某个需电单位的一部分则为该单位赋予供电状态」。任务书2.md §3.B.1：「作为规格、契约、Rust 三方唯一真源」。",
+      "severity": "重要"
+    }
+  ],
+  "notes": "完整论证：/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复核-r4-校验器正确性.md。原版 cargo test 29 项通过；候选 B 校验 4925 项通过、0 项失败、59 项不能静态检。反例与日志保存在同目录 r4-校验器证据/；被复核原件和正式文件指纹未变。"
+}

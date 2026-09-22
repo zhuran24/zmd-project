@@ -1,0 +1,113 @@
+[
+  {
+    "script": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/check_geometry.py",
+    "sha256": "798e1a9ebef3a4701aa5bc634db0b31c455bf6f48c6b8c0595d8e80a79fe49b2",
+    "output_redirect_only": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/终修",
+    "exit_code": 0
+  },
+  {
+    "script": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/bridge_delay_witness.py",
+    "sha256": "bce603976f3933488867a0f06b289131bac812f215db48c867dee045c91b66ba",
+    "output_redirect_only": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/终修",
+    "exit_code": 0
+  },
+  {
+    "name": "暂停键-cycle",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "cycle",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/静止成熟与暂停键.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--max-ticks",
+      "5",
+      "--no-record",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/终修/runs/暂停键-cycle.json"
+    ],
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/终修/runs/暂停键-cycle.json\",\"status\":\"diagnostic_cycle\"}\n",
+    "stderr": ""
+  },
+  {
+    "name": "暂停键-verify",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "verify-cycle",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/终修/runs/暂停键-cycle.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "exit_code": 0,
+    "stdout": "{\n  \"checks\": [\n    \"引用原始字节/format/producer和完整来源链\",\n    \"原种子到达前缀及跨刻事件身份\",\n    \"独立重建D动态前件及周期账/率/接收域\",\n    \"从周期起点P次step_tick及完整终态\"\n  ],\n  \"cycle_replayed\": true,\n  \"period\": 1,\n  \"prefix_replayed\": 2,\n  \"start_time\": 0,\n  \"status\": \"input_checked\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "name": "分组合并-cycle",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "cycle",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/negative/同种年龄分组-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--max-ticks",
+      "5",
+      "--no-record",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/终修/runs/分组合并-cycle.json"
+    ],
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/终修/runs/分组合并-cycle.json\",\"status\":\"diagnostic_cycle\"}\n",
+    "stderr": ""
+  },
+  {
+    "name": "分组合并-verify",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "verify-cycle",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/终修/runs/分组合并-cycle.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "exit_code": 0,
+    "stdout": "{\n  \"checks\": [\n    \"引用原始字节/format/producer和完整来源链\",\n    \"原种子到达前缀及跨刻事件身份\",\n    \"独立重建D动态前件及周期账/率/接收域\",\n    \"从周期起点P次step_tick及完整终态\"\n  ],\n  \"cycle_replayed\": true,\n  \"period\": 1,\n  \"prefix_replayed\": 2,\n  \"start_time\": 0,\n  \"status\": \"input_checked\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "name": "累计调低-cycle",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "cycle",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/累计调低保留.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--max-ticks",
+      "5",
+      "--no-record",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/终修/runs/累计调低-cycle.json"
+    ],
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/终修/runs/累计调低-cycle.json\",\"status\":\"diagnostic_cycle\"}\n",
+    "stderr": ""
+  },
+  {
+    "name": "累计调低-verify",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "verify-cycle",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/终修/runs/累计调低-cycle.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "exit_code": 0,
+    "stdout": "{\n  \"checks\": [\n    \"引用原始字节/format/producer和完整来源链\",\n    \"原种子到达前缀及跨刻事件身份\",\n    \"独立重建D动态前件及周期账/率/接收域\",\n    \"从周期起点P次step_tick及完整终态\"\n  ],\n  \"cycle_replayed\": true,\n  \"period\": 1,\n  \"prefix_replayed\": 2,\n  \"start_time\": 0,\n  \"status\": \"input_checked\"\n}\n",
+    "stderr": ""
+  }
+]

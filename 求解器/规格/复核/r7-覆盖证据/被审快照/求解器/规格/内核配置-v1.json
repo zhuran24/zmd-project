@@ -1,0 +1,1085 @@
+{
+  "schema": "kernel-profile-registry-v1",
+  "profile_id": "kernel_profile_v1",
+  "revision": "round3-r6",
+  "axis_count": 99,
+  "axes": {
+    "polling.direct_peer": {
+      "disposition": "已定",
+      "value": "physical_peer",
+      "meaning": "直接接等于PC的另一端",
+      "coverage_loss": "该已定范围无读法损失；关联未定轴另记",
+      "extension_gate": "不补已排除值；输入不匹配即invalid",
+      "choice": "T3",
+      "lifetime": "F",
+      "basis": "通道、端口、取货优先级、存货优先级"
+    },
+    "connection.port_meeting": {
+      "disposition": "已定",
+      "value": "shared_edge_opposite",
+      "meaning": "共边相向、存取互补且至少一端运输",
+      "coverage_loss": "该已定范围无读法损失；关联未定轴另记",
+      "extension_gate": "不补已排除值；输入不匹配即invalid",
+      "choice": "T5",
+      "lifetime": "F",
+      "basis": "端口、通道、约束·端口对接、约束·四通结点、约束·边带排布、约束·核心邻格"
+    },
+    "initialization.rotation_stage": {
+      "disposition": "已定",
+      "value": "build_and_debug",
+      "meaning": "建造选朝向、调试可旋转；库存和接通后效另审",
+      "coverage_loss": "该已定范围无读法损失；关联未定轴另记",
+      "extension_gate": "不补已排除值；输入不匹配即invalid",
+      "choice": "T11",
+      "lifetime": "F",
+      "basis": "旋转、调试期、零干预运行"
+    },
+    "gate.window_recovery": {
+      "disposition": "已定",
+      "value": "on_expiry_if_other_guards",
+      "meaning": "满5 tick解除窗口耗尽原因，其他原因分别保留",
+      "coverage_loss": "该已定范围无读法损失；关联未定轴另记",
+      "extension_gate": "不补已排除值；输入不匹配即invalid",
+      "choice": "T8",
+      "lifetime": "F",
+      "basis": "物品准入口、约束·准入累计、约束·来源定序"
+    },
+    "transfer.judgment": {
+      "disposition": "已定",
+      "value": "unit",
+      "meaning": "一个箱一次原子传输判定",
+      "coverage_loss": "该已定范围无读法损失；关联未定轴另记",
+      "extension_gate": "不补已排除值；输入不匹配即invalid",
+      "choice": "T6",
+      "lifetime": "F",
+      "basis": "判定（一个单位一次）、传输（自身所有格所有物品）"
+    },
+    "manufacturing.port_slot_relation": {
+      "disposition": "已定",
+      "value": "distributed",
+      "meaning": "制造存取端口只访问同名格",
+      "coverage_loss": "该已定范围无读法损失；关联未定轴另记",
+      "extension_gate": "不补已排除值；输入不匹配即invalid",
+      "choice": "T7",
+      "lifetime": "F",
+      "basis": "存货/取货端口、通道、存货/取货物品格"
+    },
+    "manufacturing.output_blocked": {
+      "disposition": "已定",
+      "value": "retain_whole_batch",
+      "meaning": "目标不兼容、容量不足或任一存货格已占产物时整批留缓存，保持completed，不拆批",
+      "coverage_loss": "该已定范围无读法损失；关联未定轴另记",
+      "extension_gate": "不补已排除值；输入不匹配即invalid",
+      "choice": "T7",
+      "lifetime": "F",
+      "basis": "缓存格、物品格"
+    },
+    "gate.limit_requires_identity": {
+      "disposition": "已定",
+      "value": true,
+      "meaning": "先设放行物种，才可设两类限额",
+      "coverage_loss": "该已定范围无读法损失；关联未定轴另记",
+      "extension_gate": "不补已排除值；输入不匹配即invalid",
+      "choice": "T9",
+      "lifetime": "F",
+      "basis": "物品准入口"
+    },
+    "warehouse.capacity": {
+      "disposition": "已定",
+      "value": {
+        "value": "80000",
+        "category": "条文直引"
+      },
+      "meaning": "每种单格上限80000，数量不限不等于同种无限",
+      "coverage_loss": "该已定范围无读法损失；关联未定轴另记",
+      "extension_gate": "不补已排除值；输入不匹配即invalid",
+      "choice": "T12",
+      "lifetime": "F",
+      "basis": "物品格、协议核心、仓库物品"
+    },
+    "warehouse.delivery_count": {
+      "disposition": "已定",
+      "value": "actual_inbound",
+      "meaning": "实际入库量，不计玩家取走量",
+      "coverage_loss": "该已定范围无读法损失；关联未定轴另记",
+      "extension_gate": "不补已排除值；输入不匹配即invalid",
+      "choice": "T12",
+      "lifetime": "F",
+      "basis": "目标、约束·入库途径"
+    },
+    "bridge.inventory_scope": {
+      "disposition": "已定",
+      "value": "two_independent_axis_slots",
+      "meaning": "两轴各自独立格，不换轴",
+      "coverage_loss": "该已定范围无读法损失；关联未定轴另记",
+      "extension_gate": "不补已排除值；输入不匹配即invalid",
+      "choice": "T14",
+      "lifetime": "F",
+      "basis": "桥接器"
+    },
+    "bridge.scheduling_scope": {
+      "disposition": "已定",
+      "value": "unit",
+      "meaning": "按单位存取两侧，存货共同分级、取货不分级",
+      "coverage_loss": "该已定范围无读法损失；关联未定轴另记",
+      "extension_gate": "不补已排除值；输入不匹配即invalid",
+      "choice": "T14",
+      "lifetime": "F",
+      "basis": "轮询、存货/取货优先级、桥接器"
+    },
+    "time.domain": {
+      "disposition": "本版选值",
+      "value": "integer_ticks",
+      "meaning": "事件时刻取整数；非精确玩家策略不能因此变成定时指令",
+      "coverage_loss": "非整数相位、建造/暂停时距",
+      "extension_gate": "时间或相位认证前",
+      "choice": "T1",
+      "lifetime": "U",
+      "basis": "时间单位、判定、传输、操作精度"
+    },
+    "time.instant_order": {
+      "disposition": "本版选值",
+      "value": "chronological_phases",
+      "meaning": "时间递增；边界完成→外部历史→窗口批维护→判定闭包；维护事务细节见受限转移定义§2",
+      "coverage_loss": "同刻完成/环境/判定的其他交织",
+      "extension_gate": "边界敏感轨迹用于规则结论前",
+      "choice": "T1",
+      "lifetime": "U",
+      "basis": "滞留、制造、判定；细化见受限转移定义§2"
+    },
+    "time.retry_schedule": {
+      "disposition": "本版选值",
+      "value": "ordered_sweeps",
+      "meaning": "按输入事件模板序反复整轮扫描，新启用事件在本轮尚未扫到时本轮尝试，已越过则下一轮",
+      "coverage_loss": "其他重试嵌入和逐时刻异序",
+      "extension_gate": "吞吐或分流性质认证前",
+      "choice": "T1",
+      "lifetime": "U",
+      "basis": "移动、轮询"
+    },
+    "time.instant_end": {
+      "disposition": "本版选值",
+      "value": "repeat_scheduler_state",
+      "meaning": "无库存或其他物理变化的扫描段内，完整调度投影在整轮边界首次重复即闭包；不是只看库存",
+      "coverage_loss": "有隐藏失败次数后效及其他空转归约",
+      "extension_gate": "推广到其他机制/全运行域前",
+      "choice": "T1",
+      "lifetime": "U",
+      "basis": "判定、移动、轮询"
+    },
+    "time.boundary": {
+      "disposition": "本版选值",
+      "value": "elapsed_inclusive",
+      "meaning": "年龄≥1可出；满配方工作量完成；窗口/冷却满5可判，端口预算属[t,t+1)",
+      "coverage_loss": "其他边界组织",
+      "extension_gate": "边界敏感认证前",
+      "choice": "T1",
+      "lifetime": "U",
+      "basis": "滞留、配方、传输、物品准入口"
+    },
+    "time.manufacture_events": {
+      "disposition": "本版选值",
+      "value": "completion_before_closure",
+      "meaning": "工作量耗足的完成在边界阶段入缓存，按输入制造模板序办理；入料齐备且启用时立即开工",
+      "coverage_loss": "完成穿插判定、其他同刻位置",
+      "extension_gate": "制造时序或混做认证前",
+      "choice": "T1/T2",
+      "lifetime": "U",
+      "basis": "制造、需电功能、配方、判定"
+    },
+    "judgment.order_scope": {
+      "disposition": "本版选值",
+      "value": "global",
+      "meaning": "每一轮使用同一模板排列，重复实例按轮号嵌入；输入给具体排列",
+      "coverage_loss": "per_instant时刻异序",
+      "extension_gate": "判定先后完整覆盖前",
+      "choice": "T2",
+      "lifetime": "U",
+      "basis": "判定、判定次序"
+    },
+    "judgment.buffer_event_class": {
+      "disposition": "本版选值",
+      "value": "manufacture_subactions",
+      "meaning": "缓存整批输出/整批输入为一次制造判定内子动作，输出先于新批输入；保留BC结构和记录",
+      "coverage_loss": "BC独立移动判定与其交织",
+      "extension_gate": "内部通道语义认证前",
+      "choice": "T2",
+      "lifetime": "U",
+      "basis": "缓存格、通道、判定"
+    },
+    "polling.initial_cursor": {
+      "disposition": "本版选值",
+      "value": "first_connected",
+      "meaning": "普通单位新级起点取级内接通序首条；并列用输入connection.tie",
+      "coverage_loss": "其他普通起点",
+      "extension_gate": "建造/起动全称覆盖前",
+      "choice": "T3",
+      "lifetime": "U",
+      "basis": "轮询、接通"
+    },
+    "polling.split_merge_start": {
+      "disposition": "本版选值",
+      "value": "second_cursor",
+      "meaning": "保留全部成员，新轮询环取计数范围的第二条",
+      "coverage_loss": "exclude_first及start_on_second",
+      "extension_gate": "分汇流鲁棒认证前",
+      "choice": "T3",
+      "lifetime": "U",
+      "basis": "轮询"
+    },
+    "polling.split_merge_scope": {
+      "disposition": "本版选值",
+      "value": "per_level",
+      "meaning": "汇流器先分级再在每级数第二条；分流器取货侧只有不分级环",
+      "coverage_loss": "全侧计数再投影",
+      "extension_gate": "含分流器直连汇流器的认证前",
+      "choice": "T3",
+      "lifetime": "U",
+      "basis": "轮询、优先级、存货优先级、分流器、汇流器"
+    },
+    "polling.split_merge_singleton": {
+      "disposition": "本版选值",
+      "value": "sole_member",
+      "meaning": "级内或不分级环仅一条时取唯一成员，仍尝试",
+      "coverage_loss": "延后多口模式等起动组织",
+      "extension_gate": "单成员级/新建通道覆盖前",
+      "choice": "T3",
+      "lifetime": "U",
+      "basis": "轮询、移动"
+    },
+    "polling.ungraded_blocked": {
+      "disposition": "本版选值",
+      "value": "empty_turn",
+      "meaning": "不分级侧轮到不可动边也做失败判定并前移",
+      "coverage_loss": "skip前瞻跳过",
+      "extension_gate": "分流序列认证前",
+      "choice": "T3",
+      "lifetime": "U",
+      "basis": "轮询、优先级、取货优先级"
+    },
+    "polling.dual_permission": {
+      "disposition": "本版选值",
+      "value": "both",
+      "meaning": "成功需两端许可；任一侧授权即触发通道判定，不把成功守卫当尝试守卫",
+      "coverage_loss": "either_trigger及其他请求协调",
+      "extension_gate": "调度鲁棒性结论前",
+      "choice": "T3",
+      "lifetime": "U",
+      "basis": "轮询、优先级、判定"
+    },
+    "polling.both_failure": {
+      "disposition": "本版选值",
+      "value": "advance_authorized",
+      "meaning": "失败只前移判定前已授权该通道的侧；成功两侧前移；无侧授权不产生判定",
+      "coverage_loss": "no_attempt_hold及advance_both（仍待规则审查）",
+      "extension_gate": "更换双端解释前",
+      "choice": "T3",
+      "lifetime": "U",
+      "basis": "轮询、判定；T3"
+    },
+    "polling.memory_scope": {
+      "disposition": "本版选值",
+      "value": "per_level",
+      "meaning": "每单位每侧每级保存next_channel与current_level；不分级侧一个环",
+      "coverage_loss": "per_side全局位置投影",
+      "extension_gate": "级间抢占覆盖前",
+      "choice": "T3",
+      "lifetime": "U",
+      "basis": "轮询、优先级"
+    },
+    "polling.resume": {
+      "disposition": "本版选值",
+      "value": "retain_position",
+      "meaning": "返回某级保留续接位置，不重置为最早或第二条",
+      "coverage_loss": "回级重置及全侧投影",
+      "extension_gate": "轮询均分全前件核验前",
+      "choice": "T3",
+      "lifetime": "U",
+      "basis": "轮询、优先级、约束·轮询均分"
+    },
+    "polling.eligibility_stage": {
+      "disposition": "本版选值",
+      "value": "pre_filter",
+      "meaning": "先以物理守卫筛最高可动级；双端指针不进入物理可动谓词，见转移§3",
+      "coverage_loss": "探测后筛级的组织",
+      "extension_gate": "优先级语义覆盖前",
+      "choice": "T3",
+      "lifetime": "U",
+      "basis": "优先级、判定"
+    },
+    "polling.membership_change": {
+      "disposition": "本版选值",
+      "value": "retain_survivors",
+      "meaning": "每笔图变更事务以完整前后图映射一次：保留存活续接位，否则沿旧环找存活者，新环按完整接通序初始化",
+      "coverage_loss": "重新起轮与其他映射",
+      "extension_gate": "准入口恢复/结构切换认证前",
+      "choice": "T3/T8/T10",
+      "lifetime": "U",
+      "basis": "通道、物品准入口、轮询、离线"
+    },
+    "polling.internal_scope": {
+      "disposition": "本版选值",
+      "value": "external_only",
+      "meaning": "BC不入端口轮询或通道分级，由制造子动作处理",
+      "coverage_loss": "include_buffer_levels的归级机制尚缺",
+      "extension_gate": "内部通道分级覆盖前",
+      "choice": "T2/T3",
+      "lifetime": "U",
+      "basis": "缓存格、轮询、取货优先级、存货优先级"
+    },
+    "polling.level_tie": {
+      "disposition": "本版选值",
+      "value": "fixed_arbitration",
+      "meaning": "正式级排序键全等时用输入的级全序；键不等不得反转；与接通并列序分开",
+      "coverage_loss": "并列级联合轮询及其他仲裁",
+      "extension_gate": "级平局鲁棒覆盖前",
+      "choice": "T3/T5",
+      "lifetime": "U",
+      "basis": "取货优先级、存货优先级、接通"
+    },
+    "damping.belt_component_rule": {
+      "disposition": "本版选值",
+      "value": "path_runs",
+      "meaning": "按实际选中路径的极大连续带串计元件",
+      "coverage_loss": "geometric_components",
+      "extension_gate": "阻尼几何解释覆盖前",
+      "choice": "T4",
+      "lifetime": "U",
+      "basis": "元件、阻尼；T4"
+    },
+    "damping.belt_adjacency": {
+      "disposition": "本版选值",
+      "value": "shared_edge",
+      "meaning": "几何连续时采用共边；本版path_runs不调用此值，显式保存以便迁移",
+      "coverage_loss": "角触连通的待审域",
+      "extension_gate": "启用geometric_components前",
+      "choice": "T4",
+      "lifetime": "U",
+      "basis": "元件的“连续”"
+    },
+    "connection.bridge_first_contact": {
+      "disposition": "本版选值",
+      "value": "physical_contact",
+      "meaning": "只在无环且唯一已知非桥先接见证下逐轴解定向",
+      "coverage_loss": "有向成边先接及递归定向",
+      "extension_gate": "桥互依赖实例运行前",
+      "choice": "T5",
+      "lifetime": "U",
+      "basis": "桥接器、通道、接通"
+    },
+    "transfer.cooldown_scope": {
+      "disposition": "本版选值",
+      "value": "box",
+      "meaning": "一个箱一个冷却；一次处理全箱",
+      "coverage_loss": "按格异相冷却",
+      "extension_gate": "箱体语义认证前",
+      "choice": "T6",
+      "lifetime": "U",
+      "basis": "传输、协议储存箱"
+    },
+    "transfer.pause": {
+      "disposition": "本版选值",
+      "value": "pause_with_function",
+      "meaning": "冷却随需电功能停用暂停，恢复续减",
+      "coverage_loss": "墙钟继续计冷却",
+      "extension_gate": "断电/开关认证前",
+      "choice": "T6",
+      "lifetime": "U",
+      "basis": "需电功能、传输"
+    },
+    "transfer.failure_cooldown": {
+      "disposition": "本版选值",
+      "value": "every_attempt",
+      "meaning": "每次到期且启用的尝试（含空/拒收）都进入5 tick冷却",
+      "coverage_loss": "只成功才冷却等",
+      "extension_gate": "拒收/空箱相位认证前",
+      "choice": "T6",
+      "lifetime": "U",
+      "basis": "传输、物品格"
+    },
+    "transfer.partial_acceptance": {
+      "disposition": "本版选值",
+      "value": "all_or_nothing",
+      "meaning": "仓库能接全箱才原子转移全部，否则全保留",
+      "coverage_loss": "单位判定内部分物种/格/件接收",
+      "extension_gate": "仓库拒收覆盖前",
+      "choice": "T6",
+      "lifetime": "U",
+      "basis": "传输、协议核心、物品格"
+    },
+    "transfer.resume_event": {
+      "disposition": "本版选值",
+      "value": "ready_in_closure",
+      "meaning": "恢复且到期的箱在同刻扫描中尝试，不插未登记的额外冷却",
+      "coverage_loss": "其他恢复日程",
+      "extension_gate": "停用/恢复认证前",
+      "choice": "T6",
+      "lifetime": "U",
+      "basis": "需电功能、传输"
+    },
+    "manufacturing.input_mixing": {
+      "disposition": "本版选值",
+      "value": "single_kind",
+      "meaning": "甲读法：任意种可进空格，单格不并存多种；跨批混做仍可",
+      "coverage_loss": "乙混装与多候选竞争",
+      "extension_gate": "混装覆盖前",
+      "choice": "T7",
+      "lifetime": "U",
+      "basis": "物品格、存货/取货物品格"
+    },
+    "manufacturing.input_capacity_scope": {
+      "disposition": "本版选值",
+      "value": "per_slot_total",
+      "meaning": "存货格合计≤50；甲下逐种计数数值虽同，语义仍分轴",
+      "coverage_loss": "per_kind",
+      "extension_gate": "启用混装时",
+      "choice": "T7",
+      "lifetime": "U",
+      "basis": "存货/取货物品格"
+    },
+    "manufacturing.recipe_match_scope": {
+      "disposition": "本版选值",
+      "value": "input_union",
+      "meaning": "按全部输入格并集匹配，不按单格独自求值",
+      "coverage_loss": "per_slot",
+      "extension_gate": "开闸语义覆盖前",
+      "choice": "T7",
+      "lifetime": "U",
+      "basis": "缓存格、大制造单位"
+    },
+    "manufacturing.recipe_completeness": {
+      "disposition": "本版选值",
+      "value": "full_batch",
+      "meaning": "开闸前所需物种及一批用量备齐；超量及额外物种另由两条匹配轴约束",
+      "coverage_loss": "all_kinds/partial_kinds",
+      "extension_gate": "部分归集及缓存抽象前",
+      "choice": "T7",
+      "lifetime": "U",
+      "basis": "缓存格、制造、配方"
+    },
+    "manufacturing.recipe_lock_time": {
+      "disposition": "本版选值",
+      "value": "on_gate_open",
+      "meaning": "开闸锁配方；制造子动作内一批归集",
+      "coverage_loss": "首件/齐料后锁定",
+      "extension_gate": "允许分步归集前",
+      "choice": "T7",
+      "lifetime": "U",
+      "basis": "缓存格、制造"
+    },
+    "manufacturing.empty_slot_identity": {
+      "disposition": "本版选值",
+      "value": "release_on_empty",
+      "meaning": "制造格清空后可重新赋种，不保留禁入锁",
+      "coverage_loss": "保留历史身份",
+      "extension_gate": "混做/选格覆盖前",
+      "choice": "T7",
+      "lifetime": "U",
+      "basis": "物品格、约束·满载配置"
+    },
+    "manufacturing.input_collection": {
+      "disposition": "本版选值",
+      "value": "atomic_batch",
+      "meaning": "一次制造判定内整批用量归集，逐条BC记账而不穿插其他事件",
+      "coverage_loss": "分步归集与暂停状态",
+      "extension_gate": "部分开闸覆盖前",
+      "choice": "T7",
+      "lifetime": "U",
+      "basis": "缓存格、判定"
+    },
+    "manufacturing.buffer_power_gate": {
+      "disposition": "本版选值",
+      "value": "manufacturing_only",
+      "meaning": "内部搬运不需电；齐料停用时等待，恢复后立刻开始；工作进度暂停",
+      "coverage_loss": "内部搬运随功能停用",
+      "extension_gate": "断电缓存覆盖前",
+      "choice": "T6/T7",
+      "lifetime": "U",
+      "basis": "需电功能、制造、缓存格"
+    },
+    "gate.identity_subject": {
+      "disposition": "本版选值",
+      "value": "candidate_item",
+      "meaning": "只检查现存PC上该次拟送物品；断边不观察邻端",
+      "coverage_loss": "上游可能种类集合及其他有据观察机制",
+      "extension_gate": "身份恢复认证前",
+      "choice": "T8",
+      "lifetime": "U",
+      "basis": "物品准入口"
+    },
+    "gate.identity_recovery": {
+      "disposition": "本版选值",
+      "value": "latched",
+      "meaning": "身份失败记录本地阻断原因；本版不执行自动身份恢复",
+      "coverage_loss": "条件恢复",
+      "extension_gate": "依赖动态身份恢复的起动认证前",
+      "choice": "T8",
+      "lifetime": "U",
+      "basis": "物品准入口、设定"
+    },
+    "gate.total_recovery": {
+      "disposition": "本版选值",
+      "value": "latched",
+      "meaning": "累计耗尽记录原因；改额度/解除后效本版遇到即停",
+      "coverage_loss": "条件恢复",
+      "extension_gate": "调试改累计方案运行前",
+      "choice": "T8/T9",
+      "lifetime": "U",
+      "basis": "物品准入口、设定"
+    },
+    "gate.window_clock": {
+      "disposition": "本版选值",
+      "value": "wall_clock",
+      "meaning": "窗口从首件按墙钟走5 tick，满后下一件再开窗，累计不清零",
+      "coverage_loss": "仅身份原因停表方向仍待审；全盘停表已排除",
+      "extension_gate": "身份停表解释认证前",
+      "choice": "T8",
+      "lifetime": "U",
+      "basis": "物品准入口、约束·准入累计、约束·来源定序"
+    },
+    "gate.reconnect_record": {
+      "disposition": "本版选值",
+      "value": "original_build_record",
+      "meaning": "恢复原几何边及其较晚建造记录；恢复事件另记，不虚构建造",
+      "coverage_loss": "恢复新记录与建造时刻衔接",
+      "extension_gate": "准入口重接解释覆盖前",
+      "choice": "T8",
+      "lifetime": "U",
+      "basis": "接通、物品准入口"
+    },
+    "gate.counter_start": {
+      "disposition": "本版选值",
+      "value": "since_build",
+      "meaning": "本版从建成起记total_received；窗口首件开窗，初态由历史/种子给",
+      "coverage_loss": "设限后才计累计等",
+      "extension_gate": "带设定变化的准入口认证前",
+      "choice": "T9",
+      "lifetime": "U",
+      "basis": "物品准入口"
+    },
+    "initialization.belt_shape_lifecycle": {
+      "disposition": "本版选值",
+      "value": "fixed_between_builds",
+      "meaning": "每次建成选形状，两次建成间固定；调试重建可重选，rotate保形",
+      "coverage_loss": "direct_change无正面授权，留待审不执行",
+      "extension_gate": "直接改形运行或全阶段覆盖前",
+      "choice": "T11",
+      "lifetime": "U",
+      "basis": "传送带、旋转、重建、设定、调试期、零干预运行"
+    },
+    "warehouse.acceptance": {
+      "disposition": "本版选值",
+      "value": "capacity_and_path",
+      "meaning": "分别记录两成品容量许可及存在物理入库途径，不将目标接收谓词当移动全局守卫",
+      "coverage_loss": "仅容量/仅路径等目标读法",
+      "extension_gate": "完整目标认证前",
+      "choice": "T12",
+      "lifetime": "U",
+      "basis": "目标、约束·入库途径"
+    },
+    "warehouse.acceptance_quantifier": {
+      "disposition": "本版选值",
+      "value": "per_instant",
+      "meaning": "在每个观察边界报告接收域；不凭一次满仓推全题无解",
+      "coverage_loss": "验收状态条件及环境量词",
+      "extension_gate": "完整目标认证前",
+      "choice": "T12",
+      "lifetime": "U",
+      "basis": "目标、循环态"
+    },
+    "warehouse.empty_slot_identity": {
+      "disposition": "本版选值",
+      "value": "retain_history",
+      "meaning": "保留历史身份；单物种按空格序落格；多种新物种竞争任一无身份空格即unsupported，见转移§4.3",
+      "coverage_loss": "释放身份、其它落格关系；至少两种无既有/历史目标物种且存在无身份空格的整箱传输未覆盖",
+      "extension_gate": "仓库抽象/空格指派认证前",
+      "choice": "T12",
+      "lifetime": "U",
+      "basis": "物品格、仓库、协议核心、设定；T12"
+    },
+    "bridge.capacity": {
+      "disposition": "本版选值",
+      "value": 1,
+      "meaning": "采用仅个数例外的读法，两独立格各1；不从运输下界证明唯一容量",
+      "coverage_loss": "容量也例外的未定域",
+      "extension_gate": "桥接容量完整覆盖前",
+      "choice": "T14",
+      "lifetime": "U",
+      "basis": "运输单位、桥接器、约束·箱体过站/约束·运输下限"
+    },
+    "power.cell_rule": {
+      "disposition": "本版选值",
+      "value": "positive_area",
+      "meaning": "运行本版正面积守卫；达标义务也按最严读法核",
+      "coverage_loss": "closed_touch可多解锁功能，行为轨迹未覆盖；达标供电必要条件无额外前件",
+      "extension_gate": "依赖额外供电的行为结论前",
+      "choice": "T15",
+      "lifetime": "U",
+      "basis": "供电桩、供电状态、约束·不得依赖的量；受限模型声明§3"
+    },
+    "residence.nontransport": {
+      "disposition": "本版选值",
+      "value": "zero",
+      "meaning": "非运输格无附加停留；制造仍耗配方工作时长",
+      "coverage_loss": "合法正停留域尚待界定",
+      "extension_gate": "停留语义完整覆盖前",
+      "choice": "T16",
+      "lifetime": "U",
+      "basis": "滞留、制造、缓存格"
+    },
+    "cascade.buffer": {
+      "disposition": "本版选值",
+      "value": "same_instant",
+      "meaning": "本次制造判定内可出缓存再归集新批；不压零制造时长、不豁免运输滞留",
+      "coverage_loss": "next_instant及独立BC交织",
+      "extension_gate": "内部级联认证前",
+      "choice": "T17",
+      "lifetime": "U",
+      "basis": "缓存格、判定、移动、配方"
+    },
+    "judgment.order": {
+      "disposition": "由输入全称量化",
+      "value": {
+        "interface": "event-order-v1"
+      },
+      "meaning": "输入给全事件模板严格全序，重复/新启用实例按轮号嵌入；见转移§2及内核输入§5.2",
+      "coverage_loss": "只运行给定序列不等于全称覆盖；本版仅global模板序",
+      "extension_gate": "首次对该输入族作全称结论前，证明域与覆盖；缺具体值则拒绝运行",
+      "choice": "T2",
+      "lifetime": "F(global)/U(per_instant)",
+      "basis": "判定、判定次序、约束·判定先后"
+    },
+    "damping.branch": {
+      "disposition": "由输入全称量化",
+      "value": {
+        "interface": "damping-branch-v1"
+      },
+      "meaning": "输入给(channel,fork_unit)→outgoing_channel表，fixed_for_run；无分叉用带结构据的不适用",
+      "coverage_loss": "运行中分支变化和其他固定性未覆盖",
+      "extension_gate": "首次对该输入族作全称结论前，证明域与覆盖；缺具体值则拒绝运行",
+      "choice": "T4",
+      "lifetime": "U",
+      "basis": "阻尼、约束·分叉分支"
+    },
+    "connection.build_order": {
+      "disposition": "由输入全称量化",
+      "value": {
+        "interface": "construction.selected_order"
+      },
+      "meaning": "输入完整合法建成史；从已选种子开始的实验不补造建造过程",
+      "coverage_loss": "未回放的其他建造史仍欠覆盖",
+      "extension_gate": "首次对该输入族作全称结论前，证明域与覆盖；缺具体值则拒绝运行",
+      "choice": "T5/T11",
+      "lifetime": "F（给定建造历史）",
+      "basis": "蓝图、建造方式"
+    },
+    "connection.order": {
+      "disposition": "由输入全称量化",
+      "value": {
+        "interface": "timeline_connection_history"
+      },
+      "meaning": "初始较晚建造端的时刻关系与当前顺序来自输入；不默认通道全排列",
+      "coverage_loss": "离线接续触发即停",
+      "extension_gate": "首次对该输入族作全称结论前，证明域与覆盖；缺具体值则拒绝运行",
+      "choice": "T5/T10",
+      "lifetime": "O",
+      "basis": "接通、离线、约束·接通先后"
+    },
+    "connection.tie": {
+      "disposition": "由输入全称量化",
+      "value": {
+        "interface": "explicit_channel_order"
+      },
+      "meaning": "输入通道严格全序只用于真实接通时刻并列，保留原并列事实",
+      "coverage_loss": "不遍历仲裁不等于仲裁鲁棒",
+      "extension_gate": "首次对该输入族作全称结论前，证明域与覆盖；缺具体值则拒绝运行",
+      "choice": "T5",
+      "lifetime": "U",
+      "basis": "接通、轮询"
+    },
+    "connection.belt_shape": {
+      "disposition": "由输入全称量化",
+      "value": {
+        "interface": "per_build_shape_map"
+      },
+      "meaning": "每个传送带建造生命段的turn_left/straight/turn_right，由布局边对推导",
+      "coverage_loss": "未枚举形状/建造史不算覆盖",
+      "extension_gate": "首次对该输入族作全称结论前，证明域与覆盖；缺具体值则拒绝运行",
+      "choice": "T5/T11",
+      "lifetime": "F（每个建造生命段）",
+      "basis": "传送带、旋转、重建"
+    },
+    "transfer.phase": {
+      "disposition": "由输入全称量化",
+      "value": {
+        "interface": "progress.cooldowns"
+      },
+      "meaning": "每箱输入整数剩余0…5及初态据；无箱且不增箱才可不适用",
+      "coverage_loss": "非整数残余、按格相位及未验证初态史",
+      "extension_gate": "首次对该输入族作全称结论前，证明域与覆盖；缺具体值则拒绝运行",
+      "choice": "T6",
+      "lifetime": "U",
+      "basis": "传输、约束·传输相位"
+    },
+    "manufacturing.recipe_selection": {
+      "disposition": "由输入全称量化",
+      "value": {
+        "interface": "explicit_recipe_order"
+      },
+      "meaning": "输入各机型所有配方全序，匹配首条；本版甲＋并集＋整批下至多一条",
+      "coverage_loss": "到达史/接通派生选择；本版通常不激活竞争",
+      "extension_gate": "首次对该输入族作全称结论前，证明域与覆盖；缺具体值则拒绝运行",
+      "choice": "T7",
+      "lifetime": "U",
+      "basis": "缓存格、配方、设定"
+    },
+    "manufacturing.input_slot_selection": {
+      "disposition": "由输入全称量化",
+      "value": {
+        "interface": "explicit_slot_order"
+      },
+      "meaning": "已有物种用其现格，否则按输入格全序取合法空格",
+      "coverage_loss": "端口关联、先空、接通派生选择",
+      "extension_gate": "首次对该输入族作全称结论前，证明域与覆盖；缺具体值则拒绝运行",
+      "choice": "T7",
+      "lifetime": "U",
+      "basis": "物品格、大制造单位、协议储存箱"
+    },
+    "initialization.warehouse_anchor": {
+      "disposition": "由输入全称量化",
+      "value": {
+        "interface": "initial_state.anchor"
+      },
+      "meaning": "输入唯一锚点，六物种各80000，其他空；运行种子不可再次补满",
+      "coverage_loss": "未验证的锚点/建造关联不算可达证据",
+      "extension_gate": "首次对该输入族作全称结论前，证明域与覆盖；缺具体值则拒绝运行",
+      "choice": "T11",
+      "lifetime": "U",
+      "basis": "仓库物品、蓝图、协议核心"
+    },
+    "initialization.other_inventory": {
+      "disposition": "由输入全称量化",
+      "value": {
+        "interface": "initial_state.nonwarehouse"
+      },
+      "meaning": "输入有限、完整StateSeed及出处；允许合成试验但单列未证可达",
+      "coverage_loss": "未覆盖初态/缓存内容及可达性",
+      "extension_gate": "首次对该输入族作全称结论前，证明域与覆盖；缺具体值则拒绝运行",
+      "choice": "T11",
+      "lifetime": "U",
+      "basis": "物品格、缓存格、调试期"
+    },
+    "initialization.switches": {
+      "disposition": "由输入全称量化",
+      "value": {
+        "interface": "settings_at_seed"
+      },
+      "meaning": "输入初值来源及种子锚点的实际开关；无默认全开",
+      "coverage_loss": "未覆盖初值与调试史",
+      "extension_gate": "首次对该输入族作全称结论前，证明域与覆盖；缺具体值则拒绝运行",
+      "choice": "T11",
+      "lifetime": "U",
+      "basis": "开关、设定、蓝图"
+    },
+    "initialization.build_timing": {
+      "disposition": "由输入全称量化",
+      "value": {
+        "interface": "timeline"
+      },
+      "meaning": "输入真实建成时刻/相对关系；本版从种子回放区间开始，区间内若建成事件未实现则停",
+      "coverage_loss": "建造期间全部运行/非整数时距",
+      "extension_gate": "首次对该输入族作全称结论前，证明域与覆盖；缺具体值则拒绝运行",
+      "choice": "T5/T11",
+      "lifetime": "U",
+      "basis": "蓝图、接通、移动"
+    },
+    "initialization.debug_end": {
+      "disposition": "由输入全称量化",
+      "value": {
+        "interface": "initial_state.reachability"
+      },
+      "meaning": "输入有限非精确操作程序的后置状态据；合成种子只作条件实验",
+      "coverage_loss": "其他可能调试后态仍待覆盖",
+      "extension_gate": "首次对该输入族作全称结论前，证明域与覆盖；缺具体值则拒绝运行",
+      "choice": "T11",
+      "lifetime": "U",
+      "basis": "调试期、操作精度、目标"
+    },
+    "warehouse.external_supply": {
+      "disposition": "由输入全称量化",
+      "value": {
+        "interface": "explicit_ore_history"
+      },
+      "meaning": "输入只对两矿、容量内且持续充分的补给事件，按显式同刻外部序回放",
+      "coverage_loss": "单一环境史不证明全环境覆盖",
+      "extension_gate": "首次对该输入族作全称结论前，证明域与覆盖；缺具体值则拒绝运行",
+      "choice": "T12",
+      "lifetime": "U",
+      "basis": "外部过程、物品格"
+    },
+    "damping.no_terminal": {
+      "disposition": "超出覆盖即停",
+      "value": {
+        "policy": "stop",
+        "trigger": "请求求阻尼而所选路径无下一非运输终点"
+      },
+      "meaning": "请求求阻尼而所选路径无下一非运输终点时返回unsupported；无终点返回unresolved，周期提升为待证义务",
+      "coverage_loss": "该事件/证明域全部未覆盖；stop是工程处置，不是游戏枚举值",
+      "extension_gate": "实现有据后效或提供提升证明并更新配置版本后才恢复",
+      "choice": "T4",
+      "lifetime": "U",
+      "basis": "阻尼、取货优先级、约束·回路转弯"
+    },
+    "connection.bridge_tie": {
+      "disposition": "超出覆盖即停",
+      "value": {
+        "policy": "stop",
+        "trigger": "先接并列或桥互依赖，不能由唯一无环见证定向"
+      },
+      "meaning": "先接并列或桥互依赖，不能由唯一无环见证定向时返回unsupported；无终点返回unresolved，周期提升为待证义务",
+      "coverage_loss": "该事件/证明域全部未覆盖；stop是工程处置，不是游戏枚举值",
+      "extension_gate": "实现有据后效或提供提升证明并更新配置版本后才恢复",
+      "choice": "T5",
+      "lifetime": "U",
+      "basis": "桥接器、蓝图、通道"
+    },
+    "gate.counter_edit": {
+      "disposition": "超出覆盖即停",
+      "value": {
+        "policy": "stop",
+        "trigger": "调试改身份/累计/窗口设定并需确定计数后效"
+      },
+      "meaning": "调试改身份/累计/窗口设定并需确定计数后效时返回unsupported；无终点返回unresolved，周期提升为待证义务",
+      "coverage_loss": "该事件/证明域全部未覆盖；stop是工程处置，不是游戏枚举值",
+      "extension_gate": "实现有据后效或提供提升证明并更新配置版本后才恢复",
+      "choice": "T9",
+      "lifetime": "U",
+      "basis": "物品准入口、设定、约束·准入累计"
+    },
+    "gate.cancel_limit": {
+      "disposition": "超出覆盖即停",
+      "value": {
+        "policy": "stop",
+        "trigger": "取消已设限额"
+      },
+      "meaning": "取消已设限额时返回unsupported；无终点返回unresolved，周期提升为待证义务",
+      "coverage_loss": "该事件/证明域全部未覆盖；stop是工程处置，不是游戏枚举值",
+      "extension_gate": "实现有据后效或提供提升证明并更新配置版本后才恢复",
+      "choice": "T9",
+      "lifetime": "U",
+      "basis": "物品准入口、设定"
+    },
+    "offline.order_domain": {
+      "disposition": "超出覆盖即停",
+      "value": {
+        "policy": "stop",
+        "trigger": "请求构造完整离线重排域或离线事件出现"
+      },
+      "meaning": "请求构造完整离线重排域或离线事件出现时返回unsupported；无终点返回unresolved，周期提升为待证义务",
+      "coverage_loss": "该事件/证明域全部未覆盖；stop是工程处置，不是游戏枚举值",
+      "extension_gate": "实现有据后效或提供提升证明并更新配置版本后才恢复",
+      "choice": "T10",
+      "lifetime": "O",
+      "basis": "离线、接通"
+    },
+    "offline.events": {
+      "disposition": "超出覆盖即停",
+      "value": {
+        "policy": "stop",
+        "trigger": "出现任何离线/上线事件"
+      },
+      "meaning": "出现任何离线/上线事件时返回unsupported；无终点返回unresolved，周期提升为待证义务",
+      "coverage_loss": "该事件/证明域全部未覆盖；stop是工程处置，不是游戏枚举值",
+      "extension_gate": "实现有据后效或提供提升证明并更新配置版本后才恢复",
+      "choice": "T10",
+      "lifetime": "U",
+      "basis": "离线、目标、零干预运行"
+    },
+    "offline.cursor_effect": {
+      "disposition": "超出覆盖即停",
+      "value": {
+        "policy": "stop",
+        "trigger": "离线需更新轮询状态"
+      },
+      "meaning": "离线需更新轮询状态时返回unsupported；无终点返回unresolved，周期提升为待证义务",
+      "coverage_loss": "该事件/证明域全部未覆盖；stop是工程处置，不是游戏枚举值",
+      "extension_gate": "实现有据后效或提供提升证明并更新配置版本后才恢复",
+      "choice": "T10",
+      "lifetime": "U",
+      "basis": "离线、轮询"
+    },
+    "offline.inventory_effect": {
+      "disposition": "超出覆盖即停",
+      "value": {
+        "policy": "stop",
+        "trigger": "离线需更新库存"
+      },
+      "meaning": "离线需更新库存时返回unsupported；无终点返回unresolved，周期提升为待证义务",
+      "coverage_loss": "该事件/证明域全部未覆盖；stop是工程处置，不是游戏枚举值",
+      "extension_gate": "实现有据后效或提供提升证明并更新配置版本后才恢复",
+      "choice": "T10",
+      "lifetime": "U",
+      "basis": "离线、物品格、仓库物品"
+    },
+    "offline.progress_effect": {
+      "disposition": "超出覆盖即停",
+      "value": {
+        "policy": "stop",
+        "trigger": "离线需更新进度/时钟"
+      },
+      "meaning": "离线需更新进度/时钟时返回unsupported；无终点返回unresolved，周期提升为待证义务",
+      "coverage_loss": "该事件/证明域全部未覆盖；stop是工程处置，不是游戏枚举值",
+      "extension_gate": "实现有据后效或提供提升证明并更新配置版本后才恢复",
+      "choice": "T10",
+      "lifetime": "U",
+      "basis": "离线、需电功能"
+    },
+    "offline.direction_effect": {
+      "disposition": "超出覆盖即停",
+      "value": {
+        "policy": "stop",
+        "trigger": "离线需更新桥方向"
+      },
+      "meaning": "离线需更新桥方向时返回unsupported；无终点返回unresolved，周期提升为待证义务",
+      "coverage_loss": "该事件/证明域全部未覆盖；stop是工程处置，不是游戏枚举值",
+      "extension_gate": "实现有据后效或提供提升证明并更新配置版本后才恢复",
+      "choice": "T10",
+      "lifetime": "U",
+      "basis": "离线、桥接器、通道"
+    },
+    "offline.gate_total_effect": {
+      "disposition": "超出覆盖即停",
+      "value": {
+        "policy": "stop",
+        "trigger": "离线需更新累计计数"
+      },
+      "meaning": "离线需更新累计计数时返回unsupported；无终点返回unresolved，周期提升为待证义务",
+      "coverage_loss": "该事件/证明域全部未覆盖；stop是工程处置，不是游戏枚举值",
+      "extension_gate": "实现有据后效或提供提升证明并更新配置版本后才恢复",
+      "choice": "T10",
+      "lifetime": "U",
+      "basis": "离线、物品准入口、约束·准入累计"
+    },
+    "offline.gate_window_effect": {
+      "disposition": "超出覆盖即停",
+      "value": {
+        "policy": "stop",
+        "trigger": "离线需更新窗口计数"
+      },
+      "meaning": "离线需更新窗口计数时返回unsupported；无终点返回unresolved，周期提升为待证义务",
+      "coverage_loss": "该事件/证明域全部未覆盖；stop是工程处置，不是游戏枚举值",
+      "extension_gate": "实现有据后效或提供提升证明并更新配置版本后才恢复",
+      "choice": "T10",
+      "lifetime": "U",
+      "basis": "离线、物品准入口"
+    },
+    "offline.gate_window_start_effect": {
+      "disposition": "超出覆盖即停",
+      "value": {
+        "policy": "stop",
+        "trigger": "离线需更新窗口起点"
+      },
+      "meaning": "离线需更新窗口起点时返回unsupported；无终点返回unresolved，周期提升为待证义务",
+      "coverage_loss": "该事件/证明域全部未覆盖；stop是工程处置，不是游戏枚举值",
+      "extension_gate": "实现有据后效或提供提升证明并更新配置版本后才恢复",
+      "choice": "T10",
+      "lifetime": "U",
+      "basis": "离线、物品准入口"
+    },
+    "initialization.debug_actions": {
+      "disposition": "超出覆盖即停",
+      "value": {
+        "policy": "stop",
+        "trigger": "运行区间内出现玩家单位操作（种子之前的动作只核证据引用）"
+      },
+      "meaning": "运行区间内出现玩家单位操作（种子之前的动作只核证据引用）时返回unsupported；无终点返回unresolved，周期提升为待证义务",
+      "coverage_loss": "该事件/证明域全部未覆盖；stop是工程处置，不是游戏枚举值",
+      "extension_gate": "实现有据后效或提供提升证明并更新配置版本后才恢复",
+      "choice": "T11",
+      "lifetime": "U",
+      "basis": "调试期、设定、旋转、重建、操作精度"
+    },
+    "initialization.rebuild_inventory": {
+      "disposition": "超出覆盖即停",
+      "value": {
+        "policy": "stop",
+        "trigger": "拆除或重建需确定库存/进度去向"
+      },
+      "meaning": "拆除或重建需确定库存/进度去向时返回unsupported；无终点返回unresolved，周期提升为待证义务",
+      "coverage_loss": "该事件/证明域全部未覆盖；stop是工程处置，不是游戏枚举值",
+      "extension_gate": "实现有据后效或提供提升证明并更新配置版本后才恢复",
+      "choice": "T11",
+      "lifetime": "U",
+      "basis": "重建、物品格、调试期"
+    },
+    "warehouse.withdrawal_policy": {
+      "disposition": "超出覆盖即停",
+      "value": {
+        "policy": "stop",
+        "trigger": "需要执行拿取策略或据此认证完整周期"
+      },
+      "meaning": "需要执行拿取策略或据此认证完整周期时返回unsupported；无终点返回unresolved，周期提升为待证义务",
+      "coverage_loss": "该事件/证明域全部未覆盖；stop是工程处置，不是游戏枚举值",
+      "extension_gate": "实现有据后效或提供提升证明并更新配置版本后才恢复",
+      "choice": "T12",
+      "lifetime": "U",
+      "basis": "零干预运行、操作精度"
+    },
+    "warehouse.withdrawal_timing": {
+      "disposition": "超出覆盖即停",
+      "value": {
+        "policy": "stop",
+        "trigger": "运行区间出现玩家拿取事件；策略与实际时距未实现"
+      },
+      "meaning": "运行区间出现玩家拿取事件；策略与实际时距未实现时返回unsupported；无终点返回unresolved，周期提升为待证义务",
+      "coverage_loss": "该事件/证明域全部未覆盖；stop是工程处置，不是游戏枚举值",
+      "extension_gate": "实现有据后效或提供提升证明并更新配置版本后才恢复",
+      "choice": "T12",
+      "lifetime": "U",
+      "basis": "操作精度、判定、循环态"
+    },
+    "warehouse.periodic_lift": {
+      "disposition": "超出覆盖即停",
+      "value": {
+        "policy": "stop",
+        "trigger": "把省略仓库/绝对时钟等的抽象周期提升为完整基地周期"
+      },
+      "meaning": "把省略仓库/绝对时钟等的抽象周期提升为完整基地周期时返回unsupported；无终点返回unresolved，周期提升为待证义务",
+      "coverage_loss": "该事件/证明域全部未覆盖；stop是工程处置，不是游戏枚举值",
+      "extension_gate": "实现有据后效或提供提升证明并更新配置版本后才恢复",
+      "choice": "T12",
+      "lifetime": "U",
+      "basis": "循环态、操作精度、目标"
+    },
+    "gate.concurrent_expiry": {
+      "disposition": "本版选值",
+      "value": "atomic_batch",
+      "meaning": "同刻到期窗口从同一快照清原因，最终图一次重算并映射旧指针；访问前多门身份删边同样批处理",
+      "coverage_loss": "逐边恢复及其显式排序、与判定交织均未覆盖；批处理不是规则唯一裁定",
+      "extension_gate": "同刻多门恢复的全称行为认证前",
+      "choice": "T1/T3/T8",
+      "lifetime": "U",
+      "basis": "物品准入口、轮询、判定次序；受限转移定义§2.1/§3.4"
+    },
+    "manufacturing.recipe_quantity_match": {
+      "disposition": "本版选值",
+      "value": "at_least",
+      "meaning": "full_batch下每个配方物种数量至少一批，允许该物种超量；仅搬运一批",
+      "coverage_loss": "exact（配方物种数量须恰一批）方向待审，不自动获准，也未被满载条件直接排除",
+      "extension_gate": "开闸匹配的完整覆盖前；非full_batch组合须另定义数量关系",
+      "choice": "T7",
+      "lifetime": "U",
+      "basis": "缓存格、存货/取货物品格、配方；一批通过量不等于开闸前数量恰等"
+    },
+    "manufacturing.recipe_extra_items": {
+      "disposition": "本版选值",
+      "value": "allow",
+      "meaning": "忽略配方之外的物种，只取所选配方一次用量；额外物种留原格",
+      "coverage_loss": "forbid（求值论域中存在额外物种则拒配）方向待审；混装多候选例依赖allow",
+      "extension_gate": "混装及额外物种开闸覆盖前",
+      "choice": "T7",
+      "lifetime": "U",
+      "basis": "缓存格、存货/取货物品格、配方；与物种完备度及数量关系分开"
+    }
+  }
+}

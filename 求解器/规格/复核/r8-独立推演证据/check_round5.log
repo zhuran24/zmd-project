@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/r8-独立推演证据/recheck.py", line 34, in <module>
+    exec(compile(filename.read_text(), str(filename), 'exec'), namespace)
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订/check_round5.py", line 149, in <module>
+    check(all(hashlib.sha256(Path(p).read_bytes()).hexdigest()==h for p,h in fingerprints.items()),'三份正式/候选约束及17份内核源码21份指纹未变')
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订/check_round5.py", line 28, in check
+    assert value,label
+           ^^^^^
+AssertionError: 三份正式/候选约束及17份内核源码21份指纹未变

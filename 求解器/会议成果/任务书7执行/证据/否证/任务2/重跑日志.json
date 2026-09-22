@@ -1,0 +1,57 @@
+[
+  {
+    "source": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/仓库/check_warehouse.py",
+    "source_sha256": "198eef60b4aa49da6d845241bdfe9932da1b5aae67817a4223a93a2f976b8190",
+    "mode": "warehouse-original",
+    "exit_status": 1,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/否证/任务2/check_audit.py\", line 59, in run_readonly\n    exec(compile(source.read_text(), str(source), 'exec'), ns)\n    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/仓库/check_warehouse.py\", line 176, in <module>\n    report = run()\n  File \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/仓库/check_warehouse.py\", line 30, in run\n    assert all(x['same'] for x in source_checks), 'source bytes changed; review affected claims'\n           ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: source bytes changed; review affected claims\n",
+    "error": "AssertionError: source bytes changed; review affected claims",
+    "captured_outputs": []
+  },
+  {
+    "source": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/仓库/check_warehouse.py",
+    "source_sha256": "198eef60b4aa49da6d845241bdfe9932da1b5aae67817a4223a93a2f976b8190",
+    "mode": "warehouse-arithmetic",
+    "exit_status": 0,
+    "stdout": "{\"status\": \"arithmetic_only_pass\", \"cases\": 1440, \"source_gate_overridden\": true}\n",
+    "stderr": "",
+    "error": null,
+    "captured_outputs": [
+      {
+        "attempted_path": "warehouse-arithmetic.json",
+        "captured_as": "warehouse-arithmetic-0.json"
+      }
+    ]
+  },
+  {
+    "source": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核推导/check_derivation.py",
+    "source_sha256": "70c8d1764897fd3e83267e48b9e3fb95eb2909da28fd8415783d57d412a913e7",
+    "mode": "derivation-arithmetic",
+    "exit_status": 0,
+    "stdout": "{\n  \"status\": \"pass\",\n  \"scope\": \"局部库存算术、归纳基和必要产能；无游戏调度、无参数扫描、无整厂证书\",\n  \"inventory_and_head_cases\": 5202,\n  \"invariant_transitions_checked\": 7550,\n  \"deadlock_count_states\": [\n    {\n      \"a\": 0,\n      \"b\": 50,\n      \"head\": \"B\",\n      \"Z\": -100\n    },\n    {\n      \"a\": 1,\n      \"b\": 50,\n      \"head\": \"B\",\n      \"Z\": -99\n    },\n    {\n      \"a\": 50,\n      \"b\": 0,\n      \"head\": \"A\",\n      \"Z\": 50\n    }\n  ],\n  \"rotations\": {\n    \"AAB\": {\n      \"prefix\": [\n        0,\n        1,\n        2,\n        0\n      ],\n      \"range\": [\n        0,\n        2\n      ]\n    },\n    \"ABA\": {\n      \"prefix\": [\n        0,\n        1,\n        -1,\n        0\n      ],\n      \"range\": [\n        -1,\n        1\n      ]\n    },\n    \"BAA\": {\n      \"prefix\": [\n        0,\n        -2,\n        -1,\n        0\n      ],\n      \"range\": [\n        -2,\n        0\n      ]\n    }\n  },\n  \"full_input_Z0\": -50,\n  \"full_input_safe_integer_D\": [\n    -48,\n    99\n  ],\n  \"safe_boundary_BAA_count_path\": [\n    [\n      50,\n      0\n    ],\n    [\n      48,\n      0\n    ],\n    [\n      49,\n      0\n    ],\n    [\n      50,\n      0\n    ]\n  ],\n  \"net_rates\": {\n    \"battery\": \"3/5\",\n    \"capsule\": \"11/20\",\n    \"parts\": \"6\",\n    \"dense_source\": \"9\",\n    \"bottles\": \"11/2\",\n    \"fine_flower\": \"11/2\",\n    \"steel\": \"17\",\n    \"blue_dust\": \"34\",\n    \"source_dust\": \"18\",\n    \"flower_dust\": \"11\",\n    \"sand_dust\": \"63/2\",\n    \"flower_crush\": \"11/2\",\n    \"sand_crush\": \"21/2\",\n    \"base_crush\": \"68\",\n    \"base_refine\": \"51\"\n  },\n  \"capacity_cases\": [\n    {\n      \"crushers\": 68,\n      \"refiners\": 51,\n      \"r_upper_bound\": \"0\"\n    },\n    {\n      \"crushers\": 68,\n      \"refiners\": 52,\n      \"r_upper_bound\": \"0\"\n    },\n    {\n      \"crushers\": 69,\n      \"refiners\": 51,\n      \"r_upper_bound\": \"0\"\n    },\n    {\n      \"crushers\": 69,\n      \"refiners\": 52,\n      \"r_upper_bound\": \"1\"\n    }\n  ],\n  \"kernel\": {\n    \"compiled\": false,\n    \"loaded\": false,\n    \"stepped\": false\n  }\n}\n",
+    "stderr": "",
+    "error": null,
+    "captured_outputs": [
+      {
+        "attempted_path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核推导/核算结果.json",
+        "captured_as": "derivation-arithmetic-0.json"
+      }
+    ]
+  },
+  {
+    "source": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核推导/validate_deliverables.py",
+    "source_sha256": "c572963aff1816bc4526e10255f94f0546a825be92163d58c4cf3ee902e9242e",
+    "mode": "derivation-validation",
+    "exit_status": 0,
+    "stdout": "{\n  \"status\": \"pass\",\n  \"inputs\": 15,\n  \"deliverables\": 3,\n  \"findings\": {\n    \"unique\": 13,\n    \"refuted\": 3,\n    \"unresolved\": 10\n  },\n  \"local_links_checked\": 30,\n  \"errors\": []\n}\n",
+    "stderr": "",
+    "error": null,
+    "captured_outputs": [
+      {
+        "attempted_path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核推导/交付校验.json",
+        "captured_as": "derivation-validation-0.json"
+      }
+    ]
+  }
+]

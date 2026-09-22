@@ -1,0 +1,7391 @@
+{
+  "status": "pass",
+  "scope": "independent static geometry, arithmetic, read-only author reproduction",
+  "metrics": {
+    "units": 235,
+    "kinds": {
+      "种植机": 2,
+      "采种机": 2,
+      "粉碎机": 2,
+      "供电桩": 8,
+      "封装机": 3,
+      "协议储存箱": 2,
+      "灌装机": 3,
+      "协议核心": 1,
+      "仓库取货口": 46,
+      "传送带": 162,
+      "桥接器": 4
+    },
+    "occupied_cells": 697,
+    "ports": 542,
+    "channels": 182,
+    "routes": 68,
+    "transport_cells": 166,
+    "transport_slots": 170,
+    "product_slots": 76,
+    "plant_slots": {
+      "荞花": 20,
+      "砂叶": 22
+    },
+    "ore_stubs": {
+      "蓝铁矿": 34,
+      "源矿": 18
+    },
+    "planned_machine_count": 219,
+    "planned_machine_area": 3325,
+    "planned_machine_counts": {
+      "粉碎机": 69,
+      "精炼炉": 51,
+      "研磨机": 32,
+      "塑形机": 6,
+      "配件机": 6,
+      "种植机": 32,
+      "采种机": 17,
+      "封装机": 3,
+      "灌装机": 3
+    },
+    "edge_statuses": {
+      "unrouted": 299,
+      "fully_embedded": 6,
+      "source_stub_only": 4,
+      "changed_terminal_to_wireless_box": 6
+    }
+  },
+  "checks": [
+    {
+      "name": "size:M174",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:M201",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:M057",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:POWER_荞花_a",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:POWER_荞花_b",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:M195",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:M212",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:M068",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:POWER_砂叶_a",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:POWER_砂叶_b",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:M213",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:M214",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:M215",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:BOX_B",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:POWER_电池输出_0",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:POWER_电池输出_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:M216",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:M217",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:M218",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:BOX_C",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:POWER_胶囊输出_0",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:POWER_胶囊输出_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:CORE",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_W_00",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_S_00",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_W_01",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_S_01",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_W_02",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_S_02",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_W_03",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_S_03",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_W_04",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_S_04",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_W_05",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_S_05",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_W_06",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_S_06",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_W_07",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_S_07",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_W_08",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_S_08",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_W_09",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_S_09",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_W_10",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_S_10",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_W_11",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_S_11",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_W_12",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_S_12",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_W_13",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_S_13",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_W_14",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_S_14",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_W_15",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_S_15",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_W_16",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_S_16",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_W_17",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_S_17",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_W_18",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_S_18",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_W_19",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_S_19",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_W_20",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_S_20",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_W_21",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_S_21",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_W_22",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:ORE_S_22",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_1_2",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_1_5",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_1_8",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_1_11",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_1_14",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_1_17",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_1_20",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_1_23",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_1_26",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_1_29",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_1_32",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_1_35",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_1_38",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_1_41",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_1_44",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_1_47",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_1_50",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_1_53",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_1_56",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_1_59",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_1_62",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_1_65",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_1_68",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_2_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_5_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_7_7",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_7_8",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_7_9",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_7_10",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_7_11",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_7_12",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_7_13",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_7_14",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_7_15",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_7_16",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_7_17",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_7_18",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_7_19",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_7_38",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_7_39",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_7_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_7_41",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_8_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_8_7",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_8_19",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_8_41",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_9_13",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_9_41",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_10_41",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_11_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_11_41",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_12_13",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_12_41",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_13_13",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_13_14",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_13_41",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_14_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_14_41",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_15_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_15_41",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_15_42",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_15_43",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_16_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_16_41",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_16_42",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_16_43",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_17_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_17_14",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_17_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_17_42",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_17_43",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_18_38",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_18_39",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_18_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_18_41",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_18_42",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_19_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_20_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_20_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_21_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_22_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_23_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_23_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_24_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_25_38",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_25_39",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_25_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_26_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_27_7",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_27_8",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_27_9",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_27_10",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_27_11",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_27_12",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_27_13",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_27_14",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_27_15",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_27_16",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_27_17",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_27_18",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_27_19",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_28_7",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_28_19",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_29_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_29_13",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_32_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_32_13",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_33_13",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_33_14",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_35_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_37_14",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_37_15",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_37_16",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_38_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_41_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_41_38",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_41_39",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_41_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_41_41",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_42_41",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_43_41",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_44_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_44_41",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_45_41",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_46_41",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_47_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_47_41",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_48_9",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_48_12",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_48_15",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_48_41",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_49_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_49_41",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_49_42",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_49_43",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_50_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_50_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_50_41",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_50_42",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_50_43",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_51_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_51_42",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_51_43",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_52_38",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_52_39",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_52_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_52_41",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_52_42",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_53_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_53_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_54_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_55_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_56_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_56_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_57_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_58_9",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_58_12",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_58_15",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_58_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_59_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_59_38",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_59_39",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_59_40",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_62_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_65_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "size:T_68_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "all_saved_ports",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "all_saved_automatic_channels",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:荞花_PH",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:荞花_PG",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:荞花_HP",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:荞花_粉末1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:砂叶_PH",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:砂叶_PG",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:砂叶_HP",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:砂叶_粉末1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:砂叶_粉末2",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:砂叶_粉末3",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:M213_成品",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:M214_成品",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:M215_成品",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:M216_成品",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:M217_成品",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:M218_成品",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:CORE_W_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:CORE_W_4",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:CORE_W_7",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:CORE_E_1",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:CORE_E_4",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:CORE_E_7",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:ORE_W_00_边界",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:ORE_S_00_边界",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:ORE_W_01_边界",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:ORE_S_01_边界",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:ORE_W_02_边界",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:ORE_S_02_边界",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:ORE_W_03_边界",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:ORE_S_03_边界",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:ORE_W_04_边界",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:ORE_S_04_边界",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:ORE_W_05_边界",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:ORE_S_05_边界",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:ORE_W_06_边界",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:ORE_S_06_边界",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:ORE_W_07_边界",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:ORE_S_07_边界",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:ORE_W_08_边界",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:ORE_S_08_边界",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:ORE_W_09_边界",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:ORE_S_09_边界",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:ORE_W_10_边界",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:ORE_S_10_边界",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:ORE_W_11_边界",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:ORE_S_11_边界",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:ORE_W_12_边界",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:ORE_S_12_边界",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:ORE_W_13_边界",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:ORE_S_13_边界",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:ORE_W_14_边界",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:ORE_S_14_边界",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:ORE_W_15_边界",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:ORE_S_15_边界",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:ORE_W_16_边界",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:ORE_S_16_边界",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:ORE_W_17_边界",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:ORE_S_17_边界",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:ORE_W_18_边界",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:ORE_S_18_边界",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:ORE_W_19_边界",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:ORE_S_19_边界",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:ORE_W_20_边界",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:ORE_S_20_边界",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:ORE_W_21_边界",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:ORE_S_21_边界",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:ORE_W_22_边界",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "route_metadata:ORE_S_22_边界",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "full_graph_equals_all_routes",
+      "passed": true,
+      "details": {
+        "extra": [],
+        "missing": []
+      }
+    },
+    {
+      "name": "all_transport_slots_in_one_route",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "saved_power",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "reported_totals",
+      "passed": true,
+      "details": {
+        "units": 235,
+        "kinds": {
+          "种植机": 2,
+          "采种机": 2,
+          "粉碎机": 2,
+          "供电桩": 8,
+          "封装机": 3,
+          "协议储存箱": 2,
+          "灌装机": 3,
+          "协议核心": 1,
+          "仓库取货口": 46,
+          "传送带": 162,
+          "桥接器": 4
+        },
+        "occupied_cells": 697,
+        "ports": 542,
+        "channels": 182,
+        "routes": 68,
+        "transport_cells": 166,
+        "transport_slots": 170,
+        "product_slots": 76,
+        "plant_slots": {
+          "荞花": 20,
+          "砂叶": 22
+        },
+        "ore_stubs": {
+          "蓝铁矿": 34,
+          "源矿": 18
+        },
+        "planned_machine_count": 219,
+        "planned_machine_area": 3325,
+        "planned_machine_counts": {
+          "粉碎机": 69,
+          "精炼炉": 51,
+          "研磨机": 32,
+          "塑形机": 6,
+          "配件机": 6,
+          "种植机": 32,
+          "采种机": 17,
+          "封装机": 3,
+          "灌装机": 3
+        },
+        "edge_statuses": {
+          "unrouted": 299,
+          "fully_embedded": 6,
+          "source_stub_only": 4,
+          "changed_terminal_to_wireless_box": 6
+        }
+      }
+    },
+    {
+      "name": "read_only_replay:生成.py",
+      "passed": true,
+      "details": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/密排/输入指纹.json",
+          "byte_equal": true,
+          "semantic_equal": true
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/密排布局.json",
+          "byte_equal": true,
+          "semantic_equal": true
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/密排/逐单位与路径.md",
+          "byte_equal": true,
+          "semantic_equal": true
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/密排/工具与输入核查.json",
+          "byte_equal": true,
+          "semantic_equal": true
+        }
+      ]
+    },
+    {
+      "name": "read_only_replay:核验.py",
+      "passed": true,
+      "details": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/密排/自动通道.json",
+          "byte_equal": true,
+          "semantic_equal": true
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/密排/桥与供电.json",
+          "byte_equal": true,
+          "semantic_equal": true
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/密排/核验结果.json",
+          "byte_equal": true,
+          "semantic_equal": true
+        }
+      ]
+    },
+    {
+      "name": "all_author_manifest_hashes",
+      "passed": true,
+      "details": null
+    }
+  ],
+  "channels": [
+    {
+      "source": "T_8_7:N:8:7",
+      "target": "M174:S:8:8",
+      "source_unit": "T_8_7",
+      "target_unit": "M174",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "M174:N:9:12",
+      "target": "T_9_13:S:9:13",
+      "source_unit": "M174",
+      "target_unit": "T_9_13",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "M174:N:12:12",
+      "target": "T_12_13:S:12:13",
+      "source_unit": "M174",
+      "target_unit": "T_12_13",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_9_13:N:9:13",
+      "target": "M201:S:9:14",
+      "source_unit": "T_9_13",
+      "target_unit": "M201",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "M201:N:8:18",
+      "target": "T_8_19:S:8:19",
+      "source_unit": "M201",
+      "target_unit": "T_8_19",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_13_14:E:13:14",
+      "target": "M057:W:14:14",
+      "source_unit": "T_13_14",
+      "target_unit": "M057",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "M057:E:16:14",
+      "target": "T_17_14:W:17:14",
+      "source_unit": "M057",
+      "target_unit": "T_17_14",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_28_7:N:28:7",
+      "target": "M195:S:28:8",
+      "source_unit": "T_28_7",
+      "target_unit": "M195",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "M195:N:29:12",
+      "target": "T_29_13:S:29:13",
+      "source_unit": "M195",
+      "target_unit": "T_29_13",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "M195:N:32:12",
+      "target": "T_32_13:S:32:13",
+      "source_unit": "M195",
+      "target_unit": "T_32_13",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_29_13:N:29:13",
+      "target": "M212:S:29:14",
+      "source_unit": "T_29_13",
+      "target_unit": "M212",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "M212:N:28:18",
+      "target": "T_28_19:S:28:19",
+      "source_unit": "M212",
+      "target_unit": "T_28_19",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_33_14:E:33:14",
+      "target": "M068:W:34:14",
+      "source_unit": "T_33_14",
+      "target_unit": "M068",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "M068:E:36:14",
+      "target": "T_37_14:W:37:14",
+      "source_unit": "M068",
+      "target_unit": "T_37_14",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "M068:E:36:15",
+      "target": "T_37_15:W:37:15",
+      "source_unit": "M068",
+      "target_unit": "T_37_15",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "M068:E:36:16",
+      "target": "T_37_16:W:37:16",
+      "source_unit": "M068",
+      "target_unit": "T_37_16",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "M213:N:7:37",
+      "target": "T_7_38:S:7:38",
+      "source_unit": "M213",
+      "target_unit": "T_7_38",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "M214:N:18:37",
+      "target": "T_18_38:S:18:38",
+      "source_unit": "M214",
+      "target_unit": "T_18_38",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "M215:N:25:37",
+      "target": "T_25_38:S:25:38",
+      "source_unit": "M215",
+      "target_unit": "T_25_38",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_15_43:N:15:43",
+      "target": "BOX_B:S:15:44",
+      "source_unit": "T_15_43",
+      "target_unit": "BOX_B",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_16_43:N:16:43",
+      "target": "BOX_B:S:16:44",
+      "source_unit": "T_16_43",
+      "target_unit": "BOX_B",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_17_43:N:17:43",
+      "target": "BOX_B:S:17:44",
+      "source_unit": "T_17_43",
+      "target_unit": "BOX_B",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "M216:N:41:37",
+      "target": "T_41_38:S:41:38",
+      "source_unit": "M216",
+      "target_unit": "T_41_38",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "M217:N:52:37",
+      "target": "T_52_38:S:52:38",
+      "source_unit": "M217",
+      "target_unit": "T_52_38",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "M218:N:59:37",
+      "target": "T_59_38:S:59:38",
+      "source_unit": "M218",
+      "target_unit": "T_59_38",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_49_43:N:49:43",
+      "target": "BOX_C:S:49:44",
+      "source_unit": "T_49_43",
+      "target_unit": "BOX_C",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_50_43:N:50:43",
+      "target": "BOX_C:S:50:44",
+      "source_unit": "T_50_43",
+      "target_unit": "BOX_C",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_51_43:N:51:43",
+      "target": "BOX_C:S:51:44",
+      "source_unit": "T_51_43",
+      "target_unit": "BOX_C",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "CORE:E:57:9",
+      "target": "T_58_9:W:58:9",
+      "source_unit": "CORE",
+      "target_unit": "T_58_9",
+      "source_slot": "蓝铁矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "CORE:E:57:12",
+      "target": "T_58_12:W:58:12",
+      "source_unit": "CORE",
+      "target_unit": "T_58_12",
+      "source_slot": "蓝铁矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "CORE:E:57:15",
+      "target": "T_58_15:W:58:15",
+      "source_unit": "CORE",
+      "target_unit": "T_58_15",
+      "source_slot": "蓝铁矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "CORE:W:49:9",
+      "target": "T_48_9:E:48:9",
+      "source_unit": "CORE",
+      "target_unit": "T_48_9",
+      "source_slot": "蓝铁矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "CORE:W:49:12",
+      "target": "T_48_12:E:48:12",
+      "source_unit": "CORE",
+      "target_unit": "T_48_12",
+      "source_slot": "蓝铁矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "CORE:W:49:15",
+      "target": "T_48_15:E:48:15",
+      "source_unit": "CORE",
+      "target_unit": "T_48_15",
+      "source_slot": "蓝铁矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "ORE_W_00:E:0:2",
+      "target": "T_1_2:W:1:2",
+      "source_unit": "ORE_W_00",
+      "target_unit": "T_1_2",
+      "source_slot": "蓝铁矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "ORE_S_00:N:2:0",
+      "target": "T_2_1:S:2:1",
+      "source_unit": "ORE_S_00",
+      "target_unit": "T_2_1",
+      "source_slot": "蓝铁矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "ORE_W_01:E:0:5",
+      "target": "T_1_5:W:1:5",
+      "source_unit": "ORE_W_01",
+      "target_unit": "T_1_5",
+      "source_slot": "蓝铁矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "ORE_S_01:N:5:0",
+      "target": "T_5_1:S:5:1",
+      "source_unit": "ORE_S_01",
+      "target_unit": "T_5_1",
+      "source_slot": "蓝铁矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "ORE_W_02:E:0:8",
+      "target": "T_1_8:W:1:8",
+      "source_unit": "ORE_W_02",
+      "target_unit": "T_1_8",
+      "source_slot": "蓝铁矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "ORE_S_02:N:8:0",
+      "target": "T_8_1:S:8:1",
+      "source_unit": "ORE_S_02",
+      "target_unit": "T_8_1",
+      "source_slot": "蓝铁矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "ORE_W_03:E:0:11",
+      "target": "T_1_11:W:1:11",
+      "source_unit": "ORE_W_03",
+      "target_unit": "T_1_11",
+      "source_slot": "蓝铁矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "ORE_S_03:N:11:0",
+      "target": "T_11_1:S:11:1",
+      "source_unit": "ORE_S_03",
+      "target_unit": "T_11_1",
+      "source_slot": "蓝铁矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "ORE_W_04:E:0:14",
+      "target": "T_1_14:W:1:14",
+      "source_unit": "ORE_W_04",
+      "target_unit": "T_1_14",
+      "source_slot": "蓝铁矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "ORE_S_04:N:14:0",
+      "target": "T_14_1:S:14:1",
+      "source_unit": "ORE_S_04",
+      "target_unit": "T_14_1",
+      "source_slot": "蓝铁矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "ORE_W_05:E:0:17",
+      "target": "T_1_17:W:1:17",
+      "source_unit": "ORE_W_05",
+      "target_unit": "T_1_17",
+      "source_slot": "蓝铁矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "ORE_S_05:N:17:0",
+      "target": "T_17_1:S:17:1",
+      "source_unit": "ORE_S_05",
+      "target_unit": "T_17_1",
+      "source_slot": "源矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "ORE_W_06:E:0:20",
+      "target": "T_1_20:W:1:20",
+      "source_unit": "ORE_W_06",
+      "target_unit": "T_1_20",
+      "source_slot": "蓝铁矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "ORE_S_06:N:20:0",
+      "target": "T_20_1:S:20:1",
+      "source_unit": "ORE_S_06",
+      "target_unit": "T_20_1",
+      "source_slot": "源矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "ORE_W_07:E:0:23",
+      "target": "T_1_23:W:1:23",
+      "source_unit": "ORE_W_07",
+      "target_unit": "T_1_23",
+      "source_slot": "蓝铁矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "ORE_S_07:N:23:0",
+      "target": "T_23_1:S:23:1",
+      "source_unit": "ORE_S_07",
+      "target_unit": "T_23_1",
+      "source_slot": "源矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "ORE_W_08:E:0:26",
+      "target": "T_1_26:W:1:26",
+      "source_unit": "ORE_W_08",
+      "target_unit": "T_1_26",
+      "source_slot": "蓝铁矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "ORE_S_08:N:26:0",
+      "target": "T_26_1:S:26:1",
+      "source_unit": "ORE_S_08",
+      "target_unit": "T_26_1",
+      "source_slot": "源矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "ORE_W_09:E:0:29",
+      "target": "T_1_29:W:1:29",
+      "source_unit": "ORE_W_09",
+      "target_unit": "T_1_29",
+      "source_slot": "蓝铁矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "ORE_S_09:N:29:0",
+      "target": "T_29_1:S:29:1",
+      "source_unit": "ORE_S_09",
+      "target_unit": "T_29_1",
+      "source_slot": "源矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "ORE_W_10:E:0:32",
+      "target": "T_1_32:W:1:32",
+      "source_unit": "ORE_W_10",
+      "target_unit": "T_1_32",
+      "source_slot": "蓝铁矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "ORE_S_10:N:32:0",
+      "target": "T_32_1:S:32:1",
+      "source_unit": "ORE_S_10",
+      "target_unit": "T_32_1",
+      "source_slot": "源矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "ORE_W_11:E:0:35",
+      "target": "T_1_35:W:1:35",
+      "source_unit": "ORE_W_11",
+      "target_unit": "T_1_35",
+      "source_slot": "蓝铁矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "ORE_S_11:N:35:0",
+      "target": "T_35_1:S:35:1",
+      "source_unit": "ORE_S_11",
+      "target_unit": "T_35_1",
+      "source_slot": "源矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "ORE_W_12:E:0:38",
+      "target": "T_1_38:W:1:38",
+      "source_unit": "ORE_W_12",
+      "target_unit": "T_1_38",
+      "source_slot": "蓝铁矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "ORE_S_12:N:38:0",
+      "target": "T_38_1:S:38:1",
+      "source_unit": "ORE_S_12",
+      "target_unit": "T_38_1",
+      "source_slot": "源矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "ORE_W_13:E:0:41",
+      "target": "T_1_41:W:1:41",
+      "source_unit": "ORE_W_13",
+      "target_unit": "T_1_41",
+      "source_slot": "蓝铁矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "ORE_S_13:N:41:0",
+      "target": "T_41_1:S:41:1",
+      "source_unit": "ORE_S_13",
+      "target_unit": "T_41_1",
+      "source_slot": "源矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "ORE_W_14:E:0:44",
+      "target": "T_1_44:W:1:44",
+      "source_unit": "ORE_W_14",
+      "target_unit": "T_1_44",
+      "source_slot": "蓝铁矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "ORE_S_14:N:44:0",
+      "target": "T_44_1:S:44:1",
+      "source_unit": "ORE_S_14",
+      "target_unit": "T_44_1",
+      "source_slot": "源矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "ORE_W_15:E:0:47",
+      "target": "T_1_47:W:1:47",
+      "source_unit": "ORE_W_15",
+      "target_unit": "T_1_47",
+      "source_slot": "蓝铁矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "ORE_S_15:N:47:0",
+      "target": "T_47_1:S:47:1",
+      "source_unit": "ORE_S_15",
+      "target_unit": "T_47_1",
+      "source_slot": "源矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "ORE_W_16:E:0:50",
+      "target": "T_1_50:W:1:50",
+      "source_unit": "ORE_W_16",
+      "target_unit": "T_1_50",
+      "source_slot": "蓝铁矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "ORE_S_16:N:50:0",
+      "target": "T_50_1:S:50:1",
+      "source_unit": "ORE_S_16",
+      "target_unit": "T_50_1",
+      "source_slot": "源矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "ORE_W_17:E:0:53",
+      "target": "T_1_53:W:1:53",
+      "source_unit": "ORE_W_17",
+      "target_unit": "T_1_53",
+      "source_slot": "蓝铁矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "ORE_S_17:N:53:0",
+      "target": "T_53_1:S:53:1",
+      "source_unit": "ORE_S_17",
+      "target_unit": "T_53_1",
+      "source_slot": "源矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "ORE_W_18:E:0:56",
+      "target": "T_1_56:W:1:56",
+      "source_unit": "ORE_W_18",
+      "target_unit": "T_1_56",
+      "source_slot": "蓝铁矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "ORE_S_18:N:56:0",
+      "target": "T_56_1:S:56:1",
+      "source_unit": "ORE_S_18",
+      "target_unit": "T_56_1",
+      "source_slot": "源矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "ORE_W_19:E:0:59",
+      "target": "T_1_59:W:1:59",
+      "source_unit": "ORE_W_19",
+      "target_unit": "T_1_59",
+      "source_slot": "蓝铁矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "ORE_S_19:N:59:0",
+      "target": "T_59_1:S:59:1",
+      "source_unit": "ORE_S_19",
+      "target_unit": "T_59_1",
+      "source_slot": "源矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "ORE_W_20:E:0:62",
+      "target": "T_1_62:W:1:62",
+      "source_unit": "ORE_W_20",
+      "target_unit": "T_1_62",
+      "source_slot": "蓝铁矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "ORE_S_20:N:62:0",
+      "target": "T_62_1:S:62:1",
+      "source_unit": "ORE_S_20",
+      "target_unit": "T_62_1",
+      "source_slot": "源矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "ORE_W_21:E:0:65",
+      "target": "T_1_65:W:1:65",
+      "source_unit": "ORE_W_21",
+      "target_unit": "T_1_65",
+      "source_slot": "蓝铁矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "ORE_S_21:N:65:0",
+      "target": "T_65_1:S:65:1",
+      "source_unit": "ORE_S_21",
+      "target_unit": "T_65_1",
+      "source_slot": "源矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "ORE_W_22:E:0:68",
+      "target": "T_1_68:W:1:68",
+      "source_unit": "ORE_W_22",
+      "target_unit": "T_1_68",
+      "source_slot": "蓝铁矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "ORE_S_22:N:68:0",
+      "target": "T_68_1:S:68:1",
+      "source_unit": "ORE_S_22",
+      "target_unit": "T_68_1",
+      "source_slot": "源矿",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_7_8:S:7:8",
+      "target": "T_7_7:N:7:7",
+      "source_unit": "T_7_8",
+      "target_unit": "T_7_7",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_7_7:E:7:7",
+      "target": "T_8_7:W:8:7",
+      "source_unit": "T_7_7",
+      "target_unit": "T_8_7",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_7_9:S:7:9",
+      "target": "T_7_8:N:7:8",
+      "source_unit": "T_7_9",
+      "target_unit": "T_7_8",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_7_10:S:7:10",
+      "target": "T_7_9:N:7:9",
+      "source_unit": "T_7_10",
+      "target_unit": "T_7_9",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_7_11:S:7:11",
+      "target": "T_7_10:N:7:10",
+      "source_unit": "T_7_11",
+      "target_unit": "T_7_10",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_7_12:S:7:12",
+      "target": "T_7_11:N:7:11",
+      "source_unit": "T_7_12",
+      "target_unit": "T_7_11",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_7_13:S:7:13",
+      "target": "T_7_12:N:7:12",
+      "source_unit": "T_7_13",
+      "target_unit": "T_7_12",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_7_14:S:7:14",
+      "target": "T_7_13:N:7:13",
+      "source_unit": "T_7_14",
+      "target_unit": "T_7_13",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_7_15:S:7:15",
+      "target": "T_7_14:N:7:14",
+      "source_unit": "T_7_15",
+      "target_unit": "T_7_14",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_7_16:S:7:16",
+      "target": "T_7_15:N:7:15",
+      "source_unit": "T_7_16",
+      "target_unit": "T_7_15",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_7_17:S:7:17",
+      "target": "T_7_16:N:7:16",
+      "source_unit": "T_7_17",
+      "target_unit": "T_7_16",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_7_18:S:7:18",
+      "target": "T_7_17:N:7:17",
+      "source_unit": "T_7_18",
+      "target_unit": "T_7_17",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_7_19:S:7:19",
+      "target": "T_7_18:N:7:18",
+      "source_unit": "T_7_19",
+      "target_unit": "T_7_18",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_8_19:W:8:19",
+      "target": "T_7_19:E:7:19",
+      "source_unit": "T_8_19",
+      "target_unit": "T_7_19",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_7_38:N:7:38",
+      "target": "T_7_39:S:7:39",
+      "source_unit": "T_7_38",
+      "target_unit": "T_7_39",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_7_39:N:7:39",
+      "target": "T_7_40:S:7:40",
+      "source_unit": "T_7_39",
+      "target_unit": "T_7_40",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_7_40:N:7:40",
+      "target": "T_7_41:S:7:41",
+      "source_unit": "T_7_40",
+      "target_unit": "T_7_41",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_7_41:E:7:41",
+      "target": "T_8_41:W:8:41",
+      "source_unit": "T_7_41",
+      "target_unit": "T_8_41",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_8_41:E:8:41",
+      "target": "T_9_41:W:9:41",
+      "source_unit": "T_8_41",
+      "target_unit": "T_9_41",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_9_41:E:9:41",
+      "target": "T_10_41:W:10:41",
+      "source_unit": "T_9_41",
+      "target_unit": "T_10_41",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_10_41:E:10:41",
+      "target": "T_11_41:W:11:41",
+      "source_unit": "T_10_41",
+      "target_unit": "T_11_41",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_11_41:E:11:41",
+      "target": "T_12_41:W:12:41",
+      "source_unit": "T_11_41",
+      "target_unit": "T_12_41",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_12_13:E:12:13",
+      "target": "T_13_13:W:13:13",
+      "source_unit": "T_12_13",
+      "target_unit": "T_13_13",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_12_41:E:12:41",
+      "target": "T_13_41:W:13:41",
+      "source_unit": "T_12_41",
+      "target_unit": "T_13_41",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_13_13:N:13:13",
+      "target": "T_13_14:S:13:14",
+      "source_unit": "T_13_13",
+      "target_unit": "T_13_14",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_13_41:E:13:41",
+      "target": "T_14_41:W:14:41",
+      "source_unit": "T_13_41",
+      "target_unit": "T_14_41",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_14_41:E:14:41",
+      "target": "T_15_41:W:15:41",
+      "source_unit": "T_14_41",
+      "target_unit": "T_15_41",
+      "source_slot": "out",
+      "target_slot": "horizontal"
+    },
+    {
+      "source": "T_16_40:W:16:40",
+      "target": "T_15_40:E:15:40",
+      "source_unit": "T_16_40",
+      "target_unit": "T_15_40",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_15_40:N:15:40",
+      "target": "T_15_41:S:15:41",
+      "source_unit": "T_15_40",
+      "target_unit": "T_15_41",
+      "source_slot": "out",
+      "target_slot": "vertical"
+    },
+    {
+      "source": "T_15_41:E:15:41",
+      "target": "T_16_41:W:16:41",
+      "source_unit": "T_15_41",
+      "target_unit": "T_16_41",
+      "source_slot": "horizontal",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_15_41:N:15:41",
+      "target": "T_15_42:S:15:42",
+      "source_unit": "T_15_41",
+      "target_unit": "T_15_42",
+      "source_slot": "vertical",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_15_42:N:15:42",
+      "target": "T_15_43:S:15:43",
+      "source_unit": "T_15_42",
+      "target_unit": "T_15_43",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_17_40:W:17:40",
+      "target": "T_16_40:E:16:40",
+      "source_unit": "T_17_40",
+      "target_unit": "T_16_40",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_16_41:N:16:41",
+      "target": "T_16_42:S:16:42",
+      "source_unit": "T_16_41",
+      "target_unit": "T_16_42",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_16_42:N:16:42",
+      "target": "T_16_43:S:16:43",
+      "source_unit": "T_16_42",
+      "target_unit": "T_16_43",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_18_40:W:18:40",
+      "target": "T_17_40:E:17:40",
+      "source_unit": "T_18_40",
+      "target_unit": "T_17_40",
+      "source_slot": "horizontal",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_18_42:W:18:42",
+      "target": "T_17_42:E:17:42",
+      "source_unit": "T_18_42",
+      "target_unit": "T_17_42",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_17_42:N:17:42",
+      "target": "T_17_43:S:17:43",
+      "source_unit": "T_17_42",
+      "target_unit": "T_17_43",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_18_38:N:18:38",
+      "target": "T_18_39:S:18:39",
+      "source_unit": "T_18_38",
+      "target_unit": "T_18_39",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_18_39:N:18:39",
+      "target": "T_18_40:S:18:40",
+      "source_unit": "T_18_39",
+      "target_unit": "T_18_40",
+      "source_slot": "out",
+      "target_slot": "vertical"
+    },
+    {
+      "source": "T_18_40:N:18:40",
+      "target": "T_18_41:S:18:41",
+      "source_unit": "T_18_40",
+      "target_unit": "T_18_41",
+      "source_slot": "vertical",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_19_40:W:19:40",
+      "target": "T_18_40:E:18:40",
+      "source_unit": "T_19_40",
+      "target_unit": "T_18_40",
+      "source_slot": "out",
+      "target_slot": "horizontal"
+    },
+    {
+      "source": "T_18_41:N:18:41",
+      "target": "T_18_42:S:18:42",
+      "source_unit": "T_18_41",
+      "target_unit": "T_18_42",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_20_40:W:20:40",
+      "target": "T_19_40:E:19:40",
+      "source_unit": "T_20_40",
+      "target_unit": "T_19_40",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_21_40:W:21:40",
+      "target": "T_20_40:E:20:40",
+      "source_unit": "T_21_40",
+      "target_unit": "T_20_40",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_22_40:W:22:40",
+      "target": "T_21_40:E:21:40",
+      "source_unit": "T_22_40",
+      "target_unit": "T_21_40",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_23_40:W:23:40",
+      "target": "T_22_40:E:22:40",
+      "source_unit": "T_23_40",
+      "target_unit": "T_22_40",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_24_40:W:24:40",
+      "target": "T_23_40:E:23:40",
+      "source_unit": "T_24_40",
+      "target_unit": "T_23_40",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_25_40:W:25:40",
+      "target": "T_24_40:E:24:40",
+      "source_unit": "T_25_40",
+      "target_unit": "T_24_40",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_25_38:N:25:38",
+      "target": "T_25_39:S:25:39",
+      "source_unit": "T_25_38",
+      "target_unit": "T_25_39",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_25_39:N:25:39",
+      "target": "T_25_40:S:25:40",
+      "source_unit": "T_25_39",
+      "target_unit": "T_25_40",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_27_8:S:27:8",
+      "target": "T_27_7:N:27:7",
+      "source_unit": "T_27_8",
+      "target_unit": "T_27_7",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_27_7:E:27:7",
+      "target": "T_28_7:W:28:7",
+      "source_unit": "T_27_7",
+      "target_unit": "T_28_7",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_27_9:S:27:9",
+      "target": "T_27_8:N:27:8",
+      "source_unit": "T_27_9",
+      "target_unit": "T_27_8",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_27_10:S:27:10",
+      "target": "T_27_9:N:27:9",
+      "source_unit": "T_27_10",
+      "target_unit": "T_27_9",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_27_11:S:27:11",
+      "target": "T_27_10:N:27:10",
+      "source_unit": "T_27_11",
+      "target_unit": "T_27_10",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_27_12:S:27:12",
+      "target": "T_27_11:N:27:11",
+      "source_unit": "T_27_12",
+      "target_unit": "T_27_11",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_27_13:S:27:13",
+      "target": "T_27_12:N:27:12",
+      "source_unit": "T_27_13",
+      "target_unit": "T_27_12",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_27_14:S:27:14",
+      "target": "T_27_13:N:27:13",
+      "source_unit": "T_27_14",
+      "target_unit": "T_27_13",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_27_15:S:27:15",
+      "target": "T_27_14:N:27:14",
+      "source_unit": "T_27_15",
+      "target_unit": "T_27_14",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_27_16:S:27:16",
+      "target": "T_27_15:N:27:15",
+      "source_unit": "T_27_16",
+      "target_unit": "T_27_15",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_27_17:S:27:17",
+      "target": "T_27_16:N:27:16",
+      "source_unit": "T_27_17",
+      "target_unit": "T_27_16",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_27_18:S:27:18",
+      "target": "T_27_17:N:27:17",
+      "source_unit": "T_27_18",
+      "target_unit": "T_27_17",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_27_19:S:27:19",
+      "target": "T_27_18:N:27:18",
+      "source_unit": "T_27_19",
+      "target_unit": "T_27_18",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_28_19:W:28:19",
+      "target": "T_27_19:E:27:19",
+      "source_unit": "T_28_19",
+      "target_unit": "T_27_19",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_32_13:E:32:13",
+      "target": "T_33_13:W:33:13",
+      "source_unit": "T_32_13",
+      "target_unit": "T_33_13",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_33_13:N:33:13",
+      "target": "T_33_14:S:33:14",
+      "source_unit": "T_33_13",
+      "target_unit": "T_33_14",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_41_38:N:41:38",
+      "target": "T_41_39:S:41:39",
+      "source_unit": "T_41_38",
+      "target_unit": "T_41_39",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_41_39:N:41:39",
+      "target": "T_41_40:S:41:40",
+      "source_unit": "T_41_39",
+      "target_unit": "T_41_40",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_41_40:N:41:40",
+      "target": "T_41_41:S:41:41",
+      "source_unit": "T_41_40",
+      "target_unit": "T_41_41",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_41_41:E:41:41",
+      "target": "T_42_41:W:42:41",
+      "source_unit": "T_41_41",
+      "target_unit": "T_42_41",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_42_41:E:42:41",
+      "target": "T_43_41:W:43:41",
+      "source_unit": "T_42_41",
+      "target_unit": "T_43_41",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_43_41:E:43:41",
+      "target": "T_44_41:W:44:41",
+      "source_unit": "T_43_41",
+      "target_unit": "T_44_41",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_44_41:E:44:41",
+      "target": "T_45_41:W:45:41",
+      "source_unit": "T_44_41",
+      "target_unit": "T_45_41",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_45_41:E:45:41",
+      "target": "T_46_41:W:46:41",
+      "source_unit": "T_45_41",
+      "target_unit": "T_46_41",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_46_41:E:46:41",
+      "target": "T_47_41:W:47:41",
+      "source_unit": "T_46_41",
+      "target_unit": "T_47_41",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_47_41:E:47:41",
+      "target": "T_48_41:W:48:41",
+      "source_unit": "T_47_41",
+      "target_unit": "T_48_41",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_48_41:E:48:41",
+      "target": "T_49_41:W:49:41",
+      "source_unit": "T_48_41",
+      "target_unit": "T_49_41",
+      "source_slot": "out",
+      "target_slot": "horizontal"
+    },
+    {
+      "source": "T_50_40:W:50:40",
+      "target": "T_49_40:E:49:40",
+      "source_unit": "T_50_40",
+      "target_unit": "T_49_40",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_49_40:N:49:40",
+      "target": "T_49_41:S:49:41",
+      "source_unit": "T_49_40",
+      "target_unit": "T_49_41",
+      "source_slot": "out",
+      "target_slot": "vertical"
+    },
+    {
+      "source": "T_49_41:E:49:41",
+      "target": "T_50_41:W:50:41",
+      "source_unit": "T_49_41",
+      "target_unit": "T_50_41",
+      "source_slot": "horizontal",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_49_41:N:49:41",
+      "target": "T_49_42:S:49:42",
+      "source_unit": "T_49_41",
+      "target_unit": "T_49_42",
+      "source_slot": "vertical",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_49_42:N:49:42",
+      "target": "T_49_43:S:49:43",
+      "source_unit": "T_49_42",
+      "target_unit": "T_49_43",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_51_40:W:51:40",
+      "target": "T_50_40:E:50:40",
+      "source_unit": "T_51_40",
+      "target_unit": "T_50_40",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_50_41:N:50:41",
+      "target": "T_50_42:S:50:42",
+      "source_unit": "T_50_41",
+      "target_unit": "T_50_42",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_50_42:N:50:42",
+      "target": "T_50_43:S:50:43",
+      "source_unit": "T_50_42",
+      "target_unit": "T_50_43",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_52_40:W:52:40",
+      "target": "T_51_40:E:51:40",
+      "source_unit": "T_52_40",
+      "target_unit": "T_51_40",
+      "source_slot": "horizontal",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_52_42:W:52:42",
+      "target": "T_51_42:E:51:42",
+      "source_unit": "T_52_42",
+      "target_unit": "T_51_42",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_51_42:N:51:42",
+      "target": "T_51_43:S:51:43",
+      "source_unit": "T_51_42",
+      "target_unit": "T_51_43",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_52_38:N:52:38",
+      "target": "T_52_39:S:52:39",
+      "source_unit": "T_52_38",
+      "target_unit": "T_52_39",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_52_39:N:52:39",
+      "target": "T_52_40:S:52:40",
+      "source_unit": "T_52_39",
+      "target_unit": "T_52_40",
+      "source_slot": "out",
+      "target_slot": "vertical"
+    },
+    {
+      "source": "T_52_40:N:52:40",
+      "target": "T_52_41:S:52:41",
+      "source_unit": "T_52_40",
+      "target_unit": "T_52_41",
+      "source_slot": "vertical",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_53_40:W:53:40",
+      "target": "T_52_40:E:52:40",
+      "source_unit": "T_53_40",
+      "target_unit": "T_52_40",
+      "source_slot": "out",
+      "target_slot": "horizontal"
+    },
+    {
+      "source": "T_52_41:N:52:41",
+      "target": "T_52_42:S:52:42",
+      "source_unit": "T_52_41",
+      "target_unit": "T_52_42",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_54_40:W:54:40",
+      "target": "T_53_40:E:53:40",
+      "source_unit": "T_54_40",
+      "target_unit": "T_53_40",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_55_40:W:55:40",
+      "target": "T_54_40:E:54:40",
+      "source_unit": "T_55_40",
+      "target_unit": "T_54_40",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_56_40:W:56:40",
+      "target": "T_55_40:E:55:40",
+      "source_unit": "T_56_40",
+      "target_unit": "T_55_40",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_57_40:W:57:40",
+      "target": "T_56_40:E:56:40",
+      "source_unit": "T_57_40",
+      "target_unit": "T_56_40",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_58_40:W:58:40",
+      "target": "T_57_40:E:57:40",
+      "source_unit": "T_58_40",
+      "target_unit": "T_57_40",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_59_40:W:59:40",
+      "target": "T_58_40:E:58:40",
+      "source_unit": "T_59_40",
+      "target_unit": "T_58_40",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_59_38:N:59:38",
+      "target": "T_59_39:S:59:39",
+      "source_unit": "T_59_38",
+      "target_unit": "T_59_39",
+      "source_slot": "out",
+      "target_slot": "in"
+    },
+    {
+      "source": "T_59_39:N:59:39",
+      "target": "T_59_40:S:59:40",
+      "source_unit": "T_59_39",
+      "target_unit": "T_59_40",
+      "source_slot": "out",
+      "target_slot": "in"
+    }
+  ],
+  "routes": [
+    {
+      "id": "荞花_PH",
+      "slots": [
+        [
+          "T_9_13",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1/2",
+      "guaranteed_production": null
+    },
+    {
+      "id": "荞花_PG",
+      "slots": [
+        [
+          "T_12_13",
+          "only"
+        ],
+        [
+          "T_13_13",
+          "only"
+        ],
+        [
+          "T_13_14",
+          "only"
+        ]
+      ],
+      "length": 3,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1/2",
+      "guaranteed_production": null
+    },
+    {
+      "id": "荞花_HP",
+      "slots": [
+        [
+          "T_8_19",
+          "only"
+        ],
+        [
+          "T_7_19",
+          "only"
+        ],
+        [
+          "T_7_18",
+          "only"
+        ],
+        [
+          "T_7_17",
+          "only"
+        ],
+        [
+          "T_7_16",
+          "only"
+        ],
+        [
+          "T_7_15",
+          "only"
+        ],
+        [
+          "T_7_14",
+          "only"
+        ],
+        [
+          "T_7_13",
+          "only"
+        ],
+        [
+          "T_7_12",
+          "only"
+        ],
+        [
+          "T_7_11",
+          "only"
+        ],
+        [
+          "T_7_10",
+          "only"
+        ],
+        [
+          "T_7_9",
+          "only"
+        ],
+        [
+          "T_7_8",
+          "only"
+        ],
+        [
+          "T_7_7",
+          "only"
+        ],
+        [
+          "T_8_7",
+          "only"
+        ]
+      ],
+      "length": 15,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "荞花_粉末1",
+      "slots": [
+        [
+          "T_17_14",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "砂叶_PH",
+      "slots": [
+        [
+          "T_29_13",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1/2",
+      "guaranteed_production": null
+    },
+    {
+      "id": "砂叶_PG",
+      "slots": [
+        [
+          "T_32_13",
+          "only"
+        ],
+        [
+          "T_33_13",
+          "only"
+        ],
+        [
+          "T_33_14",
+          "only"
+        ]
+      ],
+      "length": 3,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1/2",
+      "guaranteed_production": null
+    },
+    {
+      "id": "砂叶_HP",
+      "slots": [
+        [
+          "T_28_19",
+          "only"
+        ],
+        [
+          "T_27_19",
+          "only"
+        ],
+        [
+          "T_27_18",
+          "only"
+        ],
+        [
+          "T_27_17",
+          "only"
+        ],
+        [
+          "T_27_16",
+          "only"
+        ],
+        [
+          "T_27_15",
+          "only"
+        ],
+        [
+          "T_27_14",
+          "only"
+        ],
+        [
+          "T_27_13",
+          "only"
+        ],
+        [
+          "T_27_12",
+          "only"
+        ],
+        [
+          "T_27_11",
+          "only"
+        ],
+        [
+          "T_27_10",
+          "only"
+        ],
+        [
+          "T_27_9",
+          "only"
+        ],
+        [
+          "T_27_8",
+          "only"
+        ],
+        [
+          "T_27_7",
+          "only"
+        ],
+        [
+          "T_28_7",
+          "only"
+        ]
+      ],
+      "length": 15,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "砂叶_粉末1",
+      "slots": [
+        [
+          "T_37_14",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1/2",
+      "guaranteed_production": null
+    },
+    {
+      "id": "砂叶_粉末2",
+      "slots": [
+        [
+          "T_37_15",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1/2",
+      "guaranteed_production": null
+    },
+    {
+      "id": "砂叶_粉末3",
+      "slots": [
+        [
+          "T_37_16",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1/2",
+      "guaranteed_production": null
+    },
+    {
+      "id": "M213_成品",
+      "slots": [
+        [
+          "T_7_38",
+          "only"
+        ],
+        [
+          "T_7_39",
+          "only"
+        ],
+        [
+          "T_7_40",
+          "only"
+        ],
+        [
+          "T_7_41",
+          "only"
+        ],
+        [
+          "T_8_41",
+          "only"
+        ],
+        [
+          "T_9_41",
+          "only"
+        ],
+        [
+          "T_10_41",
+          "only"
+        ],
+        [
+          "T_11_41",
+          "only"
+        ],
+        [
+          "T_12_41",
+          "only"
+        ],
+        [
+          "T_13_41",
+          "only"
+        ],
+        [
+          "T_14_41",
+          "only"
+        ],
+        [
+          "T_15_41",
+          "horizontal"
+        ],
+        [
+          "T_16_41",
+          "only"
+        ],
+        [
+          "T_16_42",
+          "only"
+        ],
+        [
+          "T_16_43",
+          "only"
+        ]
+      ],
+      "length": 15,
+      "components": 3,
+      "single_slot_capacity": "1",
+      "planned_rate": "1/5",
+      "guaranteed_production": null
+    },
+    {
+      "id": "M214_成品",
+      "slots": [
+        [
+          "T_18_38",
+          "only"
+        ],
+        [
+          "T_18_39",
+          "only"
+        ],
+        [
+          "T_18_40",
+          "vertical"
+        ],
+        [
+          "T_18_41",
+          "only"
+        ],
+        [
+          "T_18_42",
+          "only"
+        ],
+        [
+          "T_17_42",
+          "only"
+        ],
+        [
+          "T_17_43",
+          "only"
+        ]
+      ],
+      "length": 7,
+      "components": 3,
+      "single_slot_capacity": "1",
+      "planned_rate": "1/5",
+      "guaranteed_production": null
+    },
+    {
+      "id": "M215_成品",
+      "slots": [
+        [
+          "T_25_38",
+          "only"
+        ],
+        [
+          "T_25_39",
+          "only"
+        ],
+        [
+          "T_25_40",
+          "only"
+        ],
+        [
+          "T_24_40",
+          "only"
+        ],
+        [
+          "T_23_40",
+          "only"
+        ],
+        [
+          "T_22_40",
+          "only"
+        ],
+        [
+          "T_21_40",
+          "only"
+        ],
+        [
+          "T_20_40",
+          "only"
+        ],
+        [
+          "T_19_40",
+          "only"
+        ],
+        [
+          "T_18_40",
+          "horizontal"
+        ],
+        [
+          "T_17_40",
+          "only"
+        ],
+        [
+          "T_16_40",
+          "only"
+        ],
+        [
+          "T_15_40",
+          "only"
+        ],
+        [
+          "T_15_41",
+          "vertical"
+        ],
+        [
+          "T_15_42",
+          "only"
+        ],
+        [
+          "T_15_43",
+          "only"
+        ]
+      ],
+      "length": 16,
+      "components": 5,
+      "single_slot_capacity": "1",
+      "planned_rate": "1/5",
+      "guaranteed_production": null
+    },
+    {
+      "id": "M216_成品",
+      "slots": [
+        [
+          "T_41_38",
+          "only"
+        ],
+        [
+          "T_41_39",
+          "only"
+        ],
+        [
+          "T_41_40",
+          "only"
+        ],
+        [
+          "T_41_41",
+          "only"
+        ],
+        [
+          "T_42_41",
+          "only"
+        ],
+        [
+          "T_43_41",
+          "only"
+        ],
+        [
+          "T_44_41",
+          "only"
+        ],
+        [
+          "T_45_41",
+          "only"
+        ],
+        [
+          "T_46_41",
+          "only"
+        ],
+        [
+          "T_47_41",
+          "only"
+        ],
+        [
+          "T_48_41",
+          "only"
+        ],
+        [
+          "T_49_41",
+          "horizontal"
+        ],
+        [
+          "T_50_41",
+          "only"
+        ],
+        [
+          "T_50_42",
+          "only"
+        ],
+        [
+          "T_50_43",
+          "only"
+        ]
+      ],
+      "length": 15,
+      "components": 3,
+      "single_slot_capacity": "1",
+      "planned_rate": "1/5",
+      "guaranteed_production": null
+    },
+    {
+      "id": "M217_成品",
+      "slots": [
+        [
+          "T_52_38",
+          "only"
+        ],
+        [
+          "T_52_39",
+          "only"
+        ],
+        [
+          "T_52_40",
+          "vertical"
+        ],
+        [
+          "T_52_41",
+          "only"
+        ],
+        [
+          "T_52_42",
+          "only"
+        ],
+        [
+          "T_51_42",
+          "only"
+        ],
+        [
+          "T_51_43",
+          "only"
+        ]
+      ],
+      "length": 7,
+      "components": 3,
+      "single_slot_capacity": "1",
+      "planned_rate": "1/5",
+      "guaranteed_production": null
+    },
+    {
+      "id": "M218_成品",
+      "slots": [
+        [
+          "T_59_38",
+          "only"
+        ],
+        [
+          "T_59_39",
+          "only"
+        ],
+        [
+          "T_59_40",
+          "only"
+        ],
+        [
+          "T_58_40",
+          "only"
+        ],
+        [
+          "T_57_40",
+          "only"
+        ],
+        [
+          "T_56_40",
+          "only"
+        ],
+        [
+          "T_55_40",
+          "only"
+        ],
+        [
+          "T_54_40",
+          "only"
+        ],
+        [
+          "T_53_40",
+          "only"
+        ],
+        [
+          "T_52_40",
+          "horizontal"
+        ],
+        [
+          "T_51_40",
+          "only"
+        ],
+        [
+          "T_50_40",
+          "only"
+        ],
+        [
+          "T_49_40",
+          "only"
+        ],
+        [
+          "T_49_41",
+          "vertical"
+        ],
+        [
+          "T_49_42",
+          "only"
+        ],
+        [
+          "T_49_43",
+          "only"
+        ]
+      ],
+      "length": 16,
+      "components": 5,
+      "single_slot_capacity": "1",
+      "planned_rate": "3/20",
+      "guaranteed_production": null
+    },
+    {
+      "id": "CORE_W_1",
+      "slots": [
+        [
+          "T_48_9",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "CORE_W_4",
+      "slots": [
+        [
+          "T_48_12",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "CORE_W_7",
+      "slots": [
+        [
+          "T_48_15",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "CORE_E_1",
+      "slots": [
+        [
+          "T_58_9",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "CORE_E_4",
+      "slots": [
+        [
+          "T_58_12",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "CORE_E_7",
+      "slots": [
+        [
+          "T_58_15",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "ORE_W_00_边界",
+      "slots": [
+        [
+          "T_1_2",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "ORE_S_00_边界",
+      "slots": [
+        [
+          "T_2_1",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "ORE_W_01_边界",
+      "slots": [
+        [
+          "T_1_5",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "ORE_S_01_边界",
+      "slots": [
+        [
+          "T_5_1",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "ORE_W_02_边界",
+      "slots": [
+        [
+          "T_1_8",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "ORE_S_02_边界",
+      "slots": [
+        [
+          "T_8_1",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "ORE_W_03_边界",
+      "slots": [
+        [
+          "T_1_11",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "ORE_S_03_边界",
+      "slots": [
+        [
+          "T_11_1",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "ORE_W_04_边界",
+      "slots": [
+        [
+          "T_1_14",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "ORE_S_04_边界",
+      "slots": [
+        [
+          "T_14_1",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "ORE_W_05_边界",
+      "slots": [
+        [
+          "T_1_17",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "ORE_S_05_边界",
+      "slots": [
+        [
+          "T_17_1",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "ORE_W_06_边界",
+      "slots": [
+        [
+          "T_1_20",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "ORE_S_06_边界",
+      "slots": [
+        [
+          "T_20_1",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "ORE_W_07_边界",
+      "slots": [
+        [
+          "T_1_23",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "ORE_S_07_边界",
+      "slots": [
+        [
+          "T_23_1",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "ORE_W_08_边界",
+      "slots": [
+        [
+          "T_1_26",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "ORE_S_08_边界",
+      "slots": [
+        [
+          "T_26_1",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "ORE_W_09_边界",
+      "slots": [
+        [
+          "T_1_29",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "ORE_S_09_边界",
+      "slots": [
+        [
+          "T_29_1",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "ORE_W_10_边界",
+      "slots": [
+        [
+          "T_1_32",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "ORE_S_10_边界",
+      "slots": [
+        [
+          "T_32_1",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "ORE_W_11_边界",
+      "slots": [
+        [
+          "T_1_35",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "ORE_S_11_边界",
+      "slots": [
+        [
+          "T_35_1",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "ORE_W_12_边界",
+      "slots": [
+        [
+          "T_1_38",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "ORE_S_12_边界",
+      "slots": [
+        [
+          "T_38_1",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "ORE_W_13_边界",
+      "slots": [
+        [
+          "T_1_41",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "ORE_S_13_边界",
+      "slots": [
+        [
+          "T_41_1",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "ORE_W_14_边界",
+      "slots": [
+        [
+          "T_1_44",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "ORE_S_14_边界",
+      "slots": [
+        [
+          "T_44_1",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "ORE_W_15_边界",
+      "slots": [
+        [
+          "T_1_47",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "ORE_S_15_边界",
+      "slots": [
+        [
+          "T_47_1",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "ORE_W_16_边界",
+      "slots": [
+        [
+          "T_1_50",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "ORE_S_16_边界",
+      "slots": [
+        [
+          "T_50_1",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "ORE_W_17_边界",
+      "slots": [
+        [
+          "T_1_53",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "ORE_S_17_边界",
+      "slots": [
+        [
+          "T_53_1",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "ORE_W_18_边界",
+      "slots": [
+        [
+          "T_1_56",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "ORE_S_18_边界",
+      "slots": [
+        [
+          "T_56_1",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "ORE_W_19_边界",
+      "slots": [
+        [
+          "T_1_59",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "ORE_S_19_边界",
+      "slots": [
+        [
+          "T_59_1",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "ORE_W_20_边界",
+      "slots": [
+        [
+          "T_1_62",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "ORE_S_20_边界",
+      "slots": [
+        [
+          "T_62_1",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "ORE_W_21_边界",
+      "slots": [
+        [
+          "T_1_65",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "ORE_S_21_边界",
+      "slots": [
+        [
+          "T_65_1",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "ORE_W_22_边界",
+      "slots": [
+        [
+          "T_1_68",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    },
+    {
+      "id": "ORE_S_22_边界",
+      "slots": [
+        [
+          "T_68_1",
+          "only"
+        ]
+      ],
+      "length": 1,
+      "components": 1,
+      "single_slot_capacity": "1",
+      "planned_rate": "1",
+      "guaranteed_production": null
+    }
+  ],
+  "bridges": [
+    {
+      "id": "T_15_41",
+      "verified_orders": [
+        [
+          "N",
+          "E",
+          "S",
+          "W"
+        ],
+        [
+          "N",
+          "E",
+          "W",
+          "S"
+        ],
+        [
+          "N",
+          "S",
+          "E",
+          "W"
+        ],
+        [
+          "N",
+          "S",
+          "W",
+          "E"
+        ],
+        [
+          "N",
+          "W",
+          "E",
+          "S"
+        ],
+        [
+          "N",
+          "W",
+          "S",
+          "E"
+        ],
+        [
+          "E",
+          "N",
+          "S",
+          "W"
+        ],
+        [
+          "E",
+          "N",
+          "W",
+          "S"
+        ],
+        [
+          "E",
+          "S",
+          "N",
+          "W"
+        ],
+        [
+          "E",
+          "S",
+          "W",
+          "N"
+        ],
+        [
+          "E",
+          "W",
+          "N",
+          "S"
+        ],
+        [
+          "E",
+          "W",
+          "S",
+          "N"
+        ],
+        [
+          "S",
+          "N",
+          "E",
+          "W"
+        ],
+        [
+          "S",
+          "N",
+          "W",
+          "E"
+        ],
+        [
+          "S",
+          "E",
+          "N",
+          "W"
+        ],
+        [
+          "S",
+          "E",
+          "W",
+          "N"
+        ],
+        [
+          "S",
+          "W",
+          "N",
+          "E"
+        ],
+        [
+          "S",
+          "W",
+          "E",
+          "N"
+        ],
+        [
+          "W",
+          "N",
+          "E",
+          "S"
+        ],
+        [
+          "W",
+          "N",
+          "S",
+          "E"
+        ],
+        [
+          "W",
+          "E",
+          "N",
+          "S"
+        ],
+        [
+          "W",
+          "E",
+          "S",
+          "N"
+        ],
+        [
+          "W",
+          "S",
+          "N",
+          "E"
+        ],
+        [
+          "W",
+          "S",
+          "E",
+          "N"
+        ]
+      ],
+      "inferred_axes": {
+        "horizontal": [
+          "W",
+          "E"
+        ],
+        "vertical": [
+          "S",
+          "N"
+        ]
+      }
+    },
+    {
+      "id": "T_18_40",
+      "verified_orders": [
+        [
+          "N",
+          "E",
+          "S",
+          "W"
+        ],
+        [
+          "N",
+          "E",
+          "W",
+          "S"
+        ],
+        [
+          "N",
+          "S",
+          "E",
+          "W"
+        ],
+        [
+          "N",
+          "S",
+          "W",
+          "E"
+        ],
+        [
+          "N",
+          "W",
+          "E",
+          "S"
+        ],
+        [
+          "N",
+          "W",
+          "S",
+          "E"
+        ],
+        [
+          "E",
+          "N",
+          "S",
+          "W"
+        ],
+        [
+          "E",
+          "N",
+          "W",
+          "S"
+        ],
+        [
+          "E",
+          "S",
+          "N",
+          "W"
+        ],
+        [
+          "E",
+          "S",
+          "W",
+          "N"
+        ],
+        [
+          "E",
+          "W",
+          "N",
+          "S"
+        ],
+        [
+          "E",
+          "W",
+          "S",
+          "N"
+        ],
+        [
+          "S",
+          "N",
+          "E",
+          "W"
+        ],
+        [
+          "S",
+          "N",
+          "W",
+          "E"
+        ],
+        [
+          "S",
+          "E",
+          "N",
+          "W"
+        ],
+        [
+          "S",
+          "E",
+          "W",
+          "N"
+        ],
+        [
+          "S",
+          "W",
+          "N",
+          "E"
+        ],
+        [
+          "S",
+          "W",
+          "E",
+          "N"
+        ],
+        [
+          "W",
+          "N",
+          "E",
+          "S"
+        ],
+        [
+          "W",
+          "N",
+          "S",
+          "E"
+        ],
+        [
+          "W",
+          "E",
+          "N",
+          "S"
+        ],
+        [
+          "W",
+          "E",
+          "S",
+          "N"
+        ],
+        [
+          "W",
+          "S",
+          "N",
+          "E"
+        ],
+        [
+          "W",
+          "S",
+          "E",
+          "N"
+        ]
+      ],
+      "inferred_axes": {
+        "horizontal": [
+          "E",
+          "W"
+        ],
+        "vertical": [
+          "S",
+          "N"
+        ]
+      }
+    },
+    {
+      "id": "T_49_41",
+      "verified_orders": [
+        [
+          "N",
+          "E",
+          "S",
+          "W"
+        ],
+        [
+          "N",
+          "E",
+          "W",
+          "S"
+        ],
+        [
+          "N",
+          "S",
+          "E",
+          "W"
+        ],
+        [
+          "N",
+          "S",
+          "W",
+          "E"
+        ],
+        [
+          "N",
+          "W",
+          "E",
+          "S"
+        ],
+        [
+          "N",
+          "W",
+          "S",
+          "E"
+        ],
+        [
+          "E",
+          "N",
+          "S",
+          "W"
+        ],
+        [
+          "E",
+          "N",
+          "W",
+          "S"
+        ],
+        [
+          "E",
+          "S",
+          "N",
+          "W"
+        ],
+        [
+          "E",
+          "S",
+          "W",
+          "N"
+        ],
+        [
+          "E",
+          "W",
+          "N",
+          "S"
+        ],
+        [
+          "E",
+          "W",
+          "S",
+          "N"
+        ],
+        [
+          "S",
+          "N",
+          "E",
+          "W"
+        ],
+        [
+          "S",
+          "N",
+          "W",
+          "E"
+        ],
+        [
+          "S",
+          "E",
+          "N",
+          "W"
+        ],
+        [
+          "S",
+          "E",
+          "W",
+          "N"
+        ],
+        [
+          "S",
+          "W",
+          "N",
+          "E"
+        ],
+        [
+          "S",
+          "W",
+          "E",
+          "N"
+        ],
+        [
+          "W",
+          "N",
+          "E",
+          "S"
+        ],
+        [
+          "W",
+          "N",
+          "S",
+          "E"
+        ],
+        [
+          "W",
+          "E",
+          "N",
+          "S"
+        ],
+        [
+          "W",
+          "E",
+          "S",
+          "N"
+        ],
+        [
+          "W",
+          "S",
+          "N",
+          "E"
+        ],
+        [
+          "W",
+          "S",
+          "E",
+          "N"
+        ]
+      ],
+      "inferred_axes": {
+        "horizontal": [
+          "W",
+          "E"
+        ],
+        "vertical": [
+          "S",
+          "N"
+        ]
+      }
+    },
+    {
+      "id": "T_52_40",
+      "verified_orders": [
+        [
+          "N",
+          "E",
+          "S",
+          "W"
+        ],
+        [
+          "N",
+          "E",
+          "W",
+          "S"
+        ],
+        [
+          "N",
+          "S",
+          "E",
+          "W"
+        ],
+        [
+          "N",
+          "S",
+          "W",
+          "E"
+        ],
+        [
+          "N",
+          "W",
+          "E",
+          "S"
+        ],
+        [
+          "N",
+          "W",
+          "S",
+          "E"
+        ],
+        [
+          "E",
+          "N",
+          "S",
+          "W"
+        ],
+        [
+          "E",
+          "N",
+          "W",
+          "S"
+        ],
+        [
+          "E",
+          "S",
+          "N",
+          "W"
+        ],
+        [
+          "E",
+          "S",
+          "W",
+          "N"
+        ],
+        [
+          "E",
+          "W",
+          "N",
+          "S"
+        ],
+        [
+          "E",
+          "W",
+          "S",
+          "N"
+        ],
+        [
+          "S",
+          "N",
+          "E",
+          "W"
+        ],
+        [
+          "S",
+          "N",
+          "W",
+          "E"
+        ],
+        [
+          "S",
+          "E",
+          "N",
+          "W"
+        ],
+        [
+          "S",
+          "E",
+          "W",
+          "N"
+        ],
+        [
+          "S",
+          "W",
+          "N",
+          "E"
+        ],
+        [
+          "S",
+          "W",
+          "E",
+          "N"
+        ],
+        [
+          "W",
+          "N",
+          "E",
+          "S"
+        ],
+        [
+          "W",
+          "N",
+          "S",
+          "E"
+        ],
+        [
+          "W",
+          "E",
+          "N",
+          "S"
+        ],
+        [
+          "W",
+          "E",
+          "S",
+          "N"
+        ],
+        [
+          "W",
+          "S",
+          "N",
+          "E"
+        ],
+        [
+          "W",
+          "S",
+          "E",
+          "N"
+        ]
+      ],
+      "inferred_axes": {
+        "horizontal": [
+          "E",
+          "W"
+        ],
+        "vertical": [
+          "S",
+          "N"
+        ]
+      }
+    }
+  ],
+  "power": {
+    "M174": [
+      {
+        "pole": "POWER_荞花_a",
+        "covered_cells": 15
+      }
+    ],
+    "M201": [
+      {
+        "pole": "POWER_荞花_a",
+        "covered_cells": 9
+      },
+      {
+        "pole": "POWER_荞花_b",
+        "covered_cells": 5
+      }
+    ],
+    "M057": [
+      {
+        "pole": "POWER_荞花_b",
+        "covered_cells": 9
+      }
+    ],
+    "M195": [
+      {
+        "pole": "POWER_砂叶_a",
+        "covered_cells": 15
+      }
+    ],
+    "M212": [
+      {
+        "pole": "POWER_砂叶_a",
+        "covered_cells": 9
+      },
+      {
+        "pole": "POWER_砂叶_b",
+        "covered_cells": 5
+      }
+    ],
+    "M068": [
+      {
+        "pole": "POWER_砂叶_b",
+        "covered_cells": 9
+      }
+    ],
+    "M213": [
+      {
+        "pole": "POWER_电池输出_0",
+        "covered_cells": 24
+      }
+    ],
+    "M214": [
+      {
+        "pole": "POWER_电池输出_0",
+        "covered_cells": 20
+      }
+    ],
+    "M215": [
+      {
+        "pole": "POWER_电池输出_1",
+        "covered_cells": 16
+      }
+    ],
+    "BOX_B": [
+      {
+        "pole": "POWER_电池输出_0",
+        "covered_cells": 6
+      }
+    ],
+    "M216": [
+      {
+        "pole": "POWER_胶囊输出_0",
+        "covered_cells": 24
+      }
+    ],
+    "M217": [
+      {
+        "pole": "POWER_胶囊输出_0",
+        "covered_cells": 20
+      }
+    ],
+    "M218": [
+      {
+        "pole": "POWER_胶囊输出_1",
+        "covered_cells": 16
+      }
+    ],
+    "BOX_C": [
+      {
+        "pole": "POWER_胶囊输出_0",
+        "covered_cells": 6
+      }
+    ]
+  },
+  "planned_capacity": [
+    {
+      "id": "M000",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M001",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M002",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M003",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M004",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M005",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M006",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M007",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M008",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M009",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M010",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M011",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M012",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M013",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M014",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M015",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M016",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M017",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M018",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M019",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M020",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M021",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M022",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M023",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M024",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M025",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M026",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M027",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M028",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M029",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M030",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M031",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M032",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M033",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M034",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M035",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M036",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M037",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M038",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M039",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M040",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M041",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M042",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M043",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M044",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M045",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M046",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M047",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M048",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M049",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M050",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M051",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M052",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M053",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M054",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M055",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M056",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M057",
+      "demand": "1/2",
+      "capacity": "1",
+      "slack": "1/2"
+    },
+    {
+      "id": "M058",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M059",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M060",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M061",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M062",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M063",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M064",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M065",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M066",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M067",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M068",
+      "demand": "1/2",
+      "capacity": "1",
+      "slack": "1/2"
+    },
+    {
+      "id": "M069",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M070",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M071",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M072",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M073",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M074",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M075",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M076",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M077",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M078",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M079",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M080",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M081",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M082",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M083",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M084",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M085",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M086",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M087",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M088",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M089",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M090",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M091",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M092",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M093",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M094",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M095",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M096",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M097",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M098",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M099",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M100",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M101",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M102",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M103",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M104",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M105",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M106",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M107",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M108",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M109",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M110",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M111",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M112",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M113",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M114",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M115",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M116",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M117",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M118",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M119",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M120",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M121",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M122",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M123",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M124",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M125",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M126",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M127",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M128",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M129",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M130",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M131",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M132",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M133",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M134",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M135",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M136",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M137",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M138",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M139",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M140",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M141",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M142",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M143",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M144",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M145",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M146",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M147",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M148",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M149",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M150",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M151",
+      "demand": "1/2",
+      "capacity": "1",
+      "slack": "1/2"
+    },
+    {
+      "id": "M152",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M153",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M154",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M155",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M156",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M157",
+      "demand": "1/2",
+      "capacity": "1",
+      "slack": "1/2"
+    },
+    {
+      "id": "M158",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M159",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M160",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M161",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M162",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M163",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M164",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M165",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M166",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M167",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M168",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M169",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M170",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M171",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M172",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M173",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M174",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M175",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M176",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M177",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M178",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M179",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M180",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M181",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M182",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M183",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M184",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M185",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M186",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M187",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M188",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M189",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M190",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M191",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M192",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M193",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M194",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M195",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M196",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M197",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M198",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M199",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M200",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M201",
+      "demand": "1/2",
+      "capacity": "1",
+      "slack": "1/2"
+    },
+    {
+      "id": "M202",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M203",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M204",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M205",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M206",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M207",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M208",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M209",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M210",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M211",
+      "demand": "1",
+      "capacity": "1",
+      "slack": "0"
+    },
+    {
+      "id": "M212",
+      "demand": "1/2",
+      "capacity": "1",
+      "slack": "1/2"
+    },
+    {
+      "id": "M213",
+      "demand": "1/5",
+      "capacity": "1/5",
+      "slack": "0"
+    },
+    {
+      "id": "M214",
+      "demand": "1/5",
+      "capacity": "1/5",
+      "slack": "0"
+    },
+    {
+      "id": "M215",
+      "demand": "1/5",
+      "capacity": "1/5",
+      "slack": "0"
+    },
+    {
+      "id": "M216",
+      "demand": "1/5",
+      "capacity": "1/5",
+      "slack": "0"
+    },
+    {
+      "id": "M217",
+      "demand": "1/5",
+      "capacity": "1/5",
+      "slack": "0"
+    },
+    {
+      "id": "M218",
+      "demand": "3/20",
+      "capacity": "1/5",
+      "slack": "1/20"
+    }
+  ],
+  "product_segments": [
+    {
+      "route": "M213_成品",
+      "all_segments": [
+        {
+          "slot": [
+            "T_7_38",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_7_39",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_7_40",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_7_41",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_8_41",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_9_41",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_10_41",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_11_41",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_12_41",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_13_41",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_14_41",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_15_41",
+            "horizontal"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_16_41",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_16_42",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_16_43",
+            "only"
+          ],
+          "capacity": "1"
+        }
+      ],
+      "planned_rate": "1/5",
+      "completion_rate_upper": "1/5",
+      "burst_closed_interval": "1+floor(s/5)",
+      "output_queue_upper": 2,
+      "to_box_upper": 16,
+      "to_warehouse_upper": 21,
+      "inflight_empty_start_upper": 4,
+      "physical_inflight_upper": 15
+    },
+    {
+      "route": "M214_成品",
+      "all_segments": [
+        {
+          "slot": [
+            "T_18_38",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_18_39",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_18_40",
+            "vertical"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_18_41",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_18_42",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_17_42",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_17_43",
+            "only"
+          ],
+          "capacity": "1"
+        }
+      ],
+      "planned_rate": "1/5",
+      "completion_rate_upper": "1/5",
+      "burst_closed_interval": "1+floor(s/5)",
+      "output_queue_upper": 2,
+      "to_box_upper": 8,
+      "to_warehouse_upper": 13,
+      "inflight_empty_start_upper": 2,
+      "physical_inflight_upper": 7
+    },
+    {
+      "route": "M215_成品",
+      "all_segments": [
+        {
+          "slot": [
+            "T_25_38",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_25_39",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_25_40",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_24_40",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_23_40",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_22_40",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_21_40",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_20_40",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_19_40",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_18_40",
+            "horizontal"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_17_40",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_16_40",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_15_40",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_15_41",
+            "vertical"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_15_42",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_15_43",
+            "only"
+          ],
+          "capacity": "1"
+        }
+      ],
+      "planned_rate": "1/5",
+      "completion_rate_upper": "1/5",
+      "burst_closed_interval": "1+floor(s/5)",
+      "output_queue_upper": 2,
+      "to_box_upper": 17,
+      "to_warehouse_upper": 22,
+      "inflight_empty_start_upper": 4,
+      "physical_inflight_upper": 16
+    },
+    {
+      "route": "M216_成品",
+      "all_segments": [
+        {
+          "slot": [
+            "T_41_38",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_41_39",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_41_40",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_41_41",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_42_41",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_43_41",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_44_41",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_45_41",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_46_41",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_47_41",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_48_41",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_49_41",
+            "horizontal"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_50_41",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_50_42",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_50_43",
+            "only"
+          ],
+          "capacity": "1"
+        }
+      ],
+      "planned_rate": "1/5",
+      "completion_rate_upper": "1/5",
+      "burst_closed_interval": "1+floor(s/5)",
+      "output_queue_upper": 2,
+      "to_box_upper": 16,
+      "to_warehouse_upper": 21,
+      "inflight_empty_start_upper": 4,
+      "physical_inflight_upper": 15
+    },
+    {
+      "route": "M217_成品",
+      "all_segments": [
+        {
+          "slot": [
+            "T_52_38",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_52_39",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_52_40",
+            "vertical"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_52_41",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_52_42",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_51_42",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_51_43",
+            "only"
+          ],
+          "capacity": "1"
+        }
+      ],
+      "planned_rate": "1/5",
+      "completion_rate_upper": "1/5",
+      "burst_closed_interval": "1+floor(s/5)",
+      "output_queue_upper": 2,
+      "to_box_upper": 8,
+      "to_warehouse_upper": 13,
+      "inflight_empty_start_upper": 2,
+      "physical_inflight_upper": 7
+    },
+    {
+      "route": "M218_成品",
+      "all_segments": [
+        {
+          "slot": [
+            "T_59_38",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_59_39",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_59_40",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_58_40",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_57_40",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_56_40",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_55_40",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_54_40",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_53_40",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_52_40",
+            "horizontal"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_51_40",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_50_40",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_49_40",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_49_41",
+            "vertical"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_49_42",
+            "only"
+          ],
+          "capacity": "1"
+        },
+        {
+          "slot": [
+            "T_49_43",
+            "only"
+          ],
+          "capacity": "1"
+        }
+      ],
+      "planned_rate": "3/20",
+      "completion_rate_upper": "1/5",
+      "burst_closed_interval": "1+floor(s/5)",
+      "output_queue_upper": 2,
+      "to_box_upper": 17,
+      "to_warehouse_upper": 22,
+      "inflight_empty_start_upper": 4,
+      "physical_inflight_upper": 16
+    }
+  ],
+  "manifests": [
+    {
+      "manifest": "交付清单.json",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/密排试点.md",
+      "sha256_matches": true,
+      "mtime_matches": null
+    },
+    {
+      "manifest": "交付清单.json",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/密排布局.json",
+      "sha256_matches": true,
+      "mtime_matches": null
+    },
+    {
+      "manifest": "交付清单.json",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/整厂衔接.md",
+      "sha256_matches": true,
+      "mtime_matches": null
+    },
+    {
+      "manifest": "交付清单.json",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/成品输出通路.md",
+      "sha256_matches": true,
+      "mtime_matches": null
+    },
+    {
+      "manifest": "交付清单.json",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/密排/工具与输入核查.json",
+      "sha256_matches": true,
+      "mtime_matches": null
+    },
+    {
+      "manifest": "交付清单.json",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/密排/执行日志.json",
+      "sha256_matches": true,
+      "mtime_matches": null
+    },
+    {
+      "manifest": "交付清单.json",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/密排/核验.py",
+      "sha256_matches": true,
+      "mtime_matches": null
+    },
+    {
+      "manifest": "交付清单.json",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/密排/核验结果.json",
+      "sha256_matches": true,
+      "mtime_matches": null
+    },
+    {
+      "manifest": "交付清单.json",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/密排/桥与供电.json",
+      "sha256_matches": true,
+      "mtime_matches": null
+    },
+    {
+      "manifest": "交付清单.json",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/密排/生成.py",
+      "sha256_matches": true,
+      "mtime_matches": null
+    },
+    {
+      "manifest": "交付清单.json",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/密排/结构化结果.json",
+      "sha256_matches": true,
+      "mtime_matches": null
+    },
+    {
+      "manifest": "交付清单.json",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/密排/自动通道.json",
+      "sha256_matches": true,
+      "mtime_matches": null
+    },
+    {
+      "manifest": "交付清单.json",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/密排/读者自审.md",
+      "sha256_matches": true,
+      "mtime_matches": null
+    },
+    {
+      "manifest": "交付清单.json",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/密排/输入指纹.json",
+      "sha256_matches": true,
+      "mtime_matches": null
+    },
+    {
+      "manifest": "交付清单.json",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/密排/逐单位与路径.md",
+      "sha256_matches": true,
+      "mtime_matches": null
+    },
+    {
+      "manifest": "输入指纹.json",
+      "path": "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+      "sha256_matches": true,
+      "mtime_matches": true
+    },
+    {
+      "manifest": "输入指纹.json",
+      "path": "/home/zhuran24/zmd-research-fresh/求解任务.txt",
+      "sha256_matches": true,
+      "mtime_matches": true
+    },
+    {
+      "manifest": "输入指纹.json",
+      "path": "/home/zhuran24/zmd-research-fresh/求解约束.txt",
+      "sha256_matches": true,
+      "mtime_matches": true
+    },
+    {
+      "manifest": "输入指纹.json",
+      "path": "/home/zhuran24/zmd-research-fresh/候选约束.txt",
+      "sha256_matches": true,
+      "mtime_matches": true
+    },
+    {
+      "manifest": "输入指纹.json",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7草案.md",
+      "sha256_matches": true,
+      "mtime_matches": true
+    },
+    {
+      "manifest": "输入指纹.json",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/主会话三审-0920.md",
+      "sha256_matches": true,
+      "mtime_matches": true
+    },
+    {
+      "manifest": "输入指纹.json",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/会议2成果修订-v46.md",
+      "sha256_matches": true,
+      "mtime_matches": true
+    },
+    {
+      "manifest": "输入指纹.json",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/三种相位不改产量-v2.md",
+      "sha256_matches": true,
+      "mtime_matches": true
+    },
+    {
+      "manifest": "输入指纹.json",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/植物运行试点.md",
+      "sha256_matches": true,
+      "mtime_matches": true
+    },
+    {
+      "manifest": "输入指纹.json",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/送料与接口.json",
+      "sha256_matches": true,
+      "mtime_matches": true
+    },
+    {
+      "manifest": "输入指纹.json",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/调试与释放.md",
+      "sha256_matches": true,
+      "mtime_matches": true
+    },
+    {
+      "manifest": "输入指纹.json",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/调试后状态.json",
+      "sha256_matches": true,
+      "mtime_matches": true
+    },
+    {
+      "manifest": "输入指纹.json",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/相位离线与认证范围.md",
+      "sha256_matches": true,
+      "mtime_matches": true
+    },
+    {
+      "manifest": "输入指纹.json",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/仓库接收与循环对应.md",
+      "sha256_matches": true,
+      "mtime_matches": true
+    },
+    {
+      "manifest": "输入指纹.json",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/复核/否证-任务4.md",
+      "sha256_matches": true,
+      "mtime_matches": true
+    },
+    {
+      "manifest": "输入指纹.json",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/复核/否证-任务5.md",
+      "sha256_matches": true,
+      "mtime_matches": true
+    },
+    {
+      "manifest": "输入指纹.json",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/复核/否证-任务6.md",
+      "sha256_matches": true,
+      "mtime_matches": true
+    },
+    {
+      "manifest": "输入指纹.json",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/局部结构.json",
+      "sha256_matches": true,
+      "mtime_matches": true
+    },
+    {
+      "manifest": "输入指纹.json",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/植物运行/否证逐项处理.json",
+      "sha256_matches": true,
+      "mtime_matches": true
+    }
+  ]
+}

@@ -1,0 +1,141 @@
+[
+  {
+    "name": "ore-shortage",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-规格保真-证据/ore-shortage-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "4",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-规格保真-证据/ore-shortage-record.json"
+    ],
+    "exit_code": 0,
+    "status": "completed",
+    "ticks": 4,
+    "open_items": [
+      "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+      "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+    ],
+    "input_sha256": "c741e0902fd14e17abcdfa2271801b3b16e7d0fdd61f15b8085391e3905b3da6",
+    "record_sha256": "1a3724548b879363d96e79bad6da9122610c759932866d6d8d79f87e8e4fb9d7"
+  },
+  {
+    "name": "offline-wrong-kind",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-规格保真-证据/offline-wrong-kind-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "4",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-规格保真-证据/offline-wrong-kind-record.json"
+    ],
+    "exit_code": 0,
+    "status": "completed",
+    "ticks": 4,
+    "open_items": [
+      "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+      "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+    ],
+    "input_sha256": "7b0bd4623392028706a49bf7e5fbbfb190c3592e986732e2be0c8210c1fbaacd",
+    "record_sha256": "7711df0993a8dad5692283bfee855a6b6b3eaa1d15a78b41f82b757ece494924"
+  },
+  {
+    "name": "offline-control",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-规格保真-证据/offline-control-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "4",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-规格保真-证据/offline-control-record.json"
+    ],
+    "exit_code": 2,
+    "status": "unsupported",
+    "ticks": 1,
+    "open_items": [
+      "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+      "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。",
+      "unsupported offline.events @ review_offline: 运行区间触及未实现后效"
+    ],
+    "input_sha256": "5e5b175fe521441b7577cd89fb46ab5fe7975b36f8ca44d35661877607a9f010",
+    "record_sha256": "057f615d0fd529cec6393376e421251286d599b44106de63f734a6ecfc70f72c"
+  },
+  {
+    "name": "supply-order-conflict",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-规格保真-证据/supply-order-conflict-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "4",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-规格保真-证据/supply-order-conflict-record.json"
+    ],
+    "exit_code": 0,
+    "status": "completed",
+    "ticks": 4,
+    "open_items": [
+      "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+      "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+    ],
+    "input_sha256": "6a2960b5391537be46b552421c7a41a7293b248617f4b055d9d5a6c95f3a40a6",
+    "record_sha256": "2d54352cc9af97029d58c6af31b98c1e2debb14569be494c9b8549ac83432330"
+  },
+  {
+    "name": "pending-historical-alias",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-规格保真-证据/pending-historical-alias-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "1",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-规格保真-证据/pending-historical-alias-record.json"
+    ],
+    "exit_code": 0,
+    "status": "completed",
+    "ticks": 1,
+    "open_items": [
+      "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+      "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+    ],
+    "input_sha256": "6161b7869af8bfa1e20e5d05c5a726a60fa7c857e324061b67ef3fbff83cec23",
+    "record_sha256": "eb464702f216a054e8003ebf28463afbaf999c3693757552cc5a3d4fa32118a0"
+  },
+  {
+    "name": "after-closure-control",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-规格保真-证据/after-closure-control-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "1",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-规格保真-证据/after-closure-control-record.json"
+    ],
+    "exit_code": 0,
+    "status": "completed",
+    "ticks": 1,
+    "open_items": [
+      "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+      "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+    ],
+    "input_sha256": "17f9eae9050a0d172e1db59ac546ba95e9d9d48dc736cd8fe3c5deb7f4ab28d7",
+    "record_sha256": "72577991a101e8a4a69e56b34e74d3d37e4a33ce80057dc691c5b13d9ff44689"
+  }
+]

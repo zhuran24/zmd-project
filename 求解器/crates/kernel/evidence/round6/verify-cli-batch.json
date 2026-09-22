@@ -1,0 +1,130 @@
+{
+  "status": "input_checked",
+  "read_only": true,
+  "records": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/cli/referenced-zero-prefix.record.json",
+      "ticks": 0
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/cli/referenced.record.json",
+      "ticks": 21
+    }
+  ],
+  "cycles": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/cli/continued.json",
+      "verification": {
+        "checks": [
+          "引用原始字节/format/producer和完整来源链",
+          "原种子到达前缀及跨刻事件身份",
+          "独立重建D动态前件及周期账/率/接收域",
+          "从周期起点P次step_tick及完整终态"
+        ],
+        "cycle_replayed": true,
+        "period": 20,
+        "prefix_replayed": 20,
+        "start_time": 20,
+        "status": "input_checked"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/cli/none-relative.json",
+      "verification": {
+        "checks": [
+          "引用原始字节/format/producer和完整来源链",
+          "原种子到达前缀及跨刻事件身份",
+          "独立重建D动态前件及周期账/率/接收域",
+          "从周期起点P次step_tick及完整终态"
+        ],
+        "cycle_replayed": true,
+        "period": 20,
+        "prefix_replayed": 21,
+        "start_time": 0,
+        "status": "input_checked"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/cli/none-zero-prefix.json",
+      "verification": {
+        "cycle_replayed": false,
+        "prefix_replayed": 0,
+        "reason": "原种子前缀及停止/预算位置已复现，无周期",
+        "status": "input_checked"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/cli/none.json",
+      "verification": {
+        "checks": [
+          "引用原始字节/format/producer和完整来源链",
+          "原种子到达前缀及跨刻事件身份",
+          "独立重建D动态前件及周期账/率/接收域",
+          "从周期起点P次step_tick及完整终态"
+        ],
+        "cycle_replayed": true,
+        "period": 20,
+        "prefix_replayed": 21,
+        "start_time": 0,
+        "status": "input_checked"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/cli/overflow.json",
+      "verification": {
+        "cycle_replayed": false,
+        "diagnostic_replayed": true,
+        "reason": "失败输入及依赖指纹已核，复现同一装载停止；无游戏转移或周期",
+        "status": "input_checked"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/cli/referenced-relative.json",
+      "verification": {
+        "checks": [
+          "引用原始字节/format/producer和完整来源链",
+          "原种子到达前缀及跨刻事件身份",
+          "独立重建D动态前件及周期账/率/接收域",
+          "从周期起点P次step_tick及完整终态"
+        ],
+        "cycle_replayed": true,
+        "period": 20,
+        "prefix_replayed": 21,
+        "start_time": 0,
+        "status": "input_checked"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/cli/referenced-zero-prefix.json",
+      "verification": {
+        "cycle_replayed": false,
+        "prefix_replayed": 0,
+        "reason": "原种子前缀及停止/预算位置已复现，无周期",
+        "status": "input_checked"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/cli/referenced.json",
+      "verification": {
+        "checks": [
+          "引用原始字节/format/producer和完整来源链",
+          "原种子到达前缀及跨刻事件身份",
+          "独立重建D动态前件及周期账/率/接收域",
+          "从周期起点P次step_tick及完整终态"
+        ],
+        "cycle_replayed": true,
+        "period": 20,
+        "prefix_replayed": 21,
+        "start_time": 0,
+        "status": "input_checked"
+      }
+    }
+  ],
+  "reference_records": 0,
+  "protected_baseline_files": 12,
+  "historical_records": [],
+  "scope": "全部当前v3记录和v2循环独立验收；历史v1/v2记录仅列出，固定基线另核字节。",
+  "audited_tree_unchanged": true,
+  "checked_file_count": 14,
+  "checked_bytes": 4464820
+}

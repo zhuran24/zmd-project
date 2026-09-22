@@ -1,0 +1,30 @@
+{
+  "status": "PASS",
+  "scope": "迁移前后物理输入逐字段相同；只改轴生命周期、依据与来源；未认证其它读法",
+  "samples": [
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/桥接器双通路.json",
+      "physical_geometry_history_state_unchanged": true,
+      "changed_axis_values": [],
+      "moved_axis": "connection.port_meeting: fixed/F → fixedness_unproven/U",
+      "old_sha256": "5e7bb05bb04de80e198a8b335291f020f166dccb935d683f99e411489bbd76aa",
+      "new_sha256": "cf7038eca4f6077517dad1ed4371146de1a7bdd80d2dccb4a30b8c0c45bafa01"
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询.json",
+      "physical_geometry_history_state_unchanged": true,
+      "changed_axis_values": [],
+      "moved_axis": "connection.port_meeting: fixed/F → fixedness_unproven/U",
+      "old_sha256": "9e6e243c56c4c1d45136921b822e127a79607ced0dcc90673ca6ac1edaba43de",
+      "new_sha256": "9f13351c91a71974a82d28fb54553ba41fb2358360e3cbca5bc90dfcaf4f0ea2"
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json",
+      "physical_geometry_history_state_unchanged": true,
+      "changed_axis_values": [],
+      "moved_axis": "connection.port_meeting: fixed/F → fixedness_unproven/U",
+      "old_sha256": "c7b2c622a5e3979fbdf97e6c90cadf702d45a2e557bab40d3b80cde850924566",
+      "new_sha256": "0da933a812fdd0df4ca6ac3c51b293753a88f435cf637c30c5c1e5d76ffddcb3"
+    }
+  ]
+}

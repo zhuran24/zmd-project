@@ -1,0 +1,29 @@
+{
+  "document": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/三种相位不改产量-v2.md",
+  "document_sha256": "3a24ec8cbc780b867e4c367559eee46636fda9628776007107925298e93f3f12",
+  "document_lines": 250,
+  "sections": [
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5"
+  ],
+  "checked_local_links": 23,
+  "missing_links": [],
+  "input_files_checked": 26,
+  "changed_inputs": [],
+  "dialogue_initial_full_read": {
+    "path": "/tmp/claude-1000/-home-zhuran24-zmd-research-fresh/786b1aaa-8792-43fd-afbc-2a7361543a07/scratchpad/总结/对话-0920-精简.md",
+    "sha256_at_initial_full_read": "ef0dc268fd3c06eaa1ea95fcda41022b2d51cf113ac30a34a4f715f6556efc8a",
+    "lines_at_initial_full_read": 756,
+    "available_now": false,
+    "quoted_owner_records": "owner-quotes.md"
+  },
+  "disallowed_evidence_file_types": [],
+  "author_full_read_audit": "audit.md",
+  "independent_v2_review": false,
+  "whole_layout_certified": false,
+  "kernel_run": false
+}

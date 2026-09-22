@@ -1,0 +1,265 @@
+{
+  "delivery": {
+    "count": 50,
+    "mismatches": []
+  },
+  "sources": {
+    "count": 16,
+    "mismatches": []
+  },
+  "readonly": {
+    "count": 4,
+    "mismatches": []
+  },
+  "dependencies": {
+    "count": 37,
+    "mismatches": []
+  },
+  "catalog_contract_unchanged": {
+    "count": 3,
+    "mismatches": []
+  },
+  "review_snapshot": {
+    "count": 55,
+    "mismatches": []
+  },
+  "黄金轨迹运行记录.json": {
+    "status": "completed",
+    "producer": {
+      "kind": "bounded_reference_checker",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/check_golden_trace.py",
+      "claim": "有限重算，与手工黄金摘要比较；不是 Rust 内核结果"
+    },
+    "validation_scope": {
+      "kind": "finite_trace",
+      "from": {
+        "kind": "rational",
+        "value": {
+          "value": "0",
+          "category": "候选"
+        }
+      },
+      "through": {
+        "kind": "rational",
+        "value": {
+          "value": "3",
+          "category": "候选"
+        }
+      },
+      "golden_match": true,
+      "initial_history": "conditional_witness",
+      "universal_parameters": false,
+      "all_reachable_cycles": false,
+      "target_certified": false,
+      "manufacturing_cycles_completed": {
+        "value": "2",
+        "category": "算术推论"
+      }
+    },
+    "open_items": [
+      "未覆盖实际混做与下游生产",
+      "未覆盖离线、其它初态与判定顺序",
+      "有限重算不替代全部可达循环和完整目标认证"
+    ],
+    "fingerprints": {
+      "count": 14,
+      "mismatches": []
+    },
+    "parameters": {
+      "axis_registry": 2,
+      "fixed": 15,
+      "offline_mutable": 2,
+      "fixedness_unproven": 79
+    },
+    "uncovered_axes": 84,
+    "summaries": [
+      {
+        "tick": "0",
+        "warehouse_ore": "79999",
+        "nonempty": {
+          "feed_belt:transport:0": [
+            {
+              "item": "源矿",
+              "quantity": "1",
+              "entered_at": "0"
+            }
+          ]
+        },
+        "crusher_phase": "idle",
+        "crusher_remaining": null,
+        "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+        "completed_batches": "0"
+      },
+      {
+        "tick": "1",
+        "warehouse_ore": "79998",
+        "nonempty": {
+          "crusher:buffer:0": [
+            {
+              "item": "源矿",
+              "quantity": "1",
+              "entered_at": "1"
+            }
+          ],
+          "feed_belt:transport:0": [
+            {
+              "item": "源矿",
+              "quantity": "1",
+              "entered_at": "1"
+            }
+          ]
+        },
+        "crusher_phase": "working",
+        "crusher_remaining": "1",
+        "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+        "completed_batches": "0"
+      },
+      {
+        "tick": "2",
+        "warehouse_ore": "79997",
+        "nonempty": {
+          "crusher:buffer:0": [
+            {
+              "item": "源矿",
+              "quantity": "1",
+              "entered_at": "2"
+            }
+          ],
+          "feed_belt:transport:0": [
+            {
+              "item": "源矿",
+              "quantity": "1",
+              "entered_at": "2"
+            }
+          ],
+          "belt_a0:transport:0": [
+            {
+              "item": "源石粉末",
+              "quantity": "1",
+              "entered_at": "2"
+            }
+          ]
+        },
+        "crusher_phase": "working",
+        "crusher_remaining": "1",
+        "crusher_next_output": "PC|crusher:north:2|belt_b0:south:0",
+        "completed_batches": "1"
+      },
+      {
+        "tick": "3",
+        "warehouse_ore": "79996",
+        "nonempty": {
+          "crusher:buffer:0": [
+            {
+              "item": "源矿",
+              "quantity": "1",
+              "entered_at": "3"
+            }
+          ],
+          "feed_belt:transport:0": [
+            {
+              "item": "源矿",
+              "quantity": "1",
+              "entered_at": "3"
+            }
+          ],
+          "belt_a1:transport:0": [
+            {
+              "item": "源石粉末",
+              "quantity": "1",
+              "entered_at": "3"
+            }
+          ],
+          "belt_b0:transport:0": [
+            {
+              "item": "源石粉末",
+              "quantity": "1",
+              "entered_at": "3"
+            }
+          ]
+        },
+        "crusher_phase": "working",
+        "crusher_remaining": "1",
+        "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+        "completed_batches": "2"
+      }
+    ],
+    "event_counts": [
+      28,
+      42,
+      43,
+      43
+    ],
+    "production_copy_byte_equal": true
+  },
+  "运行输入回归结果.json": {
+    "status": "通过",
+    "tests": 17,
+    "bounds": "仅0–3 tick；无全称或完整目标认证",
+    "production_copy_byte_equal": true
+  },
+  "baseline-cargo-gate.log": {
+    "test_results": [
+      "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s",
+      "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+      "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 29 filtered out; finished in 0.04s"
+    ],
+    "diagnostics": []
+  },
+  "core_port_category-cargo-gate.log": {
+    "test_results": [
+      "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s",
+      "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+      "test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 29 filtered out; finished in 0.04s"
+    ],
+    "diagnostics": [
+      "目录回源失败：units.协议核心.ports.input_count.category 与正式来源投影不一致：'候选' / '条文直引'"
+    ]
+  },
+  "power_coverage_width-cargo-gate.log": {
+    "test_results": [
+      "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s",
+      "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+      "test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 29 filtered out; finished in 0.04s"
+    ],
+    "diagnostics": [
+      "目录回源失败：units.供电桩.coverage.width.value 与正式来源投影不一致：'13' / '12'"
+    ]
+  },
+  "restored-cargo-gate.log": {
+    "test_results": [
+      "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s",
+      "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+      "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 29 filtered out; finished in 0.04s"
+    ],
+    "diagnostics": []
+  },
+  "unused_recipe_duration-cargo-gate.log": {
+    "test_results": [
+      "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s",
+      "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+      "test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 29 filtered out; finished in 0.04s"
+    ],
+    "diagnostics": [
+      "目录回源失败：recipes.精炼-蓝铁粉末.duration.value 与正式来源投影不一致：'2' / '1'"
+    ]
+  },
+  "used_recipe_input-cargo-gate.log": {
+    "test_results": [
+      "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s",
+      "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+      "test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 29 filtered out; finished in 0.04s"
+    ],
+    "diagnostics": [
+      "目录回源失败：recipes.研磨-致密蓝铁.inputs.蓝铁粉末.value 与正式来源投影不一致：'3' / '2'"
+    ]
+  },
+  "契约自查.log": {
+    "status": "通过"
+  },
+  "样例检查.log": {
+    "status": "通过",
+    "tests": 19,
+    "representations": 8
+  }
+}

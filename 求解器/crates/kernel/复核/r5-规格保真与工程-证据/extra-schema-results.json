@@ -1,0 +1,22 @@
+[
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r5-规格保真与工程-证据/relative-package/record.json",
+    "valid": true,
+    "errors": null
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r5-规格保真与工程-证据/relative-package/certificate.json",
+    "valid": true,
+    "errors": null
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r5-规格保真与工程-证据/checkpoint-delta-record.json",
+    "valid": true,
+    "errors": null
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r5-规格保真与工程-证据/delta-resumed-record.json",
+    "valid": true,
+    "errors": null
+  }
+]

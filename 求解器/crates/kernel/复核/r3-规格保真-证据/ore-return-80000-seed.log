@@ -1,0 +1,18 @@
+{
+  "name": "ore-return-80000-seed",
+  "command": [
+    "/home/zhuran24/zmd-research-fresh/求解器/target/debug/kernel",
+    "seed",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/ore-return-80000-input.json",
+    "--config",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+    "--out",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/ore-return-80000-seed.json"
+  ],
+  "exit_code": 0,
+  "status": null,
+  "schema": "kernel-input-v3",
+  "open_items": null,
+  "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/ore-return-80000-seed.json\",\"status\":null}\n",
+  "stderr": ""
+}

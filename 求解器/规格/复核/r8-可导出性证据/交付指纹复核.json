@@ -1,0 +1,167 @@
+[
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/check_revision.py",
+    "sha256_matches": true,
+    "bytes_matches": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/修订记录.md",
+    "sha256_matches": true,
+    "bytes_matches": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入-修订记录.md",
+    "sha256_matches": true,
+    "bytes_matches": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入-对参数轴的修改请求.md",
+    "sha256_matches": true,
+    "bytes_matches": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md",
+    "sha256_matches": true,
+    "bytes_matches": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.md",
+    "sha256_matches": true,
+    "bytes_matches": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.schema.json",
+    "sha256_matches": true,
+    "bytes_matches": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+    "sha256_matches": true,
+    "bytes_matches": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/参数轴-对内核输入请求的答复.md",
+    "sha256_matches": true,
+    "bytes_matches": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限模型声明.md",
+    "sha256_matches": true,
+    "bytes_matches": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md",
+    "sha256_matches": true,
+    "bytes_matches": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/四件前置义务对照.md",
+    "sha256_matches": true,
+    "bytes_matches": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/对内核的修改请求.md",
+    "sha256_matches": true,
+    "bytes_matches": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/普遍审查场景.md",
+    "sha256_matches": true,
+    "bytes_matches": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订/StateSeed字段清点.json",
+    "sha256_matches": true,
+    "bytes_matches": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订/build_schema.py",
+    "sha256_matches": true,
+    "bytes_matches": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订/check_round5.py",
+    "sha256_matches": true,
+    "bytes_matches": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订/cycle_key_reference.py",
+    "sha256_matches": true,
+    "bytes_matches": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订/schema生成.log",
+    "sha256_matches": true,
+    "bytes_matches": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订/开工只读指纹.json",
+    "sha256_matches": true,
+    "bytes_matches": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订/开工规格指纹.json",
+    "sha256_matches": true,
+    "bytes_matches": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订/提升容量卡点.json",
+    "sha256_matches": true,
+    "bytes_matches": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订/既有自查.log",
+    "sha256_matches": true,
+    "bytes_matches": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订/自查.log",
+    "sha256_matches": true,
+    "bytes_matches": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订/自查报告.md",
+    "sha256_matches": true,
+    "bytes_matches": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订/自查结果.json",
+    "sha256_matches": true,
+    "bytes_matches": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订/轮询均分局部推演.json",
+    "sha256_matches": true,
+    "bytes_matches": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订/运行记录v2基线.schema.json",
+    "sha256_matches": true,
+    "bytes_matches": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第四轮前置-疑问记录.md",
+    "sha256_matches": true,
+    "bytes_matches": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/规则覆盖表.md",
+    "sha256_matches": true,
+    "bytes_matches": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/运行语义.md",
+    "sha256_matches": true,
+    "bytes_matches": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+    "sha256_matches": true,
+    "bytes_matches": true
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点清单.md",
+    "sha256_matches": true,
+    "bytes_matches": true
+  }
+]

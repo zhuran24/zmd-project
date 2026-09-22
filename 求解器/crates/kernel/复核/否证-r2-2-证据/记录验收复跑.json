@@ -1,0 +1,1098 @@
+[
+  {
+    "case": "有效对照",
+    "sample": "混做粉碎机两下游",
+    "format": "运行记录-kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-kernel.json",
+    "python_report": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-kernel.json",
+      "ticks": 4,
+      "events": 156,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 41,
+        "exercised": 26,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "bee5c2aa24ad8ea31827a2dbe86a26a20cbf8c37483a1973eecff80f00d6958c"
+    },
+    "python_accepted": true,
+    "rust_exit": 0,
+    "rust_report": {
+      "verify": {
+        "Ok": null
+      }
+    }
+  },
+  {
+    "case": "L2-unknown_axis",
+    "sample": "混做粉碎机两下游",
+    "format": "运行记录-kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/混做粉碎机两下游-运行记录-kernel-unknown_axis.json",
+    "python_report": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/混做粉碎机两下游-运行记录-kernel-unknown_axis.json",
+      "ticks": 4,
+      "events": 156,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 41,
+        "exercised": 26,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "1c35f9ba37174530f7a5879aa82480b977583b5a616bce5b720dabb0b2b13b29"
+    },
+    "python_accepted": true,
+    "rust_exit": 0,
+    "rust_report": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "case": "L2-fabricated_exercised",
+    "sample": "混做粉碎机两下游",
+    "format": "运行记录-kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/混做粉碎机两下游-运行记录-kernel-fabricated_exercised.json",
+    "python_report": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/混做粉碎机两下游-运行记录-kernel-fabricated_exercised.json",
+      "ticks": 4,
+      "events": 156,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 40,
+        "exercised": 27,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "89c47596dfd4947ea26d48e2cbff1afd5af074f566fe022c7151fa796d7d3880"
+    },
+    "python_accepted": true,
+    "rust_exit": 0,
+    "rust_report": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "case": "L2-wrong_disposition",
+    "sample": "混做粉碎机两下游",
+    "format": "运行记录-kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/混做粉碎机两下游-运行记录-kernel-wrong_disposition.json",
+    "python_report": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/混做粉碎机两下游-运行记录-kernel-wrong_disposition.json",
+      "ticks": 4,
+      "events": 156,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 41,
+        "exercised": 26,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "abdc53e56e3e0a5126cde3ef96665be83834d82601916d96001541c093d47192"
+    },
+    "python_accepted": true,
+    "rust_exit": 0,
+    "rust_report": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "case": "L2-missing_evidence",
+    "sample": "混做粉碎机两下游",
+    "format": "运行记录-kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/混做粉碎机两下游-运行记录-kernel-missing_evidence.json",
+    "python_report": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/混做粉碎机两下游-运行记录-kernel-missing_evidence.json",
+      "ticks": 4,
+      "events": 156,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 41,
+        "exercised": 26,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "12476505e9ffc0b68c1d3d2c5de288da46659d7fced7c98fa5df973180abda96"
+    },
+    "python_accepted": true,
+    "rust_exit": 0,
+    "rust_report": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "case": "L2-wrong_profile",
+    "sample": "混做粉碎机两下游",
+    "format": "运行记录-kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/混做粉碎机两下游-运行记录-kernel-wrong_profile.json",
+    "python_report": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/混做粉碎机两下游-运行记录-kernel-wrong_profile.json",
+      "ticks": 4,
+      "events": 156,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 41,
+        "exercised": 26,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "6b7b1fd6ca45984ead63d891c8db4d3a38beeb7aa80aab43e7cac7d80ddf5e92"
+    },
+    "python_accepted": true,
+    "rust_exit": 0,
+    "rust_report": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "case": "L2-wrong_producer_path",
+    "sample": "混做粉碎机两下游",
+    "format": "运行记录-kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/混做粉碎机两下游-运行记录-kernel-wrong_producer_path.json",
+    "python_report": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/混做粉碎机两下游-运行记录-kernel-wrong_producer_path.json",
+      "ticks": 4,
+      "events": 156,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 41,
+        "exercised": 26,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "07ac91b6b03707a541cd1ebbb0401d784e94f3534a5de955c2248498287d00a6"
+    },
+    "python_accepted": true,
+    "rust_exit": 0,
+    "rust_report": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "case": "L2-bad_summary_control",
+    "sample": "混做粉碎机两下游",
+    "format": "运行记录-kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/混做粉碎机两下游-运行记录-kernel-bad_summary_control.json",
+    "python_accepted": false,
+    "python_error": "AssertionError(PosixPath('/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/混做粉碎机两下游-运行记录-kernel-bad_summary_control.json'))",
+    "rust_exit": 0,
+    "rust_report": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "case": "L3-coverage_fake_axis",
+    "sample": "混做粉碎机两下游",
+    "format": "运行记录-kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/混做粉碎机两下游-运行记录-kernel-coverage_fake_axis.json",
+    "python_report": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/混做粉碎机两下游-运行记录-kernel-coverage_fake_axis.json",
+      "ticks": 4,
+      "events": 156,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 41,
+        "exercised": 26,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "6b36fd7fba31422463564ee475a89d6682700c2ec804aca8dbc6c90b49f41063"
+    },
+    "python_accepted": true,
+    "rust_exit": 0,
+    "rust_report": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "case": "L3-coverage_fake_evidence",
+    "sample": "混做粉碎机两下游",
+    "format": "运行记录-kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/混做粉碎机两下游-运行记录-kernel-coverage_fake_evidence.json",
+    "python_report": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/混做粉碎机两下游-运行记录-kernel-coverage_fake_evidence.json",
+      "ticks": 4,
+      "events": 156,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 41,
+        "exercised": 26,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "9db140ee5568bc9789c871750df0aa450ba93e2bd290c70d2318c333a2296b1f"
+    },
+    "python_accepted": true,
+    "rust_exit": 0,
+    "rust_report": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "case": "L3-coverage_fake_transfer",
+    "sample": "混做粉碎机两下游",
+    "format": "运行记录-kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/混做粉碎机两下游-运行记录-kernel-coverage_fake_transfer.json",
+    "python_report": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/混做粉碎机两下游-运行记录-kernel-coverage_fake_transfer.json",
+      "ticks": 4,
+      "events": 156,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 40,
+        "exercised": 27,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "316f7a08fe10e25ec041e1cdb15629b360cf92b660708c4333e3a89b66f72b01"
+    },
+    "python_accepted": true,
+    "rust_exit": 0,
+    "rust_report": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "case": "有效对照",
+    "sample": "混做粉碎机两下游",
+    "format": "运行记录-checkpoint_delta-kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-checkpoint_delta-kernel.json",
+    "python_report": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-checkpoint_delta-kernel.json",
+      "ticks": 4,
+      "events": 156,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 41,
+        "exercised": 26,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "24df3b9a94e29113b03ac5984cd96a86d9ec94980e4a136dc0d563e7793edf0b"
+    },
+    "python_accepted": true,
+    "rust_exit": 0,
+    "rust_report": {
+      "verify": {
+        "Ok": null
+      }
+    }
+  },
+  {
+    "case": "L2-unknown_axis",
+    "sample": "混做粉碎机两下游",
+    "format": "运行记录-checkpoint_delta-kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/混做粉碎机两下游-运行记录-checkpoint_delta-kernel-unknown_axis.json",
+    "python_report": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/混做粉碎机两下游-运行记录-checkpoint_delta-kernel-unknown_axis.json",
+      "ticks": 4,
+      "events": 156,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 41,
+        "exercised": 26,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "d1ef0dff18e46e50839e4ddd944ee54048fe16758de7066dcf99de028b55bfc7"
+    },
+    "python_accepted": true,
+    "rust_exit": 0,
+    "rust_report": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "case": "L2-fabricated_exercised",
+    "sample": "混做粉碎机两下游",
+    "format": "运行记录-checkpoint_delta-kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/混做粉碎机两下游-运行记录-checkpoint_delta-kernel-fabricated_exercised.json",
+    "python_report": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/混做粉碎机两下游-运行记录-checkpoint_delta-kernel-fabricated_exercised.json",
+      "ticks": 4,
+      "events": 156,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 40,
+        "exercised": 27,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "3527d6c2788880d4fd25d00913ec1247536a65a708c7c62e5d9d41a99d71335b"
+    },
+    "python_accepted": true,
+    "rust_exit": 0,
+    "rust_report": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "case": "L2-wrong_disposition",
+    "sample": "混做粉碎机两下游",
+    "format": "运行记录-checkpoint_delta-kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/混做粉碎机两下游-运行记录-checkpoint_delta-kernel-wrong_disposition.json",
+    "python_report": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/混做粉碎机两下游-运行记录-checkpoint_delta-kernel-wrong_disposition.json",
+      "ticks": 4,
+      "events": 156,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 41,
+        "exercised": 26,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "92c0debf2356db616b36271e413464a160781d5806297bae64edbe42e2ea0cd6"
+    },
+    "python_accepted": true,
+    "rust_exit": 0,
+    "rust_report": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "case": "L2-missing_evidence",
+    "sample": "混做粉碎机两下游",
+    "format": "运行记录-checkpoint_delta-kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/混做粉碎机两下游-运行记录-checkpoint_delta-kernel-missing_evidence.json",
+    "python_report": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/混做粉碎机两下游-运行记录-checkpoint_delta-kernel-missing_evidence.json",
+      "ticks": 4,
+      "events": 156,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 41,
+        "exercised": 26,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "e69c653780c1a5b6b8705f426edad097c6156e3cb649fca417b0e0e93067a70e"
+    },
+    "python_accepted": true,
+    "rust_exit": 0,
+    "rust_report": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "case": "L2-wrong_profile",
+    "sample": "混做粉碎机两下游",
+    "format": "运行记录-checkpoint_delta-kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/混做粉碎机两下游-运行记录-checkpoint_delta-kernel-wrong_profile.json",
+    "python_report": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/混做粉碎机两下游-运行记录-checkpoint_delta-kernel-wrong_profile.json",
+      "ticks": 4,
+      "events": 156,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 41,
+        "exercised": 26,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "9acefa1f7b7927ae59decaef5b9e3b6e0e51fe0df5686308d5865c3d5ea6c2e3"
+    },
+    "python_accepted": true,
+    "rust_exit": 0,
+    "rust_report": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "case": "L2-wrong_producer_path",
+    "sample": "混做粉碎机两下游",
+    "format": "运行记录-checkpoint_delta-kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/混做粉碎机两下游-运行记录-checkpoint_delta-kernel-wrong_producer_path.json",
+    "python_report": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/混做粉碎机两下游-运行记录-checkpoint_delta-kernel-wrong_producer_path.json",
+      "ticks": 4,
+      "events": 156,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 41,
+        "exercised": 26,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "778088f308eceb0813f39e7076099a00894aea8a3307ac77f19ad287f204a60e"
+    },
+    "python_accepted": true,
+    "rust_exit": 0,
+    "rust_report": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "case": "L2-bad_summary_control",
+    "sample": "混做粉碎机两下游",
+    "format": "运行记录-checkpoint_delta-kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/混做粉碎机两下游-运行记录-checkpoint_delta-kernel-bad_summary_control.json",
+    "python_accepted": false,
+    "python_error": "AssertionError(PosixPath('/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/混做粉碎机两下游-运行记录-checkpoint_delta-kernel-bad_summary_control.json'))",
+    "rust_exit": 0,
+    "rust_report": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "case": "L3-coverage_fake_axis",
+    "sample": "混做粉碎机两下游",
+    "format": "运行记录-checkpoint_delta-kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/混做粉碎机两下游-运行记录-checkpoint_delta-kernel-coverage_fake_axis.json",
+    "python_report": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/混做粉碎机两下游-运行记录-checkpoint_delta-kernel-coverage_fake_axis.json",
+      "ticks": 4,
+      "events": 156,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 41,
+        "exercised": 26,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "2219e8f8947e75973b63051c69bb7d81f4be7f78fc052a152f8b9d4237f28a8d"
+    },
+    "python_accepted": true,
+    "rust_exit": 0,
+    "rust_report": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "case": "L3-coverage_fake_evidence",
+    "sample": "混做粉碎机两下游",
+    "format": "运行记录-checkpoint_delta-kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/混做粉碎机两下游-运行记录-checkpoint_delta-kernel-coverage_fake_evidence.json",
+    "python_report": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/混做粉碎机两下游-运行记录-checkpoint_delta-kernel-coverage_fake_evidence.json",
+      "ticks": 4,
+      "events": 156,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 41,
+        "exercised": 26,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "7f137b604ce8b3a5534fde3c7afa5c691dd43d5ccd318191deb40d6df8c25a35"
+    },
+    "python_accepted": true,
+    "rust_exit": 0,
+    "rust_report": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "case": "L3-coverage_fake_transfer",
+    "sample": "混做粉碎机两下游",
+    "format": "运行记录-checkpoint_delta-kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/混做粉碎机两下游-运行记录-checkpoint_delta-kernel-coverage_fake_transfer.json",
+    "python_report": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/混做粉碎机两下游-运行记录-checkpoint_delta-kernel-coverage_fake_transfer.json",
+      "ticks": 4,
+      "events": 156,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 40,
+        "exercised": 27,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "d83733f80d7b2e90296e3e15842f35753a72984ea32afc4bde1439d3f8de378b"
+    },
+    "python_accepted": true,
+    "rust_exit": 0,
+    "rust_report": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "case": "有效对照",
+    "sample": "分流器三路轮询",
+    "format": "运行记录-kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-kernel.json",
+    "python_report": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-kernel.json",
+      "ticks": 12,
+      "events": 794,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 44,
+        "exercised": 23,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "692859d0beae1e1dc96b6213c24c18be2b6c47be5b1aa0e7622bb76bd3cf3921"
+    },
+    "python_accepted": true,
+    "rust_exit": 0,
+    "rust_report": {
+      "verify": {
+        "Ok": null
+      }
+    }
+  },
+  {
+    "case": "L2-unknown_axis",
+    "sample": "分流器三路轮询",
+    "format": "运行记录-kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/分流器三路轮询-运行记录-kernel-unknown_axis.json",
+    "python_report": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/分流器三路轮询-运行记录-kernel-unknown_axis.json",
+      "ticks": 12,
+      "events": 794,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 44,
+        "exercised": 23,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "703c6ff7ca7f62e93476b6d2d7d5a8c50d7514299a38108a64eb4d8b1ac23b77"
+    },
+    "python_accepted": true,
+    "rust_exit": 0,
+    "rust_report": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "case": "L2-fabricated_exercised",
+    "sample": "分流器三路轮询",
+    "format": "运行记录-kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/分流器三路轮询-运行记录-kernel-fabricated_exercised.json",
+    "python_report": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/分流器三路轮询-运行记录-kernel-fabricated_exercised.json",
+      "ticks": 12,
+      "events": 794,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 43,
+        "exercised": 24,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "01d858a43ee1ec3a1e291b647aa6b53f717b2eb4aa4fe0a947c5478642f0b9e0"
+    },
+    "python_accepted": true,
+    "rust_exit": 0,
+    "rust_report": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "case": "L2-wrong_disposition",
+    "sample": "分流器三路轮询",
+    "format": "运行记录-kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/分流器三路轮询-运行记录-kernel-wrong_disposition.json",
+    "python_report": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/分流器三路轮询-运行记录-kernel-wrong_disposition.json",
+      "ticks": 12,
+      "events": 794,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 44,
+        "exercised": 23,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "f6cda9c09b8a531f0d73923f5154f161d7b08399ebcf012258b8522413db4ecd"
+    },
+    "python_accepted": true,
+    "rust_exit": 0,
+    "rust_report": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "case": "L2-missing_evidence",
+    "sample": "分流器三路轮询",
+    "format": "运行记录-kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/分流器三路轮询-运行记录-kernel-missing_evidence.json",
+    "python_report": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/分流器三路轮询-运行记录-kernel-missing_evidence.json",
+      "ticks": 12,
+      "events": 794,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 44,
+        "exercised": 23,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "e3403cd89f94826b966f00d24301f6e40bdb86bfc75145c21ba884ca5dde0d26"
+    },
+    "python_accepted": true,
+    "rust_exit": 0,
+    "rust_report": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "case": "L2-wrong_profile",
+    "sample": "分流器三路轮询",
+    "format": "运行记录-kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/分流器三路轮询-运行记录-kernel-wrong_profile.json",
+    "python_report": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/分流器三路轮询-运行记录-kernel-wrong_profile.json",
+      "ticks": 12,
+      "events": 794,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 44,
+        "exercised": 23,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "7af220fc4b23373cd41e2bd4d6a0c923707b0114fe035006620e72fd5a8587a8"
+    },
+    "python_accepted": true,
+    "rust_exit": 0,
+    "rust_report": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "case": "L2-wrong_producer_path",
+    "sample": "分流器三路轮询",
+    "format": "运行记录-kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/分流器三路轮询-运行记录-kernel-wrong_producer_path.json",
+    "python_report": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/分流器三路轮询-运行记录-kernel-wrong_producer_path.json",
+      "ticks": 12,
+      "events": 794,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 44,
+        "exercised": 23,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "125326e9818041ed4b2869032033868dcb456b8e8cc7e9993c3cf5b4457cabef"
+    },
+    "python_accepted": true,
+    "rust_exit": 0,
+    "rust_report": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "case": "L2-bad_summary_control",
+    "sample": "分流器三路轮询",
+    "format": "运行记录-kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/分流器三路轮询-运行记录-kernel-bad_summary_control.json",
+    "python_accepted": false,
+    "python_error": "AssertionError(PosixPath('/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/分流器三路轮询-运行记录-kernel-bad_summary_control.json'))",
+    "rust_exit": 0,
+    "rust_report": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "case": "L3-coverage_fake_axis",
+    "sample": "分流器三路轮询",
+    "format": "运行记录-kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/分流器三路轮询-运行记录-kernel-coverage_fake_axis.json",
+    "python_report": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/分流器三路轮询-运行记录-kernel-coverage_fake_axis.json",
+      "ticks": 12,
+      "events": 794,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 44,
+        "exercised": 23,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "acd5f45f36cbd01ca6a7fad5a93dcc8e1245164a3b5703e42bc4d64f634fb8a5"
+    },
+    "python_accepted": true,
+    "rust_exit": 0,
+    "rust_report": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "case": "L3-coverage_fake_evidence",
+    "sample": "分流器三路轮询",
+    "format": "运行记录-kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/分流器三路轮询-运行记录-kernel-coverage_fake_evidence.json",
+    "python_report": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/分流器三路轮询-运行记录-kernel-coverage_fake_evidence.json",
+      "ticks": 12,
+      "events": 794,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 44,
+        "exercised": 23,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "f0fd997db22720ade4be048e88459996c8df0102a711a3894e9caebd2fcd3ab3"
+    },
+    "python_accepted": true,
+    "rust_exit": 0,
+    "rust_report": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "case": "L3-coverage_fake_transfer",
+    "sample": "分流器三路轮询",
+    "format": "运行记录-kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/分流器三路轮询-运行记录-kernel-coverage_fake_transfer.json",
+    "python_report": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/分流器三路轮询-运行记录-kernel-coverage_fake_transfer.json",
+      "ticks": 12,
+      "events": 794,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 43,
+        "exercised": 24,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "b52f6eb45785bc2811c73fbabba79c2f74010db53a5bebf20ae10047ad2f83f3"
+    },
+    "python_accepted": true,
+    "rust_exit": 0,
+    "rust_report": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "case": "有效对照",
+    "sample": "分流器三路轮询",
+    "format": "运行记录-checkpoint_delta-kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-checkpoint_delta-kernel.json",
+    "python_report": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-checkpoint_delta-kernel.json",
+      "ticks": 12,
+      "events": 794,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 44,
+        "exercised": 23,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "b081795b21f4635c677ac6e7dcda5e83a6fd87ccb3610fba396ba3833f876137"
+    },
+    "python_accepted": true,
+    "rust_exit": 0,
+    "rust_report": {
+      "verify": {
+        "Ok": null
+      }
+    }
+  },
+  {
+    "case": "L2-unknown_axis",
+    "sample": "分流器三路轮询",
+    "format": "运行记录-checkpoint_delta-kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/分流器三路轮询-运行记录-checkpoint_delta-kernel-unknown_axis.json",
+    "python_report": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/分流器三路轮询-运行记录-checkpoint_delta-kernel-unknown_axis.json",
+      "ticks": 12,
+      "events": 794,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 44,
+        "exercised": 23,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "e0837e12e387c4d33786df367f2f05d0f88613c57cc039e6cb9341326b4a840d"
+    },
+    "python_accepted": true,
+    "rust_exit": 0,
+    "rust_report": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "case": "L2-fabricated_exercised",
+    "sample": "分流器三路轮询",
+    "format": "运行记录-checkpoint_delta-kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/分流器三路轮询-运行记录-checkpoint_delta-kernel-fabricated_exercised.json",
+    "python_report": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/分流器三路轮询-运行记录-checkpoint_delta-kernel-fabricated_exercised.json",
+      "ticks": 12,
+      "events": 794,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 43,
+        "exercised": 24,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "640fa5bb2fcb2f724c2ea7a56170760110a725d545b86802f87af1096e0ad450"
+    },
+    "python_accepted": true,
+    "rust_exit": 0,
+    "rust_report": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "case": "L2-wrong_disposition",
+    "sample": "分流器三路轮询",
+    "format": "运行记录-checkpoint_delta-kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/分流器三路轮询-运行记录-checkpoint_delta-kernel-wrong_disposition.json",
+    "python_report": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/分流器三路轮询-运行记录-checkpoint_delta-kernel-wrong_disposition.json",
+      "ticks": 12,
+      "events": 794,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 44,
+        "exercised": 23,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "c3e58c3cd3107ad0e1c8b7f2a216c7235f44011289525d21c273500e49ccf7ae"
+    },
+    "python_accepted": true,
+    "rust_exit": 0,
+    "rust_report": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "case": "L2-missing_evidence",
+    "sample": "分流器三路轮询",
+    "format": "运行记录-checkpoint_delta-kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/分流器三路轮询-运行记录-checkpoint_delta-kernel-missing_evidence.json",
+    "python_report": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/分流器三路轮询-运行记录-checkpoint_delta-kernel-missing_evidence.json",
+      "ticks": 12,
+      "events": 794,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 44,
+        "exercised": 23,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "5b72cf95af0cd95129fd99a254c2e806a1a16a6508a8298c40f56dee346b38ba"
+    },
+    "python_accepted": true,
+    "rust_exit": 0,
+    "rust_report": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "case": "L2-wrong_profile",
+    "sample": "分流器三路轮询",
+    "format": "运行记录-checkpoint_delta-kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/分流器三路轮询-运行记录-checkpoint_delta-kernel-wrong_profile.json",
+    "python_report": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/分流器三路轮询-运行记录-checkpoint_delta-kernel-wrong_profile.json",
+      "ticks": 12,
+      "events": 794,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 44,
+        "exercised": 23,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "f5a0bba06a2b0d1ef7cad9e09608707998c634708c85e60af808c4aa6f58c9f5"
+    },
+    "python_accepted": true,
+    "rust_exit": 0,
+    "rust_report": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "case": "L2-wrong_producer_path",
+    "sample": "分流器三路轮询",
+    "format": "运行记录-checkpoint_delta-kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/分流器三路轮询-运行记录-checkpoint_delta-kernel-wrong_producer_path.json",
+    "python_report": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/分流器三路轮询-运行记录-checkpoint_delta-kernel-wrong_producer_path.json",
+      "ticks": 12,
+      "events": 794,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 44,
+        "exercised": 23,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "62bcf10352f389cdcdbecc5ba4c84535f3d4ae98aa84855503559ba283773372"
+    },
+    "python_accepted": true,
+    "rust_exit": 0,
+    "rust_report": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "case": "L2-bad_summary_control",
+    "sample": "分流器三路轮询",
+    "format": "运行记录-checkpoint_delta-kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/分流器三路轮询-运行记录-checkpoint_delta-kernel-bad_summary_control.json",
+    "python_accepted": false,
+    "python_error": "AssertionError(PosixPath('/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-测试与证据/分流器三路轮询-运行记录-checkpoint_delta-kernel-bad_summary_control.json'))",
+    "rust_exit": 0,
+    "rust_report": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "case": "L3-coverage_fake_axis",
+    "sample": "分流器三路轮询",
+    "format": "运行记录-checkpoint_delta-kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/分流器三路轮询-运行记录-checkpoint_delta-kernel-coverage_fake_axis.json",
+    "python_report": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/分流器三路轮询-运行记录-checkpoint_delta-kernel-coverage_fake_axis.json",
+      "ticks": 12,
+      "events": 794,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 44,
+        "exercised": 23,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "7e632bb454f93a8ab407921d14e291734a80ce9234661aff4a6e2f40e7225b95"
+    },
+    "python_accepted": true,
+    "rust_exit": 0,
+    "rust_report": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "case": "L3-coverage_fake_evidence",
+    "sample": "分流器三路轮询",
+    "format": "运行记录-checkpoint_delta-kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/分流器三路轮询-运行记录-checkpoint_delta-kernel-coverage_fake_evidence.json",
+    "python_report": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/分流器三路轮询-运行记录-checkpoint_delta-kernel-coverage_fake_evidence.json",
+      "ticks": 12,
+      "events": 794,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 44,
+        "exercised": 23,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "93c692b7eec3cbdd75fbfc24ebeb5e35bf6dfddd438ad093ab433e07c8b65c8f"
+    },
+    "python_accepted": true,
+    "rust_exit": 0,
+    "rust_report": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "case": "L3-coverage_fake_transfer",
+    "sample": "分流器三路轮询",
+    "format": "运行记录-checkpoint_delta-kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/分流器三路轮询-运行记录-checkpoint_delta-kernel-coverage_fake_transfer.json",
+    "python_report": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/分流器三路轮询-运行记录-checkpoint_delta-kernel-coverage_fake_transfer.json",
+      "ticks": 12,
+      "events": 794,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 43,
+        "exercised": 24,
+        "stop_not_triggered": 17,
+        "proof_pending": 1
+      },
+      "sha256": "b416b6a67ae80cf0f58ee301dab4a7f8aef8432949105aa213507dfe19b1ec1d"
+    },
+    "python_accepted": true,
+    "rust_exit": 0,
+    "rust_report": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  }
+]

@@ -1,0 +1,1530 @@
+[
+  {
+    "label": "build",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "cargo",
+      "build",
+      "--release",
+      "-p",
+      "kernel",
+      "--target-dir",
+      "/home/zhuran24/zmd-research-fresh/求解器/target"
+    ],
+    "started": "2026-09-21T12:39:36.199339-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "",
+    "stderr": "    Finished `release` profile [optimized] target(s) in 0.01s\n"
+  },
+  {
+    "label": "original-batch",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "verify-batch",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "started": "2026-09-21T12:39:41.687899-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\n  \"status\": \"input_checked\",\n  \"read_only\": true,\n  \"records\": [\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/cache-off.json\",\n      \"ticks\": {\n        \"ticks\": 2,\n        \"wireless_item_transactions\": 0\n      }\n    },\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/cache-on.json\",\n      \"ticks\": {\n        \"ticks\": 2,\n        \"wireless_item_transactions\": 0\n      }\n    },\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/checkpoint-record.json\",\n      \"ticks\": {\n        \"ticks\": 1,\n        \"wireless_item_transactions\": 0\n      }\n    },\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/identity-full.json\",\n      \"ticks\": {\n        \"ticks\": 2,\n        \"wireless_item_transactions\": 0\n      }\n    },\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/双门窗口恢复.json\",\n      \"ticks\": {\n        \"ticks\": 12,\n        \"wireless_item_transactions\": 0\n      }\n    },\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/同刻双箱争余量.json\",\n      \"ticks\": {\n        \"ticks\": 1,\n        \"wireless_item_transactions\": 1\n      }\n    },\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/成熟旧货重试.json\",\n      \"ticks\": {\n        \"ticks\": 1,\n        \"wireless_item_transactions\": 0\n      }\n    },\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/无线一满一可收.json\",\n      \"ticks\": {\n        \"ticks\": 1,\n        \"wireless_item_transactions\": 1\n      }\n    },\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/无线全拒收.json\",\n      \"ticks\": {\n        \"ticks\": 6,\n        \"wireless_item_transactions\": 0\n      }\n    },\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/无线多格全收.json\",\n      \"ticks\": {\n        \"ticks\": 1,\n        \"wireless_item_transactions\": 1\n      }\n    },\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/无线空箱.json\",\n      \"ticks\": {\n        \"ticks\": 6,\n        \"wireless_item_transactions\": 0\n      }\n    },\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/无线部分接收.json\",\n      \"ticks\": {\n        \"ticks\": 6,\n        \"wireless_item_transactions\": 1\n      }\n    },\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/累计调低保留.json\",\n      \"ticks\": {\n        \"ticks\": 6,\n        \"wireless_item_transactions\": 0\n      }\n    },\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/累计调高资格.json\",\n      \"ticks\": {\n        \"ticks\": 6,\n        \"wireless_item_transactions\": 0\n      }\n    },\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/装载与普通制造.json\",\n      \"ticks\": {\n        \"ticks\": 4,\n        \"wireless_item_transactions\": 0\n      }\n    },\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/身份实际切换.json\",\n      \"ticks\": {\n        \"ticks\": 6,\n        \"wireless_item_transactions\": 0\n      }\n    },\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/身份断边恢复.json\",\n      \"ticks\": {\n        \"ticks\": 6,\n        \"wireless_item_transactions\": 0\n      }\n    },\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/阻尼恢复.json\",\n      \"ticks\": {\n        \"ticks\": 12,\n        \"wireless_item_transactions\": 0\n      }\n    },\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/静止成熟与暂停键-cycle.record.json\",\n      \"ticks\": {\n        \"ticks\": 2,\n        \"wireless_item_transactions\": 0\n      }\n    }\n  ],\n  \"cycles\": [\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/budget-cycle.json\",\n      \"verification\": {\n        \"cycle_replayed\": false,\n        \"prefix_replayed\": 1,\n        \"reason\": \"原种子前缀及停止/预算位置已复现，无周期\",\n        \"status\": \"input_checked\"\n      }\n    },\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/同种年龄分组-cycle.json\",\n      \"verification\": {\n        \"checks\": [\n          \"引用原始字节/format/producer和完整来源链\",\n          \"原种子到达前缀及跨刻事件身份\",\n          \"独立重建D动态前件及周期账/率/接收域\",\n          \"从周期起点P次step_tick及完整终态\"\n        ],\n        \"cycle_replayed\": true,\n        \"period\": 1,\n        \"prefix_replayed\": 2,\n        \"start_time\": 0,\n        \"status\": \"input_checked\"\n      }\n    },\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/生产环带-cycle.json\",\n      \"verification\": {\n        \"checks\": [\n          \"引用原始字节/format/producer和完整来源链\",\n          \"原种子到达前缀及跨刻事件身份\",\n          \"独立重建D动态前件及周期账/率/接收域\",\n          \"从周期起点P次step_tick及完整终态\"\n        ],\n        \"cycle_replayed\": true,\n        \"period\": 20,\n        \"prefix_replayed\": 21,\n        \"start_time\": 0,\n        \"status\": \"input_checked\"\n      }\n    },\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/累计审计与窗口周期-cycle.json\",\n      \"verification\": {\n        \"checks\": [\n          \"引用原始字节/format/producer和完整来源链\",\n          \"原种子到达前缀及跨刻事件身份\",\n          \"独立重建D动态前件及周期账/率/接收域\",\n          \"从周期起点P次step_tick及完整终态\"\n        ],\n        \"cycle_replayed\": true,\n        \"period\": 6,\n        \"prefix_replayed\": 7,\n        \"start_time\": 0,\n        \"status\": \"input_checked\"\n      }\n    },\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/累计调低保留-cycle.json\",\n      \"verification\": {\n        \"checks\": [\n          \"引用原始字节/format/producer和完整来源链\",\n          \"原种子到达前缀及跨刻事件身份\",\n          \"独立重建D动态前件及周期账/率/接收域\",\n          \"从周期起点P次step_tick及完整终态\"\n        ],\n        \"cycle_replayed\": true,\n        \"period\": 1,\n        \"prefix_replayed\": 2,\n        \"start_time\": 0,\n        \"status\": \"input_checked\"\n      }\n    },\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/静止成熟与暂停键-cycle.json\",\n      \"verification\": {\n        \"checks\": [\n          \"引用原始字节/format/producer和完整来源链\",\n          \"原种子到达前缀及跨刻事件身份\",\n          \"独立重建D动态前件及周期账/率/接收域\",\n          \"从周期起点P次step_tick及完整终态\"\n        ],\n        \"cycle_replayed\": true,\n        \"period\": 1,\n        \"prefix_replayed\": 2,\n        \"start_time\": 0,\n        \"status\": \"input_checked\"\n      }\n    }\n  ],\n  \"reference_records\": 0,\n  \"historical_records\": [],\n  \"scope\": \"当前v4记录和v3周期按现行源、schema、Rust重放及Python部分接收账验收；旧版本列作史料。\"\n}\n",
+    "stderr": "已核 budget-cycle.json\n已核 cache-off.json\n已核 cache-on.json\n已核 checkpoint-record.json\n已核 identity-full.json\n已核 双门窗口恢复.json\n已核 同刻双箱争余量.json\n已核 同种年龄分组-cycle.json\n已核 成熟旧货重试.json\n已核 无线一满一可收.json\n已核 无线全拒收.json\n已核 无线多格全收.json\n已核 无线空箱.json\n已核 无线部分接收.json\n已核 生产环带-cycle.json\n已核 累计审计与窗口周期-cycle.json\n已核 累计调低保留-cycle.json\n已核 累计调低保留.json\n已核 累计调高资格.json\n已核 装载与普通制造.json\n已核 身份实际切换.json\n已核 身份断边恢复.json\n已核 阻尼恢复.json\n已核 静止成熟与暂停键-cycle.json\n已核 静止成熟与暂停键-cycle.record.json\n"
+  },
+  {
+    "label": "check-装载与普通制造",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "check",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/装载与普通制造.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "started": "2026-09-21T12:39:51.200462-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\n  \"buffer_channels\": 8,\n  \"catalog_sha256\": \"39105d320e55b4d357cd95b47c840a6bd4127afcb94d3f98b1c2997c56efddd3\",\n  \"physical_channels\": 11,\n  \"status\": \"input_checked\",\n  \"units\": 14\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "check-无线多格歧义",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "check",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/无线多格歧义.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "started": "2026-09-21T12:39:51.210897-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\n  \"buffer_channels\": 0,\n  \"catalog_sha256\": \"39105d320e55b4d357cd95b47c840a6bd4127afcb94d3f98b1c2997c56efddd3\",\n  \"physical_channels\": 0,\n  \"status\": \"input_checked\",\n  \"units\": 3\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "old-input-rejected",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "check",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "started": "2026-09-21T12:39:51.220004-04:00",
+    "exit_code": 2,
+    "expected_exit_code": 2,
+    "stdout": "{\n  \"evidence_scope\": {\n    \"context_bindings\": [],\n    \"direction\": \"diagnostic\",\n    \"fixed_parameter_lifecycle\": \"judgment.order_scope=fixed_run_order；judgment.order整场固定，回放和端点逐值核对；本段无离线或玩家动作\",\n    \"initial_state_coverage\": {\n      \"description\": \"一个显式种子及其实际已重放前缀；调试程序全部可能后态另核\",\n      \"exact_reachable_set_enumerated\": false\n    },\n    \"kind\": \"diagnostic\",\n    \"proof_sources\": [],\n    \"review_status\": \"author_checked\",\n    \"support_domain\": [\n      \"固定布局、设定、global/event-order-v1及整数时钟的受限工程执行\",\n      \"ordered_sweeps与retain_survivors为明示工程组织；一般失败环真实唤醒对应仍待证明\"\n    ]\n  },\n  \"execution_mode\": \"finite_concrete\",\n  \"fingerprints\": [],\n  \"input_history\": null,\n  \"open_items\": [\n    \"invalid_input input @ ../正式静态目录.json: 源文件指纹不符\"\n  ],\n  \"parameter_assignment\": null,\n  \"port_meeting\": \"shared_edge_opposite\",\n  \"producer\": {\n    \"claim\": \"装载停止，未形成游戏后继\",\n    \"kind\": \"kernel\",\n    \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs\"\n  },\n  \"profile_id\": \"kernel_profile_v1\",\n  \"run_id\": \"kernel:load-stop\",\n  \"schema\": \"kernel-output-v4\",\n  \"status\": \"invalid_input\",\n  \"trace\": null,\n  \"uncovered_axes\": [],\n  \"validation_scope\": null\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "run-装载与普通制造",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/装载与普通制造.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "4",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/装载与普通制造.json",
+      "--format",
+      "full_state_each_instant"
+    ],
+    "started": "2026-09-21T12:39:51.224108-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/装载与普通制造.json\",\"status\":\"completed\"}\n",
+    "stderr": ""
+  },
+  {
+    "label": "verify-record-装载与普通制造",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "verify-record",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/装载与普通制造.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "started": "2026-09-21T12:39:51.435445-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\n  \"status\": \"input_checked\",\n  \"verified_record\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/装载与普通制造.json\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "run-无线部分接收",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/无线部分接收.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "6",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/无线部分接收.json",
+      "--format",
+      "checkpoint_delta",
+      "--checkpoint-interval",
+      "16"
+    ],
+    "started": "2026-09-21T12:39:51.552281-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/无线部分接收.json\",\"status\":\"completed\"}\n",
+    "stderr": ""
+  },
+  {
+    "label": "verify-record-无线部分接收",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "verify-record",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/无线部分接收.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "started": "2026-09-21T12:39:51.739321-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\n  \"status\": \"input_checked\",\n  \"verified_record\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/无线部分接收.json\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "run-无线一满一可收",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/无线一满一可收.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "1",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/无线一满一可收.json",
+      "--format",
+      "checkpoint_delta",
+      "--checkpoint-interval",
+      "16"
+    ],
+    "started": "2026-09-21T12:39:51.882223-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/无线一满一可收.json\",\"status\":\"completed\"}\n",
+    "stderr": ""
+  },
+  {
+    "label": "verify-record-无线一满一可收",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "verify-record",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/无线一满一可收.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "started": "2026-09-21T12:39:52.065814-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\n  \"status\": \"input_checked\",\n  \"verified_record\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/无线一满一可收.json\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "run-无线多格全收",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/无线多格全收.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "1",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/无线多格全收.json",
+      "--format",
+      "checkpoint_delta",
+      "--checkpoint-interval",
+      "16"
+    ],
+    "started": "2026-09-21T12:39:52.175556-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/无线多格全收.json\",\"status\":\"completed\"}\n",
+    "stderr": ""
+  },
+  {
+    "label": "verify-record-无线多格全收",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "verify-record",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/无线多格全收.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "started": "2026-09-21T12:39:52.364602-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\n  \"status\": \"input_checked\",\n  \"verified_record\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/无线多格全收.json\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "run-同刻双箱争余量",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/同刻双箱争余量.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "1",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/同刻双箱争余量.json",
+      "--format",
+      "checkpoint_delta",
+      "--checkpoint-interval",
+      "16"
+    ],
+    "started": "2026-09-21T12:39:52.473816-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/同刻双箱争余量.json\",\"status\":\"completed\"}\n",
+    "stderr": ""
+  },
+  {
+    "label": "verify-record-同刻双箱争余量",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "verify-record",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/同刻双箱争余量.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "started": "2026-09-21T12:39:52.674495-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\n  \"status\": \"input_checked\",\n  \"verified_record\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/同刻双箱争余量.json\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "run-无线空箱",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/无线空箱.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "6",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/无线空箱.json",
+      "--format",
+      "checkpoint_delta",
+      "--checkpoint-interval",
+      "16"
+    ],
+    "started": "2026-09-21T12:39:52.783605-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/无线空箱.json\",\"status\":\"completed\"}\n",
+    "stderr": ""
+  },
+  {
+    "label": "verify-record-无线空箱",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "verify-record",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/无线空箱.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "started": "2026-09-21T12:39:52.986595-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\n  \"status\": \"input_checked\",\n  \"verified_record\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/无线空箱.json\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "run-无线全拒收",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/无线全拒收.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "6",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/无线全拒收.json",
+      "--format",
+      "checkpoint_delta",
+      "--checkpoint-interval",
+      "16"
+    ],
+    "started": "2026-09-21T12:39:53.111061-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/无线全拒收.json\",\"status\":\"completed\"}\n",
+    "stderr": ""
+  },
+  {
+    "label": "verify-record-无线全拒收",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "verify-record",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/无线全拒收.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "started": "2026-09-21T12:39:53.317217-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\n  \"status\": \"input_checked\",\n  \"verified_record\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/无线全拒收.json\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "run-身份断边恢复",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/身份断边恢复.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "6",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/身份断边恢复.json",
+      "--format",
+      "checkpoint_delta",
+      "--checkpoint-interval",
+      "16"
+    ],
+    "started": "2026-09-21T12:39:53.443527-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/身份断边恢复.json\",\"status\":\"completed\"}\n",
+    "stderr": ""
+  },
+  {
+    "label": "verify-record-身份断边恢复",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "verify-record",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/身份断边恢复.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "started": "2026-09-21T12:39:53.653639-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\n  \"status\": \"input_checked\",\n  \"verified_record\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/身份断边恢复.json\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "run-身份实际切换",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/身份实际切换.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "6",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/身份实际切换.json",
+      "--format",
+      "checkpoint_delta",
+      "--checkpoint-interval",
+      "16"
+    ],
+    "started": "2026-09-21T12:39:53.780209-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/身份实际切换.json\",\"status\":\"completed\"}\n",
+    "stderr": ""
+  },
+  {
+    "label": "verify-record-身份实际切换",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "verify-record",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/身份实际切换.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "started": "2026-09-21T12:39:53.991552-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\n  \"status\": \"input_checked\",\n  \"verified_record\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/身份实际切换.json\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "run-累计调低保留",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/累计调低保留.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "6",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/累计调低保留.json",
+      "--format",
+      "checkpoint_delta",
+      "--checkpoint-interval",
+      "16"
+    ],
+    "started": "2026-09-21T12:39:54.125095-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/累计调低保留.json\",\"status\":\"completed\"}\n",
+    "stderr": ""
+  },
+  {
+    "label": "verify-record-累计调低保留",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "verify-record",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/累计调低保留.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "started": "2026-09-21T12:39:54.331633-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\n  \"status\": \"input_checked\",\n  \"verified_record\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/累计调低保留.json\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "run-累计调高资格",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/累计调高资格.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "6",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/累计调高资格.json",
+      "--format",
+      "checkpoint_delta",
+      "--checkpoint-interval",
+      "16"
+    ],
+    "started": "2026-09-21T12:39:54.465980-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/累计调高资格.json\",\"status\":\"completed\"}\n",
+    "stderr": ""
+  },
+  {
+    "label": "verify-record-累计调高资格",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "verify-record",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/累计调高资格.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "started": "2026-09-21T12:39:54.657281-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\n  \"status\": \"input_checked\",\n  \"verified_record\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/累计调高资格.json\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "run-双门窗口恢复",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/双门窗口恢复.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "12",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/双门窗口恢复.json",
+      "--format",
+      "checkpoint_delta",
+      "--checkpoint-interval",
+      "16"
+    ],
+    "started": "2026-09-21T12:39:54.798324-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/双门窗口恢复.json\",\"status\":\"completed\"}\n",
+    "stderr": ""
+  },
+  {
+    "label": "verify-record-双门窗口恢复",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "verify-record",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/双门窗口恢复.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "started": "2026-09-21T12:39:55.032711-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\n  \"status\": \"input_checked\",\n  \"verified_record\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/双门窗口恢复.json\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "run-阻尼恢复",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/阻尼恢复.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "12",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/阻尼恢复.json",
+      "--format",
+      "checkpoint_delta",
+      "--checkpoint-interval",
+      "16"
+    ],
+    "started": "2026-09-21T12:39:55.229682-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/阻尼恢复.json\",\"status\":\"completed\"}\n",
+    "stderr": ""
+  },
+  {
+    "label": "verify-record-阻尼恢复",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "verify-record",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/阻尼恢复.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "started": "2026-09-21T12:39:55.434579-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\n  \"status\": \"input_checked\",\n  \"verified_record\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/阻尼恢复.json\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "run-成熟旧货重试",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/成熟旧货重试.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "1",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/成熟旧货重试.json",
+      "--format",
+      "checkpoint_delta",
+      "--checkpoint-interval",
+      "16"
+    ],
+    "started": "2026-09-21T12:39:55.591569-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/成熟旧货重试.json\",\"status\":\"completed\"}\n",
+    "stderr": ""
+  },
+  {
+    "label": "verify-record-成熟旧货重试",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "verify-record",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/成熟旧货重试.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "started": "2026-09-21T12:39:55.798539-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\n  \"status\": \"input_checked\",\n  \"verified_record\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/成熟旧货重试.json\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "run-无线多格歧义",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/无线多格歧义.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "1",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/negative/无线多格歧义.json",
+      "--format",
+      "checkpoint_delta",
+      "--checkpoint-interval",
+      "16"
+    ],
+    "started": "2026-09-21T12:39:55.909480-04:00",
+    "exit_code": 2,
+    "expected_exit_code": 2,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/negative/无线多格歧义.json\",\"status\":\"unsupported\"}\n",
+    "stderr": ""
+  },
+  {
+    "label": "run-cache-on",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/身份实际切换.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/cache-on.json",
+      "--format",
+      "checkpoint_delta",
+      "--checkpoint-interval",
+      "16"
+    ],
+    "started": "2026-09-21T12:39:56.113277-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/cache-on.json\",\"status\":\"completed\"}\n",
+    "stderr": ""
+  },
+  {
+    "label": "verify-record-cache-on",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "verify-record",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/cache-on.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "started": "2026-09-21T12:39:56.302130-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\n  \"status\": \"input_checked\",\n  \"verified_record\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/cache-on.json\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "run-cache-off",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/身份实际切换.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/cache-off.json",
+      "--format",
+      "checkpoint_delta",
+      "--checkpoint-interval",
+      "16",
+      "--no-cache"
+    ],
+    "started": "2026-09-21T12:39:56.415309-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/cache-off.json\",\"status\":\"completed\"}\n",
+    "stderr": ""
+  },
+  {
+    "label": "verify-record-cache-off",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "verify-record",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/cache-off.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "started": "2026-09-21T12:39:56.622287-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\n  \"status\": \"input_checked\",\n  \"verified_record\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/cache-off.json\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "run-identity-full",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/身份实际切换.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/identity-full.json",
+      "--format",
+      "full_state_each_instant"
+    ],
+    "started": "2026-09-21T12:39:56.736937-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/identity-full.json\",\"status\":\"completed\"}\n",
+    "stderr": ""
+  },
+  {
+    "label": "verify-record-identity-full",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "verify-record",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/identity-full.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "started": "2026-09-21T12:39:56.943071-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\n  \"status\": \"input_checked\",\n  \"verified_record\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/identity-full.json\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "checkpoint",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "checkpoint",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/cache-on.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/negative/checkpoint-input.json"
+    ],
+    "started": "2026-09-21T12:39:57.060870-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/negative/checkpoint-input.json\",\"status\":null}\n",
+    "stderr": ""
+  },
+  {
+    "label": "checkpoint-run",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/negative/checkpoint-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "1",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/checkpoint-record.json"
+    ],
+    "started": "2026-09-21T12:39:57.186364-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/checkpoint-record.json\",\"status\":\"completed\"}\n",
+    "stderr": ""
+  },
+  {
+    "label": "cycle-生产环带",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "cycle",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/生产环带.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--max-ticks",
+      "30",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/生产环带-cycle.json",
+      "--no-record"
+    ],
+    "started": "2026-09-21T12:39:57.232120-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/生产环带-cycle.json\",\"status\":\"diagnostic_cycle\"}\n",
+    "stderr": ""
+  },
+  {
+    "label": "verify-cycle-生产环带",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "verify-cycle",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/生产环带-cycle.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "started": "2026-09-21T12:39:57.465257-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\n  \"checks\": [\n    \"引用原始字节/format/producer和完整来源链\",\n    \"原种子到达前缀及跨刻事件身份\",\n    \"独立重建D动态前件及周期账/率/接收域\",\n    \"从周期起点P次step_tick及完整终态\"\n  ],\n  \"cycle_replayed\": true,\n  \"period\": 20,\n  \"prefix_replayed\": 21,\n  \"start_time\": 0,\n  \"status\": \"input_checked\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "cycle-静止成熟与暂停键",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "cycle",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/静止成熟与暂停键.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--max-ticks",
+      "30",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/静止成熟与暂停键-cycle.json"
+    ],
+    "started": "2026-09-21T12:39:57.618533-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/静止成熟与暂停键-cycle.json\",\"status\":\"diagnostic_cycle\"}\n",
+    "stderr": ""
+  },
+  {
+    "label": "verify-cycle-静止成熟与暂停键",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "verify-cycle",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/静止成熟与暂停键-cycle.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "started": "2026-09-21T12:39:57.867638-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\n  \"checks\": [\n    \"引用原始字节/format/producer和完整来源链\",\n    \"原种子到达前缀及跨刻事件身份\",\n    \"独立重建D动态前件及周期账/率/接收域\",\n    \"从周期起点P次step_tick及完整终态\"\n  ],\n  \"cycle_replayed\": true,\n  \"period\": 1,\n  \"prefix_replayed\": 2,\n  \"start_time\": 0,\n  \"status\": \"input_checked\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "cycle-累计审计与窗口周期",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "cycle",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/累计审计与窗口周期.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--max-ticks",
+      "30",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/累计审计与窗口周期-cycle.json",
+      "--no-record"
+    ],
+    "started": "2026-09-21T12:39:58.100253-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/累计审计与窗口周期-cycle.json\",\"status\":\"diagnostic_cycle\"}\n",
+    "stderr": ""
+  },
+  {
+    "label": "verify-cycle-累计审计与窗口周期",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "verify-cycle",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/累计审计与窗口周期-cycle.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "started": "2026-09-21T12:39:58.329197-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\n  \"checks\": [\n    \"引用原始字节/format/producer和完整来源链\",\n    \"原种子到达前缀及跨刻事件身份\",\n    \"独立重建D动态前件及周期账/率/接收域\",\n    \"从周期起点P次step_tick及完整终态\"\n  ],\n  \"cycle_replayed\": true,\n  \"period\": 6,\n  \"prefix_replayed\": 7,\n  \"start_time\": 0,\n  \"status\": \"input_checked\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "cycle-累计调低保留",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "cycle",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/累计调低保留.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--max-ticks",
+      "30",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/累计调低保留-cycle.json",
+      "--no-record"
+    ],
+    "started": "2026-09-21T12:39:58.466760-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/累计调低保留-cycle.json\",\"status\":\"diagnostic_cycle\"}\n",
+    "stderr": ""
+  },
+  {
+    "label": "verify-cycle-累计调低保留",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "verify-cycle",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/累计调低保留-cycle.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "started": "2026-09-21T12:39:58.685247-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\n  \"checks\": [\n    \"引用原始字节/format/producer和完整来源链\",\n    \"原种子到达前缀及跨刻事件身份\",\n    \"独立重建D动态前件及周期账/率/接收域\",\n    \"从周期起点P次step_tick及完整终态\"\n  ],\n  \"cycle_replayed\": true,\n  \"period\": 1,\n  \"prefix_replayed\": 2,\n  \"start_time\": 0,\n  \"status\": \"input_checked\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "cycle-budget",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "cycle",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/生产环带.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--max-ticks",
+      "1",
+      "--no-record",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/budget-cycle.json"
+    ],
+    "started": "2026-09-21T12:39:58.812119-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/budget-cycle.json\",\"status\":\"inconclusive\"}\n",
+    "stderr": ""
+  },
+  {
+    "label": "verify-budget",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "verify-cycle",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/budget-cycle.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "started": "2026-09-21T12:39:58.858124-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\n  \"cycle_replayed\": false,\n  \"prefix_replayed\": 1,\n  \"reason\": \"原种子前缀及停止/预算位置已复现，无周期\",\n  \"status\": \"input_checked\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "cycle-load-stop",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "cycle",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/生产循环环带.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--max-ticks",
+      "1",
+      "--no-record",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/negative/load-stop-cycle.json"
+    ],
+    "started": "2026-09-21T12:39:58.969374-04:00",
+    "exit_code": 2,
+    "expected_exit_code": 2,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/negative/load-stop-cycle.json\",\"status\":\"invalid_input\"}\n",
+    "stderr": ""
+  },
+  {
+    "label": "verify-load-stop",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "verify-cycle",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/negative/load-stop-cycle.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "started": "2026-09-21T12:39:59.165146-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\n  \"cycle_replayed\": false,\n  \"diagnostic_replayed\": true,\n  \"reason\": \"失败输入及依赖指纹已核，复现同一装载停止；无游戏转移或周期\",\n  \"status\": \"input_checked\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "negative-判定排序错组",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "cycle",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/negative/判定排序错组-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--max-ticks",
+      "1",
+      "--no-record",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/negative/判定排序错组-result.json"
+    ],
+    "started": "2026-09-21T12:39:59.231168-04:00",
+    "exit_code": 2,
+    "expected_exit_code": 2,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/negative/判定排序错组-result.json\",\"status\":\"invalid_input\"}\n",
+    "stderr": ""
+  },
+  {
+    "label": "negative-制造日程过晚",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "cycle",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/negative/制造日程过晚-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--max-ticks",
+      "1",
+      "--no-record",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/negative/制造日程过晚-result.json"
+    ],
+    "started": "2026-09-21T12:39:59.271897-04:00",
+    "exit_code": 2,
+    "expected_exit_code": 2,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/negative/制造日程过晚-result.json\",\"status\":\"invalid_input\"}\n",
+    "stderr": ""
+  },
+  {
+    "label": "cycle-同种年龄分组",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "cycle",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/negative/同种年龄分组-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--max-ticks",
+      "3",
+      "--no-record",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/同种年龄分组-cycle.json"
+    ],
+    "started": "2026-09-21T12:39:59.315240-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/同种年龄分组-cycle.json\",\"status\":\"diagnostic_cycle\"}\n",
+    "stderr": ""
+  },
+  {
+    "label": "verify-同种年龄分组",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "verify-cycle",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/同种年龄分组-cycle.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "started": "2026-09-21T12:39:59.369646-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\n  \"checks\": [\n    \"引用原始字节/format/producer和完整来源链\",\n    \"原种子到达前缀及跨刻事件身份\",\n    \"独立重建D动态前件及周期账/率/接收域\",\n    \"从周期起点P次step_tick及完整终态\"\n  ],\n  \"cycle_replayed\": true,\n  \"period\": 1,\n  \"prefix_replayed\": 2,\n  \"start_time\": 0,\n  \"status\": \"input_checked\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "negative-篡改入库账",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "verify-record",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/negative/篡改入库账.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "started": "2026-09-21T12:39:59.503479-04:00",
+    "exit_code": 2,
+    "expected_exit_code": 2,
+    "stdout": "{\n  \"evidence_scope\": {\n    \"context_bindings\": [],\n    \"direction\": \"diagnostic\",\n    \"fixed_parameter_lifecycle\": \"judgment.order_scope=fixed_run_order；judgment.order整场固定，回放和端点逐值核对；本段无离线或玩家动作\",\n    \"initial_state_coverage\": {\n      \"description\": \"一个显式种子及其实际已重放前缀；调试程序全部可能后态另核\",\n      \"exact_reachable_set_enumerated\": false\n    },\n    \"kind\": \"diagnostic\",\n    \"proof_sources\": [],\n    \"review_status\": \"author_checked\",\n    \"support_domain\": [\n      \"固定布局、设定、global/event-order-v1及整数时钟的受限工程执行\",\n      \"ordered_sweeps与retain_survivors为明示工程组织；一般失败环真实唤醒对应仍待证明\"\n    ]\n  },\n  \"execution_mode\": \"finite_concrete\",\n  \"fingerprints\": [],\n  \"input_history\": null,\n  \"open_items\": [\n    \"invalid_input input @ warehouse_ledger.totals: 明细重算与总账不同\"\n  ],\n  \"parameter_assignment\": null,\n  \"port_meeting\": \"shared_edge_opposite\",\n  \"producer\": {\n    \"claim\": \"装载停止，未形成游戏后继\",\n    \"kind\": \"kernel\",\n    \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs\"\n  },\n  \"profile_id\": \"kernel_profile_v1\",\n  \"run_id\": \"kernel:load-stop\",\n  \"schema\": \"kernel-output-v4\",\n  \"status\": \"invalid_input\",\n  \"trace\": null,\n  \"uncovered_axes\": [],\n  \"validation_scope\": null\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "negative-篡改固定排序",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "verify-record",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/negative/篡改固定排序.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "started": "2026-09-21T12:39:59.583759-04:00",
+    "exit_code": 2,
+    "expected_exit_code": 2,
+    "stdout": "{\n  \"evidence_scope\": {\n    \"context_bindings\": [],\n    \"direction\": \"diagnostic\",\n    \"fixed_parameter_lifecycle\": \"judgment.order_scope=fixed_run_order；judgment.order整场固定，回放和端点逐值核对；本段无离线或玩家动作\",\n    \"initial_state_coverage\": {\n      \"description\": \"一个显式种子及其实际已重放前缀；调试程序全部可能后态另核\",\n      \"exact_reachable_set_enumerated\": false\n    },\n    \"kind\": \"diagnostic\",\n    \"proof_sources\": [],\n    \"review_status\": \"author_checked\",\n    \"support_domain\": [\n      \"固定布局、设定、global/event-order-v1及整数时钟的受限工程执行\",\n      \"ordered_sweeps与retain_survivors为明示工程组织；一般失败环真实唤醒对应仍待证明\"\n    ]\n  },\n  \"execution_mode\": \"finite_concrete\",\n  \"fingerprints\": [],\n  \"input_history\": null,\n  \"open_items\": [\n    \"invalid_input input @ record: 交付记录与完整重算逐字段不同\"\n  ],\n  \"parameter_assignment\": null,\n  \"port_meeting\": \"shared_edge_opposite\",\n  \"producer\": {\n    \"claim\": \"装载停止，未形成游戏后继\",\n    \"kind\": \"kernel\",\n    \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs\"\n  },\n  \"profile_id\": \"kernel_profile_v1\",\n  \"run_id\": \"kernel:load-stop\",\n  \"schema\": \"kernel-output-v4\",\n  \"status\": \"invalid_input\",\n  \"trace\": null,\n  \"uncovered_axes\": [],\n  \"validation_scope\": null\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "negative-删除证据范围",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "verify-record",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/negative/删除证据范围.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "started": "2026-09-21T12:39:59.699262-04:00",
+    "exit_code": 2,
+    "expected_exit_code": 2,
+    "stdout": "{\n  \"evidence_scope\": {\n    \"context_bindings\": [],\n    \"direction\": \"diagnostic\",\n    \"fixed_parameter_lifecycle\": \"judgment.order_scope=fixed_run_order；judgment.order整场固定，回放和端点逐值核对；本段无离线或玩家动作\",\n    \"initial_state_coverage\": {\n      \"description\": \"一个显式种子及其实际已重放前缀；调试程序全部可能后态另核\",\n      \"exact_reachable_set_enumerated\": false\n    },\n    \"kind\": \"diagnostic\",\n    \"proof_sources\": [],\n    \"review_status\": \"author_checked\",\n    \"support_domain\": [\n      \"固定布局、设定、global/event-order-v1及整数时钟的受限工程执行\",\n      \"ordered_sweeps与retain_survivors为明示工程组织；一般失败环真实唤醒对应仍待证明\"\n    ]\n  },\n  \"execution_mode\": \"finite_concrete\",\n  \"fingerprints\": [],\n  \"input_history\": null,\n  \"open_items\": [\n    \"invalid_input input @ record: 交付记录与完整重算逐字段不同\"\n  ],\n  \"parameter_assignment\": null,\n  \"port_meeting\": \"shared_edge_opposite\",\n  \"producer\": {\n    \"claim\": \"装载停止，未形成游戏后继\",\n    \"kind\": \"kernel\",\n    \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs\"\n  },\n  \"profile_id\": \"kernel_profile_v1\",\n  \"run_id\": \"kernel:load-stop\",\n  \"schema\": \"kernel-output-v4\",\n  \"status\": \"invalid_input\",\n  \"trace\": null,\n  \"uncovered_axes\": [],\n  \"validation_scope\": null\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "negative-伪造真实反例",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "verify-cycle",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/negative/伪造真实反例.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "started": "2026-09-21T12:39:59.784811-04:00",
+    "exit_code": 2,
+    "expected_exit_code": 2,
+    "stdout": "{\n  \"evidence_scope\": {\n    \"context_bindings\": [],\n    \"direction\": \"diagnostic\",\n    \"fixed_parameter_lifecycle\": \"judgment.order_scope=fixed_run_order；judgment.order整场固定，回放和端点逐值核对；本段无离线或玩家动作\",\n    \"initial_state_coverage\": {\n      \"description\": \"一个显式种子及其实际已重放前缀；调试程序全部可能后态另核\",\n      \"exact_reachable_set_enumerated\": false\n    },\n    \"kind\": \"diagnostic\",\n    \"proof_sources\": [],\n    \"review_status\": \"author_checked\",\n    \"support_domain\": [\n      \"固定布局、设定、global/event-order-v1及整数时钟的受限工程执行\",\n      \"ordered_sweeps与retain_survivors为明示工程组织；一般失败环真实唤醒对应仍待证明\"\n    ]\n  },\n  \"execution_mode\": \"finite_concrete\",\n  \"fingerprints\": [],\n  \"input_history\": null,\n  \"open_items\": [\n    \"invalid_input input @ cycle: 版本不符或具体完整周期验收尚未实现\"\n  ],\n  \"parameter_assignment\": null,\n  \"port_meeting\": \"shared_edge_opposite\",\n  \"producer\": {\n    \"claim\": \"装载停止，未形成游戏后继\",\n    \"kind\": \"kernel\",\n    \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs\"\n  },\n  \"profile_id\": \"kernel_profile_v1\",\n  \"run_id\": \"kernel:load-stop\",\n  \"schema\": \"kernel-output-v4\",\n  \"status\": \"invalid_input\",\n  \"trace\": null,\n  \"uncovered_axes\": [],\n  \"validation_scope\": null\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "negative-篡改周期长度",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "verify-cycle",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/negative/篡改周期长度.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "started": "2026-09-21T12:39:59.792134-04:00",
+    "exit_code": 2,
+    "expected_exit_code": 2,
+    "stdout": "{\n  \"evidence_scope\": {\n    \"context_bindings\": [],\n    \"direction\": \"diagnostic\",\n    \"fixed_parameter_lifecycle\": \"judgment.order_scope=fixed_run_order；judgment.order整场固定，回放和端点逐值核对；本段无离线或玩家动作\",\n    \"initial_state_coverage\": {\n      \"description\": \"一个显式种子及其实际已重放前缀；调试程序全部可能后态另核\",\n      \"exact_reachable_set_enumerated\": false\n    },\n    \"kind\": \"diagnostic\",\n    \"proof_sources\": [],\n    \"review_status\": \"author_checked\",\n    \"support_domain\": [\n      \"固定布局、设定、global/event-order-v1及整数时钟的受限工程执行\",\n      \"ordered_sweeps与retain_survivors为明示工程组织；一般失败环真实唤醒对应仍待证明\"\n    ]\n  },\n  \"execution_mode\": \"finite_concrete\",\n  \"fingerprints\": [],\n  \"input_history\": null,\n  \"open_items\": [\n    \"invalid_input input @ cycle: 完整证书与原种子独立搜索重算不符\"\n  ],\n  \"parameter_assignment\": null,\n  \"port_meeting\": \"shared_edge_opposite\",\n  \"producer\": {\n    \"claim\": \"装载停止，未形成游戏后继\",\n    \"kind\": \"kernel\",\n    \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs\"\n  },\n  \"profile_id\": \"kernel_profile_v1\",\n  \"run_id\": \"kernel:load-stop\",\n  \"schema\": \"kernel-output-v4\",\n  \"status\": \"invalid_input\",\n  \"trace\": null,\n  \"uncovered_axes\": [],\n  \"validation_scope\": null\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "negative-篡改证明指纹",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "verify-cycle",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/negative/篡改证明指纹.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "started": "2026-09-21T12:40:00.013833-04:00",
+    "exit_code": 2,
+    "expected_exit_code": 2,
+    "stdout": "{\n  \"evidence_scope\": {\n    \"context_bindings\": [],\n    \"direction\": \"diagnostic\",\n    \"fixed_parameter_lifecycle\": \"judgment.order_scope=fixed_run_order；judgment.order整场固定，回放和端点逐值核对；本段无离线或玩家动作\",\n    \"initial_state_coverage\": {\n      \"description\": \"一个显式种子及其实际已重放前缀；调试程序全部可能后态另核\",\n      \"exact_reachable_set_enumerated\": false\n    },\n    \"kind\": \"diagnostic\",\n    \"proof_sources\": [],\n    \"review_status\": \"author_checked\",\n    \"support_domain\": [\n      \"固定布局、设定、global/event-order-v1及整数时钟的受限工程执行\",\n      \"ordered_sweeps与retain_survivors为明示工程组织；一般失败环真实唤醒对应仍待证明\"\n    ]\n  },\n  \"execution_mode\": \"finite_concrete\",\n  \"fingerprints\": [],\n  \"input_history\": null,\n  \"open_items\": [\n    \"invalid_input input @ proof_source.sha256: 证明引用原始字节指纹不符\"\n  ],\n  \"parameter_assignment\": null,\n  \"port_meeting\": \"shared_edge_opposite\",\n  \"producer\": {\n    \"claim\": \"装载停止，未形成游戏后继\",\n    \"kind\": \"kernel\",\n    \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs\"\n  },\n  \"profile_id\": \"kernel_profile_v1\",\n  \"run_id\": \"kernel:load-stop\",\n  \"schema\": \"kernel-output-v4\",\n  \"status\": \"invalid_input\",\n  \"trace\": null,\n  \"uncovered_axes\": [],\n  \"validation_scope\": null\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "negative-篡改引用指纹",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "verify-cycle",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/negative/篡改引用指纹.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "started": "2026-09-21T12:40:00.085412-04:00",
+    "exit_code": 2,
+    "expected_exit_code": 2,
+    "stdout": "{\n  \"evidence_scope\": {\n    \"context_bindings\": [],\n    \"direction\": \"diagnostic\",\n    \"fixed_parameter_lifecycle\": \"judgment.order_scope=fixed_run_order；judgment.order整场固定，回放和端点逐值核对；本段无离线或玩家动作\",\n    \"initial_state_coverage\": {\n      \"description\": \"一个显式种子及其实际已重放前缀；调试程序全部可能后态另核\",\n      \"exact_reachable_set_enumerated\": false\n    },\n    \"kind\": \"diagnostic\",\n    \"proof_sources\": [],\n    \"review_status\": \"author_checked\",\n    \"support_domain\": [\n      \"固定布局、设定、global/event-order-v1及整数时钟的受限工程执行\",\n      \"ordered_sweeps与retain_survivors为明示工程组织；一般失败环真实唤醒对应仍待证明\"\n    ]\n  },\n  \"execution_mode\": \"finite_concrete\",\n  \"fingerprints\": [],\n  \"input_history\": null,\n  \"open_items\": [\n    \"invalid_input input @ artifact_ref.sha256: 引用原始字节指纹不符\"\n  ],\n  \"parameter_assignment\": null,\n  \"port_meeting\": \"shared_edge_opposite\",\n  \"producer\": {\n    \"claim\": \"装载停止，未形成游戏后继\",\n    \"kind\": \"kernel\",\n    \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs\"\n  },\n  \"profile_id\": \"kernel_profile_v1\",\n  \"run_id\": \"kernel:load-stop\",\n  \"schema\": \"kernel-output-v4\",\n  \"status\": \"invalid_input\",\n  \"trace\": null,\n  \"uncovered_axes\": [],\n  \"validation_scope\": null\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "verify-relative-cycle",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "verify-cycle",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/relative/cycle.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "started": "2026-09-21T12:40:00.169815-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\n  \"checks\": [\n    \"引用原始字节/format/producer和完整来源链\",\n    \"原种子到达前缀及跨刻事件身份\",\n    \"独立重建D动态前件及周期账/率/接收域\",\n    \"从周期起点P次step_tick及完整终态\"\n  ],\n  \"cycle_replayed\": true,\n  \"period\": 1,\n  \"prefix_replayed\": 2,\n  \"start_time\": 0,\n  \"status\": \"input_checked\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "batch-current",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "verify-batch",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "started": "2026-09-21T12:40:00.394135-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\n  \"status\": \"input_checked\",\n  \"read_only\": true,\n  \"records\": [\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/cache-off.json\",\n      \"ticks\": {\n        \"ticks\": 2,\n        \"wireless_item_transactions\": 0\n      }\n    },\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/cache-on.json\",\n      \"ticks\": {\n        \"ticks\": 2,\n        \"wireless_item_transactions\": 0\n      }\n    },\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/checkpoint-record.json\",\n      \"ticks\": {\n        \"ticks\": 1,\n        \"wireless_item_transactions\": 0\n      }\n    },\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/identity-full.json\",\n      \"ticks\": {\n        \"ticks\": 2,\n        \"wireless_item_transactions\": 0\n      }\n    },\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/双门窗口恢复.json\",\n      \"ticks\": {\n        \"ticks\": 12,\n        \"wireless_item_transactions\": 0\n      }\n    },\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/同刻双箱争余量.json\",\n      \"ticks\": {\n        \"ticks\": 1,\n        \"wireless_item_transactions\": 1\n      }\n    },\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/成熟旧货重试.json\",\n      \"ticks\": {\n        \"ticks\": 1,\n        \"wireless_item_transactions\": 0\n      }\n    },\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/无线一满一可收.json\",\n      \"ticks\": {\n        \"ticks\": 1,\n        \"wireless_item_transactions\": 1\n      }\n    },\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/无线全拒收.json\",\n      \"ticks\": {\n        \"ticks\": 6,\n        \"wireless_item_transactions\": 0\n      }\n    },\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/无线多格全收.json\",\n      \"ticks\": {\n        \"ticks\": 1,\n        \"wireless_item_transactions\": 1\n      }\n    },\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/无线空箱.json\",\n      \"ticks\": {\n        \"ticks\": 6,\n        \"wireless_item_transactions\": 0\n      }\n    },\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/无线部分接收.json\",\n      \"ticks\": {\n        \"ticks\": 6,\n        \"wireless_item_transactions\": 1\n      }\n    },\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/累计调低保留.json\",\n      \"ticks\": {\n        \"ticks\": 6,\n        \"wireless_item_transactions\": 0\n      }\n    },\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/累计调高资格.json\",\n      \"ticks\": {\n        \"ticks\": 6,\n        \"wireless_item_transactions\": 0\n      }\n    },\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/装载与普通制造.json\",\n      \"ticks\": {\n        \"ticks\": 4,\n        \"wireless_item_transactions\": 0\n      }\n    },\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/身份实际切换.json\",\n      \"ticks\": {\n        \"ticks\": 6,\n        \"wireless_item_transactions\": 0\n      }\n    },\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/身份断边恢复.json\",\n      \"ticks\": {\n        \"ticks\": 6,\n        \"wireless_item_transactions\": 0\n      }\n    },\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/阻尼恢复.json\",\n      \"ticks\": {\n        \"ticks\": 12,\n        \"wireless_item_transactions\": 0\n      }\n    },\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/静止成熟与暂停键-cycle.record.json\",\n      \"ticks\": {\n        \"ticks\": 2,\n        \"wireless_item_transactions\": 0\n      }\n    }\n  ],\n  \"cycles\": [\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/budget-cycle.json\",\n      \"verification\": {\n        \"cycle_replayed\": false,\n        \"prefix_replayed\": 1,\n        \"reason\": \"原种子前缀及停止/预算位置已复现，无周期\",\n        \"status\": \"input_checked\"\n      }\n    },\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/同种年龄分组-cycle.json\",\n      \"verification\": {\n        \"checks\": [\n          \"引用原始字节/format/producer和完整来源链\",\n          \"原种子到达前缀及跨刻事件身份\",\n          \"独立重建D动态前件及周期账/率/接收域\",\n          \"从周期起点P次step_tick及完整终态\"\n        ],\n        \"cycle_replayed\": true,\n        \"period\": 1,\n        \"prefix_replayed\": 2,\n        \"start_time\": 0,\n        \"status\": \"input_checked\"\n      }\n    },\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/生产环带-cycle.json\",\n      \"verification\": {\n        \"checks\": [\n          \"引用原始字节/format/producer和完整来源链\",\n          \"原种子到达前缀及跨刻事件身份\",\n          \"独立重建D动态前件及周期账/率/接收域\",\n          \"从周期起点P次step_tick及完整终态\"\n        ],\n        \"cycle_replayed\": true,\n        \"period\": 20,\n        \"prefix_replayed\": 21,\n        \"start_time\": 0,\n        \"status\": \"input_checked\"\n      }\n    },\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/累计审计与窗口周期-cycle.json\",\n      \"verification\": {\n        \"checks\": [\n          \"引用原始字节/format/producer和完整来源链\",\n          \"原种子到达前缀及跨刻事件身份\",\n          \"独立重建D动态前件及周期账/率/接收域\",\n          \"从周期起点P次step_tick及完整终态\"\n        ],\n        \"cycle_replayed\": true,\n        \"period\": 6,\n        \"prefix_replayed\": 7,\n        \"start_time\": 0,\n        \"status\": \"input_checked\"\n      }\n    },\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/累计调低保留-cycle.json\",\n      \"verification\": {\n        \"checks\": [\n          \"引用原始字节/format/producer和完整来源链\",\n          \"原种子到达前缀及跨刻事件身份\",\n          \"独立重建D动态前件及周期账/率/接收域\",\n          \"从周期起点P次step_tick及完整终态\"\n        ],\n        \"cycle_replayed\": true,\n        \"period\": 1,\n        \"prefix_replayed\": 2,\n        \"start_time\": 0,\n        \"status\": \"input_checked\"\n      }\n    },\n    {\n      \"path\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/runs/静止成熟与暂停键-cycle.json\",\n      \"verification\": {\n        \"checks\": [\n          \"引用原始字节/format/producer和完整来源链\",\n          \"原种子到达前缀及跨刻事件身份\",\n          \"独立重建D动态前件及周期账/率/接收域\",\n          \"从周期起点P次step_tick及完整终态\"\n        ],\n        \"cycle_replayed\": true,\n        \"period\": 1,\n        \"prefix_replayed\": 2,\n        \"start_time\": 0,\n        \"status\": \"input_checked\"\n      }\n    }\n  ],\n  \"reference_records\": 0,\n  \"historical_records\": [],\n  \"scope\": \"当前v4记录和v3周期按现行源、schema、Rust重放及Python部分接收账验收；旧版本列作史料。\"\n}\n",
+    "stderr": "已核 budget-cycle.json\n已核 cache-off.json\n已核 cache-on.json\n已核 checkpoint-record.json\n已核 identity-full.json\n已核 双门窗口恢复.json\n已核 同刻双箱争余量.json\n已核 同种年龄分组-cycle.json\n已核 成熟旧货重试.json\n已核 无线一满一可收.json\n已核 无线全拒收.json\n已核 无线多格全收.json\n已核 无线空箱.json\n已核 无线部分接收.json\n已核 生产环带-cycle.json\n已核 累计审计与窗口周期-cycle.json\n已核 累计调低保留-cycle.json\n已核 累计调低保留.json\n已核 累计调高资格.json\n已核 装载与普通制造.json\n已核 身份实际切换.json\n已核 身份断边恢复.json\n已核 阻尼恢复.json\n已核 静止成熟与暂停键-cycle.json\n已核 静止成熟与暂停键-cycle.record.json\n"
+  },
+  {
+    "label": "bridge-same-seed",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "seed",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/bridge-same-unseeded.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/bridge-same-input.json"
+    ],
+    "started": "2026-09-21T12:43:39.510761-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/bridge-same-input.json\",\"status\":null}\n",
+    "stderr": ""
+  },
+  {
+    "label": "bridge-same-check",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "check",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/bridge-same-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "started": "2026-09-21T12:43:39.522528-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\n  \"buffer_channels\": 0,\n  \"catalog_sha256\": \"39105d320e55b4d357cd95b47c840a6bd4127afcb94d3f98b1c2997c56efddd3\",\n  \"physical_channels\": 4,\n  \"status\": \"input_checked\",\n  \"units\": 6\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "bridge-same-run",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/bridge-same-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--format",
+      "full_state_each_instant",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/bridge-same-record.json"
+    ],
+    "started": "2026-09-21T12:43:39.532461-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/bridge-same-record.json\",\"status\":\"completed\"}\n",
+    "stderr": ""
+  },
+  {
+    "label": "bridge-same-verify",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "verify-record",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/bridge-same-record.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "started": "2026-09-21T12:43:39.579089-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\n  \"status\": \"input_checked\",\n  \"verified_record\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/bridge-same-record.json\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "bridge-different-seed",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "seed",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/bridge-different-unseeded.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/bridge-different-input.json"
+    ],
+    "started": "2026-09-21T12:43:39.693242-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/bridge-different-input.json\",\"status\":null}\n",
+    "stderr": ""
+  },
+  {
+    "label": "bridge-different-check",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "check",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/bridge-different-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "started": "2026-09-21T12:43:39.705601-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\n  \"buffer_channels\": 0,\n  \"catalog_sha256\": \"39105d320e55b4d357cd95b47c840a6bd4127afcb94d3f98b1c2997c56efddd3\",\n  \"physical_channels\": 4,\n  \"status\": \"input_checked\",\n  \"units\": 6\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "bridge-different-run",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/bridge-different-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--format",
+      "full_state_each_instant",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/bridge-different-record.json"
+    ],
+    "started": "2026-09-21T12:43:39.715998-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/bridge-different-record.json\",\"status\":\"completed\"}\n",
+    "stderr": ""
+  },
+  {
+    "label": "bridge-different-verify",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "verify-record",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/bridge-different-record.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "started": "2026-09-21T12:43:39.761676-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\n  \"status\": \"input_checked\",\n  \"verified_record\": \"/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/bridge-different-record.json\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "D3-finite-load",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "check",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/negative/植物出库域-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "started": "2026-09-21T12:52:52.448184-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\n  \"buffer_channels\": 2,\n  \"catalog_sha256\": \"39105d320e55b4d357cd95b47c840a6bd4127afcb94d3f98b1c2997c56efddd3\",\n  \"physical_channels\": 0,\n  \"status\": \"input_checked\",\n  \"units\": 4\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "D3-production-domain",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "check",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/negative/植物出库域-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--cycle-domain"
+    ],
+    "started": "2026-09-21T12:52:52.458975-04:00",
+    "exit_code": 2,
+    "expected_exit_code": 2,
+    "stdout": "{\n  \"domain_report\": [\n    {\n      \"condition\": \"D.1\",\n      \"evidence\": [\n        \"已装载固定布局、设定、global/v1、在线零干预、sufficient；无未来历史/玩家策略\"\n      ],\n      \"locations\": [],\n      \"scope\": \"static\",\n      \"status\": \"pass\"\n    },\n    {\n      \"condition\": \"D.2\",\n      \"evidence\": [\n        \"当前两矿唯一正库存且无可检查回矿候选；未来PC及有资格全箱仍在容量/physical/权限前动态核验\"\n      ],\n      \"locations\": [],\n      \"scope\": \"static\",\n      \"status\": \"pass\"\n    },\n    {\n      \"condition\": \"D.3\",\n      \"evidence\": [\n        \"仓库生产投影要求全部取货指派为原矿\"\n      ],\n      \"locations\": [\n        \"core:west:1\"\n      ],\n      \"scope\": \"static\",\n      \"status\": \"fail\"\n    },\n    {\n      \"condition\": \"D.4\",\n      \"evidence\": [\n        \"全部输入/种子/分支表已装载；未来无终点请求仍动态停止；不证明种子可达\"\n      ],\n      \"locations\": [],\n      \"scope\": \"static\",\n      \"status\": \"pass\"\n    },\n    {\n      \"condition\": \"D.5\",\n      \"evidence\": [\n        \"结构界B=0+300*0=0 <80000；每PC每刻至多1、每箱每刻至多一次全箱300\"\n      ],\n      \"locations\": [],\n      \"scope\": \"static\",\n      \"status\": \"pass\"\n    }\n  ],\n  \"status\": \"unsupported\",\n  \"trajectory_executed\": false\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "formal-sha256sum",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "sha256sum",
+      "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+      "/home/zhuran24/zmd-research-fresh/求解任务.txt",
+      "/home/zhuran24/zmd-research-fresh/求解约束.txt",
+      "/home/zhuran24/zmd-research-fresh/候选约束.txt"
+    ],
+    "started": "2026-09-21T12:52:52.470260-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "d150b86b398f8e73e57bee1598020e6bcd895e5a13a254b4b11dd1e4416c325a  /home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt\n1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac  /home/zhuran24/zmd-research-fresh/求解任务.txt\nf6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6  /home/zhuran24/zmd-research-fresh/求解约束.txt\na0ac3f9c82f371132b7de29fe47e4c6c587904680bc2786523de0c825fd5efd9  /home/zhuran24/zmd-research-fresh/候选约束.txt\n",
+    "stderr": ""
+  },
+  {
+    "label": "check_geometry",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "python",
+      "-B",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/check_geometry.py"
+    ],
+    "started": "2026-09-21T12:52:52.472223-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\n  \"units\": 235,\n  \"occupied_cells\": 697,\n  \"ports\": 542,\n  \"channels\": 182,\n  \"routes\": 68,\n  \"kinds\": {\n    \"种植机\": 2,\n    \"采种机\": 2,\n    \"粉碎机\": 2,\n    \"供电桩\": 8,\n    \"封装机\": 3,\n    \"协议储存箱\": 2,\n    \"灌装机\": 3,\n    \"协议核心\": 1,\n    \"仓库取货口\": 46,\n    \"传送带\": 162,\n    \"桥接器\": 4\n  },\n  \"transport_cells\": 166,\n  \"structural_transport_slots\": 170,\n  \"planned_species_simultaneous_capacity\": 166,\n  \"product_structural_slots\": 76,\n  \"product_planned_species_capacity\": 72\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "check_contracts",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "python",
+      "-B",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/check_contracts.py"
+    ],
+    "started": "2026-09-21T12:52:52.508070-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "PASS 53 checks; current sources/99 axes/source-binary binding\n",
+    "stderr": ""
+  },
+  {
+    "label": "check_certificates",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "python",
+      "-B",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/check_certificates.py"
+    ],
+    "started": "2026-09-21T12:52:52.539081-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "PASS 12 cycle results; 59 distinct referenced file hashes\n",
+    "stderr": ""
+  },
+  {
+    "label": "check_runs",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "python",
+      "-B",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/check_runs.py"
+    ],
+    "started": "2026-09-21T12:52:52.768241-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "PASS 19 records; 83 tick ledgers\n",
+    "stderr": ""
+  },
+  {
+    "label": "bridge_delay_witness",
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "argv": [
+      "python",
+      "-B",
+      "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/复核接口/bridge_delay_witness.py"
+    ],
+    "started": "2026-09-21T12:52:52.860324-04:00",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "stdout": "{\"token\": [\"M215\", \"5\"], \"box_time\": \"114/5\", \"warehouse_time\": \"277/10\", \"completion_to_box\": \"89/5\", \"completion_to_warehouse\": \"227/10\", \"claimed_upper_bounds\": {\"box\": 17, \"warehouse\": 22}}\n",
+    "stderr": ""
+  }
+]

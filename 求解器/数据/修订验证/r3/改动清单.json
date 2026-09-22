@@ -1,0 +1,71 @@
+{
+  "scope": "本轮启动时登记文件的前后比较；新增工具、覆盖表及证据另见交付哈希",
+  "changed_count": 13,
+  "changed": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+      "before": "63acbb92067fd9ba4229f7b83de8b5054023b6b4e520f9e7077d48b562896230",
+      "after": "74d21a5bd37c6178f988a86a4aa78a03d1e4244ecff26f133bb5e700ada82e43"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/送料契约.md",
+      "before": "138ba7f15059de5bbe49615fa466880db3a0a415f7c054c024e7347d08635922",
+      "after": "90b8db0295aca96d45e6811bfaa4f9c17e87bd3340e56368773139b63e483bea"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/修订记录.md",
+      "before": "996c707fba81b97585865441847963373250bc1c0a39293c75f50a95b77ec223",
+      "after": "3f7bbaecbb174d8ce673b1180bdf21c52c90e7ba1cd975978c88af4bd0b168b5"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/校验报告.md",
+      "before": "e9f9236fbcc54a5caf14034fec60702e0a3c47c28a9379c314b7c95667ca67cb",
+      "after": "4dedc1ca41876e1b618b02b4c1d59b53d1e400fce52165e4208dc546f71c2ddb"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/contract.json",
+      "before": "d0c887c73674a58424d05257f002953a2ee4d0b888614d52cc0b2b60ebd58ff2",
+      "after": "a555045972861bc60a84ade0cfaf81a037a1abfff89be1aeee578b9ef0e1a2db"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/来源清单.json",
+      "before": "0d6c55f896e7b406c36e22ae6646c4b228fee82d5abac91e31c2b76375775611",
+      "after": "180a10da3cb9730046e17ad575a8006bd0598b36fa6f7205d297ab5c55cae0ba"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/验证记录.md",
+      "before": "d367913d0b0f0809de9c6d8abba5e2352ac5eccd7e59a25e2e388bd9a49ba3bc",
+      "after": "69112e30d7f45f63c08b5f3f0e389efb24abedc02ca0047b82039a37e523d82f"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/转换说明.md",
+      "before": "861382b5f5a7d33adfb5601d23cb14dd6e705a4e62ebd3e8aa2574f6316b62c6",
+      "after": "ecc056d31af84d0d085270886ef6085ed0f2d21fe4b2161948841fece4a74f34"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/cargo-test.log",
+      "before": "96a92adcc0fd5e820a55850c3cde4903ec5ee6d0edf11dfb2b922099023dbc5e",
+      "after": "afc4d7f77196a85df94c65db076c4eeaa1aa9da245adfbe47bbe0a4d6cc16888"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/topology/src/lib.rs",
+      "before": "593b3e62c88629c82e22816b74e75b2e1e57eb2e690d077f7664d0a0c8ac1286",
+      "after": "bcfefa3afdd4481a900f902f6cb8f32292a94a5bd686748ba4f6a2aff2f847ff"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/topology/tests/validation.rs",
+      "before": "3ca31c3c16455a461a86d2b02ac98cfc6ce8fb4b6d25b193d0c3e43451b280c3",
+      "after": "06d290b9215e04649fc0a8f72a4b4398f1d29e7f14f5c88748d50bb3f2f19abc"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/工具/check_revision.py",
+      "before": "83e3be4a68258e2923bf5198c363825eec21d1f058d1846052f48af9ea8e752b",
+      "after": "397e614cf51e3a620b6f2336071c888ddfa9801f0ddee22fe63e6e58692d1ba7"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/工具/convert_candidate_b.py",
+      "before": "01f0b75c44f7ecf1b21a180271870b6bfcfa3a4da6bc9bb0087f4d8be786703e",
+      "after": "8d112e314160143599c1cda15695010a3c15b4fbfe06a87484bf79a5ef7798aa"
+    }
+  ]
+}

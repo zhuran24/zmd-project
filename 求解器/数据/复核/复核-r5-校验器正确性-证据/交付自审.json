@@ -1,0 +1,18 @@
+{
+  "status": "通过",
+  "findings_count": 0,
+  "links_checked": 6,
+  "missing_links": [],
+  "reviewed_files_unchanged": 58,
+  "changed_files": [],
+  "snapshot_files_unchanged": 58,
+  "reader_review": [
+    "结论及日期一致",
+    "计数和测试范围一致",
+    "正文引用与代码行号已核",
+    "候选与正式依据分开",
+    "未将静态或有限轨迹提升为运行认证",
+    "机器可读JSON与报告一致"
+  ],
+  "report_sha256": "912cc56e4214235e1a1d8c4e4c8bacbe72c7d2dc1b518ea73107e81f8842f4aa"
+}

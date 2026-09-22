@@ -1,0 +1,123 @@
+{
+  "validate_record": true,
+  "schema_check": true,
+  "collisions": [
+    {
+      "history": {
+        "id": "J|0|0|0",
+        "kind": "build",
+        "time": {
+          "kind": "rational",
+          "value": {
+            "value": "0",
+            "category": "候选"
+          }
+        }
+      },
+      "runtime": {
+        "event": "J|0|0|0",
+        "operation": "move",
+        "target": "PC|ore_source:north:1|feed_belt:south:0",
+        "outcome": "success",
+        "detail": "",
+        "basis": [
+          "规则 L13、L15–17、L23–25、L29–32",
+          "约束端口速率",
+          "受限模型声明 polling.both_failure",
+          "内核输入 §5.2、§6.3"
+        ]
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-2-证据/事件碰撞隔离副本/求解器/数据/样例/混做粉碎机两下游.json",
+      "match": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-2-证据/事件碰撞隔离副本/求解器/数据/正式静态目录.json",
+      "match": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-2-证据/事件碰撞隔离副本/求解器/规格/选择点参数轴.md",
+      "match": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-2-证据/事件碰撞隔离副本/求解器/规格/受限模型声明.md",
+      "match": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-2-证据/事件碰撞隔离副本/求解器/规格/内核配置-v1.json",
+      "match": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-2-证据/事件碰撞隔离副本/求解器/数据/样例/kernel_profile_v1参数赋值.json",
+      "match": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-2-证据/事件碰撞隔离副本/求解器/数据/样例/混做粉碎机两下游-黄金轨迹.json",
+      "match": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-2-证据/事件碰撞隔离副本/求解器/数据/样例/混做粉碎机两下游-黄金轨迹.md",
+      "match": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-2-证据/事件碰撞隔离副本/求解器/规格/受限转移定义.md",
+      "match": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-2-证据/事件碰撞隔离副本/求解器/规格/运行语义.md",
+      "match": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-2-证据/事件碰撞隔离副本/求解器/规格/内核输入.md",
+      "match": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-2-证据/事件碰撞隔离副本/求解器/规格/内核输出.md",
+      "match": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-2-证据/事件碰撞隔离副本/求解器/规格/内核输出.schema.json",
+      "match": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-2-证据/事件碰撞隔离副本/求解器/数据/样例/check_golden_trace.py",
+      "match": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-2-证据/事件碰撞隔离副本/求解器/数据/样例/runtime_example.py",
+      "match": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-2-证据/事件碰撞隔离副本/求解器/数据/样例/check_examples.py",
+      "match": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-2-证据/事件碰撞隔离副本/求解器/数据/样例/runtime_record.py",
+      "match": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-2-证据/事件碰撞隔离副本/求解器/数据/样例/event_order.py",
+      "match": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-2-证据/事件碰撞隔离副本/求解器/数据/样例/test_runtime_input.py",
+      "match": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-2-证据/事件碰撞隔离副本/《明日方舟：终末地》游戏规则.txt",
+      "match": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-2-证据/事件碰撞隔离副本/求解任务.txt",
+      "match": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-2-证据/事件碰撞隔离副本/求解约束.txt",
+      "match": true
+    }
+  ],
+  "output_sha256": "998c53ac9df2e3c6741a168d02d17ada165cb669cc5ad39d23cc3bf9cbca3ae4"
+}

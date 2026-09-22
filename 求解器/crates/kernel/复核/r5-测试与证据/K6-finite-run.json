@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+    "run",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/双成品满仓起动试作.json",
+    "--ticks",
+    "512",
+    "--no-output",
+    "--config",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+  ],
+  "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+  "returncode": 0,
+  "stdout": "{\n  \"actual_inbound\": {\n    \"源石粉末\": 508,\n    \"砂叶\": 1016,\n    \"砂叶种子\": 1016,\n    \"砂叶粉末\": 1524,\n    \"精选荞愈胶囊\": 7,\n    \"细磨荞花粉末\": 251,\n    \"致密源石粉末\": 250,\n    \"致密蓝铁粉末\": 247,\n    \"荞花\": 1016,\n    \"荞花种子\": 1016,\n    \"荞花粉末\": 1016,\n    \"蓝铁块\": 508,\n    \"蓝铁粉末\": 501,\n    \"钢制零件\": 96,\n    \"钢块\": 244,\n    \"钢质瓶\": 73,\n    \"高容谷地电池\": 9\n  },\n  \"completed_batches\": 6783,\n  \"elapsed_ns\": \"1651038946\",\n  \"final_inventory\": {\n    \"源石粉末\": 8,\n    \"源矿\": 80002,\n    \"砂叶\": 80000,\n    \"砂叶种子\": 80000,\n    \"砂叶粉末\": 779,\n    \"精选荞愈胶囊\": 7,\n    \"细磨荞花粉末\": 182,\n    \"致密源石粉末\": 116,\n    \"致密蓝铁粉末\": 4,\n    \"荞花\": 80000,\n    \"荞花种子\": 80000,\n    \"荞花粉末\": 516,\n    \"蓝铁块\": 7,\n    \"蓝铁矿\": 80002,\n    \"蓝铁粉末\": 7,\n    \"钢制零件\": 6,\n    \"钢块\": 2,\n    \"钢质瓶\": 3,\n    \"高容谷地电池\": 9\n  },\n  \"output\": \"disabled\",\n  \"statistics\": {\n    \"completed\": 1,\n    \"inconclusive\": 0,\n    \"stopped\": 0\n  },\n  \"status\": \"completed\",\n  \"ticks\": 512\n}\n",
+  "stderr": ""
+}

@@ -1,0 +1,42 @@
+{
+  "old_profile_sha256": "1e5b86f7c5324ae726a6b14a8338e34c41d68a99febd5348698e8ea3ef82643a",
+  "new_profile_sha256": "3df82c49ab2dcd44abc7a1f36334130787bd557b898743c22cbb97b1be1ee800",
+  "old_axis_count": 96,
+  "new_axis_count": 99,
+  "new_axes": {
+    "gate.concurrent_expiry": {
+      "disposition": "本版选值",
+      "value": "atomic_batch",
+      "meaning": "同刻到期窗口从同一快照清原因，最终图一次重算并映射旧指针；访问前多门身份删边同样批处理",
+      "coverage_loss": "逐边恢复及其显式排序、与判定交织均未覆盖；批处理不是规则唯一裁定",
+      "extension_gate": "同刻多门恢复的全称行为认证前",
+      "choice": "T1/T3/T8",
+      "lifetime": "U",
+      "basis": "物品准入口、轮询、判定次序；受限转移定义§2.1/§3.4"
+    },
+    "manufacturing.recipe_quantity_match": {
+      "disposition": "本版选值",
+      "value": "at_least",
+      "meaning": "full_batch下每个配方物种数量至少一批，允许该物种超量；仅搬运一批",
+      "coverage_loss": "exact（配方物种数量须恰一批）方向待审，不自动获准，也未被满载条件直接排除",
+      "extension_gate": "开闸匹配的完整覆盖前；非full_batch组合须另定义数量关系",
+      "choice": "T7",
+      "lifetime": "U",
+      "basis": "缓存格、存货/取货物品格、配方；一批通过量不等于开闸前数量恰等"
+    },
+    "manufacturing.recipe_extra_items": {
+      "disposition": "本版选值",
+      "value": "allow",
+      "meaning": "忽略配方之外的物种，只取所选配方一次用量；额外物种留原格",
+      "coverage_loss": "forbid（求值论域中存在额外物种则拒配）方向待审；混装多候选例依赖allow",
+      "extension_gate": "混装及额外物种开闸覆盖前",
+      "choice": "T7",
+      "lifetime": "U",
+      "basis": "缓存格、存货/取货物品格、配方；与物种完备度及数量关系分开"
+    }
+  },
+  "old_value_changes": [],
+  "scope": "重核新增轴、制造同种单格与原子边界事务；当前有限前缀重跑。共享文件由A线修改。",
+  "intermediate_profile_sha256": "c48dd86def369fc49372b268caf335c45716eed5d8a21d41c0da3c5f21bfbb48",
+  "final_check": "第6轮终稿再核99轴的实际值、处置及覆盖损失，与首次迁移相等；元数据revision为round3-r6；制造同种单格、箱体竞争即停、原子多门边界已核。"
+}

@@ -1,0 +1,34 @@
+[
+  {
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/supply-sufficient-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/supply-sufficient-record.json",
+      "--ticks",
+      "30"
+    ],
+    "exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/supply-sufficient-record.json\",\"status\":\"completed\"}\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/supply-explicit_ore_history-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/supply-explicit_ore_history-record.json",
+      "--ticks",
+      "30"
+    ],
+    "exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/supply-explicit_ore_history-record.json\",\"status\":\"completed\"}\n",
+    "stderr": ""
+  }
+]

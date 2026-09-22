@@ -1,0 +1,18 @@
+{
+  "status": "通过",
+  "findings": 0,
+  "report_lines": 158,
+  "table_rows_checked": 46,
+  "broken_links": [],
+  "reviewed_source_count": 79,
+  "source_changes": [],
+  "writes": "全部位于求解器/规格/复核/内核输入/；原被审文件未修改",
+  "reader_review": [
+    "结论和有限范围一致",
+    "历史指纹接续明确",
+    "复现和独立核算分开",
+    "没有未运行的全称声明",
+    "无候选规则引用或面积档位设计依据",
+    "表格转义和本地链接核验通过"
+  ]
+}

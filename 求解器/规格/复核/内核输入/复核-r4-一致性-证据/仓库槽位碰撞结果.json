@@ -1,0 +1,177 @@
+[
+  {
+    "label": "crusher:input:0",
+    "check": {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json",
+      "status": "完整运行输入检查通过（有限合成子集）",
+      "snapshot": "built_layout",
+      "anchor": {
+        "event": "blueprint_complete",
+        "side": "after"
+      },
+      "units": 14,
+      "occupied_cells": 153,
+      "physical_channels": 11,
+      "buffer_channels": 8,
+      "bridge_first_peers": [],
+      "counts_category": "算术推论（候选布局）",
+      "validation_category": "实测（工具）"
+    },
+    "summaries": [
+      {
+        "tick": "0",
+        "warehouse_ore": "79999",
+        "nonempty": {
+          "feed_belt:transport:0": [
+            {
+              "item": "源矿",
+              "quantity": "1",
+              "entered_at": "0"
+            }
+          ]
+        },
+        "crusher_phase": "idle",
+        "crusher_remaining": null,
+        "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+        "completed_batches": "0"
+      },
+      {
+        "tick": "1",
+        "warehouse_ore": "79997",
+        "nonempty": {
+          "crusher:input:0": [
+            {
+              "item": "源矿",
+              "quantity": "1",
+              "entered_at": "1"
+            }
+          ],
+          "crusher:buffer:0": [
+            {
+              "item": "源矿",
+              "quantity": "1",
+              "entered_at": "1"
+            }
+          ],
+          "feed_belt:transport:0": [
+            {
+              "item": "源矿",
+              "quantity": "1",
+              "entered_at": "1"
+            }
+          ]
+        },
+        "crusher_phase": "working",
+        "crusher_remaining": "1",
+        "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+        "completed_batches": "0"
+      },
+      {
+        "tick": "2",
+        "warehouse_ore": "79995",
+        "nonempty": {
+          "crusher:input:0": [
+            {
+              "item": "源矿",
+              "quantity": "2",
+              "entered_at": "1"
+            }
+          ],
+          "crusher:buffer:0": [
+            {
+              "item": "源矿",
+              "quantity": "1",
+              "entered_at": "2"
+            }
+          ],
+          "feed_belt:transport:0": [
+            {
+              "item": "源矿",
+              "quantity": "1",
+              "entered_at": "2"
+            }
+          ],
+          "belt_a0:transport:0": [
+            {
+              "item": "源石粉末",
+              "quantity": "1",
+              "entered_at": "2"
+            }
+          ]
+        },
+        "crusher_phase": "working",
+        "crusher_remaining": "1",
+        "crusher_next_output": "PC|crusher:north:2|belt_b0:south:0",
+        "completed_batches": "1"
+      },
+      {
+        "tick": "3",
+        "warehouse_ore": "79993",
+        "nonempty": {
+          "crusher:input:0": [
+            {
+              "item": "源矿",
+              "quantity": "3",
+              "entered_at": "1"
+            }
+          ],
+          "crusher:buffer:0": [
+            {
+              "item": "源矿",
+              "quantity": "1",
+              "entered_at": "3"
+            }
+          ],
+          "feed_belt:transport:0": [
+            {
+              "item": "源矿",
+              "quantity": "1",
+              "entered_at": "3"
+            }
+          ],
+          "belt_a1:transport:0": [
+            {
+              "item": "源石粉末",
+              "quantity": "1",
+              "entered_at": "3"
+            }
+          ],
+          "belt_b0:transport:0": [
+            {
+              "item": "源石粉末",
+              "quantity": "1",
+              "entered_at": "3"
+            }
+          ]
+        },
+        "crusher_phase": "working",
+        "crusher_remaining": "1",
+        "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+        "completed_batches": "2"
+      }
+    ]
+  },
+  {
+    "label": "feed_belt:transport:0",
+    "check": {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json",
+      "status": "完整运行输入检查通过（有限合成子集）",
+      "snapshot": "built_layout",
+      "anchor": {
+        "event": "blueprint_complete",
+        "side": "after"
+      },
+      "units": 14,
+      "occupied_cells": 153,
+      "physical_channels": 11,
+      "buffer_channels": 8,
+      "bridge_first_peers": [],
+      "counts_category": "算术推论（候选布局）",
+      "validation_category": "实测（工具）"
+    },
+    "exception": {
+      "type": "TypeError",
+      "message": "'NoneType' object is not subscriptable"
+    }
+  }
+]

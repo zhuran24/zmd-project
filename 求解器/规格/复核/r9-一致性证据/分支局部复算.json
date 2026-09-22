@@ -1,0 +1,57 @@
+{
+  "subsets": [
+    [
+      "PC_a"
+    ],
+    [
+      "PC_b"
+    ],
+    [
+      "PC_c"
+    ],
+    [
+      "PC_a",
+      "PC_b"
+    ],
+    [
+      "PC_a",
+      "PC_c"
+    ],
+    [
+      "PC_b",
+      "PC_c"
+    ],
+    [
+      "PC_a",
+      "PC_b",
+      "PC_c"
+    ]
+  ],
+  "table_count": 24,
+  "sequence": [
+    [
+      "PC_a",
+      "PC_b",
+      "PC_c"
+    ],
+    [
+      "PC_a",
+      "PC_b"
+    ],
+    [
+      "PC_b"
+    ],
+    [
+      "PC_a",
+      "PC_b",
+      "PC_c"
+    ]
+  ],
+  "answers": [
+    "PC_c",
+    "PC_b",
+    "PC_b",
+    "PC_c"
+  ],
+  "scope": "输入§5.3与转移§3.4的表查询条件例；非完整布局或Rust执行证据"
+}

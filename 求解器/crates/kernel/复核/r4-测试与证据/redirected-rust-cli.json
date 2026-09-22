@@ -1,0 +1,5 @@
+{
+  "status": "pass",
+  "original": "crates/kernel/tests/round5_cli.rs",
+  "note": "原测试全部4次CLI调用和全部断言；仅输出位置改为本目录。"
+}

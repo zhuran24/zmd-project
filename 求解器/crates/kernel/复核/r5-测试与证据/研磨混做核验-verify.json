@@ -1,0 +1,13 @@
+{
+  "command": [
+    "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+    "verify-cycle",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r5-测试与证据/研磨混做核验-cycle.json",
+    "--config",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+  ],
+  "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+  "returncode": 0,
+  "stdout": "{\n  \"checks\": [\n    \"引用原始字节/format/producer和完整来源链\",\n    \"原种子到达前缀及跨刻事件身份\",\n    \"独立重建D动态前件及周期账/率/接收域\",\n    \"从周期起点P次step_tick及完整终态\"\n  ],\n  \"cycle_replayed\": true,\n  \"period\": 5,\n  \"prefix_replayed\": 16,\n  \"start_time\": 10,\n  \"status\": \"input_checked\"\n}\n",
+  "stderr": ""
+}

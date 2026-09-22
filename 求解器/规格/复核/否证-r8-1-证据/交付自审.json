@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "reader_review": {
+    "standalone_context": true,
+    "current_conclusions_and_trial_log_distinguished": true,
+    "header_matches_three_verdicts": true,
+    "no_style_instruction_echo": true,
+    "numeric_scope_consistent": true,
+    "terms_defined": true,
+    "all_links_exist": true
+  },
+  "link_count": 24,
+  "protected_sources_unchanged": 23,
+  "evidence_extensions_checked": true,
+  "report_sha256": "e071d2de118f6acd28fb13af86893d71a931be2b00582383708042c0082401d5"
+}

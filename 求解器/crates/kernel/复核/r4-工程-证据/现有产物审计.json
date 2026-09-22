@@ -1,0 +1,238 @@
+{
+  "crates/kernel/evidence/revision-r3/交付清单.json": {
+    "checked": 189,
+    "mismatches": [],
+    "keys": [
+      "schema",
+      "changes",
+      "nonrecursive_files",
+      "cleanup_manifest",
+      "counts"
+    ]
+  },
+  "规格/第五轮规格修订-r8/交付清单.json": {
+    "checked": 0,
+    "mismatches": [],
+    "keys": [
+      "status",
+      "files",
+      "sha256",
+      "hash_scope",
+      "schema_unchanged_sha256",
+      "schema_matches_start",
+      "findings_resolved",
+      "questions_answered",
+      "observed_parallel_dependency_changes",
+      "parallel_scope",
+      "open_items"
+    ]
+  },
+  "规格/第五轮规格修订-r8/停止条件复算.json": {
+    "sha256": "367b8fc2f6817a2d973911bbec08857fd80cc2cd20c5bc3b2c2d6b9c6a62f613",
+    "keys": [
+      "scope",
+      "source_expression",
+      "reply_expression",
+      "truth_table",
+      "counterexample"
+    ],
+    "status": null,
+    "size": 17027
+  },
+  "规格/第五轮规格修订-r8/字段名复算.json": {
+    "sha256": "4db8411da0ea24f55683e463345b092a03ae95901dd48e349f5b978241c177cf",
+    "keys": [
+      "scope",
+      "original",
+      "renamed"
+    ],
+    "status": null,
+    "size": 707
+  },
+  "规格/第五轮规格修订-r8/回矿容量复算.json": {
+    "sha256": "e5ff0a1daca3ad711040b3406aa74d50f6c3f2a25d55cfe3f0d1ecfcb5f1c0b5",
+    "keys": [
+      "scope",
+      "cases"
+    ],
+    "status": null,
+    "size": 547
+  },
+  "规格/第五轮规格修订-r8/辖域扫描.json": {
+    "sha256": "e815937fb3b377e9dcdfa191d37172ed8b955d2e4fa908d415752ad9ebd35124",
+    "keys": [
+      "files",
+      "forbidden_current_phrases",
+      "historical_scope",
+      "questions_read"
+    ],
+    "status": null,
+    "size": 3104
+  },
+  "规格/第五轮规格修订-r8/本轮自查结果.json": {
+    "sha256": "10f1ffcd081594fa6d25a4c117fd4250b6afa754970e8d2006463ace8f795343",
+    "keys": [
+      "status",
+      "checks",
+      "check_count",
+      "round5_check_count",
+      "axis_count",
+      "scope",
+      "sources"
+    ],
+    "status": "PASS",
+    "size": 5267
+  },
+  "规格/第五轮规格修订-r8/自查结果.json": {
+    "sha256": "389621b4f6695d1e8db43a17586c5e6f0f3a8e9fd8a1f15176f80b7251d33bf5",
+    "keys": [
+      "status",
+      "scope",
+      "checks",
+      "check_count",
+      "open_items"
+    ],
+    "status": "PASS",
+    "size": 8463
+  },
+  "规格/第五轮规格修订-r8/StateSeed字段清点.json": {
+    "sha256": "339e3d73a4ed8bea4af0c47dd2b3db6917cc22a38472d64d6ac0dc9def57ca6e",
+    "keys": [
+      "Content",
+      "Inventory",
+      "WarehouseSlot",
+      "Warehouse",
+      "Cooldown",
+      "Progress",
+      "Level",
+      "Side",
+      "PollMemory",
+      "Gate",
+      "Logistics",
+      "Environment",
+      "Arbitration",
+      "ParameterValue",
+      "SemanticContext",
+      "State",
+      "Pending"
+    ],
+    "status": null,
+    "size": 1546
+  },
+  "规格/第五轮规格修订-r8/提升容量卡点.json": {
+    "sha256": "a11b88bfd9e2c4e1628f10650a12e27a7ba053197ddd29370f5ef6e4806daef0",
+    "keys": [
+      "warehouse_before",
+      "whole_box",
+      "actual_accepts",
+      "representative_accepts",
+      "actual_warehouse_after",
+      "family_under_capacity_holds"
+    ],
+    "status": null,
+    "size": 185
+  },
+  "规格/第五轮规格修订-r8/轮询均分局部推演.json": {
+    "sha256": "7ca20b2083ca9bc6df7f81867ad0b0cb45a785e30f1c3bc1098b51d3a89ace7f",
+    "keys": [],
+    "status": null,
+    "size": 1485
+  },
+  "规格/第五轮规格修订-r8/活动内核来源.json": {
+    "sha256": "9af66691a9c02e40faee3c0d80026b46b0252b69d8c097a8d16ac98a434474cc",
+    "keys": [
+      "current",
+      "changed_since_round5_start",
+      "scope"
+    ],
+    "status": null,
+    "size": 3734
+  },
+  "规格/第五轮规格修订-r8/交付自审.json": {
+    "sha256": "3db6d6f5aa5778678b39829c4efac278f213fd5e310ccf508d91383d0698aef3",
+    "keys": [
+      "status",
+      "reader_review",
+      "local_links_checked",
+      "links",
+      "formal_and_candidate_hashes_unchanged",
+      "checked_source_hashes_still_current",
+      "evidence_extensions",
+      "cargo_executed",
+      "simulator_written",
+      "git_commit_or_push_executed"
+    ],
+    "status": "PASS",
+    "size": 36622
+  },
+  "规格/第五轮规格修订-r8/开工指纹.json": {
+    "sha256": "7555d71d249594da77de63e8704c9f1ba145e092e4b5c7ab544af0839b7ba189",
+    "keys": [
+      "protected",
+      "specification_before",
+      "task_books",
+      "kernel_questions"
+    ],
+    "status": null,
+    "size": 128008
+  },
+  "crates/kernel/evidence/revision-r3/范围审计.json": {
+    "sha256": "61232402b71cbfdb0cc06faa66c174a25b5dd76d50741649280006804f628435",
+    "keys": [
+      "status",
+      "protected_files",
+      "protected_changes",
+      "protected_fingerprints",
+      "build_target",
+      "evidence_scan",
+      "unexpected_evidence_files",
+      "evidence_types",
+      "reference_and_golden_unchanged",
+      "scope",
+      "document_reader_review",
+      "unmodified_formal_files"
+    ],
+    "status": "pass",
+    "size": 613549
+  },
+  "crates/kernel/evidence/revision-r3/cleanup.json": {
+    "sha256": "cf3dc581f109adcf6bdb4bf27a759a49a8b4b9f2dc3435764c851537524989ac",
+    "keys": [
+      "status",
+      "before",
+      "after",
+      "moved_probes",
+      "removed_snapshot",
+      "removed_bytes",
+      "scope"
+    ],
+    "status": "pass",
+    "size": 66373
+  },
+  "crates/kernel/evidence/round5/audit-results.json": {
+    "sha256": "b9a50771902dc4e6b0732b684d27a3445d7dec4359cff0bb09d597f81fc042a8",
+    "keys": [
+      "status",
+      "records",
+      "cycles",
+      "coverage",
+      "required_unexercised",
+      "required_unexercised_reasons",
+      "bridge_first_contact",
+      "polling",
+      "dense"
+    ],
+    "status": "pass",
+    "size": 59215
+  },
+  "crates/kernel/evidence/round5/bridge-first-contact-audit.json": {
+    "sha256": "ed1a6081913a7dd1bbb6ceef26e83580e749ef0fbc66682c703265df02b57ba5",
+    "keys": [
+      "status",
+      "cases",
+      "missing_reason"
+    ],
+    "status": "pass",
+    "size": 13330
+  }
+}

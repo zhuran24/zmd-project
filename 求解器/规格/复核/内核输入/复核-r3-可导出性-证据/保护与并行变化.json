@@ -1,0 +1,18 @@
+{
+  "protected_count": 25037,
+  "protected_changes": [],
+  "simulator_set_unchanged": true,
+  "live_reviewed_file_changes": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录.json",
+      "at_snapshot": "40df21a3334db8178dca2a4cd4113d5ac8fa0b68f77be2a66ca3b2e6cd03f98d",
+      "now": "a05a20d0dfb827d0d53834fc286646c4a40cf2f41a1714e0d5acd251058aa384"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/送料契约.md",
+      "at_snapshot": "126032656df5167f240c14280cf093fb0bba5757535ba3967715165913cee515",
+      "now": "cd0d5c310aba6c096e146b664fb03afc9154e037b7a81b29f539fabe11c498c0"
+    }
+  ],
+  "note": "只读核对；复核脚本的所有持久写入均位于本证据目录。并行更新仅记录，不归因于某一席。"
+}

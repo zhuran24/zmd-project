@@ -1,0 +1,262 @@
+{
+  "type": "StructuredOutput",
+  "status": "completed",
+  "task": "任务书7任务8工程部分",
+  "error": null,
+  "quota_error": false,
+  "for_owner": [],
+  "engineering_completed": true,
+  "independent_seat_review": "pending",
+  "formal_sources": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+      "sha256": "d150b86b398f8e73e57bee1598020e6bcd895e5a13a254b4b11dd1e4416c325a",
+      "line_count": 114,
+      "registered_hash_matches": true,
+      "all_registered_lines_match": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解任务.txt",
+      "sha256": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+      "line_count": 16,
+      "registered_hash_matches": true,
+      "all_registered_lines_match": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解约束.txt",
+      "sha256": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6",
+      "line_count": 126,
+      "registered_hash_matches": true,
+      "all_registered_lines_match": true
+    }
+  ],
+  "code_changes": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/config.rs",
+      "action": "修改",
+      "reason": "参数生命周期按现行99轴表判断；judgment.order固定F组，移除旧global/per_instant特殊分桶。",
+      "sha256": "69676c866f8030ea877e662fdb85f600618f23edd99e4262699997adf9786f5a"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/engine.rs",
+      "action": "修改",
+      "reason": "累计数允许n>C的耗尽后态；核旧制造预计截止≤当前时间+剩余工作量，保护剩余量投影与事件身份。",
+      "sha256": "1c0f7bd68fef463bee4780f90be237e540f5e6fda680553a9fac9aa8933ec6d7"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/warehouse.rs",
+      "action": "修改",
+      "reason": "无线按物种最大可收量拟定原子事务；部分残留保留原格；同种分占多个编号格的严格部分扣减在提交前unsupported；四类尝试均5tick冷却。",
+      "sha256": "6d50eb1678921d2f3621149d60766463e6c4ce4fd57e0978ae1af7253557d5f5"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/polling.rs",
+      "action": "修改",
+      "reason": "从原几何候选按现值重算三类门原因；批量删/恢复边并重建级、阻尼、环和指针；事件记原因前后及恢复边。",
+      "sha256": "7d75aa6d73d0a76aaace36581e5aba0457db239cb7f3d59bb13c1610e551d26c"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/cycle.rs",
+      "action": "修改",
+      "reason": "实现phase-cycle-key-v1的成熟剩余、非运输同种分组归并、累计处理、门窗及制造剩余量；逐口全矿准入；v3证书环境与对应义务，工程周期统一diagnostic_cycle。",
+      "sha256": "d169699dde2e0e0a18b0ae8a441c9923811c0bc5330e317ed02ba5c68449200b"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/cycle_io.rs",
+      "action": "修改",
+      "reason": "v3周期及v4引用记录实际重放；证明引用也核原始字节并按所属目录解析；装载停止外壳同步新范围字段。",
+      "sha256": "93afc189315738f11780b04ac4ff5cbabf93afb2fabc04233ef5c3dd63f4de30"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/output.rs",
+      "action": "修改",
+      "reason": "生成v4记录、公共evidence_scope和当前读取审计指纹；记录门恢复实际覆盖；新证明引用规范化。",
+      "sha256": "059ad007e43a2df0ab3a4d59a9264a6fd8371be75e08eb26d9f070f6738d12b2"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/main.rs",
+      "action": "修改",
+      "reason": "CLI识别diagnostic_cycle与新周期版本；checkpoint和装载诊断按当前固定几何参数定位。",
+      "sha256": "b38a6cf3afd455a7b440f4e86bb3c27e5684ff872d4c0a2bfa8b84368f9f651d"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/transition.rs",
+      "action": "修改",
+      "reason": "在闭包输出明确首次完整重复成员的工程出口及PC-06对应断点，保留现有反复扫描。",
+      "sha256": "8d2d45792827cd813efd3fd38a39dee0318b999c9d3c7262bea9203c61f1bbb8"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/verify_all.py",
+      "action": "修改",
+      "reason": "批量入口分派当前v4/v3，历史版本另列；撤用过期正式源保护快照，当前源由实际依赖链核验；调用新部分接收审计，拒未知版本与未迁移参考生产者。",
+      "sha256": "a490697e759dd169008f5323624af482c728f9a2d81d0263c2da5490d6038602"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/audit_task7.py",
+      "action": "新增",
+      "reason": "独立于Rust转移实现，逐事件重算仓库、编号箱格、最大部分接收、实际入库账和箱冷却。",
+      "sha256": "591f0226e01006416b25095cc9cfd0fce3af95ad0165938026a77a067d4b23fa"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/周期键读取审计.md",
+      "action": "新增",
+      "reason": "给出实际字段读取、条件规范化、代表接收证明及未完成的真实对应；作为证书mapping_proof锁定。",
+      "sha256": "b8b8d2cdd017f3d0c88d71f3885b865d0776c0c390fec645598fd1997ec9eea5"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/README.md",
+      "action": "修改",
+      "reason": "提供当前命令、输入输出版本、退出码、支持域和任务7证据入口，旧性能与测试数字归史料。",
+      "sha256": "5b835b9435cc431a47f0ca4f4eaaacb50ec8be68a3ff805871c2b9ad10e0a74c"
+    }
+  ],
+  "validation": {
+    "main_checks": 80,
+    "supplemental_checks": 2,
+    "passed": 82,
+    "records_replayed": 19,
+    "cycle_results_replayed": 6,
+    "diagnostic_cycles": 5,
+    "budget_inconclusive": 1,
+    "build_exit_codes": [
+      0,
+      0
+    ],
+    "final_validation_exit_code": 0,
+    "batch_exit_code": 0,
+    "expected_rejection_exit_code": 2,
+    "commands": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/commands.json",
+    "build_binding": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/build-binding.json"
+  },
+  "evidence_categories": {
+    "load_only": "18个seed、指定check及D.3静态边界；均不步进；旧源失配另列装载诊断。",
+    "restricted_parameter_runs": "19份记录，5份周期诊断和1份预算未决；实际局部传输/恢复/键/重放见checks.json及cycle-results.json。",
+    "full_scope_proofs": {
+      "new_full_layout_certificates": 0,
+      "new_universal_certificates": 0,
+      "L": 0,
+      "U": 1113,
+      "open": "PC-04/06/07/08及完整真实周期复原；直接条件推导按原范围承接。"
+    }
+  },
+  "deliverables": {
+    "acceptance": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/内核验收.md",
+    "spec_proposal": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/规格修改稿-任务8.md",
+    "evidence": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核",
+    "file_manifest": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/交付清单.json"
+  },
+  "spec_proposals": [
+    "S8-01 累计n>C后态",
+    "S8-02 D.3逐口全矿前件",
+    "S8-03 非运输同种审计分组归并",
+    "S8-04 制造deadline不变量及remaining_work编码",
+    "S8-05 高率但对应未齐也保留诊断",
+    "S8-06 v4/v3版本与当前验收入口",
+    "S8-07 当前非空种子/恢复支持范围"
+  ],
+  "files": [
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/README.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/config.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/cycle.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/cycle_io.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/engine.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/main.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/output.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/polling.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/transition.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/warehouse.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/audit_task7.py",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/verify_all.py",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/周期键读取审计.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/内核验收.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/规格修改稿-任务8.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/audit_inputs.py",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/before.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/build-binding.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/checks.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/code-changes.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/commands.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/commands.log",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/cycle-results.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/final-check.log",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/finalize_artifacts.py",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/formal-source-audit.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/generate_cases.py",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/historical/identity-delta-pre-audit.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/input-reading-audit.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/negative/checkpoint-input.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/negative/load-stop-cycle.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/negative/伪造真实反例.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/negative/删除证据范围.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/negative/判定排序错组-input.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/negative/判定排序错组-result.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/negative/制造日程过晚-input.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/negative/制造日程过晚-result.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/negative/同种年龄分组-input.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/negative/无线多格歧义.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/negative/植物出库域-input.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/negative/篡改入库账.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/negative/篡改周期长度.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/negative/篡改固定排序.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/negative/篡改引用指纹.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/negative/篡改证明指纹.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/protected-files.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/reader-review.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/relative/cycle.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/run_command.py",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/budget-cycle.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/cache-off.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/cache-on.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/checkpoint-record.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/identity-full.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/双门窗口恢复.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/同刻双箱争余量.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/同种年龄分组-cycle.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/成熟旧货重试.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/无线一满一可收.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/无线全拒收.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/无线多格全收.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/无线空箱.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/无线部分接收.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/生产环带-cycle.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/累计审计与窗口周期-cycle.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/累计调低保留-cycle.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/累计调低保留.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/累计调高资格.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/装载与普通制造.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/身份实际切换.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/身份断边恢复.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/阻尼恢复.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/静止成熟与暂停键-cycle.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/runs/静止成熟与暂停键-cycle.record.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/sample-manifest.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/spec-merge-audit.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/supplemental-checks.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/supplemental_checks.py",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/tool-availability.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/validate_cases.py",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/交付清单.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/文件清单.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/结构化结果.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/调试后状态-读取摘要.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/内核/送料与接口-读取摘要.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/双门窗口恢复.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/同刻双箱争余量.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/成熟旧货重试.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/无线一满一可收.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/无线全拒收.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/无线多格全收.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/无线多格歧义.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/无线空箱.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/无线部分接收.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/生产环带.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/累计审计与窗口周期.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/累计调低保留.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/累计调高资格.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/装载与普通制造.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/身份实际切换.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/身份断边恢复.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/阻尼恢复.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/静止成熟与暂停键.json"
+  ]
+}

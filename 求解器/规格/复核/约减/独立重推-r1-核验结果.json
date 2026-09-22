@@ -1,0 +1,285 @@
+{
+  "schema": "independent-review-r1-v1",
+  "sources": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md",
+      "sha256": "36bfc4d83363cf482bc2d6b7068e38c921a937b19182157ad4aa87770b5abefa"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限模型声明.md",
+      "sha256": "fd6a18dbcd805414234e9dd00916eff5fc4811a7ebd0d9eb74ac6b80f63eba34"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "sha256": "397c1ce98e2faa6acd391e0fc7405da25c6c93aa07175795b84830b0ca6d4cd9"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md",
+      "sha256": "ad868c6c4c102ddadc7a8e2d566bea65763a350cf330f6fd9b11f9f27630e805"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/运行语义.md",
+      "sha256": "15aae7878c2239d7542f0a136d01581ec03fd0087b9df119ca4b68b10a6f04fd"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+      "sha256": "d4a2b567d0861876964c6a968d6b9e052eef74860324e28e86ea20cd6e5a03f7"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+      "sha256": "74d21a5bd37c6178f988a86a4aa78a03d1e4244ecff26f133bb5e700ada82e43"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/transition.rs",
+      "sha256": "6f926aec8b454fd989139185edd88daa152b8a522f3c5be8179dc6f69fd04eae"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/polling.rs",
+      "sha256": "8fb84535b4aa030b6dda820ccfb9dadb8cc969e714b4cd94e2350f589b95a59f"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解任务.txt",
+      "sha256": "10abf80fe6eefe647471eabe78da4053f77b489d3806722c501c6acb405a2864"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解约束.txt",
+      "sha256": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+      "sha256": "abc7a5867f6477eedb619c63a21c4a77144c57ad4567fdcfb696b3049d66a670"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json",
+      "sha256": "6dcc4af6cf5849aee49451759bb813900e3bc9c615dab3e22990a6df2a540689"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询.json",
+      "sha256": "407837b6f192fcf591b71f886f4b4cd9345bf3b0ac0921563507099ae114e8ae"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/count_classes.py",
+      "sha256": "1a5b407ff506f9403941fe1552b818408460effc899cad04a35b957ee8a21671"
+    }
+  ],
+  "axis_registry_check": {
+    "count": 15,
+    "axes": [
+      "connection.belt_shape",
+      "connection.build_order",
+      "connection.order",
+      "connection.tie",
+      "damping.branch",
+      "initialization.build_timing",
+      "initialization.debug_end",
+      "initialization.other_inventory",
+      "initialization.switches",
+      "initialization.warehouse_anchor",
+      "judgment.order",
+      "manufacturing.input_slot_selection",
+      "manufacturing.recipe_selection",
+      "transfer.phase",
+      "warehouse.external_supply"
+    ],
+    "status": "passed"
+  },
+  "recorded_source_changes": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md",
+      "sha256": "a966b004b9e1bc8db3028e8a72039570628ad4f7040b85a76be8f531b981558c",
+      "current_sha256": "36bfc4d83363cf482bc2d6b7068e38c921a937b19182157ad4aa87770b5abefa"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md",
+      "sha256": "9d1dee9ba0e7d4c6552422d9c3a6b33a97fea147c086adf248241408e0ecf624",
+      "current_sha256": "ad868c6c4c102ddadc7a8e2d566bea65763a350cf330f6fd9b11f9f27630e805"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+      "sha256": "6a3c2e618b807d4866335f187fc1c108145de44c84eaf53afcf6bcdb759cb221",
+      "current_sha256": "d4a2b567d0861876964c6a968d6b9e052eef74860324e28e86ea20cd6e5a03f7"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/transition.rs",
+      "sha256": "092e2bdedfa9cbd84eb6d6911d410fe4b4a0ae9004e6c0dff6c6d24354744c47",
+      "current_sha256": "6f926aec8b454fd989139185edd88daa152b8a522f3c5be8179dc6f69fd04eae"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/polling.rs",
+      "sha256": "b23c21541ba72555ef9f99f46a22569ea3907e09a92713b93155d64f24d1dffd",
+      "current_sha256": "8fb84535b4aa030b6dda820ccfb9dadb8cc969e714b4cd94e2350f589b95a59f"
+    }
+  ],
+  "non_source_results_unchanged": true,
+  "independent_graphs": [
+    {
+      "name": "混做粉碎机两下游",
+      "mode": "semantic_sweep",
+      "edge_count": 18,
+      "pairs_checked": 91,
+      "classes": 55296,
+      "independent_graph_matches": true
+    },
+    {
+      "name": "混做粉碎机两下游",
+      "mode": "operational_conservative",
+      "edge_count": 91,
+      "pairs_checked": 91,
+      "classes": 87178291200,
+      "independent_graph_matches": true
+    },
+    {
+      "name": "分流器三路轮询",
+      "mode": "semantic_sweep",
+      "edge_count": 95,
+      "pairs_checked": 153,
+      "classes": 27323180236800,
+      "independent_graph_matches": true
+    },
+    {
+      "name": "分流器三路轮询",
+      "mode": "operational_conservative",
+      "edge_count": 108,
+      "pairs_checked": 153,
+      "classes": 104657538585600,
+      "independent_graph_matches": true
+    }
+  ],
+  "pair_list_exact": true,
+  "combinatorial_checks": {
+    "graphs": 1100,
+    "permutations": 124470,
+    "adjacent_swap_component_graphs": 76,
+    "status": "passed"
+  },
+  "recipe_checks": {
+    "status": "passed",
+    "rows": [
+      {
+        "kind": "粉碎机",
+        "input_slots": 1,
+        "recipe_count": 4,
+        "support_sets": 5,
+        "max_simultaneous_candidates": 1
+      },
+      {
+        "kind": "精炼炉",
+        "input_slots": 1,
+        "recipe_count": 3,
+        "support_sets": 4,
+        "max_simultaneous_candidates": 1
+      },
+      {
+        "kind": "研磨机",
+        "input_slots": 2,
+        "recipe_count": 3,
+        "support_sets": 11,
+        "max_simultaneous_candidates": 1
+      },
+      {
+        "kind": "塑形机",
+        "input_slots": 1,
+        "recipe_count": 1,
+        "support_sets": 2,
+        "max_simultaneous_candidates": 1
+      },
+      {
+        "kind": "配件机",
+        "input_slots": 1,
+        "recipe_count": 1,
+        "support_sets": 2,
+        "max_simultaneous_candidates": 1
+      },
+      {
+        "kind": "种植机",
+        "input_slots": 1,
+        "recipe_count": 2,
+        "support_sets": 3,
+        "max_simultaneous_candidates": 1
+      },
+      {
+        "kind": "采种机",
+        "input_slots": 1,
+        "recipe_count": 2,
+        "support_sets": 3,
+        "max_simultaneous_candidates": 1
+      },
+      {
+        "kind": "封装机",
+        "input_slots": 2,
+        "recipe_count": 1,
+        "support_sets": 4,
+        "max_simultaneous_candidates": 1
+      },
+      {
+        "kind": "灌装机",
+        "input_slots": 2,
+        "recipe_count": 1,
+        "support_sets": 4,
+        "max_simultaneous_candidates": 1
+      }
+    ],
+    "per_kind_order_product": 3456,
+    "reduced_classes": 1,
+    "scope": "当前目录、单种格、输入并集、全部原料物种齐备；非输入物种不能新增候选"
+  },
+  "runtime_probes": [
+    {
+      "name": "混做粉碎机两下游",
+      "status": "not_executed",
+      "error_type": "CheckError",
+      "reason": "参数轴表哈希变化，须重新对齐",
+      "interpretation": "原样输入未通过参考入口；未绕过校验，不作换序运行通过声明"
+    },
+    {
+      "name": "分流器三路轮询",
+      "status": "not_executed",
+      "error_type": "CheckError",
+      "reason": "参数轴表哈希变化，须重新对齐",
+      "interpretation": "原样输入未通过参考入口；未绕过校验，不作换序运行通过声明"
+    }
+  ],
+  "stop_prefix_probe": {
+    "scope": "模板本体有停止时，停止前状态不交换；非完整输入验证",
+    "left": {
+      "stop": "unsupported(warehouse.empty_slot_identity, competing_new_species)",
+      "state": {
+        "machine_input": 0,
+        "machine_phase": "working",
+        "machine_cache": 1,
+        "box": {
+          "高容谷地电池": 1,
+          "精选荞愈胶囊": 1
+        },
+        "warehouse_species": [],
+        "empty_order": [
+          "W0"
+        ],
+        "assigned_slots": [
+          "W0"
+        ]
+      }
+    },
+    "right": {
+      "stop": "unsupported(warehouse.empty_slot_identity, competing_new_species)",
+      "state": {
+        "machine_input": 1,
+        "machine_phase": "idle",
+        "machine_cache": 0,
+        "box": {
+          "高容谷地电池": 1,
+          "精选荞愈胶囊": 1
+        },
+        "warehouse_species": [],
+        "empty_order": [
+          "W0"
+        ],
+        "assigned_slots": [
+          "W0"
+        ]
+      }
+    },
+    "same_state": false
+  },
+  "scope": "依赖图独立重建；组合算法复跑；停止前缀为规格局部演算，未绕过完整输入校验"
+}

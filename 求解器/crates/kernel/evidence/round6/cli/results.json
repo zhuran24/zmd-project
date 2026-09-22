@@ -1,0 +1,217 @@
+{
+  "status": "pass",
+  "cases": [
+    {
+      "name": "referenced-relative-cwd",
+      "status": "pass",
+      "verification": {
+        "checks": [
+          "引用原始字节/format/producer和完整来源链",
+          "原种子到达前缀及跨刻事件身份",
+          "独立重建D动态前件及周期账/率/接收域",
+          "从周期起点P次step_tick及完整终态"
+        ],
+        "cycle_replayed": true,
+        "period": 20,
+        "prefix_replayed": 21,
+        "start_time": 0,
+        "status": "input_checked"
+      }
+    },
+    {
+      "name": "referenced-missing_input",
+      "status": "rejected"
+    },
+    {
+      "name": "referenced-input_hash",
+      "status": "rejected"
+    },
+    {
+      "name": "referenced-input_format",
+      "status": "rejected"
+    },
+    {
+      "name": "referenced-input_producer",
+      "status": "rejected"
+    },
+    {
+      "name": "referenced-producer_claim",
+      "status": "rejected"
+    },
+    {
+      "name": "referenced-seed_reachability",
+      "status": "rejected"
+    },
+    {
+      "name": "referenced-parameter_point",
+      "status": "rejected"
+    },
+    {
+      "name": "referenced-reading",
+      "status": "rejected"
+    },
+    {
+      "name": "referenced-missing_domain",
+      "status": "rejected"
+    },
+    {
+      "name": "referenced-static_as_cycle",
+      "status": "rejected"
+    },
+    {
+      "name": "referenced-rate",
+      "status": "rejected"
+    },
+    {
+      "name": "referenced-ledger",
+      "status": "rejected"
+    },
+    {
+      "name": "referenced-acceptance",
+      "status": "rejected"
+    },
+    {
+      "name": "referenced-start_key",
+      "status": "rejected"
+    },
+    {
+      "name": "referenced-unreachable_start",
+      "status": "rejected"
+    },
+    {
+      "name": "referenced-prefix_erasure",
+      "status": "rejected"
+    },
+    {
+      "name": "referenced-full_base",
+      "status": "rejected"
+    },
+    {
+      "name": "referenced-missing_record",
+      "status": "rejected"
+    },
+    {
+      "name": "referenced-record_format",
+      "status": "rejected"
+    },
+    {
+      "name": "referenced-record_producer",
+      "status": "rejected"
+    },
+    {
+      "name": "resealed-record-duplicate-event",
+      "status": "rejected"
+    },
+    {
+      "name": "referenced-changed_bytes",
+      "status": "rejected"
+    },
+    {
+      "name": "referenced-loaded-zero-prefix",
+      "status": "pass"
+    },
+    {
+      "name": "none-relative-cwd",
+      "status": "pass",
+      "verification": {
+        "checks": [
+          "引用原始字节/format/producer和完整来源链",
+          "原种子到达前缀及跨刻事件身份",
+          "独立重建D动态前件及周期账/率/接收域",
+          "从周期起点P次step_tick及完整终态"
+        ],
+        "cycle_replayed": true,
+        "period": 20,
+        "prefix_replayed": 21,
+        "start_time": 0,
+        "status": "input_checked"
+      }
+    },
+    {
+      "name": "none-missing_input",
+      "status": "rejected"
+    },
+    {
+      "name": "none-input_hash",
+      "status": "rejected"
+    },
+    {
+      "name": "none-input_format",
+      "status": "rejected"
+    },
+    {
+      "name": "none-input_producer",
+      "status": "rejected"
+    },
+    {
+      "name": "none-producer_claim",
+      "status": "rejected"
+    },
+    {
+      "name": "none-seed_reachability",
+      "status": "rejected"
+    },
+    {
+      "name": "none-parameter_point",
+      "status": "rejected"
+    },
+    {
+      "name": "none-reading",
+      "status": "rejected"
+    },
+    {
+      "name": "none-missing_domain",
+      "status": "rejected"
+    },
+    {
+      "name": "none-static_as_cycle",
+      "status": "rejected"
+    },
+    {
+      "name": "none-rate",
+      "status": "rejected"
+    },
+    {
+      "name": "none-ledger",
+      "status": "rejected"
+    },
+    {
+      "name": "none-acceptance",
+      "status": "rejected"
+    },
+    {
+      "name": "none-start_key",
+      "status": "rejected"
+    },
+    {
+      "name": "none-unreachable_start",
+      "status": "rejected"
+    },
+    {
+      "name": "none-prefix_erasure",
+      "status": "rejected"
+    },
+    {
+      "name": "none-full_base",
+      "status": "rejected"
+    },
+    {
+      "name": "none-changed_bytes",
+      "status": "rejected"
+    },
+    {
+      "name": "none-loaded-zero-prefix",
+      "status": "pass"
+    },
+    {
+      "name": "KQ-09-load-resource",
+      "status": "diagnostic_replayed_no_cycle"
+    },
+    {
+      "name": "loaded-input-forged-as-load-shell",
+      "status": "rejected"
+    }
+  ],
+  "positive_schema_documents": 8,
+  "schema_sha256": "5033e231db40bab01b0466e3763bc53d6a3e4bc3b7d74c70e30659446e595bfc"
+}

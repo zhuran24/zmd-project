@@ -1,0 +1,257 @@
+{
+  "status": "PASS",
+  "original_round8_checks": 22,
+  "original_round5_checks": 183,
+  "extended_guard_cases": 889,
+  "guard_expression": "len(U)>=2 and any(w in assigned_slots for w in E)",
+  "label_cases": [
+    {
+      "item": "高容谷地电池",
+      "quantity": 1,
+      "same_slot": true,
+      "order": []
+    },
+    {
+      "item": "高容谷地电池",
+      "quantity": 2,
+      "same_slot": true,
+      "order": []
+    },
+    {
+      "item": "高容谷地电池",
+      "quantity": 79999,
+      "same_slot": true,
+      "order": []
+    },
+    {
+      "item": "精选荞愈胶囊",
+      "quantity": 1,
+      "same_slot": true,
+      "order": []
+    },
+    {
+      "item": "精选荞愈胶囊",
+      "quantity": 2,
+      "same_slot": true,
+      "order": []
+    },
+    {
+      "item": "精选荞愈胶囊",
+      "quantity": 79999,
+      "same_slot": true,
+      "order": []
+    }
+  ],
+  "capacity_cases": [
+    {
+      "before": 0,
+      "batch": 1,
+      "one_item_available": true,
+      "batch_available": true,
+      "representative_available": true
+    },
+    {
+      "before": 0,
+      "batch": 2,
+      "one_item_available": true,
+      "batch_available": true,
+      "representative_available": true
+    },
+    {
+      "before": 0,
+      "batch": 300,
+      "one_item_available": true,
+      "batch_available": true,
+      "representative_available": true
+    },
+    {
+      "before": 79998,
+      "batch": 1,
+      "one_item_available": true,
+      "batch_available": true,
+      "representative_available": true
+    },
+    {
+      "before": 79998,
+      "batch": 2,
+      "one_item_available": true,
+      "batch_available": true,
+      "representative_available": true
+    },
+    {
+      "before": 79998,
+      "batch": 300,
+      "one_item_available": true,
+      "batch_available": false,
+      "representative_available": true
+    },
+    {
+      "before": 79999,
+      "batch": 1,
+      "one_item_available": true,
+      "batch_available": true,
+      "representative_available": true
+    },
+    {
+      "before": 79999,
+      "batch": 2,
+      "one_item_available": true,
+      "batch_available": false,
+      "representative_available": true
+    },
+    {
+      "before": 79999,
+      "batch": 300,
+      "one_item_available": true,
+      "batch_available": false,
+      "representative_available": true
+    },
+    {
+      "before": 80000,
+      "batch": 1,
+      "one_item_available": false,
+      "batch_available": false,
+      "representative_available": true
+    },
+    {
+      "before": 80000,
+      "batch": 2,
+      "one_item_available": false,
+      "batch_available": false,
+      "representative_available": true
+    },
+    {
+      "before": 80000,
+      "batch": 300,
+      "one_item_available": false,
+      "batch_available": false,
+      "representative_available": true
+    }
+  ],
+  "original_artifacts": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/StateSeed字段清点.json",
+      "sha256": "339e3d73a4ed8bea4af0c47dd2b3db6917cc22a38472d64d6ac0dc9def57ca6e",
+      "lines": 104,
+      "json_type": "dict"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/check_round8.py",
+      "sha256": "67de1612400bbf73af12f645f36b6e79f53268c12edd42ce68b52810a1e7ea3b",
+      "lines": 197,
+      "json_type": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/schema生成.log",
+      "sha256": "43baade7e359a1c217033fe0d078eaa20073ae438ec6522c717160c23c7847de",
+      "lines": 1,
+      "json_type": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/交付清单.json",
+      "sha256": "1404c681b9c944227738f925fc7be1dba1289aac0e38081c8003c16f1c034d34",
+      "lines": 282,
+      "json_type": "dict"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/交付自审.json",
+      "sha256": "3db6d6f5aa5778678b39829c4efac278f213fd5e310ccf508d91383d0698aef3",
+      "lines": 711,
+      "json_type": "dict"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/修订论证.md",
+      "sha256": "fc8697841f2a7de476aab56ea05f9e68f3d87ecf276ff92da0e60939a1b5650d",
+      "lines": 45,
+      "json_type": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/停止条件复算.json",
+      "sha256": "367b8fc2f6817a2d973911bbec08857fd80cc2cd20c5bc3b2c2d6b9c6a62f613",
+      "lines": 823,
+      "json_type": "dict"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/回矿容量复算.json",
+      "sha256": "e5ff0a1daca3ad711040b3406aa74d50f6c3f2a25d55cfe3f0d1ecfcb5f1c0b5",
+      "lines": 21,
+      "json_type": "dict"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/字段名复算.json",
+      "sha256": "4db8411da0ea24f55683e463345b092a03ae95901dd48e349f5b978241c177cf",
+      "lines": 30,
+      "json_type": "dict"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/开工指纹.json",
+      "sha256": "7555d71d249594da77de63e8704c9f1ba145e092e4b5c7ab544af0839b7ba189",
+      "lines": 703,
+      "json_type": "dict"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/提升容量卡点.json",
+      "sha256": "a11b88bfd9e2c4e1628f10650a12e27a7ba053197ddd29370f5ef6e4806daef0",
+      "lines": 8,
+      "json_type": "dict"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/本轮自查.log",
+      "sha256": "8c50238811dc474e836d1a62146fe9baa3e75a0ce202e0c8ee1d9a0142e3d44d",
+      "lines": 1,
+      "json_type": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/本轮自查结果.json",
+      "sha256": "10f1ffcd081594fa6d25a4c117fd4250b6afa754970e8d2006463ace8f795343",
+      "lines": 58,
+      "json_type": "dict"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/活动内核来源.json",
+      "sha256": "9af66691a9c02e40faee3c0d80026b46b0252b69d8c097a8d16ac98a434474cc",
+      "lines": 37,
+      "json_type": "dict"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/第五轮自查.log",
+      "sha256": "1ccd449b3fb68b5730283a3a34d817463480ffc7ae4787b23b23d0a50e6a33dc",
+      "lines": 1,
+      "json_type": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/自查报告.md",
+      "sha256": "5960728c96205d30330250a59073aca6e8eaf2fff6555d76a6d88b5e28b1a405",
+      "lines": 38,
+      "json_type": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/自查结果.json",
+      "sha256": "389621b4f6695d1e8db43a17586c5e6f0f3a8e9fd8a1f15176f80b7251d33bf5",
+      "lines": 195,
+      "json_type": "dict"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/规格自查.log",
+      "sha256": "56238e4e759fd6ee981502cd7e42803aa7824bd88ae4bca3bb6bc716798ac4a3",
+      "lines": 131,
+      "json_type": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/轮询均分局部推演.json",
+      "sha256": "7ca20b2083ca9bc6df7f81867ad0b0cb45a785e30f1c3bc1098b51d3a89ace7f",
+      "lines": 158,
+      "json_type": "list"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/辖域扫描.json",
+      "sha256": "e815937fb3b377e9dcdfa191d37172ed8b955d2e4fa908d415752ad9ebd35124",
+      "lines": 104,
+      "json_type": "dict"
+    }
+  ],
+  "manifest_drift": [],
+  "protected_unchanged": true,
+  "rerun_method": "原r8 AST仅替换输出目录和执行包装；schema生成只改输出目标并与原字节比较；其余断言原样",
+  "scope": "静态结构、原自查、局部守卫和容量算术；非K线运行或全称证明"
+}

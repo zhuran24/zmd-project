@@ -1,0 +1,43 @@
+{
+  "name": "schema-validation",
+  "command": [
+    "node",
+    "-e",
+    "const fs=require('fs'),Ajv=require(process.argv[1]);\nconst request=JSON.parse(fs.readFileSync(0,'utf8'));\nconst validate=new Ajv({strict:false,allErrors:true}).compile(JSON.parse(fs.readFileSync(request.schema,'utf8')));\nconst rows=request.paths.map(path=>({path,valid:validate(JSON.parse(fs.readFileSync(path,'utf8'))),errors:validate.errors}));\nconsole.log(JSON.stringify(rows));if(rows.some(r=>!r.valid))process.exit(1);",
+    "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/2020.js"
+  ],
+  "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+  "exit_code": 0,
+  "result": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-1-证据/absolute-package/certificate.record.json",
+      "valid": true,
+      "errors": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-1-证据/absolute-package/certificate.json",
+      "valid": true,
+      "errors": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-1-证据/relative-package/record.json",
+      "valid": true,
+      "errors": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-1-证据/relative-package/certificate.json",
+      "valid": true,
+      "errors": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/cli/overflow.json",
+      "valid": true,
+      "errors": null
+    }
+  ],
+  "stderr": ""
+}
+STDOUT
+[{"path":"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-1-证据/absolute-package/certificate.record.json","valid":true,"errors":null},{"path":"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-1-证据/absolute-package/certificate.json","valid":true,"errors":null},{"path":"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-1-证据/relative-package/record.json","valid":true,"errors":null},{"path":"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-1-证据/relative-package/certificate.json","valid":true,"errors":null},{"path":"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/cli/overflow.json","valid":true,"errors":null}]
+
+STDERR

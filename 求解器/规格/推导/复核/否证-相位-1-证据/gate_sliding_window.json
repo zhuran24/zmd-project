@@ -1,0 +1,66 @@
+[
+  {
+    "tick": 0,
+    "offered": true,
+    "accept": true,
+    "leave": false,
+    "window_start": 0,
+    "used": 1
+  },
+  {
+    "tick": 1,
+    "offered": false,
+    "accept": false,
+    "leave": true,
+    "window_start": 0,
+    "used": 1
+  },
+  {
+    "tick": 2,
+    "offered": false,
+    "accept": false,
+    "leave": false,
+    "window_start": 0,
+    "used": 1
+  },
+  {
+    "tick": 3,
+    "offered": false,
+    "accept": false,
+    "leave": false,
+    "window_start": 0,
+    "used": 1
+  },
+  {
+    "tick": 4,
+    "offered": true,
+    "accept": true,
+    "leave": false,
+    "window_start": 0,
+    "used": 2
+  },
+  {
+    "tick": 5,
+    "offered": true,
+    "accept": true,
+    "leave": true,
+    "window_start": 5,
+    "used": 1
+  },
+  {
+    "tick": 6,
+    "offered": true,
+    "accept": true,
+    "leave": true,
+    "window_start": 5,
+    "used": 2
+  },
+  {
+    "tick": 7,
+    "offered": false,
+    "accept": false,
+    "leave": true,
+    "window_start": 5,
+    "used": 2
+  }
+]

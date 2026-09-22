@@ -1,0 +1,541 @@
+{
+  "ore-shortage": {
+    "warehouse_ore": [
+      "0",
+      "0",
+      "0",
+      "0"
+    ],
+    "completed": [
+      "0",
+      "0",
+      "1",
+      "1"
+    ],
+    "ore_output_events": [
+      [
+        "J|0|0|0"
+      ],
+      [],
+      [],
+      []
+    ],
+    "tick1_ore_out": [
+      {
+        "basis": [
+          "规则 L13、L15–17、L23–25、L29–32",
+          "约束端口速率",
+          "受限模型声明 polling.both_failure",
+          "内核输入 §5.2、§6.3"
+        ],
+        "detail": "neither_authorized",
+        "event": "J|1|0|0",
+        "operation": "move",
+        "outcome": "no_request",
+        "target": "PC|ore_source:north:1|feed_belt:south:0"
+      },
+      {
+        "basis": [
+          "规则 L13、L15–17、L23–25、L29–32",
+          "约束端口速率",
+          "受限模型声明 polling.both_failure",
+          "内核输入 §5.2、§6.3"
+        ],
+        "detail": "neither_authorized",
+        "event": "J|1|1|0",
+        "operation": "move",
+        "outcome": "no_request",
+        "target": "PC|ore_source:north:1|feed_belt:south:0"
+      }
+    ]
+  },
+  "baseline-crusher": {
+    "warehouse_ore": [
+      "79999",
+      "79998",
+      "79997",
+      "79996"
+    ],
+    "completed": [
+      "0",
+      "0",
+      "1",
+      "2"
+    ],
+    "ore_output_events": [
+      [
+        "J|0|0|0"
+      ],
+      [
+        "J|1|1|0"
+      ],
+      [
+        "J|2|1|0"
+      ],
+      [
+        "J|3|1|0"
+      ]
+    ],
+    "tick1_ore_out": [
+      {
+        "basis": [
+          "规则 L13、L15–17、L23–25、L29–32",
+          "约束端口速率",
+          "受限模型声明 polling.both_failure",
+          "内核输入 §5.2、§6.3"
+        ],
+        "detail": "neither_authorized",
+        "event": "J|1|0|0",
+        "operation": "move",
+        "outcome": "no_request",
+        "target": "PC|ore_source:north:1|feed_belt:south:0"
+      },
+      {
+        "basis": [
+          "规则 L13、L15–17、L23–25、L29–32",
+          "约束端口速率",
+          "受限模型声明 polling.both_failure",
+          "内核输入 §5.2、§6.3"
+        ],
+        "detail": "",
+        "event": "J|1|1|0",
+        "operation": "move",
+        "outcome": "success",
+        "target": "PC|ore_source:north:1|feed_belt:south:0"
+      },
+      {
+        "basis": [
+          "规则 L13、L15–17、L23–25、L29–32",
+          "约束端口速率",
+          "受限模型声明 polling.both_failure",
+          "内核输入 §5.2、§6.3"
+        ],
+        "detail": "neither_authorized",
+        "event": "J|1|2|0",
+        "operation": "move",
+        "outcome": "no_request",
+        "target": "PC|ore_source:north:1|feed_belt:south:0"
+      }
+    ],
+    "trace_matches_original": true
+  },
+  "supply-order-conflict": [
+    {
+      "basis": [
+        "受限转移定义 §2.1、§4.1；任务外部过程"
+      ],
+      "detail": "{\"event\":\"supply_a\",\"item\":\"源矿\",\"quantity\":{\"category\":\"候选\",\"value\":\"1\"},\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"1\"}}}",
+      "event": "supply_a",
+      "operation": "ore_supply",
+      "outcome": "success",
+      "target": "warehouse"
+    },
+    {
+      "basis": [
+        "受限转移定义 §2.1、§4.1；任务外部过程"
+      ],
+      "detail": "{\"event\":\"supply_b\",\"item\":\"源矿\",\"quantity\":{\"category\":\"候选\",\"value\":\"1\"},\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"1\"}}}",
+      "event": "supply_b",
+      "operation": "ore_supply",
+      "outcome": "success",
+      "target": "warehouse"
+    }
+  ],
+  "supply-order-control": [
+    {
+      "basis": [
+        "受限转移定义 §2.1、§4.1；任务外部过程"
+      ],
+      "detail": "{\"event\":\"supply_a\",\"item\":\"源矿\",\"quantity\":{\"category\":\"候选\",\"value\":\"1\"},\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"1\"}}}",
+      "event": "supply_a",
+      "operation": "ore_supply",
+      "outcome": "success",
+      "target": "warehouse"
+    },
+    {
+      "basis": [
+        "受限转移定义 §2.1、§4.1；任务外部过程"
+      ],
+      "detail": "{\"event\":\"supply_b\",\"item\":\"源矿\",\"quantity\":{\"category\":\"候选\",\"value\":\"1\"},\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"1\"}}}",
+      "event": "supply_b",
+      "operation": "ore_supply",
+      "outcome": "success",
+      "target": "warehouse"
+    }
+  ],
+  "after-closure-control": {
+    "start": {
+      "kind": "rational",
+      "value": {
+        "category": "候选",
+        "value": "1"
+      }
+    },
+    "first": {
+      "kind": "rational",
+      "value": {
+        "category": "候选",
+        "value": "2"
+      }
+    },
+    "from": {
+      "kind": "rational",
+      "value": {
+        "category": "候选",
+        "value": "2"
+      }
+    },
+    "identity_check": {
+      "accepted": true
+    },
+    "completion": [
+      {
+        "basis": [
+          "规则 L35",
+          "运行语义 §4.1",
+          "受限模型声明 time.manufacture_events"
+        ],
+        "event": "C|2|crusher",
+        "operation": "manufacture_complete",
+        "outcome": "success",
+        "target": "crusher"
+      }
+    ]
+  },
+  "pending-historical-alias": {
+    "start": {
+      "kind": "rational",
+      "value": {
+        "category": "候选",
+        "value": "1"
+      }
+    },
+    "first": {
+      "kind": "rational",
+      "value": {
+        "category": "候选",
+        "value": "2"
+      }
+    },
+    "from": {
+      "kind": "rational",
+      "value": {
+        "category": "候选",
+        "value": "2"
+      }
+    },
+    "identity_check": {
+      "accepted": false,
+      "error": "待事件与输入历史身份冲突: build_0"
+    },
+    "completion": [
+      {
+        "basis": [
+          "规则 L35",
+          "运行语义 §4.1",
+          "受限模型声明 time.manufacture_events"
+        ],
+        "event": "build_0",
+        "operation": "manufacture_complete",
+        "outcome": "success",
+        "target": "crusher"
+      }
+    ]
+  },
+  "start-only": {
+    "phases": [
+      [
+        "idle"
+      ],
+      [
+        "working"
+      ]
+    ],
+    "completed": {
+      "category": "算术推论",
+      "value": "0"
+    },
+    "axis": [
+      {
+        "axis": "manufacturing.output_blocked",
+        "coverage_status": "exercised",
+        "disposition": "已定",
+        "evidence": [
+          "J|1|0|11"
+        ],
+        "other_values": "已定域无其它值；未执行结构仍未验证",
+        "reason": "该已定范围无读法损失；关联未定轴另记"
+      }
+    ]
+  },
+  "gate-numeric-item": {
+    "gates": [
+      {
+        "blocked_reasons": [
+          "identity_mismatch"
+        ],
+        "total_received": {
+          "category": "候选",
+          "value": "0"
+        },
+        "unit": "probe_gate_a",
+        "window_received": {
+          "category": "候选",
+          "value": "0"
+        },
+        "window_started_at": null
+      },
+      {
+        "blocked_reasons": [
+          "window_exhausted"
+        ],
+        "total_received": {
+          "category": "算术推论",
+          "value": "1"
+        },
+        "unit": "probe_gate_b",
+        "window_received": {
+          "category": "算术推论",
+          "value": "1"
+        },
+        "window_started_at": {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "1"
+          }
+        }
+      }
+    ]
+  },
+  "baseline-splitter": {
+    "gates": [
+      {
+        "blocked_reasons": [
+          "window_exhausted"
+        ],
+        "total_received": {
+          "category": "算术推论",
+          "value": "1"
+        },
+        "unit": "probe_gate_a",
+        "window_received": {
+          "category": "算术推论",
+          "value": "1"
+        },
+        "window_started_at": {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "1"
+          }
+        }
+      },
+      {
+        "blocked_reasons": [
+          "window_exhausted"
+        ],
+        "total_received": {
+          "category": "算术推论",
+          "value": "1"
+        },
+        "unit": "probe_gate_b",
+        "window_received": {
+          "category": "算术推论",
+          "value": "1"
+        },
+        "window_started_at": {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "1"
+          }
+        }
+      }
+    ],
+    "trace_matches_original": true
+  },
+  "unrelated-fork-path": {
+    "reachable_until_nontransport": [
+      "probe_gate_a"
+    ],
+    "splitter_reached": false,
+    "undirected_component": [
+      "probe_bottom",
+      "probe_bottom_source",
+      "probe_box",
+      "probe_gate_a",
+      "probe_gate_b",
+      "probe_left",
+      "probe_left_source",
+      "probe_merger"
+    ],
+    "splitter_in_undirected_component": false
+  },
+  "original_records": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-kernel.json",
+      "ticks": 4,
+      "tick_keys": [
+        "closure",
+        "events",
+        "state",
+        "summary",
+        "time"
+      ],
+      "summary_keys": [
+        "completed_batches",
+        "crusher_next_output",
+        "crusher_phase",
+        "crusher_remaining",
+        "nonempty",
+        "tick",
+        "warehouse_ore"
+      ],
+      "acceptance_axes": [
+        {
+          "axis": "warehouse.acceptance",
+          "coverage_status": "not_exercised",
+          "disposition": "本版选值",
+          "evidence": [
+            "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+          ],
+          "other_values": "其它值及其联合组合未覆盖",
+          "reason": "仅容量/仅路径等目标读法"
+        },
+        {
+          "axis": "warehouse.acceptance_quantifier",
+          "coverage_status": "not_exercised",
+          "disposition": "本版选值",
+          "evidence": [
+            "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+          ],
+          "other_values": "其它值及其联合组合未覆盖",
+          "reason": "验收状态条件及环境量词"
+        }
+      ]
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-checkpoint_delta-kernel.json",
+      "ticks": 4,
+      "tick_keys": [
+        "closure",
+        "events",
+        "state",
+        "summary",
+        "time"
+      ],
+      "summary_keys": [
+        "completed_batches",
+        "crusher_next_output",
+        "crusher_phase",
+        "crusher_remaining",
+        "nonempty",
+        "tick",
+        "warehouse_ore"
+      ],
+      "acceptance_axes": [
+        {
+          "axis": "warehouse.acceptance",
+          "coverage_status": "not_exercised",
+          "disposition": "本版选值",
+          "evidence": [
+            "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+          ],
+          "other_values": "其它值及其联合组合未覆盖",
+          "reason": "仅容量/仅路径等目标读法"
+        },
+        {
+          "axis": "warehouse.acceptance_quantifier",
+          "coverage_status": "not_exercised",
+          "disposition": "本版选值",
+          "evidence": [
+            "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+          ],
+          "other_values": "其它值及其联合组合未覆盖",
+          "reason": "验收状态条件及环境量词"
+        }
+      ]
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-kernel.json",
+      "ticks": 12,
+      "tick_keys": [
+        "closure",
+        "events",
+        "state",
+        "summary",
+        "time"
+      ],
+      "summary_keys": [
+        "delivered_to_boxes",
+        "nonempty",
+        "splitter_next_output",
+        "tick",
+        "warehouse_ore"
+      ],
+      "acceptance_axes": [
+        {
+          "axis": "warehouse.acceptance",
+          "coverage_status": "not_exercised",
+          "disposition": "本版选值",
+          "evidence": [
+            "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+          ],
+          "other_values": "其它值及其联合组合未覆盖",
+          "reason": "仅容量/仅路径等目标读法"
+        },
+        {
+          "axis": "warehouse.acceptance_quantifier",
+          "coverage_status": "not_exercised",
+          "disposition": "本版选值",
+          "evidence": [
+            "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+          ],
+          "other_values": "其它值及其联合组合未覆盖",
+          "reason": "验收状态条件及环境量词"
+        }
+      ]
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-checkpoint_delta-kernel.json",
+      "ticks": 12,
+      "tick_keys": [
+        "closure",
+        "events",
+        "state",
+        "summary",
+        "time"
+      ],
+      "summary_keys": [
+        "delivered_to_boxes",
+        "nonempty",
+        "splitter_next_output",
+        "tick",
+        "warehouse_ore"
+      ],
+      "acceptance_axes": [
+        {
+          "axis": "warehouse.acceptance",
+          "coverage_status": "not_exercised",
+          "disposition": "本版选值",
+          "evidence": [
+            "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+          ],
+          "other_values": "其它值及其联合组合未覆盖",
+          "reason": "仅容量/仅路径等目标读法"
+        },
+        {
+          "axis": "warehouse.acceptance_quantifier",
+          "coverage_status": "not_exercised",
+          "disposition": "本版选值",
+          "evidence": [
+            "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+          ],
+          "other_values": "其它值及其联合组合未覆盖",
+          "reason": "验收状态条件及环境量词"
+        }
+      ]
+    }
+  ]
+}

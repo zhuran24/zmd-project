@@ -1,0 +1,742 @@
+{
+  "ore-l1": {
+    "warehouse_ore": [
+      "0",
+      "0",
+      "0",
+      "0"
+    ],
+    "completed": [
+      "0",
+      "0",
+      "1",
+      "1"
+    ],
+    "outbound": [
+      {
+        "time": {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "0"
+          }
+        },
+        "event": "J|0|0|0",
+        "channel": "PC|ore_source:north:1|feed_belt:south:0"
+      }
+    ],
+    "t1_nonempty": {
+      "crusher:buffer:0": [
+        {
+          "entered_at": "1",
+          "item": "源矿",
+          "quantity": "1"
+        }
+      ]
+    },
+    "t1_port_usage": [
+      {
+        "port": "crusher:south:0",
+        "quantity": {
+          "category": "算术推论",
+          "value": "1"
+        }
+      },
+      {
+        "port": "feed_belt:north:0",
+        "quantity": {
+          "category": "算术推论",
+          "value": "1"
+        }
+      }
+    ]
+  },
+  "ore-l2": {
+    "warehouse_ore": [
+      "0",
+      "0",
+      "0",
+      "0"
+    ],
+    "completed": [
+      "0",
+      "0",
+      "1",
+      "1"
+    ],
+    "outbound": [
+      {
+        "time": {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "0"
+          }
+        },
+        "event": "J|0|0|0",
+        "channel": "PC|ore_source:north:1|feed_belt:south:0"
+      }
+    ],
+    "t1_nonempty": {
+      "crusher:buffer:0": [
+        {
+          "entered_at": "1",
+          "item": "源矿",
+          "quantity": "1"
+        }
+      ]
+    },
+    "t1_port_usage": [
+      {
+        "port": "crusher:south:0",
+        "quantity": {
+          "category": "算术推论",
+          "value": "1"
+        }
+      },
+      {
+        "port": "feed_belt:north:0",
+        "quantity": {
+          "category": "算术推论",
+          "value": "1"
+        }
+      }
+    ]
+  },
+  "supply-order": {
+    "supply": {
+      "kind": "explicit_ore_history",
+      "events": [
+        {
+          "event": "supply_a",
+          "time": {
+            "kind": "rational",
+            "value": {
+              "value": "1",
+              "category": "候选"
+            }
+          },
+          "item": "源矿",
+          "quantity": {
+            "value": "1",
+            "category": "候选"
+          }
+        },
+        {
+          "event": "supply_b",
+          "time": {
+            "kind": "rational",
+            "value": {
+              "value": "1",
+              "category": "候选"
+            }
+          },
+          "item": "源矿",
+          "quantity": {
+            "value": "1",
+            "category": "候选"
+          }
+        }
+      ],
+      "through": {
+        "kind": "rational",
+        "value": {
+          "value": "3",
+          "category": "候选"
+        }
+      },
+      "basis": "初始80000足够本次有限段出库；区间外补给历史不在本次回放范围"
+    },
+    "relations": [
+      {
+        "before": "supply_b",
+        "after": "supply_a",
+        "relation": "occurs_before",
+        "basis": [
+          "复核同刻显式先后"
+        ]
+      }
+    ],
+    "executed": [
+      "supply_a",
+      "supply_b"
+    ]
+  },
+  "historical-alias": {
+    "history": [
+      {
+        "id": "build_0",
+        "kind": "build",
+        "time": {
+          "kind": "rational",
+          "value": {
+            "value": "-13",
+            "category": "候选"
+          }
+        }
+      }
+    ],
+    "pending": {
+      "basis": [
+        "制造耗时生成的非判定到期事件"
+      ],
+      "status": "specified",
+      "value": [
+        {
+          "event": "build_0",
+          "operation": "manufacture_complete",
+          "predecessors": [],
+          "status": "waiting",
+          "target": "crusher",
+          "trigger": {
+            "kind": "at_time",
+            "value": {
+              "kind": "rational",
+              "value": {
+                "category": "候选",
+                "value": "2"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "executed": [
+      {
+        "basis": [
+          "规则 L35",
+          "运行语义 §4.1",
+          "受限模型声明 time.manufacture_events"
+        ],
+        "event": "build_0",
+        "operation": "manufacture_complete",
+        "outcome": "success",
+        "target": "crusher"
+      }
+    ]
+  },
+  "after-closure": {
+    "start": {
+      "kind": "rational",
+      "value": {
+        "category": "候选",
+        "value": "1"
+      }
+    },
+    "first": {
+      "kind": "rational",
+      "value": {
+        "category": "候选",
+        "value": "2"
+      }
+    },
+    "from": {
+      "kind": "rational",
+      "value": {
+        "category": "候选",
+        "value": "2"
+      }
+    }
+  },
+  "offline-wrong-kind": {
+    "selected_events": [
+      {
+        "event": "review_offline",
+        "new_connection_order": {
+          "status": "specified",
+          "value": [],
+          "basis": [
+            "复核隔离输入"
+          ]
+        },
+        "effects": {
+          "cursor": {
+            "status": "derived",
+            "value": "offline.cursor_effect",
+            "basis": [
+              "复核引用错误类型负例"
+            ]
+          },
+          "inventory": {
+            "status": "derived",
+            "value": "offline.inventory_effect",
+            "basis": [
+              "复核引用错误类型负例"
+            ]
+          },
+          "progress": {
+            "status": "derived",
+            "value": "offline.progress_effect",
+            "basis": [
+              "复核引用错误类型负例"
+            ]
+          },
+          "direction": {
+            "status": "derived",
+            "value": "offline.direction_effect",
+            "basis": [
+              "复核引用错误类型负例"
+            ]
+          },
+          "gate_total": {
+            "status": "derived",
+            "value": "offline.gate_total_effect",
+            "basis": [
+              "复核引用错误类型负例"
+            ]
+          },
+          "gate_window": {
+            "status": "derived",
+            "value": "offline.gate_window_effect",
+            "basis": [
+              "复核引用错误类型负例"
+            ]
+          },
+          "gate_window_start": {
+            "status": "derived",
+            "value": "offline.gate_window_start_effect",
+            "basis": [
+              "复核引用错误类型负例"
+            ]
+          }
+        }
+      }
+    ],
+    "history": [
+      {
+        "id": "review_offline",
+        "kind": "runtime",
+        "time": {
+          "kind": "rational",
+          "value": {
+            "value": "1",
+            "category": "候选"
+          }
+        }
+      }
+    ]
+  },
+  "unrelated-fork": {
+    "choices": [
+      {
+        "channel": "PC|probe_left:west:0|probe_gate_a:south:0",
+        "fork_unit": "splitter",
+        "outgoing_channel": "PC|splitter:north:0|north_box:south:0"
+      }
+    ],
+    "origin": "PC|probe_left:west:0|probe_gate_a:south:0",
+    "reachable_until_nontransport": [
+      "probe_gate_a"
+    ],
+    "splitter_reachable": false
+  },
+  "manufacturing-prefix": {
+    "phases": [
+      {
+        "t": "0",
+        "phase": [
+          "idle",
+          "idle",
+          "idle"
+        ]
+      },
+      {
+        "t": "1",
+        "phase": [
+          "working",
+          "idle",
+          "idle"
+        ]
+      }
+    ],
+    "completions": [],
+    "successful_manufacture": [
+      {
+        "basis": [
+          "规则 L18、L35",
+          "受限转移定义 §4.2",
+          "受限模型声明 manufacture_subactions、atomic_batch、same_instant"
+        ],
+        "detail": "",
+        "event": "J|1|0|11",
+        "operation": "manufacture",
+        "outcome": "success",
+        "target": "crusher"
+      }
+    ],
+    "coverage": [
+      {
+        "axis": "manufacturing.output_blocked",
+        "coverage_status": "exercised",
+        "disposition": "已定",
+        "evidence": [
+          "J|1|0|11"
+        ],
+        "other_values": "已定域无其它值；未执行结构仍未验证",
+        "reason": "该已定范围无读法损失；关联未定轴另记"
+      }
+    ],
+    "internal_passages": [
+      [],
+      [
+        {
+          "batch": "crusher|1|input",
+          "channel": "BC|crusher:input:0|crusher:buffer:0",
+          "event": "J|1|0|11"
+        }
+      ]
+    ]
+  },
+  "gate-numeric": {
+    "settings": [
+      {
+        "unit": "probe_gate_a",
+        "item": 7,
+        "total_limit": null,
+        "window_limit": {
+          "value": "1",
+          "category": "候选"
+        }
+      },
+      {
+        "unit": "probe_gate_b",
+        "item": "源矿",
+        "total_limit": null,
+        "window_limit": {
+          "value": "1",
+          "category": "候选"
+        }
+      }
+    ],
+    "last_counters": [
+      {
+        "blocked_reasons": [
+          "identity_mismatch"
+        ],
+        "total_received": {
+          "category": "候选",
+          "value": "0"
+        },
+        "unit": "probe_gate_a",
+        "window_received": {
+          "category": "候选",
+          "value": "0"
+        },
+        "window_started_at": null
+      },
+      {
+        "blocked_reasons": [
+          "window_exhausted"
+        ],
+        "total_received": {
+          "category": "算术推论",
+          "value": "1"
+        },
+        "unit": "probe_gate_b",
+        "window_received": {
+          "category": "算术推论",
+          "value": "1"
+        },
+        "window_started_at": {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "1"
+          }
+        }
+      }
+    ]
+  },
+  "initial-duplicate-slot": {
+    "initial": [
+      {
+        "slot": "warehouse_0",
+        "item": "源矿",
+        "quantity": {
+          "value": "80000",
+          "category": "条文直引"
+        },
+        "empty_identity": {
+          "status": "not_applicable",
+          "value": null,
+          "basis": [
+            "非空格内容已给；空身份不适用"
+          ]
+        }
+      },
+      {
+        "slot": "warehouse_0",
+        "item": "砂叶",
+        "quantity": {
+          "value": "80000",
+          "category": "条文直引"
+        },
+        "empty_identity": {
+          "status": "not_applicable",
+          "value": null,
+          "basis": [
+            "非空格内容已给；空身份不适用"
+          ]
+        }
+      },
+      {
+        "slot": "warehouse_2",
+        "item": "砂叶种子",
+        "quantity": {
+          "value": "80000",
+          "category": "条文直引"
+        },
+        "empty_identity": {
+          "status": "not_applicable",
+          "value": null,
+          "basis": [
+            "非空格内容已给；空身份不适用"
+          ]
+        }
+      },
+      {
+        "slot": "warehouse_3",
+        "item": "荞花",
+        "quantity": {
+          "value": "80000",
+          "category": "条文直引"
+        },
+        "empty_identity": {
+          "status": "not_applicable",
+          "value": null,
+          "basis": [
+            "非空格内容已给；空身份不适用"
+          ]
+        }
+      },
+      {
+        "slot": "warehouse_4",
+        "item": "荞花种子",
+        "quantity": {
+          "value": "80000",
+          "category": "条文直引"
+        },
+        "empty_identity": {
+          "status": "not_applicable",
+          "value": null,
+          "basis": [
+            "非空格内容已给；空身份不适用"
+          ]
+        }
+      },
+      {
+        "slot": "warehouse_5",
+        "item": "蓝铁矿",
+        "quantity": {
+          "value": "80000",
+          "category": "条文直引"
+        },
+        "empty_identity": {
+          "status": "not_applicable",
+          "value": null,
+          "basis": [
+            "非空格内容已给；空身份不适用"
+          ]
+        }
+      }
+    ],
+    "current": [
+      {
+        "slot": "warehouse_0",
+        "item": "源矿",
+        "quantity": {
+          "value": "80000",
+          "category": "条文直引"
+        },
+        "empty_identity": {
+          "status": "not_applicable",
+          "value": null,
+          "basis": [
+            "非空格内容已给；空身份不适用"
+          ]
+        }
+      },
+      {
+        "slot": "warehouse_1",
+        "item": "砂叶",
+        "quantity": {
+          "value": "80000",
+          "category": "条文直引"
+        },
+        "empty_identity": {
+          "status": "not_applicable",
+          "value": null,
+          "basis": [
+            "非空格内容已给；空身份不适用"
+          ]
+        }
+      },
+      {
+        "slot": "warehouse_2",
+        "item": "砂叶种子",
+        "quantity": {
+          "value": "80000",
+          "category": "条文直引"
+        },
+        "empty_identity": {
+          "status": "not_applicable",
+          "value": null,
+          "basis": [
+            "非空格内容已给；空身份不适用"
+          ]
+        }
+      },
+      {
+        "slot": "warehouse_3",
+        "item": "荞花",
+        "quantity": {
+          "value": "80000",
+          "category": "条文直引"
+        },
+        "empty_identity": {
+          "status": "not_applicable",
+          "value": null,
+          "basis": [
+            "非空格内容已给；空身份不适用"
+          ]
+        }
+      },
+      {
+        "slot": "warehouse_4",
+        "item": "荞花种子",
+        "quantity": {
+          "value": "80000",
+          "category": "条文直引"
+        },
+        "empty_identity": {
+          "status": "not_applicable",
+          "value": null,
+          "basis": [
+            "非空格内容已给；空身份不适用"
+          ]
+        }
+      },
+      {
+        "slot": "warehouse_5",
+        "item": "蓝铁矿",
+        "quantity": {
+          "value": "80000",
+          "category": "条文直引"
+        },
+        "empty_identity": {
+          "status": "not_applicable",
+          "value": null,
+          "basis": [
+            "非空格内容已给；空身份不适用"
+          ]
+        }
+      }
+    ]
+  },
+  "crusher-control": {
+    "warehouse_ore": [
+      "79999",
+      "79998",
+      "79997",
+      "79996"
+    ],
+    "completed": [
+      "0",
+      "0",
+      "1",
+      "2"
+    ],
+    "outbound": [
+      {
+        "time": {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "0"
+          }
+        },
+        "event": "J|0|0|0",
+        "channel": "PC|ore_source:north:1|feed_belt:south:0"
+      },
+      {
+        "time": {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "1"
+          }
+        },
+        "event": "J|1|1|0",
+        "channel": "PC|ore_source:north:1|feed_belt:south:0"
+      },
+      {
+        "time": {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "2"
+          }
+        },
+        "event": "J|2|1|0",
+        "channel": "PC|ore_source:north:1|feed_belt:south:0"
+      },
+      {
+        "time": {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "3"
+          }
+        },
+        "event": "J|3|1|0",
+        "channel": "PC|ore_source:north:1|feed_belt:south:0"
+      }
+    ],
+    "t1_nonempty": {
+      "crusher:buffer:0": [
+        {
+          "entered_at": "1",
+          "item": "源矿",
+          "quantity": "1"
+        }
+      ],
+      "feed_belt:transport:0": [
+        {
+          "entered_at": "1",
+          "item": "源矿",
+          "quantity": "1"
+        }
+      ]
+    },
+    "t1_port_usage": [
+      {
+        "port": "crusher:south:0",
+        "quantity": {
+          "category": "算术推论",
+          "value": "1"
+        }
+      },
+      {
+        "port": "feed_belt:north:0",
+        "quantity": {
+          "category": "算术推论",
+          "value": "1"
+        }
+      },
+      {
+        "port": "feed_belt:south:0",
+        "quantity": {
+          "category": "算术推论",
+          "value": "1"
+        }
+      },
+      {
+        "port": "ore_source:north:1",
+        "quantity": {
+          "category": "算术推论",
+          "value": "1"
+        }
+      }
+    ]
+  }
+}

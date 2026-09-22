@@ -1,0 +1,24 @@
+{
+  "verdicts": [
+    {
+      "id": "K3-r4-L1-01",
+      "refuted": false,
+      "reason": "未能否证：两空箱按2的幂到期序号交换先后的预定排序满足同刻固定要求；常序、有限表和有理周期槽均不能完整表示。已有未覆盖声明不等于补齐编码。论证见/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-1.md §2。"
+    },
+    {
+      "id": "K3-r4-L3-01",
+      "refuted": false,
+      "reason": "未能否证：独立复现仓库格重名后完整输入检查通过，4次出库却扣仓库7件，制造输入格残留3件；原黄金比对虽拒绝该变体，错寻址仍成立。论证见/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-1.md §3。"
+    },
+    {
+      "id": "K3-r4-L3-02",
+      "refuted": false,
+      "reason": "未能否证：独立隔离复现将build_13及引用改为J|0|0|0，建造与首件成功移动同名，落盘生成、schema及validate_record均通过，违反全局事件身份契约。论证见/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-1.md §4。"
+    },
+    {
+      "id": "K3-r4-L3-03",
+      "refuted": false,
+      "reason": "未能否证：实核41项清单哈希，内核输入.md和运行记录两项仍失配；当前运行记录内部22项依赖及完整重算通过，问题限于外层清单过期。论证见/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r4-1.md §5。"
+    }
+  ]
+}

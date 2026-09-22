@@ -1,0 +1,104 @@
+{
+  "files": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/参数轴-对内核输入请求的答复.md",
+      "lines": 62,
+      "old_phrase_hits": []
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/运行语义.md",
+      "lines": 216,
+      "old_phrase_hits": []
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点清单.md",
+      "lines": 192,
+      "old_phrase_hits": []
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+      "lines": 187,
+      "old_phrase_hits": []
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限模型声明.md",
+      "lines": 145,
+      "old_phrase_hits": []
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md",
+      "lines": 222,
+      "old_phrase_hits": []
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md",
+      "lines": 414,
+      "old_phrase_hits": []
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.md",
+      "lines": 121,
+      "old_phrase_hits": []
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/规则覆盖表.md",
+      "lines": 253,
+      "old_phrase_hits": []
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/四件前置义务对照.md",
+      "lines": 61,
+      "old_phrase_hits": []
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/对内核的修改请求.md",
+      "lines": 38,
+      "old_phrase_hits": []
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/普遍审查场景.md",
+      "lines": 31,
+      "old_phrase_hits": []
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入-对参数轴的修改请求.md",
+      "lines": 51,
+      "old_phrase_hits": []
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第四轮前置-疑问记录.md",
+      "lines": 37,
+      "old_phrase_hits": []
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/修订记录.md",
+      "lines": 248,
+      "old_phrase_hits": []
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入-修订记录.md",
+      "lines": 131,
+      "old_phrase_hits": []
+    }
+  ],
+  "forbidden_current_phrases": [
+    "verification_scope",
+    "整箱至少两种无非空/历史目标物种且有无身份空格时",
+    "T12整箱多新物种竞争无身份空格明确unsupported",
+    "无身份空格至少一个时返回unsupported",
+    "len(U)>=2 and len(E)>=1",
+    "循环段不得有矿石入库",
+    "无回矿前提下"
+  ],
+  "historical_scope": "复核目录与以旧轮次命名的证据保存旧句，不作为现行契约；本轮脚本中的旧句仅为负例",
+  "questions_read": [
+    "KQ-01",
+    "KQ-02",
+    "KQ-03",
+    "KQ-04",
+    "KQ-05",
+    "KQ-06",
+    "KQ-07",
+    "KQ-08"
+  ]
+}

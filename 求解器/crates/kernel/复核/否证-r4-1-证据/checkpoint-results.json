@@ -1,0 +1,47 @@
+{
+  "seed_identical": true,
+  "seed_time": {
+    "kind": "rational",
+    "value": {
+      "category": "候选",
+      "value": "1"
+    }
+  },
+  "seed_phase": "after_closure",
+  "full_budget_next_time": {
+    "kind": "rational",
+    "value": {
+      "category": "候选",
+      "value": "2"
+    }
+  },
+  "full_budget_next_state_matches": true,
+  "limited": [
+    {
+      "format": "full_state_each_instant",
+      "exit_code": 2,
+      "trace": null,
+      "status": "inconclusive",
+      "parameters_present": true,
+      "history_present": true,
+      "open_items": [
+        "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+        "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。",
+        "inconclusive resource.sweeps @ J|2|0|13: instant=2 sweep=1: 未见完整状态重复，不能推进时刻"
+      ]
+    },
+    {
+      "format": "checkpoint_delta",
+      "exit_code": 2,
+      "trace": null,
+      "status": "inconclusive",
+      "parameters_present": true,
+      "history_present": true,
+      "open_items": [
+        "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+        "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。",
+        "inconclusive resource.sweeps @ J|2|0|13: instant=2 sweep=1: 未见完整状态重复，不能推进时刻"
+      ]
+    }
+  ]
+}

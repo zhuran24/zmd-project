@@ -1,0 +1,92 @@
+   Compiling memchr v2.8.3
+   Compiling itoa v1.0.18
+   Compiling serde_core v1.0.229
+   Compiling zmij v1.0.23
+   Compiling serde_json v1.0.151
+   Compiling serde v1.0.229
+   Compiling kernel v0.1.0 (/home/zhuran24/zmd-research-fresh/求解器/crates/kernel)
+error[E0061]: this method takes 2 arguments but 1 argument was supplied
+   --> crates/kernel/src/tests.rs:227:17
+    |
+227 |     let err = e.transfer("south_box").unwrap_err();
+    |                 ^^^^^^^^------------- argument #2 of type `&str` is missing
+    |
+note: method defined here
+   --> crates/kernel/src/warehouse.rs:233:19
+    |
+233 |     pub(crate) fn transfer(&mut self, uid: &str, event: &str) -> Result<(String, String)> {
+    |                   ^^^^^^^^                       -----------
+help: provide the argument
+    |
+227 |     let err = e.transfer("south_box", /* &str */).unwrap_err();
+    |                                     ++++++++++++
+
+error[E0061]: this method takes 2 arguments but 1 argument was supplied
+   --> crates/kernel/src/tests.rs:311:18
+    |
+311 |     assert_eq!(e.transfer("south_box").unwrap().0, "failure");
+    |                  ^^^^^^^^------------- argument #2 of type `&str` is missing
+    |
+note: method defined here
+   --> crates/kernel/src/warehouse.rs:233:19
+    |
+233 |     pub(crate) fn transfer(&mut self, uid: &str, event: &str) -> Result<(String, String)> {
+    |                   ^^^^^^^^                       -----------
+help: provide the argument
+    |
+311 |     assert_eq!(e.transfer("south_box", /* &str */).unwrap().0, "failure");
+    |                                      ++++++++++++
+
+error[E0061]: this method takes 2 arguments but 1 argument was supplied
+   --> crates/kernel/src/tests.rs:327:11
+    |
+327 |         e.transfer("south_box").unwrap(),
+    |           ^^^^^^^^------------- argument #2 of type `&str` is missing
+    |
+note: method defined here
+   --> crates/kernel/src/warehouse.rs:233:19
+    |
+233 |     pub(crate) fn transfer(&mut self, uid: &str, event: &str) -> Result<(String, String)> {
+    |                   ^^^^^^^^                       -----------
+help: provide the argument
+    |
+327 |         e.transfer("south_box", /* &str */).unwrap(),
+    |                               ++++++++++++
+
+error[E0061]: this method takes 2 arguments but 1 argument was supplied
+   --> crates/kernel/src/tests.rs:348:18
+    |
+348 |     assert_eq!(e.transfer("south_box").unwrap().0, "success");
+    |                  ^^^^^^^^------------- argument #2 of type `&str` is missing
+    |
+note: method defined here
+   --> crates/kernel/src/warehouse.rs:233:19
+    |
+233 |     pub(crate) fn transfer(&mut self, uid: &str, event: &str) -> Result<(String, String)> {
+    |                   ^^^^^^^^                       -----------
+help: provide the argument
+    |
+348 |     assert_eq!(e.transfer("south_box", /* &str */).unwrap().0, "success");
+    |                                      ++++++++++++
+
+error[E0277]: the trait bound `Vec<std::string::String>: From<&str>` is not satisfied
+   --> crates/kernel/src/tests.rs:486:36
+    |
+486 |         (origin.into(), "splitter".into()),
+    |                                    ^^^^ the trait `From<&str>` is not implemented for `Vec<std::string::String>`
+    |
+    = help: the following other types implement trait `From<T>`:
+              `Vec<T, A>` implements `From<BinaryHeap<T, A>>`
+              `Vec<T, A>` implements `From<Box<[T], A>>`
+              `Vec<T, A>` implements `From<VecDeque<T, A>>`
+              `Vec<T>` implements `From<&[T; N]>`
+              `Vec<T>` implements `From<&[T]>`
+              `Vec<T>` implements `From<&mut [T; N]>`
+              `Vec<T>` implements `From<&mut [T]>`
+              `Vec<T>` implements `From<Cow<'_, [T]>>`
+            and 5 others
+    = note: required for `&str` to implement `Into<Vec<std::string::String>>`
+
+Some errors have detailed explanations: E0061, E0277.
+For more information about an error, try `rustc --explain E0061`.
+error: could not compile `kernel` (lib test) due to 5 previous errors

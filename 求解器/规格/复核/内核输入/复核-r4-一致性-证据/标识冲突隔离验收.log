@@ -1,0 +1,2 @@
+{"status": "通过", "golden_match": true, "ticks": 4, "complete_cycles": "2", "events": [28, 42, 43, 43], "output": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/复核-r4-一致性-证据/标识冲突隔离副本/求解器/数据/样例/混做粉碎机两下游-运行记录.json"}
+{"stored_record_accepted": true, "collisions": [{"event": "J|0|0|0", "operation": "move", "target": "PC|ore_source:north:1|feed_belt:south:0", "outcome": "success", "detail": "", "basis": ["规则 L13、L15–17、L23–25、L29–32", "约束端口速率", "受限模型声明 polling.both_failure", "内核输入 §5.2、§6.3"]}]}

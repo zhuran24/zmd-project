@@ -1,0 +1,61 @@
+{
+  "date": "2026-09-20",
+  "inputs": {
+    "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt": {
+      "sha256": "abc7a5867f6477eedb619c63a21c4a77144c57ad4567fdcfb696b3049d66a670",
+      "lines": 114
+    },
+    "/home/zhuran24/zmd-research-fresh/求解任务.txt": {
+      "sha256": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+      "lines": 16
+    },
+    "/home/zhuran24/zmd-research-fresh/求解约束.txt": {
+      "sha256": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6",
+      "lines": 126
+    },
+    "/home/zhuran24/zmd-research-fresh/候选约束.txt": {
+      "sha256": "a0ac3f9c82f371132b7de29fe47e4c6c587904680bc2786523de0c825fd5efd9",
+      "lines": 862
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/工作/查漏.md": {
+      "sha256": "5a89abbf38f69e1696d59f1cb0f6d3e7ca3a46a890b04553846c98f6bee000c9",
+      "lines": 269
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/会议2成果修订-v46.md": {
+      "sha256": "6bde32bdff2be01a48dfda85d60e4b6a17e62ec963a447d4daa91e27bfa85978",
+      "lines": 1003
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7草案.md": {
+      "sha256": "17f67ce1cddf34d1672d9af71707ccf9fffd21a73bd60e0fb5aa8c1fd7d302c4",
+      "lines": 225
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/回路总数决定论-v2.md": {
+      "sha256": "27efd4ae6eafcf93c3592fa36c34eb0f107954652ef217cde898f2731bee8307",
+      "lines": 314
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/三种相位不改产量-v2.md": {
+      "sha256": "51327afa43a98af4a002f1e98f25561159a3855fe8240c77863dc4ab66324753",
+      "lines": 296
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/总纲-流量存量相位.md": {
+      "sha256": "24587afeeb7875a5b6a9a68c7ea5e04bddd5e701416e0e8ec3d438e8679a2321",
+      "lines": 44
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/工作/总结-终稿.md": {
+      "sha256": "101c0ccd64e6ee2cdd3cf5bb52ae89ff1f89d90436a6275645fa64193d743b03",
+      "lines": 909
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-v2-phase.md": {
+      "sha256": "4c7082a570988c31557b4905ea2772bb1fcd5ce62f4be954946bc6b0937d2c34",
+      "lines": 217
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/Cargo.toml": {
+      "sha256": "279ef923475621d73a24e2d04781ae126c93fbfc82f9646947aee8025e96de95",
+      "lines": 3
+    },
+    "/tmp/claude-1000/-home-zhuran24-zmd-research-fresh/786b1aaa-8792-43fd-afbc-2a7361543a07/scratchpad/总结/对话-0920-主线.md": {
+      "sha256": "1b4b8caa005ab05dcd88529a0cbf458de65e567386d701c5b855ab91ecab6c51",
+      "lines": 627
+    }
+  }
+}

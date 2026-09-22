@@ -1,0 +1,170 @@
+{
+  "status": "pass",
+  "results": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序0核验-周期证书-kernel.json",
+      "old_bytes": 44813959,
+      "new_bytes": 1455969,
+      "sha256": "f7570b5688c26f215f3f94c59a525c225cb1e1fb825397434584c8d79f669235",
+      "status": "counterexample",
+      "verification": {
+        "checks": [
+          "引用原始字节/format/producer和完整来源链",
+          "原种子到达前缀及跨刻事件身份",
+          "独立重建D动态前件及周期账/率/接收域",
+          "从周期起点P次step_tick及完整终态"
+        ],
+        "cycle_replayed": true,
+        "period": 190,
+        "prefix_replayed": 263,
+        "start_time": 72,
+        "status": "input_checked"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序1核验-周期证书-kernel.json",
+      "old_bytes": 91450614,
+      "new_bytes": 1453300,
+      "sha256": "c8a5e8ce33cfafd28fe9a7575190680ed2a0921d0469337d01452fd2e25ac470",
+      "status": "counterexample",
+      "verification": {
+        "checks": [
+          "引用原始字节/format/producer和完整来源链",
+          "原种子到达前缀及跨刻事件身份",
+          "独立重建D动态前件及周期账/率/接收域",
+          "从周期起点P次step_tick及完整终态"
+        ],
+        "cycle_replayed": true,
+        "period": 190,
+        "prefix_replayed": 466,
+        "start_time": 275,
+        "status": "input_checked"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序2核验-周期证书-kernel.json",
+      "old_bytes": 193675977,
+      "new_bytes": 312958,
+      "sha256": "b64e5bd729849a7cd96c63a41742efe0c37cc1d3064bb25d0e80106289f8b815",
+      "status": "inconclusive",
+      "verification": {
+        "cycle_replayed": false,
+        "prefix_replayed": 1000,
+        "reason": "原种子前缀及停止/预算位置已复现，无周期",
+        "status": "input_checked"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序3核验-周期证书-kernel.json",
+      "old_bytes": 77110962,
+      "new_bytes": 1203428,
+      "sha256": "0c08a7f34bfe7d9ede54df8104a4ab3dcb129a1c1b41c846637461e555efd770",
+      "status": "counterexample",
+      "verification": {
+        "checks": [
+          "引用原始字节/format/producer和完整来源链",
+          "原种子到达前缀及跨刻事件身份",
+          "独立重建D动态前件及周期账/率/接收域",
+          "从周期起点P次step_tick及完整终态"
+        ],
+        "cycle_replayed": true,
+        "period": 105,
+        "prefix_replayed": 455,
+        "start_time": 349,
+        "status": "input_checked"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序4核验-周期证书-kernel.json",
+      "old_bytes": 87878521,
+      "new_bytes": 2057874,
+      "sha256": "6763742463f1b20064daebe5dccd5def9a78ced3007a2046a6115cc857ab7647",
+      "status": "counterexample",
+      "verification": {
+        "checks": [
+          "引用原始字节/format/producer和完整来源链",
+          "原种子到达前缀及跨刻事件身份",
+          "独立重建D动态前件及周期账/率/接收域",
+          "从周期起点P次step_tick及完整终态"
+        ],
+        "cycle_replayed": true,
+        "period": 395,
+        "prefix_replayed": 522,
+        "start_time": 126,
+        "status": "input_checked"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序5核验-周期证书-kernel.json",
+      "old_bytes": 193769731,
+      "new_bytes": 312955,
+      "sha256": "18da276b6c9ba54402f6ffbdfaa874ded93fe4852273b3279aeeda5299576957",
+      "status": "inconclusive",
+      "verification": {
+        "cycle_replayed": false,
+        "prefix_replayed": 1000,
+        "reason": "原种子前缀及停止/预算位置已复现，无周期",
+        "status": "input_checked"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点循环种子核验-周期证书-kernel.json",
+      "old_bytes": 107959854,
+      "new_bytes": 533770,
+      "sha256": "86150aa2f7d6663f1df4eaef4a72f4ae599590aa70febf17341d4261a5baab08",
+      "status": "inconclusive",
+      "verification": {
+        "cycle_replayed": false,
+        "prefix_replayed": 100,
+        "reason": "原种子前缀及停止/预算位置已复现，无周期",
+        "status": "input_checked"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点核验-周期证书-kernel.json",
+      "old_bytes": 26325774,
+      "new_bytes": 324006,
+      "sha256": "166a62a6f105386924d96d24f1bac24fb9e6753002e5526612ae98c766134132",
+      "status": "inconclusive",
+      "verification": {
+        "cycle_replayed": false,
+        "prefix_replayed": 60,
+        "reason": "原种子前缀及停止/预算位置已复现，无周期",
+        "status": "input_checked"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点闭环核验-周期证书-kernel.json",
+      "old_bytes": 251890196,
+      "new_bytes": 548268,
+      "sha256": "29dbd7b14390a79e73f161633243a9ae98d87b65d8a15dc03b2e036b8920341f",
+      "status": "inconclusive",
+      "verification": {
+        "cycle_replayed": false,
+        "prefix_replayed": 240,
+        "reason": "原种子前缀及停止/预算位置已复现，无周期",
+        "status": "input_checked"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/生产循环环带-周期证书-kernel.json",
+      "old_bytes": 1495025,
+      "new_bytes": 350622,
+      "sha256": "92500e01d5e5918e066818aa5eac6beb925c54574b409eadf135b63595af6f1f",
+      "status": "counterexample",
+      "verification": {
+        "checks": [
+          "引用原始字节/format/producer和完整来源链",
+          "原种子到达前缀及跨刻事件身份",
+          "独立重建D动态前件及周期账/率/接收域",
+          "从周期起点P次step_tick及完整终态"
+        ],
+        "cycle_replayed": true,
+        "period": 20,
+        "prefix_replayed": 21,
+        "start_time": 0,
+        "status": "input_checked"
+      }
+    }
+  ]
+}

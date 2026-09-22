@@ -1,0 +1,40 @@
+{
+  "findings": [
+    {
+      "id": "KR-r4-L1-01",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/engine.rs:855–861；/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md §6.2",
+      "claim": "库存校验将同物种、不同入格年龄的多条记录误判为混种，拒绝规格允许的StateSeed。",
+      "evidence": "规则L13限制物种数；转移§6.2明确同种不同年龄不可合并。south_box同格两件电池分别entered_at=-2/-1时，kernel seed退出2报“普通格不能混种”；单行quantity=2对照成功。详见报告§2及age-cohort-results.json。",
+      "severity": "重要"
+    },
+    {
+      "id": "KR-r4-L1-02",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/engine.rs:768–788；/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/cycle.rs:344–365",
+      "claim": "待事件trigger未校验封闭字段，未知扩展通过种子装载并进入生产判等键。",
+      "evidence": "输入§6只定义trigger={kind,value}，转移§6.2要求拒绝未知扩展。仅增加trigger.extra后，seed与Engine::cycle_key均成功；两键唯一差异就是该未定义字段。证据见key-probe-summary.json、extra-key-result.json。",
+      "severity": "重要"
+    },
+    {
+      "id": "KR-r4-L1-03",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/input.rs:873–895、921–927",
+      "claim": "分支表装载校验覆盖全部几何分流器，错误拒绝永远不会触发阻尼查询的合法空表输入。",
+      "evidence": "输入§5.3只要求可能被阻尼查询触达的分流器，转移§3.1已定单级不请求。分流器样例完整几何中所有非运输取货侧至多一级，完整表运行12刻成功；choices=[]却立即unresolved(damping.branch)。见confirmed-findings.json。",
+      "severity": "重要"
+    },
+    {
+      "id": "KR-r4-L1-04",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/output.rs:273–275；/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/polling.rs:118–127；/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/audit-results.json",
+      "claim": "沿路径出现连续两带被误报为damping.belt_adjacency已执行，使覆盖缺口被漏记。",
+      "evidence": "参数轴§2限定该轴仅供geometric_components使用，受限模型声明明确path_runs不调用它；输出却凭belt_adjacency标记给exercised。阻尼连续带记录列252个此类证据，聚合只报另外两项缺口。见adjacency-coverage.json。",
+      "severity": "重要"
+    },
+    {
+      "id": "KR-r4-L1-05",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/output.rs:391、482–505",
+      "claim": "已成功装载的检查点在首个续跑时刻预算耗尽后被删除，运行记录丢失start_state和空前缀end_time。",
+      "evidence": "输出§2要求保留start_state，空前缀end_time等于种子时刻；§1空上下文例外针对装载前失败。实际t=1 after_closure检查点通过seed验证，run --max-sweeps 1在t=2未决却输出trace=null。见closed-first-sweep-stop-result.json；与KQ-09不同。",
+      "severity": "重要"
+    }
+  ],
+  "notes": "完整论证：/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/复核-r4-规格保真.md。本次83项内核库测试、26份运行记录及10份循环结果复验通过；其中5个实际周期完成独立起点重跑。新证据仅在指定复核目录，未改被复核文件。"
+}

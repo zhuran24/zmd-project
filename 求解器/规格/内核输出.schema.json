@@ -1,0 +1,4957 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zmd:kernel-output-v4",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/RunRecord"
+    },
+    {
+      "$ref": "#/$defs/CycleResult"
+    },
+    {
+      "$ref": "#/$defs/ProofCertificate"
+    }
+  ],
+  "$defs": {
+    "Quantity": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string",
+          "pattern": "^-?\\d+(?:/[1-9]\\d*)?$"
+        },
+        "category": {
+          "enum": [
+            "条文直引",
+            "算术推论",
+            "候选",
+            "启发式",
+            "实测"
+          ]
+        }
+      },
+      "required": [
+        "value",
+        "category"
+      ],
+      "additionalProperties": false
+    },
+    "Decision": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "enum": [
+            "specified",
+            "derived",
+            "unresolved",
+            "not_applicable"
+          ]
+        },
+        "value": {},
+        "basis": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "required": [
+        "status",
+        "value",
+        "basis"
+      ],
+      "additionalProperties": false
+    },
+    "Time": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "rational"
+        },
+        "value": {
+          "$ref": "#/$defs/Quantity"
+        }
+      },
+      "required": [
+        "kind",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "Hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "Warehouse": {
+      "type": "object",
+      "properties": {
+        "slots": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "slot": {
+                "type": "string",
+                "minLength": 1
+              },
+              "item": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "quantity": {
+                "$ref": "#/$defs/Quantity"
+              },
+              "empty_identity": {
+                "$ref": "#/$defs/Decision"
+              }
+            },
+            "required": [
+              "slot",
+              "item",
+              "quantity",
+              "empty_identity"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "unlisted": {
+          "const": "empty"
+        }
+      },
+      "required": [
+        "slots",
+        "unlisted"
+      ],
+      "additionalProperties": false
+    },
+    "Content": {
+      "type": "object",
+      "properties": {
+        "item": {
+          "type": "string",
+          "minLength": 1
+        },
+        "quantity": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "entered_at": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "item",
+        "quantity",
+        "entered_at"
+      ],
+      "additionalProperties": false
+    },
+    "Progress": {
+      "type": "object",
+      "properties": {
+        "unit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "phase": {
+          "enum": [
+            "idle",
+            "intake",
+            "working",
+            "completed"
+          ]
+        },
+        "recipe": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "candidate_recipes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "locked_recipe": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "remaining": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cooldowns": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "slot": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "remaining": {
+                "$ref": "#/$defs/Time"
+              }
+            },
+            "required": [
+              "slot",
+              "remaining"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "unit",
+        "phase",
+        "recipe",
+        "candidate_recipes",
+        "locked_recipe",
+        "remaining",
+        "cooldowns"
+      ],
+      "additionalProperties": false
+    },
+    "StateSeed": {
+      "type": "object",
+      "properties": {
+        "layout_snapshot": {
+          "type": "string",
+          "minLength": 1
+        },
+        "settings_anchor": {
+          "type": "object",
+          "properties": {
+            "event": {
+              "type": "string",
+              "minLength": 1
+            },
+            "side": {
+              "enum": [
+                "before",
+                "after"
+              ]
+            }
+          },
+          "required": [
+            "event",
+            "side"
+          ],
+          "additionalProperties": false
+        },
+        "warehouse": {
+          "$ref": "#/$defs/Warehouse"
+        },
+        "inventory": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "slot": {
+                "type": "string",
+                "minLength": 1
+              },
+              "contents": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/Content"
+                }
+              }
+            },
+            "required": [
+              "slot",
+              "contents"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "progress": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Progress"
+          }
+        },
+        "logistics": {
+          "type": "object",
+          "properties": {
+            "active_channels": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "blocked_channels": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "poll_memory": {
+              "$ref": "#/$defs/Decision"
+            },
+            "gate_counters": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "unit": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "blocked_reasons": {
+                    "type": "array",
+                    "items": {
+                      "enum": [
+                        "identity_mismatch",
+                        "total_exhausted",
+                        "window_exhausted"
+                      ]
+                    }
+                  },
+                  "total_received": {
+                    "$ref": "#/$defs/Quantity"
+                  },
+                  "window_received": {
+                    "$ref": "#/$defs/Quantity"
+                  },
+                  "window_started_at": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/$defs/Time"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "unit",
+                  "blocked_reasons",
+                  "total_received",
+                  "window_received",
+                  "window_started_at"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "connection_order": {
+              "$ref": "#/$defs/Decision"
+            }
+          },
+          "required": [
+            "active_channels",
+            "blocked_channels",
+            "poll_memory",
+            "gate_counters",
+            "connection_order"
+          ],
+          "additionalProperties": false
+        },
+        "environment": {
+          "type": "object",
+          "properties": {
+            "time": {
+              "$ref": "#/$defs/Time"
+            },
+            "stage": {
+              "enum": [
+                "building",
+                "debug",
+                "zero_intervention"
+              ]
+            },
+            "online": {
+              "type": "boolean"
+            },
+            "withdrawal_memory": {
+              "$ref": "#/$defs/Decision"
+            }
+          },
+          "required": [
+            "time",
+            "stage",
+            "online",
+            "withdrawal_memory"
+          ],
+          "additionalProperties": false
+        },
+        "semantic_context": {
+          "type": "object",
+          "properties": {
+            "arbitration": {
+              "type": "object",
+              "properties": {
+                "level_order": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "warehouse_empty_slot_order": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              },
+              "required": [
+                "level_order",
+                "warehouse_empty_slot_order"
+              ],
+              "additionalProperties": false
+            },
+            "parameter_values": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "axis": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "value": {
+                    "$ref": "#/$defs/Decision"
+                  },
+                  "lifetime": {
+                    "enum": [
+                      "F",
+                      "O",
+                      "U"
+                    ]
+                  }
+                },
+                "required": [
+                  "axis",
+                  "value",
+                  "lifetime"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "judgment_context": {
+              "$ref": "#/$defs/Decision"
+            },
+            "pending_events": {
+              "$ref": "#/$defs/Decision"
+            },
+            "tick_context": {
+              "$ref": "#/$defs/Decision"
+            }
+          },
+          "required": [
+            "arbitration",
+            "parameter_values",
+            "judgment_context",
+            "pending_events",
+            "tick_context"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "layout_snapshot",
+        "settings_anchor",
+        "warehouse",
+        "inventory",
+        "progress",
+        "logistics",
+        "environment",
+        "semantic_context"
+      ],
+      "additionalProperties": false
+    },
+    "Parameters": {
+      "type": "object",
+      "properties": {
+        "axis_registry": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "sha256": {
+              "$ref": "#/$defs/Hash"
+            }
+          },
+          "required": [
+            "path",
+            "sha256"
+          ],
+          "additionalProperties": false
+        },
+        "profile_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "fixed": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/Decision"
+          },
+          "properties": {
+            "judgment.order_scope": {
+              "allOf": [
+                {
+                  "$ref": "#/$defs/Decision"
+                },
+                {
+                  "properties": {
+                    "value": {
+                      "const": "fixed_run_order"
+                    }
+                  }
+                }
+              ]
+            },
+            "transfer.failure_cooldown": {
+              "allOf": [
+                {
+                  "$ref": "#/$defs/Decision"
+                },
+                {
+                  "properties": {
+                    "value": {
+                      "const": "every_attempt"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "required": [
+            "judgment.order_scope",
+            "transfer.failure_cooldown",
+            "judgment.order"
+          ]
+        },
+        "offline_mutable": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/Decision"
+          },
+          "properties": {
+            "judgment.order_scope": false,
+            "transfer.failure_cooldown": false,
+            "judgment.order": false
+          }
+        },
+        "fixedness_unproven": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/Decision"
+          },
+          "properties": {
+            "judgment.order_scope": false,
+            "transfer.failure_cooldown": false,
+            "judgment.order": false
+          }
+        }
+      },
+      "required": [
+        "axis_registry",
+        "profile_id",
+        "fixed",
+        "offline_mutable",
+        "fixedness_unproven"
+      ],
+      "additionalProperties": false
+    },
+    "Event": {
+      "type": "object",
+      "properties": {
+        "event": {
+          "type": "string",
+          "minLength": 1
+        },
+        "operation": {
+          "enum": [
+            "move",
+            "internal_move",
+            "manufacture",
+            "transfer",
+            "manufacture_complete",
+            "time_advance",
+            "ore_supply",
+            "offline",
+            "player_action",
+            "gate_window_expiry",
+            "gate_identity_maintenance"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "minLength": 1
+        },
+        "outcome": {
+          "enum": [
+            "success",
+            "failure",
+            "guard_false",
+            "no_request"
+          ]
+        },
+        "detail": {
+          "type": "string"
+        },
+        "basis": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "required": [
+        "event",
+        "operation",
+        "target",
+        "outcome",
+        "basis"
+      ],
+      "additionalProperties": false
+    },
+    "Tick": {
+      "type": "object",
+      "properties": {
+        "time": {
+          "$ref": "#/$defs/Time"
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Event"
+          }
+        },
+        "state": {
+          "$ref": "#/$defs/StateSeed"
+        },
+        "summary": {
+          "type": "object"
+        },
+        "closure": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "no_success_state_repeat"
+            },
+            "scan_rounds": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "basis": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "required": [
+            "kind",
+            "scan_rounds",
+            "basis"
+          ],
+          "additionalProperties": false
+        },
+        "warehouse_ledger": {
+          "$ref": "#/$defs/WarehouseLedger"
+        }
+      },
+      "required": [
+        "time",
+        "events",
+        "state",
+        "summary",
+        "closure",
+        "warehouse_ledger"
+      ],
+      "additionalProperties": false
+    },
+    "FullTrace": {
+      "type": "object",
+      "properties": {
+        "start_state": {
+          "$ref": "#/$defs/StateSeed"
+        },
+        "ticks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Tick"
+          }
+        },
+        "end_time": {
+          "$ref": "#/$defs/Time"
+        },
+        "format": {
+          "const": "full_state_each_instant"
+        }
+      },
+      "required": [
+        "start_state",
+        "ticks",
+        "end_time",
+        "format"
+      ],
+      "additionalProperties": false
+    },
+    "DeltaTick": {
+      "type": "object",
+      "properties": {
+        "time": {
+          "$ref": "#/$defs/Time"
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Event"
+          }
+        },
+        "summary": {
+          "type": "object"
+        },
+        "closure": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "no_success_state_repeat"
+            },
+            "scan_rounds": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "basis": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "required": [
+            "kind",
+            "scan_rounds",
+            "basis"
+          ],
+          "additionalProperties": false
+        },
+        "delta": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DeltaOperation"
+          }
+        },
+        "warehouse_ledger": {
+          "$ref": "#/$defs/WarehouseLedger"
+        }
+      },
+      "required": [
+        "time",
+        "events",
+        "summary",
+        "closure",
+        "delta",
+        "warehouse_ledger"
+      ],
+      "additionalProperties": false
+    },
+    "DeltaOperation": {
+      "type": "object",
+      "properties": {
+        "op": {
+          "const": "replace"
+        },
+        "path": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "value": {}
+      },
+      "required": [
+        "op",
+        "path",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "CheckpointTrace": {
+      "type": "object",
+      "properties": {
+        "start_state": {
+          "$ref": "#/$defs/StateSeed"
+        },
+        "ticks": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "$ref": "#/$defs/Tick"
+              },
+              {
+                "$ref": "#/$defs/DeltaTick"
+              }
+            ]
+          }
+        },
+        "end_time": {
+          "$ref": "#/$defs/Time"
+        },
+        "format": {
+          "const": "checkpoint_delta"
+        },
+        "checkpoint_interval": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "delta_encoding": {
+          "const": "object_replace_v1"
+        }
+      },
+      "required": [
+        "start_state",
+        "ticks",
+        "end_time",
+        "format",
+        "checkpoint_interval",
+        "delta_encoding"
+      ],
+      "additionalProperties": false
+    },
+    "CoreInbound": {
+      "type": "object",
+      "properties": {
+        "event": {
+          "type": "string",
+          "minLength": 1
+        },
+        "channel": {
+          "type": "string",
+          "minLength": 1
+        },
+        "port": {
+          "type": "string",
+          "minLength": 1
+        },
+        "item": {
+          "type": "string",
+          "minLength": 1
+        },
+        "quantity": {
+          "$ref": "#/$defs/Quantity"
+        }
+      },
+      "required": [
+        "event",
+        "channel",
+        "port",
+        "item",
+        "quantity"
+      ],
+      "additionalProperties": false
+    },
+    "WirelessInbound": {
+      "type": "object",
+      "properties": {
+        "event": {
+          "type": "string",
+          "minLength": 1
+        },
+        "unit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "item": {
+          "type": "string",
+          "minLength": 1
+        },
+        "quantity": {
+          "$ref": "#/$defs/Quantity"
+        }
+      },
+      "required": [
+        "event",
+        "unit",
+        "item",
+        "quantity"
+      ],
+      "additionalProperties": false
+    },
+    "PortOutbound": {
+      "type": "object",
+      "properties": {
+        "event": {
+          "type": "string",
+          "minLength": 1
+        },
+        "channel": {
+          "type": "string",
+          "minLength": 1
+        },
+        "port": {
+          "type": "string",
+          "minLength": 1
+        },
+        "slot": {
+          "type": "string",
+          "minLength": 1
+        },
+        "item": {
+          "type": "string",
+          "minLength": 1
+        },
+        "quantity": {
+          "$ref": "#/$defs/Quantity"
+        }
+      },
+      "required": [
+        "event",
+        "channel",
+        "port",
+        "slot",
+        "item",
+        "quantity"
+      ],
+      "additionalProperties": false
+    },
+    "ExternalSupply": {
+      "type": "object",
+      "properties": {
+        "event": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mode": {
+          "enum": [
+            "sufficient",
+            "explicit_ore_history"
+          ]
+        },
+        "item": {
+          "enum": [
+            "源矿",
+            "蓝铁矿"
+          ]
+        },
+        "quantity": {
+          "$ref": "#/$defs/Quantity"
+        }
+      },
+      "required": [
+        "event",
+        "mode",
+        "item",
+        "quantity"
+      ],
+      "additionalProperties": false
+    },
+    "PlayerWithdrawal": {
+      "type": "object",
+      "properties": {
+        "event": {
+          "type": "string",
+          "minLength": 1
+        },
+        "slot": {
+          "type": "string",
+          "minLength": 1
+        },
+        "item": {
+          "enum": [
+            "高容谷地电池",
+            "精选荞愈胶囊"
+          ]
+        },
+        "quantity": {
+          "$ref": "#/$defs/Quantity"
+        }
+      },
+      "required": [
+        "event",
+        "slot",
+        "item",
+        "quantity"
+      ],
+      "additionalProperties": false
+    },
+    "RepresentativeAdjustment": {
+      "type": "object",
+      "properties": {
+        "item": {
+          "enum": [
+            "高容谷地电池",
+            "精选荞愈胶囊"
+          ]
+        },
+        "quantity": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "reason": {
+          "const": "production_representative"
+        }
+      },
+      "required": [
+        "item",
+        "quantity",
+        "reason"
+      ],
+      "additionalProperties": false
+    },
+    "WarehouseTotal": {
+      "type": "object",
+      "properties": {
+        "item": {
+          "type": "string",
+          "minLength": 1
+        },
+        "core_inbound": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "wireless_inbound": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "port_outbound": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "external_supply": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "player_withdrawal": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "representative_adjustment": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "actual_inbound": {
+          "$ref": "#/$defs/Quantity"
+        }
+      },
+      "required": [
+        "item",
+        "core_inbound",
+        "wireless_inbound",
+        "port_outbound",
+        "external_supply",
+        "player_withdrawal",
+        "representative_adjustment",
+        "actual_inbound"
+      ],
+      "additionalProperties": false
+    },
+    "WarehouseLedger": {
+      "type": "object",
+      "properties": {
+        "core_inbound": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CoreInbound"
+          }
+        },
+        "wireless_inbound": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/WirelessInbound"
+          }
+        },
+        "port_outbound": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/PortOutbound"
+          }
+        },
+        "external_supply": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ExternalSupply"
+          }
+        },
+        "player_withdrawal": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/PlayerWithdrawal"
+          }
+        },
+        "representative_adjustment": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/RepresentativeAdjustment"
+          }
+        },
+        "totals": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/WarehouseTotal"
+          }
+        }
+      },
+      "required": [
+        "core_inbound",
+        "wireless_inbound",
+        "port_outbound",
+        "external_supply",
+        "player_withdrawal",
+        "representative_adjustment",
+        "totals"
+      ],
+      "additionalProperties": false
+    },
+    "RunRecord": {
+      "type": "object",
+      "properties": {
+        "schema": {
+          "const": "kernel-output-v4"
+        },
+        "run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "profile_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "producer": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "enum": [
+                "kernel",
+                "bounded_reference_checker",
+                "manual_expected"
+              ]
+            },
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "claim": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "kind",
+            "path",
+            "claim"
+          ],
+          "additionalProperties": false
+        },
+        "status": {
+          "enum": [
+            "completed",
+            "invalid_input",
+            "unsupported",
+            "unresolved",
+            "inconclusive"
+          ]
+        },
+        "fingerprints": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "role": {
+                "enum": [
+                  "input",
+                  "catalog",
+                  "axis_registry",
+                  "profile",
+                  "parameter_projection",
+                  "formal_source",
+                  "golden",
+                  "checker",
+                  "semantics",
+                  "schema"
+                ]
+              },
+              "path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "sha256": {
+                "$ref": "#/$defs/Hash"
+              }
+            },
+            "required": [
+              "role",
+              "path",
+              "sha256"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "parameter_assignment": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Parameters"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "input_history": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "timeline": {
+                  "type": "object"
+                },
+                "construction": {
+                  "type": "object"
+                },
+                "debug_operations": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                },
+                "environment": {
+                  "type": "object"
+                },
+                "reachability": {
+                  "$ref": "#/$defs/Decision"
+                }
+              },
+              "required": [
+                "timeline",
+                "construction",
+                "debug_operations",
+                "environment",
+                "reachability"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "uncovered_axes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "axis": {
+                "type": "string",
+                "minLength": 1
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1
+              },
+              "disposition": {
+                "type": "string",
+                "minLength": 1
+              },
+              "coverage_status": {
+                "enum": [
+                  "exercised",
+                  "input_checked",
+                  "not_exercised",
+                  "stop_not_triggered",
+                  "proof_pending"
+                ]
+              },
+              "evidence": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "other_values": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "axis",
+              "reason",
+              "disposition",
+              "coverage_status",
+              "evidence",
+              "other_values"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "trace": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/FullTrace"
+            },
+            {
+              "$ref": "#/$defs/CheckpointTrace"
+            }
+          ]
+        },
+        "validation_scope": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "const": "finite_trace"
+                },
+                "from": {
+                  "$ref": "#/$defs/Time"
+                },
+                "through": {
+                  "$ref": "#/$defs/Time"
+                },
+                "golden_match": {
+                  "type": "boolean"
+                },
+                "initial_history": {
+                  "const": "conditional_witness"
+                },
+                "universal_parameters": {
+                  "const": false
+                },
+                "all_reachable_cycles": {
+                  "const": false
+                },
+                "target_certified": {
+                  "const": false
+                },
+                "manufacturing_cycles_completed": {
+                  "$ref": "#/$defs/Quantity"
+                }
+              },
+              "required": [
+                "kind",
+                "from",
+                "through",
+                "golden_match",
+                "initial_history",
+                "universal_parameters",
+                "all_reachable_cycles",
+                "target_certified",
+                "manufacturing_cycles_completed"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "open_items": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "execution_mode": {
+          "enum": [
+            "finite_concrete",
+            "production_abstraction"
+          ]
+        },
+        "port_meeting": {
+          "enum": [
+            "shared_edge_opposite"
+          ]
+        },
+        "evidence_scope": {
+          "$ref": "#/$defs/EvidenceScope"
+        }
+      },
+      "required": [
+        "schema",
+        "run_id",
+        "profile_id",
+        "producer",
+        "status",
+        "fingerprints",
+        "parameter_assignment",
+        "input_history",
+        "uncovered_axes",
+        "trace",
+        "validation_scope",
+        "open_items",
+        "execution_mode",
+        "port_meeting",
+        "evidence_scope"
+      ],
+      "additionalProperties": false,
+      "if": {
+        "properties": {
+          "status": {
+            "const": "completed"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "parameter_assignment": {
+            "$ref": "#/$defs/Parameters"
+          },
+          "input_history": {
+            "type": "object",
+            "properties": {
+              "timeline": {
+                "type": "object"
+              },
+              "construction": {
+                "type": "object"
+              },
+              "debug_operations": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              },
+              "environment": {
+                "type": "object"
+              },
+              "reachability": {
+                "$ref": "#/$defs/Decision"
+              }
+            },
+            "required": [
+              "timeline",
+              "construction",
+              "debug_operations",
+              "environment",
+              "reachability"
+            ],
+            "additionalProperties": false
+          },
+          "trace": {
+            "oneOf": [
+              {
+                "$ref": "#/$defs/FullTrace"
+              },
+              {
+                "$ref": "#/$defs/CheckpointTrace"
+              }
+            ]
+          },
+          "validation_scope": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "const": "finite_trace"
+              },
+              "from": {
+                "$ref": "#/$defs/Time"
+              },
+              "through": {
+                "$ref": "#/$defs/Time"
+              },
+              "golden_match": {
+                "type": "boolean"
+              },
+              "initial_history": {
+                "const": "conditional_witness"
+              },
+              "universal_parameters": {
+                "const": false
+              },
+              "all_reachable_cycles": {
+                "const": false
+              },
+              "target_certified": {
+                "const": false
+              },
+              "manufacturing_cycles_completed": {
+                "$ref": "#/$defs/Quantity"
+              }
+            },
+            "required": [
+              "kind",
+              "from",
+              "through",
+              "golden_match",
+              "initial_history",
+              "universal_parameters",
+              "all_reachable_cycles",
+              "target_certified",
+              "manufacturing_cycles_completed"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "allOf": [
+        {
+          "properties": {
+            "evidence_scope": {
+              "properties": {
+                "kind": {
+                  "const": "diagnostic"
+                },
+                "direction": {
+                  "const": "diagnostic"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "ProofSource": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "$ref": "#/$defs/Hash"
+        }
+      },
+      "required": [
+        "path",
+        "sha256"
+      ],
+      "additionalProperties": false
+    },
+    "CycleKey": {
+      "type": "object",
+      "properties": {
+        "schema": {
+          "const": "phase-cycle-key-v1"
+        },
+        "domain": {
+          "const": "phase_production_v1"
+        },
+        "state": {
+          "type": "object",
+          "properties": {
+            "settings_anchor": {
+              "type": "object"
+            },
+            "warehouse": {
+              "type": "object"
+            },
+            "logistics": {
+              "type": "object",
+              "properties": {
+                "gate_counters": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "window_started_at": {
+                        "$ref": "#/$defs/GateWindowProjection"
+                      }
+                    },
+                    "required": [
+                      "window_started_at"
+                    ]
+                  }
+                }
+              }
+            },
+            "environment": {
+              "type": "object"
+            },
+            "semantic_context": {
+              "type": "object"
+            },
+            "layout_snapshot": {
+              "type": "string",
+              "minLength": 1
+            },
+            "inventory": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "slot": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "contents": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "item": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "quantity": {
+                          "type": "object",
+                          "properties": {
+                            "value": {
+                              "type": "string",
+                              "minLength": 1
+                            }
+                          },
+                          "required": [
+                            "value"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "entered_at": {
+                          "anyOf": [
+                            {
+                              "type": "null"
+                            },
+                            {
+                              "$ref": "#/$defs/MaturityResidual"
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "relative_time": {
+                                  "type": "object",
+                                  "properties": {
+                                    "value": {
+                                      "type": "string",
+                                      "minLength": 1
+                                    }
+                                  },
+                                  "required": [
+                                    "value"
+                                  ],
+                                  "additionalProperties": false
+                                }
+                              },
+                              "required": [
+                                "relative_time"
+                              ],
+                              "additionalProperties": false
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "item",
+                        "quantity",
+                        "entered_at"
+                      ],
+                      "additionalProperties": false
+                    }
+                  }
+                },
+                "required": [
+                  "slot",
+                  "contents"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "progress": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          },
+          "required": [
+            "settings_anchor",
+            "warehouse",
+            "logistics",
+            "environment",
+            "semantic_context",
+            "layout_snapshot",
+            "inventory",
+            "progress"
+          ],
+          "additionalProperties": false
+        },
+        "product_acceptance": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "item": {
+                "enum": [
+                  "高容谷地电池",
+                  "精选荞愈胶囊"
+                ]
+              },
+              "state": {
+                "const": "receivable_at_all_checks"
+              }
+            },
+            "required": [
+              "item",
+              "state"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 2,
+          "maxItems": 2,
+          "allOf": [
+            {
+              "contains": {
+                "properties": {
+                  "item": {
+                    "const": "高容谷地电池"
+                  }
+                },
+                "required": [
+                  "item"
+                ]
+              },
+              "minContains": 1,
+              "maxContains": 1
+            },
+            {
+              "contains": {
+                "properties": {
+                  "item": {
+                    "const": "精选荞愈胶囊"
+                  }
+                },
+                "required": [
+                  "item"
+                ]
+              },
+              "minContains": 1,
+              "maxContains": 1
+            }
+          ]
+        }
+      },
+      "required": [
+        "schema",
+        "domain",
+        "state",
+        "product_acceptance"
+      ],
+      "additionalProperties": false,
+      "description": "phase-cycle-key-v1按受限转移§6.2逐字段规范；结构校验之外必须核未来读取前件、真实耗时与后继保持。完整StateSeed用于恢复。"
+    },
+    "CycleRate": {
+      "type": "object",
+      "properties": {
+        "item": {
+          "enum": [
+            "高容谷地电池",
+            "精选荞愈胶囊"
+          ]
+        },
+        "inbound": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "period": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "average": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "target": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "comparison": {
+          "enum": [
+            "lt",
+            "eq",
+            "gt"
+          ]
+        }
+      },
+      "required": [
+        "item",
+        "inbound",
+        "period",
+        "average",
+        "target",
+        "comparison"
+      ],
+      "additionalProperties": false
+    },
+    "Acceptance": {
+      "type": "object",
+      "properties": {
+        "time": {
+          "$ref": "#/$defs/Time"
+        },
+        "products": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "item": {
+                "enum": [
+                  "高容谷地电池",
+                  "精选荞愈胶囊"
+                ]
+              },
+              "capacity_available": {
+                "type": "boolean"
+              },
+              "physical_path_exists": {
+                "type": "boolean"
+              },
+              "selected_acceptance": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "item",
+              "capacity_available",
+              "physical_path_exists",
+              "selected_acceptance"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 2,
+          "maxItems": 2,
+          "allOf": [
+            {
+              "contains": {
+                "properties": {
+                  "item": {
+                    "const": "高容谷地电池"
+                  }
+                },
+                "required": [
+                  "item"
+                ]
+              },
+              "minContains": 1,
+              "maxContains": 1
+            },
+            {
+              "contains": {
+                "properties": {
+                  "item": {
+                    "const": "精选荞愈胶囊"
+                  }
+                },
+                "required": [
+                  "item"
+                ]
+              },
+              "minContains": 1,
+              "maxContains": 1
+            }
+          ]
+        }
+      },
+      "required": [
+        "time",
+        "products"
+      ],
+      "additionalProperties": false
+    },
+    "Cycle": {
+      "type": "object",
+      "properties": {
+        "period": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "start_time": {
+          "$ref": "#/$defs/Time"
+        },
+        "end_time": {
+          "$ref": "#/$defs/Time"
+        },
+        "start_state": {
+          "$ref": "#/$defs/StateSeed"
+        },
+        "end_state": {
+          "$ref": "#/$defs/StateSeed"
+        },
+        "start_key": {
+          "$ref": "#/$defs/CycleKey"
+        },
+        "end_key": {
+          "$ref": "#/$defs/CycleKey"
+        },
+        "normalization": {
+          "type": "object",
+          "properties": {
+            "schema": {
+              "const": "cycle-normalization-v2"
+            },
+            "definition": {
+              "$ref": "#/$defs/ProofSource"
+            },
+            "basis": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "minItems": 1
+            },
+            "domain_checks": {
+              "const": [
+                "D.1",
+                "D.2",
+                "D.3",
+                "D.4",
+                "D.5"
+              ]
+            },
+            "mapping_proof": {
+              "$ref": "#/$defs/ProofSource"
+            }
+          },
+          "required": [
+            "schema",
+            "definition",
+            "basis",
+            "domain_checks",
+            "mapping_proof"
+          ],
+          "additionalProperties": false
+        },
+        "ledger": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "time": {
+                "$ref": "#/$defs/Time"
+              },
+              "warehouse_ledger": {
+                "$ref": "#/$defs/WarehouseLedger"
+              }
+            },
+            "required": [
+              "time",
+              "warehouse_ledger"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1
+        },
+        "totals": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/WarehouseTotal"
+          },
+          "minItems": 2
+        },
+        "rates": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CycleRate"
+          },
+          "minItems": 2,
+          "maxItems": 2,
+          "allOf": [
+            {
+              "contains": {
+                "properties": {
+                  "item": {
+                    "const": "高容谷地电池"
+                  }
+                },
+                "required": [
+                  "item"
+                ]
+              },
+              "minContains": 1,
+              "maxContains": 1
+            },
+            {
+              "contains": {
+                "properties": {
+                  "item": {
+                    "const": "精选荞愈胶囊"
+                  }
+                },
+                "required": [
+                  "item"
+                ]
+              },
+              "minContains": 1,
+              "maxContains": 1
+            }
+          ]
+        },
+        "acceptance": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Acceptance"
+          },
+          "minItems": 1
+        },
+        "correspondence": {
+          "$ref": "#/$defs/CycleCorrespondence"
+        },
+        "reception_scope": {
+          "$ref": "#/$defs/ReceptionScope"
+        }
+      },
+      "required": [
+        "period",
+        "start_time",
+        "end_time",
+        "start_state",
+        "end_state",
+        "start_key",
+        "end_key",
+        "normalization",
+        "ledger",
+        "totals",
+        "rates",
+        "acceptance",
+        "correspondence",
+        "reception_scope"
+      ],
+      "additionalProperties": false,
+      "description": "周期用真实正时长；ledger覆盖实际推进段，零时失败环另核。全部数量、时差、端点和入库账由语义校验复算。"
+    },
+    "CycleResult": {
+      "type": "object",
+      "properties": {
+        "schema": {
+          "const": "kernel-cycle-v3"
+        },
+        "result_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "enum": [
+            "cycle_found",
+            "counterexample",
+            "stopped",
+            "inconclusive",
+            "invalid_input",
+            "diagnostic_cycle"
+          ]
+        },
+        "level": {
+          "enum": [
+            "production_part",
+            "concrete_full_cycle",
+            null
+          ]
+        },
+        "execution_mode": {
+          "enum": [
+            "finite_concrete",
+            "production_abstraction"
+          ]
+        },
+        "port_meeting": {
+          "anyOf": [
+            {
+              "enum": [
+                "shared_edge_opposite"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "seed": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CycleSeed"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "parameter_point": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CycleParameterPoint"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reading": {
+          "type": "object",
+          "properties": {
+            "port_meeting": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "shared_edge_opposite"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "warehouse_acceptance": {
+              "type": "string",
+              "minLength": 1,
+              "enum": [
+                "receivable_products",
+                "unresolved"
+              ]
+            },
+            "acceptance_quantifier": {
+              "type": "string",
+              "minLength": 1,
+              "enum": [
+                "all_candidate_and_actual_checks",
+                "unresolved"
+              ]
+            },
+            "cycle_interpretation": {
+              "enum": [
+                "production_projection",
+                "concrete_base_with_withdrawal"
+              ]
+            },
+            "remaining_assumptions": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "required": [
+            "port_meeting",
+            "warehouse_acceptance",
+            "acceptance_quantifier",
+            "cycle_interpretation",
+            "remaining_assumptions"
+          ],
+          "additionalProperties": false
+        },
+        "support_domain": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uncovered": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "required": [
+            "name",
+            "uncovered"
+          ],
+          "additionalProperties": false
+        },
+        "cycle": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Cycle"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "stop": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "enum": [
+                    "invalid_input",
+                    "unsupported",
+                    "unresolved",
+                    "resource",
+                    "low_rate"
+                  ]
+                },
+                "axis": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "event": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "time": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/$defs/Time"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "reason": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "partial_events": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/Event"
+                  }
+                }
+              },
+              "required": [
+                "kind",
+                "axis",
+                "event",
+                "time",
+                "reason",
+                "partial_events"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "budget": {
+          "type": "object",
+          "properties": {
+            "max_ticks": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "max_sweeps": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "completed_ticks": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "max_ticks",
+            "max_sweeps",
+            "completed_ticks"
+          ],
+          "additionalProperties": false
+        },
+        "open_items": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "domain_report": {
+          "$ref": "#/$defs/CycleDomainReport"
+        },
+        "fingerprints": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "role": {
+                "enum": [
+                  "input",
+                  "catalog",
+                  "axis_registry",
+                  "profile",
+                  "parameter_projection",
+                  "formal_source",
+                  "golden",
+                  "checker",
+                  "semantics",
+                  "schema"
+                ]
+              },
+              "path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "sha256": {
+                "$ref": "#/$defs/Hash"
+              }
+            },
+            "required": [
+              "role",
+              "path",
+              "sha256"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "record_mode": {
+          "enum": [
+            "referenced",
+            "none"
+          ]
+        },
+        "replay_input_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ReplayInputRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "run_record_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RunRecordRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "last_state": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/StateSeed"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "evidence_scope": {
+          "$ref": "#/$defs/EvidenceScope"
+        },
+        "environment_assumption": {
+          "const": "仓库收得下成品。"
+        }
+      },
+      "required": [
+        "schema",
+        "result_id",
+        "status",
+        "level",
+        "execution_mode",
+        "port_meeting",
+        "seed",
+        "parameter_point",
+        "reading",
+        "support_domain",
+        "cycle",
+        "stop",
+        "budget",
+        "open_items",
+        "domain_report",
+        "fingerprints",
+        "record_mode",
+        "replay_input_ref",
+        "run_record_ref",
+        "last_state",
+        "evidence_scope",
+        "environment_assumption"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "replay_input_ref": {
+                "type": "object"
+              }
+            },
+            "required": [
+              "replay_input_ref"
+            ]
+          },
+          "then": {
+            "properties": {
+              "seed": {
+                "$ref": "#/$defs/CycleSeed"
+              },
+              "parameter_point": {
+                "$ref": "#/$defs/CycleParameterPoint"
+              },
+              "port_meeting": {
+                "enum": [
+                  "shared_edge_opposite"
+                ]
+              },
+              "reading": {
+                "properties": {
+                  "port_meeting": {
+                    "enum": [
+                      "shared_edge_opposite"
+                    ]
+                  }
+                }
+              },
+              "fingerprints": {
+                "minItems": 1
+              }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "record_mode": {
+                      "const": "referenced"
+                    }
+                  },
+                  "required": [
+                    "record_mode"
+                  ]
+                },
+                "then": {
+                  "properties": {
+                    "run_record_ref": {
+                      "$ref": "#/$defs/RunRecordRef"
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "cycle": {
+                      "type": "null"
+                    }
+                  },
+                  "required": [
+                    "cycle"
+                  ]
+                },
+                "then": {
+                  "properties": {
+                    "last_state": {
+                      "$ref": "#/$defs/StateSeed"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "replay_input_ref": {
+                "type": "null"
+              }
+            },
+            "required": [
+              "replay_input_ref"
+            ]
+          },
+          "then": {
+            "properties": {
+              "status": {
+                "enum": [
+                  "stopped",
+                  "inconclusive",
+                  "invalid_input"
+                ]
+              },
+              "run_record_ref": {
+                "type": "null"
+              },
+              "last_state": {
+                "type": "null"
+              },
+              "cycle": {
+                "type": "null"
+              },
+              "level": {
+                "type": "null"
+              },
+              "budget": {
+                "properties": {
+                  "completed_ticks": {
+                    "const": 0
+                  }
+                }
+              },
+              "stop": {
+                "allOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "enum": [
+                          "invalid_input",
+                          "unsupported",
+                          "unresolved",
+                          "resource",
+                          "low_rate"
+                        ]
+                      },
+                      "axis": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "event": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "time": {
+                        "anyOf": [
+                          {
+                            "$ref": "#/$defs/Time"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "reason": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "partial_events": {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/$defs/Event"
+                        }
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "axis",
+                      "event",
+                      "time",
+                      "reason",
+                      "partial_events"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "properties": {
+                      "partial_events": {
+                        "maxItems": 0
+                      }
+                    }
+                  }
+                ]
+              },
+              "domain_report": {
+                "items": {
+                  "properties": {
+                    "scope": {
+                      "enum": [
+                        "static",
+                        "not_checked"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "record_mode": {
+                "const": "none"
+              }
+            },
+            "required": [
+              "record_mode"
+            ]
+          },
+          "then": {
+            "properties": {
+              "run_record_ref": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "enum": [
+                  "cycle_found",
+                  "counterexample",
+                  "diagnostic_cycle"
+                ]
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "cycle": {
+                "$ref": "#/$defs/Cycle"
+              },
+              "seed": {
+                "$ref": "#/$defs/CycleSeed"
+              },
+              "parameter_point": {
+                "$ref": "#/$defs/CycleParameterPoint"
+              },
+              "replay_input_ref": {
+                "$ref": "#/$defs/ReplayInputRef"
+              },
+              "last_state": {
+                "type": "null"
+              },
+              "level": {
+                "enum": [
+                  "production_part",
+                  "concrete_full_cycle"
+                ]
+              },
+              "domain_report": {
+                "allOf": [
+                  {
+                    "$ref": "#/$defs/CycleDomainReport"
+                  },
+                  {
+                    "items": {
+                      "properties": {
+                        "status": {
+                          "const": "pass"
+                        },
+                        "scope": {
+                          "const": "cycle"
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "cycle_found"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "stop": {
+                "type": "null"
+              },
+              "cycle": {
+                "properties": {
+                  "rates": {
+                    "items": {
+                      "properties": {
+                        "comparison": {
+                          "enum": [
+                            "eq",
+                            "gt"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "counterexample"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "stop": {
+                "allOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "enum": [
+                          "invalid_input",
+                          "unsupported",
+                          "unresolved",
+                          "resource",
+                          "low_rate"
+                        ]
+                      },
+                      "axis": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "event": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "time": {
+                        "anyOf": [
+                          {
+                            "$ref": "#/$defs/Time"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "reason": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "partial_events": {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/$defs/Event"
+                        }
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "axis",
+                      "event",
+                      "time",
+                      "reason",
+                      "partial_events"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "properties": {
+                      "kind": {
+                        "const": "low_rate"
+                      }
+                    }
+                  }
+                ]
+              },
+              "cycle": {
+                "properties": {
+                  "rates": {
+                    "contains": {
+                      "properties": {
+                        "comparison": {
+                          "const": "lt"
+                        }
+                      },
+                      "required": [
+                        "comparison"
+                      ]
+                    },
+                    "minContains": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "enum": [
+                  "stopped",
+                  "inconclusive",
+                  "invalid_input"
+                ]
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "cycle": {
+                "type": "null"
+              },
+              "level": {
+                "type": "null"
+              },
+              "stop": {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "enum": [
+                      "invalid_input",
+                      "unsupported",
+                      "unresolved",
+                      "resource",
+                      "low_rate"
+                    ]
+                  },
+                  "axis": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "event": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "time": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/$defs/Time"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "reason": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "partial_events": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/Event"
+                    }
+                  }
+                },
+                "required": [
+                  "kind",
+                  "axis",
+                  "event",
+                  "time",
+                  "reason",
+                  "partial_events"
+                ],
+                "additionalProperties": false
+              },
+              "domain_report": {
+                "items": {
+                  "properties": {
+                    "scope": {
+                      "enum": [
+                        "static",
+                        "executed_prefix",
+                        "not_checked"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "inconclusive"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "stop": {
+                "properties": {
+                  "kind": {
+                    "const": "resource"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "invalid_input"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "stop": {
+                "properties": {
+                  "kind": {
+                    "const": "invalid_input"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "stopped"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "stop": {
+                "properties": {
+                  "kind": {
+                    "enum": [
+                      "unsupported",
+                      "unresolved"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "level": {
+                "const": "production_part"
+              }
+            },
+            "required": [
+              "level"
+            ]
+          },
+          "then": {
+            "properties": {
+              "execution_mode": {
+                "const": "production_abstraction"
+              },
+              "support_domain": {
+                "properties": {
+                  "name": {
+                    "const": "phase_production_v1"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "level": {
+                "const": "concrete_full_cycle"
+              },
+              "status": {
+                "enum": [
+                  "cycle_found",
+                  "counterexample",
+                  "diagnostic_cycle"
+                ]
+              }
+            },
+            "required": [
+              "level",
+              "status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "cycle": {
+                "properties": {
+                  "correspondence": {
+                    "properties": {
+                      "reverse_reconstruction": {
+                        "properties": {
+                          "status": {
+                            "const": "proved"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "level": {
+                "const": "production_part"
+              }
+            },
+            "required": [
+              "level"
+            ]
+          },
+          "then": {
+            "properties": {
+              "reading": {
+                "properties": {
+                  "cycle_interpretation": {
+                    "const": "production_projection"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "level": {
+                "const": "concrete_full_cycle"
+              }
+            },
+            "required": [
+              "level"
+            ]
+          },
+          "then": {
+            "properties": {
+              "execution_mode": {
+                "const": "finite_concrete"
+              },
+              "reading": {
+                "properties": {
+                  "cycle_interpretation": {
+                    "const": "concrete_base_with_withdrawal"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "cycle_found"
+              },
+              "level": {
+                "const": "production_part"
+              }
+            },
+            "required": [
+              "status",
+              "level"
+            ]
+          },
+          "then": {
+            "properties": {
+              "evidence_scope": {
+                "properties": {
+                  "kind": {
+                    "const": "production_cycle"
+                  },
+                  "direction": {
+                    "const": "conditional_witness"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "cycle_found"
+              },
+              "level": {
+                "const": "concrete_full_cycle"
+              }
+            },
+            "required": [
+              "status",
+              "level"
+            ]
+          },
+          "then": {
+            "properties": {
+              "evidence_scope": {
+                "properties": {
+                  "kind": {
+                    "const": "concrete_full_cycle"
+                  },
+                  "direction": {
+                    "const": "conditional_witness"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "counterexample"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "level": {
+                "const": "concrete_full_cycle"
+              },
+              "evidence_scope": {
+                "properties": {
+                  "kind": {
+                    "const": "concrete_full_cycle"
+                  },
+                  "direction": {
+                    "const": "counterexample"
+                  }
+                }
+              },
+              "cycle": {
+                "properties": {
+                  "correspondence": {
+                    "properties": {
+                      "reverse_reconstruction": {
+                        "properties": {
+                          "status": {
+                            "const": "proved"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "diagnostic_cycle"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "level": {
+                "const": "production_part"
+              },
+              "stop": {
+                "type": "null"
+              },
+              "evidence_scope": {
+                "properties": {
+                  "kind": {
+                    "const": "diagnostic"
+                  },
+                  "direction": {
+                    "const": "diagnostic"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "enum": [
+                  "stopped",
+                  "inconclusive",
+                  "invalid_input"
+                ]
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "evidence_scope": {
+                "properties": {
+                  "kind": {
+                    "enum": [
+                      "diagnostic",
+                      "unresolved"
+                    ]
+                  },
+                  "direction": {
+                    "enum": [
+                      "diagnostic",
+                      "unresolved"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "enum": [
+                  "cycle_found",
+                  "counterexample"
+                ]
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "cycle": {
+                "properties": {
+                  "reception_scope": {
+                    "properties": {
+                      "status": {
+                        "const": "proved"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "enum": [
+                  "cycle_found",
+                  "counterexample"
+                ]
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "cycle": {
+                "properties": {
+                  "correspondence": {
+                    "properties": {
+                      "forward_projection": {
+                        "properties": {
+                          "status": {
+                            "const": "proved"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "enum": [
+                  "cycle_found",
+                  "counterexample",
+                  "diagnostic_cycle"
+                ]
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "reading": {
+                "properties": {
+                  "warehouse_acceptance": {
+                    "const": "receivable_products"
+                  },
+                  "acceptance_quantifier": {
+                    "const": "all_candidate_and_actual_checks"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "ArtifactRef": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "$ref": "#/$defs/Hash"
+        },
+        "producer": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "enum": [
+                "kernel",
+                "bounded_reference_checker",
+                "manual_expected",
+                "input_generator"
+              ]
+            },
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "claim": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "kind",
+            "path",
+            "claim"
+          ],
+          "additionalProperties": false
+        },
+        "format": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "path",
+        "sha256",
+        "producer",
+        "format"
+      ],
+      "additionalProperties": false
+    },
+    "RunRecordRef": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ArtifactRef"
+        },
+        {
+          "properties": {
+            "format": {
+              "enum": [
+                "kernel-output-v4/full_state_each_instant",
+                "kernel-output-v4/checkpoint_delta"
+              ]
+            },
+            "producer": {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "enum": [
+                    "kernel",
+                    "bounded_reference_checker",
+                    "manual_expected"
+                  ]
+                },
+                "path": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "claim": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "kind",
+                "path",
+                "claim"
+              ],
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "ReplayInputRef": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ArtifactRef"
+        },
+        {
+          "properties": {
+            "format": {
+              "const": "kernel-input-v3"
+            }
+          }
+        }
+      ]
+    },
+    "CycleSeed": {
+      "type": "object",
+      "properties": {
+        "reachability": {
+          "$ref": "#/$defs/Decision"
+        },
+        "source_event": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "reachability",
+        "source_event"
+      ],
+      "additionalProperties": false
+    },
+    "CycleParameterPoint": {
+      "type": "object",
+      "properties": {
+        "assignment": {
+          "$ref": "#/$defs/Parameters"
+        },
+        "input_axes": {
+          "type": "object",
+          "properties": {
+            "judgment.order": {
+              "$ref": "#/$defs/Decision"
+            },
+            "damping.branch": {
+              "$ref": "#/$defs/Decision"
+            },
+            "connection.build_order": {
+              "$ref": "#/$defs/Decision"
+            },
+            "connection.order": {
+              "$ref": "#/$defs/Decision"
+            },
+            "connection.tie": {
+              "$ref": "#/$defs/Decision"
+            },
+            "connection.belt_shape": {
+              "$ref": "#/$defs/Decision"
+            },
+            "transfer.phase": {
+              "$ref": "#/$defs/Decision"
+            },
+            "manufacturing.recipe_selection": {
+              "$ref": "#/$defs/Decision"
+            },
+            "manufacturing.input_slot_selection": {
+              "$ref": "#/$defs/Decision"
+            },
+            "initialization.warehouse_anchor": {
+              "$ref": "#/$defs/Decision"
+            },
+            "initialization.other_inventory": {
+              "$ref": "#/$defs/Decision"
+            },
+            "initialization.switches": {
+              "$ref": "#/$defs/Decision"
+            },
+            "initialization.build_timing": {
+              "$ref": "#/$defs/Decision"
+            },
+            "initialization.debug_end": {
+              "$ref": "#/$defs/Decision"
+            },
+            "warehouse.external_supply": {
+              "$ref": "#/$defs/Decision"
+            }
+          },
+          "required": [
+            "judgment.order",
+            "damping.branch",
+            "connection.build_order",
+            "connection.order",
+            "connection.tie",
+            "connection.belt_shape",
+            "transfer.phase",
+            "manufacturing.recipe_selection",
+            "manufacturing.input_slot_selection",
+            "initialization.warehouse_anchor",
+            "initialization.other_inventory",
+            "initialization.switches",
+            "initialization.build_timing",
+            "initialization.debug_end",
+            "warehouse.external_supply"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "assignment",
+        "input_axes"
+      ],
+      "additionalProperties": false
+    },
+    "CycleDomainCheck": {
+      "type": "object",
+      "properties": {
+        "condition": {
+          "enum": [
+            "D.1",
+            "D.2",
+            "D.3",
+            "D.4",
+            "D.5"
+          ]
+        },
+        "status": {
+          "enum": [
+            "pass",
+            "fail",
+            "unresolved"
+          ]
+        },
+        "scope": {
+          "enum": [
+            "static",
+            "executed_prefix",
+            "cycle",
+            "not_checked"
+          ]
+        },
+        "locations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "condition",
+        "status",
+        "scope",
+        "locations",
+        "evidence"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "scope": {
+                "const": "not_checked"
+              }
+            },
+            "required": [
+              "scope"
+            ]
+          },
+          "then": {
+            "properties": {
+              "status": {
+                "const": "unresolved"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "enum": [
+                  "fail",
+                  "unresolved"
+                ]
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "locations": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "minItems": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "CycleDomainReport": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "items": false,
+      "prefixItems": [
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/CycleDomainCheck"
+            },
+            {
+              "properties": {
+                "condition": {
+                  "const": "D.1"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/CycleDomainCheck"
+            },
+            {
+              "properties": {
+                "condition": {
+                  "const": "D.2"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/CycleDomainCheck"
+            },
+            {
+              "properties": {
+                "condition": {
+                  "const": "D.3"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/CycleDomainCheck"
+            },
+            {
+              "properties": {
+                "condition": {
+                  "const": "D.4"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/CycleDomainCheck"
+            },
+            {
+              "properties": {
+                "condition": {
+                  "const": "D.5"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "EvidenceScope": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "direct_invariant",
+            "conditional_local_proof",
+            "production_cycle",
+            "concrete_full_cycle",
+            "diagnostic",
+            "unresolved"
+          ]
+        },
+        "support_domain": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1
+        },
+        "fixed_parameter_lifecycle": {
+          "type": "string",
+          "minLength": 1
+        },
+        "context_bindings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ProofSource"
+          },
+          "minItems": 0
+        },
+        "initial_state_coverage": {
+          "type": "object",
+          "properties": {
+            "description": {
+              "type": "string",
+              "minLength": 1
+            },
+            "exact_reachable_set_enumerated": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "description",
+            "exact_reachable_set_enumerated"
+          ],
+          "additionalProperties": false
+        },
+        "direction": {
+          "enum": [
+            "conditional_witness",
+            "sufficient",
+            "counterexample",
+            "diagnostic",
+            "unresolved"
+          ]
+        },
+        "review_status": {
+          "enum": [
+            "author_checked",
+            "pending",
+            "independently_reviewed"
+          ]
+        },
+        "proof_sources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ProofSource"
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "kind",
+        "support_domain",
+        "fixed_parameter_lifecycle",
+        "context_bindings",
+        "initial_state_coverage",
+        "direction",
+        "review_status",
+        "proof_sources"
+      ],
+      "additionalProperties": false
+    },
+    "ProofCheck": {
+      "type": "object",
+      "properties": {
+        "condition": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "enum": [
+            "pass",
+            "unresolved",
+            "not_claimed"
+          ]
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "condition",
+        "status",
+        "evidence"
+      ],
+      "additionalProperties": false
+    },
+    "CycleCorrespondence": {
+      "type": "object",
+      "properties": {
+        "forward_projection": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "enum": [
+                "proved",
+                "unresolved",
+                "not_claimed"
+              ]
+            },
+            "proof_sources": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ProofSource"
+              },
+              "minItems": 0
+            },
+            "checks": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ProofCheck"
+              },
+              "minItems": 4,
+              "maxItems": 4,
+              "prefixItems": [
+                {
+                  "allOf": [
+                    {
+                      "$ref": "#/$defs/ProofCheck"
+                    },
+                    {
+                      "properties": {
+                        "condition": {
+                          "const": "production_representation"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "allOf": [
+                    {
+                      "$ref": "#/$defs/ProofCheck"
+                    },
+                    {
+                      "properties": {
+                        "condition": {
+                          "const": "warehouse_label_noninterference"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "allOf": [
+                    {
+                      "$ref": "#/$defs/ProofCheck"
+                    },
+                    {
+                      "properties": {
+                        "condition": {
+                          "const": "candidate_and_actual_acceptance"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "allOf": [
+                    {
+                      "$ref": "#/$defs/ProofCheck"
+                    },
+                    {
+                      "properties": {
+                        "condition": {
+                          "const": "successor_time_delivery_preservation"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "required": [
+            "status",
+            "proof_sources",
+            "checks"
+          ],
+          "additionalProperties": false,
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "status": {
+                    "const": "proved"
+                  }
+                },
+                "required": [
+                  "status"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "proof_sources": {
+                    "minItems": 1
+                  },
+                  "checks": {
+                    "items": {
+                      "properties": {
+                        "status": {
+                          "const": "pass"
+                        }
+                      }
+                    },
+                    "prefixItems": [
+                      {
+                        "properties": {
+                          "condition": {
+                            "const": "production_representation"
+                          },
+                          "status": {
+                            "const": "pass"
+                          }
+                        }
+                      },
+                      {
+                        "properties": {
+                          "condition": {
+                            "const": "warehouse_label_noninterference"
+                          },
+                          "status": {
+                            "const": "pass"
+                          }
+                        }
+                      },
+                      {
+                        "properties": {
+                          "condition": {
+                            "const": "candidate_and_actual_acceptance"
+                          },
+                          "status": {
+                            "const": "pass"
+                          }
+                        }
+                      },
+                      {
+                        "properties": {
+                          "condition": {
+                            "const": "successor_time_delivery_preservation"
+                          },
+                          "status": {
+                            "const": "pass"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "reverse_reconstruction": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "enum": [
+                "proved",
+                "unresolved",
+                "not_claimed"
+              ]
+            },
+            "proof_sources": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ProofSource"
+              },
+              "minItems": 0
+            },
+            "checks": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ProofCheck"
+              },
+              "minItems": 10,
+              "maxItems": 10,
+              "prefixItems": [
+                {
+                  "allOf": [
+                    {
+                      "$ref": "#/$defs/ProofCheck"
+                    },
+                    {
+                      "properties": {
+                        "condition": {
+                          "const": "reachable_start"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "allOf": [
+                    {
+                      "$ref": "#/$defs/ProofCheck"
+                    },
+                    {
+                      "properties": {
+                        "condition": {
+                          "const": "fixed_parameters"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "allOf": [
+                    {
+                      "$ref": "#/$defs/ProofCheck"
+                    },
+                    {
+                      "properties": {
+                        "condition": {
+                          "const": "positive_real_duration"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "allOf": [
+                    {
+                      "$ref": "#/$defs/ProofCheck"
+                    },
+                    {
+                      "properties": {
+                        "condition": {
+                          "const": "repeated_production"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "allOf": [
+                    {
+                      "$ref": "#/$defs/ProofCheck"
+                    },
+                    {
+                      "properties": {
+                        "condition": {
+                          "const": "periodic_withdrawal_program"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "allOf": [
+                    {
+                      "$ref": "#/$defs/ProofCheck"
+                    },
+                    {
+                      "properties": {
+                        "condition": {
+                          "const": "withdrawal_prefix_legality"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "allOf": [
+                    {
+                      "$ref": "#/$defs/ProofCheck"
+                    },
+                    {
+                      "properties": {
+                        "condition": {
+                          "const": "product_balance"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "allOf": [
+                    {
+                      "$ref": "#/$defs/ProofCheck"
+                    },
+                    {
+                      "properties": {
+                        "condition": {
+                          "const": "ore_and_other_warehouse_restoration"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "allOf": [
+                    {
+                      "$ref": "#/$defs/ProofCheck"
+                    },
+                    {
+                      "properties": {
+                        "condition": {
+                          "const": "labels_and_all_effective_state_restoration"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "allOf": [
+                    {
+                      "$ref": "#/$defs/ProofCheck"
+                    },
+                    {
+                      "properties": {
+                        "condition": {
+                          "const": "operation_precision"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "required": [
+            "status",
+            "proof_sources",
+            "checks"
+          ],
+          "additionalProperties": false,
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "status": {
+                    "const": "proved"
+                  }
+                },
+                "required": [
+                  "status"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "proof_sources": {
+                    "minItems": 1
+                  },
+                  "checks": {
+                    "items": {
+                      "properties": {
+                        "status": {
+                          "const": "pass"
+                        }
+                      }
+                    },
+                    "prefixItems": [
+                      {
+                        "properties": {
+                          "condition": {
+                            "const": "reachable_start"
+                          },
+                          "status": {
+                            "const": "pass"
+                          }
+                        }
+                      },
+                      {
+                        "properties": {
+                          "condition": {
+                            "const": "fixed_parameters"
+                          },
+                          "status": {
+                            "const": "pass"
+                          }
+                        }
+                      },
+                      {
+                        "properties": {
+                          "condition": {
+                            "const": "positive_real_duration"
+                          },
+                          "status": {
+                            "const": "pass"
+                          }
+                        }
+                      },
+                      {
+                        "properties": {
+                          "condition": {
+                            "const": "repeated_production"
+                          },
+                          "status": {
+                            "const": "pass"
+                          }
+                        }
+                      },
+                      {
+                        "properties": {
+                          "condition": {
+                            "const": "periodic_withdrawal_program"
+                          },
+                          "status": {
+                            "const": "pass"
+                          }
+                        }
+                      },
+                      {
+                        "properties": {
+                          "condition": {
+                            "const": "withdrawal_prefix_legality"
+                          },
+                          "status": {
+                            "const": "pass"
+                          }
+                        }
+                      },
+                      {
+                        "properties": {
+                          "condition": {
+                            "const": "product_balance"
+                          },
+                          "status": {
+                            "const": "pass"
+                          }
+                        }
+                      },
+                      {
+                        "properties": {
+                          "condition": {
+                            "const": "ore_and_other_warehouse_restoration"
+                          },
+                          "status": {
+                            "const": "pass"
+                          }
+                        }
+                      },
+                      {
+                        "properties": {
+                          "condition": {
+                            "const": "labels_and_all_effective_state_restoration"
+                          },
+                          "status": {
+                            "const": "pass"
+                          }
+                        }
+                      },
+                      {
+                        "properties": {
+                          "condition": {
+                            "const": "operation_precision"
+                          },
+                          "status": {
+                            "const": "pass"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "all_reachable_cycles": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "enum": [
+                "proved",
+                "unresolved",
+                "not_claimed"
+              ]
+            },
+            "proof_sources": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ProofSource"
+              },
+              "minItems": 0
+            },
+            "checks": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ProofCheck"
+              },
+              "minItems": 5,
+              "maxItems": 5,
+              "prefixItems": [
+                {
+                  "allOf": [
+                    {
+                      "$ref": "#/$defs/ProofCheck"
+                    },
+                    {
+                      "properties": {
+                        "condition": {
+                          "const": "all_initial_states"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "allOf": [
+                    {
+                      "$ref": "#/$defs/ProofCheck"
+                    },
+                    {
+                      "properties": {
+                        "condition": {
+                          "const": "all_fixed_parameters"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "allOf": [
+                    {
+                      "$ref": "#/$defs/ProofCheck"
+                    },
+                    {
+                      "properties": {
+                        "condition": {
+                          "const": "legal_offline_and_recovery"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "allOf": [
+                    {
+                      "$ref": "#/$defs/ProofCheck"
+                    },
+                    {
+                      "properties": {
+                        "condition": {
+                          "const": "all_real_cycle_projections"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "allOf": [
+                    {
+                      "$ref": "#/$defs/ProofCheck"
+                    },
+                    {
+                      "properties": {
+                        "condition": {
+                          "const": "all_positive_duration_cycles"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "required": [
+            "status",
+            "proof_sources",
+            "checks"
+          ],
+          "additionalProperties": false,
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "status": {
+                    "const": "proved"
+                  }
+                },
+                "required": [
+                  "status"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "proof_sources": {
+                    "minItems": 1
+                  },
+                  "checks": {
+                    "items": {
+                      "properties": {
+                        "status": {
+                          "const": "pass"
+                        }
+                      }
+                    },
+                    "prefixItems": [
+                      {
+                        "properties": {
+                          "condition": {
+                            "const": "all_initial_states"
+                          },
+                          "status": {
+                            "const": "pass"
+                          }
+                        }
+                      },
+                      {
+                        "properties": {
+                          "condition": {
+                            "const": "all_fixed_parameters"
+                          },
+                          "status": {
+                            "const": "pass"
+                          }
+                        }
+                      },
+                      {
+                        "properties": {
+                          "condition": {
+                            "const": "legal_offline_and_recovery"
+                          },
+                          "status": {
+                            "const": "pass"
+                          }
+                        }
+                      },
+                      {
+                        "properties": {
+                          "condition": {
+                            "const": "all_real_cycle_projections"
+                          },
+                          "status": {
+                            "const": "pass"
+                          }
+                        }
+                      },
+                      {
+                        "properties": {
+                          "condition": {
+                            "const": "all_positive_duration_cycles"
+                          },
+                          "status": {
+                            "const": "pass"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "forward_projection",
+        "reverse_reconstruction",
+        "all_reachable_cycles"
+      ],
+      "additionalProperties": false
+    },
+    "ReceptionScope": {
+      "type": "object",
+      "properties": {
+        "checks": {
+          "const": "all_candidate_and_actual_checks"
+        },
+        "interval": {
+          "type": "string",
+          "minLength": 1
+        },
+        "state_coverage": {
+          "type": "string",
+          "minLength": 1
+        },
+        "recovery_state_coverage": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "enum": [
+            "proved",
+            "unresolved"
+          ]
+        },
+        "proof_sources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ProofSource"
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "checks",
+        "interval",
+        "state_coverage",
+        "recovery_state_coverage",
+        "status",
+        "proof_sources"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "proved"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "proof_sources": {
+                "minItems": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "ProofCertificate": {
+      "type": "object",
+      "properties": {
+        "schema": {
+          "const": "kernel-proof-v1"
+        },
+        "result_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "environment_assumption": {
+          "const": "仓库收得下成品。"
+        },
+        "evidence_scope": {
+          "$ref": "#/$defs/EvidenceScope"
+        },
+        "fingerprints": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "role": {
+                "enum": [
+                  "input",
+                  "catalog",
+                  "axis_registry",
+                  "profile",
+                  "parameter_projection",
+                  "formal_source",
+                  "golden",
+                  "checker",
+                  "semantics",
+                  "schema"
+                ]
+              },
+              "path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "sha256": {
+                "$ref": "#/$defs/Hash"
+              }
+            },
+            "required": [
+              "role",
+              "path",
+              "sha256"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "statement": {
+          "type": "string",
+          "minLength": 1
+        },
+        "proof_status": {
+          "enum": [
+            "proved",
+            "conditional",
+            "unresolved"
+          ]
+        },
+        "obligations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ProofCheck"
+          },
+          "minItems": 1
+        },
+        "all_reachable_cycles": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "enum": [
+                "proved",
+                "unresolved",
+                "not_claimed"
+              ]
+            },
+            "proof_sources": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ProofSource"
+              },
+              "minItems": 0
+            },
+            "checks": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ProofCheck"
+              },
+              "minItems": 5,
+              "maxItems": 5,
+              "prefixItems": [
+                {
+                  "allOf": [
+                    {
+                      "$ref": "#/$defs/ProofCheck"
+                    },
+                    {
+                      "properties": {
+                        "condition": {
+                          "const": "all_initial_states"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "allOf": [
+                    {
+                      "$ref": "#/$defs/ProofCheck"
+                    },
+                    {
+                      "properties": {
+                        "condition": {
+                          "const": "all_fixed_parameters"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "allOf": [
+                    {
+                      "$ref": "#/$defs/ProofCheck"
+                    },
+                    {
+                      "properties": {
+                        "condition": {
+                          "const": "legal_offline_and_recovery"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "allOf": [
+                    {
+                      "$ref": "#/$defs/ProofCheck"
+                    },
+                    {
+                      "properties": {
+                        "condition": {
+                          "const": "all_real_cycle_projections"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "allOf": [
+                    {
+                      "$ref": "#/$defs/ProofCheck"
+                    },
+                    {
+                      "properties": {
+                        "condition": {
+                          "const": "all_positive_duration_cycles"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "required": [
+            "status",
+            "proof_sources",
+            "checks"
+          ],
+          "additionalProperties": false,
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "status": {
+                    "const": "proved"
+                  }
+                },
+                "required": [
+                  "status"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "proof_sources": {
+                    "minItems": 1
+                  },
+                  "checks": {
+                    "items": {
+                      "properties": {
+                        "status": {
+                          "const": "pass"
+                        }
+                      }
+                    },
+                    "prefixItems": [
+                      {
+                        "properties": {
+                          "status": {
+                            "const": "pass"
+                          }
+                        }
+                      },
+                      {
+                        "properties": {
+                          "status": {
+                            "const": "pass"
+                          }
+                        }
+                      },
+                      {
+                        "properties": {
+                          "status": {
+                            "const": "pass"
+                          }
+                        }
+                      },
+                      {
+                        "properties": {
+                          "status": {
+                            "const": "pass"
+                          }
+                        }
+                      },
+                      {
+                        "properties": {
+                          "status": {
+                            "const": "pass"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "open_items": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "schema",
+        "result_id",
+        "environment_assumption",
+        "evidence_scope",
+        "fingerprints",
+        "statement",
+        "proof_status",
+        "obligations",
+        "all_reachable_cycles",
+        "open_items"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "properties": {
+            "evidence_scope": {
+              "properties": {
+                "kind": {
+                  "enum": [
+                    "direct_invariant",
+                    "conditional_local_proof",
+                    "diagnostic",
+                    "unresolved"
+                  ]
+                },
+                "direction": {
+                  "enum": [
+                    "sufficient",
+                    "diagnostic",
+                    "unresolved"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "proof_status": {
+                "const": "proved"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "evidence_scope": {
+                "properties": {
+                  "proof_sources": {
+                    "minItems": 1
+                  }
+                }
+              },
+              "obligations": {
+                "items": {
+                  "properties": {
+                    "status": {
+                      "const": "pass"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "MaturityResidual": {
+      "type": "object",
+      "properties": {
+        "residual": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "value"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "residual"
+      ],
+      "additionalProperties": false
+    },
+    "GateWindowProjection": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "phase": {
+              "const": "idle"
+            }
+          },
+          "required": [
+            "phase"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "phase": {
+              "const": "active"
+            },
+            "received": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 5
+            },
+            "remaining": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "value"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "phase",
+            "received",
+            "remaining"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}

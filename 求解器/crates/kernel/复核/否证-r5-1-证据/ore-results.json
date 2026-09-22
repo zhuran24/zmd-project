@@ -1,0 +1,49 @@
+[
+  {
+    "ore": 79999,
+    "constructor": "ok",
+    "production_abstraction": false,
+    "core_current_level": "L|core|input|other",
+    "d2": {
+      "condition": "D.2",
+      "evidence": [
+        "现存回矿候选读取被抽象容量，先于physical/级排序/授权停止"
+      ],
+      "locations": [
+        "PC|belt:north:0|core:south:1"
+      ],
+      "scope": "static",
+      "status": "fail"
+    },
+    "finite_core_inbound": [
+      {
+        "channel": "PC|belt:north:0|core:south:1",
+        "event": "J|0|0|1",
+        "item": "源矿",
+        "port": "core:south:1",
+        "quantity": {
+          "category": "算术推论",
+          "value": "1"
+        }
+      }
+    ]
+  },
+  {
+    "ore": 80000,
+    "constructor": "ok",
+    "production_abstraction": false,
+    "core_current_level": null,
+    "d2": {
+      "condition": "D.2",
+      "evidence": [
+        "现存回矿候选读取被抽象容量，先于physical/级排序/授权停止"
+      ],
+      "locations": [
+        "PC|belt:north:0|core:south:1"
+      ],
+      "scope": "static",
+      "status": "fail"
+    },
+    "finite_core_inbound": []
+  }
+]

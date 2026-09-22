@@ -1,0 +1,1 @@
+{"status": "pass", "tests": 129, "files": 123, "metrics": {"benchmark_brick_60": 0.8452749166666668, "benchmark_brick": 2.6731130000000003, "benchmark_candidate_b": 18.0549995}, "requested_targets_met": true}

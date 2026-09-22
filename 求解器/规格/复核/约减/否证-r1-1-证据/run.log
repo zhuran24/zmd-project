@@ -1,0 +1,1 @@
+{"status": "通过", "sources_stable": true, "examples": {"混做粉碎机两下游": {"full_tables": 1, "projected_tables": 1, "full_table_graph_pairs": 1, "behavior_representatives_under_spec_call_guard": 1}, "分流器三路轮询": {"full_tables": 96, "projected_tables": 12, "full_table_graph_pairs": 384, "behavior_representatives_under_spec_call_guard": 1}}}

@@ -1,0 +1,46 @@
+{
+  "status": "存在已披露写入偏差",
+  "baseline_files": 461,
+  "changed_outside_review": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/prior-regression-results.json",
+      "before": "8136bf0a9ef278b116b5b22d0b454becf5429e7c7b22294f67233b8df7b24f45",
+      "after": "7eddb70f93bbb257a4311752d916da688b55028b14d6c1389d138ef78230feb7",
+      "cause": "本席调用既有CLI测试时的内置证据写入"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/regression-results.json",
+      "before": "a40607fc4f1f56cfc9367e5f65bdb55d348dfc98ff37b94a5ee5bc27dbe55ccd",
+      "after": "c49cb975e319efc1309268b3ac698a7f554fa57d113ae56fc2b031324f34cb0b",
+      "cause": "本席调用既有CLI测试时的内置证据写入"
+    }
+  ],
+  "protected_unchanged": [
+    "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+    "/home/zhuran24/zmd-research-fresh/候选约束.txt",
+    "/home/zhuran24/zmd-research-fresh/求解任务.txt",
+    "/home/zhuran24/zmd-research-fresh/求解约束.txt"
+  ],
+  "source_spec_and_sample_changes": [],
+  "build_target": "/home/zhuran24/zmd-research-fresh/求解器/target",
+  "forbidden_directories": [],
+  "evidence_extensions": [
+    ".json",
+    ".log",
+    ".py"
+  ],
+  "reader_review": {
+    "status": "通过",
+    "findings": 4,
+    "broken_links": [],
+    "checks": [
+      "正式依据与规格执行义务分开",
+      "四条发现均有可重跑负例",
+      "正常对照与失败对照分开",
+      "字段表覆盖当前StateSeed",
+      "数值与实际日志一致",
+      "写入偏差未归责于实现席",
+      "未把非法测试种子当任务可达反例"
+    ]
+  }
+}

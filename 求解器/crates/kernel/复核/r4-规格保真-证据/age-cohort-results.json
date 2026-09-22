@@ -1,0 +1,80 @@
+[
+  {
+    "case": "one-age",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "seed",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-规格保真-证据/one-age-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-规格保真-证据/one-age-result.json"
+    ],
+    "exit_code": 0,
+    "status": "kernel-input-v3",
+    "open_items": null,
+    "contents": [
+      {
+        "item": "高容谷地电池",
+        "quantity": {
+          "value": "2",
+          "category": "候选"
+        },
+        "entered_at": {
+          "kind": "rational",
+          "value": {
+            "value": "-2",
+            "category": "候选"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "case": "two-ages",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "seed",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-规格保真-证据/two-ages-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-规格保真-证据/two-ages-result.json"
+    ],
+    "exit_code": 2,
+    "status": "invalid_input",
+    "open_items": [
+      "invalid_input input @ south_box:storage:0: 普通格不能混种"
+    ],
+    "contents": [
+      {
+        "item": "高容谷地电池",
+        "quantity": {
+          "value": "1",
+          "category": "候选"
+        },
+        "entered_at": {
+          "kind": "rational",
+          "value": {
+            "value": "-2",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "item": "高容谷地电池",
+        "quantity": {
+          "value": "1",
+          "category": "候选"
+        },
+        "entered_at": {
+          "kind": "rational",
+          "value": {
+            "value": "-1",
+            "category": "候选"
+          }
+        }
+      }
+    ]
+  }
+]

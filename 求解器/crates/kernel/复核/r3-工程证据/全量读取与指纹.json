@@ -1,0 +1,3758 @@
+{
+  "files": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+      "bytes": 7220,
+      "sha256": "abc7a5867f6477eedb619c63a21c4a77144c57ad4567fdcfb696b3049d66a670",
+      "lines": 114
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/候选约束.txt",
+      "bytes": 244240,
+      "sha256": "a0ac3f9c82f371132b7de29fe47e4c6c587904680bc2786523de0c825fd5efd9",
+      "lines": 862
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解任务.txt",
+      "bytes": 1275,
+      "sha256": "10abf80fe6eefe647471eabe78da4053f77b489d3806722c501c6acb405a2864",
+      "lines": 15
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/Cargo.lock",
+      "bytes": 3955,
+      "sha256": "031faaaec5455f074df40817d326fc59fa9ebb3d7ecd5e1a2af85a1c0b3a5a94",
+      "lines": 163
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/Cargo.toml",
+      "bytes": 74,
+      "sha256": "279ef923475621d73a24e2d04781ae126c93fbfc82f9646947aee8025e96de95",
+      "lines": 3
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/Cargo.toml",
+      "bytes": 143,
+      "sha256": "f547eba51b5e70d1054b513193e405869c9f62f794dea0382f758b031aee3b73",
+      "lines": 8
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/README.md",
+      "bytes": 8243,
+      "sha256": "9561ae2d07e061f1ca559fd99c6f17a76197393d1c3e3882d8cd59dfe9bc7fb8",
+      "lines": 71
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/benchmark.json",
+      "bytes": 4853,
+      "sha256": "c96b18c5ba46a8f6efeba76626fc0c42ac19b5cad39ac98c26e1e61b0569fec4",
+      "json_type": "dict",
+      "keys": [
+        "stage",
+        "platform",
+        "binary_sha256",
+        "reports",
+        "scope",
+        "schema",
+        "requested_cases",
+        "requested_targets_met",
+        "before_evidence",
+        "legacy_evidence",
+        "compiler"
+      ],
+      "array_lengths": {
+        "reports": 3,
+        "requested_cases": 2
+      },
+      "status": {
+        "schema": "kernel-benchmark-round5-v1"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/prior-regression-results.json",
+      "bytes": 10171,
+      "sha256": "8136bf0a9ef278b116b5b22d0b454becf5429e7c7b22294f67233b8df7b24f45",
+      "json_type": "dict",
+      "keys": [
+        "status",
+        "controls",
+        "metadata_negatives",
+        "cli_negatives",
+        "checkpoint_resume_controls",
+        "cases"
+      ],
+      "array_lengths": {
+        "cases": 50
+      },
+      "status": {
+        "status": "通过"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/regression-results.json",
+      "bytes": 19353,
+      "sha256": "a40607fc4f1f56cfc9367e5f65bdb55d348dfc98ff37b94a5ee5bc27dbe55ccd",
+      "json_type": "dict",
+      "keys": [
+        "status",
+        "controls",
+        "metadata_mutations",
+        "input_cases",
+        "metadata_rejected",
+        "input_case_count"
+      ],
+      "array_lengths": {
+        "controls": 4,
+        "metadata_mutations": 64,
+        "input_cases": 18
+      },
+      "status": {
+        "status": "通过"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/age-overflow.log",
+      "bytes": 1465,
+      "sha256": "8dbde03cce9c7da6dd93dfd963f07a63a7130a55cbdab979a7a854b9738f9957",
+      "lines": 39
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/all-progress2.log",
+      "bytes": 5882,
+      "sha256": "aa6d1823c2c05cd50ead4da7ec17353258e606ed46c53ff40611681d877db641",
+      "lines": 125
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/audit-results.json",
+      "bytes": 45787,
+      "sha256": "0b48fa4db0dfcc1eb23e89bed8cd705baf8c4bc777e91282948e62f134ceeb7c",
+      "json_type": "dict",
+      "keys": [
+        "status",
+        "records",
+        "cycles",
+        "coverage",
+        "required_unexercised",
+        "polling",
+        "dense"
+      ],
+      "array_lengths": {
+        "records": 26,
+        "cycles": 10,
+        "required_unexercised": 1
+      },
+      "status": {
+        "status": "pass"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/audit.log",
+      "bytes": 168,
+      "sha256": "bf8f8161f845cabf1a3aa2ba190e1232871a60ba6e2d7973040b4665b11d5f4c",
+      "lines": 2
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/baseline-binary.json",
+      "bytes": 246,
+      "sha256": "d02799c62c8bbd301ddf9e807b14a02a1441f2bd1f0760dfd061fb4195bec670",
+      "json_type": "dict",
+      "keys": [
+        "pid",
+        "source",
+        "sha256",
+        "note"
+      ],
+      "array_lengths": {},
+      "status": {}
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/baseline.json",
+      "bytes": 12279,
+      "sha256": "92fe577c9fb32b3b6c263312f9f000bc78f39c6a7ba2c6d105274167a1c42d80",
+      "json_type": "dict",
+      "keys": [
+        "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+        "/home/zhuran24/zmd-research-fresh/求解任务.txt",
+        "/home/zhuran24/zmd-research-fresh/求解约束.txt",
+        "/home/zhuran24/zmd-research-fresh/候选约束.txt",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/普遍审查场景.md",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/受限模型声明.md",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/运行语义.md",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/修订记录.md",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/第1轮修订自查.md",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/参数轴-对内核输入请求的答复.md",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点清单.md",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/规则覆盖表.md",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入-修订记录.md",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/参数扫描约减.md",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/check_revision.py",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/第3轮自查结果.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/第3轮修订自查.md",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核实现-对规格的疑问.md",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/第2轮修订自查.md",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/四件前置义务对照.md",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/对内核的修改请求.md",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/第2轮自查结果.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/第二轮任务修订前只读指纹.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.schema.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/第二轮任务自查结果.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/第四轮前置-疑问记录.md",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/修订前只读文件指纹.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.md",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入-对参数轴的修改请求.md",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/第二轮任务修订自查.md",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/model.rs",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/event_identity.rs",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/output.rs",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/input.rs",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/config.rs",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/main.rs",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/value.rs",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/transition.rs",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/interfaces.rs",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests.rs",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/catalog.rs",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/engine.rs",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/polling.rs",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests_revision.rs",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests_revision_r2.rs",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/warehouse.rs",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/check_splitter_trace.py",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/桥接器双通路.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-checkpoint_delta-kernel.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-checkpoint_delta.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/kernel_profile_v1参数赋值.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/check_golden_trace.py",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-kernel.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/check_port_meeting.py",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-checkpoint_delta-kernel.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-参数赋值.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-黄金轨迹.md",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行说明.md",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/check_examples.py",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/polling_reference.py",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-黄金轨迹.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/test_round4.py",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-checkpoint_delta.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-kernel.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/generate_examples.py",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/checkpoint_delta.py",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/event_order.py",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/runtime_record.py",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/test_runtime_input.py",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/检查结果.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/runtime_example.py"
+      ],
+      "array_lengths": {},
+      "status": {}
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/benchmark-after.json",
+      "bytes": 2749,
+      "sha256": "f763636e9038efb749ebdf505a3d0a10bca08f1fa92955f6598761212d269878",
+      "json_type": "dict",
+      "keys": [
+        "stage",
+        "platform",
+        "binary_sha256",
+        "reports",
+        "scope"
+      ],
+      "array_lengths": {
+        "reports": 2
+      },
+      "status": {}
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/benchmark-after.log",
+      "bytes": 66,
+      "sha256": "28e81ec640893038fffde6e7ff875f1d615dea4e23f1411129cab86040e98585",
+      "lines": 2
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/benchmark-after2.json",
+      "bytes": 2749,
+      "sha256": "84cfaa842adfc30847a81774a8f0ede74067f1f0def7151dafa61a58dc4f780a",
+      "json_type": "dict",
+      "keys": [
+        "stage",
+        "platform",
+        "binary_sha256",
+        "reports",
+        "scope"
+      ],
+      "array_lengths": {
+        "reports": 2
+      },
+      "status": {}
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/benchmark-after2.log",
+      "bytes": 68,
+      "sha256": "2f23c4379e98b6478842701cf8487c65db6343f89df12f70f628a22742557d91",
+      "lines": 2
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/benchmark-before.json",
+      "bytes": 2969,
+      "sha256": "66df88c52b74005a40b7356f9c1c2ce69e63b5ed9c0ddf1c28c29352d0ce001a",
+      "json_type": "dict",
+      "keys": [
+        "stage",
+        "platform",
+        "binary_sha256",
+        "reports",
+        "scope",
+        "measurement_note"
+      ],
+      "array_lengths": {
+        "reports": 2
+      },
+      "status": {}
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/benchmark-before.log",
+      "bytes": 62,
+      "sha256": "6a3c90301f6049ee79bd45c5856a81aea4d90f23c51d5318b452fd7f76dfdb4d",
+      "lines": 2
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/benchmark-final.json",
+      "bytes": 4372,
+      "sha256": "8a13158ffa38891ff420e6ddabd13e251f1bca182e64229e45200caeca484fc5",
+      "json_type": "dict",
+      "keys": [
+        "stage",
+        "platform",
+        "binary_sha256",
+        "reports",
+        "scope"
+      ],
+      "array_lengths": {
+        "reports": 3
+      },
+      "status": {}
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/benchmark-final.log",
+      "bytes": 114,
+      "sha256": "e9ee88bf4858e85330125814bdccb26a2b64cc5e57dcb391afd9ae0b750bc580",
+      "lines": 3
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/benchmark-legacy.json",
+      "bytes": 1267,
+      "sha256": "f4c93fab9dae93ba4083e8d74009928bd928cd224f51cdad0434a97ba1d7c3ce",
+      "json_type": "dict",
+      "keys": [
+        "classification",
+        "build",
+        "command",
+        "process_elapsed_ns",
+        "result",
+        "platform",
+        "rustc",
+        "binary_sha256",
+        "input_sha256",
+        "scope"
+      ],
+      "array_lengths": {
+        "command": 8
+      },
+      "status": {}
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/build.log",
+      "bytes": 487,
+      "sha256": "b8fc95897a12a8e831f30b70fc6b439aff181df36abecf18fa1d82a76920e9e0",
+      "lines": 13
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/cache-final.log",
+      "bytes": 1445,
+      "sha256": "6f74305cf830e6ac9fc68d84701b56a9fbe9ab99b7fd87f135ded9c3c1d0cc62",
+      "lines": 39
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/cargo-test.log",
+      "bytes": 8517,
+      "sha256": "d2f22c424d2b733a50dd5c1e1fa9f93898850bf0c0ec4e9d2f28e30f29b5f622",
+      "lines": 181
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/clippy.log",
+      "bytes": 159,
+      "sha256": "9231920cab3e2a40a367aa1a16f791b1922ac56a30d7a02379f8b23585c2ee05",
+      "lines": 2
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/dense-cycle.log",
+      "bytes": 85,
+      "sha256": "243970b945d815950b9309113b848507a6c6b7df775694f1a5bcbf3d99c0c40e",
+      "lines": 2
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/dense-manufacturing-audit.json",
+      "bytes": 4003,
+      "sha256": "119523e102abf10e8a6122f0abbeaa81e3d719973dcdb25e3380361a378caacf",
+      "json_type": "dict",
+      "keys": [
+        "status",
+        "cases",
+        "varied_positions",
+        "distinct_ratios",
+        "sensitivity",
+        "scope"
+      ],
+      "array_lengths": {
+        "cases": 6,
+        "varied_positions": 3,
+        "distinct_ratios": 2
+      },
+      "status": {
+        "status": "pass"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/dense-manufacturing-audit.log",
+      "bytes": 82,
+      "sha256": "0c510d85ba16a4e6f13432117a558a9354131cfe4933d4d6947415cb02655fe6",
+      "lines": 1
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/dense-manufacturing-results.json",
+      "bytes": 11395,
+      "sha256": "de05988e80973edaf87d9d94c38199d4cdf5ca209f2d7d9c0a2e95284ea42701",
+      "json_type": "list"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/dense-manufacturing.log",
+      "bytes": 724,
+      "sha256": "fbdfbbeeb1d615d5bb4f4d1297f4124424b812c1154ad839bd8390aa0130547d",
+      "lines": 6
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/dense-seed.log",
+      "bytes": 97,
+      "sha256": "18ef06f196648c36e467c3f4de9f05e759ffdc2a53940d7aede61e3540d9bac8",
+      "lines": 2
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/initial-tests.log",
+      "bytes": 4043,
+      "sha256": "f64f498732946706b80a1b6eebf7cab6d82c020b35adcff1deedebddee6c8980",
+      "lines": 92
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/invalid-cycle-input.json",
+      "bytes": 28,
+      "sha256": "d8d1884f14018092e627780e82ea03bbfbf69b66dcf574b273d845ac9a7b27ec",
+      "json_type": "dict",
+      "keys": [
+        "schema"
+      ],
+      "array_lengths": {},
+      "status": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/invalid-cycle-result.json",
+      "bytes": 1388,
+      "sha256": "abcb5bdc633669a1d975e5958b8eda9c73b85648347f0066765dbfabe6b06915",
+      "json_type": "dict",
+      "keys": [
+        "budget",
+        "cycle",
+        "execution_mode",
+        "level",
+        "open_items",
+        "parameter_point",
+        "port_meeting",
+        "reading",
+        "replay_input",
+        "result_id",
+        "run_record",
+        "schema",
+        "seed",
+        "status",
+        "stop",
+        "support_domain"
+      ],
+      "array_lengths": {
+        "open_items": 2
+      },
+      "status": {
+        "status": "invalid_input",
+        "schema": "kernel-cycle-v1",
+        "level": null
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/new-tests.log",
+      "bytes": 961,
+      "sha256": "87d9f53b70016f0b1e5d99982166322fc34b84c087346e5b0f370f3318253dfb",
+      "lines": 21
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/polling-six-orders.json",
+      "bytes": 3388,
+      "sha256": "10456a0bb2f95f44fdac73635f5bca5e179a84fc28b37d1fa54fa1445016d681",
+      "json_type": "dict",
+      "keys": [
+        "status",
+        "cases",
+        "scope"
+      ],
+      "array_lengths": {
+        "cases": 6
+      },
+      "status": {
+        "status": "pass"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/polling-variants.log",
+      "bytes": 216,
+      "sha256": "a59a39dbe9bd98345247b9455d8dffb6eb6de951783c86e1fbd4734c9f05aa24",
+      "lines": 6
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/progress-all.log",
+      "bytes": 6473,
+      "sha256": "4f10be62d3bc3b9e30ed301dca8c5db50043e323d39208c3b51b8b5fb515ab14",
+      "lines": 128
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/protected-baseline.json",
+      "bytes": 1972,
+      "sha256": "2c65248d2548cfb5bf262ba80ef8206a78985d2cd6a8450b9864340ddf0959c0",
+      "json_type": "dict",
+      "keys": [
+        "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+        "/home/zhuran24/zmd-research-fresh/求解任务.txt",
+        "/home/zhuran24/zmd-research-fresh/求解约束.txt",
+        "/home/zhuran24/zmd-research-fresh/候选约束.txt",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-checkpoint_delta-kernel.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-kernel.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-checkpoint_delta-kernel.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-黄金轨迹.md",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-黄金轨迹.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-kernel.json",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录.json"
+      ],
+      "array_lengths": {},
+      "status": {}
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/provenance-regression.log",
+      "bytes": 1461,
+      "sha256": "4c440ec14da8162051d0c4d5339882ff8eab61936308ac267987800400286f9e",
+      "lines": 39
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/record-validation.json",
+      "bytes": 1934,
+      "sha256": "9afccc7ec85cac0f65d6d930a3190a83d42811da22de5bbfef63ad60e78fe4ed",
+      "json_type": "dict",
+      "keys": [
+        "status",
+        "records",
+        "read_only_baseline_files",
+        "baseline_changes"
+      ],
+      "array_lengths": {
+        "records": 4,
+        "baseline_changes": 0
+      },
+      "status": {
+        "status": "通过"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/regeneration.json",
+      "bytes": 6176,
+      "sha256": "dd13d8ea5c1c747dc2a1bf969044bc6fc232ec2719ced7d146bb477f5003411c",
+      "json_type": "dict",
+      "keys": [
+        "config_revision",
+        "config_sha256",
+        "binary_sha256",
+        "results"
+      ],
+      "array_lengths": {
+        "results": 22
+      },
+      "status": {}
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/regeneration.log",
+      "bytes": 529,
+      "sha256": "2fa91eeec3a94924a60d3a6f3ed2df374f3750379ea7e269aeddd5157a611c18",
+      "lines": 22
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/release-build-after.log",
+      "bytes": 149,
+      "sha256": "65b3cbd4243956d378db761101000dc01cba71443b2b33b11275fc3fb40525ff",
+      "lines": 2
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/release-build-after2.log",
+      "bytes": 149,
+      "sha256": "d425b858e8d404f81380c064e957c091562853246944403f473901db33a8b721",
+      "lines": 2
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/release-build-before.log",
+      "bytes": 477,
+      "sha256": "1fc07903b2be5a1d6d72eee9f5c0adb20cdc980f43c5c87758dd7966dfeaeaa1",
+      "lines": 13
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/release-build.log",
+      "bytes": 149,
+      "sha256": "f621ffac5c1516b02a32dcb64328e5f8a723f421e4e92583c89a530a0856375e",
+      "lines": 2
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/relocated-seed.json",
+      "bytes": 170142,
+      "sha256": "e3d2b9f80ff1e1137614954585e4d9fee4ed1d525527433c2850f72746d6e758",
+      "json_type": "dict",
+      "keys": [
+        "catalog",
+        "construction",
+        "contract_binding",
+        "debug_operations",
+        "environment",
+        "initial_state",
+        "layout",
+        "parameters",
+        "purpose",
+        "scenario",
+        "schema",
+        "settings",
+        "timeline"
+      ],
+      "array_lengths": {
+        "debug_operations": 0
+      },
+      "status": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/resource-statistics.json",
+      "bytes": 387,
+      "sha256": "f4a7f2ace7a7a62272488626f9857c9abbf11164b31802659b15ff8efa20f5b9",
+      "json_type": "dict",
+      "keys": [
+        "completed_ticks",
+        "elapsed_ns",
+        "output",
+        "statistics",
+        "status",
+        "stop",
+        "ticks"
+      ],
+      "array_lengths": {},
+      "status": {
+        "status": "inconclusive"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/scenarios.log",
+      "bytes": 357,
+      "sha256": "78d571c79749026ae3edfcc677d5b16181fd221eaaf43f4104b9779cd2282c2a",
+      "lines": 10
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/unit-progress.log",
+      "bytes": 338635,
+      "sha256": "59a494d496f13d29cde5345ab2c717ff7a413b165f3bb010b322ac97a22367f9",
+      "lines": 105
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/verify-outputs.log",
+      "bytes": 1568,
+      "sha256": "760d061f72a0c99d092e9d6f86578a5f0704187b49586eea884eaf91f0152f5e",
+      "lines": 1
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/交付清单.json",
+      "bytes": 42123,
+      "sha256": "086d39071be606b3eb50c530d11e033712945fa41bb4ec30d32199b45888fbe2",
+      "json_type": "dict",
+      "keys": [
+        "schema",
+        "generated_at",
+        "files",
+        "protected_sources",
+        "nonrecursive_files"
+      ],
+      "array_lengths": {
+        "files": 172,
+        "protected_sources": 12,
+        "nonrecursive_files": 3
+      },
+      "status": {
+        "schema": "kernel-round5-files-v1"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/交付结果.json",
+      "bytes": 1270,
+      "sha256": "812bfb285448473cae9db02ac4cd2f18a343e1159ccb2da254456879a385227c",
+      "json_type": "dict",
+      "keys": [
+        "schema",
+        "status",
+        "profile_revision",
+        "tests_passed",
+        "clippy",
+        "reference_records",
+        "audited_records",
+        "cycle_results_checked",
+        "requested_performance_targets_met",
+        "ms_per_tick",
+        "protected_files",
+        "protected_changes",
+        "open_items",
+        "scope"
+      ],
+      "array_lengths": {
+        "protected_changes": 0,
+        "open_items": 3
+      },
+      "status": {
+        "status": "implementation_delivered_with_open_coverage",
+        "schema": "kernel-round5-delivery-v1"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/实施与验证.md",
+      "bytes": 11309,
+      "sha256": "377304089a27441e7c7f80ac23335c341000eeb51fa7144c51de3d20b3c7cb7b",
+      "lines": 73
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/范围审计.json",
+      "bytes": 5596,
+      "sha256": "12ffad2c08396f2b8bd779839d124c798d5715e4997dbc791924eb018e0309ff",
+      "json_type": "dict",
+      "keys": [
+        "status",
+        "protected_files",
+        "protected_changes",
+        "shared_spec_changes",
+        "shared_spec_note",
+        "evidence_forbidden_directories",
+        "evidence_extensions",
+        "build_target",
+        "scope_of_audit",
+        "document_reader_review"
+      ],
+      "array_lengths": {
+        "protected_changes": 0,
+        "shared_spec_changes": 16,
+        "evidence_forbidden_directories": 0,
+        "evidence_extensions": 3
+      },
+      "status": {
+        "status": "pass"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/cache.rs",
+      "bytes": 3320,
+      "sha256": "3278f432f020daa2eef8b234a844b5b665f81cabce695ff1346205d729ef47c7",
+      "lines": 81
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/catalog.rs",
+      "bytes": 23150,
+      "sha256": "3a0a7c3e21b46d626928fca81e90a617bd55189b8e3f357019c529109510636f",
+      "lines": 604
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/config.rs",
+      "bytes": 21733,
+      "sha256": "f2a22d1bbc264a75179fa45d41b03cce33f6e44d197112ba84486446d3df20ad",
+      "lines": 494
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/cycle.rs",
+      "bytes": 30168,
+      "sha256": "8d87142718445d8222853642633310da1dfdce842bcfd09dfb1356fb2319f0f4",
+      "lines": 686
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/engine.rs",
+      "bytes": 43086,
+      "sha256": "aa831e99a9517c1d2f9328a2a540d0b2f0f955ed286760f942dfaf6298ecf84a",
+      "lines": 1082
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/event_identity.rs",
+      "bytes": 11438,
+      "sha256": "0a4629ba1c0ba0fea4101a229698cc8bfbe776e4a74885142286e6d1f15b6406",
+      "lines": 250
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/input.rs",
+      "bytes": 37255,
+      "sha256": "ecf8754d2c424f2f8970e606ef8dc5db5a220dcf61c81845947225f236df199e",
+      "lines": 935
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/interfaces.rs",
+      "bytes": 21355,
+      "sha256": "26ae828a14fe77db7625de901b35d48d47dc1d39993b67f0df11b5c2dbd542ba",
+      "lines": 526
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/ledger.rs",
+      "bytes": 3570,
+      "sha256": "9a93ab0f7e2371a40f91dee9dbf0d76b6ce8714ccdf596342dc9864fce9a14b7",
+      "lines": 94
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs",
+      "bytes": 494,
+      "sha256": "514709029ca3f049e27fa05dbe1a39c0cab62bb523de1cba6bdec10b9fbfe480",
+      "lines": 25
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/main.rs",
+      "bytes": 8525,
+      "sha256": "876120a4080997152fb2c928a5eddd01f1a681c30c5595b206c3a3449fe246ba",
+      "lines": 213
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/model.rs",
+      "bytes": 4757,
+      "sha256": "6f4d3dfb5133b834ef52dba2fa398cee3f6e3f88f1da77630aaf66326e81a842",
+      "lines": 157
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/output.rs",
+      "bytes": 27948,
+      "sha256": "5fb64bdc5dd50889aa3a1bc749aef9519312a9a07c516765486dddcb6e049cb1",
+      "lines": 552
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/polling.rs",
+      "bytes": 18194,
+      "sha256": "93198482832582239a9d2b4e3ebcd0941e91d228d36ba3626076e977db0a833b",
+      "lines": 467
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/seed.rs",
+      "bytes": 8339,
+      "sha256": "a2dc077a10640a40b062a6420ceeb709a80f228ddf6d6ba7079ffcf118210b91",
+      "lines": 198
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests.rs",
+      "bytes": 40609,
+      "sha256": "94a853a4b134c00b37cc0b7186e35b205d0dbeb1527a587e8af96fa157ef20a3",
+      "lines": 1086
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests_revision.rs",
+      "bytes": 16679,
+      "sha256": "fdbec222b970566f88a7d711e44f6e46fbd7dc0062ba5bbf584159ca0217c0c1",
+      "lines": 418
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests_revision_r2.rs",
+      "bytes": 11791,
+      "sha256": "e42da5328e9946f8e745cdbf361b06e006fcb28e54656488e8f53346697f4377",
+      "lines": 283
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests_round5.rs",
+      "bytes": 10664,
+      "sha256": "bd030ee171d355c64504bad2477dcdab49e75e87ade5d609960ab3e9258468f2",
+      "lines": 303
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/transition.rs",
+      "bytes": 37039,
+      "sha256": "e298ac43f509561bcf15ebfe3a7bf5abba57133cc2561782ec397f6592ceeedd",
+      "lines": 853
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/value.rs",
+      "bytes": 12269,
+      "sha256": "0cd34a9c7877861580caa0711e643575cbb9ce631a445919c69f093c2392d32b",
+      "lines": 324
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/warehouse.rs",
+      "bytes": 13876,
+      "sha256": "aa5b1505d447b378a4cbb015f758c4ae5403b6201895db80576be4e0c8d22082",
+      "lines": 346
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/audit_dense_round5.py",
+      "bytes": 7846,
+      "sha256": "5474adcd9ba4c78ea34b94d5b436a0332c31b38658d60b1de559648a60b60aeb",
+      "lines": 138
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/audit_round5.py",
+      "bytes": 12890,
+      "sha256": "6de5e52ad907ccc3f4fa675d3c06abaabc08db40017f2931b315bc177c01af9d",
+      "lines": 156
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/benchmark_round5.py",
+      "bytes": 4834,
+      "sha256": "65ea0bdae06725597aa735e217493c67633d05b580fe8317e2094920ad865ad9",
+      "lines": 58
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/build_fixtures.py",
+      "bytes": 8607,
+      "sha256": "ce21af89e8e4adc3dd0deb9b91aee33a53a4ae231d405d204d575ef141636f5d",
+      "lines": 96
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/coverage_audit.py",
+      "bytes": 8687,
+      "sha256": "49385b9cfbc8a13c8bcc59309e60ba035d5dd5901ecd41c2d3a5145496e11dba",
+      "lines": 122
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/dense_cycle_round5.py",
+      "bytes": 3661,
+      "sha256": "b54d0ed3fd1e758a73f63c1acf98274a3ba04e270cca3cf14a2ae1ad89938059",
+      "lines": 60
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/dense_manufacturing_round5.py",
+      "bytes": 7256,
+      "sha256": "85df9f880242a1023e36a3741ee3cdd01960b5dd6bab6230192000f9a8482e13",
+      "lines": 84
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/dense_seed_round5.py",
+      "bytes": 1126,
+      "sha256": "4a779d9029f03be603e48872e9a85fe0658aeae11ea1e2795c618bd7d0ff9140",
+      "lines": 13
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/final_audit.py",
+      "bytes": 3847,
+      "sha256": "d6df8c2a0a690f316152f9026c6c3b93e3fbf9e433ae3c47a6753aaebc50cadb",
+      "lines": 61
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/final_audit_round5.py",
+      "bytes": 10034,
+      "sha256": "22ba1a84f147a85e1c6fba5e4712f64d3783b5fe254ec8626ffc28c86486cfd0",
+      "lines": 78
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/finalize_round5.py",
+      "bytes": 4004,
+      "sha256": "1a895429d8444b63d704a499ba7fc46ef23ebe20d356eec978ebac75ca2bfe11",
+      "lines": 43
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/fixtures/benchmark_1000.json",
+      "bytes": 170088,
+      "sha256": "713db1d06d0455f55a8106c6c7cee9123d833b1cd2173a0cc3dbe819aeac10d7",
+      "json_type": "dict",
+      "keys": [
+        "schema",
+        "purpose",
+        "catalog",
+        "timeline",
+        "layout",
+        "construction",
+        "settings",
+        "parameters",
+        "initial_state",
+        "debug_operations",
+        "environment",
+        "contract_binding",
+        "scenario"
+      ],
+      "array_lengths": {
+        "debug_operations": 0
+      },
+      "status": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/fixtures/benchmark_brick.json",
+      "bytes": 494299,
+      "sha256": "ba51cd30be879860d09e517970cbcf3ba643b3f97eaa4030c234f37f222f2cbf",
+      "json_type": "dict",
+      "keys": [
+        "catalog",
+        "construction",
+        "contract_binding",
+        "debug_operations",
+        "environment",
+        "initial_state",
+        "layout",
+        "parameters",
+        "purpose",
+        "scenario",
+        "schema",
+        "settings",
+        "timeline"
+      ],
+      "array_lengths": {
+        "debug_operations": 0
+      },
+      "status": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/fixtures/benchmark_brick_60.json",
+      "bytes": 511332,
+      "sha256": "6129cf2ece47c144520107193df19f419203a81de5d03da2aac430b32493b022",
+      "json_type": "dict",
+      "keys": [
+        "catalog",
+        "construction",
+        "contract_binding",
+        "debug_operations",
+        "environment",
+        "initial_state",
+        "layout",
+        "parameters",
+        "purpose",
+        "scenario",
+        "schema",
+        "settings",
+        "timeline"
+      ],
+      "array_lengths": {
+        "debug_operations": 0
+      },
+      "status": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/fixtures/benchmark_candidate_b.json",
+      "bytes": 2658160,
+      "sha256": "b66b4d69d7b930a27a6ef7879ab104afa39cfaa33348eccddd3d40f6840d52a8",
+      "json_type": "dict",
+      "keys": [
+        "catalog",
+        "construction",
+        "contract_binding",
+        "debug_operations",
+        "environment",
+        "initial_state",
+        "layout",
+        "parameters",
+        "purpose",
+        "scenario",
+        "schema",
+        "settings",
+        "timeline"
+      ],
+      "array_lengths": {
+        "debug_operations": 0
+      },
+      "status": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/fixtures/bridge.json",
+      "bytes": 141312,
+      "sha256": "119c560cd29380a01c1ffeea1a24161eac972bf48843b9aee4a80595d40dc272",
+      "json_type": "dict",
+      "keys": [
+        "schema",
+        "purpose",
+        "catalog",
+        "timeline",
+        "layout",
+        "construction",
+        "settings",
+        "parameters",
+        "initial_state",
+        "debug_operations",
+        "environment",
+        "contract_binding",
+        "scenario"
+      ],
+      "array_lengths": {
+        "debug_operations": 0
+      },
+      "status": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/fixtures/core_inbound.json",
+      "bytes": 124783,
+      "sha256": "c0cb63fe3c9d9b236d1374874d4a43c168e9fd34ee364a9fc417e1e776d82033",
+      "json_type": "dict",
+      "keys": [
+        "schema",
+        "purpose",
+        "catalog",
+        "timeline",
+        "layout",
+        "construction",
+        "settings",
+        "parameters",
+        "initial_state",
+        "debug_operations",
+        "environment",
+        "contract_binding",
+        "scenario"
+      ],
+      "array_lengths": {
+        "debug_operations": 0
+      },
+      "status": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/fixtures/priority.json",
+      "bytes": 146629,
+      "sha256": "15859f972862c73b3d42d31378241bd4a9381bb0ff0ca80db581893126cb8a38",
+      "json_type": "dict",
+      "keys": [
+        "schema",
+        "purpose",
+        "catalog",
+        "timeline",
+        "layout",
+        "construction",
+        "settings",
+        "parameters",
+        "initial_state",
+        "debug_operations",
+        "environment",
+        "contract_binding",
+        "scenario"
+      ],
+      "array_lengths": {
+        "debug_operations": 0
+      },
+      "status": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/fixtures/revision_r2_branch_cut.json",
+      "bytes": 154380,
+      "sha256": "05169eaca9c3d2164417c2f97589f9c67923d16e3d8344e14b2a23e617819ca2",
+      "json_type": "dict",
+      "keys": [
+        "schema",
+        "purpose",
+        "catalog",
+        "timeline",
+        "layout",
+        "construction",
+        "settings",
+        "parameters",
+        "initial_state",
+        "debug_operations",
+        "environment",
+        "contract_binding",
+        "scenario"
+      ],
+      "array_lengths": {
+        "debug_operations": 0
+      },
+      "status": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/fixtures/revision_r2_phase_control.json",
+      "bytes": 172876,
+      "sha256": "2fea54d7b42382140e45d1a99c5f22d5a2849e9b1c781412c094e4ac355df020",
+      "json_type": "dict",
+      "keys": [
+        "schema",
+        "purpose",
+        "catalog",
+        "timeline",
+        "layout",
+        "construction",
+        "settings",
+        "parameters",
+        "initial_state",
+        "debug_operations",
+        "environment",
+        "contract_binding",
+        "scenario"
+      ],
+      "array_lengths": {
+        "debug_operations": 0
+      },
+      "status": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/migrate_round5.py",
+      "bytes": 3174,
+      "sha256": "34c6188be2f423cf379b75a77000a4b0b9ae3f89ab66026dde22e7963c0f4ada",
+      "lines": 47
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/reference.rs",
+      "bytes": 4151,
+      "sha256": "2efc6e98295f769700baa4cd1d97fd4ecec11647e3a28432eba1218c960530bc",
+      "lines": 103
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/revision_audit.py",
+      "bytes": 7752,
+      "sha256": "db3ab25e89b8005d0e234b4c059c4c52c6b6d4fefb931f882b366fdd0738680f",
+      "lines": 120
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/revision_cli.py",
+      "bytes": 6223,
+      "sha256": "31234800316a119f6253225e5f5b9395220cfaa60e882da8a690e6a0533eab3a",
+      "lines": 103
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/revision_cli.rs",
+      "bytes": 755,
+      "sha256": "e92fd2923a16eaa2741fb5556b8eec214cb7c6d647ec5ada0739c92af7cdc7b3",
+      "lines": 21
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/revision_r2_audit.py",
+      "bytes": 7124,
+      "sha256": "4aec202635e55f90744e9d225d2d35e2c2aae78c7547dcd12142742d8a0b5665",
+      "lines": 121
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/revision_r2_cli.py",
+      "bytes": 8529,
+      "sha256": "3b454c0dd30cec3555f9f95f0ec5ad8900cea0cd225c80f71318ca4bd5c083cb",
+      "lines": 147
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/revision_r2_cli.rs",
+      "bytes": 767,
+      "sha256": "27e05f7e8bffb743e537f5204e6cb166ad032b7d82a5580179063cddcf4e9008",
+      "lines": 21
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/round5_cli.rs",
+      "bytes": 2840,
+      "sha256": "a4452020b04c009724c34bb5e98805e18b75658c00db505651a7c63b4e7d698c",
+      "lines": 79
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/round5_scenarios.py",
+      "bytes": 7951,
+      "sha256": "09415f5385a635493792a857373ff4d2c2e030b525f896dd9610f4d13660943a",
+      "lines": 91
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/variants_round5.py",
+      "bytes": 1084,
+      "sha256": "3d302d308cfe0a2679f450da4f4d42957c6e0dfc25a6a3726a4ccfdb01fe71ab",
+      "lines": 13
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/verify_outputs.py",
+      "bytes": 7803,
+      "sha256": "9399ba5dfba9756f00c52c4721e3350c310d9b681f01b634c4b98ef322e6c203",
+      "lines": 122
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/修订记录.md",
+      "bytes": 20642,
+      "sha256": "16dc04ab160a0601bbf8816f03d50ccc922d7fda0f30030473f5e601c4d45e64",
+      "lines": 111
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/check_examples.py",
+      "bytes": 50928,
+      "sha256": "c4ee485b645ef82c7823a9f3dae12a90c4ad00d13c3e98c3f84dac769b2e016f",
+      "lines": 768
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/check_golden_trace.py",
+      "bytes": 21357,
+      "sha256": "81f9ffccff44b25fba02a6bf313de41e49b00497fd41661970df72d267b6243e",
+      "lines": 290
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/check_port_meeting.py",
+      "bytes": 2430,
+      "sha256": "2fb0daf9fe68138d6b920b17e186bb0c1e23d02a0583c7692ed87619417d344c",
+      "lines": 50
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/check_splitter_trace.py",
+      "bytes": 1207,
+      "sha256": "19f7b339a6f581033b6462c944489feeedf8a9c3c5632f84afe7f4158f2d82c5",
+      "lines": 30
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/checkpoint_delta.py",
+      "bytes": 3933,
+      "sha256": "c1215a258d104c07a1d1c2f93eb6718809a0c3b55db17ee49074f057d2461878",
+      "lines": 80
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/event_order.py",
+      "bytes": 8741,
+      "sha256": "9b8b828d361e3a5380c55b8eec0aa8bbdb25e0d0a2e0a155cd8ab558407359bb",
+      "lines": 161
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/generate_examples.py",
+      "bytes": 11006,
+      "sha256": "11a47a1151ee21f34027eb322d594b49d5cdb8eab0120d0b4ba9f63162e7f162",
+      "lines": 122
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/kernel_profile_v1参数赋值.json",
+      "bytes": 61621,
+      "sha256": "726e96353f223ffc78bc64547c96f57cc87c8cf6941c10437fae80959bef95dd",
+      "json_type": "dict",
+      "keys": [
+        "schema",
+        "profile_id",
+        "profile_source",
+        "configuration_source",
+        "axis_source",
+        "axes"
+      ],
+      "array_lengths": {
+        "axes": 99
+      },
+      "status": {
+        "schema": "profile-assignment-v2"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/ledger_reference.py",
+      "bytes": 1409,
+      "sha256": "e8ff4790fe45b166c934d8f2b1bda2dc841445a3fecb2a33b3c04ef08e8fb3b9",
+      "lines": 19
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/polling_reference.py",
+      "bytes": 3694,
+      "sha256": "03d289a82c8265d1ec5a61725b899f58b2aeafd650478dde970b96a9cf464864",
+      "lines": 62
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/runtime_example.py",
+      "bytes": 27787,
+      "sha256": "4114fb44444925b70b0f339776f132e8db060f33e694a5045f4da373107cc28b",
+      "lines": 344
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/runtime_record.py",
+      "bytes": 17766,
+      "sha256": "5c0115ec2fb75dbcf3ccc76b81aaa8b6d27e4f31670b0e91064179944845a9d5",
+      "lines": 253
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/test_round4.py",
+      "bytes": 10201,
+      "sha256": "04619b85f352d76dc1ce56a7de25e9ef87e33d4f69328ee42ebfe127f9c5b31e",
+      "lines": 147
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/test_runtime_input.py",
+      "bytes": 22582,
+      "sha256": "bbf9154af73f1ed28ba18e6c66c61714e733f7c2a6866aec6a9206dd2aaa40bd",
+      "lines": 273
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/传输拒收与暂停核验-运行记录-v3-kernel.json",
+      "bytes": 746196,
+      "sha256": "ca784decdf8a47e697bef306661284e1f1e96dbe40f06232dbdb19c1eecf7264",
+      "json_type": "dict",
+      "keys": [
+        "execution_mode",
+        "fingerprints",
+        "input_history",
+        "open_items",
+        "parameter_assignment",
+        "port_meeting",
+        "producer",
+        "profile_id",
+        "run_id",
+        "schema",
+        "status",
+        "trace",
+        "uncovered_axes",
+        "validation_scope"
+      ],
+      "array_lengths": {
+        "fingerprints": 34,
+        "open_items": 2,
+        "uncovered_axes": 99
+      },
+      "status": {
+        "status": "completed",
+        "schema": "kernel-output-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/传输拒收与暂停核验.json",
+      "bytes": 141732,
+      "sha256": "3540e7c79427e8779b24d9b0cb64f94534efb1be7cdc668672ce5bdb251f8536",
+      "json_type": "dict",
+      "keys": [
+        "catalog",
+        "construction",
+        "contract_binding",
+        "debug_operations",
+        "environment",
+        "initial_state",
+        "layout",
+        "parameters",
+        "purpose",
+        "scenario",
+        "schema",
+        "settings",
+        "timeline"
+      ],
+      "array_lengths": {
+        "debug_operations": 0
+      },
+      "status": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-参数赋值.json",
+      "bytes": 66548,
+      "sha256": "5438d527f0f8a7fcf5722cb3efcf16ac89aff7bb572e6d1ad8306b5befdaee6b",
+      "json_type": "dict",
+      "keys": [
+        "schema",
+        "profile_id",
+        "profile_source",
+        "configuration_source",
+        "axis_source",
+        "axes"
+      ],
+      "array_lengths": {
+        "axes": 99
+      },
+      "status": {
+        "schema": "profile-assignment-v2"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-checkpoint_delta-v3-kernel.json",
+      "bytes": 687686,
+      "sha256": "2b3e2ca5689e5d229c0b325d171a9b07bfe6b293803e00a647e7c5bbb56532d4",
+      "json_type": "dict",
+      "keys": [
+        "execution_mode",
+        "fingerprints",
+        "input_history",
+        "open_items",
+        "parameter_assignment",
+        "port_meeting",
+        "producer",
+        "profile_id",
+        "run_id",
+        "schema",
+        "status",
+        "trace",
+        "uncovered_axes",
+        "validation_scope"
+      ],
+      "array_lengths": {
+        "fingerprints": 35,
+        "open_items": 2,
+        "uncovered_axes": 99
+      },
+      "status": {
+        "status": "completed",
+        "schema": "kernel-output-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-v3-kernel.json",
+      "bytes": 1151405,
+      "sha256": "a7bc395855775013663df4712371b800cc3f1f28968b6ba9c2decee948880b00",
+      "json_type": "dict",
+      "keys": [
+        "execution_mode",
+        "fingerprints",
+        "input_history",
+        "open_items",
+        "parameter_assignment",
+        "port_meeting",
+        "producer",
+        "profile_id",
+        "run_id",
+        "schema",
+        "status",
+        "trace",
+        "uncovered_axes",
+        "validation_scope"
+      ],
+      "array_lengths": {
+        "fingerprints": 35,
+        "open_items": 2,
+        "uncovered_axes": 99
+      },
+      "status": {
+        "status": "completed",
+        "schema": "kernel-output-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-v3.json",
+      "bytes": 2031225,
+      "sha256": "5164764efe7fa5729979e8a775c403aea819cb2202ca33fbc5f57949434bc84e",
+      "json_type": "dict",
+      "keys": [
+        "schema",
+        "execution_mode",
+        "port_meeting",
+        "run_id",
+        "profile_id",
+        "producer",
+        "status",
+        "fingerprints",
+        "parameter_assignment",
+        "input_history",
+        "uncovered_axes",
+        "trace",
+        "validation_scope",
+        "open_items"
+      ],
+      "array_lengths": {
+        "fingerprints": 27,
+        "uncovered_axes": 99,
+        "open_items": 5
+      },
+      "status": {
+        "status": "completed",
+        "schema": "kernel-output-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询.json",
+      "bytes": 194214,
+      "sha256": "02ad753b54f31d04390b8672ebd4e316cef91d931fd96fec252c2fed82e863ee",
+      "json_type": "dict",
+      "keys": [
+        "schema",
+        "purpose",
+        "catalog",
+        "timeline",
+        "layout",
+        "construction",
+        "settings",
+        "parameters",
+        "initial_state",
+        "debug_operations",
+        "environment",
+        "contract_binding",
+        "scenario"
+      ],
+      "array_lengths": {
+        "debug_operations": 0
+      },
+      "status": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环基础.json",
+      "bytes": 479270,
+      "sha256": "d42cf79f293e34b61103123dddf32a32fff6ca3445a8dd0fc7509a15765ad0da",
+      "json_type": "dict",
+      "keys": [
+        "schema",
+        "purpose",
+        "catalog",
+        "timeline",
+        "layout",
+        "construction",
+        "settings",
+        "parameters",
+        "initial_state",
+        "debug_operations",
+        "environment",
+        "contract_binding",
+        "scenario"
+      ],
+      "array_lengths": {
+        "debug_operations": 0
+      },
+      "status": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序0核验-周期证书-kernel.json",
+      "bytes": 44815143,
+      "sha256": "7f7727ffa6f277acb36a9eeadc7fc9702187df5a2e61ef70951123e283d9d006",
+      "json_type": "dict",
+      "keys": [
+        "budget",
+        "cycle",
+        "execution_mode",
+        "level",
+        "open_items",
+        "parameter_point",
+        "port_meeting",
+        "reading",
+        "replay_input",
+        "result_id",
+        "run_record",
+        "schema",
+        "seed",
+        "status",
+        "stop",
+        "support_domain"
+      ],
+      "array_lengths": {
+        "open_items": 4
+      },
+      "status": {
+        "status": "counterexample",
+        "schema": "kernel-cycle-v1",
+        "level": "production_part"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序0核验-运行记录-v3-kernel.json",
+      "bytes": 43733792,
+      "sha256": "032c7ff0b44cf8213a5fda5b5272bde5b005a46570f86cd293fc16a210deae6f",
+      "json_type": "dict",
+      "keys": [
+        "execution_mode",
+        "fingerprints",
+        "input_history",
+        "open_items",
+        "parameter_assignment",
+        "port_meeting",
+        "producer",
+        "profile_id",
+        "run_id",
+        "schema",
+        "status",
+        "trace",
+        "uncovered_axes",
+        "validation_scope"
+      ],
+      "array_lengths": {
+        "fingerprints": 34,
+        "open_items": 2,
+        "uncovered_axes": 99
+      },
+      "status": {
+        "status": "completed",
+        "schema": "kernel-output-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序0核验.json",
+      "bytes": 479199,
+      "sha256": "2925a08f55d2e36080b81ee757bad2c563c2691637343da20397576acbfabf93",
+      "json_type": "dict",
+      "keys": [
+        "catalog",
+        "construction",
+        "contract_binding",
+        "debug_operations",
+        "environment",
+        "initial_state",
+        "layout",
+        "parameters",
+        "purpose",
+        "scenario",
+        "schema",
+        "settings",
+        "timeline"
+      ],
+      "array_lengths": {
+        "debug_operations": 0
+      },
+      "status": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序1核验-周期证书-kernel.json",
+      "bytes": 91453275,
+      "sha256": "a234d60a72ca2cdf46d5b7dafb5643b556d5e746fd68b969dd6e5077ca0f60a4",
+      "json_type": "dict",
+      "keys": [
+        "budget",
+        "cycle",
+        "execution_mode",
+        "level",
+        "open_items",
+        "parameter_point",
+        "port_meeting",
+        "reading",
+        "replay_input",
+        "result_id",
+        "run_record",
+        "schema",
+        "seed",
+        "status",
+        "stop",
+        "support_domain"
+      ],
+      "array_lengths": {
+        "open_items": 4
+      },
+      "status": {
+        "status": "counterexample",
+        "schema": "kernel-cycle-v1",
+        "level": "production_part"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序1核验-运行记录-v3-kernel.json",
+      "bytes": 90372945,
+      "sha256": "19550b58265ceb0f131a2a674433763828a3a69c1f07e27b4019971ce146418d",
+      "json_type": "dict",
+      "keys": [
+        "execution_mode",
+        "fingerprints",
+        "input_history",
+        "open_items",
+        "parameter_assignment",
+        "port_meeting",
+        "producer",
+        "profile_id",
+        "run_id",
+        "schema",
+        "status",
+        "trace",
+        "uncovered_axes",
+        "validation_scope"
+      ],
+      "array_lengths": {
+        "fingerprints": 34,
+        "open_items": 2,
+        "uncovered_axes": 99
+      },
+      "status": {
+        "status": "completed",
+        "schema": "kernel-output-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序1核验.json",
+      "bytes": 479199,
+      "sha256": "8f133dc3dd698523e25875dbd931777c2abb47cd124d602b052e61ebfd7877af",
+      "json_type": "dict",
+      "keys": [
+        "catalog",
+        "construction",
+        "contract_binding",
+        "debug_operations",
+        "environment",
+        "initial_state",
+        "layout",
+        "parameters",
+        "purpose",
+        "scenario",
+        "schema",
+        "settings",
+        "timeline"
+      ],
+      "array_lengths": {
+        "debug_operations": 0
+      },
+      "status": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序2核验-周期证书-kernel.json",
+      "bytes": 193679952,
+      "sha256": "f8f1910a352dbe0406e68d832f1c1b1989bb2f9598dafe2d38a1c728e4c0ec07",
+      "json_type": "dict",
+      "keys": [
+        "budget",
+        "cycle",
+        "execution_mode",
+        "level",
+        "open_items",
+        "parameter_point",
+        "port_meeting",
+        "reading",
+        "replay_input",
+        "result_id",
+        "run_record",
+        "schema",
+        "seed",
+        "status",
+        "stop",
+        "support_domain"
+      ],
+      "array_lengths": {
+        "open_items": 4
+      },
+      "status": {
+        "status": "inconclusive",
+        "schema": "kernel-cycle-v1",
+        "level": null
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序2核验-运行记录-v3-kernel.json",
+      "bytes": 193243785,
+      "sha256": "7cc97de48ab5c03f5fd5e9f46e2cd3fe736a50ddc44d284be9f8741529dd3736",
+      "json_type": "dict",
+      "keys": [
+        "execution_mode",
+        "fingerprints",
+        "input_history",
+        "open_items",
+        "parameter_assignment",
+        "port_meeting",
+        "producer",
+        "profile_id",
+        "run_id",
+        "schema",
+        "status",
+        "trace",
+        "uncovered_axes",
+        "validation_scope"
+      ],
+      "array_lengths": {
+        "fingerprints": 34,
+        "open_items": 2,
+        "uncovered_axes": 99
+      },
+      "status": {
+        "status": "completed",
+        "schema": "kernel-output-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序2核验.json",
+      "bytes": 479199,
+      "sha256": "acd645d8d0a21709ef4fd3565a91e3da29e1190512337f0ec36204c9652a9fc2",
+      "json_type": "dict",
+      "keys": [
+        "catalog",
+        "construction",
+        "contract_binding",
+        "debug_operations",
+        "environment",
+        "initial_state",
+        "layout",
+        "parameters",
+        "purpose",
+        "scenario",
+        "schema",
+        "settings",
+        "timeline"
+      ],
+      "array_lengths": {
+        "debug_operations": 0
+      },
+      "status": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序3核验-周期证书-kernel.json",
+      "bytes": 77114031,
+      "sha256": "2300a0cea7a0adf93d865b0c0c36539fa829eeac293bee00f148814f9edde2c2",
+      "json_type": "dict",
+      "keys": [
+        "budget",
+        "cycle",
+        "execution_mode",
+        "level",
+        "open_items",
+        "parameter_point",
+        "port_meeting",
+        "reading",
+        "replay_input",
+        "result_id",
+        "run_record",
+        "schema",
+        "seed",
+        "status",
+        "stop",
+        "support_domain"
+      ],
+      "array_lengths": {
+        "open_items": 4
+      },
+      "status": {
+        "status": "counterexample",
+        "schema": "kernel-cycle-v1",
+        "level": "production_part"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序3核验-运行记录-v3-kernel.json",
+      "bytes": 76155650,
+      "sha256": "2f0a7a7f1339a606cfa8c50d334bc6371dca31e53e06423c8309be23be7cca2e",
+      "json_type": "dict",
+      "keys": [
+        "execution_mode",
+        "fingerprints",
+        "input_history",
+        "open_items",
+        "parameter_assignment",
+        "port_meeting",
+        "producer",
+        "profile_id",
+        "run_id",
+        "schema",
+        "status",
+        "trace",
+        "uncovered_axes",
+        "validation_scope"
+      ],
+      "array_lengths": {
+        "fingerprints": 34,
+        "open_items": 2,
+        "uncovered_axes": 99
+      },
+      "status": {
+        "status": "completed",
+        "schema": "kernel-output-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序3核验.json",
+      "bytes": 479199,
+      "sha256": "8d358f99f9c944f3a20af1e0b8d21114a2c8577e95ddc3646c431a5cfb335ccb",
+      "json_type": "dict",
+      "keys": [
+        "catalog",
+        "construction",
+        "contract_binding",
+        "debug_operations",
+        "environment",
+        "initial_state",
+        "layout",
+        "parameters",
+        "purpose",
+        "scenario",
+        "schema",
+        "settings",
+        "timeline"
+      ],
+      "array_lengths": {
+        "debug_operations": 0
+      },
+      "status": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序4核验-周期证书-kernel.json",
+      "bytes": 87880342,
+      "sha256": "ecf18056e5760b1937c6de7b2cd9702a0f5e7dbc6d87ff4339ad8863ed575521",
+      "json_type": "dict",
+      "keys": [
+        "budget",
+        "cycle",
+        "execution_mode",
+        "level",
+        "open_items",
+        "parameter_point",
+        "port_meeting",
+        "reading",
+        "replay_input",
+        "result_id",
+        "run_record",
+        "schema",
+        "seed",
+        "status",
+        "stop",
+        "support_domain"
+      ],
+      "array_lengths": {
+        "open_items": 4
+      },
+      "status": {
+        "status": "counterexample",
+        "schema": "kernel-cycle-v1",
+        "level": "production_part"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序4核验-运行记录-v3-kernel.json",
+      "bytes": 86505201,
+      "sha256": "97920194595f47e87e86e9d9f441c883490ba58ed2bfbe81c7226880cfdbc6e8",
+      "json_type": "dict",
+      "keys": [
+        "execution_mode",
+        "fingerprints",
+        "input_history",
+        "open_items",
+        "parameter_assignment",
+        "port_meeting",
+        "producer",
+        "profile_id",
+        "run_id",
+        "schema",
+        "status",
+        "trace",
+        "uncovered_axes",
+        "validation_scope"
+      ],
+      "array_lengths": {
+        "fingerprints": 34,
+        "open_items": 2,
+        "uncovered_axes": 99
+      },
+      "status": {
+        "status": "completed",
+        "schema": "kernel-output-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序4核验.json",
+      "bytes": 479199,
+      "sha256": "c373a7e6121c708156900fb08e0e687a09d96e864b898baa32ff10681762705f",
+      "json_type": "dict",
+      "keys": [
+        "catalog",
+        "construction",
+        "contract_binding",
+        "debug_operations",
+        "environment",
+        "initial_state",
+        "layout",
+        "parameters",
+        "purpose",
+        "scenario",
+        "schema",
+        "settings",
+        "timeline"
+      ],
+      "array_lengths": {
+        "debug_operations": 0
+      },
+      "status": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序5核验-周期证书-kernel.json",
+      "bytes": 193774394,
+      "sha256": "7820895578a0bdc3d6bdd1a96d705947361d27c864f6421eb19fa8398b6a7a1b",
+      "json_type": "dict",
+      "keys": [
+        "budget",
+        "cycle",
+        "execution_mode",
+        "level",
+        "open_items",
+        "parameter_point",
+        "port_meeting",
+        "reading",
+        "replay_input",
+        "result_id",
+        "run_record",
+        "schema",
+        "seed",
+        "status",
+        "stop",
+        "support_domain"
+      ],
+      "array_lengths": {
+        "open_items": 4
+      },
+      "status": {
+        "status": "inconclusive",
+        "schema": "kernel-cycle-v1",
+        "level": null
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序5核验-运行记录-v3-kernel.json",
+      "bytes": 193338227,
+      "sha256": "869f57deca2ce9842c77f70e569b613feaefe6cf898176ce9307d2c08084a407",
+      "json_type": "dict",
+      "keys": [
+        "execution_mode",
+        "fingerprints",
+        "input_history",
+        "open_items",
+        "parameter_assignment",
+        "port_meeting",
+        "producer",
+        "profile_id",
+        "run_id",
+        "schema",
+        "status",
+        "trace",
+        "uncovered_axes",
+        "validation_scope"
+      ],
+      "array_lengths": {
+        "fingerprints": 34,
+        "open_items": 2,
+        "uncovered_axes": 99
+      },
+      "status": {
+        "status": "completed",
+        "schema": "kernel-output-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序5核验.json",
+      "bytes": 479199,
+      "sha256": "bd12883e08a7b2c0e3b62fc1503411474be98ee60a3bed2815435b60a258c723",
+      "json_type": "dict",
+      "keys": [
+        "catalog",
+        "construction",
+        "contract_binding",
+        "debug_operations",
+        "environment",
+        "initial_state",
+        "layout",
+        "parameters",
+        "purpose",
+        "scenario",
+        "schema",
+        "settings",
+        "timeline"
+      ],
+      "array_lengths": {
+        "debug_operations": 0
+      },
+      "status": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点循环种子核验-周期证书-kernel.json",
+      "bytes": 105762281,
+      "sha256": "ad6f89ea9dd92a4a75ef2c2484d914f04f0c4d54945133a25697e8eb38be84a1",
+      "json_type": "dict",
+      "keys": [
+        "budget",
+        "cycle",
+        "execution_mode",
+        "level",
+        "open_items",
+        "parameter_point",
+        "port_meeting",
+        "reading",
+        "replay_input",
+        "result_id",
+        "run_record",
+        "schema",
+        "seed",
+        "status",
+        "stop",
+        "support_domain"
+      ],
+      "array_lengths": {
+        "open_items": 4
+      },
+      "status": {
+        "status": "inconclusive",
+        "schema": "kernel-cycle-v1",
+        "level": null
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点循环种子核验-运行记录-v3-kernel.json",
+      "bytes": 105138671,
+      "sha256": "c0a3c4a40a54ca4cb1a3ed56a8a384a989cb33ce05aa9fff06b035cb17127f32",
+      "json_type": "dict",
+      "keys": [
+        "execution_mode",
+        "fingerprints",
+        "input_history",
+        "open_items",
+        "parameter_assignment",
+        "port_meeting",
+        "producer",
+        "profile_id",
+        "run_id",
+        "schema",
+        "status",
+        "trace",
+        "uncovered_axes",
+        "validation_scope"
+      ],
+      "array_lengths": {
+        "fingerprints": 34,
+        "open_items": 2,
+        "uncovered_axes": 99
+      },
+      "status": {
+        "status": "completed",
+        "schema": "kernel-output-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点循环种子核验.json",
+      "bytes": 727529,
+      "sha256": "b6b8fbc58a15e266953b29bcd80ff99dc3b41eb656104a4636c04c44b6060dc6",
+      "json_type": "dict",
+      "keys": [
+        "catalog",
+        "construction",
+        "contract_binding",
+        "debug_operations",
+        "environment",
+        "initial_state",
+        "layout",
+        "parameters",
+        "purpose",
+        "scenario",
+        "schema",
+        "settings",
+        "timeline"
+      ],
+      "array_lengths": {
+        "debug_operations": 0
+      },
+      "status": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点核验-周期证书-kernel.json",
+      "bytes": 26064043,
+      "sha256": "371a86c41027a10dce1bf67a12eaa4e8e679a85662d500cf9fd2f440ca9c25bd",
+      "json_type": "dict",
+      "keys": [
+        "budget",
+        "cycle",
+        "execution_mode",
+        "level",
+        "open_items",
+        "parameter_point",
+        "port_meeting",
+        "reading",
+        "replay_input",
+        "result_id",
+        "run_record",
+        "schema",
+        "seed",
+        "status",
+        "stop",
+        "support_domain"
+      ],
+      "array_lengths": {
+        "open_items": 4
+      },
+      "status": {
+        "status": "inconclusive",
+        "schema": "kernel-cycle-v1",
+        "level": null
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点核验-运行记录-v3-kernel.json",
+      "bytes": 25721095,
+      "sha256": "019e26541a27b09e5d4595259b4bfe38b3ea0150b48a8a07d64793ee6f28cf80",
+      "json_type": "dict",
+      "keys": [
+        "execution_mode",
+        "fingerprints",
+        "input_history",
+        "open_items",
+        "parameter_assignment",
+        "port_meeting",
+        "producer",
+        "profile_id",
+        "run_id",
+        "schema",
+        "status",
+        "trace",
+        "uncovered_axes",
+        "validation_scope"
+      ],
+      "array_lengths": {
+        "fingerprints": 34,
+        "open_items": 2,
+        "uncovered_axes": 99
+      },
+      "status": {
+        "status": "completed",
+        "schema": "kernel-output-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点核验.json",
+      "bytes": 355430,
+      "sha256": "101c76982ccbd91a5ebf7396e37034ff538f43e7d2c6fe6642112d94abf38743",
+      "json_type": "dict",
+      "keys": [
+        "catalog",
+        "construction",
+        "contract_binding",
+        "debug_operations",
+        "environment",
+        "initial_state",
+        "layout",
+        "parameters",
+        "purpose",
+        "scenario",
+        "schema",
+        "settings",
+        "timeline"
+      ],
+      "array_lengths": {
+        "debug_operations": 0
+      },
+      "status": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点闭环核验-周期证书-kernel.json",
+      "bytes": 243650747,
+      "sha256": "1b2fe26776bf094144af8e2bca7e4b8b5220b3592714c106ec8199dd6a85901d",
+      "json_type": "dict",
+      "keys": [
+        "budget",
+        "cycle",
+        "execution_mode",
+        "level",
+        "open_items",
+        "parameter_point",
+        "port_meeting",
+        "reading",
+        "replay_input",
+        "result_id",
+        "run_record",
+        "schema",
+        "seed",
+        "status",
+        "stop",
+        "support_domain"
+      ],
+      "array_lengths": {
+        "open_items": 4
+      },
+      "status": {
+        "status": "inconclusive",
+        "schema": "kernel-cycle-v1",
+        "level": null
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点闭环核验-运行记录-v3-kernel.json",
+      "bytes": 243089773,
+      "sha256": "0f0da394c750634fa7a4dc725c5d29c8f5152250b680d9eb23d5cdc07dbb1eca",
+      "json_type": "dict",
+      "keys": [
+        "execution_mode",
+        "fingerprints",
+        "input_history",
+        "open_items",
+        "parameter_assignment",
+        "port_meeting",
+        "producer",
+        "profile_id",
+        "run_id",
+        "schema",
+        "status",
+        "trace",
+        "uncovered_axes",
+        "validation_scope"
+      ],
+      "array_lengths": {
+        "fingerprints": 34,
+        "open_items": 2,
+        "uncovered_axes": 99
+      },
+      "status": {
+        "status": "completed",
+        "schema": "kernel-output-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点闭环核验.json",
+      "bytes": 645186,
+      "sha256": "513adc0b26d79af9ac04bc4946fa1f7ef76d7da9aea39f4fc9a51beff9792cef",
+      "json_type": "dict",
+      "keys": [
+        "catalog",
+        "construction",
+        "contract_binding",
+        "debug_operations",
+        "environment",
+        "initial_state",
+        "layout",
+        "parameters",
+        "purpose",
+        "scenario",
+        "schema",
+        "settings",
+        "timeline"
+      ],
+      "array_lengths": {
+        "debug_operations": 0
+      },
+      "status": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/桥接器双通路-运行记录-v3-kernel.json",
+      "bytes": 1699560,
+      "sha256": "1d30fae52837f3a80435a45aa63e5bd5bd395bf6df2ab57ce0f49b602ff9e52c",
+      "json_type": "dict",
+      "keys": [
+        "execution_mode",
+        "fingerprints",
+        "input_history",
+        "open_items",
+        "parameter_assignment",
+        "port_meeting",
+        "producer",
+        "profile_id",
+        "run_id",
+        "schema",
+        "status",
+        "trace",
+        "uncovered_axes",
+        "validation_scope"
+      ],
+      "array_lengths": {
+        "fingerprints": 34,
+        "open_items": 2,
+        "uncovered_axes": 99
+      },
+      "status": {
+        "status": "completed",
+        "schema": "kernel-output-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/桥接器双通路.json",
+      "bytes": 141755,
+      "sha256": "efcab7af7aea7ef76687ab570a67e79e5fcef7a4b33348f5c71c3e70d41f98bf",
+      "json_type": "dict",
+      "keys": [
+        "catalog",
+        "construction",
+        "contract_binding",
+        "debug_operations",
+        "environment",
+        "initial_state",
+        "layout",
+        "parameters",
+        "purpose",
+        "scenario",
+        "schema",
+        "settings",
+        "timeline"
+      ],
+      "array_lengths": {
+        "debug_operations": 0
+      },
+      "status": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-checkpoint_delta-v3-kernel.json",
+      "bytes": 270605,
+      "sha256": "25051e495ff748b3828927f4bf160fe4bb51e944a4ac0b0e31d112e83d433c92",
+      "json_type": "dict",
+      "keys": [
+        "execution_mode",
+        "fingerprints",
+        "input_history",
+        "open_items",
+        "parameter_assignment",
+        "port_meeting",
+        "producer",
+        "profile_id",
+        "run_id",
+        "schema",
+        "status",
+        "trace",
+        "uncovered_axes",
+        "validation_scope"
+      ],
+      "array_lengths": {
+        "fingerprints": 37,
+        "open_items": 2,
+        "uncovered_axes": 99
+      },
+      "status": {
+        "status": "completed",
+        "schema": "kernel-output-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-v3-kernel.json",
+      "bytes": 398600,
+      "sha256": "f1fc74e20de84c6c320a015a474ca2402ec61d9797577aa497ca4b54d411e7b8",
+      "json_type": "dict",
+      "keys": [
+        "execution_mode",
+        "fingerprints",
+        "input_history",
+        "open_items",
+        "parameter_assignment",
+        "port_meeting",
+        "producer",
+        "profile_id",
+        "run_id",
+        "schema",
+        "status",
+        "trace",
+        "uncovered_axes",
+        "validation_scope"
+      ],
+      "array_lengths": {
+        "fingerprints": 37,
+        "open_items": 2,
+        "uncovered_axes": 99
+      },
+      "status": {
+        "status": "completed",
+        "schema": "kernel-output-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-v3.json",
+      "bytes": 665437,
+      "sha256": "b5af1023258ecd6f2eb8c56ec543d3defff07fc6b20ed44047a6855f5cf44fde",
+      "json_type": "dict",
+      "keys": [
+        "schema",
+        "execution_mode",
+        "port_meeting",
+        "run_id",
+        "profile_id",
+        "producer",
+        "status",
+        "fingerprints",
+        "parameter_assignment",
+        "input_history",
+        "uncovered_axes",
+        "trace",
+        "validation_scope",
+        "open_items"
+      ],
+      "array_lengths": {
+        "fingerprints": 28,
+        "uncovered_axes": 99,
+        "open_items": 4
+      },
+      "status": {
+        "status": "completed",
+        "schema": "kernel-output-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json",
+      "bytes": 169998,
+      "sha256": "2942f3916d63c41d600d8226046cbd2a5bc05439161cfa1c2abd1702b75dd590",
+      "json_type": "dict",
+      "keys": [
+        "schema",
+        "purpose",
+        "catalog",
+        "timeline",
+        "layout",
+        "construction",
+        "settings",
+        "parameters",
+        "initial_state",
+        "debug_operations",
+        "environment",
+        "contract_binding",
+        "scenario"
+      ],
+      "array_lengths": {
+        "debug_operations": 0
+      },
+      "status": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/生产循环环带-周期证书-kernel.json",
+      "bytes": 1495002,
+      "sha256": "f8a564d1a41a5bcdf0c576531d98c3e4a8b7dc09d33c71a04fa8ce0bb2a5b622",
+      "json_type": "dict",
+      "keys": [
+        "budget",
+        "cycle",
+        "execution_mode",
+        "level",
+        "open_items",
+        "parameter_point",
+        "port_meeting",
+        "reading",
+        "replay_input",
+        "result_id",
+        "run_record",
+        "schema",
+        "seed",
+        "status",
+        "stop",
+        "support_domain"
+      ],
+      "array_lengths": {
+        "open_items": 4
+      },
+      "status": {
+        "status": "counterexample",
+        "schema": "kernel-cycle-v1",
+        "level": "production_part"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/生产循环环带-运行记录-v3-kernel.json",
+      "bytes": 2606126,
+      "sha256": "63ea468f9e45099024343d4eacbc46efc6b6cef981921d9925d2b82eb2a22c11",
+      "json_type": "dict",
+      "keys": [
+        "execution_mode",
+        "fingerprints",
+        "input_history",
+        "open_items",
+        "parameter_assignment",
+        "port_meeting",
+        "producer",
+        "profile_id",
+        "run_id",
+        "schema",
+        "status",
+        "trace",
+        "uncovered_axes",
+        "validation_scope"
+      ],
+      "array_lengths": {
+        "fingerprints": 34,
+        "open_items": 2,
+        "uncovered_axes": 99
+      },
+      "status": {
+        "status": "completed",
+        "schema": "kernel-output-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/生产循环环带.json",
+      "bytes": 136056,
+      "sha256": "6043e8736a6caad5d8ce52e7f64e25e3647db4cfdd731ed4f3fff8b2d95d279d",
+      "json_type": "dict",
+      "keys": [
+        "catalog",
+        "construction",
+        "contract_binding",
+        "debug_operations",
+        "environment",
+        "initial_state",
+        "layout",
+        "parameters",
+        "purpose",
+        "scenario",
+        "schema",
+        "settings",
+        "timeline"
+      ],
+      "array_lengths": {
+        "debug_operations": 0
+      },
+      "status": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/研磨混做核验-运行记录-v3-kernel.json",
+      "bytes": 1215883,
+      "sha256": "0daf485561dbd823170fac3dea7924455fe93b4c047610c7587678c991d081e8",
+      "json_type": "dict",
+      "keys": [
+        "execution_mode",
+        "fingerprints",
+        "input_history",
+        "open_items",
+        "parameter_assignment",
+        "port_meeting",
+        "producer",
+        "profile_id",
+        "run_id",
+        "schema",
+        "status",
+        "trace",
+        "uncovered_axes",
+        "validation_scope"
+      ],
+      "array_lengths": {
+        "fingerprints": 34,
+        "open_items": 2,
+        "uncovered_axes": 99
+      },
+      "status": {
+        "status": "completed",
+        "schema": "kernel-output-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/研磨混做核验.json",
+      "bytes": 149767,
+      "sha256": "49c67eb95424f012035e2191b22a85114a605cbbe28c05802cb80ab38a86db2d",
+      "json_type": "dict",
+      "keys": [
+        "catalog",
+        "construction",
+        "contract_binding",
+        "debug_operations",
+        "environment",
+        "initial_state",
+        "layout",
+        "parameters",
+        "purpose",
+        "scenario",
+        "schema",
+        "settings",
+        "timeline"
+      ],
+      "array_lengths": {
+        "debug_operations": 0
+      },
+      "status": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/第五轮样例说明-kernel.md",
+      "bytes": 4069,
+      "sha256": "e5d7d21b6c87eae6f90ce45cf6497d25c775f1fec44e9695b138678f25c4d905",
+      "lines": 24
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序0核验-运行记录-v3-kernel.json",
+      "bytes": 3965198,
+      "sha256": "954debeb05fce2b1581e65f0c876d8d8bbb3724aa59672b1ffb7b81a5eb77530",
+      "json_type": "dict",
+      "keys": [
+        "execution_mode",
+        "fingerprints",
+        "input_history",
+        "open_items",
+        "parameter_assignment",
+        "port_meeting",
+        "producer",
+        "profile_id",
+        "run_id",
+        "schema",
+        "status",
+        "trace",
+        "uncovered_axes",
+        "validation_scope"
+      ],
+      "array_lengths": {
+        "fingerprints": 34,
+        "open_items": 2,
+        "uncovered_axes": 99
+      },
+      "status": {
+        "status": "completed",
+        "schema": "kernel-output-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序0核验.json",
+      "bytes": 247851,
+      "sha256": "b8571ed37ffcc98421b90dc073aa7413265a5c1c14a0c804b1bc7507282d75e7",
+      "json_type": "dict",
+      "keys": [
+        "catalog",
+        "construction",
+        "contract_binding",
+        "debug_operations",
+        "environment",
+        "initial_state",
+        "layout",
+        "parameters",
+        "purpose",
+        "scenario",
+        "schema",
+        "settings",
+        "timeline"
+      ],
+      "array_lengths": {
+        "debug_operations": 0
+      },
+      "status": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序1核验-运行记录-v3-kernel.json",
+      "bytes": 3965198,
+      "sha256": "abfe553f1db3e9b51186956c92522f32c4b984ec92a3d7cebcc7b5906a5da46c",
+      "json_type": "dict",
+      "keys": [
+        "execution_mode",
+        "fingerprints",
+        "input_history",
+        "open_items",
+        "parameter_assignment",
+        "port_meeting",
+        "producer",
+        "profile_id",
+        "run_id",
+        "schema",
+        "status",
+        "trace",
+        "uncovered_axes",
+        "validation_scope"
+      ],
+      "array_lengths": {
+        "fingerprints": 34,
+        "open_items": 2,
+        "uncovered_axes": 99
+      },
+      "status": {
+        "status": "completed",
+        "schema": "kernel-output-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序1核验.json",
+      "bytes": 247851,
+      "sha256": "581da2ea55995a864eb6fac94178822009e908b7a2a3f362e68c5a199c499647",
+      "json_type": "dict",
+      "keys": [
+        "catalog",
+        "construction",
+        "contract_binding",
+        "debug_operations",
+        "environment",
+        "initial_state",
+        "layout",
+        "parameters",
+        "purpose",
+        "scenario",
+        "schema",
+        "settings",
+        "timeline"
+      ],
+      "array_lengths": {
+        "debug_operations": 0
+      },
+      "status": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序2核验-运行记录-v3-kernel.json",
+      "bytes": 3965214,
+      "sha256": "2799dd53aa1e75c620e0b885b3dba8fffabec5bd596fc3c3a482d52ea4a98f05",
+      "json_type": "dict",
+      "keys": [
+        "execution_mode",
+        "fingerprints",
+        "input_history",
+        "open_items",
+        "parameter_assignment",
+        "port_meeting",
+        "producer",
+        "profile_id",
+        "run_id",
+        "schema",
+        "status",
+        "trace",
+        "uncovered_axes",
+        "validation_scope"
+      ],
+      "array_lengths": {
+        "fingerprints": 34,
+        "open_items": 2,
+        "uncovered_axes": 99
+      },
+      "status": {
+        "status": "completed",
+        "schema": "kernel-output-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序2核验.json",
+      "bytes": 247851,
+      "sha256": "b46f166a53ae8fede859f6de3dc09a518d04370315a512e6743926a5aaf668ef",
+      "json_type": "dict",
+      "keys": [
+        "catalog",
+        "construction",
+        "contract_binding",
+        "debug_operations",
+        "environment",
+        "initial_state",
+        "layout",
+        "parameters",
+        "purpose",
+        "scenario",
+        "schema",
+        "settings",
+        "timeline"
+      ],
+      "array_lengths": {
+        "debug_operations": 0
+      },
+      "status": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序3核验-运行记录-v3-kernel.json",
+      "bytes": 3965230,
+      "sha256": "d1d6ac96085991dc7dbd2f6d0b851381eb07d9d0e2b6bd02bb95aebe95aa6683",
+      "json_type": "dict",
+      "keys": [
+        "execution_mode",
+        "fingerprints",
+        "input_history",
+        "open_items",
+        "parameter_assignment",
+        "port_meeting",
+        "producer",
+        "profile_id",
+        "run_id",
+        "schema",
+        "status",
+        "trace",
+        "uncovered_axes",
+        "validation_scope"
+      ],
+      "array_lengths": {
+        "fingerprints": 34,
+        "open_items": 2,
+        "uncovered_axes": 99
+      },
+      "status": {
+        "status": "completed",
+        "schema": "kernel-output-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序3核验.json",
+      "bytes": 247851,
+      "sha256": "56b188a83d37367a2d4d5e2349f6be5c9ea4a4fe8d444762325f553327cef64a",
+      "json_type": "dict",
+      "keys": [
+        "catalog",
+        "construction",
+        "contract_binding",
+        "debug_operations",
+        "environment",
+        "initial_state",
+        "layout",
+        "parameters",
+        "purpose",
+        "scenario",
+        "schema",
+        "settings",
+        "timeline"
+      ],
+      "array_lengths": {
+        "debug_operations": 0
+      },
+      "status": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序4核验-运行记录-v3-kernel.json",
+      "bytes": 3965214,
+      "sha256": "3179b7c9dc9e5cf4f9e02d16e71cd83e777aed3c37d9ff5ddbe9661a43fb808b",
+      "json_type": "dict",
+      "keys": [
+        "execution_mode",
+        "fingerprints",
+        "input_history",
+        "open_items",
+        "parameter_assignment",
+        "port_meeting",
+        "producer",
+        "profile_id",
+        "run_id",
+        "schema",
+        "status",
+        "trace",
+        "uncovered_axes",
+        "validation_scope"
+      ],
+      "array_lengths": {
+        "fingerprints": 34,
+        "open_items": 2,
+        "uncovered_axes": 99
+      },
+      "status": {
+        "status": "completed",
+        "schema": "kernel-output-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序4核验.json",
+      "bytes": 247851,
+      "sha256": "d422c9d0fd762e4e78750e5274939a5708bb77236ceb5d08c3082ff8eadef87c",
+      "json_type": "dict",
+      "keys": [
+        "catalog",
+        "construction",
+        "contract_binding",
+        "debug_operations",
+        "environment",
+        "initial_state",
+        "layout",
+        "parameters",
+        "purpose",
+        "scenario",
+        "schema",
+        "settings",
+        "timeline"
+      ],
+      "array_lengths": {
+        "debug_operations": 0
+      },
+      "status": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序5核验-运行记录-v3-kernel.json",
+      "bytes": 3965230,
+      "sha256": "6e621e3d08240056850958305bcdef04c661f29babf03c054c057cb96dbe7ec7",
+      "json_type": "dict",
+      "keys": [
+        "execution_mode",
+        "fingerprints",
+        "input_history",
+        "open_items",
+        "parameter_assignment",
+        "port_meeting",
+        "producer",
+        "profile_id",
+        "run_id",
+        "schema",
+        "status",
+        "trace",
+        "uncovered_axes",
+        "validation_scope"
+      ],
+      "array_lengths": {
+        "fingerprints": 34,
+        "open_items": 2,
+        "uncovered_axes": 99
+      },
+      "status": {
+        "status": "completed",
+        "schema": "kernel-output-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序5核验.json",
+      "bytes": 247851,
+      "sha256": "308ef0c3d2254c74926183e146a46cd31c771ad12ab27a5e237e453c48fce9d4",
+      "json_type": "dict",
+      "keys": [
+        "catalog",
+        "construction",
+        "contract_binding",
+        "debug_operations",
+        "environment",
+        "initial_state",
+        "layout",
+        "parameters",
+        "purpose",
+        "scenario",
+        "schema",
+        "settings",
+        "timeline"
+      ],
+      "array_lengths": {
+        "debug_operations": 0
+      },
+      "status": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分核验-运行记录-v3-kernel.json",
+      "bytes": 9801795,
+      "sha256": "ddb474dbf7f34f476c0a12d60c2d2bb997e75f730ca457431dad2b5d973e0729",
+      "json_type": "dict",
+      "keys": [
+        "execution_mode",
+        "fingerprints",
+        "input_history",
+        "open_items",
+        "parameter_assignment",
+        "port_meeting",
+        "producer",
+        "profile_id",
+        "run_id",
+        "schema",
+        "status",
+        "trace",
+        "uncovered_axes",
+        "validation_scope"
+      ],
+      "array_lengths": {
+        "fingerprints": 34,
+        "open_items": 2,
+        "uncovered_axes": 99
+      },
+      "status": {
+        "status": "completed",
+        "schema": "kernel-output-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分核验.json",
+      "bytes": 247847,
+      "sha256": "b28f4938782f2192507dc079e3f5a68f8f980be097e2a6bdf6d747b2a4897871",
+      "json_type": "dict",
+      "keys": [
+        "catalog",
+        "construction",
+        "contract_binding",
+        "debug_operations",
+        "environment",
+        "initial_state",
+        "layout",
+        "parameters",
+        "purpose",
+        "scenario",
+        "schema",
+        "settings",
+        "timeline"
+      ],
+      "array_lengths": {
+        "debug_operations": 0
+      },
+      "status": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/阻尼切支恢复核验-运行记录-v3-kernel.json",
+      "bytes": 1341225,
+      "sha256": "a13d4c2ea5da9d98ec37b763005f47f1347512a0b8e7d8357e5ea9a4dc376254",
+      "json_type": "dict",
+      "keys": [
+        "execution_mode",
+        "fingerprints",
+        "input_history",
+        "open_items",
+        "parameter_assignment",
+        "port_meeting",
+        "producer",
+        "profile_id",
+        "run_id",
+        "schema",
+        "status",
+        "trace",
+        "uncovered_axes",
+        "validation_scope"
+      ],
+      "array_lengths": {
+        "fingerprints": 34,
+        "open_items": 2,
+        "uncovered_axes": 99
+      },
+      "status": {
+        "status": "completed",
+        "schema": "kernel-output-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/阻尼切支恢复核验.json",
+      "bytes": 153919,
+      "sha256": "41314f930ed83acf1685f6ca9109be45b7ac2761ec1225a70e63ea2ecb43ccd6",
+      "json_type": "dict",
+      "keys": [
+        "catalog",
+        "construction",
+        "contract_binding",
+        "debug_operations",
+        "environment",
+        "initial_state",
+        "layout",
+        "parameters",
+        "purpose",
+        "scenario",
+        "schema",
+        "settings",
+        "timeline"
+      ],
+      "array_lengths": {
+        "debug_operations": 0
+      },
+      "status": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/阻尼连续带核验-运行记录-v3-kernel.json",
+      "bytes": 1188753,
+      "sha256": "15e6584468d1ca98e8d19412716169165467fc69fcbb82dc9a956f5923b19117",
+      "json_type": "dict",
+      "keys": [
+        "execution_mode",
+        "fingerprints",
+        "input_history",
+        "open_items",
+        "parameter_assignment",
+        "port_meeting",
+        "producer",
+        "profile_id",
+        "run_id",
+        "schema",
+        "status",
+        "trace",
+        "uncovered_axes",
+        "validation_scope"
+      ],
+      "array_lengths": {
+        "fingerprints": 34,
+        "open_items": 2,
+        "uncovered_axes": 99
+      },
+      "status": {
+        "status": "completed",
+        "schema": "kernel-output-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/阻尼连续带核验.json",
+      "bytes": 146646,
+      "sha256": "5ac87c820f0faab69c92524891d275b45e7b9f85557259133bbce10a50b8f9f5",
+      "json_type": "dict",
+      "keys": [
+        "catalog",
+        "construction",
+        "contract_binding",
+        "debug_operations",
+        "environment",
+        "initial_state",
+        "layout",
+        "parameters",
+        "purpose",
+        "scenario",
+        "schema",
+        "settings",
+        "timeline"
+      ],
+      "array_lengths": {
+        "debug_operations": 0
+      },
+      "status": {
+        "schema": "kernel-input-v3"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+      "bytes": 156881,
+      "sha256": "74d21a5bd37c6178f988a86a4aa78a03d1e4244ecff26f133bb5e700ada82e43",
+      "json_type": "dict",
+      "keys": [
+        "recipes",
+        "constraints",
+        "schema",
+        "conventions",
+        "units",
+        "task",
+        "static_checks",
+        "sources",
+        "version",
+        "transcribed_at",
+        "source_root"
+      ],
+      "array_lengths": {
+        "recipes": 18,
+        "constraints": 56,
+        "units": 18,
+        "sources": 3
+      },
+      "status": {
+        "schema": "static-catalog-v2"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/check_revision.py",
+      "bytes": 27715,
+      "sha256": "66ea94ef739a5155736be08f4c36ebea3900f4b3ef75385434b09dfd252d4de8",
+      "lines": 333
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/修订记录.md",
+      "bytes": 44333,
+      "sha256": "3d735dbd99a6b96b65652e9551479c29e0bd9078d22fe066c5229cb8ba98e1d5",
+      "lines": 248
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核实现-对规格的疑问.md",
+      "bytes": 11661,
+      "sha256": "3a55a14cb8e21c7d11c2c1b4626d3150cf229feadb757087297ad1bd1cda87a5",
+      "lines": 83
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入-修订记录.md",
+      "bytes": 22217,
+      "sha256": "8407a00ebab39212d2289549b0d5c22927f836a06162a22f5fc9ac5ccb825ff0",
+      "lines": 131
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md",
+      "bytes": 96870,
+      "sha256": "0ca6312ed5142008d136f2d298bf23937dfbcb4cc80b7e3bfc023278833e9ec9",
+      "lines": 414
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.md",
+      "bytes": 24455,
+      "sha256": "07de6c939938b88f0165fb1c02b1d96c19fd519453af54ce33ab9aa95b88d52c",
+      "lines": 121
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.schema.json",
+      "bytes": 68098,
+      "sha256": "5c3cb1ace272c34439381ba770b000b26bdb745db20e52ca4008ff13be0d657e",
+      "json_type": "dict",
+      "keys": [
+        "$schema",
+        "$id",
+        "oneOf",
+        "$defs"
+      ],
+      "array_lengths": {
+        "oneOf": 2
+      },
+      "status": {}
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "bytes": 49726,
+      "sha256": "bb0864eec811a6a77065ede33af165ced5e31e384afb166eaa30af554589e34a",
+      "json_type": "dict",
+      "keys": [
+        "schema",
+        "profile_id",
+        "revision",
+        "axis_count",
+        "axes"
+      ],
+      "array_lengths": {},
+      "status": {
+        "schema": "kernel-profile-registry-v1"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/参数轴-对内核输入请求的答复.md",
+      "bytes": 11273,
+      "sha256": "ac1e606cd4c5042200c0f8f77bd6d88695896f939ca1b9e6b40c6157b68abd64",
+      "lines": 62
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限模型声明.md",
+      "bytes": 43098,
+      "sha256": "da0ab2073221bca451c676d54c44c98705bac2886c4ebf7049b7a87fd3509e86",
+      "lines": 145
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md",
+      "bytes": 54501,
+      "sha256": "55e3caee8ab40d1003b6002f1283c46734ef77a122e2870a2455fb4f14355450",
+      "lines": 222
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/四件前置义务对照.md",
+      "bytes": 12188,
+      "sha256": "a53e6ea0b6ecef38d8c009e66a80f5b0d04d3b5803d3270af68cc30cb19f9dde",
+      "lines": 61
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/对内核的修改请求.md",
+      "bytes": 6679,
+      "sha256": "f8f26dcde2b72c2358cb24dd1e7ab43ce56c0d40b2da6ab92e8928c88592adde",
+      "lines": 38
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/普遍审查场景.md",
+      "bytes": 6729,
+      "sha256": "5d08beced7a77cfcd622fc3c42eb5419fd4d83bb27688190eddc985a84560ce0",
+      "lines": 31
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订/check_round5.py",
+      "bytes": 15128,
+      "sha256": "1c9e31feb05ae974644d33567d2b1e59de54dca0de4982609970d09fcdaa21d9",
+      "lines": 162
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/StateSeed字段清点.json",
+      "bytes": 1546,
+      "sha256": "339e3d73a4ed8bea4af0c47dd2b3db6917cc22a38472d64d6ac0dc9def57ca6e",
+      "json_type": "dict",
+      "keys": [
+        "Content",
+        "Inventory",
+        "WarehouseSlot",
+        "Warehouse",
+        "Cooldown",
+        "Progress",
+        "Level",
+        "Side",
+        "PollMemory",
+        "Gate",
+        "Logistics",
+        "Environment",
+        "Arbitration",
+        "ParameterValue",
+        "SemanticContext",
+        "State",
+        "Pending"
+      ],
+      "array_lengths": {
+        "Content": 3,
+        "Inventory": 2,
+        "WarehouseSlot": 4,
+        "Warehouse": 2,
+        "Cooldown": 2,
+        "Progress": 7,
+        "Level": 3,
+        "Side": 5,
+        "PollMemory": 2,
+        "Gate": 5,
+        "Logistics": 5,
+        "Environment": 4,
+        "Arbitration": 2,
+        "ParameterValue": 3,
+        "SemanticContext": 5,
+        "State": 8,
+        "Pending": 6
+      },
+      "status": {}
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/check_round8.py",
+      "bytes": 12895,
+      "sha256": "67de1612400bbf73af12f645f36b6e79f53268c12edd42ce68b52810a1e7ea3b",
+      "lines": 197
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/schema生成.log",
+      "bytes": 90,
+      "sha256": "43baade7e359a1c217033fe0d078eaa20073ae438ec6522c717160c23c7847de",
+      "lines": 1
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/交付清单.json",
+      "bytes": 20866,
+      "sha256": "1404c681b9c944227738f925fc7be1dba1289aac0e38081c8003c16f1c034d34",
+      "json_type": "dict",
+      "keys": [
+        "status",
+        "files",
+        "sha256",
+        "hash_scope",
+        "schema_unchanged_sha256",
+        "schema_matches_start",
+        "findings_resolved",
+        "questions_answered",
+        "observed_parallel_dependency_changes",
+        "parallel_scope",
+        "open_items"
+      ],
+      "array_lengths": {
+        "files": 36,
+        "findings_resolved": 3,
+        "questions_answered": 2,
+        "observed_parallel_dependency_changes": 37,
+        "open_items": 2
+      },
+      "status": {
+        "status": "PASS"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/交付自审.json",
+      "bytes": 36622,
+      "sha256": "3db6d6f5aa5778678b39829c4efac278f213fd5e310ccf508d91383d0698aef3",
+      "json_type": "dict",
+      "keys": [
+        "status",
+        "reader_review",
+        "local_links_checked",
+        "links",
+        "formal_and_candidate_hashes_unchanged",
+        "checked_source_hashes_still_current",
+        "evidence_extensions",
+        "cargo_executed",
+        "simulator_written",
+        "git_commit_or_push_executed"
+      ],
+      "array_lengths": {
+        "reader_review": 7,
+        "links": 170,
+        "evidence_extensions": 4
+      },
+      "status": {
+        "status": "PASS"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/修订论证.md",
+      "bytes": 6639,
+      "sha256": "fc8697841f2a7de476aab56ea05f9e68f3d87ecf276ff92da0e60939a1b5650d",
+      "lines": 45
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/停止条件复算.json",
+      "bytes": 17027,
+      "sha256": "367b8fc2f6817a2d973911bbec08857fd80cc2cd20c5bc3b2c2d6b9c6a62f613",
+      "json_type": "dict",
+      "keys": [
+        "scope",
+        "source_expression",
+        "reply_expression",
+        "truth_table",
+        "counterexample"
+      ],
+      "array_lengths": {
+        "truth_table": 60
+      },
+      "status": {}
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/回矿容量复算.json",
+      "bytes": 547,
+      "sha256": "e5ff0a1daca3ad711040b3406aa74d50f6c3f2a25d55cfe3f0d1ecfcb5f1c0b5",
+      "json_type": "dict",
+      "keys": [
+        "scope",
+        "cases"
+      ],
+      "array_lengths": {
+        "cases": 2
+      },
+      "status": {}
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/字段名复算.json",
+      "bytes": 707,
+      "sha256": "4db8411da0ea24f55683e463345b092a03ae95901dd48e349f5b978241c177cf",
+      "json_type": "dict",
+      "keys": [
+        "scope",
+        "original",
+        "renamed"
+      ],
+      "array_lengths": {},
+      "status": {}
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/开工指纹.json",
+      "bytes": 128008,
+      "sha256": "7555d71d249594da77de63e8704c9f1ba145e092e4b5c7ab544af0839b7ba189",
+      "json_type": "dict",
+      "keys": [
+        "protected",
+        "specification_before",
+        "task_books",
+        "kernel_questions"
+      ],
+      "array_lengths": {
+        "kernel_questions": 8
+      },
+      "status": {}
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/提升容量卡点.json",
+      "bytes": 185,
+      "sha256": "a11b88bfd9e2c4e1628f10650a12e27a7ba053197ddd29370f5ef6e4806daef0",
+      "json_type": "dict",
+      "keys": [
+        "warehouse_before",
+        "whole_box",
+        "actual_accepts",
+        "representative_accepts",
+        "actual_warehouse_after",
+        "family_under_capacity_holds"
+      ],
+      "array_lengths": {},
+      "status": {}
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/本轮自查.log",
+      "bytes": 74,
+      "sha256": "8c50238811dc474e836d1a62146fe9baa3e75a0ce202e0c8ee1d9a0142e3d44d",
+      "lines": 1
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/本轮自查结果.json",
+      "bytes": 5267,
+      "sha256": "10f1ffcd081594fa6d25a4c117fd4250b6afa754970e8d2006463ace8f795343",
+      "json_type": "dict",
+      "keys": [
+        "status",
+        "checks",
+        "check_count",
+        "round5_check_count",
+        "axis_count",
+        "scope",
+        "sources"
+      ],
+      "array_lengths": {
+        "checks": 22
+      },
+      "status": {
+        "status": "PASS"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/活动内核来源.json",
+      "bytes": 3734,
+      "sha256": "9af66691a9c02e40faee3c0d80026b46b0252b69d8c097a8d16ac98a434474cc",
+      "json_type": "dict",
+      "keys": [
+        "current",
+        "changed_since_round5_start",
+        "scope"
+      ],
+      "array_lengths": {
+        "changed_since_round5_start": 13
+      },
+      "status": {}
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/第五轮自查.log",
+      "bytes": 39,
+      "sha256": "1ccd449b3fb68b5730283a3a34d817463480ffc7ae4787b23b23d0a50e6a33dc",
+      "lines": 1
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/自查报告.md",
+      "bytes": 4186,
+      "sha256": "5960728c96205d30330250a59073aca6e8eaf2fff6555d76a6d88b5e28b1a405",
+      "lines": 38
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/自查结果.json",
+      "bytes": 8463,
+      "sha256": "389621b4f6695d1e8db43a17586c5e6f0f3a8e9fd8a1f15176f80b7251d33bf5",
+      "json_type": "dict",
+      "keys": [
+        "status",
+        "scope",
+        "checks",
+        "check_count",
+        "open_items"
+      ],
+      "array_lengths": {
+        "checks": 183,
+        "open_items": 3
+      },
+      "status": {
+        "status": "PASS"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/规格自查.log",
+      "bytes": 9068,
+      "sha256": "56238e4e759fd6ee981502cd7e42803aa7824bd88ae4bca3bb6bc716798ac4a3",
+      "lines": 131
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/轮询均分局部推演.json",
+      "bytes": 1485,
+      "sha256": "7ca20b2083ca9bc6df7f81867ad0b0cb45a785e30f1c3bc1098b51d3a89ace7f",
+      "json_type": "list"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/辖域扫描.json",
+      "bytes": 3104,
+      "sha256": "e815937fb3b377e9dcdfa191d37172ed8b955d2e4fa908d415752ad9ebd35124",
+      "json_type": "dict",
+      "keys": [
+        "files",
+        "forbidden_current_phrases",
+        "historical_scope",
+        "questions_read"
+      ],
+      "array_lengths": {
+        "files": 16,
+        "forbidden_current_phrases": 7,
+        "questions_read": 8
+      },
+      "status": {}
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第四轮前置-疑问记录.md",
+      "bytes": 5120,
+      "sha256": "3ff447abaad8b5d9a22742f4778514796de39c21597f981d75f2923ecc58d2d9",
+      "lines": 37
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/规则覆盖表.md",
+      "bytes": 34552,
+      "sha256": "cddefbf6a9cb473920f30a1d79d2a4e012f8704b43c9ef063e941eaccdd617ca",
+      "lines": 253
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/运行语义.md",
+      "bytes": 44819,
+      "sha256": "1ce70540bd9f82e6fb0d1661ded855c7c723abccc4f9c13d646753cbece5a02c",
+      "lines": 216
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+      "bytes": 35741,
+      "sha256": "37427b530246a263018fa44a826893b46032c9d97eb8db1b6be06c7bcada080d",
+      "lines": 187
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点清单.md",
+      "bytes": 50228,
+      "sha256": "dda03396a0012f42c41a820adea67b41a19754d60bf63441c6205be29b0555bb",
+      "lines": 192
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解约束.txt",
+      "bytes": 24783,
+      "sha256": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6",
+      "lines": 126
+    }
+  ],
+  "kernel_manifest_entries": 172,
+  "manifest_mismatches": []
+}

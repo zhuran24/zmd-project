@@ -1,0 +1,71 @@
+{
+  "status": "通过",
+  "protected_files": 58,
+  "changed_protected_files": [],
+  "report": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1.md",
+  "report_sha256": "10bc748e3032efab2fa71734955ed78c59031ae55576d60fe72571bed1064fe0",
+  "report_ids": [
+    "KR-r2-L1-01",
+    "KR-r2-L1-02",
+    "KR-r2-L1-03",
+    "KR-r2-L2-01",
+    "KR-r2-L3-01",
+    "KR-r2-L3-02",
+    "KR-r2-L3-03",
+    "KR-r2-L3-04"
+  ],
+  "verdict_count": 8,
+  "refuted_count": 0,
+  "cli_cases": 16,
+  "record_checks": {
+    "control": {
+      "count": 4,
+      "python_accepted": 4,
+      "rust_accepted": 4
+    },
+    "L2-": {
+      "count": 24,
+      "python_accepted": 24,
+      "rust_accepted": 0
+    },
+    "L3-": {
+      "count": 12,
+      "python_accepted": 12,
+      "rust_accepted": 0
+    },
+    "bad_summary_control": {
+      "count": 4,
+      "python_accepted": 0,
+      "rust_accepted": 0
+    }
+  },
+  "extra_success_identity_probe": [
+    {
+      "basis": [
+        "规则 L13、L15–17、L23–25、L29–32",
+        "约束端口速率",
+        "受限模型声明 polling.both_failure",
+        "内核输入 §5.2、§6.3"
+      ],
+      "detail": "",
+      "event": "J|2|0|1",
+      "operation": "move",
+      "outcome": "success",
+      "target": "PC|feed_belt:north:0|crusher:south:0"
+    }
+  ],
+  "local_links_checked": 21,
+  "missing_links": [],
+  "reader_review": {
+    "independent_sections": true,
+    "source_scope_and_unresolved_branch_distinguished": true,
+    "no_request_distinguished_from_success": true,
+    "l2_l3_overlap_disclosed": true,
+    "artifact_numbers_recomputed": true,
+    "code_and_spec_unmodified": true
+  },
+  "writes": [
+    "crates/kernel/复核/否证-r2-1.md",
+    "crates/kernel/复核/否证-r2-1-证据/"
+  ]
+}

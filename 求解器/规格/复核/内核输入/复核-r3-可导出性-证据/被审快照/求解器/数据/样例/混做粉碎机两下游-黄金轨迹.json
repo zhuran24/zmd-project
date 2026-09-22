@@ -1,0 +1,119 @@
+{
+  "schema": "golden-summary-v1",
+  "origin": "manual_derivation",
+  "numeric_category": "指定候选初态与解释下的算术推论",
+  "input": "混做粉碎机两下游.json",
+  "ticks": [
+    {
+      "tick": "0",
+      "warehouse_ore": "79999",
+      "nonempty": {
+        "feed_belt:transport:0": [
+          {
+            "item": "源矿",
+            "quantity": "1",
+            "entered_at": "0"
+          }
+        ]
+      },
+      "crusher_phase": "idle",
+      "crusher_remaining": null,
+      "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+      "completed_batches": "0"
+    },
+    {
+      "tick": "1",
+      "warehouse_ore": "79998",
+      "nonempty": {
+        "feed_belt:transport:0": [
+          {
+            "item": "源矿",
+            "quantity": "1",
+            "entered_at": "1"
+          }
+        ],
+        "crusher:buffer:0": [
+          {
+            "item": "源矿",
+            "quantity": "1",
+            "entered_at": "1"
+          }
+        ]
+      },
+      "crusher_phase": "working",
+      "crusher_remaining": "1",
+      "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+      "completed_batches": "0"
+    },
+    {
+      "tick": "2",
+      "warehouse_ore": "79997",
+      "nonempty": {
+        "feed_belt:transport:0": [
+          {
+            "item": "源矿",
+            "quantity": "1",
+            "entered_at": "2"
+          }
+        ],
+        "crusher:buffer:0": [
+          {
+            "item": "源矿",
+            "quantity": "1",
+            "entered_at": "2"
+          }
+        ],
+        "belt_a0:transport:0": [
+          {
+            "item": "源石粉末",
+            "quantity": "1",
+            "entered_at": "2"
+          }
+        ]
+      },
+      "crusher_phase": "working",
+      "crusher_remaining": "1",
+      "crusher_next_output": "PC|crusher:north:2|belt_b0:south:0",
+      "completed_batches": "1"
+    },
+    {
+      "tick": "3",
+      "warehouse_ore": "79996",
+      "nonempty": {
+        "feed_belt:transport:0": [
+          {
+            "item": "源矿",
+            "quantity": "1",
+            "entered_at": "3"
+          }
+        ],
+        "crusher:buffer:0": [
+          {
+            "item": "源矿",
+            "quantity": "1",
+            "entered_at": "3"
+          }
+        ],
+        "belt_a1:transport:0": [
+          {
+            "item": "源石粉末",
+            "quantity": "1",
+            "entered_at": "3"
+          }
+        ],
+        "belt_b0:transport:0": [
+          {
+            "item": "源石粉末",
+            "quantity": "1",
+            "entered_at": "3"
+          }
+        ]
+      },
+      "crusher_phase": "working",
+      "crusher_remaining": "1",
+      "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+      "completed_batches": "2"
+    }
+  ],
+  "basis_document": "混做粉碎机两下游-黄金轨迹.md"
+}

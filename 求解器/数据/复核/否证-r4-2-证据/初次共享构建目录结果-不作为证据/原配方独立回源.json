@@ -1,0 +1,368 @@
+{
+  "recipe_count": 18,
+  "all_equal": true,
+  "parsed": [
+    {
+      "kind": "粉碎机",
+      "inputs": {
+        "源矿": {
+          "value": "1",
+          "category": "条文直引"
+        }
+      },
+      "outputs": {
+        "源石粉末": {
+          "value": "1",
+          "category": "条文直引"
+        }
+      },
+      "duration": {
+        "value": "1",
+        "category": "条文直引"
+      }
+    },
+    {
+      "kind": "粉碎机",
+      "inputs": {
+        "蓝铁块": {
+          "value": "1",
+          "category": "条文直引"
+        }
+      },
+      "outputs": {
+        "蓝铁粉末": {
+          "value": "1",
+          "category": "条文直引"
+        }
+      },
+      "duration": {
+        "value": "1",
+        "category": "条文直引"
+      }
+    },
+    {
+      "kind": "粉碎机",
+      "inputs": {
+        "荞花": {
+          "value": "1",
+          "category": "条文直引"
+        }
+      },
+      "outputs": {
+        "荞花粉末": {
+          "value": "2",
+          "category": "条文直引"
+        }
+      },
+      "duration": {
+        "value": "1",
+        "category": "条文直引"
+      }
+    },
+    {
+      "kind": "粉碎机",
+      "inputs": {
+        "砂叶": {
+          "value": "1",
+          "category": "条文直引"
+        }
+      },
+      "outputs": {
+        "砂叶粉末": {
+          "value": "3",
+          "category": "条文直引"
+        }
+      },
+      "duration": {
+        "value": "1",
+        "category": "条文直引"
+      }
+    },
+    {
+      "kind": "精炼炉",
+      "inputs": {
+        "蓝铁矿": {
+          "value": "1",
+          "category": "条文直引"
+        }
+      },
+      "outputs": {
+        "蓝铁块": {
+          "value": "1",
+          "category": "条文直引"
+        }
+      },
+      "duration": {
+        "value": "1",
+        "category": "条文直引"
+      }
+    },
+    {
+      "kind": "精炼炉",
+      "inputs": {
+        "致密蓝铁粉末": {
+          "value": "1",
+          "category": "条文直引"
+        }
+      },
+      "outputs": {
+        "钢块": {
+          "value": "1",
+          "category": "条文直引"
+        }
+      },
+      "duration": {
+        "value": "1",
+        "category": "条文直引"
+      }
+    },
+    {
+      "kind": "精炼炉",
+      "inputs": {
+        "蓝铁粉末": {
+          "value": "1",
+          "category": "条文直引"
+        }
+      },
+      "outputs": {
+        "蓝铁块": {
+          "value": "1",
+          "category": "条文直引"
+        }
+      },
+      "duration": {
+        "value": "1",
+        "category": "条文直引"
+      }
+    },
+    {
+      "kind": "研磨机",
+      "inputs": {
+        "蓝铁粉末": {
+          "value": "2",
+          "category": "条文直引"
+        },
+        "砂叶粉末": {
+          "value": "1",
+          "category": "条文直引"
+        }
+      },
+      "outputs": {
+        "致密蓝铁粉末": {
+          "value": "1",
+          "category": "条文直引"
+        }
+      },
+      "duration": {
+        "value": "1",
+        "category": "条文直引"
+      }
+    },
+    {
+      "kind": "研磨机",
+      "inputs": {
+        "源石粉末": {
+          "value": "2",
+          "category": "条文直引"
+        },
+        "砂叶粉末": {
+          "value": "1",
+          "category": "条文直引"
+        }
+      },
+      "outputs": {
+        "致密源石粉末": {
+          "value": "1",
+          "category": "条文直引"
+        }
+      },
+      "duration": {
+        "value": "1",
+        "category": "条文直引"
+      }
+    },
+    {
+      "kind": "研磨机",
+      "inputs": {
+        "荞花粉末": {
+          "value": "2",
+          "category": "条文直引"
+        },
+        "砂叶粉末": {
+          "value": "1",
+          "category": "条文直引"
+        }
+      },
+      "outputs": {
+        "细磨荞花粉末": {
+          "value": "1",
+          "category": "条文直引"
+        }
+      },
+      "duration": {
+        "value": "1",
+        "category": "条文直引"
+      }
+    },
+    {
+      "kind": "塑形机",
+      "inputs": {
+        "钢块": {
+          "value": "2",
+          "category": "条文直引"
+        }
+      },
+      "outputs": {
+        "钢质瓶": {
+          "value": "1",
+          "category": "条文直引"
+        }
+      },
+      "duration": {
+        "value": "1",
+        "category": "条文直引"
+      }
+    },
+    {
+      "kind": "配件机",
+      "inputs": {
+        "钢块": {
+          "value": "1",
+          "category": "条文直引"
+        }
+      },
+      "outputs": {
+        "钢制零件": {
+          "value": "1",
+          "category": "条文直引"
+        }
+      },
+      "duration": {
+        "value": "1",
+        "category": "条文直引"
+      }
+    },
+    {
+      "kind": "种植机",
+      "inputs": {
+        "荞花种子": {
+          "value": "1",
+          "category": "条文直引"
+        }
+      },
+      "outputs": {
+        "荞花": {
+          "value": "1",
+          "category": "条文直引"
+        }
+      },
+      "duration": {
+        "value": "1",
+        "category": "条文直引"
+      }
+    },
+    {
+      "kind": "种植机",
+      "inputs": {
+        "砂叶种子": {
+          "value": "1",
+          "category": "条文直引"
+        }
+      },
+      "outputs": {
+        "砂叶": {
+          "value": "1",
+          "category": "条文直引"
+        }
+      },
+      "duration": {
+        "value": "1",
+        "category": "条文直引"
+      }
+    },
+    {
+      "kind": "采种机",
+      "inputs": {
+        "荞花": {
+          "value": "1",
+          "category": "条文直引"
+        }
+      },
+      "outputs": {
+        "荞花种子": {
+          "value": "2",
+          "category": "条文直引"
+        }
+      },
+      "duration": {
+        "value": "1",
+        "category": "条文直引"
+      }
+    },
+    {
+      "kind": "采种机",
+      "inputs": {
+        "砂叶": {
+          "value": "1",
+          "category": "条文直引"
+        }
+      },
+      "outputs": {
+        "砂叶种子": {
+          "value": "2",
+          "category": "条文直引"
+        }
+      },
+      "duration": {
+        "value": "1",
+        "category": "条文直引"
+      }
+    },
+    {
+      "kind": "封装机",
+      "inputs": {
+        "钢制零件": {
+          "value": "10",
+          "category": "条文直引"
+        },
+        "致密源石粉末": {
+          "value": "15",
+          "category": "条文直引"
+        }
+      },
+      "outputs": {
+        "高容谷地电池": {
+          "value": "1",
+          "category": "条文直引"
+        }
+      },
+      "duration": {
+        "value": "5",
+        "category": "条文直引"
+      }
+    },
+    {
+      "kind": "灌装机",
+      "inputs": {
+        "钢质瓶": {
+          "value": "10",
+          "category": "条文直引"
+        },
+        "细磨荞花粉末": {
+          "value": "10",
+          "category": "条文直引"
+        }
+      },
+      "outputs": {
+        "精选荞愈胶囊": {
+          "value": "1",
+          "category": "条文直引"
+        }
+      },
+      "duration": {
+        "value": "5",
+        "category": "条文直引"
+      }
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "status": "通过",
+  "date": "2026-09-19",
+  "findings_revised": [
+    "K3-r4-L1-01",
+    "K3-r4-L3-01",
+    "K3-r4-L3-02",
+    "K3-r4-L3-03"
+  ],
+  "axis_count": 99,
+  "runtime_regressions": 72,
+  "revision_regressions": 55,
+  "cargo_tests": 31,
+  "candidate_b": {
+    "passed": 4925,
+    "failed": 0,
+    "not_static": 59
+  },
+  "protected_file_count": 25037,
+  "protected_unchanged": true,
+  "golden_original_bytes_unchanged": true,
+  "stored_record_schema_and_complete_replay": "通过",
+  "checkpoint_roundtrip": "通过",
+  "shared_stable_since_checks": true,
+  "reader_review": {
+    "current_versions_and_history_separated": true,
+    "all_four_findings_have_basis": true,
+    "function_representation_execution_and_universal_claims_separated": true,
+    "identity_scope_covers_input_seed_output_and_pending": true,
+    "local_links_resolve": true,
+    "summary_counts_from_logs": true
+  },
+  "shared_request": "§7三项已由规格线第7轮答复并入，本线回核共享三表入口",
+  "open_items": [
+    "通用per_instant执行、非有理求值及表达式语言外的函数未实现",
+    "任意中途种子续跑、实际混做/下游生产、全历史/解释及全部循环目标认证仍未完成"
+  ]
+}

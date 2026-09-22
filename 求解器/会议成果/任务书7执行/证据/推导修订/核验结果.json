@@ -1,0 +1,179 @@
+{
+  "status": "passed",
+  "verification_kind": "修订席自核，非独立复核或运行认证",
+  "readonly": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+      "sha256": "31ced2a24fef738c72dfa406351b6bad5df3e353d6b1c2dfd06ab1febaf566ff",
+      "unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解任务.txt",
+      "sha256": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+      "unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解约束.txt",
+      "sha256": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6",
+      "unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/候选约束.txt",
+      "sha256": "a0ac3f9c82f371132b7de29fe47e4c6c587904680bc2786523de0c825fd5efd9",
+      "unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7草案.md",
+      "sha256": "32acf147e09de04feabfb575dd509a2c5c06b519b2504ba3ff253c3a61816a26",
+      "unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/主会话三审-0920.md",
+      "sha256": "da7d816827a6d66a20def9be982308df0a0e7a8dcb879c6c75ef2c381ef01f87",
+      "unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/会议2成果修订-v46.md",
+      "sha256": "dd873bba256906787359ada38480a0caf4eefd9b2c6bc5b05f135278b7617f5c",
+      "unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/复核/推导.md",
+      "sha256": "20fa05fbd94bf02c23f871751fb27b1d7496da0311e62865758818055c631179",
+      "unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-v2-loop-r2.md",
+      "sha256": "f3faf0a4f2fade6555ea43714885ded01a54d4dc0c15c9cb676c6e3627fa1aaf",
+      "unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-总纲-1.md",
+      "sha256": "4188a2de00f53e60827dd0e71f84a0deb838fc6bd90fa46e61fc491cf9bb217d",
+      "unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-v2-loop.md",
+      "sha256": "39b06051993e834b5b0adf0149c9ad9cfd8ec69633296d7365db7ebfa1464c2d",
+      "unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-v2-phase.md",
+      "sha256": "4c7082a570988c31557b4905ea2772bb1fcd5ce62f4be954946bc6b0937d2c34",
+      "unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/证据-v2-phase-否证/input_hashes.json",
+      "sha256": "0487f68dbc8a2e1e74a1947706274d4c38f28f09119ec20c1aa11285ebf2df61",
+      "unchanged": true
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/证据-v2-loop-否证/inputs.json",
+      "sha256": "92af56da4c563093d4b737f94d44bfb59b26399ec632dbb17dc64cdf567c2056",
+      "unchanged": true
+    }
+  ],
+  "manuscripts": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/回路总数决定论-v2.md",
+      "sha256": "040202154ecfb327c75db45bfc217d88f372ea84d0b41a5bce138ee3ae7f70b1",
+      "lines": 417,
+      "before": "e3c1c80e97688cb28042d7ef86f90645b8dc4272f5a28d13f141e4924fd5ca8e"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/三种相位不改产量-v2.md",
+      "sha256": "217c9a2046da9e70b1a934eeeb5f70539e564def8149937611f1b80903239d88",
+      "lines": 322,
+      "before": "53cc75c3e645c1d975b2c4094e2f75ef23908b6729fdd2eb224696eedd787705"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/总纲-流量存量相位.md",
+      "sha256": "35bc7bc8d3d710019049ff7612dbbd647246b6392409eaabe226c0f1511275ff",
+      "lines": 95,
+      "before": "625ce76821eae837fb636d699f221d4a813570be1766c33081df5c97993dd2dd"
+    }
+  ],
+  "verdict_ids": [
+    "G-N01",
+    "G-N02",
+    "G-N03",
+    "G-N04",
+    "G-N05",
+    "G-N06",
+    "G-N07",
+    "G-N08",
+    "G-N09",
+    "G-N10",
+    "G-N11",
+    "G-N12",
+    "G-N13",
+    "G-N14",
+    "G-N15",
+    "G-N16",
+    "G-N17",
+    "G-N18",
+    "G-N19",
+    "G-N20",
+    "G-N21",
+    "G-U01",
+    "G-U02",
+    "L-E01",
+    "L-E02",
+    "L-N01",
+    "L-N02",
+    "L-N03",
+    "L-N04",
+    "L-N05",
+    "L-N06",
+    "L-N07",
+    "L-N08",
+    "L-U1",
+    "L-U2",
+    "L-U3",
+    "L-U4",
+    "L-U5",
+    "L-U6",
+    "L-U7",
+    "L-U8",
+    "P-E01",
+    "P-N01",
+    "P-N02",
+    "P-N03",
+    "P-N04",
+    "P-N05",
+    "P-U05"
+  ],
+  "phase_line3_and_item7_byte_equal": true,
+  "phase_old_review_input_sha256": "51327afa43a98af4a002f1e98f25561159a3855fe8240c77863dc4ab66324753",
+  "reverse_diff_restores_before_hashes": true,
+  "arithmetic": {
+    "crushing_base": "68",
+    "refining_base": "51",
+    "safe_integer_D": [
+      -48,
+      99
+    ],
+    "rotations": {
+      "AAB": [
+        0,
+        2
+      ],
+      "ABA": [
+        -1,
+        1
+      ],
+      "BAA": [
+        -2,
+        0
+      ]
+    }
+  },
+  "links_checked": 57,
+  "inherited_missing_links": [],
+  "kernel_compiled": false,
+  "kernel_loaded": false,
+  "kernel_steps": 0,
+  "remaining_proof_gaps_closed": [],
+  "L": 0,
+  "U": 1113
+}

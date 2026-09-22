@@ -1,0 +1,23 @@
+{
+  "snapshot-bool": [
+    "/parameters/axis_registry/path",
+    "/layout/snapshots",
+    "/catalog/path"
+  ],
+  "gate-numeric-item": [
+    "/settings/gates/0/item",
+    "/parameters/axis_registry/path",
+    "/catalog/path"
+  ],
+  "initial-duplicate-slot": [
+    "/initial_state/warehouse/slots/1/slot",
+    "/parameters/axis_registry/path",
+    "/catalog/path"
+  ],
+  "offline_control_vs_bad": [
+    "/timeline/events/27/kind"
+  ],
+  "historical_alias_vs_control": [
+    "/initial_state/nonwarehouse/value/semantic_context/pending_events/value/0/event"
+  ]
+}

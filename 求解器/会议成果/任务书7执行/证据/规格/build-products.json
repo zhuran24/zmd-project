@@ -1,0 +1,90 @@
+{
+  "scope": "mtime >= before.json time; generated or refreshed under the required build target. No copies.",
+  "files": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/target/release/.fingerprint/kernel-09491cc6801514a6/bin-kernel",
+      "sha256": "1a55d26b57abbec85c7b9e71f49160028f2f964cb1c95919035fe8af224874d1",
+      "size": 16
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/target/release/.fingerprint/kernel-09491cc6801514a6/bin-kernel.json",
+      "sha256": "09ce5b4000724ecadd5253286f6e23f5e44f978d14fb38f1ffba37db553bf09c",
+      "size": 523
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/target/release/.fingerprint/kernel-09491cc6801514a6/dep-bin-kernel",
+      "sha256": "dd32b16937730a9a92a8070aa73e4dbbc632703f88e1395eb2196a4f6b11a95a",
+      "size": 31
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/target/release/.fingerprint/kernel-09491cc6801514a6/invoked.timestamp",
+      "sha256": "5a109e6643e8d3e88642e3f35e85d2a83e639d07523aa6e99166c48178e965c3",
+      "size": 48
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/target/release/.fingerprint/kernel-6784533dba15fdc5/dep-lib-kernel",
+      "sha256": "9183040b5be69d047109cb5f15a8b959507b224f163721c6c373d80f0cb8b25c",
+      "size": 599
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/target/release/.fingerprint/kernel-6784533dba15fdc5/invoked.timestamp",
+      "sha256": "5a109e6643e8d3e88642e3f35e85d2a83e639d07523aa6e99166c48178e965c3",
+      "size": 48
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/target/release/.fingerprint/kernel-6784533dba15fdc5/lib-kernel",
+      "sha256": "d3932bf587726905019d740617a77e5994b27fa4110be4842302818938b5d07e",
+      "size": 16
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/target/release/.fingerprint/kernel-6784533dba15fdc5/lib-kernel.json",
+      "sha256": "7d475055b294465271a1f62c1468dec2a78c198c411910e9c83ac02cfc677365",
+      "size": 465
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/target/release/deps/kernel-09491cc6801514a6",
+      "sha256": "c964d17d1b1de1300bfcfb060c4bef0c15b67bb6eed20352579dca7651672a2e",
+      "size": 3965520
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/target/release/deps/kernel-09491cc6801514a6.d",
+      "sha256": "f1cd8c29779b2b0e9bde400df162ff92365d66d4be4f4338b3fe0641cf584b2d",
+      "size": 349
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/target/release/deps/kernel-6784533dba15fdc5.d",
+      "sha256": "486a3a12fbbd00b3590ed8913b1cdbb8838610368a45fb0b18c857ad4e2c8b5a",
+      "size": 3030
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/target/release/deps/libkernel-6784533dba15fdc5.rlib",
+      "sha256": "2f29f92a2b532121e2d7fe59fab6665cc5eee60387862d6ba71551b0ed8d9ec6",
+      "size": 10003208
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/target/release/deps/libkernel-6784533dba15fdc5.rmeta",
+      "sha256": "9836d35c61a3f6989f5e31f98e492e00871d93a2e35a68bf50e96567249998d9",
+      "size": 2424689
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "sha256": "c964d17d1b1de1300bfcfb060c4bef0c15b67bb6eed20352579dca7651672a2e",
+      "size": 3965520
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel.d",
+      "sha256": "2b70e631239be4f8092daa844722a05bffa67cb750e988123f814fec07e6ddd7",
+      "size": 1719
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/target/release/libkernel.d",
+      "sha256": "759c54a0621e919e885effe878a85a30dacc7eb9d71c8f0c050b8465d564b812",
+      "size": 1657
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/target/release/libkernel.rlib",
+      "sha256": "2f29f92a2b532121e2d7fe59fab6665cc5eee60387862d6ba71551b0ed8d9ec6",
+      "size": 10003208
+    }
+  ]
+}

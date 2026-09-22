@@ -1,0 +1,163 @@
+[
+  {
+    "time": 2,
+    "round": 0,
+    "last_event": {
+      "event": "J|2|0|1",
+      "operation": "move",
+      "target": "PC|feed_belt:north:0|crusher:south:0",
+      "outcome": "success",
+      "detail": "",
+      "basis": [
+        "规则 L13、L15–17、L23–25、L29–32",
+        "约束端口速率",
+        "受限模型声明 polling.both_failure",
+        "内核输入 §5.2、§6.3"
+      ]
+    },
+    "next_template": 2,
+    "events_so_far": [
+      {
+        "event": "C|2|crusher",
+        "operation": "manufacture_complete",
+        "target": "crusher",
+        "outcome": "success",
+        "basis": [
+          "规则 L35",
+          "运行语义 §4.1",
+          "受限模型声明 time.manufacture_events"
+        ]
+      },
+      {
+        "event": "J|2|0|0",
+        "operation": "move",
+        "target": "PC|ore_source:north:1|feed_belt:south:0",
+        "outcome": "no_request",
+        "detail": "neither_authorized",
+        "basis": [
+          "规则 L13、L15–17、L23–25、L29–32",
+          "约束端口速率",
+          "受限模型声明 polling.both_failure",
+          "内核输入 §5.2、§6.3"
+        ]
+      },
+      {
+        "event": "J|2|0|1",
+        "operation": "move",
+        "target": "PC|feed_belt:north:0|crusher:south:0",
+        "outcome": "success",
+        "detail": "",
+        "basis": [
+          "规则 L13、L15–17、L23–25、L29–32",
+          "约束端口速率",
+          "受限模型声明 polling.both_failure",
+          "内核输入 §5.2、§6.3"
+        ]
+      }
+    ],
+    "inventory": {
+      "crusher:input:0": [
+        {
+          "item": "源矿",
+          "quantity": {
+            "value": "1",
+            "category": "算术推论"
+          },
+          "entered_at": {
+            "kind": "rational",
+            "value": {
+              "value": "2",
+              "category": "候选"
+            }
+          }
+        }
+      ],
+      "crusher:output:0": [],
+      "crusher:buffer:0": [
+        {
+          "item": "源石粉末",
+          "quantity": {
+            "value": "1",
+            "category": "算术推论"
+          },
+          "entered_at": {
+            "kind": "rational",
+            "value": {
+              "value": "2",
+              "category": "候选"
+            }
+          }
+        }
+      ],
+      "grinder_a:input:0": [],
+      "grinder_a:input:1": [],
+      "grinder_a:output:0": [],
+      "grinder_a:buffer:0": [],
+      "grinder_b:input:0": [],
+      "grinder_b:input:1": [],
+      "grinder_b:output:0": [],
+      "grinder_b:buffer:0": [],
+      "feed_belt:transport:0": [],
+      "belt_a0:transport:0": [],
+      "belt_a1:transport:0": [],
+      "belt_a2:transport:0": [],
+      "belt_b0:transport:0": [],
+      "belt_b1:transport:0": [],
+      "belt_b2:transport:0": [],
+      "belt_b3:transport:0": []
+    },
+    "progress": {
+      "crusher": {
+        "unit": "crusher",
+        "phase": "completed",
+        "recipe": "粉碎-源矿",
+        "candidate_recipes": [
+          "粉碎-源矿"
+        ],
+        "locked_recipe": "粉碎-源矿",
+        "remaining": {
+          "kind": "rational",
+          "value": {
+            "value": "0",
+            "category": "候选"
+          }
+        },
+        "cooldowns": []
+      },
+      "grinder_a": {
+        "unit": "grinder_a",
+        "phase": "idle",
+        "recipe": null,
+        "candidate_recipes": [],
+        "locked_recipe": null,
+        "remaining": null,
+        "cooldowns": []
+      },
+      "grinder_b": {
+        "unit": "grinder_b",
+        "phase": "idle",
+        "recipe": null,
+        "candidate_recipes": [],
+        "locked_recipe": null,
+        "remaining": null,
+        "cooldowns": []
+      }
+    },
+    "port_usage": {
+      "feed_belt:north:0": 1,
+      "crusher:south:0": 1
+    },
+    "movements": [
+      {
+        "event": "J|2|0|1",
+        "channel": "PC|feed_belt:north:0|crusher:south:0",
+        "item": "源矿",
+        "quantity": {
+          "value": "1",
+          "category": "算术推论"
+        }
+      }
+    ],
+    "due": {}
+  }
+]

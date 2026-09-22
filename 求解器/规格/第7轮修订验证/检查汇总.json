@@ -1,0 +1,129 @@
+{
+  "status": "PASS",
+  "scope": "规格本轮检查与C线原产物均实测；不从有限轨迹外推全称认证",
+  "commands": [
+    {
+      "name": "规格自查",
+      "command": [
+        "/usr/bin/python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/check_revision.py"
+      ],
+      "exit_code": 0,
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/规格/第7轮修订验证/规格自查结果.json",
+      "stderr": ""
+    },
+    {
+      "name": "原转移回归",
+      "command": [
+        "/usr/bin/python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/第三轮任务验证/核对转移回归.py"
+      ],
+      "exit_code": 0,
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/规格/第7轮修订验证/原转移回归结果.json",
+      "stderr": ""
+    },
+    {
+      "name": "前轮修订回归",
+      "command": [
+        "/usr/bin/python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/核对修订回归.py"
+      ],
+      "exit_code": 0,
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/规格/第7轮修订验证/前轮修订回归结果.json",
+      "stderr": ""
+    },
+    {
+      "name": "修订回归",
+      "command": [
+        "/usr/bin/python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/第7轮修订验证/核对修订回归.py"
+      ],
+      "exit_code": 0,
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/规格/第7轮修订验证/修订回归结果.json",
+      "stderr": ""
+    },
+    {
+      "name": "正式目录",
+      "command": [
+        "/usr/bin/python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/工具/formal_catalog.py"
+      ],
+      "exit_code": 0,
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/规格/第7轮修订验证/正式目录.log",
+      "stderr": ""
+    },
+    {
+      "name": "cargo-test",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "/home/zhuran24/zmd-research-fresh/求解器/Cargo.toml"
+      ],
+      "exit_code": 0,
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/规格/第7轮修订验证/cargo-test.log",
+      "stderr": "   Compiling autocfg v1.5.1\n   Compiling proc-macro2 v1.0.107\n   Compiling unicode-ident v1.0.26\n   Compiling quote v1.0.47\n   Compiling serde_core v1.0.229\n   Compiling zmij v1.0.23\n   Compiling serde v1.0.229\n   Compiling serde_json v1.0.151\n   Compiling itoa v1.0.18\n   Compiling memchr v2.8.3\n   Compiling num-traits v0.2.19\n   Compiling syn v3.0.6\n   Compiling num-integer v0.1.47\n   Compiling num-bigint v0.4.8\n   Compiling num-rational v0.4.2\n   Compiling serde_derive v1.0.229\n   Compiling topology v0.1.0 (/home/zhuran24/zmd-research-fresh/求解器/crates/topology)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.10s\n     Running unittests src/lib.rs (求解器/target-spec-r7/debug/deps/topology-958a7a196b95191c)\n     Running unittests src/main.rs (求解器/target-spec-r7/debug/deps/topology-232d29a62249f608)\n     Running tests/validation.rs (求解器/target-spec-r7/debug/deps/validation-55f92a55e3fc13c3)\n   Doc-tests topology\n"
+    },
+    {
+      "name": "候选B校验",
+      "command": [
+        "cargo",
+        "run",
+        "--locked",
+        "--offline",
+        "--quiet",
+        "--manifest-path",
+        "/home/zhuran24/zmd-research-fresh/求解器/Cargo.toml",
+        "--",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/contract.json"
+      ],
+      "exit_code": 0,
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/规格/第7轮修订验证/候选B校验报告.md",
+      "stderr": ""
+    },
+    {
+      "name": "样例检查",
+      "command": [
+        "/usr/bin/python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/check_examples.py",
+        "--self-test"
+      ],
+      "exit_code": 0,
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/规格/第7轮修订验证/样例检查结果.json",
+      "stderr": ""
+    },
+    {
+      "name": "黄金记录再生成",
+      "command": [
+        "/usr/bin/python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/check_golden_trace.py"
+      ],
+      "exit_code": 0,
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/规格/第7轮修订验证/黄金记录重算结果.json",
+      "stderr": ""
+    },
+    {
+      "name": "样例黄金完整核验",
+      "command": [
+        "/usr/bin/python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/第7轮修订验证/核对样例兼容.py"
+      ],
+      "exit_code": 0,
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/规格/第7轮修订验证/黄金完整核验结果.json",
+      "stderr": ""
+    }
+  ],
+  "readonly_count": 25037,
+  "readonly_changes": [],
+  "simulator_file_set_unchanged": true
+}

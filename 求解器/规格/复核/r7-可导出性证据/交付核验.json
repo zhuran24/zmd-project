@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "reviewed_axis_count": 99,
+  "findings": [],
+  "snapshot_file_count": 25076,
+  "changed_files": [],
+  "report": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/复核-r7-可导出性.md",
+  "report_sha256": "07cc6228719025fff8c9d03a73562e94554e07829ba2c819d075956954ad8a5e",
+  "reader_review": {
+    "status": "完成",
+    "checked": [
+      "当前与历史版本数字分开",
+      "工程选择与规则已定分开",
+      "日志核读与本次重跑分开",
+      "完整记录与摘要分开",
+      "未决没有误报为已证明",
+      "报告与证据路径对应",
+      "所有新增写入限定复核目录"
+    ],
+    "result": "完整回读正文及99行附录；收窄指纹核验措辞，补阻尼、桥容量及停留依据；链接与数量一致"
+  }
+}

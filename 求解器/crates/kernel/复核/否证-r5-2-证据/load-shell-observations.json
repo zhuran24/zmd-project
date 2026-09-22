@@ -1,0 +1,16 @@
+{
+  "source": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/cli/overflow.json",
+  "source_sha256": "5dafe7e264eef6ad796ec580d5e15162dddf244edffe665301d97adb74f55179",
+  "schema": "kernel-cycle-v2",
+  "replay_input_ref": null,
+  "last_state": null,
+  "verification": {
+    "cycle_replayed": false,
+    "diagnostic_replayed": true,
+    "reason": "失败输入及依赖指纹已核，复现同一装载停止；无游戏转移或周期",
+    "status": "input_checked"
+  },
+  "checkpoint_exit": 101,
+  "checkpoint_stdout_json": null,
+  "checkpoint_file_exists": false
+}

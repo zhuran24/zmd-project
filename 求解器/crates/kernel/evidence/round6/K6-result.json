@@ -1,0 +1,182 @@
+{
+  "status": "attempt_completed_target_not_met",
+  "input": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/双成品满仓起动试作.json",
+  "certificate": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/双成品满仓起动试作-周期证书-kernel.json",
+  "placements": [
+    {
+      "unit": "m0",
+      "recipe": "粉碎-源矿",
+      "side": "bottom",
+      "offset": 12
+    },
+    {
+      "unit": "m1",
+      "recipe": "粉碎-蓝铁块",
+      "side": "bottom",
+      "offset": 16
+    },
+    {
+      "unit": "m2",
+      "recipe": "粉碎-荞花",
+      "side": "bottom",
+      "offset": 20
+    },
+    {
+      "unit": "m3",
+      "recipe": "粉碎-砂叶",
+      "side": "bottom",
+      "offset": 24
+    },
+    {
+      "unit": "m4",
+      "recipe": "精炼-蓝铁矿",
+      "side": "bottom",
+      "offset": 28
+    },
+    {
+      "unit": "m5",
+      "recipe": "精炼-致密蓝铁",
+      "side": "bottom",
+      "offset": 32
+    },
+    {
+      "unit": "m6",
+      "recipe": "研磨-致密蓝铁",
+      "side": "bottom",
+      "offset": 36
+    },
+    {
+      "unit": "m7",
+      "recipe": "研磨-致密源石",
+      "side": "bottom",
+      "offset": 43
+    },
+    {
+      "unit": "m8",
+      "recipe": "研磨-细磨荞花",
+      "side": "bottom",
+      "offset": 50
+    },
+    {
+      "unit": "m9",
+      "recipe": "塑形-钢质瓶",
+      "side": "bottom",
+      "offset": 57
+    },
+    {
+      "unit": "m10",
+      "recipe": "配件-钢制零件",
+      "side": "bottom",
+      "offset": 61
+    },
+    {
+      "unit": "m11",
+      "recipe": "种植-荞花",
+      "side": "left",
+      "offset": 0
+    },
+    {
+      "unit": "m12",
+      "recipe": "种植-砂叶",
+      "side": "left",
+      "offset": 6
+    },
+    {
+      "unit": "m13",
+      "recipe": "采种-荞花",
+      "side": "left",
+      "offset": 12
+    },
+    {
+      "unit": "m14",
+      "recipe": "采种-砂叶",
+      "side": "left",
+      "offset": 18
+    },
+    {
+      "unit": "m15",
+      "recipe": "封装-电池",
+      "side": "left",
+      "offset": 24
+    },
+    {
+      "unit": "m16",
+      "recipe": "灌装-胶囊",
+      "side": "left",
+      "offset": 31
+    },
+    {
+      "unit": "m17",
+      "recipe": "种植-荞花",
+      "side": "left",
+      "offset": 38
+    },
+    {
+      "unit": "m18",
+      "recipe": "种植-砂叶",
+      "side": "left",
+      "offset": 44
+    }
+  ],
+  "units": 130,
+  "physical_channels": 96,
+  "initial_inventory": "L6六种各80000，其它数量0；空格身份与已建种子历史仍条件化",
+  "finite_run": {
+    "actual_inbound": {
+      "源石粉末": 508,
+      "砂叶": 1016,
+      "砂叶种子": 1016,
+      "砂叶粉末": 1524,
+      "精选荞愈胶囊": 7,
+      "细磨荞花粉末": 251,
+      "致密源石粉末": 250,
+      "致密蓝铁粉末": 247,
+      "荞花": 1016,
+      "荞花种子": 1016,
+      "荞花粉末": 1016,
+      "蓝铁块": 508,
+      "蓝铁粉末": 501,
+      "钢制零件": 96,
+      "钢块": 244,
+      "钢质瓶": 73,
+      "高容谷地电池": 9
+    },
+    "completed_batches": 6783,
+    "elapsed_ns": "1648833350",
+    "final_inventory": {
+      "源石粉末": 8,
+      "源矿": 80002,
+      "砂叶": 80000,
+      "砂叶种子": 80000,
+      "砂叶粉末": 779,
+      "精选荞愈胶囊": 7,
+      "细磨荞花粉末": 182,
+      "致密源石粉末": 116,
+      "致密蓝铁粉末": 4,
+      "荞花": 80000,
+      "荞花种子": 80000,
+      "荞花粉末": 516,
+      "蓝铁块": 7,
+      "蓝铁矿": 80002,
+      "蓝铁粉末": 7,
+      "钢制零件": 6,
+      "钢块": 2,
+      "钢质瓶": 3,
+      "高容谷地电池": 9
+    },
+    "output": "disabled",
+    "statistics": {
+      "completed": 1,
+      "inconclusive": 0,
+      "stopped": 0
+    },
+    "status": "completed",
+    "ticks": 512
+  },
+  "cycle_status": "inconclusive",
+  "completed_ticks": 512,
+  "rates": null,
+  "bottleneck_kind": "layout",
+  "bottleneck": "仅1封装、1灌装，每台5tick一件，故即使无限齐料也分别至多1/5，严格低于3/5及11/20；仓库中转还占用矿石所需的出库端口。本布局不能达到K6目标。D五项静态通过，512刻动态无D停止，台账真实记录两成品。",
+  "remaining": "尚未构造同时满足目标率且仓库外/非成品仓库库存闭合的布局；不把预算未决或有限正交付称达标周期。"
+}

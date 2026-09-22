@@ -1,0 +1,25 @@
+{
+  "name": "tiny-expired-cycle",
+  "command": [
+    "/home/zhuran24/zmd-research-fresh/求解器/target/debug/kernel",
+    "cycle",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/tiny-expired-after-closure-input.json",
+    "--config",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+    "--max-ticks",
+    "3",
+    "--out",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/tiny-expired-cycle.json"
+  ],
+  "exit_code": 0,
+  "status": "counterexample",
+  "schema": "kernel-cycle-v1",
+  "open_items": [
+    "仅为生产部分周期或有限诊断，不是完整基地循环",
+    "级二F存在整批容量卡点；periodic_lift未获证",
+    "一般动态约束相容性与种子/参数/读法族认证未完成",
+    "精确年龄和累计计数可能造成周期漏检"
+  ],
+  "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/tiny-expired-cycle.json\",\"status\":\"counterexample\"}\n",
+  "stderr": ""
+}

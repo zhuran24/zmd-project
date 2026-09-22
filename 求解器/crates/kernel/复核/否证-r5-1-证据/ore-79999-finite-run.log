@@ -1,0 +1,25 @@
+{
+  "name": "ore-79999-finite-run",
+  "command": [
+    "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+    "run",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-1-证据/ore-79999-seed.json",
+    "--ticks",
+    "1",
+    "--out",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-1-证据/ore-79999-finite-record.json",
+    "--config",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+  ],
+  "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+  "exit_code": 0,
+  "result": {
+    "out": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-1-证据/ore-79999-finite-record.json",
+    "status": "completed"
+  },
+  "stderr": ""
+}
+STDOUT
+{"out":"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-1-证据/ore-79999-finite-record.json","status":"completed"}
+
+STDERR

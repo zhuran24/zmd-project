@@ -1,0 +1,16 @@
+{
+  "status": "pass",
+  "baseline_files": 149,
+  "changed": [],
+  "source_changed": [],
+  "reported_evidence_changed": [],
+  "broken_links": [],
+  "disallowed_files": [],
+  "evidence_subdirectories": [],
+  "compiled_files": [],
+  "verdict_count": 10,
+  "cli_calls": 50,
+  "reader_review": "已逐条重读报告；依据、正负例、范围和归责与结果文件一致",
+  "report_sha256": "ffdd84fdcce91a5b6e3f58d0ee61261eec7d8d0bde187edddad957fa425d5c3a",
+  "binary_sha256": "82d771d670570efcc9104c8ec8059a0d3a398990643435a60b1222f1cdf300a2"
+}

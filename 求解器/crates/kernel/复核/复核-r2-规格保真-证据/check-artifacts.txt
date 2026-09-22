@@ -1,0 +1,2 @@
+{"status": "通过", "controls": 4, "metadata_negatives": 40, "cli_negatives": 6}
+{"records": 4, "counts": {"已定": 11, "本版选值": 55, "由输入全称量化": 15, "超出覆盖即停": 18}, "deliverable_mismatches": []}

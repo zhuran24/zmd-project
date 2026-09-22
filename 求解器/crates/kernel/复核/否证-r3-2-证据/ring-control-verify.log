@@ -1,0 +1,20 @@
+{
+  "name": "ring-control-verify",
+  "command": [
+    "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+    "verify-cycle",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r3-2-证据/ring-control-result.json",
+    "--config",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+    "--out",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r3-2-证据/ring-control-verify-result.json"
+  ],
+  "exit_code": 0,
+  "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r3-2-证据/ring-control-verify-result.json\",\"status\":\"input_checked\"}\n",
+  "stderr": "",
+  "result_path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r3-2-证据/ring-control-verify-result.json",
+  "status": "input_checked",
+  "schema": null,
+  "stop": null,
+  "open_items": null
+}

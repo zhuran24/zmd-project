@@ -1,0 +1,22 @@
+{
+  "valid": {
+    "count": 4,
+    "python_accepted": 4,
+    "rust_accepted": 4
+  },
+  "L2": {
+    "count": 24,
+    "python_accepted": 24,
+    "rust_accepted": 0
+  },
+  "summary_control": {
+    "count": 4,
+    "python_accepted": 0,
+    "rust_accepted": 0
+  },
+  "L3": {
+    "count": 12,
+    "python_accepted": 12,
+    "rust_accepted": 0
+  }
+}

@@ -1,0 +1,672 @@
+{
+  "expressions": [
+    "len(U)>=2 and any(w in assigned_slots for w in E)",
+    "len(U)>=2 and any(w in assigned_slots for w in E)"
+  ],
+  "cases": [
+    {
+      "new_species_count": 0,
+      "empty_slots": [],
+      "assigned_empty_slots": [],
+      "stop": false
+    },
+    {
+      "new_species_count": 0,
+      "empty_slots": [
+        "W_empty_0"
+      ],
+      "assigned_empty_slots": [],
+      "stop": false
+    },
+    {
+      "new_species_count": 0,
+      "empty_slots": [
+        "W_empty_0"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0"
+      ],
+      "stop": false
+    },
+    {
+      "new_species_count": 0,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "assigned_empty_slots": [],
+      "stop": false
+    },
+    {
+      "new_species_count": 0,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0"
+      ],
+      "stop": false
+    },
+    {
+      "new_species_count": 0,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_1"
+      ],
+      "stop": false
+    },
+    {
+      "new_species_count": 0,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "stop": false
+    },
+    {
+      "new_species_count": 0,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [],
+      "stop": false
+    },
+    {
+      "new_species_count": 0,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0"
+      ],
+      "stop": false
+    },
+    {
+      "new_species_count": 0,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_1"
+      ],
+      "stop": false
+    },
+    {
+      "new_species_count": 0,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_2"
+      ],
+      "stop": false
+    },
+    {
+      "new_species_count": 0,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "stop": false
+    },
+    {
+      "new_species_count": 0,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0",
+        "W_empty_2"
+      ],
+      "stop": false
+    },
+    {
+      "new_species_count": 0,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "stop": false
+    },
+    {
+      "new_species_count": 0,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "stop": false
+    },
+    {
+      "new_species_count": 1,
+      "empty_slots": [],
+      "assigned_empty_slots": [],
+      "stop": false
+    },
+    {
+      "new_species_count": 1,
+      "empty_slots": [
+        "W_empty_0"
+      ],
+      "assigned_empty_slots": [],
+      "stop": false
+    },
+    {
+      "new_species_count": 1,
+      "empty_slots": [
+        "W_empty_0"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0"
+      ],
+      "stop": false
+    },
+    {
+      "new_species_count": 1,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "assigned_empty_slots": [],
+      "stop": false
+    },
+    {
+      "new_species_count": 1,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0"
+      ],
+      "stop": false
+    },
+    {
+      "new_species_count": 1,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_1"
+      ],
+      "stop": false
+    },
+    {
+      "new_species_count": 1,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "stop": false
+    },
+    {
+      "new_species_count": 1,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [],
+      "stop": false
+    },
+    {
+      "new_species_count": 1,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0"
+      ],
+      "stop": false
+    },
+    {
+      "new_species_count": 1,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_1"
+      ],
+      "stop": false
+    },
+    {
+      "new_species_count": 1,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_2"
+      ],
+      "stop": false
+    },
+    {
+      "new_species_count": 1,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "stop": false
+    },
+    {
+      "new_species_count": 1,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0",
+        "W_empty_2"
+      ],
+      "stop": false
+    },
+    {
+      "new_species_count": 1,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "stop": false
+    },
+    {
+      "new_species_count": 1,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "stop": false
+    },
+    {
+      "new_species_count": 2,
+      "empty_slots": [],
+      "assigned_empty_slots": [],
+      "stop": false
+    },
+    {
+      "new_species_count": 2,
+      "empty_slots": [
+        "W_empty_0"
+      ],
+      "assigned_empty_slots": [],
+      "stop": false
+    },
+    {
+      "new_species_count": 2,
+      "empty_slots": [
+        "W_empty_0"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0"
+      ],
+      "stop": true
+    },
+    {
+      "new_species_count": 2,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "assigned_empty_slots": [],
+      "stop": false
+    },
+    {
+      "new_species_count": 2,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0"
+      ],
+      "stop": true
+    },
+    {
+      "new_species_count": 2,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_1"
+      ],
+      "stop": true
+    },
+    {
+      "new_species_count": 2,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "stop": true
+    },
+    {
+      "new_species_count": 2,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [],
+      "stop": false
+    },
+    {
+      "new_species_count": 2,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0"
+      ],
+      "stop": true
+    },
+    {
+      "new_species_count": 2,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_1"
+      ],
+      "stop": true
+    },
+    {
+      "new_species_count": 2,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_2"
+      ],
+      "stop": true
+    },
+    {
+      "new_species_count": 2,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "stop": true
+    },
+    {
+      "new_species_count": 2,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0",
+        "W_empty_2"
+      ],
+      "stop": true
+    },
+    {
+      "new_species_count": 2,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "stop": true
+    },
+    {
+      "new_species_count": 2,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "stop": true
+    },
+    {
+      "new_species_count": 3,
+      "empty_slots": [],
+      "assigned_empty_slots": [],
+      "stop": false
+    },
+    {
+      "new_species_count": 3,
+      "empty_slots": [
+        "W_empty_0"
+      ],
+      "assigned_empty_slots": [],
+      "stop": false
+    },
+    {
+      "new_species_count": 3,
+      "empty_slots": [
+        "W_empty_0"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0"
+      ],
+      "stop": true
+    },
+    {
+      "new_species_count": 3,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "assigned_empty_slots": [],
+      "stop": false
+    },
+    {
+      "new_species_count": 3,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0"
+      ],
+      "stop": true
+    },
+    {
+      "new_species_count": 3,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_1"
+      ],
+      "stop": true
+    },
+    {
+      "new_species_count": 3,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "stop": true
+    },
+    {
+      "new_species_count": 3,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [],
+      "stop": false
+    },
+    {
+      "new_species_count": 3,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0"
+      ],
+      "stop": true
+    },
+    {
+      "new_species_count": 3,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_1"
+      ],
+      "stop": true
+    },
+    {
+      "new_species_count": 3,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_2"
+      ],
+      "stop": true
+    },
+    {
+      "new_species_count": 3,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "stop": true
+    },
+    {
+      "new_species_count": 3,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0",
+        "W_empty_2"
+      ],
+      "stop": true
+    },
+    {
+      "new_species_count": 3,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "stop": true
+    },
+    {
+      "new_species_count": 3,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "stop": true
+    }
+  ]
+}

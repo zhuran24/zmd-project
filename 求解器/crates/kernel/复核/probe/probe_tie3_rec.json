@@ -1,0 +1,20 @@
+{
+  "fingerprints": [],
+  "input_history": null,
+  "open_items": [
+    "invalid_input input @ poll_memory: 成员、接通环、级或当前可动级不符"
+  ],
+  "parameter_assignment": null,
+  "producer": {
+    "claim": "装载停止，未形成游戏后继",
+    "kind": "kernel",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
+  },
+  "profile_id": "kernel_profile_v1",
+  "run_id": "kernel:load-stop",
+  "schema": "kernel-output-v2",
+  "status": "invalid_input",
+  "trace": null,
+  "uncovered_axes": [],
+  "validation_scope": null
+}

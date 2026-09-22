@@ -1,0 +1,568 @@
+[
+  {
+    "case": "phase-control",
+    "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/复核-r2-规格保真-证据/phase-control-input.json",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/复核-r2-规格保真-证据/phase-control-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/phase-control-record.json"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/phase-control-record.json\",\"status\":\"completed\"}\n",
+    "status": "completed",
+    "open_items": [
+      "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+      "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+    ],
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/phase-control-record.json",
+    "schema": "通过",
+    "rust_verification": {
+      "verify": {
+        "Ok": null
+      }
+    },
+    "probe_events": [
+      [],
+      [
+        "completion_probe",
+        "supply_probe"
+      ]
+    ]
+  },
+  {
+    "case": "phase-conflict",
+    "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/复核-r2-规格保真-证据/phase-conflict-input.json",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/复核-r2-规格保真-证据/phase-conflict-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/phase-conflict-record.json"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/phase-conflict-record.json\",\"status\":\"completed\"}\n",
+    "status": "completed",
+    "open_items": [
+      "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+      "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+    ],
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/phase-conflict-record.json",
+    "schema": "通过",
+    "rust_verification": {
+      "verify": {
+        "Ok": null
+      }
+    },
+    "probe_events": [
+      [],
+      [
+        "completion_probe",
+        "supply_probe"
+      ]
+    ]
+  },
+  {
+    "case": "unowned-runtime",
+    "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/复核-r2-规格保真-证据/unowned-runtime-input.json",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/复核-r2-规格保真-证据/unowned-runtime-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/unowned-runtime-record.json"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/unowned-runtime-record.json\",\"status\":\"completed\"}\n",
+    "status": "completed",
+    "open_items": [
+      "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+      "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+    ],
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/unowned-runtime-record.json",
+    "schema": "通过",
+    "rust_verification": {
+      "verify": {
+        "Ok": null
+      }
+    },
+    "probe_events": [
+      [],
+      []
+    ]
+  },
+  {
+    "case": "unowned-connection_close",
+    "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/复核-r2-规格保真-证据/unowned-connection_close-input.json",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/复核-r2-规格保真-证据/unowned-connection_close-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/unowned-connection_close-record.json"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/unowned-connection_close-record.json\",\"status\":\"completed\"}\n",
+    "status": "completed",
+    "open_items": [
+      "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+      "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+    ],
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/unowned-connection_close-record.json",
+    "schema": "通过",
+    "rust_verification": {
+      "verify": {
+        "Ok": null
+      }
+    },
+    "probe_events": [
+      [],
+      []
+    ]
+  },
+  {
+    "case": "branch-cut",
+    "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/复核-r2-规格保真-证据/branch-cut-input.json",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/复核-r2-规格保真-证据/branch-cut-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "1",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/branch-cut-record.json"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/branch-cut-record.json\",\"status\":\"completed\"}\n",
+    "status": "completed",
+    "open_items": [
+      "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+      "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+    ],
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/branch-cut-record.json",
+    "schema": "通过",
+    "rust_verification": {
+      "verify": {
+        "Ok": null
+      }
+    },
+    "probe_events": [
+      []
+    ],
+    "library_command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/probe",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/复核-r2-规格保真-证据/branch-cut-input.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "1",
+      "PC|source:north:0|merge_a:south:0"
+    ],
+    "damping": [
+      {
+        "Ok": 3
+      },
+      {
+        "Ok": 2
+      }
+    ],
+    "reload": [
+      {
+        "Err": "invalid_input input @ damping.branch.choices: 所选出支不在查询的当前图中"
+      }
+    ]
+  },
+  {
+    "case": "branch-retained",
+    "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/复核-r2-规格保真-证据/branch-retained-input.json",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/复核-r2-规格保真-证据/branch-retained-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "1",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/branch-retained-record.json"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/branch-retained-record.json\",\"status\":\"completed\"}\n",
+    "status": "completed",
+    "open_items": [
+      "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+      "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+    ],
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/branch-retained-record.json",
+    "schema": "通过",
+    "rust_verification": {
+      "verify": {
+        "Ok": null
+      }
+    },
+    "probe_events": [
+      []
+    ],
+    "library_command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/probe",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/复核-r2-规格保真-证据/branch-retained-input.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "1",
+      "PC|source:north:0|merge_a:south:0"
+    ],
+    "damping": [
+      {
+        "Ok": 3
+      },
+      {
+        "Ok": 3
+      }
+    ],
+    "reload": [
+      {
+        "Ok": "ok"
+      }
+    ]
+  },
+  {
+    "case": "control",
+    "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/control-input.json",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/control-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/control-record.json"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/control-record.json\",\"status\":\"completed\"}\n",
+    "status": "completed",
+    "open_items": [
+      "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+      "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+    ],
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/control-record.json",
+    "schema": "通过",
+    "rust_verification": {
+      "verify": {
+        "Ok": null
+      }
+    },
+    "probe_events": [
+      [],
+      []
+    ]
+  },
+  {
+    "case": "reachability-null",
+    "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/reachability-null-input.json",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/reachability-null-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/reachability-null-record.json"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/reachability-null-record.json\",\"status\":\"completed\"}\n",
+    "status": "completed",
+    "open_items": [
+      "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+      "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+    ],
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/reachability-null-record.json",
+    "schema": "$.input_history.reachability: 类型不符",
+    "rust_verification": {
+      "verify": {
+        "Ok": null
+      }
+    },
+    "probe_events": [
+      [],
+      []
+    ]
+  },
+  {
+    "case": "reachability-number",
+    "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/reachability-number-input.json",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/reachability-number-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/reachability-number-record.json"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/reachability-number-record.json\",\"status\":\"completed\"}\n",
+    "status": "completed",
+    "open_items": [
+      "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+      "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+    ],
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/reachability-number-record.json",
+    "schema": "$.input_history.reachability: 类型不符",
+    "rust_verification": {
+      "verify": {
+        "Ok": null
+      }
+    },
+    "probe_events": [
+      [],
+      []
+    ]
+  },
+  {
+    "case": "reachability-object",
+    "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/reachability-object-input.json",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/reachability-object-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/reachability-object-record.json"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/reachability-object-record.json\",\"status\":\"completed\"}\n",
+    "status": "completed",
+    "open_items": [
+      "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+      "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+    ],
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/reachability-object-record.json",
+    "schema": "$.input_history.reachability: 必填字段缺失",
+    "rust_verification": {
+      "verify": {
+        "Ok": null
+      }
+    },
+    "probe_events": [
+      [],
+      []
+    ]
+  },
+  {
+    "case": "reachability-string",
+    "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/reachability-string-input.json",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/reachability-string-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/reachability-string-record.json"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/reachability-string-record.json\",\"status\":\"completed\"}\n",
+    "status": "completed",
+    "open_items": [
+      "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+      "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+    ],
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/reachability-string-record.json",
+    "schema": "$.input_history.reachability: 类型不符",
+    "rust_verification": {
+      "verify": {
+        "Ok": null
+      }
+    },
+    "probe_events": [
+      [],
+      []
+    ]
+  },
+  {
+    "case": "initial-unlisted-missing",
+    "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/initial-unlisted-missing-input.json",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/initial-unlisted-missing-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/initial-unlisted-missing-record.json"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/initial-unlisted-missing-record.json\",\"status\":\"completed\"}\n",
+    "status": "completed",
+    "open_items": [
+      "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+      "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+    ],
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/initial-unlisted-missing-record.json",
+    "schema": "通过",
+    "rust_verification": {
+      "verify": {
+        "Ok": null
+      }
+    },
+    "probe_events": [
+      [],
+      []
+    ]
+  },
+  {
+    "case": "initial-unlisted-filled",
+    "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/initial-unlisted-filled-input.json",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/initial-unlisted-filled-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/initial-unlisted-filled-record.json"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/initial-unlisted-filled-record.json\",\"status\":\"completed\"}\n",
+    "status": "completed",
+    "open_items": [
+      "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+      "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+    ],
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/initial-unlisted-filled-record.json",
+    "schema": "通过",
+    "rust_verification": {
+      "verify": {
+        "Ok": null
+      }
+    },
+    "probe_events": [
+      [],
+      []
+    ]
+  },
+  {
+    "case": "restart-control",
+    "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/restart-control-input.json",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/restart-control-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--no-output"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "stdout": "{\n  \"completed_batches\": 2,\n  \"elapsed_ns\": \"11315372\",\n  \"final_inventory\": {\n    \"源石粉末\": 2,\n    \"源矿\": 79998,\n    \"砂叶\": 80000,\n    \"砂叶种子\": 80000,\n    \"荞花\": 80000,\n    \"荞花种子\": 80000,\n    \"蓝铁矿\": 80000\n  },\n  \"output\": \"disabled\",\n  \"status\": \"completed\",\n  \"ticks\": 2\n}\n",
+    "status": "completed",
+    "open_items": null,
+    "library": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/restart-control-library.json"
+  },
+  {
+    "case": "movement-build-alias",
+    "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/movement-build-alias-input.json",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/movement-build-alias-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--no-output"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "stdout": "{\n  \"completed_batches\": 2,\n  \"elapsed_ns\": \"10531018\",\n  \"final_inventory\": {\n    \"源石粉末\": 2,\n    \"源矿\": 79998,\n    \"砂叶\": 80000,\n    \"砂叶种子\": 80000,\n    \"荞花\": 80000,\n    \"荞花种子\": 80000,\n    \"蓝铁矿\": 80000\n  },\n  \"output\": \"disabled\",\n  \"status\": \"completed\",\n  \"ticks\": 2\n}\n",
+    "status": "completed",
+    "open_items": null,
+    "library": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/movement-build-alias-library.json",
+    "seed_event": "build_0",
+    "same_id_executed_again": 0,
+    "repeated_events": []
+  },
+  {
+    "case": "movement-future-id",
+    "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/movement-future-id-input.json",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/movement-future-id-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--no-output"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "stdout": "{\n  \"completed_batches\": 2,\n  \"elapsed_ns\": \"11378800\",\n  \"final_inventory\": {\n    \"源石粉末\": 2,\n    \"源矿\": 79998,\n    \"砂叶\": 80000,\n    \"砂叶种子\": 80000,\n    \"荞花\": 80000,\n    \"荞花种子\": 80000,\n    \"蓝铁矿\": 80000\n  },\n  \"output\": \"disabled\",\n  \"status\": \"completed\",\n  \"ticks\": 2\n}\n",
+    "status": "completed",
+    "open_items": null,
+    "library": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/movement-future-id-library.json",
+    "seed_event": "J|2|0|0",
+    "same_id_executed_again": 1,
+    "repeated_events": [
+      {
+        "basis": [
+          "规则 L13、L15–17、L23–25、L29–32",
+          "约束端口速率",
+          "受限模型声明 polling.both_failure",
+          "内核输入 §5.2、§6.3"
+        ],
+        "detail": "neither_authorized",
+        "event": "J|2|0|0",
+        "operation": "move",
+        "outcome": "no_request",
+        "target": "PC|ore_source:north:1|feed_belt:south:0"
+      }
+    ]
+  }
+]

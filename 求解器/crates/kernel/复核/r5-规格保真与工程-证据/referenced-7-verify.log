@@ -1,0 +1,17 @@
+{"command": ["/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel", "verify-cycle", "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r5-规格保真与工程-证据/referenced-7.json", "--config", "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"], "cwd": "/home/zhuran24/zmd-research-fresh", "exit": 0}
+STDOUT
+{
+  "checks": [
+    "引用原始字节/format/producer和完整来源链",
+    "原种子到达前缀及跨刻事件身份",
+    "独立重建D动态前件及周期账/率/接收域",
+    "从周期起点P次step_tick及完整终态"
+  ],
+  "cycle_replayed": true,
+  "period": 20,
+  "prefix_replayed": 21,
+  "start_time": 0,
+  "status": "input_checked"
+}
+
+STDERR

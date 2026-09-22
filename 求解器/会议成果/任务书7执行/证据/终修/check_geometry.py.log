@@ -1,0 +1,25 @@
+{
+  "units": 235,
+  "occupied_cells": 697,
+  "ports": 542,
+  "channels": 182,
+  "routes": 68,
+  "kinds": {
+    "种植机": 2,
+    "采种机": 2,
+    "粉碎机": 2,
+    "供电桩": 8,
+    "封装机": 3,
+    "协议储存箱": 2,
+    "灌装机": 3,
+    "协议核心": 1,
+    "仓库取货口": 46,
+    "传送带": 162,
+    "桥接器": 4
+  },
+  "transport_cells": 166,
+  "structural_transport_slots": 170,
+  "planned_species_simultaneous_capacity": 166,
+  "product_structural_slots": 76,
+  "product_planned_species_capacity": 72
+}

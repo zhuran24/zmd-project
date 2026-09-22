@@ -1,0 +1,315 @@
+{
+  "status": "通过",
+  "axis_count": 99,
+  "golden_match": true,
+  "schema_validation": "本地严格验证本schema全部已用关键词，非通用JSON Schema工具",
+  "tests": [
+    {
+      "name": "漏一项运行轴",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "未定义判定模板",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "新生成判定使用未支持排序规则",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "完整StateSeed漏格",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "轮询游标指向其它级",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "当前参数与输入不同",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "起点偷清已有端口消耗",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "无供电仍声称可制造",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "空格指派拒绝未解、接受显式无历史身份",
+      "status": "通过"
+    },
+    {
+      "name": "缺调用",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "非分支边",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "重复分支键",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "非空分支表固定/逐次两种编码",
+      "status": "通过"
+    },
+    {
+      "name": "输出漏逐轴赋值",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "输出冒称全称认证",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "输出状态漏轮询记忆",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "装载失败可无种子，成功记录不可缺种子",
+      "status": "通过"
+    },
+    {
+      "name": "Decision封套/connection_order/unresolved",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "Decision封套/connection_order/illegal",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "Decision封套/connection_order/empty_basis",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "Decision封套/connection_order/missing_basis",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "Decision封套/poll_memory/unresolved",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "Decision封套/poll_memory/illegal",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "Decision封套/poll_memory/empty_basis",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "Decision封套/poll_memory/missing_basis",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "Decision封套/withdrawal_memory/unresolved",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "Decision封套/withdrawal_memory/illegal",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "Decision封套/withdrawal_memory/empty_basis",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "Decision封套/withdrawal_memory/missing_basis",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "Decision封套/judgment_context/unresolved",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "Decision封套/judgment_context/illegal",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "Decision封套/judgment_context/empty_basis",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "Decision封套/judgment_context/missing_basis",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "Decision封套/pending_events/unresolved",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "Decision封套/pending_events/illegal",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "Decision封套/pending_events/empty_basis",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "Decision封套/pending_events/missing_basis",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "Decision封套/tick_context/unresolved",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "Decision封套/tick_context/illegal",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "Decision封套/tick_context/empty_basis",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "Decision封套/tick_context/missing_basis",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "状态轴布尔冒充整数",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "轮号布尔冒充整数",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "空格运行/旧当前级",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "空格运行/缺空格序",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "空格运行/完整派生状态",
+      "status": "通过"
+    },
+    {
+      "name": "无限周期排序及新生成事件嵌入",
+      "status": "通过"
+    },
+    {
+      "name": "周期排序/零槽宽",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "周期排序/漏模板",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "周期排序/重复模板",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "闭包中途完整种子JSON往返及重算一致",
+      "status": "通过"
+    },
+    {
+      "name": "中途种子/误标闭包后",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "中途种子/漏闭包记忆",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "中途种子/偷清端口",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "中途种子/漏已执行边界",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "运行记录/运输格2件",
+      "status": "正确拒绝",
+      "reason": "状态物品格超容量: feed_belt:transport:0"
+    },
+    {
+      "name": "运行记录/制造格999件",
+      "status": "正确拒绝",
+      "reason": "状态物品格超容量: crusher:input:0"
+    },
+    {
+      "name": "运行记录/输出虚构参数",
+      "status": "正确拒绝",
+      "reason": "交付记录与输入/完整重算不符: parameter_assignment"
+    },
+    {
+      "name": "运行记录/删除tick3事件",
+      "status": "正确拒绝",
+      "reason": "成功移动缺对应事件"
+    },
+    {
+      "name": "运行记录/摘要仓库12345",
+      "status": "正确拒绝",
+      "reason": "交付记录与输入/完整重算不符: trace"
+    },
+    {
+      "name": "运行记录/篡改起点",
+      "status": "正确拒绝",
+      "reason": "交付记录与输入/完整重算不符: trace"
+    },
+    {
+      "name": "运行记录/篡改历史",
+      "status": "正确拒绝",
+      "reason": "交付记录与输入/完整重算不符: input_history"
+    },
+    {
+      "name": "运行记录/篡改结束时间",
+      "status": "正确拒绝",
+      "reason": "交付记录与输入/完整重算不符: trace"
+    },
+    {
+      "name": "运行记录/篡改验证区间",
+      "status": "正确拒绝",
+      "reason": "交付记录与输入/完整重算不符: validation_scope"
+    },
+    {
+      "name": "运行记录/删依赖指纹",
+      "status": "正确拒绝",
+      "reason": "交付记录与输入/完整重算不符: fingerprints"
+    },
+    {
+      "name": "运行记录/删投影指纹",
+      "status": "正确拒绝",
+      "reason": "交付记录与输入/完整重算不符: fingerprints"
+    },
+    {
+      "name": "运行记录/伪造未触发为已验证",
+      "status": "正确拒绝",
+      "reason": "交付记录与输入/完整重算不符: uncovered_axes"
+    },
+    {
+      "name": "参数投影/旧声明哈希",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "参数投影/投影旧值",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "参数投影/投影布尔冒充整数",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "参数投影/投影旧覆盖",
+      "status": "正确拒绝"
+    },
+    {
+      "name": "参数投影/投影旧处置",
+      "status": "正确拒绝"
+    }
+  ],
+  "finite_trace_events": [
+    28,
+    42,
+    43,
+    43
+  ],
+  "bounds": "仅0–3 tick；无全称或完整目标认证"
+}

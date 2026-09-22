@@ -1,0 +1,18 @@
+[
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/会议2成果修订-v46.md",
+    "sha256": "dd873bba256906787359ada38480a0caf4eefd9b2c6bc5b05f135278b7617f5c"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/证据-v2-loop-否证/inputs.json",
+    "sha256": "92af56da4c563093d4b737f94d44bfb59b26399ec632dbb17dc64cdf567c2056"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/证据-v2-phase/v2_rewrite_recycle.md",
+    "sha256": "5c2c34896668ce18cf993e03cc23b9f5e9e102f85e31c9147619c7cfe8211d8e"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/证据-v2-loop-否证/checks.json",
+    "sha256": "fb2355d241f63633259a543069fdec6fc5206dedc027363444f1063e2cbedd01"
+  }
+]

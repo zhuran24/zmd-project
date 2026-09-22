@@ -1,0 +1,570 @@
+[
+  {
+    "tick": 0,
+    "completion": true,
+    "gate_admit": true,
+    "output_stock": 0,
+    "completed_in_cache": 0,
+    "next_due": 1
+  },
+  {
+    "tick": 1,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 1,
+    "completed_in_cache": 0,
+    "next_due": 2
+  },
+  {
+    "tick": 2,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 2,
+    "completed_in_cache": 0,
+    "next_due": 3
+  },
+  {
+    "tick": 3,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 3,
+    "completed_in_cache": 0,
+    "next_due": 4
+  },
+  {
+    "tick": 4,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 4,
+    "completed_in_cache": 0,
+    "next_due": 5
+  },
+  {
+    "tick": 5,
+    "completion": true,
+    "gate_admit": true,
+    "output_stock": 4,
+    "completed_in_cache": 0,
+    "next_due": 6
+  },
+  {
+    "tick": 6,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 5,
+    "completed_in_cache": 0,
+    "next_due": 7
+  },
+  {
+    "tick": 7,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 6,
+    "completed_in_cache": 0,
+    "next_due": 8
+  },
+  {
+    "tick": 8,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 7,
+    "completed_in_cache": 0,
+    "next_due": 9
+  },
+  {
+    "tick": 9,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 8,
+    "completed_in_cache": 0,
+    "next_due": 10
+  },
+  {
+    "tick": 10,
+    "completion": true,
+    "gate_admit": true,
+    "output_stock": 8,
+    "completed_in_cache": 0,
+    "next_due": 11
+  },
+  {
+    "tick": 11,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 9,
+    "completed_in_cache": 0,
+    "next_due": 12
+  },
+  {
+    "tick": 12,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 10,
+    "completed_in_cache": 0,
+    "next_due": 13
+  },
+  {
+    "tick": 13,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 11,
+    "completed_in_cache": 0,
+    "next_due": 14
+  },
+  {
+    "tick": 14,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 12,
+    "completed_in_cache": 0,
+    "next_due": 15
+  },
+  {
+    "tick": 15,
+    "completion": true,
+    "gate_admit": true,
+    "output_stock": 12,
+    "completed_in_cache": 0,
+    "next_due": 16
+  },
+  {
+    "tick": 16,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 13,
+    "completed_in_cache": 0,
+    "next_due": 17
+  },
+  {
+    "tick": 17,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 14,
+    "completed_in_cache": 0,
+    "next_due": 18
+  },
+  {
+    "tick": 18,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 15,
+    "completed_in_cache": 0,
+    "next_due": 19
+  },
+  {
+    "tick": 19,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 16,
+    "completed_in_cache": 0,
+    "next_due": 20
+  },
+  {
+    "tick": 20,
+    "completion": true,
+    "gate_admit": true,
+    "output_stock": 16,
+    "completed_in_cache": 0,
+    "next_due": 21
+  },
+  {
+    "tick": 21,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 17,
+    "completed_in_cache": 0,
+    "next_due": 22
+  },
+  {
+    "tick": 22,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 18,
+    "completed_in_cache": 0,
+    "next_due": 23
+  },
+  {
+    "tick": 23,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 19,
+    "completed_in_cache": 0,
+    "next_due": 24
+  },
+  {
+    "tick": 24,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 20,
+    "completed_in_cache": 0,
+    "next_due": 25
+  },
+  {
+    "tick": 25,
+    "completion": true,
+    "gate_admit": true,
+    "output_stock": 20,
+    "completed_in_cache": 0,
+    "next_due": 26
+  },
+  {
+    "tick": 26,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 21,
+    "completed_in_cache": 0,
+    "next_due": 27
+  },
+  {
+    "tick": 27,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 22,
+    "completed_in_cache": 0,
+    "next_due": 28
+  },
+  {
+    "tick": 28,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 23,
+    "completed_in_cache": 0,
+    "next_due": 29
+  },
+  {
+    "tick": 29,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 24,
+    "completed_in_cache": 0,
+    "next_due": 30
+  },
+  {
+    "tick": 30,
+    "completion": true,
+    "gate_admit": true,
+    "output_stock": 24,
+    "completed_in_cache": 0,
+    "next_due": 31
+  },
+  {
+    "tick": 31,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 25,
+    "completed_in_cache": 0,
+    "next_due": 32
+  },
+  {
+    "tick": 32,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 26,
+    "completed_in_cache": 0,
+    "next_due": 33
+  },
+  {
+    "tick": 33,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 27,
+    "completed_in_cache": 0,
+    "next_due": 34
+  },
+  {
+    "tick": 34,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 28,
+    "completed_in_cache": 0,
+    "next_due": 35
+  },
+  {
+    "tick": 35,
+    "completion": true,
+    "gate_admit": true,
+    "output_stock": 28,
+    "completed_in_cache": 0,
+    "next_due": 36
+  },
+  {
+    "tick": 36,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 29,
+    "completed_in_cache": 0,
+    "next_due": 37
+  },
+  {
+    "tick": 37,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 30,
+    "completed_in_cache": 0,
+    "next_due": 38
+  },
+  {
+    "tick": 38,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 31,
+    "completed_in_cache": 0,
+    "next_due": 39
+  },
+  {
+    "tick": 39,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 32,
+    "completed_in_cache": 0,
+    "next_due": 40
+  },
+  {
+    "tick": 40,
+    "completion": true,
+    "gate_admit": true,
+    "output_stock": 32,
+    "completed_in_cache": 0,
+    "next_due": 41
+  },
+  {
+    "tick": 41,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 33,
+    "completed_in_cache": 0,
+    "next_due": 42
+  },
+  {
+    "tick": 42,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 34,
+    "completed_in_cache": 0,
+    "next_due": 43
+  },
+  {
+    "tick": 43,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 35,
+    "completed_in_cache": 0,
+    "next_due": 44
+  },
+  {
+    "tick": 44,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 36,
+    "completed_in_cache": 0,
+    "next_due": 45
+  },
+  {
+    "tick": 45,
+    "completion": true,
+    "gate_admit": true,
+    "output_stock": 36,
+    "completed_in_cache": 0,
+    "next_due": 46
+  },
+  {
+    "tick": 46,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 37,
+    "completed_in_cache": 0,
+    "next_due": 47
+  },
+  {
+    "tick": 47,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 38,
+    "completed_in_cache": 0,
+    "next_due": 48
+  },
+  {
+    "tick": 48,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 39,
+    "completed_in_cache": 0,
+    "next_due": 49
+  },
+  {
+    "tick": 49,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 40,
+    "completed_in_cache": 0,
+    "next_due": 50
+  },
+  {
+    "tick": 50,
+    "completion": true,
+    "gate_admit": true,
+    "output_stock": 40,
+    "completed_in_cache": 0,
+    "next_due": 51
+  },
+  {
+    "tick": 51,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 41,
+    "completed_in_cache": 0,
+    "next_due": 52
+  },
+  {
+    "tick": 52,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 42,
+    "completed_in_cache": 0,
+    "next_due": 53
+  },
+  {
+    "tick": 53,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 43,
+    "completed_in_cache": 0,
+    "next_due": 54
+  },
+  {
+    "tick": 54,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 44,
+    "completed_in_cache": 0,
+    "next_due": 55
+  },
+  {
+    "tick": 55,
+    "completion": true,
+    "gate_admit": true,
+    "output_stock": 44,
+    "completed_in_cache": 0,
+    "next_due": 56
+  },
+  {
+    "tick": 56,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 45,
+    "completed_in_cache": 0,
+    "next_due": 57
+  },
+  {
+    "tick": 57,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 46,
+    "completed_in_cache": 0,
+    "next_due": 58
+  },
+  {
+    "tick": 58,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 47,
+    "completed_in_cache": 0,
+    "next_due": 59
+  },
+  {
+    "tick": 59,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 48,
+    "completed_in_cache": 0,
+    "next_due": 60
+  },
+  {
+    "tick": 60,
+    "completion": true,
+    "gate_admit": true,
+    "output_stock": 48,
+    "completed_in_cache": 0,
+    "next_due": 61
+  },
+  {
+    "tick": 61,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 49,
+    "completed_in_cache": 0,
+    "next_due": 62
+  },
+  {
+    "tick": 62,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 50,
+    "completed_in_cache": 0,
+    "next_due": 63
+  },
+  {
+    "tick": 63,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 50,
+    "completed_in_cache": 1,
+    "next_due": null
+  },
+  {
+    "tick": 64,
+    "completion": false,
+    "gate_admit": false,
+    "output_stock": 50,
+    "completed_in_cache": 1,
+    "next_due": null
+  },
+  {
+    "tick": 65,
+    "completion": false,
+    "gate_admit": true,
+    "output_stock": 50,
+    "completed_in_cache": 0,
+    "next_due": 66
+  },
+  {
+    "tick": 66,
+    "completion": true,
+    "gate_admit": false,
+    "output_stock": 50,
+    "completed_in_cache": 1,
+    "next_due": null
+  },
+  {
+    "tick": 67,
+    "completion": false,
+    "gate_admit": false,
+    "output_stock": 50,
+    "completed_in_cache": 1,
+    "next_due": null
+  },
+  {
+    "tick": 68,
+    "completion": false,
+    "gate_admit": false,
+    "output_stock": 50,
+    "completed_in_cache": 1,
+    "next_due": null
+  },
+  {
+    "tick": 69,
+    "completion": false,
+    "gate_admit": false,
+    "output_stock": 50,
+    "completed_in_cache": 1,
+    "next_due": null
+  },
+  {
+    "tick": 70,
+    "completion": false,
+    "gate_admit": true,
+    "output_stock": 50,
+    "completed_in_cache": 0,
+    "next_due": 71
+  }
+]

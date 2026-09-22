@@ -1,0 +1,2 @@
+{"status": "pass", "periods": 4, "ratios": ["0", "1"], "sensitivity": "observed"}
+{"status": "pass", "records": 26, "cycles": 10, "missing": ["transfer.resume_event"]}

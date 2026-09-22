@@ -1,0 +1,77 @@
+{
+  "crusher_checkpoint_preserved": true,
+  "crusher_missing_parameter_count": 99,
+  "crusher_supply-conflict_parameter_count": 99,
+  "bridge_control_state_preserved": true,
+  "bridge_missing_state_preserved": false,
+  "bridge_mirror-conflict_state_preserved": false,
+  "bridge_top-conflict_state_preserved": false,
+  "expired_gate_events": [
+    {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "6"
+        }
+      },
+      "event": {
+        "basis": [
+          "规则 L64",
+          "受限转移定义 §2.1、§3.4",
+          "gate.concurrent_expiry=atomic_batch"
+        ],
+        "detail": "atomic_batch:probe_gate_a,probe_gate_b",
+        "event": "W|5|probe_gate_a",
+        "operation": "gate_window_expiry",
+        "outcome": "success",
+        "target": "probe_gate_a"
+      }
+    },
+    {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "6"
+        }
+      },
+      "event": {
+        "basis": [
+          "规则 L64",
+          "受限转移定义 §2.1、§3.4",
+          "gate.concurrent_expiry=atomic_batch"
+        ],
+        "detail": "atomic_batch:probe_gate_a,probe_gate_b",
+        "event": "W|5|probe_gate_b",
+        "operation": "gate_window_expiry",
+        "outcome": "success",
+        "target": "probe_gate_b"
+      }
+    }
+  ],
+  "tiny_cycle": {
+    "period": {
+      "category": "算术推论",
+      "value": "1"
+    },
+    "start_time": {
+      "kind": "rational",
+      "value": {
+        "category": "候选",
+        "value": "6"
+      }
+    },
+    "end_time": {
+      "kind": "rational",
+      "value": {
+        "category": "候选",
+        "value": "7"
+      }
+    }
+  },
+  "phase_string_period": {
+    "category": "算术推论",
+    "value": "20"
+  }
+}

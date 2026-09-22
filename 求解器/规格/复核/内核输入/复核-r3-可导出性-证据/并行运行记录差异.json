@@ -1,0 +1,7 @@
+[
+  {
+    "path": "$.fingerprints[3].sha256",
+    "before": "c05b2fe73edfb93c2aacba2db0a2412fc850f81700c562f7c42cc5bdc6eeae17",
+    "after": "e499b39b60200618ab69a0a30a4be29efd29992d64428d9c9647e9c6c8cf236f"
+  }
+]

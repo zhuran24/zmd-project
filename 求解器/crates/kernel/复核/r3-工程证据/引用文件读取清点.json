@@ -1,0 +1,2545 @@
+[
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+    "exists": true,
+    "bytes": 7220,
+    "sha256": "abc7a5867f6477eedb619c63a21c4a77144c57ad4567fdcfb696b3049d66a670",
+    "lines": 114
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解任务.txt",
+    "exists": true,
+    "bytes": 1275,
+    "sha256": "10abf80fe6eefe647471eabe78da4053f77b489d3806722c501c6acb405a2864",
+    "lines": 15
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/README.md",
+    "exists": true,
+    "bytes": 8243,
+    "sha256": "9561ae2d07e061f1ca559fd99c6f17a76197393d1c3e3882d8cd59dfe9bc7fb8",
+    "lines": 71,
+    "sections": [
+      "# Rust 受限运行与生产周期内核",
+      "## 使用",
+      "## 转移、键与台账",
+      "## 验证与范围"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/regression-results.json",
+    "exists": true,
+    "bytes": 19353,
+    "sha256": "c49cb975e319efc1309268b3ac698a7f554fa57d113ae56fc2b031324f34cb0b",
+    "lines": 647,
+    "json_type": "dict",
+    "top_level_keys": [
+      "status",
+      "controls",
+      "metadata_mutations",
+      "input_cases",
+      "metadata_rejected",
+      "input_case_count"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/final-audit.log",
+    "exists": true,
+    "bytes": 246,
+    "sha256": "0091ef4038227f804f2bc7f7d8d337436669b8058c81664ed0d59843b26e0593",
+    "lines": 1
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/最终回复.json",
+    "exists": true,
+    "bytes": 18570,
+    "sha256": "e6655ab13c217de3f44e589043a5ab7a902a3a545ff63ddb999a5fbda3ad2389",
+    "lines": 184,
+    "json_type": "dict",
+    "top_level_keys": [
+      "files",
+      "summary",
+      "open_items"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/input.rs",
+    "exists": true,
+    "bytes": 37255,
+    "sha256": "ecf8754d2c424f2f8970e606ef8dc5db5a220dcf61c81845947225f236df199e",
+    "lines": 935
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/interfaces.rs",
+    "exists": true,
+    "bytes": 21355,
+    "sha256": "26ae828a14fe77db7625de901b35d48d47dc1d39993b67f0df11b5c2dbd542ba",
+    "lines": 526
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/polling.rs",
+    "exists": true,
+    "bytes": 18194,
+    "sha256": "93198482832582239a9d2b4e3ebcd0941e91d228d36ba3626076e977db0a833b",
+    "lines": 467
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests.rs",
+    "exists": true,
+    "bytes": 40609,
+    "sha256": "94a853a4b134c00b37cc0b7186e35b205d0dbeb1527a587e8af96fa157ef20a3",
+    "lines": 1086
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests_revision_r2.rs",
+    "exists": true,
+    "bytes": 11791,
+    "sha256": "e42da5328e9946f8e745cdbf361b06e006fcb28e54656488e8f53346697f4377",
+    "lines": 283
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/transition.rs",
+    "exists": true,
+    "bytes": 37039,
+    "sha256": "e298ac43f509561bcf15ebfe3a7bf5abba57133cc2561782ec397f6592ceeedd",
+    "lines": 853
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/warehouse.rs",
+    "exists": true,
+    "bytes": 13876,
+    "sha256": "aa5b1505d447b378a4cbb015f758c4ae5403b6201895db80576be4e0c8d22082",
+    "lines": 346
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/完整性批评-内核.md",
+    "exists": true,
+    "bytes": 35906,
+    "sha256": "ac0218439f35df2f263f583ee2dfa5349d00e3f3710d24472bcb440c7312cf47",
+    "lines": 266,
+    "sections": [
+      "# 完整性批评（第四次，内核）：内核实现了规格吗，进执行器之前还缺什么",
+      "## 〇、本席这一轮自己跑过的机械事实",
+      "## 一、逐节对照：`受限转移定义.md` §1–§5 与代码",
+      "## 二、本席自己的手工推演（新场景，不是重读黄金轨迹）",
+      "## 三、本席自造的探针：传输与入库（两份交付记录都没有覆盖的路径）",
+      "## 四、测试与证据是否经得起推敲",
+      "### 4.1 差分测试是真的逐字段",
+      "### 4.2 本席自写的篡改负例",
+      "### 4.3 第 2 轮 8 条发现的修复，本席抽验两条",
+      "## 五、逐节对照里本席认为需要记名的四处",
+      "## 六、进入执行器之前还缺什么",
+      "### A. 循环态判等没有定义，内核也没有导出（阻断）",
+      "### B. 在内核现在的支持域内，交付率 > 0 的循环态**不可能存在**（阻断）",
+      "### C. 参数扫描没有种子派生接口（阻断「跑遍参数取值」）",
+      "### D. KQ-02 使记录无法续跑、无法分段（阻断见证生产）",
+      "### E. KQ-06 会让整条运行连一刻都产不出来（重要）",
+      "### F. 记录里没有逐刻逐物种的入库账（重要）",
+      "### G. 两份交付记录的覆盖面比看起来窄得多（重要）",
+      "### H. `connection.port_meeting` 的两读法仍然给出不同的 PC 集合（重要）",
+      "### I. 没有砖尺度的性能测量（重要）",
+      "### J. 两条已采纳动态约束的普遍审查还没做（重要，规格线）",
+      "### K. 见证／反例的输出契约还不存在（重要）",
+      "### L. 三个小工程口子（次要）",
+      "## 七、结论",
+      "## 八、本席这一轮的命令与产物"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/topology/src/lib.rs",
+    "exists": true,
+    "bytes": 57328,
+    "sha256": "0bd91bd30faa829f9449d537b74fd8941390089b39f61f1a797fb705f7868990",
+    "lines": 1365
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/修订验证/r4/门禁验证.md",
+    "exists": true,
+    "bytes": 9015,
+    "sha256": "eb95e8c1fe19af448cf562ac7d84a795e4a892c68c3d228b5d1f8ea68356f1cc",
+    "lines": 72,
+    "sections": [
+      "# 契约目录第四轮门禁验证",
+      "## 发现、原因与处置",
+      "## 门禁如何回源",
+      "## 验证结果与复现",
+      "## 保护、读者自审与未决"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/contract.json",
+    "exists": true,
+    "bytes": 356212,
+    "sha256": "a555045972861bc60a84ade0cfaf81a037a1abfff89be1aeee578b9ef0e1a2db",
+    "lines": 15438,
+    "json_type": "dict",
+    "top_level_keys": [
+      "schema",
+      "candidate",
+      "rate_window",
+      "model",
+      "planned_absent",
+      "machines",
+      "sources",
+      "logical_feeds",
+      "fanouts",
+      "source_domain",
+      "core",
+      "targets"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/来源清单.json",
+    "exists": true,
+    "bytes": 2930,
+    "sha256": "180a10da3cb9730046e17ad575a8006bd0598b36fa6f7205d297ab5c55cae0ba",
+    "lines": 66,
+    "json_type": "list"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/校验报告.md",
+    "exists": true,
+    "bytes": 618154,
+    "sha256": "4ca856465096fdcfd79fc7e75ac2500aa3898cb548c2e5cf124d34bb23815f67",
+    "lines": 5004,
+    "sections": [
+      "# 候选 B 静态校验报告",
+      "## 能检且通过（4925 项，算术推论）",
+      "## 能检且不通过（0 项，算术推论）",
+      "## 不能静态检（59 项，算术推论）"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/工具/formal_units.py",
+    "exists": true,
+    "bytes": 10224,
+    "sha256": "311719cc7993f41424c4f7dac20703f2f80db467593ceccd34e88aaa2d0d6216",
+    "lines": 146
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/check_golden_trace.py",
+    "exists": true,
+    "bytes": 21357,
+    "sha256": "81f9ffccff44b25fba02a6bf313de41e49b00497fd41661970df72d267b6243e",
+    "lines": 290
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/checkpoint_delta.py",
+    "exists": true,
+    "bytes": 3933,
+    "sha256": "c1215a258d104c07a1d1c2f93eb6718809a0c3b55db17ee49074f057d2461878",
+    "lines": 80
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/kernel_profile_v1参数赋值.json",
+    "exists": true,
+    "bytes": 61621,
+    "sha256": "726e96353f223ffc78bc64547c96f57cc87c8cf6941c10437fae80959bef95dd",
+    "lines": 1454,
+    "json_type": "dict",
+    "top_level_keys": [
+      "schema",
+      "profile_id",
+      "profile_source",
+      "configuration_source",
+      "axis_source",
+      "axes"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/runtime_record.py",
+    "exists": true,
+    "bytes": 17766,
+    "sha256": "5c0115ec2fb75dbcf3ccc76b81aaa8b6d27e4f31670b0e91064179944845a9d5",
+    "lines": 253
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行说明.md",
+    "exists": true,
+    "bytes": 7009,
+    "sha256": "8a11f1382e3e6b3d360132a01c6954cd245c4e3bf879a7a6657f41950cf245ab",
+    "lines": 41,
+    "sections": [
+      "# 分流器三路轮询的有限参考运行",
+      "## 1. 完整输入与进料来源",
+      "## 2. 初态的条件历史",
+      "## 3. 逐段手工核算与事件证据",
+      "## 4. 记录与覆盖范围",
+      "## 修订记录"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询.json",
+    "exists": true,
+    "bytes": 194214,
+    "sha256": "02ad753b54f31d04390b8672ebd4e316cef91d931fd96fec252c2fed82e863ee",
+    "lines": 5419,
+    "json_type": "dict",
+    "top_level_keys": [
+      "schema",
+      "purpose",
+      "catalog",
+      "timeline",
+      "layout",
+      "construction",
+      "settings",
+      "parameters",
+      "initial_state",
+      "debug_operations",
+      "environment",
+      "contract_binding",
+      "scenario"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/桥接器双通路.json",
+    "exists": true,
+    "bytes": 141755,
+    "sha256": "efcab7af7aea7ef76687ab570a67e79e5fcef7a4b33348f5c71c3e70d41f98bf",
+    "lines": 3678,
+    "json_type": "dict",
+    "top_level_keys": [
+      "catalog",
+      "construction",
+      "contract_binding",
+      "debug_operations",
+      "environment",
+      "initial_state",
+      "layout",
+      "parameters",
+      "purpose",
+      "scenario",
+      "schema",
+      "settings",
+      "timeline"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录.json",
+    "exists": true,
+    "bytes": 651322,
+    "sha256": "e583c931a64c601bd5cb8c2dee1b61a5babc39984fe04101ef72325a03c7dde5",
+    "lines": 16396,
+    "json_type": "dict",
+    "top_level_keys": [
+      "schema",
+      "run_id",
+      "profile_id",
+      "producer",
+      "status",
+      "fingerprints",
+      "parameter_assignment",
+      "input_history",
+      "uncovered_axes",
+      "trace",
+      "validation_scope",
+      "open_items"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-黄金轨迹.json",
+    "exists": true,
+    "bytes": 3067,
+    "sha256": "bf0e705f9a92712cd495ae9fabebe95d910eac38ff825b6dc52da04f5b4b3959",
+    "lines": 120,
+    "json_type": "dict",
+    "top_level_keys": [
+      "schema",
+      "origin",
+      "numeric_category",
+      "input",
+      "ticks",
+      "basis_document",
+      "revision_note"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-黄金轨迹.md",
+    "exists": true,
+    "bytes": 9861,
+    "sha256": "1aa028fcfe4f89844372cb8e96e684f43c238487033aa07ba5a6397944ad7e4d",
+    "lines": 49,
+    "sections": [
+      "# 源矿进料的粉碎机双下游黄金轨迹",
+      "## 1. 固定输入与规格依赖",
+      "## 2. t=0 前历史与种子",
+      "## 3. 逐 tick 手工推演",
+      "## 4. 本次可推范围与未决",
+      "## 修订记录"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json",
+    "exists": true,
+    "bytes": 169998,
+    "sha256": "2942f3916d63c41d600d8226046cbd2a5bc05439161cfa1c2abd1702b75dd590",
+    "lines": 4690,
+    "json_type": "dict",
+    "top_level_keys": [
+      "schema",
+      "purpose",
+      "catalog",
+      "timeline",
+      "layout",
+      "construction",
+      "settings",
+      "parameters",
+      "initial_state",
+      "debug_operations",
+      "environment",
+      "contract_binding",
+      "scenario"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+    "exists": true,
+    "bytes": 156881,
+    "sha256": "74d21a5bd37c6178f988a86a4aa78a03d1e4244ecff26f133bb5e700ada82e43",
+    "lines": 4198,
+    "json_type": "dict",
+    "top_level_keys": [
+      "recipes",
+      "constraints",
+      "schema",
+      "conventions",
+      "units",
+      "task",
+      "static_checks",
+      "sources",
+      "version",
+      "transcribed_at",
+      "source_root"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/规则覆盖表.md",
+    "exists": true,
+    "bytes": 33344,
+    "sha256": "be21370fbf2faadaea615cc25b4c6cca78c0ff32895be1584139b11023a8e900",
+    "lines": 215,
+    "sections": [
+      "# 契约线规则覆盖表",
+      "## 《明日方舟：终末地》游戏规则.txt",
+      "## 求解任务.txt",
+      "## 正式约束",
+      "## 结构化目录门禁"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/送料契约.md",
+    "exists": true,
+    "bytes": 24348,
+    "sha256": "cd0d5c310aba6c096e146b664fb03afc9154e037b7a81b29f539fabe11c498c0",
+    "lines": 202,
+    "sections": [
+      "# 送料契约",
+      "## 使用与证据范围",
+      "## 数值与空值约定",
+      "## 顶层字段",
+      "## 机器表 machines",
+      "## 逻辑送料记录表 logical_feeds",
+      "## 三种边与储存箱分段",
+      "## 来源身份 sources、source_domain 与 core",
+      "## 扇出表 fanouts",
+      "## 检查计算",
+      "## 共享单位目录",
+      "## 目录版本、单位设定与数字类别",
+      "## 目录门禁的字段范围",
+      "## 计划满速与运输下界",
+      "## 待验字段与选择点接口"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/修订前只读文件指纹.json",
+    "exists": true,
+    "bytes": 1302,
+    "sha256": "85a6bd4d785f2590f9c45186c0f23136a69c85c54833a2da6cd6fe98d6aa68be",
+    "lines": 11,
+    "json_type": "dict",
+    "top_level_keys": [
+      "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+      "/home/zhuran24/zmd-research-fresh/求解任务.txt",
+      "/home/zhuran24/zmd-research-fresh/求解约束.txt",
+      "/home/zhuran24/zmd-research-fresh/候选约束.txt",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/复核-r1-可导出性.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/复核-r1-覆盖.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/选择点独立清单-r1.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/复核-r1-独立选择点.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/否证-r1-2.md"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/修订记录.md",
+    "exists": true,
+    "bytes": 44333,
+    "sha256": "3d735dbd99a6b96b65652e9551479c29e0bd9078d22fe066c5229cb8ba98e1d5",
+    "lines": 248,
+    "sections": [
+      "# 运行语义规格修订记录",
+      "## 判读范围",
+      "## 自查",
+      "## 第 2 轮修订",
+      "## 第 3 轮（2026-09-19）",
+      "## 第二轮任务 A 线起草修订（2026-09-19）",
+      "### 目录依赖与范围",
+      "### 辖域纠正与论证边界",
+      "## 第 4 轮发现落地（第三轮任务执行，2026-09-19）",
+      "## 第 5 轮发现落地（第三轮任务执行，2026-09-19）",
+      "## 第三轮任务：完整性批评-2与当前目录登记",
+      "## 第6轮修订（第三轮任务，2026-09-19）",
+      "## 第 7 轮修订",
+      "## 第四轮任务书§3：前置小任务（2026-09-19）",
+      "## 第五轮任务：规格线第一次修订（2026-09-19）",
+      "## 第 8 轮修订（第五轮任务，2026-09-19）"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核实现-对规格的疑问.md",
+    "exists": true,
+    "bytes": 11661,
+    "sha256": "3a55a14cb8e21c7d11c2c1b4626d3150cf229feadb757087297ad1bd1cda87a5",
+    "lines": 83,
+    "sections": [
+      "# 内核实现对规格的疑问",
+      "## KQ-01：非空补矿历史的事件字段尚未定义",
+      "## KQ-02：after_closure 种子的首条记录时刻",
+      "## KQ-03：新仓库标签冲突的替代标签接口缺失",
+      "## KQ-04：只有一个取货级时是否必须请求阻尼",
+      "## KQ-05：门身份维护的独立日志类型",
+      "## KQ-06：整段固定分支在所选出支失活后的语义",
+      "## 不属于规格疑问的已知覆盖界限",
+      "## KQ-07（第五轮实现）：种子派生的级仲裁与已闭包游标",
+      "## KQ-08（第五轮实现）：回矿拒收也读取被抽象的矿量"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入-修订记录.md",
+    "exists": true,
+    "bytes": 22217,
+    "sha256": "8407a00ebab39212d2289549b0d5c22927f836a06162a22f5fc9ac5ccb825ff0",
+    "lines": 131,
+    "sections": [
+      "# 内核输入修订记录",
+      "## 本轮范围与依据",
+      "## 逐条处理",
+      "## 第一轮存活项的闭合映射",
+      "## 版本迁移与验证",
+      "## 第三轮：完整运行输入、黄金轨迹与输出记录（2026-09-19）",
+      "## 第三轮存活发现修订（2026-09-19）",
+      "### 同轮共享配置第6轮迁移",
+      "## 第四轮存活发现修订（2026-09-19）",
+      "### 同轮规格线并行迁移",
+      "## 第四轮任务书§3前置小任务（2026-09-19）",
+      "## 第五轮S线接口修订（2026-09-19）",
+      "## 第五轮第8轮：种子派生疑问（2026-09-19）"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入-对参数轴的修改请求.md",
+    "exists": true,
+    "bytes": 8866,
+    "sha256": "c4b3a50158f62a54d8d7693bbbb237842370efc72b495cfe6a56d84caea762e2",
+    "lines": 51,
+    "sections": [
+      "# 内核输入对共享参数轴的修改请求",
+      "## 1. 三个可输入接口",
+      "## 2. 传送带形状与阶段",
+      "## 3. 既有轴的取值与覆盖入口",
+      "## 4. 版本协调",
+      "## 5. 第三轮首次对接记录（第6轮扩轴前的历史快照）",
+      "## 6. 第三轮存活发现后的接口请求及并入状态",
+      "## 7. 第四轮接口请求及并入结果"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md",
+    "exists": true,
+    "bytes": 96870,
+    "sha256": "0ca6312ed5142008d136f2d298bf23937dfbcb4cc80b7e3bfc023278833e9ec9",
+    "lines": 414,
+    "sections": [
+      "# 内核输入",
+      "## 1. 来源、版本与读取约定",
+      "### 1.1 数值、未知与证据",
+      "### 1.2 顶层对象",
+      "## 2. 布局、端口与三种边",
+      "### 2.1 占格及端口公式",
+      "### 2.2 实体通道 PC",
+      "### 2.3 内部通道 BC 与槽位身份",
+      "## 3. 统一时间线、建造与接通历史",
+      "### 3.1 事件及时间关系",
+      "### 3.2 接通事件、结构变化与桥方向",
+      "### 3.3 离线及接续",
+      "## 4. 设定与仓库引用",
+      "## 5. 参数向量及生命周期",
+      "### 5.1 已定值、派生值和关联",
+      "### 5.2 判定排序规则 EventOrder",
+      "### 5.3 阻尼分支 DampingBranch",
+      "### 5.4 全字段赋值与执行范围",
+      "## 6. 初态、运行上下文与玩家动作",
+      "### 6.1 有限调试程序",
+      "### 6.2 零干预期成品拿取",
+      "### 6.3 轮询记忆 PollMemory",
+      "### 6.4 种子派生与检查点恢复",
+      "## 7. 与送料契约的映射",
+      "## 8. 三个样例与检查边界",
+      "## 9. 验证记录及未完成义务"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r2/修订前产物指纹.json",
+    "exists": true,
+    "bytes": 19669,
+    "sha256": "38b3a95c876724c9f2e633aa87e85e63ef45d431c4441f74cd65dd927628e829",
+    "lines": 130,
+    "json_type": "dict",
+    "top_level_keys": [
+      "/home/zhuran24/zmd-research-fresh/求解器/Cargo.toml",
+      "/home/zhuran24/zmd-research-fresh/求解器/.gitignore",
+      "/home/zhuran24/zmd-research-fresh/求解器/Cargo.lock",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/受限模型声明.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/运行语义.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/修订记录.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/第1轮修订自查.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点清单.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/规则覆盖表.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/check_revision.py",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/第3轮自查结果.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/第3轮修订自查.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/第2轮修订自查.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/四件前置义务对照.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/第2轮自查结果.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/第二轮任务修订前只读指纹.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/第二轮任务自查结果.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/修订前只读文件指纹.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/第二轮任务修订自查.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/送料契约.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/修订记录.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/规则覆盖表.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/topology/Cargo.toml",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/topology/src/main.rs",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/topology/src/lib.rs",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/topology/tests/validation.rs",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/修订验证/转换复现.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/修订验证/修订前产物指纹.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/修订验证/只读文件指纹.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/修订验证/自查结果.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/校验报告.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/contract.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/来源清单.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/验证记录.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/转换说明.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/cargo-test.log",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/交付哈希.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/桥接器双通路.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/check_examples.py",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/generate_examples.py",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/检查结果.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/工具/check_revision.py",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/工具/convert_candidate_b.py",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/工具/test_formal_catalog.py",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/工具/formal_catalog.py",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复核-r2-字段覆盖.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/否证-r3-1.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复核-r2-校验器正确性.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复核-r3-校验器正确性.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/否证-r2-1.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/否证-r2-2.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复核-r3-字段覆盖.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复核-r3-数值复算.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复核-r2-数值复算.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/否证-r3-2.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复算-r3/派生投影-r3.txt",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复算-r3/recompute3.py",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复算-r3/派生投影-r3.py",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复算-r3/复算输出-r3.txt",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复算-r1/复算输出.txt",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复算-r1/报告复现.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复算-r1/recompute.py",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复算-r2/复算输出-r2.txt",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复算-r2/报告逐行核-输出.txt",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复算-r2/recompute2.py",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复算-r2/报告逐行核.py",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/修订验证/r3/目录负例.log",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/修订验证/r3/转换复现.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/修订验证/r3/契约自查.log",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/修订验证/r3/样例检查.log",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/修订验证/r3/首次-cargo-test.log",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/修订验证/r3/交付自审.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/修订验证/r3/改动清单.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/修订验证/r3/派生投影.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/修订验证/r3/样例目录引用刷新.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/修订验证/r3/修订前产物指纹.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/修订验证/r3/候选校验.log",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/修订验证/r3/A线原自查.log",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/修订验证/r3/只读文件指纹.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/修订验证/r3/自查结果.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/复核-r2-可导出性.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/复核-r5-可导出性.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/否证-r3-1.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/复核-r5-覆盖.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/复核-r2-独立选择点.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/r5_供电构造独立复算.py",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/复核-r5-独立选择点.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/供电覆盖计数核验-r4.py",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/否证-r4-1.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/完整性批评.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/否证-r5-1.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/否证-r2-1.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/r4_供电格集合复算.py",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/复核-r1-可导出性.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/复核-r4-独立选择点.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/选择点独立清单-r4.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/否证-r2-2.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/复核-r1-覆盖.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/否证-r5-2.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/复核-r4-可导出性.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/选择点独立清单-r1.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/复核-r4-覆盖.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/选择点独立清单-r5.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/r5_供电覆盖复算.py",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/复核-r1-独立选择点.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/选择点独立清单-r3.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/选择点独立清单-r2.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/复核-r3-独立选择点.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/复核-r3-覆盖.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/否证-r3-2.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/否证-r1-2.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/复核-r3-可导出性.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/复核-r2-覆盖.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/复核-r2-可导出性.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/复核-r1-一致性.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/复核-r2-一致性.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r2-1.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/复核-r1-可导出性.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r2-2.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/复核-r1-覆盖.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r1-1.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/否证-r1-2.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/复核-r2-覆盖.md"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r2/自查报告.md",
+    "exists": true,
+    "bytes": 6340,
+    "sha256": "0cf2798b0c052cb624b42ea352670d2fe668ced663391e88ef166fd16d0b983a",
+    "lines": 59,
+    "sections": [
+      "# 内核输入第二轮修订自查",
+      "## 实测结果",
+      "## 原 A 线自查失败的归属",
+      "## 规格与代码的读者自审",
+      "## 复现",
+      "## 未完成的范围"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r3/存活发现处理.md",
+    "exists": true,
+    "bytes": 12361,
+    "sha256": "9f4dc9217a3e9daa8969c2afc65b6ec3074d4f73e2b0495b45197b092ac41130",
+    "lines": 72,
+    "sections": [
+      "# 第三轮内核输入存活发现处理与论证",
+      "## 1. K3-r3-L1-01：周期排序的合法见证与编码",
+      "## 2. K3-r3-L1-02：实际闭包内部状态",
+      "## 3. K3-r3-L2-01、K3-r3-L3-03：验收实际交付记录",
+      "## 4. K3-r3-L2-02：本次实际验证的组合",
+      "## 5. K3-r3-L2-03、K3-r3-L3-04：来源和投影闭合",
+      "## 6. K3-r3-L3-01：Decision封套与活动状态",
+      "## 7. K3-r3-L3-02：实际库存派生可动级及空格仲裁",
+      "## 8. 辖域及未完成工作",
+      "## 9. 规格线并行配置迁移"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r3/自查报告.md",
+    "exists": true,
+    "bytes": 5919,
+    "sha256": "2ad4a42d54cc4b76a4b73c8ef4776a341bfff15c1c2c5efedbe4fb9de0fe4872",
+    "lines": 42,
+    "sections": [
+      "# 第三轮内核输入存活发现修订自查",
+      "## 当前交付与实测范围",
+      "## 与9项发现的对应",
+      "## 未完成事项与交付边界",
+      "## 读者自审"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r4/中途种子.json",
+    "exists": true,
+    "bytes": 94492,
+    "sha256": "0b33031214b4d9c95ca9c0aec49523fa0300670c22e0b0e1feb47bb0437ed3be",
+    "lines": 2670,
+    "json_type": "dict",
+    "top_level_keys": [
+      "layout_snapshot",
+      "settings_anchor",
+      "warehouse",
+      "inventory",
+      "progress",
+      "logistics",
+      "environment",
+      "semantic_context"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r4/二的幂次到期排序.json",
+    "exists": true,
+    "bytes": 1383,
+    "sha256": "140c9d14dcdced9d1ff516a2620d93a5a7b4815b429b2d76a72f1ff7d001f347",
+    "lines": 68,
+    "json_type": "dict",
+    "top_level_keys": [
+      "schema",
+      "scope",
+      "template_order",
+      "repeat_embedding",
+      "schedule"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r4/交付清单.json",
+    "exists": true,
+    "bytes": 13755,
+    "sha256": "01a74dde5c007cbbedef92c5a539da4a02b081061b3ee0669bf9e3ae88939947",
+    "lines": 116,
+    "json_type": "dict",
+    "top_level_keys": [
+      "schema",
+      "status",
+      "files",
+      "sha256",
+      "baseline",
+      "self_reference",
+      "previous_manifest",
+      "summary",
+      "attribution",
+      "open_items"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r4/共享配置迁移.json",
+    "exists": true,
+    "bytes": 2911,
+    "sha256": "c0a4d2f2449f85a770015df91652daccec1878e950c3e22725da3a89428daa01",
+    "lines": 54,
+    "json_type": "dict",
+    "top_level_keys": [
+      "before_sha256",
+      "after_sha256",
+      "axis_changes",
+      "axis_count",
+      "basis"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r4/存活发现处理.md",
+    "exists": true,
+    "bytes": 9349,
+    "sha256": "66068d321efdcb61774ede34c20d857810ae0eefbbd9ee915b5579933d02f474",
+    "lines": 51,
+    "sections": [
+      "# 内核输入第四轮存活发现处理",
+      "## 1. K3-r4-L1-01：非周期完整排序",
+      "## 2. K3-r4-L3-01：仓库和单位槽位不可重名",
+      "## 3. K3-r4-L3-02：新事件注册与引用分开",
+      "## 4. K3-r4-L3-03：最终清单与实际字节",
+      "## 5. 共享配置迁移与全文辖域"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r4/自查报告.md",
+    "exists": true,
+    "bytes": 4757,
+    "sha256": "7093f86dbdf341ea945caab8617fbf9aaa5b265850b96087ac5de9d00a65b79e",
+    "lines": 43,
+    "sections": [
+      "# 内核输入第四轮修订自查",
+      "## 检查结果",
+      "## 版本与边界",
+      "## 封存与复现"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.md",
+    "exists": true,
+    "bytes": 24455,
+    "sha256": "07de6c939938b88f0165fb1c02b1d96c19fd519453af54ce33ab9aa95b88d52c",
+    "lines": 121,
+    "sections": [
+      "# 内核运行记录与循环结果",
+      "## 1. 顶层契约",
+      "## 2. 逐事件、逐时刻内容",
+      "### 2.0 逐刻逐物种仓库台账",
+      "### 2.1 checkpoint_delta 编码与验收",
+      "## 3. 验证与结果解释",
+      "## 4. 版本、覆盖与复核边界",
+      "## 5. 循环证书、反例和未决结果",
+      "### 5.1 共用对象",
+      "### 5.2 cycle字段",
+      "### 5.3 独立重跑验收与反例等级"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.schema.json",
+    "exists": true,
+    "bytes": 68098,
+    "sha256": "5c3cb1ace272c34439381ba770b000b26bdb745db20e52ca4008ff13be0d657e",
+    "lines": 2687,
+    "json_type": "dict",
+    "top_level_keys": [
+      "$schema",
+      "$id",
+      "oneOf",
+      "$defs"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+    "exists": true,
+    "bytes": 49726,
+    "sha256": "bb0864eec811a6a77065ede33af165ced5e31e384afb166eaa30af554589e34a",
+    "lines": 1086,
+    "json_type": "dict",
+    "top_level_keys": [
+      "schema",
+      "profile_id",
+      "revision",
+      "axis_count",
+      "axes"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/参数扫描约减.md",
+    "exists": true,
+    "bytes": 45759,
+    "sha256": "b130439dc970d41923314a992f043dbdc96280c2cf0e653000ce9b6363e94011",
+    "lines": 235,
+    "sections": [
+      "# 参数扫描约减",
+      "## 1. 口径、依据和量词",
+      "## 2. 十五条输入轴逐项台账",
+      "### 2.1 分支表的永久出边投影与行为代表",
+      "### 2.2 接通并列序与输入格序",
+      "### 2.3 配方序约减到1",
+      "### 2.4 补给的有限段约减边界",
+      "## 3. 事件读写集与判等对象",
+      "### 3.1 三种判等，不能互代",
+      "### 3.2 资源分块与共同读项",
+      "### 3.3 按模板列完整读写集",
+      "### 3.4 共同维护的处理",
+      "## 4. 不冲突交换的逐类证明",
+      "### 4.1 冲突定义与局部引理",
+      "### 4.2 六类模板对",
+      "### 4.3 边界阶段与整轮归纳",
+      "## 5. 等价类枚举、两个样例的精确计数",
+      "### 5.1 为什么类数是无环定向数",
+      "### 5.2 样例结果",
+      "### 5.3 复跑与证据",
+      "## 6. 未证项、反例边界与接入要求",
+      "## 7. 交付自审记录"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/参数轴-对内核输入请求的答复.md",
+    "exists": true,
+    "bytes": 11273,
+    "sha256": "ac1e606cd4c5042200c0f8f77bd6d88695896f939ca1b9e6b40c6157b68abd64",
+    "lines": 62,
+    "sections": [
+      "# 参数轴对内核输入请求的答复",
+      "## 第6轮配置迁移与请求§6答复",
+      "### 第6轮末次全文辖域核对",
+      "## 第7轮相遇分类与仓库后态接口",
+      "### 对新增请求§7的答复"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限模型声明.md",
+    "exists": true,
+    "bytes": 43098,
+    "sha256": "da0ab2073221bca451c676d54c44c98705bac2886c4ebf7049b7a87fd3509e86",
+    "lines": 145,
+    "sections": [
+      "# 受限模型声明",
+      "## 1. 覆盖对象与判读",
+      "## 2. 逐轴处置、取值、依据与损失",
+      "## 3. 最严读法与供电核对",
+      "## 4. 双端权限、闭包及认证边界"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md",
+    "exists": true,
+    "bytes": 54501,
+    "sha256": "55e3caee8ab40d1003b6002f1283c46734ef77a122e2870a2455fb4f14355450",
+    "lines": 222,
+    "sections": [
+      "# 第一版受限转移定义",
+      "## 1. 输入、支持域和返回值",
+      "## 2. 时间阶段与事件实例",
+      "### 2.1 边界阶段",
+      "### 2.2 固定模板与重复嵌入",
+      "## 3. 两端权限与轮询后效",
+      "### 3.1 先定义物理可动，避免循环守卫",
+      "### 3.2 授权、起轮与记忆",
+      "### 3.3 一次PC模板访问",
+      "### 3.4 断边和恢复",
+      "## 4. 库存选择器和其它模板",
+      "### 4.1 外部物品选择",
+      "### 4.2 制造模板",
+      "### 4.3 传输模板",
+      "## 5. 同刻闭包、终止和唯一性",
+      "### 5.1 归约算法",
+      "### 5.2 本版的终止性",
+      "### 5.3 唯一后继与剩余规则义务",
+      "## 6. 循环态判等",
+      "### 6.1 两级、执行模式及准入域",
+      "### 6.2 StateSeed逐字段键与closure_key逐项对照",
+      "### 6.3 良定义证明（限D与生产抽象G）",
+      "### 6.4 周期、合法生产行为与平均率保持",
+      "### 6.5 级二提升：逐项证明与精确卡点"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/四件前置义务对照.md",
+    "exists": true,
+    "bytes": 12188,
+    "sha256": "a53e6ea0b6ecef38d8c009e66a80f5b0d04d3b5803d3270af68cc30cb19f9dde",
+    "lines": 61,
+    "sections": [
+      "# 四件前置义务对照",
+      "## 1. 参数覆盖",
+      "## 2. 转移确定性",
+      "## 3. 状态有限或可靠有限抽象",
+      "## 4. 分叉分支与相位、初态有限化",
+      "## 5. 认证输出边界"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/复核-r5-可导出性.md",
+    "exists": true,
+    "bytes": 21862,
+    "sha256": "d4072a116c6475ba5310a55965b469d15796db5964b2e28f9e605892bcb63a7e",
+    "lines": 254,
+    "sections": [
+      "# 复核 r5 · 可导出性视角（Claude 源）",
+      "## 0. 本轮被复核对象的实际状态（这是第 1 条发现的事实基础）",
+      "## 1. 发现",
+      "### S2-r5-L2-01（阻断）第 4 轮修订整轮未执行；起草人把用户原声「这次就先算了，下次」误读成「本轮不做规格修订」，10 条已过否证的发现原样留在草稿里",
+      "### S2-r5-L2-02（重要）`power.cell_rule` 的 `closed_touch` 与 约束·供电下限 的「至多 24 台」直接矛盾，应进「已排除」，不该留在 `open` 里并为它登记「覆盖损失」",
+      "### S2-r5-L2-03（次要）两份新文件有十余处把正式**约束**条款名当规则条款名裸引，违反规格自己定的前缀约定，把带前件的达标必要条件混进了无条件的物理据里",
+      "### S2-r5-L2-04（次要）`polling.internal_scope` 只登记了一个方向却说「另审」，受限模型又为一个从未登记的读法记了覆盖损失；`polling.direct_peer` 同病",
+      "### S2-r5-L2-05（次要，本轮新增）`gate.identity_subject` 第一版读法凭空加了「断边时观察物理相邻源的候选来件」这一机制：条文没有正面据，`选择点清单.md` T8 的登记集合里也没有它，参数轴上更没有对应的轴",
+      "## 2. 复核到、判定为**不是问题**的地方（留痕）",
+      "## 3. 小结"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/复核-r5-独立选择点.md",
+    "exists": true,
+    "bytes": 22926,
+    "sha256": "6ca1797e04bccdc3f695501ce68cea1df97fa0ef6b02c57a64a3608596ded723",
+    "lines": 252,
+    "sections": [
+      "# 复核 r5（独立选择点视角）",
+      "## 零、本轮的特殊情况",
+      "## 一、S2-r5-L3-01（重要）：`power.cell_rule` 的 `closed_touch` 是被约束「供电下限」排除的取值",
+      "## 二、S2-r5-L3-02（重要，本轮新发现）：汇流器的存货侧是分级的，而「从第二条接通的通道起轮」的三读法全部只在「全部已接通通道」上定义",
+      "## 三、S2-r5-L3-03（重要）：`connection.port_meeting` 既没有取值集合也没有排除依据，而条文其实能定",
+      "## 四、S2-r5-L3-04（次要）：规则 L29「都建立了通道时」的辖域是一处静默取值；第 4 轮给的排除论证用错了侧",
+      "## 五、S2-r5-L3-05（重要）：参数轴 F1 把规则 L72 取货侧的「非空物品格」写成「合法格」并宣称已定",
+      "## 六、复核过但判定**不**成立、不报为发现的几处",
+      "## 七、结论"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/复核-r5-覆盖.md",
+    "exists": true,
+    "bytes": 25708,
+    "sha256": "9e67f35d02d22d0fec0be98d345ebabb03e45081051b4015889bcd3158fd20c3",
+    "lines": 198,
+    "sections": [
+      "# 复核 r5·覆盖视角",
+      "## 〇、先核的机械事实",
+      "### 0.1 三份正式文件",
+      "### 0.2 本轮被复核的「草稿」是零改动",
+      "### 0.3 其它可机械核对的数字（本席重算）",
+      "## 一、完整性批评 §一至§三的缺口现状",
+      "## 二、第 4 轮覆盖视角的四条发现，逐条现状",
+      "### 2.1 传送带端口形状（原 S2-r4-L1-01）→ 本轮 **S2-r5-L1-02**",
+      "### 2.2 受限模型漏三轴（原 S2-r4-L1-02）→ 本轮 **S2-r5-L1-03**",
+      "### 2.3 T15 与两条几何约束的交叉核验（原 S2-r4-L1-03／L2-01／L3-01）→ 本轮 **S2-r5-L1-04**，含分寸修正",
+      "### 2.4 覆盖表两行指错 T 编号（原 S2-r4-L1-04）→ 本轮 **S2-r5-L1-05**",
+      "## 三、本轮新增的两条",
+      "### 3.1 单位占格互不重叠：只在 C 线格式里出现，据不支持，A 线正文无落点 → **S2-r5-L1-06**",
+      "### 3.2 仓库物品格的身份与空格落格没有落点 → **S2-r5-L1-07**",
+      "## 四、本席核过、但不构成发现的事项",
+      "### 4.1 T15 的格集合算式",
+      "### 4.2 §4.3 的 H 不相容证明",
+      "### 4.3 已排除项逐条回源，没有发现把允许域取小的",
+      "### 4.4 T14 按单位调度",
+      "### 4.5 仓库取货口朝向的导出",
+      "### 4.6 `规则:L29` 的「从第二条接通的通道起轮」只对分流器／汇流器的多口侧有意义",
+      "### 4.7 存货侧恒分级",
+      "### 4.8 其余两席的第 4 轮发现",
+      "## 五、发现清单"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/完整性批评-2.md",
+    "exists": true,
+    "bytes": 48893,
+    "sha256": "5a8a64fc2a795badb29d25570b9d3d1a2c4b24ff52a201bd8793ca9f875cf808",
+    "lines": 375,
+    "sections": [
+      "# 完整性批评（第二次）：写 Rust 内核之前还缺什么",
+      "## 〇、本席重算的机械事实",
+      "## 一、上一次 §七 五项的逐项核",
+      "### 1. 内核输入格式规格 —— 已补，布局/建造史/设定/参数四件齐全；「第一块砖」按主席裁定不在本轮",
+      "### 2. 受限模型声明 + 选择点 → 正交参数轴对照表 —— 两份文件都在，但受限模型声明没有做完任务书 §3.A.1 要求的事",
+      "### 3. 补 §二.2 的四条 —— 全部补成了显式轴，取值集合都有据（本席回源复核）",
+      "### 4. 补 §一.4／1.5／1.6 三条漏登记 —— 全部补上，算式本席独立复算通过",
+      "### 5. 两轨共用的 id 词表与单位目录 —— 已补，本席核过",
+      "## 二、状态定义是否完整到能写成数据结构",
+      "### 2.1 `logistics.poll_memory` 没有编码，内核存不下也读不回轮询状态",
+      "### 2.2 `judgment.order` 与 `damping.branch` 没有编码——四个「不得依赖的量」里有两个无法显式输入",
+      "## 三、转移是否精确到两个实现者不会分歧",
+      "### 3.1 双端权限（`polling.dual_permission=both`）：失败后效未定，且与 `规则:L29` 的字面有冲突",
+      "### 3.2 制造完成事件在同刻串行序里的位置没有选（`time.manufacture_events`）",
+      "### 3.3 级排序平局（`polling.level_tie`）没有选，而平局是常态不是例外",
+      "### 3.4 `connection.port_meeting` 没有选，而内核的通道集合就是它算出来的",
+      "## 四、受限模型声明：每条读法是否合法、覆盖损失是否登记",
+      "### 4.1 91 条轴里 43 条一字未提，且文件没有区分「本版选值」与「由输入全称量化」",
+      "### 4.2 已选的读法逐条核：合法性与覆盖损失",
+      "### 4.3 §4.3 的 H 不相容证明，本席重算一致",
+      "### 4.4 `power.cell_rule`：两个复核席给出相反结论，无人裁；这条必须在内核开工前裁掉",
+      "## 五、内核输入格式与送料契约、单位目录、运行语义之间的 id 与术语",
+      "### 5.1 对的地方（本席逐项核过）",
+      "### 5.2 内核的输入不是送料契约这件事，现在写清楚了",
+      "### 5.3 A 线的自查现在是红的，而且 A 线正文挂在一个已经不存在的目录版本上",
+      "### 5.4 三处措辞仍不互相拆台，本席没有发现新的术语冲突",
+      "## 六、三个样例是否合法",
+      "### 6.1 合法——本席独立重算，与样例声明逐条相同",
+      "### 6.2 但没有一个样例是内核能跑一步的",
+      "## 七、起草人的未决里，有没有其实规则能定的",
+      "### 7.1 `gate.window_recovery` 的「一次触发即锁闭」读法应当排除",
+      "### 7.2 `gate.window_clock` 的「阻断期间暂停」读法（全盘版）自毁，应当排除",
+      "### 7.3 可收窄：仓库空格指派（复核席 S2-r5-L1-07 的一半能定）",
+      "### 7.4 本席核过但**不**构成发现的（列出以免下一席重复）",
+      "## 八、尚未落地的存量发现（这是本轮最大的一块）",
+      "## 九、动内核之前的最小清单（按依赖先后）",
+      "## 附录：`受限模型声明.md` 全文未出现的 43 条轴",
+      "## 第四轮前置修订记录（2026-09-19）"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/完整性批评-3-角接对枚举.py",
+    "exists": true,
+    "bytes": 4172,
+    "sha256": "e87e2d0c1b4e9d572a5d7596b0ad017530adedb25c5acc8cec6691a99c9fc24e",
+    "lines": 96
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/完整性批评-3.md",
+    "exists": true,
+    "bytes": 54486,
+    "sha256": "8677024f38066fd7dff734c3fa9b3f2dc6b666a082d84c43e1f54b8a9430a2d2",
+    "lines": 389,
+    "sections": [
+      "# 完整性批评（第三次）：写 Rust 内核之前还缺什么",
+      "## 〇、本席这一轮重算的机械事实",
+      "## 一、完整性批评-2 的 12 条逐条核",
+      "### 1.1 第 1 条 —— 28 条存量发现整批未落地 → **已补，有据**",
+      "### 1.2 第 2 条 —— 受限模型声明漏 43 条轴、四条必选轴未选 → **已补，有据**",
+      "### 1.3 第 3 条 —— 转移函数尚未唯一 → **已补，有据**（本席的重点复核，详见 §三）",
+      "### 1.4 第 4 条 —— `polling.dual_permission=both` 的失败后效与 `规则:L29` 字面冲突 → **已补，有据**",
+      "### 1.5 第 5 条 —— 三处语法缺失导致两个「不得依赖的量」无法显式输入 → **已补，有据**",
+      "### 1.6 第 6 条 —— 没有可执行实例、没有输出格式 → **已补，有据**（详见 §四、§五）",
+      "### 1.7 第 7 条 —— `power.cell_rule` 无人裁 → **已裁，据成立**",
+      "### 1.8 第 8 条 —— A 线自查红、目录登记链断 → **已补**",
+      "### 1.9 第 9 条 —— T8 两条规则能定的 → **已收进已定/已排除，据成立**",
+      "### 1.10 第 10 条 —— 仓库空格指派可收窄 → **已补，补法与主席裁定一致**",
+      "### 1.11 第 11 条 —— 传送带端口形状没有轴 → **已补，且比主席的推导更保守**",
+      "### 1.12 第 12 条 —— 占格互不相交的据不成立 → **已换据，据成立**",
+      "## 二、99 条轴：条条有登记吗，四条必选轴选了吗",
+      "## 三、T1 闭包与 T3 双端权限的联合后继是否唯一",
+      "### 3.1 循环守卫被正面拆开了",
+      "### 3.2 唯一性的每个分支都有值",
+      "### 3.3 终止性论证本席复核",
+      "### 3.4 本席对这一节的保留（不是发现，是分寸）",
+      "## 四、可跑实例与黄金轨迹是否真能从规格推出",
+      "### 4.1 实例的静态结构：本席独立重算，逐条相同",
+      "### 4.2 逐 tick 推演：本席按规格重走，未发现推不出的步",
+      "### 4.3 但轨迹覆盖到的读法只有五分之二 —— 量化",
+      "### 4.4 【本轮新发现 1】三个样例都正好坐在 `connection.port_meeting` 的歧义上，而没有任何文件记这件事",
+      "## 五、内核输出格式是否够用",
+      "### 5.1 够用的部分（本席逐项核过）",
+      "### 5.2 【本轮新发现 2】格式只有「逐时刻全状态」一种，没有扩尺度的路",
+      "### 5.3 已被起草人自己写明的缺口（本席只核，不重复计）",
+      "## 六、三线术语与 id 是否一致",
+      "## 七、起草人的未决里，有没有其实规则能定的",
+      "### 7.1 【可收窄，有据】`warehouse.empty_slot_identity` 的竞争停止条件比必要的宽",
+      "### 7.2 本席核过但**不**构成发现的（列出以免下一席重复）",
+      "## 八、本席核过的其余机械事实",
+      "## 九、结论与随内核步该还的五条欠账"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/完整性批评.md",
+    "exists": true,
+    "bytes": 26791,
+    "sha256": "eb1cdd83cbe471c69fae7cd4f82cdd45c89180c1497318c137e7676de8b13daf",
+    "lines": 195,
+    "sections": [
+      "# 完整性批评：写 Rust 内核之前还缺什么",
+      "## 一、状态定义是否完整到能写成数据结构",
+      "### 1.1 有三个字段的**类型**取决于未定读法，不是取决于未知数值",
+      "### 1.2 时间不是整数，规格已经这样写了，但内核默认会写成整数",
+      "### 1.3 参数向量漏项：`Parameters` 只有四个正式量加一个无结构兜底",
+      "### 1.4 供电状态算不出来",
+      "### 1.5 非运输单位物品格的最短停留没有登记",
+      "### 1.6 同一时刻的级联移动没有登记",
+      "## 二、转移是否精确到两个实现者不会分歧",
+      "### 2.1 已登记、但取值集合开放（内核只能取子集并登记覆盖损失）",
+      "### 2.2 被写成「已定」、其实条文还有分歧（四条）",
+      "## 三、选择点的取值集合是否都有据",
+      "### 3.1 没有一个是封闭的，这要在内核里写死",
+      "### 3.2 T7 与 T14 是捆包，不是轴；缺一份「选择点 → 正交参数轴」对照表",
+      "### 3.3 一条有据但没进取值集合的",
+      "## 四、送料契约是否足以作为执行器的输入",
+      "### 4.1 契约本身有一处口径错误，换候选就会咬人",
+      "## 五、两条轨道之间的术语与 id 是否一致",
+      "### 5.1 对的地方（本席回源核过）",
+      "### 5.2 缺的地方",
+      "## 六、起草人的未决里有没有其实规则能定的",
+      "### 6.1 T7 的端口到格映射，应当定为分配读法（把举证责任翻给非分配读法）",
+      "### 6.2 T6 的传输**判定**粒度可由 `规则:L25` 定为按单位一次；判定粒度与冷却粒度要拆成两个轴",
+      "### 6.3 T13 不是游戏语义的选择点，是正式文件的笔误，应当升级为 owner 的一行勘误",
+      "### 6.4 本席核过但**不**构成发现的两条（列出以免下一席重复）",
+      "## 七、动内核之前的最小清单"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/verify_branch_projection.py",
+    "exists": true,
+    "bytes": 7976,
+    "sha256": "d9aba100cb281221944516d63320455b4d555809bbc9f645cced7b6653e16824",
+    "lines": 129
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/事件对清单.md",
+    "exists": true,
+    "bytes": 14440,
+    "sha256": "24f63baf7f4f0be075cdf26625b9d14a507dd3734b20cb9d35847fe0902cb62a",
+    "lines": 298,
+    "sections": [
+      "# 逐对冲突与未采用交换清单",
+      "## 混做粉碎机两下游",
+      "## 分流器三路轮询"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/分支表约减验证.json",
+    "exists": true,
+    "bytes": 161724,
+    "sha256": "db45e95e5edf05bcddd289db4f147f90a7152a1719bd38bd66283141415b3073",
+    "lines": 4038,
+    "json_type": "dict",
+    "top_level_keys": [
+      "schema",
+      "status",
+      "sources",
+      "scope",
+      "examples",
+      "negative_checks"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/否证-r1-1-证据/check_branch_projection.py",
+    "exists": true,
+    "bytes": 10501,
+    "sha256": "75ed503410e1201b95ebac14f06b8069182053bd6331383f2a8ae673fa094cf9",
+    "lines": 199
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/等价类计数.json",
+    "exists": true,
+    "bytes": 258234,
+    "sha256": "c26b2fc41810feeb365790bf55176bb8950336675f1b5a5ed8e05f63efe61ce7",
+    "lines": 8944,
+    "json_type": "dict",
+    "top_level_keys": [
+      "schema",
+      "axes",
+      "scope",
+      "sources",
+      "examples"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/选择点独立清单-r3.md",
+    "exists": true,
+    "bytes": 50605,
+    "sha256": "b828623b37f14fc3899cc3bd690370e845ca5173d377243e01cdca1f95a92ba5",
+    "lines": 604,
+    "sections": [
+      "# 选择点独立清单（第 3 轮复核席，独立视角）",
+      "## 零、四个已登记的「不得依赖的量」（不是本清单要新列的，列出以免重复计数）",
+      "## A 组：时间、时刻与判定结构",
+      "### A1　一个 tick 内包含几个「时刻」　**未定（核心）**",
+      "### A2　一个 tick 内同一条通道可发生几次**尝试移动**判定　**未定（核心）**",
+      "### A3　「判定先后固定」的固定性辖域　**未定**",
+      "### A4　同一 tick 内多个时刻之间的先后是否固定　**未定**",
+      "### A5　tick 边界上的动作归属　**未定**",
+      "### A6　制造耗时的结束时刻与开始时刻　**未定**",
+      "### A7　协议储存箱 5 tick 冷却的计时与相位　**未定，且相位已登记为不得依赖的量**",
+      "## B 组：移动、滞留与级联",
+      "### B1　滞留只对运输单位物品格成立，别的物品格的最短停留　**未定**",
+      "### B2　同一时刻内的级联移动（时间为 0 的链式传递）　**未定**",
+      "### B3　移动的「成功」条件　**未定（条文只给了必要条件的碎片）**",
+      "### B4　「一直在尝试移动」是否意味着每个时刻每条通道都产生一次判定　**未定**",
+      "## C 组：制造单位内部（缓存格闸门、配方选择、物品格）",
+      "### C1　缓存格通道不经端口，`约束:端口速率` 对它不成立　**已定（但极易写错，列此防错）**",
+      "### C2　大制造单位的「符合某个配方」按单个存货物品格判还是按两格合判　**未定（重要）**",
+      "### C3　存货端口把物品放进哪个存货物品格　**未定（重要）**",
+      "### C4　存货物品格的「放置上限 50」是每格总量还是每种物品各 50　**未定（重要）**",
+      "### C5　存货物品格内容同时符合多个配方时选哪个配方　**未定（重要）**",
+      "### C6　整批产物无法整批进入取货物品格时的行为　**未定（重要）**",
+      "### C7　缓存格无限容量与状态有限性　**未定／待审（有限性的直接威胁）**",
+      "### C8　制造单位的缓存格通道是否计入该单位的存货／取货通道分级与轮询　**未定**",
+      "## D 组：运输单位、桥接器、阻尼、轮询、优先级",
+      "### D1　桥接器两对端口是否算「同一个单位的多个存货端口／取货端口」　**未定（重要）**",
+      "### D2　桥接器「端口类型由先接上的那一端所接的单位决定」的映射规则　**未定（重要）**",
+      "### D3　桥接器两个物品格的放置上限　**未定（但已被采纳约束实质收紧，须写清楚辖域）**",
+      "### D4　旋转与端口朝向是建造期固定还是设定项　**未定（重要）**",
+      "### D5　「元件」中「一段连续的传送带」的界定　**未定（重要）**",
+      "### D6　阻尼的起点端点是否计入、以及无终点／成环时的定义　**未定（重要）**",
+      "### D7　轮询指针：初始位置、失败是否推进、断开／恢复后的重排　**未定（重要）**",
+      "### D8　优先级与轮询的交互　**未定（重要）**",
+      "### D9　取货／存货优先级的辖域、「直接接」的含义与平局　**未定（重要）**",
+      "### D10　「接通」时刻与离线改变的到底是什么　**未定（重要）**",
+      "### D11　通道的形成条件（几何「相遇」）　**未定**",
+      "## E 组：物品准入口",
+      "### E1　阻断的触发、辖域与恢复　**未定（重要）**",
+      "### E2　准入口的物品格与滞留　**已定**",
+      "## F 组：协议储存箱",
+      "### F1　选格规则的判定粒度　**已定＋一处未定**",
+      "### F2　传输的冷却粒度：整箱一个冷却还是每格各一个　**未定（重要）**",
+      "### F3　传输的「仓库能接收」条件　**未定**",
+      "### F4　协议储存箱取货端口的轮询与「编号最小非空格」的交互　**未定**",
+      "### F5　供电中断与开关关闭期间冷却进度　**已定**",
+      "## G 组：协议核心与仓库",
+      "### G1　协议核心存货端口把物品放进仓库的哪个物品格　**已定（本席初稿写成「未定」，回源后自纠）**",
+      "### G2　仓库初始「满」的数量　**未定**",
+      "### G3　玩家从仓库拿取成品的时机与数量　**未定**",
+      "## H 组：供电",
+      "### H1　供电范围的几何锚点　**未定（几何层）**",
+      "### H2　需电单位的清单　**已定**",
+      "### H3　开关的初始状态　**未定（重要）**",
+      "## I 组：蓝图、建造、调试期",
+      "### I1　建造次序与建造期的时间结构　**未定（重要）**",
+      "### I2　调试期玩家操作的种类集合　**未定（重要）**",
+      "### I3　重建时物品格内物品的去向　**未定**",
+      "## J 组：目标与达标判定",
+      "### J1　「仓库同时可以接受两种成品」的含义　**未定（重要）**",
+      "### J2　「每个可到达的循环态」的可达集合　**未定（重要）**",
+      "### J3　「交付」的计数口径　**未定**",
+      "### J4　空矩形的判据　**未定（几何层，但要登记）**",
+      "## K 组：设定项、术语辖域与其他",
+      "### K1　「设定」项的穷尽清单　**未定**",
+      "### K2　「通道」一词在规则内的两种用法　**未定（术语层，重要）**",
+      "### K3　「一个时刻」结束的判据　**未定（核心，与 A1/A2 同源，单列因为它是转移函数的终止条件）**",
+      "### K4　物品格上限与「种类」的交互在**仓库**一侧　**已定**",
+      "### K5　需电单位不运行时「进行中的进度」的范围　**未定**",
+      "## 附：本清单与草稿的对照方式"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/对内核的修改请求.md",
+    "exists": true,
+    "bytes": 6679,
+    "sha256": "f8f26dcde2b72c2358cb24dd1e7ab43ce56c0d40b2da6ab92e8928c88592adde",
+    "lines": 38,
+    "sections": [
+      "# 第五轮规格对内核的修改请求",
+      "## 1. KQ逐项裁定与迁移",
+      "## 2. 循环接口与级二停止",
+      "## 3. v3输出、工程潜伏项与验收"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/普遍审查场景.md",
+    "exists": true,
+    "bytes": 6729,
+    "sha256": "5d08beced7a77cfcd622fc3c42eb5419fd4d83bb27688190eddc985a84560ce0",
+    "lines": 31,
+    "sections": [
+      "# 轮询均分与密集结点的审查场景",
+      "## 1. 轮询均分：确实有同级通道的供货端",
+      "### 1.1 要核的局部后效与预期",
+      "## 2. 密集结点：分流器直连汇流器且竞争来源真实有量"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第1轮修订自查.md",
+    "exists": true,
+    "bytes": 3515,
+    "sha256": "1a787d8ac5b3e76560fe8dadff8e275940725c0b2e5812b0098a886972b2374e",
+    "lines": 32,
+    "sections": [
+      "# 第 1 轮运行语义修订自查",
+      "## 检查范围与结果",
+      "## 回源与辖域复读",
+      "## 读者视角自审"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第2轮修订自查.md",
+    "exists": true,
+    "bytes": 2334,
+    "sha256": "1f4bc4d8d7095b4b76bd415876824e1a26b7bf8d8431d2fed6d0192b662a4480",
+    "lines": 21,
+    "sections": [
+      "# 第 2 轮运行语义修订自查",
+      "## 回源、全文辖域与读者自审"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第2轮自查结果.json",
+    "exists": true,
+    "bytes": 839,
+    "sha256": "82ed39e70c76aabc5a6d912ca5e93c34291041081ddb6e460599ab353400eba4",
+    "lines": 20,
+    "json_type": "dict",
+    "top_level_keys": [
+      "status",
+      "checks"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第3轮修订自查.md",
+    "exists": true,
+    "bytes": 2265,
+    "sha256": "15c5711404a9a62f147aea9aad1d34de46645ceb83992a05922da82535a1e2ee",
+    "lines": 15,
+    "sections": [
+      "# 第3轮修订自查"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第3轮自查结果.json",
+    "exists": true,
+    "bytes": 1615,
+    "sha256": "ef4c4bae98fdf487fd5b41e9a54f9603232d6b010a7a35932f17e017923cfa43",
+    "lines": 32,
+    "json_type": "dict",
+    "top_level_keys": [
+      "status",
+      "scope",
+      "checks"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/修订论证.md",
+    "exists": true,
+    "bytes": 9350,
+    "sha256": "45278d58bf1c356d2f635821e6287a979a1f9cef16d932062c0bbb4b79a8d0c2",
+    "lines": 61,
+    "sections": [
+      "# 第6轮规格修订论证",
+      "## 1. 任务、来源与修改范围",
+      "## 2. S3-r6-L1-01：供电发现的归因",
+      "## 3. S3-r6-L2-01：制造的同种单格不变量",
+      "## 4. S3-r6-L3-01：同刻窗口维护的事务粒度",
+      "## 5. S3-r6-L3-02：整箱落格的可执行停止条件",
+      "## 6. S3-r6-L3-03：配方匹配的两个独立决定",
+      "## 7. 自查与交付边界"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第6轮修订验证/自查报告.md",
+    "exists": true,
+    "bytes": 6422,
+    "sha256": "10d00509f07c5a26cd51bf6e41a0ee7093539ed14f12cd2e0b64880e569a19eb",
+    "lines": 58,
+    "sections": [
+      "# 第6轮规格修订自查",
+      "## 1. 修订与重跑入口",
+      "## 2. 检查结果与适用范围",
+      "## 3. 并行接口与来源链",
+      "## 4. 全文辖域扫描及读者自审",
+      "## 5. 保护范围与剩余事项"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第7轮修订验证/修订论证.md",
+    "exists": true,
+    "bytes": 9944,
+    "sha256": "4b01777911ec1da59b953fb91d72d94478c519e73590afc5267e761a21de75b7",
+    "lines": 63,
+    "sections": [
+      "# 第7轮规格修订论证",
+      "## 1. 来源和任务边界",
+      "## 2. S3-r7-L3-1：相遇不能由端口宽度唯一化",
+      "## 3. S3-r7-L3-2：当前候选序的完整后效",
+      "### 3.1 唯一辖域",
+      "### 3.2 提交是同一原子事务",
+      "### 3.3 不变量、连续执行与恢复",
+      "## 4. 接口请求与并行来源",
+      "## 5. 检查和结论范围"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第7轮修订验证/检查汇总.json",
+    "exists": true,
+    "bytes": 5069,
+    "sha256": "5f0d917e291986bbae9d05db4216703886995df1437677a091cacfde932aac65",
+    "lines": 129,
+    "json_type": "dict",
+    "top_level_keys": [
+      "status",
+      "scope",
+      "commands",
+      "readonly_count",
+      "readonly_changes",
+      "simulator_file_set_unchanged"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第7轮修订验证/自查报告.md",
+    "exists": true,
+    "bytes": 6732,
+    "sha256": "6e22532023359f3963f42ce5f165fc02987d97ca66cbee956d502e1d08f7da68",
+    "lines": 53,
+    "sections": [
+      "# 第7轮规格修订自查",
+      "## 1. 结果与复现",
+      "## 2. 修订及接口闭合",
+      "## 3. 过程异常与末次结果",
+      "## 4. 全文辖域与读者自审",
+      "## 5. 剩余事项"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第7轮修订验证/输入投影同步.json",
+    "exists": true,
+    "bytes": 1545,
+    "sha256": "418b97fc75d31ddcb8ce07b31fef2e0d3d4c94d03aac78f9b4b8ce73436de765",
+    "lines": 30,
+    "json_type": "dict",
+    "top_level_keys": [
+      "status",
+      "scope",
+      "samples"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第三轮任务验证/自查报告.md",
+    "exists": true,
+    "bytes": 5067,
+    "sha256": "7d02cd45490581a9abe094212dddadc46c289b051cbe470163567f623e20d3a8",
+    "lines": 50,
+    "sections": [
+      "# 第三轮规格修订自查",
+      "## 1. 可复现命令与结果",
+      "## 2. 语义与算术回归范围",
+      "## 3. 逐辖域复读与读者自审",
+      "## 4. 未决与交付边界"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第二轮任务修订前只读指纹.json",
+    "exists": true,
+    "bytes": 7900,
+    "sha256": "8461f7ff6733c65df5074e92a2efc85d06199355c300089c90b2032f9db518a1",
+    "lines": 55,
+    "json_type": "dict",
+    "top_level_keys": [
+      "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+      "/home/zhuran24/zmd-research-fresh/求解任务.txt",
+      "/home/zhuran24/zmd-research-fresh/求解约束.txt",
+      "/home/zhuran24/zmd-research-fresh/候选约束.txt",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/复核-r2-可导出性.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/否证-r3-1.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/复核-r2-独立选择点.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/完整性批评.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/否证-r2-1.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/复核-r1-可导出性.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/否证-r2-2.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/复核-r1-覆盖.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/选择点独立清单-r1.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/复核-r1-独立选择点.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/选择点独立清单-r3.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/选择点独立清单-r2.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/复核-r3-独立选择点.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/复核-r3-覆盖.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/否证-r3-2.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/否证-r1-2.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/复核-r3-可导出性.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/复核-r2-覆盖.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/修订前只读文件指纹.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/第1轮修订自查.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/第3轮自查结果.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/第3轮修订自查.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/第2轮修订自查.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/第2轮自查结果.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/送料契约.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/修订记录.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/修订验证/转换复现.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/修订验证/修订前产物指纹.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/修订验证/只读文件指纹.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/修订验证/自查结果.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/校验报告.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/contract.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/来源清单.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/验证记录.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/转换说明.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/cargo-test.log",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/交付哈希.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/工具/check_revision.py",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/工具/convert_candidate_b.py",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复算-r1/复算输出.txt",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复算-r1/报告复现.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复算-r1/recompute.py",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/topology/Cargo.toml",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/topology/src/main.rs",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/topology/src/lib.rs",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/topology/tests/validation.rs",
+      "/home/zhuran24/zmd-research-fresh/求解器/Cargo.toml",
+      "/home/zhuran24/zmd-research-fresh/求解器/Cargo.lock"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第二轮任务修订自查.md",
+    "exists": true,
+    "bytes": 4563,
+    "sha256": "de1d199cff749aada976b729965318084540ec63f5775425807fe9b20dfe57a2",
+    "lines": 42,
+    "sections": [
+      "# 第二轮任务 A 线修订自查",
+      "## 1. 可重跑入口与保护基线",
+      "## 2. 检查范围",
+      "## 3. 全文辖域与读者视角自审",
+      "## 4. 尚未完成的工作"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第二轮任务自查结果.json",
+    "exists": true,
+    "bytes": 2467,
+    "sha256": "b33bc21edeb5d122209d6f34ef7629e8f6577ed1367e668e98560cad8ec66b27",
+    "lines": 45,
+    "json_type": "dict",
+    "top_level_keys": [
+      "status",
+      "scope",
+      "axis_count",
+      "independent_item_count",
+      "checks"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订/StateSeed字段清点.json",
+    "exists": true,
+    "bytes": 1546,
+    "sha256": "339e3d73a4ed8bea4af0c47dd2b3db6917cc22a38472d64d6ac0dc9def57ca6e",
+    "lines": 104,
+    "json_type": "dict",
+    "top_level_keys": [
+      "Content",
+      "Inventory",
+      "WarehouseSlot",
+      "Warehouse",
+      "Cooldown",
+      "Progress",
+      "Level",
+      "Side",
+      "PollMemory",
+      "Gate",
+      "Logistics",
+      "Environment",
+      "Arbitration",
+      "ParameterValue",
+      "SemanticContext",
+      "State",
+      "Pending"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订/build_schema.py",
+    "exists": true,
+    "bytes": 7924,
+    "sha256": "0b78a190cc1dc4faa3d7176eea6c8004592793dfe520621d2818488cdc37b4cf",
+    "lines": 59
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订/check_round5.py",
+    "exists": true,
+    "bytes": 15128,
+    "sha256": "1c9e31feb05ae974644d33567d2b1e59de54dca0de4982609970d09fcdaa21d9",
+    "lines": 162
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订/cycle_key_reference.py",
+    "exists": true,
+    "bytes": 4309,
+    "sha256": "a94b9d27a347712e13b2963e8cb45cf1990492afde29267dc5172d7108dfbc11",
+    "lines": 65
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订/schema生成.log",
+    "exists": true,
+    "bytes": 90,
+    "sha256": "43baade7e359a1c217033fe0d078eaa20073ae438ec6522c717160c23c7847de",
+    "lines": 1
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订/交付清单.json",
+    "exists": true,
+    "bytes": 7599,
+    "sha256": "8ebed7dc9a9958c1bce0c61ef4c47056bb6d23e077b583d3a64848724fadffd4",
+    "lines": 184,
+    "json_type": "dict",
+    "top_level_keys": [
+      "status",
+      "scope",
+      "files",
+      "checks",
+      "not_run"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订/开工只读指纹.json",
+    "exists": true,
+    "bytes": 3025,
+    "sha256": "216779ead541d84eb7949f1819430dcc1e210f2acf6d4a3ecf83f4492ee0e882",
+    "lines": 23,
+    "json_type": "dict",
+    "top_level_keys": [
+      "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+      "/home/zhuran24/zmd-research-fresh/求解任务.txt",
+      "/home/zhuran24/zmd-research-fresh/求解约束.txt",
+      "/home/zhuran24/zmd-research-fresh/候选约束.txt",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/model.rs",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/event_identity.rs",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/output.rs",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/input.rs",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/config.rs",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/main.rs",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/value.rs",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/transition.rs",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/interfaces.rs",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests.rs",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/catalog.rs",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/engine.rs",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/polling.rs",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests_revision.rs",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests_revision_r2.rs",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/warehouse.rs"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订/开工规格指纹.json",
+    "exists": true,
+    "bytes": 4053,
+    "sha256": "a91817794800b2afe555fb6eeda3b37c01b1aed75161d98eea53b60d62e26629",
+    "lines": 29,
+    "json_type": "dict",
+    "top_level_keys": [
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/受限模型声明.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/运行语义.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/修订记录.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/第1轮修订自查.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/参数轴-对内核输入请求的答复.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点清单.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/规则覆盖表.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入-修订记录.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/check_revision.py",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/第3轮自查结果.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/第3轮修订自查.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核实现-对规格的疑问.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/第2轮修订自查.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/四件前置义务对照.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/第2轮自查结果.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/第二轮任务修订前只读指纹.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.schema.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/第二轮任务自查结果.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/第四轮前置-疑问记录.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/修订前只读文件指纹.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入-对参数轴的修改请求.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/第二轮任务修订自查.md"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订/提升容量卡点.json",
+    "exists": true,
+    "bytes": 185,
+    "sha256": "a11b88bfd9e2c4e1628f10650a12e27a7ba053197ddd29370f5ef6e4806daef0",
+    "lines": 8,
+    "json_type": "dict",
+    "top_level_keys": [
+      "warehouse_before",
+      "whole_box",
+      "actual_accepts",
+      "representative_accepts",
+      "actual_warehouse_after",
+      "family_under_capacity_holds"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订/既有自查.log",
+    "exists": true,
+    "bytes": 5050,
+    "sha256": "17ac508b0343107cedefdc2b9f62761c10304398b1474b1000933652f7cfe3f0",
+    "lines": 92
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订/自查.log",
+    "exists": true,
+    "bytes": 39,
+    "sha256": "1ccd449b3fb68b5730283a3a34d817463480ffc7ae4787b23b23d0a50e6a33dc",
+    "lines": 1
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订/自查报告.md",
+    "exists": true,
+    "bytes": 3966,
+    "sha256": "f060463956941a24bf98f98e2ff592aa9d885154b429f2b0010f2dba048900fe",
+    "lines": 32,
+    "sections": [
+      "# 第五轮规格修订自查报告",
+      "## 1. 复现与结果",
+      "## 2. 读者视角自审",
+      "## 3. 交接未决"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订/自查结果.json",
+    "exists": true,
+    "bytes": 8476,
+    "sha256": "0f057d58cc296d59a023e0bb1a6566189909ea013bf48072896cd4524b1de784",
+    "lines": 195,
+    "json_type": "dict",
+    "top_level_keys": [
+      "status",
+      "scope",
+      "checks",
+      "check_count",
+      "open_items"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订/轮询均分局部推演.json",
+    "exists": true,
+    "bytes": 1485,
+    "sha256": "7ca20b2083ca9bc6df7f81867ad0b0cb45a785e30f1c3bc1098b51d3a89ace7f",
+    "lines": 158,
+    "json_type": "list"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订/运行记录v2基线.schema.json",
+    "exists": true,
+    "bytes": 26104,
+    "sha256": "0439fd844fb169dddbdf1d012f214d93b6fa4e12aa2c9871ef8481df44c4ccf0",
+    "lines": 1156,
+    "json_type": "dict",
+    "top_level_keys": [
+      "type",
+      "properties",
+      "required",
+      "additionalProperties",
+      "if",
+      "then",
+      "$schema",
+      "$id",
+      "$defs"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/StateSeed字段清点.json",
+    "exists": true,
+    "bytes": 1546,
+    "sha256": "339e3d73a4ed8bea4af0c47dd2b3db6917cc22a38472d64d6ac0dc9def57ca6e",
+    "lines": 104,
+    "json_type": "dict",
+    "top_level_keys": [
+      "Content",
+      "Inventory",
+      "WarehouseSlot",
+      "Warehouse",
+      "Cooldown",
+      "Progress",
+      "Level",
+      "Side",
+      "PollMemory",
+      "Gate",
+      "Logistics",
+      "Environment",
+      "Arbitration",
+      "ParameterValue",
+      "SemanticContext",
+      "State",
+      "Pending"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/check_round8.py",
+    "exists": true,
+    "bytes": 12895,
+    "sha256": "67de1612400bbf73af12f645f36b6e79f53268c12edd42ce68b52810a1e7ea3b",
+    "lines": 197
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/schema生成.log",
+    "exists": true,
+    "bytes": 90,
+    "sha256": "43baade7e359a1c217033fe0d078eaa20073ae438ec6522c717160c23c7847de",
+    "lines": 1
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/交付清单.json",
+    "exists": true,
+    "bytes": 20866,
+    "sha256": "1404c681b9c944227738f925fc7be1dba1289aac0e38081c8003c16f1c034d34",
+    "lines": 282,
+    "json_type": "dict",
+    "top_level_keys": [
+      "status",
+      "files",
+      "sha256",
+      "hash_scope",
+      "schema_unchanged_sha256",
+      "schema_matches_start",
+      "findings_resolved",
+      "questions_answered",
+      "observed_parallel_dependency_changes",
+      "parallel_scope",
+      "open_items"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/交付自审.json",
+    "exists": true,
+    "bytes": 36622,
+    "sha256": "3db6d6f5aa5778678b39829c4efac278f213fd5e310ccf508d91383d0698aef3",
+    "lines": 711,
+    "json_type": "dict",
+    "top_level_keys": [
+      "status",
+      "reader_review",
+      "local_links_checked",
+      "links",
+      "formal_and_candidate_hashes_unchanged",
+      "checked_source_hashes_still_current",
+      "evidence_extensions",
+      "cargo_executed",
+      "simulator_written",
+      "git_commit_or_push_executed"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/修订论证.md",
+    "exists": true,
+    "bytes": 6639,
+    "sha256": "fc8697841f2a7de476aab56ea05f9e68f3d87ecf276ff92da0e60939a1b5650d",
+    "lines": 45,
+    "sections": [
+      "# 第8轮规格修订论证",
+      "## 1. 整箱新物种停止前件",
+      "## 2. 验证范围字段",
+      "## 3. KQ-07：种子不是运行史反演",
+      "## 4. KQ-08：回矿失败也是容量观察",
+      "## 5. 验证与未决范围"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/停止条件复算.json",
+    "exists": true,
+    "bytes": 17027,
+    "sha256": "367b8fc2f6817a2d973911bbec08857fd80cc2cd20c5bc3b2c2d6b9c6a62f613",
+    "lines": 823,
+    "json_type": "dict",
+    "top_level_keys": [
+      "scope",
+      "source_expression",
+      "reply_expression",
+      "truth_table",
+      "counterexample"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/回矿容量复算.json",
+    "exists": true,
+    "bytes": 547,
+    "sha256": "e5ff0a1daca3ad711040b3406aa74d50f6c3f2a25d55cfe3f0d1ecfcb5f1c0b5",
+    "lines": 21,
+    "json_type": "dict",
+    "top_level_keys": [
+      "scope",
+      "cases"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/字段名复算.json",
+    "exists": true,
+    "bytes": 707,
+    "sha256": "4db8411da0ea24f55683e463345b092a03ae95901dd48e349f5b978241c177cf",
+    "lines": 30,
+    "json_type": "dict",
+    "top_level_keys": [
+      "scope",
+      "original",
+      "renamed"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/开工指纹.json",
+    "exists": true,
+    "bytes": 128008,
+    "sha256": "7555d71d249594da77de63e8704c9f1ba145e092e4b5c7ab544af0839b7ba189",
+    "lines": 703,
+    "json_type": "dict",
+    "top_level_keys": [
+      "protected",
+      "specification_before",
+      "task_books",
+      "kernel_questions"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/提升容量卡点.json",
+    "exists": true,
+    "bytes": 185,
+    "sha256": "a11b88bfd9e2c4e1628f10650a12e27a7ba053197ddd29370f5ef6e4806daef0",
+    "lines": 8,
+    "json_type": "dict",
+    "top_level_keys": [
+      "warehouse_before",
+      "whole_box",
+      "actual_accepts",
+      "representative_accepts",
+      "actual_warehouse_after",
+      "family_under_capacity_holds"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/本轮自查.log",
+    "exists": true,
+    "bytes": 74,
+    "sha256": "8c50238811dc474e836d1a62146fe9baa3e75a0ce202e0c8ee1d9a0142e3d44d",
+    "lines": 1
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/本轮自查结果.json",
+    "exists": true,
+    "bytes": 5267,
+    "sha256": "10f1ffcd081594fa6d25a4c117fd4250b6afa754970e8d2006463ace8f795343",
+    "lines": 58,
+    "json_type": "dict",
+    "top_level_keys": [
+      "status",
+      "checks",
+      "check_count",
+      "round5_check_count",
+      "axis_count",
+      "scope",
+      "sources"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/活动内核来源.json",
+    "exists": true,
+    "bytes": 3734,
+    "sha256": "9af66691a9c02e40faee3c0d80026b46b0252b69d8c097a8d16ac98a434474cc",
+    "lines": 37,
+    "json_type": "dict",
+    "top_level_keys": [
+      "current",
+      "changed_since_round5_start",
+      "scope"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/第五轮自查.log",
+    "exists": true,
+    "bytes": 39,
+    "sha256": "1ccd449b3fb68b5730283a3a34d817463480ffc7ae4787b23b23d0a50e6a33dc",
+    "lines": 1
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/自查报告.md",
+    "exists": true,
+    "bytes": 4186,
+    "sha256": "5960728c96205d30330250a59073aca6e8eaf2fff6555d76a6d88b5e28b1a405",
+    "lines": 38,
+    "sections": [
+      "# 第8轮规格自查报告",
+      "## 1. 复现",
+      "## 2. 结果",
+      "## 3. 来源与写入范围",
+      "## 4. 读者视角自审与交接"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/自查结果.json",
+    "exists": true,
+    "bytes": 8463,
+    "sha256": "389621b4f6695d1e8db43a17586c5e6f0f3a8e9fd8a1f15176f80b7251d33bf5",
+    "lines": 195,
+    "json_type": "dict",
+    "top_level_keys": [
+      "status",
+      "scope",
+      "checks",
+      "check_count",
+      "open_items"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/规格自查.log",
+    "exists": true,
+    "bytes": 9068,
+    "sha256": "56238e4e759fd6ee981502cd7e42803aa7824bd88ae4bca3bb6bc716798ac4a3",
+    "lines": 131
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/轮询均分局部推演.json",
+    "exists": true,
+    "bytes": 1485,
+    "sha256": "7ca20b2083ca9bc6df7f81867ad0b0cb45a785e30f1c3bc1098b51d3a89ace7f",
+    "lines": 158,
+    "json_type": "list"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第五轮规格修订-r8/辖域扫描.json",
+    "exists": true,
+    "bytes": 3104,
+    "sha256": "e815937fb3b377e9dcdfa191d37172ed8b955d2e4fa908d415752ad9ebd35124",
+    "lines": 104,
+    "json_type": "dict",
+    "top_level_keys": [
+      "files",
+      "forbidden_current_phrases",
+      "historical_scope",
+      "questions_read"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第四轮前置-疑问记录.md",
+    "exists": true,
+    "bytes": 5120,
+    "sha256": "3ff447abaad8b5d9a22742f4778514796de39c21597f981d75f2923ecc58d2d9",
+    "lines": 37,
+    "sections": [
+      "# 第四轮前置任务的规格疑问与未决",
+      "## R4-Q1：仅挪单位不能消除连续端口行的端点相遇",
+      "## R4-Q2：断边恢复时级仲裁表的定义域（已收口）",
+      "## 后续执行域与认证义务"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第四轮前置验证/回归结果.json",
+    "exists": true,
+    "bytes": 24411,
+    "sha256": "ffd760cc43205a4e987b694269fc122c707cbd922c0730418041010639720b8b",
+    "lines": 710,
+    "json_type": "dict",
+    "top_level_keys": [
+      "status",
+      "tests",
+      "test_count",
+      "port_meeting",
+      "runs",
+      "scope"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第四轮前置验证/端口相遇比较.json",
+    "exists": true,
+    "bytes": 10893,
+    "sha256": "b96ce7aa621858d116af1ab347c536bfdabdb2210f3b59d39afc6978561de4e8",
+    "lines": 245,
+    "json_type": "dict",
+    "top_level_keys": [
+      "桥接器双通路.json",
+      "分流器三路轮询.json",
+      "混做粉碎机两下游.json"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/第四轮前置验证/验证报告.md",
+    "exists": true,
+    "bytes": 6137,
+    "sha256": "3e7aa4f1dae29fb453e6396dca2cce3015b2b21f849315188d98ba3b4d4171a2",
+    "lines": 47,
+    "sections": [
+      "# 第四轮前置任务验证报告",
+      "## 1. 阅读、保护与任务边界",
+      "## 2. 五项处置与论证",
+      "## 3. 复现命令与通过结果",
+      "## 4. 读者视角自审与验收边界"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/规则覆盖表.md",
+    "exists": true,
+    "bytes": 34552,
+    "sha256": "cddefbf6a9cb473920f30a1d79d2a4e012f8704b43c9ef063e941eaccdd617ca",
+    "lines": 253,
+    "sections": [
+      "# 规则覆盖表",
+      "## 1. 游戏规则逐行",
+      "## 2. 求解任务逐行",
+      "## 3. 正式约束条目登记",
+      "## 4. 回源自核记录",
+      "## 5. 内核输入表示接口",
+      "## 第五轮循环与运行记录入口"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/运行语义.md",
+    "exists": true,
+    "bytes": 44819,
+    "sha256": "1ce70540bd9f82e6fb0d1661ded855c7c723abccc4f9c13d646753cbece5a02c",
+    "lines": 216,
+    "sections": [
+      "# 运行语义",
+      "## 1. 口径、状态边界与目标",
+      "## 2. 完整状态的字段与约束",
+      "### 2.1 全局字段",
+      "### 2.2 按单位列库存与接口",
+      "### 2.3 配方表",
+      "## 3. 参数生命周期与离线接续",
+      "### 3.1 通道变化与离线后的派生量清点",
+      "## 4. 原子转移与时间",
+      "### 4.1 判定及环境、操作转移",
+      "### 4.2 轮询与优先级",
+      "### 4.3 一个 tick 内可以有多少次移动",
+      "### 4.4 第一版的确定转移接口",
+      "## 5. 起动、环境与循环验收",
+      "## 6. 正式约束的使用边界"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+    "exists": true,
+    "bytes": 35741,
+    "sha256": "37427b530246a263018fa44a826893b46032c9d97eb8db1b6be06c7bcada080d",
+    "lines": 187,
+    "sections": [
+      "# 选择点参数轴",
+      "## 1. 参数域与生命周期",
+      "## 2. 字段、取值方向与取据",
+      "## 3. 独立清单 A1–K5 的逐条处置",
+      "## 4. 目录与联合核验依赖"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点清单.md",
+    "exists": true,
+    "bytes": 50228,
+    "sha256": "dda03396a0012f42c41a820adea67b41a19754d60bf63441c6205be29b0555bb",
+    "lines": 192,
+    "sections": [
+      "# 选择点清单",
+      "## 1. 取值集合的含义",
+      "## T1. 时间域、尝试日程和时刻结束",
+      "## T2. 固定判定先后的表示",
+      "## T3. 轮询权限、起点及双端协调",
+      "## T4. 阻尼分支及终点",
+      "## T5. 蓝图接通先后、平局及桥接器方向",
+      "## T6. 传输相位、失败与暂停",
+      "## T7. 端口到格映射、选格、批次进入与空格身份",
+      "## T8. 准入口阻断后恢复",
+      "## T9. 准入口改设定与计数寿命",
+      "## T10. 离线后的派生状态",
+      "## T11. 初始状态和调试操作边界",
+      "## T12. 仓库环境、成品拿取和目标接收域",
+      "## T14. 桥接器的库存例外、容量依据与调度辖域",
+      "## T15. 供电覆盖的格集合",
+      "## T16. 非运输格的最短停留",
+      "## T17. 缓存内部通道的同刻级联",
+      "## 2. 已能裁掉、无需作为 owner 选择的事项"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解约束.txt",
+    "exists": true,
+    "bytes": 24783,
+    "sha256": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6",
+    "lines": 126
+  },
+  {
+    "path": "/home/zhuran24/文档/会议2全套/会议目录/seat-opus-1/共识草案-v45-5c9e556a.md",
+    "exists": true,
+    "bytes": 103417,
+    "sha256": "5c9e556a01a36295112c9339554d1bc579a147d89ea3ddb7d39fcd95503aec48",
+    "lines": 466,
+    "sections": [
+      "# 会议 2 共识草案 v45（冻结版，供逐席投票）",
+      "## A. 记账口径",
+      "## B. 判据八项",
+      "## C. 认证方向纪律",
+      "## D. 结构事实（按证据状态分级）",
+      "### D1 密度／跳数预算（**一条，两种参数化，纪要不要记成两条**）",
+      "### D2 分支账本",
+      "### D3 全称义务的第二半：可达性",
+      "### D4 读法：按 R2 单读设计；**本轮无读法待裁事项**",
+      "### D5 本轮产出的候选（走既有流水线，异源两轮）",
+      "### D5b 本轮被证伪或撤回的",
+      "## E. 做法比较表",
+      "## F. 先后与理由",
+      "## G. 交付物定义",
+      "## G2. 正文与附件的分层（在同一文件内分层）",
+      "## H. 未决与不承诺"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/文档/会议2全套/会议目录/seat-opus-3.md",
+    "exists": true,
+    "bytes": 54448,
+    "sha256": "1abfed160df66eb7f5fcbc25962bd7076f127d1e3f236c47375d0c1af4f2e8ba",
+    "lines": 366,
+    "sections": [
+      "# seat-opus-3 立场（会议 2：构造求解怎么做）— 终态",
+      "## 0. 定位与一句话结论",
+      "## 1. 我提出又撤回的东西（先写这个，因为撤回本身是成果）",
+      "### 1.1 全额撤回：「满速独占几乎是强制的，故省面积与可证明性同向」",
+      "### 1.2 全额撤回：候选约束「存货无分级」，连同它的 44 台几何硬禁令",
+      "## 2. 跳数预算（保留，但按复核更正了定义与一处数字）",
+      "### 2.1 这条改掉我自己的方法排序",
+      "## 3. 存货物品格读法：我提的读法 R1 已被四席一致否掉，撤回主张",
+      "### 3.1 我提过什么，结论是什么",
+      "### 3.2 R2 也不蕴含「研磨机单配方」（seat-codex-1，接受，且这条要改共识草案）",
+      "### 3.3 撤掉 R1 之后，我这一侧还剩什么",
+      "## 3B. 候选：满速扇出定则（本轮唯一正着推出来的一条）",
+      "## 4. 候选：桥接器定向（窄式，与 seat-opus-2 独立同得）",
+      "## 4B. 我这一轮复核过的别席候选（记结论，便于纪要）",
+      "## 4C. 共识草案收口期我查出的四条（v32→v38）",
+      "## 5. 砖级验证的规格（终稿）",
+      "### 5.0 验证对象是「确定性运行族」，不是分支图（本轮定稿，替代先前的终末 SCC 写法）",
+      "#### 5.0.1 修正：接通先后不是全程固定的（seat-codex-4 指出方向，我核原文确认）",
+      "#### 5.0.2 六条前置义务（未证前不假定），且首选是找共同不变量而不是穷举",
+      "### 5.1 不是「跑 20 tick」",
+      "### 5.2 执行器范围（钉死）",
+      "### 5.3 验收清单（四项，吸收各席要求）",
+      "### 5.4 范围能缩到多小：一半已到手，一半还没有",
+      "### 5.5 我认领的下一个具体产出",
+      "### 5.6 复核 seat-opus-4 的整数注入机制",
+      "## 6. 验收阶梯（供各席统一措辞）",
+      "## 7. 做法比较（覆盖／漏掉／代价／失败给不给信息）",
+      "## 8. 排序",
+      "## 9. 我请全体在纪要里写死的四句"
+    ]
+  },
+  {
+    "path": "/home/zhuran24/文档/会议2全套/会议目录/seat-opus-4/channels.csv",
+    "exists": true,
+    "bytes": 23577,
+    "sha256": "a0fb9cf1a94b1b9c76304bdf5b3f8fae1412d2e78533145650458cf8922db9c4",
+    "lines": 316
+  },
+  {
+    "path": "/home/zhuran24/文档/会议2全套/会议目录/seat-opus-4/design.py",
+    "exists": true,
+    "bytes": 12396,
+    "sha256": "8d0359f6445eba0029cbac01a4fc85fcf1c9aaf655de90519058f91b0520d97f",
+    "lines": 222
+  },
+  {
+    "path": "/home/zhuran24/文档/会议2全套/会议目录/seat-opus-4/fanout.json",
+    "exists": true,
+    "bytes": 6185,
+    "sha256": "f2a78c50b61f26e36c524e19e361485e55af9884b3ff12651e73b9c6bfafe55c",
+    "lines": 332,
+    "json_type": "list"
+  },
+  {
+    "path": "/home/zhuran24/文档/会议2全套/会议目录/seat-opus-4/machines.csv",
+    "exists": true,
+    "bytes": 18143,
+    "sha256": "53e87340d66761c39cceda3c14d33d494654fdfc32a8e0fd8ec5a797fb78f82c",
+    "lines": 220
+  },
+  {
+    "path": "/home/zhuran24/文档/会议2全套/会议目录/seat-opus-4/scc.py",
+    "exists": true,
+    "bytes": 1960,
+    "sha256": "efa2589f1e6b4c0ebbe06a83cd741f398c062c269a445122a2ed3f5dc79b2e32",
+    "lines": 44
+  },
+  {
+    "path": "/home/zhuran24/文档/会议2全套/会议目录/seat-opus-4/候选-准入口阻断是动态的.txt",
+    "exists": true,
+    "bytes": 5059,
+    "sha256": "ef951feeea80200392a1f1b09b984a05b128f320702bca7f1f005fa34a46d36c",
+    "lines": 45
+  },
+  {
+    "path": "/home/zhuran24/文档/会议2全套/会议目录/seat-opus-4/候选-轮询均分松.txt",
+    "exists": true,
+    "bytes": 8971,
+    "sha256": "15c411e27d1c1c572e24136e125a48560b235d3f44d1818e022125fba10932e6",
+    "lines": 66
+  },
+  {
+    "path": "/home/zhuran24/文档/会议2全套/会议目录/纪要.md",
+    "exists": true,
+    "bytes": 23888,
+    "sha256": "ea6449e3329e18457ba5d6d83ee5d5b63d82464bea275a6191aaeff11961d33b",
+    "lines": 127,
+    "sections": [
+      "# 会议 2 纪要：构造法（2026-09-18）",
+      "## 一、会议回答了什么",
+      "## 二、做法比较表（E 节，四席各自的表合并后的全席版）【转述；带★的格是主席核过】",
+      "## 三、先后与理由（F 节）【转述】",
+      "## 四、交付物定义（G 节）【转述】",
+      "## 五、结构事实（D 节）",
+      "### D1 密度律／跳数预算【核过】",
+      "### D2 分支账本【核过】",
+      "### D3 全称义务的第二半：可达性【转述】",
+      "### D4 读法【转述】",
+      "### D5 本轮产出的候选（走既有流水线）【转述】",
+      "### D5b 被证伪或撤回的【转述，择要】",
+      "## 六、认证方向纪律（C 节）【转述】",
+      "## 七、过程：怎么开的",
+      "## 八、主席核过的数字清单【核过】",
+      "## 九、要 owner 定的事",
+      "## 十、会后工作（共识稿 D5、H 所列）【转述】",
+      "## 十一、主席的对照【自己推】"
+    ]
+  },
+  {
+    "path": "/tmp/claude-1000/-home-zhuran24-zmd-research-fresh/2a1af1b1-ede2-4b4a-8f95-41e78df48af0/scratchpad/step1/gptpro_评审摘录.md",
+    "exists": true,
+    "bytes": 12727,
+    "sha256": "acde1383748f230822f0c569b3303d867f4f33add2deaba140aa7d8073e7941a",
+    "lines": 81,
+    "sections": [
+      "# GPT Pro 对会议 2 材料的评审（2026-09-18/19，浏览器会话「推荐求解器架构」，主会话从页面导出的原文）",
+      "## 第一条：对会议材料的评审",
+      "## 第二条：对 owner「每步只改一个维度行不行」的回答（要点）"
+    ]
+  },
+  {
+    "path": "/tmp/claude-1000/-home-zhuran24-zmd-research-fresh/2a1af1b1-ede2-4b4a-8f95-41e78df48af0/scratchpad/step1/round3_state.json",
+    "exists": true,
+    "bytes": 59093,
+    "sha256": "550c862705c24a53ec60a14ad7ad9cc11976a647fb20444fc09535e401bea34b",
+    "lines": 218,
+    "json_type": "dict",
+    "top_level_keys": [
+      "aFindings",
+      "critic"
+    ]
+  },
+  {
+    "path": "/tmp/claude-1000/-home-zhuran24-zmd-research-fresh/2a1af1b1-ede2-4b4a-8f95-41e78df48af0/scratchpad/step1/任务书.md",
+    "exists": true,
+    "bytes": 10978,
+    "sha256": "7d9a2b0701fd6c3fa44a16a62e6e7f5ffc048e191a1763fb337bfb9ffdfac407",
+    "lines": 73,
+    "sections": [
+      "# 第一步任务书：运行语义规格与送料契约（2026-09-19）",
+      "## 1. 题目与现状（事实）",
+      "## 2. 目录与写入范围",
+      "## 3. 本步交付物",
+      "### A. 运行语义规格（`求解器/规格/运行语义.md`，可拆多文件）",
+      "### B. 送料契约与校验器",
+      "## 4. 纪律（会议 2 C 节与 owner 的规矩）",
+      "## 5. 汇报方式"
+    ]
+  },
+  {
+    "path": "/tmp/claude-1000/-home-zhuran24-zmd-research-fresh/2a1af1b1-ede2-4b4a-8f95-41e78df48af0/scratchpad/step1/任务书2.md",
+    "exists": true,
+    "bytes": 8537,
+    "sha256": "e62e31d5c807a0674d3f8579e246b729ab82b81a9d8bb05ef4a7f4d360b6193e",
+    "lines": 57,
+    "sections": [
+      "# 第二轮任务书：按完整性批评收口（2026-09-19）",
+      "## 1. 第一轮的结果（事实）",
+      "## 2. 主席已定的事（核过）",
+      "## 3. 三条线",
+      "### A. 规格修订（codex 起草 → opus 三视角复核 → codex 两席否证 → codex 修订，至多 2 轮）",
+      "### B. 契约修订与真正的复核（codex 修订 → opus 三视角复核 → codex 两席否证 → codex 修订，至多 2 轮）",
+      "### C. 内核输入格式规格（codex 起草 → opus 三视角复核 → codex 两席否证 → codex 修订，至多 2 轮）",
+      "## 4. 复核与否证的规矩（沿用）",
+      "## 5. 顺序"
+    ]
+  },
+  {
+    "path": "/tmp/claude-1000/-home-zhuran24-zmd-research-fresh/2a1af1b1-ede2-4b4a-8f95-41e78df48af0/scratchpad/step1/任务书3.md",
+    "exists": true,
+    "bytes": 8200,
+    "sha256": "2657ee86178800af4b2076485b82c771f2368823d391531789af36185209cba2",
+    "lines": 55,
+    "sections": [
+      "# 第三轮任务书：落地规格线欠账、按完整性批评-2 收口（2026-09-19 14:20）",
+      "## 0. 给每一席的两句话（先读）",
+      "## 1. 上一轮的结果（事实）",
+      "## 2. 主席已定的事（核过）",
+      "## 3. 三条线",
+      "### A. 规格线（codex 修订 → codex 三视角复核 → codex 两席否证 → codex 修订，至多 2 轮）",
+      "### C. 内核输入线（codex 修订 → codex 三视角复核 → codex 两席否证 → codex 修订，至多 2 轮）",
+      "### B. 契约线（codex 三视角复核 → codex 两席否证 → codex 修订，至多 1 轮）",
+      "## 4. 顺序"
+    ]
+  },
+  {
+    "path": "/tmp/claude-1000/-home-zhuran24-zmd-research-fresh/2a1af1b1-ede2-4b4a-8f95-41e78df48af0/scratchpad/step1/任务书4.md",
+    "exists": true,
+    "bytes": 7485,
+    "sha256": "8dbf65a07725c60a5e87edaab2d35f9018d97346e44ff4f940827297b0997ba5",
+    "lines": 51,
+    "sections": [
+      "# 第四轮任务书：内核实现（2026-09-19 17:00）",
+      "## 1. 现状（事实）",
+      "## 2. 本轮目标",
+      "## 3. 前置小任务（codex，一席，先做，约半小时）",
+      "## 4. 内核实现（codex，一席，前置小任务完成后开工）",
+      "## 5. 复核（codex 三视角 → codex 两席否证 → codex 修订，至多 2 轮）"
+    ]
+  },
+  {
+    "path": "/tmp/claude-1000/-home-zhuran24-zmd-research-fresh/2a1af1b1-ede2-4b4a-8f95-41e78df48af0/scratchpad/step1/任务书5.md",
+    "exists": true,
+    "bytes": 17556,
+    "sha256": "397949140d016b7af1ddda25becf4e823be9af198108f87dcd0c303f25f75766",
+    "lines": 95,
+    "sections": [
+      "# 第五轮任务书：回答内核提出的规格疑问、循环态判等、内核收口（2026-09-19 21:15）",
+      "## 0. 给每一席的话（先读）",
+      "## 1. 现状（事实）",
+      "## 2. 主席已定的事（核过；每席按此执行，不复议，但执行得不对可以指出）",
+      "### 2.1 循环认证分两级；仓库两矿与两成品存量从循环判等中抽象掉",
+      "### 2.2 KQ-02：已闭包种子的首条记录",
+      "### 2.3 KQ-06：固定分支在所选出支失活后的语义（主席建议，待驳）",
+      "### 2.4 R4-Q1：相遇读法不靠挪单位解决",
+      "### 2.5 KQ-01、03、04、05",
+      "### 2.6 参数扫描的约减是一条独立线（R 线）",
+      "## 3. 三条线与顺序",
+      "### S. 规格线（codex 修订 → codex 三视角复核 → codex 两席否证 → codex 修订，至多 2 轮）",
+      "### K. 内核线（codex 实现 → codex 三视角复核 → codex 两席否证 → codex 修订，至多 2 轮）",
+      "### R. 约减线（codex 起草 → codex 三视角复核 → codex 两席否证 → codex 修订，至多 2 轮）",
+      "### 收尾：完整性批评-内核-2（opus，本工作流唯一的 opus 席）"
+    ]
+  }
+]

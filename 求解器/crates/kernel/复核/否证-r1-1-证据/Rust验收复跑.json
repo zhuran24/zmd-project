@@ -1,0 +1,418 @@
+[
+  {
+    "case": "混做粉碎机两下游运行记录-kernel",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/public-verify",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-kernel.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "engine_created": true,
+    "engine_error": null,
+    "input_loaded": true,
+    "verify_accepted": true,
+    "verify_error": null
+  },
+  {
+    "case": "混做粉碎机两下游运行记录-checkpoint_delta-kernel",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/public-verify",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-checkpoint_delta-kernel.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "engine_created": true,
+    "engine_error": null,
+    "input_loaded": true,
+    "verify_accepted": true,
+    "verify_error": null
+  },
+  {
+    "case": "混做粉碎机两下游-remove-formal",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/public-verify",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/混做粉碎机两下游-remove-formal.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "engine_created": true,
+    "engine_error": null,
+    "input_loaded": true,
+    "verify_accepted": false,
+    "verify_error": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+  },
+  {
+    "case": "混做粉碎机两下游-remove-all",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/public-verify",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/混做粉碎机两下游-remove-all.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "engine_created": true,
+    "engine_error": null,
+    "input_loaded": true,
+    "verify_accepted": false,
+    "verify_error": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+  },
+  {
+    "case": "混做粉碎机两下游-fake-scope",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/public-verify",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/混做粉碎机两下游-fake-scope.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "engine_created": true,
+    "engine_error": null,
+    "input_loaded": true,
+    "verify_accepted": false,
+    "verify_error": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+  },
+  {
+    "case": "混做粉碎机两下游-fake-count",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/public-verify",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/混做粉碎机两下游-fake-count.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "engine_created": true,
+    "engine_error": null,
+    "input_loaded": true,
+    "verify_accepted": false,
+    "verify_error": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+  },
+  {
+    "case": "混做粉碎机两下游-bad-summary",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/public-verify",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/混做粉碎机两下游-bad-summary.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "engine_created": true,
+    "engine_error": null,
+    "input_loaded": true,
+    "verify_accepted": false,
+    "verify_error": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+  },
+  {
+    "case": "分流器三路轮询运行记录-kernel",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/public-verify",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-kernel.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "engine_created": true,
+    "engine_error": null,
+    "input_loaded": true,
+    "verify_accepted": true,
+    "verify_error": null
+  },
+  {
+    "case": "分流器三路轮询运行记录-checkpoint_delta-kernel",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/public-verify",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-checkpoint_delta-kernel.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "engine_created": true,
+    "engine_error": null,
+    "input_loaded": true,
+    "verify_accepted": true,
+    "verify_error": null
+  },
+  {
+    "case": "分流器三路轮询-remove-formal",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/public-verify",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/分流器三路轮询-remove-formal.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "engine_created": true,
+    "engine_error": null,
+    "input_loaded": true,
+    "verify_accepted": false,
+    "verify_error": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+  },
+  {
+    "case": "分流器三路轮询-remove-all",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/public-verify",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/分流器三路轮询-remove-all.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "engine_created": true,
+    "engine_error": null,
+    "input_loaded": true,
+    "verify_accepted": false,
+    "verify_error": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+  },
+  {
+    "case": "分流器三路轮询-fake-scope",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/public-verify",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/分流器三路轮询-fake-scope.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "engine_created": true,
+    "engine_error": null,
+    "input_loaded": true,
+    "verify_accepted": false,
+    "verify_error": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+  },
+  {
+    "case": "分流器三路轮询-fake-count",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/public-verify",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/分流器三路轮询-fake-count.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "engine_created": true,
+    "engine_error": null,
+    "input_loaded": true,
+    "verify_accepted": false,
+    "verify_error": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+  },
+  {
+    "case": "分流器三路轮询-bad-summary",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/public-verify",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/分流器三路轮询-bad-summary.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "engine_created": true,
+    "engine_error": null,
+    "input_loaded": true,
+    "verify_accepted": false,
+    "verify_error": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+  },
+  {
+    "case": "ore-l1",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/public-verify",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-规格保真-证据/ore-shortage-input.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/ore-l1-record.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "engine_created": true,
+    "engine_error": null,
+    "input_loaded": true,
+    "verify_accepted": true,
+    "verify_error": null
+  },
+  {
+    "case": "ore-l2",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/public-verify",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-测试与证据/空补矿史耗尽-input.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/ore-l2-record.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "engine_created": true,
+    "engine_error": null,
+    "input_loaded": true,
+    "verify_accepted": true,
+    "verify_error": null
+  },
+  {
+    "case": "supply-order",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/public-verify",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-规格保真-证据/supply-order-conflict-input.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/supply-order-record.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "engine_created": true,
+    "engine_error": null,
+    "input_loaded": true,
+    "verify_accepted": true,
+    "verify_error": null
+  },
+  {
+    "case": "historical-alias",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/public-verify",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-规格保真-证据/pending-historical-alias-input.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/historical-alias-record.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "engine_created": true,
+    "engine_error": null,
+    "input_loaded": true,
+    "verify_accepted": true,
+    "verify_error": null
+  },
+  {
+    "case": "after-closure",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/public-verify",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-规格保真-证据/after-closure-control-input.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/after-closure-record.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "engine_created": true,
+    "engine_error": null,
+    "input_loaded": true,
+    "verify_accepted": true,
+    "verify_error": null
+  },
+  {
+    "case": "offline-wrong-kind",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/public-verify",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-规格保真-证据/offline-wrong-kind-input.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/offline-wrong-kind-record.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "engine_created": true,
+    "engine_error": null,
+    "input_loaded": true,
+    "verify_accepted": true,
+    "verify_error": null
+  },
+  {
+    "case": "unrelated-fork",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/public-verify",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-规格保真-证据/unrelated-fork-input.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/unrelated-fork-record.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "engine_created": true,
+    "engine_error": null,
+    "input_loaded": true,
+    "verify_accepted": true,
+    "verify_error": null
+  },
+  {
+    "case": "manufacturing-prefix",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/public-verify",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-测试与证据/仅开工未完成-input.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/manufacturing-prefix-record.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "engine_created": true,
+    "engine_error": null,
+    "input_loaded": true,
+    "verify_accepted": true,
+    "verify_error": null
+  },
+  {
+    "case": "gate-numeric",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/public-verify",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-工程-evidence/gate-numeric-item-input.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/gate-numeric-record.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "engine_created": true,
+    "engine_error": null,
+    "input_loaded": true,
+    "verify_accepted": true,
+    "verify_error": null
+  },
+  {
+    "case": "initial-duplicate-slot",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/public-verify",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-工程-evidence/initial-duplicate-slot-input.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/initial-duplicate-slot-record.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "engine_created": true,
+    "engine_error": null,
+    "input_loaded": true,
+    "verify_accepted": true,
+    "verify_error": null
+  },
+  {
+    "case": "crusher-control",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/public-verify",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/crusher-control-record.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "engine_created": true,
+    "engine_error": null,
+    "input_loaded": true,
+    "verify_accepted": true,
+    "verify_error": null
+  },
+  {
+    "case": "splitter-control",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/public-verify",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/splitter-control-record.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "engine_created": true,
+    "engine_error": null,
+    "input_loaded": true,
+    "verify_accepted": true,
+    "verify_error": null
+  }
+]

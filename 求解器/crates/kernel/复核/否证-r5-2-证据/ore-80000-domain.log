@@ -1,0 +1,57 @@
+{"name": "ore-80000-domain", "command": ["/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel", "check", "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-2-证据/ore-80000-seed.json", "--cycle-domain", "--config", "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"], "cwd": "/home/zhuran24/zmd-research-fresh/求解器", "exit": 2}
+STDOUT
+{
+  "domain_report": [
+    {
+      "condition": "D.1",
+      "evidence": [
+        "已装载固定布局、设定、global/v1、在线零干预、sufficient；无未来历史/玩家策略"
+      ],
+      "locations": [],
+      "scope": "static",
+      "status": "pass"
+    },
+    {
+      "condition": "D.2",
+      "evidence": [
+        "现存回矿候选读取被抽象容量，先于physical/级排序/授权停止"
+      ],
+      "locations": [
+        "PC|belt:north:0|core:south:1"
+      ],
+      "scope": "static",
+      "status": "fail"
+    },
+    {
+      "condition": "D.3",
+      "evidence": [
+        "O为空；成品格无取货指派；新格标签无冲突；retain_history保持该不变量"
+      ],
+      "locations": [],
+      "scope": "static",
+      "status": "pass"
+    },
+    {
+      "condition": "D.4",
+      "evidence": [
+        "全部输入/种子/分支表已装载；未来无终点请求仍动态停止；不证明种子可达"
+      ],
+      "locations": [],
+      "scope": "static",
+      "status": "pass"
+    },
+    {
+      "condition": "D.5",
+      "evidence": [
+        "结构界B=1+300*0=1 <80000；每PC每刻至多1、每箱每刻至多一次全箱300"
+      ],
+      "locations": [],
+      "scope": "static",
+      "status": "pass"
+    }
+  ],
+  "status": "unsupported",
+  "trajectory_executed": false
+}
+
+STDERR

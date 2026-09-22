@@ -1,0 +1,622 @@
+[
+  {
+    "sample": "混做粉碎机两下游",
+    "format": "full_state_each_instant",
+    "case": "control",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-kernel.json",
+    "python": {
+      "accepted": true
+    },
+    "rust": {
+      "verify": {
+        "Ok": null
+      }
+    }
+  },
+  {
+    "sample": "混做粉碎机两下游",
+    "format": "full_state_each_instant",
+    "case": "L2-unknown_axis",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/覆盖变异/混做粉碎机两下游-运行记录-kernel-L2-unknown_axis.json",
+    "python": {
+      "accepted": true
+    },
+    "rust": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "sample": "混做粉碎机两下游",
+    "format": "full_state_each_instant",
+    "case": "L2-fabricated_exercised",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/覆盖变异/混做粉碎机两下游-运行记录-kernel-L2-fabricated_exercised.json",
+    "python": {
+      "accepted": true
+    },
+    "rust": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "sample": "混做粉碎机两下游",
+    "format": "full_state_each_instant",
+    "case": "L2-wrong_disposition",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/覆盖变异/混做粉碎机两下游-运行记录-kernel-L2-wrong_disposition.json",
+    "python": {
+      "accepted": true
+    },
+    "rust": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "sample": "混做粉碎机两下游",
+    "format": "full_state_each_instant",
+    "case": "L2-missing_evidence",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/覆盖变异/混做粉碎机两下游-运行记录-kernel-L2-missing_evidence.json",
+    "python": {
+      "accepted": true
+    },
+    "rust": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "sample": "混做粉碎机两下游",
+    "format": "full_state_each_instant",
+    "case": "L2-wrong_profile",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/覆盖变异/混做粉碎机两下游-运行记录-kernel-L2-wrong_profile.json",
+    "python": {
+      "accepted": true
+    },
+    "rust": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "sample": "混做粉碎机两下游",
+    "format": "full_state_each_instant",
+    "case": "L2-wrong_producer_path",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/覆盖变异/混做粉碎机两下游-运行记录-kernel-L2-wrong_producer_path.json",
+    "python": {
+      "accepted": true
+    },
+    "rust": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "sample": "混做粉碎机两下游",
+    "format": "full_state_each_instant",
+    "case": "L3-coverage_fake_axis",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/覆盖变异/混做粉碎机两下游-运行记录-kernel-L3-coverage_fake_axis.json",
+    "python": {
+      "accepted": true
+    },
+    "rust": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "sample": "混做粉碎机两下游",
+    "format": "full_state_each_instant",
+    "case": "L3-coverage_fake_evidence",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/覆盖变异/混做粉碎机两下游-运行记录-kernel-L3-coverage_fake_evidence.json",
+    "python": {
+      "accepted": true
+    },
+    "rust": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "sample": "混做粉碎机两下游",
+    "format": "full_state_each_instant",
+    "case": "L3-coverage_fake_transfer",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/覆盖变异/混做粉碎机两下游-运行记录-kernel-L3-coverage_fake_transfer.json",
+    "python": {
+      "accepted": true
+    },
+    "rust": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "sample": "混做粉碎机两下游",
+    "format": "full_state_each_instant",
+    "case": "bad_summary_control",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/覆盖变异/混做粉碎机两下游-运行记录-kernel-bad_summary_control.json",
+    "python": {
+      "accepted": false,
+      "error": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/覆盖变异/混做粉碎机两下游-运行记录-kernel-bad_summary_control.json"
+    },
+    "rust": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "sample": "混做粉碎机两下游",
+    "format": "checkpoint_delta",
+    "case": "control",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录-checkpoint_delta-kernel.json",
+    "python": {
+      "accepted": true
+    },
+    "rust": {
+      "verify": {
+        "Ok": null
+      }
+    }
+  },
+  {
+    "sample": "混做粉碎机两下游",
+    "format": "checkpoint_delta",
+    "case": "L2-unknown_axis",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/覆盖变异/混做粉碎机两下游-运行记录-checkpoint_delta-kernel-L2-unknown_axis.json",
+    "python": {
+      "accepted": true
+    },
+    "rust": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "sample": "混做粉碎机两下游",
+    "format": "checkpoint_delta",
+    "case": "L2-fabricated_exercised",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/覆盖变异/混做粉碎机两下游-运行记录-checkpoint_delta-kernel-L2-fabricated_exercised.json",
+    "python": {
+      "accepted": true
+    },
+    "rust": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "sample": "混做粉碎机两下游",
+    "format": "checkpoint_delta",
+    "case": "L2-wrong_disposition",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/覆盖变异/混做粉碎机两下游-运行记录-checkpoint_delta-kernel-L2-wrong_disposition.json",
+    "python": {
+      "accepted": true
+    },
+    "rust": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "sample": "混做粉碎机两下游",
+    "format": "checkpoint_delta",
+    "case": "L2-missing_evidence",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/覆盖变异/混做粉碎机两下游-运行记录-checkpoint_delta-kernel-L2-missing_evidence.json",
+    "python": {
+      "accepted": true
+    },
+    "rust": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "sample": "混做粉碎机两下游",
+    "format": "checkpoint_delta",
+    "case": "L2-wrong_profile",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/覆盖变异/混做粉碎机两下游-运行记录-checkpoint_delta-kernel-L2-wrong_profile.json",
+    "python": {
+      "accepted": true
+    },
+    "rust": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "sample": "混做粉碎机两下游",
+    "format": "checkpoint_delta",
+    "case": "L2-wrong_producer_path",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/覆盖变异/混做粉碎机两下游-运行记录-checkpoint_delta-kernel-L2-wrong_producer_path.json",
+    "python": {
+      "accepted": true
+    },
+    "rust": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "sample": "混做粉碎机两下游",
+    "format": "checkpoint_delta",
+    "case": "L3-coverage_fake_axis",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/覆盖变异/混做粉碎机两下游-运行记录-checkpoint_delta-kernel-L3-coverage_fake_axis.json",
+    "python": {
+      "accepted": true
+    },
+    "rust": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "sample": "混做粉碎机两下游",
+    "format": "checkpoint_delta",
+    "case": "L3-coverage_fake_evidence",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/覆盖变异/混做粉碎机两下游-运行记录-checkpoint_delta-kernel-L3-coverage_fake_evidence.json",
+    "python": {
+      "accepted": true
+    },
+    "rust": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "sample": "混做粉碎机两下游",
+    "format": "checkpoint_delta",
+    "case": "L3-coverage_fake_transfer",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/覆盖变异/混做粉碎机两下游-运行记录-checkpoint_delta-kernel-L3-coverage_fake_transfer.json",
+    "python": {
+      "accepted": true
+    },
+    "rust": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "sample": "混做粉碎机两下游",
+    "format": "checkpoint_delta",
+    "case": "bad_summary_control",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/覆盖变异/混做粉碎机两下游-运行记录-checkpoint_delta-kernel-bad_summary_control.json",
+    "python": {
+      "accepted": false,
+      "error": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/覆盖变异/混做粉碎机两下游-运行记录-checkpoint_delta-kernel-bad_summary_control.json"
+    },
+    "rust": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "sample": "分流器三路轮询",
+    "format": "full_state_each_instant",
+    "case": "control",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-kernel.json",
+    "python": {
+      "accepted": true
+    },
+    "rust": {
+      "verify": {
+        "Ok": null
+      }
+    }
+  },
+  {
+    "sample": "分流器三路轮询",
+    "format": "full_state_each_instant",
+    "case": "L2-unknown_axis",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/覆盖变异/分流器三路轮询-运行记录-kernel-L2-unknown_axis.json",
+    "python": {
+      "accepted": true
+    },
+    "rust": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "sample": "分流器三路轮询",
+    "format": "full_state_each_instant",
+    "case": "L2-fabricated_exercised",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/覆盖变异/分流器三路轮询-运行记录-kernel-L2-fabricated_exercised.json",
+    "python": {
+      "accepted": true
+    },
+    "rust": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "sample": "分流器三路轮询",
+    "format": "full_state_each_instant",
+    "case": "L2-wrong_disposition",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/覆盖变异/分流器三路轮询-运行记录-kernel-L2-wrong_disposition.json",
+    "python": {
+      "accepted": true
+    },
+    "rust": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "sample": "分流器三路轮询",
+    "format": "full_state_each_instant",
+    "case": "L2-missing_evidence",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/覆盖变异/分流器三路轮询-运行记录-kernel-L2-missing_evidence.json",
+    "python": {
+      "accepted": true
+    },
+    "rust": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "sample": "分流器三路轮询",
+    "format": "full_state_each_instant",
+    "case": "L2-wrong_profile",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/覆盖变异/分流器三路轮询-运行记录-kernel-L2-wrong_profile.json",
+    "python": {
+      "accepted": true
+    },
+    "rust": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "sample": "分流器三路轮询",
+    "format": "full_state_each_instant",
+    "case": "L2-wrong_producer_path",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/覆盖变异/分流器三路轮询-运行记录-kernel-L2-wrong_producer_path.json",
+    "python": {
+      "accepted": true
+    },
+    "rust": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "sample": "分流器三路轮询",
+    "format": "full_state_each_instant",
+    "case": "L3-coverage_fake_axis",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/覆盖变异/分流器三路轮询-运行记录-kernel-L3-coverage_fake_axis.json",
+    "python": {
+      "accepted": true
+    },
+    "rust": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "sample": "分流器三路轮询",
+    "format": "full_state_each_instant",
+    "case": "L3-coverage_fake_evidence",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/覆盖变异/分流器三路轮询-运行记录-kernel-L3-coverage_fake_evidence.json",
+    "python": {
+      "accepted": true
+    },
+    "rust": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "sample": "分流器三路轮询",
+    "format": "full_state_each_instant",
+    "case": "L3-coverage_fake_transfer",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/覆盖变异/分流器三路轮询-运行记录-kernel-L3-coverage_fake_transfer.json",
+    "python": {
+      "accepted": true
+    },
+    "rust": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "sample": "分流器三路轮询",
+    "format": "full_state_each_instant",
+    "case": "bad_summary_control",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/覆盖变异/分流器三路轮询-运行记录-kernel-bad_summary_control.json",
+    "python": {
+      "accepted": false,
+      "error": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/覆盖变异/分流器三路轮询-运行记录-kernel-bad_summary_control.json"
+    },
+    "rust": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "sample": "分流器三路轮询",
+    "format": "checkpoint_delta",
+    "case": "control",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-checkpoint_delta-kernel.json",
+    "python": {
+      "accepted": true
+    },
+    "rust": {
+      "verify": {
+        "Ok": null
+      }
+    }
+  },
+  {
+    "sample": "分流器三路轮询",
+    "format": "checkpoint_delta",
+    "case": "L2-unknown_axis",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/覆盖变异/分流器三路轮询-运行记录-checkpoint_delta-kernel-L2-unknown_axis.json",
+    "python": {
+      "accepted": true
+    },
+    "rust": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "sample": "分流器三路轮询",
+    "format": "checkpoint_delta",
+    "case": "L2-fabricated_exercised",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/覆盖变异/分流器三路轮询-运行记录-checkpoint_delta-kernel-L2-fabricated_exercised.json",
+    "python": {
+      "accepted": true
+    },
+    "rust": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "sample": "分流器三路轮询",
+    "format": "checkpoint_delta",
+    "case": "L2-wrong_disposition",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/覆盖变异/分流器三路轮询-运行记录-checkpoint_delta-kernel-L2-wrong_disposition.json",
+    "python": {
+      "accepted": true
+    },
+    "rust": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "sample": "分流器三路轮询",
+    "format": "checkpoint_delta",
+    "case": "L2-missing_evidence",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/覆盖变异/分流器三路轮询-运行记录-checkpoint_delta-kernel-L2-missing_evidence.json",
+    "python": {
+      "accepted": true
+    },
+    "rust": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "sample": "分流器三路轮询",
+    "format": "checkpoint_delta",
+    "case": "L2-wrong_profile",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/覆盖变异/分流器三路轮询-运行记录-checkpoint_delta-kernel-L2-wrong_profile.json",
+    "python": {
+      "accepted": true
+    },
+    "rust": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "sample": "分流器三路轮询",
+    "format": "checkpoint_delta",
+    "case": "L2-wrong_producer_path",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/覆盖变异/分流器三路轮询-运行记录-checkpoint_delta-kernel-L2-wrong_producer_path.json",
+    "python": {
+      "accepted": true
+    },
+    "rust": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "sample": "分流器三路轮询",
+    "format": "checkpoint_delta",
+    "case": "L3-coverage_fake_axis",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/覆盖变异/分流器三路轮询-运行记录-checkpoint_delta-kernel-L3-coverage_fake_axis.json",
+    "python": {
+      "accepted": true
+    },
+    "rust": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "sample": "分流器三路轮询",
+    "format": "checkpoint_delta",
+    "case": "L3-coverage_fake_evidence",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/覆盖变异/分流器三路轮询-运行记录-checkpoint_delta-kernel-L3-coverage_fake_evidence.json",
+    "python": {
+      "accepted": true
+    },
+    "rust": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "sample": "分流器三路轮询",
+    "format": "checkpoint_delta",
+    "case": "L3-coverage_fake_transfer",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/覆盖变异/分流器三路轮询-运行记录-checkpoint_delta-kernel-L3-coverage_fake_transfer.json",
+    "python": {
+      "accepted": true
+    },
+    "rust": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  },
+  {
+    "sample": "分流器三路轮询",
+    "format": "checkpoint_delta",
+    "case": "bad_summary_control",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/覆盖变异/分流器三路轮询-运行记录-checkpoint_delta-kernel-bad_summary_control.json",
+    "python": {
+      "accepted": false,
+      "error": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r2-1-证据/覆盖变异/分流器三路轮询-运行记录-checkpoint_delta-kernel-bad_summary_control.json"
+    },
+    "rust": {
+      "verify": {
+        "Err": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+      }
+    }
+  }
+]

@@ -1,0 +1,5 @@
+     Locking 12 packages to latest compatible versions
+   Compiling kernel v0.1.0 (/home/zhuran24/zmd-research-fresh/求解器/crates/kernel)
+   Compiling kernel-review-record-probe v0.1.0 (/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-测试与证据/record-probe)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.11s
+     Running `crates/kernel/复核/r1-测试与证据/target/debug/kernel-review-record-probe '/home/zhuran24/zmd-research-fresh/求解器'`

@@ -1,0 +1,126 @@
+{
+  "status": "通过",
+  "local_status": "通过",
+  "shared_spec_status": "通过",
+  "commands": [
+    {
+      "name": "输出schema生成",
+      "command": [
+        "/usr/bin/python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r3/build_output_schema.py"
+      ],
+      "exit_code": 0,
+      "log": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r3/输出schema生成.log"
+    },
+    {
+      "name": "生成样例",
+      "command": [
+        "/usr/bin/python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/generate_examples.py"
+      ],
+      "exit_code": 0,
+      "log": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r3/生成样例.log"
+    },
+    {
+      "name": "样例检查",
+      "command": [
+        "/usr/bin/python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/check_examples.py",
+        "--self-test",
+        "--report",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/检查结果.json"
+      ],
+      "exit_code": 0,
+      "log": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r3/样例检查.log"
+    },
+    {
+      "name": "黄金重算",
+      "command": [
+        "/usr/bin/python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/check_golden_trace.py"
+      ],
+      "exit_code": 0,
+      "log": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r3/黄金重算.log"
+    },
+    {
+      "name": "运行回归",
+      "command": [
+        "/usr/bin/python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/test_runtime_input.py"
+      ],
+      "exit_code": 0,
+      "log": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r3/运行回归.log"
+    },
+    {
+      "name": "正式目录回源",
+      "command": [
+        "/usr/bin/python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/工具/formal_catalog.py"
+      ],
+      "exit_code": 0,
+      "log": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r3/正式目录回源.log"
+    },
+    {
+      "name": "规则覆盖自查",
+      "command": [
+        "/usr/bin/python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r3/check_current_coverage.py"
+      ],
+      "exit_code": 0,
+      "log": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r3/规则覆盖自查.log"
+    },
+    {
+      "name": "规格线自查",
+      "command": [
+        "/usr/bin/python",
+        "-B",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/check_revision.py"
+      ],
+      "exit_code": 0,
+      "log": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r3/规格线自查.log"
+    },
+    {
+      "name": "cargo-test",
+      "command": [
+        "cargo",
+        "test",
+        "--offline",
+        "--locked",
+        "--manifest-path",
+        "/home/zhuran24/zmd-research-fresh/求解器/Cargo.toml"
+      ],
+      "exit_code": 0,
+      "log": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r3/cargo-test.log"
+    },
+    {
+      "name": "候选B校验",
+      "command": [
+        "cargo",
+        "run",
+        "--offline",
+        "--locked",
+        "--manifest-path",
+        "/home/zhuran24/zmd-research-fresh/求解器/Cargo.toml",
+        "-p",
+        "topology",
+        "--",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/contract.json"
+      ],
+      "exit_code": 0,
+      "log": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入修订验证-r3/候选B校验.log"
+    }
+  ],
+  "protected_file_count": 25037,
+  "protected_changes": [],
+  "simulator_file_set_unchanged": true,
+  "broken_links": [],
+  "shared_tables": "A线拥有写权，本席仅提交修改请求；不把并行文件变化列为本席违规",
+  "scope": "有限输入与轨迹检查，不是全部运行族/目标认证"
+}

@@ -1,0 +1,12 @@
+[
+  {
+    "case": "control-key",
+    "status": "accepted",
+    "extra": null
+  },
+  {
+    "case": "extra-key",
+    "status": "accepted",
+    "extra": "未定义扩展"
+  }
+]

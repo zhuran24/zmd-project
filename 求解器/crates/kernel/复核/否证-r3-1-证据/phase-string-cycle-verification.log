@@ -1,0 +1,19 @@
+{
+  "name": "phase-string-cycle-verification",
+  "command": [
+    "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+    "verify-cycle",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r3-1-证据/phase-string-cycle.json",
+    "--config",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+    "--out",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r3-1-证据/phase-string-cycle-verification.json"
+  ],
+  "exit_code": 0,
+  "output_exists": true,
+  "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r3-1-证据/phase-string-cycle-verification.json\",\"status\":\"input_checked\"}\n",
+  "stderr": "",
+  "status": "input_checked",
+  "stop": null,
+  "open_items": null
+}

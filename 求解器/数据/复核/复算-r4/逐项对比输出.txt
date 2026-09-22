@@ -1,0 +1,15 @@
+{
+  "check_count": 5986,
+  "difference_count": 0,
+  "differences": [],
+  "report_counts": {
+    "能检且通过": 4925,
+    "不能静态检": 59
+  },
+  "rate_histogram": {
+    "1": 300,
+    "1/2": 9,
+    "1/5": 5,
+    "3/20": 1
+  }
+}

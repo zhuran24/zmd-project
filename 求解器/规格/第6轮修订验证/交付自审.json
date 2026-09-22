@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "readonly_count": 25037,
+  "readonly_changes": [],
+  "local_links_missing": [],
+  "golden_evidence_sources_current": true,
+  "scope_sweep": "现行规格与内核输入轴表全辖域；历史复核/被审快照及负例不重写",
+  "reader_review": "七项读者自审见自查报告第4节",
+  "open_items": [
+    "多新物种竞争无身份仓库空格的实际分配机制仍待审，本版已明确unsupported停止",
+    "其它恢复/配方读法与一般状态有限化、初态离线覆盖、完整周期提升及全称认证未完成"
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "scope": "局部时序算术复算，不是完整布局、可达性证书或 kernel 核对",
+  "sources": [
+    {
+      "path": "《明日方舟：终末地》游戏规则.txt",
+      "sha256": "abc7a5867f6477eedb619c63a21c4a77144c57ad4567fdcfb696b3049d66a670"
+    },
+    {
+      "path": "求解任务.txt",
+      "sha256": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac"
+    },
+    {
+      "path": "求解约束.txt",
+      "sha256": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6"
+    },
+    {
+      "path": "求解器/规格/推导/三种相位不改产量.md",
+      "sha256": "3786fa29935a854a0eedb9ce877f565e9b7db17f8b0f0851cd0d988cc2d85a2f"
+    }
+  ],
+  "continuous_filler": {
+    "duration": 5,
+    "use_each": 10,
+    "initial_before_start_each": 12,
+    "arrivals_odd_each": 3,
+    "arrivals_even_each": 1,
+    "last_tick": 10
+  },
+  "three_fillers": {
+    "duration": 5,
+    "use_each": 10,
+    "initial_after_start_each": [
+      0,
+      0,
+      0
+    ],
+    "arrivals_AB_each": 2,
+    "arrivals_C_odd_each": 2,
+    "arrivals_C_even_each": 1,
+    "last_tick": 40
+  },
+  "gate_sliding_window": {
+    "limit": 2,
+    "offered_ticks": [
+      0,
+      4,
+      5,
+      6
+    ]
+  },
+  "gate_intermittent": {
+    "limit": 2,
+    "offered_ticks": [
+      0,
+      5,
+      10,
+      15,
+      20
+    ]
+  },
+  "two_gates": {
+    "limits": [
+      1,
+      1
+    ],
+    "window_origins": [
+      0,
+      0
+    ],
+    "at_tick_0": {
+      "front_belt": "P1",
+      "gate_A": "P0",
+      "gate_B": "Q0"
+    },
+    "P1_ready_to_leave_front": 1
+  },
+  "parts_backlog": {
+    "manufacture_duration": 1,
+    "output_capacity": 50,
+    "gate_limit": 1,
+    "initial_completion_tick": 0,
+    "last_tick": 70
+  }
+}

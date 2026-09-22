@@ -1,0 +1,8 @@
+{
+  "started_utc": "2026-09-19T18:33:54.527219+00:00",
+  "finished_utc": "2026-09-19T18:34:03.957028+00:00",
+  "recipe_values_match_formal_source": 18,
+  "command_scope": "原转换器仅执行至第41行断言；cargo测试和CLI完整运行",
+  "rust_version": "rustc 1.98.1 (48a229cea 2026-09-01) (Arch Linux rust 1:1.98.1-1.1)",
+  "cargo_version": "cargo 1.98.1 (797e8a9bc 2026-08-05) (Arch Linux rust 1:1.98.1-1.1)"
+}

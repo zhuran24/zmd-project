@@ -1,0 +1,27 @@
+{
+  "status": "PASS",
+  "finding_count": 2,
+  "unhandled_findings": [],
+  "schema_and_full_record_verified": true,
+  "shared_sources_stable_during_validation": true,
+  "protected_files": 25037,
+  "protected_unchanged": true,
+  "simulator_file_set_unchanged": true,
+  "specification_checks": 62,
+  "local_regression_checks": 20,
+  "reader_review": [
+    "正文终态与历史分区",
+    "相遇待审和已定类型守卫分开",
+    "当前空格序成功/失败完整后效",
+    "非空/空格身份编码可逆",
+    "99轴及F/O/U一致",
+    "链接与符号落点",
+    "有限实验不升级全称认证"
+  ],
+  "open_items": [
+    "角点相遇等其它谓词的全规则审查",
+    "竞争匿名空格的批量分配",
+    "一般语义相容性、全部初态/离线、有限抽象与完整周期提升"
+  ],
+  "scope": "测试与读者自审已完成；随后由本脚本写清单/指纹并逐项重读，失败则整个封存退出非零"
+}

@@ -1,0 +1,21 @@
+{
+  "command": [
+    "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+    "cycle",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/fixtures/benchmark_brick_60.json",
+    "--config",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+    "--ticks",
+    "12",
+    "--no-record",
+    "--search-checkpoint-interval",
+    "32",
+    "--out",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r5-测试与证据/benchmark_brick_60-benchmark-cycle.json"
+  ],
+  "returncode": 0,
+  "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r5-测试与证据/benchmark_brick_60-benchmark-cycle.json\",\"status\":\"inconclusive\"}\n",
+  "stderr": "",
+  "wall_ns": 86379825,
+  "max_rss_kb": 18916
+}

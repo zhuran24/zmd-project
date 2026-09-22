@@ -1,0 +1,32 @@
+[
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r5-规格保真与工程-证据/none-1.json",
+    "valid": true,
+    "errors": null
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r5-规格保真与工程-证据/none-7.json",
+    "valid": true,
+    "errors": null
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r5-规格保真与工程-证据/referenced-7.json",
+    "valid": true,
+    "errors": null
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r5-规格保真与工程-证据/continued.json",
+    "valid": true,
+    "errors": null
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r5-规格保真与工程-证据/relative.record.json",
+    "valid": true,
+    "errors": null
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r5-规格保真与工程-证据/relative-cycle.json",
+    "valid": true,
+    "errors": null
+  }
+]

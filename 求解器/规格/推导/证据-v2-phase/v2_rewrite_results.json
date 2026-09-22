@@ -1,0 +1,98 @@
+{
+  "status": "passed",
+  "scope": "局部证据逐字段复算及精确分数算术；不是整厂认证",
+  "inputs_read": 25,
+  "json_fully_parsed": 10,
+  "compared": [
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-相位-1-证据/inputs.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-相位-1-证据/continuous_filler.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-相位-1-证据/three_fillers.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-相位-1-证据/gate_sliding_window.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-相位-1-证据/gate_intermittent.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-相位-1-证据/serial_gates.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-相位-1-证据/parts_backlog.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-相位-1-证据/checks.json",
+    "review2:three_fillers",
+    "review2:round_robin_item_types",
+    "review2:gate_non_sliding_window",
+    "review2:gate_sparse_input",
+    "review2:two_serial_gates_delay",
+    "review2:crusher_before_k1_gate",
+    "review2:head_of_line:pointer_A1",
+    "review2:head_of_line:pointer_B"
+  ],
+  "serial_probe_cases": 625,
+  "mass_conserving_recipes": 18,
+  "k5_histories": 32,
+  "kernel_run": false,
+  "layout_certified": false,
+  "first_review": {
+    "continuous_start_stock": [
+      12,
+      13,
+      12
+    ],
+    "third_filler_starts_0_to_20": [
+      0,
+      7,
+      13,
+      20
+    ],
+    "third_filler_prestart_stock": [
+      10,
+      11,
+      10,
+      10
+    ],
+    "three_filler_completions_in_0_open_20_closed": [
+      4,
+      4,
+      3
+    ],
+    "three_filler_state_period": 20,
+    "gate_limit_2_in_sliding_4_to_9": 3,
+    "intermittent_gate_limit_2_actual_per_20": 4,
+    "serial_P1_delivery_tick": 11,
+    "serial_extra_delay_against_empty_unlimited_path": 8,
+    "parts_first_completed_batch_block_tick": 63,
+    "kernel_run": false,
+    "whole_layout_or_phase_dependent_long_run_counterexample": false
+  },
+  "second_review_filler_starts": [
+    {
+      "tick": 0,
+      "before": [
+        10,
+        10
+      ]
+    },
+    {
+      "tick": 7,
+      "before": [
+        11,
+        10
+      ]
+    },
+    {
+      "tick": 14,
+      "before": [
+        11,
+        11
+      ]
+    },
+    {
+      "tick": 20,
+      "before": [
+        10,
+        10
+      ]
+    }
+  ],
+  "non_sliding_receipts": [
+    0,
+    4,
+    5,
+    6
+  ],
+  "blue_recycle_equation": "blue_block -> blue_powder -> blue_block; net mass and net item vector zero"
+}

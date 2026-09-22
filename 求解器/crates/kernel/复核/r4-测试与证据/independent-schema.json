@@ -1,0 +1,599 @@
+{
+  "validator": "AJV2020 independent implementation",
+  "passed": 57,
+  "failed": 1,
+  "cases": [
+    {
+      "case": "bridge-control",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/bridge-control-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "checkpoint-run",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/checkpoint-run-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "checkpoint-derived-run",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/checkpoint-derived-run-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "parameter-missing-run",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/parameter-missing-run-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "parameter-missing-seed",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/parameter-missing-seed-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "parameter-missing-cycle",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/parameter-missing-cycle-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "parameter-conflict-run",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/parameter-conflict-run-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "parameter-conflict-seed",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/parameter-conflict-seed-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "parameter-conflict-cycle",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/parameter-conflict-cycle-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "parameter-top_only-run",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/parameter-top_only-run-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "parameter-top_only-seed",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/parameter-top_only-seed-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "parameter-top_only-cycle",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/parameter-top_only-cycle-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "parameter-lifetime-run",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/parameter-lifetime-run-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "parameter-lifetime-seed",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/parameter-lifetime-seed-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "parameter-lifetime-cycle",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/parameter-lifetime-cycle-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "phase--1-run",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/phase--1-run-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "phase--1-seed",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/phase--1-seed-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "phase--1-cycle",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/phase--1-cycle-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "phase-6-run",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/phase-6-run-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "phase-6-seed",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/phase-6-seed-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "phase-6-cycle",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/phase-6-cycle-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "phase-1_2-run",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/phase-1_2-run-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "phase-1_2-seed",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/phase-1_2-seed-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "phase-1_2-cycle",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/phase-1_2-cycle-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "phase-not-a-Time-run",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/phase-not-a-Time-run-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "phase-not-a-Time-seed",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/phase-not-a-Time-seed-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "phase-not-a-Time-cycle",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/phase-not-a-Time-cycle-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "slot_short-run",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/slot_short-run-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "slot_short-seed",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/slot_short-seed-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "slot_short-cycle",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/slot_short-cycle-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "slot_unknown-run",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/slot_unknown-run-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "slot_unknown-seed",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/slot_unknown-seed-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "slot_unknown-cycle",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/slot_unknown-cycle-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "boolean_seed-run",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/boolean_seed-run-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "boolean_seed-seed",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/boolean_seed-seed-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "boolean_seed-cycle",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/boolean_seed-cycle-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "boolean_context-run",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/boolean_context-run-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "boolean_context-seed",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/boolean_context-seed-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "boolean_context-cycle",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/boolean_context-cycle-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "missing_inventory-run",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/missing_inventory-run-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "missing_inventory-seed",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/missing_inventory-seed-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "missing_inventory-cycle",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/missing_inventory-cycle-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "unknown_progress-run",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/unknown_progress-run-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "unknown_progress-seed",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/unknown_progress-seed-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "unknown_progress-cycle",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/unknown_progress-cycle-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "zero-ore-origin-run",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/zero-ore-origin-run-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "zero-ore-origin-seed",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/zero-ore-origin-seed-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "zero-ore-origin-cycle",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/zero-ore-origin-cycle-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "zero-ore-iron-run",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/zero-ore-iron-run-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "zero-ore-iron-seed",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/zero-ore-iron-seed-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "zero-ore-iron-cycle",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/zero-ore-iron-cycle-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "age-overflow-run",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/age-overflow-run-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "age-overflow-cycle",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/age-overflow-cycle-result.json",
+      "status": "fail",
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "run_id"
+          },
+          "message": "must have required property 'run_id'"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "profile_id"
+          },
+          "message": "must have required property 'profile_id'"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "producer"
+          },
+          "message": "must have required property 'producer'"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "fingerprints"
+          },
+          "message": "must have required property 'fingerprints'"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "parameter_assignment"
+          },
+          "message": "must have required property 'parameter_assignment'"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "input_history"
+          },
+          "message": "must have required property 'input_history'"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "uncovered_axes"
+          },
+          "message": "must have required property 'uncovered_axes'"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "trace"
+          },
+          "message": "must have required property 'trace'"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "validation_scope"
+          },
+          "message": "must have required property 'validation_scope'"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/additionalProperties",
+          "keyword": "additionalProperties",
+          "params": {
+            "additionalProperty": "budget"
+          },
+          "message": "must NOT have additional properties"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/additionalProperties",
+          "keyword": "additionalProperties",
+          "params": {
+            "additionalProperty": "cycle"
+          },
+          "message": "must NOT have additional properties"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/additionalProperties",
+          "keyword": "additionalProperties",
+          "params": {
+            "additionalProperty": "level"
+          },
+          "message": "must NOT have additional properties"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/additionalProperties",
+          "keyword": "additionalProperties",
+          "params": {
+            "additionalProperty": "parameter_point"
+          },
+          "message": "must NOT have additional properties"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/additionalProperties",
+          "keyword": "additionalProperties",
+          "params": {
+            "additionalProperty": "reading"
+          },
+          "message": "must NOT have additional properties"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/additionalProperties",
+          "keyword": "additionalProperties",
+          "params": {
+            "additionalProperty": "replay_input"
+          },
+          "message": "must NOT have additional properties"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/additionalProperties",
+          "keyword": "additionalProperties",
+          "params": {
+            "additionalProperty": "result_id"
+          },
+          "message": "must NOT have additional properties"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/additionalProperties",
+          "keyword": "additionalProperties",
+          "params": {
+            "additionalProperty": "run_record"
+          },
+          "message": "must NOT have additional properties"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/additionalProperties",
+          "keyword": "additionalProperties",
+          "params": {
+            "additionalProperty": "seed"
+          },
+          "message": "must NOT have additional properties"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/additionalProperties",
+          "keyword": "additionalProperties",
+          "params": {
+            "additionalProperty": "stop"
+          },
+          "message": "must NOT have additional properties"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/additionalProperties",
+          "keyword": "additionalProperties",
+          "params": {
+            "additionalProperty": "support_domain"
+          },
+          "message": "must NOT have additional properties"
+        },
+        {
+          "instancePath": "/schema",
+          "schemaPath": "#/properties/schema/const",
+          "keyword": "const",
+          "params": {
+            "allowedValue": "kernel-output-v3"
+          },
+          "message": "must be equal to constant"
+        },
+        {
+          "instancePath": "/seed",
+          "schemaPath": "#/allOf/4/then/properties/seed/type",
+          "keyword": "type",
+          "params": {
+            "type": "object"
+          },
+          "message": "must be object"
+        },
+        {
+          "instancePath": "/parameter_point",
+          "schemaPath": "#/allOf/4/then/properties/parameter_point/type",
+          "keyword": "type",
+          "params": {
+            "type": "object"
+          },
+          "message": "must be object"
+        },
+        {
+          "instancePath": "/replay_input",
+          "schemaPath": "#/allOf/4/then/properties/replay_input/type",
+          "keyword": "type",
+          "params": {
+            "type": "object"
+          },
+          "message": "must be object"
+        },
+        {
+          "instancePath": "/run_record",
+          "schemaPath": "#/type",
+          "keyword": "type",
+          "params": {
+            "type": "object"
+          },
+          "message": "must be object"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/allOf/4/if",
+          "keyword": "if",
+          "params": {
+            "failingKeyword": "then"
+          },
+          "message": "must match \"then\" schema"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/oneOf",
+          "keyword": "oneOf",
+          "params": {
+            "passingSchemas": null
+          },
+          "message": "must match exactly one schema in oneOf"
+        }
+      ]
+    },
+    {
+      "case": "expired-after-closure-run",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/expired-after-closure-run-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "expired-after-closure-seed",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/expired-after-closure-seed-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "expired-after-closure-cycle",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/expired-after-closure-cycle-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "legacy-late-window-cycle",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/legacy-late-window-cycle-result.json",
+      "status": "pass",
+      "errors": []
+    },
+    {
+      "case": "legacy-late-window-record",
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r4-测试与证据/revision_r3_cli/legacy-late-window-record-result.json",
+      "status": "pass",
+      "errors": []
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "mutations": [
+    {
+      "accepted": false,
+      "case": "unknown_axis",
+      "reason": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+    },
+    {
+      "accepted": false,
+      "case": "fabricated_exercised",
+      "reason": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+    },
+    {
+      "accepted": false,
+      "case": "wrong_disposition",
+      "reason": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+    },
+    {
+      "accepted": false,
+      "case": "missing_evidence",
+      "reason": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+    },
+    {
+      "accepted": false,
+      "case": "wrong_profile",
+      "reason": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+    },
+    {
+      "accepted": false,
+      "case": "wrong_producer_path",
+      "reason": "invalid_input input @ record: 交付记录与完整重算逐字段不同"
+    }
+  ],
+  "valid_control": true
+}

@@ -1,0 +1,71 @@
+   Compiling proc-macro2 v1.0.107
+   Compiling autocfg v1.5.1
+   Compiling unicode-ident v1.0.26
+   Compiling quote v1.0.47
+   Compiling serde_core v1.0.229
+   Compiling zmij v1.0.23
+   Compiling serde_json v1.0.151
+   Compiling serde v1.0.229
+   Compiling memchr v2.8.3
+   Compiling itoa v1.0.18
+   Compiling num-traits v0.2.19
+   Compiling syn v3.0.6
+   Compiling num-integer v0.1.47
+   Compiling num-bigint v0.4.8
+   Compiling num-rational v0.4.2
+   Compiling serde_derive v1.0.229
+   Compiling topology v0.1.0 (/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复算-r4/隔离重跑/求解器/crates/topology)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.00s
+     Running unittests src/lib.rs (求解器/数据/复核/复算-r4/target/debug/deps/topology-958a7a196b95191c)
+
+running 1 test
+test catalog_tests::legacy_machine_constants_equal_catalog ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (求解器/数据/复核/复算-r4/target/debug/deps/topology-232d29a62249f608)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/validation.rs (求解器/数据/复核/复算-r4/target/debug/deps/validation-55f92a55e3fc13c3)
+
+running 28 tests
+test catalog_port_edges_match_formal_reference_layouts ... ok
+test catalog_unit_properties_match_formal_reference_values ... ok
+test storage_split_counts_both_sides_and_deduplicates_item_rows ... ok
+test catalog_is_checked_against_live_formal_sources ... ok
+test storage_relay_cannot_double_material_origin_flow ... ok
+test plant_storage_condition_uses_current_machine_count ... ok
+test multi_material_obligations_cannot_disappear ... ok
+test overload_is_exact_and_not_rounded ... ok
+test candidate_passes_static_only ... ok
+test legacy_channels_and_storage_shortcut_are_rejected ... ok
+test duplicate_source_identity_is_rejected ... ok
+test wrong_target_recipe_is_rejected ... ok
+test every_formal_constraint_has_coverage_row ... ok
+test invalid_ore_machine_is_not_counted_as_dedicated ... ok
+test dedicated_ports_cannot_fork_without_transport_model ... ok
+test wrong_target_cannot_redefine_task ... ok
+test changed_channel_breaks_local_balance ... ok
+test false_actual_rate_is_not_a_certificate ... ok
+test shared_port_rates_are_summed ... ok
+test false_fanout_certification_is_rejected ... ok
+test full_speed_and_transport_projection_are_explicit_but_not_certified ... ok
+test fabricated_capacity_cannot_relax_rule ... ok
+test unsupported_routing_fails_closed ... ok
+test zero_rate_does_not_count_as_live_channel ... ok
+test zero_denominator_and_missing_fields_fail_loading ... ok
+test logical_feed_ids_cannot_be_physical_or_buffer_channels ... ok
+test numeric_categories_have_field_semantics ... ok
+test same_item_multiport_and_mixed_recipe_obligations_are_required ... ok
+
+test result: ok. 28 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.34s
+
+   Doc-tests topology
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

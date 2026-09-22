@@ -1,0 +1,772 @@
+{
+  "荞花": {
+    "machines": [
+      {
+        "id": "P",
+        "kind": "种植机",
+        "x": 10,
+        "y": 10,
+        "w": 5,
+        "h": 5,
+        "input": "S",
+        "output": "N"
+      },
+      {
+        "id": "H",
+        "kind": "采种机",
+        "x": 10,
+        "y": 18,
+        "w": 5,
+        "h": 5,
+        "input": "S",
+        "output": "N"
+      },
+      {
+        "id": "G",
+        "kind": "粉碎机",
+        "x": 16,
+        "y": 16,
+        "w": 3,
+        "h": 3,
+        "input": "W",
+        "output": "E"
+      }
+    ],
+    "power": [
+      {
+        "id": "E1",
+        "x": 6,
+        "y": 12,
+        "w": 2,
+        "h": 2
+      },
+      {
+        "id": "E2",
+        "x": 19,
+        "y": 20,
+        "w": 2,
+        "h": 2
+      }
+    ],
+    "belts": [
+      {
+        "id": "P-H-1",
+        "x": 11,
+        "y": 15,
+        "input": "S",
+        "output": "N",
+        "path": "P-H"
+      },
+      {
+        "id": "P-H-2",
+        "x": 11,
+        "y": 16,
+        "input": "S",
+        "output": "N",
+        "path": "P-H"
+      },
+      {
+        "id": "P-H-3",
+        "x": 11,
+        "y": 17,
+        "input": "S",
+        "output": "N",
+        "path": "P-H"
+      },
+      {
+        "id": "P-G-1",
+        "x": 14,
+        "y": 15,
+        "input": "S",
+        "output": "E",
+        "path": "P-G"
+      },
+      {
+        "id": "P-G-2",
+        "x": 15,
+        "y": 15,
+        "input": "W",
+        "output": "N",
+        "path": "P-G"
+      },
+      {
+        "id": "P-G-3",
+        "x": 15,
+        "y": 16,
+        "input": "S",
+        "output": "E",
+        "path": "P-G"
+      },
+      {
+        "id": "H-P-1",
+        "x": 10,
+        "y": 23,
+        "input": "S",
+        "output": "W",
+        "path": "H-P"
+      },
+      {
+        "id": "H-P-2",
+        "x": 9,
+        "y": 23,
+        "input": "E",
+        "output": "S",
+        "path": "H-P"
+      },
+      {
+        "id": "H-P-3",
+        "x": 9,
+        "y": 22,
+        "input": "N",
+        "output": "S",
+        "path": "H-P"
+      },
+      {
+        "id": "H-P-4",
+        "x": 9,
+        "y": 21,
+        "input": "N",
+        "output": "S",
+        "path": "H-P"
+      },
+      {
+        "id": "H-P-5",
+        "x": 9,
+        "y": 20,
+        "input": "N",
+        "output": "S",
+        "path": "H-P"
+      },
+      {
+        "id": "H-P-6",
+        "x": 9,
+        "y": 19,
+        "input": "N",
+        "output": "S",
+        "path": "H-P"
+      },
+      {
+        "id": "H-P-7",
+        "x": 9,
+        "y": 18,
+        "input": "N",
+        "output": "S",
+        "path": "H-P"
+      },
+      {
+        "id": "H-P-8",
+        "x": 9,
+        "y": 17,
+        "input": "N",
+        "output": "S",
+        "path": "H-P"
+      },
+      {
+        "id": "H-P-9",
+        "x": 9,
+        "y": 16,
+        "input": "N",
+        "output": "S",
+        "path": "H-P"
+      },
+      {
+        "id": "H-P-10",
+        "x": 9,
+        "y": 15,
+        "input": "N",
+        "output": "S",
+        "path": "H-P"
+      },
+      {
+        "id": "H-P-11",
+        "x": 9,
+        "y": 14,
+        "input": "N",
+        "output": "S",
+        "path": "H-P"
+      },
+      {
+        "id": "H-P-12",
+        "x": 9,
+        "y": 13,
+        "input": "N",
+        "output": "S",
+        "path": "H-P"
+      },
+      {
+        "id": "H-P-13",
+        "x": 9,
+        "y": 12,
+        "input": "N",
+        "output": "S",
+        "path": "H-P"
+      },
+      {
+        "id": "H-P-14",
+        "x": 9,
+        "y": 11,
+        "input": "N",
+        "output": "S",
+        "path": "H-P"
+      },
+      {
+        "id": "H-P-15",
+        "x": 9,
+        "y": 10,
+        "input": "N",
+        "output": "S",
+        "path": "H-P"
+      },
+      {
+        "id": "H-P-16",
+        "x": 9,
+        "y": 9,
+        "input": "N",
+        "output": "E",
+        "path": "H-P"
+      },
+      {
+        "id": "H-P-17",
+        "x": 10,
+        "y": 9,
+        "input": "W",
+        "output": "N",
+        "path": "H-P"
+      },
+      {
+        "id": "G-OUT-0",
+        "x": 19,
+        "y": 16,
+        "input": "W",
+        "output": "E",
+        "path": "粉末边界"
+      }
+    ],
+    "internal_channels": [
+      [
+        "P",
+        "P-H-1"
+      ],
+      [
+        "P",
+        "P-G-1"
+      ],
+      [
+        "H",
+        "H-P-1"
+      ],
+      [
+        "G",
+        "G-OUT-0"
+      ],
+      [
+        "P-H-1",
+        "P-H-2"
+      ],
+      [
+        "P-H-2",
+        "P-H-3"
+      ],
+      [
+        "P-H-3",
+        "H"
+      ],
+      [
+        "P-G-1",
+        "P-G-2"
+      ],
+      [
+        "P-G-2",
+        "P-G-3"
+      ],
+      [
+        "P-G-3",
+        "G"
+      ],
+      [
+        "H-P-1",
+        "H-P-2"
+      ],
+      [
+        "H-P-2",
+        "H-P-3"
+      ],
+      [
+        "H-P-3",
+        "H-P-4"
+      ],
+      [
+        "H-P-4",
+        "H-P-5"
+      ],
+      [
+        "H-P-5",
+        "H-P-6"
+      ],
+      [
+        "H-P-6",
+        "H-P-7"
+      ],
+      [
+        "H-P-7",
+        "H-P-8"
+      ],
+      [
+        "H-P-8",
+        "H-P-9"
+      ],
+      [
+        "H-P-9",
+        "H-P-10"
+      ],
+      [
+        "H-P-10",
+        "H-P-11"
+      ],
+      [
+        "H-P-11",
+        "H-P-12"
+      ],
+      [
+        "H-P-12",
+        "H-P-13"
+      ],
+      [
+        "H-P-13",
+        "H-P-14"
+      ],
+      [
+        "H-P-14",
+        "H-P-15"
+      ],
+      [
+        "H-P-15",
+        "H-P-16"
+      ],
+      [
+        "H-P-16",
+        "H-P-17"
+      ],
+      [
+        "H-P-17",
+        "P"
+      ]
+    ],
+    "powder_service_boundary": [
+      "G-OUT-0"
+    ],
+    "transport_slots": 24,
+    "raw_plant_slots": 23,
+    "power_coverage": {
+      "P": [
+        "E1"
+      ],
+      "H": [
+        "E1",
+        "E2"
+      ],
+      "G": [
+        "E2"
+      ]
+    },
+    "coordinates_scope": "局部三机；两种植物分开实例化；边界接收尚未装入整厂"
+  },
+  "砂叶": {
+    "machines": [
+      {
+        "id": "P",
+        "kind": "种植机",
+        "x": 10,
+        "y": 10,
+        "w": 5,
+        "h": 5,
+        "input": "S",
+        "output": "N"
+      },
+      {
+        "id": "H",
+        "kind": "采种机",
+        "x": 10,
+        "y": 18,
+        "w": 5,
+        "h": 5,
+        "input": "S",
+        "output": "N"
+      },
+      {
+        "id": "G",
+        "kind": "粉碎机",
+        "x": 16,
+        "y": 16,
+        "w": 3,
+        "h": 3,
+        "input": "W",
+        "output": "E"
+      }
+    ],
+    "power": [
+      {
+        "id": "E1",
+        "x": 6,
+        "y": 12,
+        "w": 2,
+        "h": 2
+      },
+      {
+        "id": "E2",
+        "x": 19,
+        "y": 20,
+        "w": 2,
+        "h": 2
+      }
+    ],
+    "belts": [
+      {
+        "id": "P-H-1",
+        "x": 11,
+        "y": 15,
+        "input": "S",
+        "output": "N",
+        "path": "P-H"
+      },
+      {
+        "id": "P-H-2",
+        "x": 11,
+        "y": 16,
+        "input": "S",
+        "output": "N",
+        "path": "P-H"
+      },
+      {
+        "id": "P-H-3",
+        "x": 11,
+        "y": 17,
+        "input": "S",
+        "output": "N",
+        "path": "P-H"
+      },
+      {
+        "id": "P-G-1",
+        "x": 14,
+        "y": 15,
+        "input": "S",
+        "output": "E",
+        "path": "P-G"
+      },
+      {
+        "id": "P-G-2",
+        "x": 15,
+        "y": 15,
+        "input": "W",
+        "output": "N",
+        "path": "P-G"
+      },
+      {
+        "id": "P-G-3",
+        "x": 15,
+        "y": 16,
+        "input": "S",
+        "output": "E",
+        "path": "P-G"
+      },
+      {
+        "id": "H-P-1",
+        "x": 10,
+        "y": 23,
+        "input": "S",
+        "output": "W",
+        "path": "H-P"
+      },
+      {
+        "id": "H-P-2",
+        "x": 9,
+        "y": 23,
+        "input": "E",
+        "output": "S",
+        "path": "H-P"
+      },
+      {
+        "id": "H-P-3",
+        "x": 9,
+        "y": 22,
+        "input": "N",
+        "output": "S",
+        "path": "H-P"
+      },
+      {
+        "id": "H-P-4",
+        "x": 9,
+        "y": 21,
+        "input": "N",
+        "output": "S",
+        "path": "H-P"
+      },
+      {
+        "id": "H-P-5",
+        "x": 9,
+        "y": 20,
+        "input": "N",
+        "output": "S",
+        "path": "H-P"
+      },
+      {
+        "id": "H-P-6",
+        "x": 9,
+        "y": 19,
+        "input": "N",
+        "output": "S",
+        "path": "H-P"
+      },
+      {
+        "id": "H-P-7",
+        "x": 9,
+        "y": 18,
+        "input": "N",
+        "output": "S",
+        "path": "H-P"
+      },
+      {
+        "id": "H-P-8",
+        "x": 9,
+        "y": 17,
+        "input": "N",
+        "output": "S",
+        "path": "H-P"
+      },
+      {
+        "id": "H-P-9",
+        "x": 9,
+        "y": 16,
+        "input": "N",
+        "output": "S",
+        "path": "H-P"
+      },
+      {
+        "id": "H-P-10",
+        "x": 9,
+        "y": 15,
+        "input": "N",
+        "output": "S",
+        "path": "H-P"
+      },
+      {
+        "id": "H-P-11",
+        "x": 9,
+        "y": 14,
+        "input": "N",
+        "output": "S",
+        "path": "H-P"
+      },
+      {
+        "id": "H-P-12",
+        "x": 9,
+        "y": 13,
+        "input": "N",
+        "output": "S",
+        "path": "H-P"
+      },
+      {
+        "id": "H-P-13",
+        "x": 9,
+        "y": 12,
+        "input": "N",
+        "output": "S",
+        "path": "H-P"
+      },
+      {
+        "id": "H-P-14",
+        "x": 9,
+        "y": 11,
+        "input": "N",
+        "output": "S",
+        "path": "H-P"
+      },
+      {
+        "id": "H-P-15",
+        "x": 9,
+        "y": 10,
+        "input": "N",
+        "output": "S",
+        "path": "H-P"
+      },
+      {
+        "id": "H-P-16",
+        "x": 9,
+        "y": 9,
+        "input": "N",
+        "output": "E",
+        "path": "H-P"
+      },
+      {
+        "id": "H-P-17",
+        "x": 10,
+        "y": 9,
+        "input": "W",
+        "output": "N",
+        "path": "H-P"
+      },
+      {
+        "id": "G-OUT-0",
+        "x": 19,
+        "y": 16,
+        "input": "W",
+        "output": "E",
+        "path": "粉末边界"
+      },
+      {
+        "id": "G-OUT-1",
+        "x": 19,
+        "y": 17,
+        "input": "W",
+        "output": "E",
+        "path": "粉末边界"
+      },
+      {
+        "id": "G-OUT-2",
+        "x": 19,
+        "y": 18,
+        "input": "W",
+        "output": "E",
+        "path": "粉末边界"
+      }
+    ],
+    "internal_channels": [
+      [
+        "P",
+        "P-H-1"
+      ],
+      [
+        "P",
+        "P-G-1"
+      ],
+      [
+        "H",
+        "H-P-1"
+      ],
+      [
+        "G",
+        "G-OUT-0"
+      ],
+      [
+        "G",
+        "G-OUT-1"
+      ],
+      [
+        "G",
+        "G-OUT-2"
+      ],
+      [
+        "P-H-1",
+        "P-H-2"
+      ],
+      [
+        "P-H-2",
+        "P-H-3"
+      ],
+      [
+        "P-H-3",
+        "H"
+      ],
+      [
+        "P-G-1",
+        "P-G-2"
+      ],
+      [
+        "P-G-2",
+        "P-G-3"
+      ],
+      [
+        "P-G-3",
+        "G"
+      ],
+      [
+        "H-P-1",
+        "H-P-2"
+      ],
+      [
+        "H-P-2",
+        "H-P-3"
+      ],
+      [
+        "H-P-3",
+        "H-P-4"
+      ],
+      [
+        "H-P-4",
+        "H-P-5"
+      ],
+      [
+        "H-P-5",
+        "H-P-6"
+      ],
+      [
+        "H-P-6",
+        "H-P-7"
+      ],
+      [
+        "H-P-7",
+        "H-P-8"
+      ],
+      [
+        "H-P-8",
+        "H-P-9"
+      ],
+      [
+        "H-P-9",
+        "H-P-10"
+      ],
+      [
+        "H-P-10",
+        "H-P-11"
+      ],
+      [
+        "H-P-11",
+        "H-P-12"
+      ],
+      [
+        "H-P-12",
+        "H-P-13"
+      ],
+      [
+        "H-P-13",
+        "H-P-14"
+      ],
+      [
+        "H-P-14",
+        "H-P-15"
+      ],
+      [
+        "H-P-15",
+        "H-P-16"
+      ],
+      [
+        "H-P-16",
+        "H-P-17"
+      ],
+      [
+        "H-P-17",
+        "P"
+      ]
+    ],
+    "powder_service_boundary": [
+      "G-OUT-0",
+      "G-OUT-1",
+      "G-OUT-2"
+    ],
+    "transport_slots": 26,
+    "raw_plant_slots": 23,
+    "power_coverage": {
+      "P": [
+        "E1"
+      ],
+      "H": [
+        "E1",
+        "E2"
+      ],
+      "G": [
+        "E2"
+      ]
+    },
+    "coordinates_scope": "局部三机；两种植物分开实例化；边界接收尚未装入整厂"
+  }
+}

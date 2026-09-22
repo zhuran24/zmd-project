@@ -1,0 +1,823 @@
+{
+  "scope": "局部守卫及条件落格，非完整可达布局或Rust运行",
+  "source_expression": "len(U)>=2 and any(w in assigned_slots for w in E)",
+  "reply_expression": "len(U)>=2 and any(w in assigned_slots for w in E)",
+  "truth_table": [
+    {
+      "new_species_count": 0,
+      "empty_slots": [],
+      "assigned_empty_slots": [],
+      "expected_stop": false,
+      "transfer_stop": false,
+      "reply_stop": false
+    },
+    {
+      "new_species_count": 0,
+      "empty_slots": [
+        "W_empty_0"
+      ],
+      "assigned_empty_slots": [],
+      "expected_stop": false,
+      "transfer_stop": false,
+      "reply_stop": false
+    },
+    {
+      "new_species_count": 0,
+      "empty_slots": [
+        "W_empty_0"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0"
+      ],
+      "expected_stop": false,
+      "transfer_stop": false,
+      "reply_stop": false
+    },
+    {
+      "new_species_count": 0,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "assigned_empty_slots": [],
+      "expected_stop": false,
+      "transfer_stop": false,
+      "reply_stop": false
+    },
+    {
+      "new_species_count": 0,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0"
+      ],
+      "expected_stop": false,
+      "transfer_stop": false,
+      "reply_stop": false
+    },
+    {
+      "new_species_count": 0,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_1"
+      ],
+      "expected_stop": false,
+      "transfer_stop": false,
+      "reply_stop": false
+    },
+    {
+      "new_species_count": 0,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "expected_stop": false,
+      "transfer_stop": false,
+      "reply_stop": false
+    },
+    {
+      "new_species_count": 0,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [],
+      "expected_stop": false,
+      "transfer_stop": false,
+      "reply_stop": false
+    },
+    {
+      "new_species_count": 0,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0"
+      ],
+      "expected_stop": false,
+      "transfer_stop": false,
+      "reply_stop": false
+    },
+    {
+      "new_species_count": 0,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_1"
+      ],
+      "expected_stop": false,
+      "transfer_stop": false,
+      "reply_stop": false
+    },
+    {
+      "new_species_count": 0,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_2"
+      ],
+      "expected_stop": false,
+      "transfer_stop": false,
+      "reply_stop": false
+    },
+    {
+      "new_species_count": 0,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "expected_stop": false,
+      "transfer_stop": false,
+      "reply_stop": false
+    },
+    {
+      "new_species_count": 0,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0",
+        "W_empty_2"
+      ],
+      "expected_stop": false,
+      "transfer_stop": false,
+      "reply_stop": false
+    },
+    {
+      "new_species_count": 0,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "expected_stop": false,
+      "transfer_stop": false,
+      "reply_stop": false
+    },
+    {
+      "new_species_count": 0,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "expected_stop": false,
+      "transfer_stop": false,
+      "reply_stop": false
+    },
+    {
+      "new_species_count": 1,
+      "empty_slots": [],
+      "assigned_empty_slots": [],
+      "expected_stop": false,
+      "transfer_stop": false,
+      "reply_stop": false
+    },
+    {
+      "new_species_count": 1,
+      "empty_slots": [
+        "W_empty_0"
+      ],
+      "assigned_empty_slots": [],
+      "expected_stop": false,
+      "transfer_stop": false,
+      "reply_stop": false
+    },
+    {
+      "new_species_count": 1,
+      "empty_slots": [
+        "W_empty_0"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0"
+      ],
+      "expected_stop": false,
+      "transfer_stop": false,
+      "reply_stop": false
+    },
+    {
+      "new_species_count": 1,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "assigned_empty_slots": [],
+      "expected_stop": false,
+      "transfer_stop": false,
+      "reply_stop": false
+    },
+    {
+      "new_species_count": 1,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0"
+      ],
+      "expected_stop": false,
+      "transfer_stop": false,
+      "reply_stop": false
+    },
+    {
+      "new_species_count": 1,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_1"
+      ],
+      "expected_stop": false,
+      "transfer_stop": false,
+      "reply_stop": false
+    },
+    {
+      "new_species_count": 1,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "expected_stop": false,
+      "transfer_stop": false,
+      "reply_stop": false
+    },
+    {
+      "new_species_count": 1,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [],
+      "expected_stop": false,
+      "transfer_stop": false,
+      "reply_stop": false
+    },
+    {
+      "new_species_count": 1,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0"
+      ],
+      "expected_stop": false,
+      "transfer_stop": false,
+      "reply_stop": false
+    },
+    {
+      "new_species_count": 1,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_1"
+      ],
+      "expected_stop": false,
+      "transfer_stop": false,
+      "reply_stop": false
+    },
+    {
+      "new_species_count": 1,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_2"
+      ],
+      "expected_stop": false,
+      "transfer_stop": false,
+      "reply_stop": false
+    },
+    {
+      "new_species_count": 1,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "expected_stop": false,
+      "transfer_stop": false,
+      "reply_stop": false
+    },
+    {
+      "new_species_count": 1,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0",
+        "W_empty_2"
+      ],
+      "expected_stop": false,
+      "transfer_stop": false,
+      "reply_stop": false
+    },
+    {
+      "new_species_count": 1,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "expected_stop": false,
+      "transfer_stop": false,
+      "reply_stop": false
+    },
+    {
+      "new_species_count": 1,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "expected_stop": false,
+      "transfer_stop": false,
+      "reply_stop": false
+    },
+    {
+      "new_species_count": 2,
+      "empty_slots": [],
+      "assigned_empty_slots": [],
+      "expected_stop": false,
+      "transfer_stop": false,
+      "reply_stop": false
+    },
+    {
+      "new_species_count": 2,
+      "empty_slots": [
+        "W_empty_0"
+      ],
+      "assigned_empty_slots": [],
+      "expected_stop": false,
+      "transfer_stop": false,
+      "reply_stop": false
+    },
+    {
+      "new_species_count": 2,
+      "empty_slots": [
+        "W_empty_0"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0"
+      ],
+      "expected_stop": true,
+      "transfer_stop": true,
+      "reply_stop": true
+    },
+    {
+      "new_species_count": 2,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "assigned_empty_slots": [],
+      "expected_stop": false,
+      "transfer_stop": false,
+      "reply_stop": false
+    },
+    {
+      "new_species_count": 2,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0"
+      ],
+      "expected_stop": true,
+      "transfer_stop": true,
+      "reply_stop": true
+    },
+    {
+      "new_species_count": 2,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_1"
+      ],
+      "expected_stop": true,
+      "transfer_stop": true,
+      "reply_stop": true
+    },
+    {
+      "new_species_count": 2,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "expected_stop": true,
+      "transfer_stop": true,
+      "reply_stop": true
+    },
+    {
+      "new_species_count": 2,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [],
+      "expected_stop": false,
+      "transfer_stop": false,
+      "reply_stop": false
+    },
+    {
+      "new_species_count": 2,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0"
+      ],
+      "expected_stop": true,
+      "transfer_stop": true,
+      "reply_stop": true
+    },
+    {
+      "new_species_count": 2,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_1"
+      ],
+      "expected_stop": true,
+      "transfer_stop": true,
+      "reply_stop": true
+    },
+    {
+      "new_species_count": 2,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_2"
+      ],
+      "expected_stop": true,
+      "transfer_stop": true,
+      "reply_stop": true
+    },
+    {
+      "new_species_count": 2,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "expected_stop": true,
+      "transfer_stop": true,
+      "reply_stop": true
+    },
+    {
+      "new_species_count": 2,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0",
+        "W_empty_2"
+      ],
+      "expected_stop": true,
+      "transfer_stop": true,
+      "reply_stop": true
+    },
+    {
+      "new_species_count": 2,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "expected_stop": true,
+      "transfer_stop": true,
+      "reply_stop": true
+    },
+    {
+      "new_species_count": 2,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "expected_stop": true,
+      "transfer_stop": true,
+      "reply_stop": true
+    },
+    {
+      "new_species_count": 3,
+      "empty_slots": [],
+      "assigned_empty_slots": [],
+      "expected_stop": false,
+      "transfer_stop": false,
+      "reply_stop": false
+    },
+    {
+      "new_species_count": 3,
+      "empty_slots": [
+        "W_empty_0"
+      ],
+      "assigned_empty_slots": [],
+      "expected_stop": false,
+      "transfer_stop": false,
+      "reply_stop": false
+    },
+    {
+      "new_species_count": 3,
+      "empty_slots": [
+        "W_empty_0"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0"
+      ],
+      "expected_stop": true,
+      "transfer_stop": true,
+      "reply_stop": true
+    },
+    {
+      "new_species_count": 3,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "assigned_empty_slots": [],
+      "expected_stop": false,
+      "transfer_stop": false,
+      "reply_stop": false
+    },
+    {
+      "new_species_count": 3,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0"
+      ],
+      "expected_stop": true,
+      "transfer_stop": true,
+      "reply_stop": true
+    },
+    {
+      "new_species_count": 3,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_1"
+      ],
+      "expected_stop": true,
+      "transfer_stop": true,
+      "reply_stop": true
+    },
+    {
+      "new_species_count": 3,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "expected_stop": true,
+      "transfer_stop": true,
+      "reply_stop": true
+    },
+    {
+      "new_species_count": 3,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [],
+      "expected_stop": false,
+      "transfer_stop": false,
+      "reply_stop": false
+    },
+    {
+      "new_species_count": 3,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0"
+      ],
+      "expected_stop": true,
+      "transfer_stop": true,
+      "reply_stop": true
+    },
+    {
+      "new_species_count": 3,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_1"
+      ],
+      "expected_stop": true,
+      "transfer_stop": true,
+      "reply_stop": true
+    },
+    {
+      "new_species_count": 3,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_2"
+      ],
+      "expected_stop": true,
+      "transfer_stop": true,
+      "reply_stop": true
+    },
+    {
+      "new_species_count": 3,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0",
+        "W_empty_1"
+      ],
+      "expected_stop": true,
+      "transfer_stop": true,
+      "reply_stop": true
+    },
+    {
+      "new_species_count": 3,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0",
+        "W_empty_2"
+      ],
+      "expected_stop": true,
+      "transfer_stop": true,
+      "reply_stop": true
+    },
+    {
+      "new_species_count": 3,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "expected_stop": true,
+      "transfer_stop": true,
+      "reply_stop": true
+    },
+    {
+      "new_species_count": 3,
+      "empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "assigned_empty_slots": [
+        "W_empty_0",
+        "W_empty_1",
+        "W_empty_2"
+      ],
+      "expected_stop": true,
+      "transfer_stop": true,
+      "reply_stop": true
+    }
+  ],
+  "counterexample": {
+    "U": [
+      "高容谷地电池",
+      "精选荞愈胶囊"
+    ],
+    "E": [
+      "W_empty"
+    ],
+    "O": [
+      "W_empty"
+    ],
+    "assigned_slots": [
+      "W_ore_a",
+      "W_ore_b"
+    ],
+    "stop": false,
+    "allocation": {
+      "精选荞愈胶囊": "W_empty",
+      "高容谷地电池": "W_new_e9ab98e5aeb9e8b0b7e59cb0e794b5e6b1a0"
+    },
+    "O_after": [],
+    "quantities_after": {
+      "高容谷地电池": 1,
+      "精选荞愈胶囊": 1
+    },
+    "conditions": [
+      "有电且传输开、冷却0",
+      "身份和O完整",
+      "新标签无冲突",
+      "无改指派/拿取/离线且retain_history"
+    ]
+  }
+}

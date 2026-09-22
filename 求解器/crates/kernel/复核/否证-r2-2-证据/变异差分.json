@@ -1,0 +1,578 @@
+{
+  "phase": [
+    {
+      "path": "/timeline/relations/26/after",
+      "before": "supply_probe",
+      "after": "completion_probe"
+    },
+    {
+      "path": "/timeline/relations/26/before",
+      "before": "completion_probe",
+      "after": "supply_probe"
+    }
+  ],
+  "branch": [
+    {
+      "path": "/settings/gates/0/total_limit",
+      "before": null,
+      "after": {
+        "value": "1",
+        "category": "候选"
+      }
+    }
+  ],
+  "reachability-null": [
+    {
+      "path": "/initial_state/reachability",
+      "before": {
+        "status": "specified",
+        "value": {
+          "kind": "conditional_history",
+          "document": "混做粉碎机两下游-黄金轨迹.md",
+          "scope": "本输入历史及初值读法；不覆盖全部建造或调试时刻"
+        },
+        "basis": [
+          "黄金轨迹 §2；任务操作精度"
+        ]
+      },
+      "after": null
+    }
+  ],
+  "reachability-number": [
+    {
+      "path": "/initial_state/reachability",
+      "before": {
+        "status": "specified",
+        "value": {
+          "kind": "conditional_history",
+          "document": "混做粉碎机两下游-黄金轨迹.md",
+          "scope": "本输入历史及初值读法；不覆盖全部建造或调试时刻"
+        },
+        "basis": [
+          "黄金轨迹 §2；任务操作精度"
+        ]
+      },
+      "after": 7
+    }
+  ],
+  "reachability-object": [
+    {
+      "path": "/initial_state/reachability/basis",
+      "before": [
+        "黄金轨迹 §2；任务操作精度"
+      ],
+      "after": "<缺字段>"
+    },
+    {
+      "path": "/initial_state/reachability/status",
+      "before": "specified",
+      "after": "<缺字段>"
+    },
+    {
+      "path": "/initial_state/reachability/value",
+      "before": {
+        "kind": "conditional_history",
+        "document": "混做粉碎机两下游-黄金轨迹.md",
+        "scope": "本输入历史及初值读法；不覆盖全部建造或调试时刻"
+      },
+      "after": "<缺字段>"
+    }
+  ],
+  "reachability-string": [
+    {
+      "path": "/initial_state/reachability",
+      "before": {
+        "status": "specified",
+        "value": {
+          "kind": "conditional_history",
+          "document": "混做粉碎机两下游-黄金轨迹.md",
+          "scope": "本输入历史及初值读法；不覆盖全部建造或调试时刻"
+        },
+        "basis": [
+          "黄金轨迹 §2；任务操作精度"
+        ]
+      },
+      "after": "合法"
+    }
+  ],
+  "initial-unlisted-missing": [
+    {
+      "path": "/initial_state/warehouse/unlisted",
+      "before": "empty",
+      "after": "<缺字段>"
+    }
+  ],
+  "initial-unlisted-filled": [
+    {
+      "path": "/initial_state/warehouse/unlisted",
+      "before": "empty",
+      "after": "filled"
+    }
+  ],
+  "movement-build-alias": [
+    {
+      "path": "/initial_state/nonwarehouse/value/semantic_context/tick_context/value/movements/0/event",
+      "before": "J|1|0|1",
+      "after": "build_0"
+    }
+  ],
+  "movement-future-id": [
+    {
+      "path": "/initial_state/nonwarehouse/value/semantic_context/tick_context/value/movements/0/event",
+      "before": "J|1|0|1",
+      "after": "J|2|0|0"
+    }
+  ],
+  "混做粉碎机两下游-运行记录-kernel.json": [],
+  "混做粉碎机两下游-运行记录-kernel-unknown_axis.json": [
+    {
+      "path": "/uncovered_axes/0/axis",
+      "before": "polling.direct_peer",
+      "after": "fabricated.axis"
+    }
+  ],
+  "混做粉碎机两下游-运行记录-kernel-fabricated_exercised.json": [
+    {
+      "path": "/uncovered_axes/36/coverage_status",
+      "before": "not_exercised",
+      "after": "exercised"
+    },
+    {
+      "path": "/uncovered_axes/36/evidence/0",
+      "before": "本次未记录该机制实际后效；参数赋值不等于覆盖。",
+      "after": "never_executed_event"
+    }
+  ],
+  "混做粉碎机两下游-运行记录-kernel-wrong_disposition.json": [
+    {
+      "path": "/uncovered_axes/95/disposition",
+      "before": "超出覆盖即停",
+      "after": "已定"
+    }
+  ],
+  "混做粉碎机两下游-运行记录-kernel-missing_evidence.json": [
+    {
+      "path": "/uncovered_axes/56/evidence",
+      "before": [
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"0\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"1\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"2\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"3\"}}}"
+      ],
+      "after": [
+        "无逐边界报告"
+      ]
+    },
+    {
+      "path": "/uncovered_axes/57/evidence",
+      "before": [
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"0\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"1\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"2\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"3\"}}}"
+      ],
+      "after": [
+        "无逐边界报告"
+      ]
+    }
+  ],
+  "混做粉碎机两下游-运行记录-kernel-wrong_profile.json": [
+    {
+      "path": "/profile_id",
+      "before": "kernel_profile_v1",
+      "after": "fabricated_profile"
+    }
+  ],
+  "混做粉碎机两下游-运行记录-kernel-wrong_producer_path.json": [
+    {
+      "path": "/producer/path",
+      "before": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs",
+      "after": "/nonexistent/fabricated.rs"
+    }
+  ],
+  "混做粉碎机两下游-运行记录-kernel-bad_summary_control.json": [
+    {
+      "path": "/trace/ticks/0/summary/warehouse_ore",
+      "before": "79999",
+      "after": "123"
+    }
+  ],
+  "混做粉碎机两下游-运行记录-kernel-coverage_fake_axis.json": [
+    {
+      "path": "/uncovered_axes/36/axis",
+      "before": "transfer.cooldown_scope",
+      "after": "engineering.fabricated_axis"
+    }
+  ],
+  "混做粉碎机两下游-运行记录-kernel-coverage_fake_evidence.json": [
+    {
+      "path": "/uncovered_axes/6/evidence",
+      "before": [
+        "J|2|0|11",
+        "J|3|0|11"
+      ],
+      "after": [
+        "not_registered_anywhere"
+      ]
+    }
+  ],
+  "混做粉碎机两下游-运行记录-kernel-coverage_fake_transfer.json": [
+    {
+      "path": "/uncovered_axes/36/coverage_status",
+      "before": "not_exercised",
+      "after": "exercised"
+    },
+    {
+      "path": "/uncovered_axes/36/evidence/0",
+      "before": "本次未记录该机制实际后效；参数赋值不等于覆盖。",
+      "after": "J|999|0|999"
+    }
+  ],
+  "混做粉碎机两下游-运行记录-checkpoint_delta-kernel.json": [],
+  "混做粉碎机两下游-运行记录-checkpoint_delta-kernel-unknown_axis.json": [
+    {
+      "path": "/uncovered_axes/0/axis",
+      "before": "polling.direct_peer",
+      "after": "fabricated.axis"
+    }
+  ],
+  "混做粉碎机两下游-运行记录-checkpoint_delta-kernel-fabricated_exercised.json": [
+    {
+      "path": "/uncovered_axes/36/coverage_status",
+      "before": "not_exercised",
+      "after": "exercised"
+    },
+    {
+      "path": "/uncovered_axes/36/evidence/0",
+      "before": "本次未记录该机制实际后效；参数赋值不等于覆盖。",
+      "after": "never_executed_event"
+    }
+  ],
+  "混做粉碎机两下游-运行记录-checkpoint_delta-kernel-wrong_disposition.json": [
+    {
+      "path": "/uncovered_axes/95/disposition",
+      "before": "超出覆盖即停",
+      "after": "已定"
+    }
+  ],
+  "混做粉碎机两下游-运行记录-checkpoint_delta-kernel-missing_evidence.json": [
+    {
+      "path": "/uncovered_axes/56/evidence",
+      "before": [
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"0\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"1\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"2\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"3\"}}}"
+      ],
+      "after": [
+        "无逐边界报告"
+      ]
+    },
+    {
+      "path": "/uncovered_axes/57/evidence",
+      "before": [
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"0\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"1\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"2\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"3\"}}}"
+      ],
+      "after": [
+        "无逐边界报告"
+      ]
+    }
+  ],
+  "混做粉碎机两下游-运行记录-checkpoint_delta-kernel-wrong_profile.json": [
+    {
+      "path": "/profile_id",
+      "before": "kernel_profile_v1",
+      "after": "fabricated_profile"
+    }
+  ],
+  "混做粉碎机两下游-运行记录-checkpoint_delta-kernel-wrong_producer_path.json": [
+    {
+      "path": "/producer/path",
+      "before": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs",
+      "after": "/nonexistent/fabricated.rs"
+    }
+  ],
+  "混做粉碎机两下游-运行记录-checkpoint_delta-kernel-bad_summary_control.json": [
+    {
+      "path": "/trace/ticks/0/summary/warehouse_ore",
+      "before": "79999",
+      "after": "123"
+    }
+  ],
+  "混做粉碎机两下游-运行记录-checkpoint_delta-kernel-coverage_fake_axis.json": [
+    {
+      "path": "/uncovered_axes/36/axis",
+      "before": "transfer.cooldown_scope",
+      "after": "engineering.fabricated_axis"
+    }
+  ],
+  "混做粉碎机两下游-运行记录-checkpoint_delta-kernel-coverage_fake_evidence.json": [
+    {
+      "path": "/uncovered_axes/6/evidence",
+      "before": [
+        "J|2|0|11",
+        "J|3|0|11"
+      ],
+      "after": [
+        "not_registered_anywhere"
+      ]
+    }
+  ],
+  "混做粉碎机两下游-运行记录-checkpoint_delta-kernel-coverage_fake_transfer.json": [
+    {
+      "path": "/uncovered_axes/36/coverage_status",
+      "before": "not_exercised",
+      "after": "exercised"
+    },
+    {
+      "path": "/uncovered_axes/36/evidence/0",
+      "before": "本次未记录该机制实际后效；参数赋值不等于覆盖。",
+      "after": "J|999|0|999"
+    }
+  ],
+  "分流器三路轮询-运行记录-kernel.json": [],
+  "分流器三路轮询-运行记录-kernel-unknown_axis.json": [
+    {
+      "path": "/uncovered_axes/0/axis",
+      "before": "polling.direct_peer",
+      "after": "fabricated.axis"
+    }
+  ],
+  "分流器三路轮询-运行记录-kernel-fabricated_exercised.json": [
+    {
+      "path": "/uncovered_axes/36/coverage_status",
+      "before": "not_exercised",
+      "after": "exercised"
+    },
+    {
+      "path": "/uncovered_axes/36/evidence/0",
+      "before": "本次未记录该机制实际后效；参数赋值不等于覆盖。",
+      "after": "never_executed_event"
+    }
+  ],
+  "分流器三路轮询-运行记录-kernel-wrong_disposition.json": [
+    {
+      "path": "/uncovered_axes/95/disposition",
+      "before": "超出覆盖即停",
+      "after": "已定"
+    }
+  ],
+  "分流器三路轮询-运行记录-kernel-missing_evidence.json": [
+    {
+      "path": "/uncovered_axes/56/evidence",
+      "before": [
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"0\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"1\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"2\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"3\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"4\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"5\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"6\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"7\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"8\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"9\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"10\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"11\"}}}"
+      ],
+      "after": [
+        "无逐边界报告"
+      ]
+    },
+    {
+      "path": "/uncovered_axes/57/evidence",
+      "before": [
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"0\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"1\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"2\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"3\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"4\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"5\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"6\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"7\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"8\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"9\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"10\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"11\"}}}"
+      ],
+      "after": [
+        "无逐边界报告"
+      ]
+    }
+  ],
+  "分流器三路轮询-运行记录-kernel-wrong_profile.json": [
+    {
+      "path": "/profile_id",
+      "before": "kernel_profile_v1",
+      "after": "fabricated_profile"
+    }
+  ],
+  "分流器三路轮询-运行记录-kernel-wrong_producer_path.json": [
+    {
+      "path": "/producer/path",
+      "before": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs",
+      "after": "/nonexistent/fabricated.rs"
+    }
+  ],
+  "分流器三路轮询-运行记录-kernel-bad_summary_control.json": [
+    {
+      "path": "/trace/ticks/0/summary/warehouse_ore",
+      "before": "79997",
+      "after": "123"
+    }
+  ],
+  "分流器三路轮询-运行记录-kernel-coverage_fake_axis.json": [
+    {
+      "path": "/uncovered_axes/36/axis",
+      "before": "transfer.cooldown_scope",
+      "after": "engineering.fabricated_axis"
+    }
+  ],
+  "分流器三路轮询-运行记录-kernel-coverage_fake_evidence.json": [
+    {
+      "path": "/uncovered_axes/3/evidence",
+      "before": [
+        "W|6|probe_gate_a",
+        "W|6|probe_gate_b"
+      ],
+      "after": [
+        "not_registered_anywhere"
+      ]
+    }
+  ],
+  "分流器三路轮询-运行记录-kernel-coverage_fake_transfer.json": [
+    {
+      "path": "/uncovered_axes/36/coverage_status",
+      "before": "not_exercised",
+      "after": "exercised"
+    },
+    {
+      "path": "/uncovered_axes/36/evidence/0",
+      "before": "本次未记录该机制实际后效；参数赋值不等于覆盖。",
+      "after": "J|999|0|999"
+    }
+  ],
+  "分流器三路轮询-运行记录-checkpoint_delta-kernel.json": [],
+  "分流器三路轮询-运行记录-checkpoint_delta-kernel-unknown_axis.json": [
+    {
+      "path": "/uncovered_axes/0/axis",
+      "before": "polling.direct_peer",
+      "after": "fabricated.axis"
+    }
+  ],
+  "分流器三路轮询-运行记录-checkpoint_delta-kernel-fabricated_exercised.json": [
+    {
+      "path": "/uncovered_axes/36/coverage_status",
+      "before": "not_exercised",
+      "after": "exercised"
+    },
+    {
+      "path": "/uncovered_axes/36/evidence/0",
+      "before": "本次未记录该机制实际后效；参数赋值不等于覆盖。",
+      "after": "never_executed_event"
+    }
+  ],
+  "分流器三路轮询-运行记录-checkpoint_delta-kernel-wrong_disposition.json": [
+    {
+      "path": "/uncovered_axes/95/disposition",
+      "before": "超出覆盖即停",
+      "after": "已定"
+    }
+  ],
+  "分流器三路轮询-运行记录-checkpoint_delta-kernel-missing_evidence.json": [
+    {
+      "path": "/uncovered_axes/56/evidence",
+      "before": [
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"0\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"1\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"2\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"3\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"4\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"5\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"6\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"7\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"8\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"9\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"10\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"11\"}}}"
+      ],
+      "after": [
+        "无逐边界报告"
+      ]
+    },
+    {
+      "path": "/uncovered_axes/57/evidence",
+      "before": [
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"0\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"1\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"2\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"3\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"4\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"5\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"6\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"7\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"8\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"9\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"10\"}}}",
+        "{\"both_products_capacity_and_path\":false,\"core_input_channels\":[],\"enabled_transfer_units\":[],\"path_scope\":\"入库途径仅指当前现存核心存货PC或有电且开关开的箱体传输接口；不承诺成品已到达、端口本刻余量、冷却就绪或全程送料可达。\",\"phase\":\"after_closure\",\"products\":[{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"高容谷地电池\",\"physical_path_exists\":false},{\"capacity_and_path\":false,\"capacity_available\":true,\"free_capacity\":{\"category\":\"算术推论\",\"value\":\"80000\"},\"item\":\"精选荞愈胶囊\",\"physical_path_exists\":false}],\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"11\"}}}"
+      ],
+      "after": [
+        "无逐边界报告"
+      ]
+    }
+  ],
+  "分流器三路轮询-运行记录-checkpoint_delta-kernel-wrong_profile.json": [
+    {
+      "path": "/profile_id",
+      "before": "kernel_profile_v1",
+      "after": "fabricated_profile"
+    }
+  ],
+  "分流器三路轮询-运行记录-checkpoint_delta-kernel-wrong_producer_path.json": [
+    {
+      "path": "/producer/path",
+      "before": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs",
+      "after": "/nonexistent/fabricated.rs"
+    }
+  ],
+  "分流器三路轮询-运行记录-checkpoint_delta-kernel-bad_summary_control.json": [
+    {
+      "path": "/trace/ticks/0/summary/warehouse_ore",
+      "before": "79997",
+      "after": "123"
+    }
+  ],
+  "分流器三路轮询-运行记录-checkpoint_delta-kernel-coverage_fake_axis.json": [
+    {
+      "path": "/uncovered_axes/36/axis",
+      "before": "transfer.cooldown_scope",
+      "after": "engineering.fabricated_axis"
+    }
+  ],
+  "分流器三路轮询-运行记录-checkpoint_delta-kernel-coverage_fake_evidence.json": [
+    {
+      "path": "/uncovered_axes/3/evidence",
+      "before": [
+        "W|6|probe_gate_a",
+        "W|6|probe_gate_b"
+      ],
+      "after": [
+        "not_registered_anywhere"
+      ]
+    }
+  ],
+  "分流器三路轮询-运行记录-checkpoint_delta-kernel-coverage_fake_transfer.json": [
+    {
+      "path": "/uncovered_axes/36/coverage_status",
+      "before": "not_exercised",
+      "after": "exercised"
+    },
+    {
+      "path": "/uncovered_axes/36/evidence/0",
+      "before": "本次未记录该机制实际后效；参数赋值不等于覆盖。",
+      "after": "J|999|0|999"
+    }
+  ]
+}

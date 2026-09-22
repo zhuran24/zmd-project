@@ -1,0 +1,58 @@
+[
+  {
+    "case": "unused_recipe_duration",
+    "description": "配方 精炼-蓝铁粉末 的 duration.value：1 → 2",
+    "formal_verify": "accepted",
+    "cargo_exit_code": 0,
+    "cargo_reported_pass_counts": [
+      "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+      "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+      "test result: ok. 28 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.34s",
+      "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+    ]
+  },
+  {
+    "case": "unit_width",
+    "description": "粉碎机 dimensions.width.value：3 → 4",
+    "formal_verify": "accepted"
+  },
+  {
+    "case": "unit_capacity",
+    "description": "协议核心库存 capacity.value：80000 → 80001",
+    "formal_verify": "accepted"
+  },
+  {
+    "case": "power_coverage",
+    "description": "供电桩 coverage.width.value：12 → 13",
+    "formal_verify": "accepted",
+    "cargo_exit_code": 0,
+    "cargo_reported_pass_counts": [
+      "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+      "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+      "test result: ok. 28 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.32s",
+      "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+    ]
+  },
+  {
+    "case": "port_category",
+    "description": "协议核心 ports.input_count.category：条文直引 → 候选",
+    "formal_verify": "accepted",
+    "cargo_exit_code": 0,
+    "cargo_reported_pass_counts": [
+      "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+      "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+      "test result: ok. 28 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.31s",
+      "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+    ]
+  },
+  {
+    "case": "lower_bound",
+    "description": "粉碎机 static_lower_bounds.machines.value：68 → 67",
+    "formal_verify": "accepted"
+  },
+  {
+    "case": "cooldown_control",
+    "description": "对照：箱体 transfer.cooldown_ticks.value：5 → 4",
+    "formal_verify": "rejected"
+  }
+]

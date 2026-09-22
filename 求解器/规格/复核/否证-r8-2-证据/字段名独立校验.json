@@ -1,0 +1,52 @@
+{
+  "scope": "仅验证当前schema的结构；不表示轨迹合法、来源核验或目标认证",
+  "schema_path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.schema.json",
+  "schema_sha256": "5c3cb1ace272c34439381ba770b000b26bdb745db20e52ca4008ff13be0d657e",
+  "validator": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/2020.js",
+  "validator_stderr": "",
+  "original": {
+    "root_valid": true,
+    "run_record_valid": true,
+    "run_record_errors": null
+  },
+  "renamed": {
+    "root_valid": false,
+    "run_record_valid": false,
+    "run_record_errors": [
+      {
+        "instancePath": "",
+        "schemaPath": "#/required",
+        "keyword": "required",
+        "params": {
+          "missingProperty": "validation_scope"
+        },
+        "message": "must have required property 'validation_scope'"
+      },
+      {
+        "instancePath": "",
+        "schemaPath": "#/additionalProperties",
+        "keyword": "additionalProperties",
+        "params": {
+          "additionalProperty": "verification_scope"
+        },
+        "message": "must NOT have additional properties"
+      }
+    ]
+  },
+  "both": {
+    "root_valid": false,
+    "run_record_valid": false,
+    "run_record_errors": [
+      {
+        "instancePath": "",
+        "schemaPath": "#/additionalProperties",
+        "keyword": "additionalProperties",
+        "params": {
+          "additionalProperty": "verification_scope"
+        },
+        "message": "must NOT have additional properties"
+      }
+    ]
+  },
+  "result": "PASS：正确字段通过，改名同时触发缺字段和未知字段，保留两名也失败"
+}

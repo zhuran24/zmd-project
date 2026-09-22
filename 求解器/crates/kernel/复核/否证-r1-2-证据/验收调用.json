@@ -1,0 +1,22 @@
+{
+  "stdin_source": "\nuse kernel::{output::verify_record, value::read_json, Config, Input};\nuse serde_json::json;\nuse std::path::PathBuf;\nfn main() {\n    let root=PathBuf::from(std::env::args().nth(1).unwrap());\n    let out=root.join(\"crates/kernel/复核/否证-r1-2-证据\");\n    let cfg=root.join(\"规格/内核配置-v1.json\");\n    let config=Config::parse(read_json(&cfg).unwrap()).unwrap();\n    let mut results=Vec::new();\n    for name in [\"混做粉碎机两下游\", \"分流器三路轮询\"] {\n        for kind in [\"original\", \"remove-formal\", \"remove-all\", \"false-scope\", \"false-count\", \"false-summary\"] {\n            let input=root.join(format!(\"数据/样例/{name}.json\"));\n            let path=if kind==\"original\" {root.join(format!(\"数据/样例/{name}-运行记录-kernel.json\"))} else {out.join(format!(\"{name}-{kind}.json\"))};\n            let record=read_json(&path).unwrap();\n            let result=verify_record(&record,Input::load(&input,&config,false).unwrap(),&config,&cfg);\n            results.push(json!({\"case\":format!(\"{name}:{kind}\"),\"accepted\":result.is_ok(),\"error\":result.err().map(|e|e.to_string())}));\n        }\n    }\n    for name in [\"ore-shortage\",\"pending-historical-alias\",\"after-closure-control\"] {\n        let path=out.join(format!(\"{name}-record.json\"));\n        let input=out.join(format!(\"{name}-input.json\"));\n        let result=verify_record(&read_json(&path).unwrap(),Input::load(&input,&config,false).unwrap(),&config,&cfg);\n        results.push(json!({\"case\":name,\"accepted\":result.is_ok(),\"error\":result.err().map(|e|e.to_string())}));\n    }\n    println!(\"{}\",serde_json::to_string_pretty(&results).unwrap());\n}\n",
+  "compile_command": [
+    "rustc",
+    "--edition=2021",
+    "--crate-name",
+    "verify_probe",
+    "-",
+    "--extern",
+    "kernel=/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-2-证据/libkernel.rlib",
+    "--extern",
+    "serde_json=/home/zhuran24/zmd-research-fresh/求解器/target/debug/deps/libserde_json-0ab88e76c2088d71.rlib",
+    "-L",
+    "dependency=/home/zhuran24/zmd-research-fresh/求解器/target/debug/deps",
+    "-o",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-2-证据/verify-probe"
+  ],
+  "run_command": [
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-2-证据/verify-probe",
+    "/home/zhuran24/zmd-research-fresh/求解器"
+  ]
+}

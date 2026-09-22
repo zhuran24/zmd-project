@@ -1,0 +1,1251 @@
+{
+  "桥接器双通路": {
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/桥接器双通路-运行记录-v3-kernel.json",
+    "ticks": 30,
+    "axis_samples": {
+      "transfer.judgment": {
+        "claimed": "exercised",
+        "event_references_exist": true,
+        "count": 12,
+        "first_event": {
+          "time": 0,
+          "event": {
+            "basis": [
+              "规则 L20–21、L36",
+              "受限转移定义 §4.3"
+            ],
+            "detail": "empty_box",
+            "event": "J|0|0|5",
+            "operation": "transfer",
+            "outcome": "success",
+            "target": "north_box"
+          }
+        }
+      },
+      "warehouse.delivery_count": {
+        "claimed": "exercised",
+        "event_references_exist": true,
+        "count": 4,
+        "first_event": {
+          "time": 5,
+          "event": {
+            "basis": [
+              "规则 L20–21、L36",
+              "受限转移定义 §4.3"
+            ],
+            "detail": "whole_box",
+            "event": "J|5|0|5",
+            "operation": "transfer",
+            "outcome": "success",
+            "target": "north_box"
+          }
+        }
+      },
+      "bridge.inventory_scope": {
+        "claimed": "exercised",
+        "event_references_exist": true,
+        "count": 32,
+        "first_event": {
+          "time": 0,
+          "event": {
+            "basis": [
+              "规则 L13、L15–17、L23–25、L29–32",
+              "约束端口速率",
+              "受限模型声明 polling.both_failure",
+              "内核输入 §5.2、§6.3"
+            ],
+            "detail": "",
+            "event": "J|0|0|0",
+            "operation": "move",
+            "outcome": "success",
+            "target": "PC|south_box:north:2|bridge:south:0"
+          }
+        }
+      },
+      "bridge.scheduling_scope": {
+        "claimed": "exercised",
+        "event_references_exist": true,
+        "count": 32,
+        "first_event": {
+          "time": 0,
+          "event": {
+            "basis": [
+              "规则 L13、L15–17、L23–25、L29–32",
+              "约束端口速率",
+              "受限模型声明 polling.both_failure",
+              "内核输入 §5.2、§6.3"
+            ],
+            "detail": "",
+            "event": "J|0|0|0",
+            "operation": "move",
+            "outcome": "success",
+            "target": "PC|south_box:north:2|bridge:south:0"
+          }
+        }
+      },
+      "connection.bridge_first_contact": {
+        "claimed": "exercised",
+        "event_references_exist": true,
+        "count": 32,
+        "first_event": {
+          "time": 0,
+          "event": {
+            "basis": [
+              "规则 L13、L15–17、L23–25、L29–32",
+              "约束端口速率",
+              "受限模型声明 polling.both_failure",
+              "内核输入 §5.2、§6.3"
+            ],
+            "detail": "",
+            "event": "J|0|0|0",
+            "operation": "move",
+            "outcome": "success",
+            "target": "PC|south_box:north:2|bridge:south:0"
+          }
+        }
+      },
+      "transfer.cooldown_scope": {
+        "claimed": "exercised",
+        "event_references_exist": true,
+        "count": 12,
+        "first_event": {
+          "time": 0,
+          "event": {
+            "basis": [
+              "规则 L20–21、L36",
+              "受限转移定义 §4.3"
+            ],
+            "detail": "empty_box",
+            "event": "J|0|0|5",
+            "operation": "transfer",
+            "outcome": "success",
+            "target": "north_box"
+          }
+        }
+      },
+      "transfer.failure_cooldown": {
+        "claimed": "exercised",
+        "event_references_exist": true,
+        "count": 12,
+        "first_event": {
+          "time": 0,
+          "event": {
+            "basis": [
+              "规则 L20–21、L36",
+              "受限转移定义 §4.3"
+            ],
+            "detail": "empty_box",
+            "event": "J|0|0|5",
+            "operation": "transfer",
+            "outcome": "success",
+            "target": "north_box"
+          }
+        }
+      },
+      "transfer.partial_acceptance": {
+        "claimed": "exercised",
+        "event_references_exist": true,
+        "count": 12,
+        "first_event": {
+          "time": 0,
+          "event": {
+            "basis": [
+              "规则 L20–21、L36",
+              "受限转移定义 §4.3"
+            ],
+            "detail": "empty_box",
+            "event": "J|0|0|5",
+            "operation": "transfer",
+            "outcome": "success",
+            "target": "north_box"
+          }
+        }
+      },
+      "warehouse.empty_slot_identity": {
+        "claimed": "exercised",
+        "event_references_exist": true,
+        "count": 4,
+        "first_event": {
+          "time": 5,
+          "event": {
+            "basis": [
+              "规则 L20–21、L36",
+              "受限转移定义 §4.3"
+            ],
+            "detail": "whole_box",
+            "event": "J|5|0|5",
+            "operation": "transfer",
+            "outcome": "success",
+            "target": "north_box"
+          }
+        }
+      },
+      "bridge.capacity": {
+        "claimed": "exercised",
+        "event_references_exist": true,
+        "count": 32,
+        "first_event": {
+          "time": 0,
+          "event": {
+            "basis": [
+              "规则 L13、L15–17、L23–25、L29–32",
+              "约束端口速率",
+              "受限模型声明 polling.both_failure",
+              "内核输入 §5.2、§6.3"
+            ],
+            "detail": "",
+            "event": "J|0|0|0",
+            "operation": "move",
+            "outcome": "success",
+            "target": "PC|south_box:north:2|bridge:south:0"
+          }
+        }
+      },
+      "transfer.phase": {
+        "claimed": "exercised",
+        "event_references_exist": true,
+        "count": 12,
+        "first_event": {
+          "time": 0,
+          "event": {
+            "basis": [
+              "规则 L20–21、L36",
+              "受限转移定义 §4.3"
+            ],
+            "detail": "empty_box",
+            "event": "J|0|0|5",
+            "operation": "transfer",
+            "outcome": "success",
+            "target": "north_box"
+          }
+        }
+      }
+    },
+    "bridge_flux": {
+      "PC|south_box:north:2|bridge:south:0": 8,
+      "PC|west_box:north:2|bridge:west:0": 8,
+      "PC|bridge:north:0|north_box:south:0": 8,
+      "PC|bridge:east:0|east_box:south:0": 8
+    },
+    "wireless_inbound": {
+      "高容谷地电池": 8,
+      "精选荞愈胶囊": 8
+    },
+    "bridge_connection_history": [
+      {
+        "action": "open",
+        "cause": "build_2",
+        "channel": "PC|south_box:north:2|bridge:south:0",
+        "construction_basis": {
+          "basis": [
+            "受限转移§1：明确有限历史"
+          ],
+          "status": "specified",
+          "value": {
+            "later_build": "build_2",
+            "source_build": "build_1",
+            "target_build": "build_2"
+          }
+        },
+        "event": "connect_0",
+        "geometry_snapshot": "built_layout",
+        "time": -5
+      },
+      {
+        "action": "open",
+        "cause": "build_3",
+        "channel": "PC|bridge:north:0|north_box:south:0",
+        "construction_basis": {
+          "basis": [
+            "受限转移§1：明确有限历史"
+          ],
+          "status": "specified",
+          "value": {
+            "later_build": "build_3",
+            "source_build": "build_2",
+            "target_build": "build_3"
+          }
+        },
+        "event": "connect_1",
+        "geometry_snapshot": "built_layout",
+        "time": -4
+      },
+      {
+        "action": "open",
+        "cause": "build_5",
+        "channel": "PC|bridge:east:0|east_box:south:0",
+        "construction_basis": {
+          "basis": [
+            "受限转移§1：明确有限历史"
+          ],
+          "status": "specified",
+          "value": {
+            "later_build": "build_5",
+            "source_build": "build_2",
+            "target_build": "build_5"
+          }
+        },
+        "event": "connect_2",
+        "geometry_snapshot": "built_layout",
+        "time": -2
+      },
+      {
+        "action": "open",
+        "cause": "build_4",
+        "channel": "PC|west_box:north:2|bridge:west:0",
+        "construction_basis": {
+          "basis": [
+            "受限转移§1：明确有限历史"
+          ],
+          "status": "specified",
+          "value": {
+            "later_build": "build_4",
+            "source_build": "build_4",
+            "target_build": "build_2"
+          }
+        },
+        "event": "connect_3",
+        "geometry_snapshot": "built_layout",
+        "time": -3
+      }
+    ],
+    "bridge_axes_at_input": {
+      "horizontal": {
+        "basis": [
+          "候选先接历史：西侧先接"
+        ],
+        "input_side": "west",
+        "status": "resolved"
+      },
+      "vertical": {
+        "basis": [
+          "候选先接历史：南侧先接"
+        ],
+        "input_side": "south",
+        "status": "resolved"
+      }
+    },
+    "first_contact_executed_in_trace": false
+  },
+  "传输拒收与暂停核验": {
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/传输拒收与暂停核验-运行记录-v3-kernel.json",
+    "ticks": 12,
+    "axis_samples": {
+      "transfer.judgment": {
+        "claimed": "exercised",
+        "event_references_exist": true,
+        "count": 3,
+        "first_event": {
+          "time": 0,
+          "event": {
+            "basis": [
+              "规则 L20–21、L36",
+              "受限转移定义 §4.3"
+            ],
+            "detail": "warehouse_capacity",
+            "event": "J|0|0|4",
+            "operation": "transfer",
+            "outcome": "failure",
+            "target": "south_box"
+          }
+        }
+      },
+      "bridge.inventory_scope": {
+        "claimed": "exercised",
+        "event_references_exist": true,
+        "count": 6,
+        "first_event": {
+          "time": 0,
+          "event": {
+            "basis": [
+              "规则 L13、L15–17、L23–25、L29–32",
+              "约束端口速率",
+              "受限模型声明 polling.both_failure",
+              "内核输入 §5.2、§6.3"
+            ],
+            "detail": "",
+            "event": "J|0|0|0",
+            "operation": "move",
+            "outcome": "success",
+            "target": "PC|south_box:north:2|bridge:south:0"
+          }
+        }
+      },
+      "bridge.scheduling_scope": {
+        "claimed": "exercised",
+        "event_references_exist": true,
+        "count": 6,
+        "first_event": {
+          "time": 0,
+          "event": {
+            "basis": [
+              "规则 L13、L15–17、L23–25、L29–32",
+              "约束端口速率",
+              "受限模型声明 polling.both_failure",
+              "内核输入 §5.2、§6.3"
+            ],
+            "detail": "",
+            "event": "J|0|0|0",
+            "operation": "move",
+            "outcome": "success",
+            "target": "PC|south_box:north:2|bridge:south:0"
+          }
+        }
+      },
+      "connection.bridge_first_contact": {
+        "claimed": "exercised",
+        "event_references_exist": true,
+        "count": 6,
+        "first_event": {
+          "time": 0,
+          "event": {
+            "basis": [
+              "规则 L13、L15–17、L23–25、L29–32",
+              "约束端口速率",
+              "受限模型声明 polling.both_failure",
+              "内核输入 §5.2、§6.3"
+            ],
+            "detail": "",
+            "event": "J|0|0|0",
+            "operation": "move",
+            "outcome": "success",
+            "target": "PC|south_box:north:2|bridge:south:0"
+          }
+        }
+      },
+      "transfer.cooldown_scope": {
+        "claimed": "exercised",
+        "event_references_exist": true,
+        "count": 3,
+        "first_event": {
+          "time": 0,
+          "event": {
+            "basis": [
+              "规则 L20–21、L36",
+              "受限转移定义 §4.3"
+            ],
+            "detail": "warehouse_capacity",
+            "event": "J|0|0|4",
+            "operation": "transfer",
+            "outcome": "failure",
+            "target": "south_box"
+          }
+        }
+      },
+      "transfer.pause": {
+        "claimed": "exercised",
+        "event_references_exist": true,
+        "count": 20,
+        "first_event": {
+          "time": 0,
+          "event": {
+            "basis": [
+              "规则 L20–21、L36",
+              "受限转移定义 §4.3"
+            ],
+            "detail": "function_disabled",
+            "event": "J|0|0|7",
+            "operation": "transfer",
+            "outcome": "guard_false",
+            "target": "east_box"
+          }
+        }
+      },
+      "transfer.failure_cooldown": {
+        "claimed": "exercised",
+        "event_references_exist": true,
+        "count": 3,
+        "first_event": {
+          "time": 0,
+          "event": {
+            "basis": [
+              "规则 L20–21、L36",
+              "受限转移定义 §4.3"
+            ],
+            "detail": "warehouse_capacity",
+            "event": "J|0|0|4",
+            "operation": "transfer",
+            "outcome": "failure",
+            "target": "south_box"
+          }
+        }
+      },
+      "transfer.partial_acceptance": {
+        "claimed": "exercised",
+        "event_references_exist": true,
+        "count": 3,
+        "first_event": {
+          "time": 0,
+          "event": {
+            "basis": [
+              "规则 L20–21、L36",
+              "受限转移定义 §4.3"
+            ],
+            "detail": "warehouse_capacity",
+            "event": "J|0|0|4",
+            "operation": "transfer",
+            "outcome": "failure",
+            "target": "south_box"
+          }
+        }
+      },
+      "bridge.capacity": {
+        "claimed": "exercised",
+        "event_references_exist": true,
+        "count": 6,
+        "first_event": {
+          "time": 0,
+          "event": {
+            "basis": [
+              "规则 L13、L15–17、L23–25、L29–32",
+              "约束端口速率",
+              "受限模型声明 polling.both_failure",
+              "内核输入 §5.2、§6.3"
+            ],
+            "detail": "",
+            "event": "J|0|0|0",
+            "operation": "move",
+            "outcome": "success",
+            "target": "PC|south_box:north:2|bridge:south:0"
+          }
+        }
+      },
+      "transfer.phase": {
+        "claimed": "exercised",
+        "event_references_exist": true,
+        "count": 3,
+        "first_event": {
+          "time": 0,
+          "event": {
+            "basis": [
+              "规则 L20–21、L36",
+              "受限转移定义 §4.3"
+            ],
+            "detail": "warehouse_capacity",
+            "event": "J|0|0|4",
+            "operation": "transfer",
+            "outcome": "failure",
+            "target": "south_box"
+          }
+        }
+      }
+    },
+    "rejected_transaction": {
+      "basis": [
+        "规则 L20–21、L36",
+        "受限转移定义 §4.3"
+      ],
+      "detail": "warehouse_capacity",
+      "event": "J|0|0|4",
+      "operation": "transfer",
+      "outcome": "failure",
+      "target": "south_box"
+    },
+    "paused_cooldown": 3,
+    "pause_preserved_at_all_ticks": true
+  },
+  "研磨混做核验": {
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/研磨混做核验-运行记录-v3-kernel.json",
+    "ticks": 20,
+    "axis_samples": {
+      "transfer.judgment": {
+        "claimed": "exercised",
+        "event_references_exist": true,
+        "count": 4,
+        "first_event": {
+          "time": 0,
+          "event": {
+            "basis": [
+              "规则 L20–21、L36",
+              "受限转移定义 §4.3"
+            ],
+            "detail": "empty_box",
+            "event": "J|0|0|9",
+            "operation": "transfer",
+            "outcome": "success",
+            "target": "sink"
+          }
+        }
+      },
+      "manufacturing.port_slot_relation": {
+        "claimed": "exercised",
+        "event_references_exist": true,
+        "count": 6,
+        "first_event": {
+          "time": 1,
+          "event": {
+            "basis": [
+              "规则 L13、L15–17、L23–25、L29–32",
+              "约束端口速率",
+              "受限模型声明 polling.both_failure",
+              "内核输入 §5.2、§6.3"
+            ],
+            "detail": "",
+            "event": "J|1|0|3",
+            "operation": "move",
+            "outcome": "success",
+            "target": "PC|belt_a:north:0|grinder:south:0"
+          }
+        }
+      },
+      "manufacturing.output_blocked": {
+        "claimed": "exercised",
+        "event_references_exist": true,
+        "count": 2,
+        "first_event": {
+          "time": 3,
+          "event": {
+            "basis": [
+              "规则 L18、L35",
+              "受限转移定义 §4.2",
+              "受限模型声明 manufacture_subactions、atomic_batch、same_instant"
+            ],
+            "detail": "",
+            "event": "J|3|0|6",
+            "operation": "manufacture",
+            "outcome": "success",
+            "target": "grinder"
+          }
+        }
+      },
+      "warehouse.delivery_count": {
+        "claimed": "exercised",
+        "event_references_exist": true,
+        "count": 2,
+        "first_event": {
+          "time": 5,
+          "event": {
+            "basis": [
+              "规则 L20–21、L36",
+              "受限转移定义 §4.3"
+            ],
+            "detail": "whole_box",
+            "event": "J|5|0|9",
+            "operation": "transfer",
+            "outcome": "success",
+            "target": "sink"
+          }
+        }
+      },
+      "transfer.cooldown_scope": {
+        "claimed": "exercised",
+        "event_references_exist": true,
+        "count": 4,
+        "first_event": {
+          "time": 0,
+          "event": {
+            "basis": [
+              "规则 L20–21、L36",
+              "受限转移定义 §4.3"
+            ],
+            "detail": "empty_box",
+            "event": "J|0|0|9",
+            "operation": "transfer",
+            "outcome": "success",
+            "target": "sink"
+          }
+        }
+      },
+      "transfer.failure_cooldown": {
+        "claimed": "exercised",
+        "event_references_exist": true,
+        "count": 4,
+        "first_event": {
+          "time": 0,
+          "event": {
+            "basis": [
+              "规则 L20–21、L36",
+              "受限转移定义 §4.3"
+            ],
+            "detail": "empty_box",
+            "event": "J|0|0|9",
+            "operation": "transfer",
+            "outcome": "success",
+            "target": "sink"
+          }
+        }
+      },
+      "transfer.partial_acceptance": {
+        "claimed": "exercised",
+        "event_references_exist": true,
+        "count": 4,
+        "first_event": {
+          "time": 0,
+          "event": {
+            "basis": [
+              "规则 L20–21、L36",
+              "受限转移定义 §4.3"
+            ],
+            "detail": "empty_box",
+            "event": "J|0|0|9",
+            "operation": "transfer",
+            "outcome": "success",
+            "target": "sink"
+          }
+        }
+      },
+      "manufacturing.input_mixing": {
+        "claimed": "exercised",
+        "event_references_exist": true,
+        "count": 6,
+        "first_event": {
+          "time": 1,
+          "event": {
+            "basis": [
+              "规则 L13、L15–17、L23–25、L29–32",
+              "约束端口速率",
+              "受限模型声明 polling.both_failure",
+              "内核输入 §5.2、§6.3"
+            ],
+            "detail": "",
+            "event": "J|1|0|3",
+            "operation": "move",
+            "outcome": "success",
+            "target": "PC|belt_a:north:0|grinder:south:0"
+          }
+        }
+      },
+      "manufacturing.input_capacity_scope": {
+        "claimed": "exercised",
+        "event_references_exist": true,
+        "count": 6,
+        "first_event": {
+          "time": 1,
+          "event": {
+            "basis": [
+              "规则 L13、L15–17、L23–25、L29–32",
+              "约束端口速率",
+              "受限模型声明 polling.both_failure",
+              "内核输入 §5.2、§6.3"
+            ],
+            "detail": "",
+            "event": "J|1|0|3",
+            "operation": "move",
+            "outcome": "success",
+            "target": "PC|belt_a:north:0|grinder:south:0"
+          }
+        }
+      },
+      "manufacturing.recipe_match_scope": {
+        "claimed": "exercised",
+        "event_references_exist": true,
+        "count": 2,
+        "first_event": {
+          "time": 2,
+          "event": {
+            "basis": [
+              "规则 L18、L35",
+              "受限转移定义 §4.2",
+              "受限模型声明 manufacture_subactions、atomic_batch、same_instant"
+            ],
+            "detail": "",
+            "event": "J|2|0|6",
+            "operation": "manufacture",
+            "outcome": "success",
+            "target": "grinder"
+          }
+        }
+      },
+      "manufacturing.recipe_completeness": {
+        "claimed": "exercised",
+        "event_references_exist": true,
+        "count": 2,
+        "first_event": {
+          "time": 2,
+          "event": {
+            "basis": [
+              "规则 L18、L35",
+              "受限转移定义 §4.2",
+              "受限模型声明 manufacture_subactions、atomic_batch、same_instant"
+            ],
+            "detail": "",
+            "event": "J|2|0|6",
+            "operation": "manufacture",
+            "outcome": "success",
+            "target": "grinder"
+          }
+        }
+      },
+      "manufacturing.recipe_lock_time": {
+        "claimed": "exercised",
+        "event_references_exist": true,
+        "count": 2,
+        "first_event": {
+          "time": 2,
+          "event": {
+            "basis": [
+              "规则 L18、L35",
+              "受限转移定义 §4.2",
+              "受限模型声明 manufacture_subactions、atomic_batch、same_instant"
+            ],
+            "detail": "",
+            "event": "J|2|0|6",
+            "operation": "manufacture",
+            "outcome": "success",
+            "target": "grinder"
+          }
+        }
+      },
+      "manufacturing.empty_slot_identity": {
+        "claimed": "exercised",
+        "event_references_exist": true,
+        "count": 6,
+        "first_event": {
+          "time": 1,
+          "event": {
+            "basis": [
+              "规则 L13、L15–17、L23–25、L29–32",
+              "约束端口速率",
+              "受限模型声明 polling.both_failure",
+              "内核输入 §5.2、§6.3"
+            ],
+            "detail": "",
+            "event": "J|1|0|3",
+            "operation": "move",
+            "outcome": "success",
+            "target": "PC|belt_a:north:0|grinder:south:0"
+          }
+        }
+      },
+      "manufacturing.input_collection": {
+        "claimed": "exercised",
+        "event_references_exist": true,
+        "count": 2,
+        "first_event": {
+          "time": 2,
+          "event": {
+            "basis": [
+              "规则 L18、L35",
+              "受限转移定义 §4.2",
+              "受限模型声明 manufacture_subactions、atomic_batch、same_instant"
+            ],
+            "detail": "",
+            "event": "J|2|0|6",
+            "operation": "manufacture",
+            "outcome": "success",
+            "target": "grinder"
+          }
+        }
+      },
+      "manufacturing.buffer_power_gate": {
+        "claimed": "exercised",
+        "event_references_exist": true,
+        "count": 4,
+        "first_event": {
+          "time": 2,
+          "event": {
+            "basis": [
+              "规则 L18、L35",
+              "受限转移定义 §4.2",
+              "受限模型声明 manufacture_subactions、atomic_batch、same_instant"
+            ],
+            "detail": "",
+            "event": "J|2|0|6",
+            "operation": "manufacture",
+            "outcome": "success",
+            "target": "grinder"
+          }
+        }
+      },
+      "warehouse.empty_slot_identity": {
+        "claimed": "exercised",
+        "event_references_exist": true,
+        "count": 2,
+        "first_event": {
+          "time": 5,
+          "event": {
+            "basis": [
+              "规则 L20–21、L36",
+              "受限转移定义 §4.3"
+            ],
+            "detail": "whole_box",
+            "event": "J|5|0|9",
+            "operation": "transfer",
+            "outcome": "success",
+            "target": "sink"
+          }
+        }
+      },
+      "transfer.phase": {
+        "claimed": "exercised",
+        "event_references_exist": true,
+        "count": 4,
+        "first_event": {
+          "time": 0,
+          "event": {
+            "basis": [
+              "规则 L20–21、L36",
+              "受限转移定义 §4.3"
+            ],
+            "detail": "empty_box",
+            "event": "J|0|0|9",
+            "operation": "transfer",
+            "outcome": "success",
+            "target": "sink"
+          }
+        }
+      },
+      "manufacturing.recipe_selection": {
+        "claimed": "exercised",
+        "event_references_exist": true,
+        "count": 2,
+        "first_event": {
+          "time": 2,
+          "event": {
+            "basis": [
+              "规则 L18、L35",
+              "受限转移定义 §4.2",
+              "受限模型声明 manufacture_subactions、atomic_batch、same_instant"
+            ],
+            "detail": "",
+            "event": "J|2|0|6",
+            "operation": "manufacture",
+            "outcome": "success",
+            "target": "grinder"
+          }
+        }
+      },
+      "manufacturing.input_slot_selection": {
+        "claimed": "exercised",
+        "event_references_exist": true,
+        "count": 6,
+        "first_event": {
+          "time": 1,
+          "event": {
+            "basis": [
+              "规则 L13、L15–17、L23–25、L29–32",
+              "约束端口速率",
+              "受限模型声明 polling.both_failure",
+              "内核输入 §5.2、§6.3"
+            ],
+            "detail": "",
+            "event": "J|1|0|3",
+            "operation": "move",
+            "outcome": "success",
+            "target": "PC|belt_a:north:0|grinder:south:0"
+          }
+        }
+      },
+      "manufacturing.recipe_quantity_match": {
+        "claimed": "exercised",
+        "event_references_exist": true,
+        "count": 2,
+        "first_event": {
+          "time": 2,
+          "event": {
+            "basis": [
+              "规则 L18、L35",
+              "受限转移定义 §4.2",
+              "受限模型声明 manufacture_subactions、atomic_batch、same_instant"
+            ],
+            "detail": "",
+            "event": "J|2|0|6",
+            "operation": "manufacture",
+            "outcome": "success",
+            "target": "grinder"
+          }
+        }
+      },
+      "manufacturing.recipe_extra_items": {
+        "claimed": "exercised",
+        "event_references_exist": true,
+        "count": 2,
+        "first_event": {
+          "time": 2,
+          "event": {
+            "basis": [
+              "规则 L18、L35",
+              "受限转移定义 §4.2",
+              "受限模型声明 manufacture_subactions、atomic_batch、same_instant"
+            ],
+            "detail": "",
+            "event": "J|2|0|6",
+            "operation": "manufacture",
+            "outcome": "success",
+            "target": "grinder"
+          }
+        }
+      }
+    },
+    "completions": [
+      {
+        "time": 3,
+        "event": "C|3|grinder",
+        "unit": "grinder",
+        "recipe": "研磨-致密蓝铁"
+      },
+      {
+        "time": 5,
+        "event": "C|5|grinder",
+        "unit": "grinder",
+        "recipe": "研磨-致密源石"
+      }
+    ]
+  },
+  "阻尼连续带核验": {
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/阻尼连续带核验-运行记录-v3-kernel.json",
+    "ticks": 18,
+    "axis_samples": {
+      "damping.belt_component_rule": {
+        "claimed": "exercised",
+        "event_references_exist": true,
+        "count": 252,
+        "first_event": {
+          "time": 0,
+          "event": {
+            "basis": [
+              "规则 L13、L15–17、L23–25、L29–32",
+              "约束端口速率",
+              "受限模型声明 polling.both_failure",
+              "内核输入 §5.2、§6.3",
+              "damping.evaluated:PC|source:north:0|merger:south:0;PC|source:north:2|belt_1:south:0;belt_adjacency:PC|source:north:2|belt_1:south:0;belt_component:PC|source:north:2|belt_1:south:0"
+            ],
+            "detail": "dual_permission",
+            "event": "J|0|0|0",
+            "operation": "move",
+            "outcome": "failure",
+            "target": "PC|source:north:0|merger:south:0"
+          }
+        }
+      },
+      "damping.belt_adjacency": {
+        "claimed": "exercised",
+        "event_references_exist": true,
+        "count": 252,
+        "first_event": {
+          "time": 0,
+          "event": {
+            "basis": [
+              "规则 L13、L15–17、L23–25、L29–32",
+              "约束端口速率",
+              "受限模型声明 polling.both_failure",
+              "内核输入 §5.2、§6.3",
+              "damping.evaluated:PC|source:north:0|merger:south:0;PC|source:north:2|belt_1:south:0;belt_adjacency:PC|source:north:2|belt_1:south:0;belt_component:PC|source:north:2|belt_1:south:0"
+            ],
+            "detail": "dual_permission",
+            "event": "J|0|0|0",
+            "operation": "move",
+            "outcome": "failure",
+            "target": "PC|source:north:0|merger:south:0"
+          }
+        }
+      }
+    },
+    "damping_basis": [
+      "damping.evaluated:PC|source:north:0|merger:south:0;PC|source:north:2|belt_1:south:0;belt_adjacency:PC|source:north:2|belt_1:south:0;belt_component:PC|source:north:2|belt_1:south:0"
+    ],
+    "nontransport_output_level_count": {
+      "source": 2
+    },
+    "active_graphs": [
+      {
+        "time": 0,
+        "blocked": []
+      },
+      {
+        "time": 1,
+        "blocked": []
+      },
+      {
+        "time": 2,
+        "blocked": []
+      },
+      {
+        "time": 3,
+        "blocked": []
+      },
+      {
+        "time": 4,
+        "blocked": []
+      },
+      {
+        "time": 5,
+        "blocked": []
+      },
+      {
+        "time": 6,
+        "blocked": []
+      },
+      {
+        "time": 7,
+        "blocked": []
+      },
+      {
+        "time": 8,
+        "blocked": []
+      },
+      {
+        "time": 9,
+        "blocked": []
+      },
+      {
+        "time": 10,
+        "blocked": []
+      },
+      {
+        "time": 11,
+        "blocked": []
+      },
+      {
+        "time": 12,
+        "blocked": []
+      },
+      {
+        "time": 13,
+        "blocked": []
+      },
+      {
+        "time": 14,
+        "blocked": []
+      },
+      {
+        "time": 15,
+        "blocked": []
+      },
+      {
+        "time": 16,
+        "blocked": []
+      },
+      {
+        "time": 17,
+        "blocked": []
+      }
+    ]
+  },
+  "阻尼切支恢复核验": {
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/阻尼切支恢复核验-运行记录-v3-kernel.json",
+    "ticks": 18,
+    "axis_samples": {
+      "damping.branch": {
+        "claimed": "exercised",
+        "event_references_exist": true,
+        "count": 455,
+        "first_event": {
+          "time": 0,
+          "event": {
+            "basis": [
+              "规则 L13、L15–17、L23–25、L29–32",
+              "约束端口速率",
+              "受限模型声明 polling.both_failure",
+              "内核输入 §5.2、§6.3",
+              "damping.evaluated:PC|source:north:0|merge_a:south:0;PC|source:north:2|merge_b:east:0;branch:PC|source:north:0|merge_a:south:0"
+            ],
+            "detail": "dual_permission",
+            "event": "J|0|0|0",
+            "operation": "move",
+            "outcome": "failure",
+            "target": "PC|fork:north:0|gate:south:0"
+          }
+        }
+      }
+    },
+    "damping_basis": [
+      "damping.evaluated:PC|source:north:0|merge_a:south:0;PC|source:north:2|merge_b:east:0;branch:PC|source:north:0|merge_a:south:0"
+    ],
+    "nontransport_output_level_count": {
+      "source": 2
+    },
+    "active_graphs": [
+      {
+        "time": 0,
+        "blocked": []
+      },
+      {
+        "time": 1,
+        "blocked": []
+      },
+      {
+        "time": 2,
+        "blocked": [
+          "PC|fork:north:0|gate:south:0"
+        ]
+      },
+      {
+        "time": 3,
+        "blocked": [
+          "PC|fork:north:0|gate:south:0"
+        ]
+      },
+      {
+        "time": 4,
+        "blocked": [
+          "PC|fork:north:0|gate:south:0"
+        ]
+      },
+      {
+        "time": 5,
+        "blocked": [
+          "PC|fork:north:0|gate:south:0"
+        ]
+      },
+      {
+        "time": 6,
+        "blocked": [
+          "PC|fork:north:0|gate:south:0"
+        ]
+      },
+      {
+        "time": 7,
+        "blocked": []
+      },
+      {
+        "time": 8,
+        "blocked": [
+          "PC|fork:north:0|gate:south:0"
+        ]
+      },
+      {
+        "time": 9,
+        "blocked": [
+          "PC|fork:north:0|gate:south:0"
+        ]
+      },
+      {
+        "time": 10,
+        "blocked": [
+          "PC|fork:north:0|gate:south:0"
+        ]
+      },
+      {
+        "time": 11,
+        "blocked": [
+          "PC|fork:north:0|gate:south:0"
+        ]
+      },
+      {
+        "time": 12,
+        "blocked": [
+          "PC|fork:north:0|gate:south:0"
+        ]
+      },
+      {
+        "time": 13,
+        "blocked": []
+      },
+      {
+        "time": 14,
+        "blocked": [
+          "PC|fork:north:0|gate:south:0"
+        ]
+      },
+      {
+        "time": 15,
+        "blocked": [
+          "PC|fork:north:0|gate:south:0"
+        ]
+      },
+      {
+        "time": 16,
+        "blocked": [
+          "PC|fork:north:0|gate:south:0"
+        ]
+      },
+      {
+        "time": 17,
+        "blocked": [
+          "PC|fork:north:0|gate:south:0"
+        ]
+      }
+    ]
+  }
+}

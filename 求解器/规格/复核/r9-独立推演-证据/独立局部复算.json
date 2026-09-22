@@ -1,0 +1,136 @@
+{
+  "status": "PASS",
+  "checks": [
+    "运输年龄、窗口年龄、两类pending及tick边界共同平移1后键相同",
+    "平移1不改变固定建造参数",
+    "运输年龄、窗口年龄、两类pending及tick边界共同平移5后键相同",
+    "平移5不改变固定建造参数",
+    "运输年龄、窗口年龄、两类pending及tick边界共同平移31后键相同",
+    "平移31不改变固定建造参数",
+    "运输年龄、窗口年龄、两类pending及tick边界共同平移1000000000000000000后键相同",
+    "平移1000000000000000000不改变固定建造参数",
+    "运输年龄保守保留于键",
+    "制造剩余工作量保守保留于键",
+    "箱冷却保守保留于键",
+    "门窗口年龄保守保留于键",
+    "门累计保守保留于键",
+    "门窗口计数保守保留于键",
+    "门原因保守保留于键",
+    "轮询游标保守保留于键",
+    "植物仓库量保守保留于键",
+    "待完成截止偏移保守保留于键",
+    "端口额度保守保留于键",
+    "成品高容谷地电池数量0或历史身份格移出键",
+    "成品高容谷地电池数量1或历史身份格移出键",
+    "成品高容谷地电池数量79999或历史身份格移出键",
+    "成品精选荞愈胶囊数量0或历史身份格移出键",
+    "成品精选荞愈胶囊数量1或历史身份格移出键",
+    "成品精选荞愈胶囊数量79999或历史身份格移出键",
+    "两矿正库存的回矿容量守卫不等价",
+    "成品未满不蕴含整批两件可收",
+    "周期账率按精确有理数比较",
+    "retain_history取空不进入匿名序，但已指派口可观察库存变化"
+  ],
+  "check_count": 29,
+  "capacity_cases": [
+    {
+      "stock": 1,
+      "batch": 1,
+      "accepts": true
+    },
+    {
+      "stock": 79998,
+      "batch": 1,
+      "accepts": true
+    },
+    {
+      "stock": 79999,
+      "batch": 1,
+      "accepts": true
+    },
+    {
+      "stock": 80000,
+      "batch": 1,
+      "accepts": false
+    },
+    {
+      "stock": 1,
+      "batch": 2,
+      "accepts": true
+    },
+    {
+      "stock": 79998,
+      "batch": 2,
+      "accepts": true
+    },
+    {
+      "stock": 79999,
+      "batch": 2,
+      "accepts": false
+    },
+    {
+      "stock": 80000,
+      "batch": 2,
+      "accepts": false
+    },
+    {
+      "stock": 1,
+      "batch": 50,
+      "accepts": true
+    },
+    {
+      "stock": 79998,
+      "batch": 50,
+      "accepts": false
+    },
+    {
+      "stock": 79999,
+      "batch": 50,
+      "accepts": false
+    },
+    {
+      "stock": 80000,
+      "batch": 50,
+      "accepts": false
+    },
+    {
+      "stock": 1,
+      "batch": 300,
+      "accepts": true
+    },
+    {
+      "stock": 79998,
+      "batch": 300,
+      "accepts": false
+    },
+    {
+      "stock": 79999,
+      "batch": 300,
+      "accepts": false
+    },
+    {
+      "stock": 80000,
+      "batch": 300,
+      "accepts": false
+    }
+  ],
+  "identity_case": {
+    "before": {
+      "slot": "product_slot",
+      "item": "高容谷地电池",
+      "quantity": 1,
+      "empty_identity": null
+    },
+    "after": {
+      "slot": "product_slot",
+      "item": null,
+      "quantity": 0,
+      "empty_identity": "高容谷地电池"
+    },
+    "anonymous_order_before": [],
+    "anonymous_order_after": [],
+    "assigned_source_available_before": true,
+    "assigned_source_available_after": false
+  },
+  "scope": "字段映射试样及局部规则算术；非合法StateSeed、非Rust测试或完整可达反例"
+}

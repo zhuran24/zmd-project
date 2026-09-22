@@ -1,0 +1,138 @@
+{
+  "status": "通过",
+  "scope": "合成布局静态结构，不是运行认证",
+  "results": [
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/桥接器双通路.json",
+      "status": "静态结构通过",
+      "units": 7,
+      "occupied_cells": 122,
+      "physical_channels": 4,
+      "buffer_channels": 0,
+      "bridge_first_peers": [
+        {
+          "unit": "bridge",
+          "axis": "vertical",
+          "first_peer": "south_box:north:2"
+        },
+        {
+          "unit": "bridge",
+          "axis": "horizontal",
+          "first_peer": "west_box:north:2"
+        }
+      ],
+      "counts_category": "算术推论（候选布局）",
+      "validation_category": "实测（工具）"
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询.json",
+      "status": "静态结构通过",
+      "units": 9,
+      "occupied_cells": 128,
+      "physical_channels": 4,
+      "buffer_channels": 0,
+      "bridge_first_peers": [],
+      "counts_category": "算术推论（候选布局）",
+      "validation_category": "实测（工具）"
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json",
+      "status": "静态结构通过",
+      "units": 12,
+      "occupied_cells": 149,
+      "physical_channels": 9,
+      "buffer_channels": 8,
+      "bridge_first_peers": [],
+      "counts_category": "算术推论（候选布局）",
+      "validation_category": "实测（工具）"
+    }
+  ],
+  "negative_tests": [
+    {
+      "name": "占格重叠",
+      "status": "正确拒绝",
+      "reason": "占格重叠: south_box 与 core"
+    },
+    {
+      "name": "基地越界",
+      "status": "正确拒绝",
+      "reason": "越界: core"
+    },
+    {
+      "name": "伪造或遗漏实体通道",
+      "status": "正确拒绝",
+      "reason": "physical_channels: 必须等于全部导出通道，不能遗漏/伪造"
+    },
+    {
+      "name": "核心指派遗漏",
+      "status": "正确拒绝",
+      "reason": "须逐一指派核心及全部仓库取货口"
+    },
+    {
+      "name": "错误配方机型",
+      "status": "正确拒绝",
+      "reason": "配方 id 与机型不匹配"
+    },
+    {
+      "name": "传送带抢先建造",
+      "status": "正确拒绝",
+      "reason": "蓝图传送带必须最后建造"
+    },
+    {
+      "name": "未知参数轴",
+      "status": "正确拒绝",
+      "reason": "fixedness_unproven: 字段缺失或未知"
+    },
+    {
+      "name": "未知顶层字段",
+      "status": "正确拒绝",
+      "reason": "root: 字段缺失或未知"
+    },
+    {
+      "name": "桥接器按轴调度",
+      "status": "正确拒绝",
+      "reason": "已定轴值不符: bridge.scheduling_scope"
+    },
+    {
+      "name": "仓库非六类满",
+      "status": "正确拒绝",
+      "reason": "任务仓库初态不符"
+    },
+    {
+      "name": "桥接器路径跨轴",
+      "status": "正确拒绝",
+      "reason": "桥接器路径跨轴"
+    }
+  ],
+  "readonly_source_hashes": {
+    "《明日方舟：终末地》游戏规则.txt": "abc7a5867f6477eedb619c63a21c4a77144c57ad4567fdcfb696b3049d66a670",
+    "求解任务.txt": "10abf80fe6eefe647471eabe78da4053f77b489d3806722c501c6acb405a2864",
+    "求解约束.txt": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6",
+    "候选约束.txt": "a0ac3f9c82f371132b7de29fe47e4c6c587904680bc2786523de0c825fd5efd9"
+  },
+  "axis_registry_sha256": "490a4c82d299a2030049cfc1596e5f4841cabf7b47a9c9de7d0da7ed75147f49",
+  "axis_count": 87,
+  "axis_alignment": "全部字段名、已定值和生命周期逐项检查",
+  "document_checks": {
+    "axis_names_match": true,
+    "local_links_resolve": true
+  },
+  "artifact_sha256": {
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/桥接器双通路.json": "457e872989ef3a92d9cb135126731a6b413507e74d400032196e16aa8bcb34e1",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询.json": "519edb40ea28331c6c7b2a42ad91ef2453488d6ed8d36c26cd45e6551ffba7e3",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json": "009c4adacf998f9b10d2dd42283b592c2be7645be5c9720a4e8de83cb0bb959b",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md": "03712e5375fe4291f38e5309acd2514d281d0499296616e16d6106ccd2a5256b",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/check_examples.py": "a463aec57b8e4398edf956b9aa961c7536e9baf1f27c65cacba437d968cafa26",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/generate_examples.py": "11268cd730238697c4bc49b33f7da69d68737e29339e617a6ab1adadd1b331f8"
+  },
+  "unverified": [
+    "供电覆盖格集合",
+    "实际库存与进度",
+    "调试可达性",
+    "轮询与均分",
+    "实际混做及物流分配",
+    "离线接续",
+    "吞吐及全部可达循环达标",
+    "外部契约绑定与非空调试程序"
+  ]
+}

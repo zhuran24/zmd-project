@@ -1,0 +1,800 @@
+{
+  "transfer.judgment": {
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/桥接器双通路-运行记录-v3-kernel.json",
+    "sha256": "2d2cd76bd45cbe6d0925911e214fc7266d09608098505931d68bf959839e2aa6",
+    "reported_status": "exercised",
+    "reported_evidence_count": 12,
+    "first_event": {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "event": {
+        "basis": [
+          "规则 L20–21、L36",
+          "受限转移定义 §4.3"
+        ],
+        "detail": "empty_box",
+        "event": "J|0|0|5",
+        "operation": "transfer",
+        "outcome": "success",
+        "target": "north_box"
+      }
+    }
+  },
+  "manufacturing.port_slot_relation": {
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/研磨混做核验-运行记录-v3-kernel.json",
+    "sha256": "a8b2a1e47ca0f9b54faca4695a35e66f0d070d72536810a3cd96aa2f984a71ed",
+    "reported_status": "exercised",
+    "reported_evidence_count": 6,
+    "first_event": {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "1"
+        }
+      },
+      "event": {
+        "basis": [
+          "规则 L13、L15–17、L23–25、L29–32",
+          "约束端口速率",
+          "受限模型声明 polling.both_failure",
+          "内核输入 §5.2、§6.3"
+        ],
+        "detail": "",
+        "event": "J|1|0|3",
+        "operation": "move",
+        "outcome": "success",
+        "target": "PC|belt_a:north:0|grinder:south:0"
+      }
+    }
+  },
+  "manufacturing.output_blocked": {
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/研磨混做核验-运行记录-v3-kernel.json",
+    "sha256": "a8b2a1e47ca0f9b54faca4695a35e66f0d070d72536810a3cd96aa2f984a71ed",
+    "reported_status": "exercised",
+    "reported_evidence_count": 2,
+    "first_event": {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "3"
+        }
+      },
+      "event": {
+        "basis": [
+          "规则 L18、L35",
+          "受限转移定义 §4.2",
+          "受限模型声明 manufacture_subactions、atomic_batch、same_instant"
+        ],
+        "detail": "",
+        "event": "J|3|0|6",
+        "operation": "manufacture",
+        "outcome": "success",
+        "target": "grinder"
+      }
+    }
+  },
+  "bridge.inventory_scope": {
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/桥接器双通路-运行记录-v3-kernel.json",
+    "sha256": "2d2cd76bd45cbe6d0925911e214fc7266d09608098505931d68bf959839e2aa6",
+    "reported_status": "exercised",
+    "reported_evidence_count": 32,
+    "first_event": {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "event": {
+        "basis": [
+          "规则 L13、L15–17、L23–25、L29–32",
+          "约束端口速率",
+          "受限模型声明 polling.both_failure",
+          "内核输入 §5.2、§6.3"
+        ],
+        "detail": "",
+        "event": "J|0|0|0",
+        "operation": "move",
+        "outcome": "success",
+        "target": "PC|south_box:north:2|bridge:south:0"
+      }
+    }
+  },
+  "bridge.scheduling_scope": {
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/桥接器双通路-运行记录-v3-kernel.json",
+    "sha256": "2d2cd76bd45cbe6d0925911e214fc7266d09608098505931d68bf959839e2aa6",
+    "reported_status": "exercised",
+    "reported_evidence_count": 32,
+    "first_event": {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "event": {
+        "basis": [
+          "规则 L13、L15–17、L23–25、L29–32",
+          "约束端口速率",
+          "受限模型声明 polling.both_failure",
+          "内核输入 §5.2、§6.3"
+        ],
+        "detail": "",
+        "event": "J|0|0|0",
+        "operation": "move",
+        "outcome": "success",
+        "target": "PC|south_box:north:2|bridge:south:0"
+      }
+    }
+  },
+  "transfer.cooldown_scope": {
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/桥接器双通路-运行记录-v3-kernel.json",
+    "sha256": "2d2cd76bd45cbe6d0925911e214fc7266d09608098505931d68bf959839e2aa6",
+    "reported_status": "exercised",
+    "reported_evidence_count": 12,
+    "first_event": {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "event": {
+        "basis": [
+          "规则 L20–21、L36",
+          "受限转移定义 §4.3"
+        ],
+        "detail": "empty_box",
+        "event": "J|0|0|5",
+        "operation": "transfer",
+        "outcome": "success",
+        "target": "north_box"
+      }
+    }
+  },
+  "transfer.pause": {
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/传输拒收与暂停核验-运行记录-v3-kernel.json",
+    "sha256": "ddcd8c01316e286c86343ffdb1ef7d106116c5e7cfaa10e6f8e2400201f4ee5e",
+    "reported_status": "exercised",
+    "reported_evidence_count": 20,
+    "first_event": {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "event": {
+        "basis": [
+          "规则 L20–21、L36",
+          "受限转移定义 §4.3"
+        ],
+        "detail": "function_disabled",
+        "event": "J|0|0|7",
+        "operation": "transfer",
+        "outcome": "guard_false",
+        "target": "east_box"
+      }
+    }
+  },
+  "transfer.failure_cooldown": {
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/传输拒收与暂停核验-运行记录-v3-kernel.json",
+    "sha256": "ddcd8c01316e286c86343ffdb1ef7d106116c5e7cfaa10e6f8e2400201f4ee5e",
+    "reported_status": "exercised",
+    "reported_evidence_count": 3,
+    "first_event": {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "event": {
+        "basis": [
+          "规则 L20–21、L36",
+          "受限转移定义 §4.3"
+        ],
+        "detail": "warehouse_capacity",
+        "event": "J|0|0|4",
+        "operation": "transfer",
+        "outcome": "failure",
+        "target": "south_box"
+      }
+    }
+  },
+  "transfer.partial_acceptance": {
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/传输拒收与暂停核验-运行记录-v3-kernel.json",
+    "sha256": "ddcd8c01316e286c86343ffdb1ef7d106116c5e7cfaa10e6f8e2400201f4ee5e",
+    "reported_status": "exercised",
+    "reported_evidence_count": 3,
+    "first_event": {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "event": {
+        "basis": [
+          "规则 L20–21、L36",
+          "受限转移定义 §4.3"
+        ],
+        "detail": "warehouse_capacity",
+        "event": "J|0|0|4",
+        "operation": "transfer",
+        "outcome": "failure",
+        "target": "south_box"
+      }
+    }
+  },
+  "transfer.resume_event": {
+    "status": "not_exercised",
+    "reason": "运行段供电和开关固定；暂停后重新启用所需的调试/离线后效未实现。"
+  },
+  "manufacturing.input_mixing": {
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/研磨混做核验-运行记录-v3-kernel.json",
+    "sha256": "a8b2a1e47ca0f9b54faca4695a35e66f0d070d72536810a3cd96aa2f984a71ed",
+    "reported_status": "exercised",
+    "reported_evidence_count": 6,
+    "first_event": {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "1"
+        }
+      },
+      "event": {
+        "basis": [
+          "规则 L13、L15–17、L23–25、L29–32",
+          "约束端口速率",
+          "受限模型声明 polling.both_failure",
+          "内核输入 §5.2、§6.3"
+        ],
+        "detail": "",
+        "event": "J|1|0|3",
+        "operation": "move",
+        "outcome": "success",
+        "target": "PC|belt_a:north:0|grinder:south:0"
+      }
+    }
+  },
+  "manufacturing.input_capacity_scope": {
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/研磨混做核验-运行记录-v3-kernel.json",
+    "sha256": "a8b2a1e47ca0f9b54faca4695a35e66f0d070d72536810a3cd96aa2f984a71ed",
+    "reported_status": "exercised",
+    "reported_evidence_count": 6,
+    "first_event": {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "1"
+        }
+      },
+      "event": {
+        "basis": [
+          "规则 L13、L15–17、L23–25、L29–32",
+          "约束端口速率",
+          "受限模型声明 polling.both_failure",
+          "内核输入 §5.2、§6.3"
+        ],
+        "detail": "",
+        "event": "J|1|0|3",
+        "operation": "move",
+        "outcome": "success",
+        "target": "PC|belt_a:north:0|grinder:south:0"
+      }
+    }
+  },
+  "manufacturing.recipe_match_scope": {
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/研磨混做核验-运行记录-v3-kernel.json",
+    "sha256": "a8b2a1e47ca0f9b54faca4695a35e66f0d070d72536810a3cd96aa2f984a71ed",
+    "reported_status": "exercised",
+    "reported_evidence_count": 2,
+    "first_event": {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "2"
+        }
+      },
+      "event": {
+        "basis": [
+          "规则 L18、L35",
+          "受限转移定义 §4.2",
+          "受限模型声明 manufacture_subactions、atomic_batch、same_instant"
+        ],
+        "detail": "",
+        "event": "J|2|0|6",
+        "operation": "manufacture",
+        "outcome": "success",
+        "target": "grinder"
+      }
+    }
+  },
+  "manufacturing.recipe_completeness": {
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/研磨混做核验-运行记录-v3-kernel.json",
+    "sha256": "a8b2a1e47ca0f9b54faca4695a35e66f0d070d72536810a3cd96aa2f984a71ed",
+    "reported_status": "exercised",
+    "reported_evidence_count": 2,
+    "first_event": {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "2"
+        }
+      },
+      "event": {
+        "basis": [
+          "规则 L18、L35",
+          "受限转移定义 §4.2",
+          "受限模型声明 manufacture_subactions、atomic_batch、same_instant"
+        ],
+        "detail": "",
+        "event": "J|2|0|6",
+        "operation": "manufacture",
+        "outcome": "success",
+        "target": "grinder"
+      }
+    }
+  },
+  "manufacturing.recipe_lock_time": {
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/研磨混做核验-运行记录-v3-kernel.json",
+    "sha256": "a8b2a1e47ca0f9b54faca4695a35e66f0d070d72536810a3cd96aa2f984a71ed",
+    "reported_status": "exercised",
+    "reported_evidence_count": 2,
+    "first_event": {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "2"
+        }
+      },
+      "event": {
+        "basis": [
+          "规则 L18、L35",
+          "受限转移定义 §4.2",
+          "受限模型声明 manufacture_subactions、atomic_batch、same_instant"
+        ],
+        "detail": "",
+        "event": "J|2|0|6",
+        "operation": "manufacture",
+        "outcome": "success",
+        "target": "grinder"
+      }
+    }
+  },
+  "manufacturing.empty_slot_identity": {
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/研磨混做核验-运行记录-v3-kernel.json",
+    "sha256": "a8b2a1e47ca0f9b54faca4695a35e66f0d070d72536810a3cd96aa2f984a71ed",
+    "reported_status": "exercised",
+    "reported_evidence_count": 6,
+    "first_event": {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "1"
+        }
+      },
+      "event": {
+        "basis": [
+          "规则 L13、L15–17、L23–25、L29–32",
+          "约束端口速率",
+          "受限模型声明 polling.both_failure",
+          "内核输入 §5.2、§6.3"
+        ],
+        "detail": "",
+        "event": "J|1|0|3",
+        "operation": "move",
+        "outcome": "success",
+        "target": "PC|belt_a:north:0|grinder:south:0"
+      }
+    }
+  },
+  "manufacturing.input_collection": {
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/研磨混做核验-运行记录-v3-kernel.json",
+    "sha256": "a8b2a1e47ca0f9b54faca4695a35e66f0d070d72536810a3cd96aa2f984a71ed",
+    "reported_status": "exercised",
+    "reported_evidence_count": 2,
+    "first_event": {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "2"
+        }
+      },
+      "event": {
+        "basis": [
+          "规则 L18、L35",
+          "受限转移定义 §4.2",
+          "受限模型声明 manufacture_subactions、atomic_batch、same_instant"
+        ],
+        "detail": "",
+        "event": "J|2|0|6",
+        "operation": "manufacture",
+        "outcome": "success",
+        "target": "grinder"
+      }
+    }
+  },
+  "manufacturing.buffer_power_gate": {
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/研磨混做核验-运行记录-v3-kernel.json",
+    "sha256": "a8b2a1e47ca0f9b54faca4695a35e66f0d070d72536810a3cd96aa2f984a71ed",
+    "reported_status": "exercised",
+    "reported_evidence_count": 4,
+    "first_event": {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "2"
+        }
+      },
+      "event": {
+        "basis": [
+          "规则 L18、L35",
+          "受限转移定义 §4.2",
+          "受限模型声明 manufacture_subactions、atomic_batch、same_instant"
+        ],
+        "detail": "",
+        "event": "J|2|0|6",
+        "operation": "manufacture",
+        "outcome": "success",
+        "target": "grinder"
+      }
+    }
+  },
+  "bridge.capacity": {
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/桥接器双通路-运行记录-v3-kernel.json",
+    "sha256": "2d2cd76bd45cbe6d0925911e214fc7266d09608098505931d68bf959839e2aa6",
+    "reported_status": "exercised",
+    "reported_evidence_count": 32,
+    "first_event": {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "event": {
+        "basis": [
+          "规则 L13、L15–17、L23–25、L29–32",
+          "约束端口速率",
+          "受限模型声明 polling.both_failure",
+          "内核输入 §5.2、§6.3"
+        ],
+        "detail": "",
+        "event": "J|0|0|0",
+        "operation": "move",
+        "outcome": "success",
+        "target": "PC|south_box:north:2|bridge:south:0"
+      }
+    }
+  },
+  "transfer.phase": {
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/桥接器双通路-运行记录-v3-kernel.json",
+    "sha256": "2d2cd76bd45cbe6d0925911e214fc7266d09608098505931d68bf959839e2aa6",
+    "reported_status": "exercised",
+    "reported_evidence_count": 12,
+    "first_event": {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "event": {
+        "basis": [
+          "规则 L20–21、L36",
+          "受限转移定义 §4.3"
+        ],
+        "detail": "empty_box",
+        "event": "J|0|0|5",
+        "operation": "transfer",
+        "outcome": "success",
+        "target": "north_box"
+      }
+    }
+  },
+  "manufacturing.recipe_selection": {
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/研磨混做核验-运行记录-v3-kernel.json",
+    "sha256": "a8b2a1e47ca0f9b54faca4695a35e66f0d070d72536810a3cd96aa2f984a71ed",
+    "reported_status": "exercised",
+    "reported_evidence_count": 2,
+    "first_event": {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "2"
+        }
+      },
+      "event": {
+        "basis": [
+          "规则 L18、L35",
+          "受限转移定义 §4.2",
+          "受限模型声明 manufacture_subactions、atomic_batch、same_instant"
+        ],
+        "detail": "",
+        "event": "J|2|0|6",
+        "operation": "manufacture",
+        "outcome": "success",
+        "target": "grinder"
+      }
+    }
+  },
+  "manufacturing.input_slot_selection": {
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/研磨混做核验-运行记录-v3-kernel.json",
+    "sha256": "a8b2a1e47ca0f9b54faca4695a35e66f0d070d72536810a3cd96aa2f984a71ed",
+    "reported_status": "exercised",
+    "reported_evidence_count": 6,
+    "first_event": {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "1"
+        }
+      },
+      "event": {
+        "basis": [
+          "规则 L13、L15–17、L23–25、L29–32",
+          "约束端口速率",
+          "受限模型声明 polling.both_failure",
+          "内核输入 §5.2、§6.3"
+        ],
+        "detail": "",
+        "event": "J|1|0|3",
+        "operation": "move",
+        "outcome": "success",
+        "target": "PC|belt_a:north:0|grinder:south:0"
+      }
+    }
+  },
+  "manufacturing.recipe_quantity_match": {
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/研磨混做核验-运行记录-v3-kernel.json",
+    "sha256": "a8b2a1e47ca0f9b54faca4695a35e66f0d070d72536810a3cd96aa2f984a71ed",
+    "reported_status": "exercised",
+    "reported_evidence_count": 2,
+    "first_event": {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "2"
+        }
+      },
+      "event": {
+        "basis": [
+          "规则 L18、L35",
+          "受限转移定义 §4.2",
+          "受限模型声明 manufacture_subactions、atomic_batch、same_instant"
+        ],
+        "detail": "",
+        "event": "J|2|0|6",
+        "operation": "manufacture",
+        "outcome": "success",
+        "target": "grinder"
+      }
+    }
+  },
+  "manufacturing.recipe_extra_items": {
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/研磨混做核验-运行记录-v3-kernel.json",
+    "sha256": "a8b2a1e47ca0f9b54faca4695a35e66f0d070d72536810a3cd96aa2f984a71ed",
+    "reported_status": "exercised",
+    "reported_evidence_count": 2,
+    "first_event": {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "2"
+        }
+      },
+      "event": {
+        "basis": [
+          "规则 L18、L35",
+          "受限转移定义 §4.2",
+          "受限模型声明 manufacture_subactions、atomic_batch、same_instant"
+        ],
+        "detail": "",
+        "event": "J|2|0|6",
+        "operation": "manufacture",
+        "outcome": "success",
+        "target": "grinder"
+      }
+    }
+  },
+  "connection.bridge_first_contact": {
+    "status": "not_exercised",
+    "reason": "运行支持域只接已建成且桥方向已解的布局；先接历史仅作input_checked，需建造/方向变更转移才能取得运行证据。"
+  },
+  "warehouse.delivery_count": {
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/桥接器双通路-运行记录-v3-kernel.json",
+    "sha256": "2d2cd76bd45cbe6d0925911e214fc7266d09608098505931d68bf959839e2aa6",
+    "reported_status": "exercised",
+    "reported_evidence_count": 4,
+    "first_event": {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "5"
+        }
+      },
+      "event": {
+        "basis": [
+          "规则 L20–21、L36",
+          "受限转移定义 §4.3"
+        ],
+        "detail": "whole_box",
+        "event": "J|5|0|5",
+        "operation": "transfer",
+        "outcome": "success",
+        "target": "north_box"
+      }
+    }
+  },
+  "warehouse.empty_slot_identity": {
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/桥接器双通路-运行记录-v3-kernel.json",
+    "sha256": "2d2cd76bd45cbe6d0925911e214fc7266d09608098505931d68bf959839e2aa6",
+    "reported_status": "exercised",
+    "reported_evidence_count": 4,
+    "first_event": {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "5"
+        }
+      },
+      "event": {
+        "basis": [
+          "规则 L20–21、L36",
+          "受限转移定义 §4.3"
+        ],
+        "detail": "whole_box",
+        "event": "J|5|0|5",
+        "operation": "transfer",
+        "outcome": "success",
+        "target": "north_box"
+      }
+    }
+  },
+  "warehouse.external_supply": {
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分核验-运行记录-v3-kernel.json",
+    "sha256": "8f31b43af299da14f4939a1f80bf0572eb92b7a65aaa7731969f341f30702468",
+    "reported_status": "exercised",
+    "reported_evidence_count": 100,
+    "first_event": {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "event": {
+        "basis": [
+          "规则 L13、L15–17、L23–25、L29–32",
+          "约束端口速率",
+          "受限模型声明 polling.both_failure",
+          "内核输入 §5.2、§6.3"
+        ],
+        "detail": "",
+        "event": "J|0|0|27",
+        "operation": "move",
+        "outcome": "success",
+        "target": "PC|source:north:1|feed_1:south:0"
+      }
+    }
+  },
+  "damping.branch": {
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/阻尼切支恢复核验-运行记录-v3-kernel.json",
+    "sha256": "a48f9249c9b6071497714c4d192e107fbdb9d62987dfda2c90942539db600e7e",
+    "reported_status": "exercised",
+    "reported_evidence_count": 455,
+    "first_event": {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "event": {
+        "basis": [
+          "规则 L13、L15–17、L23–25、L29–32",
+          "约束端口速率",
+          "受限模型声明 polling.both_failure",
+          "内核输入 §5.2、§6.3",
+          "damping.evaluated:PC|source:north:0|merge_a:south:0;PC|source:north:2|merge_b:east:0;branch:PC|source:north:0|merge_a:south:0"
+        ],
+        "detail": "dual_permission",
+        "event": "J|0|0|0",
+        "operation": "move",
+        "outcome": "failure",
+        "target": "PC|fork:north:0|gate:south:0"
+      }
+    }
+  },
+  "damping.belt_adjacency": {
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/阻尼连续带核验-运行记录-v3-kernel.json",
+    "sha256": "f3ae819a338949eaef81e38a1919ba37dcc5ca9685b25539ca910ce6e2247ced",
+    "reported_status": "exercised",
+    "reported_evidence_count": 252,
+    "first_event": {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "event": {
+        "basis": [
+          "规则 L13、L15–17、L23–25、L29–32",
+          "约束端口速率",
+          "受限模型声明 polling.both_failure",
+          "内核输入 §5.2、§6.3",
+          "damping.evaluated:PC|source:north:0|merger:south:0;PC|source:north:2|belt_1:south:0;belt_adjacency:PC|source:north:2|belt_1:south:0;belt_component:PC|source:north:2|belt_1:south:0"
+        ],
+        "detail": "dual_permission",
+        "event": "J|0|0|0",
+        "operation": "move",
+        "outcome": "failure",
+        "target": "PC|source:north:0|merger:south:0"
+      }
+    }
+  },
+  "damping.belt_component_rule": {
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/阻尼连续带核验-运行记录-v3-kernel.json",
+    "sha256": "f3ae819a338949eaef81e38a1919ba37dcc5ca9685b25539ca910ce6e2247ced",
+    "reported_status": "exercised",
+    "reported_evidence_count": 252,
+    "first_event": {
+      "time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "event": {
+        "basis": [
+          "规则 L13、L15–17、L23–25、L29–32",
+          "约束端口速率",
+          "受限模型声明 polling.both_failure",
+          "内核输入 §5.2、§6.3",
+          "damping.evaluated:PC|source:north:0|merger:south:0;PC|source:north:2|belt_1:south:0;belt_adjacency:PC|source:north:2|belt_1:south:0;belt_component:PC|source:north:2|belt_1:south:0"
+        ],
+        "detail": "dual_permission",
+        "event": "J|0|0|0",
+        "operation": "move",
+        "outcome": "failure",
+        "target": "PC|source:north:0|merger:south:0"
+      }
+    }
+  }
+}

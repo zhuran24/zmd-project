@@ -1,0 +1,84 @@
+{
+  "local_instances": [
+    {
+      "species": "荞花",
+      "transport_slots": 24,
+      "actual_channels_checked": 27,
+      "machines": [
+        {
+          "unit": "P",
+          "kind": "种植机",
+          "all_output_peers": [
+            "P-H-1",
+            "P-G-1"
+          ],
+          "output_levels": 1,
+          "PA-01": true
+        },
+        {
+          "unit": "H",
+          "kind": "采种机",
+          "all_output_peers": [
+            "H-P-1"
+          ],
+          "output_levels": 1,
+          "PA-01": true
+        },
+        {
+          "unit": "G",
+          "kind": "粉碎机",
+          "all_output_peers": [
+            "G-OUT-0"
+          ],
+          "output_levels": 1,
+          "PA-01": true
+        }
+      ],
+      "PA-02": true,
+      "PA-03": "无箱",
+      "scope": "局部三机；两种植物分开实例化；边界接收尚未装入整厂"
+    },
+    {
+      "species": "砂叶",
+      "transport_slots": 26,
+      "actual_channels_checked": 29,
+      "machines": [
+        {
+          "unit": "P",
+          "kind": "种植机",
+          "all_output_peers": [
+            "P-H-1",
+            "P-G-1"
+          ],
+          "output_levels": 1,
+          "PA-01": true
+        },
+        {
+          "unit": "H",
+          "kind": "采种机",
+          "all_output_peers": [
+            "H-P-1"
+          ],
+          "output_levels": 1,
+          "PA-01": true
+        },
+        {
+          "unit": "G",
+          "kind": "粉碎机",
+          "all_output_peers": [
+            "G-OUT-0",
+            "G-OUT-1",
+            "G-OUT-2"
+          ],
+          "output_levels": 1,
+          "PA-01": true
+        }
+      ],
+      "PA-02": true,
+      "PA-03": "无箱",
+      "scope": "局部三机；两种植物分开实例化；边界接收尚未装入整厂"
+    }
+  ],
+  "full_AB_realization": "未提供实际几何，保持待核",
+  "direction": "局部结构定理前件检查"
+}

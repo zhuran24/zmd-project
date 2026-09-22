@@ -1,0 +1,19 @@
+{
+  "findings": [
+    {
+      "id": "S5-r8-L2-01",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/规格/参数轴-对内核输入请求的答复.md:24；/home/zhuran24/zmd-research-fresh/求解器/规格/修订记录.md:232",
+      "claim": "当前接口答复仍把“两种新物种且有无身份空格”一律列为停止，遗漏“至少一格被取货端口指派”的限定，会误导后续缩减有限运行覆盖。",
+      "evidence": "规则L13/L36/L41/L73及任务书4§3.3；受限转移定义.md:90规定len(U)>=2且any(w in assigned_slots for w in E)才停止，:91–96允许未指派空格规范分配。独立反例U={电池,胶囊}、E=O=[W_empty]、指派集合仅含两矿格，答复条件为真而现行条件为假，各入1件满足容量。证据：规格/复核/r8-一致性证据/停止条件反例.json。",
+      "severity": "重要"
+    },
+    {
+      "id": "S5-r8-L2-02",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/规格/参数轴-对内核输入请求的答复.md:22",
+      "claim": "答复要求写入verification_scope，但输出正文和封闭schema的实际字段均为validation_scope。",
+      "evidence": "内核输出.md:7、22、65使用validation_scope；内核输出.schema.json:1358将其列为必填，:1363拒绝未知字段。AJV独立试验仅将该字段改名后同时报缺validation_scope和多verification_scope。证据：规格/复核/r8-一致性证据/字段名反例.json。",
+      "severity": "次要"
+    }
+  ],
+  "notes": "完整论证：/home/zhuran24/zmd-research-fresh/求解器/规格/复核/复核-r8-一致性.md。发现重要1项、次要1项；34份被审规格未变。自查通过后的K线源码并行变化及验证时点已在报告分列。"
+}

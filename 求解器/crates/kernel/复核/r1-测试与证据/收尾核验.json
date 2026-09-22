@@ -1,0 +1,28 @@
+{
+  "status": "通过",
+  "protected_files": 99,
+  "protected_changes": [],
+  "original_baseline": {
+    "baseline_count": 1250,
+    "baseline_changes": [],
+    "deliverable_entries": 43,
+    "deliverable_changes": []
+  },
+  "cargo_tests_passed": 79,
+  "cargo_tests_failed": 0,
+  "report_links_checked": 22,
+  "missing_links": [],
+  "findings_schema_valid": true,
+  "manual_state_and_ledger_match": true,
+  "reader_review": {
+    "standalone_context": true,
+    "current_findings_and_counts_consistent": true,
+    "no_conversation_only_references": true,
+    "no_universal_claim_from_finite_tests": true,
+    "strong_and_weak_verifiers_distinguished": true,
+    "synthetic_seed_reachability_not_claimed": true,
+    "all_three_findings_have_reproduction_and_spec_basis": true
+  },
+  "report_sha256": "bed37df6b180fa2e823b227f9ceb267c3ca0730d2bbef908fac9f917acb00a3e",
+  "findings_sha256": "f6c91608dc303b8192b1d9d2801d6da6cbd2fce9b897e3cdf8364b19c81aa0d9"
+}

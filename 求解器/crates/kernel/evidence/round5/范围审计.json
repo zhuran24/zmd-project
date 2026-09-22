@@ -1,0 +1,115 @@
+{
+  "status": "pass",
+  "protected_files": 12,
+  "protected_changes": [],
+  "shared_spec_changes": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限模型声明.md",
+      "before": "fd6a18dbcd805414234e9dd00916eff5fc4811a7ebd0d9eb74ac6b80f63eba34",
+      "after": "da0ab2073221bca451c676d54c44c98705bac2886c4ebf7049b7a87fd3509e86"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/运行语义.md",
+      "before": "15aae7878c2239d7542f0a136d01581ec03fd0087b9df119ca4b68b10a6f04fd",
+      "after": "1ce70540bd9f82e6fb0d1661ded855c7c723abccc4f9c13d646753cbece5a02c"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/修订记录.md",
+      "before": "1a932152168342a1182cef66913385bd5bce51cfb6de1c95528c01de64179235",
+      "after": "3d735dbd99a6b96b65652e9551479c29e0bd9078d22fe066c5229cb8ba98e1d5"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/参数轴-对内核输入请求的答复.md",
+      "before": "8ef9d6f0a5b2e47299e3119c7a54413cca2db4fda5ee15d4d9298baa5c151cae",
+      "after": "ac1e606cd4c5042200c0f8f77bd6d88695896f939ca1b9e6b40c6157b68abd64"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点清单.md",
+      "before": "218603dac8f85901f363da26efebca404124257687693cebe6fbdd9f004472d0",
+      "after": "dda03396a0012f42c41a820adea67b41a19754d60bf63441c6205be29b0555bb"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/规则覆盖表.md",
+      "before": "f6dde7993bb8cd83ab45b27c1206e5c92348bac070e3c4830432ed0c1b235c5c",
+      "after": "cddefbf6a9cb473920f30a1d79d2a4e012f8704b43c9ef063e941eaccdd617ca"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入-修订记录.md",
+      "before": "1ad13680c8b8612c28600ce475eb232e15360cecb2ae49302911133283d67c3e",
+      "after": "8407a00ebab39212d2289549b0d5c22927f836a06162a22f5fc9ac5ccb825ff0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md",
+      "before": "36bfc4d83363cf482bc2d6b7068e38c921a937b19182157ad4aa87770b5abefa",
+      "after": "55e3caee8ab40d1003b6002f1283c46734ef77a122e2870a2455fb4f14355450"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/参数扫描约减.md",
+      "before": "2fd206e60a3e2bac6d5d3700aab8df450ae1a521e412a7bdee99076b6693097f",
+      "after": "b130439dc970d41923314a992f043dbdc96280c2cf0e653000ce9b6363e94011"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+      "before": "d4a2b567d0861876964c6a968d6b9e052eef74860324e28e86ea20cd6e5a03f7",
+      "after": "37427b530246a263018fa44a826893b46032c9d97eb8db1b6be06c7bcada080d"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/check_revision.py",
+      "before": "0fa316e9be725c68f9aacf4f6eec5c42cd7fe47af40996ca0be996eaa22b4231",
+      "after": "66ea94ef739a5155736be08f4c36ebea3900f4b3ef75385434b09dfd252d4de8"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/四件前置义务对照.md",
+      "before": "38a2b0f913351addedb89fa3f65d1f2d9a3648f1b58bd686ed92d51cc1bcc0be",
+      "after": "a53e6ea0b6ecef38d8c009e66a80f5b0d04d3b5803d3270af68cc30cb19f9dde"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/对内核的修改请求.md",
+      "before": "45a74d1e810cc49d30088fff537e846b9f594d21c1f183c905d58639d9ee5230",
+      "after": "f8f26dcde2b72c2358cb24dd1e7ab43ce56c0d40b2da6ab92e8928c88592adde"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md",
+      "before": "ad868c6c4c102ddadc7a8e2d566bea65763a350cf330f6fd9b11f9f27630e805",
+      "after": "0ca6312ed5142008d136f2d298bf23937dfbcb4cc80b7e3bfc023278833e9ec9"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "before": "397c1ce98e2faa6acd391e0fc7405da25c6c93aa07175795b84830b0ca6d4cd9",
+      "after": "bb0864eec811a6a77065ede33af165ced5e31e384afb166eaa30af554589e34a"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.md",
+      "before": "c81e2899992fed73faaa7c283b83cfc103fd49abbe95796151224932ebaf3fd8",
+      "after": "07de6c939938b88f0165fb1c02b1d96c19fd519453af54ce33ab9aa95b88d52c"
+    }
+  ],
+  "shared_spec_note": "S/R写权内并发修订，只读核对；不是K线产物。K线疑问文件单列在交付清单。",
+  "evidence_forbidden_directories": [],
+  "evidence_extensions": [
+    ".json",
+    ".log",
+    ".md"
+  ],
+  "build_target": "/home/zhuran24/zmd-research-fresh/求解器/target",
+  "scope_of_audit": "保护集原始字节、显式产物路径和本轮证据目录；不声称审计了整个系统所有文件。",
+  "document_reader_review": {
+    "status": "pass",
+    "documents": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/README.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/修订记录.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round5/实施与验证.md",
+      "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/第五轮样例说明-kernel.md"
+    ],
+    "checks": [
+      "当前/历史分区明确",
+      "头部状态与证据相符",
+      "不将条件轨迹写成全称证明",
+      "数字分别给测量域",
+      "未决逐项保留",
+      "链接存在",
+      "没有占位符或工作流指令回声"
+    ],
+    "broken_links": []
+  }
+}

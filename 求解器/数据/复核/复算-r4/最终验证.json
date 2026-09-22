@@ -1,0 +1,9 @@
+{
+  "reviewed_or_source_changes": [],
+  "report_byte_equal": true,
+  "original_report_sha256": "4dedc1ca41876e1b618b02b4c1d59b53d1e400fce52165e4208dc546f71c2ddb",
+  "regenerated_report_sha256": "4dedc1ca41876e1b618b02b4c1d59b53d1e400fce52165e4208dc546f71c2ddb",
+  "non_english_identifiers": [],
+  "cargo_test_log": "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复算-r4/cargo-test.log",
+  "catalog_negative_test_log": "/home/zhuran24/zmd-research-fresh/求解器/数据/复核/复算-r4/目录负例.log"
+}

@@ -1,0 +1,21 @@
+{
+  "name": "bad-slot",
+  "command": [
+    "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+    "run",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r3-1-证据/bad-slot-input.json",
+    "--config",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+    "--ticks",
+    "1",
+    "--out",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r3-1-证据/bad-slot.json"
+  ],
+  "exit_code": 101,
+  "output_exists": false,
+  "stdout": "",
+  "stderr": "\nthread 'main' (686136) panicked at crates/kernel/src/engine.rs:170:47:\nindex out of bounds: the len is 1 but the index is 1\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n",
+  "status": null,
+  "stop": null,
+  "open_items": null
+}

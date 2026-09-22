@@ -1,0 +1,4 @@
+{"name": "compile-api-probe", "command": ["rustc", "--edition=2021", "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-2-证据/inspect_engine.rs", "--extern", "kernel=/home/zhuran24/zmd-research-fresh/求解器/target/release/libkernel.rlib", "--extern", "serde_json=/home/zhuran24/zmd-research-fresh/求解器/target/release/deps/libserde_json-3f2317e8f192de6d.rlib", "-L", "dependency=/home/zhuran24/zmd-research-fresh/求解器/target/release/deps", "-o", "/home/zhuran24/zmd-research-fresh/求解器/target/kr_r5_2_inspect_engine"], "cwd": "/home/zhuran24/zmd-research-fresh/求解器", "exit": 0}
+STDOUT
+
+STDERR

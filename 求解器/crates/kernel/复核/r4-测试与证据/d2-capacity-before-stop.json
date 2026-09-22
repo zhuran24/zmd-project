@@ -1,0 +1,195 @@
+{
+  "status": "pass",
+  "cases": [
+    {
+      "mode": "pc",
+      "ore": 79999,
+      "finite_ore_inbound": 1,
+      "cycle_status": "stopped",
+      "stop": {
+        "axis": "cycle.domain.D2",
+        "event": "PC|belt:north:0|core:south:1",
+        "kind": "unsupported",
+        "partial_events": [],
+        "reason": "现存回矿候选读取被抽象容量，先于physical/级排序/授权停止",
+        "time": {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "0"
+          }
+        }
+      },
+      "completed_ticks": 0
+    },
+    {
+      "mode": "pc",
+      "ore": 80000,
+      "finite_ore_inbound": 0,
+      "cycle_status": "stopped",
+      "stop": {
+        "axis": "cycle.domain.D2",
+        "event": "PC|belt:north:0|core:south:1",
+        "kind": "unsupported",
+        "partial_events": [],
+        "reason": "现存回矿候选读取被抽象容量，先于physical/级排序/授权停止",
+        "time": {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "0"
+          }
+        }
+      },
+      "completed_ticks": 0
+    },
+    {
+      "mode": "box",
+      "ore": 79999,
+      "finite_ore_inbound": 1,
+      "cycle_status": "stopped",
+      "stop": {
+        "axis": "cycle.domain.D2",
+        "event": "J|0|0|4: J|0|0|4",
+        "kind": "unsupported",
+        "partial_events": [
+          {
+            "basis": [
+              "规则 L13、L15–17、L23–25、L29–32",
+              "约束端口速率",
+              "受限模型声明 polling.both_failure",
+              "内核输入 §5.2、§6.3"
+            ],
+            "detail": "",
+            "event": "J|0|0|0",
+            "operation": "move",
+            "outcome": "success",
+            "target": "PC|a:east:0|b:south:0"
+          },
+          {
+            "basis": [
+              "规则 L13、L15–17、L23–25、L29–32",
+              "约束端口速率",
+              "受限模型声明 polling.both_failure",
+              "内核输入 §5.2、§6.3"
+            ],
+            "detail": "residence",
+            "event": "J|0|0|1",
+            "operation": "move",
+            "outcome": "failure",
+            "target": "PC|b:east:0|c:south:0"
+          },
+          {
+            "basis": [
+              "规则 L13、L15–17、L23–25、L29–32",
+              "约束端口速率",
+              "受限模型声明 polling.both_failure",
+              "内核输入 §5.2、§6.3"
+            ],
+            "detail": "source_empty",
+            "event": "J|0|0|2",
+            "operation": "move",
+            "outcome": "failure",
+            "target": "PC|c:east:0|d:south:0"
+          },
+          {
+            "basis": [
+              "规则 L13、L15–17、L23–25、L29–32",
+              "约束端口速率",
+              "受限模型声明 polling.both_failure",
+              "内核输入 §5.2、§6.3"
+            ],
+            "detail": "source_empty",
+            "event": "J|0|0|3",
+            "operation": "move",
+            "outcome": "failure",
+            "target": "PC|d:east:0|a:south:0"
+          }
+        ],
+        "reason": "生产抽象不允许矿石回仓",
+        "time": {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "0"
+          }
+        }
+      },
+      "completed_ticks": 0
+    },
+    {
+      "mode": "box",
+      "ore": 80000,
+      "finite_ore_inbound": 0,
+      "cycle_status": "stopped",
+      "stop": {
+        "axis": "cycle.domain.D2",
+        "event": "J|0|0|4: J|0|0|4",
+        "kind": "unsupported",
+        "partial_events": [
+          {
+            "basis": [
+              "规则 L13、L15–17、L23–25、L29–32",
+              "约束端口速率",
+              "受限模型声明 polling.both_failure",
+              "内核输入 §5.2、§6.3"
+            ],
+            "detail": "",
+            "event": "J|0|0|0",
+            "operation": "move",
+            "outcome": "success",
+            "target": "PC|a:east:0|b:south:0"
+          },
+          {
+            "basis": [
+              "规则 L13、L15–17、L23–25、L29–32",
+              "约束端口速率",
+              "受限模型声明 polling.both_failure",
+              "内核输入 §5.2、§6.3"
+            ],
+            "detail": "residence",
+            "event": "J|0|0|1",
+            "operation": "move",
+            "outcome": "failure",
+            "target": "PC|b:east:0|c:south:0"
+          },
+          {
+            "basis": [
+              "规则 L13、L15–17、L23–25、L29–32",
+              "约束端口速率",
+              "受限模型声明 polling.both_failure",
+              "内核输入 §5.2、§6.3"
+            ],
+            "detail": "source_empty",
+            "event": "J|0|0|2",
+            "operation": "move",
+            "outcome": "failure",
+            "target": "PC|c:east:0|d:south:0"
+          },
+          {
+            "basis": [
+              "规则 L13、L15–17、L23–25、L29–32",
+              "约束端口速率",
+              "受限模型声明 polling.both_failure",
+              "内核输入 §5.2、§6.3"
+            ],
+            "detail": "source_empty",
+            "event": "J|0|0|3",
+            "operation": "move",
+            "outcome": "failure",
+            "target": "PC|d:east:0|a:south:0"
+          }
+        ],
+        "reason": "生产抽象不允许矿石回仓",
+        "time": {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "0"
+          }
+        }
+      },
+      "completed_ticks": 0
+    }
+  ]
+}

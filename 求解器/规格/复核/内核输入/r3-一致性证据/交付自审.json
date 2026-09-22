@@ -1,0 +1,36 @@
+{
+  "status": "通过",
+  "report": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/复核-r3-一致性.md",
+  "report_sha256": "8c94bf100450b132f6c8e3cfc1602f9eb9e84edcf83d3e2195dbdc824ea67e02",
+  "findings": 4,
+  "severity_counts": {
+    "重要": 3,
+    "次要": 1
+  },
+  "links": 15,
+  "broken_links": [],
+  "reader_audit": [
+    "原始轨迹正确与校验漏检分开",
+    "每项有明确反例和任务或正式规则依据",
+    "未将已披露的全称未决重复列为缺陷",
+    "数值和路径一致",
+    "并行外部变化有记录，未归责未回写"
+  ],
+  "source_changes": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录.json",
+      "start": "40df21a3334db8178dca2a4cd4113d5ac8fa0b68f77be2a66ca3b2e6cd03f98d",
+      "now": "a05a20d0dfb827d0d53834fc286646c4a40cf2f41a1714e0d5acd251058aa384"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/送料契约.md",
+      "start": "90b8db0295aca96d45e6811bfaa4f9c17e87bd3340e56368773139b63e483bea",
+      "now": "cd0d5c310aba6c096e146b664fb03afc9154e037b7a81b29f539fabe11c498c0"
+    }
+  ],
+  "reader_audit_fixes": [
+    "补全三份任务书绝对目录",
+    "明确反例只修改列明字段且保留原依赖路径",
+    "限定输出指纹缺口为当前回归未检查交付清单"
+  ]
+}

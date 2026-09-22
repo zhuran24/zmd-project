@@ -1,0 +1,97 @@
+{
+  "rectangles": {
+    "A": [
+      10,
+      10,
+      3,
+      3
+    ],
+    "B": [
+      16,
+      10,
+      3,
+      3
+    ],
+    "power": [
+      13,
+      10,
+      2,
+      2
+    ],
+    "core": [
+      50,
+      50,
+      9,
+      9
+    ]
+  },
+  "within_base": true,
+  "overlaps": [],
+  "positive_area_powered": {
+    "A": true,
+    "B": true
+  },
+  "physical_channels": 0,
+  "physical_channel_basis": "规则L16要求至少一端运输；四单位均非运输，故没有PC",
+  "orders": [
+    {
+      "instant": 0,
+      "order": [
+        "A",
+        "B"
+      ]
+    },
+    {
+      "instant": 5,
+      "order": [
+        "B",
+        "A"
+      ]
+    },
+    {
+      "instant": 10,
+      "order": [
+        "A",
+        "B"
+      ]
+    },
+    {
+      "instant": 15,
+      "order": [
+        "B",
+        "A"
+      ]
+    },
+    {
+      "instant": 20,
+      "order": [
+        "A",
+        "B"
+      ]
+    },
+    {
+      "instant": 25,
+      "order": [
+        "B",
+        "A"
+      ]
+    },
+    {
+      "instant": 30,
+      "order": [
+        "A",
+        "B"
+      ]
+    },
+    {
+      "instant": 35,
+      "order": [
+        "B",
+        "A"
+      ]
+    }
+  ],
+  "complete_order_rule": "t=5k时，k偶数先A后B、奇数先B后A；其它时刻二箱均在冷却",
+  "cooldown_rule": "A自-10、B自-5起每隔5 tick尝试空传输；每次尝试后冷却5；正时刻共同到期",
+  "scope": "正式规则相容的无物流合成见证；不声称达标，不声称现执行器支持此实例"
+}

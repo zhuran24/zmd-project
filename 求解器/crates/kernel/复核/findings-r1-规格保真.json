@@ -1,0 +1,61 @@
+{
+  "review": "内核实现第1轮规格保真",
+  "report_path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/复核-r1-规格保真.md",
+  "findings": [
+    {
+      "id": "KR-r1-L1-01",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/interfaces.rs:169；/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/interfaces.rs:262；/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/transition.rs:267；/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/engine.rs:869",
+      "claim": "内核未核补矿历史的持续充分性，矿源已断供时仍返回 completed。",
+      "evidence": "任务L7；受限转移§2.1要求空历史在整个被测段不违持续可得；ore-shortage-record.json在t=0取空源矿后继续完成t=1…3。",
+      "severity": "阻断"
+    },
+    {
+      "id": "KR-r1-L1-02",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/input.rs:84；/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/interfaces.rs:189；/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/transition.rs:464",
+      "claim": "同刻补矿数组序与统一时间线矛盾时未拒收，并输出违反显式先后的轨迹。",
+      "evidence": "内核输入§3.1要求全部偏序取交集、冲突拒收；supply-order-conflict输入规定b先于a，实际completed记录却先a后b。",
+      "severity": "阻断"
+    },
+    {
+      "id": "KR-r1-L1-03",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/engine.rs:136；/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/engine.rs:626；/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/transition.rs:371；/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/output.rs:365",
+      "claim": "待完成事件可复用历史建造ID，且错误记录通过Rust自身重算验收。",
+      "evidence": "内核输入§3.1、内核输出§2–§3禁止历史别名并要求独立身份校验；t=-13的build_0被用于t=2制造完成，verify_record返回Ok，独立校验报待事件与输入历史身份冲突。",
+      "severity": "重要"
+    },
+    {
+      "id": "KR-r1-L1-04",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/interfaces.rs:267；/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/input.rs:145；/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/transition.rs:279",
+      "claim": "外部动作记录缺少全局事件引用校验，离线记录误指runtime时被忽略并完成运行。",
+      "evidence": "内核输入§3.1、§3.3要求离线记录引用offline；offline-wrong-kind负例completed，而只改kind的对照在t=1按offline.events停止。",
+      "severity": "重要"
+    },
+    {
+      "id": "KR-r1-L1-05",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/input.rs:657",
+      "claim": "阻尼分支表接受与发起查询路径无关的分流器表项。",
+      "evidence": "内核输入§5.3明令禁止无关分流器入表；unrelated-fork-input.json把探针支路查询绑定主splitter，公开装载与Engine::new仍成功。",
+      "severity": "重要"
+    },
+    {
+      "id": "KR-r1-L1-06",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/config.rs:120；/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/transition.rs:672；/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/output.rs:327",
+      "claim": "warehouse.acceptance及其量词轴未实现规定的逐观察边界两成品接收域报告。",
+      "evidence": "受限模型声明§2及内核配置同名轴要求分别记录容量许可与物理入库途径、每边界报告；代码只有配置赋值，四份记录没有报告且标not_exercised。",
+      "severity": "重要"
+    },
+    {
+      "id": "KR-r1-L1-07",
+      "where": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/transition.rs:568；/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/output.rs:261；/home/zhuran24/zmd-research-fresh/求解器/规格/内核实现-对规格的疑问.md:KQ-02",
+      "claim": "after_closure种子的输出首时刻与当前输出契约不一致，虽其推进符合转移语义。",
+      "evidence": "受限转移§1要求t到t+1，内核输出§2却要求首项起于start_state时间；实测start_state为1、首ticks为2，需要正式统一接口。",
+      "severity": "重要"
+    }
+  ],
+  "open_items": [
+    "KQ-01临时补矿编码须正式定义，并补已存在的持续充分性和统一顺序检查。",
+    "KQ-02推进语义正确但输出契约冲突未解决；KQ-03现接口下保守拒收合理。",
+    "KQ-04需明确按需阻尼调用前件；固定分支断开后仅余一路是否继续沿唯一边，另需规格澄清，本轮不判定为确定缺陷。",
+    "KQ-05在封闭schema下不伪造维护事件合理，独立维护日志仍需契约扩展。"
+  ]
+}

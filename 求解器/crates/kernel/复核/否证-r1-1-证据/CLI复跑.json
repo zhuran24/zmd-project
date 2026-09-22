@@ -1,0 +1,3001 @@
+{
+  "binary": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/target/debug/kernel",
+  "binary_sha256": "0dfa54594956b238ec568e1807b0748311001cf05d8e587257b5c6150cc2da47",
+  "cases": [
+    {
+      "case": "ore-l1",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-规格保真-证据/ore-shortage-input.json",
+      "input_sha256": "c741e0902fd14e17abcdfa2271801b3b16e7d0fdd61f15b8085391e3905b3da6",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/target/debug/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-规格保真-证据/ore-shortage-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--ticks",
+        "4",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/ore-l1-record.json"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/ore-l1-record.json\",\"status\":\"completed\"}\n",
+      "stderr": "",
+      "record_exists": true,
+      "status": "completed",
+      "open_items": [
+        "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+        "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+      ],
+      "start_time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "tick_times": [
+        {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "0"
+          }
+        },
+        {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "1"
+          }
+        },
+        {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "2"
+          }
+        },
+        {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "3"
+          }
+        }
+      ],
+      "summaries": [
+        {
+          "completed_batches": "0",
+          "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+          "crusher_phase": "idle",
+          "crusher_remaining": null,
+          "nonempty": {
+            "feed_belt:transport:0": [
+              {
+                "entered_at": "0",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ]
+          },
+          "tick": "0",
+          "warehouse_ore": "0"
+        },
+        {
+          "completed_batches": "0",
+          "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+          "crusher_phase": "working",
+          "crusher_remaining": "1",
+          "nonempty": {
+            "crusher:buffer:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ]
+          },
+          "tick": "1",
+          "warehouse_ore": "0"
+        },
+        {
+          "completed_batches": "1",
+          "crusher_next_output": "PC|crusher:north:2|belt_b0:south:0",
+          "crusher_phase": "idle",
+          "crusher_remaining": null,
+          "nonempty": {
+            "belt_a0:transport:0": [
+              {
+                "entered_at": "2",
+                "item": "源石粉末",
+                "quantity": "1"
+              }
+            ]
+          },
+          "tick": "2",
+          "warehouse_ore": "0"
+        },
+        {
+          "completed_batches": "1",
+          "crusher_next_output": "PC|crusher:north:2|belt_b0:south:0",
+          "crusher_phase": "idle",
+          "crusher_remaining": null,
+          "nonempty": {
+            "belt_a1:transport:0": [
+              {
+                "entered_at": "3",
+                "item": "源石粉末",
+                "quantity": "1"
+              }
+            ]
+          },
+          "tick": "3",
+          "warehouse_ore": "0"
+        }
+      ],
+      "events_of_interest": [
+        {
+          "basis": [
+            "规则 L35",
+            "运行语义 §4.1",
+            "受限模型声明 time.manufacture_events"
+          ],
+          "event": "C|2|crusher",
+          "operation": "manufacture_complete",
+          "outcome": "success",
+          "target": "crusher"
+        }
+      ],
+      "warehouse_axes": [
+        {
+          "axis": "manufacturing.output_blocked",
+          "coverage_status": "exercised",
+          "disposition": "已定",
+          "evidence": [
+            "J|1|0|11",
+            "J|2|0|11"
+          ],
+          "other_values": "已定域无其它值；未执行结构仍未验证",
+          "reason": "该已定范围无读法损失；关联未定轴另记"
+        },
+        {
+          "axis": "warehouse.acceptance",
+          "coverage_status": "not_exercised",
+          "disposition": "本版选值",
+          "evidence": [
+            "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+          ],
+          "other_values": "其它值及其联合组合未覆盖",
+          "reason": "仅容量/仅路径等目标读法"
+        },
+        {
+          "axis": "warehouse.acceptance_quantifier",
+          "coverage_status": "not_exercised",
+          "disposition": "本版选值",
+          "evidence": [
+            "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+          ],
+          "other_values": "其它值及其联合组合未覆盖",
+          "reason": "验收状态条件及环境量词"
+        }
+      ]
+    },
+    {
+      "case": "ore-l2",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-测试与证据/空补矿史耗尽-input.json",
+      "input_sha256": "b76ba1bbbf9136b4d5948d313b80ed718aafc11b81d0a908d07c47bb32982fe8",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/target/debug/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-测试与证据/空补矿史耗尽-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--ticks",
+        "4",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/ore-l2-record.json"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/ore-l2-record.json\",\"status\":\"completed\"}\n",
+      "stderr": "",
+      "record_exists": true,
+      "status": "completed",
+      "open_items": [
+        "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+        "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+      ],
+      "start_time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "tick_times": [
+        {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "0"
+          }
+        },
+        {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "1"
+          }
+        },
+        {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "2"
+          }
+        },
+        {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "3"
+          }
+        }
+      ],
+      "summaries": [
+        {
+          "completed_batches": "0",
+          "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+          "crusher_phase": "idle",
+          "crusher_remaining": null,
+          "nonempty": {
+            "feed_belt:transport:0": [
+              {
+                "entered_at": "0",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ]
+          },
+          "tick": "0",
+          "warehouse_ore": "0"
+        },
+        {
+          "completed_batches": "0",
+          "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+          "crusher_phase": "working",
+          "crusher_remaining": "1",
+          "nonempty": {
+            "crusher:buffer:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ]
+          },
+          "tick": "1",
+          "warehouse_ore": "0"
+        },
+        {
+          "completed_batches": "1",
+          "crusher_next_output": "PC|crusher:north:2|belt_b0:south:0",
+          "crusher_phase": "idle",
+          "crusher_remaining": null,
+          "nonempty": {
+            "belt_a0:transport:0": [
+              {
+                "entered_at": "2",
+                "item": "源石粉末",
+                "quantity": "1"
+              }
+            ]
+          },
+          "tick": "2",
+          "warehouse_ore": "0"
+        },
+        {
+          "completed_batches": "1",
+          "crusher_next_output": "PC|crusher:north:2|belt_b0:south:0",
+          "crusher_phase": "idle",
+          "crusher_remaining": null,
+          "nonempty": {
+            "belt_a1:transport:0": [
+              {
+                "entered_at": "3",
+                "item": "源石粉末",
+                "quantity": "1"
+              }
+            ]
+          },
+          "tick": "3",
+          "warehouse_ore": "0"
+        }
+      ],
+      "events_of_interest": [
+        {
+          "basis": [
+            "规则 L35",
+            "运行语义 §4.1",
+            "受限模型声明 time.manufacture_events"
+          ],
+          "event": "C|2|crusher",
+          "operation": "manufacture_complete",
+          "outcome": "success",
+          "target": "crusher"
+        }
+      ],
+      "warehouse_axes": [
+        {
+          "axis": "manufacturing.output_blocked",
+          "coverage_status": "exercised",
+          "disposition": "已定",
+          "evidence": [
+            "J|1|0|11",
+            "J|2|0|11"
+          ],
+          "other_values": "已定域无其它值；未执行结构仍未验证",
+          "reason": "该已定范围无读法损失；关联未定轴另记"
+        },
+        {
+          "axis": "warehouse.acceptance",
+          "coverage_status": "not_exercised",
+          "disposition": "本版选值",
+          "evidence": [
+            "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+          ],
+          "other_values": "其它值及其联合组合未覆盖",
+          "reason": "仅容量/仅路径等目标读法"
+        },
+        {
+          "axis": "warehouse.acceptance_quantifier",
+          "coverage_status": "not_exercised",
+          "disposition": "本版选值",
+          "evidence": [
+            "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+          ],
+          "other_values": "其它值及其联合组合未覆盖",
+          "reason": "验收状态条件及环境量词"
+        }
+      ]
+    },
+    {
+      "case": "supply-order",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-规格保真-证据/supply-order-conflict-input.json",
+      "input_sha256": "6a2960b5391537be46b552421c7a41a7293b248617f4b055d9d5a6c95f3a40a6",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/target/debug/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-规格保真-证据/supply-order-conflict-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--ticks",
+        "4",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/supply-order-record.json"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/supply-order-record.json\",\"status\":\"completed\"}\n",
+      "stderr": "",
+      "record_exists": true,
+      "status": "completed",
+      "open_items": [
+        "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+        "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+      ],
+      "start_time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "tick_times": [
+        {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "0"
+          }
+        },
+        {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "1"
+          }
+        },
+        {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "2"
+          }
+        },
+        {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "3"
+          }
+        }
+      ],
+      "summaries": [
+        {
+          "completed_batches": "0",
+          "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+          "crusher_phase": "idle",
+          "crusher_remaining": null,
+          "nonempty": {
+            "feed_belt:transport:0": [
+              {
+                "entered_at": "0",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ]
+          },
+          "tick": "0",
+          "warehouse_ore": "79989"
+        },
+        {
+          "completed_batches": "0",
+          "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+          "crusher_phase": "working",
+          "crusher_remaining": "1",
+          "nonempty": {
+            "crusher:buffer:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "feed_belt:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ]
+          },
+          "tick": "1",
+          "warehouse_ore": "79990"
+        },
+        {
+          "completed_batches": "1",
+          "crusher_next_output": "PC|crusher:north:2|belt_b0:south:0",
+          "crusher_phase": "working",
+          "crusher_remaining": "1",
+          "nonempty": {
+            "belt_a0:transport:0": [
+              {
+                "entered_at": "2",
+                "item": "源石粉末",
+                "quantity": "1"
+              }
+            ],
+            "crusher:buffer:0": [
+              {
+                "entered_at": "2",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "feed_belt:transport:0": [
+              {
+                "entered_at": "2",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ]
+          },
+          "tick": "2",
+          "warehouse_ore": "79989"
+        },
+        {
+          "completed_batches": "2",
+          "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+          "crusher_phase": "working",
+          "crusher_remaining": "1",
+          "nonempty": {
+            "belt_a1:transport:0": [
+              {
+                "entered_at": "3",
+                "item": "源石粉末",
+                "quantity": "1"
+              }
+            ],
+            "belt_b0:transport:0": [
+              {
+                "entered_at": "3",
+                "item": "源石粉末",
+                "quantity": "1"
+              }
+            ],
+            "crusher:buffer:0": [
+              {
+                "entered_at": "3",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "feed_belt:transport:0": [
+              {
+                "entered_at": "3",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ]
+          },
+          "tick": "3",
+          "warehouse_ore": "79988"
+        }
+      ],
+      "events_of_interest": [
+        {
+          "basis": [
+            "受限转移定义 §2.1、§4.1；任务外部过程"
+          ],
+          "detail": "{\"event\":\"supply_a\",\"item\":\"源矿\",\"quantity\":{\"category\":\"候选\",\"value\":\"1\"},\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"1\"}}}",
+          "event": "supply_a",
+          "operation": "ore_supply",
+          "outcome": "success",
+          "target": "warehouse"
+        },
+        {
+          "basis": [
+            "受限转移定义 §2.1、§4.1；任务外部过程"
+          ],
+          "detail": "{\"event\":\"supply_b\",\"item\":\"源矿\",\"quantity\":{\"category\":\"候选\",\"value\":\"1\"},\"time\":{\"kind\":\"rational\",\"value\":{\"category\":\"候选\",\"value\":\"1\"}}}",
+          "event": "supply_b",
+          "operation": "ore_supply",
+          "outcome": "success",
+          "target": "warehouse"
+        },
+        {
+          "basis": [
+            "规则 L35",
+            "运行语义 §4.1",
+            "受限模型声明 time.manufacture_events"
+          ],
+          "event": "C|2|crusher",
+          "operation": "manufacture_complete",
+          "outcome": "success",
+          "target": "crusher"
+        },
+        {
+          "basis": [
+            "规则 L35",
+            "运行语义 §4.1",
+            "受限模型声明 time.manufacture_events"
+          ],
+          "event": "C|3|crusher",
+          "operation": "manufacture_complete",
+          "outcome": "success",
+          "target": "crusher"
+        }
+      ],
+      "warehouse_axes": [
+        {
+          "axis": "manufacturing.output_blocked",
+          "coverage_status": "exercised",
+          "disposition": "已定",
+          "evidence": [
+            "J|1|0|11",
+            "J|2|0|11",
+            "J|3|0|11"
+          ],
+          "other_values": "已定域无其它值；未执行结构仍未验证",
+          "reason": "该已定范围无读法损失；关联未定轴另记"
+        },
+        {
+          "axis": "warehouse.acceptance",
+          "coverage_status": "not_exercised",
+          "disposition": "本版选值",
+          "evidence": [
+            "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+          ],
+          "other_values": "其它值及其联合组合未覆盖",
+          "reason": "仅容量/仅路径等目标读法"
+        },
+        {
+          "axis": "warehouse.acceptance_quantifier",
+          "coverage_status": "not_exercised",
+          "disposition": "本版选值",
+          "evidence": [
+            "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+          ],
+          "other_values": "其它值及其联合组合未覆盖",
+          "reason": "验收状态条件及环境量词"
+        }
+      ]
+    },
+    {
+      "case": "historical-alias",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-规格保真-证据/pending-historical-alias-input.json",
+      "input_sha256": "6161b7869af8bfa1e20e5d05c5a726a60fa7c857e324061b67ef3fbff83cec23",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/target/debug/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-规格保真-证据/pending-historical-alias-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--ticks",
+        "1",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/historical-alias-record.json"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/historical-alias-record.json\",\"status\":\"completed\"}\n",
+      "stderr": "",
+      "record_exists": true,
+      "status": "completed",
+      "open_items": [
+        "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+        "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+      ],
+      "start_time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "1"
+        }
+      },
+      "tick_times": [
+        {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "2"
+          }
+        }
+      ],
+      "summaries": [
+        {
+          "completed_batches": "1",
+          "crusher_next_output": "PC|crusher:north:2|belt_b0:south:0",
+          "crusher_phase": "working",
+          "crusher_remaining": "1",
+          "nonempty": {
+            "belt_a0:transport:0": [
+              {
+                "entered_at": "2",
+                "item": "源石粉末",
+                "quantity": "1"
+              }
+            ],
+            "crusher:buffer:0": [
+              {
+                "entered_at": "2",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "feed_belt:transport:0": [
+              {
+                "entered_at": "2",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ]
+          },
+          "tick": "2",
+          "warehouse_ore": "79997"
+        }
+      ],
+      "events_of_interest": [
+        {
+          "basis": [
+            "规则 L35",
+            "运行语义 §4.1",
+            "受限模型声明 time.manufacture_events"
+          ],
+          "event": "build_0",
+          "operation": "manufacture_complete",
+          "outcome": "success",
+          "target": "crusher"
+        }
+      ],
+      "warehouse_axes": [
+        {
+          "axis": "manufacturing.output_blocked",
+          "coverage_status": "exercised",
+          "disposition": "已定",
+          "evidence": [
+            "J|2|0|11"
+          ],
+          "other_values": "已定域无其它值；未执行结构仍未验证",
+          "reason": "该已定范围无读法损失；关联未定轴另记"
+        },
+        {
+          "axis": "warehouse.acceptance",
+          "coverage_status": "not_exercised",
+          "disposition": "本版选值",
+          "evidence": [
+            "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+          ],
+          "other_values": "其它值及其联合组合未覆盖",
+          "reason": "仅容量/仅路径等目标读法"
+        },
+        {
+          "axis": "warehouse.acceptance_quantifier",
+          "coverage_status": "not_exercised",
+          "disposition": "本版选值",
+          "evidence": [
+            "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+          ],
+          "other_values": "其它值及其联合组合未覆盖",
+          "reason": "验收状态条件及环境量词"
+        }
+      ]
+    },
+    {
+      "case": "after-closure",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-规格保真-证据/after-closure-control-input.json",
+      "input_sha256": "17f9eae9050a0d172e1db59ac546ba95e9d9d48dc736cd8fe3c5deb7f4ab28d7",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/target/debug/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-规格保真-证据/after-closure-control-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--ticks",
+        "1",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/after-closure-record.json"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/after-closure-record.json\",\"status\":\"completed\"}\n",
+      "stderr": "",
+      "record_exists": true,
+      "status": "completed",
+      "open_items": [
+        "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+        "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+      ],
+      "start_time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "1"
+        }
+      },
+      "tick_times": [
+        {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "2"
+          }
+        }
+      ],
+      "summaries": [
+        {
+          "completed_batches": "1",
+          "crusher_next_output": "PC|crusher:north:2|belt_b0:south:0",
+          "crusher_phase": "working",
+          "crusher_remaining": "1",
+          "nonempty": {
+            "belt_a0:transport:0": [
+              {
+                "entered_at": "2",
+                "item": "源石粉末",
+                "quantity": "1"
+              }
+            ],
+            "crusher:buffer:0": [
+              {
+                "entered_at": "2",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "feed_belt:transport:0": [
+              {
+                "entered_at": "2",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ]
+          },
+          "tick": "2",
+          "warehouse_ore": "79997"
+        }
+      ],
+      "events_of_interest": [
+        {
+          "basis": [
+            "规则 L35",
+            "运行语义 §4.1",
+            "受限模型声明 time.manufacture_events"
+          ],
+          "event": "C|2|crusher",
+          "operation": "manufacture_complete",
+          "outcome": "success",
+          "target": "crusher"
+        }
+      ],
+      "warehouse_axes": [
+        {
+          "axis": "manufacturing.output_blocked",
+          "coverage_status": "exercised",
+          "disposition": "已定",
+          "evidence": [
+            "J|2|0|11"
+          ],
+          "other_values": "已定域无其它值；未执行结构仍未验证",
+          "reason": "该已定范围无读法损失；关联未定轴另记"
+        },
+        {
+          "axis": "warehouse.acceptance",
+          "coverage_status": "not_exercised",
+          "disposition": "本版选值",
+          "evidence": [
+            "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+          ],
+          "other_values": "其它值及其联合组合未覆盖",
+          "reason": "仅容量/仅路径等目标读法"
+        },
+        {
+          "axis": "warehouse.acceptance_quantifier",
+          "coverage_status": "not_exercised",
+          "disposition": "本版选值",
+          "evidence": [
+            "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+          ],
+          "other_values": "其它值及其联合组合未覆盖",
+          "reason": "验收状态条件及环境量词"
+        }
+      ]
+    },
+    {
+      "case": "offline-wrong-kind",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-规格保真-证据/offline-wrong-kind-input.json",
+      "input_sha256": "7b0bd4623392028706a49bf7e5fbbfb190c3592e986732e2be0c8210c1fbaacd",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/target/debug/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-规格保真-证据/offline-wrong-kind-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--ticks",
+        "4",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/offline-wrong-kind-record.json"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/offline-wrong-kind-record.json\",\"status\":\"completed\"}\n",
+      "stderr": "",
+      "record_exists": true,
+      "status": "completed",
+      "open_items": [
+        "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+        "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+      ],
+      "start_time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "tick_times": [
+        {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "0"
+          }
+        },
+        {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "1"
+          }
+        },
+        {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "2"
+          }
+        },
+        {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "3"
+          }
+        }
+      ],
+      "summaries": [
+        {
+          "completed_batches": "0",
+          "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+          "crusher_phase": "idle",
+          "crusher_remaining": null,
+          "nonempty": {
+            "feed_belt:transport:0": [
+              {
+                "entered_at": "0",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ]
+          },
+          "tick": "0",
+          "warehouse_ore": "79999"
+        },
+        {
+          "completed_batches": "0",
+          "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+          "crusher_phase": "working",
+          "crusher_remaining": "1",
+          "nonempty": {
+            "crusher:buffer:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "feed_belt:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ]
+          },
+          "tick": "1",
+          "warehouse_ore": "79998"
+        },
+        {
+          "completed_batches": "1",
+          "crusher_next_output": "PC|crusher:north:2|belt_b0:south:0",
+          "crusher_phase": "working",
+          "crusher_remaining": "1",
+          "nonempty": {
+            "belt_a0:transport:0": [
+              {
+                "entered_at": "2",
+                "item": "源石粉末",
+                "quantity": "1"
+              }
+            ],
+            "crusher:buffer:0": [
+              {
+                "entered_at": "2",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "feed_belt:transport:0": [
+              {
+                "entered_at": "2",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ]
+          },
+          "tick": "2",
+          "warehouse_ore": "79997"
+        },
+        {
+          "completed_batches": "2",
+          "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+          "crusher_phase": "working",
+          "crusher_remaining": "1",
+          "nonempty": {
+            "belt_a1:transport:0": [
+              {
+                "entered_at": "3",
+                "item": "源石粉末",
+                "quantity": "1"
+              }
+            ],
+            "belt_b0:transport:0": [
+              {
+                "entered_at": "3",
+                "item": "源石粉末",
+                "quantity": "1"
+              }
+            ],
+            "crusher:buffer:0": [
+              {
+                "entered_at": "3",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "feed_belt:transport:0": [
+              {
+                "entered_at": "3",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ]
+          },
+          "tick": "3",
+          "warehouse_ore": "79996"
+        }
+      ],
+      "events_of_interest": [
+        {
+          "basis": [
+            "规则 L35",
+            "运行语义 §4.1",
+            "受限模型声明 time.manufacture_events"
+          ],
+          "event": "C|2|crusher",
+          "operation": "manufacture_complete",
+          "outcome": "success",
+          "target": "crusher"
+        },
+        {
+          "basis": [
+            "规则 L35",
+            "运行语义 §4.1",
+            "受限模型声明 time.manufacture_events"
+          ],
+          "event": "C|3|crusher",
+          "operation": "manufacture_complete",
+          "outcome": "success",
+          "target": "crusher"
+        }
+      ],
+      "warehouse_axes": [
+        {
+          "axis": "manufacturing.output_blocked",
+          "coverage_status": "exercised",
+          "disposition": "已定",
+          "evidence": [
+            "J|1|0|11",
+            "J|2|0|11",
+            "J|3|0|11"
+          ],
+          "other_values": "已定域无其它值；未执行结构仍未验证",
+          "reason": "该已定范围无读法损失；关联未定轴另记"
+        },
+        {
+          "axis": "warehouse.acceptance",
+          "coverage_status": "not_exercised",
+          "disposition": "本版选值",
+          "evidence": [
+            "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+          ],
+          "other_values": "其它值及其联合组合未覆盖",
+          "reason": "仅容量/仅路径等目标读法"
+        },
+        {
+          "axis": "warehouse.acceptance_quantifier",
+          "coverage_status": "not_exercised",
+          "disposition": "本版选值",
+          "evidence": [
+            "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+          ],
+          "other_values": "其它值及其联合组合未覆盖",
+          "reason": "验收状态条件及环境量词"
+        }
+      ]
+    },
+    {
+      "case": "offline-control",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-规格保真-证据/offline-control-input.json",
+      "input_sha256": "5e5b175fe521441b7577cd89fb46ab5fe7975b36f8ca44d35661877607a9f010",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/target/debug/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-规格保真-证据/offline-control-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--ticks",
+        "4",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/offline-control-record.json"
+      ],
+      "exit_code": 2,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/offline-control-record.json\",\"status\":\"unsupported\"}\n",
+      "stderr": "",
+      "record_exists": true,
+      "status": "unsupported",
+      "open_items": [
+        "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+        "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。",
+        "unsupported offline.events @ review_offline: 运行区间触及未实现后效"
+      ],
+      "start_time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "tick_times": [
+        {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "0"
+          }
+        }
+      ],
+      "summaries": [
+        {
+          "completed_batches": "0",
+          "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+          "crusher_phase": "idle",
+          "crusher_remaining": null,
+          "nonempty": {
+            "feed_belt:transport:0": [
+              {
+                "entered_at": "0",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ]
+          },
+          "tick": "0",
+          "warehouse_ore": "79999"
+        }
+      ],
+      "events_of_interest": [],
+      "warehouse_axes": [
+        {
+          "axis": "manufacturing.output_blocked",
+          "coverage_status": "not_exercised",
+          "disposition": "已定",
+          "evidence": [
+            "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+          ],
+          "other_values": "已定域无其它值；未执行结构仍未验证",
+          "reason": "该已定范围无读法损失；关联未定轴另记"
+        },
+        {
+          "axis": "warehouse.acceptance",
+          "coverage_status": "not_exercised",
+          "disposition": "本版选值",
+          "evidence": [
+            "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+          ],
+          "other_values": "其它值及其联合组合未覆盖",
+          "reason": "仅容量/仅路径等目标读法"
+        },
+        {
+          "axis": "warehouse.acceptance_quantifier",
+          "coverage_status": "not_exercised",
+          "disposition": "本版选值",
+          "evidence": [
+            "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+          ],
+          "other_values": "其它值及其联合组合未覆盖",
+          "reason": "验收状态条件及环境量词"
+        }
+      ]
+    },
+    {
+      "case": "unrelated-fork",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-规格保真-证据/unrelated-fork-input.json",
+      "input_sha256": "c776866c0d6a688f289282ebf889b458161a41dc0208b00345eab2bd1ee9dd34",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/target/debug/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-规格保真-证据/unrelated-fork-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--ticks",
+        "2",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/unrelated-fork-record.json"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/unrelated-fork-record.json\",\"status\":\"completed\"}\n",
+      "stderr": "",
+      "record_exists": true,
+      "status": "completed",
+      "open_items": [
+        "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+        "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+      ],
+      "start_time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "tick_times": [
+        {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "0"
+          }
+        },
+        {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "1"
+          }
+        }
+      ],
+      "summaries": [
+        {
+          "delivered_to_boxes": {
+            "east_box": "0",
+            "north_box": "0",
+            "west_box": "0"
+          },
+          "nonempty": {
+            "feed_splitter:transport:0": [
+              {
+                "entered_at": "0",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_bottom:transport:0": [
+              {
+                "entered_at": "0",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_left:transport:0": [
+              {
+                "entered_at": "0",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ]
+          },
+          "splitter_next_output": "PC|splitter:north:0|north_box:south:0",
+          "tick": "0",
+          "warehouse_ore": "79997"
+        },
+        {
+          "delivered_to_boxes": {
+            "east_box": "0",
+            "north_box": "0",
+            "west_box": "0"
+          },
+          "nonempty": {
+            "feed_splitter:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_bottom:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_gate_a:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_gate_b:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_left:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "splitter:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ]
+          },
+          "splitter_next_output": "PC|splitter:north:0|north_box:south:0",
+          "tick": "1",
+          "warehouse_ore": "79994"
+        }
+      ],
+      "events_of_interest": [],
+      "warehouse_axes": [
+        {
+          "axis": "manufacturing.output_blocked",
+          "coverage_status": "not_exercised",
+          "disposition": "已定",
+          "evidence": [
+            "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+          ],
+          "other_values": "已定域无其它值；未执行结构仍未验证",
+          "reason": "该已定范围无读法损失；关联未定轴另记"
+        },
+        {
+          "axis": "warehouse.acceptance",
+          "coverage_status": "not_exercised",
+          "disposition": "本版选值",
+          "evidence": [
+            "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+          ],
+          "other_values": "其它值及其联合组合未覆盖",
+          "reason": "仅容量/仅路径等目标读法"
+        },
+        {
+          "axis": "warehouse.acceptance_quantifier",
+          "coverage_status": "not_exercised",
+          "disposition": "本版选值",
+          "evidence": [
+            "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+          ],
+          "other_values": "其它值及其联合组合未覆盖",
+          "reason": "验收状态条件及环境量词"
+        }
+      ]
+    },
+    {
+      "case": "manufacturing-prefix",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-测试与证据/仅开工未完成-input.json",
+      "input_sha256": "515852bd322148a4ed8cc7f22d69007f70ad2730639408a0e6d5f0a1c182b76d",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/target/debug/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-测试与证据/仅开工未完成-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--ticks",
+        "2",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/manufacturing-prefix-record.json"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/manufacturing-prefix-record.json\",\"status\":\"completed\"}\n",
+      "stderr": "",
+      "record_exists": true,
+      "status": "completed",
+      "open_items": [
+        "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+        "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+      ],
+      "start_time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "tick_times": [
+        {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "0"
+          }
+        },
+        {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "1"
+          }
+        }
+      ],
+      "summaries": [
+        {
+          "completed_batches": "0",
+          "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+          "crusher_phase": "idle",
+          "crusher_remaining": null,
+          "nonempty": {
+            "feed_belt:transport:0": [
+              {
+                "entered_at": "0",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ]
+          },
+          "tick": "0",
+          "warehouse_ore": "79999"
+        },
+        {
+          "completed_batches": "0",
+          "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+          "crusher_phase": "working",
+          "crusher_remaining": "1",
+          "nonempty": {
+            "crusher:buffer:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "feed_belt:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ]
+          },
+          "tick": "1",
+          "warehouse_ore": "79998"
+        }
+      ],
+      "events_of_interest": [],
+      "warehouse_axes": [
+        {
+          "axis": "manufacturing.output_blocked",
+          "coverage_status": "exercised",
+          "disposition": "已定",
+          "evidence": [
+            "J|1|0|11"
+          ],
+          "other_values": "已定域无其它值；未执行结构仍未验证",
+          "reason": "该已定范围无读法损失；关联未定轴另记"
+        },
+        {
+          "axis": "warehouse.acceptance",
+          "coverage_status": "not_exercised",
+          "disposition": "本版选值",
+          "evidence": [
+            "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+          ],
+          "other_values": "其它值及其联合组合未覆盖",
+          "reason": "仅容量/仅路径等目标读法"
+        },
+        {
+          "axis": "warehouse.acceptance_quantifier",
+          "coverage_status": "not_exercised",
+          "disposition": "本版选值",
+          "evidence": [
+            "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+          ],
+          "other_values": "其它值及其联合组合未覆盖",
+          "reason": "验收状态条件及环境量词"
+        }
+      ]
+    },
+    {
+      "case": "snapshot-bool",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-工程-evidence/snapshot-bool-input.json",
+      "input_sha256": "2885cb30bca04080853b9e0eff0005e4b663cb0182239ec3deed639d091b2cd6",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/target/debug/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-工程-evidence/snapshot-bool-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--ticks",
+        "2",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/snapshot-bool-record.json"
+      ],
+      "exit_code": 101,
+      "stdout": "",
+      "stderr": "\nthread 'main' (383655) panicked at /home/zhuran24/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_json-1.0.151/src/value/index.rs:102:18:\ncannot access key \"base\" in JSON boolean\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n",
+      "record_exists": false
+    },
+    {
+      "case": "gate-numeric",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-工程-evidence/gate-numeric-item-input.json",
+      "input_sha256": "310786cddcb6de33c43f704327ec31d21accb43910197f0a0bdaa02c06a0be0b",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/target/debug/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-工程-evidence/gate-numeric-item-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--ticks",
+        "2",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/gate-numeric-record.json"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/gate-numeric-record.json\",\"status\":\"completed\"}\n",
+      "stderr": "",
+      "record_exists": true,
+      "status": "completed",
+      "open_items": [
+        "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+        "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+      ],
+      "start_time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "tick_times": [
+        {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "0"
+          }
+        },
+        {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "1"
+          }
+        }
+      ],
+      "summaries": [
+        {
+          "delivered_to_boxes": {
+            "east_box": "0",
+            "north_box": "0",
+            "west_box": "0"
+          },
+          "nonempty": {
+            "feed_splitter:transport:0": [
+              {
+                "entered_at": "0",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_bottom:transport:0": [
+              {
+                "entered_at": "0",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_left:transport:0": [
+              {
+                "entered_at": "0",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ]
+          },
+          "splitter_next_output": "PC|splitter:north:0|north_box:south:0",
+          "tick": "0",
+          "warehouse_ore": "79997"
+        },
+        {
+          "delivered_to_boxes": {
+            "east_box": "0",
+            "north_box": "0",
+            "west_box": "0"
+          },
+          "nonempty": {
+            "feed_splitter:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_bottom:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_gate_b:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_left:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_merger:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "splitter:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ]
+          },
+          "splitter_next_output": "PC|splitter:north:0|north_box:south:0",
+          "tick": "1",
+          "warehouse_ore": "79994"
+        }
+      ],
+      "events_of_interest": [],
+      "warehouse_axes": [
+        {
+          "axis": "manufacturing.output_blocked",
+          "coverage_status": "not_exercised",
+          "disposition": "已定",
+          "evidence": [
+            "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+          ],
+          "other_values": "已定域无其它值；未执行结构仍未验证",
+          "reason": "该已定范围无读法损失；关联未定轴另记"
+        },
+        {
+          "axis": "warehouse.acceptance",
+          "coverage_status": "not_exercised",
+          "disposition": "本版选值",
+          "evidence": [
+            "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+          ],
+          "other_values": "其它值及其联合组合未覆盖",
+          "reason": "仅容量/仅路径等目标读法"
+        },
+        {
+          "axis": "warehouse.acceptance_quantifier",
+          "coverage_status": "not_exercised",
+          "disposition": "本版选值",
+          "evidence": [
+            "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+          ],
+          "other_values": "其它值及其联合组合未覆盖",
+          "reason": "验收状态条件及环境量词"
+        }
+      ]
+    },
+    {
+      "case": "initial-duplicate-slot",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-工程-evidence/initial-duplicate-slot-input.json",
+      "input_sha256": "5291456fa15ecebe73c1cf3dce86221cafa0b1ade493e892acc4c6dbedba0e95",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/target/debug/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r1-工程-evidence/initial-duplicate-slot-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--ticks",
+        "2",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/initial-duplicate-slot-record.json"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/initial-duplicate-slot-record.json\",\"status\":\"completed\"}\n",
+      "stderr": "",
+      "record_exists": true,
+      "status": "completed",
+      "open_items": [
+        "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+        "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+      ],
+      "start_time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "tick_times": [
+        {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "0"
+          }
+        },
+        {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "1"
+          }
+        }
+      ],
+      "summaries": [
+        {
+          "completed_batches": "0",
+          "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+          "crusher_phase": "idle",
+          "crusher_remaining": null,
+          "nonempty": {
+            "feed_belt:transport:0": [
+              {
+                "entered_at": "0",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ]
+          },
+          "tick": "0",
+          "warehouse_ore": "79999"
+        },
+        {
+          "completed_batches": "0",
+          "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+          "crusher_phase": "working",
+          "crusher_remaining": "1",
+          "nonempty": {
+            "crusher:buffer:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "feed_belt:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ]
+          },
+          "tick": "1",
+          "warehouse_ore": "79998"
+        }
+      ],
+      "events_of_interest": [],
+      "warehouse_axes": [
+        {
+          "axis": "manufacturing.output_blocked",
+          "coverage_status": "exercised",
+          "disposition": "已定",
+          "evidence": [
+            "J|1|0|11"
+          ],
+          "other_values": "已定域无其它值；未执行结构仍未验证",
+          "reason": "该已定范围无读法损失；关联未定轴另记"
+        },
+        {
+          "axis": "warehouse.acceptance",
+          "coverage_status": "not_exercised",
+          "disposition": "本版选值",
+          "evidence": [
+            "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+          ],
+          "other_values": "其它值及其联合组合未覆盖",
+          "reason": "仅容量/仅路径等目标读法"
+        },
+        {
+          "axis": "warehouse.acceptance_quantifier",
+          "coverage_status": "not_exercised",
+          "disposition": "本版选值",
+          "evidence": [
+            "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+          ],
+          "other_values": "其它值及其联合组合未覆盖",
+          "reason": "验收状态条件及环境量词"
+        }
+      ]
+    },
+    {
+      "case": "crusher-control",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json",
+      "input_sha256": "6dcc4af6cf5849aee49451759bb813900e3bc9c615dab3e22990a6df2a540689",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/target/debug/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--ticks",
+        "4",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/crusher-control-record.json"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/crusher-control-record.json\",\"status\":\"completed\"}\n",
+      "stderr": "",
+      "record_exists": true,
+      "status": "completed",
+      "open_items": [
+        "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+        "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+      ],
+      "start_time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "tick_times": [
+        {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "0"
+          }
+        },
+        {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "1"
+          }
+        },
+        {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "2"
+          }
+        },
+        {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "3"
+          }
+        }
+      ],
+      "summaries": [
+        {
+          "completed_batches": "0",
+          "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+          "crusher_phase": "idle",
+          "crusher_remaining": null,
+          "nonempty": {
+            "feed_belt:transport:0": [
+              {
+                "entered_at": "0",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ]
+          },
+          "tick": "0",
+          "warehouse_ore": "79999"
+        },
+        {
+          "completed_batches": "0",
+          "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+          "crusher_phase": "working",
+          "crusher_remaining": "1",
+          "nonempty": {
+            "crusher:buffer:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "feed_belt:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ]
+          },
+          "tick": "1",
+          "warehouse_ore": "79998"
+        },
+        {
+          "completed_batches": "1",
+          "crusher_next_output": "PC|crusher:north:2|belt_b0:south:0",
+          "crusher_phase": "working",
+          "crusher_remaining": "1",
+          "nonempty": {
+            "belt_a0:transport:0": [
+              {
+                "entered_at": "2",
+                "item": "源石粉末",
+                "quantity": "1"
+              }
+            ],
+            "crusher:buffer:0": [
+              {
+                "entered_at": "2",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "feed_belt:transport:0": [
+              {
+                "entered_at": "2",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ]
+          },
+          "tick": "2",
+          "warehouse_ore": "79997"
+        },
+        {
+          "completed_batches": "2",
+          "crusher_next_output": "PC|crusher:north:0|belt_a0:south:0",
+          "crusher_phase": "working",
+          "crusher_remaining": "1",
+          "nonempty": {
+            "belt_a1:transport:0": [
+              {
+                "entered_at": "3",
+                "item": "源石粉末",
+                "quantity": "1"
+              }
+            ],
+            "belt_b0:transport:0": [
+              {
+                "entered_at": "3",
+                "item": "源石粉末",
+                "quantity": "1"
+              }
+            ],
+            "crusher:buffer:0": [
+              {
+                "entered_at": "3",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "feed_belt:transport:0": [
+              {
+                "entered_at": "3",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ]
+          },
+          "tick": "3",
+          "warehouse_ore": "79996"
+        }
+      ],
+      "events_of_interest": [
+        {
+          "basis": [
+            "规则 L35",
+            "运行语义 §4.1",
+            "受限模型声明 time.manufacture_events"
+          ],
+          "event": "C|2|crusher",
+          "operation": "manufacture_complete",
+          "outcome": "success",
+          "target": "crusher"
+        },
+        {
+          "basis": [
+            "规则 L35",
+            "运行语义 §4.1",
+            "受限模型声明 time.manufacture_events"
+          ],
+          "event": "C|3|crusher",
+          "operation": "manufacture_complete",
+          "outcome": "success",
+          "target": "crusher"
+        }
+      ],
+      "warehouse_axes": [
+        {
+          "axis": "manufacturing.output_blocked",
+          "coverage_status": "exercised",
+          "disposition": "已定",
+          "evidence": [
+            "J|1|0|11",
+            "J|2|0|11",
+            "J|3|0|11"
+          ],
+          "other_values": "已定域无其它值；未执行结构仍未验证",
+          "reason": "该已定范围无读法损失；关联未定轴另记"
+        },
+        {
+          "axis": "warehouse.acceptance",
+          "coverage_status": "not_exercised",
+          "disposition": "本版选值",
+          "evidence": [
+            "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+          ],
+          "other_values": "其它值及其联合组合未覆盖",
+          "reason": "仅容量/仅路径等目标读法"
+        },
+        {
+          "axis": "warehouse.acceptance_quantifier",
+          "coverage_status": "not_exercised",
+          "disposition": "本版选值",
+          "evidence": [
+            "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+          ],
+          "other_values": "其它值及其联合组合未覆盖",
+          "reason": "验收状态条件及环境量词"
+        }
+      ]
+    },
+    {
+      "case": "splitter-control",
+      "input": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询.json",
+      "input_sha256": "407837b6f192fcf591b71f886f4b4cd9345bf3b0ac0921563507099ae114e8ae",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/target/debug/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "--ticks",
+        "12",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/splitter-control-record.json"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-1-证据/splitter-control-record.json\",\"status\":\"completed\"}\n",
+      "stderr": "",
+      "record_exists": true,
+      "status": "completed",
+      "open_items": [
+        "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。",
+        "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+      ],
+      "start_time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "tick_times": [
+        {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "0"
+          }
+        },
+        {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "1"
+          }
+        },
+        {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "2"
+          }
+        },
+        {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "3"
+          }
+        },
+        {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "4"
+          }
+        },
+        {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "5"
+          }
+        },
+        {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "6"
+          }
+        },
+        {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "7"
+          }
+        },
+        {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "8"
+          }
+        },
+        {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "9"
+          }
+        },
+        {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "10"
+          }
+        },
+        {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "11"
+          }
+        }
+      ],
+      "summaries": [
+        {
+          "delivered_to_boxes": {
+            "east_box": "0",
+            "north_box": "0",
+            "west_box": "0"
+          },
+          "nonempty": {
+            "feed_splitter:transport:0": [
+              {
+                "entered_at": "0",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_bottom:transport:0": [
+              {
+                "entered_at": "0",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_left:transport:0": [
+              {
+                "entered_at": "0",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ]
+          },
+          "splitter_next_output": "PC|splitter:north:0|north_box:south:0",
+          "tick": "0",
+          "warehouse_ore": "79997"
+        },
+        {
+          "delivered_to_boxes": {
+            "east_box": "0",
+            "north_box": "0",
+            "west_box": "0"
+          },
+          "nonempty": {
+            "feed_splitter:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_bottom:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_gate_a:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_gate_b:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_left:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "splitter:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ]
+          },
+          "splitter_next_output": "PC|splitter:north:0|north_box:south:0",
+          "tick": "1",
+          "warehouse_ore": "79994"
+        },
+        {
+          "delivered_to_boxes": {
+            "east_box": "0",
+            "north_box": "1",
+            "west_box": "0"
+          },
+          "nonempty": {
+            "feed_splitter:transport:0": [
+              {
+                "entered_at": "2",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "north_box:storage:0": [
+              {
+                "entered_at": "2",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_bottom:transport:0": [
+              {
+                "entered_at": "2",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_gate_a:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_gate_b:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_left:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_merger:transport:0": [
+              {
+                "entered_at": "2",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "splitter:transport:0": [
+              {
+                "entered_at": "2",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ]
+          },
+          "splitter_next_output": "PC|splitter:north:0|north_box:south:0",
+          "tick": "2",
+          "warehouse_ore": "79992"
+        },
+        {
+          "delivered_to_boxes": {
+            "east_box": "0",
+            "north_box": "2",
+            "west_box": "0"
+          },
+          "nonempty": {
+            "feed_splitter:transport:0": [
+              {
+                "entered_at": "3",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "north_box:storage:0": [
+              {
+                "entered_at": "2",
+                "item": "源矿",
+                "quantity": "2"
+              }
+            ],
+            "probe_bottom:transport:0": [
+              {
+                "entered_at": "3",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_box:storage:0": [
+              {
+                "entered_at": "3",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_gate_a:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_gate_b:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_left:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_merger:transport:0": [
+              {
+                "entered_at": "3",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "splitter:transport:0": [
+              {
+                "entered_at": "3",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ]
+          },
+          "splitter_next_output": "PC|splitter:north:0|north_box:south:0",
+          "tick": "3",
+          "warehouse_ore": "79990"
+        },
+        {
+          "delivered_to_boxes": {
+            "east_box": "0",
+            "north_box": "3",
+            "west_box": "0"
+          },
+          "nonempty": {
+            "feed_splitter:transport:0": [
+              {
+                "entered_at": "4",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "north_box:storage:0": [
+              {
+                "entered_at": "2",
+                "item": "源矿",
+                "quantity": "3"
+              }
+            ],
+            "probe_bottom:transport:0": [
+              {
+                "entered_at": "4",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_box:storage:0": [
+              {
+                "entered_at": "3",
+                "item": "源矿",
+                "quantity": "2"
+              }
+            ],
+            "probe_gate_a:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_gate_b:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_left:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_merger:transport:0": [
+              {
+                "entered_at": "4",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "splitter:transport:0": [
+              {
+                "entered_at": "4",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ]
+          },
+          "splitter_next_output": "PC|splitter:north:0|north_box:south:0",
+          "tick": "4",
+          "warehouse_ore": "79988"
+        },
+        {
+          "delivered_to_boxes": {
+            "east_box": "0",
+            "north_box": "4",
+            "west_box": "0"
+          },
+          "nonempty": {
+            "feed_splitter:transport:0": [
+              {
+                "entered_at": "5",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "north_box:storage:0": [
+              {
+                "entered_at": "2",
+                "item": "源矿",
+                "quantity": "4"
+              }
+            ],
+            "probe_bottom:transport:0": [
+              {
+                "entered_at": "5",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_box:storage:0": [
+              {
+                "entered_at": "3",
+                "item": "源矿",
+                "quantity": "3"
+              }
+            ],
+            "probe_gate_a:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_gate_b:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_left:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_merger:transport:0": [
+              {
+                "entered_at": "5",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "splitter:transport:0": [
+              {
+                "entered_at": "5",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ]
+          },
+          "splitter_next_output": "PC|splitter:north:0|north_box:south:0",
+          "tick": "5",
+          "warehouse_ore": "79986"
+        },
+        {
+          "delivered_to_boxes": {
+            "east_box": "0",
+            "north_box": "5",
+            "west_box": "0"
+          },
+          "nonempty": {
+            "feed_splitter:transport:0": [
+              {
+                "entered_at": "6",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "north_box:storage:0": [
+              {
+                "entered_at": "2",
+                "item": "源矿",
+                "quantity": "5"
+              }
+            ],
+            "probe_bottom:transport:0": [
+              {
+                "entered_at": "6",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_box:storage:0": [
+              {
+                "entered_at": "3",
+                "item": "源矿",
+                "quantity": "4"
+              }
+            ],
+            "probe_gate_a:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_gate_b:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_left:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_merger:transport:0": [
+              {
+                "entered_at": "6",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "splitter:transport:0": [
+              {
+                "entered_at": "6",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ]
+          },
+          "splitter_next_output": "PC|splitter:north:0|north_box:south:0",
+          "tick": "6",
+          "warehouse_ore": "79984"
+        },
+        {
+          "delivered_to_boxes": {
+            "east_box": "0",
+            "north_box": "6",
+            "west_box": "0"
+          },
+          "nonempty": {
+            "feed_splitter:transport:0": [
+              {
+                "entered_at": "7",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "north_box:storage:0": [
+              {
+                "entered_at": "2",
+                "item": "源矿",
+                "quantity": "6"
+              }
+            ],
+            "probe_bottom:transport:0": [
+              {
+                "entered_at": "7",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_box:storage:0": [
+              {
+                "entered_at": "3",
+                "item": "源矿",
+                "quantity": "5"
+              }
+            ],
+            "probe_gate_a:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_gate_b:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_left:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_merger:transport:0": [
+              {
+                "entered_at": "7",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "splitter:transport:0": [
+              {
+                "entered_at": "7",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ]
+          },
+          "splitter_next_output": "PC|splitter:north:0|north_box:south:0",
+          "tick": "7",
+          "warehouse_ore": "79982"
+        },
+        {
+          "delivered_to_boxes": {
+            "east_box": "0",
+            "north_box": "7",
+            "west_box": "0"
+          },
+          "nonempty": {
+            "feed_splitter:transport:0": [
+              {
+                "entered_at": "8",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "north_box:storage:0": [
+              {
+                "entered_at": "2",
+                "item": "源矿",
+                "quantity": "7"
+              }
+            ],
+            "probe_bottom:transport:0": [
+              {
+                "entered_at": "8",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_box:storage:0": [
+              {
+                "entered_at": "3",
+                "item": "源矿",
+                "quantity": "6"
+              }
+            ],
+            "probe_gate_a:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_gate_b:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_left:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_merger:transport:0": [
+              {
+                "entered_at": "8",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "splitter:transport:0": [
+              {
+                "entered_at": "8",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ]
+          },
+          "splitter_next_output": "PC|splitter:north:0|north_box:south:0",
+          "tick": "8",
+          "warehouse_ore": "79980"
+        },
+        {
+          "delivered_to_boxes": {
+            "east_box": "0",
+            "north_box": "8",
+            "west_box": "0"
+          },
+          "nonempty": {
+            "feed_splitter:transport:0": [
+              {
+                "entered_at": "9",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "north_box:storage:0": [
+              {
+                "entered_at": "2",
+                "item": "源矿",
+                "quantity": "8"
+              }
+            ],
+            "probe_bottom:transport:0": [
+              {
+                "entered_at": "9",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_box:storage:0": [
+              {
+                "entered_at": "3",
+                "item": "源矿",
+                "quantity": "7"
+              }
+            ],
+            "probe_gate_a:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_gate_b:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_left:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_merger:transport:0": [
+              {
+                "entered_at": "9",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "splitter:transport:0": [
+              {
+                "entered_at": "9",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ]
+          },
+          "splitter_next_output": "PC|splitter:north:0|north_box:south:0",
+          "tick": "9",
+          "warehouse_ore": "79978"
+        },
+        {
+          "delivered_to_boxes": {
+            "east_box": "0",
+            "north_box": "9",
+            "west_box": "0"
+          },
+          "nonempty": {
+            "feed_splitter:transport:0": [
+              {
+                "entered_at": "10",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "north_box:storage:0": [
+              {
+                "entered_at": "2",
+                "item": "源矿",
+                "quantity": "9"
+              }
+            ],
+            "probe_bottom:transport:0": [
+              {
+                "entered_at": "10",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_box:storage:0": [
+              {
+                "entered_at": "3",
+                "item": "源矿",
+                "quantity": "8"
+              }
+            ],
+            "probe_gate_a:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_gate_b:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_left:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_merger:transport:0": [
+              {
+                "entered_at": "10",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "splitter:transport:0": [
+              {
+                "entered_at": "10",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ]
+          },
+          "splitter_next_output": "PC|splitter:north:0|north_box:south:0",
+          "tick": "10",
+          "warehouse_ore": "79976"
+        },
+        {
+          "delivered_to_boxes": {
+            "east_box": "0",
+            "north_box": "10",
+            "west_box": "0"
+          },
+          "nonempty": {
+            "feed_splitter:transport:0": [
+              {
+                "entered_at": "11",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "north_box:storage:0": [
+              {
+                "entered_at": "2",
+                "item": "源矿",
+                "quantity": "10"
+              }
+            ],
+            "probe_bottom:transport:0": [
+              {
+                "entered_at": "11",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_box:storage:0": [
+              {
+                "entered_at": "3",
+                "item": "源矿",
+                "quantity": "9"
+              }
+            ],
+            "probe_gate_a:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_gate_b:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_left:transport:0": [
+              {
+                "entered_at": "1",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "probe_merger:transport:0": [
+              {
+                "entered_at": "11",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ],
+            "splitter:transport:0": [
+              {
+                "entered_at": "11",
+                "item": "源矿",
+                "quantity": "1"
+              }
+            ]
+          },
+          "splitter_next_output": "PC|splitter:north:0|north_box:south:0",
+          "tick": "11",
+          "warehouse_ore": "79974"
+        }
+      ],
+      "events_of_interest": [],
+      "warehouse_axes": [
+        {
+          "axis": "manufacturing.output_blocked",
+          "coverage_status": "not_exercised",
+          "disposition": "已定",
+          "evidence": [
+            "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+          ],
+          "other_values": "已定域无其它值；未执行结构仍未验证",
+          "reason": "该已定范围无读法损失；关联未定轴另记"
+        },
+        {
+          "axis": "warehouse.acceptance",
+          "coverage_status": "not_exercised",
+          "disposition": "本版选值",
+          "evidence": [
+            "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+          ],
+          "other_values": "其它值及其联合组合未覆盖",
+          "reason": "仅容量/仅路径等目标读法"
+        },
+        {
+          "axis": "warehouse.acceptance_quantifier",
+          "coverage_status": "not_exercised",
+          "disposition": "本版选值",
+          "evidence": [
+            "本次未记录该机制实际后效；参数赋值不等于覆盖。"
+          ],
+          "other_values": "其它值及其联合组合未覆盖",
+          "reason": "验收状态条件及环境量词"
+        }
+      ]
+    }
+  ]
+}

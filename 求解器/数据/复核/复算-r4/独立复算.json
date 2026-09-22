@@ -1,0 +1,8457 @@
+{
+  "summary": {
+    "machine_count": 219,
+    "machine_area": 3325,
+    "logical_feeds": 315,
+    "manufacturing_source_ports": 263,
+    "manufacturing_target_ports": 309,
+    "ore_ports": 52,
+    "core_input_ports": 6,
+    "S": 315,
+    "R": 315,
+    "type_counts": {
+      "粉碎机": 69,
+      "精炼炉": 51,
+      "研磨机": 32,
+      "塑形机": 6,
+      "配件机": 6,
+      "种植机": 32,
+      "采种机": 17,
+      "封装机": 3,
+      "灌装机": 3
+    },
+    "type_area": {
+      "粉碎机": 621,
+      "精炼炉": 459,
+      "研磨机": 768,
+      "塑形机": 54,
+      "配件机": 54,
+      "种植机": 800,
+      "采种机": 425,
+      "封装机": 72,
+      "灌装机": 72
+    },
+    "type_inputs": {
+      "粉碎机": 69,
+      "精炼炉": 51,
+      "研磨机": 96,
+      "塑形机": 11,
+      "配件机": 6,
+      "种植机": 32,
+      "采种机": 17,
+      "封装机": 15,
+      "灌装机": 12
+    },
+    "type_outputs": {
+      "粉碎机": 96,
+      "精炼炉": 51,
+      "研磨机": 32,
+      "塑形机": 6,
+      "配件机": 6,
+      "种植机": 34,
+      "采种机": 32,
+      "封装机": 3,
+      "灌装机": 3
+    },
+    "grinding_at_least_three": 31,
+    "shaping_at_least_two": 5,
+    "packaging_inputs": [
+      5,
+      5,
+      5
+    ],
+    "filling_inputs": [
+      4,
+      4,
+      4
+    ],
+    "multi_input_machines": 38,
+    "fanout_counts": {
+      "full_speed_fanout": 30,
+      "neither": 1,
+      "round_robin_equal": 2
+    },
+    "material_flow_total": "6113/20",
+    "ore_rates": {
+      "源矿": "18",
+      "蓝铁矿": "34"
+    },
+    "product_rates": {
+      "精选荞愈胶囊": "11/20",
+      "高容谷地电池": "3/5"
+    },
+    "plant_cycles": {
+      "荞花": {
+        "seed_batches": "11/2",
+        "plant_batches": "11",
+        "crush_batches": "11/2",
+        "warehouse_flow": 0
+      },
+      "砂叶": {
+        "seed_batches": "21/2",
+        "plant_batches": "21",
+        "crush_batches": "21/2",
+        "warehouse_flow": 0
+      }
+    },
+    "unit_ore": {
+      "battery_blue": "20",
+      "battery_source": "30",
+      "capsule_blue": "40"
+    },
+    "source_convergence": {
+      "K": 6,
+      "B": 0,
+      "C": 0,
+      "weighted": 6
+    },
+    "errors": []
+  },
+  "per_machine": {
+    "M000": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-源矿",
+      "rule_line": 81,
+      "batch_rate": "1",
+      "input_rates": {
+        "源矿": "1"
+      },
+      "output_rates": {
+        "源石粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "源矿",
+          "1",
+          "仓库出矿口",
+          "C018"
+        ]
+      ],
+      "output_edges": [
+        [
+          "源石粉末",
+          "1",
+          "M137",
+          "C000"
+        ]
+      ],
+      "normalized_input": {
+        "源矿": "1"
+      }
+    },
+    "M001": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-源矿",
+      "rule_line": 81,
+      "batch_rate": "1",
+      "input_rates": {
+        "源矿": "1"
+      },
+      "output_rates": {
+        "源石粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "源矿",
+          "1",
+          "仓库出矿口",
+          "C019"
+        ]
+      ],
+      "output_edges": [
+        [
+          "源石粉末",
+          "1",
+          "M138",
+          "C001"
+        ]
+      ],
+      "normalized_input": {
+        "源矿": "1"
+      }
+    },
+    "M002": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-源矿",
+      "rule_line": 81,
+      "batch_rate": "1",
+      "input_rates": {
+        "源矿": "1"
+      },
+      "output_rates": {
+        "源石粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "源矿",
+          "1",
+          "仓库出矿口",
+          "C020"
+        ]
+      ],
+      "output_edges": [
+        [
+          "源石粉末",
+          "1",
+          "M139",
+          "C002"
+        ]
+      ],
+      "normalized_input": {
+        "源矿": "1"
+      }
+    },
+    "M003": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-源矿",
+      "rule_line": 81,
+      "batch_rate": "1",
+      "input_rates": {
+        "源矿": "1"
+      },
+      "output_rates": {
+        "源石粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "源矿",
+          "1",
+          "仓库出矿口",
+          "C021"
+        ]
+      ],
+      "output_edges": [
+        [
+          "源石粉末",
+          "1",
+          "M140",
+          "C003"
+        ]
+      ],
+      "normalized_input": {
+        "源矿": "1"
+      }
+    },
+    "M004": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-源矿",
+      "rule_line": 81,
+      "batch_rate": "1",
+      "input_rates": {
+        "源矿": "1"
+      },
+      "output_rates": {
+        "源石粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "源矿",
+          "1",
+          "仓库出矿口",
+          "C022"
+        ]
+      ],
+      "output_edges": [
+        [
+          "源石粉末",
+          "1",
+          "M141",
+          "C004"
+        ]
+      ],
+      "normalized_input": {
+        "源矿": "1"
+      }
+    },
+    "M005": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-源矿",
+      "rule_line": 81,
+      "batch_rate": "1",
+      "input_rates": {
+        "源矿": "1"
+      },
+      "output_rates": {
+        "源石粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "源矿",
+          "1",
+          "仓库出矿口",
+          "C023"
+        ]
+      ],
+      "output_edges": [
+        [
+          "源石粉末",
+          "1",
+          "M142",
+          "C005"
+        ]
+      ],
+      "normalized_input": {
+        "源矿": "1"
+      }
+    },
+    "M006": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-源矿",
+      "rule_line": 81,
+      "batch_rate": "1",
+      "input_rates": {
+        "源矿": "1"
+      },
+      "output_rates": {
+        "源石粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "源矿",
+          "1",
+          "仓库出矿口",
+          "C024"
+        ]
+      ],
+      "output_edges": [
+        [
+          "源石粉末",
+          "1",
+          "M143",
+          "C006"
+        ]
+      ],
+      "normalized_input": {
+        "源矿": "1"
+      }
+    },
+    "M007": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-源矿",
+      "rule_line": 81,
+      "batch_rate": "1",
+      "input_rates": {
+        "源矿": "1"
+      },
+      "output_rates": {
+        "源石粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "源矿",
+          "1",
+          "仓库出矿口",
+          "C025"
+        ]
+      ],
+      "output_edges": [
+        [
+          "源石粉末",
+          "1",
+          "M144",
+          "C007"
+        ]
+      ],
+      "normalized_input": {
+        "源矿": "1"
+      }
+    },
+    "M008": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-源矿",
+      "rule_line": 81,
+      "batch_rate": "1",
+      "input_rates": {
+        "源矿": "1"
+      },
+      "output_rates": {
+        "源石粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "源矿",
+          "1",
+          "仓库出矿口",
+          "C026"
+        ]
+      ],
+      "output_edges": [
+        [
+          "源石粉末",
+          "1",
+          "M145",
+          "C008"
+        ]
+      ],
+      "normalized_input": {
+        "源矿": "1"
+      }
+    },
+    "M009": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-源矿",
+      "rule_line": 81,
+      "batch_rate": "1",
+      "input_rates": {
+        "源矿": "1"
+      },
+      "output_rates": {
+        "源石粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "源矿",
+          "1",
+          "仓库出矿口",
+          "C027"
+        ]
+      ],
+      "output_edges": [
+        [
+          "源石粉末",
+          "1",
+          "M145",
+          "C009"
+        ]
+      ],
+      "normalized_input": {
+        "源矿": "1"
+      }
+    },
+    "M010": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-源矿",
+      "rule_line": 81,
+      "batch_rate": "1",
+      "input_rates": {
+        "源矿": "1"
+      },
+      "output_rates": {
+        "源石粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "源矿",
+          "1",
+          "仓库出矿口",
+          "C028"
+        ]
+      ],
+      "output_edges": [
+        [
+          "源石粉末",
+          "1",
+          "M144",
+          "C010"
+        ]
+      ],
+      "normalized_input": {
+        "源矿": "1"
+      }
+    },
+    "M011": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-源矿",
+      "rule_line": 81,
+      "batch_rate": "1",
+      "input_rates": {
+        "源矿": "1"
+      },
+      "output_rates": {
+        "源石粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "源矿",
+          "1",
+          "仓库出矿口",
+          "C029"
+        ]
+      ],
+      "output_edges": [
+        [
+          "源石粉末",
+          "1",
+          "M143",
+          "C011"
+        ]
+      ],
+      "normalized_input": {
+        "源矿": "1"
+      }
+    },
+    "M012": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-源矿",
+      "rule_line": 81,
+      "batch_rate": "1",
+      "input_rates": {
+        "源矿": "1"
+      },
+      "output_rates": {
+        "源石粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "源矿",
+          "1",
+          "仓库出矿口",
+          "C030"
+        ]
+      ],
+      "output_edges": [
+        [
+          "源石粉末",
+          "1",
+          "M142",
+          "C012"
+        ]
+      ],
+      "normalized_input": {
+        "源矿": "1"
+      }
+    },
+    "M013": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-源矿",
+      "rule_line": 81,
+      "batch_rate": "1",
+      "input_rates": {
+        "源矿": "1"
+      },
+      "output_rates": {
+        "源石粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "源矿",
+          "1",
+          "仓库出矿口",
+          "C031"
+        ]
+      ],
+      "output_edges": [
+        [
+          "源石粉末",
+          "1",
+          "M141",
+          "C013"
+        ]
+      ],
+      "normalized_input": {
+        "源矿": "1"
+      }
+    },
+    "M014": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-源矿",
+      "rule_line": 81,
+      "batch_rate": "1",
+      "input_rates": {
+        "源矿": "1"
+      },
+      "output_rates": {
+        "源石粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "源矿",
+          "1",
+          "仓库出矿口",
+          "C032"
+        ]
+      ],
+      "output_edges": [
+        [
+          "源石粉末",
+          "1",
+          "M140",
+          "C014"
+        ]
+      ],
+      "normalized_input": {
+        "源矿": "1"
+      }
+    },
+    "M015": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-源矿",
+      "rule_line": 81,
+      "batch_rate": "1",
+      "input_rates": {
+        "源矿": "1"
+      },
+      "output_rates": {
+        "源石粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "源矿",
+          "1",
+          "仓库出矿口",
+          "C033"
+        ]
+      ],
+      "output_edges": [
+        [
+          "源石粉末",
+          "1",
+          "M139",
+          "C015"
+        ]
+      ],
+      "normalized_input": {
+        "源矿": "1"
+      }
+    },
+    "M016": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-源矿",
+      "rule_line": 81,
+      "batch_rate": "1",
+      "input_rates": {
+        "源矿": "1"
+      },
+      "output_rates": {
+        "源石粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "源矿",
+          "1",
+          "仓库出矿口",
+          "C034"
+        ]
+      ],
+      "output_edges": [
+        [
+          "源石粉末",
+          "1",
+          "M138",
+          "C016"
+        ]
+      ],
+      "normalized_input": {
+        "源矿": "1"
+      }
+    },
+    "M017": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-源矿",
+      "rule_line": 81,
+      "batch_rate": "1",
+      "input_rates": {
+        "源矿": "1"
+      },
+      "output_rates": {
+        "源石粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "源矿",
+          "1",
+          "仓库出矿口",
+          "C035"
+        ]
+      ],
+      "output_edges": [
+        [
+          "源石粉末",
+          "1",
+          "M137",
+          "C017"
+        ]
+      ],
+      "normalized_input": {
+        "源矿": "1"
+      }
+    },
+    "M018": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-蓝铁块",
+      "rule_line": 82,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁块": "1"
+      },
+      "output_rates": {
+        "蓝铁粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M069",
+          "C181"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁粉末",
+          "1",
+          "M120",
+          "C249"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁块": "1"
+      }
+    },
+    "M019": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-蓝铁块",
+      "rule_line": 82,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁块": "1"
+      },
+      "output_rates": {
+        "蓝铁粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M070",
+          "C182"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁粉末",
+          "1",
+          "M121",
+          "C250"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁块": "1"
+      }
+    },
+    "M020": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-蓝铁块",
+      "rule_line": 82,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁块": "1"
+      },
+      "output_rates": {
+        "蓝铁粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M071",
+          "C183"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁粉末",
+          "1",
+          "M122",
+          "C251"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁块": "1"
+      }
+    },
+    "M021": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-蓝铁块",
+      "rule_line": 82,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁块": "1"
+      },
+      "output_rates": {
+        "蓝铁粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M072",
+          "C184"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁粉末",
+          "1",
+          "M123",
+          "C252"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁块": "1"
+      }
+    },
+    "M022": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-蓝铁块",
+      "rule_line": 82,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁块": "1"
+      },
+      "output_rates": {
+        "蓝铁粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M073",
+          "C185"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁粉末",
+          "1",
+          "M124",
+          "C253"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁块": "1"
+      }
+    },
+    "M023": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-蓝铁块",
+      "rule_line": 82,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁块": "1"
+      },
+      "output_rates": {
+        "蓝铁粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M074",
+          "C186"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁粉末",
+          "1",
+          "M125",
+          "C254"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁块": "1"
+      }
+    },
+    "M024": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-蓝铁块",
+      "rule_line": 82,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁块": "1"
+      },
+      "output_rates": {
+        "蓝铁粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M075",
+          "C187"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁粉末",
+          "1",
+          "M126",
+          "C255"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁块": "1"
+      }
+    },
+    "M025": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-蓝铁块",
+      "rule_line": 82,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁块": "1"
+      },
+      "output_rates": {
+        "蓝铁粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M076",
+          "C188"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁粉末",
+          "1",
+          "M127",
+          "C256"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁块": "1"
+      }
+    },
+    "M026": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-蓝铁块",
+      "rule_line": 82,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁块": "1"
+      },
+      "output_rates": {
+        "蓝铁粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M077",
+          "C189"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁粉末",
+          "1",
+          "M128",
+          "C257"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁块": "1"
+      }
+    },
+    "M027": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-蓝铁块",
+      "rule_line": 82,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁块": "1"
+      },
+      "output_rates": {
+        "蓝铁粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M078",
+          "C190"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁粉末",
+          "1",
+          "M129",
+          "C258"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁块": "1"
+      }
+    },
+    "M028": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-蓝铁块",
+      "rule_line": 82,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁块": "1"
+      },
+      "output_rates": {
+        "蓝铁粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M079",
+          "C191"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁粉末",
+          "1",
+          "M130",
+          "C259"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁块": "1"
+      }
+    },
+    "M029": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-蓝铁块",
+      "rule_line": 82,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁块": "1"
+      },
+      "output_rates": {
+        "蓝铁粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M080",
+          "C192"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁粉末",
+          "1",
+          "M131",
+          "C260"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁块": "1"
+      }
+    },
+    "M030": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-蓝铁块",
+      "rule_line": 82,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁块": "1"
+      },
+      "output_rates": {
+        "蓝铁粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M081",
+          "C193"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁粉末",
+          "1",
+          "M132",
+          "C261"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁块": "1"
+      }
+    },
+    "M031": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-蓝铁块",
+      "rule_line": 82,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁块": "1"
+      },
+      "output_rates": {
+        "蓝铁粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M082",
+          "C194"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁粉末",
+          "1",
+          "M133",
+          "C262"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁块": "1"
+      }
+    },
+    "M032": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-蓝铁块",
+      "rule_line": 82,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁块": "1"
+      },
+      "output_rates": {
+        "蓝铁粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M083",
+          "C195"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁粉末",
+          "1",
+          "M134",
+          "C263"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁块": "1"
+      }
+    },
+    "M033": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-蓝铁块",
+      "rule_line": 82,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁块": "1"
+      },
+      "output_rates": {
+        "蓝铁粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M084",
+          "C196"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁粉末",
+          "1",
+          "M135",
+          "C264"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁块": "1"
+      }
+    },
+    "M034": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-蓝铁块",
+      "rule_line": 82,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁块": "1"
+      },
+      "output_rates": {
+        "蓝铁粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M085",
+          "C197"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁粉末",
+          "1",
+          "M136",
+          "C265"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁块": "1"
+      }
+    },
+    "M035": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-蓝铁块",
+      "rule_line": 82,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁块": "1"
+      },
+      "output_rates": {
+        "蓝铁粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M086",
+          "C198"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁粉末",
+          "1",
+          "M136",
+          "C266"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁块": "1"
+      }
+    },
+    "M036": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-蓝铁块",
+      "rule_line": 82,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁块": "1"
+      },
+      "output_rates": {
+        "蓝铁粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M087",
+          "C199"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁粉末",
+          "1",
+          "M135",
+          "C267"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁块": "1"
+      }
+    },
+    "M037": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-蓝铁块",
+      "rule_line": 82,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁块": "1"
+      },
+      "output_rates": {
+        "蓝铁粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M088",
+          "C200"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁粉末",
+          "1",
+          "M134",
+          "C268"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁块": "1"
+      }
+    },
+    "M038": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-蓝铁块",
+      "rule_line": 82,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁块": "1"
+      },
+      "output_rates": {
+        "蓝铁粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M089",
+          "C201"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁粉末",
+          "1",
+          "M133",
+          "C269"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁块": "1"
+      }
+    },
+    "M039": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-蓝铁块",
+      "rule_line": 82,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁块": "1"
+      },
+      "output_rates": {
+        "蓝铁粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M090",
+          "C202"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁粉末",
+          "1",
+          "M132",
+          "C270"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁块": "1"
+      }
+    },
+    "M040": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-蓝铁块",
+      "rule_line": 82,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁块": "1"
+      },
+      "output_rates": {
+        "蓝铁粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M091",
+          "C203"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁粉末",
+          "1",
+          "M131",
+          "C271"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁块": "1"
+      }
+    },
+    "M041": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-蓝铁块",
+      "rule_line": 82,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁块": "1"
+      },
+      "output_rates": {
+        "蓝铁粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M092",
+          "C204"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁粉末",
+          "1",
+          "M130",
+          "C272"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁块": "1"
+      }
+    },
+    "M042": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-蓝铁块",
+      "rule_line": 82,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁块": "1"
+      },
+      "output_rates": {
+        "蓝铁粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M093",
+          "C205"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁粉末",
+          "1",
+          "M129",
+          "C273"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁块": "1"
+      }
+    },
+    "M043": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-蓝铁块",
+      "rule_line": 82,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁块": "1"
+      },
+      "output_rates": {
+        "蓝铁粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M094",
+          "C206"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁粉末",
+          "1",
+          "M128",
+          "C274"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁块": "1"
+      }
+    },
+    "M044": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-蓝铁块",
+      "rule_line": 82,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁块": "1"
+      },
+      "output_rates": {
+        "蓝铁粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M095",
+          "C207"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁粉末",
+          "1",
+          "M127",
+          "C275"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁块": "1"
+      }
+    },
+    "M045": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-蓝铁块",
+      "rule_line": 82,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁块": "1"
+      },
+      "output_rates": {
+        "蓝铁粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M096",
+          "C208"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁粉末",
+          "1",
+          "M126",
+          "C276"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁块": "1"
+      }
+    },
+    "M046": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-蓝铁块",
+      "rule_line": 82,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁块": "1"
+      },
+      "output_rates": {
+        "蓝铁粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M097",
+          "C209"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁粉末",
+          "1",
+          "M125",
+          "C277"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁块": "1"
+      }
+    },
+    "M047": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-蓝铁块",
+      "rule_line": 82,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁块": "1"
+      },
+      "output_rates": {
+        "蓝铁粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M098",
+          "C210"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁粉末",
+          "1",
+          "M124",
+          "C278"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁块": "1"
+      }
+    },
+    "M048": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-蓝铁块",
+      "rule_line": 82,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁块": "1"
+      },
+      "output_rates": {
+        "蓝铁粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M099",
+          "C211"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁粉末",
+          "1",
+          "M123",
+          "C279"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁块": "1"
+      }
+    },
+    "M049": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-蓝铁块",
+      "rule_line": 82,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁块": "1"
+      },
+      "output_rates": {
+        "蓝铁粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M100",
+          "C212"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁粉末",
+          "1",
+          "M122",
+          "C280"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁块": "1"
+      }
+    },
+    "M050": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-蓝铁块",
+      "rule_line": 82,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁块": "1"
+      },
+      "output_rates": {
+        "蓝铁粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M101",
+          "C213"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁粉末",
+          "1",
+          "M121",
+          "C281"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁块": "1"
+      }
+    },
+    "M051": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-蓝铁块",
+      "rule_line": 82,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁块": "1"
+      },
+      "output_rates": {
+        "蓝铁粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M102",
+          "C214"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁粉末",
+          "1",
+          "M120",
+          "C282"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁块": "1"
+      }
+    },
+    "M052": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-荞花",
+      "rule_line": 83,
+      "batch_rate": "1",
+      "input_rates": {
+        "荞花": "1"
+      },
+      "output_rates": {
+        "荞花粉末": "2"
+      },
+      "input_count": 1,
+      "output_count": 2,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "荞花",
+          "1",
+          "M164",
+          "C147"
+        ]
+      ],
+      "output_edges": [
+        [
+          "荞花粉末",
+          "1",
+          "M146",
+          "C170"
+        ],
+        [
+          "荞花粉末",
+          "1",
+          "M147",
+          "C171"
+        ]
+      ],
+      "normalized_input": {
+        "荞花": "1"
+      }
+    },
+    "M053": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-荞花",
+      "rule_line": 83,
+      "batch_rate": "1",
+      "input_rates": {
+        "荞花": "1"
+      },
+      "output_rates": {
+        "荞花粉末": "2"
+      },
+      "input_count": 1,
+      "output_count": 2,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "荞花",
+          "1",
+          "M165",
+          "C148"
+        ]
+      ],
+      "output_edges": [
+        [
+          "荞花粉末",
+          "1",
+          "M148",
+          "C172"
+        ],
+        [
+          "荞花粉末",
+          "1",
+          "M149",
+          "C173"
+        ]
+      ],
+      "normalized_input": {
+        "荞花": "1"
+      }
+    },
+    "M054": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-荞花",
+      "rule_line": 83,
+      "batch_rate": "1",
+      "input_rates": {
+        "荞花": "1"
+      },
+      "output_rates": {
+        "荞花粉末": "2"
+      },
+      "input_count": 1,
+      "output_count": 2,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "荞花",
+          "1",
+          "M166",
+          "C149"
+        ]
+      ],
+      "output_edges": [
+        [
+          "荞花粉末",
+          "1",
+          "M150",
+          "C174"
+        ],
+        [
+          "荞花粉末",
+          "1",
+          "M150",
+          "C175"
+        ]
+      ],
+      "normalized_input": {
+        "荞花": "1"
+      }
+    },
+    "M055": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-荞花",
+      "rule_line": 83,
+      "batch_rate": "1",
+      "input_rates": {
+        "荞花": "1"
+      },
+      "output_rates": {
+        "荞花粉末": "2"
+      },
+      "input_count": 1,
+      "output_count": 2,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "荞花",
+          "1",
+          "M167",
+          "C150"
+        ]
+      ],
+      "output_edges": [
+        [
+          "荞花粉末",
+          "1",
+          "M149",
+          "C176"
+        ],
+        [
+          "荞花粉末",
+          "1",
+          "M148",
+          "C177"
+        ]
+      ],
+      "normalized_input": {
+        "荞花": "1"
+      }
+    },
+    "M056": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-荞花",
+      "rule_line": 83,
+      "batch_rate": "1",
+      "input_rates": {
+        "荞花": "1"
+      },
+      "output_rates": {
+        "荞花粉末": "2"
+      },
+      "input_count": 1,
+      "output_count": 2,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "荞花",
+          "1",
+          "M168",
+          "C151"
+        ]
+      ],
+      "output_edges": [
+        [
+          "荞花粉末",
+          "1",
+          "M147",
+          "C178"
+        ],
+        [
+          "荞花粉末",
+          "1",
+          "M146",
+          "C179"
+        ]
+      ],
+      "normalized_input": {
+        "荞花": "1"
+      }
+    },
+    "M057": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-荞花",
+      "rule_line": 83,
+      "batch_rate": "1/2",
+      "input_rates": {
+        "荞花": "1/2"
+      },
+      "output_rates": {
+        "荞花粉末": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "荞花",
+          "1/2",
+          "M174",
+          "C157"
+        ]
+      ],
+      "output_edges": [
+        [
+          "荞花粉末",
+          "1",
+          "M151",
+          "C180"
+        ]
+      ],
+      "normalized_input": {
+        "荞花": "1/2"
+      }
+    },
+    "M058": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-砂叶",
+      "rule_line": 84,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶": "1"
+      },
+      "output_rates": {
+        "砂叶粉末": "3"
+      },
+      "input_count": 1,
+      "output_count": 3,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "砂叶",
+          "1",
+          "M175",
+          "C036"
+        ]
+      ],
+      "output_edges": [
+        [
+          "砂叶粉末",
+          "1",
+          "M120",
+          "C079"
+        ],
+        [
+          "砂叶粉末",
+          "1",
+          "M121",
+          "C080"
+        ],
+        [
+          "砂叶粉末",
+          "1",
+          "M122",
+          "C081"
+        ]
+      ],
+      "normalized_input": {
+        "砂叶": "1"
+      }
+    },
+    "M059": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-砂叶",
+      "rule_line": 84,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶": "1"
+      },
+      "output_rates": {
+        "砂叶粉末": "3"
+      },
+      "input_count": 1,
+      "output_count": 3,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "砂叶",
+          "1",
+          "M176",
+          "C037"
+        ]
+      ],
+      "output_edges": [
+        [
+          "砂叶粉末",
+          "1",
+          "M123",
+          "C082"
+        ],
+        [
+          "砂叶粉末",
+          "1",
+          "M124",
+          "C083"
+        ],
+        [
+          "砂叶粉末",
+          "1",
+          "M125",
+          "C084"
+        ]
+      ],
+      "normalized_input": {
+        "砂叶": "1"
+      }
+    },
+    "M060": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-砂叶",
+      "rule_line": 84,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶": "1"
+      },
+      "output_rates": {
+        "砂叶粉末": "3"
+      },
+      "input_count": 1,
+      "output_count": 3,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "砂叶",
+          "1",
+          "M177",
+          "C038"
+        ]
+      ],
+      "output_edges": [
+        [
+          "砂叶粉末",
+          "1",
+          "M126",
+          "C085"
+        ],
+        [
+          "砂叶粉末",
+          "1",
+          "M127",
+          "C086"
+        ],
+        [
+          "砂叶粉末",
+          "1",
+          "M128",
+          "C087"
+        ]
+      ],
+      "normalized_input": {
+        "砂叶": "1"
+      }
+    },
+    "M061": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-砂叶",
+      "rule_line": 84,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶": "1"
+      },
+      "output_rates": {
+        "砂叶粉末": "3"
+      },
+      "input_count": 1,
+      "output_count": 3,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "砂叶",
+          "1",
+          "M178",
+          "C039"
+        ]
+      ],
+      "output_edges": [
+        [
+          "砂叶粉末",
+          "1",
+          "M129",
+          "C088"
+        ],
+        [
+          "砂叶粉末",
+          "1",
+          "M130",
+          "C089"
+        ],
+        [
+          "砂叶粉末",
+          "1",
+          "M131",
+          "C090"
+        ]
+      ],
+      "normalized_input": {
+        "砂叶": "1"
+      }
+    },
+    "M062": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-砂叶",
+      "rule_line": 84,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶": "1"
+      },
+      "output_rates": {
+        "砂叶粉末": "3"
+      },
+      "input_count": 1,
+      "output_count": 3,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "砂叶",
+          "1",
+          "M179",
+          "C040"
+        ]
+      ],
+      "output_edges": [
+        [
+          "砂叶粉末",
+          "1",
+          "M132",
+          "C091"
+        ],
+        [
+          "砂叶粉末",
+          "1",
+          "M133",
+          "C092"
+        ],
+        [
+          "砂叶粉末",
+          "1",
+          "M134",
+          "C093"
+        ]
+      ],
+      "normalized_input": {
+        "砂叶": "1"
+      }
+    },
+    "M063": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-砂叶",
+      "rule_line": 84,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶": "1"
+      },
+      "output_rates": {
+        "砂叶粉末": "3"
+      },
+      "input_count": 1,
+      "output_count": 3,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "砂叶",
+          "1",
+          "M180",
+          "C041"
+        ]
+      ],
+      "output_edges": [
+        [
+          "砂叶粉末",
+          "1",
+          "M135",
+          "C094"
+        ],
+        [
+          "砂叶粉末",
+          "1",
+          "M136",
+          "C095"
+        ],
+        [
+          "砂叶粉末",
+          "1",
+          "M137",
+          "C096"
+        ]
+      ],
+      "normalized_input": {
+        "砂叶": "1"
+      }
+    },
+    "M064": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-砂叶",
+      "rule_line": 84,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶": "1"
+      },
+      "output_rates": {
+        "砂叶粉末": "3"
+      },
+      "input_count": 1,
+      "output_count": 3,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "砂叶",
+          "1",
+          "M181",
+          "C042"
+        ]
+      ],
+      "output_edges": [
+        [
+          "砂叶粉末",
+          "1",
+          "M138",
+          "C097"
+        ],
+        [
+          "砂叶粉末",
+          "1",
+          "M139",
+          "C098"
+        ],
+        [
+          "砂叶粉末",
+          "1",
+          "M140",
+          "C099"
+        ]
+      ],
+      "normalized_input": {
+        "砂叶": "1"
+      }
+    },
+    "M065": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-砂叶",
+      "rule_line": 84,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶": "1"
+      },
+      "output_rates": {
+        "砂叶粉末": "3"
+      },
+      "input_count": 1,
+      "output_count": 3,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "砂叶",
+          "1",
+          "M182",
+          "C043"
+        ]
+      ],
+      "output_edges": [
+        [
+          "砂叶粉末",
+          "1",
+          "M141",
+          "C100"
+        ],
+        [
+          "砂叶粉末",
+          "1",
+          "M142",
+          "C101"
+        ],
+        [
+          "砂叶粉末",
+          "1",
+          "M143",
+          "C102"
+        ]
+      ],
+      "normalized_input": {
+        "砂叶": "1"
+      }
+    },
+    "M066": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-砂叶",
+      "rule_line": 84,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶": "1"
+      },
+      "output_rates": {
+        "砂叶粉末": "3"
+      },
+      "input_count": 1,
+      "output_count": 3,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "砂叶",
+          "1",
+          "M183",
+          "C044"
+        ]
+      ],
+      "output_edges": [
+        [
+          "砂叶粉末",
+          "1",
+          "M144",
+          "C103"
+        ],
+        [
+          "砂叶粉末",
+          "1",
+          "M145",
+          "C104"
+        ],
+        [
+          "砂叶粉末",
+          "1",
+          "M146",
+          "C105"
+        ]
+      ],
+      "normalized_input": {
+        "砂叶": "1"
+      }
+    },
+    "M067": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-砂叶",
+      "rule_line": 84,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶": "1"
+      },
+      "output_rates": {
+        "砂叶粉末": "3"
+      },
+      "input_count": 1,
+      "output_count": 3,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "砂叶",
+          "1",
+          "M184",
+          "C045"
+        ]
+      ],
+      "output_edges": [
+        [
+          "砂叶粉末",
+          "1",
+          "M147",
+          "C106"
+        ],
+        [
+          "砂叶粉末",
+          "1",
+          "M148",
+          "C107"
+        ],
+        [
+          "砂叶粉末",
+          "1",
+          "M149",
+          "C108"
+        ]
+      ],
+      "normalized_input": {
+        "砂叶": "1"
+      }
+    },
+    "M068": {
+      "machine_type": "粉碎机",
+      "recipe_alias": "粉碎-砂叶",
+      "rule_line": 84,
+      "batch_rate": "1/2",
+      "input_rates": {
+        "砂叶": "1/2"
+      },
+      "output_rates": {
+        "砂叶粉末": "3/2"
+      },
+      "input_count": 1,
+      "output_count": 3,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "砂叶",
+          "1/2",
+          "M195",
+          "C056"
+        ]
+      ],
+      "output_edges": [
+        [
+          "砂叶粉末",
+          "1/2",
+          "M150",
+          "C109"
+        ],
+        [
+          "砂叶粉末",
+          "1/2",
+          "M150",
+          "C110"
+        ],
+        [
+          "砂叶粉末",
+          "1/2",
+          "M151",
+          "C111"
+        ]
+      ],
+      "normalized_input": {
+        "砂叶": "1/2"
+      }
+    },
+    "M069": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-蓝铁矿",
+      "rule_line": 87,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁矿": "1"
+      },
+      "output_rates": {
+        "蓝铁块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁矿",
+          "1",
+          "仓库出矿口",
+          "C215"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M018",
+          "C181"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁矿": "1"
+      }
+    },
+    "M070": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-蓝铁矿",
+      "rule_line": 87,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁矿": "1"
+      },
+      "output_rates": {
+        "蓝铁块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁矿",
+          "1",
+          "仓库出矿口",
+          "C216"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M019",
+          "C182"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁矿": "1"
+      }
+    },
+    "M071": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-蓝铁矿",
+      "rule_line": 87,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁矿": "1"
+      },
+      "output_rates": {
+        "蓝铁块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁矿",
+          "1",
+          "仓库出矿口",
+          "C217"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M020",
+          "C183"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁矿": "1"
+      }
+    },
+    "M072": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-蓝铁矿",
+      "rule_line": 87,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁矿": "1"
+      },
+      "output_rates": {
+        "蓝铁块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁矿",
+          "1",
+          "仓库出矿口",
+          "C218"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M021",
+          "C184"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁矿": "1"
+      }
+    },
+    "M073": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-蓝铁矿",
+      "rule_line": 87,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁矿": "1"
+      },
+      "output_rates": {
+        "蓝铁块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁矿",
+          "1",
+          "仓库出矿口",
+          "C219"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M022",
+          "C185"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁矿": "1"
+      }
+    },
+    "M074": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-蓝铁矿",
+      "rule_line": 87,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁矿": "1"
+      },
+      "output_rates": {
+        "蓝铁块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁矿",
+          "1",
+          "仓库出矿口",
+          "C220"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M023",
+          "C186"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁矿": "1"
+      }
+    },
+    "M075": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-蓝铁矿",
+      "rule_line": 87,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁矿": "1"
+      },
+      "output_rates": {
+        "蓝铁块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁矿",
+          "1",
+          "仓库出矿口",
+          "C221"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M024",
+          "C187"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁矿": "1"
+      }
+    },
+    "M076": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-蓝铁矿",
+      "rule_line": 87,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁矿": "1"
+      },
+      "output_rates": {
+        "蓝铁块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁矿",
+          "1",
+          "仓库出矿口",
+          "C222"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M025",
+          "C188"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁矿": "1"
+      }
+    },
+    "M077": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-蓝铁矿",
+      "rule_line": 87,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁矿": "1"
+      },
+      "output_rates": {
+        "蓝铁块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁矿",
+          "1",
+          "仓库出矿口",
+          "C223"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M026",
+          "C189"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁矿": "1"
+      }
+    },
+    "M078": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-蓝铁矿",
+      "rule_line": 87,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁矿": "1"
+      },
+      "output_rates": {
+        "蓝铁块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁矿",
+          "1",
+          "仓库出矿口",
+          "C224"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M027",
+          "C190"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁矿": "1"
+      }
+    },
+    "M079": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-蓝铁矿",
+      "rule_line": 87,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁矿": "1"
+      },
+      "output_rates": {
+        "蓝铁块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁矿",
+          "1",
+          "仓库出矿口",
+          "C225"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M028",
+          "C191"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁矿": "1"
+      }
+    },
+    "M080": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-蓝铁矿",
+      "rule_line": 87,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁矿": "1"
+      },
+      "output_rates": {
+        "蓝铁块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁矿",
+          "1",
+          "仓库出矿口",
+          "C226"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M029",
+          "C192"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁矿": "1"
+      }
+    },
+    "M081": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-蓝铁矿",
+      "rule_line": 87,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁矿": "1"
+      },
+      "output_rates": {
+        "蓝铁块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁矿",
+          "1",
+          "仓库出矿口",
+          "C227"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M030",
+          "C193"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁矿": "1"
+      }
+    },
+    "M082": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-蓝铁矿",
+      "rule_line": 87,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁矿": "1"
+      },
+      "output_rates": {
+        "蓝铁块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁矿",
+          "1",
+          "仓库出矿口",
+          "C228"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M031",
+          "C194"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁矿": "1"
+      }
+    },
+    "M083": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-蓝铁矿",
+      "rule_line": 87,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁矿": "1"
+      },
+      "output_rates": {
+        "蓝铁块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁矿",
+          "1",
+          "仓库出矿口",
+          "C229"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M032",
+          "C195"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁矿": "1"
+      }
+    },
+    "M084": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-蓝铁矿",
+      "rule_line": 87,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁矿": "1"
+      },
+      "output_rates": {
+        "蓝铁块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁矿",
+          "1",
+          "仓库出矿口",
+          "C230"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M033",
+          "C196"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁矿": "1"
+      }
+    },
+    "M085": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-蓝铁矿",
+      "rule_line": 87,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁矿": "1"
+      },
+      "output_rates": {
+        "蓝铁块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁矿",
+          "1",
+          "仓库出矿口",
+          "C231"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M034",
+          "C197"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁矿": "1"
+      }
+    },
+    "M086": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-蓝铁矿",
+      "rule_line": 87,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁矿": "1"
+      },
+      "output_rates": {
+        "蓝铁块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁矿",
+          "1",
+          "仓库出矿口",
+          "C232"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M035",
+          "C198"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁矿": "1"
+      }
+    },
+    "M087": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-蓝铁矿",
+      "rule_line": 87,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁矿": "1"
+      },
+      "output_rates": {
+        "蓝铁块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁矿",
+          "1",
+          "仓库出矿口",
+          "C233"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M036",
+          "C199"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁矿": "1"
+      }
+    },
+    "M088": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-蓝铁矿",
+      "rule_line": 87,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁矿": "1"
+      },
+      "output_rates": {
+        "蓝铁块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁矿",
+          "1",
+          "仓库出矿口",
+          "C234"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M037",
+          "C200"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁矿": "1"
+      }
+    },
+    "M089": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-蓝铁矿",
+      "rule_line": 87,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁矿": "1"
+      },
+      "output_rates": {
+        "蓝铁块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁矿",
+          "1",
+          "仓库出矿口",
+          "C235"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M038",
+          "C201"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁矿": "1"
+      }
+    },
+    "M090": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-蓝铁矿",
+      "rule_line": 87,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁矿": "1"
+      },
+      "output_rates": {
+        "蓝铁块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁矿",
+          "1",
+          "仓库出矿口",
+          "C236"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M039",
+          "C202"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁矿": "1"
+      }
+    },
+    "M091": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-蓝铁矿",
+      "rule_line": 87,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁矿": "1"
+      },
+      "output_rates": {
+        "蓝铁块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁矿",
+          "1",
+          "仓库出矿口",
+          "C237"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M040",
+          "C203"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁矿": "1"
+      }
+    },
+    "M092": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-蓝铁矿",
+      "rule_line": 87,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁矿": "1"
+      },
+      "output_rates": {
+        "蓝铁块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁矿",
+          "1",
+          "仓库出矿口",
+          "C238"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M041",
+          "C204"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁矿": "1"
+      }
+    },
+    "M093": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-蓝铁矿",
+      "rule_line": 87,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁矿": "1"
+      },
+      "output_rates": {
+        "蓝铁块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁矿",
+          "1",
+          "仓库出矿口",
+          "C239"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M042",
+          "C205"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁矿": "1"
+      }
+    },
+    "M094": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-蓝铁矿",
+      "rule_line": 87,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁矿": "1"
+      },
+      "output_rates": {
+        "蓝铁块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁矿",
+          "1",
+          "仓库出矿口",
+          "C240"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M043",
+          "C206"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁矿": "1"
+      }
+    },
+    "M095": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-蓝铁矿",
+      "rule_line": 87,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁矿": "1"
+      },
+      "output_rates": {
+        "蓝铁块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁矿",
+          "1",
+          "仓库出矿口",
+          "C241"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M044",
+          "C207"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁矿": "1"
+      }
+    },
+    "M096": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-蓝铁矿",
+      "rule_line": 87,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁矿": "1"
+      },
+      "output_rates": {
+        "蓝铁块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁矿",
+          "1",
+          "仓库出矿口",
+          "C242"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M045",
+          "C208"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁矿": "1"
+      }
+    },
+    "M097": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-蓝铁矿",
+      "rule_line": 87,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁矿": "1"
+      },
+      "output_rates": {
+        "蓝铁块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁矿",
+          "1",
+          "仓库出矿口",
+          "C243"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M046",
+          "C209"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁矿": "1"
+      }
+    },
+    "M098": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-蓝铁矿",
+      "rule_line": 87,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁矿": "1"
+      },
+      "output_rates": {
+        "蓝铁块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁矿",
+          "1",
+          "仓库出矿口",
+          "C244"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M047",
+          "C210"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁矿": "1"
+      }
+    },
+    "M099": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-蓝铁矿",
+      "rule_line": 87,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁矿": "1"
+      },
+      "output_rates": {
+        "蓝铁块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁矿",
+          "1",
+          "仓库出矿口",
+          "C245"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M048",
+          "C211"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁矿": "1"
+      }
+    },
+    "M100": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-蓝铁矿",
+      "rule_line": 87,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁矿": "1"
+      },
+      "output_rates": {
+        "蓝铁块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁矿",
+          "1",
+          "仓库出矿口",
+          "C246"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M049",
+          "C212"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁矿": "1"
+      }
+    },
+    "M101": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-蓝铁矿",
+      "rule_line": 87,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁矿": "1"
+      },
+      "output_rates": {
+        "蓝铁块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁矿",
+          "1",
+          "仓库出矿口",
+          "C247"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M050",
+          "C213"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁矿": "1"
+      }
+    },
+    "M102": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-蓝铁矿",
+      "rule_line": 87,
+      "batch_rate": "1",
+      "input_rates": {
+        "蓝铁矿": "1"
+      },
+      "output_rates": {
+        "蓝铁块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "蓝铁矿",
+          "1",
+          "仓库出矿口",
+          "C248"
+        ]
+      ],
+      "output_edges": [
+        [
+          "蓝铁块",
+          "1",
+          "M051",
+          "C214"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁矿": "1"
+      }
+    },
+    "M103": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-致密蓝铁",
+      "rule_line": 88,
+      "batch_rate": "1",
+      "input_rates": {
+        "致密蓝铁粉末": "1"
+      },
+      "output_rates": {
+        "钢块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "致密蓝铁粉末",
+          "1",
+          "M120",
+          "C130"
+        ]
+      ],
+      "output_edges": [
+        [
+          "钢块",
+          "1",
+          "M152",
+          "C289"
+        ]
+      ],
+      "normalized_input": {
+        "致密蓝铁粉末": "1"
+      }
+    },
+    "M104": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-致密蓝铁",
+      "rule_line": 88,
+      "batch_rate": "1",
+      "input_rates": {
+        "致密蓝铁粉末": "1"
+      },
+      "output_rates": {
+        "钢块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "致密蓝铁粉末",
+          "1",
+          "M121",
+          "C131"
+        ]
+      ],
+      "output_edges": [
+        [
+          "钢块",
+          "1",
+          "M153",
+          "C290"
+        ]
+      ],
+      "normalized_input": {
+        "致密蓝铁粉末": "1"
+      }
+    },
+    "M105": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-致密蓝铁",
+      "rule_line": 88,
+      "batch_rate": "1",
+      "input_rates": {
+        "致密蓝铁粉末": "1"
+      },
+      "output_rates": {
+        "钢块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "致密蓝铁粉末",
+          "1",
+          "M122",
+          "C132"
+        ]
+      ],
+      "output_edges": [
+        [
+          "钢块",
+          "1",
+          "M154",
+          "C291"
+        ]
+      ],
+      "normalized_input": {
+        "致密蓝铁粉末": "1"
+      }
+    },
+    "M106": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-致密蓝铁",
+      "rule_line": 88,
+      "batch_rate": "1",
+      "input_rates": {
+        "致密蓝铁粉末": "1"
+      },
+      "output_rates": {
+        "钢块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "致密蓝铁粉末",
+          "1",
+          "M123",
+          "C133"
+        ]
+      ],
+      "output_edges": [
+        [
+          "钢块",
+          "1",
+          "M155",
+          "C292"
+        ]
+      ],
+      "normalized_input": {
+        "致密蓝铁粉末": "1"
+      }
+    },
+    "M107": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-致密蓝铁",
+      "rule_line": 88,
+      "batch_rate": "1",
+      "input_rates": {
+        "致密蓝铁粉末": "1"
+      },
+      "output_rates": {
+        "钢块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "致密蓝铁粉末",
+          "1",
+          "M124",
+          "C134"
+        ]
+      ],
+      "output_edges": [
+        [
+          "钢块",
+          "1",
+          "M156",
+          "C293"
+        ]
+      ],
+      "normalized_input": {
+        "致密蓝铁粉末": "1"
+      }
+    },
+    "M108": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-致密蓝铁",
+      "rule_line": 88,
+      "batch_rate": "1",
+      "input_rates": {
+        "致密蓝铁粉末": "1"
+      },
+      "output_rates": {
+        "钢块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "致密蓝铁粉末",
+          "1",
+          "M125",
+          "C135"
+        ]
+      ],
+      "output_edges": [
+        [
+          "钢块",
+          "1",
+          "M156",
+          "C294"
+        ]
+      ],
+      "normalized_input": {
+        "致密蓝铁粉末": "1"
+      }
+    },
+    "M109": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-致密蓝铁",
+      "rule_line": 88,
+      "batch_rate": "1",
+      "input_rates": {
+        "致密蓝铁粉末": "1"
+      },
+      "output_rates": {
+        "钢块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "致密蓝铁粉末",
+          "1",
+          "M126",
+          "C136"
+        ]
+      ],
+      "output_edges": [
+        [
+          "钢块",
+          "1",
+          "M155",
+          "C295"
+        ]
+      ],
+      "normalized_input": {
+        "致密蓝铁粉末": "1"
+      }
+    },
+    "M110": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-致密蓝铁",
+      "rule_line": 88,
+      "batch_rate": "1",
+      "input_rates": {
+        "致密蓝铁粉末": "1"
+      },
+      "output_rates": {
+        "钢块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "致密蓝铁粉末",
+          "1",
+          "M127",
+          "C137"
+        ]
+      ],
+      "output_edges": [
+        [
+          "钢块",
+          "1",
+          "M154",
+          "C296"
+        ]
+      ],
+      "normalized_input": {
+        "致密蓝铁粉末": "1"
+      }
+    },
+    "M111": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-致密蓝铁",
+      "rule_line": 88,
+      "batch_rate": "1",
+      "input_rates": {
+        "致密蓝铁粉末": "1"
+      },
+      "output_rates": {
+        "钢块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "致密蓝铁粉末",
+          "1",
+          "M128",
+          "C138"
+        ]
+      ],
+      "output_edges": [
+        [
+          "钢块",
+          "1",
+          "M153",
+          "C297"
+        ]
+      ],
+      "normalized_input": {
+        "致密蓝铁粉末": "1"
+      }
+    },
+    "M112": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-致密蓝铁",
+      "rule_line": 88,
+      "batch_rate": "1",
+      "input_rates": {
+        "致密蓝铁粉末": "1"
+      },
+      "output_rates": {
+        "钢块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "致密蓝铁粉末",
+          "1",
+          "M129",
+          "C139"
+        ]
+      ],
+      "output_edges": [
+        [
+          "钢块",
+          "1",
+          "M152",
+          "C298"
+        ]
+      ],
+      "normalized_input": {
+        "致密蓝铁粉末": "1"
+      }
+    },
+    "M113": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-致密蓝铁",
+      "rule_line": 88,
+      "batch_rate": "1",
+      "input_rates": {
+        "致密蓝铁粉末": "1"
+      },
+      "output_rates": {
+        "钢块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "致密蓝铁粉末",
+          "1",
+          "M130",
+          "C140"
+        ]
+      ],
+      "output_edges": [
+        [
+          "钢块",
+          "1",
+          "M157",
+          "C299"
+        ]
+      ],
+      "normalized_input": {
+        "致密蓝铁粉末": "1"
+      }
+    },
+    "M114": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-致密蓝铁",
+      "rule_line": 88,
+      "batch_rate": "1",
+      "input_rates": {
+        "致密蓝铁粉末": "1"
+      },
+      "output_rates": {
+        "钢块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "致密蓝铁粉末",
+          "1",
+          "M131",
+          "C141"
+        ]
+      ],
+      "output_edges": [
+        [
+          "钢块",
+          "1",
+          "M158",
+          "C300"
+        ]
+      ],
+      "normalized_input": {
+        "致密蓝铁粉末": "1"
+      }
+    },
+    "M115": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-致密蓝铁",
+      "rule_line": 88,
+      "batch_rate": "1",
+      "input_rates": {
+        "致密蓝铁粉末": "1"
+      },
+      "output_rates": {
+        "钢块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "致密蓝铁粉末",
+          "1",
+          "M132",
+          "C142"
+        ]
+      ],
+      "output_edges": [
+        [
+          "钢块",
+          "1",
+          "M159",
+          "C301"
+        ]
+      ],
+      "normalized_input": {
+        "致密蓝铁粉末": "1"
+      }
+    },
+    "M116": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-致密蓝铁",
+      "rule_line": 88,
+      "batch_rate": "1",
+      "input_rates": {
+        "致密蓝铁粉末": "1"
+      },
+      "output_rates": {
+        "钢块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "致密蓝铁粉末",
+          "1",
+          "M133",
+          "C143"
+        ]
+      ],
+      "output_edges": [
+        [
+          "钢块",
+          "1",
+          "M160",
+          "C302"
+        ]
+      ],
+      "normalized_input": {
+        "致密蓝铁粉末": "1"
+      }
+    },
+    "M117": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-致密蓝铁",
+      "rule_line": 88,
+      "batch_rate": "1",
+      "input_rates": {
+        "致密蓝铁粉末": "1"
+      },
+      "output_rates": {
+        "钢块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "致密蓝铁粉末",
+          "1",
+          "M134",
+          "C144"
+        ]
+      ],
+      "output_edges": [
+        [
+          "钢块",
+          "1",
+          "M161",
+          "C303"
+        ]
+      ],
+      "normalized_input": {
+        "致密蓝铁粉末": "1"
+      }
+    },
+    "M118": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-致密蓝铁",
+      "rule_line": 88,
+      "batch_rate": "1",
+      "input_rates": {
+        "致密蓝铁粉末": "1"
+      },
+      "output_rates": {
+        "钢块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "致密蓝铁粉末",
+          "1",
+          "M135",
+          "C145"
+        ]
+      ],
+      "output_edges": [
+        [
+          "钢块",
+          "1",
+          "M162",
+          "C304"
+        ]
+      ],
+      "normalized_input": {
+        "致密蓝铁粉末": "1"
+      }
+    },
+    "M119": {
+      "machine_type": "精炼炉",
+      "recipe_alias": "精炼-致密蓝铁",
+      "rule_line": 88,
+      "batch_rate": "1",
+      "input_rates": {
+        "致密蓝铁粉末": "1"
+      },
+      "output_rates": {
+        "钢块": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "致密蓝铁粉末",
+          "1",
+          "M136",
+          "C146"
+        ]
+      ],
+      "output_edges": [
+        [
+          "钢块",
+          "1",
+          "M163",
+          "C305"
+        ]
+      ],
+      "normalized_input": {
+        "致密蓝铁粉末": "1"
+      }
+    },
+    "M120": {
+      "machine_type": "研磨机",
+      "recipe_alias": "研磨-致密蓝铁",
+      "rule_line": 92,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶粉末": "1",
+        "蓝铁粉末": "2"
+      },
+      "output_rates": {
+        "致密蓝铁粉末": "1"
+      },
+      "input_count": 3,
+      "output_count": 1,
+      "port_capacity": 6,
+      "input_edges": [
+        [
+          "砂叶粉末",
+          "1",
+          "M058",
+          "C079"
+        ],
+        [
+          "蓝铁粉末",
+          "1",
+          "M018",
+          "C249"
+        ],
+        [
+          "蓝铁粉末",
+          "1",
+          "M051",
+          "C282"
+        ]
+      ],
+      "output_edges": [
+        [
+          "致密蓝铁粉末",
+          "1",
+          "M103",
+          "C130"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁粉末": "1",
+        "砂叶粉末": "1"
+      }
+    },
+    "M121": {
+      "machine_type": "研磨机",
+      "recipe_alias": "研磨-致密蓝铁",
+      "rule_line": 92,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶粉末": "1",
+        "蓝铁粉末": "2"
+      },
+      "output_rates": {
+        "致密蓝铁粉末": "1"
+      },
+      "input_count": 3,
+      "output_count": 1,
+      "port_capacity": 6,
+      "input_edges": [
+        [
+          "砂叶粉末",
+          "1",
+          "M058",
+          "C080"
+        ],
+        [
+          "蓝铁粉末",
+          "1",
+          "M019",
+          "C250"
+        ],
+        [
+          "蓝铁粉末",
+          "1",
+          "M050",
+          "C281"
+        ]
+      ],
+      "output_edges": [
+        [
+          "致密蓝铁粉末",
+          "1",
+          "M104",
+          "C131"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁粉末": "1",
+        "砂叶粉末": "1"
+      }
+    },
+    "M122": {
+      "machine_type": "研磨机",
+      "recipe_alias": "研磨-致密蓝铁",
+      "rule_line": 92,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶粉末": "1",
+        "蓝铁粉末": "2"
+      },
+      "output_rates": {
+        "致密蓝铁粉末": "1"
+      },
+      "input_count": 3,
+      "output_count": 1,
+      "port_capacity": 6,
+      "input_edges": [
+        [
+          "砂叶粉末",
+          "1",
+          "M058",
+          "C081"
+        ],
+        [
+          "蓝铁粉末",
+          "1",
+          "M020",
+          "C251"
+        ],
+        [
+          "蓝铁粉末",
+          "1",
+          "M049",
+          "C280"
+        ]
+      ],
+      "output_edges": [
+        [
+          "致密蓝铁粉末",
+          "1",
+          "M105",
+          "C132"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁粉末": "1",
+        "砂叶粉末": "1"
+      }
+    },
+    "M123": {
+      "machine_type": "研磨机",
+      "recipe_alias": "研磨-致密蓝铁",
+      "rule_line": 92,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶粉末": "1",
+        "蓝铁粉末": "2"
+      },
+      "output_rates": {
+        "致密蓝铁粉末": "1"
+      },
+      "input_count": 3,
+      "output_count": 1,
+      "port_capacity": 6,
+      "input_edges": [
+        [
+          "砂叶粉末",
+          "1",
+          "M059",
+          "C082"
+        ],
+        [
+          "蓝铁粉末",
+          "1",
+          "M021",
+          "C252"
+        ],
+        [
+          "蓝铁粉末",
+          "1",
+          "M048",
+          "C279"
+        ]
+      ],
+      "output_edges": [
+        [
+          "致密蓝铁粉末",
+          "1",
+          "M106",
+          "C133"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁粉末": "1",
+        "砂叶粉末": "1"
+      }
+    },
+    "M124": {
+      "machine_type": "研磨机",
+      "recipe_alias": "研磨-致密蓝铁",
+      "rule_line": 92,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶粉末": "1",
+        "蓝铁粉末": "2"
+      },
+      "output_rates": {
+        "致密蓝铁粉末": "1"
+      },
+      "input_count": 3,
+      "output_count": 1,
+      "port_capacity": 6,
+      "input_edges": [
+        [
+          "砂叶粉末",
+          "1",
+          "M059",
+          "C083"
+        ],
+        [
+          "蓝铁粉末",
+          "1",
+          "M022",
+          "C253"
+        ],
+        [
+          "蓝铁粉末",
+          "1",
+          "M047",
+          "C278"
+        ]
+      ],
+      "output_edges": [
+        [
+          "致密蓝铁粉末",
+          "1",
+          "M107",
+          "C134"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁粉末": "1",
+        "砂叶粉末": "1"
+      }
+    },
+    "M125": {
+      "machine_type": "研磨机",
+      "recipe_alias": "研磨-致密蓝铁",
+      "rule_line": 92,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶粉末": "1",
+        "蓝铁粉末": "2"
+      },
+      "output_rates": {
+        "致密蓝铁粉末": "1"
+      },
+      "input_count": 3,
+      "output_count": 1,
+      "port_capacity": 6,
+      "input_edges": [
+        [
+          "砂叶粉末",
+          "1",
+          "M059",
+          "C084"
+        ],
+        [
+          "蓝铁粉末",
+          "1",
+          "M023",
+          "C254"
+        ],
+        [
+          "蓝铁粉末",
+          "1",
+          "M046",
+          "C277"
+        ]
+      ],
+      "output_edges": [
+        [
+          "致密蓝铁粉末",
+          "1",
+          "M108",
+          "C135"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁粉末": "1",
+        "砂叶粉末": "1"
+      }
+    },
+    "M126": {
+      "machine_type": "研磨机",
+      "recipe_alias": "研磨-致密蓝铁",
+      "rule_line": 92,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶粉末": "1",
+        "蓝铁粉末": "2"
+      },
+      "output_rates": {
+        "致密蓝铁粉末": "1"
+      },
+      "input_count": 3,
+      "output_count": 1,
+      "port_capacity": 6,
+      "input_edges": [
+        [
+          "砂叶粉末",
+          "1",
+          "M060",
+          "C085"
+        ],
+        [
+          "蓝铁粉末",
+          "1",
+          "M024",
+          "C255"
+        ],
+        [
+          "蓝铁粉末",
+          "1",
+          "M045",
+          "C276"
+        ]
+      ],
+      "output_edges": [
+        [
+          "致密蓝铁粉末",
+          "1",
+          "M109",
+          "C136"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁粉末": "1",
+        "砂叶粉末": "1"
+      }
+    },
+    "M127": {
+      "machine_type": "研磨机",
+      "recipe_alias": "研磨-致密蓝铁",
+      "rule_line": 92,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶粉末": "1",
+        "蓝铁粉末": "2"
+      },
+      "output_rates": {
+        "致密蓝铁粉末": "1"
+      },
+      "input_count": 3,
+      "output_count": 1,
+      "port_capacity": 6,
+      "input_edges": [
+        [
+          "砂叶粉末",
+          "1",
+          "M060",
+          "C086"
+        ],
+        [
+          "蓝铁粉末",
+          "1",
+          "M025",
+          "C256"
+        ],
+        [
+          "蓝铁粉末",
+          "1",
+          "M044",
+          "C275"
+        ]
+      ],
+      "output_edges": [
+        [
+          "致密蓝铁粉末",
+          "1",
+          "M110",
+          "C137"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁粉末": "1",
+        "砂叶粉末": "1"
+      }
+    },
+    "M128": {
+      "machine_type": "研磨机",
+      "recipe_alias": "研磨-致密蓝铁",
+      "rule_line": 92,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶粉末": "1",
+        "蓝铁粉末": "2"
+      },
+      "output_rates": {
+        "致密蓝铁粉末": "1"
+      },
+      "input_count": 3,
+      "output_count": 1,
+      "port_capacity": 6,
+      "input_edges": [
+        [
+          "砂叶粉末",
+          "1",
+          "M060",
+          "C087"
+        ],
+        [
+          "蓝铁粉末",
+          "1",
+          "M026",
+          "C257"
+        ],
+        [
+          "蓝铁粉末",
+          "1",
+          "M043",
+          "C274"
+        ]
+      ],
+      "output_edges": [
+        [
+          "致密蓝铁粉末",
+          "1",
+          "M111",
+          "C138"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁粉末": "1",
+        "砂叶粉末": "1"
+      }
+    },
+    "M129": {
+      "machine_type": "研磨机",
+      "recipe_alias": "研磨-致密蓝铁",
+      "rule_line": 92,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶粉末": "1",
+        "蓝铁粉末": "2"
+      },
+      "output_rates": {
+        "致密蓝铁粉末": "1"
+      },
+      "input_count": 3,
+      "output_count": 1,
+      "port_capacity": 6,
+      "input_edges": [
+        [
+          "砂叶粉末",
+          "1",
+          "M061",
+          "C088"
+        ],
+        [
+          "蓝铁粉末",
+          "1",
+          "M027",
+          "C258"
+        ],
+        [
+          "蓝铁粉末",
+          "1",
+          "M042",
+          "C273"
+        ]
+      ],
+      "output_edges": [
+        [
+          "致密蓝铁粉末",
+          "1",
+          "M112",
+          "C139"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁粉末": "1",
+        "砂叶粉末": "1"
+      }
+    },
+    "M130": {
+      "machine_type": "研磨机",
+      "recipe_alias": "研磨-致密蓝铁",
+      "rule_line": 92,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶粉末": "1",
+        "蓝铁粉末": "2"
+      },
+      "output_rates": {
+        "致密蓝铁粉末": "1"
+      },
+      "input_count": 3,
+      "output_count": 1,
+      "port_capacity": 6,
+      "input_edges": [
+        [
+          "砂叶粉末",
+          "1",
+          "M061",
+          "C089"
+        ],
+        [
+          "蓝铁粉末",
+          "1",
+          "M028",
+          "C259"
+        ],
+        [
+          "蓝铁粉末",
+          "1",
+          "M041",
+          "C272"
+        ]
+      ],
+      "output_edges": [
+        [
+          "致密蓝铁粉末",
+          "1",
+          "M113",
+          "C140"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁粉末": "1",
+        "砂叶粉末": "1"
+      }
+    },
+    "M131": {
+      "machine_type": "研磨机",
+      "recipe_alias": "研磨-致密蓝铁",
+      "rule_line": 92,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶粉末": "1",
+        "蓝铁粉末": "2"
+      },
+      "output_rates": {
+        "致密蓝铁粉末": "1"
+      },
+      "input_count": 3,
+      "output_count": 1,
+      "port_capacity": 6,
+      "input_edges": [
+        [
+          "砂叶粉末",
+          "1",
+          "M061",
+          "C090"
+        ],
+        [
+          "蓝铁粉末",
+          "1",
+          "M029",
+          "C260"
+        ],
+        [
+          "蓝铁粉末",
+          "1",
+          "M040",
+          "C271"
+        ]
+      ],
+      "output_edges": [
+        [
+          "致密蓝铁粉末",
+          "1",
+          "M114",
+          "C141"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁粉末": "1",
+        "砂叶粉末": "1"
+      }
+    },
+    "M132": {
+      "machine_type": "研磨机",
+      "recipe_alias": "研磨-致密蓝铁",
+      "rule_line": 92,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶粉末": "1",
+        "蓝铁粉末": "2"
+      },
+      "output_rates": {
+        "致密蓝铁粉末": "1"
+      },
+      "input_count": 3,
+      "output_count": 1,
+      "port_capacity": 6,
+      "input_edges": [
+        [
+          "砂叶粉末",
+          "1",
+          "M062",
+          "C091"
+        ],
+        [
+          "蓝铁粉末",
+          "1",
+          "M030",
+          "C261"
+        ],
+        [
+          "蓝铁粉末",
+          "1",
+          "M039",
+          "C270"
+        ]
+      ],
+      "output_edges": [
+        [
+          "致密蓝铁粉末",
+          "1",
+          "M115",
+          "C142"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁粉末": "1",
+        "砂叶粉末": "1"
+      }
+    },
+    "M133": {
+      "machine_type": "研磨机",
+      "recipe_alias": "研磨-致密蓝铁",
+      "rule_line": 92,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶粉末": "1",
+        "蓝铁粉末": "2"
+      },
+      "output_rates": {
+        "致密蓝铁粉末": "1"
+      },
+      "input_count": 3,
+      "output_count": 1,
+      "port_capacity": 6,
+      "input_edges": [
+        [
+          "砂叶粉末",
+          "1",
+          "M062",
+          "C092"
+        ],
+        [
+          "蓝铁粉末",
+          "1",
+          "M031",
+          "C262"
+        ],
+        [
+          "蓝铁粉末",
+          "1",
+          "M038",
+          "C269"
+        ]
+      ],
+      "output_edges": [
+        [
+          "致密蓝铁粉末",
+          "1",
+          "M116",
+          "C143"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁粉末": "1",
+        "砂叶粉末": "1"
+      }
+    },
+    "M134": {
+      "machine_type": "研磨机",
+      "recipe_alias": "研磨-致密蓝铁",
+      "rule_line": 92,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶粉末": "1",
+        "蓝铁粉末": "2"
+      },
+      "output_rates": {
+        "致密蓝铁粉末": "1"
+      },
+      "input_count": 3,
+      "output_count": 1,
+      "port_capacity": 6,
+      "input_edges": [
+        [
+          "砂叶粉末",
+          "1",
+          "M062",
+          "C093"
+        ],
+        [
+          "蓝铁粉末",
+          "1",
+          "M032",
+          "C263"
+        ],
+        [
+          "蓝铁粉末",
+          "1",
+          "M037",
+          "C268"
+        ]
+      ],
+      "output_edges": [
+        [
+          "致密蓝铁粉末",
+          "1",
+          "M117",
+          "C144"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁粉末": "1",
+        "砂叶粉末": "1"
+      }
+    },
+    "M135": {
+      "machine_type": "研磨机",
+      "recipe_alias": "研磨-致密蓝铁",
+      "rule_line": 92,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶粉末": "1",
+        "蓝铁粉末": "2"
+      },
+      "output_rates": {
+        "致密蓝铁粉末": "1"
+      },
+      "input_count": 3,
+      "output_count": 1,
+      "port_capacity": 6,
+      "input_edges": [
+        [
+          "砂叶粉末",
+          "1",
+          "M063",
+          "C094"
+        ],
+        [
+          "蓝铁粉末",
+          "1",
+          "M033",
+          "C264"
+        ],
+        [
+          "蓝铁粉末",
+          "1",
+          "M036",
+          "C267"
+        ]
+      ],
+      "output_edges": [
+        [
+          "致密蓝铁粉末",
+          "1",
+          "M118",
+          "C145"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁粉末": "1",
+        "砂叶粉末": "1"
+      }
+    },
+    "M136": {
+      "machine_type": "研磨机",
+      "recipe_alias": "研磨-致密蓝铁",
+      "rule_line": 92,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶粉末": "1",
+        "蓝铁粉末": "2"
+      },
+      "output_rates": {
+        "致密蓝铁粉末": "1"
+      },
+      "input_count": 3,
+      "output_count": 1,
+      "port_capacity": 6,
+      "input_edges": [
+        [
+          "砂叶粉末",
+          "1",
+          "M063",
+          "C095"
+        ],
+        [
+          "蓝铁粉末",
+          "1",
+          "M034",
+          "C265"
+        ],
+        [
+          "蓝铁粉末",
+          "1",
+          "M035",
+          "C266"
+        ]
+      ],
+      "output_edges": [
+        [
+          "致密蓝铁粉末",
+          "1",
+          "M119",
+          "C146"
+        ]
+      ],
+      "normalized_input": {
+        "蓝铁粉末": "1",
+        "砂叶粉末": "1"
+      }
+    },
+    "M137": {
+      "machine_type": "研磨机",
+      "recipe_alias": "研磨-致密源石",
+      "rule_line": 93,
+      "batch_rate": "1",
+      "input_rates": {
+        "源石粉末": "2",
+        "砂叶粉末": "1"
+      },
+      "output_rates": {
+        "致密源石粉末": "1"
+      },
+      "input_count": 3,
+      "output_count": 1,
+      "port_capacity": 6,
+      "input_edges": [
+        [
+          "源石粉末",
+          "1",
+          "M000",
+          "C000"
+        ],
+        [
+          "源石粉末",
+          "1",
+          "M017",
+          "C017"
+        ],
+        [
+          "砂叶粉末",
+          "1",
+          "M063",
+          "C096"
+        ]
+      ],
+      "output_edges": [
+        [
+          "致密源石粉末",
+          "1",
+          "M213",
+          "C121"
+        ]
+      ],
+      "normalized_input": {
+        "源石粉末": "1",
+        "砂叶粉末": "1"
+      }
+    },
+    "M138": {
+      "machine_type": "研磨机",
+      "recipe_alias": "研磨-致密源石",
+      "rule_line": 93,
+      "batch_rate": "1",
+      "input_rates": {
+        "源石粉末": "2",
+        "砂叶粉末": "1"
+      },
+      "output_rates": {
+        "致密源石粉末": "1"
+      },
+      "input_count": 3,
+      "output_count": 1,
+      "port_capacity": 6,
+      "input_edges": [
+        [
+          "源石粉末",
+          "1",
+          "M001",
+          "C001"
+        ],
+        [
+          "源石粉末",
+          "1",
+          "M016",
+          "C016"
+        ],
+        [
+          "砂叶粉末",
+          "1",
+          "M064",
+          "C097"
+        ]
+      ],
+      "output_edges": [
+        [
+          "致密源石粉末",
+          "1",
+          "M214",
+          "C122"
+        ]
+      ],
+      "normalized_input": {
+        "源石粉末": "1",
+        "砂叶粉末": "1"
+      }
+    },
+    "M139": {
+      "machine_type": "研磨机",
+      "recipe_alias": "研磨-致密源石",
+      "rule_line": 93,
+      "batch_rate": "1",
+      "input_rates": {
+        "源石粉末": "2",
+        "砂叶粉末": "1"
+      },
+      "output_rates": {
+        "致密源石粉末": "1"
+      },
+      "input_count": 3,
+      "output_count": 1,
+      "port_capacity": 6,
+      "input_edges": [
+        [
+          "源石粉末",
+          "1",
+          "M002",
+          "C002"
+        ],
+        [
+          "源石粉末",
+          "1",
+          "M015",
+          "C015"
+        ],
+        [
+          "砂叶粉末",
+          "1",
+          "M064",
+          "C098"
+        ]
+      ],
+      "output_edges": [
+        [
+          "致密源石粉末",
+          "1",
+          "M215",
+          "C123"
+        ]
+      ],
+      "normalized_input": {
+        "源石粉末": "1",
+        "砂叶粉末": "1"
+      }
+    },
+    "M140": {
+      "machine_type": "研磨机",
+      "recipe_alias": "研磨-致密源石",
+      "rule_line": 93,
+      "batch_rate": "1",
+      "input_rates": {
+        "源石粉末": "2",
+        "砂叶粉末": "1"
+      },
+      "output_rates": {
+        "致密源石粉末": "1"
+      },
+      "input_count": 3,
+      "output_count": 1,
+      "port_capacity": 6,
+      "input_edges": [
+        [
+          "源石粉末",
+          "1",
+          "M003",
+          "C003"
+        ],
+        [
+          "源石粉末",
+          "1",
+          "M014",
+          "C014"
+        ],
+        [
+          "砂叶粉末",
+          "1",
+          "M064",
+          "C099"
+        ]
+      ],
+      "output_edges": [
+        [
+          "致密源石粉末",
+          "1",
+          "M215",
+          "C124"
+        ]
+      ],
+      "normalized_input": {
+        "源石粉末": "1",
+        "砂叶粉末": "1"
+      }
+    },
+    "M141": {
+      "machine_type": "研磨机",
+      "recipe_alias": "研磨-致密源石",
+      "rule_line": 93,
+      "batch_rate": "1",
+      "input_rates": {
+        "源石粉末": "2",
+        "砂叶粉末": "1"
+      },
+      "output_rates": {
+        "致密源石粉末": "1"
+      },
+      "input_count": 3,
+      "output_count": 1,
+      "port_capacity": 6,
+      "input_edges": [
+        [
+          "源石粉末",
+          "1",
+          "M004",
+          "C004"
+        ],
+        [
+          "源石粉末",
+          "1",
+          "M013",
+          "C013"
+        ],
+        [
+          "砂叶粉末",
+          "1",
+          "M065",
+          "C100"
+        ]
+      ],
+      "output_edges": [
+        [
+          "致密源石粉末",
+          "1",
+          "M214",
+          "C125"
+        ]
+      ],
+      "normalized_input": {
+        "源石粉末": "1",
+        "砂叶粉末": "1"
+      }
+    },
+    "M142": {
+      "machine_type": "研磨机",
+      "recipe_alias": "研磨-致密源石",
+      "rule_line": 93,
+      "batch_rate": "1",
+      "input_rates": {
+        "源石粉末": "2",
+        "砂叶粉末": "1"
+      },
+      "output_rates": {
+        "致密源石粉末": "1"
+      },
+      "input_count": 3,
+      "output_count": 1,
+      "port_capacity": 6,
+      "input_edges": [
+        [
+          "源石粉末",
+          "1",
+          "M005",
+          "C005"
+        ],
+        [
+          "源石粉末",
+          "1",
+          "M012",
+          "C012"
+        ],
+        [
+          "砂叶粉末",
+          "1",
+          "M065",
+          "C101"
+        ]
+      ],
+      "output_edges": [
+        [
+          "致密源石粉末",
+          "1",
+          "M213",
+          "C126"
+        ]
+      ],
+      "normalized_input": {
+        "源石粉末": "1",
+        "砂叶粉末": "1"
+      }
+    },
+    "M143": {
+      "machine_type": "研磨机",
+      "recipe_alias": "研磨-致密源石",
+      "rule_line": 93,
+      "batch_rate": "1",
+      "input_rates": {
+        "源石粉末": "2",
+        "砂叶粉末": "1"
+      },
+      "output_rates": {
+        "致密源石粉末": "1"
+      },
+      "input_count": 3,
+      "output_count": 1,
+      "port_capacity": 6,
+      "input_edges": [
+        [
+          "源石粉末",
+          "1",
+          "M006",
+          "C006"
+        ],
+        [
+          "源石粉末",
+          "1",
+          "M011",
+          "C011"
+        ],
+        [
+          "砂叶粉末",
+          "1",
+          "M065",
+          "C102"
+        ]
+      ],
+      "output_edges": [
+        [
+          "致密源石粉末",
+          "1",
+          "M213",
+          "C127"
+        ]
+      ],
+      "normalized_input": {
+        "源石粉末": "1",
+        "砂叶粉末": "1"
+      }
+    },
+    "M144": {
+      "machine_type": "研磨机",
+      "recipe_alias": "研磨-致密源石",
+      "rule_line": 93,
+      "batch_rate": "1",
+      "input_rates": {
+        "源石粉末": "2",
+        "砂叶粉末": "1"
+      },
+      "output_rates": {
+        "致密源石粉末": "1"
+      },
+      "input_count": 3,
+      "output_count": 1,
+      "port_capacity": 6,
+      "input_edges": [
+        [
+          "源石粉末",
+          "1",
+          "M007",
+          "C007"
+        ],
+        [
+          "源石粉末",
+          "1",
+          "M010",
+          "C010"
+        ],
+        [
+          "砂叶粉末",
+          "1",
+          "M066",
+          "C103"
+        ]
+      ],
+      "output_edges": [
+        [
+          "致密源石粉末",
+          "1",
+          "M214",
+          "C128"
+        ]
+      ],
+      "normalized_input": {
+        "源石粉末": "1",
+        "砂叶粉末": "1"
+      }
+    },
+    "M145": {
+      "machine_type": "研磨机",
+      "recipe_alias": "研磨-致密源石",
+      "rule_line": 93,
+      "batch_rate": "1",
+      "input_rates": {
+        "源石粉末": "2",
+        "砂叶粉末": "1"
+      },
+      "output_rates": {
+        "致密源石粉末": "1"
+      },
+      "input_count": 3,
+      "output_count": 1,
+      "port_capacity": 6,
+      "input_edges": [
+        [
+          "源石粉末",
+          "1",
+          "M008",
+          "C008"
+        ],
+        [
+          "源石粉末",
+          "1",
+          "M009",
+          "C009"
+        ],
+        [
+          "砂叶粉末",
+          "1",
+          "M066",
+          "C104"
+        ]
+      ],
+      "output_edges": [
+        [
+          "致密源石粉末",
+          "1",
+          "M215",
+          "C129"
+        ]
+      ],
+      "normalized_input": {
+        "源石粉末": "1",
+        "砂叶粉末": "1"
+      }
+    },
+    "M146": {
+      "machine_type": "研磨机",
+      "recipe_alias": "研磨-细磨荞花",
+      "rule_line": 94,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶粉末": "1",
+        "荞花粉末": "2"
+      },
+      "output_rates": {
+        "细磨荞花粉末": "1"
+      },
+      "input_count": 3,
+      "output_count": 1,
+      "port_capacity": 6,
+      "input_edges": [
+        [
+          "砂叶粉末",
+          "1",
+          "M066",
+          "C105"
+        ],
+        [
+          "荞花粉末",
+          "1",
+          "M052",
+          "C170"
+        ],
+        [
+          "荞花粉末",
+          "1",
+          "M056",
+          "C179"
+        ]
+      ],
+      "output_edges": [
+        [
+          "细磨荞花粉末",
+          "1",
+          "M216",
+          "C115"
+        ]
+      ],
+      "normalized_input": {
+        "荞花粉末": "1",
+        "砂叶粉末": "1"
+      }
+    },
+    "M147": {
+      "machine_type": "研磨机",
+      "recipe_alias": "研磨-细磨荞花",
+      "rule_line": 94,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶粉末": "1",
+        "荞花粉末": "2"
+      },
+      "output_rates": {
+        "细磨荞花粉末": "1"
+      },
+      "input_count": 3,
+      "output_count": 1,
+      "port_capacity": 6,
+      "input_edges": [
+        [
+          "砂叶粉末",
+          "1",
+          "M067",
+          "C106"
+        ],
+        [
+          "荞花粉末",
+          "1",
+          "M052",
+          "C171"
+        ],
+        [
+          "荞花粉末",
+          "1",
+          "M056",
+          "C178"
+        ]
+      ],
+      "output_edges": [
+        [
+          "细磨荞花粉末",
+          "1",
+          "M217",
+          "C116"
+        ]
+      ],
+      "normalized_input": {
+        "荞花粉末": "1",
+        "砂叶粉末": "1"
+      }
+    },
+    "M148": {
+      "machine_type": "研磨机",
+      "recipe_alias": "研磨-细磨荞花",
+      "rule_line": 94,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶粉末": "1",
+        "荞花粉末": "2"
+      },
+      "output_rates": {
+        "细磨荞花粉末": "1"
+      },
+      "input_count": 3,
+      "output_count": 1,
+      "port_capacity": 6,
+      "input_edges": [
+        [
+          "砂叶粉末",
+          "1",
+          "M067",
+          "C107"
+        ],
+        [
+          "荞花粉末",
+          "1",
+          "M053",
+          "C172"
+        ],
+        [
+          "荞花粉末",
+          "1",
+          "M055",
+          "C177"
+        ]
+      ],
+      "output_edges": [
+        [
+          "细磨荞花粉末",
+          "1",
+          "M218",
+          "C117"
+        ]
+      ],
+      "normalized_input": {
+        "荞花粉末": "1",
+        "砂叶粉末": "1"
+      }
+    },
+    "M149": {
+      "machine_type": "研磨机",
+      "recipe_alias": "研磨-细磨荞花",
+      "rule_line": 94,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶粉末": "1",
+        "荞花粉末": "2"
+      },
+      "output_rates": {
+        "细磨荞花粉末": "1"
+      },
+      "input_count": 3,
+      "output_count": 1,
+      "port_capacity": 6,
+      "input_edges": [
+        [
+          "砂叶粉末",
+          "1",
+          "M067",
+          "C108"
+        ],
+        [
+          "荞花粉末",
+          "1",
+          "M053",
+          "C173"
+        ],
+        [
+          "荞花粉末",
+          "1",
+          "M055",
+          "C176"
+        ]
+      ],
+      "output_edges": [
+        [
+          "细磨荞花粉末",
+          "1",
+          "M217",
+          "C118"
+        ]
+      ],
+      "normalized_input": {
+        "荞花粉末": "1",
+        "砂叶粉末": "1"
+      }
+    },
+    "M150": {
+      "machine_type": "研磨机",
+      "recipe_alias": "研磨-细磨荞花",
+      "rule_line": 94,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶粉末": "1",
+        "荞花粉末": "2"
+      },
+      "output_rates": {
+        "细磨荞花粉末": "1"
+      },
+      "input_count": 4,
+      "output_count": 1,
+      "port_capacity": 6,
+      "input_edges": [
+        [
+          "砂叶粉末",
+          "1/2",
+          "M068",
+          "C109"
+        ],
+        [
+          "砂叶粉末",
+          "1/2",
+          "M068",
+          "C110"
+        ],
+        [
+          "荞花粉末",
+          "1",
+          "M054",
+          "C174"
+        ],
+        [
+          "荞花粉末",
+          "1",
+          "M054",
+          "C175"
+        ]
+      ],
+      "output_edges": [
+        [
+          "细磨荞花粉末",
+          "1",
+          "M216",
+          "C119"
+        ]
+      ],
+      "normalized_input": {
+        "荞花粉末": "1",
+        "砂叶粉末": "1"
+      }
+    },
+    "M151": {
+      "machine_type": "研磨机",
+      "recipe_alias": "研磨-细磨荞花",
+      "rule_line": 94,
+      "batch_rate": "1/2",
+      "input_rates": {
+        "砂叶粉末": "1/2",
+        "荞花粉末": "1"
+      },
+      "output_rates": {
+        "细磨荞花粉末": "1/2"
+      },
+      "input_count": 2,
+      "output_count": 1,
+      "port_capacity": 6,
+      "input_edges": [
+        [
+          "砂叶粉末",
+          "1/2",
+          "M068",
+          "C111"
+        ],
+        [
+          "荞花粉末",
+          "1",
+          "M057",
+          "C180"
+        ]
+      ],
+      "output_edges": [
+        [
+          "细磨荞花粉末",
+          "1/2",
+          "M218",
+          "C120"
+        ]
+      ],
+      "normalized_input": {
+        "荞花粉末": "1/2",
+        "砂叶粉末": "1/2"
+      }
+    },
+    "M152": {
+      "machine_type": "塑形机",
+      "recipe_alias": "塑形-钢质瓶",
+      "rule_line": 97,
+      "batch_rate": "1",
+      "input_rates": {
+        "钢块": "2"
+      },
+      "output_rates": {
+        "钢质瓶": "1"
+      },
+      "input_count": 2,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "钢块",
+          "1",
+          "M103",
+          "C289"
+        ],
+        [
+          "钢块",
+          "1",
+          "M112",
+          "C298"
+        ]
+      ],
+      "output_edges": [
+        [
+          "钢质瓶",
+          "1",
+          "M216",
+          "C306"
+        ]
+      ],
+      "normalized_input": {
+        "钢块": "1"
+      }
+    },
+    "M153": {
+      "machine_type": "塑形机",
+      "recipe_alias": "塑形-钢质瓶",
+      "rule_line": 97,
+      "batch_rate": "1",
+      "input_rates": {
+        "钢块": "2"
+      },
+      "output_rates": {
+        "钢质瓶": "1"
+      },
+      "input_count": 2,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "钢块",
+          "1",
+          "M104",
+          "C290"
+        ],
+        [
+          "钢块",
+          "1",
+          "M111",
+          "C297"
+        ]
+      ],
+      "output_edges": [
+        [
+          "钢质瓶",
+          "1",
+          "M217",
+          "C307"
+        ]
+      ],
+      "normalized_input": {
+        "钢块": "1"
+      }
+    },
+    "M154": {
+      "machine_type": "塑形机",
+      "recipe_alias": "塑形-钢质瓶",
+      "rule_line": 97,
+      "batch_rate": "1",
+      "input_rates": {
+        "钢块": "2"
+      },
+      "output_rates": {
+        "钢质瓶": "1"
+      },
+      "input_count": 2,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "钢块",
+          "1",
+          "M105",
+          "C291"
+        ],
+        [
+          "钢块",
+          "1",
+          "M110",
+          "C296"
+        ]
+      ],
+      "output_edges": [
+        [
+          "钢质瓶",
+          "1",
+          "M218",
+          "C308"
+        ]
+      ],
+      "normalized_input": {
+        "钢块": "1"
+      }
+    },
+    "M155": {
+      "machine_type": "塑形机",
+      "recipe_alias": "塑形-钢质瓶",
+      "rule_line": 97,
+      "batch_rate": "1",
+      "input_rates": {
+        "钢块": "2"
+      },
+      "output_rates": {
+        "钢质瓶": "1"
+      },
+      "input_count": 2,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "钢块",
+          "1",
+          "M106",
+          "C292"
+        ],
+        [
+          "钢块",
+          "1",
+          "M109",
+          "C295"
+        ]
+      ],
+      "output_edges": [
+        [
+          "钢质瓶",
+          "1",
+          "M217",
+          "C309"
+        ]
+      ],
+      "normalized_input": {
+        "钢块": "1"
+      }
+    },
+    "M156": {
+      "machine_type": "塑形机",
+      "recipe_alias": "塑形-钢质瓶",
+      "rule_line": 97,
+      "batch_rate": "1",
+      "input_rates": {
+        "钢块": "2"
+      },
+      "output_rates": {
+        "钢质瓶": "1"
+      },
+      "input_count": 2,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "钢块",
+          "1",
+          "M107",
+          "C293"
+        ],
+        [
+          "钢块",
+          "1",
+          "M108",
+          "C294"
+        ]
+      ],
+      "output_edges": [
+        [
+          "钢质瓶",
+          "1",
+          "M216",
+          "C310"
+        ]
+      ],
+      "normalized_input": {
+        "钢块": "1"
+      }
+    },
+    "M157": {
+      "machine_type": "塑形机",
+      "recipe_alias": "塑形-钢质瓶",
+      "rule_line": 97,
+      "batch_rate": "1/2",
+      "input_rates": {
+        "钢块": "1"
+      },
+      "output_rates": {
+        "钢质瓶": "1/2"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "钢块",
+          "1",
+          "M113",
+          "C299"
+        ]
+      ],
+      "output_edges": [
+        [
+          "钢质瓶",
+          "1/2",
+          "M218",
+          "C311"
+        ]
+      ],
+      "normalized_input": {
+        "钢块": "1/2"
+      }
+    },
+    "M158": {
+      "machine_type": "配件机",
+      "recipe_alias": "配件-钢制零件",
+      "rule_line": 100,
+      "batch_rate": "1",
+      "input_rates": {
+        "钢块": "1"
+      },
+      "output_rates": {
+        "钢制零件": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "钢块",
+          "1",
+          "M114",
+          "C300"
+        ]
+      ],
+      "output_edges": [
+        [
+          "钢制零件",
+          "1",
+          "M213",
+          "C283"
+        ]
+      ],
+      "normalized_input": {
+        "钢块": "1"
+      }
+    },
+    "M159": {
+      "machine_type": "配件机",
+      "recipe_alias": "配件-钢制零件",
+      "rule_line": 100,
+      "batch_rate": "1",
+      "input_rates": {
+        "钢块": "1"
+      },
+      "output_rates": {
+        "钢制零件": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "钢块",
+          "1",
+          "M115",
+          "C301"
+        ]
+      ],
+      "output_edges": [
+        [
+          "钢制零件",
+          "1",
+          "M214",
+          "C284"
+        ]
+      ],
+      "normalized_input": {
+        "钢块": "1"
+      }
+    },
+    "M160": {
+      "machine_type": "配件机",
+      "recipe_alias": "配件-钢制零件",
+      "rule_line": 100,
+      "batch_rate": "1",
+      "input_rates": {
+        "钢块": "1"
+      },
+      "output_rates": {
+        "钢制零件": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "钢块",
+          "1",
+          "M116",
+          "C302"
+        ]
+      ],
+      "output_edges": [
+        [
+          "钢制零件",
+          "1",
+          "M215",
+          "C285"
+        ]
+      ],
+      "normalized_input": {
+        "钢块": "1"
+      }
+    },
+    "M161": {
+      "machine_type": "配件机",
+      "recipe_alias": "配件-钢制零件",
+      "rule_line": 100,
+      "batch_rate": "1",
+      "input_rates": {
+        "钢块": "1"
+      },
+      "output_rates": {
+        "钢制零件": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "钢块",
+          "1",
+          "M117",
+          "C303"
+        ]
+      ],
+      "output_edges": [
+        [
+          "钢制零件",
+          "1",
+          "M215",
+          "C286"
+        ]
+      ],
+      "normalized_input": {
+        "钢块": "1"
+      }
+    },
+    "M162": {
+      "machine_type": "配件机",
+      "recipe_alias": "配件-钢制零件",
+      "rule_line": 100,
+      "batch_rate": "1",
+      "input_rates": {
+        "钢块": "1"
+      },
+      "output_rates": {
+        "钢制零件": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "钢块",
+          "1",
+          "M118",
+          "C304"
+        ]
+      ],
+      "output_edges": [
+        [
+          "钢制零件",
+          "1",
+          "M214",
+          "C287"
+        ]
+      ],
+      "normalized_input": {
+        "钢块": "1"
+      }
+    },
+    "M163": {
+      "machine_type": "配件机",
+      "recipe_alias": "配件-钢制零件",
+      "rule_line": 100,
+      "batch_rate": "1",
+      "input_rates": {
+        "钢块": "1"
+      },
+      "output_rates": {
+        "钢制零件": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 3,
+      "input_edges": [
+        [
+          "钢块",
+          "1",
+          "M119",
+          "C305"
+        ]
+      ],
+      "output_edges": [
+        [
+          "钢制零件",
+          "1",
+          "M213",
+          "C288"
+        ]
+      ],
+      "normalized_input": {
+        "钢块": "1"
+      }
+    },
+    "M164": {
+      "machine_type": "种植机",
+      "recipe_alias": "种植-荞花",
+      "rule_line": 103,
+      "batch_rate": "1",
+      "input_rates": {
+        "荞花种子": "1"
+      },
+      "output_rates": {
+        "荞花": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "荞花种子",
+          "1",
+          "M196",
+          "C159"
+        ]
+      ],
+      "output_edges": [
+        [
+          "荞花",
+          "1",
+          "M052",
+          "C147"
+        ]
+      ],
+      "normalized_input": {
+        "荞花种子": "1"
+      }
+    },
+    "M165": {
+      "machine_type": "种植机",
+      "recipe_alias": "种植-荞花",
+      "rule_line": 103,
+      "batch_rate": "1",
+      "input_rates": {
+        "荞花种子": "1"
+      },
+      "output_rates": {
+        "荞花": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "荞花种子",
+          "1",
+          "M196",
+          "C160"
+        ]
+      ],
+      "output_edges": [
+        [
+          "荞花",
+          "1",
+          "M053",
+          "C148"
+        ]
+      ],
+      "normalized_input": {
+        "荞花种子": "1"
+      }
+    },
+    "M166": {
+      "machine_type": "种植机",
+      "recipe_alias": "种植-荞花",
+      "rule_line": 103,
+      "batch_rate": "1",
+      "input_rates": {
+        "荞花种子": "1"
+      },
+      "output_rates": {
+        "荞花": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "荞花种子",
+          "1",
+          "M197",
+          "C161"
+        ]
+      ],
+      "output_edges": [
+        [
+          "荞花",
+          "1",
+          "M054",
+          "C149"
+        ]
+      ],
+      "normalized_input": {
+        "荞花种子": "1"
+      }
+    },
+    "M167": {
+      "machine_type": "种植机",
+      "recipe_alias": "种植-荞花",
+      "rule_line": 103,
+      "batch_rate": "1",
+      "input_rates": {
+        "荞花种子": "1"
+      },
+      "output_rates": {
+        "荞花": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "荞花种子",
+          "1",
+          "M197",
+          "C162"
+        ]
+      ],
+      "output_edges": [
+        [
+          "荞花",
+          "1",
+          "M055",
+          "C150"
+        ]
+      ],
+      "normalized_input": {
+        "荞花种子": "1"
+      }
+    },
+    "M168": {
+      "machine_type": "种植机",
+      "recipe_alias": "种植-荞花",
+      "rule_line": 103,
+      "batch_rate": "1",
+      "input_rates": {
+        "荞花种子": "1"
+      },
+      "output_rates": {
+        "荞花": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "荞花种子",
+          "1",
+          "M198",
+          "C163"
+        ]
+      ],
+      "output_edges": [
+        [
+          "荞花",
+          "1",
+          "M056",
+          "C151"
+        ]
+      ],
+      "normalized_input": {
+        "荞花种子": "1"
+      }
+    },
+    "M169": {
+      "machine_type": "种植机",
+      "recipe_alias": "种植-荞花",
+      "rule_line": 103,
+      "batch_rate": "1",
+      "input_rates": {
+        "荞花种子": "1"
+      },
+      "output_rates": {
+        "荞花": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "荞花种子",
+          "1",
+          "M198",
+          "C164"
+        ]
+      ],
+      "output_edges": [
+        [
+          "荞花",
+          "1",
+          "M196",
+          "C152"
+        ]
+      ],
+      "normalized_input": {
+        "荞花种子": "1"
+      }
+    },
+    "M170": {
+      "machine_type": "种植机",
+      "recipe_alias": "种植-荞花",
+      "rule_line": 103,
+      "batch_rate": "1",
+      "input_rates": {
+        "荞花种子": "1"
+      },
+      "output_rates": {
+        "荞花": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "荞花种子",
+          "1",
+          "M199",
+          "C165"
+        ]
+      ],
+      "output_edges": [
+        [
+          "荞花",
+          "1",
+          "M197",
+          "C153"
+        ]
+      ],
+      "normalized_input": {
+        "荞花种子": "1"
+      }
+    },
+    "M171": {
+      "machine_type": "种植机",
+      "recipe_alias": "种植-荞花",
+      "rule_line": 103,
+      "batch_rate": "1",
+      "input_rates": {
+        "荞花种子": "1"
+      },
+      "output_rates": {
+        "荞花": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "荞花种子",
+          "1",
+          "M199",
+          "C166"
+        ]
+      ],
+      "output_edges": [
+        [
+          "荞花",
+          "1",
+          "M198",
+          "C154"
+        ]
+      ],
+      "normalized_input": {
+        "荞花种子": "1"
+      }
+    },
+    "M172": {
+      "machine_type": "种植机",
+      "recipe_alias": "种植-荞花",
+      "rule_line": 103,
+      "batch_rate": "1",
+      "input_rates": {
+        "荞花种子": "1"
+      },
+      "output_rates": {
+        "荞花": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "荞花种子",
+          "1",
+          "M200",
+          "C167"
+        ]
+      ],
+      "output_edges": [
+        [
+          "荞花",
+          "1",
+          "M199",
+          "C155"
+        ]
+      ],
+      "normalized_input": {
+        "荞花种子": "1"
+      }
+    },
+    "M173": {
+      "machine_type": "种植机",
+      "recipe_alias": "种植-荞花",
+      "rule_line": 103,
+      "batch_rate": "1",
+      "input_rates": {
+        "荞花种子": "1"
+      },
+      "output_rates": {
+        "荞花": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "荞花种子",
+          "1",
+          "M200",
+          "C168"
+        ]
+      ],
+      "output_edges": [
+        [
+          "荞花",
+          "1",
+          "M200",
+          "C156"
+        ]
+      ],
+      "normalized_input": {
+        "荞花种子": "1"
+      }
+    },
+    "M174": {
+      "machine_type": "种植机",
+      "recipe_alias": "种植-荞花",
+      "rule_line": 103,
+      "batch_rate": "1",
+      "input_rates": {
+        "荞花种子": "1"
+      },
+      "output_rates": {
+        "荞花": "1"
+      },
+      "input_count": 1,
+      "output_count": 2,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "荞花种子",
+          "1",
+          "M201",
+          "C169"
+        ]
+      ],
+      "output_edges": [
+        [
+          "荞花",
+          "1/2",
+          "M057",
+          "C157"
+        ],
+        [
+          "荞花",
+          "1/2",
+          "M201",
+          "C158"
+        ]
+      ],
+      "normalized_input": {
+        "荞花种子": "1"
+      }
+    },
+    "M175": {
+      "machine_type": "种植机",
+      "recipe_alias": "种植-砂叶",
+      "rule_line": 104,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶种子": "1"
+      },
+      "output_rates": {
+        "砂叶": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "砂叶种子",
+          "1",
+          "M202",
+          "C058"
+        ]
+      ],
+      "output_edges": [
+        [
+          "砂叶",
+          "1",
+          "M058",
+          "C036"
+        ]
+      ],
+      "normalized_input": {
+        "砂叶种子": "1"
+      }
+    },
+    "M176": {
+      "machine_type": "种植机",
+      "recipe_alias": "种植-砂叶",
+      "rule_line": 104,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶种子": "1"
+      },
+      "output_rates": {
+        "砂叶": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "砂叶种子",
+          "1",
+          "M202",
+          "C059"
+        ]
+      ],
+      "output_edges": [
+        [
+          "砂叶",
+          "1",
+          "M059",
+          "C037"
+        ]
+      ],
+      "normalized_input": {
+        "砂叶种子": "1"
+      }
+    },
+    "M177": {
+      "machine_type": "种植机",
+      "recipe_alias": "种植-砂叶",
+      "rule_line": 104,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶种子": "1"
+      },
+      "output_rates": {
+        "砂叶": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "砂叶种子",
+          "1",
+          "M203",
+          "C060"
+        ]
+      ],
+      "output_edges": [
+        [
+          "砂叶",
+          "1",
+          "M060",
+          "C038"
+        ]
+      ],
+      "normalized_input": {
+        "砂叶种子": "1"
+      }
+    },
+    "M178": {
+      "machine_type": "种植机",
+      "recipe_alias": "种植-砂叶",
+      "rule_line": 104,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶种子": "1"
+      },
+      "output_rates": {
+        "砂叶": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "砂叶种子",
+          "1",
+          "M203",
+          "C061"
+        ]
+      ],
+      "output_edges": [
+        [
+          "砂叶",
+          "1",
+          "M061",
+          "C039"
+        ]
+      ],
+      "normalized_input": {
+        "砂叶种子": "1"
+      }
+    },
+    "M179": {
+      "machine_type": "种植机",
+      "recipe_alias": "种植-砂叶",
+      "rule_line": 104,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶种子": "1"
+      },
+      "output_rates": {
+        "砂叶": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "砂叶种子",
+          "1",
+          "M204",
+          "C062"
+        ]
+      ],
+      "output_edges": [
+        [
+          "砂叶",
+          "1",
+          "M062",
+          "C040"
+        ]
+      ],
+      "normalized_input": {
+        "砂叶种子": "1"
+      }
+    },
+    "M180": {
+      "machine_type": "种植机",
+      "recipe_alias": "种植-砂叶",
+      "rule_line": 104,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶种子": "1"
+      },
+      "output_rates": {
+        "砂叶": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "砂叶种子",
+          "1",
+          "M204",
+          "C063"
+        ]
+      ],
+      "output_edges": [
+        [
+          "砂叶",
+          "1",
+          "M063",
+          "C041"
+        ]
+      ],
+      "normalized_input": {
+        "砂叶种子": "1"
+      }
+    },
+    "M181": {
+      "machine_type": "种植机",
+      "recipe_alias": "种植-砂叶",
+      "rule_line": 104,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶种子": "1"
+      },
+      "output_rates": {
+        "砂叶": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "砂叶种子",
+          "1",
+          "M205",
+          "C064"
+        ]
+      ],
+      "output_edges": [
+        [
+          "砂叶",
+          "1",
+          "M064",
+          "C042"
+        ]
+      ],
+      "normalized_input": {
+        "砂叶种子": "1"
+      }
+    },
+    "M182": {
+      "machine_type": "种植机",
+      "recipe_alias": "种植-砂叶",
+      "rule_line": 104,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶种子": "1"
+      },
+      "output_rates": {
+        "砂叶": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "砂叶种子",
+          "1",
+          "M205",
+          "C065"
+        ]
+      ],
+      "output_edges": [
+        [
+          "砂叶",
+          "1",
+          "M065",
+          "C043"
+        ]
+      ],
+      "normalized_input": {
+        "砂叶种子": "1"
+      }
+    },
+    "M183": {
+      "machine_type": "种植机",
+      "recipe_alias": "种植-砂叶",
+      "rule_line": 104,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶种子": "1"
+      },
+      "output_rates": {
+        "砂叶": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "砂叶种子",
+          "1",
+          "M206",
+          "C066"
+        ]
+      ],
+      "output_edges": [
+        [
+          "砂叶",
+          "1",
+          "M066",
+          "C044"
+        ]
+      ],
+      "normalized_input": {
+        "砂叶种子": "1"
+      }
+    },
+    "M184": {
+      "machine_type": "种植机",
+      "recipe_alias": "种植-砂叶",
+      "rule_line": 104,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶种子": "1"
+      },
+      "output_rates": {
+        "砂叶": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "砂叶种子",
+          "1",
+          "M206",
+          "C067"
+        ]
+      ],
+      "output_edges": [
+        [
+          "砂叶",
+          "1",
+          "M067",
+          "C045"
+        ]
+      ],
+      "normalized_input": {
+        "砂叶种子": "1"
+      }
+    },
+    "M185": {
+      "machine_type": "种植机",
+      "recipe_alias": "种植-砂叶",
+      "rule_line": 104,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶种子": "1"
+      },
+      "output_rates": {
+        "砂叶": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "砂叶种子",
+          "1",
+          "M207",
+          "C068"
+        ]
+      ],
+      "output_edges": [
+        [
+          "砂叶",
+          "1",
+          "M202",
+          "C046"
+        ]
+      ],
+      "normalized_input": {
+        "砂叶种子": "1"
+      }
+    },
+    "M186": {
+      "machine_type": "种植机",
+      "recipe_alias": "种植-砂叶",
+      "rule_line": 104,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶种子": "1"
+      },
+      "output_rates": {
+        "砂叶": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "砂叶种子",
+          "1",
+          "M207",
+          "C069"
+        ]
+      ],
+      "output_edges": [
+        [
+          "砂叶",
+          "1",
+          "M203",
+          "C047"
+        ]
+      ],
+      "normalized_input": {
+        "砂叶种子": "1"
+      }
+    },
+    "M187": {
+      "machine_type": "种植机",
+      "recipe_alias": "种植-砂叶",
+      "rule_line": 104,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶种子": "1"
+      },
+      "output_rates": {
+        "砂叶": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "砂叶种子",
+          "1",
+          "M208",
+          "C070"
+        ]
+      ],
+      "output_edges": [
+        [
+          "砂叶",
+          "1",
+          "M204",
+          "C048"
+        ]
+      ],
+      "normalized_input": {
+        "砂叶种子": "1"
+      }
+    },
+    "M188": {
+      "machine_type": "种植机",
+      "recipe_alias": "种植-砂叶",
+      "rule_line": 104,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶种子": "1"
+      },
+      "output_rates": {
+        "砂叶": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "砂叶种子",
+          "1",
+          "M208",
+          "C071"
+        ]
+      ],
+      "output_edges": [
+        [
+          "砂叶",
+          "1",
+          "M205",
+          "C049"
+        ]
+      ],
+      "normalized_input": {
+        "砂叶种子": "1"
+      }
+    },
+    "M189": {
+      "machine_type": "种植机",
+      "recipe_alias": "种植-砂叶",
+      "rule_line": 104,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶种子": "1"
+      },
+      "output_rates": {
+        "砂叶": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "砂叶种子",
+          "1",
+          "M209",
+          "C072"
+        ]
+      ],
+      "output_edges": [
+        [
+          "砂叶",
+          "1",
+          "M206",
+          "C050"
+        ]
+      ],
+      "normalized_input": {
+        "砂叶种子": "1"
+      }
+    },
+    "M190": {
+      "machine_type": "种植机",
+      "recipe_alias": "种植-砂叶",
+      "rule_line": 104,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶种子": "1"
+      },
+      "output_rates": {
+        "砂叶": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "砂叶种子",
+          "1",
+          "M209",
+          "C073"
+        ]
+      ],
+      "output_edges": [
+        [
+          "砂叶",
+          "1",
+          "M207",
+          "C051"
+        ]
+      ],
+      "normalized_input": {
+        "砂叶种子": "1"
+      }
+    },
+    "M191": {
+      "machine_type": "种植机",
+      "recipe_alias": "种植-砂叶",
+      "rule_line": 104,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶种子": "1"
+      },
+      "output_rates": {
+        "砂叶": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "砂叶种子",
+          "1",
+          "M210",
+          "C074"
+        ]
+      ],
+      "output_edges": [
+        [
+          "砂叶",
+          "1",
+          "M208",
+          "C052"
+        ]
+      ],
+      "normalized_input": {
+        "砂叶种子": "1"
+      }
+    },
+    "M192": {
+      "machine_type": "种植机",
+      "recipe_alias": "种植-砂叶",
+      "rule_line": 104,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶种子": "1"
+      },
+      "output_rates": {
+        "砂叶": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "砂叶种子",
+          "1",
+          "M210",
+          "C075"
+        ]
+      ],
+      "output_edges": [
+        [
+          "砂叶",
+          "1",
+          "M209",
+          "C053"
+        ]
+      ],
+      "normalized_input": {
+        "砂叶种子": "1"
+      }
+    },
+    "M193": {
+      "machine_type": "种植机",
+      "recipe_alias": "种植-砂叶",
+      "rule_line": 104,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶种子": "1"
+      },
+      "output_rates": {
+        "砂叶": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "砂叶种子",
+          "1",
+          "M211",
+          "C076"
+        ]
+      ],
+      "output_edges": [
+        [
+          "砂叶",
+          "1",
+          "M210",
+          "C054"
+        ]
+      ],
+      "normalized_input": {
+        "砂叶种子": "1"
+      }
+    },
+    "M194": {
+      "machine_type": "种植机",
+      "recipe_alias": "种植-砂叶",
+      "rule_line": 104,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶种子": "1"
+      },
+      "output_rates": {
+        "砂叶": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "砂叶种子",
+          "1",
+          "M211",
+          "C077"
+        ]
+      ],
+      "output_edges": [
+        [
+          "砂叶",
+          "1",
+          "M211",
+          "C055"
+        ]
+      ],
+      "normalized_input": {
+        "砂叶种子": "1"
+      }
+    },
+    "M195": {
+      "machine_type": "种植机",
+      "recipe_alias": "种植-砂叶",
+      "rule_line": 104,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶种子": "1"
+      },
+      "output_rates": {
+        "砂叶": "1"
+      },
+      "input_count": 1,
+      "output_count": 2,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "砂叶种子",
+          "1",
+          "M212",
+          "C078"
+        ]
+      ],
+      "output_edges": [
+        [
+          "砂叶",
+          "1/2",
+          "M068",
+          "C056"
+        ],
+        [
+          "砂叶",
+          "1/2",
+          "M212",
+          "C057"
+        ]
+      ],
+      "normalized_input": {
+        "砂叶种子": "1"
+      }
+    },
+    "M196": {
+      "machine_type": "采种机",
+      "recipe_alias": "采种-荞花",
+      "rule_line": 107,
+      "batch_rate": "1",
+      "input_rates": {
+        "荞花": "1"
+      },
+      "output_rates": {
+        "荞花种子": "2"
+      },
+      "input_count": 1,
+      "output_count": 2,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "荞花",
+          "1",
+          "M169",
+          "C152"
+        ]
+      ],
+      "output_edges": [
+        [
+          "荞花种子",
+          "1",
+          "M164",
+          "C159"
+        ],
+        [
+          "荞花种子",
+          "1",
+          "M165",
+          "C160"
+        ]
+      ],
+      "normalized_input": {
+        "荞花": "1"
+      }
+    },
+    "M197": {
+      "machine_type": "采种机",
+      "recipe_alias": "采种-荞花",
+      "rule_line": 107,
+      "batch_rate": "1",
+      "input_rates": {
+        "荞花": "1"
+      },
+      "output_rates": {
+        "荞花种子": "2"
+      },
+      "input_count": 1,
+      "output_count": 2,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "荞花",
+          "1",
+          "M170",
+          "C153"
+        ]
+      ],
+      "output_edges": [
+        [
+          "荞花种子",
+          "1",
+          "M166",
+          "C161"
+        ],
+        [
+          "荞花种子",
+          "1",
+          "M167",
+          "C162"
+        ]
+      ],
+      "normalized_input": {
+        "荞花": "1"
+      }
+    },
+    "M198": {
+      "machine_type": "采种机",
+      "recipe_alias": "采种-荞花",
+      "rule_line": 107,
+      "batch_rate": "1",
+      "input_rates": {
+        "荞花": "1"
+      },
+      "output_rates": {
+        "荞花种子": "2"
+      },
+      "input_count": 1,
+      "output_count": 2,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "荞花",
+          "1",
+          "M171",
+          "C154"
+        ]
+      ],
+      "output_edges": [
+        [
+          "荞花种子",
+          "1",
+          "M168",
+          "C163"
+        ],
+        [
+          "荞花种子",
+          "1",
+          "M169",
+          "C164"
+        ]
+      ],
+      "normalized_input": {
+        "荞花": "1"
+      }
+    },
+    "M199": {
+      "machine_type": "采种机",
+      "recipe_alias": "采种-荞花",
+      "rule_line": 107,
+      "batch_rate": "1",
+      "input_rates": {
+        "荞花": "1"
+      },
+      "output_rates": {
+        "荞花种子": "2"
+      },
+      "input_count": 1,
+      "output_count": 2,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "荞花",
+          "1",
+          "M172",
+          "C155"
+        ]
+      ],
+      "output_edges": [
+        [
+          "荞花种子",
+          "1",
+          "M170",
+          "C165"
+        ],
+        [
+          "荞花种子",
+          "1",
+          "M171",
+          "C166"
+        ]
+      ],
+      "normalized_input": {
+        "荞花": "1"
+      }
+    },
+    "M200": {
+      "machine_type": "采种机",
+      "recipe_alias": "采种-荞花",
+      "rule_line": 107,
+      "batch_rate": "1",
+      "input_rates": {
+        "荞花": "1"
+      },
+      "output_rates": {
+        "荞花种子": "2"
+      },
+      "input_count": 1,
+      "output_count": 2,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "荞花",
+          "1",
+          "M173",
+          "C156"
+        ]
+      ],
+      "output_edges": [
+        [
+          "荞花种子",
+          "1",
+          "M172",
+          "C167"
+        ],
+        [
+          "荞花种子",
+          "1",
+          "M173",
+          "C168"
+        ]
+      ],
+      "normalized_input": {
+        "荞花": "1"
+      }
+    },
+    "M201": {
+      "machine_type": "采种机",
+      "recipe_alias": "采种-荞花",
+      "rule_line": 107,
+      "batch_rate": "1/2",
+      "input_rates": {
+        "荞花": "1/2"
+      },
+      "output_rates": {
+        "荞花种子": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "荞花",
+          "1/2",
+          "M174",
+          "C158"
+        ]
+      ],
+      "output_edges": [
+        [
+          "荞花种子",
+          "1",
+          "M174",
+          "C169"
+        ]
+      ],
+      "normalized_input": {
+        "荞花": "1/2"
+      }
+    },
+    "M202": {
+      "machine_type": "采种机",
+      "recipe_alias": "采种-砂叶",
+      "rule_line": 108,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶": "1"
+      },
+      "output_rates": {
+        "砂叶种子": "2"
+      },
+      "input_count": 1,
+      "output_count": 2,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "砂叶",
+          "1",
+          "M185",
+          "C046"
+        ]
+      ],
+      "output_edges": [
+        [
+          "砂叶种子",
+          "1",
+          "M175",
+          "C058"
+        ],
+        [
+          "砂叶种子",
+          "1",
+          "M176",
+          "C059"
+        ]
+      ],
+      "normalized_input": {
+        "砂叶": "1"
+      }
+    },
+    "M203": {
+      "machine_type": "采种机",
+      "recipe_alias": "采种-砂叶",
+      "rule_line": 108,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶": "1"
+      },
+      "output_rates": {
+        "砂叶种子": "2"
+      },
+      "input_count": 1,
+      "output_count": 2,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "砂叶",
+          "1",
+          "M186",
+          "C047"
+        ]
+      ],
+      "output_edges": [
+        [
+          "砂叶种子",
+          "1",
+          "M177",
+          "C060"
+        ],
+        [
+          "砂叶种子",
+          "1",
+          "M178",
+          "C061"
+        ]
+      ],
+      "normalized_input": {
+        "砂叶": "1"
+      }
+    },
+    "M204": {
+      "machine_type": "采种机",
+      "recipe_alias": "采种-砂叶",
+      "rule_line": 108,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶": "1"
+      },
+      "output_rates": {
+        "砂叶种子": "2"
+      },
+      "input_count": 1,
+      "output_count": 2,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "砂叶",
+          "1",
+          "M187",
+          "C048"
+        ]
+      ],
+      "output_edges": [
+        [
+          "砂叶种子",
+          "1",
+          "M179",
+          "C062"
+        ],
+        [
+          "砂叶种子",
+          "1",
+          "M180",
+          "C063"
+        ]
+      ],
+      "normalized_input": {
+        "砂叶": "1"
+      }
+    },
+    "M205": {
+      "machine_type": "采种机",
+      "recipe_alias": "采种-砂叶",
+      "rule_line": 108,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶": "1"
+      },
+      "output_rates": {
+        "砂叶种子": "2"
+      },
+      "input_count": 1,
+      "output_count": 2,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "砂叶",
+          "1",
+          "M188",
+          "C049"
+        ]
+      ],
+      "output_edges": [
+        [
+          "砂叶种子",
+          "1",
+          "M181",
+          "C064"
+        ],
+        [
+          "砂叶种子",
+          "1",
+          "M182",
+          "C065"
+        ]
+      ],
+      "normalized_input": {
+        "砂叶": "1"
+      }
+    },
+    "M206": {
+      "machine_type": "采种机",
+      "recipe_alias": "采种-砂叶",
+      "rule_line": 108,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶": "1"
+      },
+      "output_rates": {
+        "砂叶种子": "2"
+      },
+      "input_count": 1,
+      "output_count": 2,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "砂叶",
+          "1",
+          "M189",
+          "C050"
+        ]
+      ],
+      "output_edges": [
+        [
+          "砂叶种子",
+          "1",
+          "M183",
+          "C066"
+        ],
+        [
+          "砂叶种子",
+          "1",
+          "M184",
+          "C067"
+        ]
+      ],
+      "normalized_input": {
+        "砂叶": "1"
+      }
+    },
+    "M207": {
+      "machine_type": "采种机",
+      "recipe_alias": "采种-砂叶",
+      "rule_line": 108,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶": "1"
+      },
+      "output_rates": {
+        "砂叶种子": "2"
+      },
+      "input_count": 1,
+      "output_count": 2,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "砂叶",
+          "1",
+          "M190",
+          "C051"
+        ]
+      ],
+      "output_edges": [
+        [
+          "砂叶种子",
+          "1",
+          "M185",
+          "C068"
+        ],
+        [
+          "砂叶种子",
+          "1",
+          "M186",
+          "C069"
+        ]
+      ],
+      "normalized_input": {
+        "砂叶": "1"
+      }
+    },
+    "M208": {
+      "machine_type": "采种机",
+      "recipe_alias": "采种-砂叶",
+      "rule_line": 108,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶": "1"
+      },
+      "output_rates": {
+        "砂叶种子": "2"
+      },
+      "input_count": 1,
+      "output_count": 2,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "砂叶",
+          "1",
+          "M191",
+          "C052"
+        ]
+      ],
+      "output_edges": [
+        [
+          "砂叶种子",
+          "1",
+          "M187",
+          "C070"
+        ],
+        [
+          "砂叶种子",
+          "1",
+          "M188",
+          "C071"
+        ]
+      ],
+      "normalized_input": {
+        "砂叶": "1"
+      }
+    },
+    "M209": {
+      "machine_type": "采种机",
+      "recipe_alias": "采种-砂叶",
+      "rule_line": 108,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶": "1"
+      },
+      "output_rates": {
+        "砂叶种子": "2"
+      },
+      "input_count": 1,
+      "output_count": 2,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "砂叶",
+          "1",
+          "M192",
+          "C053"
+        ]
+      ],
+      "output_edges": [
+        [
+          "砂叶种子",
+          "1",
+          "M189",
+          "C072"
+        ],
+        [
+          "砂叶种子",
+          "1",
+          "M190",
+          "C073"
+        ]
+      ],
+      "normalized_input": {
+        "砂叶": "1"
+      }
+    },
+    "M210": {
+      "machine_type": "采种机",
+      "recipe_alias": "采种-砂叶",
+      "rule_line": 108,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶": "1"
+      },
+      "output_rates": {
+        "砂叶种子": "2"
+      },
+      "input_count": 1,
+      "output_count": 2,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "砂叶",
+          "1",
+          "M193",
+          "C054"
+        ]
+      ],
+      "output_edges": [
+        [
+          "砂叶种子",
+          "1",
+          "M191",
+          "C074"
+        ],
+        [
+          "砂叶种子",
+          "1",
+          "M192",
+          "C075"
+        ]
+      ],
+      "normalized_input": {
+        "砂叶": "1"
+      }
+    },
+    "M211": {
+      "machine_type": "采种机",
+      "recipe_alias": "采种-砂叶",
+      "rule_line": 108,
+      "batch_rate": "1",
+      "input_rates": {
+        "砂叶": "1"
+      },
+      "output_rates": {
+        "砂叶种子": "2"
+      },
+      "input_count": 1,
+      "output_count": 2,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "砂叶",
+          "1",
+          "M194",
+          "C055"
+        ]
+      ],
+      "output_edges": [
+        [
+          "砂叶种子",
+          "1",
+          "M193",
+          "C076"
+        ],
+        [
+          "砂叶种子",
+          "1",
+          "M194",
+          "C077"
+        ]
+      ],
+      "normalized_input": {
+        "砂叶": "1"
+      }
+    },
+    "M212": {
+      "machine_type": "采种机",
+      "recipe_alias": "采种-砂叶",
+      "rule_line": 108,
+      "batch_rate": "1/2",
+      "input_rates": {
+        "砂叶": "1/2"
+      },
+      "output_rates": {
+        "砂叶种子": "1"
+      },
+      "input_count": 1,
+      "output_count": 1,
+      "port_capacity": 5,
+      "input_edges": [
+        [
+          "砂叶",
+          "1/2",
+          "M195",
+          "C057"
+        ]
+      ],
+      "output_edges": [
+        [
+          "砂叶种子",
+          "1",
+          "M195",
+          "C078"
+        ]
+      ],
+      "normalized_input": {
+        "砂叶": "1/2"
+      }
+    },
+    "M213": {
+      "machine_type": "封装机",
+      "recipe_alias": "封装-电池",
+      "rule_line": 111,
+      "batch_rate": "1/5",
+      "input_rates": {
+        "致密源石粉末": "3",
+        "钢制零件": "2"
+      },
+      "output_rates": {
+        "高容谷地电池": "1/5"
+      },
+      "input_count": 5,
+      "output_count": 1,
+      "port_capacity": 6,
+      "input_edges": [
+        [
+          "致密源石粉末",
+          "1",
+          "M137",
+          "C121"
+        ],
+        [
+          "致密源石粉末",
+          "1",
+          "M142",
+          "C126"
+        ],
+        [
+          "致密源石粉末",
+          "1",
+          "M143",
+          "C127"
+        ],
+        [
+          "钢制零件",
+          "1",
+          "M158",
+          "C283"
+        ],
+        [
+          "钢制零件",
+          "1",
+          "M163",
+          "C288"
+        ]
+      ],
+      "output_edges": [
+        [
+          "高容谷地电池",
+          "1/5",
+          "协议核心",
+          "C312"
+        ]
+      ],
+      "normalized_input": {
+        "钢制零件": "1/5",
+        "致密源石粉末": "1/5"
+      }
+    },
+    "M214": {
+      "machine_type": "封装机",
+      "recipe_alias": "封装-电池",
+      "rule_line": 111,
+      "batch_rate": "1/5",
+      "input_rates": {
+        "致密源石粉末": "3",
+        "钢制零件": "2"
+      },
+      "output_rates": {
+        "高容谷地电池": "1/5"
+      },
+      "input_count": 5,
+      "output_count": 1,
+      "port_capacity": 6,
+      "input_edges": [
+        [
+          "致密源石粉末",
+          "1",
+          "M138",
+          "C122"
+        ],
+        [
+          "致密源石粉末",
+          "1",
+          "M141",
+          "C125"
+        ],
+        [
+          "致密源石粉末",
+          "1",
+          "M144",
+          "C128"
+        ],
+        [
+          "钢制零件",
+          "1",
+          "M159",
+          "C284"
+        ],
+        [
+          "钢制零件",
+          "1",
+          "M162",
+          "C287"
+        ]
+      ],
+      "output_edges": [
+        [
+          "高容谷地电池",
+          "1/5",
+          "协议核心",
+          "C313"
+        ]
+      ],
+      "normalized_input": {
+        "钢制零件": "1/5",
+        "致密源石粉末": "1/5"
+      }
+    },
+    "M215": {
+      "machine_type": "封装机",
+      "recipe_alias": "封装-电池",
+      "rule_line": 111,
+      "batch_rate": "1/5",
+      "input_rates": {
+        "致密源石粉末": "3",
+        "钢制零件": "2"
+      },
+      "output_rates": {
+        "高容谷地电池": "1/5"
+      },
+      "input_count": 5,
+      "output_count": 1,
+      "port_capacity": 6,
+      "input_edges": [
+        [
+          "致密源石粉末",
+          "1",
+          "M139",
+          "C123"
+        ],
+        [
+          "致密源石粉末",
+          "1",
+          "M140",
+          "C124"
+        ],
+        [
+          "致密源石粉末",
+          "1",
+          "M145",
+          "C129"
+        ],
+        [
+          "钢制零件",
+          "1",
+          "M160",
+          "C285"
+        ],
+        [
+          "钢制零件",
+          "1",
+          "M161",
+          "C286"
+        ]
+      ],
+      "output_edges": [
+        [
+          "高容谷地电池",
+          "1/5",
+          "协议核心",
+          "C314"
+        ]
+      ],
+      "normalized_input": {
+        "钢制零件": "1/5",
+        "致密源石粉末": "1/5"
+      }
+    },
+    "M216": {
+      "machine_type": "灌装机",
+      "recipe_alias": "灌装-胶囊",
+      "rule_line": 114,
+      "batch_rate": "1/5",
+      "input_rates": {
+        "细磨荞花粉末": "2",
+        "钢质瓶": "2"
+      },
+      "output_rates": {
+        "精选荞愈胶囊": "1/5"
+      },
+      "input_count": 4,
+      "output_count": 1,
+      "port_capacity": 6,
+      "input_edges": [
+        [
+          "细磨荞花粉末",
+          "1",
+          "M146",
+          "C115"
+        ],
+        [
+          "细磨荞花粉末",
+          "1",
+          "M150",
+          "C119"
+        ],
+        [
+          "钢质瓶",
+          "1",
+          "M152",
+          "C306"
+        ],
+        [
+          "钢质瓶",
+          "1",
+          "M156",
+          "C310"
+        ]
+      ],
+      "output_edges": [
+        [
+          "精选荞愈胶囊",
+          "1/5",
+          "协议核心",
+          "C112"
+        ]
+      ],
+      "normalized_input": {
+        "钢质瓶": "1/5",
+        "细磨荞花粉末": "1/5"
+      }
+    },
+    "M217": {
+      "machine_type": "灌装机",
+      "recipe_alias": "灌装-胶囊",
+      "rule_line": 114,
+      "batch_rate": "1/5",
+      "input_rates": {
+        "细磨荞花粉末": "2",
+        "钢质瓶": "2"
+      },
+      "output_rates": {
+        "精选荞愈胶囊": "1/5"
+      },
+      "input_count": 4,
+      "output_count": 1,
+      "port_capacity": 6,
+      "input_edges": [
+        [
+          "细磨荞花粉末",
+          "1",
+          "M147",
+          "C116"
+        ],
+        [
+          "细磨荞花粉末",
+          "1",
+          "M149",
+          "C118"
+        ],
+        [
+          "钢质瓶",
+          "1",
+          "M153",
+          "C307"
+        ],
+        [
+          "钢质瓶",
+          "1",
+          "M155",
+          "C309"
+        ]
+      ],
+      "output_edges": [
+        [
+          "精选荞愈胶囊",
+          "1/5",
+          "协议核心",
+          "C113"
+        ]
+      ],
+      "normalized_input": {
+        "钢质瓶": "1/5",
+        "细磨荞花粉末": "1/5"
+      }
+    },
+    "M218": {
+      "machine_type": "灌装机",
+      "recipe_alias": "灌装-胶囊",
+      "rule_line": 114,
+      "batch_rate": "3/20",
+      "input_rates": {
+        "细磨荞花粉末": "3/2",
+        "钢质瓶": "3/2"
+      },
+      "output_rates": {
+        "精选荞愈胶囊": "3/20"
+      },
+      "input_count": 4,
+      "output_count": 1,
+      "port_capacity": 6,
+      "input_edges": [
+        [
+          "细磨荞花粉末",
+          "1",
+          "M148",
+          "C117"
+        ],
+        [
+          "细磨荞花粉末",
+          "1/2",
+          "M151",
+          "C120"
+        ],
+        [
+          "钢质瓶",
+          "1",
+          "M154",
+          "C308"
+        ],
+        [
+          "钢质瓶",
+          "1/2",
+          "M157",
+          "C311"
+        ]
+      ],
+      "output_edges": [
+        [
+          "精选荞愈胶囊",
+          "3/20",
+          "协议核心",
+          "C114"
+        ]
+      ],
+      "normalized_input": {
+        "钢质瓶": "3/20",
+        "细磨荞花粉末": "3/20"
+      }
+    }
+  },
+  "recipe_batches": {
+    "粉碎-源矿": "18",
+    "粉碎-蓝铁块": "34",
+    "粉碎-荞花": "11/2",
+    "粉碎-砂叶": "21/2",
+    "精炼-蓝铁矿": "34",
+    "精炼-致密蓝铁": "17",
+    "研磨-致密蓝铁": "17",
+    "研磨-致密源石": "9",
+    "研磨-细磨荞花": "11/2",
+    "塑形-钢质瓶": "11/2",
+    "配件-钢制零件": "6",
+    "种植-荞花": "11",
+    "种植-砂叶": "21",
+    "采种-荞花": "11/2",
+    "采种-砂叶": "21/2",
+    "封装-电池": "3/5",
+    "灌装-胶囊": "11/20"
+  }
+}

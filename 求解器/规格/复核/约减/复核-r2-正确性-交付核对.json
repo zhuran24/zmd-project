@@ -1,0 +1,38 @@
+{
+  "status": "passed",
+  "report": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/复核-r2-正确性.md",
+  "findings": [],
+  "link_count": 19,
+  "missing_links": [],
+  "reviewed_files_changed": [],
+  "sources_changed_since_verification": [],
+  "reader_review": {
+    "self_contained": true,
+    "current_and_historical_results_separated": true,
+    "field_and_six_pair_types_covered": true,
+    "numeric_scopes_consistent": true,
+    "references_checked": true
+  },
+  "artifacts": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/复核-r2-正确性.md",
+      "sha256": "ebd7de05a97f68326a31fdc2bf29ab974363b2648336b0edb8bd166c464771ac",
+      "bytes": 23012
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/复核-r2-正确性-核验.py",
+      "sha256": "d695ddbc322b98f01d37ec8e24aef75509b0463c68936f0d7b4a00a113fe2f66",
+      "bytes": 11968
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/复核-r2-正确性-核验.json",
+      "sha256": "a9ab0f1bb339eded69b00c823b07422e1f05bb2240f9f22d95e9096beb398c77",
+      "bytes": 11271
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/约减/复核-r2-正确性-check.log",
+      "sha256": "c128319ef55554089846ea90b59436191bae57febc8cc30becde26128ca961ed",
+      "bytes": 782
+    }
+  ]
+}

@@ -1,0 +1,2 @@
+PASS: local footprints within 70x70; no overlap; indicated port-neighbor paths contiguous; three manufacturing units overlap power coverage; gate count and 5-tick spacing consistent; batch-release and inventory arithmetic consistent.
+SCOPE: hand-derived trace checks only. No kernel simulation; no proof of complete-base feasibility or final periodic yield.

@@ -1,0 +1,25 @@
+   Compiling proc-macro2 v1.0.107
+   Compiling unicode-ident v1.0.26
+   Compiling quote v1.0.47
+   Compiling serde_core v1.0.229
+   Compiling zmij v1.0.23
+   Compiling serde_json v1.0.151
+   Compiling serde v1.0.229
+   Compiling itoa v1.0.18
+   Compiling memchr v2.8.3
+   Compiling syn v3.0.6
+   Compiling serde_derive v1.0.229
+   Compiling kernel v0.1.0 (/home/zhuran24/zmd-research-fresh/求解器/crates/kernel)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.37s
+     Running unittests src/lib.rs (target/debug/deps/kernel-26241e85d1128675)
+
+running 6 tests
+test tests::warehouse_invalid_identity_and_order ... ok
+test tests::warehouse_identity_monotone ... ok
+test tests::warehouse_unassigned_species_order ... ok
+test tests::warehouse_single_unknown_with_assigned_empty ... ok
+test tests::warehouse_competition_atomic_stop ... ok
+test tests::warehouse_80000_and_recipe_conservation ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 60 filtered out; finished in 0.04s
+

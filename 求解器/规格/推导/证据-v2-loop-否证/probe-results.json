@@ -1,0 +1,30 @@
+{
+  "head-block": {
+    "status": "invalid_input",
+    "open_items": [
+      "invalid_input input @ 求解任务.txt: 正式源指纹不符"
+    ],
+    "trajectory_executed": false
+  },
+  "head-release": {
+    "status": "invalid_input",
+    "open_items": [
+      "invalid_input input @ 求解任务.txt: 正式源指纹不符"
+    ],
+    "trajectory_executed": false
+  },
+  "full-inputs": {
+    "status": "invalid_input",
+    "open_items": [
+      "invalid_input input @ 求解任务.txt: 正式源指纹不符"
+    ],
+    "trajectory_executed": false
+  },
+  "gate-first-release": {
+    "status": "invalid_input",
+    "open_items": [
+      "invalid_input input @ 求解任务.txt: 正式源指纹不符"
+    ],
+    "trajectory_executed": false
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "status": "pass",
+  "report": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-2.md",
+  "finding_ids": [
+    "KR-r5-L2-01",
+    "KR-r5-L2-02",
+    "KR-r5-L2-03"
+  ],
+  "links_checked": 51,
+  "manual_review": [
+    "每条结论自包含且有独立试验、契约和实现依据",
+    "普通有限合法性与生产域准入区分，交叉坏记忆不作合法输入证据",
+    "路径归一化相等与原始字节摘要分别核验",
+    "诊断复现与状态恢复、周期重跑分别判定",
+    "未声称全量回归或一般规则证明，状态与当前实测一致"
+  ],
+  "evidence_extensions": [
+    ".json",
+    ".log",
+    ".py",
+    ".rs"
+  ],
+  "evidence_bytes_before_audit_result": 9066771,
+  "files_over_20MiB": []
+}

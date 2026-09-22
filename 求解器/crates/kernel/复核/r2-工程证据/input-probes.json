@@ -1,0 +1,312 @@
+[
+  {
+    "name": "control",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/control-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/control-record.json"
+    ],
+    "exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/control-record.json\",\"status\":\"completed\"}\n",
+    "stderr": "",
+    "status": "completed",
+    "schema": "通过",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/control-record.json"
+  },
+  {
+    "name": "reachability-null",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/reachability-null-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/reachability-null-record.json"
+    ],
+    "exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/reachability-null-record.json\",\"status\":\"completed\"}\n",
+    "stderr": "",
+    "status": "completed",
+    "schema": "$.input_history.reachability: 类型不符",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/reachability-null-record.json"
+  },
+  {
+    "name": "reachability-number",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/reachability-number-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/reachability-number-record.json"
+    ],
+    "exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/reachability-number-record.json\",\"status\":\"completed\"}\n",
+    "stderr": "",
+    "status": "completed",
+    "schema": "$.input_history.reachability: 类型不符",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/reachability-number-record.json"
+  },
+  {
+    "name": "reachability-object",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/reachability-object-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/reachability-object-record.json"
+    ],
+    "exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/reachability-object-record.json\",\"status\":\"completed\"}\n",
+    "stderr": "",
+    "status": "completed",
+    "schema": "$.input_history.reachability: 必填字段缺失",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/reachability-object-record.json"
+  },
+  {
+    "name": "reachability-string",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/reachability-string-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/reachability-string-record.json"
+    ],
+    "exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/reachability-string-record.json\",\"status\":\"completed\"}\n",
+    "stderr": "",
+    "status": "completed",
+    "schema": "$.input_history.reachability: 类型不符",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/reachability-string-record.json"
+  },
+  {
+    "name": "initial-unlisted-missing",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/initial-unlisted-missing-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/initial-unlisted-missing-record.json"
+    ],
+    "exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/initial-unlisted-missing-record.json\",\"status\":\"completed\"}\n",
+    "stderr": "",
+    "status": "completed",
+    "schema": "通过",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/initial-unlisted-missing-record.json"
+  },
+  {
+    "name": "initial-unlisted-filled",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/initial-unlisted-filled-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/initial-unlisted-filled-record.json"
+    ],
+    "exit_code": 0,
+    "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/initial-unlisted-filled-record.json\",\"status\":\"completed\"}\n",
+    "stderr": "",
+    "status": "completed",
+    "schema": "通过",
+    "record": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/initial-unlisted-filled-record.json"
+  },
+  {
+    "name": "restart-control",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/restart-control-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--no-output"
+    ],
+    "exit_code": 0,
+    "stdout": "{\n  \"completed_batches\": 2,\n  \"elapsed_ns\": \"1558544\",\n  \"final_inventory\": {\n    \"源石粉末\": 2,\n    \"源矿\": 79998,\n    \"砂叶\": 80000,\n    \"砂叶种子\": 80000,\n    \"荞花\": 80000,\n    \"荞花种子\": 80000,\n    \"蓝铁矿\": 80000\n  },\n  \"output\": \"disabled\",\n  \"status\": \"completed\",\n  \"ticks\": 2\n}\n",
+    "stderr": "",
+    "status": "completed",
+    "schema": "不适用",
+    "record": {
+      "completed_batches": 2,
+      "elapsed_ns": "1558544",
+      "final_inventory": {
+        "源石粉末": 2,
+        "源矿": 79998,
+        "砂叶": 80000,
+        "砂叶种子": 80000,
+        "荞花": 80000,
+        "荞花种子": 80000,
+        "蓝铁矿": 80000
+      },
+      "output": "disabled",
+      "status": "completed",
+      "ticks": 2
+    }
+  },
+  {
+    "name": "movement-build-alias",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/movement-build-alias-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--no-output"
+    ],
+    "exit_code": 0,
+    "stdout": "{\n  \"completed_batches\": 2,\n  \"elapsed_ns\": \"2396449\",\n  \"final_inventory\": {\n    \"源石粉末\": 2,\n    \"源矿\": 79998,\n    \"砂叶\": 80000,\n    \"砂叶种子\": 80000,\n    \"荞花\": 80000,\n    \"荞花种子\": 80000,\n    \"蓝铁矿\": 80000\n  },\n  \"output\": \"disabled\",\n  \"status\": \"completed\",\n  \"ticks\": 2\n}\n",
+    "stderr": "",
+    "status": "completed",
+    "schema": "不适用",
+    "record": {
+      "completed_batches": 2,
+      "elapsed_ns": "2396449",
+      "final_inventory": {
+        "源石粉末": 2,
+        "源矿": 79998,
+        "砂叶": 80000,
+        "砂叶种子": 80000,
+        "荞花": 80000,
+        "荞花种子": 80000,
+        "蓝铁矿": 80000
+      },
+      "output": "disabled",
+      "status": "completed",
+      "ticks": 2
+    }
+  },
+  {
+    "name": "movement-missing-identity",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/movement-missing-identity-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--no-output"
+    ],
+    "exit_code": 0,
+    "stdout": "{\n  \"completed_batches\": 2,\n  \"elapsed_ns\": \"2338742\",\n  \"final_inventory\": {\n    \"源石粉末\": 2,\n    \"源矿\": 79998,\n    \"砂叶\": 80000,\n    \"砂叶种子\": 80000,\n    \"荞花\": 80000,\n    \"荞花种子\": 80000,\n    \"蓝铁矿\": 80000\n  },\n  \"output\": \"disabled\",\n  \"status\": \"completed\",\n  \"ticks\": 2\n}\n",
+    "stderr": "",
+    "status": "completed",
+    "schema": "不适用",
+    "record": {
+      "completed_batches": 2,
+      "elapsed_ns": "2338742",
+      "final_inventory": {
+        "源石粉末": 2,
+        "源矿": 79998,
+        "砂叶": 80000,
+        "砂叶种子": 80000,
+        "荞花": 80000,
+        "荞花种子": 80000,
+        "蓝铁矿": 80000
+      },
+      "output": "disabled",
+      "status": "completed",
+      "ticks": 2
+    }
+  },
+  {
+    "name": "movement-item-number",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/movement-item-number-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--no-output"
+    ],
+    "exit_code": 0,
+    "stdout": "{\n  \"completed_batches\": 2,\n  \"elapsed_ns\": \"1531377\",\n  \"final_inventory\": {\n    \"源石粉末\": 2,\n    \"源矿\": 79998,\n    \"砂叶\": 80000,\n    \"砂叶种子\": 80000,\n    \"荞花\": 80000,\n    \"荞花种子\": 80000,\n    \"蓝铁矿\": 80000\n  },\n  \"output\": \"disabled\",\n  \"status\": \"completed\",\n  \"ticks\": 2\n}\n",
+    "stderr": "",
+    "status": "completed",
+    "schema": "不适用",
+    "record": {
+      "completed_batches": 2,
+      "elapsed_ns": "1531377",
+      "final_inventory": {
+        "源石粉末": 2,
+        "源矿": 79998,
+        "砂叶": 80000,
+        "砂叶种子": 80000,
+        "荞花": 80000,
+        "荞花种子": 80000,
+        "蓝铁矿": 80000
+      },
+      "output": "disabled",
+      "status": "completed",
+      "ticks": 2
+    }
+  },
+  {
+    "name": "movement-item-forged",
+    "command": [
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r2-工程证据/movement-item-forged-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "2",
+      "--no-output"
+    ],
+    "exit_code": 0,
+    "stdout": "{\n  \"completed_batches\": 2,\n  \"elapsed_ns\": \"2313377\",\n  \"final_inventory\": {\n    \"源石粉末\": 2,\n    \"源矿\": 79998,\n    \"砂叶\": 80000,\n    \"砂叶种子\": 80000,\n    \"荞花\": 80000,\n    \"荞花种子\": 80000,\n    \"蓝铁矿\": 80000\n  },\n  \"output\": \"disabled\",\n  \"status\": \"completed\",\n  \"ticks\": 2\n}\n",
+    "stderr": "",
+    "status": "completed",
+    "schema": "不适用",
+    "record": {
+      "completed_batches": 2,
+      "elapsed_ns": "2313377",
+      "final_inventory": {
+        "源石粉末": 2,
+        "源矿": 79998,
+        "砂叶": 80000,
+        "砂叶种子": 80000,
+        "荞花": 80000,
+        "荞花种子": 80000,
+        "蓝铁矿": 80000
+      },
+      "output": "disabled",
+      "status": "completed",
+      "ticks": 2
+    }
+  }
+]

@@ -1,0 +1,67 @@
+{
+  "env": {
+    "CARGO_MANIFEST_DIR": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel",
+    "TMPDIR": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-2-证据/tmp",
+    "PYTHONDONTWRITEBYTECODE": "1"
+  },
+  "results": [
+    {
+      "command": [
+        "rustc",
+        "--edition=2021",
+        "--extern",
+        "serde=/home/zhuran24/zmd-research-fresh/求解器/target/debug/deps/libserde-bda080004035699a.rlib",
+        "--extern",
+        "serde_json=/home/zhuran24/zmd-research-fresh/求解器/target/debug/deps/libserde_json-0ab88e76c2088d71.rlib",
+        "-L",
+        "dependency=/home/zhuran24/zmd-research-fresh/求解器/target/debug/deps",
+        "--crate-type=rlib",
+        "--crate-name",
+        "kernel",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs",
+        "-o",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-2-证据/libkernel.rlib"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "rustc",
+        "--edition=2021",
+        "--extern",
+        "serde=/home/zhuran24/zmd-research-fresh/求解器/target/debug/deps/libserde-bda080004035699a.rlib",
+        "--extern",
+        "serde_json=/home/zhuran24/zmd-research-fresh/求解器/target/debug/deps/libserde_json-0ab88e76c2088d71.rlib",
+        "-L",
+        "dependency=/home/zhuran24/zmd-research-fresh/求解器/target/debug/deps",
+        "--crate-name",
+        "kernel_probe_cli",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/main.rs",
+        "--extern",
+        "kernel=/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-2-证据/libkernel.rlib",
+        "-o",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-2-证据/kernel"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "rustc",
+        "--edition=2021",
+        "--extern",
+        "serde=/home/zhuran24/zmd-research-fresh/求解器/target/debug/deps/libserde-bda080004035699a.rlib",
+        "--extern",
+        "serde_json=/home/zhuran24/zmd-research-fresh/求解器/target/debug/deps/libserde_json-0ab88e76c2088d71.rlib",
+        "-L",
+        "dependency=/home/zhuran24/zmd-research-fresh/求解器/target/debug/deps",
+        "--test",
+        "--crate-name",
+        "kernel",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs",
+        "-o",
+        "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r1-2-证据/kernel-tests"
+      ],
+      "exit_code": 0
+    }
+  ]
+}

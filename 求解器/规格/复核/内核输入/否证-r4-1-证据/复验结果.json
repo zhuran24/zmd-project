@@ -1,0 +1,142 @@
+{
+  "baseline": {
+    "record_accepted": true,
+    "schema_accepted": true,
+    "warehouse_ore": [
+      "79999",
+      "79998",
+      "79997",
+      "79996"
+    ],
+    "dependency_count": 22,
+    "dependency_mismatches": []
+  },
+  "warehouse_collision": {
+    "input_check": {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json",
+      "status": "完整运行输入检查通过（有限合成子集）",
+      "snapshot": "built_layout",
+      "anchor": {
+        "event": "blueprint_complete",
+        "side": "after"
+      },
+      "units": 14,
+      "occupied_cells": 153,
+      "physical_channels": 11,
+      "buffer_channels": 8,
+      "bridge_first_peers": [],
+      "counts_category": "算术推论（候选布局）",
+      "validation_category": "实测（工具）"
+    },
+    "warehouse_ore": [
+      "79999",
+      "79997",
+      "79995",
+      "79993"
+    ],
+    "warehouse_loss": 7,
+    "successful_outbound": 4,
+    "crusher_input_final": [
+      {
+        "item": "源矿",
+        "quantity": {
+          "value": "3",
+          "category": "算术推论"
+        },
+        "entered_at": {
+          "kind": "rational",
+          "value": {
+            "value": "1",
+            "category": "候选"
+          }
+        }
+      }
+    ],
+    "golden_gate": "黄金轨迹与有限重算不同"
+  },
+  "event_collision": {
+    "exit_code": 0,
+    "disk_record_accepted": true,
+    "schema_accepted": true,
+    "collisions": [
+      {
+        "history": {
+          "id": "J|0|0|0",
+          "kind": "build",
+          "time": {
+            "kind": "rational",
+            "value": {
+              "value": "0",
+              "category": "候选"
+            }
+          }
+        },
+        "runtime": {
+          "event": "J|0|0|0",
+          "operation": "move",
+          "target": "PC|ore_source:north:1|feed_belt:south:0",
+          "outcome": "success",
+          "detail": "",
+          "basis": [
+            "规则 L13、L15–17、L23–25、L29–32",
+            "约束端口速率",
+            "受限模型声明 polling.both_failure",
+            "内核输入 §5.2、§6.3"
+          ]
+        }
+      }
+    ],
+    "dependency_mismatches": []
+  },
+  "order_coverage": {
+    "finite_entries_pass": 65,
+    "next_instant": 325,
+    "finite_error": "unsupported: 有限排序表未覆盖本时刻",
+    "periodic_probes": [
+      {
+        "slot_width": "5",
+        "origin": "0",
+        "period_on_due_index": 10,
+        "index": 16,
+        "encoded_same": true,
+        "required_different": true
+      },
+      {
+        "slot_width": "7/3",
+        "origin": "-1/2",
+        "period_on_due_index": 21,
+        "index": 32,
+        "encoded_same": true,
+        "required_different": true
+      },
+      {
+        "slot_width": "13/17",
+        "origin": "2/3",
+        "period_on_due_index": 52,
+        "index": 64,
+        "encoded_same": true,
+        "required_different": true
+      }
+    ]
+  },
+  "manifest": {
+    "file_count": 42,
+    "hash_count": 41,
+    "mismatches": [
+      {
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游-运行记录.json",
+        "declared": "97562091ec78c7994ea0a53a07778260878c2c172a4dce9c6c32de2bfea05e47",
+        "actual": "b664ed551271e1fbe895821de5041a8c96d29e97d51da353114abf5a403734aa"
+      },
+      {
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md",
+        "declared": "08991e07b792f82ecf6f98a0bcbd663ecc7caa2b534ac5379c6805a14f78c413",
+        "actual": "a180570ac7507e9711eeeb6d0dbcc21205aa136c8694634d0cb2d7e536b2486b"
+      }
+    ]
+  },
+  "protected_sources": {
+    "count": 57,
+    "changed": []
+  }
+}

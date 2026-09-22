@@ -1,0 +1,21 @@
+{
+  "status": "passed",
+  "time": "2026-09-21T11:04:26.694183+00:00",
+  "binary": {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+    "sha256": "c964d17d1b1de1300bfcfb060c4bef0c15b67bb6eed20352579dca7651672a2e"
+  },
+  "input": {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/规格/装载样例.json",
+    "sha256": "889e2d36700d8c89d592b5443655b4417136a081288c1b61ac4e248cc5000a7e"
+  },
+  "seed_output": {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/任务书7执行/证据/规格/seed-output.json",
+    "sha256": "cb9fd4a31cf7d6021c945d9c4896b343786b54926838c519efd2b75f3bd464fe"
+  },
+  "catalog_sha256": "5d0c7e09d87180b851cdc0763fd5098c527657b0c62971791f9bf6ced8264cd7",
+  "config_sha256": "b39ea582af8c3d710d6ac0dccdbf3c1c4f34d4be0c15112d6f7649e6c2769539",
+  "axis_sha256": "737dcf750563e7f7c0b7d911aed301adf0982191b2be1fd46cde3f9524c74297",
+  "trajectory_executed": false,
+  "interpretation": "seed先通过Input::parse_with_base的目录引用、编译期目录与三份正式源检查，再派生初态调度上下文；check复读派生输入。未运行step，不认证新传输、门恢复、完整语义或达标。"
+}

@@ -1,0 +1,38 @@
+{
+  "status": "通过",
+  "protected_count": 1290,
+  "protected_changes": [],
+  "missing_links": [],
+  "finding_count": 8,
+  "refuted_count": 0,
+  "report_sha256": "86c556a87a9f2e7a9ce57c36adc3c993acd024924bc0ac9cdcd640002f13c50a",
+  "reader_audit": [
+    "八条发现均有独立裁决、规格及代码依据、当前复跑与否证尝试",
+    "阻尼退化解释与运行恢复不一致分开",
+    "扫描身份复用未宣称重复成功搬货",
+    "Python漏验与Rust拒收分开，重叠发现未重复计根因",
+    "所有本席产物位于求解器/crates/kernel/复核/，未修改被审代码或规格"
+  ],
+  "record_summary": {
+    "valid": {
+      "count": 4,
+      "python_accepted": 4,
+      "rust_accepted": 4
+    },
+    "L2": {
+      "count": 24,
+      "python_accepted": 24,
+      "rust_accepted": 0
+    },
+    "summary_control": {
+      "count": 4,
+      "python_accepted": 0,
+      "rust_accepted": 0
+    },
+    "L3": {
+      "count": 12,
+      "python_accepted": 12,
+      "rust_accepted": 0
+    }
+  }
+}

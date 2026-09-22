@@ -1,0 +1,92 @@
+[
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/装载与普通制造.json",
+    "sha256": "6ad3b9e25bbb25657abd9a74701e6e79c677806ffb5fae6f35dfcd68db402ac0",
+    "purpose": "synthetic_execution；单一明确参数点"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/双门窗口恢复.json",
+    "sha256": "862dbe04ac471c3c914a5da3ac8f1d244504fd6b5bbab62c6819e432cf11217b",
+    "purpose": "synthetic_execution；单一明确参数点"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/阻尼恢复.json",
+    "sha256": "5a04d735d3fde1b275fe6c9b65a712ab64bf72a1bc0765c0a8dff8b17ad8a2eb",
+    "purpose": "synthetic_execution；单一明确参数点"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/生产环带.json",
+    "sha256": "a212c71a64f32486a274958205427918b7f6ae013cd83eb8cd4b095ee5a80e17",
+    "purpose": "synthetic_execution；单一明确参数点"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/无线部分接收.json",
+    "sha256": "3c2918565ec16673309b020bc64d9277f7f7fd4e6154aa4fb01d9ea98a27987d",
+    "purpose": "synthetic_execution；单一明确参数点"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/无线一满一可收.json",
+    "sha256": "99e04ed52d8fc144a1f413ddabbd224f06c11799e0bba964716d336cc68bd126",
+    "purpose": "synthetic_execution；单一明确参数点"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/无线空箱.json",
+    "sha256": "ddbf9d986b72737c0c7219d73f692a0acf9e8d18a135c5a0f7168904ce33de39",
+    "purpose": "synthetic_execution；单一明确参数点"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/无线全拒收.json",
+    "sha256": "509d08cf57ba6b0251e48abadef106eae90c6cf5fff2eec164c533af35e86110",
+    "purpose": "synthetic_execution；单一明确参数点"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/无线多格全收.json",
+    "sha256": "fea651dfa6cbe91ad0b48f26e856b2f30339447f3639cd954ab1770521a01f49",
+    "purpose": "synthetic_execution；单一明确参数点"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/无线多格歧义.json",
+    "sha256": "3e8fed4d7974efb44f785e67036f46dbd6ffe3ac91302296b0ab7637ede2045e",
+    "purpose": "synthetic_execution；单一明确参数点"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/身份断边恢复.json",
+    "sha256": "59b3864c6184c2f9022512003db046ff012c8ac1ff3c7565c379c98acc7b0e6d",
+    "purpose": "synthetic_execution；单一明确参数点"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/累计调低保留.json",
+    "sha256": "8f89a485c8eab58c2c6fcf66834f24b0aa42772bff99417b646f07cd0cf0e64d",
+    "purpose": "synthetic_execution；单一明确参数点"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/累计调高资格.json",
+    "sha256": "f1b835af4a3938c81644b1b1186fcfffdccbd29b9d9d9be1feb4ee8b4ab439ee",
+    "purpose": "synthetic_execution；单一明确参数点"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/成熟旧货重试.json",
+    "sha256": "6d576ab863d7a0b077497f25ba15b683bf27138f02afccd0511f5acdce5b5649",
+    "purpose": "synthetic_execution；单一明确参数点"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/身份实际切换.json",
+    "sha256": "e64f05abed796a577c67627fb88eed741731e9866c077509baa98283936f85fd",
+    "purpose": "synthetic_execution；单一明确参数点"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/累计审计与窗口周期.json",
+    "sha256": "aeefd79eead27613ba4f81e85ecfb6fa7d5f0585e8e7648c11d8052f40ee2d54",
+    "purpose": "synthetic_execution；单一明确参数点"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/同刻双箱争余量.json",
+    "sha256": "a91fbac14ca5c2753aa00d653040bbf8152adf04ee2716723208d79fa5108761",
+    "purpose": "synthetic_execution；单一明确参数点"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/静止成熟与暂停键.json",
+    "sha256": "37c446288ece59bbb8075824be2f545127f5c2cf6d319812d5fba6f19defefb9",
+    "purpose": "synthetic_execution；单一明确参数点"
+  }
+]

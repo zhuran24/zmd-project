@@ -1,0 +1,57 @@
+   Compiling kernel v0.1.0 (/home/zhuran24/zmd-research-fresh/求解器/crates/kernel)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.60s
+     Running unittests src/lib.rs (target/debug/deps/kernel-26241e85d1128675)
+
+running 7 tests
+test tests::round6::round6_static_domain_reports_all_without_tick ... ok
+test tests::round6::round6_put_rejects_without_partial_write ... ok
+test tests::round6::round6_test_only_two_product_recipe_keeps_buffer_exception ... ok
+test tests::round6::round6_compact_step_preserves_full_checkpoint ... ok
+test tests::round6::round6_static_pass_does_not_replace_dynamic_d2 ... ok
+test tests::round6::round6_no_record_retains_loaded_zero_prefix ... ok
+test tests::round6::round6_hash_collisions_replay_every_candidate ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 91 filtered out; finished in 1.42s
+
+     Running unittests src/main.rs (target/debug/deps/kernel-7b5e2fc753826063)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference.rs (target/debug/deps/reference-1613ad1990138602)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.00s
+
+     Running tests/revision_cli.rs (target/debug/deps/revision_cli-6e74e26d9cc8e0e1)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/revision_r2_cli.rs (target/debug/deps/revision_r2_cli-8728dafa1cffde10)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/revision_r3_cli.rs (target/debug/deps/revision_r3_cli-8d0c1cc68ed29ba1)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/revision_r4_cli.rs (target/debug/deps/revision_r4_cli-58776cb1dd0f3c30)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/round5_cli.rs (target/debug/deps/round5_cli-110510aa32f40868)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+

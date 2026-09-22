@@ -1,0 +1,107 @@
+{
+  "scope": "本轮只采用指定对话、现行正式文件和指定复核；候选约束仅核对保护哈希，不作论据。",
+  "sources": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+      "sha256": "abc7a5867f6477eedb619c63a21c4a77144c57ad4567fdcfb696b3049d66a670",
+      "bytes": 7220,
+      "lines": 114
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解任务.txt",
+      "sha256": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+      "bytes": 1405,
+      "lines": 16
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解约束.txt",
+      "sha256": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6",
+      "bytes": 24783,
+      "lines": 126
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/候选约束.txt",
+      "sha256": "a0ac3f9c82f371132b7de29fe47e4c6c587904680bc2786523de0c825fd5efd9",
+      "bytes": 244240,
+      "lines": 862
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/回路总数决定论.md",
+      "sha256": "bf56998b6396118df3f8e7d6fbf4dcea6a7f0e31fbaeb14a4ff558c7e74215d1",
+      "bytes": 8767,
+      "lines": 77
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/总纲-流量存量相位.md",
+      "sha256": "24587afeeb7875a5b6a9a68c7ea5e04bddd5e701416e0e8ec3d438e8679a2321",
+      "bytes": 4167,
+      "lines": 44
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/独立推导-opus.md",
+      "sha256": "ac0dc90d30b032edbc32e359ecdec3ac89e64cc88f4f4379aca39f6da2e58e95",
+      "bytes": 48610,
+      "lines": 583
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-1.md",
+      "sha256": "044082a8948c670ecd46eb45279839d8fe2e59c151d9c01e8ae1d09ae55ee172",
+      "bytes": 32741,
+      "lines": 292
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-2.md",
+      "sha256": "dde3eaf805a514fd2dd72e782e01213a493d1defda44325643f3aebe94eaeb40",
+      "bytes": 30705,
+      "lines": 290
+    },
+    {
+      "path": "/tmp/claude-1000/-home-zhuran24-zmd-research-fresh/786b1aaa-8792-43fd-afbc-2a7361543a07/scratchpad/总结/对话-0920-主线.md",
+      "sha256": "1b4b8caa005ab05dcd88529a0cbf458de65e567386d701c5b855ab91ecab6c51",
+      "bytes": 94288,
+      "lines": 627
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-1-证据/局部检查.log",
+      "sha256": "ee214c47b661fa7000df34010332121700a6930c0f820e52703bbc642f8d52a4",
+      "bytes": 358,
+      "lines": 2
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-1-证据/检查局部证据.py",
+      "sha256": "d286fb8635eb5b14be7144e4ea2790b1a2dc5fc524dd21598a862008d508f213",
+      "bytes": 2487,
+      "lines": 53
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-1-证据/正式文件与被审66行.json",
+      "sha256": "d0792db97cc84e81f2ebc8043add7a0d459087ea2035492c4043d6f6dd313a8e",
+      "bytes": 41912,
+      "lines": 32
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-1-证据/结构化结论.json",
+      "sha256": "0cb38d081a9e319770f4b9a40e81ca7f9381bb7c4d0bc1f44f4948afbc6aab2f",
+      "bytes": 10020,
+      "lines": 150
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-1-证据/被审66行.md",
+      "sha256": "1da5d3a33d162f6b0a3be2d69233c447a131a4c151a6f11e6be0843c93426bf1",
+      "bytes": 7064,
+      "lines": 66
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/复核/否证-1-证据/逐tick反例.json",
+      "sha256": "03084271fb3e33c9d1e546db7ba6ee71b8e3e81ea89cc3d96e00c078746f3a0e",
+      "bytes": 5844,
+      "lines": 276
+    }
+  ],
+  "evidence_directories": {
+    "独立推导-opus": "没有单列证据目录，证据在报告正文",
+    "否证-1": "6 个文件已读取；快照与当前正式文件一致，结构化结论与报告完全一致",
+    "否证-2": "证据目录为空，反例及手推表在报告正文"
+  },
+  "kernel_run": false
+}
