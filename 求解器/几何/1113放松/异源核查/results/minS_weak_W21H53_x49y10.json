@@ -1,0 +1,432 @@
+{
+ "rect": [
+  49,
+  10,
+  21,
+  53
+ ],
+ "P_domain": [
+  10,
+  11,
+  12
+ ],
+ "forbid_edge0": false,
+ "minimize": "S",
+ "status": "OPTIMAL",
+ "wall": 0.822,
+ "build": 0.124,
+ "workers": 6,
+ "seed": 7,
+ "n_bodies": 843,
+ "n_xcells": 83,
+ "n_ring": 95,
+ "P": 10,
+ "J": 1,
+ "X": 19,
+ "Y": 10,
+ "hidden_edge": 0,
+ "hidden": 0,
+ "bound": 187.0,
+ "bodies": [
+  {
+   "kind": "small",
+   "rect": [
+    52,
+    67,
+    3,
+    3
+   ],
+   "axis": "EW"
+  },
+  {
+   "kind": "small",
+   "rect": [
+    53,
+    63,
+    3,
+    3
+   ],
+   "axis": "EW"
+  },
+  {
+   "kind": "small",
+   "rect": [
+    56,
+    67,
+    3,
+    3
+   ],
+   "axis": "EW"
+  },
+  {
+   "kind": "small",
+   "rect": [
+    57,
+    63,
+    3,
+    3
+   ],
+   "axis": "EW"
+  },
+  {
+   "kind": "small",
+   "rect": [
+    60,
+    67,
+    3,
+    3
+   ],
+   "axis": "EW"
+  },
+  {
+   "kind": "small",
+   "rect": [
+    61,
+    63,
+    3,
+    3
+   ],
+   "axis": "EW"
+  },
+  {
+   "kind": "small",
+   "rect": [
+    64,
+    67,
+    3,
+    3
+   ],
+   "axis": "EW"
+  },
+  {
+   "kind": "small",
+   "rect": [
+    67,
+    1,
+    3,
+    3
+   ],
+   "axis": "NS"
+  },
+  {
+   "kind": "small",
+   "rect": [
+    67,
+    5,
+    3,
+    3
+   ],
+   "axis": "NS"
+  },
+  {
+   "kind": "small",
+   "rect": [
+    67,
+    66,
+    3,
+    3
+   ],
+   "axis": "NS"
+  },
+  {
+   "kind": "medium",
+   "rect": [
+    1,
+    65,
+    5,
+    5
+   ],
+   "axis": "EW"
+  },
+  {
+   "kind": "medium",
+   "rect": [
+    7,
+    65,
+    5,
+    5
+   ],
+   "axis": "EW"
+  },
+  {
+   "kind": "medium",
+   "rect": [
+    23,
+    65,
+    5,
+    5
+   ],
+   "axis": "EW"
+  },
+  {
+   "kind": "medium",
+   "rect": [
+    29,
+    65,
+    5,
+    5
+   ],
+   "axis": "EW"
+  },
+  {
+   "kind": "medium",
+   "rect": [
+    35,
+    65,
+    5,
+    5
+   ],
+   "axis": "EW"
+  },
+  {
+   "kind": "medium",
+   "rect": [
+    46,
+    65,
+    5,
+    5
+   ],
+   "axis": "EW"
+  },
+  {
+   "kind": "medium",
+   "rect": [
+    55,
+    5,
+    5,
+    5
+   ],
+   "axis": "EW"
+  },
+  {
+   "kind": "medium",
+   "rect": [
+    44,
+    9,
+    5,
+    5
+   ],
+   "axis": "NS"
+  },
+  {
+   "kind": "medium",
+   "rect": [
+    44,
+    16,
+    5,
+    5
+   ],
+   "axis": "NS"
+  },
+  {
+   "kind": "medium",
+   "rect": [
+    44,
+    22,
+    5,
+    5
+   ],
+   "axis": "NS"
+  },
+  {
+   "kind": "medium",
+   "rect": [
+    44,
+    28,
+    5,
+    5
+   ],
+   "axis": "NS"
+  },
+  {
+   "kind": "medium",
+   "rect": [
+    44,
+    34,
+    5,
+    5
+   ],
+   "axis": "NS"
+  },
+  {
+   "kind": "medium",
+   "rect": [
+    44,
+    40,
+    5,
+    5
+   ],
+   "axis": "NS"
+  },
+  {
+   "kind": "medium",
+   "rect": [
+    44,
+    46,
+    5,
+    5
+   ],
+   "axis": "NS"
+  },
+  {
+   "kind": "medium",
+   "rect": [
+    44,
+    52,
+    5,
+    5
+   ],
+   "axis": "NS"
+  },
+  {
+   "kind": "large",
+   "rect": [
+    43,
+    59,
+    6,
+    4
+   ],
+   "axis": "NS"
+  },
+  {
+   "kind": "large",
+   "rect": [
+    41,
+    64,
+    4,
+    6
+   ],
+   "axis": "EW"
+  },
+  {
+   "kind": "large",
+   "rect": [
+    49,
+    4,
+    4,
+    6
+   ],
+   "axis": "EW"
+  },
+  {
+   "kind": "large",
+   "rect": [
+    61,
+    4,
+    4,
+    6
+   ],
+   "axis": "EW"
+  },
+  {
+   "kind": "core",
+   "rect": [
+    13,
+    61,
+    9,
+    9
+   ],
+   "axis": "EW"
+  },
+  {
+   "kind": "pole",
+   "rect": [
+    47,
+    14,
+    2,
+    2
+   ],
+   "axis": null
+  },
+  {
+   "kind": "pole",
+   "rect": [
+    47,
+    57,
+    2,
+    2
+   ],
+   "axis": null
+  },
+  {
+   "kind": "pole",
+   "rect": [
+    49,
+    63,
+    2,
+    2
+   ],
+   "axis": null
+  },
+  {
+   "kind": "pole",
+   "rect": [
+    51,
+    63,
+    2,
+    2
+   ],
+   "axis": null
+  },
+  {
+   "kind": "pole",
+   "rect": [
+    53,
+    8,
+    2,
+    2
+   ],
+   "axis": null
+  },
+  {
+   "kind": "pole",
+   "rect": [
+    64,
+    63,
+    2,
+    2
+   ],
+   "axis": null
+  },
+  {
+   "kind": "pole",
+   "rect": [
+    65,
+    8,
+    2,
+    2
+   ],
+   "axis": null
+  },
+  {
+   "kind": "pole",
+   "rect": [
+    66,
+    63,
+    2,
+    2
+   ],
+   "axis": null
+  },
+  {
+   "kind": "pole",
+   "rect": [
+    67,
+    8,
+    2,
+    2
+   ],
+   "axis": null
+  },
+  {
+   "kind": "pole",
+   "rect": [
+    68,
+    63,
+    2,
+    2
+   ],
+   "axis": null
+  }
+ ]
+}

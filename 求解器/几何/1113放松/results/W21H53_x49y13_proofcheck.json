@@ -1,0 +1,20 @@
+{
+  "id": "W21H53_x49y13",
+  "status": "PASS",
+  "replay": {
+    "status": "INFEASIBLE",
+    "seconds": 0.928168783,
+    "workers": 2,
+    "model_path": "/home/zhuran24/zmd-research-fresh/求解器/几何/1113放松/models/W21H53_x49y13_replay_parallel.pb",
+    "model_sha256": "05e976c167f8d2584c73ed40bfca75288e00f297139d65137919b707154080a8",
+    "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 709\nbooleans: 1568\nconflicts: 519\nbranches: 26386\npropagations: 503712\ninteger_propagations: 429020\nrestarts: 1\nlp_iterations: 4448\nwalltime: 0.928169\nusertime: 0.928169\ndeterministic_time: 1.60705\ngap_integral: 0\n"
+  },
+  "all_P_without_DP_cuts": {
+    "status": "INFEASIBLE",
+    "seconds": 0.596865159,
+    "workers": 2,
+    "model_path": "/home/zhuran24/zmd-research-fresh/求解器/几何/1113放松/models/W21H53_x49y13_no_DP_cuts.pb",
+    "model_sha256": "cf25a33c761a821898cadcc0290a29bf6f8956b6b9fc6fb50dd4589ce38553d4",
+    "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 854\nbooleans: 1631\nconflicts: 574\nbranches: 28459\npropagations: 528973\ninteger_propagations: 486222\nrestarts: 1\nlp_iterations: 4883\nwalltime: 0.596865\nusertime: 0.596865\ndeterministic_time: 1.72103\ngap_integral: 0\n"
+  }
+}

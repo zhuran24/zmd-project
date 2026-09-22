@@ -1,0 +1,390 @@
+{
+ "rect": [
+  49,
+  13,
+  21,
+  53
+ ],
+ "P_domain": [
+  10
+ ],
+ "forbid_edge0": false,
+ "minimize": "S",
+ "status": "OPTIMAL",
+ "wall": 0.455,
+ "build": 0.115,
+ "workers": 6,
+ "seed": 7,
+ "n_bodies": 753,
+ "n_xcells": 83,
+ "n_ring": 95,
+ "P": 10,
+ "J": 1,
+ "X": 27,
+ "Y": 15,
+ "hidden_edge": 0,
+ "hidden": 0,
+ "bound": 200.0,
+ "bodies": [
+  {
+   "kind": "small",
+   "rect": [
+    13,
+    67,
+    3,
+    3
+   ],
+   "axis": "EW"
+  },
+  {
+   "kind": "small",
+   "rect": [
+    53,
+    66,
+    3,
+    3
+   ],
+   "axis": "EW"
+  },
+  {
+   "kind": "small",
+   "rect": [
+    56,
+    67,
+    3,
+    3
+   ],
+   "axis": "EW"
+  },
+  {
+   "kind": "small",
+   "rect": [
+    59,
+    66,
+    3,
+    3
+   ],
+   "axis": "EW"
+  },
+  {
+   "kind": "small",
+   "rect": [
+    61,
+    10,
+    3,
+    3
+   ],
+   "axis": "EW"
+  },
+  {
+   "kind": "small",
+   "rect": [
+    62,
+    67,
+    3,
+    3
+   ],
+   "axis": "EW"
+  },
+  {
+   "kind": "small",
+   "rect": [
+    65,
+    66,
+    3,
+    3
+   ],
+   "axis": "EW"
+  },
+  {
+   "kind": "medium",
+   "rect": [
+    1,
+    65,
+    5,
+    5
+   ],
+   "axis": "EW"
+  },
+  {
+   "kind": "medium",
+   "rect": [
+    7,
+    65,
+    5,
+    5
+   ],
+   "axis": "EW"
+  },
+  {
+   "kind": "medium",
+   "rect": [
+    27,
+    65,
+    5,
+    5
+   ],
+   "axis": "EW"
+  },
+  {
+   "kind": "medium",
+   "rect": [
+    33,
+    65,
+    5,
+    5
+   ],
+   "axis": "EW"
+  },
+  {
+   "kind": "medium",
+   "rect": [
+    39,
+    65,
+    5,
+    5
+   ],
+   "axis": "EW"
+  },
+  {
+   "kind": "medium",
+   "rect": [
+    55,
+    8,
+    5,
+    5
+   ],
+   "axis": "EW"
+  },
+  {
+   "kind": "medium",
+   "rect": [
+    44,
+    19,
+    5,
+    5
+   ],
+   "axis": "NS"
+  },
+  {
+   "kind": "medium",
+   "rect": [
+    44,
+    25,
+    5,
+    5
+   ],
+   "axis": "NS"
+  },
+  {
+   "kind": "medium",
+   "rect": [
+    44,
+    31,
+    5,
+    5
+   ],
+   "axis": "NS"
+  },
+  {
+   "kind": "medium",
+   "rect": [
+    44,
+    37,
+    5,
+    5
+   ],
+   "axis": "NS"
+  },
+  {
+   "kind": "medium",
+   "rect": [
+    44,
+    43,
+    5,
+    5
+   ],
+   "axis": "NS"
+  },
+  {
+   "kind": "medium",
+   "rect": [
+    44,
+    49,
+    5,
+    5
+   ],
+   "axis": "NS"
+  },
+  {
+   "kind": "medium",
+   "rect": [
+    44,
+    55,
+    5,
+    5
+   ],
+   "axis": "NS"
+  },
+  {
+   "kind": "medium",
+   "rect": [
+    65,
+    6,
+    5,
+    5
+   ],
+   "axis": "NS"
+  },
+  {
+   "kind": "large",
+   "rect": [
+    43,
+    13,
+    6,
+    4
+   ],
+   "axis": "NS"
+  },
+  {
+   "kind": "large",
+   "rect": [
+    64,
+    1,
+    6,
+    4
+   ],
+   "axis": "NS"
+  },
+  {
+   "kind": "large",
+   "rect": [
+    45,
+    64,
+    4,
+    6
+   ],
+   "axis": "EW"
+  },
+  {
+   "kind": "large",
+   "rect": [
+    47,
+    7,
+    4,
+    6
+   ],
+   "axis": "EW"
+  },
+  {
+   "kind": "core",
+   "rect": [
+    17,
+    61,
+    9,
+    9
+   ],
+   "axis": "EW"
+  },
+  {
+   "kind": "pole",
+   "rect": [
+    47,
+    17,
+    2,
+    2
+   ],
+   "axis": null
+  },
+  {
+   "kind": "pole",
+   "rect": [
+    47,
+    60,
+    2,
+    2
+   ],
+   "axis": null
+  },
+  {
+   "kind": "pole",
+   "rect": [
+    47,
+    62,
+    2,
+    2
+   ],
+   "axis": null
+  },
+  {
+   "kind": "pole",
+   "rect": [
+    49,
+    66,
+    2,
+    2
+   ],
+   "axis": null
+  },
+  {
+   "kind": "pole",
+   "rect": [
+    51,
+    11,
+    2,
+    2
+   ],
+   "axis": null
+  },
+  {
+   "kind": "pole",
+   "rect": [
+    51,
+    66,
+    2,
+    2
+   ],
+   "axis": null
+  },
+  {
+   "kind": "pole",
+   "rect": [
+    53,
+    11,
+    2,
+    2
+   ],
+   "axis": null
+  },
+  {
+   "kind": "pole",
+   "rect": [
+    64,
+    11,
+    2,
+    2
+   ],
+   "axis": null
+  },
+  {
+   "kind": "pole",
+   "rect": [
+    66,
+    11,
+    2,
+    2
+   ],
+   "axis": null
+  },
+  {
+   "kind": "pole",
+   "rect": [
+    68,
+    66,
+    2,
+    2
+   ],
+   "axis": null
+  }
+ ]
+}

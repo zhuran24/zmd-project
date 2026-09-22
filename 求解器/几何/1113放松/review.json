@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "counts": [
+    22,
+    2,
+    0,
+    20
+  ],
+  "position_table_rows": 22,
+  "report_links_checked": 16,
+  "checks": [
+    "full report reread",
+    "source citations reviewed",
+    "necessary relaxation mapping reviewed",
+    "position and P-branch counts separated",
+    "boundary feasibility not counted as full feasibility",
+    "UNKNOWN not counted as infeasible",
+    "all relative links resolve",
+    "source end hashes unchanged"
+  ],
+  "report_sha256": "e62f9be13b763209a55c5a056a0e43540ca91942cfaa31e45a691d9c29d06a9f"
+}

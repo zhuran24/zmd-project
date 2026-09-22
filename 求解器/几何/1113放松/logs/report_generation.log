@@ -1,0 +1,39 @@
+{
+  "report_path": "/home/zhuran24/zmd-research-fresh/求解器/几何/1113放松/报告.md",
+  "positions_total": 22,
+  "infeasible": 2,
+  "feasible": 0,
+  "unknown": 20,
+  "status": "全部 22 个候选已完成短时及延长测试；2 个已排除，仍有 20 个 UNKNOWN",
+  "error": "无致命执行阻碍；UNKNOWN 是时限内未决，不能解释为不可行。",
+  "raw_positions": 1260,
+  "prefilter_excluded": 1238,
+  "solver_runs": {
+    "short": 22,
+    "extended": 22,
+    "longcuts": 2,
+    "boundary": 22
+  },
+  "solve_seconds": {
+    "short": {
+      "min": 4.629400519999763,
+      "max": 5.08531663499889,
+      "sum": 106.21259931199165
+    },
+    "extended": {
+      "min": 20.70747783399929,
+      "max": 30.838815842998883,
+      "sum": 649.699620678999
+    },
+    "longcuts": {
+      "min": 120.40123409499938,
+      "max": 120.48618335100036,
+      "sum": 240.88741744599974
+    },
+    "boundary": {
+      "min": 0.8092060310009401,
+      "max": 30.088721747000818,
+      "sum": 575.4647458440086
+    }
+  }
+}

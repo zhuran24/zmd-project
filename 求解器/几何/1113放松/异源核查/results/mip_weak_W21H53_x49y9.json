@@ -1,0 +1,17 @@
+{
+ "rect": [
+  49,
+  9,
+  21,
+  53
+ ],
+ "forbid_edge0": false,
+ "backend": "HiGHS",
+ "status": 0,
+ "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+ "seconds": 2.02,
+ "n_bodies": 824,
+ "n_rows": 3083,
+ "S_min": 186.0,
+ "dual_bound": 186.0
+}

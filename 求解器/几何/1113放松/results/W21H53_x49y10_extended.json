@@ -1,0 +1,27 @@
+{
+  "id": "W21H53_x49y10",
+  "rect": [
+    49,
+    10,
+    21,
+    53
+  ],
+  "allowed_P": [
+    10,
+    11
+  ],
+  "stage": "extended",
+  "time_limit": 30.0,
+  "workers": 8,
+  "probing": 0,
+  "solver_status": "UNKNOWN",
+  "status": "UNKNOWN",
+  "solve_seconds": 30.089329446000193,
+  "solver_wall_seconds": 30.086545462,
+  "build_seconds": 1.2294870520017867,
+  "branches": 481344,
+  "conflicts": 210,
+  "response_stats": "CpSolverResponse summary:\nstatus: UNKNOWN\nobjective: 0\nbest_bound: 0\nintegers: 29991\nbooleans: 29633\nconflicts: 210\nbranches: 481344\npropagations: 9537073\ninteger_propagations: 4155444\nrestarts: 1\nlp_iterations: 71442\nwalltime: 30.0865\nusertime: 30.0865\ndeterministic_time: 267.098\ngap_integral: 0\n",
+  "model_stats": "satisfaction model '': (model_fingerprint: 0x64eb3188645b0eec)\n#Variables: 38'104 (30'628 primary variables)\n  - 33'341 Booleans in [0,1]\n  - 1 in [0,6]\n  - 4'761 in [0,12]\n  - 1 in [10,11]\n#kBoolAnd: 28'070 (#enforced: 28'070) (#literals: 56'140)\n#kBoolOr: 35'855 (#enforced: 35'855) (#literals: 165'189)\n#kExactlyOne: 1 (#literals: 47)\n#kLinear1: 141\n#kLinear2: 3'791\n#kLinearN: 30'691 (#enforced: 4'365) (#terms: 1'094'157)",
+  "log_path": "/home/zhuran24/zmd-research-fresh/求解器/几何/1113放松/logs/W21H53_x49y10_extended.log"
+}

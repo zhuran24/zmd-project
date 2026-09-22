@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/home/zhuran24/zmd-research-fresh/求解器/几何/1113放松/verify_infeasible.py", line 32, in <module>
+    if __name__=='__main__':main()
+                            ~~~~^^
+  File "/home/zhuran24/zmd-research-fresh/求解器/几何/1113放松/verify_infeasible.py", line 26, in main
+    assert again['status']=='INFEASIBLE',again
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'status': 'UNKNOWN', 'seconds': 59.999677049000006, 'workers': 1, 'model_path': '/home/zhuran24/zmd-research-fresh/求解器/几何/1113放松/models/W21H53_x49y13_replay.pb', 'model_sha256': '05e976c167f8d2584c73ed40bfca75288e00f297139d65137919b707154080a8', 'response_stats': 'CpSolverResponse summary:\nstatus: UNKNOWN\nobjective: 0\nbest_bound: 0\nintegers: 650\nbooleans: 1569\nconflicts: 34893\nbranches: 760074\npropagations: 13634874\ninteger_propagations: 9539318\nrestarts: 186\nlp_iterations: 325204\nwalltime: 59.9997\nusertime: 59.9997\ndeterministic_time: 50.2977\ngap_integral: 0\n'}

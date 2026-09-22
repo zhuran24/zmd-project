@@ -272,3 +272,5 @@ third_party/
 
 # cargo test 运行时写出的证据包，可由 cargo test 重生成（2026-09-22）
 /求解器/内核维护/*/cargo-test-evidence/
+__pycache__/
+/求解器/几何/*/models/*.pb

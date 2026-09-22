@@ -1,0 +1,20 @@
+{
+  "id": "W53H21_x8y49",
+  "rect": [
+    8,
+    49,
+    53,
+    21
+  ],
+  "model": "boundary_projection",
+  "stage": "boundary",
+  "workers": 2,
+  "time_limit": 30,
+  "status": "UNKNOWN",
+  "solver_status": "UNKNOWN",
+  "solve_seconds": 30.088721747000818,
+  "build_seconds": 0.1371267809990968,
+  "model_stats": "satisfaction model '': (model_fingerprint: 0x6f0026a498ef1b91)\n#Variables: 2'136 (2'135 primary variables)\n  - 2'134 Booleans in [0,1]\n  - 1 in [0,6]\n  - 1 in [10,11]\n#kBoolAnd: 2'792 (#enforced: 2'792) (#literals: 5'584)\n#kBoolOr: 1'084 (#enforced: 1'084) (#literals: 4'976)\n#kExactlyOne: 1 (#literals: 47)\n#kLinear1: 9 (#enforced: 4)\n#kLinear2: 18 (#enforced: 1)\n#kLinear3: 10 (#enforced: 1)\n#kLinearN: 1'359 (#enforced: 107) (#terms: 25'084)",
+  "response_stats": "CpSolverResponse summary:\nstatus: UNKNOWN\nobjective: 0\nbest_bound: 0\nintegers: 828\nbooleans: 1807\nconflicts: 24866\nbranches: 387705\npropagations: 7225576\ninteger_propagations: 5347560\nrestarts: 106\nlp_iterations: 207283\nwalltime: 30.0886\nusertime: 30.0886\ndeterministic_time: 88.9487\ngap_integral: 0\n",
+  "log_path": "/home/zhuran24/zmd-research-fresh/求解器/几何/1113放松/logs/W53H21_x8y49_boundary.log"
+}

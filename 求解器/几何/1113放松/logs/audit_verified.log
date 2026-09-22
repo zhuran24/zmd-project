@@ -1,0 +1,26 @@
+{"checked": 90, "elapsed": 1.8496688779996475, "cache": {"hits": 70, "misses": 170, "maxsize": null, "currsize": 170}}
+{"checked": 180, "elapsed": 3.611643592001201, "cache": {"hits": 153, "misses": 327, "maxsize": null, "currsize": 327}}
+{"checked": 270, "elapsed": 5.3886012630027835, "cache": {"hits": 226, "misses": 494, "maxsize": null, "currsize": 494}}
+{"checked": 360, "elapsed": 7.180912239000463, "cache": {"hits": 324, "misses": 636, "maxsize": null, "currsize": 636}}
+{"checked": 450, "elapsed": 9.002980511002534, "cache": {"hits": 474, "misses": 726, "maxsize": null, "currsize": 726}}
+{"checked": 540, "elapsed": 10.765473671002837, "cache": {"hits": 629, "misses": 811, "maxsize": null, "currsize": 811}}
+{"checked": 630, "elapsed": 12.52460092399997, "cache": {"hits": 779, "misses": 901, "maxsize": null, "currsize": 901}}
+{"checked": 720, "elapsed": 14.275797530001, "cache": {"hits": 939, "misses": 981, "maxsize": null, "currsize": 981}}
+{"checked": 810, "elapsed": 16.035508566001226, "cache": {"hits": 1099, "misses": 1061, "maxsize": null, "currsize": 1061}}
+{"checked": 900, "elapsed": 17.8169660679996, "cache": {"hits": 1249, "misses": 1151, "maxsize": null, "currsize": 1151}}
+{"checked": 990, "elapsed": 19.600946935999673, "cache": {"hits": 1404, "misses": 1236, "maxsize": null, "currsize": 1236}}
+{"checked": 1080, "elapsed": 21.392584634999366, "cache": {"hits": 1554, "misses": 1326, "maxsize": null, "currsize": 1326}}
+{"checked": 1170, "elapsed": 23.162178468999628, "cache": {"hits": 1709, "misses": 1411, "maxsize": null, "currsize": 1411}}
+{"checked": 1260, "elapsed": 24.92466775399953, "cache": {"hits": 1859, "misses": 1501, "maxsize": null, "currsize": 1501}}
+{"checked": 1350, "elapsed": 26.689399767001305, "cache": {"hits": 2019, "misses": 1581, "maxsize": null, "currsize": 1581}}
+{"checked": 1440, "elapsed": 28.4492451920014, "cache": {"hits": 2179, "misses": 1661, "maxsize": null, "currsize": 1661}}
+{"checked": 1530, "elapsed": 29.65002881700275, "cache": {"hits": 2252, "misses": 1828, "maxsize": null, "currsize": 1828}}
+{"checked": 1620, "elapsed": 30.50445388600201, "cache": {"hits": 2330, "misses": 1990, "maxsize": null, "currsize": 1990}}
+{"checked": 1710, "elapsed": 31.357564096000715, "cache": {"hits": 2336, "misses": 2224, "maxsize": null, "currsize": 2224}}
+/home/zhuran24/zmd-research-fresh/求解器/几何/1113放松/audit.py:34: RuntimeWarning: Unrecognized options detected: {'threads'}. These will be passed to HiGHS verbatim.
+  result=milp(cost,integrality=np.ones(n),bounds=Bounds(np.zeros(n),np.ones(n)),
+{"fallback": "8023fedbb227a3e404f36ecbd27c50fedb7aaef25ff39e0a1f9c172cd499f29a", "result": {"status": "OPTIMAL", "objective": 24.0, "bound": 24.0, "seconds": 0.5418397989997175, "backend": "HiGHS", "cp_attempt": {"status": "FEASIBLE", "objective": 24.0, "bound": 7.0, "seconds": 10.000292302, "backend": "CP-SAT"}}}
+{"fallback": "e9adae565ae71a1159c48e9b1ee8617d120f1de5fe7143c9338a493e3fe3ff80", "result": {"status": "OPTIMAL", "objective": 24.0, "bound": 24.0, "seconds": 0.1500588829985645, "backend": "HiGHS", "cp_attempt": {"status": "FEASIBLE", "objective": 24.0, "bound": 7.0, "seconds": 10.000346274, "backend": "CP-SAT"}}}
+{"checked": 1800, "elapsed": 101.26673019900045, "cache": {"hits": 2359, "misses": 2441, "maxsize": null, "currsize": 2441}}
+{"checked": 1890, "elapsed": 107.46212032300173, "cache": {"hits": 2359, "misses": 2673, "maxsize": null, "currsize": 2673}}
+{"status": "PASS", "coverage_checks": 6724, "transpose_pairs": 630, "joint_warehouse_patterns": 47, "checked_position_P_branches": 1890, "independent_cp_models": 2673, "old_style_counts_per_orientation": {"10": 12, "11": 8, "12": 1}, "current_counts_per_orientation": {"10": 11, "11": 8, "12": 1}, "verifier_backends": {"CP-SAT": 2665, "HiGHS": 8}, "elapsed": 107.46357175700177}

@@ -1,0 +1,23 @@
+{
+ "rect": [
+  36,
+  9,
+  21,
+  53
+ ],
+ "P_domain": [
+  10,
+  11,
+  12
+ ],
+ "forbid_edge0": true,
+ "minimize": null,
+ "status": "INFEASIBLE",
+ "wall": 6.977,
+ "build": 0.149,
+ "workers": 4,
+ "seed": 7,
+ "n_bodies": 1448,
+ "n_xcells": 136,
+ "n_ring": 148
+}

@@ -1,0 +1,28 @@
+{"checked": 90, "elapsed": 23.992849258000206, "cache": {"hits": 70, "misses": 170, "maxsize": null, "currsize": 170}}
+{"checked": 180, "elapsed": 32.35123630000089, "cache": {"hits": 153, "misses": 327, "maxsize": null, "currsize": 327}}
+{"checked": 270, "elapsed": 53.10032038999998, "cache": {"hits": 226, "misses": 494, "maxsize": null, "currsize": 494}}
+{"checked": 360, "elapsed": 66.08208678099982, "cache": {"hits": 324, "misses": 636, "maxsize": null, "currsize": 636}}
+{"checked": 450, "elapsed": 71.9335990130021, "cache": {"hits": 474, "misses": 726, "maxsize": null, "currsize": 726}}
+{"checked": 540, "elapsed": 78.3106895810015, "cache": {"hits": 629, "misses": 811, "maxsize": null, "currsize": 811}}
+{"checked": 630, "elapsed": 83.76994154899876, "cache": {"hits": 779, "misses": 901, "maxsize": null, "currsize": 901}}
+{"checked": 720, "elapsed": 88.6181580779994, "cache": {"hits": 939, "misses": 981, "maxsize": null, "currsize": 981}}
+{"checked": 810, "elapsed": 93.60964123099984, "cache": {"hits": 1099, "misses": 1061, "maxsize": null, "currsize": 1061}}
+{"checked": 900, "elapsed": 99.6685150810008, "cache": {"hits": 1249, "misses": 1151, "maxsize": null, "currsize": 1151}}
+{"checked": 990, "elapsed": 104.91475582299972, "cache": {"hits": 1404, "misses": 1236, "maxsize": null, "currsize": 1236}}
+{"checked": 1080, "elapsed": 111.50965925100172, "cache": {"hits": 1554, "misses": 1326, "maxsize": null, "currsize": 1326}}
+{"checked": 1170, "elapsed": 117.16427930600184, "cache": {"hits": 1709, "misses": 1411, "maxsize": null, "currsize": 1411}}
+{"checked": 1260, "elapsed": 122.94641143899935, "cache": {"hits": 1859, "misses": 1501, "maxsize": null, "currsize": 1501}}
+{"checked": 1350, "elapsed": 129.75989049499913, "cache": {"hits": 2019, "misses": 1581, "maxsize": null, "currsize": 1581}}
+{"checked": 1440, "elapsed": 134.56504348700037, "cache": {"hits": 2179, "misses": 1661, "maxsize": null, "currsize": 1661}}
+{"checked": 1530, "elapsed": 142.53630664400043, "cache": {"hits": 2252, "misses": 1828, "maxsize": null, "currsize": 1828}}
+{"checked": 1620, "elapsed": 150.19564956199974, "cache": {"hits": 2330, "misses": 1990, "maxsize": null, "currsize": 1990}}
+Traceback (most recent call last):
+  File "/home/zhuran24/zmd-research-fresh/求解器/几何/1113放松/audit.py", line 101, in <module>
+    if __name__=='__main__': main()
+                             ~~~~^^
+  File "/home/zhuran24/zmd-research-fresh/求解器/几何/1113放松/audit.py", line 83, in main
+    X=minX(r,P); yy=interval_cp(Ytables,P,23*P-217)
+  File "/home/zhuran24/zmd-research-fresh/求解器/几何/1113放松/audit.py", line 49, in minX
+    assert all(x['status']=='OPTIMAL' for x in choices),choices
+           ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: [{'status': 'FEASIBLE', 'objective': 22.0, 'bound': 9.0, 'seconds': 10.000538910000001}, {'status': 'OPTIMAL', 'objective': 22.0, 'bound': 22.0, 'seconds': 2.253928816}]

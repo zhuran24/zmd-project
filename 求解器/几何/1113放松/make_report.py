@@ -1,0 +1,194 @@
+#!/usr/bin/env python3
+import json,hashlib,platform
+from collections import Counter
+from pathlib import Path
+from datetime import datetime,timezone
+import ortools
+ROOT=Path(__file__).resolve().parent
+def main():
+    positions=json.loads((ROOT/'positions.json').read_text())
+    audit=json.loads((ROOT/'audit.json').read_text())
+    checked=json.loads((ROOT/'solution_checks.json').read_text())
+    assert audit['status']=='PASS' and checked['status']=='PASS'
+    rows=[]; stages=Counter();times={}; all_runs=[]
+    for p in positions['candidates']:
+        runs={}
+        for stage in ('short','extended','longcuts','boundary'):
+            f=ROOT/'results'/f"{p['id']}_{stage}.json"
+            if f.exists():
+                runs[stage]=json.loads(f.read_text());stages[stage]+=1
+                times.setdefault(stage,[]).append(runs[stage]['solve_seconds']);all_runs.append(runs[stage])
+        assert all(s in runs for s in ('short','extended','boundary'))
+        full=[d for s,d in runs.items() if s!='boundary']
+        infeasible=any(d['status']=='INFEASIBLE' for d in runs.values())
+        feasible=any(d['status']=='FEASIBLE' for d in full)
+        assert not (infeasible and feasible)
+        status='INFEASIBLE' if infeasible else 'FEASIBLE' if feasible else 'UNKNOWN'
+        proof=ROOT/'results'/f"{p['id']}_proofcheck.json"
+        if runs['boundary']['status']=='INFEASIBLE':
+            assert proof.exists() and json.loads(proof.read_text())['status']=='PASS'
+        rows.append(dict(**p,status=status,runs=runs,proofcheck=str(proof) if proof.exists() else None))
+    counts=Counter(row['status'] for row in rows)
+    summary=dict(report_path=str(ROOT/'报告.md'),positions_total=len(rows),infeasible=counts['INFEASIBLE'],feasible=counts['FEASIBLE'],unknown=counts['UNKNOWN'],
+                 status=f"全部 {len(rows)} 个候选已完成短时及延长测试；{counts['INFEASIBLE']} 个已排除，仍有 {counts['UNKNOWN']} 个 UNKNOWN",
+                 error='无致命执行阻碍；UNKNOWN 是时限内未决，不能解释为不可行。',
+                 raw_positions=positions['raw_positions'],prefilter_excluded=positions['raw_positions']-len(rows),
+                 solver_runs=dict(stages),solve_seconds={s:dict(min=min(v),max=max(v),sum=sum(v)) for s,v in times.items()},positions=rows)
+    (ROOT/'summary.json').write_text(json.dumps(summary,ensure_ascii=False,indent=2))
+    source=[]
+    for p in sorted((ROOT/'input_snapshot').iterdir()):
+        h=hashlib.sha256(p.read_bytes()).hexdigest();current=ROOT.parents[2]/p.name
+        now=hashlib.sha256(current.read_bytes()).hexdigest()
+        source.append(dict(file=p.name,snapshot_sha256=h,current_sha256=now,unchanged=h==now))
+    assert all(x['unchanged'] for x in source),'Source changed; review before publication'
+    manifest=json.loads((ROOT/'manifest.json').read_text());manifest.update(source_end_check=source,
+        artifact_sha256={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in ROOT.glob('*.py')})
+    (ROOT/'manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2))
+    report=f'''# 面积 1113 的必要条件放松：位置枚举与 CP-SAT 结果
+
+日期：{datetime.now(timezone.utc).isoformat(timespec='seconds')}。状态：本轮有限时求解与核验已结束。
+
+**结论：候选位置 {len(rows)} 个，INFEASIBLE {counts['INFEASIBLE']} 个，完整放松模型找到可行解 {counts['FEASIBLE']} 个，UNKNOWN {counts['UNKNOWN']} 个。面积上界仍为 1113，未得到达标布局。**
+
+位置的定义是固定空矩形的 `(W,H,a,b)`，其中 `(a,b)` 为左下角格，坐标为 0…69。一个位置允许的 P 分支合并求解，只计一个位置。INFEASIBLE 包括由完整模型的必要边界投影证出的不可行；边界投影的可行解不计入完整模型的 feasible。
+
+## 1. 输入与证据边界
+
+正式依据为本目录 `input_snapshot/` 中的三份原始文件：《明日方舟：终末地》游戏规则.txt、求解任务.txt、求解约束.txt。下文“规则”“任务”“约束”的行号都对应这些逐字快照。思路.txt 第三、四节用于理解研究目标；候选约束.txt 第 54 轮仅用于复现与比较，不将未采纳的候选条文当作前提。
+
+读取时与结束时的 SHA-256 见 [manifest.json](manifest.json)，五份材料均未变化。所有本轮产物均在本目录；没有执行 git 操作。
+
+任意真正达标且含面积 1113 空矩形的布局，都可投影为本文模型的解。因此模型不可行能排除该位置。模型可行仅说明这些必要条件不能排除它，不能证明配方、流量、自动接通、调试或每个可到达循环态达标。
+
+## 2. 完整模型及全部约束
+
+实现：[solve_relaxation.py](solve_relaxation.py)。使用 OR-Tools {ortools.__version__}，Python {platform.python_version()}，CP-SAT 满足性求解，无优化目标。
+
+### 2.1 变量、单位数量和自由度
+
+单位均按左下角整数坐标和正交朝向枚举位置。每个候选占位有一个 Boolean；空矩形内的候选占位直接删除。单位不相交采用逐格占用和 ≤1，和矩形装箱等价。
+
+| 条件 | 编码 | 出处 |
+|---|---|---|
+| 70×70、正交单位可旋转 | 占位全部在格 0…69 内；3×3、5×5 各有两种端口轴；大机为 6×4/4×6 | 规则 8、11、44–57 |
+| 九机型恰在下限，无协议储存箱 | 粉碎 68、精炼 51、配件 6、塑形 6、种植 32、采种 16、研磨 32、封装 3、灌装 3；共 217 台、3291 格 | 约束「机型下限」46–47、「面积预算」113–114 |
+| 协议核心恰一个 | 9×9，两种取货端口轴，全部可能位置 | 规则 41；约束「核心离带」「核心邻格」98–101 |
+| 左下各 23 个取货口 | 47 个联合边带模式中恰选一个 | 规则 73；任务 16；约束「取货口配置」「边带排布」34–35、94–95 |
+| P 为 10…12 | 每个 2×2 桩位自由选择；P 为已选桩之和，按位置筛选保留其可行 P 分支 | 规则 76；约束「供电下限」「面积预算」92–93、113–114 |
+
+同尺寸机器在本模型中没有配方或流量差别，故把九类数量等价聚合为小机 131、中机 48、大机 38。导出解时可任意分别贴回上述九类数量的标签；这不是固定哪台加工何物。180° 反转只交换机器进出边，本模型仅要求两边都对接，故合并为同一轴状态。两个轴和大机两个占地朝向均枚举，没有预设机器、核心、桩的位置或供料关系。
+
+217 台在此数量配置下都必须有正制造量：去掉任意一台对应机型的制造贡献都会违反该机型的流量容量下限。由此才可使用正式条文针对“循环态中有制造”的供电与端口结论。
+
+### 2.2 边带、端口与运输格
+
+每边长度 70，23 个取货口各占 3 格，唯一缺格是坐标 `3k (k=0…23)`。左、下两缺格至少一个为角格，故联合模式 `(k左,k下)` 有 `24+23=47` 种。46 个取货口总占地 138，模式的 46 个取货端口正对格全部强制为运输格。每个模式均保留，只有与固定矩形的正式矿石走廊割界冲突的模式才删除。
+
+非矩形格具有运输 Boolean `t[c]` 和结构占用 Boolean `o[c]`（制造/核心/桩）。`o[c]=Σ覆盖该格的已选结构占位`，并要求 `o[c]+t[c]+仓库取货口占用[c]≤1`。没有被占的格可以空着，运输格之间不预先固定接线。所有运输种类被合并为 1×1 运输格，放弃方向、流量、物料和桥接器轴的限制，是向可行方向放宽。
+
+每个选中的制造占位，两条端口边各要求外侧运输 Boolean 之和 ≥1。此条件来自规则 16、35、44–57、59–68 与约束「端口对接」28–29，以及各台在循环态中必须有正制造量。它要求每条端口边至少一条通道，不把整边端口强制接满。运输格可同时作为多台机器的几何对接格；不要求这必能赋予合法运输方向。
+
+核心的六个取货端口（边上偏移 1、4、7，0 起算）的邻格全部为运输格；14 个存货端口的邻格合计至少两个运输格。后者来自无箱、成品入库至少两条通道，不要求两条存货边各有一个。出处：规则 41；约束「取货口配置」「通道下限」「入库途径」「核心邻格」34、48、40、100。
+
+制造、核心、桩的机身不会占第 0 行/列：边带除唯一一格 q 外全被取货口占据，宽至少 2 的机身不可能塞入 q。正流量端口的对接格也不能是第 0 行/列：唯一 q 至多有一个能对接的内邻格，无法有循环正流量的一进一出。因此枚举机身与有效端口邻格从坐标 1 开始；q 本身仍可作为闲置运输格。依据：规则端口/通道和单位占地，约束「边带排布」「端口对接」「取货口配置」。
+
+`Σt≥208`；若所选边带的唯一非取货口格 q 为运输格，则 `Σt≥209`。出处：约束「运输下限」104–105。没有假定运输格恰为下限。
+
+### 2.3 核心走廊
+
+核心左下角 `(x0,y0)` 满足 `x0,y0≥2`，不允许同时 `x0≤3 且 y0≤3`。对每种核心占位与所选联合边带，分别计算跨度内实际取货口数 m，施加 `m+3δ≤e(x0−1)` 和转置式；δ 表示朝带边是取货边，核心贴对边边界时 e=1，否则 e=2。实现为禁止不兼容的“核心占位、边带模式”组合。出处：约束「核心离带」「核心邻格」98–101。
+
+### 2.4 精确覆盖与供电切割
+
+桩左下角 `(p,q)` 的覆盖是半开区域 `[p−5,p+7)×[q−5,q+7)`。机器 `[x,x+w)×[y,y+h)` 得电，当且仅当至少一个已选桩满足 `p∈[x−6,x+w+4]、q∈[y−6,y+h+4]`。模型使用二维桩数前缀和精确计算此矩形内的桩数，并令其 ≥该机器占位 Boolean。覆盖只需碰到一格，不要求覆盖整台机器。出处：规则 19–20、35、76。
+
+令 J 为占格含第 1/69 列或第 1/69 行的桩数，施加 `9J≤23P−217`。每桩容量上界 23；占一个上述边界亏 9，占两个亏 15。若桩在空矩形某侧外且覆盖沿边投影完整落入该边跨度，机身距矩形 g=0…6 时亏额为 `(10,9,9,6,5,4,1)`。同一桩适用多个上界时取亏额最大值，**不相加**；全部亏额之和 ≤`23P−217`。这样也蕴含十桩时最多一个边界桩、无角桩。出处：约束「供电下限」「侧旁供电」92、115。
+
+所有机器至少被一个桩覆盖，因此各桩能覆盖的机器数之和必须 ≥217，即使同台被多桩覆盖，这个必要条件仍成立。
+
+### 2.5 空矩形、面积和缺口
+
+固定 R 面积为 1113；没有任何单位允许进入 R。其余机身面积为 `3291+81+138+4P=3510+4P`，故 R 外运输与空格总数 `T+F=277−4P`。
+
+X 严格按约束 125 行：右/上两条 68 格外边段中非制造/核心/桩/R 的格数，右上角不属桩与 R 时再加 2。Y 为 R 外正交邻接一圈中非制造/核心/桩的格数，贴基地边界的一侧没有这圈格，不含对角格。同一格同时属于 X、Y 时按两个方向分别计费。
+
+施加 `16P−2J+X+Y≤187` 和 `14P≤187`，分别是正式 `4A+16P−2J+X+Y≤4639`、`4A+14P≤4639` 代入 A=1113。出处：约束「面积预算」「内带缺口」113–114、125–126。矩形有面积 1113，而正式上界为 1113，因此任何真正映射进来的布局中它确为最大空矩形；不需要另外枚举所有其他空矩形。
+
+长时附加测试还按 P 施加已核验的 `X≥minX(P)、Y≥minY(P)`，其来源与位置筛选相同。没有加入流量分配、通道数分机型加强、具体配方、矿线专机假设、桥的方向、四通结点或运行调度。这些遗漏只放宽模型。
+
+## 3. 位置枚举及与第 54 轮的比较
+
+两个朝向最初共有 1800 个整数位置。「矩形离带」给 a,b≥4 后剩 1288；「矿石走廊」排除 a=4 且 H=53（及转置）后剩 1260，即每朝向 630。
+
+接着对 47 种联合边带逐一核对 a=4/b=4 时的实际 m≤6，而不只用较弱的 H/W≤21。对每个仍有边带模式的位置，独立求 X、Y 的安全下界。P=10/11/12 时 `J≤1/4/6`，所以 `X+Y` 允许量为 `29/19/7`。
+
+区间筛选实现为 [filter_positions.py](filter_positions.py)：沿 X 的外边界和 Y 的矩形外圈，枚举每种真实尺寸、朝向、合法机身空间、端口必要空位的单体投影。完整制造块 M 的沿边长为 3/4/5；核心 C 长 9；桩长 2；未被结构覆盖格费用 1。完整 M–M、M–C、C–M 相邻会挡住较浅机体的整条端口边；C–P、P–C 会挡住核心偏移 1 的满速取货口，因此禁止。跨出侧边跨度的截断块保留所有实际机身可能，放宽其邻接限制。出处：规则的尺寸和端口；约束「端口对接」「取货口配置」「核心邻格」。
+
+每套边界核心数≤1，桩数≤P，桩的亏额预算按上节取最大值。外边界角桩单独枚举，两个边段共享同一桩的一次数量/亏额；角格费用两次计数与正式 X 定义相同。Y 四边之间忽略机身互撞，允许无限制造块。一个不与 R 相交的矩形机身不能同时碰到 R 两条相邻侧的正交邻接条带，否则会包含 R 的角格；机身最大边长 9，又不能跨越 R 的两条相对侧。因此每个机身在 Y 中至多出现一次。核心或制造单位若同时碰右、上基地边界，至少一整条活跃端口边出界，故不能占右上角；X 中只有角桩需要两侧共享计数。X、Y 两套各自借用一个核心及整组桩，各自取最小后相加，故仍是放松。角区 `(2,2)` 已由 a,b≥4 自动排除；核心邻格与侧旁供电在单体投影和资源预算中生效。
+
+枚举全过程与排除理由见 [positions.json](positions.json)，筛选用时 {positions['elapsed']:.3f} 秒。1260 个位置中 {sum(not z['patterns'] for z in positions['positions'])} 个无合法边带模式，其余又排除 {sum(bool(z['patterns']) and not any(t['keep'] for t in z['branches']) for z in positions['positions'])} 个，剩 **22 个不同位置、40 个位置/P 分支**。
+
+| 朝向 W×H | P=10 的位置 | P=11 的位置 | P=12 的位置 |
+|---|---|---|---|
+| 21×53 | a=49，b=5…14 或 17（11 个） | a=49，b=6…12 或 17（8 个） | (49,17)（1 个） |
+| 53×21 | b=49，a=5…14 或 17（11 个） | b=49，a=6…12 或 17（8 个） | (17,49)（1 个） |
+
+旧记录每朝向是 12/8/1。本次把共同边带的实际 m 也算进去后为 11/8/1：差异是 `(W,H,a,b)=(21,53,49,4)` 及其转置。下带端口位于 x=49…69 内的个数，对全部 47 种模式最小仍为 7，而 b=4 的转置矿石走廊界要求 ≤6。去掉这项精确核对、只保留较弱的边长条件，本次程序重算恰得旧记录的 12/8/1。旧脚本已丢失，所以这是对记录数字的重建，不是声称检查过原脚本。
+
+## 4. 求解和独立核验
+
+完整模型对 22 个位置分别先给 5 秒，再对 UNKNOWN 全部给 30 秒。短时轮使用默认探测等级 2，多数耗在预处理；延长轮改探测等级 0，日志显示已进入搜索。长时轮的具体位置和用时列在下表。随机种子 20260922；完整模型每次 8 个 worker，各位置串行。并行核验最多另占 4 个 worker，**本轮所有 CP-SAT 实例同时 worker 总数不超过 12**。
+
+辅助 [boundary_joint.py](boundary_joint.py) 是完整模型的必要投影：只显式保留触及 X 或 Y 的机身，保持真实二维不重叠与端口对接；制造数量只设对应上限、核心≤1，未触边的单位全部允许存在于省略部分。总桩数 P 仍为 10…12，显式边界桩数 p≤P，显式边界计数 j≤J≤j+(P−p)，未显式的边界桩各至少亏 9，施加 `显式桩亏额+9(J−j)≤23P−217`。X、Y 使用同一份真实机身和核心/桩资源，并保留面积缺口式及独立下界切割。完整达标布局向其投影时，必须保留所有碰到这些格的单位，因此省略部分不会改变 X、Y。**该子模型 INFEASIBLE 能排除完整模型；其 FEASIBLE 不能作为完整模型的可行解。**
+
+区间 DP 的独立核验 [audit.py](audit.py) 没有调用 DP 转移：重新建立区间精确覆盖整数模型，覆盖一个朝向全部 630×3=1890 个位置/P 分支，再逐项检查另一朝向的转置一致性。共实际求解 {audit['independent_cp_models']} 个不同区间模型，后端分布为 {audit['verifier_backends']}。全部最优值与 DP 一致。核验复用单体投影候选列表，独立的是优化编码与求解；几何必要性由前述映射论证。HiGHS 的整数目标按 1e-6 容差核对后取整，原始浮点结果保存在缓存中。CP-SAT 的单个 10 秒核验曾超时，原始日志保留；重试对这类模型用 HiGHS 整数规划核验，未把超时记作通过。计数型排除的主证据仍是精确整数 DP 及其推导。
+
+另核对 47 个仓库模式的 138 格占地与 46 个独立出矿格；对 4 种机身尺寸的 6724 个相对位移，直接逐矩形相交与前缀和覆盖公式完全一致。结果见 [audit.json](audit.json)。所有保存的可行见证另由 [check_solutions.py](check_solutions.py) 用直接格集合检查，结果见 [solution_checks.json](solution_checks.json)。两个排除位置均由完整模型直接返回 INFEASIBLE；对应完整 `.pb` 及与原运行一致的模型统计、哈希见 [full_infeasible_models.json](full_infeasible_models.json)。对 (49,13) 的边界子模型，两个不同配置的单 worker 复跑各 60 秒仍为 UNKNOWN；恢复原 2-worker 参数后在 0.928 秒复现 INFEASIBLE。进一步移除全部 DP 切割、恢复 P=10…12，仍在 0.597 秒返回 INFEASIBLE，因此该位置的排除不依赖区间 DP 数值。全部日志保留，详见 `results/W21H53_x49y13_proofcheck.json`。这里的 INFEASIBLE 是 CP-SAT 返回结果与重跑证据，没有宣称生成了独立 LRAT 形式证明。
+
+## 5. 逐位置结果和用时
+
+秒数为实际 solve wall time，不含模型构建。完整模型每次构建用时范围 {min(d['build_seconds'] for d in all_runs if d.get('model')!='boundary_projection'):.3f}…{max(d['build_seconds'] for d in all_runs if d.get('model')!='boundary_projection'):.3f} 秒。`U/F/I` 分别指 UNKNOWN / FEASIBLE / INFEASIBLE；“子模型 F”不改变完整模型 UNKNOWN。
+
+| W×H | (a,b) | 允许 P | 完整 5 秒轮 | 完整 30 秒轮 | 完整长时轮 | 边界子模型 | 最终位置结论 |
+|---|---|---|---|---|---|---|---|
+'''
+    def cell(d):return {'UNKNOWN':'U','FEASIBLE':'F','INFEASIBLE':'I'}[d['status']]+f" / {d['solve_seconds']:.3f}s"
+    for row in rows:
+        a,b,w,h=row['rect'];r=row['runs']
+        report+=f"| {w}×{h} | ({a},{b}) | {','.join(map(str,row['allowed_P']))} | {cell(r['short'])} | {cell(r['extended'])} | {cell(r['longcuts']) if 'longcuts' in r else '—'} | {cell(r['boundary'])} | {row['status']} |\n"
+    report+='\n'+f'''计数：**{counts['INFEASIBLE']} / {counts['FEASIBLE']} / {counts['UNKNOWN']}，合计 {len(rows)}**。前置规则/DP 排除的 1238 个位置不混入候选位置的 INFEASIBLE 计数。每次求解的建模秒数、实际求解秒数、状态、worker、参数、分支/冲突计数和日志路径见 [summary.json](summary.json) 及 `results/`；原始日志在 `logs/`。总计各轮的 solve wall time：{ {s:round(sum(v),3) for s,v in times.items()} } 秒，并行轮次的这些秒数不能当作总经过时间相加。
+
+## 6. 已证与未证
+
+已证的位置排除只依赖正式必要条件及上述放松映射；既未证出不可行、又未找到完整放松见证的位置记 UNKNOWN。剩余 UNKNOWN 使“全部面积 1113 位置都不可行”的结论尚未成立，所以不能把上界降到下一面积级。即使将来完整放松返回可行解，也还缺运输单位类型与方向、配方/流量、自动接通、调试和全部可到达循环态的证明，不能直接提高布局下界。
+
+本轮没有无法表达的必需条件或致命运行阻碍。限制是当前满足性搜索时限内没有完成所有位置的判定；区间核验的初始超时已通过后续独立最优化核验处理，原记录未删除。
+
+## 7. 复现与文件索引
+
+在本目录执行：
+
+```bash
+python filter_positions.py
+python audit.py
+python solve_relaxation.py --stage short --seconds 5 --workers 8
+python solve_relaxation.py --stage extended --seconds 30 --workers 8 --probing 0 --unknown-only
+python boundary_joint.py
+python verify_infeasible.py
+python check_solutions.py
+python make_report.py
+```
+
+批处理按已存在的同阶段 JSON 跳过，防止覆盖证据；要做新参数实验应使用新的 stage 名。`audit_models.jsonl` 是独立区间核验缓存，只有得到 OPTIMAL 的记录才写入。长时附加轮使用 `--stage longcuts --seconds 120 --workers 8 --probing 0 --boundary-cuts --only W21H53_x49y5,W21H53_x49y17`。主模型可在脚本中通过 `build(position).model` 对应返回值导出；INFEASIBLE 的边界重跑模型已经保存在 `models/`。
+
+- [positions.json](positions.json)：1260 个前置候选的位置、边带模式、各 P 下界与排除判据。
+- [summary.json](summary.json)：最终每个候选的位置结论、各次运行与回执计数。
+- [audit.json](audit.json)、[audit_models.jsonl](audit_models.jsonl)：独立数值核验及重建 12/8/1 的反事实比较。
+- `results/*_proofcheck.json`、`models/*.pb`：不可行重跑、移除 DP 切割的附加检验与模型哈希。
+- `input_snapshot/`、[manifest.json](manifest.json)：输入字节证据、环境与脚本哈希。
+
+'''
+    report=report.replace('`build(position).model` 对应返回值','`build(position)` 的第一个返回值')
+    (ROOT/'报告.md').write_text(report)
+    print(json.dumps({k:v for k,v in summary.items() if k not in ('positions',)},ensure_ascii=False,indent=2))
+if __name__=='__main__':main()

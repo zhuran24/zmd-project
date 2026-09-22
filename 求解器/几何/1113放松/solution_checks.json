@@ -1,0 +1,40 @@
+{
+  "status": "PASS",
+  "checked": 2,
+  "results": [
+    {
+      "file": "W21H53_x49y17_boundary.json",
+      "status": "PASS",
+      "model": "boundary_projection",
+      "P": 10,
+      "J": 1,
+      "X": 14,
+      "Y": 15,
+      "body_counts": {
+        "small": 9,
+        "medium": 8,
+        "large": 5,
+        "core": 1,
+        "pole": 7
+      },
+      "transport_count": 255
+    },
+    {
+      "file": "W53H21_x17y49_boundary.json",
+      "status": "PASS",
+      "model": "boundary_projection",
+      "P": 10,
+      "J": 1,
+      "X": 16,
+      "Y": 13,
+      "body_counts": {
+        "small": 13,
+        "medium": 5,
+        "large": 5,
+        "core": 1,
+        "pole": 8
+      },
+      "transport_count": 239
+    }
+  ]
+}

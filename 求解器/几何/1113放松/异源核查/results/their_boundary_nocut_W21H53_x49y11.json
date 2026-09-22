@@ -1,0 +1,9 @@
+{
+ "id": "W21H53_x49y11",
+ "model": "report boundary_joint.build, allowed_P=[10,11,12], branches=[] (no DP cuts)",
+ "status": "INFEASIBLE",
+ "wall": 111.96,
+ "workers": 4,
+ "seed": 1,
+ "fingerprint": "satisfaction model '': (model_fingerprint: 0x3710c6a242d60a1a)"
+}

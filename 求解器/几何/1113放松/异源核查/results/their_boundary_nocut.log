@@ -1,0 +1,3 @@
+{"id": "W21H53_x49y14", "model": "report boundary_joint.build, allowed_P=[10,11,12], branches=[] (no DP cuts)", "status": "INFEASIBLE", "wall": 170.06, "workers": 4, "seed": 1, "fingerprint": "satisfaction model '': (model_fingerprint: 0x6831fa25871d9050)"}
+{"id": "W53H21_x14y49", "model": "report boundary_joint.build, allowed_P=[10,11,12], branches=[] (no DP cuts)", "status": "INFEASIBLE", "wall": 301.13, "workers": 4, "seed": 1, "fingerprint": "satisfaction model '': (model_fingerprint: 0x4ec39d66eb460e63)"}
+{"id": "W53H21_x13y49", "model": "report boundary_joint.build, allowed_P=[10,11,12], branches=[] (no DP cuts)", "status": "INFEASIBLE", "wall": 0.74, "workers": 4, "seed": 1, "fingerprint": "satisfaction model '': (model_fingerprint: 0x91089c6dd83bde4d)"}

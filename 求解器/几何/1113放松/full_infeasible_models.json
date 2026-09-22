@@ -1,0 +1,16 @@
+[
+  {
+    "id": "W21H53_x49y13",
+    "source_result": "/home/zhuran24/zmd-research-fresh/求解器/几何/1113放松/results/W21H53_x49y13_extended.json",
+    "model": "/home/zhuran24/zmd-research-fresh/求解器/几何/1113放松/models/W21H53_x49y13_full.pb",
+    "sha256": "9532e5678e030ee91874aafab19e5b3ff943dd754c888a9dde80f88896ce55a7",
+    "model_stats_identical": true
+  },
+  {
+    "id": "W53H21_x13y49",
+    "source_result": "/home/zhuran24/zmd-research-fresh/求解器/几何/1113放松/results/W53H21_x13y49_extended.json",
+    "model": "/home/zhuran24/zmd-research-fresh/求解器/几何/1113放松/models/W53H21_x13y49_full.pb",
+    "sha256": "d2f3859a09c86b3f6ad586c6a089df759e6c9631e64211b6e5e511916e515495",
+    "model_stats_identical": true
+  }
+]

@@ -1,0 +1,32 @@
+{"checked": 90, "elapsed": 28.07788902300308, "cache": {"hits": 70, "misses": 170, "maxsize": null, "currsize": 170}}
+{"checked": 180, "elapsed": 38.592188143000385, "cache": {"hits": 153, "misses": 327, "maxsize": null, "currsize": 327}}
+{"checked": 270, "elapsed": 68.90233118700053, "cache": {"hits": 226, "misses": 494, "maxsize": null, "currsize": 494}}
+{"checked": 360, "elapsed": 85.63790300700202, "cache": {"hits": 324, "misses": 636, "maxsize": null, "currsize": 636}}
+{"checked": 450, "elapsed": 92.38701937600126, "cache": {"hits": 474, "misses": 726, "maxsize": null, "currsize": 726}}
+{"checked": 540, "elapsed": 103.23937795600068, "cache": {"hits": 629, "misses": 811, "maxsize": null, "currsize": 811}}
+{"checked": 630, "elapsed": 114.05601308500263, "cache": {"hits": 779, "misses": 901, "maxsize": null, "currsize": 901}}
+{"checked": 720, "elapsed": 123.82991513400339, "cache": {"hits": 939, "misses": 981, "maxsize": null, "currsize": 981}}
+{"checked": 810, "elapsed": 133.73570467000172, "cache": {"hits": 1099, "misses": 1061, "maxsize": null, "currsize": 1061}}
+{"checked": 900, "elapsed": 147.12731066000197, "cache": {"hits": 1249, "misses": 1151, "maxsize": null, "currsize": 1151}}
+{"checked": 990, "elapsed": 158.57829152200065, "cache": {"hits": 1404, "misses": 1236, "maxsize": null, "currsize": 1236}}
+{"checked": 1080, "elapsed": 172.02020637100213, "cache": {"hits": 1554, "misses": 1326, "maxsize": null, "currsize": 1326}}
+{"checked": 1170, "elapsed": 182.98943535299986, "cache": {"hits": 1709, "misses": 1411, "maxsize": null, "currsize": 1411}}
+{"checked": 1260, "elapsed": 194.2654437830024, "cache": {"hits": 1859, "misses": 1501, "maxsize": null, "currsize": 1501}}
+{"checked": 1350, "elapsed": 204.76146721900295, "cache": {"hits": 2019, "misses": 1581, "maxsize": null, "currsize": 1581}}
+{"checked": 1440, "elapsed": 211.91792389200054, "cache": {"hits": 2179, "misses": 1661, "maxsize": null, "currsize": 1661}}
+{"checked": 1530, "elapsed": 223.18155204700088, "cache": {"hits": 2252, "misses": 1828, "maxsize": null, "currsize": 1828}}
+{"checked": 1620, "elapsed": 237.108297736002, "cache": {"hits": 2330, "misses": 1990, "maxsize": null, "currsize": 1990}}
+Traceback (most recent call last):
+  File "/home/zhuran24/zmd-research-fresh/求解器/几何/1113放松/audit.py", line 145, in <module>
+    if __name__=='__main__': main()
+                             ~~~~^^
+  File "/home/zhuran24/zmd-research-fresh/求解器/几何/1113放松/audit.py", line 126, in main
+    X=minX(r,P); yy=interval_cp(Ytables,P,23*P-217)
+  File "/home/zhuran24/zmd-research-fresh/求解器/几何/1113放松/audit.py", line 88, in minX
+    first=interval_cp(tuple(sorted(canonical(r,s,True,False) for s in 'EN')),P,budget)
+  File "/home/zhuran24/zmd-research-fresh/求解器/几何/1113放松/audit.py", line 79, in interval_cp
+    first=result; result=milp_fallback(model); result['cp_attempt']=first
+                         ~~~~~~~~~~~~~^^^^^^^
+  File "/home/zhuran24/zmd-research-fresh/求解器/几何/1113放松/audit.py", line 19, in milp_fallback
+    from threadpoolctl import threadpool_limits
+ModuleNotFoundError: No module named 'threadpoolctl'

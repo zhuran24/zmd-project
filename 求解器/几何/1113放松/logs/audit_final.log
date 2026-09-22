@@ -1,0 +1,35 @@
+{"checked": 90, "elapsed": 0.8588338509980531, "cache": {"hits": 70, "misses": 170, "maxsize": null, "currsize": 170}}
+{"checked": 180, "elapsed": 1.7224783669989847, "cache": {"hits": 153, "misses": 327, "maxsize": null, "currsize": 327}}
+{"checked": 270, "elapsed": 2.586285109999153, "cache": {"hits": 226, "misses": 494, "maxsize": null, "currsize": 494}}
+{"checked": 360, "elapsed": 3.4558231580012944, "cache": {"hits": 324, "misses": 636, "maxsize": null, "currsize": 636}}
+{"checked": 450, "elapsed": 4.32997622000039, "cache": {"hits": 474, "misses": 726, "maxsize": null, "currsize": 726}}
+{"checked": 540, "elapsed": 5.198286613998789, "cache": {"hits": 629, "misses": 811, "maxsize": null, "currsize": 811}}
+{"checked": 630, "elapsed": 6.062838155001373, "cache": {"hits": 779, "misses": 901, "maxsize": null, "currsize": 901}}
+{"checked": 720, "elapsed": 6.924154355001519, "cache": {"hits": 939, "misses": 981, "maxsize": null, "currsize": 981}}
+{"checked": 810, "elapsed": 7.808150377000857, "cache": {"hits": 1099, "misses": 1061, "maxsize": null, "currsize": 1061}}
+{"checked": 900, "elapsed": 8.697469153001293, "cache": {"hits": 1249, "misses": 1151, "maxsize": null, "currsize": 1151}}
+{"checked": 990, "elapsed": 9.577013383001031, "cache": {"hits": 1404, "misses": 1236, "maxsize": null, "currsize": 1236}}
+{"checked": 1080, "elapsed": 10.475224016001448, "cache": {"hits": 1554, "misses": 1326, "maxsize": null, "currsize": 1326}}
+{"checked": 1170, "elapsed": 11.403571120998095, "cache": {"hits": 1709, "misses": 1411, "maxsize": null, "currsize": 1411}}
+{"checked": 1260, "elapsed": 12.329207160000806, "cache": {"hits": 1859, "misses": 1501, "maxsize": null, "currsize": 1501}}
+{"checked": 1350, "elapsed": 13.24754045499867, "cache": {"hits": 2019, "misses": 1581, "maxsize": null, "currsize": 1581}}
+{"checked": 1440, "elapsed": 14.223489130999951, "cache": {"hits": 2179, "misses": 1661, "maxsize": null, "currsize": 1661}}
+{"checked": 1530, "elapsed": 15.477171956001257, "cache": {"hits": 2252, "misses": 1828, "maxsize": null, "currsize": 1828}}
+{"checked": 1620, "elapsed": 16.527578101999097, "cache": {"hits": 2330, "misses": 1990, "maxsize": null, "currsize": 1990}}
+/home/zhuran24/zmd-research-fresh/求解器/几何/1113放松/audit.py:34: RuntimeWarning: Unrecognized options detected: {'threads'}. These will be passed to HiGHS verbatim.
+  result=milp(cost,integrality=np.ones(n),bounds=Bounds(np.zeros(n),np.ones(n)),
+{"fallback": "1e30a3f74258808fb0d8c67ec2e0f1319b0a6c216ffa7f830d5d51e4aa341429", "result": {"status": "OPTIMAL", "objective": 22.0, "bound": 22.0, "seconds": 0.5185006510000676, "backend": "HiGHS", "cp_attempt": {"status": "FEASIBLE", "objective": 22.0, "bound": 9.0, "seconds": 10.000322538, "backend": "CP-SAT"}}}
+{"fallback": "1cc3d56de71ccc18bfe6f6cb431d1675edb0a2190480e0e35ba58a2923d5aa9a", "result": {"status": "OPTIMAL", "objective": 22.0, "bound": 22.0, "seconds": 0.9210248300005333, "backend": "HiGHS", "cp_attempt": {"status": "FEASIBLE", "objective": 22.0, "bound": 9.0, "seconds": 10.000459989000001, "backend": "CP-SAT"}}}
+{"fallback": "cdfabdc873487317dc0a9e40b4accb2b4ca2e47a124b856aeff02e6a35754963", "result": {"status": "OPTIMAL", "objective": 24.0, "bound": 24.0, "seconds": 0.5693507679970935, "backend": "HiGHS", "cp_attempt": {"status": "FEASIBLE", "objective": 24.0, "bound": 8.0, "seconds": 10.000461462, "backend": "CP-SAT"}}}
+{"checked": 1710, "elapsed": 86.50699235000138, "cache": {"hits": 2336, "misses": 2224, "maxsize": null, "currsize": 2224}}
+{"fallback": "f8468ce59d4e41a0cd4e1f7cae99e42c52e7efab7b1d4b772650e82e3903ea2d", "result": {"status": "OPTIMAL", "objective": 24.0, "bound": 24.0, "seconds": 0.5449857090025034, "backend": "HiGHS", "cp_attempt": {"status": "FEASIBLE", "objective": 24.0, "bound": 6.0, "seconds": 10.000995134, "backend": "CP-SAT"}}}
+{"fallback": "b57ce879a1e481a8a21349e6b59de6f644a36a131ca1da2f7115c9ee24ffeaf8", "result": {"status": "OPTIMAL", "objective": 22.0, "bound": 22.0, "seconds": 0.24975350900058402, "backend": "HiGHS", "cp_attempt": {"status": "FEASIBLE", "objective": 22.0, "bound": 10.0, "seconds": 10.000370138000001, "backend": "CP-SAT"}}}
+{"fallback": "7f7956a15251991d97668f6ee57ff978316bc8f268dfb0571729a6911e008d08", "result": {"status": "OPTIMAL", "objective": 21.99999999999999, "bound": 21.99999999999999, "seconds": 0.30637023800227325, "backend": "HiGHS", "cp_attempt": {"status": "FEASIBLE", "objective": 22.0, "bound": 11.0, "seconds": 10.000316696, "backend": "CP-SAT"}}}
+Traceback (most recent call last):
+  File "/home/zhuran24/zmd-research-fresh/求解器/几何/1113放松/audit.py", line 143, in <module>
+    if __name__=='__main__': main()
+                             ~~~~^^
+  File "/home/zhuran24/zmd-research-fresh/求解器/几何/1113放松/audit.py", line 129, in main
+    assert X==old['X_lower'] and Y==old['Y_lower'],(r,P,X,Y,old)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ((46, 10, 21, 53), 12, 21.99999999999999, 11.0, {'P': 12, 'X_lower': 22, 'Y_lower': 11, 'allowed': 7, 'keep': False})
