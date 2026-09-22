@@ -1,0 +1,93 @@
+{
+  "copy_root": "/tmp/zmd-r2-source-67wgyqjd/求解器",
+  "build_argv": [
+    "cargo",
+    "build",
+    "--manifest-path",
+    "/tmp/zmd-r2-source-67wgyqjd/求解器/Cargo.toml",
+    "--locked",
+    "--offline",
+    "-p",
+    "kernel",
+    "--bin",
+    "kernel",
+    "--profile",
+    "r2source67wgyqjd",
+    "--config",
+    "profile.r2source67wgyqjd.inherits=\"dev\"",
+    "--config",
+    "profile.r2source67wgyqjd.codegen-units=1",
+    "--config",
+    "profile.r2source67wgyqjd.debug=0",
+    "-j",
+    "1"
+  ],
+  "existing_source": {
+    "old_binary": "/home/zhuran24/zmd-research-fresh/求解器/target/r2-source-timing-20260922/kernel-tmp-original",
+    "old_binary_sha256_before": "e60c6a71f24c103e4f7c68e22e8bdde60d612ee05ed42724e095c140bb88aa04",
+    "old_binary_sha256_after": "e60c6a71f24c103e4f7c68e22e8bdde60d612ee05ed42724e095c140bb88aa04",
+    "new_binary": "/home/zhuran24/zmd-research-fresh/求解器/target/r2-source-timing-20260922/kernel-tmp-marker",
+    "new_binary_sha256": "7777ac2faea31f7999e19717bf419f2e247984a1548544444f68de58457786e7",
+    "source_sha256_before": "059ad007e43a2df0ab3a4d59a9264a6fd8371be75e08eb26d9f070f6738d12b2",
+    "source_sha256_after": "1333bb58ab01ec4af559a5c5bdfcd2e15b17178f91493c927f9cfc51538bf699",
+    "old_output_fingerprint_before": {
+      "path": "/tmp/zmd-r2-source-67wgyqjd/求解器/crates/kernel/src/output.rs",
+      "role": "checker",
+      "sha256": "059ad007e43a2df0ab3a4d59a9264a6fd8371be75e08eb26d9f070f6738d12b2"
+    },
+    "old_output_fingerprint_after": {
+      "path": "/tmp/zmd-r2-source-67wgyqjd/求解器/crates/kernel/src/output.rs",
+      "role": "checker",
+      "sha256": "1333bb58ab01ec4af559a5c5bdfcd2e15b17178f91493c927f9cfc51538bf699"
+    },
+    "old_output_claim_before": "Rust 受限内核的有限条件轨迹；不作全称或完整目标认证",
+    "old_output_claim_after": "Rust 受限内核的有限条件轨迹；不作全称或完整目标认证",
+    "rebuilt_output_claim": "R2_TMP_NEW_SOURCE_PRODUCER_MARKER",
+    "old_before_vs_after_diff": [
+      {
+        "path": "$[\"evidence_scope\"][\"context_bindings\"][25][\"sha256\"]",
+        "a": "059ad007e43a2df0ab3a4d59a9264a6fd8371be75e08eb26d9f070f6738d12b2",
+        "b": "1333bb58ab01ec4af559a5c5bdfcd2e15b17178f91493c927f9cfc51538bf699"
+      },
+      {
+        "path": "$[\"fingerprints\"][25][\"sha256\"]",
+        "a": "059ad007e43a2df0ab3a4d59a9264a6fd8371be75e08eb26d9f070f6738d12b2",
+        "b": "1333bb58ab01ec4af559a5c5bdfcd2e15b17178f91493c927f9cfc51538bf699"
+      }
+    ],
+    "old_after_vs_rebuilt_diff": [
+      {
+        "path": "$[\"producer\"][\"claim\"]",
+        "a": "Rust 受限内核的有限条件轨迹；不作全称或完整目标认证",
+        "b": "R2_TMP_NEW_SOURCE_PRODUCER_MARKER"
+      }
+    ],
+    "verify_exit_codes": {
+      "old_on_new_source_record": 0,
+      "old_on_pre_edit_record": 2,
+      "new_on_old_record": 2
+    }
+  },
+  "new_module": {
+    "module_path": "/tmp/zmd-r2-source-67wgyqjd/求解器/crates/kernel/src/r2_omitted_probe.rs",
+    "module_sha256_a": "413b335d56196fdd30345d3d165a8c30866bc6109a8ad1b5fe38d87697da05e6",
+    "module_sha256_b": "cbddbe6f4f5996024ab6527cc2712d7a9e26e1a78da261f24a1218a4ecef45cc",
+    "binary_a": "/home/zhuran24/zmd-research-fresh/求解器/target/r2-source-timing-20260922/kernel-module-a",
+    "binary_b": "/home/zhuran24/zmd-research-fresh/求解器/target/r2-source-timing-20260922/kernel-module-b",
+    "binary_sha256_a": "49abdc5e10b8d18e0db990c73e9fcfc88438eb634b6a9d54c491253b78492832",
+    "binary_sha256_b": "db1469b9a7ed6c17dee1c2fa9801b211e2f106a41690a94915b6e91939f9a2d4",
+    "present_in_fingerprints": false,
+    "fingerprints_equal": true,
+    "context_bindings_equal": true,
+    "full_record_differences": [
+      {
+        "path": "$[\"producer\"][\"claim\"]",
+        "a": "R2_MODULE_A",
+        "b": "R2_MODULE_B"
+      }
+    ],
+    "verify_old_binary_after_module_only_edit_exit": 0,
+    "module_source_a": "pub const CLAIM: &str = \"R2_MODULE_A\";\n",
+    "module_source_b": "pub const CLAIM: &str = \"R2_MODULE_B\";\n"
+  }
+}

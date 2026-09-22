@@ -1,0 +1,145 @@
+**Flow (call path among the symbols you queried)**
+
+1. search (crates/kernel/src/cycle.rs:650)
+   ↓ calls
+2. restore (crates/kernel/src/cycle.rs:576)
+   ↓ calls
+3. checkpoint_input (crates/kernel/src/cycle.rs:500)
+
+> Full source for these symbols is below — the call flow among them, followed by their bodies.
+**Exploration: crates/kernel/src/cycle.rs SearchOptions search checkpoint_input**
+
+Found 26 symbols across 1 file. 1 file pinned from the query.
+
+**Blast radius — what depends on these (update/verify before editing)**
+
+- `checkpoint_input` (crates/kernel/src/cycle.rs:500) — 2 callers in `crates/kernel/src/cycle.rs`, `crates/kernel/src/cycle_io.rs`; no tests found within 3 caller hops
+- `SearchOptions` (crates/kernel/src/cycle.rs:548) — 6 callers in `crates/kernel/src/cycle_io.rs`, `crates/kernel/src/tests_round6.rs`, `crates/kernel/src/main.rs`, `crates/kernel/src/cycle.rs`; no tests found within 3 caller hops
+- `Input` (crates/kernel/src/input.rs:9) — 31 callers in `crates/kernel/src/interfaces.rs`, `crates/kernel/src/lib.rs`, `crates/kernel/src/seed.rs`, `crates/kernel/src/output.rs` +4 more; tested via callers: `crates/kernel/tests/legacy_probes/r1_record/src/main.rs`, `crates/kernel/tests/legacy_probes/r2_engineering/src/main.rs` +3
+- `checkpoint` (crates/kernel/src/tests_revision_r3.rs:4) — 4 callers in `crates/kernel/src/tests_revision_r3.rs`; no tests found within 3 caller hops
+- `INPUT` (规格/复核/内核输入/r4-覆盖证据/被审快照/求解器/数据/样例/check_golden_trace.py:11) — 7 callers in `规格/内核输入修订验证-r3/finalize_delivery.py`, `规格/内核输入修订验证-r4/finalize_delivery.py`, `规格/复核/内核输入/r4-覆盖证据/被审快照/求解器/规格/内核输入修订验证-r3/finalize_delivery.py`, `规格/复核/内核输入/r4-覆盖证据/被审快照/求解器/数据/样例/check_golden_trace.py`; tests: `规格/内核输入修订验证-r4/test_revision.py`, `规格/复核/内核输入/r4-覆盖证据/被审快照/求解器/数据/样例/test_runtime_input.py`
+
+**Relationships**
+
+**calls:**
+- restore → checkpoint_input
+- verify_cycle_at → checkpoint_input
+- restore → set_cache_enabled
+- restore → new_production
+- restore_position → restore
+- search → restore
+- verify_cycle_at → fields
+- verify_cycle_at → invalid
+- verify_cycle_at → canonical_fingerprints
+- verify_cycle_at → canonical_proof_sources
+- ... and 297 more
+
+**references:**
+- checkpoint_input → Input
+- checkpoint_input → Config
+- checkpoint_input → Result
+- restore → Input
+- restore → State
+- restore → Config
+- restore → Result
+- restore → Engine
+- verify_cycle_at → Config
+- verify_cycle_at → Result
+- ... and 96 more
+
+**instantiates:**
+- round6_hash_collisions_replay_every_candidate → SearchOptions
+- run → SearchOptions
+
+**Source Code**
+
+> The code below is the **verbatim, current on-disk source** of these files — re-read from disk on this call and line-numbered, byte-for-byte identical to what the Read tool returns. It is NOT a summary, outline, or stale cache. Treat each block as a Read you have already performed: do not Read a file shown here.
+
+**`crates/kernel/src/cycle.rs`** — calls(calls), Result(references), invalid(calls), Input(references), sort_rows(calls), Config(references), difference(calls), stop_value(calls), domain_report(calls), State(references), +52 more
+
+```rust
+15	fn rational(s: &str) -> Result<String> {
+16	    let parts: Vec<_> = s.split('/').collect();
+17	    if parts.is_empty() || parts.len() > 2 {
+18	        return Err(Stop::invalid("cycle.quantity", "非法有理数"));
+19	    }
+
+... (gap) ...
+
+549	    pub checkpoint_interval: usize,
+550	    #[cfg(test)]
+551	    pub replay_limit: usize,
+552	    pub record_path: Option<std::path::PathBuf>,
+553	    #[cfg(test)]
+554	    pub force_collision: bool,
+555	}
+556	impl Default for SearchOptions {
+557	    fn default() -> Self {
+558	        Self {
+559	            checkpoint_interval: 32,
+560	            #[cfg(test)]
+561	            replay_limit: usize::MAX,
+562	            record_path: None,
+563	            #[cfg(test)]
+564	            force_collision: false,
+565	        }
+566	    }
+567	}
+568	fn digest(key: &Value, options: &SearchOptions) -> String {
+569	    #[cfg(test)]
+570	    if options.force_collision {
+571	        return "0".repeat(64);
+572	    }
+573	    let _ = options;
+574	    crate::digest::sha256_bytes(key.to_string().as_bytes())
+575	}
+576	fn restore(input: &Input, state: &State, config: &Config, sweeps: usize) -> Result<Engine> {
+577	    let mut engine = Engine::new_production(checkpoint_input(input, json!(state), config)?)?;
+578	    engine.max_sweeps = sweeps;
+579	    engine.set_cache_enabled(true);
+580	    Ok(engine)
+581	}
+582	/// 输出§5.2：检查点重放到摘要桶内每个候选位置；失败不判周期。
+583	fn restore_position(
+584	    input: &Input,
+585	    checkpoints: &BTreeMap<usize, State>,
+586	    position: usize,
+587	    config: &Config,
+588	    sweeps: usize,
+589	    remaining: &mut usize,
+590	) -> Result<Engine> {
+591	    let (index, state) = checkpoints.range(..=position).next_back().unwrap();
+592	    let mut engine = restore(input, state, config, sweeps)?;
+593	    for _ in *index..position {
+594	        if *remaining == 0 {
+595	            return Err(Stop::new(
+596	                "inconclusive",
+597	                "resource.replay",
+598	                "cycle.collision_replay",
+599	                "检查点消歧重放预算耗尽；未判定键相等",
+600	            ));
+601	        }
+602	        *remaining -= 1;
+603	        engine.step_compact()?;
+604	    }
+605	    Ok(engine)
+```
+
+**Not shown above — explore these names for their source**
+
+- 规格/复核/内核输入/r4-覆盖证据/被审快照/求解器/数据/样例/check_golden_trace.py: INPUT:11, BASE:10, run:16, main:195, GOLDEN:12, OUTPUT:13, +10 more
+- 规格/复核/内核输入/否证-r4-1-证据/事件冲突隔离/求解器/数据/样例/check_golden_trace.py: INPUT:11, BASE:10, run:16, main:195, GOLDEN:12, OUTPUT:13, +10 more
+- 规格/复核/内核输入/否证-r4-1-证据/读取快照/求解器/数据/样例/check_golden_trace.py: INPUT:11, BASE:10, run:16, main:195, GOLDEN:12, OUTPUT:13, +10 more
+- 规格/复核/内核输入/否证-r4-2-证据/事件碰撞隔离副本/求解器/数据/样例/check_golden_trace.py: INPUT:11, BASE:10, run:16, main:195, GOLDEN:12, OUTPUT:13, +10 more
+- crates/kernel/src/input.rs: Input:9, load:302, parse:315, parse_with_base:306, validate_runtime_interfaces:762, damping_forks:855, +2 more
+- crates/kernel/src/tests_revision_r3.rs: checkpoint:4, revision_r3_checkpoint_parameters_are_not_repaired:22, revision_r3_phase_type_and_domain_at_both_anchors:61, revision_r3_window_deadline_respects_anchor_phase:100, revision_r3_sufficient_requires_both_positive_ores:150, revision_r3_bridge_moves_are_not_first_contact_events:243
+- crates/kernel/src/cycle_io.rs: verify_cycle_at:114, canonical_fingerprints:58, canonical_proof_sources:76, load_stopped_cycle:346, attach_load_context:365, load_ref:38, +2 more
+- crates/kernel/src/output.rs: canonical_record:551, validate_projection:107, fingerprints:148, coverage:227, coverage_with_manufacturing:236, manufacturing_evidence:309, +5 more
+- crates/kernel/src/event_identity.rs: seed_executed:15, validate_event_identity:176, new:189
+- crates/kernel/src/value.rs: Result:6, fields:50, invalid:30, read_json:63
+- ... and 39 more files
+
+---
+> **Complete source for 1 files is included above — do NOT re-read them.** If your question also needs files/symbols listed under "Not shown above" (or any area this call didn't cover), make ANOTHER codegraph_explore targeting those names — it returns the same source with line numbers and is cheaper and more complete than reading. Reserve Read for a single specific line range explore can't surface.
+
+> **Explore budget: 2 calls for this project (661 files indexed).** Each call covers ~6 files; if your question spans more, spend your remaining calls on the uncovered area BEFORE falling back to Read — another explore is cheaper and more complete than reading those files. Synthesize once you've used 2.

@@ -1,0 +1,54 @@
+{
+  "build_argv": [
+    "cargo",
+    "build",
+    "--locked",
+    "--offline",
+    "--workspace",
+    "--bins",
+    "--profile",
+    "r2audit",
+    "--config",
+    "profile.r2audit.inherits=\"dev\"",
+    "--config",
+    "profile.r2audit.codegen-units=1",
+    "--config",
+    "profile.r2audit.debug=0",
+    "-j",
+    "1"
+  ],
+  "profile": "r2audit",
+  "binaries": {
+    "kernel": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/target/r2-source-timing-20260922/kernel-baseline",
+      "sha256": "1b5e6650111aca7dae5f6f94e10be87e4d5ebe4d97083f5588712d7068198278"
+    },
+    "topology": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/target/r2-source-timing-20260922/topology-baseline",
+      "sha256": "7365ad55ead56b31682f4b740c1c4b22a320ea6f6eeffab94907de5ef81ead6f"
+    }
+  },
+  "env": {
+    "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+    "CARGO_BUILD_JOBS": "1",
+    "RAYON_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "UV_THREADPOOL_SIZE": "1",
+    "NODE_OPTIONS": "--v8-pool-size=1"
+  },
+  "cpu_affinity": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "inputs": {
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/生产循环环带.json": "ba34effdb9309d3907eb0c3a2c16567069c69c46e610a6562e3ec66ca53ea9ed",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json": "0aa13f4a7e6856a6cdafdca444297bb3f133d77b120afba3dca2fbdda74b0ef6",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询.json": "6f5a69bb8e043c81fe59d7b3a4ed84231a1e05da69e66e3491f28ecda87b5103",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json": "a6ecebadfb0e322726f22dd3967301691063965c45f56bd62e0d84965a810fee",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/contract.json": "a555045972861bc60a84ade0cfaf81a037a1abfff89be1aeee578b9ef0e1a2db"
+  }
+}

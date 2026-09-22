@@ -1,0 +1,8 @@
+seed exit=0
+check exit=0
+run exit=0
+verify-record exit=0
+cycle exit=0
+verify-cycle exit=0
+checkpoint exit=0
+resumed exit=0

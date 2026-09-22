@@ -1,0 +1,2372 @@
+{
+  "7da52a7": [
+    {
+      "status": "M",
+      "path": ".gitignore"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/src/tests.rs"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/src/tests_round5.rs"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/tests/coverage_audit.py"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/tests/fixtures/benchmark_1000.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/tests/fixtures/benchmark_brick.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/tests/fixtures/benchmark_brick_60.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/tests/fixtures/bridge.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/tests/fixtures/core_inbound.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/tests/fixtures/priority.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/tests/fixtures/revision_r2_branch_cut.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/tests/fixtures/revision_r2_phase_control.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/tests/reference.rs"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/tests/revision_r5_cli.py"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/tests/round5_cli.rs"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/tests/verify_all.py"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/tests/verify_outputs.py"
+    },
+    {
+      "status": "M",
+      "path": "求解器/会议成果/主会话三审-0921.md"
+    },
+    {
+      "status": "M",
+      "path": "求解器/会议成果/任务书7执行/会议成果回填稿.md"
+    },
+    {
+      "status": "M",
+      "path": "求解器/会议成果/任务书7执行/密排布局.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/会议成果/任务书7执行/密排试点.md"
+    },
+    {
+      "status": "M",
+      "path": "求解器/会议成果/任务书7执行/成品输出通路.md"
+    },
+    {
+      "status": "M",
+      "path": "求解器/会议成果/任务书7执行/整厂衔接.md"
+    },
+    {
+      "status": "M",
+      "path": "求解器/会议成果/任务书7执行/未决去向.md"
+    },
+    {
+      "status": "M",
+      "path": "求解器/会议成果/任务书7执行/本轮成果.md"
+    },
+    {
+      "status": "M",
+      "path": "求解器/会议成果/任务书7执行/植物运行试点.md"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/archive-inventory.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/before.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/bin/python"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/bridge-edit-files.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/build-release.log"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/build.attempt-1.log"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/build.log"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/catalog-tests.attempt-1.log"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/catalog-tests.log"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/catalog.attempt-1.log"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/catalog.log"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/check_bridge_python.py"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/check_positive.py"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/clippy-diagnostics.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/clippy.attempt-1.log"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/clippy.attempt-2.log"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/clippy.log"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/commands.jsonl.log"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/coverage-control.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/coverage-control.log"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/delivery-manifest.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/early-test-invalid-cycle-result.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/early-test-output-restoration.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/early-test-relocated-seed.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/early-test-resource-statistics.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/final-audit.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/final_audit.py"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/functions.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/health-inventory.log"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/health_inventory.py"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/input-migration.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/integration-retry.log"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/integration-targeted.log"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/kernel-check.log"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/kernel-run.log"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/kernel-seed.log"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/kernel-verify-record.log"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/migrate_active_inputs.py"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/positive-input.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/positive-run.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/positive-validation.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/positive-validation.log"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/python-bridge-validation.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/python-bridge-validation.log"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/reader-review.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/recover_load_stop.py"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/reference-refresh.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/refresh_reference.py"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/relock.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/relock.py"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/restore_test_outputs.py"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/result.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/revert_bridge.py"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/revert_bridge_docs.py"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/revision-r5-final.log"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/run_checks.py"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/samples.attempt-1.log"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/samples.attempt-2.log"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/samples.log"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/seed-output.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/stale-catalog-input.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/stale-catalog.log"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/supported-sample-check.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/supported-samples.log"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/sync_regressions.py"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/test.attempt-1.log"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/test.attempt-2.log"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/test.attempt-3.log"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/test.attempt-4.log"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/test.attempt-5.log"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/test.attempt-6.log"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/test.log"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/toolchain.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/write_health_plan.py"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/write_report.py"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/分流器三路轮询-reference-diff.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/混做粉碎机两下游-reference-diff.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22/记录.md"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/代码体检方案.md"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/工具/formal_catalog.py"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/工具/formal_units.py"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/工具/test_formal_catalog.py"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/check_examples.py"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/check_golden_trace.py"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/kernel_profile_v1参数赋值.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/runtime_example.py"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/runtime_record.py"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/双门窗口恢复.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/同刻双箱争余量.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/成熟旧货重试.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/无线一满一可收.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/无线全拒收.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/无线多格全收.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/无线多格歧义.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/无线空箱.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/无线部分接收.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/生产环带.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/累计审计与窗口周期.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/累计调低保留.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/累计调高资格.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/装载与普通制造.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/身份实际切换.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/身份断边恢复.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/阻尼恢复.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/静止成熟与暂停键.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/传输拒收与暂停核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/分流器三路轮询-参数赋值.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/数据/样例/分流器三路轮询-参考运行记录.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/分流器三路轮询.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/双成品制造砖.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/双成品满仓起动试作.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/密集制造闭环基础.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/密集制造闭环序0核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/密集制造闭环序1核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/密集制造闭环序2核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/密集制造闭环序3核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/密集制造闭环序4核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/密集制造闭环序5核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/密集结点循环种子核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/密集结点核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/密集结点闭环核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/桥接器双通路.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/数据/样例/混做粉碎机两下游-参考运行记录.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/混做粉碎机两下游.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/生产循环环带.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/研磨混做核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/轮询均分序0核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/轮询均分序1核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/轮询均分序2核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/轮询均分序3核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/轮询均分序4核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/轮询均分序5核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/轮询均分核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/阻尼切支恢复核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/阻尼连续带核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/正式静态目录.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/送料契约.md"
+    },
+    {
+      "status": "M",
+      "path": "求解器/规格/参数扫描约减.md"
+    },
+    {
+      "status": "M",
+      "path": "求解器/规格/受限转移定义.md"
+    },
+    {
+      "status": "M",
+      "path": "求解器/规格/运行语义.md"
+    },
+    {
+      "status": "M",
+      "path": "求解器/规格/选择点清单.md"
+    }
+  ],
+  "a7539f5": [
+    {
+      "status": "M",
+      "path": "《明日方舟：终末地》游戏规则.txt"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/revision-r2/prior-regression-results.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/revision-r2/regression-results.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/age-cohorts-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/age-cohorts-run-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/age-cohorts-seed-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/age-overflow-cycle-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/age-overflow-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/closed-checkpoint-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/closed-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/closed-prefix-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/closed-seed-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/closed-stop-checkpoint_delta-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/closed-stop-full_state_each_instant-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/empty-branch-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/empty-branch-seed-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/extra-trigger-cycle-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/extra-trigger-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/extra-trigger-run-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/extra-trigger-seed-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/forged-adjacency.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/full-branch-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/path-runs-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/path-runs-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/results.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/working-input.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/crates/kernel/evidence/round5/round5_cli/invalid-cycle-input.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/crates/kernel/evidence/round5/round5_cli/invalid-cycle-result.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/crates/kernel/evidence/round5/round5_cli/relocated-seed.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/crates/kernel/evidence/round5/round5_cli/resource-statistics.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/cli/checkpoint-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/cli/continued.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/cli/none-relative.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/cli/none-zero-prefix.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/cli/none.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/cli/overflow-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/cli/overflow.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/cli/referenced-relative.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/cli/referenced-zero-prefix.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/cli/referenced-zero-prefix.record.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/cli/referenced.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/cli/results.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/age-overflow-cycle-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/age-overflow-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/age-overflow-run-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/boolean_context-cycle-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/boolean_context-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/boolean_context-run-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/boolean_context-seed-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/boolean_seed-cycle-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/boolean_seed-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/boolean_seed-run-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/boolean_seed-seed-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/bridge-control-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/bridge-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/checkpoint-control.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/checkpoint-derived-run-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/checkpoint-run-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/checkpoint-seed-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/expired-after-closure-cycle-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/expired-after-closure-run-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/expired-after-closure-seed-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/legacy-late-window-cycle-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/legacy-late-window-record-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/missing_inventory-cycle-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/missing_inventory-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/missing_inventory-run-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/missing_inventory-seed-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/parameter-conflict-cycle-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/parameter-conflict-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/parameter-conflict-run-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/parameter-conflict-seed-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/parameter-lifetime-cycle-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/parameter-lifetime-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/parameter-lifetime-run-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/parameter-lifetime-seed-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/parameter-missing-cycle-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/parameter-missing-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/parameter-missing-run-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/parameter-missing-seed-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/parameter-top_only-cycle-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/parameter-top_only-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/parameter-top_only-run-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/parameter-top_only-seed-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/phase--1-cycle-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/phase--1-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/phase--1-run-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/phase--1-seed-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/phase-1_2-cycle-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/phase-1_2-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/phase-1_2-run-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/phase-1_2-seed-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/phase-6-cycle-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/phase-6-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/phase-6-run-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/phase-6-seed-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/phase-not-a-Time-cycle-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/phase-not-a-Time-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/phase-not-a-Time-run-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/phase-not-a-Time-seed-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/results.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/slot_short-cycle-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/slot_short-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/slot_short-run-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/slot_short-seed-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/slot_unknown-cycle-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/slot_unknown-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/slot_unknown-run-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/slot_unknown-seed-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/unknown_progress-cycle-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/unknown_progress-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/unknown_progress-run-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/unknown_progress-seed-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/zero-ore-iron-cycle-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/zero-ore-iron-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/zero-ore-iron-run-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/zero-ore-iron-seed-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/zero-ore-origin-cycle-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/zero-ore-origin-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/zero-ore-origin-run-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/zero-ore-origin-seed-result.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/bounded-reference-batch-unsupported.log"
+    },
+    {
+      "status": "A",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/bounded-reference-package/分流器三路轮询-reference.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/bounded-reference-package/混做粉碎机两下游-reference.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/checkpoint_delta-checkpoint.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/checkpoint_delta-continued.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/checkpoint_delta-cycle-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/full_state_each_instant-checkpoint.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/full_state_each_instant-continued.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/full_state_each_instant-cycle-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/generate-cycle.log"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/invalid-checkpoint-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/invalid-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/invalid-shell.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/ore-79999-cycle.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/ore-79999-finite.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/ore-79999-raw.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/ore-79999-seed.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/ore-80000-cycle.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/ore-80000-finite.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/ore-80000-raw.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/ore-80000-seed.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/ore-crossed-cycle.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/ore-crossed-seed.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/original-cycle.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/package/checkpoint_delta/certificates/cycle.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/package/checkpoint_delta/records/record.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/package/full_state_each_instant/certificates/cycle.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/reference-package/混做粉碎机两下游-checkpoint_delta.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/reference-package/混做粉碎机两下游-full_state_each_instant.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/reject-dependency.log"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/reject-hash.log"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/reject-missing.log"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/reject-producer.log"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/reject-state.log"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/relative-production-batch.log"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/relative-reference-batch.log"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/resource-checkpoint-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/resource-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/resource-shell.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/results.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/unsupported-checkpoint-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/unsupported-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/unsupported-shell.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/zero-checkpoint.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/zero-prefix.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/混做粉碎机两下游-absolute.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/tests/fixtures/benchmark_1000.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/tests/fixtures/benchmark_brick.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/tests/fixtures/benchmark_brick_60.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/tests/fixtures/bridge.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/tests/fixtures/core_inbound.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/tests/fixtures/priority.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/tests/fixtures/revision_r2_branch_cut.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/tests/fixtures/revision_r2_phase_control.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22b/check_positive.py"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22b/kernel-check.log"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22b/kernel-run.log"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22b/kernel-seed.log"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22b/kernel-verify-record.log"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22b/positive-input.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22b/positive-run.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22b/positive-validation.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22b/relock.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22b/relock.py"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22b/seed-output.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22b/stale-catalog-input.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22b/stale-catalog.log"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22b/test.log"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/check_examples.py"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/双门窗口恢复.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/同刻双箱争余量.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/成熟旧货重试.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/无线一满一可收.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/无线全拒收.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/无线多格全收.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/无线多格歧义.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/无线空箱.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/无线部分接收.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/生产环带.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/累计审计与窗口周期.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/累计调低保留.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/累计调高资格.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/装载与普通制造.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/身份实际切换.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/身份断边恢复.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/阻尼恢复.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/静止成熟与暂停键.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/传输拒收与暂停核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/分流器三路轮询.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/双成品制造砖.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/双成品满仓起动试作.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/密集制造闭环基础.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/密集制造闭环序0核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/密集制造闭环序1核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/密集制造闭环序2核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/密集制造闭环序3核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/密集制造闭环序4核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/密集制造闭环序5核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/密集结点循环种子核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/密集结点核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/密集结点闭环核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/桥接器双通路.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/混做粉碎机两下游.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/生产循环环带.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/研磨混做核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/轮询均分序0核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/轮询均分序1核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/轮询均分序2核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/轮询均分序3核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/轮询均分序4核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/轮询均分序5核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/轮询均分核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/阻尼切支恢复核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/阻尼连续带核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/正式静态目录.json"
+    }
+  ],
+  "220f7b6": [
+    {
+      "status": "M",
+      "path": "候选约束.txt"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/revision-r2/prior-regression-results.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/revision-r2/regression-results.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/age-cohorts-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/age-cohorts-run-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/age-cohorts-seed-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/age-overflow-cycle-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/age-overflow-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/closed-checkpoint-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/closed-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/closed-prefix-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/closed-seed-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/closed-stop-checkpoint_delta-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/closed-stop-full_state_each_instant-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/empty-branch-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/empty-branch-seed-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/extra-trigger-cycle-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/extra-trigger-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/forged-adjacency.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/full-branch-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/path-runs-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/path-runs-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/working-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round5/round5_cli/invalid-cycle-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round5/round5_cli/relocated-seed.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round5/round5_cli/resource-statistics.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/cli/checkpoint-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/cli/continued.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/cli/none-relative.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/cli/none-zero-prefix.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/cli/none.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/cli/overflow-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/cli/overflow.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/cli/referenced-relative.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/cli/referenced-zero-prefix.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/cli/referenced-zero-prefix.record.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/cli/referenced.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/age-overflow-cycle-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/age-overflow-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/boolean_context-cycle-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/boolean_context-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/boolean_seed-cycle-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/boolean_seed-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/bridge-control-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/bridge-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/checkpoint-control.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/checkpoint-derived-run-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/checkpoint-run-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/checkpoint-seed-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/expired-after-closure-cycle-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/missing_inventory-cycle-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/missing_inventory-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/parameter-conflict-cycle-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/parameter-conflict-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/parameter-lifetime-cycle-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/parameter-lifetime-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/parameter-missing-cycle-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/parameter-missing-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/parameter-top_only-cycle-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/parameter-top_only-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/phase--1-cycle-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/phase--1-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/phase-1_2-cycle-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/phase-1_2-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/phase-6-cycle-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/phase-6-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/phase-not-a-Time-cycle-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/phase-not-a-Time-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/results.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/slot_short-cycle-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/slot_short-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/slot_unknown-cycle-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/slot_unknown-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/unknown_progress-cycle-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/unknown_progress-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/zero-ore-iron-cycle-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/zero-ore-iron-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/zero-ore-origin-cycle-result.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/regressions/revision-r3/zero-ore-origin-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/bounded-reference-package/分流器三路轮询-reference.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/bounded-reference-package/混做粉碎机两下游-reference.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/checkpoint_delta-checkpoint.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/checkpoint_delta-continued.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/checkpoint_delta-cycle-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/full_state_each_instant-checkpoint.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/full_state_each_instant-continued.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/full_state_each_instant-cycle-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/invalid-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/invalid-shell.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/ore-79999-cycle.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/ore-79999-finite.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/ore-79999-raw.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/ore-79999-seed.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/ore-80000-cycle.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/ore-80000-finite.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/ore-80000-raw.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/ore-80000-seed.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/ore-crossed-cycle.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/ore-crossed-seed.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/original-cycle.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/package/checkpoint_delta/certificates/cycle.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/package/checkpoint_delta/records/record.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/package/full_state_each_instant/certificates/cycle.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/reference-package/混做粉碎机两下游-checkpoint_delta.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/reference-package/混做粉碎机两下游-full_state_each_instant.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/resource-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/resource-shell.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/unsupported-input.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/unsupported-shell.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/zero-checkpoint.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/zero-prefix.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/混做粉碎机两下游-absolute.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/tests/fixtures/benchmark_1000.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/tests/fixtures/benchmark_brick.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/tests/fixtures/benchmark_brick_60.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/tests/fixtures/bridge.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/tests/fixtures/core_inbound.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/tests/fixtures/priority.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/tests/fixtures/revision_r2_branch_cut.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/kernel/tests/fixtures/revision_r2_phase_control.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/crates/topology/tests/validation.rs"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22c/check_positive.py"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22c/kernel-check.log"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22c/kernel-run.log"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22c/kernel-seed.log"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22c/kernel-verify-record.log"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22c/positive-input.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22c/positive-run.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22c/positive-validation.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22c/regen_constraints.py"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22c/relock.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22c/relock.py"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22c/seed-output.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22c/stale-catalog-input.json"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22c/stale-catalog.log"
+    },
+    {
+      "status": "A",
+      "path": "求解器/内核维护/2026-09-22c/test.log"
+    },
+    {
+      "status": "A",
+      "path": "求解器/数据/工具/__pycache__/formal_catalog.cpython-314.pyc"
+    },
+    {
+      "status": "A",
+      "path": "求解器/数据/工具/__pycache__/formal_units.cpython-314.pyc"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/工具/check_revision.py"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/工具/formal_catalog.py"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/check_examples.py"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/双门窗口恢复.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/同刻双箱争余量.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/成熟旧货重试.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/无线一满一可收.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/无线全拒收.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/无线多格全收.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/无线多格歧义.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/无线空箱.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/无线部分接收.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/生产环带.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/累计审计与窗口周期.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/累计调低保留.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/累计调高资格.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/装载与普通制造.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/身份实际切换.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/身份断边恢复.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/阻尼恢复.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/任务7内核/静止成熟与暂停键.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/传输拒收与暂停核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/分流器三路轮询.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/双成品制造砖.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/双成品满仓起动试作.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/密集制造闭环基础.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/密集制造闭环序0核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/密集制造闭环序1核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/密集制造闭环序2核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/密集制造闭环序3核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/密集制造闭环序4核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/密集制造闭环序5核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/密集结点循环种子核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/密集结点核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/密集结点闭环核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/桥接器双通路.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/混做粉碎机两下游.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/生产循环环带.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/研磨混做核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/轮询均分序0核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/轮询均分序1核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/轮询均分序2核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/轮询均分序3核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/轮询均分序4核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/轮询均分序5核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/轮询均分核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/阻尼切支恢复核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/样例/阻尼连续带核验.json"
+    },
+    {
+      "status": "M",
+      "path": "求解器/数据/正式静态目录.json"
+    },
+    {
+      "status": "M",
+      "path": "求解约束.txt"
+    }
+  ]
+}

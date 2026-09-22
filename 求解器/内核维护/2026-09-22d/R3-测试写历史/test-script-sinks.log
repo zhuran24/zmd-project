@@ -1,0 +1,108 @@
+crates/kernel/tests/cleanup_revision_r3.py:8:KERNEL = Path(__file__).resolve().parents[1]
+crates/kernel/tests/cleanup_revision_r3.py:9:OUT = KERNEL / 'evidence/revision-r3'
+crates/kernel/tests/cleanup_revision_r3.py:60:        manifest.write_text(text)
+crates/kernel/tests/cleanup_revision_r3.py:75:    report_path.write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n')
+crates/kernel/tests/finalize_round5.py:4:ROOT=Path(__file__).resolve().parents[3];BASE=ROOT/'数据/样例';E=ROOT/'crates/kernel/evidence/round5';BIN=ROOT/'target/release/kernel';CFG=ROOT/'规格/内核配置-v1.json'
+crates/kernel/tests/finalize_round5.py:24:    (BASE/(name+'-运行记录-v3.json')).write_text(json.dumps(record,ensure_ascii=False,indent=2)+'\n')
+crates/kernel/tests/finalize_round5.py:36:    record.write_text(json.dumps(value['run_record'],ensure_ascii=False,separators=(',',':'))+'\n')
+crates/kernel/tests/finalize_round5.py:38:(E/'regeneration.json').write_text(json.dumps(dict(config_revision=json.loads(CFG.read_text())['revision'],config_sha256=hashlib.sha256(CFG.read_bytes()).hexdigest(),binary_sha256=hashlib.sha256(BIN.read_bytes()).hexdigest(),results=reports),ensure_ascii=False,indent=2)+'\n')
+crates/kernel/tests/finalize_round5.py:41:    path.write_text(json.dumps(json.loads(path.read_text()),ensure_ascii=False,separators=(',',':'))+'\n')
+crates/kernel/tests/finalize_round5.py:43:    path.write_text(json.dumps(json.loads(path.read_text()),ensure_ascii=False,separators=(',',':'))+'\n')
+crates/kernel/tests/verify_outputs.py:9:ROOT = Path(__file__).resolve().parents[3]
+crates/kernel/tests/verify_outputs.py:133:    (ROOT / 'crates/kernel/evidence/round5/record-validation.json').write_text(json.dumps(result, ensure_ascii=False, indent=2) + '\n')
+crates/kernel/tests/benchmark_round5.py:8:ROOT=b.ROOT;E=ROOT/'crates/kernel/evidence/round5';b.OUT=ROOT/'crates/kernel/tests/fixtures'
+crates/kernel/tests/benchmark_round5.py:26:    source=b.OUT/(name+'.json');save(source,d)
+crates/kernel/tests/benchmark_round5.py:37:    source=b.OUT/'benchmark_brick_60.json';save(source,d)
+crates/kernel/tests/benchmark_round5.py:55:    save(E/f'benchmark-{stage}.json',output)
+crates/kernel/tests/benchmark_round6.py:11:ROOT=b.ROOT;E=ROOT/'crates/kernel/evidence/round6';BASE=ROOT/'数据/样例';BIN=ROOT/'target/release/kernel';CFG=ROOT/'规格/内核配置-v1.json'
+crates/kernel/tests/benchmark_round6.py:24: b.OUT=BASE;d=b.generate('双成品制造砖',units)
+crates/kernel/tests/benchmark_round6.py:32: path=BASE/'双成品制造砖.json';save(path,migrate(d));call(['seed',path,'--out',path]);return path
+crates/kernel/tests/benchmark_round6.py:37: if args.out_dir:E=args.out_dir.resolve();E.mkdir(parents=True,exist_ok=True)
+crates/kernel/tests/benchmark_round6.py:49:   p=SimpleNamespace(**measured);wall=p.wall_ns;rss.write_text(json.dumps(measured,ensure_ascii=False)+'\n')
+crates/kernel/tests/benchmark_round6.py:67: save(E/f'benchmark-{args.stage}.json',output)
+crates/kernel/tests/finalize_revision_r4.py:10:ROOT = Path(__file__).resolve().parents[3]
+crates/kernel/tests/finalize_revision_r4.py:11:KERNEL = ROOT / 'crates/kernel'
+crates/kernel/tests/finalize_revision_r4.py:12:OUT = KERNEL / 'evidence/revision-r4'
+crates/kernel/tests/finalize_revision_r4.py:23:def write(path, value):
+crates/kernel/tests/finalize_revision_r4.py:24:    path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + '\n')
+crates/kernel/tests/finalize_revision_r4.py:52:    write(OUT / 'benchmark-final.json', bench)
+crates/kernel/tests/finalize_revision_r4.py:58:    write(KERNEL / 'evidence/benchmark.json', benchmark)
+crates/kernel/tests/finalize_revision_r4.py:59:    write(KERNEL / 'evidence/round5/benchmark-final.json', bench)
+crates/kernel/tests/finalize_revision_r4.py:83:    write(OUT / '交付结果.json', result)
+crates/kernel/tests/finalize_revision_r4.py:84:    write(KERNEL / 'evidence/round5/交付结果.json', {**result, 'current_report': str(OUT / '修订与验证.md')})
+crates/kernel/tests/finalize_revision_r4.py:137:    (OUT / '修订与验证.md').write_text(report)
+crates/kernel/tests/finalize_revision_r4.py:153:    revision.write_text(text)
+crates/kernel/tests/finalize_revision_r4.py:196:    write(OUT / '范围审计.json', scope)
+crates/kernel/tests/finalize_revision_r4.py:202:    write(OUT / '交付清单.json', dict(schema='kernel-revision-r4-files-v1', changes=changes, nonrecursive_files=sorted(excluded)))
+crates/kernel/tests/finalize_revision_r4.py:205:    write(OUT / '最终回复.json', dict(files=files, summary=summary, open_items=open_items))
+crates/kernel/tests/refresh_round6.py:4:ROOT=Path(__file__).resolve().parents[3];BASE=ROOT/'数据/样例';E=ROOT/'crates/kernel/evidence/round6'
+crates/kernel/tests/refresh_round6.py:7:def save(p,d):p.write_text(json.dumps(d,ensure_ascii=False,indent=2)+'\n')
+crates/kernel/tests/refresh_round6.py:22: d=dict(certificates=certificates,records=records);assert len(certificates)==10 and len(records)==26;save(path,d);return d
+crates/kernel/tests/refresh_round6.py:37:  save(E/f'migration-{kind}.json',dict(status='pass',results=results));results=[]
+crates/kernel/tests/refresh_round6.py:47:   validate_record(record,raw,ticks);save(BASE/(name+'-运行记录-v3.json'),record)
+crates/kernel/tests/revision_r2_audit.py:8:ROOT = Path(__file__).resolve().parents[3]
+crates/kernel/tests/revision_r2_audit.py:9:KERNEL = ROOT / 'crates/kernel'
+crates/kernel/tests/revision_r2_audit.py:10:OUT = KERNEL / 'evidence/revision-r2'
+crates/kernel/tests/revision_r2_audit.py:18:def write(name, value):
+crates/kernel/tests/revision_r2_audit.py:20:    (OUT / name).write_text(json.dumps(value, ensure_ascii=False, indent=2) + '\n')
+crates/kernel/tests/revision_r2_audit.py:95:    write('final-audit.json', {
+crates/kernel/tests/revision_r2_audit.py:112:    write('deliverables.json', {
+crates/kernel/tests/finalize_revision_r3.py:7:ROOT = Path(__file__).resolve().parents[3]
+crates/kernel/tests/finalize_revision_r3.py:8:KERNEL = ROOT / 'crates/kernel'
+crates/kernel/tests/finalize_revision_r3.py:9:OUT = KERNEL / 'evidence/revision-r3'
+crates/kernel/tests/finalize_revision_r3.py:106:    (OUT / '修订与验证.md').write_text(report)
+crates/kernel/tests/finalize_revision_r3.py:124:    revision.write_text(text)
+crates/kernel/tests/finalize_revision_r3.py:130:    (OUT / '交付结果.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+crates/kernel/tests/revision_audit.py:9:ROOT = Path(__file__).resolve().parents[3]
+crates/kernel/tests/revision_audit.py:10:KERNEL = ROOT / 'crates/kernel'
+crates/kernel/tests/revision_audit.py:11:EVIDENCE = KERNEL / 'evidence/revision-r1'
+crates/kernel/tests/revision_audit.py:19:def write(path, value):
+crates/kernel/tests/revision_audit.py:21:    path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + '\n')
+crates/kernel/tests/revision_audit.py:64:    write(EVIDENCE / 'record-validation.json', {'status': '通过', 'records': records})
+crates/kernel/tests/revision_audit.py:100:    write(EVIDENCE / 'final-audit.json', {
+crates/kernel/tests/revision_audit.py:112:    write(manifest, {'scope': '第1轮修订新增或修改的源文件、文档、运行记录和验证证据；不含构建缓存与已清理临时文件',
+crates/kernel/tests/production_attempt_round6.py:10:ROOT=b.ROOT;BASE=ROOT/'数据/样例';E=ROOT/'crates/kernel/evidence/round6';BIN=ROOT/'target/release/kernel';CFG=ROOT/'规格/内核配置-v1.json'
+crates/kernel/tests/production_attempt_round6.py:35: b.OUT=BASE;name='双成品满仓起动试作';d=b.generate(name,units);b.set_axis(d,'warehouse.external_supply',{'kind':'sufficient'})
+crates/kernel/tests/production_attempt_round6.py:46: path=BASE/(name+'.json');save(path,migrate(d));call(['seed',path,'--out',path]);return path,placement
+crates/kernel/tests/production_attempt_round6.py:48: path,placement=generate();static=call(['check',path,'--cycle-domain']);save(E/'K6-domain.json',static)
+crates/kernel/tests/production_attempt_round6.py:49: run=call(['run',path,'--no-output','--ticks',512]);save(E/'K6-run.json',run)
+crates/kernel/tests/production_attempt_round6.py:50: cert=BASE/'双成品满仓起动试作-周期证书-kernel.json';search=call(['cycle',path,'--no-record','--max-ticks',512,'--out',cert],True);save(E/'K6-search.json',search)
+crates/kernel/tests/production_attempt_round6.py:51: result=json.loads(cert.read_text());verification=call(['verify-cycle',cert]);save(E/'K6-verify.json',verification)
+crates/kernel/tests/production_attempt_round6.py:54: save(E/'K6-result.json',report);print(json.dumps({k:report[k] for k in ('status','units','physical_channels','cycle_status','completed_ticks')},ensure_ascii=False))
+crates/kernel/tests/final_audit.py:10:ROOT = Path(__file__).resolve().parents[3]
+crates/kernel/tests/final_audit.py:11:KERNEL = ROOT / 'crates/kernel'
+crates/kernel/tests/final_audit.py:29:    (KERNEL / 'evidence/periodic-stop.json').write_text(json.dumps(stopped, ensure_ascii=False, indent=2) + '\n')
+crates/kernel/tests/final_audit.py:43:    manifest_path.write_text('{}\n')
+crates/kernel/tests/final_audit.py:53:    (KERNEL / 'evidence/final-audit.json').write_text(json.dumps(result, ensure_ascii=False, indent=2) + '\n')
+crates/kernel/tests/final_audit.py:56:    manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + '\n')
+crates/kernel/tests/dense_cycle_round5.py:8:ROOT=s.ROOT;BASE=s.OUT;BIN=s.BIN;CFG=s.CONFIG
+crates/kernel/tests/variants_round5.py:13:write(s.ROOT/'crates/kernel/evidence/round5/polling-six-orders.json',dict(status='pass',cases=results,scope='同一已核前件下六种局部顺序；没有替代judgment.order全域约减'))
+crates/kernel/tests/dense_manufacturing_round5.py:8:ROOT=s.ROOT;BASE=s.OUT;BIN=s.BIN;CFG=s.CONFIG
+crates/kernel/tests/dense_manufacturing_round5.py:65: source=BASE/(name+'.json');save(source,d)
+crates/kernel/tests/dense_manufacturing_round5.py:69: source.write_bytes(normalized.read_bytes());normalized.unlink()
+crates/kernel/tests/dense_manufacturing_round5.py:83: record=BASE/(name+'-运行记录-v3-kernel.json');record.write_text(json.dumps(result['run_record'],ensure_ascii=False,separators=(',',':'))+'\n');out.write_text(json.dumps(result,ensure_ascii=False,separators=(',',':'))+'\n')
+crates/kernel/tests/dense_manufacturing_round5.py:84:(ROOT/'crates/kernel/evidence/round5/dense-manufacturing-results.json').write_text(json.dumps(reports,ensure_ascii=False,indent=2)+'\n')
+crates/kernel/tests/migrate_round5.py:4:ROOT=Path(__file__).resolve().parents[3]
+crates/kernel/tests/migrate_round5.py:7:def save(p,d):p.write_text(json.dumps(d,ensure_ascii=False,indent=2)+'\n')
+crates/kernel/tests/migrate_round5.py:43:    for p in files:save(p,migrate(load(p)))
+crates/kernel/tests/migrate_round5.py:47:    for name,out in [('混做粉碎机两下游','kernel_profile_v1参数赋值'),('分流器三路轮询','分流器三路轮询-参数赋值')]:save(SAMPLES/(out+'.json'),profile_projection(load(SAMPLES/(name+'.json'))))
+crates/kernel/tests/audit_task7.py:5:ROOT=Path(__file__).resolve().parents[3]
+crates/kernel/tests/audit_revision_r3.py:8:ROOT = Path(__file__).resolve().parents[3]
+crates/kernel/tests/audit_revision_r3.py:9:OUT = ROOT / 'crates/kernel/evidence/revision-r3'
+crates/kernel/tests/audit_revision_r3.py:44:    (OUT / 'cli-schema-audit.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+crates/kernel/tests/scope_revision_r3.py:10:ROOT = Path(__file__).resolve().parents[4]
+crates/kernel/tests/scope_revision_r3.py:12:KERNEL = SOLVER / 'crates/kernel'
+crates/kernel/tests/scope_revision_r3.py:13:OUT = KERNEL / 'evidence/revision-r3'
+crates/kernel/tests/scope_revision_r3.py:24:def write(name, value):
+crates/kernel/tests/scope_revision_r3.py:25:    (OUT / name).write_text(json.dumps(value, ensure_ascii=False, indent=2) + '\n')
+crates/kernel/tests/scope_revision_r3.py:109:    write('范围审计.json',scope)
+crates/kernel/tests/scope_revision_r3.py:116:    write('交付清单.json',dict(schema='kernel-revision-r3-files-v1',changes=changes,
+crates/kernel/tests/audit_dense_round5.py:8:ROOT = Path(__file__).resolve().parents[3]
+crates/kernel/tests/audit_dense_round5.py:9:BASE = ROOT / '数据/样例'
+crates/kernel/tests/audit_dense_round5.py:10:E = ROOT / 'crates/kernel/evidence/round5'
+crates/kernel/tests/audit_dense_round5.py:132:    (E / 'dense-manufacturing-audit.json').write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n')
+crates/kernel/tests/audit_round5.py:5:ROOT=Path(__file__).resolve().parents[3];BASE=ROOT/'数据/样例';E=ROOT/'crates/kernel/evidence/round5'
+crates/kernel/tests/audit_round5.py:14:def write(p,d):p.write_text(json.dumps(d,ensure_ascii=False,indent=2)+'\n')
+crates/kernel/tests/audit_round5.py:181:    write(E/'bridge-first-contact-audit.json',dict(status='pass',cases=bridge_audit,
+crates/kernel/tests/audit_round5.py:185:    write(E/'polling-six-orders.json',dict(status='pass',cases=variants,scope='当前来源下六局部顺序的实际回放，不代替全局全序约减'))
+crates/kernel/tests/audit_round5.py:191:    write(E/'audit-results.json',result);print(json.dumps(dict(status='pass',records=len(reports),cycles=len(cycles),missing=missing),ensure_ascii=False))

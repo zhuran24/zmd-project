@@ -1,0 +1,36 @@
+{
+  "argv": [
+    "cargo",
+    "build",
+    "--manifest-path",
+    "/tmp/zmd-r2-cache-origin-q4ypu2nd/求解器/Cargo.toml",
+    "-vv",
+    "--locked",
+    "--offline",
+    "--workspace",
+    "--bins",
+    "--profile",
+    "r2audit",
+    "--config",
+    "profile.r2audit.inherits=\"dev\"",
+    "--config",
+    "profile.r2audit.codegen-units=1",
+    "--config",
+    "profile.r2audit.debug=0",
+    "-j",
+    "1"
+  ],
+  "shell_command": "cargo build --manifest-path '/tmp/zmd-r2-cache-origin-q4ypu2nd/求解器/Cargo.toml' -vv --locked --offline --workspace --bins --profile r2audit --config 'profile.r2audit.inherits=\"dev\"' --config profile.r2audit.codegen-units=1 --config profile.r2audit.debug=0 -j 1",
+  "cwd": "/tmp/zmd-r2-cache-origin-q4ypu2nd/求解器",
+  "returncode": 0,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "acc941ed8bb71aae847c6ac33e6817384be6cde4056e600f29f7493268aaf1d2",
+  "cpu_affinity": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ]
+}

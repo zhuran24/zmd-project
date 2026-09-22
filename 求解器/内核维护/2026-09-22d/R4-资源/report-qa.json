@@ -1,0 +1,17 @@
+{
+  "status": "pass",
+  "reader_review": "全文重读完成；结论、实际推进量、计时口径、原始日志、代码定位、归因边界、工具路径差异与来源哈希均可独立理解。",
+  "report_links_checked": 34,
+  "missing_links": [],
+  "measurement_rows": 23,
+  "artifact_hashes_checked": 8,
+  "unchanged_tracked_files": 6386,
+  "report_sha256": "dcf4b0f0f4c90c35871f6eaf82915d87f1bc559b999936327f998ec489fd2317",
+  "file_extensions": {
+    ".log": 114,
+    ".py": 3,
+    ".json": 65,
+    ".rs": 2
+  },
+  "code_unchanged": true
+}

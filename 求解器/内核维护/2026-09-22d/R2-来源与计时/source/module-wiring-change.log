@@ -1,0 +1,14 @@
+--- output.rs:marker
++++ output.rs:module
+@@ -518,7 +518,7 @@
+     let sources = fingerprints(&engine.input,config_path,&extra)?;
+     let scope = evidence_scope("diagnostic", "diagnostic", &sources);
+     Ok(
+-        json!({"schema":"kernel-output-v4","evidence_scope":scope,"execution_mode":if engine.production_abstraction {"production_abstraction"}else{"finite_concrete"},"port_meeting":engine.input.parameters.value(Axis::ConnectionPortMeeting)?,"run_id":format!("kernel:{}:{}:{}",engine.input.path.file_stem().and_then(|s|s.to_str()).unwrap_or("input"),from["value"]["value"].as_str().unwrap_or("?"),ticks),"profile_id":config.profile_id,"producer":{"kind":"kernel","path":root.join("crates/kernel/src/lib.rs").canonicalize().map_err(|e|Stop::invalid("producer",e.to_string()))?,"claim":"R2_TMP_NEW_SOURCE_PRODUCER_MARKER"},"status":status,"fingerprints":sources,"parameter_assignment":engine.input.raw["parameters"],"input_history":{"timeline":engine.input.raw["timeline"],"construction":engine.input.raw["construction"],"debug_operations":engine.input.raw["debug_operations"],"environment":engine.input.raw["environment"],"reachability":engine.input.raw["initial_state"]["reachability"]},"uncovered_axes":uncovered,"trace":trace,"validation_scope":json!({"kind":"finite_trace","from":from,"through":end,"golden_match":golden_match,"initial_history":"conditional_witness","universal_parameters":false,"all_reachable_cycles":false,"target_certified":false,"manufacturing_cycles_completed":q(completed)}),"open_items":open}),
++        json!({"schema":"kernel-output-v4","evidence_scope":scope,"execution_mode":if engine.production_abstraction {"production_abstraction"}else{"finite_concrete"},"port_meeting":engine.input.parameters.value(Axis::ConnectionPortMeeting)?,"run_id":format!("kernel:{}:{}:{}",engine.input.path.file_stem().and_then(|s|s.to_str()).unwrap_or("input"),from["value"]["value"].as_str().unwrap_or("?"),ticks),"profile_id":config.profile_id,"producer":{"kind":"kernel","path":root.join("crates/kernel/src/lib.rs").canonicalize().map_err(|e|Stop::invalid("producer",e.to_string()))?,"claim":crate::r2_omitted_probe::CLAIM},"status":status,"fingerprints":sources,"parameter_assignment":engine.input.raw["parameters"],"input_history":{"timeline":engine.input.raw["timeline"],"construction":engine.input.raw["construction"],"debug_operations":engine.input.raw["debug_operations"],"environment":engine.input.raw["environment"],"reachability":engine.input.raw["initial_state"]["reachability"]},"uncovered_axes":uncovered,"trace":trace,"validation_scope":json!({"kind":"finite_trace","from":from,"through":end,"golden_match":golden_match,"initial_history":"conditional_witness","universal_parameters":false,"all_reachable_cycles":false,"target_certified":false,"manufacturing_cycles_completed":q(completed)}),"open_items":open}),
+     )
+ }
+ /// 内核输出§1：装载失败不制造非法的“完整参数/轨迹”对象。
+
+lib.rs addition:
+pub mod r2_omitted_probe;

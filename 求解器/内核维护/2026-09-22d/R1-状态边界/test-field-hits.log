@@ -1,0 +1,101 @@
+crates/kernel/src/tests_revision_r5.rs:12:    let mut raw = sample.input.raw.clone();
+crates/kernel/src/tests_revision_r5.rs:34:        memories.push(finite.memory.clone());
+crates/kernel/src/tests_round6.rs:43:        assert_eq!(row["warehouse_ledger"], b.ledger);
+crates/kernel/src/tests_round6.rs:104:    assert_eq!(e.completed_batches, 1);
+crates/kernel/src/tests_round6.rs:132:    let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_round5.rs:12:            original.input.raw.clone(),
+crates/kernel/src/tests_round5.rs:26:    let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_round5.rs:42:    let mut raw = explicit.input.raw.clone();
+crates/kernel/src/tests_round5.rs:72:    let mut raw = sample("混做粉碎机两下游").input.raw;
+crates/kernel/src/tests_round5.rs:125:        e.production_abstraction = name == "生产循环环带";
+crates/kernel/src/tests_round5.rs:166:    unpersisted.raw["scenario"]["assertions"] = json!(["没有写入所锁定输入文件的变异"]);
+crates/kernel/src/tests_round5.rs:217:        .switches
+crates/kernel/src/tests_round5.rs:221:        .switches
+crates/kernel/src/tests_round5.rs:234:    let mut raw = original.input.raw.clone();
+crates/kernel/src/tests_round5.rs:255:        let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_round5.rs:295:    input.raw["initial_state"]["nonwarehouse"]["value"] = json!(e.state);
+crates/kernel/src/tests_revision_r4.rs:26:    let mut raw = original.input.raw;
+crates/kernel/src/tests_revision_r4.rs:98:    let mut raw = original.input.raw;
+crates/kernel/src/tests_revision_r4.rs:120:    let mut checkpoint = e.input.raw.clone();
+crates/kernel/src/tests_revision_r4.rs:169:    let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_revision_r4.rs:175:            engine("研磨混做核验").input.raw
+crates/kernel/src/tests_revision_r4.rs:202:    let mut raw = original.input.raw;
+crates/kernel/src/tests_revision_r4.rs:235:    let raw = original.input.raw;
+crates/kernel/src/tests_revision_r4.rs:292:        e.max_sweeps = 1;
+crates/kernel/src/tests_revision_r3.rs:9:    let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_revision_r3.rs:63:    let initial = engine("桥接器双通路").input.raw;
+crates/kernel/src/tests_revision_r3.rs:157:                (e.input.raw, e.input.path)
+crates/kernel/src/tests_revision_r3.rs:185:        let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_revision_r3.rs:196:            let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_revision_r3.rs:202:        let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_revision_r2.rs:22:    let mut raw = original.input.raw.clone();
+crates/kernel/src/tests_revision_r2.rs:81:    let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_revision_r2.rs:86:    let mut resumed = control.input.raw.clone();
+crates/kernel/src/tests_revision_r2.rs:129:        let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_revision_r2.rs:157:        let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_revision_r2.rs:169:        let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_revision_r2.rs:182:    load(e.input.raw.clone(), &e.input.path)
+crates/kernel/src/tests_revision_r2.rs:193:    let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_revision_r2.rs:242:    let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_revision.rs:34:        let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_revision.rs:40:    let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_revision.rs:60:        let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_revision.rs:67:    let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_revision.rs:84:        let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_revision.rs:97:        let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_revision.rs:120:    let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_revision.rs:128:    assert_eq!(control.supplied["源矿"], 4);
+crates/kernel/src/tests_revision.rs:157:    let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_revision.rs:207:        let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_revision.rs:235:    let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_revision.rs:306:    let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_revision.rs:383:        .switches
+crates/kernel/src/tests.rs:138:        let mut raw = b.input.raw.clone();
+crates/kernel/src/tests.rs:176:    limited.max_sweeps = 1;
+crates/kernel/src/tests.rs:216:    assert_eq!(e.delivery["高容谷地电池"], 3);
+crates/kernel/src/tests.rs:224:        .assignments
+crates/kernel/src/tests.rs:227:        .switches
+crates/kernel/src/tests.rs:236:    assert!(e.delivery.is_empty());
+crates/kernel/src/tests.rs:262:        .assignments
+crates/kernel/src/tests.rs:313:        .switches
+crates/kernel/src/tests.rs:352:        .switches
+crates/kernel/src/tests.rs:363:        e.delivery,
+crates/kernel/src/tests.rs:414:        .switches
+crates/kernel/src/tests.rs:445:    e.input.gate_settings.get_mut("probe_gate_a").unwrap()["item"] = json!("蓝铁矿");
+crates/kernel/src/tests.rs:456:    e.input.gate_settings.get_mut("probe_gate_a").unwrap()["item"] = json!("源矿");
+crates/kernel/src/tests.rs:466:    e.input.gate_settings.get_mut("probe_gate_a").unwrap()["total_limit"] = q(1);
+crates/kernel/src/tests.rs:480:    let members = e.memory.sides[i].levels[0].members.clone();
+crates/kernel/src/tests.rs:482:    e.memory.sides[i].levels[0].next_channel = members[1].clone();
+crates/kernel/src/tests.rs:485:    assert_eq!(e.memory.sides[i].levels[0].next_channel, members[2]);
+crates/kernel/src/tests.rs:488:    assert_eq!(e.memory.sides[i].levels[0].next_channel, members[2]);
+crates/kernel/src/tests.rs:508:    let old = s.input.branches.remove(&key).unwrap();
+crates/kernel/src/tests.rs:510:    s.input.branches.insert(key, old);
+crates/kernel/src/tests.rs:555:    assert_eq!(e.completed_batches, 2);
+crates/kernel/src/tests.rs:568:        e.input.raw["timeline"]["events"]
+crates/kernel/src/tests.rs:620:    let mut raw = e.input.raw.clone();
+crates/kernel/src/tests.rs:658:    let mut premature = e.input.raw.clone();
+crates/kernel/src/tests.rs:670:    let mut alias = e.input.raw.clone();
+crates/kernel/src/tests.rs:683:    let mut raw = e.input.raw.clone();
+crates/kernel/src/tests.rs:688:    let mut raw = e.input.raw.clone();
+crates/kernel/src/tests.rs:700:    let mut raw = e.input.raw.clone();
+crates/kernel/src/tests.rs:757:    let mut raw = e.input.raw.clone();
+crates/kernel/src/tests.rs:769:    assert_eq!(e.supplied["源矿"], 1);
+crates/kernel/src/tests.rs:770:    assert!(e.delivery.is_empty());
+crates/kernel/src/tests.rs:785:        let mut raw = e.input.raw.clone();
+crates/kernel/src/tests.rs:826:    e.state.logistics.poll_memory.value = json!(e.memory);
+crates/kernel/src/tests.rs:827:    let mut raw = e.input.raw.clone();
+crates/kernel/src/tests.rs:890:    assert!(e.input.connection_times[direct] < e.input.connection_times[other]);
+crates/kernel/src/tests.rs:891:    let s = &e.memory.sides[e.side_index[&("source".into(), "output".into())]];
+crates/kernel/src/tests.rs:910:    assert!(e.delivery.is_empty());
+crates/kernel/src/tests.rs:912:    assert_eq!(e.delivery["高容谷地电池"], 1);
+crates/kernel/src/tests.rs:920:    let mut raw = normal.input.raw.clone();
+crates/kernel/src/tests.rs:948:        normal.input.connection_times,
+crates/kernel/src/tests.rs:949:        reversed.input.connection_times
+crates/kernel/src/tests.rs:957:    let members = e.memory.sides[i].levels[0].members.clone();
+crates/kernel/src/tests.rs:962:    assert!(e.memory.sides[i].levels.is_empty());
+crates/kernel/src/tests.rs:967:    assert_eq!(e.memory.sides[i].levels[0].next_channel, members[1]);
+crates/kernel/src/tests.rs:985:        .switches
+crates/kernel/src/tests.rs:1000:    let mut raw = original.input.raw.clone();
+crates/kernel/src/tests.rs:1013:        .parameters
+crates/kernel/src/tests.rs:1097:    e.max_sweeps = 0;
+crates/kernel/src/tests.rs:1100:    e.max_sweeps = 1000;

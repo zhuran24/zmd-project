@@ -1,0 +1,69 @@
+{
+  "environment": {
+    "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+    "CARGO_BUILD_JOBS": "2",
+    "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+    "RUST_TEST_THREADS": "1",
+    "RAYON_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "PYTHONDONTWRITEBYTECODE": "1"
+  },
+  "commands": [
+    {
+      "name": "rustc-version",
+      "argv": [
+        "rustc",
+        "-Vv"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "exit_code": 0
+    },
+    {
+      "name": "build",
+      "argv": [
+        "cargo",
+        "build",
+        "--locked",
+        "--offline",
+        "-p",
+        "kernel",
+        "--lib",
+        "-j",
+        "2",
+        "--message-format=json"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "exit_code": 0
+    },
+    {
+      "name": "rustc-probe",
+      "argv": [
+        "rustc",
+        "--edition=2021",
+        "-C",
+        "codegen-units=1",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22d/R5-验证与失败态/probe.rs",
+        "-L",
+        "dependency=/home/zhuran24/zmd-research-fresh/求解器/target/debug/deps",
+        "--extern",
+        "kernel=/home/zhuran24/zmd-research-fresh/求解器/target/debug/libkernel.rlib",
+        "--extern",
+        "serde_json=/home/zhuran24/zmd-research-fresh/求解器/target/debug/deps/libserde_json-9e3a536667d77ac1.rlib",
+        "-o",
+        "/home/zhuran24/zmd-research-fresh/求解器/target/r5-validation-failure-probe"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "exit_code": 0
+    },
+    {
+      "name": "probe",
+      "argv": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/r5-validation-failure-probe",
+        "/home/zhuran24/zmd-research-fresh/求解器",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22d/R5-验证与失败态"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "exit_code": 101
+    }
+  ]
+}

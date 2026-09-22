@@ -1,0 +1,6 @@
+{
+  "verdict": "重现了",
+  "findings": "原版 release 内核：环带无输出 1000/10000/100000 tick 三次中位墙钟 0.04/0.39/4.01 秒，峰值 RSS 8392/22868/167716 KiB，均 completed。较大制造闭环样例相应墙钟 0.89/9.03/92.60 秒，峰值 55264/458012/4486920 KiB，均 completed。环带 1000 tick full 输出 999684 KiB，delta(K=32) 221540 KiB。周期搜索较大样例完成 1000 tick、inconclusive；K=1/32/128 峰值分别 666652/83472/68832 KiB。只读统计探针在环带 100000 tick 直接看到 allocated=1000013、executed=1000000、records 长度及容量均 0；两个集合字符串缓冲区及 String 对象至少 69778224 字节。代码核实 allocated/executed 全程保留；单刻 records 每 tick 清空，run_record 的 rows/acceptance 等保存全程；周期搜索保存摘要位置及间隔 State 检查点，未保存逐 tick 完整键。未作堆分配归因或更大未命中预算曲线，不把 RSS 全归给一个集合。",
+  "extra_issues": "分流器样例请求三规模均仅完成 12 tick，因 warehouse.external_supply 覆盖区间停止，不能作长期成功数据；环带周期请求 100000 tick 实际 21 tick 即得到 diagnostic_cycle（period=20）。有输出峰值显著且 delta 非流式。宿主 /usr/bin/time 缺失，使用从既有软件源临时解包的 GNU Time 1.10 -v，同一计量口径，无系统安装。23 组 CLI 测量均使用同一二进制哈希；6386 个既有跟踪文件 SHA-256 及大小均未变。",
+  "report_path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22d/R4-资源.md"
+}

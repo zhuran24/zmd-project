@@ -1,0 +1,495 @@
+CodeGraph used first for active implementation; these excerpts capture audited source lines.
+
+$ nl -ba crates/kernel/src/engine.rs | sed -n 19,60p
+19	pub struct Engine {
+20	    pub(crate) gate_channels: Vec<String>,
+21	    pub(crate) core_inbound_channels: Vec<String>,
+22	    pub(crate) arbitration_rank: BTreeMap<String, usize>,
+23	    pub(crate) level_keys: std::cell::RefCell<BTreeMap<String, (i64, i64)>>,
+24	    pub(crate) damping_used: std::cell::RefCell<BTreeSet<String>>,
+25	    pub(crate) cache_enabled: bool,
+26	    pub(crate) physical_cache: std::cell::RefCell<BTreeMap<String, crate::cache::PhysicalResult>>,
+27	    pub(crate) dirty_sides: std::cell::RefCell<BTreeSet<usize>>,
+28	    pub(crate) dependencies: BTreeMap<String, BTreeSet<String>>,
+29	    pub(crate) slot_groups: BTreeMap<(String, String), Vec<String>>,
+30	    pub(crate) unit_inventory: BTreeMap<String, Vec<usize>>,
+31	    pub input: Input,
+32	    pub state: State,
+33	    pub memory: PollMemory,
+34	    pub completed_batches: i64,
+35	    pub ledger: Value,
+36	    pub production_abstraction: bool,
+37	    pub delivery: BTreeMap<String, i64>,
+38	    pub supplied: BTreeMap<String, i64>,
+39	    pub(crate) inv: BTreeMap<String, usize>,
+40	    pub(crate) progress: BTreeMap<String, usize>,
+41	    pub(crate) warehouse: BTreeMap<String, usize>,
+42	    pub(crate) caps: BTreeMap<String, Option<i64>>,
+43	    pub(crate) active: BTreeSet<String>,
+44	    pub(crate) channel_order: Vec<String>,
+45	    pub(crate) usage: BTreeMap<String, i64>,
+46	    pub(crate) pending: Vec<Pending>,
+47	    pub(crate) allocated: BTreeSet<String>,
+48	    pub(crate) executed: BTreeSet<String>,
+49	    pub(crate) side_index: BTreeMap<(String, String), usize>,
+50	    pub(crate) gate_index: BTreeMap<String, usize>,
+51	    pub(crate) t: i64,
+52	    pub(crate) records: Vec<Event>,
+53	    pub(crate) movements: Vec<Value>,
+54	    pub(crate) passages: Vec<Value>,
+55	    pub(crate) capture: bool,
+56	    pub(crate) tie_sides: Vec<String>,
+57	    pub(crate) first: bool,
+58	    pub max_sweeps: usize,
+59	    pub(crate) halted: Option<Stop>,
+60	    pub(crate) active_event: Option<String>,
+
+$ nl -ba crates/kernel/src/engine.rs | sed -n 244,252p
+244	        let executed = crate::event_identity::seed_executed(&input, &json!(state))?;
+245	        let allocated = input.raw["timeline"]["events"]
+246	            .as_array()
+247	            .unwrap()
+248	            .iter()
+249	            .map(|e| e["id"].as_str().unwrap().to_string())
+250	            .chain(pending.iter().map(|p| p.event.clone()))
+251	            .chain(executed.iter().cloned())
+252	            .collect();
+
+$ nl -ba crates/kernel/src/engine.rs | sed -n 1221,1241p
+1221	    /// 内核输入§3.1、内核输出§2：生成事件只注册一次。
+1222	    pub(crate) fn allocate(&mut self, id: &str) -> Result<()> {
+1223	        if !self.allocated.insert(id.into()) {
+1224	            return Err(Stop::invalid(id, "运行事件与已注册身份冲突"));
+1225	        }
+1226	        Ok(())
+1227	    }
+1228	    /// 内核输出§2：待事件消费与模板机会均禁止重复执行。
+1229	    pub(crate) fn execute(&mut self, id: &str) -> Result<()> {
+1230	        if !self.allocated.contains(id) || !self.executed.insert(id.into()) {
+1231	            return Err(Stop::invalid(id, "事件未注册或重复执行"));
+1232	        }
+1233	        Ok(())
+1234	    }
+1235	    /// 内核输出§2：关闭记录时仍执行真实守卫和事件身份检查。
+1236	    pub(crate) fn record(&mut self, event: Event) {
+1237	        if self.capture {
+1238	            self.records.push(event)
+1239	        }
+1240	    }
+1241	}
+
+$ nl -ba crates/kernel/src/transition.rs | sed -n 675,685p
+675	    fn step_inner(&mut self, capture: bool, snapshot: bool) -> Result<Option<Value>> {
+676	        self.invalidate_all();
+677	        self.damping_used.borrow_mut().clear();
+678	        self.level_keys.borrow_mut().clear();
+679	        self.capture = capture;
+680	        self.records.clear();
+681	        self.ledger = crate::ledger::empty_ledger();
+682	        self.movements.clear();
+683	        self.passages.clear();
+684	        let advance = !self.first
+685	            || self.state.semantic_context.judgment_context.value["phase"] == "after_closure";
+
+$ nl -ba crates/kernel/src/transition.rs | sed -n 695,767p
+695	        self.boundary(advance)?;
+696	        self.first = false;
+697	        self.refresh()?;
+698	        let mut seen = BTreeSet::new();
+699	        seen.insert(self.closure_key()?);
+700	        let mut rounds = 0;
+701	        loop {
+702	            if rounds >= self.max_sweeps {
+703	                return Err(Stop::new(
+704	                    "inconclusive",
+705	                    "resource.sweeps",
+706	                    format!("instant={} sweep={rounds}", self.t),
+707	                    "未见完整状态重复，不能推进时刻",
+708	                ));
+709	            }
+710	            for i in 0..self.input.templates.len() {
+711	                let maintenance = self.maintain_identity()?;
+712	                if let Some(detail) = maintenance {
+713	                    let id = format!("I|{}|{rounds}|{i}", self.t);
+714	                    self.allocate(&id)?;
+715	                    self.execute(&id)?;
+716	                    self.record(Event {
+717	                        event: id,
+718	                        operation: "gate_identity_maintenance".into(),
+719	                        target: "gates".into(),
+720	                        outcome: "success".into(),
+721	                        detail: Some(detail),
+722	                        basis: vec!["受限转移定义§2.2；KQ-05".into()],
+723	                    });
+724	                }
+725	                let template = self.input.templates[i].clone();
+726	                let id = format!("J|{}|{rounds}|{i}", self.t);
+727	                self.active_event = Some(id.clone());
+728	                self.allocate(&id)?;
+729	                self.execute(&id)?;
+730	                let (outcome, detail, basis) = match template.operation.as_str() {
+731	                    "move" => self.move_channel(&template.target, &id)?,
+732	                    "manufacture" => (
+733	                        self.manufacture(&template.target, &id)?,
+734	                        String::new(),
+735	                        vec![
+736	                            "规则 L18、L35".into(),
+737	                            "受限转移定义 §4.2".into(),
+738	                            "受限模型声明 manufacture_subactions、atomic_batch、same_instant"
+739	                                .into(),
+740	                        ],
+741	                    ),
+742	                    "transfer" => {
+743	                        let (a, b) = self.transfer(&template.target, &id)?;
+744	                        (
+745	                            a,
+746	                            b,
+747	                            vec!["规则 L20–21、L36".into(), "受限转移定义 §4.3".into()],
+748	                        )
+749	                    }
+750	                    _ => return Err(Stop::unsupported("judgment.order", &id, "未知模板")),
+751	                };
+752	                self.record(Event {
+753	                    event: id,
+754	                    operation: template.operation,
+755	                    target: template.target,
+756	                    outcome,
+757	                    detail: Some(detail),
+758	                    basis,
+759	                });
+760	            }
+761	            rounds += 1;
+762	            self.refresh()?;
+763	            if !seen.insert(self.closure_key()?) {
+764	                break;
+765	            }
+766	        }
+767	        self.state.logistics.poll_memory.value = json!(self.memory);
+
+$ nl -ba crates/kernel/src/output.rs | sed -n 394,441p
+394	pub fn run_record(
+395	    mut engine: Engine,
+396	    config: &Config,
+397	    config_path: &Path,
+398	    ticks: usize,
+399	    format: &str,
+400	    interval: usize,
+401	) -> Result<Value> {
+402	    if !["full_state_each_instant", "checkpoint_delta"].contains(&format) || interval == 0 {
+403	        return Err(Stop::invalid("format", "格式或检查点间隔非法"));
+404	    }
+405	    let start = json!(engine.state);
+406	    let mut previous = start.clone();
+407	    let mut rows = Vec::new();
+408	    let mut acceptance = Vec::new();
+409	    let mut manufacturing = BTreeMap::<String, Vec<String>>::new();
+410	    let mut phases = manufacturing_phases(&engine.input);
+411	    let mut stop = None;
+412	    for index in 0..ticks {
+413	        match engine.step(true) {
+414	            Ok(Some(mut t)) => {
+415	                acceptance.push(
+416	                    serde_json::to_string(&engine.acceptance_report()?)
+417	                        .map_err(|e| Stop::invalid("warehouse.acceptance", e.to_string()))?,
+418	                );
+419	                // 增量编码前取证，完整tick本身及黄金/差分对象保持不变。
+420	                manufacturing_evidence(&t, &engine.input, &mut phases, &mut manufacturing);
+421	                if format == "checkpoint_delta" {
+422	                    let current = t.as_object_mut().unwrap().remove("state").unwrap();
+423	                    if index % interval == 0 {
+424	                        t["state"] = current.clone();
+425	                    } else {
+426	                        t["delta"] = json!(delta(&previous, &current)?);
+427	                    }
+428	                    previous = current;
+429	                }
+430	                rows.push(t)
+431	            }
+432	            Ok(None) => return Err(Stop::invalid("output", "记录被意外关闭")),
+433	            Err(e) => {
+434	                stop = Some(e);
+435	                break;
+436	            }
+437	        }
+438	    }
+439	    let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../..");
+440	    let sample = root.join("数据/样例");
+441	    let mut extra = Vec::new();
+
+$ nl -ba crates/kernel/src/output.rs | sed -n 489,521p
+489	    let completed = rows
+490	        .iter()
+491	        .flat_map(|t| t["events"].as_array().into_iter().flatten())
+492	        .filter(|e| e["operation"] == "manufacture_complete")
+493	        .count() as i64;
+494	    let end = rows
+495	        .last()
+496	        .map(|t| t["time"].clone())
+497	        .unwrap_or(start["environment"]["time"].clone());
+498	    let from = rows
+499	        .first()
+500	        .map(|t| t["time"].clone())
+501	        .unwrap_or(start["environment"]["time"].clone());
+502	    let mut trace = json!({"start_state":start,"ticks":rows,"end_time":end,"format":format});
+503	    if format == "checkpoint_delta" {
+504	        trace["checkpoint_interval"] = json!(interval);
+505	        trace["delta_encoding"] = json!("object_replace_v1");
+506	    }
+507	    let status = stop
+508	        .as_ref()
+509	        .map(|s| s.status.as_str())
+510	        .unwrap_or("completed");
+511	    let mut open = vec![
+512	        "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。".into(),
+513	        "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。".into(),
+514	    ];
+515	    if let Some(e) = &stop {
+516	        open.push(e.to_string());
+517	    }
+518	    let sources = fingerprints(&engine.input,config_path,&extra)?;
+519	    let scope = evidence_scope("diagnostic", "diagnostic", &sources);
+520	    Ok(
+521	        json!({"schema":"kernel-output-v4","evidence_scope":scope,"execution_mode":if engine.production_abstraction {"production_abstraction"}else{"finite_concrete"},"port_meeting":engine.input.parameters.value(Axis::ConnectionPortMeeting)?,"run_id":format!("kernel:{}:{}:{}",engine.input.path.file_stem().and_then(|s|s.to_str()).unwrap_or("input"),from["value"]["value"].as_str().unwrap_or("?"),ticks),"profile_id":config.profile_id,"producer":{"kind":"kernel","path":root.join("crates/kernel/src/lib.rs").canonicalize().map_err(|e|Stop::invalid("producer",e.to_string()))?,"claim":"Rust 受限内核的有限条件轨迹；不作全称或完整目标认证"},"status":status,"fingerprints":sources,"parameter_assignment":engine.input.raw["parameters"],"input_history":{"timeline":engine.input.raw["timeline"],"construction":engine.input.raw["construction"],"debug_operations":engine.input.raw["debug_operations"],"environment":engine.input.raw["environment"],"reachability":engine.input.raw["initial_state"]["reachability"]},"uncovered_axes":uncovered,"trace":trace,"validation_scope":json!({"kind":"finite_trace","from":from,"through":end,"golden_match":golden_match,"initial_history":"conditional_witness","universal_parameters":false,"all_reachable_cycles":false,"target_certified":false,"manufacturing_cycles_completed":q(completed)}),"open_items":open}),
+
+$ nl -ba crates/kernel/src/cycle.rs | sed -n 548,565p
+548	pub struct SearchOptions {
+549	    pub checkpoint_interval: usize,
+550	    #[cfg(test)]
+551	    pub replay_limit: usize,
+552	    pub record_path: Option<std::path::PathBuf>,
+553	    #[cfg(test)]
+554	    pub force_collision: bool,
+555	}
+556	impl Default for SearchOptions {
+557	    fn default() -> Self {
+558	        Self {
+559	            checkpoint_interval: 32,
+560	            #[cfg(test)]
+561	            replay_limit: usize::MAX,
+562	            record_path: None,
+563	            #[cfg(test)]
+564	            force_collision: false,
+565	        }
+
+$ nl -ba crates/kernel/src/cycle.rs | sed -n 576,607p
+576	fn restore(input: &Input, state: &State, config: &Config, sweeps: usize) -> Result<Engine> {
+577	    let mut engine = Engine::new_production(checkpoint_input(input, json!(state), config)?)?;
+578	    engine.max_sweeps = sweeps;
+579	    engine.set_cache_enabled(true);
+580	    Ok(engine)
+581	}
+582	/// 输出§5.2：检查点重放到摘要桶内每个候选位置；失败不判周期。
+583	fn restore_position(
+584	    input: &Input,
+585	    checkpoints: &BTreeMap<usize, State>,
+586	    position: usize,
+587	    config: &Config,
+588	    sweeps: usize,
+589	    remaining: &mut usize,
+590	) -> Result<Engine> {
+591	    let (index, state) = checkpoints.range(..=position).next_back().unwrap();
+592	    let mut engine = restore(input, state, config, sweeps)?;
+593	    for _ in *index..position {
+594	        if *remaining == 0 {
+595	            return Err(Stop::new(
+596	                "inconclusive",
+597	                "resource.replay",
+598	                "cycle.collision_replay",
+599	                "检查点消歧重放预算耗尽；未判定键相等",
+600	            ));
+601	        }
+602	        *remaining -= 1;
+603	        engine.step_compact()?;
+604	    }
+605	    Ok(engine)
+606	}
+607	/// 输出§5：默认库调用不写文件，使用无记录证书；CLI可显式保存独立记录。
+
+$ nl -ba crates/kernel/src/cycle.rs | sed -n 661,735p
+661	    let mut engine = Engine::new_production(input.clone())?;
+662	    engine.max_sweeps = max_sweeps;
+663	    engine.set_cache_enabled(true);
+664	    let seed = engine.state.clone();
+665	    let mut last = seed.clone();
+666	    let mut checks = engine.domain_report("static");
+667	    let mut stop = engine
+668	        .production_domain()
+669	        .err()
+670	        .map(|e| stop_value(&e, engine.t, &[]));
+671	    let mut stopped_in_step = false;
+672	    let mut seen = BTreeMap::<String, Vec<usize>>::new();
+673	    let mut checkpoints = BTreeMap::from([(0, seed.clone())]);
+674	    let mut completed = 0;
+675	    let mut found = None;
+676	    // 故障注入只供回归；公开预算仍恰为契约的ticks/sweeps。
+677	    #[cfg(test)]
+678	    let mut replay_budget = options.replay_limit;
+679	    #[cfg(not(test))]
+680	    let mut replay_budget = usize::MAX;
+681	    if stop.is_none() && seed.semantic_context.judgment_context.value["phase"] == "after_closure" {
+682	        match engine.cycle_key() {
+683	            Ok(k) => {
+684	                seen.insert(digest(&k, options), vec![0]);
+685	            }
+686	            Err(e) => stop = Some(stop_value(&e, engine.t, &[])),
+687	        }
+688	    }
+689	    while stop.is_none() && completed < max_ticks {
+690	        if let Err(e) = engine.step_compact() {
+691	            stopped_in_step = true;
+692	            stop = Some(stop_value(&e, engine.t, &engine.records));
+693	            break;
+694	        }
+695	        completed += 1;
+696	        last = engine.state.clone();
+697	        let key = match engine.cycle_key() {
+698	            Ok(k) => k,
+699	            Err(e) => {
+700	                stop = Some(stop_value(&e, engine.t, &[]));
+701	                break;
+702	            }
+703	        };
+704	        let hash = digest(&key, options);
+705	        if let Some(positions) = seen.get(&hash) {
+706	            for position in positions {
+707	                let restored = match restore_position(
+708	                    &input,
+709	                    &checkpoints,
+710	                    *position,
+711	                    config,
+712	                    max_sweeps,
+713	                    &mut replay_budget,
+714	                ) {
+715	                    Ok(e) => e,
+716	                    Err(e) => {
+717	                        stop = Some(stop_value(&e, engine.t, &[]));
+718	                        break;
+719	                    }
+720	                };
+721	                let candidate = restored.cycle_key()?;
+722	                if candidate == key {
+723	                    found = Some((restored.state, *position, candidate, key.clone()));
+724	                    break;
+725	                }
+726	            }
+727	        }
+728	        if stop.is_some() || found.is_some() {
+729	            break;
+730	        }
+731	        seen.entry(hash).or_default().push(completed);
+732	        if completed % options.checkpoint_interval == 0 {
+733	            checkpoints.insert(completed, last.clone());
+734	        }
+735	    }
+
+$ nl -ba crates/kernel/src/cycle.rs | sed -n 745,758p
+745	        let mut ledger = Vec::new();
+746	        let mut accept = Vec::new();
+747	        let mut combined = crate::ledger::empty_ledger();
+748	        for _ in index..completed {
+749	            replay.step_compact()?;
+750	            for f in FLOWS {
+751	                combined[f]
+752	                    .as_array_mut()
+753	                    .unwrap()
+754	                    .extend(replay.ledger[f].as_array().unwrap().iter().cloned());
+755	            }
+756	            ledger.push(json!({"time":tv(replay.t),"warehouse_ledger":replay.ledger}));
+757	            accept.push(acceptance(&replay)?);
+758	        }
+
+$ nl -ba crates/kernel/src/cycle.rs | sed -n 822,832p
+822	    let record = if options.record_path.is_some() {
+823	        let mut replay = restore(&input, &seed, config, max_sweeps)?;
+824	        replay.max_sweeps = max_sweeps;
+825	        let mut record = output::run_record(
+826	            replay,
+827	            config,
+828	            config_path,
+829	            completed + usize::from(stopped_in_step),
+830	            "full_state_each_instant",
+831	            1,
+832	        )?;
+
+$ nl -ba crates/kernel/src/main.rs | sed -n 249,275p
+249	        let mut engine = Engine::new(input)?;
+250	        engine.max_sweeps = max_sweeps;
+251	        engine.set_cache_enabled(cache);
+252	        if no_output {
+253	            let start = Instant::now();
+254	            let mut completed = 0usize;
+255	            let mut stop = None;
+256	            for _ in 0..n {
+257	                match engine.step(false) {
+258	                    Ok(_) => completed += 1,
+259	                    Err(e) => {
+260	                        stop = Some(e);
+261	                        break;
+262	                    }
+263	                }
+264	            }
+265	            if let Some(e) = stop {
+266	                return Ok(
+267	                    serde_json::json!({"status":e.status,"ticks":n,"completed_ticks":completed,"elapsed_ns":start.elapsed().as_nanos().to_string(),"output":"disabled","statistics":{"completed":0,"inconclusive":usize::from(e.status=="inconclusive"),"stopped":usize::from(e.status!="inconclusive")},"stop":e}),
+268	                );
+269	            }
+270	            Ok(
+271	                serde_json::json!({"status":"completed","ticks":n,"elapsed_ns":start.elapsed().as_nanos().to_string(),"output":"disabled","statistics":{"completed":1,"inconclusive":0,"stopped":0},"completed_batches":engine.completed_batches,"actual_inbound":engine.delivery,"final_inventory":engine.inventory_totals()?}),
+272	            )
+273	        } else {
+274	            run_record(engine, &config, &cfg, n, &format, interval)
+275	        }
+
+$ nl -ba crates/kernel/src/main.rs | sed -n 319,335p
+319	    let text = serde_json::to_string_pretty(&record)
+320	        .map_err(|e| Stop::invalid("output", e.to_string()))?
+321	        + "\n";
+322	    if let Some(path) = out {
+323	        std::fs::write(&path, text)
+324	            .map_err(|e| Stop::invalid(path.display().to_string(), e.to_string()))?;
+325	        println!(
+326	            "{}",
+327	            serde_json::json!({"status":record["status"],"out":path})
+328	        );
+329	    } else if command == "run" && !no_output {
+330	        return Err(Stop::invalid(
+331	            "cli",
+332	            "记录输出须指定 --out；性能运行用 --no-output",
+333	        ));
+334	    } else {
+335	        print!("{text}");
+
+$ nl -ba crates/kernel/src/cache.rs | sed -n 9,13p
+9	    /// 每时刻或图事务全失效，涵盖年龄、预算清零、门原因、级及阻尼路径。
+10	    pub(crate) fn invalidate_all(&self) {
+11	        self.physical_cache.borrow_mut().clear();
+12	        *self.dirty_sides.borrow_mut() = (0..self.memory.sides.len()).collect();
+13	    }
+
+$ rg -n allocated|executed crates/kernel/src --glob !tests*
+crates/kernel/src/seed.rs:213:        self.allocated
+crates/kernel/src/engine.rs:47:    pub(crate) allocated: BTreeSet<String>,
+crates/kernel/src/engine.rs:48:    pub(crate) executed: BTreeSet<String>,
+crates/kernel/src/engine.rs:244:        let executed = crate::event_identity::seed_executed(&input, &json!(state))?;
+crates/kernel/src/engine.rs:245:        let allocated = input.raw["timeline"]["events"]
+crates/kernel/src/engine.rs:251:            .chain(executed.iter().cloned())
+crates/kernel/src/engine.rs:341:            allocated,
+crates/kernel/src/engine.rs:342:            executed,
+crates/kernel/src/engine.rs:1223:        if !self.allocated.insert(id.into()) {
+crates/kernel/src/engine.rs:1230:        if !self.allocated.contains(id) || !self.executed.insert(id.into()) {
+crates/kernel/src/cycle.rs:801:        checks = engine.domain_report("executed_prefix");
+crates/kernel/src/interfaces.rs:457:                    format!("seed_executed:{}", row["event"]),
+crates/kernel/src/transition.rs:123:        if self.allocated.contains(id) {
+crates/kernel/src/transition.rs:585:            if self.executed.contains(id) {
+crates/kernel/src/transition.rs:591:            if !self.allocated.contains(id) {
+crates/kernel/src/main.rs:218:                    serde_json::json!({"status":if passed{"input_checked"}else{"unsupported"},"domain_report":report,"trajectory_executed":false}),
+crates/kernel/src/main.rs:303:                record = serde_json::json!({"status":e.status,"domain_report":kernel::cycle::load_stopped_cycle(&e,1,max_sweeps,meeting)["domain_report"],"trajectory_executed":false});
+crates/kernel/src/event_identity.rs:15:pub(crate) fn seed_executed(input: &Input, start: &Value) -> Result<BTreeSet<String>> {
+crates/kernel/src/event_identity.rs:118:    executed: BTreeSet<String>,
+crates/kernel/src/event_identity.rs:135:            if !current.insert(id.to_string()) || self.executed.contains(id) {
+crates/kernel/src/event_identity.rs:166:            .any(|id| !self.executed.contains(id) && !current.contains(id))
+crates/kernel/src/event_identity.rs:198:            executed: seed_executed(input, start)?,
+crates/kernel/src/event_identity.rs:234:            if registry.executed.contains(id) {
+crates/kernel/src/event_identity.rs:258:            registry.executed.insert(id.to_string());
+crates/kernel/src/event_identity.rs:260:        let consumed = seed_executed(input, &tick["state"])?;
+crates/kernel/src/event_identity.rs:261:        if !consumed.is_subset(&registry.executed) {

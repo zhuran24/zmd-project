@@ -1,0 +1,25 @@
+{
+  "argv": [
+    "/home/zhuran24/zmd-research-fresh/求解器/target/r2-source-timing-20260922/kernel-baseline",
+    "cycle",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/生产循环环带.json",
+    "--config",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+    "--max-ticks",
+    "20",
+    "--no-record"
+  ],
+  "shell_command": "'/home/zhuran24/zmd-research-fresh/求解器/target/r2-source-timing-20260922/kernel-baseline' cycle '/home/zhuran24/zmd-research-fresh/求解器/数据/样例/生产循环环带.json' --config '/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json' --max-ticks 20 --no-record",
+  "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+  "returncode": 0,
+  "stdout_sha256": "2fd345b46761f414486b591182a3dc96daa3e6cb6d9f31e0a8d4c02db221e641",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "cpu_affinity": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ]
+}

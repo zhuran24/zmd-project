@@ -1,0 +1,21 @@
+{
+  "utc": "2026-09-22T21:55:11.738860+00:00",
+  "platform": "Linux-7.2.6-1-cachyos-x86_64-with-glibc2.44",
+  "cpu_model": "model name\t: 13th Gen Intel(R) Core(TM) i9-13900KS",
+  "meminfo": "MemTotal:       48996540 kB\nMemFree:        31355612 kB\nMemAvailable:   35773476 kB\nBuffers:          107512 kB\nCached:          5876836 kB\nSwapCached:        10760 kB\nActive:          6377760 kB\nInactive:        7079068 kB\nActive(anon):    5745232 kB\nInactive(anon):  2952876 kB\nActive(file):     632528 kB\nInactive(file):  4126192 kB\nUnevictable:      554908 kB\nMlocked:             116 kB\nSwapTotal:      48996348 kB\nSwapFree:       43262352 kB\nZswap:                 0 kB\nZswapped:              0 kB\nDirty:             63192 kB\nWriteback:             0 kB\nAnonPages:       7543856 kB\nMapped:          1411560 kB\nShmem:           1042040 kB\nKReclaimable:     261736 kB\nSlab:             796100 kB\nSReclaimable:     261736 kB\nSUnreclaim:       534364 kB\nKernelStack:       68240 kB\nPageTables:       196812 kB\nSecPageTables:      3084 kB\nNFS_Unstable:          0 kB\nBounce:                0 kB\nWritebackTmp:          0 kB\nCommitLimit:    73494616 kB\nCommitted_AS:   53399848 kB\nVmallocTotal:   34359738367 kB\nVmallocUsed:      360736 kB\nVmallocChunk:          0 kB\nPercpu:            21792 kB\nHardwareCorrupted:     0 kB\nAnonHugePages:   1116160 kB\nShmemHugePages:   399360 kB\nShmemPmdMapped:        0 kB\nFileHugePages:    100352 kB\nFilePmdMapped:     43008 kB\nCmaTotal:              0 kB\nCmaFree:               0 kB\nUnaccepted:            0 kB\nBalloon:               0 kB\nGPUActive:             0 kB\nGPUReclaim:            0 kB\nHugePages_Total:       0\nHugePages_Free:        0\nHugePages_Rsvd:        0\nHugePages_Surp:        0\nHugepagesize:       2048 kB\nHugetlb:               0 kB\nDirectMap4k:     1767788 kB\nDirectMap2M:    47192064 kB\nDirectMap1G:     1048576 kB\n",
+  "loadavg": "0.83 0.69 0.79 6/4242 595316\n",
+  "rustc": "rustc 1.98.1 (48a229cea 2026-09-01) (Arch Linux rust 1:1.98.1-1.1)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8\n",
+  "cargo": "cargo 1.98.1 (797e8a9bc 2026-08-05) (Arch Linux rust 1:1.98.1-1.1)\n",
+  "git_head": "5574911008304c6b01d0fa76c234d0d519e72e1b",
+  "binary_sha256": "6809bf5b8b48dd3853d4c898d597ec5eabcc3610e362b89c39ddeec128c1869d",
+  "binary_mtime_ns": 1790110474410730412,
+  "build_command": "CARGO_TARGET_DIR=/home/zhuran24/zmd-research-fresh/求解器/target CARGO_BUILD_JOBS=1 RAYON_NUM_THREADS=1 cargo build --release --locked -p kernel --bin kernel -j 1",
+  "environment_overrides": {
+    "LC_ALL": "C",
+    "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+    "CARGO_BUILD_JOBS": "1",
+    "RAYON_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1"
+  }
+}

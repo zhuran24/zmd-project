@@ -1,0 +1,22 @@
+{
+  "argv": [
+    "/home/zhuran24/zmd-research-fresh/求解器/target/r2-source-timing-20260922/kernel-baseline",
+    "verify-batch",
+    "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22d/R2-来源与计时/aa/batch",
+    "--config",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+  ],
+  "shell_command": "'/home/zhuran24/zmd-research-fresh/求解器/target/r2-source-timing-20260922/kernel-baseline' verify-batch '/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22d/R2-来源与计时/aa/batch' --config '/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json'",
+  "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+  "returncode": 0,
+  "stdout_sha256": "664072f3d224c0744fd8b6c154b6e69912a09875d0b0ca1c61be2362226cc5e6",
+  "stderr_sha256": "bbef13b96e1337c66676ab2c1509988a413fa8e89ebcc07cd397d64b631ce00b",
+  "cpu_affinity": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ]
+}

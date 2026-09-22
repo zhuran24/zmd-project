@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "gdb",
+    "-nx",
+    "-nh",
+    "-batch",
+    "-q",
+    "-iex",
+    "set debuginfod enabled off",
+    "-iex",
+    "maintenance set worker-threads 2",
+    "-ex",
+    "set pagination off",
+    "-ex",
+    "source /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22d/R5-验证与失败态/trace_calls.py",
+    "-ex",
+    "run",
+    "--args",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/r5-validation-failure-probe",
+    "/home/zhuran24/zmd-research-fresh/求解器",
+    "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22d/R5-验证与失败态"
+  ],
+  "exit_code": 0
+}

@@ -1,0 +1,78 @@
+{
+  "commands": [
+    {
+      "argv": [
+        "cargo",
+        "build",
+        "--locked",
+        "--offline",
+        "--lib",
+        "-p",
+        "kernel",
+        "-j",
+        "6",
+        "--message-format=json"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "exit_code": 0,
+      "stdout": "build.json",
+      "stderr": "build.log"
+    },
+    {
+      "argv": [
+        "rustc",
+        "--edition=2021",
+        "--crate-name",
+        "r1_state_boundary_probe",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22d/R1-状态边界/probe.rs",
+        "-C",
+        "codegen-units=1",
+        "-L",
+        "dependency=/home/zhuran24/zmd-research-fresh/求解器/target/debug/deps",
+        "--extern",
+        "kernel=/home/zhuran24/zmd-research-fresh/求解器/target/debug/libkernel.rlib",
+        "--extern",
+        "serde_json=/home/zhuran24/zmd-research-fresh/求解器/target/debug/deps/libserde_json-0ab88e76c2088d71.rlib",
+        "-o",
+        "/home/zhuran24/zmd-research-fresh/求解器/target/debug/r1_state_boundary_probe"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "exit_code": 0,
+      "stdout": "compile.log",
+      "stderr": "compile-stderr.log"
+    },
+    {
+      "argv": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/debug/r1_state_boundary_probe",
+        "/home/zhuran24/zmd-research-fresh/求解器"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "exit_code": 0,
+      "stdout": "probe.json",
+      "stderr": "probe.log"
+    }
+  ],
+  "environment": {
+    "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+    "CARGO_BUILD_JOBS": "6",
+    "RAYON_NUM_THREADS": "6",
+    "OMP_NUM_THREADS": "6"
+  },
+  "cpu_affinity": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "rustc": "rustc 1.98.1 (48a229cea 2026-09-01) (Arch Linux rust 1:1.98.1-1.1)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8\n",
+  "cargo": "cargo 1.98.1 (797e8a9bc 2026-08-05) (Arch Linux rust 1:1.98.1-1.1)\n",
+  "head": "5574911008304c6b01d0fa76c234d0d519e72e1b",
+  "hashes": {
+    "/home/zhuran24/zmd-research-fresh/求解器/target/debug/r1_state_boundary_probe": "ff2f0258f06303ed07590b4ee1a855fe275c746521380e3d8aa48da622ff0876",
+    "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22d/R1-状态边界/probe.rs": "8636e6c93846319dc460f45f6351c54b1d17c8438822483f861013d4d5b4c418",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/生产循环环带.json": "ba34effdb9309d3907eb0c3a2c16567069c69c46e610a6562e3ec66ca53ea9ed",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json": "a6ecebadfb0e322726f22dd3967301691063965c45f56bd62e0d84965a810fee"
+  }
+}

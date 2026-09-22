@@ -1,0 +1,1 @@
+/tmp/r4-gnu-time-m5smi74t/usr/bin/time -v -o '/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22d/R4-资源/ring-none-10000-r1.time.log' '/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel' run '/home/zhuran24/zmd-research-fresh/求解器/数据/样例/生产循环环带.json' --config '/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json' --ticks 10000 --max-sweeps 100000 --no-output

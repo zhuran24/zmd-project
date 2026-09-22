@@ -1,0 +1,292 @@
+crates/kernel/tests/revision_r2_audit.py:10:OUT = KERNEL / 'evidence/revision-r2'
+crates/kernel/tests/revision_r2_audit.py:20:    (OUT / name).write_text(json.dumps(value, ensure_ascii=False, indent=2) + '\n')
+crates/kernel/tests/revision_r2_audit.py:101:        'prior_review_and_evidence_bytes_unchanged': True,
+crates/kernel/tests/dense_manufacturing_round5.py:67: r=subprocess.run([str(BIN),'seed',str(source),'--config',str(CFG),'--out',str(normalized)],capture_output=True,text=True)
+crates/kernel/tests/dense_manufacturing_round5.py:69: source.write_bytes(normalized.read_bytes());normalized.unlink()
+crates/kernel/tests/dense_manufacturing_round5.py:71: r=subprocess.run([str(BIN),'cycle',str(source),'--config',str(CFG),'--max-ticks','1000','--out',str(out)],capture_output=True,text=True)
+crates/kernel/tests/dense_manufacturing_round5.py:83: record=BASE/(name+'-运行记录-v3-kernel.json');record.write_text(json.dumps(result['run_record'],ensure_ascii=False,separators=(',',':'))+'\n');out.write_text(json.dumps(result,ensure_ascii=False,separators=(',',':'))+'\n')
+crates/kernel/tests/dense_manufacturing_round5.py:84:(ROOT/'crates/kernel/evidence/round5/dense-manufacturing-results.json').write_text(json.dumps(reports,ensure_ascii=False,indent=2)+'\n')
+crates/kernel/tests/revision_cli.rs:12:        .env("PYTHONDONTWRITEBYTECODE", "1")
+crates/kernel/tests/revision_cli.py:12:EVIDENCE = ROOT / 'crates/kernel/evidence/revision-r2'
+crates/kernel/tests/revision_cli.py:13:OUT = EVIDENCE / 'tmp'
+crates/kernel/tests/revision_cli.py:20:    path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + '\n')
+crates/kernel/tests/revision_cli.py:27:               '--format', format_name, '--checkpoint-interval', '3', '--out', str(path)]
+crates/kernel/tests/revision_cli.py:95:    write(EVIDENCE / 'prior-regression-results.json', result)
+crates/kernel/tests/revision_cli.py:101:    with tempfile.TemporaryDirectory(prefix='cli-', dir=OUT) as directory:
+crates/kernel/tests/revision_cli.py:102:        OUT = Path(directory)
+数据/工具/test_formal_catalog.py:42:        with tempfile.TemporaryDirectory(dir=directory) as name:
+数据/工具/test_formal_catalog.py:45:                (repo/source['path']).write_bytes((ROOT.parent/source['path']).read_bytes())
+数据/工具/test_formal_catalog.py:50:                p.write_bytes(original+b'\n')
+数据/工具/test_formal_catalog.py:53:                p.write_bytes(original)
+crates/kernel/tests/reference.rs:78:        .env("PYTHONDONTWRITEBYTECODE", "1")
+crates/kernel/tests/revision_audit.py:11:EVIDENCE = KERNEL / 'evidence/revision-r1'
+crates/kernel/tests/revision_audit.py:21:    path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + '\n')
+crates/kernel/tests/revision_audit.py:38:                decoded = [json.loads(s) for s in axes[axis]['evidence']]
+crates/kernel/tests/revision_audit.py:64:    write(EVIDENCE / 'record-validation.json', {'status': '通过', 'records': records})
+crates/kernel/tests/revision_audit.py:66:    baseline = verifier.checker.load_json(EVIDENCE / 'baseline.json')
+crates/kernel/tests/revision_audit.py:71:        'crates/kernel/tests/verify_outputs.py', 'crates/kernel/evidence/实现验证.md',
+crates/kernel/tests/revision_audit.py:72:        'crates/kernel/evidence/手推桥接轨迹.md', '规格/内核实现-对规格的疑问.md')}
+crates/kernel/tests/revision_audit.py:76:    counts = re.findall(r'test result: ok\. (\d+) passed; (\d+) failed', (EVIDENCE / 'cargo-test.txt').read_text())
+crates/kernel/tests/revision_audit.py:78:    assert 'Finished' in (EVIDENCE / 'clippy.txt').read_text()
+crates/kernel/tests/revision_audit.py:79:    assert 'error:' not in (EVIDENCE / 'clippy.txt').read_text()
+crates/kernel/tests/revision_audit.py:80:    docs = [KERNEL / 'README.md', KERNEL / '修订记录.md', KERNEL / 'evidence/实现验证.md',
+crates/kernel/tests/revision_audit.py:81:            KERNEL / 'evidence/手推桥接轨迹.md', ROOT / '规格/内核实现-对规格的疑问.md']
+crates/kernel/tests/revision_audit.py:84:    manifest = EVIDENCE / 'deliverables.json'
+crates/kernel/tests/revision_audit.py:89:            if path not in (manifest, EVIDENCE / 'final-audit.json'):
+crates/kernel/tests/revision_audit.py:100:    write(EVIDENCE / 'final-audit.json', {
+crates/kernel/tests/revision_audit.py:108:                  *list(EVIDENCE.glob('*')), *docs]
+数据/样例/check_splitter_trace.py:20:    target.write_text(json.dumps(record, ensure_ascii=False, indent=2) + '\n')
+数据/样例/check_splitter_trace.py:24:    (BASE / '分流器三路轮询-运行记录-checkpoint_delta.json').write_text(json.dumps(compact, ensure_ascii=False, indent=2) + '\n')
+数据/样例/check_port_meeting.py:45:    target.write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n')
+crates/kernel/tests/verify_outputs.py:98:    assert same(record['input_history'], {**{k: data[k] for k in ('timeline', 'construction', 'debug_operations', 'environment')}, 'reachability': data['initial_state']['reachability']})
+crates/kernel/tests/verify_outputs.py:129:    baseline = checker.load_json(ROOT / 'crates/kernel/evidence/round5/protected-baseline.json')
+crates/kernel/tests/verify_outputs.py:133:    (ROOT / 'crates/kernel/evidence/round5/record-validation.json').write_text(json.dumps(result, ensure_ascii=False, indent=2) + '\n')
+crates/kernel/tests/coverage_audit.py:86:        status, evidence = 'not_exercised', ['本次未记录该机制实际后效；参数赋值不等于覆盖。']
+crates/kernel/tests/coverage_audit.py:89:            status, evidence = 'exercised', moves
+crates/kernel/tests/coverage_audit.py:91:            status, evidence = ('exercised', complete) if complete else ('not_exercised', ['本次没有制造完成'])
+crates/kernel/tests/coverage_audit.py:93:            status, evidence = 'exercised', manufacturing[name]
+crates/kernel/tests/coverage_audit.py:95:            status, evidence = 'input_checked', ['本次输入/目录/种子检查；单一历史不证明全称可达性。']
+crates/kernel/tests/coverage_audit.py:97:            status, evidence = 'input_checked', ['仅校验输入中已解桥方向及先接历史；运行段不执行建造/先接定向，后续搬运不构成定向事件。']
+crates/kernel/tests/coverage_audit.py:99:            status, evidence = 'exercised', failures
+crates/kernel/tests/coverage_audit.py:101:            status, evidence = 'exercised', tie
+crates/kernel/tests/coverage_audit.py:103:            status, evidence = 'exercised', transfer
+crates/kernel/tests/coverage_audit.py:106:            status, evidence = 'exercised', expiry
+crates/kernel/tests/coverage_audit.py:108:            status, evidence = 'exercised', split_merge
+crates/kernel/tests/coverage_audit.py:111:            if inbound:status,evidence='exercised',inbound
+crates/kernel/tests/coverage_audit.py:113:            status,evidence='not_exercised',['本版path_runs只计路径连续带串，不调用geometric_components的几何邻接轴。']
+crates/kernel/tests/coverage_audit.py:115:            status,evidence='not_exercised',['运行段开关/供电固定，暂停后重新启用需未支持的调试或离线后效；未以普通冷却到期冒领。']
+crates/kernel/tests/coverage_audit.py:117:            status, evidence = 'stop_not_triggered', ['所请求的有限前缀未触及停止域，不证明该域后效。']
+crates/kernel/tests/coverage_audit.py:119:            status, evidence = 'proof_pending', ['具体完整周期复原及全称覆盖分别待证；当前接口生成受限生产诊断。']
+crates/kernel/tests/coverage_audit.py:121:            status, evidence = 'exercised', acceptance
+crates/kernel/tests/coverage_audit.py:123:                        'coverage_status': status, 'evidence': evidence,
+数据/工具/convert_candidate_b.py:15:OUT = ROOT / '数据/候选B'
+数据/工具/convert_candidate_b.py:22:    path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + '\n')
+数据/工具/convert_candidate_b.py:52:rows = list(csv.DictReader((SOURCE/'machines.csv').open()))
+数据/工具/convert_candidate_b.py:53:edges = list(csv.DictReader((SOURCE/'channels.csv').open()))
+crates/kernel/tests/verify_all.py:10:BIN=Path(os.environ.get('KERNEL_BIN',ROOT/'target/release/kernel'))
+crates/kernel/tests/scope_revision_r3.py:13:OUT = KERNEL / 'evidence/revision-r3'
+crates/kernel/tests/scope_revision_r3.py:18:    with path.open('rb') as stream:
+crates/kernel/tests/scope_revision_r3.py:25:    (OUT / name).write_text(json.dumps(value, ensure_ascii=False, indent=2) + '\n')
+crates/kernel/tests/scope_revision_r3.py:67:    evidence = scan()
+crates/kernel/tests/scope_revision_r3.py:68:    assert not any(evidence.values()), evidence
+crates/kernel/tests/scope_revision_r3.py:70:    for base in [KERNEL / 'evidence', KERNEL / '复核']:
+crates/kernel/tests/scope_revision_r3.py:76:            KERNEL / 'evidence/round5/实施与验证.md',KERNEL / '复核/证据维护说明.md',
+crates/kernel/tests/scope_revision_r3.py:101:               evidence_scan=evidence,unexpected_evidence_files=unexpected,
+crates/kernel/tests/scope_revision_r3.py:102:               evidence_types='源码脚本、文本日志（含历史.txt）、JSON、Markdown',
+crates/kernel/tests/cleanup_revision_r3.py:9:OUT = KERNEL / 'evidence/revision-r3'
+crates/kernel/tests/cleanup_revision_r3.py:19:    for root in (KERNEL / 'evidence', KERNEL / '复核'):
+crates/kernel/tests/cleanup_revision_r3.py:26:                with path.open('rb') as stream:
+crates/kernel/tests/cleanup_revision_r3.py:60:        manifest.write_text(text)
+crates/kernel/tests/cleanup_revision_r3.py:65:        assert path.is_relative_to(KERNEL / '复核') or path.is_relative_to(KERNEL / 'evidence')
+crates/kernel/tests/cleanup_revision_r3.py:75:    report_path.write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n')
+数据/样例/test_runtime_input.py:167:    paths=[('logistics','connection_order'),('logistics','poll_memory'),('environment','withdrawal_memory'),
+数据/样例/test_runtime_input.py:232:    (BASE.parents[1]/'规格/内核输入修订验证-r4/中途种子.json').write_text(json.dumps(captured,ensure_ascii=False,indent=2)+'\n')
+数据/样例/test_runtime_input.py:233:    (BASE.parents[1]/'规格/内核输入修订验证-r4/周期排序.json').write_text(json.dumps(periodic,ensure_ascii=False,indent=2)+'\n')
+数据/样例/test_runtime_input.py:269:    target=BASE.parents[1]/'规格/内核输入修订验证-r4/运行回归结果.json';target.write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
+crates/kernel/tests/variants_round5.py:13:write(s.ROOT/'crates/kernel/evidence/round5/polling-six-orders.json',dict(status='pass',cases=results,scope='同一已核前件下六种局部顺序；没有替代judgment.order全域约减'))
+crates/kernel/tests/migrate_round5.py:7:def save(p,d):p.write_text(json.dumps(d,ensure_ascii=False,indent=2)+'\n')
+crates/kernel/tests/production_attempt_round6.py:10:ROOT=b.ROOT;BASE=ROOT/'数据/样例';E=ROOT/'crates/kernel/evidence/round6';BIN=ROOT/'target/release/kernel';CFG=ROOT/'规格/内核配置-v1.json'
+crates/kernel/tests/production_attempt_round6.py:35: b.OUT=BASE;name='双成品满仓起动试作';d=b.generate(name,units);b.set_axis(d,'warehouse.external_supply',{'kind':'sufficient'})
+crates/kernel/tests/production_attempt_round6.py:46: path=BASE/(name+'.json');save(path,migrate(d));call(['seed',path,'--out',path]);return path,placement
+crates/kernel/tests/production_attempt_round6.py:50: cert=BASE/'双成品满仓起动试作-周期证书-kernel.json';search=call(['cycle',path,'--no-record','--max-ticks',512,'--out',cert],True);save(E/'K6-search.json',search)
+数据/样例/check_golden_trace.py:164:        state['environment']['time']=time_value(t)
+数据/样例/check_golden_trace.py:293:    OUTPUT.write_text(json.dumps(output,ensure_ascii=False,indent=2)+'\n')
+crates/kernel/tests/refresh_round6.py:4:ROOT=Path(__file__).resolve().parents[3];BASE=ROOT/'数据/样例';E=ROOT/'crates/kernel/evidence/round6'
+crates/kernel/tests/refresh_round6.py:7:def save(p,d):p.write_text(json.dumps(d,ensure_ascii=False,indent=2)+'\n')
+crates/kernel/tests/refresh_round6.py:30:    run(['cycle',row['input'],'--max-ticks',row['budget']['max_ticks'],'--max-sweeps',row['budget']['max_sweeps'],'--search-checkpoint-interval',32,'--no-record','--out',temp])
+crates/kernel/tests/refresh_round6.py:33:    run(['run',row['input'],'--ticks',row['ticks'],'--format',row['format'],'--checkpoint-interval',row['interval'],'--out',temp]);verification=run(['verify-record',temp]);new=read(temp)
+crates/kernel/tests/benchmark_round6.py:11:ROOT=b.ROOT;E=ROOT/'crates/kernel/evidence/round6';BASE=ROOT/'数据/样例';BIN=ROOT/'target/release/kernel';CFG=ROOT/'规格/内核配置-v1.json'
+crates/kernel/tests/benchmark_round6.py:24: b.OUT=BASE;d=b.generate('双成品制造砖',units)
+crates/kernel/tests/benchmark_round6.py:32: path=BASE/'双成品制造砖.json';save(path,migrate(d));call(['seed',path,'--out',path]);return path
+crates/kernel/tests/benchmark_round6.py:36: parser=argparse.ArgumentParser();parser.add_argument('stage',choices=['before','final']);parser.add_argument('--generate',action='store_true');parser.add_argument('--out-dir',type=Path);args=parser.parse_args()
+crates/kernel/tests/benchmark_round6.py:47:   cmd+=['--no-output'] if mode=='run' else ['--no-record','--search-checkpoint-interval','32','--out',str(dest)]
+crates/kernel/tests/benchmark_round6.py:49:   p=SimpleNamespace(**measured);wall=p.wall_ns;rss.write_text(json.dumps(measured,ensure_ascii=False)+'\n')
+crates/kernel/tests/benchmark_round6.py:61: call(['run',path,'--ticks',12,'--out',record]);call(['verify-record',record])
+crates/kernel/tests/benchmark_round6.py:65:  other=E/'brick-no-cache.json';call(['run',path,'--ticks',12,'--no-cache','--out',other]);assert json.loads(other.read_text())==data;other.unlink()
+数据/样例/check_examples.py:315:    fields(data, "schema purpose catalog timeline layout construction settings parameters initial_state debug_operations environment contract_binding scenario", "root")
+数据/样例/check_examples.py:335:    require(data["environment"]["offline"]["selected_events"] == [], "unsupported: 此子集不检查具体离线见证")
+数据/样例/check_examples.py:336:    require(data["environment"]["product_withdrawal"]["selected_events"] == [], "unsupported: 此子集不执行成品拿取历史")
+数据/样例/check_examples.py:370:    end = data["environment"]["debug_end_event"]
+数据/样例/check_examples.py:380:    bridge_evidence = []
+数据/样例/check_examples.py:397:                bridge_evidence.append({"unit": uid, "axis": axis, "status": "pending"})
+数据/样例/check_examples.py:408:            bridge_evidence.append({"unit": uid, "axis": axis, "first_peer": other, "scope": "两种已登记先接读法的一致唯一非桥见证"})
+数据/样例/check_examples.py:524:    environment = data["environment"]
+数据/样例/check_examples.py:525:    fields(environment, "ore_supply offline product_withdrawal debug_end_event zero_intervention_after_debug", "environment")
+数据/样例/check_examples.py:526:    require(environment["ore_supply"] == "task_continuous_sufficient" and environment["zero_intervention_after_debug"] is True, "任务环境不符")
+数据/样例/check_examples.py:527:    fields(environment["product_withdrawal"], "policy selected_events", "product_withdrawal")
+数据/样例/check_examples.py:528:    decision(environment["product_withdrawal"]["policy"], {"specified"} if runtime else {"unresolved"})
+数据/样例/check_examples.py:529:    fields(environment["offline"], "event_domain selected_events", "offline")
+数据/样例/check_examples.py:530:    decision(environment["offline"]["event_domain"], {"specified"} if runtime else {"unresolved"})
+数据/样例/check_examples.py:531:    require(environment["offline"]["selected_events"] == [], "unsupported: 此子集不检查具体离线见证")
+数据/样例/check_examples.py:586:    return {"file": str(path.resolve()), "status": "完整运行输入检查通过（有限合成子集）" if runtime else "指定快照静态结构通过", "snapshot": layout["id"], "anchor": layout["anchor"], "units": len(units), "occupied_cells": area, "physical_channels": len(channels), "buffer_channels": len(buffers), "bridge_first_peers": bridge_evidence, "counts_category": "算术推论（候选布局）", "validation_category": "实测（工具）"}
+数据/样例/check_examples.py:747:        target.write_text(output)
+crates/kernel/tests/round6_cli.py:7:ROOT=Path(__file__).resolve().parents[3];E=ROOT/'crates/kernel/evidence/round6/cli';E.mkdir(parents=True,exist_ok=True)
+crates/kernel/tests/round6_cli.py:8:BIN=Path(os.environ.get('KERNEL_BIN',ROOT/'target/release/kernel'));CFG=ROOT/'规格/内核配置-v1.json';BASE=ROOT/'数据/样例'
+crates/kernel/tests/round6_cli.py:10:def save(p,d):p.write_text(json.dumps(d,ensure_ascii=False,indent=2)+'\n');return p
+crates/kernel/tests/round6_cli.py:18: call('cycle',BASE/'生产循环环带.json','--max-ticks',50,'--out',cert,*flags)
+crates/kernel/tests/round6_cli.py:45: ('unreachable_start',lambda d:d['cycle']['start_state']['environment']['time']['value'].update(value='-500')),
+crates/kernel/tests/round6_cli.py:56: original=Path(r['replay_input_ref']['path']);mutated=E/'mutated-input.json';mutated.write_bytes(original.read_bytes()+b' ')
+crates/kernel/tests/round6_cli.py:59: p=E/(mode+'-zero-prefix.json');call('cycle',BASE/'生产循环环带.json','--max-ticks',2,'--max-sweeps',1,'--out',p,*flags)
+crates/kernel/tests/round6_cli.py:62:  record=read(Path(zero['run_record_ref']['path']));assert record['trace']['ticks']==[] and record['trace']['end_time']==record['trace']['start_state']['environment']['time']
+crates/kernel/tests/round6_cli.py:65:checkpoint=E/'checkpoint-input.json';call('checkpoint',E/'none.json','--out',checkpoint)
+crates/kernel/tests/round6_cli.py:67:continued=E/'continued.json';call('cycle',checkpoint,'--no-record','--max-ticks',25,'--out',continued);call('verify-cycle',continued);positives.append(continued)
+crates/kernel/tests/round6_cli.py:73:source=save(E/'overflow-input.json',raw);shell=E/'overflow.json';call('cycle',source,'--max-ticks',2,'--out',shell,ok=False)
+crates/kernel/tests/finalize_round5.py:4:ROOT=Path(__file__).resolve().parents[3];BASE=ROOT/'数据/样例';E=ROOT/'crates/kernel/evidence/round5';BIN=ROOT/'target/release/kernel';CFG=ROOT/'规格/内核配置-v1.json'
+crates/kernel/tests/finalize_round5.py:14:    command=[str(BIN),'run',str(source),'--config',str(CFG),'--ticks',str(count),'--out',str(out)]
+crates/kernel/tests/finalize_round5.py:20:    command=[str(BIN),'run',str(source),'--config',str(CFG),'--ticks',str(names[name]),'--format','checkpoint_delta','--checkpoint-interval','5','--out',str(out)]
+crates/kernel/tests/finalize_round5.py:24:    (BASE/(name+'-运行记录-v3.json')).write_text(json.dumps(record,ensure_ascii=False,indent=2)+'\n')
+crates/kernel/tests/finalize_round5.py:27:    result=subprocess.run([str(BIN),'cycle',str(BASE/(name+'.json')),'--config',str(CFG),'--max-ticks',str(names[name]),'--out',str(out)],capture_output=True,text=True)
+crates/kernel/tests/finalize_round5.py:33:    result=subprocess.run([str(BIN),'cycle',str(BASE/(name+'.json')),'--config',str(CFG),'--max-ticks','1000','--out',str(out)],capture_output=True,text=True)
+crates/kernel/tests/finalize_round5.py:36:    record.write_text(json.dumps(value['run_record'],ensure_ascii=False,separators=(',',':'))+'\n')
+crates/kernel/tests/finalize_round5.py:38:(E/'regeneration.json').write_text(json.dumps(dict(config_revision=json.loads(CFG.read_text())['revision'],config_sha256=hashlib.sha256(CFG.read_bytes()).hexdigest(),binary_sha256=hashlib.sha256(BIN.read_bytes()).hexdigest(),results=reports),ensure_ascii=False,indent=2)+'\n')
+crates/kernel/tests/finalize_round5.py:41:    path.write_text(json.dumps(json.loads(path.read_text()),ensure_ascii=False,separators=(',',':'))+'\n')
+crates/kernel/tests/finalize_round5.py:43:    path.write_text(json.dumps(json.loads(path.read_text()),ensure_ascii=False,separators=(',',':'))+'\n')
+数据/工具/check_revision.py:15:parser.add_argument('--output-dir', type=Path, default=data/'修订验证/r4')
+数据/工具/check_revision.py:21:(output_dir/'自查结果.json').write_text(json.dumps({'status':'进行中'},ensure_ascii=False)+'\n')
+数据/工具/check_revision.py:34:rows = list(csv.DictReader((source_dir/'channels.csv').open()))
+数据/工具/check_revision.py:113:(output_dir/'自查结果.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+crates/kernel/tests/round5_scenarios.py:6:ROOT=b.ROOT;OUT=ROOT/'数据/样例';b.OUT=OUT
+crates/kernel/tests/round5_scenarios.py:19:    cmd=[str(BIN),'seed',str(source),'--config',str(CONFIG),'--out',str(canonical)]
+crates/kernel/tests/round5_scenarios.py:22:    source.write_bytes(canonical.read_bytes());canonical.unlink()
+crates/kernel/tests/round5_scenarios.py:24:    r=subprocess.run([str(BIN),'run',str(source),'--config',str(CONFIG),'--ticks',str(ticks),'--out',str(record)],capture_output=True,text=True)
+crates/kernel/tests/round5_scenarios.py:29:        r=subprocess.run([str(BIN),'cycle',str(source),'--config',str(CONFIG),'--max-ticks',str(ticks),'--out',str(cert)],capture_output=True,text=True)
+crates/kernel/tests/build_fixtures.py:15:OUT = Path(__file__).parent / 'fixtures'
+crates/kernel/tests/build_fixtures.py:74:    (OUT / f'{name}.json').write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n')
+crates/kernel/tests/build_fixtures.py:92:    (OUT / 'benchmark_1000.json').write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n')
+crates/kernel/tests/benchmark_round5.py:8:ROOT=b.ROOT;E=ROOT/'crates/kernel/evidence/round5';b.OUT=ROOT/'crates/kernel/tests/fixtures'
+crates/kernel/tests/benchmark_round5.py:46:        r=subprocess.run([str(binary),'seed',str(source),'--config',str(config),'--out',str(source)],capture_output=True,text=True)
+crates/kernel/tests/round6_cli.rs:8:        .env("KERNEL_BIN", env!("CARGO_BIN_EXE_kernel"))
+crates/kernel/tests/revision_r5_cli.py:18:E = ROOT / 'crates/kernel/evidence/round6/revision-r5/cli'
+crates/kernel/tests/revision_r5_cli.py:19:BIN = Path(os.environ.get('KERNEL_BIN', ROOT / 'target/release/kernel'))
+crates/kernel/tests/revision_r5_cli.py:30:    path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + '\n')
+crates/kernel/tests/revision_r5_cli.py:37:    (E / (name + '.log')).write_text(json.dumps(dict(command=command, cwd=str(cwd),
+crates/kernel/tests/revision_r5_cli.py:59:    call('generate-cycle', 'cycle', source, '--max-ticks', 50, '--out', certificate)
+crates/kernel/tests/revision_r5_cli.py:74:        call(encoding + '-checkpoint', 'checkpoint', relative, '--out', resumed, cwd=ROOT.parent)
+crates/kernel/tests/revision_r5_cli.py:77:        call(encoding + '-continue', 'run', resumed, '--ticks', 2, '--out', continuation)
+crates/kernel/tests/revision_r5_cli.py:94:        call(encoding + '-cycle-checkpoint', 'checkpoint', cert_path, '--out', E / (encoding + '-cycle-input.json'))
+crates/kernel/tests/revision_r5_cli.py:103:        call(name + '-finite', 'run', BASE / (name + '.json'), '--ticks', len(expected), '--out', generated)
+crates/kernel/tests/revision_r5_cli.py:118:    (E / 'bounded-reference-batch-unsupported.log').write_text(rejected.stderr)
+crates/kernel/tests/revision_r5_cli.py:135:        call(f'ore-{quantity}-seed', 'seed', raw_path, '--out', seed_path)
+crates/kernel/tests/revision_r5_cli.py:137:        call(f'ore-{quantity}-finite', 'run', seed_path, '--ticks', 2, '--out', E / f'ore-{quantity}-finite.json')
+crates/kernel/tests/revision_r5_cli.py:151:        call(f'ore-{label}-cycle', 'cycle', seed_path, '--max-ticks', 2, '--no-record', '--out', shell, code=2)
+crates/kernel/tests/revision_r5_cli.py:174:        call(kind + '-shell-generate', 'cycle', bad_path, '--max-ticks', 2, '--out', shell, code=2)
+crates/kernel/tests/revision_r5_cli.py:178:        call(kind + '-checkpoint', 'checkpoint', shell, '--out', rejected, code=2)
+crates/kernel/tests/revision_r5_cli.py:185:    call('zero-generate', 'cycle', source, '--max-ticks', 2, '--max-sweeps', 1, '--no-record', '--out', zero)
+crates/kernel/tests/revision_r5_cli.py:187:    call('zero-checkpoint', 'checkpoint', zero, '--out', checkpoint)
+数据/样例/test_round4.py:14:OUT = BASE.parents[1] / '规格/第四轮前置验证'
+数据/样例/test_round4.py:108:            path.write_text(json.dumps(compact,ensure_ascii=False,indent=2)+'\n')
+数据/样例/test_round4.py:113:            passed(all(coverage[axis]['coverage_status']=='exercised' and any(e in event_ids for e in coverage[axis]['evidence']) for axis in required), '五条指定轴全部有真实运行事件证据')
+数据/样例/test_round4.py:142:    (OUT/'回归结果.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
+crates/kernel/tests/round5_cli.rs:11:    let out = std::env::var_os("KERNEL_TEST_EVIDENCE_DIR")
+crates/kernel/tests/round5_cli.rs:13:        .unwrap_or_else(|| root.join("crates/kernel/evidence/round5"))
+crates/kernel/tests/round5_cli.rs:22:        .arg("--out")
+crates/kernel/tests/round5_cli.rs:74:        .args(["--max-ticks", "2", "--out"])
+crates/kernel/tests/finalize_revision_r4.py:12:OUT = KERNEL / 'evidence/revision-r4'
+crates/kernel/tests/finalize_revision_r4.py:24:    path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + '\n')
+crates/kernel/tests/finalize_revision_r4.py:47:    references = read(KERNEL / 'evidence/round5/record-validation.json')
+crates/kernel/tests/finalize_revision_r4.py:48:    audit = read(KERNEL / 'evidence/round5/audit-results.json')
+crates/kernel/tests/finalize_revision_r4.py:51:    bench = read(KERNEL / 'evidence/round5/benchmark-r4.json')
+crates/kernel/tests/finalize_revision_r4.py:58:    write(KERNEL / 'evidence/benchmark.json', benchmark)
+crates/kernel/tests/finalize_revision_r4.py:59:    write(KERNEL / 'evidence/round5/benchmark-final.json', bench)
+crates/kernel/tests/finalize_revision_r4.py:84:    write(KERNEL / 'evidence/round5/交付结果.json', {**result, 'current_report': str(OUT / '修订与验证.md')})
+crates/kernel/tests/finalize_revision_r4.py:137:    (OUT / '修订与验证.md').write_text(report)
+crates/kernel/tests/finalize_revision_r4.py:145:日期：2026-09-20。性质：执行记录。当前论证与边界见[第4轮报告](evidence/revision-r4/修订与验证.md)。
+crates/kernel/tests/finalize_revision_r4.py:153:    revision.write_text(text)
+crates/kernel/tests/finalize_revision_r4.py:171:    evidence_scan = scan()
+crates/kernel/tests/finalize_revision_r4.py:172:    assert not any(evidence_scan.values()), evidence_scan
+crates/kernel/tests/finalize_revision_r4.py:173:    docs = [KERNEL / 'README.md', revision, OUT / '修订与验证.md', KERNEL / 'evidence/round5/实施与验证.md',
+crates/kernel/tests/finalize_revision_r4.py:189:                 build_target=str(ROOT / 'target'), forbidden_evidence_directories=forbidden, unexpected_evidence_files=unexpected,
+crates/kernel/tests/finalize_revision_r4.py:190:                 full_kernel_evidence_scan=evidence_scan,
+crates/kernel/tests/audit_task7.py:26:        assert tm(tick['time'])==tm(previous['environment']['time'])+advance
+crates/kernel/tests/revision_r5_cli.rs:12:        .env("KERNEL_BIN", env!("CARGO_BIN_EXE_kernel"))
+数据/样例/runtime_example.py:146:    time=checker.quantity(seed['environment']['time']['value'],integer=False) if seed else 0
+数据/样例/runtime_example.py:225:          'environment':{'time':time_value(0),'stage':'zero_intervention','online':True,'withdrawal_memory':decision({'once_fired':[],'pending_rules':[]},'无拿取事件')},
+数据/样例/runtime_example.py:232:    data['environment']['offline']['event_domain']=decision({'kind':'selected_history','events':[]},'本次无离线见证，不排除其它历史')
+数据/样例/runtime_example.py:233:    data['environment']['product_withdrawal']['policy']=decision({'schema':'withdrawal-policy-v1','rules':[],'selection':decision({'kind':'listed_order','rule_order':[]},'空规则集合'),'timing_family':{'kind':'imprecise','after':[],'before':[],'response':decision(None,'本有限实验不请求响应界','unresolved'),'interleaving':decision([],'无事件')},'admissibility':decision({'kind':'no_actions'},'未请求任何玩家动作')},'有限轨迹中无成品可拿取')
+数据/样例/runtime_example.py:250:    projection_path(data).write_text(json.dumps(profile_projection(data),ensure_ascii=False,indent=2)+'\n')
+数据/样例/runtime_example.py:277:    fields(seed,'layout_snapshot settings_anchor warehouse inventory progress logistics environment semantic_context','StateSeed')
+数据/样例/runtime_example.py:306:    env=seed['environment']; fields(env,'time stage online withdrawal_memory','state.environment')
+数据/样例/runtime_example.py:325:    require(data['environment']['offline']['event_domain']['value']=={'kind':'selected_history','events':[]},'离线历史域不在本子集')
+数据/样例/runtime_example.py:326:    policy=data['environment']['product_withdrawal']['policy']['value']
+crates/kernel/tests/revision_r3_cli.rs:12:        .env("KERNEL_BIN", env!("CARGO_BIN_EXE_kernel"))
+数据/样例/runtime_record.py:64:        evidence=['本次未记录此机制的运行验证；赋值和静态相容检查不等于行为已验证。']
+数据/样例/runtime_record.py:66:            status='exercised'; evidence=exercised[name]
+数据/样例/runtime_record.py:68:            status='input_checked'; evidence=['输入、目录和条件历史的装载检查；不代表遍历全部取值或历史。']
+数据/样例/runtime_record.py:70:            status='not_exercised'; evidence=['没有成功传输：粉碎机布局无箱；分流器布局箱体传输显式关闭，仅检查模板守卫，不验证冷却/相位后效。']
+数据/样例/runtime_record.py:72:            status='not_exercised'; evidence=['参考执行只处理单级通道，没有调用阻尼求值器；有传送带不等于已验证元件计数。']
+数据/样例/runtime_record.py:74:            evidence=[e['event'] for e in events if any(b.startswith('polling.level_tie=fixed_arbitration:') for b in e['basis'])]
+数据/样例/runtime_record.py:75:            status='exercised' if evidence else 'not_exercised'
+数据/样例/runtime_record.py:76:            if not evidence:evidence=['本次没有实际多可动级同键平局']
+数据/样例/runtime_record.py:78:            status='not_exercised'; evidence=['本运行输入无桥接器；其它样例的结果不并入本次运行覆盖。']
+数据/样例/runtime_record.py:80:            evidence=[e['event'] for e in events if e['operation']=='gate_window_expiry'] if name in ('gate.concurrent_expiry','gate.window_clock','gate.window_recovery','gate.reconnect_record') else []
+数据/样例/runtime_record.py:81:            status='exercised' if evidence else 'not_exercised'
+数据/样例/runtime_record.py:82:            if not evidence:evidence=['本次未记录此门控机制的运行证据，不能用存在准入口代替触发。']
+数据/样例/runtime_record.py:86:                evidence=[e['event'] for e in events if e['operation']=='move' and e['outcome'] in ('success','failure') and ((uid=='probe_merger' and e['target'].split('|')[2].startswith('probe_merger:')) or e['target'].startswith('PC|'+uid+':'))]
+数据/样例/runtime_record.py:87:                status='exercised' if evidence else 'not_exercised'
+数据/样例/runtime_record.py:89:                    evidence+=['两个直连分流器使汇流器存货侧形成两个单成员级，各级sole_member独立起轮；跨级仲裁不取代级内指针。']
+数据/样例/runtime_record.py:91:                status='not_exercised'; evidence=['本运行输入无分流器/汇流器，无第二条起轮及单成员级特例。']
+数据/样例/runtime_record.py:95:            status='input_checked';evidence=[comparison['status'], '额外角接对数='+str(len(comparison['corner_pairs']))+'；本记录仅执行shared_edge_opposite']
+数据/样例/runtime_record.py:98:            evidence += ['所填 stop 是遇到对应机制即停止的工程处置；本轨迹未触及，不证明后效。']
+数据/样例/runtime_record.py:100:            status='proof_pending'; evidence=['只核有限前缀，完整仓库周期提升没有证明；请求提升即停止。']
+数据/样例/runtime_record.py:102:                     'coverage_status':status,'evidence':evidence,
+数据/样例/runtime_record.py:114:            'evidence_scope':{'kind':'diagnostic','direction':'diagnostic',
+数据/样例/runtime_record.py:123:            'input_history':{**{k:data[k] for k in ('timeline','construction','debug_operations','environment')},
+crates/kernel/tests/final_audit_round5.py:4:ROOT=Path(__file__).resolve().parents[3];K=ROOT/'crates/kernel';E=K/'evidence/round5';BASE=ROOT/'数据/样例'
+crates/kernel/tests/final_audit_round5.py:6:def write(p,d):p.write_text(json.dumps(d,ensure_ascii=False,indent=2)+'\n')
+crates/kernel/tests/final_audit_round5.py:21:old=K/'evidence/benchmark.json';legacy=E/'benchmark-legacy.json'
+crates/kernel/tests/final_audit_round5.py:22:if not legacy.exists():legacy.write_bytes(old.read_bytes())
+crates/kernel/tests/final_audit_round5.py:23:requested=['benchmark_brick_60','benchmark_candidate_b'];final_bench={**bench,'schema':'kernel-benchmark-round5-v1','requested_cases':requested,'requested_targets_met':all(r['target_met']for r in bench['reports']if r['name']in requested),'before_evidence':str(E/'benchmark-before.json'),'legacy_evidence':str(legacy),'compiler':subprocess.check_output(['rustc','--version'],text=True).strip()}
+crates/kernel/tests/final_audit_round5.py:26: 'KQ-09：cycle装载资源不足已保留inconclusive，但现行schema强制未决携完整上下文，与正文装载失败可空冲突；待S线修订schema，原样证据见evidence/revision-r3/cli-schema-audit.json。',
+crates/kernel/tests/final_audit_round5.py:46:本次执行记录日期：2026-09-19至2026-09-20。KQ-01–KQ-08已与S线第8轮答复对齐；前述第四轮停止策略属于史料，当前接口见[README](README.md)和[第五轮报告](evidence/round5/实施与验证.md)。
+crates/kernel/tests/final_audit_round5.py:57:text+='[测试日志](evidence/round5/cargo-test.log)、[Clippy](evidence/round5/clippy.log)、[双参考验收](evidence/round5/record-validation.json)、[扩展审计](evidence/round5/audit-results.json)、[性能](evidence/benchmark.json)、[交付结果](evidence/round5/交付结果.json)与[范围审计](evidence/round5/范围审计.json)保存实际证据。旧黄金、历史v2记录和正式源保护指纹保持；源码、样例及投影的第8轮迁移经过重新运行，不给旧结果换哈希冒充通过。未改正式文件/候选约束/模拟器，未commit/push。\n'
+crates/kernel/tests/final_audit_round5.py:58:revision.write_text(text+suffix)
+crates/kernel/tests/final_audit_round5.py:70:scope={'status':'pass','protected_files':len(protected),'protected_changes':changes,'shared_spec_changes':concurrent,'shared_spec_note':'S/R写权内并发修订，只读核对；不是K线产物。K线疑问文件单列在交付清单。','evidence_forbidden_directories':forbidden,'evidence_extensions':extensions,'build_target':str(ROOT/'target'),'scope_of_audit':'保护集原始字节、显式产物路径和本轮证据目录；不声称审计了整个系统所有文件。','document_reader_review':{'status':'pass','documents':[str(p)for p in docs],'checks':['当前/历史分区明确','头部状态与证据相符','不将条件轨迹写成全称证明','数字分别给测量域','未决逐项保留','链接存在','没有占位符或工作流指令回声'],'broken_links':bad}}
+crates/kernel/tests/final_audit_round5.py:73:candidates=list((K/'src').glob('*.rs'))+list((K/'tests').glob('*.py'))+list((K/'tests').glob('*.rs'))+list((K/'tests/fixtures').glob('*.json'))+list(BASE.glob('*'))+[K/'README.md',revision,ROOT/'规格/内核实现-对规格的疑问.md',K/'evidence/benchmark.json']+list(E.rglob('*'))
+crates/kernel/tests/final_audit_round5.py:74:candidates += list((K/'evidence/revision-r2').glob('*.json'))
+crates/kernel/tests/finalize_revision_r3.py:9:OUT = KERNEL / 'evidence/revision-r3'
+crates/kernel/tests/finalize_revision_r3.py:10:ROUND5 = KERNEL / 'evidence/round5'
+crates/kernel/tests/finalize_revision_r3.py:106:    (OUT / '修订与验证.md').write_text(report)
+crates/kernel/tests/finalize_revision_r3.py:114:日期：2026-09-20。性质：修订执行记录。逐发现代码、条款、论证和验证边界见[第3轮报告](evidence/revision-r3/修订与验证.md)；下表保留所有发现ID，重复根因仍分别登记。
+crates/kernel/tests/finalize_revision_r3.py:122:KQ-09不在K线schema写权内，已登记明确修订请求。先接定向与传输恢复的运行覆盖仍缺，序2/5、级二和族全称认证仍未决；没有用停止或预算耗尽推无解。清理删除清单、最新原始日志与保护审计均在[revision-r3](evidence/revision-r3/)。
+crates/kernel/tests/finalize_revision_r3.py:124:    revision.write_text(text)
+crates/kernel/tests/finalize_revision_r3.py:130:    (OUT / '交付结果.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+数据/样例/generate_examples.py:60:        'environment': {'ore_supply': 'task_continuous_sufficient', 'offline': {'event_domain': decision('任务 L13；T10：空离线见证不排除离线'), 'selected_events': []}, 'product_withdrawal': {'policy': decision('任务 L8、L12；T12：成品拿取不可精确计时'), 'selected_events': []}, 'debug_end_event': 'debug_end', 'zero_intervention_after_debug': True},
+数据/样例/generate_examples.py:88:    path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n')
+crates/kernel/tests/revision_r4_cli.py:11:OUT = ROOT / 'crates/kernel/evidence/revision-r4/cli'
+crates/kernel/tests/revision_r4_cli.py:12:BIN = Path(os.environ.get('KERNEL_BIN', ROOT / 'target/release/kernel'))
+crates/kernel/tests/revision_r4_cli.py:22:    path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + '\n')
+crates/kernel/tests/revision_r4_cli.py:40:        command = [str(BIN), mode, str(path), '--config', str(CFG), '--out', str(output), *options]
+crates/kernel/tests/revision_r4_cli.py:97:        assert result['trace']['end_time'] == state['environment']['time']
+crates/kernel/tests/revision_r4_cli.py:98:        assert result['validation_scope']['through'] == state['environment']['time']
+crates/kernel/tests/audit_revision_r3.py:9:OUT = ROOT / 'crates/kernel/evidence/revision-r3'
+crates/kernel/tests/audit_revision_r3.py:44:    (OUT / 'cli-schema-audit.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+crates/kernel/tests/final_audit.py:21:    baseline = json.loads((KERNEL / 'evidence/baseline.json').read_text())
+crates/kernel/tests/final_audit.py:29:    (KERNEL / 'evidence/periodic-stop.json').write_text(json.dumps(stopped, ensure_ascii=False, indent=2) + '\n')
+crates/kernel/tests/final_audit.py:38:    test_log = (KERNEL / 'evidence/cargo-test.txt').read_text()
+crates/kernel/tests/final_audit.py:41:    docs = [KERNEL / 'README.md', KERNEL / 'evidence/实现验证.md', KERNEL / 'evidence/手推桥接轨迹.md', ROOT / '规格/内核实现-对规格的疑问.md']
+crates/kernel/tests/final_audit.py:42:    manifest_path = KERNEL / 'evidence/deliverables.json'
+crates/kernel/tests/final_audit.py:43:    manifest_path.write_text('{}\n')
+crates/kernel/tests/final_audit.py:53:    (KERNEL / 'evidence/final-audit.json').write_text(json.dumps(result, ensure_ascii=False, indent=2) + '\n')
+crates/kernel/tests/final_audit.py:56:    manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + '\n')
+crates/kernel/tests/revision_r2_cli.py:11:EVIDENCE = ROOT / 'crates/kernel/evidence/revision-r2'
+crates/kernel/tests/revision_r2_cli.py:18:    path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n')
+crates/kernel/tests/revision_r2_cli.py:27:        command += ['--format', format_name, '--checkpoint-interval', '5', '--out', str(out)]
+crates/kernel/tests/revision_r2_cli.py:57:                             'wrong_other_values', 'missing_evidence', 'fake_evidence', 'exercised_with_existing_event',
+crates/kernel/tests/revision_r2_cli.py:68:                elif mutation == 'missing_evidence': rows[0]['evidence'] = []
+crates/kernel/tests/revision_r2_cli.py:69:                elif mutation == 'fake_evidence': rows[0]['evidence'] = ['missing_event']
+crates/kernel/tests/revision_r2_cli.py:72:                    row.update(coverage_status='exercised', evidence=[expected[0]['events'][0]['event']])
+crates/kernel/tests/revision_r2_cli.py:139:    write(EVIDENCE / 'regression-results.json', result)
+crates/kernel/tests/revision_r2_cli.py:145:    EVIDENCE.mkdir(exist_ok=True)
+crates/kernel/tests/revision_r2_cli.py:146:    with tempfile.TemporaryDirectory(prefix='r2-cli-', dir=EVIDENCE) as directory:
+crates/kernel/tests/revision_r3_cli.py:12:OUT = ROOT / 'crates/kernel/evidence/round6/regressions/revision-r3'
+crates/kernel/tests/revision_r3_cli.py:13:BIN = Path(os.environ.get('KERNEL_BIN', ROOT / 'target/release/kernel'))
+crates/kernel/tests/revision_r3_cli.py:24:    path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n')
+crates/kernel/tests/revision_r3_cli.py:39:    command = [str(BIN), mode, str(path), '--config', str(CFG), '--out', str(out)]
+crates/kernel/tests/audit_round5.py:5:ROOT=Path(__file__).resolve().parents[3];BASE=ROOT/'数据/样例';E=ROOT/'crates/kernel/evidence/round5'
+crates/kernel/tests/audit_round5.py:14:def write(p,d):p.write_text(json.dumps(d,ensure_ascii=False,indent=2)+'\n')
+crates/kernel/tests/audit_round5.py:29:        expected_time=time(previous['environment']['time'])+(index>0 or previous['semantic_context']['judgment_context']['value']['phase']=='after_closure')
+crates/kernel/tests/audit_round5.py:90:    trace=decode_trace(record['trace']);start=time(trace['start_state']['environment']['time'])
+crates/kernel/tests/audit_dense_round5.py:10:E = ROOT / 'crates/kernel/evidence/round5'
+crates/kernel/tests/audit_dense_round5.py:132:    (E / 'dense-manufacturing-audit.json').write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n')
+crates/kernel/tests/revision_r2_cli.rs:12:        .env("PYTHONDONTWRITEBYTECODE", "1")
+crates/kernel/tests/revision_r4_cli.rs:9:        .env("KERNEL_BIN", env!("CARGO_BIN_EXE_kernel"))

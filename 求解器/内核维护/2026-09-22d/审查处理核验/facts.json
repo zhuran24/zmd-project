@@ -1,0 +1,188 @@
+{
+  "head": "5b4b3e3cd990582fa381abba5dd4842cd33b0c9d",
+  "plan_before_sha256": "24654bd905fef808ca90e51e08ed02d59858f92a4706a6eed5b7f7952896cb9e",
+  "commits": {
+    "7da52a7": {},
+    "a7539f5": {
+      "M": 159,
+      "A": 7
+    },
+    "220f7b6": {
+      "M": 111
+    }
+  },
+  "wrapper_matches": {
+    "revision_cli.py": [
+      1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "revision_r2_cli.py": [
+      1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "revision_r3_cli.py": [
+      0,
+      1,
+      0,
+      0,
+      0
+    ],
+    "revision_r4_cli.py": [
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "revision_r5_cli.py": [
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    "round6_cli.py": [
+      0,
+      0,
+      0,
+      0,
+      1
+    ]
+  },
+  "stale_R2_fingerprints": [
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/生产循环环带.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+    "/home/zhuran24/zmd-research-fresh/求解约束.txt",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/受限模型声明.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/运行语义.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.md"
+  ],
+  "reference_leaves": [
+    "/cycle/correspondence/forward_projection/proof_sources/0",
+    "/cycle/normalization/definition",
+    "/cycle/normalization/mapping_proof",
+    "/cycle/reception_scope/proof_sources/0",
+    "/parameter_point/assignment/axis_registry",
+    "/replay_input_ref",
+    "/run_record_ref"
+  ],
+  "reference_transfer": {
+    "混做粉碎机两下游": {},
+    "分流器三路轮询": {
+      "('guard_false', None)": 220
+    }
+  },
+  "new_helpers_exist": {
+    "crates/kernel/tests/support/mod.rs": false,
+    "crates/kernel/tests/evidence_paths.py": false
+  },
+  "large_artifact": {
+    "bytes": 85851145,
+    "check_ignore_returncode": 1
+  },
+  "new_output_ignore": ".gitignore:274:/求解器/内核维护/*/cargo-test-evidence/\t\"/home/zhuran24/zmd-research-fresh/\\346\\261\\202\\350\\247\\243\\345\\231\\250/\\345\\206\\205\\346\\240\\270\\347\\273\\264\\346\\212\\244/\\344\\275\\223\\346\\243\\200-example/cargo-test-evidence/output.json\"\n",
+  "dep_info": {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/debug/deps/kernel-26241e85d1128675.d",
+    "embedded_catalog": true,
+    "embedded_config": true,
+    "main_rs": false
+  },
+  "targets": {
+    "topology": [
+      {
+        "name": "topology",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "name": "topology",
+        "kind": [
+          "bin"
+        ]
+      },
+      {
+        "name": "validation",
+        "kind": [
+          "test"
+        ]
+      }
+    ],
+    "kernel": [
+      {
+        "name": "kernel",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "name": "kernel",
+        "kind": [
+          "bin"
+        ]
+      },
+      {
+        "name": "reference",
+        "kind": [
+          "test"
+        ]
+      },
+      {
+        "name": "revision_cli",
+        "kind": [
+          "test"
+        ]
+      },
+      {
+        "name": "revision_r2_cli",
+        "kind": [
+          "test"
+        ]
+      },
+      {
+        "name": "revision_r3_cli",
+        "kind": [
+          "test"
+        ]
+      },
+      {
+        "name": "revision_r4_cli",
+        "kind": [
+          "test"
+        ]
+      },
+      {
+        "name": "revision_r5_cli",
+        "kind": [
+          "test"
+        ]
+      },
+      {
+        "name": "round5_cli",
+        "kind": [
+          "test"
+        ]
+      },
+      {
+        "name": "round6_cli",
+        "kind": [
+          "test"
+        ]
+      }
+    ]
+  },
+  "hook": {
+    "path": "/home/zhuran24/zmd-research-fresh/.git/hooks/post-commit",
+    "exists": true,
+    "text": "#!/bin/bash\n# 每次提交后在后台：推送代码到 origin；同步 CC 资料到 ~/zmd-project-cc 并提交推送。日志在 .git/auto-sync.log\n# 会话记录镜像（含删除）；scratchpad 只增改不删，因为 /tmp 重启即清空。\nREPO=$(git rev-parse --show-toplevel)\nLOG=\"$REPO/.git/auto-sync.log\"\n(\n  flock 9\n  echo \"== $(date '+%F %T') $(git -C \"$REPO\" log -1 --format='%h %s')\"\n  git -C \"$REPO\" push -q origin HEAD 2>&1 || echo \"代码推送失败\"\n  CC=~/zmd-project-cc\n  P=~/.claude/projects\n  rsync -a --delete \"$P/-home-zhuran24-zmd-research-fresh\" \"$P/-home-zhuran24-zmd-research-fresh----\" \\\n    \"$P/-home-zhuran24-zmd-research-fresh-----crates-kernel---\" \"$CC/projects/\"\n  [ -d /tmp/claude-1000/-home-zhuran24-zmd-research-fresh ] && \\\n    rsync -a /tmp/claude-1000/-home-zhuran24-zmd-research-fresh/ \"$CC/scratchpad/\"\n  git -C \"$CC\" add -A\n  if ! git -C \"$CC\" diff --cached --quiet; then\n    git -C \"$CC\" commit -q -m \"同步 CC 资料（代码 $(git -C \"$REPO\" log -1 --format=%h)）\"\n    git -C \"$CC\" push -q origin HEAD 2>&1 || echo \"CC 资料推送失败\"\n  fi\n  echo \"完成 $(date '+%T')\"\n) 9>\"$REPO/.git/auto-sync.lock\" >>\"$LOG\" 2>&1 </dev/null &\ndisown\n"
+  }
+}

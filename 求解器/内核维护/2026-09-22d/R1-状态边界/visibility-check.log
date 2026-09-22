@@ -1,0 +1,5 @@
+    Checking kernel v0.1.0 (/tmp/zmd-r1-visibility-33u52kc7/crates/kernel)
+    Checking topology v0.1.0 (/tmp/zmd-r1-visibility-33u52kc7/crates/topology)
+error: could not compile `kernel` (bin "kernel" test) due to 8 previous errors
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `kernel` (bin "kernel") due to 8 previous errors

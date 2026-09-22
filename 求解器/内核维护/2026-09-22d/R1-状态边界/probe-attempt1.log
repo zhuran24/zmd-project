@@ -1,0 +1,4 @@
+
+thread 'main' (589775) panicked at /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22d/R1-状态边界/probe.rs:49:70:
+called `Option::unwrap()` on a `None` value
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

@@ -1,0 +1,2271 @@
+[
+  {
+    "path": "$[\"求解器/候选约束轮次/第60-62轮/复核61/independent_boundary.py\"]",
+    "a": null,
+    "b": {
+      "bytes": 9054,
+      "sha256": "22d3de1ff2d81d1cc219a869b0f222f0630d19c502c0576d1c12ee8281d323b6"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/候选约束轮次/第60-62轮/复核61/minima.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 12384,
+      "sha256": "a103501ade51e9ab8a24477389d8f17f30162b2dd251f8f4d15ac889bc53738c"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/候选约束轮次/第60-62轮/复核61/minima.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 534,
+      "sha256": "0e3010bd537cbf499aced41e96464a45f33b69e09cfb78f524eb25f5a6b19c2d"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/候选约束轮次/第60-62轮/复核62/boundary62.py\"]",
+    "a": null,
+    "b": {
+      "bytes": 8772,
+      "sha256": "a5a6c8f322720d4d98465b7910a61491aa251050b16bbe86f3723be8c6fccdf8"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/候选约束轮次/第60-62轮/复核62/input_manifest.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 1824,
+      "sha256": "50c7bc3b358a2dd4152b8a1a305ec9571bd5b28a110aced6ce84f6865a7c46fa"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/候选约束轮次/第60-62轮/复核62/joint_49_13.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 15040,
+      "sha256": "89e9667f904bc332b5e0fe70d479b7118437ad9afaaa17cd0dadd9d1a7139631"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/候选约束轮次/第60-62轮/复核62/version_comparison.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 11184,
+      "sha256": "36b90c671136d22facba55298a9c531ee5ec5e718c5026b121bdd3046f3c2fb6"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R1-状态边界/all-test-engine-fields.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 23650,
+      "sha256": "b77d5910292278a602220b718ef795ff70f55bb127ffc3b8198a1f88e31dd8e1"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R1-状态边界/build.json\"][\"sha256\"]",
+    "a": "33db11892d5efb81ad1c4b740f3aec06286564d74e20a538a1291c2f6c8b8b42",
+    "b": "212d389c9ec792b14da327ef94708f6881a898a86fa07389c59ffe559bb7a5ff"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R1-状态边界/build.log\"][\"sha256\"]",
+    "a": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126",
+    "b": "23b9a21bbaf189889e08dc27ed8eba521021280c5852db22205f721db08b2c7c"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R1-状态边界/check_visibility.py\"]",
+    "a": null,
+    "b": {
+      "bytes": 3205,
+      "sha256": "df1825d2719446b749e7c41732ae65c03c9a07828e97030e5bffadf6e76321c2"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R1-状态边界/compile-stderr.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R1-状态边界/compile.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R1-状态边界/embedded-code-files.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 440,
+      "sha256": "6fcfe3cdd5e15baa377048d5368fad6d2e19e59698a9ae28f5ac72a7c2d5ddf1"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R1-状态边界/field-references.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 266408,
+      "sha256": "3070fffcdde68bef9cf4ab9f3e6fd81916216ac5457420017ca292aa79a90491"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R1-状态边界/probe-attempt1.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 259,
+      "sha256": "9585a49b6f9ab2e0f2f3da8380d81a3a62552a497e0422585ba2d43708fb34f2"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R1-状态边界/probe.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 351860,
+      "sha256": "4eb3b7cb35e1b453f571a8a00f0ea828b30e6bca4f37ab3ab1625f299c489bdf"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R1-状态边界/probe.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R1-状态边界/probe.rs\"]",
+    "a": null,
+    "b": {
+      "bytes": 3595,
+      "sha256": "8636e6c93846319dc460f45f6351c54b1d17c8438822483f861013d4d5b4c418"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R1-状态边界/public-fields.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 2196,
+      "sha256": "d42f2077ff36941582337370787d9fca8956b5db91a6791076b8409f3838f3ed"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R1-状态边界/run.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 2884,
+      "sha256": "562f8ac2286f85d9f4e2a802a443e90686c077645b0961c87755547871a41aa0"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R1-状态边界/run_probe.py\"]",
+    "a": null,
+    "b": {
+      "bytes": 3280,
+      "sha256": "f2ac0cad799c70f4737b1b15d457c0f2a67b171cf3ba03c582b69e4b0642e1b0"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R1-状态边界/rust-files.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 7610,
+      "sha256": "69f24d628ae6e097fd9539565da944fa786cfa8e86d161d7b3c2eceae39e4004"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R1-状态边界/scan_callers.py\"]",
+    "a": null,
+    "b": {
+      "bytes": 3477,
+      "sha256": "67dc472e64cc757d0b737576ea1f895830648d0ff51b6a8a707be0f70029db2e"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R1-状态边界/summary.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 897,
+      "sha256": "1b7cbfa9eff2eea542ddb4661039f8f57a1490652127ab1dc921309cd9e63ab5"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R1-状态边界/test-field-hits.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 8075,
+      "sha256": "f1a23165a7701e0fcf350618f144276df13cf5d3e3642e902a213bcc4d5f5ba4"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R1-状态边界/visibility-check.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 71724,
+      "sha256": "609e4114953fe4fb18dca602d8f9b9ae59d851c9e8a70e49762c98e56973d9ea"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R1-状态边界/visibility-check.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 366,
+      "sha256": "c9ae3b8eed9271aa82e2e4c3226967b88599c48aaa5c3903f278e27b8e30e83d"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R1-状态边界/visibility-summary.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 39864,
+      "sha256": "b9830f5e5cee480a037cc45db39c6b2111b80715c33b24b7943682349d73ab72"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R1-状态边界/write-candidates.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 40348,
+      "sha256": "5443d44d2c686fda91fcd75a085f836dbb61ceeaa17bf9dd6fd9adc1f957455a"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R1-状态边界/write-candidates.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 9150,
+      "sha256": "c5cd0cc3daaffdf4bb51a2995b915ef9ddfbbdb36cf50e6708510150ad64ba65"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R3-测试写历史/active-source-writers.md\"]",
+    "a": null,
+    "b": {
+      "bytes": 42039,
+      "sha256": "61cde6095555d4faed5dfbf17e81ccdacc270815ac107b949fad1a09c4bcbba8"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R3-测试写历史/all-source-writers.md\"]",
+    "a": null,
+    "b": {
+      "bytes": 388661,
+      "sha256": "8cdbe9283450ecd91c075eb7addd0c24d6a6a167660b8297f57768d919ba09c8"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R3-测试写历史/compare_baseline.py\"]",
+    "a": null,
+    "b": {
+      "bytes": 1579,
+      "sha256": "7cb41c3c4ce4b9e1919bc0270c1d7f0ec0b489cfa4e30afd19e7e862f9d4235c"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R3-测试写历史/concrete_examples.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 19757,
+      "sha256": "4f81cc6d1b380911bb975f7e66818bc68c9c9a3eaa7f738b2cb6006f0e1dc7c6"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R3-测试写历史/default_path_probe.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 2016,
+      "sha256": "774b97ee5c827a2921e1d55bf2a5cfc09af94d98e0d099a10a9f2cf99a2b6869"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R3-测试写历史/default_path_probe.py\"]",
+    "a": null,
+    "b": {
+      "bytes": 2119,
+      "sha256": "8f0ecee3b99c9e60bfd6f836a343234bf8071b6a04dd51ef7066324034f6f731"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R3-测试写历史/inventory.py\"]",
+    "a": null,
+    "b": {
+      "bytes": 4181,
+      "sha256": "4673c6dd356ad95b8e545dd64f98b4f91ea1c2a9bdf7db6be205df1e8508a2f9"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R3-测试写历史/pre_day_hash_drift.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 55629,
+      "sha256": "3461ff0fe23e48e824e100bc0e22c77c53202cc0e2141f5f04bed271c55ec6f0"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R3-测试写历史/resolved_writer_catalog.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 714263,
+      "sha256": "168b41b9daa2fbae515e57d27a352812a9b24a30fe550f3844897aac45999d58"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R3-测试写历史/restoration_verified.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 1229,
+      "sha256": "d1b238f3d563643c33dc51f8a86434221b0ff3282ef57eb91bb915fca5ec5e7a"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R3-测试写历史/static_inventory.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 730505,
+      "sha256": "641d557ace3ec8a665815b779b38a1b083950432786a4585f87402a209fe2a6d"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R3-测试写历史/test-script-sinks.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 13267,
+      "sha256": "8f25c4a0df8336cce35932d540903ca8630b7568bc06d9834de2c6525d456b1d"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R3-测试写历史/writer_catalog.py\"]",
+    "a": null,
+    "b": {
+      "bytes": 3561,
+      "sha256": "b3925467c2faab4c59c24ece01251ab1a00e16a8c310ecfbfdd5ed7a0c34c649"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R3-测试写历史/全树脚本写点目录.md\"]",
+    "a": null,
+    "b": {
+      "bytes": 335471,
+      "sha256": "0f80c50b1803163573b04b30d17036ad22807fa3ff9fa6698cc7b26926cda20a"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/benchmark.py\"]",
+    "a": null,
+    "b": {
+      "bytes": 8488,
+      "sha256": "b89fa9041633c59b6c2ad7eabf3d0868a2fe4ca6a13a2ee1c79e1f7ef156dd21"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/build.stderr.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 62,
+      "sha256": "6bfa9e18ffdef821c711a542cfebd7db0982665615563e5a191285e489609c6f"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/build.stdout.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/build_probe.py\"]",
+    "a": null,
+    "b": {
+      "bytes": 2447,
+      "sha256": "909558405349e8f2e38a5ca70a60ab4fbcfdf1e7201303bd00254edc7a0a7073"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/code-audit.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 24189,
+      "sha256": "7e5223753c4674cae7890916d16e22e3179e85c560edf602fea7471fe44bf389"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/cycle-driver.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 540,
+      "sha256": "b6703893125d7fc2307a09581e3572e81e5db99f5f011ed535ff35ebe2563116"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/cycle-driver.stderr.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/cycle-results.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 6356,
+      "sha256": "2d33de3d642a55aca79893fea68aaf7bf8f58bf360036bbad994301f807b181d"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/dense-none-1000.command.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 1146,
+      "sha256": "e35615069633b2374d022bc423fd61b04a3a340ba2991459b688263fabce2b17"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/dense-none-1000.command.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 445,
+      "sha256": "c5f76868c6949dfbfc3dc8d9db7f0a086dc0346330d70d78d0b1391335a88ce7"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/dense-none-1000.result.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 1823,
+      "sha256": "bcddac48fd0edfd26d8fe9987bb2de4e292f612a5c57e6323e2fe99244976d51"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/dense-none-1000.stderr.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/dense-none-1000.stdout.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 444,
+      "sha256": "c13c5bd1b2b6454ada8f6a05393974c226859820e0abb768eac3a3700bc903d5"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/dense-none-1000.time.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 1005,
+      "sha256": "d40deffe0b194b8c07f5d89a2ed9ae115f1e99b0d8975f44d44ecd598bb3ed18"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/dense-none-10000.command.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 1150,
+      "sha256": "f5411a5ac8608eb3168e6a3d0a14a2ad9f497b45033f1818bebbae576be1dce4"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/dense-none-10000.command.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 447,
+      "sha256": "b57dd40d610b8b0275eaa07f31195fd691d0813b7a48bf27a00355b58053fd5a"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/dense-none-10000.result.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 1829,
+      "sha256": "5c61aac2f1573ecd9d2ff5a4372d919893812b6e224723badd286636e01afe51"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/dense-none-10000.stderr.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/dense-none-10000.stdout.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 447,
+      "sha256": "7858b493ca2b670cf20a892c6a6188cde74a6fb8fde07882d6db7f82e1f62767"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/dense-none-10000.time.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 1009,
+      "sha256": "5943809d4f442ae00181f1a07213802bc85cc70c75844c63f0aab48185c2dc61"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/dense-none-100000.command.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 1154,
+      "sha256": "6142df8e97cfa05b74e1b5bc0f742e0b45adf1a547f816d7915f4c43f0be7b4e"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/dense-none-100000.command.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 449,
+      "sha256": "26c3ad6afb0ee5bc2229fec575ecea6c27980e106b840f5967c2aa6eee27254b"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/dense-none-100000.stderr.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/dense-none-100000.stdout.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/dense-none-100000.time.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/environment.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 2931,
+      "sha256": "e6523af4cca061c5c0dc9a0760c4ce551c169c65057668d69d5617b05e3e57e9"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/extended-driver.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 352,
+      "sha256": "93d7ef41cbc88c185a8043a415fa34ec3a76f5fa55767bfe2eb962a60dcb95e0"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/extended-driver.stderr.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/git-before.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 4400,
+      "sha256": "efe615b85a6426c1a2d94022214127f8a39db0909668f374dacd4add19e9bfb8"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/main-driver.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 2125,
+      "sha256": "3fdba8649362af75009eac81d5e021aa3d5ab1866b9683b801cb1e89112d5bb5"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/main-driver.stderr.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/main-results.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 23301,
+      "sha256": "2c89b04f3cf770334f572fbf4bd0c0f028c8e0b3f1e95da1831d1805599e5c8a"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/output-driver.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 343,
+      "sha256": "0cce2f01d331a51f365f5c74ba5ef08d5fed573d56ed982fdc10e638df7be4d2"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/output-driver.stderr.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/output-results.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 4125,
+      "sha256": "0ab44bd0ae916c63598116c024b9364ffe8abc30857fa23090c0bb7c77e05f88"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/probe-build.command.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 565,
+      "sha256": "c10604350188a8cd168f4ab46a6f97a42d8f6d15cbe51a3b56331f4657f339a1"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/probe-build.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 3733,
+      "sha256": "6f55749a775ae134ad4811657de1e46851d89aae247ac7773b2bfa963952a52e"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/probe-build.stderr.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/probe-build.stdout.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/probe.command.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 378,
+      "sha256": "7c6f443abd2f2b26f4f95cd27f2566b3fc5832865c95ddf07e901e6da961897b"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/probe.stderr.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/probe.stdout.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 10315,
+      "sha256": "ed8254b77ac248b2cdf2d0ee5f413dfbf4d161e245c733f8c49bde01f4e550e6"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/probe.time.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 950,
+      "sha256": "9af89335a26ebcd93139e9800566abf111aa85f589baaed9e38312dfbb30b504"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/probe_body.rs\"]",
+    "a": null,
+    "b": {
+      "bytes": 2166,
+      "sha256": "73d7cca44d49314935bd166960f2f250d47ba546b2975d0e546fa9d724c7ee03"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/probe_main.rs\"]",
+    "a": null,
+    "b": {
+      "bytes": 1984,
+      "sha256": "2f6c0bbbc5cf2fd40d4fb71806770a85bda40fdcfaa3e9ad46abf48e56eec2bf"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-cycle-100000-k1.artifact.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 362443,
+      "sha256": "e9595f15614d030d311da31cb83dbc29ceb902a6f886a067c7ab2cf65fa7feb8"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-cycle-100000-k1.command.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 1325,
+      "sha256": "070e9710eec1219f8c1797cd631765ad6102f15d20b56ee94441e9f157ddb2c3"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-cycle-100000-k1.command.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 601,
+      "sha256": "98f347c84d368d87f77bd12f560810dedc0ed49fb3aa8e690617802fc0a0a0c2"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-cycle-100000-k1.result.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 1988,
+      "sha256": "d3e6ff88b802930d0bf9b7f4ed4d070e5b279f56ccf1e0d69fa835a1bf6c437d"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-cycle-100000-k1.stderr.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-cycle-100000-k1.stdout.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 152,
+      "sha256": "8d50312b87bbddb4b827665e6acb0358a4ebb7ca6d90b727a0c44423e13b3157"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-cycle-100000-k1.time.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 1157,
+      "sha256": "b20cd2c9671f268879b570fec0934ddb33b4fa6b9e388823015266861fbb9031"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-cycle-100000-k128.artifact.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 362443,
+      "sha256": "e9595f15614d030d311da31cb83dbc29ceb902a6f886a067c7ab2cf65fa7feb8"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-cycle-100000-k128.command.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 1335,
+      "sha256": "3fede5acb521be118de4cd4b7e01d659d15403c49799dd63ed7a5169bc57d2df"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-cycle-100000-k128.command.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 607,
+      "sha256": "93b232746e4028a8fb74707981bfb70ff6e07e25f1e33dbbd4adfbfe153f388c"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-cycle-100000-k128.result.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 1998,
+      "sha256": "c09d5e5a68b63bdaaf0aefcbbf746ec16b5d77d1cb09aa883c14c1be0dcb269e"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-cycle-100000-k128.stderr.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-cycle-100000-k128.stdout.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 154,
+      "sha256": "bdd22cfe9b381e2d4afa0cb4faaf9177170d4409411328e6ff1eb6cf4b8a0646"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-cycle-100000-k128.time.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 1160,
+      "sha256": "7f83a89536c7b6bef02c10087ed67c4690d19b9cf753ba2424b0cd5f67d3c408"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-cycle-100000-k32.artifact.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 362443,
+      "sha256": "e9595f15614d030d311da31cb83dbc29ceb902a6f886a067c7ab2cf65fa7feb8"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-cycle-100000-k32.command.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 1330,
+      "sha256": "ccd43f25ca0e720be972d3b2dfd73362cfd0c54c8c24d453d138ebb03f98cbfb"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-cycle-100000-k32.command.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 604,
+      "sha256": "2c00d3ce68d7327abfbc98c443f7c73f226ae553add3fbf04a2cb60c52afb5c2"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-cycle-100000-k32.result.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 1992,
+      "sha256": "d52d537dab7f07fac33c1bafaa24b84534a9a1f2f8eae41a1abf745ee74ccb1f"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-cycle-100000-k32.stderr.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-cycle-100000-k32.stdout.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 153,
+      "sha256": "d9c4ef4ee8047f9b2c99409a01bd5aa61acffda547dac25bfd2fb3f845193d1e"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-cycle-100000-k32.time.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 1159,
+      "sha256": "6aefe212f2951bad1ce227581281467f8e33c231c9ede49e9bdee52b3c71ca5a"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-delta-1000.artifact.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 16664380,
+      "sha256": "61f4affb3891e51a4d31730a350871ad0d7f1727ea1bf33f98fe063d3e072592"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-delta-1000.command.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 1327,
+      "sha256": "2cf9ab766a3160f936e9eb9c784753779b2f817bc7bed464100e53e544561699"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-delta-1000.command.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 591,
+      "sha256": "c5405d877bb236b96ecacb6667f24e6ec24bba63ad82937def8e638e823e8fe9"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-delta-1000.result.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 1934,
+      "sha256": "dab55f62759255fa36095f616a492f8d09f8b451142f53b6ac82edf0c0b716b8"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-delta-1000.stderr.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-delta-1000.stdout.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 140,
+      "sha256": "0f046723352d0e71f42935968a5e713f7a8f384427610dd62dbc09dcd5dd2ef0"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-delta-1000.time.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 1154,
+      "sha256": "3cc9c0fbe48fa6f8c25e47ce30e924321d67128378a20bb94608d3812c930ef3"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-full-1000.artifact.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 85851145,
+      "sha256": "500a97bdf1c43682332ff574a1e7c6ac24721db5782afd7b2a0f55255369a15e"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-full-1000.command.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 1338,
+      "sha256": "1286dfd30737da1575271e90146c952397cb52e3ea3283bba05c462808f55913"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-full-1000.command.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 596,
+      "sha256": "9fb9ae143f954777e1e53e8c1d532125cd713d4a58e4390f47481610de58e1fb"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-full-1000.result.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 1946,
+      "sha256": "5b6257064c192d22375550840c57cb500ae3f3676a5dceeaefb3fa84b4155329"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-full-1000.stderr.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-full-1000.stdout.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 139,
+      "sha256": "1fb33540a30c9fa6c7d59e4795a4c95fff470f02d0eb24b01b6a58fc23ff0c41"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-full-1000.time.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 1163,
+      "sha256": "518b928e572360e77685f97931cfdc1999f2bf29a8cc1c0ab8afb85213276143"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-1000-r1.command.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 1130,
+      "sha256": "37b9933f5180fa4f29c0eb82637fa1911ce0e17324545f82a71ae9cc5b705062"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-1000-r1.command.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 437,
+      "sha256": "78b302744cae0ee27273bf9072a9a888077c77775df8cb3ca751d6ed881eec35"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-1000-r1.result.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 1823,
+      "sha256": "27ab1c0618256543864b1482876e9d193dc6902d304928359133f65409037a56"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-1000-r1.stderr.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-1000-r1.stdout.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 487,
+      "sha256": "8de3076f6387994c787fd80df17ca5ad309e486a3c1cac943654ff5bfc6cebaa"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-1000-r1.time.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 992,
+      "sha256": "9c7467bfeffd2e8373b06dc80b24c98a7a605d086971852888942c645ffedfdb"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-1000-r2.command.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 1130,
+      "sha256": "3064f13a669f3ba248838cabf02fd38501fc96f961d5705ef1bbc13c1b1a3038"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-1000-r2.command.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 437,
+      "sha256": "b4a47e2c8b9868584883f267b04f00c53c1fad37c30cb6dac29059270eac90af"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-1000-r2.result.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 1823,
+      "sha256": "3b85af3f6917cecc46269c9fc03d451b133619d1814d938acf4b60e4cde3c10b"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-1000-r2.stderr.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-1000-r2.stdout.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 487,
+      "sha256": "5f0dd03acdca9d1a3dd7adaf0a363791b51e3f128ca8f67753585957799cb3f2"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-1000-r2.time.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 996,
+      "sha256": "9a3a57ada8199911a2b18713445692c863d0c683ab54dcdb23fe529fa9216059"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-1000-r3.command.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 1130,
+      "sha256": "5526f6b0ff2b3e3fc2223d4810139f5cc151323dd91dbf1a7b33d0d88e4b2aa6"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-1000-r3.command.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 437,
+      "sha256": "5e03c660b9b9d818c33710ec31f47767cef64ddd11402b39663fb8b2f4c5b530"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-1000-r3.result.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 1823,
+      "sha256": "e2c135182cc43ed1d8eaa4752b90ae09d734a09e75eb58b77b504cf08513eaeb"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-1000-r3.stderr.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-1000-r3.stdout.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 487,
+      "sha256": "fd5b8aa4eda81a11521c72d48b76e38b9120991a2d754da95c0de1580e2ab279"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-1000-r3.time.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 993,
+      "sha256": "9b6649ab8c7005dca0c6ebcaaf02f3d0019f1fbc843bcd84d0bfabe0e92005a3"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-10000-r1.command.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 1134,
+      "sha256": "73dce7b72ca87a8c2a15024cda652747e63603a9d76386031ad4f43dd1bb2e4f"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-10000-r1.command.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 439,
+      "sha256": "8ab237ad58dc5d843605c4d618e5a49796d349fb0c1dc734b9bf98adac92d72c"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-10000-r1.result.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 1825,
+      "sha256": "12aa3dec4130026737d8acfb0d398313940a8f71ee7dc4c691cf0b1d0262cdc6"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-10000-r1.stderr.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-10000-r1.stdout.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 489,
+      "sha256": "050cc61b1585c4ef3edc02308cee6686d248563a701c164f41b77a77771e66cf"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-10000-r1.time.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 994,
+      "sha256": "fb0802727456b6938205c4a6300edfd345adf51f878b58cdee58103dc38a1350"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-10000-r2.command.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 1134,
+      "sha256": "4a022385809834e7960ef2761da1e4bf16447623567c4f60a5638f97035e0219"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-10000-r2.command.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 439,
+      "sha256": "7274879fc0a3d0db3865fb099c6f12bed11c145f5b39c67aca132f35de08d187"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-10000-r2.result.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 1825,
+      "sha256": "bf993cd46ee4e07e2f3de335647428db7bbe377649843ba97e9cea266acf4474"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-10000-r2.stderr.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-10000-r2.stdout.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 489,
+      "sha256": "4989854c83a2c4c34535ed16c717cec11274b658d00282928a6deb624f7c2930"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-10000-r2.time.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 996,
+      "sha256": "050bd545fe60a3e6b1b570d2e2992149a15d8416f0c91c889b71d55fef60e688"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-10000-r3.command.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 1134,
+      "sha256": "b0f5e0f9c691e7b6d4e8b9d9951b68d110bb2b88df4d7d6f32d71812ce4ac713"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-10000-r3.command.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 439,
+      "sha256": "db05df2c627df92c6cf2cf487f08ce4de04a8dec2375845d86a966f3bd2ff064"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-10000-r3.result.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 1825,
+      "sha256": "e897a462a6a323650ab5b191db824189b639ba41bb5a44e91164fdda39e2eb98"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-10000-r3.stderr.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-10000-r3.stdout.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 489,
+      "sha256": "1ba8cc1267fca586a677f7487780a7f7cfd384ed1f481d14bfab0fadd3e3aa63"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-10000-r3.time.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 994,
+      "sha256": "0cfaf1310b94d7c7d876ba149c3acedec6d0cb15575df5bce74fe360a0356b22"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-100000-r1.command.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 1138,
+      "sha256": "d05a52d702ca1163cab6f320815701ce879faf40e319fd83203b1a307740c722"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-100000-r1.command.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 441,
+      "sha256": "71c7f197b2e4b0e8fb25888529cb158aaadca42df9184dafb46f3b5cde0252c3"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-100000-r1.result.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 1833,
+      "sha256": "9533df859d29dda030170f16138c96ac06b8bb13942aae430b7c4a5e517fac21"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-100000-r1.stderr.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-100000-r1.stdout.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 491,
+      "sha256": "f6b6b0d04ac829ef1973f1399dfd668823c57ed06b0fc5c05e2fda4aa5781d17"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-100000-r1.time.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 997,
+      "sha256": "87a85cb18c3c27837bfb83b72d4ac36d702ef766f14aa278d5ebfa85d0ed62be"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-100000-r2.command.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 1138,
+      "sha256": "87285cd39d7abb456d7628b1f682e8d0094b69d4d5af49558f3d455c1098412d"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-100000-r2.command.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 441,
+      "sha256": "d6842ba6d1e8d3d153c45f3ddcefb3a83f0dd62479b4c0bd96e2d0df86bd943e"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-100000-r2.result.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 1833,
+      "sha256": "98c23b300038d37f9947378047df28d1e906937a335fa9eca620f4b3b83a0074"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-100000-r2.stderr.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-100000-r2.stdout.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 491,
+      "sha256": "e8df615091ffd0deaf6c3aa1fe715b6a612c3ddc88fbaf7d80a7810bd04cf57b"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-100000-r2.time.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 998,
+      "sha256": "f645977c511730a0f16251c66fec23d1e69819024dcc20513b092127dfeb175c"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-100000-r3.command.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 1138,
+      "sha256": "7c546f3c474394d2d024f939bd9697e1ab63d9c153efdad203e0ad7dc7fb837d"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-100000-r3.command.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 441,
+      "sha256": "1c2f1074925d64031cd357b5eafd6f0b632d49ea37cab831e65eaff18d7d4de7"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-100000-r3.result.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 1832,
+      "sha256": "0ddf160f46ddf769479308e3a7ce5f668931960206f689fccea74cd409e2fb42"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-100000-r3.stderr.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-100000-r3.stdout.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 491,
+      "sha256": "100879d5192cfc1634fd60b0daa8282bf81373f43b815d4af049cbb601dd4ed3"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/ring-none-100000-r3.time.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 998,
+      "sha256": "088e2a0862525ad75047929c7409eb86d1be7b075ccdb61863202b47c9a66a2b"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/splitter-none-1000.command.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 1138,
+      "sha256": "478246350c8092eae07f449a3265b9bb13f0506f39528f2457863d2484c5cd37"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/splitter-none-1000.command.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 441,
+      "sha256": "600ba141d709ae52b8c4faa742c9ba2214b07d18db3a07a9a5e1f4549317ab37"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/splitter-none-1000.result.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 1789,
+      "sha256": "3a4774f0c5d5162ae5918abdf3c5e60439750b0c37e4ff14dcaca82a4028055e"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/splitter-none-1000.stderr.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/splitter-none-1000.stdout.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 382,
+      "sha256": "d9bfc382fbfb16d86a877e2e0fec8377e9bcf4fe0613b0240ca1dd87279e40be"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/splitter-none-1000.time.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 1033,
+      "sha256": "397300741e0383c566ac6ad338e2e21825500eb5204a22b07cb51cce2955f1fc"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/splitter-none-10000.command.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 1142,
+      "sha256": "9353a20f7712b6a0aa8cd7475ff72232d2d75d6035dd13ca070d9a4d519f46f7"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/splitter-none-10000.command.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 443,
+      "sha256": "1ebe8ee4e31a9c82ae3fd0effbc979de4750e4c7c852321fbfba9da0ce2033cc"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/splitter-none-10000.result.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 1793,
+      "sha256": "dc34fd40c4c76058a607c12fb589d11cdee946d70eead9c2a3a71b71e038cc4f"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/splitter-none-10000.stderr.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/splitter-none-10000.stdout.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 383,
+      "sha256": "c954bef0d2a505153e98f36fdc5fbf3f658d0522d0904aaf77ba1fb9735f4464"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/splitter-none-10000.time.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 1034,
+      "sha256": "f8a5fff26af8ff65d5edf57916a457d90b8fcbc2ca1fc6bf84b43e06a0a3e879"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/splitter-none-100000.command.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 1146,
+      "sha256": "935a4369f549666588bdb02f74d75f443b9431a20ecc1821d87ce063af58ee2b"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/splitter-none-100000.command.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 445,
+      "sha256": "f662a23aea28e8379e1051080c52a2d9af6eaa39ae1a00dc5acaa8e7eb4517a0"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/splitter-none-100000.result.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 1798,
+      "sha256": "9caa2fd04575d7f2520047f7a8a6447788d0e202f41ae45daba1134b6b1b75d7"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/splitter-none-100000.stderr.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/splitter-none-100000.stdout.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 384,
+      "sha256": "563c93e96f8ef2fc722e48e9045389071fbbeeeadda1307d981f259ad7b1c816"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/splitter-none-100000.time.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 1036,
+      "sha256": "c23981d1548f621ae0428385574160fb1afcf384caa4a08f396cd08ec31cdd99"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/time-setup.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 469,
+      "sha256": "0f3a1296de6adcf080a54e934a1fca534c9d8b5f1c6240afa2c26a6ad649ca29"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/time-tool.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 905,
+      "sha256": "1517ed67f74f91260861b36c042670fa49512a5f5848aa4302f1377f07def0ea"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R4-资源/tracked-before.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 1224594,
+      "sha256": "8091f1b4c1441b39916c936c0f6e457c443a0c2a71dc4f8238ac9b03cf166ef7"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R5-验证与失败态/attempt-1/build.stderr.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 332,
+      "sha256": "0d558844017718d40cba76b1b09721edb8387014b9f43ca60f3e596da826ab2f"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R5-验证与失败态/attempt-1/build.stdout.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 16223,
+      "sha256": "96f9d68b4800e72eb50267356dcd82fb1c5d46b13eca568f484b58fa25ad25a5"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R5-验证与失败态/attempt-1/commands.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 2011,
+      "sha256": "8204d80afff0fbc95d02d424a233c44d3b43e4b8f9b709aefc8fbe48fcae724e"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R5-验证与失败态/attempt-1/probe.stderr.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 299,
+      "sha256": "17fa07351257c01d9e766dddd9f95aa88fd752059db32c2451d3f57396852670"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R5-验证与失败态/attempt-1/probe.stdout.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R5-验证与失败态/attempt-1/rustc-probe.stderr.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R5-验证与失败态/attempt-1/rustc-probe.stdout.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R5-验证与失败态/attempt-1/rustc-version.stderr.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R5-验证与失败态/attempt-1/rustc-version.stdout.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 227,
+      "sha256": "2ec72c4801964fef2625062a7df760735c5de02c26fbf3ed92c6a0fbc86947f5"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R5-验证与失败态/attempt-2/build.stderr.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 72,
+      "sha256": "6d77f64dfc8c5325b90fdbe05d8be367bdd578bcccec24f275c5ffee7d03dd6e"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R5-验证与失败态/attempt-2/build.stdout.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 16216,
+      "sha256": "19eef519c7c8116726f90a165a2483e235ce203846101429de2b8d5385e79e54"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R5-验证与失败态/attempt-2/commands.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 3038,
+      "sha256": "b0e6edfd950f0861cce87557c3128b9c55cd12964b6390e1e895061b400b7484"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R5-验证与失败态/attempt-2/kernel-lib-list.stderr.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 238,
+      "sha256": "6aa958de0d288694a26dc2454e57fc0b7779b1e4da2f57eec7de6f9f16307396"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R5-验证与失败态/attempt-2/kernel-lib-list.stdout.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 5605,
+      "sha256": "ab9ccefb5389b6edd9780449c6de324a0bdedcc9ff799fdad19d2d0f7119bf07"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R5-验证与失败态/attempt-2/probe.stderr.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R5-验证与失败态/attempt-2/probe.stdout.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 8068,
+      "sha256": "04492610e449eb0d93b05f78ee1e0305566a8ce3f8d67ccc2fe8be39aef3ddf1"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R5-验证与失败态/attempt-2/reference.stderr.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 239,
+      "sha256": "7dd6f50a6b5321a76af84cff58d958b6827ec6ead3994db056b84067d93ea535"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R5-验证与失败态/attempt-2/reference.stdout.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 211,
+      "sha256": "cc91c54f891634356c2668849899898255c721b1e40f2ed1cc5776e4d6b619c6"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R5-验证与失败态/attempt-2/rustc-probe.stderr.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R5-验证与失败态/attempt-2/rustc-probe.stdout.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R5-验证与失败态/attempt-2/rustc-version.stderr.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R5-验证与失败态/attempt-2/rustc-version.stdout.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 227,
+      "sha256": "2ec72c4801964fef2625062a7df760735c5de02c26fbf3ed92c6a0fbc86947f5"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R5-验证与失败态/attempt-2/topology-lib-list.stderr.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 373,
+      "sha256": "997d8c86f9fcefddd0cfd88ee02259cf8142b7122487167ebc175a52b2b093ad"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R5-验证与失败态/attempt-2/topology-lib-list.stdout.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 82,
+      "sha256": "0d1923e2a4022886755978e5f47442587c4012371dd97ccc99f63af30fb47faa"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R5-验证与失败态/callpath-command.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 631,
+      "sha256": "9dad977c7b48733e79c1089b14c2d80940aabcd29947195ed082c19f2aab0721"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R5-验证与失败态/callpath.stderr.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R5-验证与失败态/callpath.stdout.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 40773,
+      "sha256": "4303a473cf2d61124eba096a8218c4773060661a6fd1aec3023a846d80d0934d"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R5-验证与失败态/codegraph-cli.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 9510,
+      "sha256": "2aed0de60a47a3f0abdba259292e0d746712ce68707574eb8a7d44975afb5620"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R5-验证与失败态/codegraph-search.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 8205,
+      "sha256": "ddedf085a08d5ba25bf97da91bc5c038cae743e2eab868f18a8d54ed070ea0aa"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R5-验证与失败态/codegraph-transition.log\"]",
+    "a": null,
+    "b": {
+      "bytes": 22086,
+      "sha256": "43ebb037c51302a9295fcd67225031e842a0c907ee2c9bd622be1f7ebd0b1963"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R5-验证与失败态/history-check.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 693,
+      "sha256": "8f18658069c458751763d9fd49b5c52dd9e6113e8887c1dbc34ad8175b3a7da6"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R5-验证与失败态/probe-results.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 653724,
+      "sha256": "1109e3497b6e056951a8031e391538f604c6750cc2a523f3a8d90af680ac3758"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R5-验证与失败态/probe.rs\"]",
+    "a": null,
+    "b": {
+      "bytes": 6167,
+      "sha256": "47e0618a6fa0b8059d50e43e389e4816547903c28a5c0c4ed1cd7ca890304d58"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R5-验证与失败态/protected-after.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 501,
+      "sha256": "e34f9a9379549fc97df13d40584d8c2d572c8aa7754b08b0d9427c90cde68393"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R5-验证与失败态/reference-coverage.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 3616,
+      "sha256": "9bd661f00c6f99cecefbe392f7c486bb6796ad18c78ce6bf6213bf33a2561ad1"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R5-验证与失败态/run.py\"]",
+    "a": null,
+    "b": {
+      "bytes": 2350,
+      "sha256": "0390e1480dbb13b046e58ccf43f9708ef37994e34d80b70b057ce78e9f8b1132"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/内核维护/2026-09-22d/R5-验证与失败态/trace_calls.py\"]",
+    "a": null,
+    "b": {
+      "bytes": 808,
+      "sha256": "a5a5146df542549d598ca347e0a62b2385b68d2eaa27d020a98311ccb963c591"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/几何/1113流量层/inputs/aggflow.py\"]",
+    "a": null,
+    "b": {
+      "bytes": 18960,
+      "sha256": "8ca458aa5484e235bdac6bfdfbb5830e4a8427faded037e72a73a625c85f26f3"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/几何/1113流量层/inputs/filter_positions.py\"]",
+    "a": null,
+    "b": {
+      "bytes": 9069,
+      "sha256": "9bceabcf7f7a9371d3bf469c3cc09611b29dec566f4861e491212e27a2c22a7e"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/几何/1113流量层/inputs/flowcheck.py\"]",
+    "a": null,
+    "b": {
+      "bytes": 5514,
+      "sha256": "932fedf9007b0991f901a30f4e9ce72921e0a01a183d27a3976cc1191b9206f8"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/几何/1113流量层/inputs/positions.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 4070,
+      "sha256": "fd9d7255ca03f96d6c700331abd1fc45a660b3742038281f17108e6c917d550c"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/几何/1113流量层/inputs/solve_relaxation.py\"]",
+    "a": null,
+    "b": {
+      "bytes": 10077,
+      "sha256": "054504b42f781f4da8d8723cd1f4d9e87cb7f9f74152c53fb0beccdf3037e4b7"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/几何/1113流量层/inputs/《明日方舟：终末地》游戏规则.txt\"]",
+    "a": null,
+    "b": {
+      "bytes": 7298,
+      "sha256": "52df4c12ce90975b861a6a663bd37873e03c9549658d200dc7e95fabc4bc29f3"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/几何/1113流量层/inputs/共识稿-v4-7aae9e20.md\"]",
+    "a": null,
+    "b": {
+      "bytes": 39519,
+      "sha256": "7aae9e20fdfab4edc5cb44b4de5a083436c86874449af654e9b0ee9871da5578"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/几何/1113流量层/inputs/异源核查.md\"]",
+    "a": null,
+    "b": {
+      "bytes": 14893,
+      "sha256": "54e859d2d5de3eeaa6933c98f66d55d49c7fcd73306ae66bdce8323caffeb191"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/几何/1113流量层/inputs/报告.md\"]",
+    "a": null,
+    "b": {
+      "bytes": 19489,
+      "sha256": "e62f9be13b763209a55c5a056a0e43540ca91942cfaa31e45a691d9c29d06a9f"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/几何/1113流量层/inputs/求解任务.txt\"]",
+    "a": null,
+    "b": {
+      "bytes": 1405,
+      "sha256": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/几何/1113流量层/inputs/求解约束.txt\"]",
+    "a": null,
+    "b": {
+      "bytes": 34667,
+      "sha256": "cf44821f07779490b9b1d913bfb87d7757ae8abfe784c912bb7891868780f7f3"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/几何/1113流量层/inputs/纪要.md\"]",
+    "a": null,
+    "b": {
+      "bytes": 6319,
+      "sha256": "d6c92a966fd9b295d5ed9dab4fed9e63710b76206c13107a6897d86f42db9228"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/几何/1113流量层/manifest.json\"]",
+    "a": null,
+    "b": {
+      "bytes": 2101,
+      "sha256": "9eaf4e4efdcbd3d9b18ad3663e054c26ed5c621d06b7e105770a488453351baf"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/约束修订/2026-09-22-矿系不入库/A-箱内中转.md\"]",
+    "a": null,
+    "b": {
+      "bytes": 28213,
+      "sha256": "c6e0cba32a0e498787145bc80f17ebcc0c232da71e42b3dc9c2cd19ecc9b5567"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/约束修订/2026-09-22-矿系不入库/B-条目依赖.md\"]",
+    "a": null,
+    "b": {
+      "bytes": 33459,
+      "sha256": "c0ead1982e1df597e294220927fbf4de7f71736b88f284346e854ad1d6d4a318"
+    },
+    "missing": "a"
+  },
+  {
+    "path": "$[\"求解器/约束修订/2026-09-22-矿系不入库/C-内核依赖.md\"]",
+    "a": null,
+    "b": {
+      "bytes": 29316,
+      "sha256": "cbc38713fc7f129cc657564c84b08a3a79ba969c297a3e903a03b45751596b85"
+    },
+    "missing": "a"
+  }
+]

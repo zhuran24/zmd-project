@@ -1,0 +1,1833 @@
+[
+  {
+    "path": "求解器/crates/kernel/src/cycle.rs",
+    "line": 316,
+    "function": "cycle_key",
+    "root": "bound",
+    "fields": [
+      "raw"
+    ],
+    "methods": [],
+    "expression": "bound.raw[\"initial_state\"][\"nonwarehouse\"][\"value\"]",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/cycle.rs",
+    "line": 505,
+    "function": "checkpoint_input",
+    "root": "resumed",
+    "fields": [
+      "raw"
+    ],
+    "methods": [],
+    "expression": "resumed.raw",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/cycle.rs",
+    "line": 578,
+    "function": "restore",
+    "root": "engine",
+    "fields": [
+      "max_sweeps"
+    ],
+    "methods": [],
+    "expression": "engine.max_sweeps",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/cycle.rs",
+    "line": 662,
+    "function": "search",
+    "root": "engine",
+    "fields": [
+      "max_sweeps"
+    ],
+    "methods": [],
+    "expression": "engine.max_sweeps",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/cycle.rs",
+    "line": 824,
+    "function": "search",
+    "root": "replay",
+    "fields": [
+      "max_sweeps"
+    ],
+    "methods": [],
+    "expression": "replay.max_sweeps",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/cycle_io.rs",
+    "line": 279,
+    "function": "verify_cycle_at",
+    "root": "prefix",
+    "fields": [
+      "max_sweeps"
+    ],
+    "methods": [],
+    "expression": "prefix.max_sweeps",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/cycle_io.rs",
+    "line": 302,
+    "function": "verify_cycle_at",
+    "root": "replay",
+    "fields": [
+      "max_sweeps"
+    ],
+    "methods": [],
+    "expression": "replay.max_sweeps",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/engine.rs",
+    "line": 1137,
+    "function": "remove",
+    "root": "self",
+    "fields": [
+      "state",
+      "warehouse",
+      "slots"
+    ],
+    "methods": [],
+    "expression": "self.state.warehouse.slots[i]",
+    "reasons": [
+      "mutable borrow"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/engine.rs",
+    "line": 1151,
+    "function": "remove",
+    "root": "self",
+    "fields": [
+      "state",
+      "inventory",
+      "contents"
+    ],
+    "methods": [],
+    "expression": "self.state.inventory[i].contents",
+    "reasons": [
+      "mutable borrow"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/engine.rs",
+    "line": 1203,
+    "function": "put",
+    "root": "self",
+    "fields": [
+      "state",
+      "inventory",
+      "contents"
+    ],
+    "methods": [],
+    "expression": "self.state.inventory[index].contents",
+    "reasons": [
+      "mutable borrow"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/input.rs",
+    "line": 782,
+    "function": "validate_runtime_interfaces",
+    "root": "self",
+    "fields": [
+      "templates"
+    ],
+    "methods": [],
+    "expression": "self.templates",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/input.rs",
+    "line": 816,
+    "function": "validate_runtime_interfaces",
+    "root": "self",
+    "fields": [
+      "tie_order"
+    ],
+    "methods": [],
+    "expression": "self.tie_order",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/input.rs",
+    "line": 822,
+    "function": "validate_runtime_interfaces",
+    "root": "self",
+    "fields": [
+      "recipe_order"
+    ],
+    "methods": [],
+    "expression": "self.recipe_order",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/input.rs",
+    "line": 828,
+    "function": "validate_runtime_interfaces",
+    "root": "self",
+    "fields": [
+      "slot_order"
+    ],
+    "methods": [],
+    "expression": "self.slot_order",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/input.rs",
+    "line": 976,
+    "function": "validate_branches",
+    "root": "self",
+    "fields": [
+      "branches"
+    ],
+    "methods": [
+      "insert",
+      "is_some"
+    ],
+    "expression": "self.branches.insert(key, selected).is_some()",
+    "reasons": [
+      "method insert"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/ledger.rs",
+    "line": 67,
+    "function": "book",
+    "root": "self",
+    "fields": [
+      "ledger"
+    ],
+    "methods": [
+      "as_array_mut",
+      "expect",
+      "push"
+    ],
+    "expression": "self.ledger[flow]\n            .as_array_mut()\n            .expect(\"固定台账字段\")\n            .push(row)",
+    "reasons": [
+      "method as_array_mut",
+      "method push"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/ledger.rs",
+    "line": 75,
+    "function": "represent_products",
+    "root": "self",
+    "fields": [
+      "state",
+      "warehouse",
+      "slots"
+    ],
+    "methods": [],
+    "expression": "self.state.warehouse.slots[i]",
+    "reasons": [
+      "mutable borrow"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/main.rs",
+    "line": 250,
+    "function": "run",
+    "root": "engine",
+    "fields": [
+      "max_sweeps"
+    ],
+    "methods": [],
+    "expression": "engine.max_sweeps",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/polling.rs",
+    "line": 297,
+    "function": "refresh",
+    "root": "self",
+    "fields": [
+      "memory",
+      "sides",
+      "current_level"
+    ],
+    "methods": [],
+    "expression": "self.memory.sides[index].current_level",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/polling.rs",
+    "line": 338,
+    "function": "advance",
+    "root": "self",
+    "fields": [
+      "memory",
+      "sides"
+    ],
+    "methods": [],
+    "expression": "self.memory.sides[index]",
+    "reasons": [
+      "mutable borrow"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/polling.rs",
+    "line": 355,
+    "function": "rebuild_memory",
+    "root": "self",
+    "fields": [
+      "memory",
+      "sides"
+    ],
+    "methods": [],
+    "expression": "self.memory.sides",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/polling.rs",
+    "line": 405,
+    "function": "rebuild_graph",
+    "root": "self",
+    "fields": [
+      "state",
+      "logistics",
+      "active_channels"
+    ],
+    "methods": [],
+    "expression": "self.state.logistics.active_channels",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/polling.rs",
+    "line": 411,
+    "function": "rebuild_graph",
+    "root": "self",
+    "fields": [
+      "state",
+      "logistics",
+      "blocked_channels"
+    ],
+    "methods": [],
+    "expression": "self.state.logistics.blocked_channels",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/polling.rs",
+    "line": 466,
+    "function": "maintain_identity",
+    "root": "self",
+    "fields": [
+      "state",
+      "logistics",
+      "gate_counters"
+    ],
+    "methods": [],
+    "expression": "self.state.logistics.gate_counters",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/seed.rs",
+    "line": 51,
+    "function": "canonicalize_seed",
+    "root": "input",
+    "fields": [
+      "raw"
+    ],
+    "methods": [],
+    "expression": "input.raw[\"initial_state\"][\"nonwarehouse\"][\"value\"]",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/seed.rs",
+    "line": 83,
+    "function": "derive_context",
+    "root": "self",
+    "fields": [
+      "state",
+      "logistics",
+      "connection_order",
+      "value"
+    ],
+    "methods": [],
+    "expression": "self.state.logistics.connection_order.value",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/seed.rs",
+    "line": 105,
+    "function": "derive_context",
+    "root": "self",
+    "fields": [
+      "memory",
+      "sides"
+    ],
+    "methods": [],
+    "expression": "self.memory.sides",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/seed.rs",
+    "line": 124,
+    "function": "derive_context",
+    "root": "self",
+    "fields": [
+      "state",
+      "semantic_context",
+      "arbitration",
+      "level_order"
+    ],
+    "methods": [],
+    "expression": "self.state.semantic_context.arbitration.level_order",
+    "reasons": [
+      "mutable borrow"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/seed.rs",
+    "line": 154,
+    "function": "derive_context",
+    "root": "self",
+    "fields": [
+      "state",
+      "logistics",
+      "active_channels"
+    ],
+    "methods": [],
+    "expression": "self.state.logistics.active_channels",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/seed.rs",
+    "line": 160,
+    "function": "derive_context",
+    "root": "self",
+    "fields": [
+      "state",
+      "logistics",
+      "blocked_channels"
+    ],
+    "methods": [],
+    "expression": "self.state.logistics.blocked_channels",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/seed.rs",
+    "line": 166,
+    "function": "derive_context",
+    "root": "self",
+    "fields": [
+      "memory",
+      "sides"
+    ],
+    "methods": [],
+    "expression": "self.memory.sides",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/seed.rs",
+    "line": 168,
+    "function": "derive_context",
+    "root": "self",
+    "fields": [
+      "state",
+      "logistics",
+      "poll_memory",
+      "value"
+    ],
+    "methods": [],
+    "expression": "self.state.logistics.poll_memory.value",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/seed.rs",
+    "line": 215,
+    "function": "derive_context",
+    "root": "self",
+    "fields": [
+      "state",
+      "semantic_context",
+      "pending_events",
+      "value"
+    ],
+    "methods": [],
+    "expression": "self.state.semantic_context.pending_events.value",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/seed.rs",
+    "line": 216,
+    "function": "derive_context",
+    "root": "self",
+    "fields": [
+      "state",
+      "semantic_context",
+      "judgment_context",
+      "value"
+    ],
+    "methods": [],
+    "expression": "self.state.semantic_context.judgment_context.value",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/seed.rs",
+    "line": 217,
+    "function": "derive_context",
+    "root": "self",
+    "fields": [
+      "state",
+      "semantic_context",
+      "tick_context",
+      "value"
+    ],
+    "methods": [],
+    "expression": "self.state.semantic_context.tick_context.value",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests.rs",
+    "line": 58,
+    "function": "empty",
+    "root": "e",
+    "fields": [
+      "state",
+      "warehouse",
+      "slots"
+    ],
+    "methods": [
+      "push"
+    ],
+    "expression": "e.state.warehouse.slots.push(WarehouseSlot {\n        slot: id.into(),\n        item: None,\n        quantity: Quantity::calc(0),\n        empty_identity: Decision::specified(Value::Null, \"受限转移§4.1：试验匿名空格\"),\n    })",
+    "reasons": [
+      "method push"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests.rs",
+    "line": 65,
+    "function": "empty",
+    "root": "e",
+    "fields": [
+      "state",
+      "semantic_context",
+      "arbitration",
+      "warehouse_empty_slot_order"
+    ],
+    "methods": [
+      "push"
+    ],
+    "expression": "e.state\n        .semantic_context\n        .arbitration\n        .warehouse_empty_slot_order\n        .push(id.into())",
+    "reasons": [
+      "method push"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests.rs",
+    "line": 176,
+    "function": "closure_and_resources",
+    "root": "limited",
+    "fields": [
+      "max_sweeps"
+    ],
+    "methods": [],
+    "expression": "limited.max_sweeps",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests.rs",
+    "line": 223,
+    "function": "warehouse_competition_atomic_stop",
+    "root": "e",
+    "fields": [
+      "input",
+      "assignments"
+    ],
+    "methods": [
+      "insert"
+    ],
+    "expression": "e.input\n        .assignments\n        .insert(\"ore_source:north:1\".into(), \"assigned\".into())",
+    "reasons": [
+      "method insert"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests.rs",
+    "line": 226,
+    "function": "warehouse_competition_atomic_stop",
+    "root": "e",
+    "fields": [
+      "input",
+      "switches"
+    ],
+    "methods": [
+      "insert"
+    ],
+    "expression": "e.input\n        .switches\n        .insert((\"south_box\".into(), \"transfer\".into()), true)",
+    "reasons": [
+      "method insert"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests.rs",
+    "line": 261,
+    "function": "warehouse_single_unknown_with_assigned_empty",
+    "root": "e",
+    "fields": [
+      "input",
+      "assignments"
+    ],
+    "methods": [
+      "insert"
+    ],
+    "expression": "e.input\n        .assignments\n        .insert(\"ore_source:north:1\".into(), \"assigned\".into())",
+    "reasons": [
+      "method insert"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests.rs",
+    "line": 264,
+    "function": "warehouse_single_unknown_with_assigned_empty",
+    "root": "e",
+    "fields": [
+      "state",
+      "warehouse",
+      "slots",
+      "quantity"
+    ],
+    "methods": [],
+    "expression": "e.state.warehouse.slots[e.warehouse[\"warehouse_0\"]].quantity",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests.rs",
+    "line": 283,
+    "function": "warehouse_invalid_identity_and_order",
+    "root": "e",
+    "fields": [
+      "state",
+      "semantic_context",
+      "arbitration",
+      "warehouse_empty_slot_order"
+    ],
+    "methods": [
+      "push"
+    ],
+    "expression": "e.state\n        .semantic_context\n        .arbitration\n        .warehouse_empty_slot_order\n        .push(\"warehouse_0\".into())",
+    "reasons": [
+      "method push"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests.rs",
+    "line": 294,
+    "function": "warehouse_invalid_identity_and_order",
+    "root": "e",
+    "fields": [
+      "state",
+      "semantic_context",
+      "arbitration",
+      "warehouse_empty_slot_order"
+    ],
+    "methods": [
+      "pop"
+    ],
+    "expression": "e.state\n        .semantic_context\n        .arbitration\n        .warehouse_empty_slot_order\n        .pop()",
+    "reasons": [
+      "method pop"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests.rs",
+    "line": 300,
+    "function": "warehouse_invalid_identity_and_order",
+    "root": "e",
+    "fields": [
+      "state",
+      "warehouse",
+      "slots",
+      "empty_identity"
+    ],
+    "methods": [],
+    "expression": "e.state.warehouse.slots[i].empty_identity",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests.rs",
+    "line": 301,
+    "function": "warehouse_invalid_identity_and_order",
+    "root": "e",
+    "fields": [
+      "state",
+      "semantic_context",
+      "arbitration",
+      "warehouse_empty_slot_order"
+    ],
+    "methods": [
+      "clear"
+    ],
+    "expression": "e.state\n        .semantic_context\n        .arbitration\n        .warehouse_empty_slot_order\n        .clear()",
+    "reasons": [
+      "method clear"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests.rs",
+    "line": 312,
+    "function": "transfer_capacity_and_empty_cooldown",
+    "root": "e",
+    "fields": [
+      "input",
+      "switches"
+    ],
+    "methods": [
+      "insert"
+    ],
+    "expression": "e.input\n        .switches\n        .insert((\"south_box\".into(), \"transfer\".into()), true)",
+    "reasons": [
+      "method insert"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests.rs",
+    "line": 331,
+    "function": "transfer_capacity_and_empty_cooldown",
+    "root": "e",
+    "fields": [
+      "state",
+      "inventory",
+      "contents"
+    ],
+    "methods": [
+      "clear"
+    ],
+    "expression": "e.state.inventory[e.inv[\"south_box:storage:0\"]]\n        .contents\n        .clear()",
+    "reasons": [
+      "method clear"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests.rs",
+    "line": 334,
+    "function": "transfer_capacity_and_empty_cooldown",
+    "root": "e",
+    "fields": [
+      "state",
+      "progress",
+      "cooldowns",
+      "remaining"
+    ],
+    "methods": [],
+    "expression": "e.state.progress[pi].cooldowns[0].remaining",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests.rs",
+    "line": 351,
+    "function": "transfer_conservation",
+    "root": "e",
+    "fields": [
+      "input",
+      "switches"
+    ],
+    "methods": [
+      "insert"
+    ],
+    "expression": "e.input\n        .switches\n        .insert((\"south_box\".into(), \"transfer\".into()), true)",
+    "reasons": [
+      "method insert"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests.rs",
+    "line": 413,
+    "function": "manufacture_disabled_intake_and_pause",
+    "root": "e",
+    "fields": [
+      "input",
+      "switches"
+    ],
+    "methods": [
+      "insert"
+    ],
+    "expression": "e.input\n        .switches\n        .insert((\"crusher\".into(), \"manufacture\".into()), false)",
+    "reasons": [
+      "method insert"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests.rs",
+    "line": 431,
+    "function": "completed_output_conflict_retains_batch",
+    "root": "e",
+    "fields": [
+      "state",
+      "progress",
+      "phase"
+    ],
+    "methods": [],
+    "expression": "e.state.progress[i].phase",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests.rs",
+    "line": 432,
+    "function": "completed_output_conflict_retains_batch",
+    "root": "e",
+    "fields": [
+      "state",
+      "progress",
+      "recipe"
+    ],
+    "methods": [],
+    "expression": "e.state.progress[i].recipe",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests.rs",
+    "line": 433,
+    "function": "completed_output_conflict_retains_batch",
+    "root": "e",
+    "fields": [
+      "state",
+      "progress",
+      "locked_recipe"
+    ],
+    "methods": [],
+    "expression": "e.state.progress[i].locked_recipe",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests.rs",
+    "line": 434,
+    "function": "completed_output_conflict_retains_batch",
+    "root": "e",
+    "fields": [
+      "state",
+      "progress",
+      "candidate_recipes"
+    ],
+    "methods": [],
+    "expression": "e.state.progress[i].candidate_recipes",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests.rs",
+    "line": 435,
+    "function": "completed_output_conflict_retains_batch",
+    "root": "e",
+    "fields": [
+      "state",
+      "progress",
+      "remaining"
+    ],
+    "methods": [],
+    "expression": "e.state.progress[i].remaining",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests.rs",
+    "line": 445,
+    "function": "identity_current_condition_restores_disconnected_channel",
+    "root": "e",
+    "fields": [
+      "input",
+      "gate_settings"
+    ],
+    "methods": [
+      "get_mut",
+      "unwrap"
+    ],
+    "expression": "e.input.gate_settings.get_mut(\"probe_gate_a\").unwrap()[\"item\"]",
+    "reasons": [
+      "assignment =",
+      "method get_mut"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests.rs",
+    "line": 456,
+    "function": "identity_current_condition_restores_disconnected_channel",
+    "root": "e",
+    "fields": [
+      "input",
+      "gate_settings"
+    ],
+    "methods": [
+      "get_mut",
+      "unwrap"
+    ],
+    "expression": "e.input.gate_settings.get_mut(\"probe_gate_a\").unwrap()[\"item\"]",
+    "reasons": [
+      "assignment =",
+      "method get_mut"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests.rs",
+    "line": 466,
+    "function": "total_exhaustion_survives_window_expiry",
+    "root": "e",
+    "fields": [
+      "input",
+      "gate_settings"
+    ],
+    "methods": [
+      "get_mut",
+      "unwrap"
+    ],
+    "expression": "e.input.gate_settings.get_mut(\"probe_gate_a\").unwrap()[\"total_limit\"]",
+    "reasons": [
+      "assignment =",
+      "method get_mut"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests.rs",
+    "line": 482,
+    "function": "membership_projection",
+    "root": "e",
+    "fields": [
+      "memory",
+      "sides",
+      "levels",
+      "next_channel"
+    ],
+    "methods": [],
+    "expression": "e.memory.sides[i].levels[0].next_channel",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests.rs",
+    "line": 508,
+    "function": "damping_paths_and_missing_branch",
+    "root": "s",
+    "fields": [
+      "input",
+      "branches"
+    ],
+    "methods": [
+      "remove",
+      "unwrap"
+    ],
+    "expression": "s.input.branches.remove(&key).unwrap()",
+    "reasons": [
+      "method remove"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests.rs",
+    "line": 510,
+    "function": "damping_paths_and_missing_branch",
+    "root": "s",
+    "fields": [
+      "input",
+      "branches"
+    ],
+    "methods": [
+      "insert"
+    ],
+    "expression": "s.input.branches.insert(key, old)",
+    "reasons": [
+      "method insert"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests.rs",
+    "line": 568,
+    "function": "external_stop_positions",
+    "root": "e",
+    "fields": [
+      "input",
+      "raw"
+    ],
+    "methods": [
+      "as_array_mut",
+      "unwrap",
+      "push"
+    ],
+    "expression": "e.input.raw[\"timeline\"][\"events\"]\n            .as_array_mut()\n            .unwrap()\n            .push(json!({\"id\":\"external_test\",\"kind\":kind,\"time\":tv(1)}))",
+    "reasons": [
+      "method as_array_mut",
+      "method push"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests.rs",
+    "line": 826,
+    "function": "reload",
+    "root": "e",
+    "fields": [
+      "state",
+      "logistics",
+      "poll_memory",
+      "value"
+    ],
+    "methods": [],
+    "expression": "e.state.logistics.poll_memory.value",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests.rs",
+    "line": 974,
+    "function": "transfer_cooldown_pause",
+    "root": "e",
+    "fields": [
+      "state",
+      "progress",
+      "cooldowns",
+      "remaining"
+    ],
+    "methods": [],
+    "expression": "e.state.progress[i].cooldowns[0].remaining",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests.rs",
+    "line": 984,
+    "function": "transfer_cooldown_pause",
+    "root": "e",
+    "fields": [
+      "input",
+      "switches"
+    ],
+    "methods": [
+      "insert"
+    ],
+    "expression": "e.input\n        .switches\n        .insert((\"south_box\".into(), \"transfer\".into()), true)",
+    "reasons": [
+      "method insert"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests.rs",
+    "line": 1097,
+    "function": "stopped_engine_cannot_continue",
+    "root": "e",
+    "fields": [
+      "max_sweeps"
+    ],
+    "methods": [],
+    "expression": "e.max_sweeps",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests.rs",
+    "line": 1100,
+    "function": "stopped_engine_cannot_continue",
+    "root": "e",
+    "fields": [
+      "max_sweeps"
+    ],
+    "methods": [],
+    "expression": "e.max_sweeps",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests_revision.rs",
+    "line": 134,
+    "function": "revision_ore_depletion_is_not_a_movement_guard",
+    "root": "e",
+    "fields": [
+      "state",
+      "warehouse",
+      "slots",
+      "quantity"
+    ],
+    "methods": [],
+    "expression": "e.state.warehouse.slots[0].quantity",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests_revision.rs",
+    "line": 340,
+    "function": "revision_manufacturing_axis_evidence",
+    "root": "blocked",
+    "fields": [
+      "state",
+      "progress"
+    ],
+    "methods": [],
+    "expression": "blocked.state.progress[index]",
+    "reasons": [
+      "mutable borrow"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests_revision.rs",
+    "line": 382,
+    "function": "revision_warehouse_acceptance",
+    "root": "e",
+    "fields": [
+      "input",
+      "switches"
+    ],
+    "methods": [
+      "insert"
+    ],
+    "expression": "e.input\n        .switches\n        .insert((\"north_box\".into(), \"transfer\".into()), true)",
+    "reasons": [
+      "method insert"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests_revision_r4.rs",
+    "line": 194,
+    "function": "revision_r4_pending_trigger_is_closed_before_derivation_and_key",
+    "root": "e",
+    "fields": [
+      "state"
+    ],
+    "methods": [],
+    "expression": "e.state",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests_revision_r4.rs",
+    "line": 292,
+    "function": "revision_r4_first_resumed_sweep_stop_preserves_checkpoint",
+    "root": "e",
+    "fields": [
+      "max_sweeps"
+    ],
+    "methods": [],
+    "expression": "e.max_sweeps",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests_revision_r5.rs",
+    "line": 10,
+    "function": "revision_r5_production_load_guards_ore_before_memory",
+    "root": "sample",
+    "fields": [
+      "state",
+      "inventory",
+      "contents",
+      "entered_at"
+    ],
+    "methods": [],
+    "expression": "sample.state.inventory[sample.inv[\"belt:transport:0\"]].contents[0].entered_at",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests_round5.rs",
+    "line": 125,
+    "function": "round5_ledgers_conserve_every_species",
+    "root": "e",
+    "fields": [
+      "production_abstraction"
+    ],
+    "methods": [],
+    "expression": "e.production_abstraction",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests_round5.rs",
+    "line": 166,
+    "function": "round5_cycle_certificate_replay_and_tamper",
+    "root": "unpersisted",
+    "fields": [
+      "raw"
+    ],
+    "methods": [],
+    "expression": "unpersisted.raw[\"scenario\"][\"assertions\"]",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests_round5.rs",
+    "line": 216,
+    "function": "round5_completion_after_pause",
+    "root": "e",
+    "fields": [
+      "input",
+      "switches"
+    ],
+    "methods": [
+      "insert"
+    ],
+    "expression": "e.input\n        .switches\n        .insert((\"crusher\".into(), \"manufacture\".into()), false)",
+    "reasons": [
+      "method insert"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests_round5.rs",
+    "line": 220,
+    "function": "round5_completion_after_pause",
+    "root": "e",
+    "fields": [
+      "input",
+      "switches"
+    ],
+    "methods": [
+      "insert"
+    ],
+    "expression": "e.input\n        .switches\n        .insert((\"crusher\".into(), \"manufacture\".into()), true)",
+    "reasons": [
+      "method insert"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests_round5.rs",
+    "line": 249,
+    "function": "round5_ore_return_candidate_stops_before_capacity_or_age",
+    "root": "e",
+    "fields": [
+      "state",
+      "warehouse",
+      "slots"
+    ],
+    "methods": [],
+    "expression": "e.state.warehouse.slots",
+    "reasons": [
+      "mutable borrow"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests_round5.rs",
+    "line": 287,
+    "function": "round5_cycle_age_overflow_is_resource_not_wrap",
+    "root": "e",
+    "fields": [
+      "state",
+      "inventory",
+      "contents",
+      "entered_at"
+    ],
+    "methods": [],
+    "expression": "e.state.inventory[source].contents[0].entered_at",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests_round5.rs",
+    "line": 290,
+    "function": "round5_cycle_age_overflow_is_resource_not_wrap",
+    "root": "e",
+    "fields": [
+      "state",
+      "inventory",
+      "contents",
+      "entered_at"
+    ],
+    "methods": [],
+    "expression": "e.state.inventory[slot].contents[0].entered_at",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests_round5.rs",
+    "line": 295,
+    "function": "round5_cycle_age_overflow_is_resource_not_wrap",
+    "root": "input",
+    "fields": [
+      "raw"
+    ],
+    "methods": [],
+    "expression": "input.raw[\"initial_state\"][\"nonwarehouse\"][\"value\"]",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests_round6.rs",
+    "line": 86,
+    "function": "round6_test_only_two_product_recipe_keeps_buffer_exception",
+    "root": "e",
+    "fields": [
+      "input",
+      "catalog",
+      "recipes"
+    ],
+    "methods": [
+      "values_mut",
+      "find",
+      "unwrap"
+    ],
+    "expression": "e\n        .input\n        .catalog\n        .recipes\n        .values_mut()\n        .find(|r| r.kind == \"粉碎机\" && r.inputs.contains_key(\"源矿\"))\n        .unwrap()",
+    "reasons": [
+      "method values_mut"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests_round6.rs",
+    "line": 118,
+    "function": "round6_static_domain_reports_all_without_tick",
+    "root": "e",
+    "fields": [
+      "state",
+      "environment",
+      "online"
+    ],
+    "methods": [],
+    "expression": "e.state.environment.online",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests_round6.rs",
+    "line": 119,
+    "function": "round6_static_domain_reports_all_without_tick",
+    "root": "e",
+    "fields": [
+      "state",
+      "semantic_context",
+      "arbitration",
+      "warehouse_empty_slot_order"
+    ],
+    "methods": [],
+    "expression": "e.state\n        .semantic_context\n        .arbitration\n        .warehouse_empty_slot_order",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/transition.rs",
+    "line": 37,
+    "function": "manufacture",
+    "root": "self",
+    "fields": [
+      "state",
+      "inventory",
+      "contents"
+    ],
+    "methods": [
+      "clear"
+    ],
+    "expression": "self.state.inventory[self.inv[&buffer]].contents.clear()",
+    "reasons": [
+      "method clear"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/transition.rs",
+    "line": 38,
+    "function": "manufacture",
+    "root": "self",
+    "fields": [
+      "state",
+      "progress"
+    ],
+    "methods": [],
+    "expression": "self.state.progress[i]",
+    "reasons": [
+      "mutable borrow"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/transition.rs",
+    "line": 90,
+    "function": "manufacture",
+    "root": "self",
+    "fields": [
+      "state",
+      "progress"
+    ],
+    "methods": [],
+    "expression": "self.state.progress[i]",
+    "reasons": [
+      "mutable borrow"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/transition.rs",
+    "line": 106,
+    "function": "manufacture",
+    "root": "self",
+    "fields": [
+      "state",
+      "progress"
+    ],
+    "methods": [],
+    "expression": "self.state.progress[i]",
+    "reasons": [
+      "mutable borrow"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/transition.rs",
+    "line": 237,
+    "function": "move_channel",
+    "root": "self",
+    "fields": [
+      "supplied"
+    ],
+    "methods": [
+      "insert"
+    ],
+    "expression": "self.supplied.insert(route.item.clone(), n)",
+    "reasons": [
+      "method insert"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/transition.rs",
+    "line": 264,
+    "function": "move_channel",
+    "root": "self",
+    "fields": [
+      "state",
+      "logistics",
+      "gate_counters"
+    ],
+    "methods": [],
+    "expression": "self.state.logistics.gate_counters[i]",
+    "reasons": [
+      "mutable borrow"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/transition.rs",
+    "line": 417,
+    "function": "boundary",
+    "root": "self",
+    "fields": [
+      "state",
+      "progress"
+    ],
+    "methods": [],
+    "expression": "self.state.progress[i]",
+    "reasons": [
+      "mutable borrow"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/transition.rs",
+    "line": 422,
+    "function": "boundary",
+    "root": "self",
+    "fields": [
+      "state",
+      "progress",
+      "cooldowns"
+    ],
+    "methods": [],
+    "expression": "self.state.progress[i].cooldowns[0]",
+    "reasons": [
+      "mutable borrow"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/transition.rs",
+    "line": 428,
+    "function": "boundary",
+    "root": "self",
+    "fields": [
+      "state",
+      "environment",
+      "time"
+    ],
+    "methods": [],
+    "expression": "self.state.environment.time",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/transition.rs",
+    "line": 458,
+    "function": "boundary",
+    "root": "self",
+    "fields": [
+      "state",
+      "inventory",
+      "contents"
+    ],
+    "methods": [
+      "clear"
+    ],
+    "expression": "self.state.inventory[self.inv[&buffer]].contents.clear()",
+    "reasons": [
+      "method clear"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/transition.rs",
+    "line": 462,
+    "function": "boundary",
+    "root": "self",
+    "fields": [
+      "state",
+      "progress",
+      "phase"
+    ],
+    "methods": [],
+    "expression": "self.state.progress[i].phase",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/transition.rs",
+    "line": 463,
+    "function": "boundary",
+    "root": "self",
+    "fields": [
+      "state",
+      "progress",
+      "remaining"
+    ],
+    "methods": [],
+    "expression": "self.state.progress[i].remaining",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/transition.rs",
+    "line": 464,
+    "function": "boundary",
+    "root": "self",
+    "fields": [
+      "completed_batches"
+    ],
+    "methods": [],
+    "expression": "self.completed_batches",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/transition.rs",
+    "line": 494,
+    "function": "boundary",
+    "root": "self",
+    "fields": [
+      "state",
+      "logistics",
+      "gate_counters"
+    ],
+    "methods": [],
+    "expression": "self.state.logistics.gate_counters[self.gate_index[uid]]",
+    "reasons": [
+      "mutable borrow"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/transition.rs",
+    "line": 681,
+    "function": "step_inner",
+    "root": "self",
+    "fields": [
+      "ledger"
+    ],
+    "methods": [],
+    "expression": "self.ledger",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/transition.rs",
+    "line": 767,
+    "function": "step_inner",
+    "root": "self",
+    "fields": [
+      "state",
+      "logistics",
+      "poll_memory",
+      "value"
+    ],
+    "methods": [],
+    "expression": "self.state.logistics.poll_memory.value",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/transition.rs",
+    "line": 768,
+    "function": "step_inner",
+    "root": "self",
+    "fields": [
+      "state",
+      "semantic_context",
+      "judgment_context"
+    ],
+    "methods": [],
+    "expression": "self.state.semantic_context.judgment_context",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/transition.rs",
+    "line": 783,
+    "function": "step_inner",
+    "root": "self",
+    "fields": [
+      "state",
+      "semantic_context",
+      "pending_events"
+    ],
+    "methods": [],
+    "expression": "self.state.semantic_context.pending_events",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/transition.rs",
+    "line": 791,
+    "function": "step_inner",
+    "root": "self",
+    "fields": [
+      "state",
+      "semantic_context",
+      "tick_context"
+    ],
+    "methods": [],
+    "expression": "self.state.semantic_context.tick_context",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/transition.rs",
+    "line": 795,
+    "function": "step_inner",
+    "root": "self",
+    "fields": [
+      "ledger"
+    ],
+    "methods": [],
+    "expression": "self.ledger[\"totals\"]",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/warehouse.rs",
+    "line": 221,
+    "function": "commit_deposit",
+    "root": "self",
+    "fields": [
+      "state",
+      "warehouse",
+      "slots"
+    ],
+    "methods": [
+      "push"
+    ],
+    "expression": "self.state.warehouse.slots.push(WarehouseSlot {\n                    slot: p.slot.clone(),\n                    item: Some(p.item.clone()),\n                    quantity: Quantity::calc(p.count),\n                    empty_identity: identity,\n                })",
+    "reasons": [
+      "method push"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/warehouse.rs",
+    "line": 229,
+    "function": "commit_deposit",
+    "root": "self",
+    "fields": [
+      "state",
+      "warehouse",
+      "slots"
+    ],
+    "methods": [],
+    "expression": "self.state.warehouse.slots[self.warehouse[&p.slot]]",
+    "reasons": [
+      "mutable borrow"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/warehouse.rs",
+    "line": 238,
+    "function": "commit_deposit",
+    "root": "self",
+    "fields": [
+      "supplied"
+    ],
+    "methods": [
+      "insert"
+    ],
+    "expression": "self.supplied.insert(p.item.clone(), count)",
+    "reasons": [
+      "method insert"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/warehouse.rs",
+    "line": 240,
+    "function": "commit_deposit",
+    "root": "self",
+    "fields": [
+      "delivery"
+    ],
+    "methods": [
+      "insert"
+    ],
+    "expression": "self.delivery.insert(p.item.clone(), count)",
+    "reasons": [
+      "method insert"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/warehouse.rs",
+    "line": 243,
+    "function": "commit_deposit",
+    "root": "self",
+    "fields": [
+      "state",
+      "semantic_context",
+      "arbitration",
+      "warehouse_empty_slot_order"
+    ],
+    "methods": [
+      "retain"
+    ],
+    "expression": "self.state\n            .semantic_context\n            .arbitration\n            .warehouse_empty_slot_order\n            .retain(|s| !used.contains(s))",
+    "reasons": [
+      "method retain"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/src/warehouse.rs",
+    "line": 324,
+    "function": "transfer",
+    "root": "self",
+    "fields": [
+      "state",
+      "progress",
+      "cooldowns",
+      "remaining"
+    ],
+    "methods": [],
+    "expression": "self.state.progress[i].cooldowns[0].remaining",
+    "reasons": [
+      "assignment ="
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/复核/r1-规格保真-证据/review_probes.rs",
+    "line": 36,
+    "function": "review_fixed_branch_after_edge_removal",
+    "root": "engine",
+    "fields": [
+      "input",
+      "branches"
+    ],
+    "methods": [
+      "insert"
+    ],
+    "expression": "engine.input.branches.insert((origin.into(), \"splitter\".into()), chosen.into())",
+    "reasons": [
+      "method insert"
+    ]
+  },
+  {
+    "path": "求解器/crates/kernel/复核/r1-规格保真-证据/review_probes.rs",
+    "line": 85,
+    "function": "review_dynamic_fixed_branch",
+    "root": "engine",
+    "fields": [
+      "state",
+      "logistics",
+      "poll_memory",
+      "value"
+    ],
+    "methods": [],
+    "expression": "engine.state.logistics.poll_memory.value",
+    "reasons": [
+      "assignment ="
+    ]
+  }
+]

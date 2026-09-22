@@ -1,0 +1,6 @@
+{"name": "dense-none-1000", "status": "completed", "completed_ticks": 1000, "wall_seconds": 0.89, "elapsed_ns": "867839180", "peak_rss_kib": 55264.0, "artifact_bytes": null}
+{"name": "dense-none-10000", "status": "completed", "completed_ticks": 10000, "wall_seconds": 9.03, "elapsed_ns": "8898394588", "peak_rss_kib": 458012.0, "artifact_bytes": null}
+{"name": "dense-none-100000", "status": "completed", "completed_ticks": 100000, "wall_seconds": 92.6, "elapsed_ns": "91353237810", "peak_rss_kib": 4486920.0, "artifact_bytes": null}
+{"name": "dense-cycle-1000-k1", "status": "inconclusive", "completed_ticks": 1000, "wall_seconds": 2.61, "elapsed_ns": null, "peak_rss_kib": 666652.0, "artifact_bytes": 319358}
+{"name": "dense-cycle-1000-k32", "status": "inconclusive", "completed_ticks": 1000, "wall_seconds": 2.35, "elapsed_ns": null, "peak_rss_kib": 83472.0, "artifact_bytes": 319358}
+{"name": "dense-cycle-1000-k128", "status": "inconclusive", "completed_ticks": 1000, "wall_seconds": 2.33, "elapsed_ns": null, "peak_rss_kib": 68832.0, "artifact_bytes": 319358}

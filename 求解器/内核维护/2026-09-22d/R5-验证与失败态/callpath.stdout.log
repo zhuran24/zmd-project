@@ -1,0 +1,933 @@
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/usr/lib/libthread_db.so.1".
+[Detaching after vfork from child process 601706]
+[Detaching after vfork from child process 601707]
+[Detaching after vfork from child process 601708]
+[Detaching after vfork from child process 601709]
+[Detaching after vfork from child process 601710]
+[Detaching after vfork from child process 601711]
+[Detaching after vfork from child process 601712]
+[Detaching after vfork from child process 601713]
+[Detaching after vfork from child process 601714]
+[Detaching after vfork from child process 601715]
+[Detaching after vfork from child process 601716]
+[Detaching after vfork from child process 601717]
+[Detaching after vfork from child process 601718]
+[Detaching after vfork from child process 601719]
+[Detaching after vfork from child process 601720]
+[Detaching after vfork from child process 601721]
+[Detaching after vfork from child process 601722]
+[Detaching after vfork from child process 601723]
+[Detaching after vfork from child process 601724]
+[Detaching after vfork from child process 601725]
+[Detaching after vfork from child process 601726]
+[Detaching after vfork from child process 601727]
+[Detaching after vfork from child process 601728]
+[Detaching after vfork from child process 601729]
+[Detaching after vfork from child process 601730]
+[Detaching after vfork from child process 601731]
+[Detaching after vfork from child process 601732]
+[Detaching after vfork from child process 601733]
+[Detaching after vfork from child process 601734]
+[Detaching after vfork from child process 601735]
+[Detaching after vfork from child process 601736]
+[Detaching after vfork from child process 601737]
+[Detaching after vfork from child process 601738]
+[Detaching after vfork from child process 601739]
+[Detaching after vfork from child process 601740]
+[Detaching after vfork from child process 601741]
+[Detaching after vfork from child process 601742]
+[Detaching after vfork from child process 601743]
+[Detaching after vfork from child process 601744]
+[Detaching after vfork from child process 601745]
+[Detaching after vfork from child process 601746]
+[Detaching after vfork from child process 601747]
+[Detaching after vfork from child process 601748]
+[Detaching after vfork from child process 601749]
+[Detaching after vfork from child process 601750]
+[Detaching after vfork from child process 601751]
+[Detaching after vfork from child process 601752]
+[Detaching after vfork from child process 601753]
+[Detaching after vfork from child process 601754]
+[Detaching after vfork from child process 601755]
+[Detaching after vfork from child process 601756]
+[Detaching after vfork from child process 601757]
+[Detaching after vfork from child process 601758]
+[Detaching after vfork from child process 601759]
+[Detaching after vfork from child process 601760]
+[Detaching after vfork from child process 601761]
+[Detaching after vfork from child process 601762]
+[Detaching after vfork from child process 601763]
+[Detaching after vfork from child process 601764]
+[Detaching after vfork from child process 601765]
+[Detaching after vfork from child process 601766]
+[Detaching after vfork from child process 601767]
+[Detaching after vfork from child process 601768]
+[Detaching after vfork from child process 601769]
+[Detaching after vfork from child process 601770]
+[Detaching after vfork from child process 601771]
+[Detaching after vfork from child process 601772]
+[Detaching after vfork from child process 601773]
+[Detaching after vfork from child process 601774]
+[Detaching after vfork from child process 601775]
+[Detaching after vfork from child process 601776]
+[Detaching after vfork from child process 601777]
+[Detaching after vfork from child process 601778]
+[Detaching after vfork from child process 601779]
+[Detaching after vfork from child process 601780]
+[Detaching after vfork from child process 601781]
+[Detaching after vfork from child process 601782]
+[Detaching after vfork from child process 601783]
+[Detaching after vfork from child process 601784]
+[Detaching after vfork from child process 601785]
+[Detaching after vfork from child process 601786]
+[Detaching after vfork from child process 601787]
+[Detaching after vfork from child process 601788]
+[Detaching after vfork from child process 601789]
+[Detaching after vfork from child process 601790]
+[Detaching after vfork from child process 601791]
+[Detaching after vfork from child process 601792]
+[Detaching after vfork from child process 601793]
+[Detaching after vfork from child process 601794]
+[Detaching after vfork from child process 601795]
+[Detaching after vfork from child process 601796]
+[Detaching after vfork from child process 601797]
+[Detaching after vfork from child process 601798]
+[Detaching after vfork from child process 601799]
+[Detaching after vfork from child process 601800]
+[Detaching after vfork from child process 601801]
+[Detaching after vfork from child process 601802]
+[Detaching after vfork from child process 601803]
+[Detaching after vfork from child process 601804]
+[Detaching after vfork from child process 601805]
+[Detaching after vfork from child process 601806]
+[Detaching after vfork from child process 601807]
+[Detaching after vfork from child process 601808]
+[Detaching after vfork from child process 601809]
+[Detaching after vfork from child process 601810]
+[Detaching after vfork from child process 601811]
+[Detaching after vfork from child process 601812]
+[Detaching after vfork from child process 601813]
+[Detaching after vfork from child process 601815]
+[Detaching after vfork from child process 601816]
+[Detaching after vfork from child process 601817]
+[Detaching after vfork from child process 601818]
+[Detaching after vfork from child process 601819]
+[Detaching after vfork from child process 601820]
+[Detaching after vfork from child process 601821]
+[Detaching after vfork from child process 601822]
+[Detaching after vfork from child process 601823]
+[Detaching after vfork from child process 601824]
+[Detaching after vfork from child process 601825]
+[Detaching after vfork from child process 601826]
+[Detaching after vfork from child process 601827]
+[Detaching after vfork from child process 601828]
+[Detaching after vfork from child process 601829]
+[Detaching after vfork from child process 601830]
+[Detaching after vfork from child process 601831]
+[Detaching after vfork from child process 601832]
+[Detaching after vfork from child process 601833]
+[Detaching after vfork from child process 601834]
+[Detaching after vfork from child process 601835]
+[Detaching after vfork from child process 601836]
+[Detaching after vfork from child process 601837]
+[Detaching after vfork from child process 601838]
+[Detaching after vfork from child process 601839]
+[Detaching after vfork from child process 601840]
+[Detaching after vfork from child process 601841]
+R5_CALLPATH ["kernel::output::run_record", "kernel::output::verify_record_at", "probe::main", "<fn() as core::ops::function::FnOnce<()>>::call_once", "std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>"]
+[Detaching after vfork from child process 601842]
+[Detaching after vfork from child process 601843]
+[Detaching after vfork from child process 601844]
+[Detaching after vfork from child process 601845]
+[Detaching after vfork from child process 601846]
+[Detaching after vfork from child process 601847]
+[Detaching after vfork from child process 601848]
+[Detaching after vfork from child process 601849]
+[Detaching after vfork from child process 601850]
+[Detaching after vfork from child process 601851]
+[Detaching after vfork from child process 601852]
+[Detaching after vfork from child process 601853]
+[Detaching after vfork from child process 601854]
+[Detaching after vfork from child process 601855]
+[Detaching after vfork from child process 601856]
+[Detaching after vfork from child process 601857]
+[Detaching after vfork from child process 601858]
+[Detaching after vfork from child process 601859]
+[Detaching after vfork from child process 601860]
+[Detaching after vfork from child process 601861]
+[Detaching after vfork from child process 601862]
+[Detaching after vfork from child process 601863]
+[Detaching after vfork from child process 601864]
+[Detaching after vfork from child process 601865]
+[Detaching after vfork from child process 601866]
+[Detaching after vfork from child process 601867]
+[Detaching after vfork from child process 601868]
+[Detaching after vfork from child process 601869]
+[Detaching after vfork from child process 601870]
+[Detaching after vfork from child process 601871]
+[Detaching after vfork from child process 601872]
+[Detaching after vfork from child process 601873]
+[Detaching after vfork from child process 601874]
+[Detaching after vfork from child process 601875]
+[Detaching after vfork from child process 601876]
+[Detaching after vfork from child process 601877]
+[Detaching after vfork from child process 601878]
+[Detaching after vfork from child process 601879]
+[Detaching after vfork from child process 601880]
+[Detaching after vfork from child process 601881]
+[Detaching after vfork from child process 601882]
+[Detaching after vfork from child process 601883]
+[Detaching after vfork from child process 601884]
+[Detaching after vfork from child process 601885]
+[Detaching after vfork from child process 601886]
+[Detaching after vfork from child process 601887]
+[Detaching after vfork from child process 601888]
+[Detaching after vfork from child process 601889]
+[Detaching after vfork from child process 601890]
+[Detaching after vfork from child process 601891]
+[Detaching after vfork from child process 601892]
+[Detaching after vfork from child process 601893]
+[Detaching after vfork from child process 601894]
+[Detaching after vfork from child process 601895]
+[Detaching after vfork from child process 601896]
+[Detaching after vfork from child process 601897]
+[Detaching after vfork from child process 601898]
+[Detaching after vfork from child process 601899]
+[Detaching after vfork from child process 601900]
+[Detaching after vfork from child process 601901]
+[Detaching after vfork from child process 601902]
+[Detaching after vfork from child process 601903]
+[Detaching after vfork from child process 601904]
+[Detaching after vfork from child process 601906]
+[Detaching after vfork from child process 601907]
+[Detaching after vfork from child process 601908]
+[Detaching after vfork from child process 601909]
+[Detaching after vfork from child process 601910]
+[Detaching after vfork from child process 601911]
+[Detaching after vfork from child process 601912]
+[Detaching after vfork from child process 601913]
+[Detaching after vfork from child process 601914]
+[Detaching after vfork from child process 601915]
+[Detaching after vfork from child process 601916]
+[Detaching after vfork from child process 601917]
+[Detaching after vfork from child process 601918]
+[Detaching after vfork from child process 601919]
+[Detaching after vfork from child process 601920]
+[Detaching after vfork from child process 601921]
+[Detaching after vfork from child process 601922]
+[Detaching after vfork from child process 601923]
+[Detaching after vfork from child process 601924]
+[Detaching after vfork from child process 601925]
+[Detaching after vfork from child process 601926]
+[Detaching after vfork from child process 601927]
+[Detaching after vfork from child process 601928]
+[Detaching after vfork from child process 601929]
+[Detaching after vfork from child process 601930]
+[Detaching after vfork from child process 601931]
+[Detaching after vfork from child process 601932]
+[Detaching after vfork from child process 601933]
+[Detaching after vfork from child process 601934]
+[Detaching after vfork from child process 601935]
+[Detaching after vfork from child process 601936]
+[Detaching after vfork from child process 601937]
+[Detaching after vfork from child process 601938]
+[Detaching after vfork from child process 601939]
+[Detaching after vfork from child process 601940]
+[Detaching after vfork from child process 601941]
+[Detaching after vfork from child process 601942]
+[Detaching after vfork from child process 601943]
+[Detaching after vfork from child process 601944]
+[Detaching after vfork from child process 601945]
+[Detaching after vfork from child process 601946]
+[Detaching after vfork from child process 601947]
+[Detaching after vfork from child process 601948]
+[Detaching after vfork from child process 601949]
+[Detaching after vfork from child process 601950]
+[Detaching after vfork from child process 601951]
+[Detaching after vfork from child process 601952]
+[Detaching after vfork from child process 601953]
+[Detaching after vfork from child process 601954]
+[Detaching after vfork from child process 601955]
+[Detaching after vfork from child process 601956]
+[Detaching after vfork from child process 601957]
+[Detaching after vfork from child process 601958]
+[Detaching after vfork from child process 601959]
+[Detaching after vfork from child process 601960]
+[Detaching after vfork from child process 601961]
+[Detaching after vfork from child process 601962]
+[Detaching after vfork from child process 601963]
+[Detaching after vfork from child process 601964]
+[Detaching after vfork from child process 601965]
+[Detaching after vfork from child process 601966]
+[Detaching after vfork from child process 601967]
+[Detaching after vfork from child process 601968]
+[Detaching after vfork from child process 601969]
+[Detaching after vfork from child process 601970]
+[Detaching after vfork from child process 601971]
+[Detaching after vfork from child process 601972]
+[Detaching after vfork from child process 601973]
+[Detaching after vfork from child process 601974]
+[Detaching after vfork from child process 601975]
+[Detaching after vfork from child process 601976]
+[Detaching after vfork from child process 601977]
+[Detaching after vfork from child process 601978]
+[Detaching after vfork from child process 601979]
+[Detaching after vfork from child process 601980]
+[Detaching after vfork from child process 601981]
+[Detaching after vfork from child process 601982]
+[Detaching after vfork from child process 601983]
+[Detaching after vfork from child process 601984]
+[Detaching after vfork from child process 601985]
+[Detaching after vfork from child process 601986]
+[Detaching after vfork from child process 601987]
+[Detaching after vfork from child process 601988]
+[Detaching after vfork from child process 601989]
+[Detaching after vfork from child process 601990]
+[Detaching after vfork from child process 601991]
+[Detaching after vfork from child process 601992]
+[Detaching after vfork from child process 601993]
+[Detaching after vfork from child process 601994]
+[Detaching after vfork from child process 601995]
+[Detaching after vfork from child process 601996]
+[Detaching after vfork from child process 601997]
+[Detaching after vfork from child process 601998]
+[Detaching after vfork from child process 601999]
+[Detaching after vfork from child process 602000]
+[Detaching after vfork from child process 602001]
+[Detaching after vfork from child process 602002]
+[Detaching after vfork from child process 602003]
+[Detaching after vfork from child process 602005]
+[Detaching after vfork from child process 602006]
+[Detaching after vfork from child process 602007]
+[Detaching after vfork from child process 602008]
+[Detaching after vfork from child process 602009]
+[Detaching after vfork from child process 602010]
+[Detaching after vfork from child process 602011]
+[Detaching after vfork from child process 602012]
+[Detaching after vfork from child process 602013]
+[Detaching after vfork from child process 602014]
+[Detaching after vfork from child process 602015]
+[Detaching after vfork from child process 602016]
+[Detaching after vfork from child process 602017]
+[Detaching after vfork from child process 602018]
+[Detaching after vfork from child process 602019]
+[Detaching after vfork from child process 602020]
+[Detaching after vfork from child process 602021]
+[Detaching after vfork from child process 602022]
+[Detaching after vfork from child process 602023]
+[Detaching after vfork from child process 602024]
+[Detaching after vfork from child process 602025]
+[Detaching after vfork from child process 602026]
+[Detaching after vfork from child process 602027]
+[Detaching after vfork from child process 602028]
+[Detaching after vfork from child process 602029]
+[Detaching after vfork from child process 602030]
+[Detaching after vfork from child process 602031]
+[Detaching after vfork from child process 602032]
+[Detaching after vfork from child process 602033]
+[Detaching after vfork from child process 602034]
+[Detaching after vfork from child process 602035]
+[Detaching after vfork from child process 602036]
+[Detaching after vfork from child process 602037]
+[Detaching after vfork from child process 602038]
+[Detaching after vfork from child process 602039]
+[Detaching after vfork from child process 602040]
+[Detaching after vfork from child process 602041]
+[Detaching after vfork from child process 602042]
+[Detaching after vfork from child process 602043]
+[Detaching after vfork from child process 602044]
+[Detaching after vfork from child process 602045]
+[Detaching after vfork from child process 602046]
+[Detaching after vfork from child process 602047]
+[Detaching after vfork from child process 602048]
+[Detaching after vfork from child process 602049]
+[Detaching after vfork from child process 602050]
+[Detaching after vfork from child process 602051]
+[Detaching after vfork from child process 602052]
+[Detaching after vfork from child process 602053]
+[Detaching after vfork from child process 602054]
+[Detaching after vfork from child process 602055]
+[Detaching after vfork from child process 602056]
+[Detaching after vfork from child process 602057]
+[Detaching after vfork from child process 602058]
+[Detaching after vfork from child process 602059]
+[Detaching after vfork from child process 602060]
+[Detaching after vfork from child process 602061]
+[Detaching after vfork from child process 602062]
+[Detaching after vfork from child process 602063]
+[Detaching after vfork from child process 602064]
+[Detaching after vfork from child process 602065]
+[Detaching after vfork from child process 602066]
+[Detaching after vfork from child process 602067]
+[Detaching after vfork from child process 602068]
+[Detaching after vfork from child process 602069]
+[Detaching after vfork from child process 602070]
+[Detaching after vfork from child process 602071]
+[Detaching after vfork from child process 602072]
+[Detaching after vfork from child process 602073]
+[Detaching after vfork from child process 602074]
+[Detaching after vfork from child process 602075]
+[Detaching after vfork from child process 602076]
+[Detaching after vfork from child process 602077]
+[Detaching after vfork from child process 602078]
+[Detaching after vfork from child process 602079]
+[Detaching after vfork from child process 602080]
+[Detaching after vfork from child process 602081]
+[Detaching after vfork from child process 602082]
+[Detaching after vfork from child process 602083]
+[Detaching after vfork from child process 602084]
+[Detaching after vfork from child process 602085]
+[Detaching after vfork from child process 602086]
+[Detaching after vfork from child process 602087]
+[Detaching after vfork from child process 602088]
+[Detaching after vfork from child process 602089]
+[Detaching after vfork from child process 602090]
+[Detaching after vfork from child process 602091]
+[Detaching after vfork from child process 602092]
+[Detaching after vfork from child process 602093]
+[Detaching after vfork from child process 602094]
+[Detaching after vfork from child process 602095]
+[Detaching after vfork from child process 602096]
+[Detaching after vfork from child process 602097]
+[Detaching after vfork from child process 602098]
+[Detaching after vfork from child process 602099]
+[Detaching after vfork from child process 602100]
+[Detaching after vfork from child process 602101]
+[Detaching after vfork from child process 602102]
+[Detaching after vfork from child process 602103]
+[Detaching after vfork from child process 602104]
+[Detaching after vfork from child process 602105]
+[Detaching after vfork from child process 602106]
+[Detaching after vfork from child process 602107]
+[Detaching after vfork from child process 602108]
+[Detaching after vfork from child process 602109]
+[Detaching after vfork from child process 602110]
+[Detaching after vfork from child process 602111]
+[Detaching after vfork from child process 602112]
+[Detaching after vfork from child process 602113]
+[Detaching after vfork from child process 602114]
+[Detaching after vfork from child process 602115]
+[Detaching after vfork from child process 602116]
+[Detaching after vfork from child process 602117]
+[Detaching after vfork from child process 602118]
+[Detaching after vfork from child process 602119]
+[Detaching after vfork from child process 602120]
+[Detaching after vfork from child process 602121]
+[Detaching after vfork from child process 602122]
+[Detaching after vfork from child process 602123]
+[Detaching after vfork from child process 602124]
+[Detaching after vfork from child process 602125]
+[Detaching after vfork from child process 602126]
+[Detaching after vfork from child process 602127]
+[Detaching after vfork from child process 602128]
+[Detaching after vfork from child process 602129]
+[Detaching after vfork from child process 602130]
+[Detaching after vfork from child process 602131]
+[Detaching after vfork from child process 602132]
+[Detaching after vfork from child process 602133]
+[Detaching after vfork from child process 602134]
+R5_CALLPATH ["kernel::cycle::search", "kernel::cycle_io::verify_cycle_at", "probe::main", "<fn() as core::ops::function::FnOnce<()>>::call_once", "std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>"]
+R5_CALLPATH ["kernel::engine::Engine::new_production", "kernel::cycle::search", "kernel::cycle_io::verify_cycle_at", "probe::main", "<fn() as core::ops::function::FnOnce<()>>::call_once"]
+R5_CALLPATH ["kernel::engine::Engine::new_production", "kernel::cycle::restore", "kernel::cycle::restore_position", "kernel::cycle::search", "kernel::cycle_io::verify_cycle_at"]
+R5_CALLPATH ["kernel::engine::Engine::new_production", "kernel::cycle::restore", "kernel::cycle::search", "kernel::cycle_io::verify_cycle_at", "probe::main"]
+[Detaching after vfork from child process 602138]
+[Detaching after vfork from child process 602139]
+[Detaching after vfork from child process 602140]
+[Detaching after vfork from child process 602141]
+[Detaching after vfork from child process 602142]
+[Detaching after vfork from child process 602143]
+[Detaching after vfork from child process 602144]
+[Detaching after vfork from child process 602145]
+[Detaching after vfork from child process 602146]
+[Detaching after vfork from child process 602147]
+[Detaching after vfork from child process 602148]
+[Detaching after vfork from child process 602149]
+[Detaching after vfork from child process 602150]
+[Detaching after vfork from child process 602151]
+[Detaching after vfork from child process 602152]
+[Detaching after vfork from child process 602153]
+[Detaching after vfork from child process 602154]
+[Detaching after vfork from child process 602155]
+[Detaching after vfork from child process 602156]
+[Detaching after vfork from child process 602157]
+[Detaching after vfork from child process 602158]
+[Detaching after vfork from child process 602159]
+[Detaching after vfork from child process 602160]
+[Detaching after vfork from child process 602161]
+[Detaching after vfork from child process 602162]
+[Detaching after vfork from child process 602163]
+[Detaching after vfork from child process 602164]
+[Detaching after vfork from child process 602165]
+[Detaching after vfork from child process 602166]
+[Detaching after vfork from child process 602167]
+[Detaching after vfork from child process 602168]
+[Detaching after vfork from child process 602169]
+[Detaching after vfork from child process 602170]
+[Detaching after vfork from child process 602171]
+[Detaching after vfork from child process 602172]
+[Detaching after vfork from child process 602173]
+[Detaching after vfork from child process 602174]
+[Detaching after vfork from child process 602175]
+[Detaching after vfork from child process 602176]
+[Detaching after vfork from child process 602177]
+R5_CALLPATH ["kernel::engine::Engine::new_production", "kernel::cycle_io::verify_cycle_at", "probe::main", "<fn() as core::ops::function::FnOnce<()>>::call_once", "std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>"]
+R5_CALLPATH ["kernel::engine::Engine::step_tick", "kernel::cycle_io::verify_cycle_at", "probe::main", "<fn() as core::ops::function::FnOnce<()>>::call_once", "std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>"]
+[Detaching after vfork from child process 602178]
+[Detaching after vfork from child process 602179]
+[Detaching after vfork from child process 602180]
+[Detaching after vfork from child process 602181]
+[Detaching after vfork from child process 602182]
+[Detaching after vfork from child process 602183]
+[Detaching after vfork from child process 602184]
+[Detaching after vfork from child process 602185]
+[Detaching after vfork from child process 602186]
+[Detaching after vfork from child process 602187]
+[Detaching after vfork from child process 602188]
+[Detaching after vfork from child process 602189]
+[Detaching after vfork from child process 602190]
+[Detaching after vfork from child process 602191]
+[Detaching after vfork from child process 602192]
+[Detaching after vfork from child process 602193]
+[Detaching after vfork from child process 602194]
+[Detaching after vfork from child process 602195]
+[Detaching after vfork from child process 602196]
+[Detaching after vfork from child process 602197]
+[Detaching after vfork from child process 602198]
+[Detaching after vfork from child process 602199]
+[Detaching after vfork from child process 602200]
+[Detaching after vfork from child process 602201]
+[Detaching after vfork from child process 602202]
+[Detaching after vfork from child process 602203]
+[Detaching after vfork from child process 602204]
+[Detaching after vfork from child process 602205]
+[Detaching after vfork from child process 602206]
+[Detaching after vfork from child process 602207]
+[Detaching after vfork from child process 602208]
+[Detaching after vfork from child process 602209]
+[Detaching after vfork from child process 602210]
+[Detaching after vfork from child process 602211]
+[Detaching after vfork from child process 602212]
+[Detaching after vfork from child process 602213]
+[Detaching after vfork from child process 602214]
+[Detaching after vfork from child process 602215]
+[Detaching after vfork from child process 602217]
+[Detaching after vfork from child process 602218]
+[Detaching after vfork from child process 602220]
+[Detaching after vfork from child process 602221]
+[Detaching after vfork from child process 602222]
+[Detaching after vfork from child process 602223]
+[Detaching after vfork from child process 602224]
+[Detaching after vfork from child process 602225]
+[Detaching after vfork from child process 602226]
+[Detaching after vfork from child process 602227]
+[Detaching after vfork from child process 602228]
+[Detaching after vfork from child process 602229]
+[Detaching after vfork from child process 602230]
+[Detaching after vfork from child process 602231]
+[Detaching after vfork from child process 602232]
+[Detaching after vfork from child process 602233]
+[Detaching after vfork from child process 602234]
+[Detaching after vfork from child process 602235]
+[Detaching after vfork from child process 602236]
+[Detaching after vfork from child process 602237]
+[Detaching after vfork from child process 602238]
+[Detaching after vfork from child process 602239]
+[Detaching after vfork from child process 602240]
+[Detaching after vfork from child process 602241]
+[Detaching after vfork from child process 602242]
+[Detaching after vfork from child process 602243]
+[Detaching after vfork from child process 602244]
+[Detaching after vfork from child process 602245]
+[Detaching after vfork from child process 602246]
+[Detaching after vfork from child process 602247]
+[Detaching after vfork from child process 602248]
+[Detaching after vfork from child process 602249]
+[Detaching after vfork from child process 602250]
+[Detaching after vfork from child process 602251]
+[Detaching after vfork from child process 602252]
+[Detaching after vfork from child process 602253]
+[Detaching after vfork from child process 602254]
+[Detaching after vfork from child process 602255]
+[Detaching after vfork from child process 602256]
+[Detaching after vfork from child process 602257]
+[Detaching after vfork from child process 602258]
+[Detaching after vfork from child process 602259]
+[Detaching after vfork from child process 602260]
+[Detaching after vfork from child process 602261]
+[Detaching after vfork from child process 602262]
+[Detaching after vfork from child process 602263]
+[Detaching after vfork from child process 602264]
+[Detaching after vfork from child process 602265]
+[Detaching after vfork from child process 602266]
+[Detaching after vfork from child process 602267]
+[Detaching after vfork from child process 602268]
+[Detaching after vfork from child process 602269]
+[Detaching after vfork from child process 602270]
+[Detaching after vfork from child process 602271]
+[Detaching after vfork from child process 602272]
+[Detaching after vfork from child process 602273]
+[Detaching after vfork from child process 602274]
+[Detaching after vfork from child process 602275]
+[Detaching after vfork from child process 602276]
+[Detaching after vfork from child process 602277]
+[Detaching after vfork from child process 602278]
+[Detaching after vfork from child process 602279]
+[Detaching after vfork from child process 602280]
+[Detaching after vfork from child process 602281]
+[Detaching after vfork from child process 602282]
+[Detaching after vfork from child process 602283]
+[Detaching after vfork from child process 602284]
+[Detaching after vfork from child process 602285]
+[Detaching after vfork from child process 602286]
+[Detaching after vfork from child process 602287]
+[Detaching after vfork from child process 602288]
+[Detaching after vfork from child process 602289]
+[Detaching after vfork from child process 602290]
+[Detaching after vfork from child process 602291]
+[Detaching after vfork from child process 602292]
+[Detaching after vfork from child process 602293]
+[Detaching after vfork from child process 602294]
+[Detaching after vfork from child process 602295]
+[Detaching after vfork from child process 602296]
+[Detaching after vfork from child process 602297]
+[Detaching after vfork from child process 602298]
+[Detaching after vfork from child process 602299]
+[Detaching after vfork from child process 602300]
+[Detaching after vfork from child process 602301]
+[Detaching after vfork from child process 602302]
+[Detaching after vfork from child process 602303]
+[Detaching after vfork from child process 602304]
+[Detaching after vfork from child process 602305]
+[Detaching after vfork from child process 602306]
+[Detaching after vfork from child process 602307]
+[Detaching after vfork from child process 602308]
+[Detaching after vfork from child process 602309]
+[Detaching after vfork from child process 602310]
+[Detaching after vfork from child process 602311]
+[Detaching after vfork from child process 602312]
+[Detaching after vfork from child process 602313]
+[Detaching after vfork from child process 602314]
+[Detaching after vfork from child process 602315]
+[Detaching after vfork from child process 602316]
+[Detaching after vfork from child process 602317]
+[Detaching after vfork from child process 602318]
+[Detaching after vfork from child process 602319]
+[Detaching after vfork from child process 602320]
+[Detaching after vfork from child process 602321]
+[Detaching after vfork from child process 602322]
+[Detaching after vfork from child process 602323]
+[Detaching after vfork from child process 602324]
+[Detaching after vfork from child process 602325]
+[Detaching after vfork from child process 602326]
+[Detaching after vfork from child process 602327]
+[Detaching after vfork from child process 602328]
+[Detaching after vfork from child process 602329]
+[Detaching after vfork from child process 602330]
+[Detaching after vfork from child process 602331]
+[Detaching after vfork from child process 602332]
+[Detaching after vfork from child process 602333]
+[Detaching after vfork from child process 602334]
+[Detaching after vfork from child process 602335]
+[Detaching after vfork from child process 602336]
+{
+  "cycle_verification": {
+    "generated_status": "diagnostic_cycle",
+    "stopped_completed_ticks": 0,
+    "stopped_partial_events": 5,
+    "stopped_status": "inconclusive",
+    "stopped_verification": {
+      "cycle_replayed": false,
+      "prefix_replayed": 0,
+      "reason": "原种子前缀及停止/预算位置已复现，无周期",
+      "status": "input_checked"
+    },
+    "verification": {
+      "checks": [
+        "引用原始字节/format/producer和完整来源链",
+        "原种子到达前缀及跨刻事件身份",
+        "独立重建D动态前件及周期账/率/接收域",
+        "从周期起点P次step_tick及完整终态"
+      ],
+      "cycle_replayed": true,
+      "period": 20,
+      "prefix_replayed": 21,
+      "start_time": 0,
+      "status": "input_checked"
+    }
+  },
+  "failure_probes": [
+    {
+      "before_time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "failed_judgment_context": {
+        "basis": [
+          "新时刻扫描前；无先前判定"
+        ],
+        "status": "specified",
+        "value": {
+          "instant": {
+            "kind": "rational",
+            "value": {
+              "category": "候选",
+              "value": "0"
+            }
+          },
+          "next_event": null,
+          "next_template": 0,
+          "order_scope": "global",
+          "ordered_events": [],
+          "phase": "before_boundary",
+          "round": 0
+        }
+      },
+      "failed_time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "inventory_changed_before_error": true,
+      "mode": "snapshot",
+      "repeat_entire_engine_debug_unchanged": true,
+      "repeat_stop_identical": true,
+      "resume_failed_state": {
+        "accepted": false,
+        "stop": {
+          "axis": "input",
+          "location": "poll_memory",
+          "reason": "成员、接通环、级或当前可动级不符",
+          "status": "invalid_input"
+        }
+      },
+      "state_changed_before_error": true,
+      "stop": {
+        "axis": "resource.sweeps",
+        "location": "J|0|0|4: instant=0 sweep=1",
+        "reason": "未见完整状态重复，不能推进时刻",
+        "status": "inconclusive"
+      },
+      "warmup_one_complete_tick": false
+    },
+    {
+      "before_time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "failed_judgment_context": {
+        "basis": [
+          "新时刻扫描前；无先前判定"
+        ],
+        "status": "specified",
+        "value": {
+          "instant": {
+            "kind": "rational",
+            "value": {
+              "category": "候选",
+              "value": "0"
+            }
+          },
+          "next_event": null,
+          "next_template": 0,
+          "order_scope": "global",
+          "ordered_events": [],
+          "phase": "before_boundary",
+          "round": 0
+        }
+      },
+      "failed_time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "inventory_changed_before_error": true,
+      "mode": "no_output",
+      "repeat_entire_engine_debug_unchanged": true,
+      "repeat_stop_identical": true,
+      "resume_failed_state": {
+        "accepted": false,
+        "stop": {
+          "axis": "input",
+          "location": "poll_memory",
+          "reason": "成员、接通环、级或当前可动级不符",
+          "status": "invalid_input"
+        }
+      },
+      "state_changed_before_error": true,
+      "stop": {
+        "axis": "resource.sweeps",
+        "location": "J|0|0|4: instant=0 sweep=1",
+        "reason": "未见完整状态重复，不能推进时刻",
+        "status": "inconclusive"
+      },
+      "warmup_one_complete_tick": false
+    },
+    {
+      "before_time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "failed_judgment_context": {
+        "basis": [
+          "新时刻扫描前；无先前判定"
+        ],
+        "status": "specified",
+        "value": {
+          "instant": {
+            "kind": "rational",
+            "value": {
+              "category": "候选",
+              "value": "0"
+            }
+          },
+          "next_event": null,
+          "next_template": 0,
+          "order_scope": "global",
+          "ordered_events": [],
+          "phase": "before_boundary",
+          "round": 0
+        }
+      },
+      "failed_time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "inventory_changed_before_error": true,
+      "mode": "compact",
+      "repeat_entire_engine_debug_unchanged": true,
+      "repeat_stop_identical": true,
+      "resume_failed_state": {
+        "accepted": false,
+        "stop": {
+          "axis": "input",
+          "location": "poll_memory",
+          "reason": "成员、接通环、级或当前可动级不符",
+          "status": "invalid_input"
+        }
+      },
+      "state_changed_before_error": true,
+      "stop": {
+        "axis": "resource.sweeps",
+        "location": "J|0|0|4: instant=0 sweep=1",
+        "reason": "未见完整状态重复，不能推进时刻",
+        "status": "inconclusive"
+      },
+      "warmup_one_complete_tick": false
+    },
+    {
+      "before_time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "failed_judgment_context": {
+        "basis": [
+          "完整扫描边界重复，保留轮询状态"
+        ],
+        "status": "specified",
+        "value": {
+          "instant": {
+            "kind": "rational",
+            "value": {
+              "category": "候选",
+              "value": "0"
+            }
+          },
+          "next_event": null,
+          "next_template": 0,
+          "order_scope": "global",
+          "ordered_events": [],
+          "phase": "after_closure",
+          "round": 2
+        }
+      },
+      "failed_time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "1"
+        }
+      },
+      "inventory_changed_before_error": true,
+      "mode": "snapshot",
+      "repeat_entire_engine_debug_unchanged": true,
+      "repeat_stop_identical": true,
+      "resume_failed_state": {
+        "accepted": false,
+        "stop": {
+          "axis": "input",
+          "location": "J|0|0|0",
+          "reason": "成功账本与J实例时刻/扫描位置/模板不符",
+          "status": "invalid_input"
+        }
+      },
+      "state_changed_before_error": true,
+      "stop": {
+        "axis": "resource.sweeps",
+        "location": "J|1|0|4: instant=1 sweep=1",
+        "reason": "未见完整状态重复，不能推进时刻",
+        "status": "inconclusive"
+      },
+      "warmup_one_complete_tick": true
+    }
+  ],
+  "last_complete_boundary": {
+    "fields": [
+      "time",
+      "events",
+      "state",
+      "warehouse_ledger",
+      "closure"
+    ],
+    "resume_and_next_tick_match": true
+  },
+  "precondition_guard": {
+    "step_tick_error": {
+      "axis": "input",
+      "location": "step_tick",
+      "reason": "需要 after_closure 锚点",
+      "status": "invalid_input"
+    },
+    "subsequent_step_succeeds": true
+  },
+  "progress": {
+    "compile_time_field_types_checked": true,
+    "engine_rejects": {
+      "axis": "initialization.other_inventory",
+      "location": "crusher",
+      "reason": "idle 缓存/批次不是空",
+      "status": "unsupported"
+    },
+    "idle_with_remaining_deserializes": true
+  },
+  "record_verification": {
+    "completed_ticks": 4,
+    "summary_tamper_rejected": {
+      "axis": "input",
+      "location": "record",
+      "reason": "交付记录与完整重算逐字段不同",
+      "status": "invalid_input"
+    },
+    "valid_record_passes": true
+  }
+}
+[Inferior 1 (process 601703) exited normally]

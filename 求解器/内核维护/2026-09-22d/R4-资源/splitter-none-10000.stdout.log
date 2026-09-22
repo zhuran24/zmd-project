@@ -1,0 +1,18 @@
+{
+  "completed_ticks": 12,
+  "elapsed_ns": "3761121",
+  "output": "disabled",
+  "statistics": {
+    "completed": 0,
+    "inconclusive": 0,
+    "stopped": 1
+  },
+  "status": "unsupported",
+  "stop": {
+    "axis": "warehouse.external_supply",
+    "location": "instant=12",
+    "reason": "请求超出显式外部历史覆盖区间",
+    "status": "unsupported"
+  },
+  "ticks": 10000
+}

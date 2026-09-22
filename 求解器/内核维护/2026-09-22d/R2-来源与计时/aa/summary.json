@@ -1,0 +1,75 @@
+{
+  "pairs": 44,
+  "unexpected_exits": [],
+  "unstable": [
+    {
+      "name": "run-no-output",
+      "output": "stdout",
+      "differences": [
+        {
+          "path": "$[\"elapsed_ns\"]",
+          "a": "8392800",
+          "b": "8440702"
+        }
+      ]
+    },
+    {
+      "name": "run-no-output-no-cache",
+      "output": "stdout",
+      "differences": [
+        {
+          "path": "$[\"elapsed_ns\"]",
+          "a": "11294252",
+          "b": "12043927"
+        }
+      ]
+    },
+    {
+      "name": "run-no-output-zero",
+      "output": "stdout",
+      "differences": [
+        {
+          "path": "$[\"elapsed_ns\"]",
+          "a": "877",
+          "b": "1089"
+        }
+      ]
+    },
+    {
+      "name": "run-no-output-stop",
+      "output": "stdout",
+      "differences": [
+        {
+          "path": "$[\"elapsed_ns\"]",
+          "a": "321801",
+          "b": "311940"
+        }
+      ]
+    },
+    {
+      "name": "run-no-output-out",
+      "output": "measurement",
+      "differences": [
+        {
+          "path": "$[\"elapsed_ns\"]",
+          "a": "8394551",
+          "b": "8483792"
+        }
+      ]
+    }
+  ],
+  "binary_sha256_before": {
+    "kernel": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/target/r2-source-timing-20260922/kernel-baseline",
+      "sha256": "1b5e6650111aca7dae5f6f94e10be87e4d5ebe4d97083f5588712d7068198278"
+    },
+    "topology": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/target/r2-source-timing-20260922/topology-baseline",
+      "sha256": "7365ad55ead56b31682f4b740c1c4b22a320ea6f6eeffab94907de5ef81ead6f"
+    }
+  },
+  "binary_sha256_after": {
+    "kernel": "1b5e6650111aca7dae5f6f94e10be87e4d5ebe4d97083f5588712d7068198278",
+    "topology": "7365ad55ead56b31682f4b740c1c4b22a320ea6f6eeffab94907de5ef81ead6f"
+  }
+}

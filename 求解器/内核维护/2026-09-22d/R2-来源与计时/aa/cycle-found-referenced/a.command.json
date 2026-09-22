@@ -1,0 +1,28 @@
+{
+  "argv": [
+    "/home/zhuran24/zmd-research-fresh/求解器/target/r2-source-timing-20260922/kernel-baseline",
+    "cycle",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/生产循环环带.json",
+    "--config",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+    "--max-ticks",
+    "50",
+    "--search-checkpoint-interval",
+    "3",
+    "--out",
+    "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22d/R2-来源与计时/aa/batch/cycle-found.json"
+  ],
+  "shell_command": "'/home/zhuran24/zmd-research-fresh/求解器/target/r2-source-timing-20260922/kernel-baseline' cycle '/home/zhuran24/zmd-research-fresh/求解器/数据/样例/生产循环环带.json' --config '/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json' --max-ticks 50 --search-checkpoint-interval 3 --out '/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22d/R2-来源与计时/aa/batch/cycle-found.json'",
+  "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+  "returncode": 0,
+  "stdout_sha256": "42d4824e576ecd1affcafad4b9eb8e778630f5db594248a86df0dd70b1c48afc",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "cpu_affinity": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ]
+}

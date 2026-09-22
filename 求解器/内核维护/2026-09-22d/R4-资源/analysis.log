@@ -1,0 +1,34 @@
+{
+  "ring_medians": [
+    {
+      "ticks": 1000,
+      "repeats": 3,
+      "median_wall_seconds": 0.04,
+      "median_elapsed_seconds": 0.037847222,
+      "median_peak_rss_kib": 8392.0,
+      "min_peak_rss_kib": 8364.0,
+      "max_peak_rss_kib": 8440.0
+    },
+    {
+      "ticks": 10000,
+      "repeats": 3,
+      "median_wall_seconds": 0.39,
+      "median_elapsed_seconds": 0.38742426,
+      "median_peak_rss_kib": 22868.0,
+      "min_peak_rss_kib": 22864.0,
+      "max_peak_rss_kib": 23004.0
+    },
+    {
+      "ticks": 100000,
+      "repeats": 3,
+      "median_wall_seconds": 4.01,
+      "median_elapsed_seconds": 3.955849033,
+      "median_peak_rss_kib": 167716.0,
+      "min_peak_rss_kib": 167656.0,
+      "max_peak_rss_kib": 168096.0
+    }
+  ],
+  "changed_tracked_files": 0,
+  "measurements": 23,
+  "sampled_max_kernel_threads": 1
+}

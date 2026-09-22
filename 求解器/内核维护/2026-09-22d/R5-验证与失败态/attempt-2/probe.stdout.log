@@ -1,0 +1,300 @@
+{
+  "cycle_verification": {
+    "generated_status": "diagnostic_cycle",
+    "stopped_completed_ticks": 0,
+    "stopped_partial_events": 5,
+    "stopped_status": "inconclusive",
+    "stopped_verification": {
+      "cycle_replayed": false,
+      "prefix_replayed": 0,
+      "reason": "原种子前缀及停止/预算位置已复现，无周期",
+      "status": "input_checked"
+    },
+    "verification": {
+      "checks": [
+        "引用原始字节/format/producer和完整来源链",
+        "原种子到达前缀及跨刻事件身份",
+        "独立重建D动态前件及周期账/率/接收域",
+        "从周期起点P次step_tick及完整终态"
+      ],
+      "cycle_replayed": true,
+      "period": 20,
+      "prefix_replayed": 21,
+      "start_time": 0,
+      "status": "input_checked"
+    }
+  },
+  "failure_probes": [
+    {
+      "before_time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "failed_judgment_context": {
+        "basis": [
+          "新时刻扫描前；无先前判定"
+        ],
+        "status": "specified",
+        "value": {
+          "instant": {
+            "kind": "rational",
+            "value": {
+              "category": "候选",
+              "value": "0"
+            }
+          },
+          "next_event": null,
+          "next_template": 0,
+          "order_scope": "global",
+          "ordered_events": [],
+          "phase": "before_boundary",
+          "round": 0
+        }
+      },
+      "failed_time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "inventory_changed_before_error": true,
+      "mode": "snapshot",
+      "repeat_entire_engine_debug_unchanged": true,
+      "repeat_stop_identical": true,
+      "resume_failed_state": {
+        "accepted": false,
+        "stop": {
+          "axis": "input",
+          "location": "poll_memory",
+          "reason": "成员、接通环、级或当前可动级不符",
+          "status": "invalid_input"
+        }
+      },
+      "state_changed_before_error": true,
+      "stop": {
+        "axis": "resource.sweeps",
+        "location": "J|0|0|4: instant=0 sweep=1",
+        "reason": "未见完整状态重复，不能推进时刻",
+        "status": "inconclusive"
+      },
+      "warmup_one_complete_tick": false
+    },
+    {
+      "before_time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "failed_judgment_context": {
+        "basis": [
+          "新时刻扫描前；无先前判定"
+        ],
+        "status": "specified",
+        "value": {
+          "instant": {
+            "kind": "rational",
+            "value": {
+              "category": "候选",
+              "value": "0"
+            }
+          },
+          "next_event": null,
+          "next_template": 0,
+          "order_scope": "global",
+          "ordered_events": [],
+          "phase": "before_boundary",
+          "round": 0
+        }
+      },
+      "failed_time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "inventory_changed_before_error": true,
+      "mode": "no_output",
+      "repeat_entire_engine_debug_unchanged": true,
+      "repeat_stop_identical": true,
+      "resume_failed_state": {
+        "accepted": false,
+        "stop": {
+          "axis": "input",
+          "location": "poll_memory",
+          "reason": "成员、接通环、级或当前可动级不符",
+          "status": "invalid_input"
+        }
+      },
+      "state_changed_before_error": true,
+      "stop": {
+        "axis": "resource.sweeps",
+        "location": "J|0|0|4: instant=0 sweep=1",
+        "reason": "未见完整状态重复，不能推进时刻",
+        "status": "inconclusive"
+      },
+      "warmup_one_complete_tick": false
+    },
+    {
+      "before_time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "failed_judgment_context": {
+        "basis": [
+          "新时刻扫描前；无先前判定"
+        ],
+        "status": "specified",
+        "value": {
+          "instant": {
+            "kind": "rational",
+            "value": {
+              "category": "候选",
+              "value": "0"
+            }
+          },
+          "next_event": null,
+          "next_template": 0,
+          "order_scope": "global",
+          "ordered_events": [],
+          "phase": "before_boundary",
+          "round": 0
+        }
+      },
+      "failed_time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "inventory_changed_before_error": true,
+      "mode": "compact",
+      "repeat_entire_engine_debug_unchanged": true,
+      "repeat_stop_identical": true,
+      "resume_failed_state": {
+        "accepted": false,
+        "stop": {
+          "axis": "input",
+          "location": "poll_memory",
+          "reason": "成员、接通环、级或当前可动级不符",
+          "status": "invalid_input"
+        }
+      },
+      "state_changed_before_error": true,
+      "stop": {
+        "axis": "resource.sweeps",
+        "location": "J|0|0|4: instant=0 sweep=1",
+        "reason": "未见完整状态重复，不能推进时刻",
+        "status": "inconclusive"
+      },
+      "warmup_one_complete_tick": false
+    },
+    {
+      "before_time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "0"
+        }
+      },
+      "failed_judgment_context": {
+        "basis": [
+          "完整扫描边界重复，保留轮询状态"
+        ],
+        "status": "specified",
+        "value": {
+          "instant": {
+            "kind": "rational",
+            "value": {
+              "category": "候选",
+              "value": "0"
+            }
+          },
+          "next_event": null,
+          "next_template": 0,
+          "order_scope": "global",
+          "ordered_events": [],
+          "phase": "after_closure",
+          "round": 2
+        }
+      },
+      "failed_time": {
+        "kind": "rational",
+        "value": {
+          "category": "候选",
+          "value": "1"
+        }
+      },
+      "inventory_changed_before_error": true,
+      "mode": "snapshot",
+      "repeat_entire_engine_debug_unchanged": true,
+      "repeat_stop_identical": true,
+      "resume_failed_state": {
+        "accepted": false,
+        "stop": {
+          "axis": "input",
+          "location": "J|0|0|0",
+          "reason": "成功账本与J实例时刻/扫描位置/模板不符",
+          "status": "invalid_input"
+        }
+      },
+      "state_changed_before_error": true,
+      "stop": {
+        "axis": "resource.sweeps",
+        "location": "J|1|0|4: instant=1 sweep=1",
+        "reason": "未见完整状态重复，不能推进时刻",
+        "status": "inconclusive"
+      },
+      "warmup_one_complete_tick": true
+    }
+  ],
+  "last_complete_boundary": {
+    "fields": [
+      "time",
+      "events",
+      "state",
+      "warehouse_ledger",
+      "closure"
+    ],
+    "resume_and_next_tick_match": true
+  },
+  "precondition_guard": {
+    "step_tick_error": {
+      "axis": "input",
+      "location": "step_tick",
+      "reason": "需要 after_closure 锚点",
+      "status": "invalid_input"
+    },
+    "subsequent_step_succeeds": true
+  },
+  "progress": {
+    "compile_time_field_types_checked": true,
+    "engine_rejects": {
+      "axis": "initialization.other_inventory",
+      "location": "crusher",
+      "reason": "idle 缓存/批次不是空",
+      "status": "unsupported"
+    },
+    "idle_with_remaining_deserializes": true
+  },
+  "record_verification": {
+    "completed_ticks": 4,
+    "summary_tamper_rejected": {
+      "axis": "input",
+      "location": "record",
+      "reason": "交付记录与完整重算逐字段不同",
+      "status": "invalid_input"
+    },
+    "valid_record_passes": true
+  }
+}

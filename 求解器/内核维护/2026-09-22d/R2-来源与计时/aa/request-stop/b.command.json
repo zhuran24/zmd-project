@@ -1,0 +1,22 @@
+{
+  "argv": [
+    "/home/zhuran24/zmd-research-fresh/求解器/target/r2-source-timing-20260922/kernel-baseline",
+    "request",
+    "damping.no_terminal",
+    "--config",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+  ],
+  "shell_command": "'/home/zhuran24/zmd-research-fresh/求解器/target/r2-source-timing-20260922/kernel-baseline' request damping.no_terminal --config '/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json'",
+  "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+  "returncode": 2,
+  "stdout_sha256": "559b105f3874023470629ecd58388824c407483c8e481b67fd1fa315d920c697",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "cpu_affinity": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ]
+}

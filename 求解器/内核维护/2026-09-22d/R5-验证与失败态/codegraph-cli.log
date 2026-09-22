@@ -1,0 +1,245 @@
+**Exploration: crates/kernel/tests/revision_cli.rs crates/kernel/tests/revision_r2_cli.rs crates/kernel/tests/revision_r3_cli.rs crates/kernel/tests/revision_r4_cli.rs crates/kernel/tests/revision_r5_cli.rs crates/kernel/tests/round5_cli.rs crates/kernel/tests/round6_cli.rs**
+
+Found 7 symbols across 7 files. 7 files pinned from the query.
+
+**Source Code**
+
+> The code below is the **verbatim, current on-disk source** of these files — re-read from disk on this call and line-numbered, byte-for-byte identical to what the Read tool returns. It is NOT a summary, outline, or stale cache. Treat each block as a Read you have already performed: do not Read a file shown here.
+
+**`crates/kernel/tests/revision_cli.rs`** — revision_cli_and_python_record_negatives(function)
+
+```rust
+1	//! 第1轮修订：公开CLI和独立Python落盘验收均进入cargo test。
+2	use std::{path::PathBuf, process::Command};
+3	
+4	/// 内核输入§2、§3与内核输出§1–§3：生成真实文件再验收，篡改必须非零拒绝。
+5	#[test]
+6	fn revision_cli_and_python_record_negatives() {
+7	    let script = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/revision_cli.py");
+8	    let output = Command::new("python")
+9	        .arg("-B")
+10	        .arg(script)
+11	        .arg(env!("CARGO_BIN_EXE_kernel"))
+12	        .env("PYTHONDONTWRITEBYTECODE", "1")
+13	        .output()
+14	        .unwrap();
+15	    assert!(
+16	        output.status.success(),
+17	        "{}\n{}",
+18	        String::from_utf8_lossy(&output.stdout),
+19	        String::from_utf8_lossy(&output.stderr)
+20	    );
+21	}
+```
+
+**`crates/kernel/tests/revision_r2_cli.rs`** — revision_r2_cli_and_python_record_negatives(function)
+
+```rust
+1	//! 第2轮修订：实际CLI与独立Python验收的元数据和输入负例纳入cargo test。
+2	use std::{path::PathBuf, process::Command};
+3	
+4	/// 内核输出§3、内核输入§1–§6：真文件、真进程及有效对照同时核验。
+5	#[test]
+6	fn revision_r2_cli_and_python_record_negatives() {
+7	    let script = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/revision_r2_cli.py");
+8	    let output = Command::new("python")
+9	        .arg("-B")
+10	        .arg(script)
+11	        .arg(env!("CARGO_BIN_EXE_kernel"))
+12	        .env("PYTHONDONTWRITEBYTECODE", "1")
+13	        .output()
+14	        .unwrap();
+15	    assert!(
+16	        output.status.success(),
+17	        "{}\n{}",
+18	        String::from_utf8_lossy(&output.stdout),
+19	        String::from_utf8_lossy(&output.stderr)
+20	    );
+21	}
+```
+
+**`crates/kernel/tests/revision_r3_cli.rs`** — revision_r3_public_cli_regressions(function)
+
+```rust
+1	//! 第3轮：公开入口回归必须由本次Cargo构建的CLI执行。
+2	use std::process::Command;
+3	
+4	#[test]
+5	fn revision_r3_public_cli_regressions() {
+6	    let output = Command::new("python")
+7	        .arg("-B")
+8	        .arg(concat!(
+9	            env!("CARGO_MANIFEST_DIR"),
+10	            "/tests/revision_r3_cli.py"
+11	        ))
+12	        .env("KERNEL_BIN", env!("CARGO_BIN_EXE_kernel"))
+13	        .output()
+14	        .unwrap();
+15	    assert!(
+16	        output.status.success(),
+17	        "{}\n{}",
+18	        String::from_utf8_lossy(&output.stdout),
+19	        String::from_utf8_lossy(&output.stderr)
+20	    );
+21	}
+```
+
+**`crates/kernel/tests/revision_r4_cli.rs`** — revision_r4_public_cli_regressions(function)
+
+```rust
+1	//! 第4轮：使用本次Cargo构建的公开CLI核验真实文件及独立schema。
+2	use std::process::Command;
+3	
+4	#[test]
+5	fn revision_r4_public_cli_regressions() {
+6	    let result = Command::new("python")
+7	        .arg("-B")
+8	        .arg(concat!(env!("CARGO_MANIFEST_DIR"), "/tests/revision_r4_cli.py"))
+9	        .env("KERNEL_BIN", env!("CARGO_BIN_EXE_kernel"))
+10	        .output()
+11	        .unwrap();
+12	    assert!(result.status.success(), "{}\n{}", String::from_utf8_lossy(&result.stdout), String::from_utf8_lossy(&result.stderr));
+13	}
+```
+
+**`crates/kernel/tests/revision_r5_cli.rs`** — revision_r5_public_cli_regressions(function)
+
+```rust
+1	//! 修订r5：公共入口回归包含不同cwd、两种记录编码及诊断恢复拒收。
+2	use std::process::Command;
+3	
+4	#[test]
+5	fn revision_r5_public_cli_regressions() {
+6	    let result = Command::new("python")
+7	        .arg("-B")
+8	        .arg(concat!(
+9	            env!("CARGO_MANIFEST_DIR"),
+10	            "/tests/revision_r5_cli.py"
+11	        ))
+12	        .env("KERNEL_BIN", env!("CARGO_BIN_EXE_kernel"))
+13	        .output()
+14	        .unwrap();
+15	    assert!(
+16	        result.status.success(),
+17	        "{}\n{}",
+18	        String::from_utf8_lossy(&result.stdout),
+19	        String::from_utf8_lossy(&result.stderr)
+20	    );
+21	}
+```
+
+**`crates/kernel/tests/round5_cli.rs`** — round5_cli_resource_statistics_and_cycle_load_stop(function)
+
+```rust
+1	//! 第五轮K5/K8：真实CLI的资源统计及装载停止仍遵守循环外壳。
+2	use serde_json::{json, Value};
+3	use std::{path::PathBuf, process::Command};
+4	#[test]
+5	fn round5_cli_resource_statistics_and_cycle_load_stop() {
+6	    let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+7	        .join("../..")
+8	        .canonicalize()
+9	        .unwrap();
+10	    let config = root.join("规格/内核配置-v1.json");
+11	    let out = std::env::var_os("KERNEL_TEST_EVIDENCE_DIR")
+12	        .map(PathBuf::from)
+13	        .unwrap_or_else(|| root.join("crates/kernel/evidence/round5"))
+14	        .join("round5_cli");
+15	    std::fs::create_dir_all(&out).unwrap();
+16	    let exported = out.join("relocated-seed.json");
+17	    let process = Command::new(env!("CARGO_BIN_EXE_kernel"))
+18	        .arg("seed")
+19	        .arg(root.join("数据/样例/混做粉碎机两下游.json"))
+20	        .arg("--config")
+21	        .arg(&config)
+22	        .arg("--out")
+23	        .arg(&exported)
+24	        .output()
+25	        .unwrap();
+26	    assert!(
+27	        process.status.success(),
+28	        "{}",
+29	        String::from_utf8_lossy(&process.stderr)
+30	    );
+31	    let process = Command::new(env!("CARGO_BIN_EXE_kernel"))
+32	        .arg("run")
+33	        .arg(&exported)
+34	        .arg("--config")
+35	        .arg(&config)
+36	        .args(["--ticks", "4", "--no-output"])
+37	        .output()
+38	        .unwrap();
+39	    assert!(
+40	        process.status.success(),
+41	        "{}",
+42	        String::from_utf8_lossy(&process.stdout)
+43	    );
+44	    assert_eq!(
+45	        serde_json::from_slice::<Value>(&process.stdout).unwrap()["status"],
+46	        "completed"
+47	    );
+48	    let process = Command::new(env!("CARGO_BIN_EXE_kernel"))
+49	        .arg("run")
+50	        .arg(root.join("数据/样例/生产循环环带.json"))
+51	        .arg("--config")
+52	        .arg(&config)
+53	        .args(["--ticks", "2", "--max-sweeps", "1", "--no-output"])
+54	        .output()
+55	        .unwrap();
+56	    assert_eq!(process.status.code(), Some(2));
+57	    let report: Value = serde_json::from_slice(&process.stdout).unwrap();
+58	    assert_eq!(report["status"], "inconclusive");
+59	    assert_eq!(report["statistics"]["inconclusive"], 1);
+60	    assert_eq!(report["completed_ticks"], 0);
+61	    std::fs::write(
+62	        out.join("resource-statistics.json"),
+63	        serde_json::to_vec_pretty(&report).unwrap(),
+64	    )
+65	    .unwrap();
+66	    let input = out.join("invalid-cycle-input.json");
+67	    let record = out.join("invalid-cycle-result.json");
+68	    std::fs::write(&input, json!({"schema":"kernel-input-v3"}).to_string()).unwrap();
+69	    let process = Command::new(env!("CARGO_BIN_EXE_kernel"))
+70	        .arg("cycle")
+71	        .arg(&input)
+72	        .arg("--config")
+73	        .arg(&config)
+74	        .args(["--max-ticks", "2", "--out"])
+75	        .arg(&record)
+76	        .output()
+77	        .unwrap();
+78	    assert_eq!(process.status.code(), Some(2));
+79	    let result: Value = serde_json::from_slice(&std::fs::read(&record).unwrap()).unwrap();
+80	    assert_eq!(result["schema"], "kernel-cycle-v3");
+81	    assert_eq!(result["status"], "invalid_input");
+82	    assert!(result["cycle"].is_null());
+83	}
+```
+
+**`crates/kernel/tests/round6_cli.rs`** — round6_public_cli_regressions(function)
+
+```rust
+1	//! 第六轮公开CLI：引用、两模式、独立重跑、检查点及装载边界。
+2	use std::process::Command;
+3	#[test]
+4	fn round6_public_cli_regressions() {
+5	    let result = Command::new("python")
+6	        .arg("-B")
+7	        .arg(concat!(env!("CARGO_MANIFEST_DIR"), "/tests/round6_cli.py"))
+8	        .env("KERNEL_BIN", env!("CARGO_BIN_EXE_kernel"))
+9	        .output()
+10	        .unwrap();
+11	    assert!(
+12	        result.status.success(),
+13	        "{}\n{}",
+14	        String::from_utf8_lossy(&result.stdout),
+15	        String::from_utf8_lossy(&result.stderr)
+16	    );
+17	}
+```
+
+
+---
+> **Complete source for 7 files is included above — do NOT re-read them.** If your question also needs files/symbols listed under "Not shown above" (or any area this call didn't cover), make ANOTHER codegraph_explore targeting those names — it returns the same source with line numbers and is cheaper and more complete than reading. Reserve Read for a single specific line range explore can't surface.
+
+> **Explore budget: 2 calls for this project (656 files indexed).** Each call covers ~6 files; if your question spans more, spend your remaining calls on the uncovered area BEFORE falling back to Read — another explore is cheaper and more complete than reading those files. Synthesize once you've used 2.

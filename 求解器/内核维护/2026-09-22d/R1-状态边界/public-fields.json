@@ -1,0 +1,126 @@
+{
+  "Engine": [
+    {
+      "field": "input",
+      "type": "Input",
+      "line": 31
+    },
+    {
+      "field": "state",
+      "type": "State",
+      "line": 32
+    },
+    {
+      "field": "memory",
+      "type": "PollMemory",
+      "line": 33
+    },
+    {
+      "field": "completed_batches",
+      "type": "i64",
+      "line": 34
+    },
+    {
+      "field": "ledger",
+      "type": "Value",
+      "line": 35
+    },
+    {
+      "field": "production_abstraction",
+      "type": "bool",
+      "line": 36
+    },
+    {
+      "field": "delivery",
+      "type": "BTreeMap<String, i64>",
+      "line": 37
+    },
+    {
+      "field": "supplied",
+      "type": "BTreeMap<String, i64>",
+      "line": 38
+    },
+    {
+      "field": "max_sweeps",
+      "type": "usize",
+      "line": 58
+    }
+  ],
+  "Input": [
+    {
+      "field": "raw",
+      "type": "Value",
+      "line": 10
+    },
+    {
+      "field": "path",
+      "type": "PathBuf",
+      "line": 11
+    },
+    {
+      "field": "catalog",
+      "type": "Catalog",
+      "line": 12
+    },
+    {
+      "field": "geometry",
+      "type": "Geometry",
+      "line": 13
+    },
+    {
+      "field": "parameters",
+      "type": "Parameters",
+      "line": 14
+    },
+    {
+      "field": "connection_times",
+      "type": "BTreeMap<String, i64>",
+      "line": 15
+    },
+    {
+      "field": "templates",
+      "type": "Vec<Template>",
+      "line": 16
+    },
+    {
+      "field": "assignments",
+      "type": "BTreeMap<String, String>",
+      "line": 17
+    },
+    {
+      "field": "switches",
+      "type": "BTreeMap<(String, String), bool>",
+      "line": 18
+    },
+    {
+      "field": "gate_settings",
+      "type": "BTreeMap<String, Value>",
+      "line": 19
+    },
+    {
+      "field": "recipe_order",
+      "type": "Vec<String>",
+      "line": 20
+    },
+    {
+      "field": "slot_order",
+      "type": "Vec<String>",
+      "line": 21
+    },
+    {
+      "field": "tie_order",
+      "type": "Vec<String>",
+      "line": 22
+    },
+    {
+      "field": "branches",
+      "type": "BTreeMap<(String, Vec<String>), String>",
+      "line": 23
+    },
+    {
+      "field": "source_paths",
+      "type": "Vec<(String, PathBuf)>",
+      "line": 24
+    }
+  ]
+}

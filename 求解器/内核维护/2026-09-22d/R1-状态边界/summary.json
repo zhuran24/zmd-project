@@ -1,0 +1,41 @@
+{
+  "verdict": "重现了",
+  "time": [
+    0,
+    0
+  ],
+  "mutation": {
+    "after": "0",
+    "before": "1",
+    "path": "state.inventory[1].contents[0].quantity.value",
+    "slot": "b:transport:0"
+  },
+  "state_diffs": [
+    "$.inventory[1].contents[0].quantity.value"
+  ],
+  "before": {
+    "engine_cycle_key": "Ok",
+    "standalone_cycle_key": "Ok",
+    "validate_inventory": "Ok"
+  },
+  "after": {
+    "engine_cycle_key": "Ok",
+    "standalone_cycle_key": {
+      "axis": "input",
+      "location": "b:transport:0",
+      "reason": "库存数量/物种非法",
+      "status": "invalid_input"
+    },
+    "validate_inventory": {
+      "axis": "input",
+      "location": "b:transport:0",
+      "reason": "库存数量/物种非法",
+      "status": "invalid_input"
+    }
+  },
+  "restored": {
+    "engine_cycle_key": "Ok",
+    "standalone_cycle_key": "Ok",
+    "validate_inventory": "Ok"
+  }
+}

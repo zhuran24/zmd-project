@@ -1,0 +1,311 @@
+{
+  "bash": [
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/代码体检方案.md",
+      "block": 1,
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/代码体检方案.md",
+      "block": 2,
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/代码体检方案.md",
+      "block": 3,
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/代码体检方案.md",
+      "block": 4,
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/代码体检方案.md",
+      "block": 5,
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/代码体检方案.md",
+      "block": 6,
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/代码体检方案.md",
+      "block": 7,
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/代码体检方案.md",
+      "block": 8,
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/代码体检方案.md",
+      "block": 9,
+      "returncode": 0,
+      "stderr": ""
+    }
+  ],
+  "python": [
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/代码体检方案.md",
+      "block": 1,
+      "heredoc": 1,
+      "error": null
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/代码体检方案.md",
+      "block": 3,
+      "heredoc": 1,
+      "error": null
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/代码体检方案.md",
+      "block": 6,
+      "heredoc": 1,
+      "error": null
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/代码体检方案.md",
+      "block": 7,
+      "heredoc": 1,
+      "error": null
+    }
+  ],
+  "links": [
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/代码体检方案.md",
+      "target": "2026-09-22d/R3-测试写历史/restore_manifest.json",
+      "exists": true
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/代码体检方案.md",
+      "target": "2026-09-22d/审查-opus/unresolved_targets.json",
+      "exists": true
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/代码体检方案.md",
+      "target": "2026-09-22d/审查处理核验/extra-facts.json",
+      "exists": true
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/代码体检方案.md",
+      "target": "2026-09-22d/R3-测试写历史.md",
+      "exists": true
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/代码体检方案.md",
+      "target": "2026-09-22d/R3-测试写历史/active-source-writers.md",
+      "exists": true
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/代码体检方案.md",
+      "target": "2026-09-22d/R2-来源与计时/commands.md",
+      "exists": true
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/代码体检方案.md",
+      "target": "2026-09-22d/R1-状态边界.md",
+      "exists": true
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/代码体检方案.md",
+      "target": "2026-09-22d/R1-状态边界/public-fields.json",
+      "exists": true
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/代码体检方案.md",
+      "target": "2026-09-22d/R5-验证与失败态.md",
+      "exists": true
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/代码体检方案.md",
+      "target": "2026-09-22d/R2-来源与计时.md",
+      "exists": true
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/代码体检方案.md",
+      "target": "2026-09-22/functions.json",
+      "exists": true
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/代码体检方案.md",
+      "target": "2026-09-22d/R4-资源.md",
+      "exists": true
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/代码体检方案.md",
+      "target": "2026-09-22/archive-inventory.json",
+      "exists": true
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/代码体检方案.md",
+      "target": "2026-09-22d/R1-状态边界.md",
+      "exists": true
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/代码体检方案.md",
+      "target": "2026-09-22d/R2-来源与计时.md",
+      "exists": true
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/代码体检方案.md",
+      "target": "2026-09-22d/R3-测试写历史.md",
+      "exists": true
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/代码体检方案.md",
+      "target": "2026-09-22d/R4-资源.md",
+      "exists": true
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/代码体检方案.md",
+      "target": "2026-09-22d/R5-验证与失败态.md",
+      "exists": true
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/代码体检方案.md",
+      "target": "2026-09-22/functions.json",
+      "exists": true
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/代码体检方案.md",
+      "target": "2026-09-22/archive-inventory.json",
+      "exists": true
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22d/审查处理.md",
+      "target": "../代码体检方案.md",
+      "exists": true
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22d/审查处理.md",
+      "target": "GPT-Pro-意见.md",
+      "exists": true
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22d/审查处理.md",
+      "target": "GPT-Pro-第二份/代码体检方案-修订版.md",
+      "exists": true
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22d/审查处理.md",
+      "target": "GPT-Pro-第二份/求解器与项目方向-审阅报告.md",
+      "exists": true
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22d/审查处理.md",
+      "target": "主会话说明.md",
+      "exists": true
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22d/审查处理.md",
+      "target": "审查-opus.md",
+      "exists": true
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22d/审查处理.md",
+      "target": "审查处理核验/",
+      "exists": true
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22d/审查处理.md",
+      "target": "审查处理核验/facts.json",
+      "exists": true
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22d/审查处理.md",
+      "target": "审查处理核验/restore-dryrun.json",
+      "exists": true
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22d/审查处理.md",
+      "target": "审查处理核验/fingerprint-vs-f8.json",
+      "exists": true
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22d/审查处理.md",
+      "target": "审查处理核验/extra-facts.json",
+      "exists": true
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22d/审查处理.md",
+      "target": "审查处理核验/commands.jsonl.log",
+      "exists": true
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22d/审查处理.md",
+      "target": "审查处理核验/extra-commands.jsonl.log",
+      "exists": true
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22d/审查处理.md",
+      "target": "审查处理核验/current-status.json",
+      "exists": true
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22d/审查处理.md",
+      "target": "审查处理核验/document-check.json",
+      "exists": true
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22d/审查处理.md",
+      "target": "审查处理核验/protection-diff.json",
+      "exists": true
+    }
+  ],
+  "files": {
+    "/home/zhuran24/zmd-research-fresh/求解器/内核维护/代码体检方案.md": {
+      "lines": 615,
+      "sha256": "b09248acc9e411bce9f89e0aef9f76b85199b71e0ecc2d9ac4c7e4ded4f24a38"
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22d/审查处理.md": {
+      "lines": 183,
+      "sha256": "d18b7eb78f679b11c3848483434bdc231ea3282781dfdba2d9543f5617cb1449"
+    }
+  },
+  "review_groups": {
+    "H1": true,
+    "H2": true,
+    "H3": true,
+    "H4": true,
+    "M1": true,
+    "M2": true,
+    "M3": true,
+    "M4": true,
+    "M5": true,
+    "M6": true,
+    "M7": true,
+    "M8": true,
+    "L1/L2": true,
+    "L3": true,
+    "L4": true,
+    "L5": true,
+    "L6": true,
+    "L7/L8": true,
+    "L9": true
+  },
+  "pass": true,
+  "reader_review": {
+    "status": "completed",
+    "checks": [
+      "standalone audience",
+      "final-state prose",
+      "status labels",
+      "no editing-process notes in plan",
+      "count scopes",
+      "meaningful names",
+      "cross-references"
+    ],
+    "runtime_validation": "not executed"
+  }
+}

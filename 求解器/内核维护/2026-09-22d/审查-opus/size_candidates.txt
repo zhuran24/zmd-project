@@ -1,0 +1,5 @@
+/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-运行记录-v3-kernel.json
+/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-1-证据/absolute-package/certificate.record.json
+/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-2-证据/fresh-cycle.record.json
+/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/否证-r5-2-证据/absolute-package/record.json
+/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r5-规格保真与工程-证据/referenced-7.record.json

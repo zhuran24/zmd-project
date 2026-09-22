@@ -1,0 +1,7 @@
+   Compiling num-traits v0.2.19
+   Compiling num-integer v0.1.47
+   Compiling num-bigint v0.4.8
+   Compiling num-rational v0.4.2
+   Compiling topology v0.1.0 (/home/zhuran24/zmd-research-fresh/求解器/crates/topology)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.53s
+     Running unittests src/lib.rs (target/debug/deps/topology-84c684aecc288bbd)

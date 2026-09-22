@@ -1,0 +1,492 @@
+{
+  "crates/kernel/evidence/round6/cli/none.json": {
+    "f8f6129": {
+      "schema": "kernel-cycle-v2",
+      "status": "counterexample",
+      "sha256": "61d1e7d1545bcbbc5bdcc0674a5d5320d4c44d84bde9d1e779a19e8fe0e32d8c",
+      "fingerprints": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "role": "catalog",
+          "sha256": "74d21a5bd37c6178f988a86a4aa78a03d1e4244ecff26f133bb5e700ada82e43"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+          "role": "formal_source",
+          "sha256": "abc7a5867f6477eedb619c63a21c4a77144c57ad4567fdcfb696b3049d66a670"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解任务.txt",
+          "role": "formal_source",
+          "sha256": "10abf80fe6eefe647471eabe78da4053f77b489d3806722c501c6acb405a2864"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解约束.txt",
+          "role": "formal_source",
+          "sha256": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6"
+        }
+      ]
+    },
+    "7da52a7": {
+      "schema": "kernel-cycle-v2",
+      "status": "counterexample",
+      "sha256": "61d1e7d1545bcbbc5bdcc0674a5d5320d4c44d84bde9d1e779a19e8fe0e32d8c",
+      "fingerprints": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "role": "catalog",
+          "sha256": "74d21a5bd37c6178f988a86a4aa78a03d1e4244ecff26f133bb5e700ada82e43"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+          "role": "formal_source",
+          "sha256": "abc7a5867f6477eedb619c63a21c4a77144c57ad4567fdcfb696b3049d66a670"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解任务.txt",
+          "role": "formal_source",
+          "sha256": "10abf80fe6eefe647471eabe78da4053f77b489d3806722c501c6acb405a2864"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解约束.txt",
+          "role": "formal_source",
+          "sha256": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6"
+        }
+      ]
+    },
+    "a7539f5": {
+      "schema": "kernel-cycle-v3",
+      "status": "diagnostic_cycle",
+      "sha256": "97b094000d858a40f5ea721e10c05afb4d532f425f71ae14215e534dd8770eaa",
+      "fingerprints": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "role": "catalog",
+          "sha256": "c252c5fae915e2e4002869d7830fff61a50407c47c2ffd9fa855ad0fc893879d"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+          "role": "formal_source",
+          "sha256": "52df4c12ce90975b861a6a663bd37873e03c9549658d200dc7e95fabc4bc29f3"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解任务.txt",
+          "role": "formal_source",
+          "sha256": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解约束.txt",
+          "role": "formal_source",
+          "sha256": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6"
+        }
+      ]
+    },
+    "220f7b6": {
+      "schema": "kernel-cycle-v3",
+      "status": "diagnostic_cycle",
+      "sha256": "37897c0bb3064a48d01e4901d590ee15a94252787b5a8063a544f75d918886c3",
+      "fingerprints": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "role": "catalog",
+          "sha256": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+          "role": "formal_source",
+          "sha256": "52df4c12ce90975b861a6a663bd37873e03c9549658d200dc7e95fabc4bc29f3"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解任务.txt",
+          "role": "formal_source",
+          "sha256": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解约束.txt",
+          "role": "formal_source",
+          "sha256": "cf44821f07779490b9b1d913bfb87d7757ae8abfe784c912bb7891868780f7f3"
+        }
+      ]
+    }
+  },
+  "crates/kernel/evidence/revision-r4/cli/age-cohorts-run-result.json": {
+    "f8f6129": {
+      "schema": "kernel-output-v3",
+      "status": "completed",
+      "sha256": "4a5c859e6f65cca7105915bfc738daf57db19ce9b64cd81eb28a096567556082",
+      "fingerprints": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "role": "catalog",
+          "sha256": "74d21a5bd37c6178f988a86a4aa78a03d1e4244ecff26f133bb5e700ada82e43"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+          "role": "formal_source",
+          "sha256": "abc7a5867f6477eedb619c63a21c4a77144c57ad4567fdcfb696b3049d66a670"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解任务.txt",
+          "role": "formal_source",
+          "sha256": "10abf80fe6eefe647471eabe78da4053f77b489d3806722c501c6acb405a2864"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解约束.txt",
+          "role": "formal_source",
+          "sha256": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6"
+        }
+      ]
+    },
+    "7da52a7": {
+      "schema": "kernel-output-v3",
+      "status": "completed",
+      "sha256": "4a5c859e6f65cca7105915bfc738daf57db19ce9b64cd81eb28a096567556082",
+      "fingerprints": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "role": "catalog",
+          "sha256": "74d21a5bd37c6178f988a86a4aa78a03d1e4244ecff26f133bb5e700ada82e43"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+          "role": "formal_source",
+          "sha256": "abc7a5867f6477eedb619c63a21c4a77144c57ad4567fdcfb696b3049d66a670"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解任务.txt",
+          "role": "formal_source",
+          "sha256": "10abf80fe6eefe647471eabe78da4053f77b489d3806722c501c6acb405a2864"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解约束.txt",
+          "role": "formal_source",
+          "sha256": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6"
+        }
+      ]
+    },
+    "a7539f5": {
+      "schema": "kernel-output-v4",
+      "status": "completed",
+      "sha256": "d8c93ec5e6ee3bb3cf4bb8aa9a7d6cf0d92c7e717917049a4c187ba8fbca6514",
+      "fingerprints": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "role": "catalog",
+          "sha256": "c252c5fae915e2e4002869d7830fff61a50407c47c2ffd9fa855ad0fc893879d"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+          "role": "formal_source",
+          "sha256": "52df4c12ce90975b861a6a663bd37873e03c9549658d200dc7e95fabc4bc29f3"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解任务.txt",
+          "role": "formal_source",
+          "sha256": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解约束.txt",
+          "role": "formal_source",
+          "sha256": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6"
+        }
+      ]
+    },
+    "220f7b6": {
+      "schema": "kernel-output-v4",
+      "status": "completed",
+      "sha256": "3dfff1681b908e90a57bdedda1ee4ad71a6b733291feff453f8d7f349b136490",
+      "fingerprints": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "role": "catalog",
+          "sha256": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+          "role": "formal_source",
+          "sha256": "52df4c12ce90975b861a6a663bd37873e03c9549658d200dc7e95fabc4bc29f3"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解任务.txt",
+          "role": "formal_source",
+          "sha256": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解约束.txt",
+          "role": "formal_source",
+          "sha256": "cf44821f07779490b9b1d913bfb87d7757ae8abfe784c912bb7891868780f7f3"
+        }
+      ]
+    }
+  },
+  "crates/kernel/evidence/round5/round5_cli/resource-statistics.json": {
+    "f8f6129": null,
+    "7da52a7": null,
+    "a7539f5": {
+      "status": "inconclusive",
+      "elapsed_ns": "631000",
+      "sha256": "63bb0e057a693d1205c93e2fc3a87971f223f4a9d32b4019d2d2719fa543dbcd"
+    },
+    "220f7b6": {
+      "status": "inconclusive",
+      "elapsed_ns": "626343",
+      "sha256": "449add6d256bd1fe25b32497b81eff1d6e97abb3712c9307b8cf0d742797e539"
+    }
+  },
+  "crates/kernel/evidence/revision-r2/regression-results.json": {
+    "f8f6129": {
+      "status": "通过",
+      "sha256": "54595fcace25768abc14c80d0e6e7954ef6e11a6536f997d4bb6c2c31ee284e9",
+      "controls": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/r2-cli-skza4tf2/混做粉碎机两下游-full_state_each_instant.json",
+          "ticks": 4,
+          "events": 156,
+          "coverage_status_counts": {
+            "input_checked": 14,
+            "not_exercised": 36,
+            "exercised": 31,
+            "stop_not_triggered": 17,
+            "proof_pending": 1
+          },
+          "sha256": "84eada0a052e34c4b1360241f08acf3544ca3bf722b2f9fc1de304a51dd2a234"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/r2-cli-skza4tf2/混做粉碎机两下游-checkpoint_delta.json",
+          "ticks": 4,
+          "events": 156,
+          "coverage_status_counts": {
+            "input_checked": 14,
+            "not_exercised": 36,
+            "exercised": 31,
+            "stop_not_triggered": 17,
+            "proof_pending": 1
+          },
+          "sha256": "5e969931f9fcadc7de63a03bebfab1f0081ca6ad1ecdca1ce24a6e0e5df1f404"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/r2-cli-skza4tf2/分流器三路轮询-full_state_each_instant.json",
+          "ticks": 12,
+          "events": 794,
+          "coverage_status_counts": {
+            "input_checked": 14,
+            "not_exercised": 44,
+            "exercised": 23,
+            "stop_not_triggered": 17,
+            "proof_pending": 1
+          },
+          "sha256": "6b1932067958528eeabb961fd2f08a6c8f605243767efa2f3e496d778b4d430c"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/r2-cli-skza4tf2/分流器三路轮询-checkpoint_delta.json",
+          "ticks": 12,
+          "events": 794,
+          "coverage_status_counts": {
+            "input_checked": 14,
+            "not_exercised": 44,
+            "exercised": 23,
+            "stop_not_triggered": 17,
+            "proof_pending": 1
+          },
+          "sha256": "712ef7bbedb4b9b5a3d1897976f3968e697a92af9a3b5e2a0ff387802bb9ad77"
+        }
+      ]
+    },
+    "7da52a7": {
+      "status": "通过",
+      "sha256": "54595fcace25768abc14c80d0e6e7954ef6e11a6536f997d4bb6c2c31ee284e9",
+      "controls": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/r2-cli-skza4tf2/混做粉碎机两下游-full_state_each_instant.json",
+          "ticks": 4,
+          "events": 156,
+          "coverage_status_counts": {
+            "input_checked": 14,
+            "not_exercised": 36,
+            "exercised": 31,
+            "stop_not_triggered": 17,
+            "proof_pending": 1
+          },
+          "sha256": "84eada0a052e34c4b1360241f08acf3544ca3bf722b2f9fc1de304a51dd2a234"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/r2-cli-skza4tf2/混做粉碎机两下游-checkpoint_delta.json",
+          "ticks": 4,
+          "events": 156,
+          "coverage_status_counts": {
+            "input_checked": 14,
+            "not_exercised": 36,
+            "exercised": 31,
+            "stop_not_triggered": 17,
+            "proof_pending": 1
+          },
+          "sha256": "5e969931f9fcadc7de63a03bebfab1f0081ca6ad1ecdca1ce24a6e0e5df1f404"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/r2-cli-skza4tf2/分流器三路轮询-full_state_each_instant.json",
+          "ticks": 12,
+          "events": 794,
+          "coverage_status_counts": {
+            "input_checked": 14,
+            "not_exercised": 44,
+            "exercised": 23,
+            "stop_not_triggered": 17,
+            "proof_pending": 1
+          },
+          "sha256": "6b1932067958528eeabb961fd2f08a6c8f605243767efa2f3e496d778b4d430c"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/r2-cli-skza4tf2/分流器三路轮询-checkpoint_delta.json",
+          "ticks": 12,
+          "events": 794,
+          "coverage_status_counts": {
+            "input_checked": 14,
+            "not_exercised": 44,
+            "exercised": 23,
+            "stop_not_triggered": 17,
+            "proof_pending": 1
+          },
+          "sha256": "712ef7bbedb4b9b5a3d1897976f3968e697a92af9a3b5e2a0ff387802bb9ad77"
+        }
+      ]
+    },
+    "a7539f5": {
+      "status": "通过",
+      "sha256": "ff0da730d7b30d031f405826fd7961477ab3efc5fd7d8fd3374146297a676b70",
+      "controls": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/r2-cli-3yakkyez/混做粉碎机两下游-full_state_each_instant.json",
+          "ticks": 4,
+          "events": 156,
+          "coverage_status_counts": {
+            "input_checked": 14,
+            "not_exercised": 36,
+            "exercised": 31,
+            "stop_not_triggered": 17,
+            "proof_pending": 1
+          },
+          "sha256": "3c2fbec584d503df6713e2d3a998317e42cfd24ea39f76c432ee3555cced6dfb"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/r2-cli-3yakkyez/混做粉碎机两下游-checkpoint_delta.json",
+          "ticks": 4,
+          "events": 156,
+          "coverage_status_counts": {
+            "input_checked": 14,
+            "not_exercised": 36,
+            "exercised": 31,
+            "stop_not_triggered": 17,
+            "proof_pending": 1
+          },
+          "sha256": "9a77ed939151b8cbe040c786346f3687fd74a0ee6ae7de44ad7822a0b2c08628"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/r2-cli-3yakkyez/分流器三路轮询-full_state_each_instant.json",
+          "ticks": 12,
+          "events": 794,
+          "coverage_status_counts": {
+            "input_checked": 14,
+            "not_exercised": 44,
+            "exercised": 23,
+            "stop_not_triggered": 17,
+            "proof_pending": 1
+          },
+          "sha256": "c1d6a32b98cc7af1c643ecdca4da861c3638cc4c6ff5fcbef2de466356574e02"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/r2-cli-3yakkyez/分流器三路轮询-checkpoint_delta.json",
+          "ticks": 12,
+          "events": 794,
+          "coverage_status_counts": {
+            "input_checked": 14,
+            "not_exercised": 44,
+            "exercised": 23,
+            "stop_not_triggered": 17,
+            "proof_pending": 1
+          },
+          "sha256": "f56a41fdbc9fbb0bfc9da14c7acca106b3b10014062aea05d55553bf3ddad656"
+        }
+      ]
+    },
+    "220f7b6": {
+      "status": "通过",
+      "sha256": "fb5f7f4e4c0ba80aa9352ab16a31d343d8d1b3d33e6dcad447e5210ab85e192c",
+      "controls": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/r2-cli-_02vejj3/混做粉碎机两下游-full_state_each_instant.json",
+          "ticks": 4,
+          "events": 156,
+          "coverage_status_counts": {
+            "input_checked": 14,
+            "not_exercised": 36,
+            "exercised": 31,
+            "stop_not_triggered": 17,
+            "proof_pending": 1
+          },
+          "sha256": "aec41ba5d9ea2381864f9b74f00c9def04f5c14e45eb3b170dab962b170d971d"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/r2-cli-_02vejj3/混做粉碎机两下游-checkpoint_delta.json",
+          "ticks": 4,
+          "events": 156,
+          "coverage_status_counts": {
+            "input_checked": 14,
+            "not_exercised": 36,
+            "exercised": 31,
+            "stop_not_triggered": 17,
+            "proof_pending": 1
+          },
+          "sha256": "f1c701decf328d92fcac736f29d36242ba23f80ce7667239bfd942b74ca0623d"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/r2-cli-_02vejj3/分流器三路轮询-full_state_each_instant.json",
+          "ticks": 12,
+          "events": 794,
+          "coverage_status_counts": {
+            "input_checked": 14,
+            "not_exercised": 44,
+            "exercised": 23,
+            "stop_not_triggered": 17,
+            "proof_pending": 1
+          },
+          "sha256": "d1bdbe58f1e1329a70463a7a4af8144eaf32e782124fffc388321f689eeb827b"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/r2-cli-_02vejj3/分流器三路轮询-checkpoint_delta.json",
+          "ticks": 12,
+          "events": 794,
+          "coverage_status_counts": {
+            "input_checked": 14,
+            "not_exercised": 44,
+            "exercised": 23,
+            "stop_not_triggered": 17,
+            "proof_pending": 1
+          },
+          "sha256": "9140c62cbbe56d98000bf42d572316361d8e08473ef089cff43b306055e06b01"
+        }
+      ]
+    }
+  },
+  "crates/kernel/evidence/round6/regressions/revision-r3/results.json": {
+    "f8f6129": {
+      "status": "pass",
+      "binary_sha256": "1e33ee193eba70e7abc001fc2de77d346e4b15b2cafc364275244ec7a0f4901c",
+      "sha256": "a345031a8bae92deafad4c13ca5579a86e27ff96f8134d58ee31288b462f57c3"
+    },
+    "7da52a7": {
+      "status": "pass",
+      "binary_sha256": "1e33ee193eba70e7abc001fc2de77d346e4b15b2cafc364275244ec7a0f4901c",
+      "sha256": "a345031a8bae92deafad4c13ca5579a86e27ff96f8134d58ee31288b462f57c3"
+    },
+    "a7539f5": {
+      "status": "pass",
+      "binary_sha256": "e8c824c1149053b901b0e4b4f7cacd1977940a7cc3cd6b7ecace8b16b0275363",
+      "sha256": "71f5d46ce9abdd95bd66d45ed30d4a793c82db1f765f3ffeb11554b0a286ed68"
+    },
+    "220f7b6": {
+      "status": "pass",
+      "binary_sha256": "e1bbca96ca4aa8476e40c3105fe6688a3731d3e93dc90eddcfb16a8686fe04f4",
+      "sha256": "981223f3058acce849be96aed6f79b5619da5517c1da8bf269bb48ef8230d1d0"
+    }
+  }
+}

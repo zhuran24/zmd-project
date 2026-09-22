@@ -1,0 +1,851 @@
+{
+  "changes": "Engine and Input public fields only: pub -> pub(crate)",
+  "changed_field_counts": {
+    "Engine": 9,
+    "Input": 15
+  },
+  "temporary_copy": "/tmp/zmd-r1-visibility-33u52kc7",
+  "source_copy_removed_after_check": true,
+  "argv": [
+    "cargo",
+    "check",
+    "--locked",
+    "--offline",
+    "--workspace",
+    "--all-targets",
+    "-j",
+    "6",
+    "--message-format=json"
+  ],
+  "cwd": "/tmp/zmd-r1-visibility-33u52kc7",
+  "environment": {
+    "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+    "CARGO_BUILD_JOBS": "6",
+    "RAYON_NUM_THREADS": "6",
+    "OMP_NUM_THREADS": "6"
+  },
+  "cpu_affinity": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "exit_code": 101,
+  "tests_executed": 0,
+  "errors": [
+    {
+      "target": "kernel",
+      "test": [
+        "bin"
+      ],
+      "code": {
+        "code": "E0616",
+        "explanation": "Attempted to access a private field on a struct.\n\nErroneous code example:\n\n```compile_fail,E0616\nmod some_module {\n    pub struct Foo {\n        x: u32, // So `x` is private in here.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.x); // error: field `x` of struct `some_module::Foo` is private\n```\n\nIf you want to access this field, you have two options:\n\n1) Set the field public:\n\n```\nmod some_module {\n    pub struct Foo {\n        pub x: u32, // `x` is now public.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.x); // ok!\n```\n\n2) Add a getter function:\n\n```\nmod some_module {\n    pub struct Foo {\n        x: u32, // So `x` is still private in here.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n\n        // We create the getter function here:\n        pub fn get_x(&self) -> &u32 { &self.x }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.get_x()); // ok!\n```\n"
+      },
+      "message": "field `raw` of struct `kernel::Input` is private",
+      "spans": [
+        {
+          "byte_end": 7801,
+          "byte_start": 7798,
+          "column_end": 56,
+          "column_start": 53,
+          "expansion": null,
+          "file_name": "crates/kernel/src/main.rs",
+          "is_primary": true,
+          "label": "private field",
+          "line_end": 203,
+          "line_start": 203,
+          "suggested_replacement": null,
+          "suggestion_applicability": null,
+          "text": [
+            {
+              "highlight_end": 56,
+              "highlight_start": 53,
+              "text": "            return Input::canonicalize_seed(resumed.raw, source.parent().unwrap(), &config);"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "target": "kernel",
+      "test": [
+        "bin"
+      ],
+      "code": {
+        "code": "E0616",
+        "explanation": "Attempted to access a private field on a struct.\n\nErroneous code example:\n\n```compile_fail,E0616\nmod some_module {\n    pub struct Foo {\n        x: u32, // So `x` is private in here.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.x); // error: field `x` of struct `some_module::Foo` is private\n```\n\nIf you want to access this field, you have two options:\n\n1) Set the field public:\n\n```\nmod some_module {\n    pub struct Foo {\n        pub x: u32, // `x` is now public.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.x); // ok!\n```\n\n2) Add a getter function:\n\n```\nmod some_module {\n    pub struct Foo {\n        x: u32, // So `x` is still private in here.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n\n        // We create the getter function here:\n        pub fn get_x(&self) -> &u32 { &self.x }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.get_x()); // ok!\n```\n"
+      },
+      "message": "field `geometry` of struct `kernel::Input` is private",
+      "spans": [
+        {
+          "byte_end": 8693,
+          "byte_start": 8685,
+          "column_end": 83,
+          "column_start": 75,
+          "expansion": null,
+          "file_name": "crates/kernel/src/main.rs",
+          "is_primary": true,
+          "label": "private field",
+          "line_end": 222,
+          "line_start": 222,
+          "suggested_replacement": null,
+          "suggestion_applicability": null,
+          "text": [
+            {
+              "highlight_end": 83,
+              "highlight_start": 75,
+              "text": "                serde_json::json!({\"status\":\"input_checked\",\"units\":input.geometry.units.len(),\"physical_channels\":input.geometry.channels.len(),\"buffer_channels\":input.geometry.buffers.len(),\"catalog_sha256\":input.catalog.sha256}),"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "target": "kernel",
+      "test": [
+        "bin"
+      ],
+      "code": {
+        "code": "E0616",
+        "explanation": "Attempted to access a private field on a struct.\n\nErroneous code example:\n\n```compile_fail,E0616\nmod some_module {\n    pub struct Foo {\n        x: u32, // So `x` is private in here.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.x); // error: field `x` of struct `some_module::Foo` is private\n```\n\nIf you want to access this field, you have two options:\n\n1) Set the field public:\n\n```\nmod some_module {\n    pub struct Foo {\n        pub x: u32, // `x` is now public.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.x); // ok!\n```\n\n2) Add a getter function:\n\n```\nmod some_module {\n    pub struct Foo {\n        x: u32, // So `x` is still private in here.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n\n        // We create the getter function here:\n        pub fn get_x(&self) -> &u32 { &self.x }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.get_x()); // ok!\n```\n"
+      },
+      "message": "field `geometry` of struct `kernel::Input` is private",
+      "spans": [
+        {
+          "byte_end": 8740,
+          "byte_start": 8732,
+          "column_end": 130,
+          "column_start": 122,
+          "expansion": null,
+          "file_name": "crates/kernel/src/main.rs",
+          "is_primary": true,
+          "label": "private field",
+          "line_end": 222,
+          "line_start": 222,
+          "suggested_replacement": null,
+          "suggestion_applicability": null,
+          "text": [
+            {
+              "highlight_end": 130,
+              "highlight_start": 122,
+              "text": "                serde_json::json!({\"status\":\"input_checked\",\"units\":input.geometry.units.len(),\"physical_channels\":input.geometry.channels.len(),\"buffer_channels\":input.geometry.buffers.len(),\"catalog_sha256\":input.catalog.sha256}),"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "target": "kernel",
+      "test": [
+        "bin"
+      ],
+      "code": {
+        "code": "E0616",
+        "explanation": "Attempted to access a private field on a struct.\n\nErroneous code example:\n\n```compile_fail,E0616\nmod some_module {\n    pub struct Foo {\n        x: u32, // So `x` is private in here.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.x); // error: field `x` of struct `some_module::Foo` is private\n```\n\nIf you want to access this field, you have two options:\n\n1) Set the field public:\n\n```\nmod some_module {\n    pub struct Foo {\n        pub x: u32, // `x` is now public.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.x); // ok!\n```\n\n2) Add a getter function:\n\n```\nmod some_module {\n    pub struct Foo {\n        x: u32, // So `x` is still private in here.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n\n        // We create the getter function here:\n        pub fn get_x(&self) -> &u32 { &self.x }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.get_x()); // ok!\n```\n"
+      },
+      "message": "field `geometry` of struct `kernel::Input` is private",
+      "spans": [
+        {
+          "byte_end": 8788,
+          "byte_start": 8780,
+          "column_end": 178,
+          "column_start": 170,
+          "expansion": null,
+          "file_name": "crates/kernel/src/main.rs",
+          "is_primary": true,
+          "label": "private field",
+          "line_end": 222,
+          "line_start": 222,
+          "suggested_replacement": null,
+          "suggestion_applicability": null,
+          "text": [
+            {
+              "highlight_end": 178,
+              "highlight_start": 170,
+              "text": "                serde_json::json!({\"status\":\"input_checked\",\"units\":input.geometry.units.len(),\"physical_channels\":input.geometry.channels.len(),\"buffer_channels\":input.geometry.buffers.len(),\"catalog_sha256\":input.catalog.sha256}),"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "target": "kernel",
+      "test": [
+        "bin"
+      ],
+      "code": {
+        "code": "E0616",
+        "explanation": "Attempted to access a private field on a struct.\n\nErroneous code example:\n\n```compile_fail,E0616\nmod some_module {\n    pub struct Foo {\n        x: u32, // So `x` is private in here.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.x); // error: field `x` of struct `some_module::Foo` is private\n```\n\nIf you want to access this field, you have two options:\n\n1) Set the field public:\n\n```\nmod some_module {\n    pub struct Foo {\n        pub x: u32, // `x` is now public.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.x); // ok!\n```\n\n2) Add a getter function:\n\n```\nmod some_module {\n    pub struct Foo {\n        x: u32, // So `x` is still private in here.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n\n        // We create the getter function here:\n        pub fn get_x(&self) -> &u32 { &self.x }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.get_x()); // ok!\n```\n"
+      },
+      "message": "field `catalog` of struct `kernel::Input` is private",
+      "spans": [
+        {
+          "byte_end": 8833,
+          "byte_start": 8826,
+          "column_end": 223,
+          "column_start": 216,
+          "expansion": null,
+          "file_name": "crates/kernel/src/main.rs",
+          "is_primary": true,
+          "label": "private field",
+          "line_end": 222,
+          "line_start": 222,
+          "suggested_replacement": null,
+          "suggestion_applicability": null,
+          "text": [
+            {
+              "highlight_end": 223,
+              "highlight_start": 216,
+              "text": "                serde_json::json!({\"status\":\"input_checked\",\"units\":input.geometry.units.len(),\"physical_channels\":input.geometry.channels.len(),\"buffer_channels\":input.geometry.buffers.len(),\"catalog_sha256\":input.catalog.sha256}),"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "target": "kernel",
+      "test": [
+        "bin"
+      ],
+      "code": {
+        "code": "E0616",
+        "explanation": "Attempted to access a private field on a struct.\n\nErroneous code example:\n\n```compile_fail,E0616\nmod some_module {\n    pub struct Foo {\n        x: u32, // So `x` is private in here.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.x); // error: field `x` of struct `some_module::Foo` is private\n```\n\nIf you want to access this field, you have two options:\n\n1) Set the field public:\n\n```\nmod some_module {\n    pub struct Foo {\n        pub x: u32, // `x` is now public.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.x); // ok!\n```\n\n2) Add a getter function:\n\n```\nmod some_module {\n    pub struct Foo {\n        x: u32, // So `x` is still private in here.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n\n        // We create the getter function here:\n        pub fn get_x(&self) -> &u32 { &self.x }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.get_x()); // ok!\n```\n"
+      },
+      "message": "field `max_sweeps` of struct `Engine` is private",
+      "spans": [
+        {
+          "byte_end": 9930,
+          "byte_start": 9920,
+          "column_end": 26,
+          "column_start": 16,
+          "expansion": null,
+          "file_name": "crates/kernel/src/main.rs",
+          "is_primary": true,
+          "label": "private field",
+          "line_end": 250,
+          "line_start": 250,
+          "suggested_replacement": null,
+          "suggestion_applicability": null,
+          "text": [
+            {
+              "highlight_end": 26,
+              "highlight_start": 16,
+              "text": "        engine.max_sweeps = max_sweeps;"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "target": "kernel",
+      "test": [
+        "bin"
+      ],
+      "code": {
+        "code": "E0616",
+        "explanation": "Attempted to access a private field on a struct.\n\nErroneous code example:\n\n```compile_fail,E0616\nmod some_module {\n    pub struct Foo {\n        x: u32, // So `x` is private in here.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.x); // error: field `x` of struct `some_module::Foo` is private\n```\n\nIf you want to access this field, you have two options:\n\n1) Set the field public:\n\n```\nmod some_module {\n    pub struct Foo {\n        pub x: u32, // `x` is now public.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.x); // ok!\n```\n\n2) Add a getter function:\n\n```\nmod some_module {\n    pub struct Foo {\n        x: u32, // So `x` is still private in here.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n\n        // We create the getter function here:\n        pub fn get_x(&self) -> &u32 { &self.x }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.get_x()); // ok!\n```\n"
+      },
+      "message": "field `completed_batches` of struct `Engine` is private",
+      "spans": [
+        {
+          "byte_end": 11056,
+          "byte_start": 11039,
+          "column_end": 241,
+          "column_start": 224,
+          "expansion": null,
+          "file_name": "crates/kernel/src/main.rs",
+          "is_primary": true,
+          "label": "private field",
+          "line_end": 271,
+          "line_start": 271,
+          "suggested_replacement": null,
+          "suggestion_applicability": null,
+          "text": [
+            {
+              "highlight_end": 241,
+              "highlight_start": 224,
+              "text": "                serde_json::json!({\"status\":\"completed\",\"ticks\":n,\"elapsed_ns\":start.elapsed().as_nanos().to_string(),\"output\":\"disabled\",\"statistics\":{\"completed\":1,\"inconclusive\":0,\"stopped\":0},\"completed_batches\":engine.completed_batches,\"actual_inbound\":engine.delivery,\"final_inventory\":engine.inventory_totals()?}),"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "target": "kernel",
+      "test": [
+        "bin"
+      ],
+      "code": {
+        "code": "E0616",
+        "explanation": "Attempted to access a private field on a struct.\n\nErroneous code example:\n\n```compile_fail,E0616\nmod some_module {\n    pub struct Foo {\n        x: u32, // So `x` is private in here.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.x); // error: field `x` of struct `some_module::Foo` is private\n```\n\nIf you want to access this field, you have two options:\n\n1) Set the field public:\n\n```\nmod some_module {\n    pub struct Foo {\n        pub x: u32, // `x` is now public.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.x); // ok!\n```\n\n2) Add a getter function:\n\n```\nmod some_module {\n    pub struct Foo {\n        x: u32, // So `x` is still private in here.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n\n        // We create the getter function here:\n        pub fn get_x(&self) -> &u32 { &self.x }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.get_x()); // ok!\n```\n"
+      },
+      "message": "field `delivery` of struct `Engine` is private",
+      "spans": [
+        {
+          "byte_end": 11089,
+          "byte_start": 11081,
+          "column_end": 274,
+          "column_start": 266,
+          "expansion": null,
+          "file_name": "crates/kernel/src/main.rs",
+          "is_primary": true,
+          "label": "private field",
+          "line_end": 271,
+          "line_start": 271,
+          "suggested_replacement": null,
+          "suggestion_applicability": null,
+          "text": [
+            {
+              "highlight_end": 274,
+              "highlight_start": 266,
+              "text": "                serde_json::json!({\"status\":\"completed\",\"ticks\":n,\"elapsed_ns\":start.elapsed().as_nanos().to_string(),\"output\":\"disabled\",\"statistics\":{\"completed\":1,\"inconclusive\":0,\"stopped\":0},\"completed_batches\":engine.completed_batches,\"actual_inbound\":engine.delivery,\"final_inventory\":engine.inventory_totals()?}),"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "target": "kernel",
+      "test": [
+        "bin"
+      ],
+      "code": {
+        "code": "E0616",
+        "explanation": "Attempted to access a private field on a struct.\n\nErroneous code example:\n\n```compile_fail,E0616\nmod some_module {\n    pub struct Foo {\n        x: u32, // So `x` is private in here.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.x); // error: field `x` of struct `some_module::Foo` is private\n```\n\nIf you want to access this field, you have two options:\n\n1) Set the field public:\n\n```\nmod some_module {\n    pub struct Foo {\n        pub x: u32, // `x` is now public.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.x); // ok!\n```\n\n2) Add a getter function:\n\n```\nmod some_module {\n    pub struct Foo {\n        x: u32, // So `x` is still private in here.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n\n        // We create the getter function here:\n        pub fn get_x(&self) -> &u32 { &self.x }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.get_x()); // ok!\n```\n"
+      },
+      "message": "field `raw` of struct `kernel::Input` is private",
+      "spans": [
+        {
+          "byte_end": 7801,
+          "byte_start": 7798,
+          "column_end": 56,
+          "column_start": 53,
+          "expansion": null,
+          "file_name": "crates/kernel/src/main.rs",
+          "is_primary": true,
+          "label": "private field",
+          "line_end": 203,
+          "line_start": 203,
+          "suggested_replacement": null,
+          "suggestion_applicability": null,
+          "text": [
+            {
+              "highlight_end": 56,
+              "highlight_start": 53,
+              "text": "            return Input::canonicalize_seed(resumed.raw, source.parent().unwrap(), &config);"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "target": "kernel",
+      "test": [
+        "bin"
+      ],
+      "code": {
+        "code": "E0616",
+        "explanation": "Attempted to access a private field on a struct.\n\nErroneous code example:\n\n```compile_fail,E0616\nmod some_module {\n    pub struct Foo {\n        x: u32, // So `x` is private in here.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.x); // error: field `x` of struct `some_module::Foo` is private\n```\n\nIf you want to access this field, you have two options:\n\n1) Set the field public:\n\n```\nmod some_module {\n    pub struct Foo {\n        pub x: u32, // `x` is now public.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.x); // ok!\n```\n\n2) Add a getter function:\n\n```\nmod some_module {\n    pub struct Foo {\n        x: u32, // So `x` is still private in here.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n\n        // We create the getter function here:\n        pub fn get_x(&self) -> &u32 { &self.x }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.get_x()); // ok!\n```\n"
+      },
+      "message": "field `geometry` of struct `kernel::Input` is private",
+      "spans": [
+        {
+          "byte_end": 8693,
+          "byte_start": 8685,
+          "column_end": 83,
+          "column_start": 75,
+          "expansion": null,
+          "file_name": "crates/kernel/src/main.rs",
+          "is_primary": true,
+          "label": "private field",
+          "line_end": 222,
+          "line_start": 222,
+          "suggested_replacement": null,
+          "suggestion_applicability": null,
+          "text": [
+            {
+              "highlight_end": 83,
+              "highlight_start": 75,
+              "text": "                serde_json::json!({\"status\":\"input_checked\",\"units\":input.geometry.units.len(),\"physical_channels\":input.geometry.channels.len(),\"buffer_channels\":input.geometry.buffers.len(),\"catalog_sha256\":input.catalog.sha256}),"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "target": "kernel",
+      "test": [
+        "bin"
+      ],
+      "code": {
+        "code": "E0616",
+        "explanation": "Attempted to access a private field on a struct.\n\nErroneous code example:\n\n```compile_fail,E0616\nmod some_module {\n    pub struct Foo {\n        x: u32, // So `x` is private in here.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.x); // error: field `x` of struct `some_module::Foo` is private\n```\n\nIf you want to access this field, you have two options:\n\n1) Set the field public:\n\n```\nmod some_module {\n    pub struct Foo {\n        pub x: u32, // `x` is now public.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.x); // ok!\n```\n\n2) Add a getter function:\n\n```\nmod some_module {\n    pub struct Foo {\n        x: u32, // So `x` is still private in here.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n\n        // We create the getter function here:\n        pub fn get_x(&self) -> &u32 { &self.x }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.get_x()); // ok!\n```\n"
+      },
+      "message": "field `geometry` of struct `kernel::Input` is private",
+      "spans": [
+        {
+          "byte_end": 8740,
+          "byte_start": 8732,
+          "column_end": 130,
+          "column_start": 122,
+          "expansion": null,
+          "file_name": "crates/kernel/src/main.rs",
+          "is_primary": true,
+          "label": "private field",
+          "line_end": 222,
+          "line_start": 222,
+          "suggested_replacement": null,
+          "suggestion_applicability": null,
+          "text": [
+            {
+              "highlight_end": 130,
+              "highlight_start": 122,
+              "text": "                serde_json::json!({\"status\":\"input_checked\",\"units\":input.geometry.units.len(),\"physical_channels\":input.geometry.channels.len(),\"buffer_channels\":input.geometry.buffers.len(),\"catalog_sha256\":input.catalog.sha256}),"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "target": "kernel",
+      "test": [
+        "bin"
+      ],
+      "code": {
+        "code": "E0616",
+        "explanation": "Attempted to access a private field on a struct.\n\nErroneous code example:\n\n```compile_fail,E0616\nmod some_module {\n    pub struct Foo {\n        x: u32, // So `x` is private in here.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.x); // error: field `x` of struct `some_module::Foo` is private\n```\n\nIf you want to access this field, you have two options:\n\n1) Set the field public:\n\n```\nmod some_module {\n    pub struct Foo {\n        pub x: u32, // `x` is now public.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.x); // ok!\n```\n\n2) Add a getter function:\n\n```\nmod some_module {\n    pub struct Foo {\n        x: u32, // So `x` is still private in here.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n\n        // We create the getter function here:\n        pub fn get_x(&self) -> &u32 { &self.x }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.get_x()); // ok!\n```\n"
+      },
+      "message": "field `geometry` of struct `kernel::Input` is private",
+      "spans": [
+        {
+          "byte_end": 8788,
+          "byte_start": 8780,
+          "column_end": 178,
+          "column_start": 170,
+          "expansion": null,
+          "file_name": "crates/kernel/src/main.rs",
+          "is_primary": true,
+          "label": "private field",
+          "line_end": 222,
+          "line_start": 222,
+          "suggested_replacement": null,
+          "suggestion_applicability": null,
+          "text": [
+            {
+              "highlight_end": 178,
+              "highlight_start": 170,
+              "text": "                serde_json::json!({\"status\":\"input_checked\",\"units\":input.geometry.units.len(),\"physical_channels\":input.geometry.channels.len(),\"buffer_channels\":input.geometry.buffers.len(),\"catalog_sha256\":input.catalog.sha256}),"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "target": "kernel",
+      "test": [
+        "bin"
+      ],
+      "code": {
+        "code": "E0616",
+        "explanation": "Attempted to access a private field on a struct.\n\nErroneous code example:\n\n```compile_fail,E0616\nmod some_module {\n    pub struct Foo {\n        x: u32, // So `x` is private in here.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.x); // error: field `x` of struct `some_module::Foo` is private\n```\n\nIf you want to access this field, you have two options:\n\n1) Set the field public:\n\n```\nmod some_module {\n    pub struct Foo {\n        pub x: u32, // `x` is now public.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.x); // ok!\n```\n\n2) Add a getter function:\n\n```\nmod some_module {\n    pub struct Foo {\n        x: u32, // So `x` is still private in here.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n\n        // We create the getter function here:\n        pub fn get_x(&self) -> &u32 { &self.x }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.get_x()); // ok!\n```\n"
+      },
+      "message": "field `catalog` of struct `kernel::Input` is private",
+      "spans": [
+        {
+          "byte_end": 8833,
+          "byte_start": 8826,
+          "column_end": 223,
+          "column_start": 216,
+          "expansion": null,
+          "file_name": "crates/kernel/src/main.rs",
+          "is_primary": true,
+          "label": "private field",
+          "line_end": 222,
+          "line_start": 222,
+          "suggested_replacement": null,
+          "suggestion_applicability": null,
+          "text": [
+            {
+              "highlight_end": 223,
+              "highlight_start": 216,
+              "text": "                serde_json::json!({\"status\":\"input_checked\",\"units\":input.geometry.units.len(),\"physical_channels\":input.geometry.channels.len(),\"buffer_channels\":input.geometry.buffers.len(),\"catalog_sha256\":input.catalog.sha256}),"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "target": "kernel",
+      "test": [
+        "bin"
+      ],
+      "code": {
+        "code": "E0616",
+        "explanation": "Attempted to access a private field on a struct.\n\nErroneous code example:\n\n```compile_fail,E0616\nmod some_module {\n    pub struct Foo {\n        x: u32, // So `x` is private in here.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.x); // error: field `x` of struct `some_module::Foo` is private\n```\n\nIf you want to access this field, you have two options:\n\n1) Set the field public:\n\n```\nmod some_module {\n    pub struct Foo {\n        pub x: u32, // `x` is now public.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.x); // ok!\n```\n\n2) Add a getter function:\n\n```\nmod some_module {\n    pub struct Foo {\n        x: u32, // So `x` is still private in here.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n\n        // We create the getter function here:\n        pub fn get_x(&self) -> &u32 { &self.x }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.get_x()); // ok!\n```\n"
+      },
+      "message": "field `max_sweeps` of struct `Engine` is private",
+      "spans": [
+        {
+          "byte_end": 9930,
+          "byte_start": 9920,
+          "column_end": 26,
+          "column_start": 16,
+          "expansion": null,
+          "file_name": "crates/kernel/src/main.rs",
+          "is_primary": true,
+          "label": "private field",
+          "line_end": 250,
+          "line_start": 250,
+          "suggested_replacement": null,
+          "suggestion_applicability": null,
+          "text": [
+            {
+              "highlight_end": 26,
+              "highlight_start": 16,
+              "text": "        engine.max_sweeps = max_sweeps;"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "target": "kernel",
+      "test": [
+        "bin"
+      ],
+      "code": {
+        "code": "E0616",
+        "explanation": "Attempted to access a private field on a struct.\n\nErroneous code example:\n\n```compile_fail,E0616\nmod some_module {\n    pub struct Foo {\n        x: u32, // So `x` is private in here.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.x); // error: field `x` of struct `some_module::Foo` is private\n```\n\nIf you want to access this field, you have two options:\n\n1) Set the field public:\n\n```\nmod some_module {\n    pub struct Foo {\n        pub x: u32, // `x` is now public.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.x); // ok!\n```\n\n2) Add a getter function:\n\n```\nmod some_module {\n    pub struct Foo {\n        x: u32, // So `x` is still private in here.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n\n        // We create the getter function here:\n        pub fn get_x(&self) -> &u32 { &self.x }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.get_x()); // ok!\n```\n"
+      },
+      "message": "field `completed_batches` of struct `Engine` is private",
+      "spans": [
+        {
+          "byte_end": 11056,
+          "byte_start": 11039,
+          "column_end": 241,
+          "column_start": 224,
+          "expansion": null,
+          "file_name": "crates/kernel/src/main.rs",
+          "is_primary": true,
+          "label": "private field",
+          "line_end": 271,
+          "line_start": 271,
+          "suggested_replacement": null,
+          "suggestion_applicability": null,
+          "text": [
+            {
+              "highlight_end": 241,
+              "highlight_start": 224,
+              "text": "                serde_json::json!({\"status\":\"completed\",\"ticks\":n,\"elapsed_ns\":start.elapsed().as_nanos().to_string(),\"output\":\"disabled\",\"statistics\":{\"completed\":1,\"inconclusive\":0,\"stopped\":0},\"completed_batches\":engine.completed_batches,\"actual_inbound\":engine.delivery,\"final_inventory\":engine.inventory_totals()?}),"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "target": "kernel",
+      "test": [
+        "bin"
+      ],
+      "code": {
+        "code": "E0616",
+        "explanation": "Attempted to access a private field on a struct.\n\nErroneous code example:\n\n```compile_fail,E0616\nmod some_module {\n    pub struct Foo {\n        x: u32, // So `x` is private in here.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.x); // error: field `x` of struct `some_module::Foo` is private\n```\n\nIf you want to access this field, you have two options:\n\n1) Set the field public:\n\n```\nmod some_module {\n    pub struct Foo {\n        pub x: u32, // `x` is now public.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.x); // ok!\n```\n\n2) Add a getter function:\n\n```\nmod some_module {\n    pub struct Foo {\n        x: u32, // So `x` is still private in here.\n    }\n\n    impl Foo {\n        pub fn new() -> Foo { Foo { x: 0 } }\n\n        // We create the getter function here:\n        pub fn get_x(&self) -> &u32 { &self.x }\n    }\n}\n\nlet f = some_module::Foo::new();\nprintln!(\"{}\", f.get_x()); // ok!\n```\n"
+      },
+      "message": "field `delivery` of struct `Engine` is private",
+      "spans": [
+        {
+          "byte_end": 11089,
+          "byte_start": 11081,
+          "column_end": 274,
+          "column_start": 266,
+          "expansion": null,
+          "file_name": "crates/kernel/src/main.rs",
+          "is_primary": true,
+          "label": "private field",
+          "line_end": 271,
+          "line_start": 271,
+          "suggested_replacement": null,
+          "suggestion_applicability": null,
+          "text": [
+            {
+              "highlight_end": 274,
+              "highlight_start": 266,
+              "text": "                serde_json::json!({\"status\":\"completed\",\"ticks\":n,\"elapsed_ns\":start.elapsed().as_nanos().to_string(),\"output\":\"disabled\",\"statistics\":{\"completed\":1,\"inconclusive\":0,\"stopped\":0},\"completed_batches\":engine.completed_batches,\"actual_inbound\":engine.delivery,\"final_inventory\":engine.inventory_totals()?}),"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "target": "build-script-build",
+      "kind": [
+        "custom-build"
+      ],
+      "profile_test": false
+    },
+    {
+      "target": "unicode_ident",
+      "kind": [
+        "lib"
+      ],
+      "profile_test": false
+    },
+    {
+      "target": "build-script-build",
+      "kind": [
+        "custom-build"
+      ],
+      "profile_test": false
+    },
+    {
+      "target": "build-script-build",
+      "kind": [
+        "custom-build"
+      ],
+      "profile_test": false
+    },
+    {
+      "target": "build-script-build",
+      "kind": [
+        "custom-build"
+      ],
+      "profile_test": false
+    },
+    {
+      "target": "build-script-build",
+      "kind": [
+        "custom-build"
+      ],
+      "profile_test": false
+    },
+    {
+      "target": "proc_macro2",
+      "kind": [
+        "lib"
+      ],
+      "profile_test": false
+    },
+    {
+      "target": "build-script-build",
+      "kind": [
+        "custom-build"
+      ],
+      "profile_test": false
+    },
+    {
+      "target": "quote",
+      "kind": [
+        "lib"
+      ],
+      "profile_test": false
+    },
+    {
+      "target": "serde_core",
+      "kind": [
+        "lib"
+      ],
+      "profile_test": false
+    },
+    {
+      "target": "zmij",
+      "kind": [
+        "lib"
+      ],
+      "profile_test": false
+    },
+    {
+      "target": "itoa",
+      "kind": [
+        "lib"
+      ],
+      "profile_test": false
+    },
+    {
+      "target": "memchr",
+      "kind": [
+        "lib"
+      ],
+      "profile_test": false
+    },
+    {
+      "target": "syn",
+      "kind": [
+        "lib"
+      ],
+      "profile_test": false
+    },
+    {
+      "target": "serde_json",
+      "kind": [
+        "lib"
+      ],
+      "profile_test": false
+    },
+    {
+      "target": "autocfg",
+      "kind": [
+        "lib"
+      ],
+      "profile_test": false
+    },
+    {
+      "target": "serde_derive",
+      "kind": [
+        "proc-macro"
+      ],
+      "profile_test": false
+    },
+    {
+      "target": "build-script-build",
+      "kind": [
+        "custom-build"
+      ],
+      "profile_test": false
+    },
+    {
+      "target": "serde",
+      "kind": [
+        "lib"
+      ],
+      "profile_test": false
+    },
+    {
+      "target": "num_traits",
+      "kind": [
+        "lib"
+      ],
+      "profile_test": false
+    },
+    {
+      "target": "num_integer",
+      "kind": [
+        "lib"
+      ],
+      "profile_test": false
+    },
+    {
+      "target": "num_bigint",
+      "kind": [
+        "lib"
+      ],
+      "profile_test": false
+    },
+    {
+      "target": "num_rational",
+      "kind": [
+        "lib"
+      ],
+      "profile_test": false
+    },
+    {
+      "target": "topology",
+      "kind": [
+        "lib"
+      ],
+      "profile_test": true
+    },
+    {
+      "target": "topology",
+      "kind": [
+        "lib"
+      ],
+      "profile_test": false
+    },
+    {
+      "target": "topology",
+      "kind": [
+        "bin"
+      ],
+      "profile_test": false
+    },
+    {
+      "target": "topology",
+      "kind": [
+        "bin"
+      ],
+      "profile_test": true
+    },
+    {
+      "target": "validation",
+      "kind": [
+        "test"
+      ],
+      "profile_test": true
+    },
+    {
+      "target": "kernel",
+      "kind": [
+        "lib"
+      ],
+      "profile_test": false
+    },
+    {
+      "target": "revision_r5_cli",
+      "kind": [
+        "test"
+      ],
+      "profile_test": true
+    },
+    {
+      "target": "revision_cli",
+      "kind": [
+        "test"
+      ],
+      "profile_test": true
+    },
+    {
+      "target": "revision_r4_cli",
+      "kind": [
+        "test"
+      ],
+      "profile_test": true
+    },
+    {
+      "target": "round5_cli",
+      "kind": [
+        "test"
+      ],
+      "profile_test": true
+    },
+    {
+      "target": "round6_cli",
+      "kind": [
+        "test"
+      ],
+      "profile_test": true
+    },
+    {
+      "target": "revision_r3_cli",
+      "kind": [
+        "test"
+      ],
+      "profile_test": true
+    },
+    {
+      "target": "revision_r2_cli",
+      "kind": [
+        "test"
+      ],
+      "profile_test": true
+    },
+    {
+      "target": "reference",
+      "kind": [
+        "test"
+      ],
+      "profile_test": true
+    },
+    {
+      "target": "kernel",
+      "kind": [
+        "lib"
+      ],
+      "profile_test": true
+    }
+  ]
+}

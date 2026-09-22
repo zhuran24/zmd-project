@@ -1,0 +1,443 @@
+**Exploration: step_inner boundary check_external_stops**
+
+Found 8 symbols across 1 file.
+
+**Blast radius — what depends on these (update/verify before editing)**
+
+- `step_inner` (crates/kernel/src/transition.rs:675) — 1 caller in `crates/kernel/src/transition.rs`; tested via callers: `crates/kernel/tests/legacy_probes/r2_engineering/src/main.rs`, `crates/kernel/tests/legacy_probes/r2_spec/src/main.rs` +1
+- `check_external_stops` (crates/kernel/src/transition.rs:341) — 1 caller in `crates/kernel/src/transition.rs`; no tests found within 3 caller hops
+- `check` (几何/1113放松/check_solutions.py:28) — 1 caller in `几何/1113放松/check_solutions.py`; no tests found within 3 caller hops
+- `check` (会议成果/会议3/seat-opus-4/check_full.py:63) — 1 caller in `会议成果/会议3/seat-opus-4/check_full.py`; no tests found within 3 caller hops
+- `check` (规格/check_revision.py:16) — 1 caller in `规格/check_revision.py`; no tests found within 3 caller hops
+
+**Relationships**
+
+**calls:**
+- step_inner → invalidate_all
+- step_inner → empty_ledger
+- step_inner → check_external_stops
+- step_inner → represent_products
+- step_inner → boundary
+- step_inner → refresh
+- step_inner → closure_key
+- step_inner → maintain_identity
+- step_inner → allocate
+- step_inner → execute
+- ... and 134 more
+
+**instantiates:**
+- step_inner → Event
+
+**references:**
+- step_inner → Result
+- check_external_stops → Result
+- value → Axis
+- value → Result
+- instant → Result
+- main → ROOT
+- check → RECIPES
+- check → OPP
+- check → KIND_OF
+- facing_of → OPP
+- ... and 29 more
+
+**Source Code**
+
+> The code below is the **verbatim, current on-disk source** of these files — re-read from disk on this call and line-numbered, byte-for-byte identical to what the Read tool returns. It is NOT a summary, outline, or stale cache. Treat each block as a Read you have already performed: do not Read a file shown here. (Files marked **"Already sent earlier in this conversation"** are not repeated: their source came back on an earlier codegraph_explore call in THIS conversation and the file has not changed since, so that copy is exact and current — scroll back for it rather than re-fetching or Reading.)
+
+**`crates/kernel/src/transition.rs`** — calls(calls), add(calls), Result(references), unsupported(calls), allocate(calls), execute(calls), record(calls), Event(instantiates), refresh(calls), instant(calls), +25 more
+
+> **Already sent earlier in this conversation:** `crates/kernel/src/transition.rs` L651-730 (step_inner, step_with_snapshot) — unchanged on disk since, so that copy is still exact. Only the NEW lines are shown below; scroll back for the rest. Do NOT Read this file.
+
+```rust
+4	use std::collections::{BTreeMap, BTreeSet};
+5	impl Engine {
+6	    /// 受限转移§4.2：制造固定子动作链，整批输出后方能归集下一批。
+7	    fn manufacture(&mut self, uid: &str, event: &str) -> Result<String> {
+8	        let i = self.progress[uid];
+9	        let output = format!("{uid}:output:0");
+10	        let buffer = format!("{uid}:buffer:0");
+11	        let mut success = false;
+12	        if self.state.progress[i].phase == "completed" {
+13	            let rows = &self.state.inventory[self.inv[&buffer]].contents;
+14	            let out = &self.state.inventory[self.inv[&output]].contents;
+15	            let input_conflict = self.unit_inventory[uid]
+16	                .iter()
+17	                .map(|i| &self.state.inventory[*i])
+18	                .filter(|s| s.slot.contains(":input:"))
+19	                .any(|s| {
+20	                    s.contents
+21	                        .iter()
+22	                        .any(|c| rows.iter().any(|r| r.item == c.item))
+23	                });
+24	            let sum = rows
+25	                .iter()
+26	                .chain(out)
+27	                .try_fold(0, |n, c| add(n, c.quantity.integer(&output)?, &output))?;
+28	            if !rows.is_empty()
+29	                && !input_conflict
+30	                && rows.iter().chain(out).all(|c| c.item == rows[0].item)
+31	                && self.caps[&output].is_some_and(|cap| sum <= cap)
+32	            {
+33	                let batch = rows.clone();
+34	                for c in batch {
+35	                    self.put(&output, &c.item, c.quantity.integer(&buffer)?)?
+36	                }
+37	                self.state.inventory[self.inv[&buffer]].contents.clear();
+38	                let p = &mut self.state.progress[i];
+39	                p.phase = "idle".into();
+40	                p.recipe = None;
+41	                p.locked_recipe = None;
+42	                p.candidate_recipes.clear();
+43	                p.remaining = None;
+44	                success = true;
+45	                {
+46	                    self.passages.push(json!({"event":event,"batch":format!("{uid}|{}|output",self.t),"channel":format!("BC|{buffer}|{output}")}));
+47	                }
+48	            }
+49	        }
+50	        if self.state.progress[i].phase == "idle" {
+51	            let mut available = BTreeMap::new();
+52	            for slot in self
+53	                .slot_groups
+54	                .get(&(uid.into(), "input".into()))
+55	                .into_iter()
+56	                .flatten()
+57	            {
+58	                {
+59	                    for c in &self.state.inventory[self.inv[slot]].contents {
+60	                        let entry = available.entry(c.item.clone()).or_insert((slot.clone(), 0));
+61	                        entry.1 = add(entry.1, c.quantity.integer(slot)?, slot)?;
+62	                    }
+63	                }
+64	            }
+65	            let matched = self
+66	                .input
+67	                .recipe_order
+68	                .iter()
+69	                .find(|id| {
+70	                    let r = &self.input.catalog.recipes[*id];
+71	                    r.kind == self.input.geometry.units[uid].kind
+72	                        && r.inputs
+73	                            .iter()
+74	                            .all(|(item, n)| available.get(item).is_some_and(|(_, q)| q >= n))
+75	                })
+76	                .cloned();
+77	            if let Some(rid) = matched {
+78	                let r = self.input.catalog.recipes[&rid].clone();
+79	                if self.enabled(uid, "manufacture") {
+80	                    self.precheck_new_event(&format!("C|{}|{uid}", add(self.t, r.duration, uid)?))?;
+81	                }
+82	                for (item, n) in &r.inputs {
+83	                    let src = &available[item].0;
+84	                    self.remove(src, item, *n)?;
+85	                    self.put(&buffer, item, *n)?;
+86	                    {
+87	                        self.passages.push(json!({"event":event,"batch":format!("{uid}|{}|input",self.t),"channel":format!("BC|{src}|{buffer}")}));
+88	                    }
+89	                }
+90	                let p = &mut self.state.progress[i];
+91	                p.phase = "intake".into();
+92	                p.recipe = Some(rid.clone());
+93	                p.locked_recipe = Some(rid.clone());
+94	                p.candidate_recipes = vec![rid];
+95	                p.remaining = None;
+96	                success = true;
+97	            }
+98	        }
+99	        if self.state.progress[i].phase == "intake" && self.enabled(uid, "manufacture") {
+100	            let duration = self.input.catalog.recipes
+101	                [self.state.progress[i].recipe.as_ref().unwrap()]
+102	            .duration;
+103	            let deadline = add(self.t, duration, uid)?;
+104	            let eid = format!("C|{deadline}|{uid}");
+105	            self.allocate(&eid)?;
+106	            let p = &mut self.state.progress[i];
+107	            p.phase = "working".into();
+108	            p.remaining = Some(Time::at(duration));
+109	            self.pending.push(Pending {
+110	                event: eid,
+111	                operation: "manufacture_complete".into(),
+112	                target: uid.into(),
+113	                trigger: json!({"kind":"at_time","value":tv(deadline)}),
+114	                predecessors: vec![],
+115	                status: "waiting".into(),
+116	            });
+117	            success = true;
+118	        }
+119	        Ok(if success { "success" } else { "guard_false" }.into())
+120	    }
+121	    /// 内核输入§3.1、受限转移§4：事务开始前拒绝新事件别名。
+122	    fn precheck_new_event(&self, id: &str) -> Result<()> {
+123	        if self.allocated.contains(id) {
+
+... (gap) ...
+
+338	        Ok((outcome.into(), detail.into(), basis))
+339	    }
+340	    /// 受限转移§1、§2.1：未实现外部动作在对应时刻、变更任何物理量之前停止。
+341	    fn check_external_stops(&self, t: i64) -> Result<()> {
+342	        let supply = self
+343	            .input
+344	            .parameters
+345	            .value(crate::config::Axis::WarehouseExternalSupply)?;
+346	        if supply["kind"] == "explicit_ore_history"
+347	            && t > instant(&supply["through"], "warehouse.external_supply.through")?
+348	        {
+349	            return Err(Stop::unsupported(
+350	                "warehouse.external_supply",
+351	                format!("instant={t}"),
+352	                "请求超出显式外部历史覆盖区间",
+353	            ));
+354	        }
+355	        let history = &self.input.raw;
+356	        let events = history["timeline"]["events"].as_array().unwrap();
+357	        for row in events {
+358	            let Some(kind) = row["kind"].as_str() else {
+359	                continue;
+360	            };
+361	            if [
+362	                "runtime",
+363	                "connection_open",
+364	                "blueprint_complete",
+365	                "debug_end",
+366	            ]
+367	            .contains(&kind)
+368	            {
+369	                continue;
+370	            }
+371	            let axis = match kind {
+372	                "offline" => "offline.events",
+373	                "withdraw_product" => "warehouse.withdrawal_timing",
+374	                "debug_operation" => "initialization.debug_actions",
+375	                "unit_removed" | "unit_rebuilt" => "initialization.rebuild_inventory",
+376	                "build" => "initialization.build_timing",
+377	                _ => continue,
+378	            };
+379	            let at = if row["time"].is_null() {
+380	                return Err(Stop::unsupported(
+381	                    axis,
+382	                    row["id"].as_str().unwrap_or("timeline"),
+383	                    "事件时刻未解释",
+384	                ));
+385	            } else {
+386	                instant(&row["time"], "timeline.event.time")?
+387	            };
+388	            // 初刻建成事件已由种子历史消费；后续结构变化必须停止。
+389	            if at == t && !(kind == "build" && self.first) {
+390	                return Err(Stop::unsupported(
+391	                    axis,
+392	                    row["id"].as_str().unwrap_or("timeline"),
+393	                    "运行区间触及未实现后效",
+394	                ));
+395	            }
+396	        }
+397	        let policy = &history["environment"]["product_withdrawal"]["policy"];
+398	        if policy["status"] == "specified"
+399	            && policy["value"]["rules"]
+400	                .as_array()
+401	                .is_some_and(|r| !r.is_empty())
+402	        {
+403	            return Err(Stop::unsupported(
+404	                "warehouse.withdrawal_policy",
+405	                format!("instant={t}"),
+406	                "拿取策略求值不在本版",
+407	            ));
+408	        }
+409	        Ok(())
+410	    }
+411	    /// 受限转移§2.1：旧功能推进工作/冷却，完成按输入制造模板序，窗口原子批到期。
+412	    fn boundary(&mut self, advance: bool) -> Result<()> {
+413	        if advance {
+414	            for i in 0..self.state.progress.len() {
+415	                let uid = self.state.progress[i].unit.clone();
+416	                if self.state.progress[i].phase == "working" && self.enabled(&uid, "manufacture") {
+417	                    let p = &mut self.state.progress[i];
+418	                    let n = p.remaining.as_ref().unwrap().integer(&uid)?;
+419	                    p.remaining = Some(Time::at(n - 1));
+420	                }
+421	                if !self.state.progress[i].cooldowns.is_empty() && self.enabled(&uid, "transfer") {
+422	                    let c = &mut self.state.progress[i].cooldowns[0];
+423	                    c.remaining = Time::at((c.remaining.integer(&uid)? - 1).max(0));
+424	                }
+425	            }
+426	            self.t = add(self.t, 1, "time")?;
+427	        }
+428	        self.state.environment.time = Time::at(self.t);
+429	        self.usage.clear();
+430	        let units: Vec<_> = self
+431	            .input
+432	            .templates
+433	            .iter()
+434	            .filter(|t| t.operation == "manufacture")
+435	            .map(|t| t.target.clone())
+436	            .collect();
+437	        for uid in units {
+438	            let i = self.progress[&uid];
+439	            if self.state.progress[i].phase == "working"
+440	                && self.state.progress[i]
+441	                    .remaining
+442	                    .as_ref()
+443	                    .unwrap()
+444	                    .integer(&uid)?
+445	                    == 0
+446	            {
+447	                let p = self
+448	                    .pending
+449	                    .iter()
+450	                    .position(|p| p.operation == "manufacture_complete" && p.target == uid)
+451	                    .ok_or_else(|| Stop::invalid(&uid, "完成日程缺失"))?;
+452	                let pending = self.pending.remove(p);
+453	                self.execute(&pending.event)?;
+454	                let recipe = self.input.catalog.recipes
+455	                    [self.state.progress[i].recipe.as_ref().unwrap()]
+456	                .clone();
+457	                let buffer = format!("{uid}:buffer:0");
+458	                self.state.inventory[self.inv[&buffer]].contents.clear();
+459	                for (item, n) in recipe.outputs {
+460	                    self.put(&buffer, &item, n)?;
+461	                }
+462	                self.state.progress[i].phase = "completed".into();
+463	                self.state.progress[i].remaining = Some(Time::at(0));
+464	                self.completed_batches = add(self.completed_batches, 1, "completed_batches")?;
+465	                self.record(Event {
+466	                    event: pending.event,
+467	                    operation: "manufacture_complete".into(),
+468	                    target: uid,
+469	                    outcome: "success".into(),
+470	                    detail: None,
+471	                    basis: vec![
+472	                        "规则 L35".into(),
+473	                        "运行语义 §4.1".into(),
+474	                        "受限模型声明 time.manufacture_events".into(),
+475	                    ],
+476	                });
+477	            }
+478	        }
+479	        self.ore_supply()?;
+480	        self.check_ore_availability()?;
+481	        let mut expired: Vec<_> = self
+482	            .pending
+483	            .iter()
+484	            .filter(|p| p.operation == "gate_window_expiry")
+485	            .filter_map(|p| match instant(&p.trigger["value"], &p.event) {
+486	                Ok(t) if t <= self.t => Some(Ok((p.target.clone(), p.event.clone()))),
+487	                Ok(_) => None,
+488	                Err(e) => Some(Err(e)),
+489	            })
+490	            .collect::<Result<_>>()?;
+491	        expired.sort();
+492	        if !expired.is_empty() {
+493	            for (uid, _) in &expired {
+494	                let g = &mut self.state.logistics.gate_counters[self.gate_index[uid]];
+495	                g.window_received = Quantity::calc(0);
+496	                g.window_started_at = None;
+497	                g.blocked_reasons.retain(|r| r != "window_exhausted");
+498	            }
+499	            self.rebuild_graph()?;
+500	            let names = expired
+501	                .iter()
+502	                .map(|(u, _)| u.as_str())
+503	                .collect::<Vec<_>>()
+504	                .join(",");
+505	            for (uid, id) in expired {
+506	                self.execute(&id)?;
+
+... (gap) ...
+
+731	                    "move" => self.move_channel(&template.target, &id)?,
+732	                    "manufacture" => (
+733	                        self.manufacture(&template.target, &id)?,
+734	                        String::new(),
+735	                        vec![
+736	                            "规则 L18、L35".into(),
+737	                            "受限转移定义 §4.2".into(),
+738	                            "受限模型声明 manufacture_subactions、atomic_batch、same_instant"
+739	                                .into(),
+740	                        ],
+741	                    ),
+742	                    "transfer" => {
+743	                        let (a, b) = self.transfer(&template.target, &id)?;
+744	                        (
+745	                            a,
+746	                            b,
+747	                            vec!["规则 L20–21、L36".into(), "受限转移定义 §4.3".into()],
+748	                        )
+749	                    }
+750	                    _ => return Err(Stop::unsupported("judgment.order", &id, "未知模板")),
+751	                };
+752	                self.record(Event {
+753	                    event: id,
+754	                    operation: template.operation,
+755	                    target: template.target,
+756	                    outcome,
+757	                    detail: Some(detail),
+758	                    basis,
+759	                });
+760	            }
+761	            rounds += 1;
+762	            self.refresh()?;
+763	            if !seen.insert(self.closure_key()?) {
+764	                break;
+765	            }
+766	        }
+767	        self.state.logistics.poll_memory.value = json!(self.memory);
+768	        self.state.semantic_context.judgment_context = Decision::specified(
+769	            json!({"instant":tv(self.t),"phase":"after_closure","order_scope":"global","round":rounds,"next_template":0,"ordered_events":[],"next_event":null}),
+770	            "完整扫描边界重复，保留轮询状态",
+771	        );
+772	        // 内核输出§2：完成队列先于窗口队列；同类按创建顺序保留事件身份。
+773	        let pending: Vec<_> = self
+774	            .pending
+775	            .iter()
+776	            .filter(|p| p.operation == "manufacture_complete")
+777	            .chain(
+778	                self.pending
+779	                    .iter()
+780	                    .filter(|p| p.operation == "gate_window_expiry"),
+781	            )
+782	            .collect();
+783	        self.state.semantic_context.pending_events = Decision::specified(
+784	            json!(pending),
+785	            if self.gate_index.is_empty() {
+786	                "制造耗时生成的非判定到期事件"
+787	            } else {
+788	                "制造完成及准入口窗口的非判定到期事件"
+789	            },
+790	        );
+791	        self.state.semantic_context.tick_context = Decision::specified(
+792	            json!({"window_start":tv(self.t),"window_end":tv(add(self.t,1,"time")?),"movements":self.movements,"port_usage":self.usage.iter().map(|(p,n)|json!({"port":p,"quantity":q(*n)})).collect::<Vec<_>>(),"internal_passages":self.passages}),
+793	            "本时刻实际成功记录",
+794	        );
+795	        self.ledger["totals"] = crate::ledger::totals(&self.ledger)?;
+796	        if capture && snapshot {
+797	            Ok(Some(
+798	                json!({"time":tv(self.t),"events":self.records,"state":self.state,"warehouse_ledger":self.ledger,"summary":self.summary()?,"closure":{"kind":"no_success_state_repeat","scan_rounds":rounds,"basis":["受限模型声明 time.instant_end","内核输入 §5.2","工程出口保留首次重复的完整扫描边界成员；一般真实唤醒对应为PC-06未完成义务"]}}),
+799	            ))
+800	        } else {
+801	            Ok(None)
+802	        }
+803	    }
+804	    /// 内核输出§2：样例摘要只是完整状态的投影，不影响任何转移守卫。
+805	    pub fn summary(&self) -> Result<Value> {
+806	        let mut nonempty = serde_json::Map::new();
+```
+
+**Not shown above — explore these names for their source**
+
+- 几何/1113放松/check_solutions.py: check:28, sides:10, loss:17, grid:7, main:81, ROOT:6
+- 规格/check_revision.py: check:16, check_revision.py:1
+- 规格/复核/r7-独立选择点-证据/被审快照/求解器/规格/check_revision.py: check:16, check_revision.py:1
+- 规格/复核/r7-覆盖证据/被审快照/求解器/规格/check_revision.py: check:16, check_revision.py:1
+- 会议成果/会议3/seat-opus-4/check_full.py: check:63, edge:90, facing_of:142, reach:231, role_recipes:51, OPP:31, +5 more
+- crates/kernel/src/value.rs: unsupported:34, specified:272, new:16, add:234, Result:6, instant:243, +2 more
+- 规格/复核/r8-一致性证据/independent_checks.py: check:19, test_mutation:90, independent_checks.py:1
+- crates/kernel/src/engine.rs: allocate:1222, execute:1229, record:1236, prepare:90
+- crates/kernel/src/ledger.rs: empty_ledger:18, represent_products:73, totals:23, sufficient:59
+- crates/kernel/src/polling.rs: refresh:167, maintain_identity:420
+- ... and 24 more files
+
+---
+> **Complete source for 1 files is included above — do NOT re-read them.** If your question also needs files/symbols listed under "Not shown above" (or any area this call didn't cover), make ANOTHER codegraph_explore targeting those names — it returns the same source with line numbers and is cheaper and more complete than reading. Reserve Read for a single specific line range explore can't surface.
+
+> **Explore budget: 2 calls for this project (656 files indexed).** Each call covers ~6 files; if your question spans more, spend your remaining calls on the uncovered area BEFORE falling back to Read — another explore is cheaper and more complete than reading those files. Synthesize once you've used 2.

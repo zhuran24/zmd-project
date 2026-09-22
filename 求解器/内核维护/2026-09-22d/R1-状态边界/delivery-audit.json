@@ -1,0 +1,16 @@
+{
+  "reader_review": "completed: scope, current status, conclusion strength, field totals, caller categories, commands, limitations and links checked",
+  "report_sha256": "aaa817fc85a386c9ce095a45eb7f0d160ecd3e0b60c70da06c9ab6a9e940ef91",
+  "links_checked": 102,
+  "broken_links": [],
+  "field_counts": {
+    "Engine": 9,
+    "Input": 15
+  },
+  "test_mutation_functions": 30,
+  "test_mutation_access_sites": 50,
+  "tracked_files_unchanged": 6386,
+  "visibility_diagnostics": 16,
+  "tests_executed": 0,
+  "output_extensions_allowed": true
+}

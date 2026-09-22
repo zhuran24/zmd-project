@@ -1,0 +1,407 @@
+**Exploration: verify_cycle_at**
+
+Found 9 symbols across 1 file.
+
+**Blast radius — what depends on these (update/verify before editing)**
+
+- `verify_cycle_at` (crates/kernel/src/cycle_io.rs:114) — 2 callers in `crates/kernel/src/cycle_io.rs`, `crates/kernel/src/cycle.rs`; no tests found within 3 caller hops
+- `verify` (数据/复核/r4-L1-字段覆盖证据/snapshot/求解器/数据/工具/formal_catalog.py:107) — 2 callers in `数据/复核/r4-L1-字段覆盖证据/snapshot/求解器/数据/工具/convert_candidate_b.py`, `数据/复核/r4-L1-字段覆盖证据/snapshot/求解器/数据/工具/formal_catalog.py`; no tests found within 3 caller hops
+- `verify` (数据/复核/r4-L1-字段覆盖证据/testrepo/求解器/数据/工具/formal_catalog.py:107) — 2 callers in `数据/复核/r4-L1-字段覆盖证据/testrepo/求解器/数据/工具/convert_candidate_b.py`, `数据/复核/r4-L1-字段覆盖证据/testrepo/求解器/数据/工具/formal_catalog.py`; no tests found within 3 caller hops
+
+**Relationships**
+
+**calls:**
+- verify_cycle_at → fields
+- verify_cycle_at → invalid
+- verify_cycle_at → canonical_fingerprints
+- verify_cycle_at → canonical_proof_sources
+- verify_cycle_at → load
+- verify_cycle_at → read_json
+- verify_cycle_at → load_stopped_cycle
+- verify_cycle_at → attach_load_context
+- verify_cycle_at → load_ref
+- verify_cycle_at → input_producer
+- ... and 175 more
+
+**references:**
+- verify → no_duplicates
+- verify → REPO
+- source_snapshot → SOURCE_NAMES
+- source_snapshot → REPO
+- formal_projection → quantity
+- verify → REPO
+- source_snapshot → SOURCE_NAMES
+- source_snapshot → REPO
+- formal_projection → quantity
+- verify → REPO
+- ... and 12 more
+
+**Source Code**
+
+> The code below is the **verbatim, current on-disk source** of these files — re-read from disk on this call and line-numbered, byte-for-byte identical to what the Read tool returns. It is NOT a summary, outline, or stale cache. Treat each block as a Read you have already performed: do not Read a file shown here. (Files marked **"Already sent earlier in this conversation"** are not repeated: their source came back on an earlier codegraph_explore call in THIS conversation and the file has not changed since, so that copy is exact and current — scroll back for it rather than re-fetching or Reading.)
+
+**`crates/kernel/src/cycle_io.rs`** — invalid(calls), Result(references), calls(calls), fields(calls), source(calls), read_json(calls), Config(references), canonical_fingerprints(calls), canonical_proof_sources(calls), source(references), +34 more
+
+> **Already sent earlier in this conversation:** `crates/kernel/src/cycle_io.rs` L111-188 (verify_cycle_at, verify_cycle) — unchanged on disk since, so that copy is still exact. Only the NEW lines are shown below; scroll back for the rest. Do NOT Read this file.
+
+```rust
+17	    )
+18	    .map_err(|e| Stop::invalid(path.display().to_string(), e.to_string()))
+19	}
+20	pub(crate) fn input_producer() -> Value {
+21	    json!({"kind":"kernel","path":concat!(env!("CARGO_MANIFEST_DIR"),"/src/lib.rs"),"claim":"Rust内核装载并核验的完整输入引用；不证明种子可达"})
+22	}
+23	pub(crate) fn artifact_ref(path: &Path, format: &str, producer: Value) -> Result<Value> {
+24	    let path = path
+25	        .canonicalize()
+
+... (gap) ...
+
+35	        .canonicalize()
+36	        .map_err(|e| Stop::invalid(at, e.to_string()))
+37	}
+38	fn load_ref(reference: &Value, base: &Path) -> Result<(PathBuf, Value, Value)> {
+39	    fields(reference, "path sha256 producer format", "artifact_ref")?;
+40	    fields(
+41	        &reference["producer"],
+42	        "kind path claim",
+43	        "artifact_ref.producer",
+44	    )?;
+45	    let path = resolved(base, &reference["path"], "artifact_ref.path")?;
+46	    if sha256(&path)? != reference["sha256"] {
+47	        return Err(Stop::invalid("artifact_ref.sha256", "引用原始字节指纹不符"));
+48	    }
+49	    let mut canonical = reference.clone();
+50	    canonical["path"] = json!(path);
+51	    canonical["producer"]["path"] = json!(resolved(
+52	        base,
+53	        &reference["producer"]["path"],
+54	        "artifact_ref.producer.path"
+55	    )?);
+56	    Ok((path.clone(), read_json(&path)?, canonical))
+57	}
+58	pub(crate) fn canonical_fingerprints(value: &mut Value, base: &Path) -> Result<()> {
+59	    for row in value["fingerprints"]
+60	        .as_array_mut()
+61	        .ok_or_else(|| Stop::invalid("fingerprints", "须为数组"))?
+62	    {
+63	        fields(row, "role path sha256", "fingerprints[]")?;
+64	        let p = resolved(base, &row["path"], "fingerprints.path")?;
+65	        if sha256(&p)? != row["sha256"] {
+66	            return Err(Stop::invalid(
+67	                p.display().to_string(),
+68	                "来源指纹不符，须重验而非刷新",
+69	            ));
+70	        }
+71	        row["path"] = json!(p);
+72	    }
+73	    Ok(())
+74	}
+75	/// 输出§4/§5：证明引用与运行引用同样先核字节，路径相对所属证书。
+76	pub(crate) fn canonical_proof_sources(value: &mut Value, base: &Path) -> Result<()> {
+77	    fn source(row: &mut Value, base: &Path) -> Result<()> {
+78	        fields(row, "path sha256", "proof_source")?;
+79	        let path = resolved(base, &row["path"], "proof_source.path")?;
+80	        if sha256(&path)? != row["sha256"] {
+81	            return Err(Stop::invalid("proof_source.sha256", "证明引用原始字节指纹不符"));
+82	        }
+83	        row["path"] = json!(path);
+84	        Ok(())
+85	    }
+86	    if let Some(scope) = value.get_mut("evidence_scope") {
+87	        for key in ["context_bindings", "proof_sources"] {
+88	            for row in scope[key].as_array_mut().ok_or_else(|| Stop::invalid(key, "证明来源须为数组"))? {
+89	                source(row, base)?;
+90	            }
+91	        }
+92	    }
+93	    if let Some(cycle) = value.get_mut("cycle").filter(|v| v.is_object()) {
+94	        for key in ["definition", "mapping_proof"] {
+95	            source(&mut cycle["normalization"][key], base)?;
+96	        }
+97	        for row in cycle["reception_scope"]["proof_sources"].as_array_mut()
+98	            .ok_or_else(|| Stop::invalid("reception_scope.proof_sources", "须为数组"))? {
+99	            source(row, base)?;
+100	        }
+101	        for key in ["forward_projection", "reverse_reconstruction", "all_reachable_cycles"] {
+102	            for row in cycle["correspondence"][key]["proof_sources"].as_array_mut()
+103	                .ok_or_else(|| Stop::invalid("correspondence.proof_sources", "须为数组"))? {
+104	                source(row, base)?;
+105	            }
+106	        }
+107	    }
+108	    Ok(())
+109	}
+110	pub fn verify_cycle(result: &Value, config: &Config, config_path: &Path) -> Result<Value> {
+
+... (gap) ...
+
+189	    }
+190	    supplied["replay_input_ref"] = input_ref;
+191	    let input = Input::parse(raw, &source, config, false)?;
+192	    let ticks = result["budget"]["max_ticks"]
+193	        .as_u64()
+194	        .filter(|n| *n > 0)
+195	        .ok_or_else(|| Stop::invalid("max_ticks", "须为正整数"))? as usize;
+196	    let sweeps = result["budget"]["max_sweeps"]
+197	        .as_u64()
+198	        .filter(|n| *n > 0)
+199	        .ok_or_else(|| Stop::invalid("max_sweeps", "须为正整数"))? as usize;
+200	    let mut loaded_record = None;
+201	    let mut options = SearchOptions::default();
+202	    match result["record_mode"].as_str() {
+203	        Some("referenced") => {
+204	            let (path, record, reference) = load_ref(&result["run_record_ref"], base)?;
+205	            let record = output::canonical_record(&record, path.parent().unwrap())?;
+206	            let format = format!(
+207	                "{}/{}",
+208	                record["schema"].as_str().unwrap_or(""),
+209	                record["trace"]["format"].as_str().unwrap_or("")
+210	            );
+211	            let producer = &record["producer"];
+212	            if ![
+213	                "kernel-output-v4/full_state_each_instant",
+214	                "kernel-output-v4/checkpoint_delta",
+215	            ]
+216	            .contains(&format.as_str())
+217	                || reference["format"] != format
+218	                || reference["producer"] != *producer
+219	                || producer["kind"] != "kernel"
+220	            {
+221	                return Err(Stop::invalid("run_record_ref", "格式或producer与目标不符"));
+222	            }
+223	            output::verify_record_events(&record, &input)?;
+224	            supplied["run_record_ref"] = reference;
+225	            options.record_path = Some(path);
+226	            loaded_record = Some(record);
+227	        }
+228	        Some("none") if result["run_record_ref"].is_null() => (),
+229	        _ => return Err(Stop::invalid("record_mode", "记录模式与引用不一致")),
+230	    }
+231	    let (mut expected, expected_record) =
+232	        cycle::search(input.clone(), config, config_path, ticks, sweeps, &options)?;
+233	    if let (Some(given), Some(mut regenerated)) = (&loaded_record, expected_record) {
+234	        if given["trace"]["format"] == "checkpoint_delta" {
+235	            let k = given["trace"]["checkpoint_interval"]
+236	                .as_u64()
+237	                .filter(|n| *n > 0)
+238	                .ok_or_else(|| Stop::invalid("checkpoint_interval", "须正整数"))?
+239	                as usize;
+240	            let mut previous = regenerated["trace"]["start_state"].clone();
+241	            for (i, row) in regenerated["trace"]["ticks"]
+242	                .as_array_mut()
+243	                .unwrap()
+244	                .iter_mut()
+245	                .enumerate()
+246	            {
+247	                let current = row["state"].clone();
+248	                if i % k != 0 {
+249	                    row.as_object_mut().unwrap().remove("state");
+250	                    row["delta"] = json!(output::delta(&previous, &current)?);
+251	                }
+252	                previous = current;
+253	            }
+254	            regenerated["trace"]["format"] = json!("checkpoint_delta");
+255	            regenerated["trace"]["checkpoint_interval"] = json!(k);
+256	            regenerated["trace"]["delta_encoding"] = json!("object_replace_v1");
+257	        }
+258	        if *given != regenerated {
+259	            return Err(Stop::invalid(
+260	                "run_record_ref",
+261	                "完整v3前缀与独立重算逐字段不符",
+262	            ));
+263	        }
+264	        expected["run_record_ref"] = supplied["run_record_ref"].clone();
+265	    }
+266	    if !supplied["cycle"].is_null() {
+267	        let definition = &mut supplied["cycle"]["normalization"]["definition"];
+268	        definition["path"] = json!(resolved(
+269	            base,
+270	            &definition["path"],
+271	            "normalization.definition"
+272	        )?);
+273	    }
+274	    if expected != supplied {
+275	        return Err(Stop::invalid("cycle", "完整证书与原种子独立搜索重算不符"));
+276	    }
+277	    // 独立身份审计使用流式注册器，不保留全部完整快照。
+278	    let mut prefix = Engine::new_production(input.clone())?;
+279	    prefix.max_sweeps = sweeps;
+280	    prefix.set_cache_enabled(true);
+281	    let mut registry = EventValidator::new(&input, &json!(prefix.state))?;
+282	    let completed = result["budget"]["completed_ticks"].as_u64().unwrap();
+283	    let mut previous = json!(prefix.state);
+284	    for _ in 0..completed {
+285	        let row = prefix.step(true)?.unwrap();
+286	        registry.tick(&row)?;
+287	        crate::ledger::verify_tick(&previous, &row)?;
+288	        previous = row["state"].clone();
+289	    }
+290	    let c = &result["cycle"];
+291	    if c.is_null() {
+292	        return Ok(
+293	            json!({"status":"input_checked","cycle_replayed":false,"prefix_replayed":completed,"reason":"原种子前缀及停止/预算位置已复现，无周期"}),
+294	        );
+295	    }
+296	    let period = num(&c["period"], "period")?;
+297	    let mut replay = Engine::new_production(cycle::checkpoint_input(
+298	        &input,
+299	        c["start_state"].clone(),
+300	        config,
+301	    )?)?;
+302	    replay.max_sweeps = sweeps;
+303	    replay.set_cache_enabled(true);
+304	    let mut registry = EventValidator::new(&input, &c["start_state"])?;
+305	    let record_trace = loaded_record
+306	        .as_ref()
+307	        .map(|r| output::decode_trace(&r["trace"]))
+308	        .transpose()?;
+309	    let a = instant(&c["start_time"], "start")?;
+310	    let mut previous = c["start_state"].clone();
+311	    for index in 0..period as usize {
+312	        let row = replay.step_tick(true)?.unwrap();
+313	        registry.tick(&row)?;
+314	        crate::ledger::verify_tick(&previous, &row)?;
+315	        previous = row["state"].clone();
+316	        if json!({"time":row["time"],"warehouse_ledger":row["warehouse_ledger"]})
+317	            != c["ledger"][index]
+318	        {
+319	            return Err(Stop::invalid("cycle.ledger", "P刻独立重跑台账不符"));
+320	        }
+321	        if let Some(trace) = &record_trace {
+322	            let original = trace["ticks"]
+323	                .as_array()
+324	                .unwrap()
+325	                .iter()
+326	                .find(|t| t["time"] == row["time"])
+327	                .ok_or_else(|| Stop::invalid("cycle.replay", "记录缺周期刻"))?;
+328	            for field in ["time", "events", "state", "warehouse_ledger", "closure"] {
+329	                if row[field] != original[field] {
+330	                    return Err(Stop::invalid(
+331	                        format!("cycle.replay[{index}].{field}"),
+332	                        "周期重跑逐字段不符",
+333	                    ));
+334	                }
+335	            }
+336	        }
+337	    }
+338	    if json!(replay.state) != c["end_state"] || replay.cycle_key()? != c["end_key"] {
+339	        return Err(Stop::invalid("cycle.replay", "P刻完整终态或键不符"));
+340	    }
+341	    Ok(
+342	        json!({"status":"input_checked","cycle_replayed":true,"prefix_replayed":completed,"period":period,"start_time":a,"checks":["引用原始字节/format/producer和完整来源链","原种子到达前缀及跨刻事件身份","独立重建D动态前件及周期账/率/接收域","从周期起点P次step_tick及完整终态"]}),
+343	    )
+344	}
+345	/// KQ-09装载前外壳不伪造读法；结构通过与独立验收明确区分。
+346	pub fn load_stopped_cycle(
+347	    stop: &Stop,
+348	    max_ticks: usize,
+349	    max_sweeps: usize,
+350	    port_meeting: &str,
+351	) -> Value {
+352	    let status = match stop.status.as_str() {
+353	        "invalid_input" => "invalid_input",
+354	        "inconclusive" => "inconclusive",
+355	        _ => "stopped",
+356	    };
+357	    let meeting = if port_meeting == "shared_edge_opposite" {
+358	        json!(port_meeting)
+359	    } else {
+360	        Value::Null
+361	    };
+362	    json!({"schema":"kernel-cycle-v3","evidence_scope":output::evidence_scope("diagnostic","diagnostic", &[]),"environment_assumption":"仓库收得下成品。","result_id":"cycle:load-stop","status":status,"level":null,"execution_mode":"production_abstraction","port_meeting":meeting,"seed":null,"parameter_point":null,"reading":{"port_meeting":meeting,"warehouse_acceptance":"unresolved","acceptance_quantifier":"unresolved","cycle_interpretation":"production_projection","remaining_assumptions":["装载未成立，未形成可认证参数点"]},"support_domain":{"name":"phase_production_v1","uncovered":["完整输入未通过装载"]},"domain_report":(1..=5).map(|i|json!({"condition":format!("D.{i}"),"status":"unresolved","scope":"not_checked","locations":[stop.location],"evidence":[format!("未完成装载：{}",stop.reason)]})).collect::<Vec<_>>(),"fingerprints":[],"record_mode":"none","replay_input_ref":null,"run_record_ref":null,"last_state":null,"cycle":null,"stop":{"kind":if stop.status=="inconclusive"{"resource"}else{stop.status.as_str()},"axis":stop.axis,"event":stop.location,"time":null,"reason":stop.reason,"partial_events":[]},"budget":{"max_ticks":max_ticks.max(1),"max_sweeps":max_sweeps.max(1),"completed_ticks":0},"open_items":[stop.to_string(),"装载诊断未独立复现；技术停止不证明布局无解"]})
+363	}
+364	/// 输出§5.1.2：失败输入仍可读取时锁住诊断材料；不把非法输入包装成可回放引用。
+365	pub fn attach_load_context(result: &mut Value, source: &Path, config_path: &Path) -> Result<()> {
+366	    let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+367	        .join("../..")
+368	        .canonicalize()
+369	        .map_err(|e| Stop::invalid("root", e.to_string()))?;
+370	    let mut paths = vec![
+371	        ("input", source.to_path_buf()),
+372	        ("profile", config_path.to_path_buf()),
+373	    ];
+374	    for name in [
+375	        "value.rs",
+376	        "config.rs",
+377	        "model.rs",
+378	        "catalog.rs",
+379	        "input.rs",
+380	        "interfaces.rs",
+381	        "engine.rs",
+382	        "event_identity.rs",
+383	        "warehouse.rs",
+384	        "polling.rs",
+385	        "transition.rs",
+386	        "output.rs",
+387	        "ledger.rs",
+388	        "cycle.rs",
+389	        "cycle_io.rs",
+390	        "digest.rs",
+391	        "seed.rs",
+392	        "cache.rs",
+393	        "lib.rs",
+394	        "main.rs",
+395	    ] {
+396	        paths.push(("checker", root.join("crates/kernel/src").join(name)));
+397	    }
+398	    for name in [
+399	        "受限转移定义.md",
+400	        "运行语义.md",
+401	        "内核输入.md",
+402	        "内核输出.md",
+403	    ] {
+404	        paths.push(("semantics", root.join("规格").join(name)));
+405	    }
+406	    paths.push(("schema", root.join("规格/内核输出.schema.json")));
+407	    paths.push(("semantics", root.join("crates/kernel/周期键读取审计.md")));
+408	    if let Ok(raw) = read_json(source) {
+409	        for (role, reference) in [
+410	            ("catalog", &raw["catalog"]),
+411	            ("axis_registry", &raw["parameters"]["axis_registry"]),
+412	        ] {
+413	            if let Some(p) = reference["path"].as_str() {
+414	                paths.push((role, source.parent().unwrap_or(Path::new(".")).join(p)));
+415	            }
+416	        }
+417	    }
+418	    for name in [
+419	        "《明日方舟：终末地》游戏规则.txt",
+420	        "求解任务.txt",
+421	        "求解约束.txt",
+422	    ] {
+423	        paths.push(("formal_source", root.parent().unwrap().join(name)));
+424	    }
+425	    result["fingerprints"] = json!(paths
+426	        .into_iter()
+427	        .filter(|(_, p)| p.is_file())
+428	        .map(|(role, p)| {
+429	            let path = p
+430	                .canonicalize()
+431	                .map_err(|e| Stop::invalid("fingerprints", e.to_string()))?;
+432	            Ok(json!({"role":role,"path":path,"sha256":sha256(&path)?}))
+433	        })
+434	        .collect::<Result<Vec<_>>>()?);
+435	    Ok(())
+436	}
+437	
+```
+
+**Not shown above — explore these names for their source**
+
+- crates/kernel/src/config.rs: Config:338
+- 数据/复核/r5-字段覆盖/isolated/求解器/数据/工具/formal_catalog.py: verify:172, source_snapshot:21, compare:144, formal_projection:44, indexed:162, recipe_projection:110, +7 more
+- 数据/复核/r4-L1-字段覆盖证据/snapshot/求解器/数据/工具/formal_catalog.py: verify:107, source_snapshot:18, formal_projection:41, quantity:14, REPO:10, SOURCE_NAMES:11, +3 more
+- 数据/复核/r4-L1-字段覆盖证据/testrepo/求解器/数据/工具/formal_catalog.py: verify:107, source_snapshot:18, formal_projection:41, quantity:14, REPO:10, SOURCE_NAMES:11, +3 more
+- 数据/复核/r4-校验器证据/隔离副本/求解器/数据/工具/formal_catalog.py: verify:107, source_snapshot:18, formal_projection:41, quantity:14, REPO:10, SOURCE_NAMES:11, +3 more
+- 数据/复核/否证-r4-1-证据/isolated/求解器/数据/工具/formal_catalog.py: verify:107, source_snapshot:18, formal_projection:41, quantity:14, REPO:10, SOURCE_NAMES:11, +3 more
+- 会议成果/会议3/seat-codex-1/verify_cut_certificate.py: verify:29, q:19, norm:25, no_duplicates:10
+- crates/kernel/src/value.rs: fields:50, invalid:30, read_json:63, instant:243, num:239, Result:6
+- crates/kernel/src/cycle.rs: default:557, search:650, checkpoint_input:500, cycle.rs:1, cycle_key:307
+- 数据/复核/r5-字段覆盖/isolated/求解器/数据/工具/formal_units.py: unit_projection:5, numbers:14, edge:20, opposed:24, slot:27, unit:31
+- ... and 37 more files
+
+---
+> **Complete source for 1 files is included above — do NOT re-read them.** If your question also needs files/symbols listed under "Not shown above" (or any area this call didn't cover), make ANOTHER codegraph_explore targeting those names — it returns the same source with line numbers and is cheaper and more complete than reading. Reserve Read for a single specific line range explore can't surface.
+
+> **Explore budget: 2 calls for this project (656 files indexed).** Each call covers ~6 files; if your question spans more, spend your remaining calls on the uncovered area BEFORE falling back to Read — another explore is cheaper and more complete than reading those files. Synthesize once you've used 2.

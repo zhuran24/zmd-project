@@ -1,0 +1,50 @@
+[
+  {
+    "file": "crates/kernel/tests/revision_cli.py",
+    "line": 12,
+    "variable": "EVIDENCE",
+    "without_env": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2",
+    "with_env": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2",
+    "env_ignored": true
+  },
+  {
+    "file": "crates/kernel/tests/revision_r2_cli.py",
+    "line": 11,
+    "variable": "EVIDENCE",
+    "without_env": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2",
+    "with_env": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2",
+    "env_ignored": true
+  },
+  {
+    "file": "crates/kernel/tests/revision_r3_cli.py",
+    "line": 12,
+    "variable": "OUT",
+    "without_env": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/regressions/revision-r3",
+    "with_env": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/regressions/revision-r3",
+    "env_ignored": true
+  },
+  {
+    "file": "crates/kernel/tests/revision_r4_cli.py",
+    "line": 11,
+    "variable": "OUT",
+    "without_env": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r4/cli",
+    "with_env": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r4/cli",
+    "env_ignored": true
+  },
+  {
+    "file": "crates/kernel/tests/revision_r5_cli.py",
+    "line": 18,
+    "variable": "E",
+    "without_env": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/cli",
+    "with_env": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/cli",
+    "env_ignored": true
+  },
+  {
+    "file": "crates/kernel/tests/round6_cli.py",
+    "line": 7,
+    "variable": "E",
+    "without_env": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/cli",
+    "with_env": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/cli",
+    "env_ignored": true
+  }
+]

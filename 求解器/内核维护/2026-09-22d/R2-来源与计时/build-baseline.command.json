@@ -1,0 +1,33 @@
+{
+  "argv": [
+    "cargo",
+    "build",
+    "--locked",
+    "--offline",
+    "--workspace",
+    "--bins",
+    "--profile",
+    "r2audit",
+    "--config",
+    "profile.r2audit.inherits=\"dev\"",
+    "--config",
+    "profile.r2audit.codegen-units=1",
+    "--config",
+    "profile.r2audit.debug=0",
+    "-j",
+    "1"
+  ],
+  "shell_command": "cargo build --locked --offline --workspace --bins --profile r2audit --config 'profile.r2audit.inherits=\"dev\"' --config profile.r2audit.codegen-units=1 --config profile.r2audit.debug=0 -j 1",
+  "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+  "returncode": 0,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "a763ce7a3867d1e87460c816cb432251949168309b5838834ea4cd397c876385",
+  "cpu_affinity": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ]
+}

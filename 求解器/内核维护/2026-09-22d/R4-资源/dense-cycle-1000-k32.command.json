@@ -1,0 +1,41 @@
+{
+  "name": "dense-cycle-1000-k32",
+  "sample": "密集制造闭环序2核验",
+  "mode": "cycle",
+  "requested_ticks": 1000,
+  "repeat": 1,
+  "interval": 32,
+  "argv": [
+    "/tmp/r4-gnu-time-m5smi74t/usr/bin/time",
+    "-v",
+    "-o",
+    "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22d/R4-资源/dense-cycle-1000-k32.time.log",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+    "cycle",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序2核验.json",
+    "--config",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+    "--max-ticks",
+    "1000",
+    "--max-sweeps",
+    "100000",
+    "--no-record",
+    "--search-checkpoint-interval",
+    "32",
+    "--out",
+    "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22d/R4-资源/dense-cycle-1000-k32.artifact.json"
+  ],
+  "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+  "started_at": "2026-09-22T21:59:25.778197+00:00",
+  "binary_sha256_before": "6809bf5b8b48dd3853d4c898d597ec5eabcc3610e362b89c39ddeec128c1869d",
+  "input_sha256": "1bda6618f9f5edf8c25fe0560414761e5a4a786b00c5c995730df3a87731f365",
+  "config_sha256": "a6ecebadfb0e322726f22dd3967301691063965c45f56bd62e0d84965a810fee",
+  "cpu_affinity": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ]
+}

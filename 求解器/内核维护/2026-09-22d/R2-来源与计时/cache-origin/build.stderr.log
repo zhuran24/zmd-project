@@ -1,0 +1,19 @@
+       Fresh unicode-ident v1.0.26
+       Fresh proc-macro2 v1.0.107
+       Fresh autocfg v1.5.1
+       Fresh quote v1.0.47
+       Fresh syn v3.0.6
+       Fresh serde_core v1.0.229
+       Fresh num-traits v0.2.19
+       Fresh serde_derive v1.0.229
+       Fresh zmij v1.0.23
+       Fresh itoa v1.0.18
+       Fresh memchr v2.8.3
+       Fresh serde_json v1.0.151
+       Fresh serde v1.0.229
+       Fresh num-integer v0.1.47
+       Fresh num-bigint v0.4.8
+       Fresh num-rational v0.4.2
+       Fresh kernel v0.1.0 (/tmp/zmd-r2-cache-origin-q4ypu2nd/求解器/crates/kernel)
+       Fresh topology v0.1.0 (/tmp/zmd-r2-cache-origin-q4ypu2nd/求解器/crates/topology)
+    Finished `r2audit` profile [unoptimized] target(s) in 0.00s

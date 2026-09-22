@@ -1,0 +1,28 @@
+profile=healthreview721412
+== build 1 env=
+   Compiling proc-macro2 v1.0.107
+   Compiling quote v1.0.47
+   Compiling unicode-ident v1.0.26
+   Compiling serde_core v1.0.229
+   Compiling zmij v1.0.23
+   Compiling syn v3.0.6
+   Compiling serde v1.0.229
+   Compiling serde_json v1.0.151
+   Compiling itoa v1.0.18
+   Compiling serde_derive v1.0.229
+   Compiling memchr v2.8.3
+   Compiling kernel v0.1.0 (/home/zhuran24/zmd-research-fresh/求解器/crates/kernel)
+    Finished `healthreview721412` profile [unoptimized + debuginfo] target(s) in 11.88s
+== build 2 env=CARGO_PROFILE_HEALTHREVIEW721412_CODEGEN_UNITS=1
+   Compiling serde_core v1.0.229
+   Compiling zmij v1.0.23
+   Compiling itoa v1.0.18
+   Compiling memchr v2.8.3
+   Compiling serde v1.0.229
+   Compiling serde_json v1.0.151
+   Compiling kernel v0.1.0 (/home/zhuran24/zmd-research-fresh/求解器/crates/kernel)
+    Finished `healthreview721412` profile [unoptimized + debuginfo] target(s) in 13.20s
+== build 3 env=CARGO_PROFILE_HEALTHREVIEW721412_CODEGEN_UNITS=1
+    Finished `healthreview721412` profile [unoptimized + debuginfo] target(s) in 0.01s
+== build 4 env=
+    Finished `healthreview721412` profile [unoptimized + debuginfo] target(s) in 0.01s

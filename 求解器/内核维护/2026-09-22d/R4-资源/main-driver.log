@@ -1,0 +1,12 @@
+{"name": "ring-none-1000-r1", "status": "completed", "completed_ticks": 1000, "wall_seconds": 0.04, "elapsed_ns": "37481347", "peak_rss_kib": 8392.0, "artifact_bytes": null}
+{"name": "ring-none-10000-r1", "status": "completed", "completed_ticks": 10000, "wall_seconds": 0.4, "elapsed_ns": "389131531", "peak_rss_kib": 22864.0, "artifact_bytes": null}
+{"name": "ring-none-100000-r1", "status": "completed", "completed_ticks": 100000, "wall_seconds": 4.01, "elapsed_ns": "3958512867", "peak_rss_kib": 167656.0, "artifact_bytes": null}
+{"name": "ring-none-1000-r2", "status": "completed", "completed_ticks": 1000, "wall_seconds": 0.04, "elapsed_ns": "37847222", "peak_rss_kib": 8440.0, "artifact_bytes": null}
+{"name": "ring-none-10000-r2", "status": "completed", "completed_ticks": 10000, "wall_seconds": 0.39, "elapsed_ns": "387424260", "peak_rss_kib": 22868.0, "artifact_bytes": null}
+{"name": "ring-none-100000-r2", "status": "completed", "completed_ticks": 100000, "wall_seconds": 4.01, "elapsed_ns": "3955849033", "peak_rss_kib": 167716.0, "artifact_bytes": null}
+{"name": "ring-none-1000-r3", "status": "completed", "completed_ticks": 1000, "wall_seconds": 0.04, "elapsed_ns": "40401607", "peak_rss_kib": 8364.0, "artifact_bytes": null}
+{"name": "ring-none-10000-r3", "status": "completed", "completed_ticks": 10000, "wall_seconds": 0.39, "elapsed_ns": "385079426", "peak_rss_kib": 23004.0, "artifact_bytes": null}
+{"name": "ring-none-100000-r3", "status": "completed", "completed_ticks": 100000, "wall_seconds": 4.0, "elapsed_ns": "3948552503", "peak_rss_kib": 168096.0, "artifact_bytes": null}
+{"name": "splitter-none-1000", "status": "unsupported", "completed_ticks": 12, "wall_seconds": 0.01, "elapsed_ns": "3728446", "peak_rss_kib": 8276.0, "artifact_bytes": null}
+{"name": "splitter-none-10000", "status": "unsupported", "completed_ticks": 12, "wall_seconds": 0.01, "elapsed_ns": "3761121", "peak_rss_kib": 8300.0, "artifact_bytes": null}
+{"name": "splitter-none-100000", "status": "unsupported", "completed_ticks": 12, "wall_seconds": 0.01, "elapsed_ns": "3748505", "peak_rss_kib": 8352.0, "artifact_bytes": null}

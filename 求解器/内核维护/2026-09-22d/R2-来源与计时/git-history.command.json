@@ -1,0 +1,23 @@
+{
+  "argv": [
+    "git",
+    "show",
+    "--stat",
+    "7da52a7",
+    "a7539f5",
+    "220f7b6"
+  ],
+  "shell_command": "git show --stat 7da52a7 a7539f5 220f7b6",
+  "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+  "returncode": 0,
+  "stdout_sha256": "786cf437457ada502a33e70675194d5515292311fc2035836c6bfa1caedb2b64",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "cpu_affinity": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ]
+}

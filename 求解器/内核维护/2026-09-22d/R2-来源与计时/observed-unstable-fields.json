@@ -1,0 +1,83 @@
+{
+  "scope": "Observed A/A cases only; do not filter other fields or automatically extend this list. Original byte outputs remain authoritative.",
+  "paths": [
+    {
+      "command": "run",
+      "conditions": "--no-output and reaches timed execution, including completed, ticks=0, or step-stop branches",
+      "transport": "stdout when --out absent; JSON file specified by --out otherwise",
+      "json_path": "$[\"elapsed_ns\"]",
+      "json_pointer": "/elapsed_ns",
+      "type": "string of decimal nanoseconds"
+    }
+  ],
+  "observations": [
+    {
+      "name": "run-no-output",
+      "output": "stdout",
+      "differences": [
+        {
+          "path": "$[\"elapsed_ns\"]",
+          "a": "8392800",
+          "b": "8440702"
+        }
+      ]
+    },
+    {
+      "name": "run-no-output-no-cache",
+      "output": "stdout",
+      "differences": [
+        {
+          "path": "$[\"elapsed_ns\"]",
+          "a": "11294252",
+          "b": "12043927"
+        }
+      ]
+    },
+    {
+      "name": "run-no-output-zero",
+      "output": "stdout",
+      "differences": [
+        {
+          "path": "$[\"elapsed_ns\"]",
+          "a": "877",
+          "b": "1089"
+        }
+      ]
+    },
+    {
+      "name": "run-no-output-stop",
+      "output": "stdout",
+      "differences": [
+        {
+          "path": "$[\"elapsed_ns\"]",
+          "a": "321801",
+          "b": "311940"
+        }
+      ]
+    },
+    {
+      "name": "run-no-output-out",
+      "output": "measurement",
+      "differences": [
+        {
+          "path": "$[\"elapsed_ns\"]",
+          "a": "8394551",
+          "b": "8483792"
+        }
+      ]
+    }
+  ],
+  "all_other_observed_fields": "strictly equal",
+  "not_exempt": [
+    "event/state time",
+    "run_id",
+    "result_id",
+    "fingerprints",
+    "evidence_scope.context_bindings",
+    "stop",
+    "basis",
+    "out",
+    "verified_record",
+    "array_order"
+  ]
+}

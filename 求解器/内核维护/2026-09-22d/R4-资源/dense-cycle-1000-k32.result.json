@@ -1,0 +1,72 @@
+{
+  "name": "dense-cycle-1000-k32",
+  "sample": "密集制造闭环序2核验",
+  "mode": "cycle",
+  "requested_ticks": 1000,
+  "repeat": 1,
+  "interval": 32,
+  "argv": [
+    "/tmp/r4-gnu-time-m5smi74t/usr/bin/time",
+    "-v",
+    "-o",
+    "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22d/R4-资源/dense-cycle-1000-k32.time.log",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+    "cycle",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序2核验.json",
+    "--config",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+    "--max-ticks",
+    "1000",
+    "--max-sweeps",
+    "100000",
+    "--no-record",
+    "--search-checkpoint-interval",
+    "32",
+    "--out",
+    "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22d/R4-资源/dense-cycle-1000-k32.artifact.json"
+  ],
+  "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+  "started_at": "2026-09-22T21:59:25.778197+00:00",
+  "binary_sha256_before": "6809bf5b8b48dd3853d4c898d597ec5eabcc3610e362b89c39ddeec128c1869d",
+  "input_sha256": "1bda6618f9f5edf8c25fe0560414761e5a4a786b00c5c995730df3a87731f365",
+  "config_sha256": "a6ecebadfb0e322726f22dd3967301691063965c45f56bd62e0d84965a810fee",
+  "cpu_affinity": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "returncode": 0,
+  "driver_wall_seconds": 2.363378726004157,
+  "sampled_max_kernel_threads": 1,
+  "binary_sha256_after": "6809bf5b8b48dd3853d4c898d597ec5eabcc3610e362b89c39ddeec128c1869d",
+  "user_seconds": 2.3,
+  "system_seconds": 0.02,
+  "peak_rss_kib": 83472.0,
+  "major_page_faults": 0.0,
+  "minor_page_faults": 31511.0,
+  "swaps": 0.0,
+  "wall_seconds": 2.35,
+  "status": "inconclusive",
+  "completed_ticks": 1000,
+  "cycle_period": null,
+  "record_mode": "none",
+  "artifact_bytes": 319358,
+  "artifact_sha256": "620caf7ecbb21fa512823b4cb5cdb49460a229c5f5ce2d66018d79d3999bbf58",
+  "stop": {
+    "axis": "resource.ticks",
+    "event": null,
+    "kind": "resource",
+    "partial_events": [],
+    "reason": "时刻预算耗尽，未发现重键；不证明无循环",
+    "time": {
+      "kind": "rational",
+      "value": {
+        "category": "候选",
+        "value": "999"
+      }
+    }
+  }
+}

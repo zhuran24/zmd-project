@@ -1,0 +1,6 @@
+
+thread 'main' (596636) panicked at /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22d/R5-验证与失败态/probe.rs:35:5:
+assertion `left == right` failed
+  left: "unsupported"
+ right: "invalid_input"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

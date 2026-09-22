@@ -1,0 +1,54 @@
+{
+  "status": "report_complete_automatic_delivery_check_stopped_at_concurrent_head_change",
+  "audit_head": "5574911008304c6b01d0fa76c234d0d519e72e1b",
+  "observed_concurrent_head": "2154315",
+  "automatic_check": {
+    "command": "python -B 内核维护/2026-09-22d/R3-测试写历史/review_delivery.py",
+    "exit_code": 1,
+    "stopped_at": "assert head==read('git_summary.json')['head']",
+    "checks_passed_before_stop": {
+      "evidence_rows": 166,
+      "restore_rows": 159,
+      "new_test_rows": 7,
+      "old_rows_modified_again_in_220f7b6": 106,
+      "new_rows_modified_again_in_220f7b6": 5,
+      "restore_manifest_matches_classification": true,
+      "evidence_current_sha256_matches_saved_audit": true,
+      "source_fingerprints_checked": 657,
+      "source_fingerprint_changes": [],
+      "pre_day_historical_drift": 173,
+      "untracked_drift": 14,
+      "untracked_paths_confirmed_ignored": 14,
+      "untracked_paths_with_existing_exact_copy": 1,
+      "three_earlier_restorations_still_match": true,
+      "tracked_worktree_diff": ""
+    },
+    "checks_after_head_assertion": "not executed; not claimed as passed"
+  },
+  "concurrent_commit_inspection": {
+    "command": "git -c core.quotePath=false diff --stat 5574911 HEAD",
+    "observed_result": "4 files changed, 407 insertions(+)",
+    "paths": [
+      "内核维护/2026-09-22d/GPT-Pro-意见.md",
+      "内核维护/2026-09-22d/GPT-Pro-第二份/代码体检方案-修订版.md",
+      "内核维护/2026-09-22d/GPT-Pro-第二份/求解器与项目方向-审阅报告.md",
+      "内核维护/2026-09-22d/主会话说明.md"
+    ],
+    "effect_on_R3_findings": "No audited tests or historical evidence changed in this concurrent commit. GPT Pro section IV remains at lines 119-144."
+  },
+  "reader_review": {
+    "report_body_complete": true,
+    "all_sections_read": "1 through 10, including complete 166-row classification and 14-row untracked recovery table",
+    "corrections_already_applied": [
+      "GPT Pro section IV line range",
+      "revision_r4_cli result write line",
+      "convert_candidate_b contract write line",
+      "runtime_example function name write_profile",
+      "full historical report paths",
+      "final_audit_round5 line range"
+    ],
+    "followup": "Only delivery status recorded after interruption; no audit, probe, test, build, or Git mutation rerun."
+  },
+  "historical_tests_executed": 0,
+  "restoration_executed": false
+}

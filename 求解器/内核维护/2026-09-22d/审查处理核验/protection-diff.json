@@ -1,0 +1,909 @@
+{
+  "求解器/内核维护/2026-09-22e/resume/topology-doc-final-active-after.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 42196,
+      "mode": 33188,
+      "sha256": "c50d35983a545f938b04a12c12897b0161825b40fc83666a36ffef26e3f3d4cb"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/suite-cargo-clippy-final-history-diff.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 52,
+      "mode": 33188,
+      "sha256": "a6bad2847ef56d03b43a21942c03eaa5fae553d48492cc745040397465e663fb"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/verify/protected-sources.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 552,
+      "mode": 33188,
+      "sha256": "5442cb2d4a45af3b00fdc1adca7c16aa18c08dd592ae49463624cf7b9b1e5de8"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/topology-lib-final-active-after.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 42196,
+      "mode": 33188,
+      "sha256": "c50d35983a545f938b04a12c12897b0161825b40fc83666a36ffef26e3f3d4cb"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/verify/archive-addition-provenance.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 369,
+      "mode": 33188,
+      "sha256": "265dc37bc9492994e80a5bcaf415335a08b6953f4e392d8e3aac08b9227875f6"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/topology-doc-final-after-history-diff.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 52,
+      "mode": 33188,
+      "sha256": "a6bad2847ef56d03b43a21942c03eaa5fae553d48492cc745040397465e663fb"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/suite-cargo-check-final-history-diff.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 52,
+      "mode": 33188,
+      "sha256": "a6bad2847ef56d03b43a21942c03eaa5fae553d48492cc745040397465e663fb"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/kernel-reference-final-after-history-diff.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 52,
+      "mode": 33188,
+      "sha256": "a6bad2847ef56d03b43a21942c03eaa5fae553d48492cc745040397465e663fb"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/topology-validation-final-before-history-diff.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 52,
+      "mode": 33188,
+      "sha256": "a6bad2847ef56d03b43a21942c03eaa5fae553d48492cc745040397465e663fb"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/cargo-clippy-final-before-history.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 670185,
+      "mode": 33188,
+      "sha256": "9184e9cb044ac1cbb4f59db519c979222ef809657e11cc28da2b8cdb720adc64"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/kernel-reference-final.log": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 363,
+      "mode": 33188,
+      "sha256": "800a8b9c587fc3943a43f3411a9903ad853c4b10c3b4c29a9d8d5a53ca23f684"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/structured-summary.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 69097,
+      "mode": 33188,
+      "sha256": "c80a50632e6a52ecadde389e4004284fa118ea7c2696ca4a5e9fed22306932db"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/cargo-clippy-final-active-after.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 42196,
+      "mode": 33188,
+      "sha256": "c50d35983a545f938b04a12c12897b0161825b40fc83666a36ffef26e3f3d4cb"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/上一席记录-并发任务结束.md": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 14201,
+      "mode": 33188,
+      "sha256": "4217d740c3783677af794ce1cebca0b33537896d0e663b6b76e449988aba5dad"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/topology-lib-final.log": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 331,
+      "mode": 33188,
+      "sha256": "9ef772d643e32c2a4ebbd625f9abe136c7c8131fcab18aab0ba4ab13856e14fe"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/commands.jsonl": {
+    "before": {
+      "type": "file",
+      "size": 11100,
+      "mode": 33188,
+      "sha256": "30a4418c3fadd81611952bc44368164e82d4288cd018a960ae219d79c21aefb5"
+    },
+    "after": {
+      "type": "file",
+      "size": 15977,
+      "mode": 33188,
+      "sha256": "ac98232a709cecd5ad063346515081076f420b33401111a4509b54d3b7a17865"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/kernel-doc-final.log": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 206,
+      "mode": 33188,
+      "sha256": "37cdf949f197dda72daf8d4ccac02b2be8ff0e4d97fc113fe0dab9aea4f3cd14"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/suite-kernel-doc-final-history.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 670185,
+      "mode": 33188,
+      "sha256": "9184e9cb044ac1cbb4f59db519c979222ef809657e11cc28da2b8cdb720adc64"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/verify/preflight-summary.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 859,
+      "mode": 33188,
+      "sha256": "9d38cc898ce5c898a7da7efbd8b68ae227832f5a241b5879119ef23966a4933a"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/audit-complete.log": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 1150,
+      "mode": 33188,
+      "sha256": "2f3a6110b1f5cdf69428f450601449ee06a55a0a6e192129a611ae9d9231568b"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/suite-topology-lib-final-history.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 670185,
+      "mode": 33188,
+      "sha256": "9184e9cb044ac1cbb4f59db519c979222ef809657e11cc28da2b8cdb720adc64"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/cargo-check-final-after-history-diff.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 52,
+      "mode": 33188,
+      "sha256": "a6bad2847ef56d03b43a21942c03eaa5fae553d48492cc745040397465e663fb"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/changed-files.md": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 66409,
+      "mode": 33188,
+      "sha256": "111419648d958fe5d5777b43d7f2ee3838aa39af9374f8e611334d363990331c"
+    }
+  },
+  ".gitignore": {
+    "before": {
+      "type": "file",
+      "sha256": "0574cfb69eda229aa99b29f86c3c2b6fa4086b3d381cd11eb36ad13185918e94"
+    },
+    "after": {
+      "type": "file",
+      "sha256": "5b6705b74403e5cc76757270cf260955aa063ae99fd799f6aa4f36e677fa9746"
+    }
+  },
+  "求解器/内核维护/2026-09-22d/审查-opus.md": {
+    "before": {
+      "type": "file",
+      "size": 32940,
+      "mode": 33188,
+      "sha256": "ae85c3ee70404bff4decb4dc4230a4885c69d31ff81a59d6bdc57f02e79107cb"
+    },
+    "after": {
+      "type": "file",
+      "size": 33414,
+      "mode": 33188,
+      "sha256": "e5bf05982108d10110c95f7ce0cf25cb9118bf876d892732d04bc89e991d29e4"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/suite-kernel-doc-final-history-diff.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 52,
+      "mode": 33188,
+      "sha256": "a6bad2847ef56d03b43a21942c03eaa5fae553d48492cc745040397465e663fb"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/audit-complete-before-history-diff.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 52,
+      "mode": 33188,
+      "sha256": "a6bad2847ef56d03b43a21942c03eaa5fae553d48492cc745040397465e663fb"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/verify/history_preflight.py": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 4111,
+      "mode": 33188,
+      "sha256": "e7fe50e97c3d472c78f57bdc08f0c4fc721cde7607b6f80c93c9d675fcf0a0b0"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/topology-validation-final-after-history-diff.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 52,
+      "mode": 33188,
+      "sha256": "a6bad2847ef56d03b43a21942c03eaa5fae553d48492cc745040397465e663fb"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/audit-complete-after-history-diff.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 52,
+      "mode": 33188,
+      "sha256": "a6bad2847ef56d03b43a21942c03eaa5fae553d48492cc745040397465e663fb"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/audit-complete-after-history.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 670185,
+      "mode": 33188,
+      "sha256": "9184e9cb044ac1cbb4f59db519c979222ef809657e11cc28da2b8cdb720adc64"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/reader-review.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 440,
+      "mode": 33188,
+      "sha256": "e10193ff96a8bc6c5309772c95682f47399ce079283710b08553a46b98ad38b2"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/suite-kernel-reference-final-history.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 670185,
+      "mode": 33188,
+      "sha256": "9184e9cb044ac1cbb4f59db519c979222ef809657e11cc28da2b8cdb720adc64"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/suite-cargo-check-final-history.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 670185,
+      "mode": 33188,
+      "sha256": "9184e9cb044ac1cbb4f59db519c979222ef809657e11cc28da2b8cdb720adc64"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/audit-complete-active-after.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 42196,
+      "mode": 33188,
+      "sha256": "c50d35983a545f938b04a12c12897b0161825b40fc83666a36ffef26e3f3d4cb"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/cargo-check-final-before-history-diff.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 52,
+      "mode": 33188,
+      "sha256": "a6bad2847ef56d03b43a21942c03eaa5fae553d48492cc745040397465e663fb"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/kernel-reference-final-before-history.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 670185,
+      "mode": 33188,
+      "sha256": "9184e9cb044ac1cbb4f59db519c979222ef809657e11cc28da2b8cdb720adc64"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/kernel-doc-final-active-before.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 42196,
+      "mode": 33188,
+      "sha256": "c50d35983a545f938b04a12c12897b0161825b40fc83666a36ffef26e3f3d4cb"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/suite-topology-doc-final-history.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 670185,
+      "mode": 33188,
+      "sha256": "9184e9cb044ac1cbb4f59db519c979222ef809657e11cc28da2b8cdb720adc64"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/topology-doc-final-before-history.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 670185,
+      "mode": 33188,
+      "sha256": "9184e9cb044ac1cbb4f59db519c979222ef809657e11cc28da2b8cdb720adc64"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/记录.md": {
+    "before": {
+      "type": "file",
+      "size": 14201,
+      "mode": 33188,
+      "sha256": "4217d740c3783677af794ce1cebca0b33537896d0e663b6b76e449988aba5dad"
+    },
+    "after": {
+      "type": "file",
+      "size": 15876,
+      "mode": 33188,
+      "sha256": "11c720a4cc20621bb3277d906b53b882741ee8984dbc128299bfffa600360d61"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/cargo-clippy-final.log": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 72,
+      "mode": 33188,
+      "sha256": "02db5a66fa0c60ca8618bd08aac556eac4f3ec863e8630a0d353dba6a0f6e126"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/delivery-history-diff.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 151,
+      "mode": 33188,
+      "sha256": "1c7ae73e858574b8c1b68cc0ba0b023b97da2f50ab6ea8a216805021248c33a2"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/cargo-clippy-final-active-before.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 42196,
+      "mode": 33188,
+      "sha256": "c50d35983a545f938b04a12c12897b0161825b40fc83666a36ffef26e3f3d4cb"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/topology-doc-final-active-before.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 42196,
+      "mode": 33188,
+      "sha256": "c50d35983a545f938b04a12c12897b0161825b40fc83666a36ffef26e3f3d4cb"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/delivery-history.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 670399,
+      "mode": 33188,
+      "sha256": "1afbec1ea91520640e8de99ddb6f2ab667d146cd0b97a2832506c0c6147d399f"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/topology-validation-final-active-after.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 42196,
+      "mode": 33188,
+      "sha256": "c50d35983a545f938b04a12c12897b0161825b40fc83666a36ffef26e3f3d4cb"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/suite-topology-lib-final-history-diff.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 52,
+      "mode": 33188,
+      "sha256": "a6bad2847ef56d03b43a21942c03eaa5fae553d48492cc745040397465e663fb"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/topology-lib-final-after-history.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 670185,
+      "mode": 33188,
+      "sha256": "9184e9cb044ac1cbb4f59db519c979222ef809657e11cc28da2b8cdb720adc64"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/cargo-clippy-final-after-history.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 670185,
+      "mode": 33188,
+      "sha256": "9184e9cb044ac1cbb4f59db519c979222ef809657e11cc28da2b8cdb720adc64"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/sync-audit.json": {
+    "before": {
+      "type": "file",
+      "size": 12045,
+      "mode": 33188,
+      "sha256": "d574e41102863b76a86c238b5b237fdf13d20df41e1f423c542465a99fe9c02e"
+    },
+    "after": {
+      "type": "file",
+      "size": 12326,
+      "mode": 33188,
+      "sha256": "d086bb1843500720afbd2934ef1b8f463fb7de92a72a49b712431fd2a049eae4"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/kernel-reference-final-after-history.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 670185,
+      "mode": 33188,
+      "sha256": "9184e9cb044ac1cbb4f59db519c979222ef809657e11cc28da2b8cdb720adc64"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/cargo-clippy-final-before-history-diff.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 52,
+      "mode": 33188,
+      "sha256": "a6bad2847ef56d03b43a21942c03eaa5fae553d48492cc745040397465e663fb"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/delivery-snapshot-stop.log": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 189,
+      "mode": 33188,
+      "sha256": "ed2ce520c37c5fce9b7122c8cca56e4706a36d8746a3133b4db0c7996200ab55"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/cargo-check-final-before-history.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 670185,
+      "mode": 33188,
+      "sha256": "9184e9cb044ac1cbb4f59db519c979222ef809657e11cc28da2b8cdb720adc64"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/cargo-check-final.log": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 72,
+      "mode": 33188,
+      "sha256": "6d77f64dfc8c5325b90fdbe05d8be367bdd578bcccec24f275c5ffee7d03dd6e"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/safe_suite.py": {
+    "before": {
+      "type": "file",
+      "size": 1331,
+      "mode": 33188,
+      "sha256": "72ee9e7d4ef7592cc0100f961f5a1ca2bd9e6cad20613b0cfa95d605eb252326"
+    },
+    "after": {
+      "type": "file",
+      "size": 1527,
+      "mode": 33188,
+      "sha256": "eb37d5ddec6ed777e098f6ed6a4ce05a716e7ee82fca7a3f53c07018a58df369"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/suite-topology-validation-final-history.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 670185,
+      "mode": 33188,
+      "sha256": "9184e9cb044ac1cbb4f59db519c979222ef809657e11cc28da2b8cdb720adc64"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/changed-files.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 99633,
+      "mode": 33188,
+      "sha256": "935d3befb3bc71fc8705b48fce1d0ee58b9e94f3cdea5b1d92066b9fa3d173cf"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/suite-topology-doc-final-history-diff.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 52,
+      "mode": 33188,
+      "sha256": "a6bad2847ef56d03b43a21942c03eaa5fae553d48492cc745040397465e663fb"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/kernel-doc-final-before-history-diff.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 52,
+      "mode": 33188,
+      "sha256": "a6bad2847ef56d03b43a21942c03eaa5fae553d48492cc745040397465e663fb"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/suite-cargo-clippy-final-history.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 670185,
+      "mode": 33188,
+      "sha256": "9184e9cb044ac1cbb4f59db519c979222ef809657e11cc28da2b8cdb720adc64"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/topology-lib-final-before-history.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 670185,
+      "mode": 33188,
+      "sha256": "9184e9cb044ac1cbb4f59db519c979222ef809657e11cc28da2b8cdb720adc64"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/kernel-reference-final-before-history-diff.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 52,
+      "mode": 33188,
+      "sha256": "a6bad2847ef56d03b43a21942c03eaa5fae553d48492cc745040397465e663fb"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/topology-lib-final-after-history-diff.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 52,
+      "mode": 33188,
+      "sha256": "a6bad2847ef56d03b43a21942c03eaa5fae553d48492cc745040397465e663fb"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/suite-kernel-reference-final-history-diff.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 52,
+      "mode": 33188,
+      "sha256": "a6bad2847ef56d03b43a21942c03eaa5fae553d48492cc745040397465e663fb"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/kernel-doc-final-active-after.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 42196,
+      "mode": 33188,
+      "sha256": "c50d35983a545f938b04a12c12897b0161825b40fc83666a36ffef26e3f3d4cb"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/kernel-reference-final-active-after.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 42196,
+      "mode": 33188,
+      "sha256": "c50d35983a545f938b04a12c12897b0161825b40fc83666a36ffef26e3f3d4cb"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/topology-lib-final-before-history-diff.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 52,
+      "mode": 33188,
+      "sha256": "a6bad2847ef56d03b43a21942c03eaa5fae553d48492cc745040397465e663fb"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/kernel-doc-final-after-history.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 670185,
+      "mode": 33188,
+      "sha256": "9184e9cb044ac1cbb4f59db519c979222ef809657e11cc28da2b8cdb720adc64"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/topology-validation-final-active-before.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 42196,
+      "mode": 33188,
+      "sha256": "c50d35983a545f938b04a12c12897b0161825b40fc83666a36ffef26e3f3d4cb"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/verify/baseline-comparisons.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 1525,
+      "mode": 33188,
+      "sha256": "3429b632b7d7f46d1dd0354a4bed9434151e5b5e2d2d943880e09f6cbf6c47a0"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/cargo-check-final-active-before.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 42196,
+      "mode": 33188,
+      "sha256": "c50d35983a545f938b04a12c12897b0161825b40fc83666a36ffef26e3f3d4cb"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/verify/initial-history.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 670693,
+      "mode": 33188,
+      "sha256": "2a69b37f53508ceb197ecb68847ed9f25c40b0f37a39edf9971067fa8d41be6b"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/command-results.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 21949,
+      "mode": 33188,
+      "sha256": "90c593b2aabf549a178cea9d8e5c1c1e5dccc95bcb9cf44cb329e85d01f8500b"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/kernel-doc-final-before-history.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 670185,
+      "mode": 33188,
+      "sha256": "9184e9cb044ac1cbb4f59db519c979222ef809657e11cc28da2b8cdb720adc64"
+    }
+  },
+  "求解器/规格/修订记录.md": {
+    "before": {
+      "type": "file",
+      "size": 53309,
+      "mode": 33188,
+      "sha256": "8e01add9ab88e4dc22a1c779069c3081f58190369777128cbf6cf096e1df10bc"
+    },
+    "after": {
+      "type": "file",
+      "size": 54355,
+      "mode": 33188,
+      "sha256": "e31a18bee9b40aa50d7f7b1d4c1f43ddeddf96bc2dfda5766fd9c5c182bea049"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/topology-lib-final-active-before.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 42196,
+      "mode": 33188,
+      "sha256": "c50d35983a545f938b04a12c12897b0161825b40fc83666a36ffef26e3f3d4cb"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/cargo-check-final-active-after.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 42196,
+      "mode": 33188,
+      "sha256": "c50d35983a545f938b04a12c12897b0161825b40fc83666a36ffef26e3f3d4cb"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/audit_sync.py": {
+    "before": {
+      "type": "file",
+      "size": 5262,
+      "mode": 33188,
+      "sha256": "b4950f28d0a332328813e938959798e2bfc416da579b2f811598fc835c370085"
+    },
+    "after": {
+      "type": "file",
+      "size": 7963,
+      "mode": 33188,
+      "sha256": "ec46093dec5f444fcf67932a9f43a018ec7fac383b67cdc6d31da83779d3fe56"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/topology-validation-final-after-history.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 670185,
+      "mode": 33188,
+      "sha256": "9184e9cb044ac1cbb4f59db519c979222ef809657e11cc28da2b8cdb720adc64"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/suite-topology-validation-final-history-diff.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 52,
+      "mode": 33188,
+      "sha256": "a6bad2847ef56d03b43a21942c03eaa5fae553d48492cc745040397465e663fb"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/audit-complete-active-before.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 42196,
+      "mode": 33188,
+      "sha256": "c50d35983a545f938b04a12c12897b0161825b40fc83666a36ffef26e3f3d4cb"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/topology-doc-final-after-history.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 670185,
+      "mode": 33188,
+      "sha256": "9184e9cb044ac1cbb4f59db519c979222ef809657e11cc28da2b8cdb720adc64"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/audit-complete-before-history.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 670185,
+      "mode": 33188,
+      "sha256": "9184e9cb044ac1cbb4f59db519c979222ef809657e11cc28da2b8cdb720adc64"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/cargo-check-final-after-history.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 670185,
+      "mode": 33188,
+      "sha256": "9184e9cb044ac1cbb4f59db519c979222ef809657e11cc28da2b8cdb720adc64"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/kernel-doc-final-after-history-diff.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 52,
+      "mode": 33188,
+      "sha256": "a6bad2847ef56d03b43a21942c03eaa5fae553d48492cc745040397465e663fb"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/topology-doc-final-before-history-diff.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 52,
+      "mode": 33188,
+      "sha256": "a6bad2847ef56d03b43a21942c03eaa5fae553d48492cc745040397465e663fb"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/finish_record.py": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 20716,
+      "mode": 33188,
+      "sha256": "b6826c73b94788edb652e459f1edaa3d20e010459410cd1e1d802c3afceab881"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/topology-validation-final.log": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 1976,
+      "mode": 33188,
+      "sha256": "773af235e58d05fe6c18b50ed8555b7fc73ae055331b20a8159616272beb4b99"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/topology-doc-final.log": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 208,
+      "mode": 33188,
+      "sha256": "136983d2f5f85da05470d27037dac3e60dc8db71449a086a57cbbe15d6b62141"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/grep-inventory.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 103016,
+      "mode": 33188,
+      "sha256": "c3949b4950d979aa824f32fd7162df30cae50d80c339d57a93925b0bd3205dc0"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/kernel-reference-final-active-before.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 42196,
+      "mode": 33188,
+      "sha256": "c50d35983a545f938b04a12c12897b0161825b40fc83666a36ffef26e3f3d4cb"
+    }
+  },
+  "求解器/crates/kernel/复核/r3-测试与证据/密集制造闭环序3核验-重跑周期.json.gz": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 11867571,
+      "mode": 33188,
+      "sha256": "838f8c2dee07a909b5ec91cca51f3a0c38b637a76b956a3c06782ce3b16165a5"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/cargo-clippy-final-after-history-diff.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 52,
+      "mode": 33188,
+      "sha256": "a6bad2847ef56d03b43a21942c03eaa5fae553d48492cc745040397465e663fb"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/resume/topology-validation-final-before-history.json": {
+    "before": null,
+    "after": {
+      "type": "file",
+      "size": 670185,
+      "mode": 33188,
+      "sha256": "9184e9cb044ac1cbb4f59db519c979222ef809657e11cc28da2b8cdb720adc64"
+    }
+  },
+  "求解器/内核维护/2026-09-22e/verify": {
+    "before": null,
+    "after": {
+      "type": "directory",
+      "mode": 16877
+    }
+  }
+}

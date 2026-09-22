@@ -1,0 +1,12 @@
+{
+  "temporary_manifest": "/tmp/zmd-r2-cache-origin-q4ypu2nd/求解器/Cargo.toml",
+  "copied_with": "shutil.copy2 (preserves modification times)",
+  "binary_sha256_before_build": "1b5e6650111aca7dae5f6f94e10be87e4d5ebe4d97083f5588712d7068198278",
+  "binary_sha256_after_build": "1b5e6650111aca7dae5f6f94e10be87e4d5ebe4d97083f5588712d7068198278",
+  "baseline_binary_sha256": "1b5e6650111aca7dae5f6f94e10be87e4d5ebe4d97083f5588712d7068198278",
+  "expected_producer_path": "/tmp/zmd-r2-cache-origin-q4ypu2nd/求解器/crates/kernel/src/lib.rs",
+  "actual_producer_path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs",
+  "mismatched_origin": true,
+  "cargo_build_exit": 0,
+  "run_exit": 0
+}

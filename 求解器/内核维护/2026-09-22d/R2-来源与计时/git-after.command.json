@@ -1,0 +1,23 @@
+{
+  "argv": [
+    "git",
+    "-c",
+    "core.quotePath=false",
+    "status",
+    "--short",
+    "--untracked-files=all"
+  ],
+  "shell_command": "git -c core.quotePath=false status --short --untracked-files=all",
+  "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+  "returncode": 0,
+  "stdout_sha256": "cc8a059db39cd2f5725a9f8812d46a1b290f0b28ae23717eda62eec2443eb14c",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "cpu_affinity": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ]
+}

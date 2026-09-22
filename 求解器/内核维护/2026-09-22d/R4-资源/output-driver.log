@@ -1,0 +1,2 @@
+{"name": "ring-full-1000", "status": "completed", "completed_ticks": 1000, "wall_seconds": 0.59, "elapsed_ns": null, "peak_rss_kib": 999684.0, "artifact_bytes": 85851145}
+{"name": "ring-delta-1000", "status": "completed", "completed_ticks": 1000, "wall_seconds": 0.31, "elapsed_ns": null, "peak_rss_kib": 221540.0, "artifact_bytes": 16664380}

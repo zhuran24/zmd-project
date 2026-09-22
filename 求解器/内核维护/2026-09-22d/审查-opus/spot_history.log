@@ -1,0 +1,37 @@
+== revision-r2/regression-results.json
+  220f7b6 16:56 三审采纳第 57 轮 14 条候选与增机面积界 1089，求解约束增至 71 条，内核指纹重锁
+  a7539f5 16:26 规则「开关」条改措辞，内核正式源指纹随之重锁
+  f8f6129 13:09 入库求解器全套、思路与三份正式文件；清掉初始英文文件
+  f8f6129=54595fcace25  7da52a7=54595fcace25  a7539f5=ff0da730d7b3  220f7b6=fb5f7f4e4c0b  HEAD=fb5f7f4e4c0b
+  now=71c8ec897253
+== round6/cli/none.json
+  220f7b6 16:56 三审采纳第 57 轮 14 条候选与增机面积界 1089，求解约束增至 71 条，内核指纹重锁
+  a7539f5 16:26 规则「开关」条改措辞，内核正式源指纹随之重锁
+  f8f6129 13:09 入库求解器全套、思路与三份正式文件；清掉初始英文文件
+  f8f6129=61d1e7d1545b  7da52a7=61d1e7d1545b  a7539f5=97b094000d85  220f7b6=37897c0bb306  HEAD=37897c0bb306
+  now=37897c0bb306
+== round6/regressions/revision-r3/results.json
+  220f7b6 16:56 三审采纳第 57 轮 14 条候选与增机面积界 1089，求解约束增至 71 条，内核指纹重锁
+  a7539f5 16:26 规则「开关」条改措辞，内核正式源指纹随之重锁
+  f8f6129 13:09 入库求解器全套、思路与三份正式文件；清掉初始英文文件
+  f8f6129=a345031a8bae  7da52a7=a345031a8bae  a7539f5=71f5d46ce9ab  220f7b6=981223f3058a  HEAD=981223f3058a
+  now=e620d15b30ca
+== revision-r4/cli/extra-trigger-run-result.json
+  a7539f5 16:26 规则「开关」条改措辞，内核正式源指纹随之重锁
+  f8f6129 13:09 入库求解器全套、思路与三份正式文件；清掉初始英文文件
+  f8f6129=7e7335c0c8d9  7da52a7=7e7335c0c8d9  a7539f5=b78d962892dc  220f7b6=b78d962892dc  HEAD=b78d962892dc
+  now=b78d962892dc
+== round6/revision-r5/cli/results.json
+  a7539f5 16:26 规则「开关」条改措辞，内核正式源指纹随之重锁
+  f8f6129 13:09 入库求解器全套、思路与三份正式文件；清掉初始英文文件
+  f8f6129=9891972b245f  7da52a7=9891972b245f  a7539f5=98c2f1380afc  220f7b6=98c2f1380afc  HEAD=98c2f1380afc
+  now=98c2f1380afc
+== round5/round5_cli/resource-statistics.json
+  220f7b6 16:56 三审采纳第 57 轮 14 条候选与增机面积界 1089，求解约束增至 71 条，内核指纹重锁
+  a7539f5 16:26 规则「开关」条改措辞，内核正式源指纹随之重锁
+  f8f6129=absent  7da52a7=absent  a7539f5=63bb0e057a69  220f7b6=449add6d256b  HEAD=449add6d256b
+  now=449add6d256b
+== round6/revision-r5/cli/bounded-reference-batch-unsupported.log
+  a7539f5 16:26 规则「开关」条改措辞，内核正式源指纹随之重锁
+  f8f6129=absent  7da52a7=absent  a7539f5=cd71b29ca418  220f7b6=cd71b29ca418  HEAD=cd71b29ca418
+  now=cd71b29ca418

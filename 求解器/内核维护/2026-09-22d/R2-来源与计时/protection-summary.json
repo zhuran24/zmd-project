@@ -1,0 +1,15 @@
+{
+  "before_files": 10350,
+  "after_files": 10601,
+  "existing_changed": [
+    "求解器/内核维护/2026-09-22d/R1-状态边界/build.json",
+    "求解器/内核维护/2026-09-22d/R1-状态边界/build.log"
+  ],
+  "removed": [],
+  "added_count": 251,
+  "protected_existing_files": 6240,
+  "protected_changed": [],
+  "protected_removed": [],
+  "protected_added": [],
+  "note": "Broad inventory includes concurrent sibling task outputs; this task only writes its designated output directory/report, /tmp sources, shared target artifacts."
+}

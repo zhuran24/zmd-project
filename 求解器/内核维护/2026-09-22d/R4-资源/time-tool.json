@@ -1,0 +1,13 @@
+{
+  "system_usr_bin_time_exists": false,
+  "executable": "/tmp/r4-gnu-time-m5smi74t/usr/bin/time",
+  "package_url": "https://mirror.krfoss.org/cachyos/repo/x86_64_v3/cachyos-extra-v3/time-1.10-1.1-x86_64_v3.pkg.tar.zst",
+  "package_sha256": "a29b3ee7ed361b6f8fd7e968a0c99924457d53464a14c1e7291bf1f9cae8aea8",
+  "executable_sha256": "7b29eec93a6fce9aa554bf4fc7f94ef77121bc58f376cf730d060df07872ab63",
+  "version": "time (GNU Time) 1.10\nCopyright (C) 2026 Free Software Foundation, Inc.\nLicense GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.\nThis is free software: you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.\n\nWritten by David Keppel, David MacKenzie, and Assaf Gordon.\n",
+  "namespace_probe": {
+    "returncode": 1,
+    "stdout": "",
+    "stderr": "bwrap: Can't create file /usr/bin/time: Read-only file system\n"
+  }
+}

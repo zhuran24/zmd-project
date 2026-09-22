@@ -1,0 +1,37 @@
+{
+  "argv": [
+    "cargo",
+    "build",
+    "--manifest-path",
+    "/tmp/zmd-r2-source-67wgyqjd/求解器/Cargo.toml",
+    "--locked",
+    "--offline",
+    "-p",
+    "kernel",
+    "--bin",
+    "kernel",
+    "--profile",
+    "r2source67wgyqjd",
+    "--config",
+    "profile.r2source67wgyqjd.inherits=\"dev\"",
+    "--config",
+    "profile.r2source67wgyqjd.codegen-units=1",
+    "--config",
+    "profile.r2source67wgyqjd.debug=0",
+    "-j",
+    "1"
+  ],
+  "shell_command": "cargo build --manifest-path '/tmp/zmd-r2-source-67wgyqjd/求解器/Cargo.toml' --locked --offline -p kernel --bin kernel --profile r2source67wgyqjd --config 'profile.r2source67wgyqjd.inherits=\"dev\"' --config profile.r2source67wgyqjd.codegen-units=1 --config profile.r2source67wgyqjd.debug=0 -j 1",
+  "cwd": "/tmp/zmd-r2-source-67wgyqjd/求解器",
+  "returncode": 0,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "a54a64b6027331d87f5ef69498667eb74869e1b04b282096473576163e16d3b4",
+  "cpu_affinity": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ]
+}

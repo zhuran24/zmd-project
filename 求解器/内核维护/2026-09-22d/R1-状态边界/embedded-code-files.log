@@ -1,0 +1,8 @@
+./crates/kernel/复核/否证-r4-1-证据/recheck.py
+./crates/kernel/复核/r4-规格保真-证据/key_probe.py
+./crates/kernel/复核/否证-r4-2-证据/run_checks.py
+./crates/kernel/复核/r4-测试与证据/write_report.py
+./内核维护/2026-09-22/write_report.py
+./crates/kernel/复核/否证-r5-1-证据/reproduce.py
+./crates/kernel/复核/r3-测试与证据/write_report.py
+./crates/kernel/evidence/round6/revision-r5/final_audit.py

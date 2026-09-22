@@ -1,0 +1,24 @@
+#![forbid(unsafe_code)]
+#[path = "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/cache.rs"] pub mod cache;
+#[path = "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/catalog.rs"] pub mod catalog;
+#[path = "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/config.rs"] pub mod config;
+#[path = "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/cycle.rs"] pub mod cycle;
+#[path = "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/cycle_io.rs"] pub mod cycle_io;
+#[path = "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/digest.rs"] pub mod digest;
+#[path = "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/engine.rs"] pub mod engine;
+#[path = "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/event_identity.rs"] pub mod event_identity;
+#[path = "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/input.rs"] pub mod input;
+#[path = "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/interfaces.rs"] pub mod interfaces;
+#[path = "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/ledger.rs"] pub mod ledger;
+#[path = "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/model.rs"] pub mod model;
+#[path = "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/output.rs"] pub mod output;
+#[path = "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/polling.rs"] pub mod polling;
+#[path = "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/seed.rs"] pub mod seed;
+#[path = "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/transition.rs"] pub mod transition;
+#[path = "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/value.rs"] pub mod value;
+#[path = "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/warehouse.rs"] pub mod warehouse;
+pub use config::Config;
+pub use engine::Engine;
+pub use input::Input;
+pub use value::{Result, Stop};
+include!("probe_body.rs");

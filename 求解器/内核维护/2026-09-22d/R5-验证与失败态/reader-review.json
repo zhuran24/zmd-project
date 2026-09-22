@@ -1,0 +1,26 @@
+{
+  "report_exists": true,
+  "report_sha256": "66eafe2103a234ba37f0e28bda518c7a11201f37c752e9f7c984ada2091273b1",
+  "broken_relative_links": [],
+  "final_command_exit_codes": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "excluded_cli_count": 7,
+  "failure_probe_count": 4,
+  "callpath_count": 7,
+  "unexpected_output_extensions": [],
+  "reader_review": {
+    "standalone_context": true,
+    "current_status_consistent": true,
+    "facts_and_limits_separated": true,
+    "counts_have_one_defined_basis": true,
+    "source_and_artifact_references_checked": true,
+    "probe_author_error_disclosed": true
+  }
+}

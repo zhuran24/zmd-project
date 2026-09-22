@@ -1,0 +1,33 @@
+{
+  "command": [
+    "git",
+    "diff",
+    "7da52a7",
+    "HEAD",
+    "--",
+    "crates/kernel/src/model.rs",
+    "crates/kernel/src/transition.rs",
+    "crates/kernel/src/output.rs",
+    "crates/kernel/src/cycle_io.rs",
+    "crates/kernel/tests/reference.rs"
+  ],
+  "exit_code": 0,
+  "diff": "",
+  "historical_test_logs": [
+    {
+      "commit": "7da52a7",
+      "test_log": "2026-09-22/test.log",
+      "current_equals_committed": true
+    },
+    {
+      "commit": "a7539f5",
+      "test_log": "2026-09-22b/test.log",
+      "current_equals_committed": true
+    },
+    {
+      "commit": "220f7b6",
+      "test_log": "2026-09-22c/test.log",
+      "current_equals_committed": true
+    }
+  ]
+}

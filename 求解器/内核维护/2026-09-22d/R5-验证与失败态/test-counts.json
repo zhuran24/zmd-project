@@ -1,0 +1,232 @@
+{
+  "2026-09-22": {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22/test.log",
+    "suites": [
+      {
+        "line": 107,
+        "suite": "Running unittests src/lib.rs (target/debug/deps/kernel-26241e85d1128675)",
+        "passed": 100,
+        "failed": 0
+      },
+      {
+        "line": 113,
+        "suite": "Running unittests src/main.rs (target/debug/deps/kernel-7b5e2fc753826063)",
+        "passed": 0,
+        "failed": 0
+      },
+      {
+        "line": 122,
+        "suite": "Running tests/reference.rs (target/debug/deps/reference-1613ad1990138602)",
+        "passed": 3,
+        "failed": 0
+      },
+      {
+        "line": 129,
+        "suite": "Running tests/revision_cli.rs (target/debug/deps/revision_cli-6e74e26d9cc8e0e1)",
+        "passed": 1,
+        "failed": 0
+      },
+      {
+        "line": 136,
+        "suite": "Running tests/revision_r2_cli.rs (target/debug/deps/revision_r2_cli-8728dafa1cffde10)",
+        "passed": 1,
+        "failed": 0
+      },
+      {
+        "line": 143,
+        "suite": "Running tests/revision_r3_cli.rs (target/debug/deps/revision_r3_cli-8d0c1cc68ed29ba1)",
+        "passed": 1,
+        "failed": 0
+      },
+      {
+        "line": 150,
+        "suite": "Running tests/revision_r4_cli.rs (target/debug/deps/revision_r4_cli-58776cb1dd0f3c30)",
+        "passed": 1,
+        "failed": 0
+      },
+      {
+        "line": 157,
+        "suite": "Running tests/revision_r5_cli.rs (target/debug/deps/revision_r5_cli-1c88f989f3382336)",
+        "passed": 1,
+        "failed": 0
+      },
+      {
+        "line": 164,
+        "suite": "Running tests/round5_cli.rs (target/debug/deps/round5_cli-110510aa32f40868)",
+        "passed": 1,
+        "failed": 0
+      },
+      {
+        "line": 171,
+        "suite": "Running tests/round6_cli.rs (target/debug/deps/round6_cli-330f8d58b875abbb)",
+        "passed": 1,
+        "failed": 0
+      },
+      {
+        "line": 178,
+        "suite": "Running unittests src/lib.rs (target/debug/deps/topology-958a7a196b95191c)",
+        "passed": 1,
+        "failed": 0
+      },
+      {
+        "line": 184,
+        "suite": "Running unittests src/main.rs (target/debug/deps/topology-232d29a62249f608)",
+        "passed": 0,
+        "failed": 0
+      },
+      {
+        "line": 220,
+        "suite": "Running tests/validation.rs (target/debug/deps/validation-55f92a55e3fc13c3)",
+        "passed": 30,
+        "failed": 0
+      },
+      {
+        "line": 226,
+        "suite": "Doc-tests kernel",
+        "passed": 0,
+        "failed": 0
+      },
+      {
+        "line": 232,
+        "suite": "Doc-tests topology",
+        "passed": 0,
+        "failed": 0
+      }
+    ],
+    "passed": 141,
+    "failed": 0
+  },
+  "2026-09-22b": {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22b/test.log",
+    "suites": [],
+    "passed": 141,
+    "failed": 0
+  },
+  "2026-09-22c": {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22c/test.log",
+    "suites": [
+      {
+        "line": 5,
+        "suite": null,
+        "passed": 100,
+        "failed": 0
+      },
+      {
+        "line": 10,
+        "suite": null,
+        "passed": 0,
+        "failed": 0
+      },
+      {
+        "line": 15,
+        "suite": null,
+        "passed": 3,
+        "failed": 0
+      },
+      {
+        "line": 20,
+        "suite": null,
+        "passed": 1,
+        "failed": 0
+      },
+      {
+        "line": 25,
+        "suite": null,
+        "passed": 1,
+        "failed": 0
+      },
+      {
+        "line": 30,
+        "suite": null,
+        "passed": 1,
+        "failed": 0
+      },
+      {
+        "line": 35,
+        "suite": null,
+        "passed": 1,
+        "failed": 0
+      },
+      {
+        "line": 40,
+        "suite": null,
+        "passed": 1,
+        "failed": 0
+      },
+      {
+        "line": 45,
+        "suite": null,
+        "passed": 1,
+        "failed": 0
+      },
+      {
+        "line": 50,
+        "suite": null,
+        "passed": 1,
+        "failed": 0
+      },
+      {
+        "line": 55,
+        "suite": null,
+        "passed": 1,
+        "failed": 0
+      },
+      {
+        "line": 60,
+        "suite": null,
+        "passed": 0,
+        "failed": 0
+      },
+      {
+        "line": 65,
+        "suite": null,
+        "passed": 30,
+        "failed": 0
+      },
+      {
+        "line": 70,
+        "suite": null,
+        "passed": 0,
+        "failed": 0
+      },
+      {
+        "line": 75,
+        "suite": null,
+        "passed": 0,
+        "failed": 0
+      }
+    ],
+    "passed": 141,
+    "failed": 0
+  },
+  "excluded_cli": [
+    {
+      "line": 127,
+      "name": "revision_cli_and_python_record_negatives"
+    },
+    {
+      "line": 134,
+      "name": "revision_r2_cli_and_python_record_negatives"
+    },
+    {
+      "line": 141,
+      "name": "revision_r3_public_cli_regressions"
+    },
+    {
+      "line": 148,
+      "name": "revision_r4_public_cli_regressions"
+    },
+    {
+      "line": 155,
+      "name": "revision_r5_public_cli_regressions"
+    },
+    {
+      "line": 162,
+      "name": "round5_cli_resource_statistics_and_cycle_load_stop"
+    },
+    {
+      "line": 169,
+      "name": "round6_public_cli_regressions"
+    }
+  ]
+}

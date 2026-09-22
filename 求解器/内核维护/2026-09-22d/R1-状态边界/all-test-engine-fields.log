@@ -1,0 +1,264 @@
+crates/kernel/src/tests_round6.rs:7:    let input = engine("生产循环环带").input;
+crates/kernel/src/tests_round6.rs:41:        assert_eq!(row["state"], json!(b.state));
+crates/kernel/src/tests_round6.rs:50:    let result = crate::cycle::run_cycle(engine("生产循环环带").input, &cfg, &cp, 5, 1).unwrap();
+crates/kernel/src/tests_round6.rs:74:    let before = json!(e.state);
+crates/kernel/src/tests_round6.rs:79:        assert_eq!(json!(e.state), before);
+crates/kernel/src/tests_round6.rs:87:        .input
+crates/kernel/src/tests_round6.rs:97:    let buffer = &e.state.inventory[e.inv["crusher:buffer:0"]].contents;
+crates/kernel/src/tests_round6.rs:99:    assert!(e.state.inventory[e.inv["crusher:output:0"]]
+crates/kernel/src/tests_round6.rs:103:    assert_eq!(e.state.progress[e.progress["crusher"]].phase, "completed");
+crates/kernel/src/tests_round6.rs:109:    let before = json!(e.state);
+crates/kernel/src/tests_round6.rs:111:    assert_eq!(json!(e.state), before);
+crates/kernel/src/tests_round6.rs:118:    e.state.environment.online = false;
+crates/kernel/src/tests_round6.rs:119:    e.state
+crates/kernel/src/tests_round6.rs:132:    let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_round6.rs:133:    raw["initial_state"]["nonwarehouse"]["value"] = json!(e.state);
+crates/kernel/src/tests_round6.rs:139:    let raw = Input::canonicalize_seed(raw, e.input.path.parent().unwrap(), &config()).unwrap();
+crates/kernel/src/tests_round6.rs:140:    let e = Engine::new(Input::parse(raw, &e.input.path, &config(), false).unwrap()).unwrap();
+crates/kernel/src/tests_round6.rs:143:        e.input,
+crates/kernel/src/tests_round6.rs:162:        let before = json!(e.state);
+crates/kernel/src/tests_round5.rs:10:        let path = original.input.path.clone();
+crates/kernel/src/tests_round5.rs:12:            original.input.raw.clone(),
+crates/kernel/src/tests_round5.rs:26:    let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_round5.rs:31:        Engine::new(Input::parse(raw.clone(), &e.input.path, &config(), false).unwrap()).is_err()
+crates/kernel/src/tests_round5.rs:33:    let d = Input::canonicalize_seed(raw, e.input.path.parent().unwrap(), &config()).unwrap();
+crates/kernel/src/tests_round5.rs:34:    Engine::new(Input::parse(d, &e.input.path, &config(), false).unwrap())
+crates/kernel/src/tests_round5.rs:42:    let mut raw = explicit.input.raw.clone();
+crates/kernel/src/tests_round5.rs:49:        Engine::new(Input::parse(raw, &explicit.input.path, &config(), false).unwrap()).unwrap();
+crates/kernel/src/tests_round5.rs:72:    let mut raw = sample("混做粉碎机两下游").input.raw;
+crates/kernel/src/tests_round5.rs:92:        e.state
+crates/kernel/src/tests_round5.rs:125:        e.production_abstraction = name == "生产循环环带";
+crates/kernel/src/tests_round5.rs:127:            let before = warehouse_counts(&e.state);
+crates/kernel/src/tests_round5.rs:129:            let after = warehouse_counts(&e.state);
+crates/kernel/src/tests_round5.rs:150:    let result = crate::cycle::run_cycle(e.input, &cfg, &path, 50, 10000).unwrap();
+crates/kernel/src/tests_round5.rs:165:    let mut unpersisted = sample("生产循环环带").input;
+crates/kernel/src/tests_round5.rs:169:        crate::cycle::run_cycle(sample("生产循环环带").input, &cfg, &path, 1, 10000).unwrap();
+crates/kernel/src/tests_round5.rs:216:    e.input
+crates/kernel/src/tests_round5.rs:220:    e.input
+crates/kernel/src/tests_round5.rs:234:    let mut raw = original.input.raw.clone();
+crates/kernel/src/tests_round5.rs:240:        Engine::new(Input::parse(raw, &original.input.path, &config(), false).unwrap()).unwrap();
+crates/kernel/src/tests_round5.rs:249:        for r in &mut e.state.warehouse.slots {
+crates/kernel/src/tests_round5.rs:255:        let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_round5.rs:256:        raw["initial_state"]["nonwarehouse"]["value"] = json!(e.state);
+crates/kernel/src/tests_round5.rs:263:            Input::canonicalize_seed(raw, e.input.path.parent().unwrap(), &config()).unwrap();
+crates/kernel/src/tests_round5.rs:264:        let e = Engine::new(Input::parse(seed, &e.input.path, &config(), false).unwrap()).unwrap();
+crates/kernel/src/tests_round5.rs:267:            e.input,
+crates/kernel/src/tests_round5.rs:287:    e.state.inventory[source].contents[0].entered_at = Some(Time::at(i64::MIN));
+crates/kernel/src/tests_round5.rs:290:    e.state.inventory[slot].contents[0].entered_at = Some(Time::at(i64::MIN));
+crates/kernel/src/tests_round5.rs:294:    let mut input = e.input.clone();
+crates/kernel/src/tests_round5.rs:295:    input.raw["initial_state"]["nonwarehouse"]["value"] = json!(e.state);
+crates/kernel/src/tests_revision_r5.rs:10:    sample.state.inventory[sample.inv["belt:transport:0"]].contents[0].entered_at =
+crates/kernel/src/tests_revision_r5.rs:12:    let mut raw = sample.input.raw.clone();
+crates/kernel/src/tests_revision_r5.rs:13:    raw["initial_state"]["nonwarehouse"]["value"] = json!(sample.state);
+crates/kernel/src/tests_revision_r5.rs:30:        let seed = Input::canonicalize_seed(raw.clone(), sample.input.path.parent().unwrap(), &cfg)
+crates/kernel/src/tests_revision_r5.rs:32:        let input = Input::parse(seed.clone(), &sample.input.path, &cfg, false).unwrap();
+crates/kernel/src/tests_revision_r5.rs:34:        memories.push(finite.memory.clone());
+crates/kernel/src/tests_revision_r5.rs:46:            crate::cycle::cycle_key(&finite.state, &input)
+crates/kernel/src/tests_revision_r5.rs:58:    let input = Input::parse(crossed, &sample.input.path, &cfg, false).unwrap();
+crates/kernel/src/tests_revision_r4.rs:25:    let path = original.input.path;
+crates/kernel/src/tests_revision_r4.rs:26:    let mut raw = original.input.raw;
+crates/kernel/src/tests_revision_r4.rs:35:        e.state.inventory[e.inv["south_box:storage:0"]]
+crates/kernel/src/tests_revision_r4.rs:42:        e.state.inventory[e.inv["south_box:storage:0"]]
+crates/kernel/src/tests_revision_r4.rs:81:        .input
+crates/kernel/src/tests_revision_r4.rs:97:    let path = original.input.path;
+crates/kernel/src/tests_revision_r4.rs:98:    let mut raw = original.input.raw;
+crates/kernel/src/tests_revision_r4.rs:120:    let mut checkpoint = e.input.raw.clone();
+crates/kernel/src/tests_revision_r4.rs:121:    checkpoint["initial_state"]["nonwarehouse"]["value"] = json!(e.state);
+crates/kernel/src/tests_revision_r4.rs:134:    let rows = &e.state.inventory[e.inv["south_box:storage:0"]].contents;
+crates/kernel/src/tests_revision_r4.rs:154:    let before = e.state.clone();
+crates/kernel/src/tests_revision_r4.rs:156:    assert_eq!(e.state, before);
+crates/kernel/src/tests_revision_r4.rs:168:    let path = e.input.path.clone();
+crates/kernel/src/tests_revision_r4.rs:169:    let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_revision_r4.rs:170:    raw["initial_state"]["nonwarehouse"]["value"] = json!(e.state);
+crates/kernel/src/tests_revision_r4.rs:175:            engine("研磨混做核验").input.raw
+crates/kernel/src/tests_revision_r4.rs:191:    let mut bad = e.state.clone();
+crates/kernel/src/tests_revision_r4.rs:193:    assert!(crate::cycle::cycle_key(&bad, &e.input).is_err());
+crates/kernel/src/tests_revision_r4.rs:194:    e.state = bad;
+crates/kernel/src/tests_revision_r4.rs:201:    let path = original.input.path;
+crates/kernel/src/tests_revision_r4.rs:202:    let mut raw = original.input.raw;
+crates/kernel/src/tests_revision_r4.rs:234:    let path = original.input.path;
+crates/kernel/src/tests_revision_r4.rs:235:    let raw = original.input.raw;
+crates/kernel/src/tests_revision_r4.rs:291:        let start = json!(e.state);
+crates/kernel/src/tests_revision_r4.rs:292:        e.max_sweeps = 1;
+crates/kernel/src/tests_revision_r2.rs:21:    let path = original.input.path.clone();
+crates/kernel/src/tests_revision_r2.rs:22:    let mut raw = original.input.raw.clone();
+crates/kernel/src/tests_revision_r2.rs:31:        let start = json!(e.state);
+crates/kernel/src/tests_revision_r2.rs:38:        validate_event_identity(&e.input, &start, &ticks).unwrap();
+crates/kernel/src/tests_revision_r2.rs:41:        assert!(validate_event_identity(&e.input, &start, &bad).is_err());
+crates/kernel/src/tests_revision_r2.rs:81:    let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_revision_r2.rs:83:    let mut control = load(raw, &e.input.path).unwrap();
+crates/kernel/src/tests_revision_r2.rs:86:    let mut resumed = control.input.raw.clone();
+crates/kernel/src/tests_revision_r2.rs:87:    resumed["initial_state"]["nonwarehouse"]["value"] = json!(control.state);
+crates/kernel/src/tests_revision_r2.rs:88:    let mut resumed = load(resumed, &control.input.path).unwrap();
+crates/kernel/src/tests_revision_r2.rs:129:        let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_revision_r2.rs:135:        let stop = load(raw, &e.input.path).unwrap_err();
+crates/kernel/src/tests_revision_r2.rs:157:        let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_revision_r2.rs:159:        let stop = load(raw, &e.input.path).unwrap_err();
+crates/kernel/src/tests_revision_r2.rs:169:        let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_revision_r2.rs:178:        let stop = load(raw, &e.input.path).unwrap_err();
+crates/kernel/src/tests_revision_r2.rs:182:    load(e.input.raw.clone(), &e.input.path)
+crates/kernel/src/tests_revision_r2.rs:193:    let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_revision_r2.rs:194:    raw["initial_state"]["nonwarehouse"]["value"] = json!(e.state);
+crates/kernel/src/tests_revision_r2.rs:207:        assert!(load(bad, &e.input.path).is_err(), "{id}");
+crates/kernel/src/tests_revision_r2.rs:209:    let mut control = load(raw.clone(), &e.input.path).unwrap();
+crates/kernel/src/tests_revision_r2.rs:210:    let ids = seed_executed(&control.input, &json!(control.state)).unwrap();
+crates/kernel/src/tests_revision_r2.rs:225:    let mut restored = load(raw.clone(), &e.input.path).unwrap();
+crates/kernel/src/tests_revision_r2.rs:233:    assert!(load(raw, &e.input.path).is_err());
+crates/kernel/src/tests_revision_r2.rs:242:    let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_revision_r2.rs:243:    raw["initial_state"]["nonwarehouse"]["value"] = json!(e.state);
+crates/kernel/src/tests_revision_r2.rs:244:    load(raw.clone(), &e.input.path).unwrap();
+crates/kernel/src/tests_revision_r2.rs:250:    assert!(load(raw, &e.input.path).is_err());
+crates/kernel/src/tests_revision_r2.rs:260:            let input = e.input.clone();
+crates/kernel/src/tests_revision_r3.rs:9:    let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_revision_r3.rs:10:    raw["initial_state"]["nonwarehouse"]["value"] = json!(e.state);
+crates/kernel/src/tests_revision_r3.rs:11:    (raw, e.input.path)
+crates/kernel/src/tests_revision_r3.rs:63:    let initial = engine("桥接器双通路").input.raw;
+crates/kernel/src/tests_revision_r3.rs:132:            let start = json!(e.state);
+crates/kernel/src/tests_revision_r3.rs:157:                (e.input.raw, e.input.path)
+crates/kernel/src/tests_revision_r3.rs:185:        let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_revision_r3.rs:187:        reject_both(raw, &e.input.path);
+crates/kernel/src/tests_revision_r3.rs:196:            let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_revision_r3.rs:198:            reject_both(raw, &e.input.path);
+crates/kernel/src/tests_revision_r3.rs:202:        let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_revision_r3.rs:212:        reject_both(raw, &e.input.path);
+crates/kernel/src/tests_revision_r3.rs:221:    let mut result = crate::cycle::run_cycle(e.input.clone(), &cfg, &cp, 50, 100000).unwrap();
+crates/kernel/src/tests_revision_r3.rs:235:        crate::output::verify_record_events(&record, &engine("生产循环环带").input).unwrap_err();
+crates/kernel/src/tests_revision_r3.rs:249:    let coverage = coverage(&config(), &rows, &e.input);
+crates/kernel/src/tests_revision.rs:7:    Input::parse(raw, &e.input.path, &config(), false)
+crates/kernel/src/tests_revision.rs:34:        let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_revision.rs:40:    let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_revision.rs:60:        let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_revision.rs:67:    let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_revision.rs:84:        let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_revision.rs:97:        let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_revision.rs:120:    let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_revision.rs:134:    e.state.warehouse.slots[0].quantity = Quantity::calc(1);
+crates/kernel/src/tests_revision.rs:138:    assert_eq!(e.state.warehouse.slots[0].quantity.value, "1");
+crates/kernel/src/tests_revision.rs:141:        .state
+crates/kernel/src/tests_revision.rs:157:    let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_revision.rs:207:        let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_revision.rs:235:    let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_revision.rs:236:    raw["initial_state"]["nonwarehouse"]["value"] = json!(e.state);
+crates/kernel/src/tests_revision.rs:268:    let start = json!(e.state);
+crates/kernel/src/tests_revision.rs:270:    validate_event_identity(&e.input, &start, &ticks).unwrap();
+crates/kernel/src/tests_revision.rs:297:            validate_event_identity(&e.input, &start, &bad).is_err(),
+crates/kernel/src/tests_revision.rs:306:    let mut raw = e.input.raw.clone();
+crates/kernel/src/tests_revision.rs:318:    let rows = coverage(&config(), &ticks, &e.input);
+crates/kernel/src/tests_revision.rs:326:    let rows = coverage(&config(), &ticks, &e.input);
+crates/kernel/src/tests_revision.rs:340:    let p = &mut blocked.state.progress[index];
+crates/kernel/src/tests_revision.rs:348:    let rows = coverage(&config(), std::slice::from_ref(&tick), &blocked.input);
+crates/kernel/src/tests_revision.rs:382:    e.input
+crates/kernel/src/tests.rs:57:    let i = e.state.warehouse.slots.len();
+crates/kernel/src/tests.rs:58:    e.state.warehouse.slots.push(WarehouseSlot {
+crates/kernel/src/tests.rs:65:    e.state
+crates/kernel/src/tests.rs:77:    e.state.inventory[e.inv[slot]]
+crates/kernel/src/tests.rs:126:            &e.input,
+crates/kernel/src/tests.rs:138:        let mut raw = b.input.raw.clone();
+crates/kernel/src/tests.rs:143:            Engine::new(Input::parse(raw, &b.input.path, &config(), false).unwrap()).unwrap();
+crates/kernel/src/tests.rs:160:    assert_eq!(e.input.catalog.kinds.len(), 18);
+crates/kernel/src/tests.rs:161:    assert_eq!(e.input.catalog.recipes.len(), 18);
+crates/kernel/src/tests.rs:162:    assert_eq!(e.input.geometry.channels.len(), 11);
+crates/kernel/src/tests.rs:163:    assert_eq!(e.input.geometry.buffers.len(), 8);
+crates/kernel/src/tests.rs:165:        e.input.catalog.sha256,
+crates/kernel/src/tests.rs:176:    limited.max_sweeps = 1;
+crates/kernel/src/tests.rs:193:        e.state
+crates/kernel/src/tests.rs:200:        e.state.warehouse.slots[e.warehouse["spare_b"]]
+crates/kernel/src/tests.rs:210:        e.state.warehouse.slots[e.warehouse["spare_b"]]
+crates/kernel/src/tests.rs:223:    e.input
+crates/kernel/src/tests.rs:226:    e.input
+crates/kernel/src/tests.rs:232:    let before = json!(e.state);
+crates/kernel/src/tests.rs:235:    assert_eq!(json!(e.state), before);
+crates/kernel/src/tests.rs:249:        e.state.warehouse.slots[e.warehouse["first"]]
+crates/kernel/src/tests.rs:261:    e.input
+crates/kernel/src/tests.rs:264:    e.state.warehouse.slots[e.warehouse["warehouse_0"]].quantity = Quantity::calc(79999);
+crates/kernel/src/tests.rs:272:        e.state.warehouse.slots[e.warehouse["assigned"]]
+crates/kernel/src/tests.rs:283:    e.state
+crates/kernel/src/tests.rs:294:    e.state
+crates/kernel/src/tests.rs:300:    e.state.warehouse.slots[i].empty_identity = Decision::specified(json!("源矿"), "冲突负例");
+crates/kernel/src/tests.rs:301:    e.state
+crates/kernel/src/tests.rs:312:    e.input
+crates/kernel/src/tests.rs:316:    let warehouse = e.state.warehouse.clone();
+crates/kernel/src/tests.rs:322:    assert_eq!(e.state.warehouse, warehouse);
+crates/kernel/src/tests.rs:325:        e.state.progress[pi].cooldowns[0]
+crates/kernel/src/tests.rs:331:    e.state.inventory[e.inv["south_box:storage:0"]]
+crates/kernel/src/tests.rs:334:    e.state.progress[pi].cooldowns[0].remaining = Time::at(0);
+crates/kernel/src/tests.rs:340:        e.state.progress[pi].cooldowns[0]
+crates/kernel/src/tests.rs:351:    e.input
+crates/kernel/src/tests.rs:405:        e.state.inventory[e.inv["grinder_a:output:0"]].contents[0].item,
+crates/kernel/src/tests.rs:413:    e.input
+crates/kernel/src/tests.rs:418:    assert_eq!(e.state.progress[e.progress["crusher"]].phase, "intake");
+crates/kernel/src/tests.rs:421:    assert_eq!(e.state.progress[e.progress["crusher"]].phase, "intake");
+crates/kernel/src/tests.rs:431:    e.state.progress[i].phase = "completed".into();
+crates/kernel/src/tests.rs:432:    e.state.progress[i].recipe = Some("粉碎-源矿".into());
+crates/kernel/src/tests.rs:433:    e.state.progress[i].locked_recipe = Some("粉碎-源矿".into());
+crates/kernel/src/tests.rs:434:    e.state.progress[i].candidate_recipes = vec!["粉碎-源矿".into()];
+crates/kernel/src/tests.rs:435:    e.state.progress[i].remaining = Some(Time::at(0));
+crates/kernel/src/tests.rs:439:    assert_eq!(e.state.progress[i].phase, "completed");
+crates/kernel/src/tests.rs:445:    e.input.gate_settings.get_mut("probe_gate_a").unwrap()["item"] = json!("蓝铁矿");
+crates/kernel/src/tests.rs:452:    let g = &e.state.logistics.gate_counters[e.gate_index["probe_gate_a"]];
+crates/kernel/src/tests.rs:456:    e.input.gate_settings.get_mut("probe_gate_a").unwrap()["item"] = json!("源矿");
+crates/kernel/src/tests.rs:459:    let g = &e.state.logistics.gate_counters[e.gate_index["probe_gate_a"]];
+crates/kernel/src/tests.rs:466:    e.input.gate_settings.get_mut("probe_gate_a").unwrap()["total_limit"] = q(1);
+crates/kernel/src/tests.rs:470:    let g = &e.state.logistics.gate_counters[e.gate_index["probe_gate_a"]];
+crates/kernel/src/tests.rs:480:    let members = e.memory.sides[i].levels[0].members.clone();
+crates/kernel/src/tests.rs:482:    e.memory.sides[i].levels[0].next_channel = members[1].clone();
+crates/kernel/src/tests.rs:485:    assert_eq!(e.memory.sides[i].levels[0].next_channel, members[2]);
+crates/kernel/src/tests.rs:488:    assert_eq!(e.memory.sides[i].levels[0].next_channel, members[2]);
+crates/kernel/src/tests.rs:500:        s.input
+crates/kernel/src/tests.rs:504:            .filter(|(_, c)| s.input.geometry.ports[&c.source_port].unit == "splitter")
+crates/kernel/src/tests.rs:508:    let old = s.input.branches.remove(&key).unwrap();
+crates/kernel/src/tests.rs:510:    s.input.branches.insert(key, old);
+crates/kernel/src/tests.rs:541:                let recipe = &e.input.catalog.recipes[rid];
+crates/kernel/src/tests.rs:568:        e.input.raw["timeline"]["events"]
+crates/kernel/src/tests.rs:573:        let before = json!(e.state);
+crates/kernel/src/tests.rs:577:        assert_eq!(json!(e.state), before);
+crates/kernel/src/tests.rs:610:        assert_eq!(a.state, b.state);
+crates/kernel/src/tests.rs:620:    let mut raw = e.input.raw.clone();
+crates/kernel/src/tests.rs:621:    raw["initial_state"]["nonwarehouse"]["value"] = json!(e.state);
+crates/kernel/src/tests.rs:623:        Engine::new(Input::parse(raw, &e.input.path, &config(), false).unwrap()).unwrap();
+crates/kernel/src/tests.rs:658:    let mut premature = e.input.raw.clone();
+crates/kernel/src/tests.rs:665:        Engine::new(Input::parse(premature, &e.input.path, &config(), false).unwrap())
+crates/kernel/src/tests.rs:670:    let mut alias = e.input.raw.clone();
+crates/kernel/src/tests.rs:676:        Input::parse(alias, &e.input.path, &config(), false)
+crates/kernel/src/tests.rs:683:    let mut raw = e.input.raw.clone();
+crates/kernel/src/tests.rs:686:    let err = Engine::new(Input::parse(raw, &e.input.path, &config(), false).unwrap()).unwrap_err();
+crates/kernel/src/tests.rs:688:    let mut raw = e.input.raw.clone();
+crates/kernel/src/tests.rs:695:        Input::parse(raw, &e.input.path, &config(), false)
+crates/kernel/src/tests.rs:700:    let mut raw = e.input.raw.clone();
+crates/kernel/src/tests.rs:705:    assert!(Input::parse(raw, &e.input.path, &config(), false).is_err());
+crates/kernel/src/tests.rs:741:    verify_record(&delta, engine("混做粉碎机两下游").input, &config(), &path).unwrap();
+crates/kernel/src/tests.rs:747:        engine("混做粉碎机两下游").input,
+crates/kernel/src/tests.rs:757:    let mut raw = e.input.raw.clone();
+crates/kernel/src/tests.rs:766:    let mut e = Engine::new(Input::parse(raw, &e.input.path, &config(), false).unwrap()).unwrap();
+crates/kernel/src/tests.rs:773:        e.state.warehouse.slots[e.warehouse["warehouse_0"]]
+crates/kernel/src/tests.rs:785:        let mut raw = e.input.raw.clone();
+crates/kernel/src/tests.rs:803:        let result = Input::parse(raw, &e.input.path, &config(), false).and_then(Engine::new);
+crates/kernel/src/tests.rs:826:    e.state.logistics.poll_memory.value = json!(e.memory);
+crates/kernel/src/tests.rs:827:    let mut raw = e.input.raw.clone();
+crates/kernel/src/tests.rs:828:    raw["initial_state"]["nonwarehouse"]["value"] = json!(e.state);
+crates/kernel/src/tests.rs:829:    Engine::new(Input::parse(raw, &e.input.path, &config(), false).unwrap()).unwrap()
+crates/kernel/src/tests.rs:846:        e.state.inventory[e.inv["north_box:storage:0"]].contents[0].item,
+crates/kernel/src/tests.rs:850:        e.state.inventory[e.inv["east_box:storage:0"]].contents[0].item,
+crates/kernel/src/tests.rs:890:    assert!(e.input.connection_times[direct] < e.input.connection_times[other]);
+crates/kernel/src/tests.rs:891:    let s = &e.memory.sides[e.side_index[&("source".into(), "output".into())]];
+crates/kernel/src/tests.rs:920:    let mut raw = normal.input.raw.clone();
+crates/kernel/src/tests.rs:926:        Engine::new(Input::parse(raw, &normal.input.path, &config(), false).unwrap()).unwrap();
+crates/kernel/src/tests.rs:948:        normal.input.connection_times,
+crates/kernel/src/tests.rs:949:        reversed.input.connection_times
+crates/kernel/src/tests.rs:957:    let members = e.memory.sides[i].levels[0].members.clone();
+crates/kernel/src/tests.rs:962:    assert!(e.memory.sides[i].levels.is_empty());
+crates/kernel/src/tests.rs:967:    assert_eq!(e.memory.sides[i].levels[0].next_channel, members[1]);
+crates/kernel/src/tests.rs:974:    e.state.progress[i].cooldowns[0].remaining = Time::at(4);
+crates/kernel/src/tests.rs:978:        e.state.progress[i].cooldowns[0]
+crates/kernel/src/tests.rs:984:    e.input
+crates/kernel/src/tests.rs:989:        e.state.progress[i].cooldowns[0]
+crates/kernel/src/tests.rs:1000:    let mut raw = original.input.raw.clone();
+crates/kernel/src/tests.rs:1012:        .input
+crates/kernel/src/tests.rs:1020:        Engine::new(Input::parse(raw, &original.input.path, &config(), false).unwrap()).unwrap();
+crates/kernel/src/tests.rs:1021:    let recipe = e.input.catalog.recipes["封装-电池"].clone();
+crates/kernel/src/tests.rs:1044:        e.state.inventory[e.inv["grinder_a:output:0"]].contents[0].item,
+crates/kernel/src/tests.rs:1056:    let rows = coverage(&config(), &ticks, &e.input);
+crates/kernel/src/tests.rs:1097:    e.max_sweeps = 0;
+crates/kernel/src/tests.rs:1099:    let state = e.state.clone();
+crates/kernel/src/tests.rs:1100:    e.max_sweeps = 1000;
+crates/kernel/src/tests.rs:1102:    assert_eq!(e.state, state);

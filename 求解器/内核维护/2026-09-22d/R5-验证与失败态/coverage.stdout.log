@@ -1,0 +1,167 @@
+{
+  "混做粉碎机两下游": {
+    "ticks": 4,
+    "times": [
+      "0",
+      "1",
+      "2",
+      "3"
+    ],
+    "tick_fields": [
+      "warehouse_ledger",
+      "time",
+      "events",
+      "state",
+      "summary",
+      "closure"
+    ],
+    "operations": {
+      "move": 121,
+      "manufacture": 33,
+      "manufacture_complete": 2
+    },
+    "outcomes": {
+      "success": 15,
+      "failure": 85,
+      "no_request": 26,
+      "guard_false": 30
+    },
+    "details": {
+      "": 43,
+      "residence": 15,
+      "neither_authorized": 26,
+      "source_empty": 69,
+      "None": 2,
+      "dual_permission": 1
+    },
+    "non_judgment_events": [
+      {
+        "time": {
+          "kind": "rational",
+          "value": {
+            "value": "2",
+            "category": "候选"
+          }
+        },
+        "events": [
+          {
+            "event": "C|2|crusher",
+            "operation": "manufacture_complete",
+            "target": "crusher",
+            "outcome": "success",
+            "basis": [
+              "规则 L35",
+              "运行语义 §4.1",
+              "受限模型声明 time.manufacture_events"
+            ]
+          }
+        ]
+      },
+      {
+        "time": {
+          "kind": "rational",
+          "value": {
+            "value": "3",
+            "category": "候选"
+          }
+        },
+        "events": [
+          {
+            "event": "C|3|crusher",
+            "operation": "manufacture_complete",
+            "target": "crusher",
+            "outcome": "success",
+            "basis": [
+              "规则 L35",
+              "运行语义 §4.1",
+              "受限模型声明 time.manufacture_events"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "分流器三路轮询": {
+    "ticks": 12,
+    "times": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10",
+      "11"
+    ],
+    "tick_fields": [
+      "warehouse_ledger",
+      "time",
+      "events",
+      "state",
+      "summary",
+      "closure"
+    ],
+    "operations": {
+      "move": 572,
+      "transfer": 220,
+      "gate_window_expiry": 2
+    },
+    "outcomes": {
+      "success": 81,
+      "failure": 317,
+      "no_request": 176,
+      "guard_false": 220
+    },
+    "details": {
+      "": 79,
+      "residence": 171,
+      "neither_authorized": 176,
+      "source_empty": 32,
+      "function_disabled": 220,
+      "dual_permission": 10,
+      "target_capacity": 104,
+      "atomic_batch:probe_gate_a,probe_gate_b": 2
+    },
+    "non_judgment_events": [
+      {
+        "time": {
+          "kind": "rational",
+          "value": {
+            "value": "6",
+            "category": "候选"
+          }
+        },
+        "events": [
+          {
+            "event": "W|6|probe_gate_a",
+            "operation": "gate_window_expiry",
+            "target": "probe_gate_a",
+            "outcome": "success",
+            "detail": "atomic_batch:probe_gate_a,probe_gate_b",
+            "basis": [
+              "规则 L64",
+              "受限转移定义 §2.1、§3.4",
+              "gate.concurrent_expiry=atomic_batch"
+            ]
+          },
+          {
+            "event": "W|6|probe_gate_b",
+            "operation": "gate_window_expiry",
+            "target": "probe_gate_b",
+            "outcome": "success",
+            "detail": "atomic_batch:probe_gate_a,probe_gate_b",
+            "basis": [
+              "规则 L64",
+              "受限转移定义 §2.1、§3.4",
+              "gate.concurrent_expiry=atomic_batch"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

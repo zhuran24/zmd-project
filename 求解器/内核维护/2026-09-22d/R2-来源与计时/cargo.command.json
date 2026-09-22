@@ -1,0 +1,19 @@
+{
+  "argv": [
+    "cargo",
+    "-V"
+  ],
+  "shell_command": "cargo -V",
+  "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+  "returncode": 0,
+  "stdout_sha256": "8e780a864fc0861c081cafaf20a5ea82a3e481f99e2bf02e2734621ef3ef5e77",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "cpu_affinity": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ]
+}

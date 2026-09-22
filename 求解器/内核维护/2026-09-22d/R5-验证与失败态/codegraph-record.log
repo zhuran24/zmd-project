@@ -1,0 +1,248 @@
+**Exploration: verify_record_at**
+
+Found 5 symbols across 1 file.
+
+**Blast radius — what depends on these (update/verify before editing)**
+
+- `verify_record_at` (crates/kernel/src/output.rs:580) — 1 caller in `crates/kernel/src/output.rs`; tested via callers: `crates/kernel/tests/legacy_probes/r1_record/src/main.rs`, `crates/kernel/tests/legacy_probes/r2_engineering/src/main.rs` +1
+- `verify` (数据/复核/r4-L1-字段覆盖证据/snapshot/求解器/数据/工具/formal_catalog.py:107) — 2 callers in `数据/复核/r4-L1-字段覆盖证据/snapshot/求解器/数据/工具/convert_candidate_b.py`, `数据/复核/r4-L1-字段覆盖证据/snapshot/求解器/数据/工具/formal_catalog.py`; no tests found within 3 caller hops
+- `verify` (数据/复核/r4-L1-字段覆盖证据/testrepo/求解器/数据/工具/formal_catalog.py:107) — 2 callers in `数据/复核/r4-L1-字段覆盖证据/testrepo/求解器/数据/工具/convert_candidate_b.py`, `数据/复核/r4-L1-字段覆盖证据/testrepo/求解器/数据/工具/formal_catalog.py`; no tests found within 3 caller hops
+
+**Relationships**
+
+**calls:**
+- verify_record_at → canonical_record
+- verify_record_at → invalid
+- verify_record_at → verify_record_events
+- verify_record_at → set_cache_enabled
+- verify_record_at → production_domain
+- verify_record_at → run_record
+- verify_record_at → new_production
+- verify_record_at → new
+- verify_record → verify_record_at
+- canonical_record → canonical_fingerprints
+- ... and 159 more
+
+**references:**
+- verify_record_at → Input
+- verify_record_at → Config
+- verify_record_at → Result
+- canonical_record → Result
+- verify → no_duplicates
+- verify → REPO
+- source_snapshot → SOURCE_NAMES
+- source_snapshot → REPO
+- formal_projection → quantity
+- verify → REPO
+- ... and 41 more
+
+**Source Code**
+
+> The code below is the **verbatim, current on-disk source** of these files — re-read from disk on this call and line-numbered, byte-for-byte identical to what the Read tool returns. It is NOT a summary, outline, or stale cache. Treat each block as a Read you have already performed: do not Read a file shown here. (Files marked **"Already sent earlier in this conversation"** are not repeated: their source came back on an earlier codegraph_explore call in THIS conversation and the file has not changed since, so that copy is exact and current — scroll back for it rather than re-fetching or Reading.)
+
+**`crates/kernel/src/output.rs`** — calls(calls), invalid(calls), Result(references), Config(references), Input(references), run_record(function), references(references), verify_record_events(function), canonical_record(function), canonical_fingerprints(calls), +11 more
+
+> **Already sent earlier in this conversation:** `crates/kernel/src/output.rs` L391-441 (run_record) — unchanged on disk since, so that copy is still exact. Only the NEW lines are shown below; scroll back for the rest. Do NOT Read this file.
+
+```rust
+442	    let mut golden_match = false;
+443	    for (name, projection) in [
+444	        ("混做粉碎机两下游.json", "kernel_profile_v1参数赋值.json"),
+445	        ("分流器三路轮询.json", "分流器三路轮询-参数赋值.json"),
+446	    ] {
+447	        if engine.input.path.canonicalize().ok() == sample.join(name).canonicalize().ok() {
+448	            validate_projection(&sample.join(projection), &engine.input, config)?;
+449	            extra.push(("parameter_projection".into(), sample.join(projection)));
+450	        }
+451	    }
+452	    if engine.input.path.canonicalize().ok()
+453	        == sample.join("混做粉碎机两下游.json").canonicalize().ok()
+454	        && rows.len() == 4
+455	        && stop.is_none()
+456	    {
+457	        let p = sample.join("混做粉碎机两下游-黄金轨迹.json");
+458	        let golden = read_json(&p)?;
+459	        let summaries: Vec<_> = rows.iter().map(|t| t["summary"].clone()).collect();
+460	        if json!(summaries) != golden["ticks"] {
+461	            return Err(Stop::invalid("golden.ticks", "黄金轨迹逐字段不同"));
+462	        }
+463	        golden_match = true;
+464	        extra.push(("golden".into(), p));
+465	        extra.push(("golden".into(), sample.join("混做粉碎机两下游-黄金轨迹.md")));
+466	    }
+467	    let mut uncovered = coverage_with_manufacturing(config, &rows, &engine.input, &manufacturing);
+468	    for row in &mut uncovered {
+469	        if ["warehouse.acceptance", "warehouse.acceptance_quantifier"]
+470	            .contains(&row["axis"].as_str().unwrap_or(""))
+471	            && !acceptance.is_empty()
+472	        {
+473	            row["coverage_status"] = json!("exercised");
+474	            row["evidence"] = json!(acceptance);
+475	        }
+476	    }
+477	    if let Some(stop) = &stop {
+478	        for row in &mut uncovered {
+479	            if row["axis"] == stop.axis {
+480	                row["coverage_status"] = json!(if stop.axis == "warehouse.periodic_lift" {
+481	                    "proof_pending"
+482	                } else {
+483	                    "input_checked"
+484	                });
+485	                row["evidence"] = json!([stop.to_string()]);
+486	            }
+487	        }
+488	    }
+489	    let completed = rows
+490	        .iter()
+491	        .flat_map(|t| t["events"].as_array().into_iter().flatten())
+492	        .filter(|e| e["operation"] == "manufacture_complete")
+493	        .count() as i64;
+494	    let end = rows
+495	        .last()
+496	        .map(|t| t["time"].clone())
+497	        .unwrap_or(start["environment"]["time"].clone());
+498	    let from = rows
+499	        .first()
+500	        .map(|t| t["time"].clone())
+501	        .unwrap_or(start["environment"]["time"].clone());
+502	    let mut trace = json!({"start_state":start,"ticks":rows,"end_time":end,"format":format});
+503	    if format == "checkpoint_delta" {
+504	        trace["checkpoint_interval"] = json!(interval);
+505	        trace["delta_encoding"] = json!("object_replace_v1");
+506	    }
+507	    let status = stop
+508	        .as_ref()
+509	        .map(|s| s.status.as_str())
+510	        .unwrap_or("completed");
+511	    let mut open = vec![
+512	        "有限轨迹不证明全称参数、初态可达性、全部可达循环或目标。".into(),
+513	        "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。".into(),
+514	    ];
+515	    if let Some(e) = &stop {
+516	        open.push(e.to_string());
+517	    }
+518	    let sources = fingerprints(&engine.input,config_path,&extra)?;
+519	    let scope = evidence_scope("diagnostic", "diagnostic", &sources);
+520	    Ok(
+521	        json!({"schema":"kernel-output-v4","evidence_scope":scope,"execution_mode":if engine.production_abstraction {"production_abstraction"}else{"finite_concrete"},"port_meeting":engine.input.parameters.value(Axis::ConnectionPortMeeting)?,"run_id":format!("kernel:{}:{}:{}",engine.input.path.file_stem().and_then(|s|s.to_str()).unwrap_or("input"),from["value"]["value"].as_str().unwrap_or("?"),ticks),"profile_id":config.profile_id,"producer":{"kind":"kernel","path":root.join("crates/kernel/src/lib.rs").canonicalize().map_err(|e|Stop::invalid("producer",e.to_string()))?,"claim":"Rust 受限内核的有限条件轨迹；不作全称或完整目标认证"},"status":status,"fingerprints":sources,"parameter_assignment":engine.input.raw["parameters"],"input_history":{"timeline":engine.input.raw["timeline"],"construction":engine.input.raw["construction"],"debug_operations":engine.input.raw["debug_operations"],"environment":engine.input.raw["environment"],"reachability":engine.input.raw["initial_state"]["reachability"]},"uncovered_axes":uncovered,"trace":trace,"validation_scope":json!({"kind":"finite_trace","from":from,"through":end,"golden_match":golden_match,"initial_history":"conditional_witness","universal_parameters":false,"all_reachable_cycles":false,"target_certified":false,"manufacturing_cycles_completed":q(completed)}),"open_items":open}),
+522	    )
+523	}
+524	/// 内核输出§1：装载失败不制造非法的“完整参数/轨迹”对象。
+525	pub fn stopped_record(stop: &Stop) -> Value {
+526	    json!({"schema":"kernel-output-v4","evidence_scope":evidence_scope("diagnostic","diagnostic", &[]),"execution_mode":"finite_concrete","port_meeting":"shared_edge_opposite","run_id":"kernel:load-stop","profile_id":"kernel_profile_v1","producer":{"kind":"kernel","path":concat!(env!("CARGO_MANIFEST_DIR"),"/src/lib.rs"),"claim":"装载停止，未形成游戏后继"},"status":stop.status,"fingerprints":[],"parameter_assignment":null,"input_history":null,"uncovered_axes":[],"trace":null,"validation_scope":null,"open_items":[stop.to_string()]})
+527	}
+528	/// 输出§2/§5.3：独立检查完整前缀的注册、单次消费和时序，普通与周期验收共用。
+529	pub(crate) fn verify_record_events(record: &Value, input: &Input) -> Result<()> {
+530	    if record["trace"].is_null() && record["status"] != "completed" {
+531	        return Ok(());
+532	    }
+533	    let decoded = decode_trace(&record["trace"])?;
+534	    let mut previous = decoded["start_state"].clone();
+535	    for tick in decoded["ticks"]
+536	        .as_array()
+537	        .ok_or_else(|| Stop::invalid("trace.ticks", "须为数组"))?
+538	    {
+539	        crate::ledger::verify_tick(&previous, tick)?;
+540	        previous = tick["state"].clone();
+541	    }
+542	    crate::event_identity::validate_event_identity(
+543	        input,
+544	        &decoded["start_state"],
+545	        decoded["ticks"]
+546	            .as_array()
+547	            .ok_or_else(|| Stop::invalid("trace.ticks", "须为数组"))?,
+548	    )
+549	}
+550	/// 内核输出§1：只规范属于记录的来源路径，输入内的参数路径仍保持原输入表示。
+551	pub fn canonical_record(record: &Value, base: &Path) -> Result<Value> {
+552	    let mut canonical = record.clone();
+553	    crate::cycle_io::canonical_fingerprints(&mut canonical, base)?;
+554	    crate::cycle_io::canonical_proof_sources(&mut canonical, base)?;
+555	    canonical["producer"]["path"] = json!(crate::cycle_io::resolved(
+556	        base,
+557	        &record["producer"]["path"],
+558	        "producer.path"
+559	    )?);
+560	    Ok(canonical)
+561	}
+562	/// 内核输出§1：记录输入来源相对记录所在目录，禁止依赖调用者cwd。
+563	pub fn record_input_path(record: &Value, base: &Path) -> Result<PathBuf> {
+564	    let source = record["fingerprints"]
+565	        .as_array()
+566	        .and_then(|rows| rows.iter().find(|row| row["role"] == "input"))
+567	        .ok_or_else(|| Stop::invalid("fingerprints", "缺输入来源"))?;
+568	    crate::cycle_io::resolved(base, &source["path"], "fingerprints.input.path")
+569	}
+570	/// 内核输出§3：内存记录兼容入口；相对路径基目录为当前目录。
+571	pub fn verify_record(
+572	    record: &Value,
+573	    input: Input,
+574	    config: &Config,
+575	    config_path: &Path,
+576	) -> Result<()> {
+577	    verify_record_at(record, input, config, config_path, Path::new("."))
+578	}
+579	/// 内核输出§1/§3：核原始来源字节后规范路径，再严格比较重算的完整记录。
+580	pub fn verify_record_at(
+581	    record: &Value,
+582	    input: Input,
+583	    config: &Config,
+584	    config_path: &Path,
+585	    base: &Path,
+586	) -> Result<()> {
+587	    let record = canonical_record(record, base)?;
+588	    if record["status"] != "completed" || record["producer"]["kind"] != "kernel" {
+589	        return Err(Stop::invalid("record", "验收入口只接已完成内核记录"));
+590	    }
+591	    let trace = &record["trace"];
+592	    verify_record_events(&record, &input)?;
+593	    let ticks = trace["ticks"]
+594	        .as_array()
+595	        .ok_or_else(|| Stop::invalid("trace.ticks", "须为数组"))?
+596	        .len();
+597	    let format = trace["format"]
+598	        .as_str()
+599	        .ok_or_else(|| Stop::invalid("trace.format", "须为字符串"))?;
+600	    let k = if format == "checkpoint_delta" {
+601	        trace["checkpoint_interval"]
+602	            .as_u64()
+603	            .ok_or_else(|| Stop::invalid("checkpoint_interval", "须为正整数"))? as usize
+604	    } else {
+605	        1
+606	    };
+607	    let mut engine = if record["execution_mode"] == "production_abstraction" {
+608	        Engine::new_production(input)?
+609	    } else {
+610	        Engine::new(input)?
+611	    };
+612	    engine.set_cache_enabled(true);
+613	    if record["execution_mode"] == "production_abstraction" {
+614	        engine.production_domain()?;
+615	    }
+616	    let recomputed = run_record(engine, config, config_path, ticks, format, k)?;
+617	    if record != recomputed {
+618	        return Err(Stop::invalid("record", "交付记录与完整重算逐字段不同"));
+619	    }
+620	    Ok(())
+621	}
+622	
+```
+
+**Not shown above — explore these names for their source**
+
+- crates/kernel/src/input.rs: Input:9
+- crates/kernel/src/config.rs: Config:338
+- 数据/复核/r5-字段覆盖/isolated/求解器/数据/工具/formal_catalog.py: verify:172, source_snapshot:21, compare:144, formal_projection:44, indexed:162, recipe_projection:110, +7 more
+- 数据/复核/r4-L1-字段覆盖证据/snapshot/求解器/数据/工具/formal_catalog.py: verify:107, source_snapshot:18, formal_projection:41, quantity:14, REPO:10, SOURCE_NAMES:11, +3 more
+- 数据/复核/r4-L1-字段覆盖证据/testrepo/求解器/数据/工具/formal_catalog.py: verify:107, source_snapshot:18, formal_projection:41, quantity:14, REPO:10, SOURCE_NAMES:11, +3 more
+- 数据/复核/r4-校验器证据/隔离副本/求解器/数据/工具/formal_catalog.py: verify:107, source_snapshot:18, formal_projection:41, quantity:14, REPO:10, SOURCE_NAMES:11, +3 more
+- 数据/复核/否证-r4-1-证据/isolated/求解器/数据/工具/formal_catalog.py: verify:107, source_snapshot:18, formal_projection:41, quantity:14, REPO:10, SOURCE_NAMES:11, +3 more
+- 会议成果/会议3/seat-codex-1/verify_cut_certificate.py: verify:29, q:19, norm:25, no_duplicates:10
+- 数据/复核/r5-字段覆盖/isolated/求解器/数据/工具/formal_units.py: unit_projection:5, numbers:14, edge:20, opposed:24, slot:27, unit:31
+- 数据/复核/r5-字段覆盖/isolated/求解器/数据/工具/test_formal_catalog.py: test_any_source_byte_drift_is_rejected:39, test_threshold_target_and_unit_domains_cannot_drift:55, test_live_catalog_passes:66, test_every_unit_and_recipe_leaf_is_guarded:69, test_collections_and_unknown_fields_are_guarded:96, test_formal_catalog.py:1
+- ... and 36 more files
+
+---
+> **Complete source for 1 files is included above — do NOT re-read them.** If your question also needs files/symbols listed under "Not shown above" (or any area this call didn't cover), make ANOTHER codegraph_explore targeting those names — it returns the same source with line numbers and is cheaper and more complete than reading. Reserve Read for a single specific line range explore can't surface.
+
+> **Explore budget: 2 calls for this project (656 files indexed).** Each call covers ~6 files; if your question spans more, spend your remaining calls on the uncovered area BEFORE falling back to Read — another explore is cheaper and more complete than reading those files. Synthesize once you've used 2.

@@ -1,0 +1,360 @@
+crates/kernel/src/output.rs
+148: pub fn fingerprints(
+149:     input: &Input,
+150:     config_path: &Path,
+151:     extra: &[(String, PathBuf)],
+152: ) -> Result<Vec<Value>> {
+153:     let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+154:         .join("../..")
+155:         .canonicalize()
+156:         .map_err(|e| Stop::invalid("root", e.to_string()))?;
+157:     let mut paths = vec![
+158:         ("input".into(), input.path.clone()),
+159:         ("profile".into(), config_path.to_path_buf()),
+160:     ];
+161:     paths.extend(input.source_paths.clone());
+162:     paths.push(("profile".into(), root.join("规格/受限模型声明.md")));
+163:     for p in [
+164:         "受限转移定义.md",
+165:         "运行语义.md",
+166:         "内核输入.md",
+167:         "内核输出.md",
+168:     ] {
+169:         paths.push(("semantics".into(), root.join("规格").join(p)));
+170:     }
+171:     paths.push(("schema".into(), root.join("规格/内核输出.schema.json")));
+172:     paths.push(("semantics".into(), root.join("crates/kernel/周期键读取审计.md")));
+173:     for p in [
+174:         "value.rs",
+175:         "config.rs",
+176:         "model.rs",
+177:         "catalog.rs",
+178:         "input.rs",
+179:         "interfaces.rs",
+180:         "engine.rs",
+181:         "event_identity.rs",
+182:         "warehouse.rs",
+183:         "polling.rs",
+184:         "transition.rs",
+185:         "output.rs",
+186:         "ledger.rs",
+187:         "cycle.rs",
+188:         "cycle_io.rs",
+189:         "digest.rs",
+190:         "seed.rs",
+191:         "cache.rs",
+192:         "lib.rs",
+193:         "main.rs",
+194:     ] {
+195:         paths.push(("checker".into(), root.join("crates/kernel/src").join(p)));
+196:     }
+197:     for p in ["Cargo.toml", "Cargo.lock", "crates/kernel/Cargo.toml"] {
+198:         paths.push(("checker".into(), root.join(p)));
+199:     }
+200:     paths.extend(extra.iter().cloned());
+201:     let mut result = Vec::new();
+202:     let mut seen = BTreeSet::new();
+203:     for (role, p) in paths {
+204:         let path = p
+205:             .canonicalize()
+206:             .map_err(|e| Stop::invalid(p.display().to_string(), e.to_string()))?;
+207:         if !seen.insert((role.clone(), path.clone())) {
+208:             continue;
+209:         }
+210:         result.push(json!({"role":role,"path":path,"sha256":sha256(&path)?}));
+211:     }
+212:     Ok(result)
+214: /// 输出§5.1：单个输入及固定参数的工程证据，证明义务随证书另列。
+215: pub(crate) fn evidence_scope(kind: &str, direction: &str, sources: &[Value]) -> Value {
+216:     json!({
+217:         "kind":kind,
+218:         "support_domain":["固定布局、设定、global/event-order-v1及整数时钟的受限工程执行",
+219:             "ordered_sweeps与retain_survivors为明示工程组织；一般失败环真实唤醒对应仍待证明"],
+220:         "fixed_parameter_lifecycle":"judgment.order_scope=fixed_run_order；judgment.order整场固定，回放和端点逐值核对；本段无离线或玩家动作",
+221:         "context_bindings":sources.iter().map(|r| json!({"path":r["path"],"sha256":r["sha256"]})).collect::<Vec<_>>(),
+222:         "initial_state_coverage":{"description":"一个显式种子及其实际已重放前缀；调试程序全部可能后态另核","exact_reachable_set_enumerated":false},
+223:         "direction":direction,"review_status":"author_checked","proof_sources":[]
+224:     })
+518:     let sources = fingerprints(&engine.input,config_path,&extra)?;
+519:     let scope = evidence_scope("diagnostic", "diagnostic", &sources);
+520:     Ok(
+521:         json!({"schema":"kernel-output-v4","evidence_scope":scope,"execution_mode":if engine.production_abstraction {"production_abstraction"}else{"finite_concrete"},"port_meeting":engine.input.parameters.value(Axis::ConnectionPortMeeting)?,"run_id":format!("kernel:{}:{}:{}",engine.input.path.file_stem().and_then(|s|s.to_str()).unwrap_or("input"),from["value"]["value"].as_str().unwrap_or("?"),ticks),"profile_id":config.profile_id,"producer":{"kind":"kernel","path":root.join("crates/kernel/src/lib.rs").canonicalize().map_err(|e|Stop::invalid("producer",e.to_string()))?,"claim":"Rust 受限内核的有限条件轨迹；不作全称或完整目标认证"},"status":status,"fingerprints":sources,"parameter_assignment":engine.input.raw["parameters"],"input_history":{"timeline":engine.input.raw["timeline"],"construction":engine.input.raw["construction"],"debug_operations":engine.input.raw["debug_operations"],"environment":engine.input.raw["environment"],"reachability":engine.input.raw["initial_state"]["reachability"]},"uncovered_axes":uncovered,"trace":trace,"validation_scope":json!({"kind":"finite_trace","from":from,"through":end,"golden_match":golden_match,"initial_history":"conditional_witness","universal_parameters":false,"all_reachable_cycles":false,"target_certified":false,"manufacturing_cycles_completed":q(completed)}),"open_items":open}),
+522:     )
+523: }
+524: /// 内核输出§1：装载失败不制造非法的“完整参数/轨迹”对象。
+525: pub fn stopped_record(stop: &Stop) -> Value {
+526:     json!({"schema":"kernel-output-v4","evidence_scope":evidence_scope("diagnostic","diagnostic", &[]),"execution_mode":"finite_concrete","port_meeting":"shared_edge_opposite","run_id":"kernel:load-stop","profile_id":"kernel_profile_v1","producer":{"kind":"kernel","path":concat!(env!("CARGO_MANIFEST_DIR"),"/src/lib.rs"),"claim":"装载停止，未形成游戏后继"},"status":stop.status,"fingerprints":[],"parameter_assignment":null,"input_history":null,"uncovered_axes":[],"trace":null,"validation_scope":null,"open_items":[stop.to_string()]})
+580: pub fn verify_record_at(
+581:     record: &Value,
+582:     input: Input,
+583:     config: &Config,
+584:     config_path: &Path,
+585:     base: &Path,
+586: ) -> Result<()> {
+587:     let record = canonical_record(record, base)?;
+588:     if record["status"] != "completed" || record["producer"]["kind"] != "kernel" {
+589:         return Err(Stop::invalid("record", "验收入口只接已完成内核记录"));
+590:     }
+591:     let trace = &record["trace"];
+592:     verify_record_events(&record, &input)?;
+593:     let ticks = trace["ticks"]
+594:         .as_array()
+595:         .ok_or_else(|| Stop::invalid("trace.ticks", "须为数组"))?
+596:         .len();
+597:     let format = trace["format"]
+598:         .as_str()
+599:         .ok_or_else(|| Stop::invalid("trace.format", "须为字符串"))?;
+600:     let k = if format == "checkpoint_delta" {
+601:         trace["checkpoint_interval"]
+602:             .as_u64()
+603:             .ok_or_else(|| Stop::invalid("checkpoint_interval", "须为正整数"))? as usize
+604:     } else {
+605:         1
+606:     };
+607:     let mut engine = if record["execution_mode"] == "production_abstraction" {
+608:         Engine::new_production(input)?
+609:     } else {
+610:         Engine::new(input)?
+611:     };
+612:     engine.set_cache_enabled(true);
+613:     if record["execution_mode"] == "production_abstraction" {
+614:         engine.production_domain()?;
+615:     }
+616:     let recomputed = run_record(engine, config, config_path, ticks, format, k)?;
+617:     if record != recomputed {
+618:         return Err(Stop::invalid("record", "交付记录与完整重算逐字段不同"));
+619:     }
+620:     Ok(())
+
+crates/kernel/src/catalog.rs
+47: /// 内核输出§1：只读原始字节指纹，子进程参数不经 shell。
+48: pub fn sha256(path: &Path) -> Result<String> {
+49:     let out = Command::new("sha256sum")
+50:         .arg("--")
+51:         .arg(path)
+52:         .output()
+53:         .map_err(|e| Stop::invalid(path.display().to_string(), e.to_string()))?;
+54:     if !out.status.success() {
+55:         return Err(Stop::invalid(
+56:             path.display().to_string(),
+57:             "sha256sum 读取失败",
+58:         ));
+59:     }
+60:     let s = String::from_utf8(out.stdout).map_err(|e| Stop::invalid("sha256sum", e.to_string()))?;
+61:     let hash = s
+62:         .split_whitespace()
+63:         .next()
+64:         .ok_or_else(|| Stop::invalid("sha256sum", "无输出"))?;
+65:     if hash.len() != 64 || !hash.bytes().all(|b| b.is_ascii_hexdigit()) {
+66:         return Err(Stop::invalid("sha256sum", "散列格式异常"));
+67:     }
+68:     Ok(hash.into())
+83:     pub fn load(path: &Path) -> Result<Self> {
+84:         let raw = read_json(path)?;
+85:         let formal: Value = serde_json::from_str(include_str!("../../../数据/正式静态目录.json"))
+86:             .map_err(|e| Stop::invalid("catalog", e.to_string()))?;
+87:         if raw != formal {
+88:             return Err(Stop::invalid(
+89:                 "catalog",
+90:                 "输入目录不同于本实现编译时登记的正式目录",
+91:             ));
+
+crates/kernel/src/main.rs
+14:     let command = &args[0];
+15:     if command == "verify-batch" {
+16:         let directory = args
+17:             .get(1)
+18:             .ok_or_else(|| Stop::invalid("verify-batch", "缺目录"))?;
+19:         let mut child = std::process::Command::new("python");
+20:         child
+21:             .arg("-B")
+22:             .arg(concat!(env!("CARGO_MANIFEST_DIR"), "/tests/verify_all.py"))
+23:             .arg("--dry")
+24:             .arg(directory)
+25:             .args(&args[2..]);
+26:         child.env(
+27:             "KERNEL_BIN",
+28:             std::env::current_exe().map_err(|e| Stop::invalid("binary", e.to_string()))?,
+29:         );
+30:         return Ok(child
+31:             .status()
+32:             .map_err(|e| Stop::invalid("verify-batch", e.to_string()))?
+33:             .success());
+34:     }
+35: 
+36:     if ![
+37:         "run",
+38:         "check",
+39:         "request",
+40:         "seed",
+41:         "cycle",
+42:         "verify-cycle",
+43:         "verify-record",
+44:         "checkpoint",
+45:     ]
+138:         if command == "verify-record" {
+139:             let record = read_json(&path)?;
+140:             let base = path.parent().unwrap();
+141:             let source = kernel::output::record_input_path(&record, base)?;
+142:             kernel::output::verify_record_at(
+143:                 &record,
+144:                 Input::load(&source, &config, false)?,
+145:                 &config,
+146:                 &cfg,
+147:                 base,
+148:             )?;
+149:             return Ok(serde_json::json!({"status":"input_checked","verified_record":path}));
+150:         }
+225:         let n = ticks.ok_or_else(|| Stop::invalid("cli", "缺 --ticks"))?;
+226:         if command == "cycle" {
+227:             let record_path = if no_record {
+228:                 None
+229:             } else {
+230:                 let dest = out.as_ref().ok_or_else(|| {
+231:                     Stop::invalid("cli.cycle", "有记录模式须给 --out；无记录用 --no-record")
+232:                 })?;
+233:                 Some(dest.with_file_name(format!(
+234:                     "{}.record.json",
+235:                     dest.file_stem().unwrap().to_string_lossy()
+236:                 )))
+237:             };
+238:             let options = kernel::cycle::SearchOptions {
+239:                 checkpoint_interval: search_interval,
+240:                 record_path,
+241:             };
+242:             return kernel::cycle::run_cycle_with_options(
+243:                 input, &config, &cfg, n, max_sweeps, &options,
+244:             );
+245:         }
+246:         if n == 0 && !no_output {
+247:             return Err(Stop::invalid("ticks", "记录至少需要一个时刻"));
+248:         }
+249:         let mut engine = Engine::new(input)?;
+250:         engine.max_sweeps = max_sweeps;
+251:         engine.set_cache_enabled(cache);
+252:         if no_output {
+253:             let start = Instant::now();
+254:             let mut completed = 0usize;
+255:             let mut stop = None;
+256:             for _ in 0..n {
+257:                 match engine.step(false) {
+258:                     Ok(_) => completed += 1,
+259:                     Err(e) => {
+260:                         stop = Some(e);
+261:                         break;
+262:                     }
+263:                 }
+264:             }
+265:             if let Some(e) = stop {
+266:                 return Ok(
+267:                     serde_json::json!({"status":e.status,"ticks":n,"completed_ticks":completed,"elapsed_ns":start.elapsed().as_nanos().to_string(),"output":"disabled","statistics":{"completed":0,"inconclusive":usize::from(e.status=="inconclusive"),"stopped":usize::from(e.status!="inconclusive")},"stop":e}),
+268:                 );
+269:             }
+270:             Ok(
+271:                 serde_json::json!({"status":"completed","ticks":n,"elapsed_ns":start.elapsed().as_nanos().to_string(),"output":"disabled","statistics":{"completed":1,"inconclusive":0,"stopped":0},"completed_batches":engine.completed_batches,"actual_inbound":engine.delivery,"final_inventory":engine.inventory_totals()?}),
+272:             )
+273:         } else {
+274:             run_record(engine, &config, &cfg, n, &format, interval)
+275:         }
+319:     let text = serde_json::to_string_pretty(&record)
+320:         .map_err(|e| Stop::invalid("output", e.to_string()))?
+321:         + "\n";
+322:     if let Some(path) = out {
+323:         std::fs::write(&path, text)
+324:             .map_err(|e| Stop::invalid(path.display().to_string(), e.to_string()))?;
+325:         println!(
+326:             "{}",
+327:             serde_json::json!({"status":record["status"],"out":path})
+328:         );
+329:     } else if command == "run" && !no_output {
+330:         return Err(Stop::invalid(
+331:             "cli",
+332:             "记录输出须指定 --out；性能运行用 --no-output",
+333:         ));
+334:     } else {
+335:         print!("{text}");
+336:     }
+337:     Ok(success)
+338: }
+339: /// 第四轮§4.6：失败以非零退出，不吞错误或把停止报成功。
+340: fn main() {
+341:     match run() {
+342:         Ok(true) => {}
+343:         Ok(false) => std::process::exit(2),
+344:         Err(e) => {
+345:             eprintln!("{e}");
+346:             std::process::exit(2)
+347:         }
+
+crates/kernel/src/cycle_io.rs
+58: pub(crate) fn canonical_fingerprints(value: &mut Value, base: &Path) -> Result<()> {
+59:     for row in value["fingerprints"]
+60:         .as_array_mut()
+61:         .ok_or_else(|| Stop::invalid("fingerprints", "须为数组"))?
+62:     {
+63:         fields(row, "role path sha256", "fingerprints[]")?;
+64:         let p = resolved(base, &row["path"], "fingerprints.path")?;
+65:         if sha256(&p)? != row["sha256"] {
+66:             return Err(Stop::invalid(
+67:                 p.display().to_string(),
+68:                 "来源指纹不符，须重验而非刷新",
+69:             ));
+70:         }
+71:         row["path"] = json!(p);
+72:     }
+73:     Ok(())
+
+crates/kernel/tests/verify_all.py
+7: ROOT=Path(__file__).resolve().parents[3]
+8: sys.path.insert(0,str(ROOT/'数据/样例'))
+9: from audit_task7 import audit_ledger
+10: BIN=Path(os.environ.get('KERNEL_BIN',ROOT/'target/release/kernel'))
+11: AJV='/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/2020.js'
+12: def read(path):return json.loads(path.read_text())
+13: def schema_check(paths):
+14:  script='''const fs=require('fs');const Ajv=require(process.argv[1]);const args=JSON.parse(fs.readFileSync(0,'utf8'));const schema=JSON.parse(fs.readFileSync(args.schema,'utf8'));const validate=new Ajv({strict:false,allErrors:true}).compile(schema);for(const path of args.paths){if(!validate(JSON.parse(fs.readFileSync(path,'utf8')))){console.error(JSON.stringify({path,errors:validate.errors}));process.exit(1);}}'''
+15:  p=subprocess.run(['node','-e',script,AJV],input=json.dumps(dict(schema=str(ROOT/'规格/内核输出.schema.json'),paths=[str(p) for p in paths])),capture_output=True,text=True)
+16:  assert p.returncode==0,(p.stdout,p.stderr)
+17: def main():
+18:  parser=argparse.ArgumentParser();parser.add_argument('directory',type=Path);parser.add_argument('--dry',action='store_true',required=True);parser.add_argument('--config',type=Path,default=ROOT/'规格/内核配置-v1.json');args=parser.parse_args()
+19:  assert args.directory.is_dir(),args.directory
+20:  paths=[];historical=[];records=[];cycles=[];reference_count=0
+21:  for path in sorted(args.directory.rglob('*.json')):
+22:   data=read(path)
+23:   if not isinstance(data,dict):continue
+24:   schema=data.get('schema')
+25:   if schema in ('kernel-output-v4','kernel-cycle-v3'):paths.append(path)
+26:   elif schema in ('kernel-cycle-v1','kernel-cycle-v2','kernel-output-v1','kernel-output-v2','kernel-output-v3'):historical.append(str(path))
+27:   elif isinstance(schema,str) and schema.startswith(('kernel-output-','kernel-cycle-','kernel-proof-')):raise AssertionError(('尚未支持的证据版本或直接证明语义入口',str(path),schema))
+28:  schema_check(paths)
+29:  certified_records={};cycle_results={}
+30:  for path in paths:
+31:   data=read(path)
+32:   if data['schema']!='kernel-cycle-v3':continue
+33:   checked=subprocess.run([str(BIN),'verify-cycle',str(path.resolve()),'--config',str(args.config.resolve())],capture_output=True,text=True)
+34:   assert checked.returncode==0,(str(path),checked.stdout,checked.stderr)
+35:   cycle_results[path]=json.loads(checked.stdout)
+36:   if data['run_record_ref']:
+37:    certified_records[(path.parent/data['run_record_ref']['path']).resolve()]=str(path.resolve())
+38:  for path in paths:
+39:   data=read(path);mode='verify-cycle' if data['schema']=='kernel-cycle-v3' else 'verify-record'
+40:   if mode=='verify-cycle':
+41:    pass
+42:   elif path.resolve() in certified_records and data['status']!='completed':
+43:    pass  # 上方已按证书预算完整重跑其停止前缀，不能由孤立记录猜资源预算。
+44:   elif mode=='verify-record' and data['producer']['kind']!='kernel':
+45:    raise AssertionError(('当前批量入口仅支持kernel生产者；参考执行器尚未迁移v4',str(path)))
+46:   else:
+47:    p=subprocess.run([str(BIN),mode,str(path.resolve()),'--config',str(args.config.resolve())],capture_output=True,text=True)
+48:    assert p.returncode==0,(str(path),p.stdout,p.stderr)
+49:   if mode=='verify-record':
+50:    source=next((path.parent/row['path']).resolve() for row in data['fingerprints'] if row['role']=='input')
+51:    source_data=read(source)
+52:    source_data['catalog']['path']=str((source.parent/source_data['catalog']['path']).resolve())
+53:    ticks=audit_ledger(data,source_data)
+54:    records.append(dict(path=str(path.resolve()),ticks=ticks))
+55:   else:cycles.append(dict(path=str(path.resolve()),verification=cycle_results[path]))
+56:   print('已核 '+path.name,file=sys.stderr,flush=True)
+57:  print(json.dumps(dict(status='input_checked',read_only=True,records=records,cycles=cycles,reference_records=reference_count,historical_records=historical,scope='当前v4记录和v3周期按现行源、schema、Rust重放及Python部分接收账验收；旧版本列作史料。'),ensure_ascii=False,indent=2))
+58: if __name__=='__main__':main()
+

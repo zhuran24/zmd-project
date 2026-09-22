@@ -1,0 +1,16 @@
+{
+  "broken_links": [],
+  "unexpected_file_extensions": [],
+  "python_parse_errors": [],
+  "aa_pair_count": 44,
+  "aa_binary_identity_mismatch": [],
+  "aa_command_mismatch": [],
+  "raw_output_hash_mismatch": [],
+  "input_hash_mismatch": [],
+  "protected_existing_files": 6240,
+  "protected_content_mismatch": [],
+  "reader_review": {
+    "complete": true,
+    "basis": "Full report reread after generation; corrected empty CLI argument cell, stated profile timing limitation, checked scope, counts, classification and links."
+  }
+}

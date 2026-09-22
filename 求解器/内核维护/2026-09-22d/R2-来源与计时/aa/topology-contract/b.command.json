@@ -1,0 +1,19 @@
+{
+  "argv": [
+    "/home/zhuran24/zmd-research-fresh/求解器/target/r2-source-timing-20260922/topology-baseline",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/contract.json"
+  ],
+  "shell_command": "'/home/zhuran24/zmd-research-fresh/求解器/target/r2-source-timing-20260922/topology-baseline' '/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/contract.json'",
+  "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+  "returncode": 0,
+  "stdout_sha256": "b8225f3a7d7e8487164302e5d990953b808f25ff6f0e96ceb22ae22028162967",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "cpu_affinity": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ]
+}

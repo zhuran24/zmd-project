@@ -1,0 +1,1726 @@
+{
+  "R2-来源与计时/aa/artifacts/bad-input.json": {
+    "bytes": 3,
+    "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+  },
+  "R2-来源与计时/aa/artifacts/checkpoint-cycle-found.json": {
+    "bytes": 135041,
+    "sha256": "bd6ae4c5d2f7c82a821af296df0f84a16b211b6e81f0f259db47d01cd041d326"
+  },
+  "R2-来源与计时/aa/artifacts/checkpoint-cycle.json": {
+    "bytes": 135041,
+    "sha256": "e6cfb824ac70b0568b6abe42ff3880427950caa09cefaf756fb84d7d4ce1c852"
+  },
+  "R2-来源与计时/aa/artifacts/checkpoint-record.json": {
+    "bytes": 135056,
+    "sha256": "680aae238042450e20c6a5e2dd713376fc3eaebc5dfbc19335b2b442a334035c"
+  },
+  "R2-来源与计时/aa/artifacts/run-delta.json": {
+    "bytes": 633931,
+    "sha256": "30fedebf60ad0a5523854ad0b363e4e313bd9cc666d0705aa55c098f7bdf2ccf"
+  },
+  "R2-来源与计时/aa/artifacts/run-full.json": {
+    "bytes": 1205657,
+    "sha256": "6b8372cf35f1167c164de6c9fe17344b413d32ac20ada70baba192d44fa6fe42"
+  },
+  "R2-来源与计时/aa/artifacts/run-grinder.json": {
+    "bytes": 673910,
+    "sha256": "aec41ba5d9ea2381864f9b74f00c9def04f5c14e45eb3b170dab962b170d971d"
+  },
+  "R2-来源与计时/aa/artifacts/run-no-cache.json": {
+    "bytes": 1205657,
+    "sha256": "6b8372cf35f1167c164de6c9fe17344b413d32ac20ada70baba192d44fa6fe42"
+  },
+  "R2-来源与计时/aa/artifacts/run-no-output-out.json": {
+    "bytes": 484,
+    "sha256": "7d192c554f347dad1f91f07d2b23818271121e1256a007f79f25212222802e62"
+  },
+  "R2-来源与计时/aa/artifacts/run-splitter.json": {
+    "bytes": 2102262,
+    "sha256": "d1bdbe58f1e1329a70463a7a4af8144eaf32e782124fffc388321f689eeb827b"
+  },
+  "R2-来源与计时/aa/artifacts/run-stopped.json": {
+    "bytes": 180017,
+    "sha256": "f3df9a86e868ca5ed877cb5fc4a990818640156df45ea64f737c64015ba04a4f"
+  },
+  "R2-来源与计时/aa/artifacts/seed.json": {
+    "bytes": 134240,
+    "sha256": "6df1374b469af6a246433c336ef95fde8f7e70bb02cfede913446311a2d1dddc"
+  },
+  "R2-来源与计时/aa/batch/cycle-found.json": {
+    "bytes": 362944,
+    "sha256": "83d4da6c7ed1345d6b2fab8974234e330a6683c740b3c593f655c3ca20d6bf2f"
+  },
+  "R2-来源与计时/aa/batch/cycle-found.record.json": {
+    "bytes": 1976331,
+    "sha256": "fb9bfb128b3e3cdc55ffb832f2cb9f9330833111852215ae59a83515dc369b13"
+  },
+  "R2-来源与计时/aa/batch/cycle.json": {
+    "bytes": 139131,
+    "sha256": "40581c471d6e36385495cb0c9bf83a5e946fa9b704bc090af57f4aaa0692b9a7"
+  },
+  "R2-来源与计时/aa/batch/cycle.record.json": {
+    "bytes": 1890599,
+    "sha256": "6e0334b8f6f801288243d13732626060744462ad619475a7bd0d3cea084afe89"
+  },
+  "R2-来源与计时/aa/batch/finite-record.json": {
+    "bytes": 1205657,
+    "sha256": "6b8372cf35f1167c164de6c9fe17344b413d32ac20ada70baba192d44fa6fe42"
+  },
+  "R2-来源与计时/aa/check/a.command.json": {
+    "bytes": 921,
+    "sha256": "751c78ac676dbb6bf52293d34210de9f833d5b7920f0ed3ab736fa00a63e037b"
+  },
+  "R2-来源与计时/aa/check/a.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/check/a.stdout.log": {
+    "bytes": 184,
+    "sha256": "ef763b2e91f37d04da56beb9e25786f7d6b66523bb79d2ac4acd056f0635d648"
+  },
+  "R2-来源与计时/aa/check/b.command.json": {
+    "bytes": 921,
+    "sha256": "751c78ac676dbb6bf52293d34210de9f833d5b7920f0ed3ab736fa00a63e037b"
+  },
+  "R2-来源与计时/aa/check/b.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/check/b.stdout.log": {
+    "bytes": 184,
+    "sha256": "ef763b2e91f37d04da56beb9e25786f7d6b66523bb79d2ac4acd056f0635d648"
+  },
+  "R2-来源与计时/aa/check-cycle-domain/a.command.json": {
+    "bytes": 958,
+    "sha256": "22d3dc52a1ee4bf628e63ed105903c6ab4a7eb92d773aecad864db8db0b06058"
+  },
+  "R2-来源与计时/aa/check-cycle-domain/a.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/check-cycle-domain/a.stdout.log": {
+    "bytes": 1349,
+    "sha256": "2ebb068a59dc7b048f6781a9775b469e401338e31f47a73c810f6f449eeacb58"
+  },
+  "R2-来源与计时/aa/check-cycle-domain/b.command.json": {
+    "bytes": 958,
+    "sha256": "22d3dc52a1ee4bf628e63ed105903c6ab4a7eb92d773aecad864db8db0b06058"
+  },
+  "R2-来源与计时/aa/check-cycle-domain/b.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/check-cycle-domain/b.stdout.log": {
+    "bytes": 1349,
+    "sha256": "2ebb068a59dc7b048f6781a9775b469e401338e31f47a73c810f6f449eeacb58"
+  },
+  "R2-来源与计时/aa/check-invalid-input/a.command.json": {
+    "bytes": 989,
+    "sha256": "faf96484a0690cb5d7fec39be63d199f1e744c2b1a57523c08f4ae312f6a5a6a"
+  },
+  "R2-来源与计时/aa/check-invalid-input/a.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/check-invalid-input/a.stdout.log": {
+    "bytes": 1523,
+    "sha256": "c958bb581c0ffd9b845020b71c6be8d04205bc3881ff28912c2def463e678f68"
+  },
+  "R2-来源与计时/aa/check-invalid-input/b.command.json": {
+    "bytes": 989,
+    "sha256": "faf96484a0690cb5d7fec39be63d199f1e744c2b1a57523c08f4ae312f6a5a6a"
+  },
+  "R2-来源与计时/aa/check-invalid-input/b.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/check-invalid-input/b.stdout.log": {
+    "bytes": 1523,
+    "sha256": "c958bb581c0ffd9b845020b71c6be8d04205bc3881ff28912c2def463e678f68"
+  },
+  "R2-来源与计时/aa/checkpoint-cycle/a.command.json": {
+    "bytes": 1257,
+    "sha256": "e0ae584344fc62563cbca27559553ce471c2437eea97f8c130219a93f6d47d91"
+  },
+  "R2-来源与计时/aa/checkpoint-cycle/a.seed.json": {
+    "bytes": 135041,
+    "sha256": "e6cfb824ac70b0568b6abe42ff3880427950caa09cefaf756fb84d7d4ce1c852"
+  },
+  "R2-来源与计时/aa/checkpoint-cycle/a.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/checkpoint-cycle/a.stdout.log": {
+    "bytes": 147,
+    "sha256": "fc46ca7e0f8026d623345e44288bde10a7564c67272b5fee47cd79041fd9bcce"
+  },
+  "R2-来源与计时/aa/checkpoint-cycle/b.command.json": {
+    "bytes": 1257,
+    "sha256": "e0ae584344fc62563cbca27559553ce471c2437eea97f8c130219a93f6d47d91"
+  },
+  "R2-来源与计时/aa/checkpoint-cycle/b.seed.json": {
+    "bytes": 135041,
+    "sha256": "e6cfb824ac70b0568b6abe42ff3880427950caa09cefaf756fb84d7d4ce1c852"
+  },
+  "R2-来源与计时/aa/checkpoint-cycle/b.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/checkpoint-cycle/b.stdout.log": {
+    "bytes": 147,
+    "sha256": "fc46ca7e0f8026d623345e44288bde10a7564c67272b5fee47cd79041fd9bcce"
+  },
+  "R2-来源与计时/aa/checkpoint-cycle-found/a.command.json": {
+    "bytes": 1281,
+    "sha256": "102430e1779a1405388e11200d372a46839e3ef314841100574302a5b11f293e"
+  },
+  "R2-来源与计时/aa/checkpoint-cycle-found/a.seed.json": {
+    "bytes": 135041,
+    "sha256": "bd6ae4c5d2f7c82a821af296df0f84a16b211b6e81f0f259db47d01cd041d326"
+  },
+  "R2-来源与计时/aa/checkpoint-cycle-found/a.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/checkpoint-cycle-found/a.stdout.log": {
+    "bytes": 153,
+    "sha256": "633df3f985a1ab9cbc94b7f28e396172c56563bb223a7eaf996153e54da7c7c1"
+  },
+  "R2-来源与计时/aa/checkpoint-cycle-found/b.command.json": {
+    "bytes": 1281,
+    "sha256": "102430e1779a1405388e11200d372a46839e3ef314841100574302a5b11f293e"
+  },
+  "R2-来源与计时/aa/checkpoint-cycle-found/b.seed.json": {
+    "bytes": 135041,
+    "sha256": "bd6ae4c5d2f7c82a821af296df0f84a16b211b6e81f0f259db47d01cd041d326"
+  },
+  "R2-来源与计时/aa/checkpoint-cycle-found/b.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/checkpoint-cycle-found/b.stdout.log": {
+    "bytes": 153,
+    "sha256": "633df3f985a1ab9cbc94b7f28e396172c56563bb223a7eaf996153e54da7c7c1"
+  },
+  "R2-来源与计时/aa/checkpoint-invalid-input/a.command.json": {
+    "bytes": 999,
+    "sha256": "882d53b0b28182622fb6cf1917763630587e0a6fd4e4db144afff5b89b7d8a10"
+  },
+  "R2-来源与计时/aa/checkpoint-invalid-input/a.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/checkpoint-invalid-input/a.stdout.log": {
+    "bytes": 1389,
+    "sha256": "713e3488e28502095762cd1b23a52bcc697dfa248fd22ef9a72bd143638d2a48"
+  },
+  "R2-来源与计时/aa/checkpoint-invalid-input/b.command.json": {
+    "bytes": 999,
+    "sha256": "882d53b0b28182622fb6cf1917763630587e0a6fd4e4db144afff5b89b7d8a10"
+  },
+  "R2-来源与计时/aa/checkpoint-invalid-input/b.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/checkpoint-invalid-input/b.stdout.log": {
+    "bytes": 1389,
+    "sha256": "713e3488e28502095762cd1b23a52bcc697dfa248fd22ef9a72bd143638d2a48"
+  },
+  "R2-来源与计时/aa/checkpoint-record/a.command.json": {
+    "bytes": 1273,
+    "sha256": "d9a2ea08a4e9c3a62486c8c32df3fcf6ba8944907252860113dd1fed07c067e8"
+  },
+  "R2-来源与计时/aa/checkpoint-record/a.seed.json": {
+    "bytes": 135056,
+    "sha256": "680aae238042450e20c6a5e2dd713376fc3eaebc5dfbc19335b2b442a334035c"
+  },
+  "R2-来源与计时/aa/checkpoint-record/a.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/checkpoint-record/a.stdout.log": {
+    "bytes": 148,
+    "sha256": "a2e80fa9796a3fbd49f997fcd8dd6f68a26bdcb28cb0b0c74f8c2f116c719c71"
+  },
+  "R2-来源与计时/aa/checkpoint-record/b.command.json": {
+    "bytes": 1273,
+    "sha256": "d9a2ea08a4e9c3a62486c8c32df3fcf6ba8944907252860113dd1fed07c067e8"
+  },
+  "R2-来源与计时/aa/checkpoint-record/b.seed.json": {
+    "bytes": 135056,
+    "sha256": "680aae238042450e20c6a5e2dd713376fc3eaebc5dfbc19335b2b442a334035c"
+  },
+  "R2-来源与计时/aa/checkpoint-record/b.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/checkpoint-record/b.stdout.log": {
+    "bytes": 148,
+    "sha256": "a2e80fa9796a3fbd49f997fcd8dd6f68a26bdcb28cb0b0c74f8c2f116c719c71"
+  },
+  "R2-来源与计时/aa/cli-no-args/a.command.json": {
+    "bytes": 551,
+    "sha256": "7d239c4258f124bdb32d0b10bc4757650ac36c691eeb1afc03e4c6cdd18e7d28"
+  },
+  "R2-来源与计时/aa/cli-no-args/a.stderr.log": {
+    "bytes": 221,
+    "sha256": "fed99324b99a971a5a998dfc082424a78842f7bc83735a012bce5fe1b037052f"
+  },
+  "R2-来源与计时/aa/cli-no-args/a.stdout.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/cli-no-args/b.command.json": {
+    "bytes": 551,
+    "sha256": "7d239c4258f124bdb32d0b10bc4757650ac36c691eeb1afc03e4c6cdd18e7d28"
+  },
+  "R2-来源与计时/aa/cli-no-args/b.stderr.log": {
+    "bytes": 221,
+    "sha256": "fed99324b99a971a5a998dfc082424a78842f7bc83735a012bce5fe1b037052f"
+  },
+  "R2-来源与计时/aa/cli-no-args/b.stdout.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/cli-unknown-command/a.command.json": {
+    "bytes": 753,
+    "sha256": "13dc3ac6f927386aa5ba96d78a2d70a7345821df6e26fc3e1195a74d1c933956"
+  },
+  "R2-来源与计时/aa/cli-unknown-command/a.stderr.log": {
+    "bytes": 85,
+    "sha256": "785777e89c38e6f5c03bef9b1b730737df7d8f0c92c91003494dca4b978a23e5"
+  },
+  "R2-来源与计时/aa/cli-unknown-command/a.stdout.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/cli-unknown-command/b.command.json": {
+    "bytes": 753,
+    "sha256": "13dc3ac6f927386aa5ba96d78a2d70a7345821df6e26fc3e1195a74d1c933956"
+  },
+  "R2-来源与计时/aa/cli-unknown-command/b.stderr.log": {
+    "bytes": 85,
+    "sha256": "785777e89c38e6f5c03bef9b1b730737df7d8f0c92c91003494dca4b978a23e5"
+  },
+  "R2-来源与计时/aa/cli-unknown-command/b.stdout.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/cycle-budget/a.command.json": {
+    "bytes": 994,
+    "sha256": "8ee6d87f92c01ad3b7873d077eacac7cb047acb0f732c757002455626c2414b7"
+  },
+  "R2-来源与计时/aa/cycle-budget/a.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/cycle-budget/a.stdout.log": {
+    "bytes": 138633,
+    "sha256": "3775063408917f01de9ead88ec551352bee75779dbaf38ffb98ae151743afd6f"
+  },
+  "R2-来源与计时/aa/cycle-budget/b.command.json": {
+    "bytes": 994,
+    "sha256": "8ee6d87f92c01ad3b7873d077eacac7cb047acb0f732c757002455626c2414b7"
+  },
+  "R2-来源与计时/aa/cycle-budget/b.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/cycle-budget/b.stdout.log": {
+    "bytes": 138633,
+    "sha256": "3775063408917f01de9ead88ec551352bee75779dbaf38ffb98ae151743afd6f"
+  },
+  "R2-来源与计时/aa/cycle-found-no-record/a.command.json": {
+    "bytes": 996,
+    "sha256": "332e010f9323e134b5c1c7dd0df4739fe69ad26d24486c9963b3384d46c0c98c"
+  },
+  "R2-来源与计时/aa/cycle-found-no-record/a.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/cycle-found-no-record/a.stdout.log": {
+    "bytes": 362435,
+    "sha256": "37897c0bb3064a48d01e4901d590ee15a94252787b5a8063a544f75d918886c3"
+  },
+  "R2-来源与计时/aa/cycle-found-no-record/b.command.json": {
+    "bytes": 996,
+    "sha256": "332e010f9323e134b5c1c7dd0df4739fe69ad26d24486c9963b3384d46c0c98c"
+  },
+  "R2-来源与计时/aa/cycle-found-no-record/b.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/cycle-found-no-record/b.stdout.log": {
+    "bytes": 362435,
+    "sha256": "37897c0bb3064a48d01e4901d590ee15a94252787b5a8063a544f75d918886c3"
+  },
+  "R2-来源与计时/aa/cycle-found-referenced/a.certificate.json": {
+    "bytes": 362944,
+    "sha256": "83d4da6c7ed1345d6b2fab8974234e330a6683c740b3c593f655c3ca20d6bf2f"
+  },
+  "R2-来源与计时/aa/cycle-found-referenced/a.command.json": {
+    "bytes": 1297,
+    "sha256": "3059834ede7d5d9c5384f6d3970087a28d0bc807ca0f5159274b5adf8d6c0cfd"
+  },
+  "R2-来源与计时/aa/cycle-found-referenced/a.record.json": {
+    "bytes": 1976331,
+    "sha256": "fb9bfb128b3e3cdc55ffb832f2cb9f9330833111852215ae59a83515dc369b13"
+  },
+  "R2-来源与计时/aa/cycle-found-referenced/a.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/cycle-found-referenced/a.stdout.log": {
+    "bytes": 152,
+    "sha256": "42d4824e576ecd1affcafad4b9eb8e778630f5db594248a86df0dd70b1c48afc"
+  },
+  "R2-来源与计时/aa/cycle-found-referenced/b.certificate.json": {
+    "bytes": 362944,
+    "sha256": "83d4da6c7ed1345d6b2fab8974234e330a6683c740b3c593f655c3ca20d6bf2f"
+  },
+  "R2-来源与计时/aa/cycle-found-referenced/b.command.json": {
+    "bytes": 1297,
+    "sha256": "3059834ede7d5d9c5384f6d3970087a28d0bc807ca0f5159274b5adf8d6c0cfd"
+  },
+  "R2-来源与计时/aa/cycle-found-referenced/b.record.json": {
+    "bytes": 1976331,
+    "sha256": "fb9bfb128b3e3cdc55ffb832f2cb9f9330833111852215ae59a83515dc369b13"
+  },
+  "R2-来源与计时/aa/cycle-found-referenced/b.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/cycle-found-referenced/b.stdout.log": {
+    "bytes": 152,
+    "sha256": "42d4824e576ecd1affcafad4b9eb8e778630f5db594248a86df0dd70b1c48afc"
+  },
+  "R2-来源与计时/aa/cycle-invalid-input/a.command.json": {
+    "bytes": 1062,
+    "sha256": "074e801d42f5aa92b899aa3befe3bdc8f7444322ca37d3b1d5e1e750f99bd098"
+  },
+  "R2-来源与计时/aa/cycle-invalid-input/a.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/cycle-invalid-input/a.stdout.log": {
+    "bytes": 10645,
+    "sha256": "3390e084adce545a44ecb272bef913bd2e88cd9ac04734eb19436ccbff11a9b3"
+  },
+  "R2-来源与计时/aa/cycle-invalid-input/b.command.json": {
+    "bytes": 1062,
+    "sha256": "074e801d42f5aa92b899aa3befe3bdc8f7444322ca37d3b1d5e1e750f99bd098"
+  },
+  "R2-来源与计时/aa/cycle-invalid-input/b.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/cycle-invalid-input/b.stdout.log": {
+    "bytes": 10645,
+    "sha256": "3390e084adce545a44ecb272bef913bd2e88cd9ac04734eb19436ccbff11a9b3"
+  },
+  "R2-来源与计时/aa/cycle-no-record/a.command.json": {
+    "bytes": 996,
+    "sha256": "2ac6e99ad84e7b35ba13dda8fdb9918192edb2ae9e18218be7d51bf846b87da5"
+  },
+  "R2-来源与计时/aa/cycle-no-record/a.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/cycle-no-record/a.stdout.log": {
+    "bytes": 138628,
+    "sha256": "2fd345b46761f414486b591182a3dc96daa3e6cb6d9f31e0a8d4c02db221e641"
+  },
+  "R2-来源与计时/aa/cycle-no-record/b.command.json": {
+    "bytes": 996,
+    "sha256": "2ac6e99ad84e7b35ba13dda8fdb9918192edb2ae9e18218be7d51bf846b87da5"
+  },
+  "R2-来源与计时/aa/cycle-no-record/b.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/cycle-no-record/b.stdout.log": {
+    "bytes": 138628,
+    "sha256": "2fd345b46761f414486b591182a3dc96daa3e6cb6d9f31e0a8d4c02db221e641"
+  },
+  "R2-来源与计时/aa/cycle-referenced/a.certificate.json": {
+    "bytes": 139131,
+    "sha256": "40581c471d6e36385495cb0c9bf83a5e946fa9b704bc090af57f4aaa0692b9a7"
+  },
+  "R2-来源与计时/aa/cycle-referenced/a.command.json": {
+    "bytes": 1285,
+    "sha256": "a704436819afbe7cc8ae993cd471fdf32bf9cd3b7bd81801e306824b33b5f73e"
+  },
+  "R2-来源与计时/aa/cycle-referenced/a.record.json": {
+    "bytes": 1890599,
+    "sha256": "6e0334b8f6f801288243d13732626060744462ad619475a7bd0d3cea084afe89"
+  },
+  "R2-来源与计时/aa/cycle-referenced/a.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/cycle-referenced/a.stdout.log": {
+    "bytes": 142,
+    "sha256": "bcb3cf24e6479277f72a6afa5472257e23c95193cefbb7bbf4e0c0ddfbe84dc0"
+  },
+  "R2-来源与计时/aa/cycle-referenced/b.certificate.json": {
+    "bytes": 139131,
+    "sha256": "40581c471d6e36385495cb0c9bf83a5e946fa9b704bc090af57f4aaa0692b9a7"
+  },
+  "R2-来源与计时/aa/cycle-referenced/b.command.json": {
+    "bytes": 1285,
+    "sha256": "a704436819afbe7cc8ae993cd471fdf32bf9cd3b7bd81801e306824b33b5f73e"
+  },
+  "R2-来源与计时/aa/cycle-referenced/b.record.json": {
+    "bytes": 1890599,
+    "sha256": "6e0334b8f6f801288243d13732626060744462ad619475a7bd0d3cea084afe89"
+  },
+  "R2-来源与计时/aa/cycle-referenced/b.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/cycle-referenced/b.stdout.log": {
+    "bytes": 142,
+    "sha256": "bcb3cf24e6479277f72a6afa5472257e23c95193cefbb7bbf4e0c0ddfbe84dc0"
+  },
+  "R2-来源与计时/aa/cycle-sweep-stop/a.command.json": {
+    "bytes": 1040,
+    "sha256": "05fdebf0ddc27a2703b7d65bbcbc9023a714c7298dc72df4f1543e8bce677eb0"
+  },
+  "R2-来源与计时/aa/cycle-sweep-stop/a.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/cycle-sweep-stop/a.stdout.log": {
+    "bytes": 139818,
+    "sha256": "199482dd11e8eb774223f95363da502f2f6e72921b3cf4ead67feb22636c75e2"
+  },
+  "R2-来源与计时/aa/cycle-sweep-stop/b.command.json": {
+    "bytes": 1040,
+    "sha256": "05fdebf0ddc27a2703b7d65bbcbc9023a714c7298dc72df4f1543e8bce677eb0"
+  },
+  "R2-来源与计时/aa/cycle-sweep-stop/b.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/cycle-sweep-stop/b.stdout.log": {
+    "bytes": 139818,
+    "sha256": "199482dd11e8eb774223f95363da502f2f6e72921b3cf4ead67feb22636c75e2"
+  },
+  "R2-来源与计时/aa/request-fixed/a.command.json": {
+    "bytes": 783,
+    "sha256": "dd11d189ca7fcc3530628bb42ba6c82a9bdec4c84c323cc12e3eddc98b102349"
+  },
+  "R2-来源与计时/aa/request-fixed/a.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/request-fixed/a.stdout.log": {
+    "bytes": 32,
+    "sha256": "191f164f359c7bb0644ee4d8900d6029de492f344709e203ca533a72fc40f494"
+  },
+  "R2-来源与计时/aa/request-fixed/b.command.json": {
+    "bytes": 783,
+    "sha256": "dd11d189ca7fcc3530628bb42ba6c82a9bdec4c84c323cc12e3eddc98b102349"
+  },
+  "R2-来源与计时/aa/request-fixed/b.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/request-fixed/b.stdout.log": {
+    "bytes": 32,
+    "sha256": "191f164f359c7bb0644ee4d8900d6029de492f344709e203ca533a72fc40f494"
+  },
+  "R2-来源与计时/aa/request-invalid/a.command.json": {
+    "bytes": 791,
+    "sha256": "cbfb00d17e3847071d421de52e0c190684d2f6c6250eea72f4d0d8a8a2c17813"
+  },
+  "R2-来源与计时/aa/request-invalid/a.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/request-invalid/a.stdout.log": {
+    "bytes": 4126,
+    "sha256": "d1e508a5e378cb49dfb5a36a0f3cf04a8a945e9c5d1932e3d92c5367048b770a"
+  },
+  "R2-来源与计时/aa/request-invalid/b.command.json": {
+    "bytes": 791,
+    "sha256": "cbfb00d17e3847071d421de52e0c190684d2f6c6250eea72f4d0d8a8a2c17813"
+  },
+  "R2-来源与计时/aa/request-invalid/b.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/request-invalid/b.stdout.log": {
+    "bytes": 4126,
+    "sha256": "d1e508a5e378cb49dfb5a36a0f3cf04a8a945e9c5d1932e3d92c5367048b770a"
+  },
+  "R2-来源与计时/aa/request-stop/a.command.json": {
+    "bytes": 799,
+    "sha256": "2480d708ab2a853d63904ed28b305e86c1d0a3dfbd9ee8343964ed49b458a960"
+  },
+  "R2-来源与计时/aa/request-stop/a.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/request-stop/a.stdout.log": {
+    "bytes": 1510,
+    "sha256": "559b105f3874023470629ecd58388824c407483c8e481b67fd1fa315d920c697"
+  },
+  "R2-来源与计时/aa/request-stop/b.command.json": {
+    "bytes": 799,
+    "sha256": "2480d708ab2a853d63904ed28b305e86c1d0a3dfbd9ee8343964ed49b458a960"
+  },
+  "R2-来源与计时/aa/request-stop/b.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/request-stop/b.stdout.log": {
+    "bytes": 1510,
+    "sha256": "559b105f3874023470629ecd58388824c407483c8e481b67fd1fa315d920c697"
+  },
+  "R2-来源与计时/aa/results.json": {
+    "bytes": 53518,
+    "sha256": "8518e56f3a0ccfca542f51442b21a560d82ef5bcfb6a5b8c44b53262207db84a"
+  },
+  "R2-来源与计时/aa/run-delta/a.command.json": {
+    "bytes": 1341,
+    "sha256": "d1769f259c7e98e99ab83dfffc7fc4002931cd8a5d34b66989952e5d8abf8619"
+  },
+  "R2-来源与计时/aa/run-delta/a.record.json": {
+    "bytes": 633931,
+    "sha256": "30fedebf60ad0a5523854ad0b363e4e313bd9cc666d0705aa55c098f7bdf2ccf"
+  },
+  "R2-来源与计时/aa/run-delta/a.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/run-delta/a.stdout.log": {
+    "bytes": 147,
+    "sha256": "f32fccb776c9dec369a34e1fc3d96bafd2addbc9289257f844e277e9fac21e3b"
+  },
+  "R2-来源与计时/aa/run-delta/b.command.json": {
+    "bytes": 1341,
+    "sha256": "d1769f259c7e98e99ab83dfffc7fc4002931cd8a5d34b66989952e5d8abf8619"
+  },
+  "R2-来源与计时/aa/run-delta/b.record.json": {
+    "bytes": 633931,
+    "sha256": "30fedebf60ad0a5523854ad0b363e4e313bd9cc666d0705aa55c098f7bdf2ccf"
+  },
+  "R2-来源与计时/aa/run-delta/b.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/run-delta/b.stdout.log": {
+    "bytes": 147,
+    "sha256": "f32fccb776c9dec369a34e1fc3d96bafd2addbc9289257f844e277e9fac21e3b"
+  },
+  "R2-来源与计时/aa/run-full/a.command.json": {
+    "bytes": 1211,
+    "sha256": "e0b4a92f6c5ea4f7a02e0795f43c997e78cae6595c2a8dea7d4b74ee4b882d45"
+  },
+  "R2-来源与计时/aa/run-full/a.record.json": {
+    "bytes": 1205657,
+    "sha256": "6b8372cf35f1167c164de6c9fe17344b413d32ac20ada70baba192d44fa6fe42"
+  },
+  "R2-来源与计时/aa/run-full/a.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/run-full/a.stdout.log": {
+    "bytes": 146,
+    "sha256": "3f2c231da63ff9321eb4e6c54bbd201ad6da7867c3546c0e3b2652aeaed15a96"
+  },
+  "R2-来源与计时/aa/run-full/b.command.json": {
+    "bytes": 1211,
+    "sha256": "e0b4a92f6c5ea4f7a02e0795f43c997e78cae6595c2a8dea7d4b74ee4b882d45"
+  },
+  "R2-来源与计时/aa/run-full/b.record.json": {
+    "bytes": 1205657,
+    "sha256": "6b8372cf35f1167c164de6c9fe17344b413d32ac20ada70baba192d44fa6fe42"
+  },
+  "R2-来源与计时/aa/run-full/b.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/run-full/b.stdout.log": {
+    "bytes": 146,
+    "sha256": "3f2c231da63ff9321eb4e6c54bbd201ad6da7867c3546c0e3b2652aeaed15a96"
+  },
+  "R2-来源与计时/aa/run-grinder/a.command.json": {
+    "bytes": 1227,
+    "sha256": "3682ee33b6e223f45539f0d160b630ab3e78a827e407572c2a8ca4ef4612e4eb"
+  },
+  "R2-来源与计时/aa/run-grinder/a.record.json": {
+    "bytes": 673910,
+    "sha256": "aec41ba5d9ea2381864f9b74f00c9def04f5c14e45eb3b170dab962b170d971d"
+  },
+  "R2-来源与计时/aa/run-grinder/a.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/run-grinder/a.stdout.log": {
+    "bytes": 149,
+    "sha256": "5dd2c9a5ed5cf0c0809397d221271f6c4caa4ee7aa69cdbec42c57c9848319b8"
+  },
+  "R2-来源与计时/aa/run-grinder/b.command.json": {
+    "bytes": 1227,
+    "sha256": "3682ee33b6e223f45539f0d160b630ab3e78a827e407572c2a8ca4ef4612e4eb"
+  },
+  "R2-来源与计时/aa/run-grinder/b.record.json": {
+    "bytes": 673910,
+    "sha256": "aec41ba5d9ea2381864f9b74f00c9def04f5c14e45eb3b170dab962b170d971d"
+  },
+  "R2-来源与计时/aa/run-grinder/b.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/run-grinder/b.stdout.log": {
+    "bytes": 149,
+    "sha256": "5dd2c9a5ed5cf0c0809397d221271f6c4caa4ee7aa69cdbec42c57c9848319b8"
+  },
+  "R2-来源与计时/aa/run-invalid-input/a.command.json": {
+    "bytes": 1050,
+    "sha256": "e32b0541979a681b06636ab87c27b7daeba65d759df8a8f13cfef11f5353261b"
+  },
+  "R2-来源与计时/aa/run-invalid-input/a.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/run-invalid-input/a.stdout.log": {
+    "bytes": 1523,
+    "sha256": "c958bb581c0ffd9b845020b71c6be8d04205bc3881ff28912c2def463e678f68"
+  },
+  "R2-来源与计时/aa/run-invalid-input/b.command.json": {
+    "bytes": 1050,
+    "sha256": "e32b0541979a681b06636ab87c27b7daeba65d759df8a8f13cfef11f5353261b"
+  },
+  "R2-来源与计时/aa/run-invalid-input/b.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/run-invalid-input/b.stdout.log": {
+    "bytes": 1523,
+    "sha256": "c958bb581c0ffd9b845020b71c6be8d04205bc3881ff28912c2def463e678f68"
+  },
+  "R2-来源与计时/aa/run-no-cache/a.command.json": {
+    "bytes": 1248,
+    "sha256": "f2002ff123f0a545f1fbaffcce47f6a89d4819efbdfa357b7901c786acfe8c7e"
+  },
+  "R2-来源与计时/aa/run-no-cache/a.record.json": {
+    "bytes": 1205657,
+    "sha256": "6b8372cf35f1167c164de6c9fe17344b413d32ac20ada70baba192d44fa6fe42"
+  },
+  "R2-来源与计时/aa/run-no-cache/a.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/run-no-cache/a.stdout.log": {
+    "bytes": 150,
+    "sha256": "55d5df2ec0049360c26012c3cf7f8af1a0df2c978794a12fa42c26298b6a2c36"
+  },
+  "R2-来源与计时/aa/run-no-cache/b.command.json": {
+    "bytes": 1248,
+    "sha256": "f2002ff123f0a545f1fbaffcce47f6a89d4819efbdfa357b7901c786acfe8c7e"
+  },
+  "R2-来源与计时/aa/run-no-cache/b.record.json": {
+    "bytes": 1205657,
+    "sha256": "6b8372cf35f1167c164de6c9fe17344b413d32ac20ada70baba192d44fa6fe42"
+  },
+  "R2-来源与计时/aa/run-no-cache/b.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/run-no-cache/b.stdout.log": {
+    "bytes": 150,
+    "sha256": "55d5df2ec0049360c26012c3cf7f8af1a0df2c978794a12fa42c26298b6a2c36"
+  },
+  "R2-来源与计时/aa/run-no-output/a.command.json": {
+    "bytes": 984,
+    "sha256": "b55872d350d36a98721cb3b5d2a7a4f81344ea0f067093a38b4b7f8aeefd303e"
+  },
+  "R2-来源与计时/aa/run-no-output/a.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/run-no-output/a.stdout.log": {
+    "bytes": 484,
+    "sha256": "dd4307cd26747fd11ca21ea6489baa5bf849746662dbb5a45ff8cccf45c7b8b9"
+  },
+  "R2-来源与计时/aa/run-no-output/b.command.json": {
+    "bytes": 984,
+    "sha256": "eac42b8551f72cc133fd74cc6acba6d1832b8f5a3d8169d9f77268fe3a8b8375"
+  },
+  "R2-来源与计时/aa/run-no-output/b.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/run-no-output/b.stdout.log": {
+    "bytes": 484,
+    "sha256": "28ce5dbf42b99695a3934dfb0a39da143706cb4df07b12c47c9ed28a30db5d78"
+  },
+  "R2-来源与计时/aa/run-no-output-no-cache/a.command.json": {
+    "bytes": 1013,
+    "sha256": "ff5a0ce1cde14e20b0939fc7c8bb42ba87c348f94c63fae690357f1c52b32261"
+  },
+  "R2-来源与计时/aa/run-no-output-no-cache/a.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/run-no-output-no-cache/a.stdout.log": {
+    "bytes": 485,
+    "sha256": "c58471b4ac72afbf30ba2a89538afb29ad9d91d98cf8108766d8432b6b98a882"
+  },
+  "R2-来源与计时/aa/run-no-output-no-cache/b.command.json": {
+    "bytes": 1013,
+    "sha256": "12dc11088a69faac9346f0d589b66be7c914166ba437db1169299b4095ae29b4"
+  },
+  "R2-来源与计时/aa/run-no-output-no-cache/b.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/run-no-output-no-cache/b.stdout.log": {
+    "bytes": 485,
+    "sha256": "ab3ee6f0fd3fdc6c53de6bfd4129b92bbade953d0892ad964c3638e31544a969"
+  },
+  "R2-来源与计时/aa/run-no-output-out/a.command.json": {
+    "bytes": 1260,
+    "sha256": "37bf27dfda8396c0242e46aefcd9389b068f85c2ed442df455e3b2556d0a7e65"
+  },
+  "R2-来源与计时/aa/run-no-output-out/a.measurement.json": {
+    "bytes": 484,
+    "sha256": "2ebd2cf246f88f1db8b23847a029b93d295ab37f7275a22abc96802b1f88107d"
+  },
+  "R2-来源与计时/aa/run-no-output-out/a.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/run-no-output-out/a.stdout.log": {
+    "bytes": 155,
+    "sha256": "f8cd69d0be7e0e0eaed7ecc4d324faacee2c3d2bd56ade1c41936a019b7ac5df"
+  },
+  "R2-来源与计时/aa/run-no-output-out/b.command.json": {
+    "bytes": 1260,
+    "sha256": "37bf27dfda8396c0242e46aefcd9389b068f85c2ed442df455e3b2556d0a7e65"
+  },
+  "R2-来源与计时/aa/run-no-output-out/b.measurement.json": {
+    "bytes": 484,
+    "sha256": "7d192c554f347dad1f91f07d2b23818271121e1256a007f79f25212222802e62"
+  },
+  "R2-来源与计时/aa/run-no-output-out/b.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/run-no-output-out/b.stdout.log": {
+    "bytes": 155,
+    "sha256": "f8cd69d0be7e0e0eaed7ecc4d324faacee2c3d2bd56ade1c41936a019b7ac5df"
+  },
+  "R2-来源与计时/aa/run-no-output-stop/a.command.json": {
+    "bytes": 1028,
+    "sha256": "0c53ac5bd979eae2af7abecbbda8b84debcbb74e452fa87ec2ea44bbc5d1c998"
+  },
+  "R2-来源与计时/aa/run-no-output-stop/a.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/run-no-output-stop/a.stdout.log": {
+    "bytes": 389,
+    "sha256": "52fe5d1ca084cde20baec3b277d057113a851012ca7fef8b912d08d0919a286b"
+  },
+  "R2-来源与计时/aa/run-no-output-stop/b.command.json": {
+    "bytes": 1028,
+    "sha256": "7bd89452274c22d587160249d3b43d7691bfccdc86352828c941222d6c317a75"
+  },
+  "R2-来源与计时/aa/run-no-output-stop/b.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/run-no-output-stop/b.stdout.log": {
+    "bytes": 389,
+    "sha256": "3b4abf60b74b7ca9b53bac502cf8a34e359711bfe70535d6ac0b7b4d9b385ab8"
+  },
+  "R2-来源与计时/aa/run-no-output-zero/a.command.json": {
+    "bytes": 982,
+    "sha256": "a613b8daa348dd55145fe4a087034241371954059a8af6a50ac222509be3dabe"
+  },
+  "R2-来源与计时/aa/run-no-output-zero/a.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/run-no-output-zero/a.stdout.log": {
+    "bytes": 448,
+    "sha256": "ef287802a2269a35663ff45d53c42f77bacb14dd0159a94067a02bd794454bf0"
+  },
+  "R2-来源与计时/aa/run-no-output-zero/b.command.json": {
+    "bytes": 982,
+    "sha256": "287f8d8e24be100ebf548b1dab8babc20ea0c0074b8f274d2c5edc84841f2786"
+  },
+  "R2-来源与计时/aa/run-no-output-zero/b.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/run-no-output-zero/b.stdout.log": {
+    "bytes": 449,
+    "sha256": "e2b27914fd749137f5bb52c6a2f481ebfe50f3bb67807f39b49a6f3258a8e3ee"
+  },
+  "R2-来源与计时/aa/run-splitter/a.command.json": {
+    "bytes": 1225,
+    "sha256": "fc7c896991fa707f5129715401516b2f0b425e5021bf404d32085554f50591b4"
+  },
+  "R2-来源与计时/aa/run-splitter/a.record.json": {
+    "bytes": 2102262,
+    "sha256": "d1bdbe58f1e1329a70463a7a4af8144eaf32e782124fffc388321f689eeb827b"
+  },
+  "R2-来源与计时/aa/run-splitter/a.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/run-splitter/a.stdout.log": {
+    "bytes": 150,
+    "sha256": "83df4c48c6f1ccf1d2127641b0c29211e6ce43ec471ae0af4c9438214fc13478"
+  },
+  "R2-来源与计时/aa/run-splitter/b.command.json": {
+    "bytes": 1225,
+    "sha256": "fc7c896991fa707f5129715401516b2f0b425e5021bf404d32085554f50591b4"
+  },
+  "R2-来源与计时/aa/run-splitter/b.record.json": {
+    "bytes": 2102262,
+    "sha256": "d1bdbe58f1e1329a70463a7a4af8144eaf32e782124fffc388321f689eeb827b"
+  },
+  "R2-来源与计时/aa/run-splitter/b.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/run-splitter/b.stdout.log": {
+    "bytes": 150,
+    "sha256": "83df4c48c6f1ccf1d2127641b0c29211e6ce43ec471ae0af4c9438214fc13478"
+  },
+  "R2-来源与计时/aa/run-stopped/a.command.json": {
+    "bytes": 1261,
+    "sha256": "17aac13b3310d7c1b67d9ff1fc92ce25e2d75dfa8387c221a4d6ac6f43cffa00"
+  },
+  "R2-来源与计时/aa/run-stopped/a.record.json": {
+    "bytes": 180017,
+    "sha256": "f3df9a86e868ca5ed877cb5fc4a990818640156df45ea64f737c64015ba04a4f"
+  },
+  "R2-来源与计时/aa/run-stopped/a.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/run-stopped/a.stdout.log": {
+    "bytes": 152,
+    "sha256": "aec4d414a913c64f31dbfa9bffb7bde7d2bfd0b6a5e40538bf1a53a041ad4c30"
+  },
+  "R2-来源与计时/aa/run-stopped/b.command.json": {
+    "bytes": 1261,
+    "sha256": "17aac13b3310d7c1b67d9ff1fc92ce25e2d75dfa8387c221a4d6ac6f43cffa00"
+  },
+  "R2-来源与计时/aa/run-stopped/b.record.json": {
+    "bytes": 180017,
+    "sha256": "f3df9a86e868ca5ed877cb5fc4a990818640156df45ea64f737c64015ba04a4f"
+  },
+  "R2-来源与计时/aa/run-stopped/b.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/run-stopped/b.stdout.log": {
+    "bytes": 152,
+    "sha256": "aec4d414a913c64f31dbfa9bffb7bde7d2bfd0b6a5e40538bf1a53a041ad4c30"
+  },
+  "R2-来源与计时/aa/seed/a.command.json": {
+    "bytes": 919,
+    "sha256": "93bcb6c81d9cfe7b74d1c3b8d3b527cfffa852a1c3d51629fac5cabae8931242"
+  },
+  "R2-来源与计时/aa/seed/a.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/seed/a.stdout.log": {
+    "bytes": 134240,
+    "sha256": "6df1374b469af6a246433c336ef95fde8f7e70bb02cfede913446311a2d1dddc"
+  },
+  "R2-来源与计时/aa/seed/b.command.json": {
+    "bytes": 919,
+    "sha256": "93bcb6c81d9cfe7b74d1c3b8d3b527cfffa852a1c3d51629fac5cabae8931242"
+  },
+  "R2-来源与计时/aa/seed/b.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/seed/b.stdout.log": {
+    "bytes": 134240,
+    "sha256": "6df1374b469af6a246433c336ef95fde8f7e70bb02cfede913446311a2d1dddc"
+  },
+  "R2-来源与计时/aa/seed-invalid-input/a.command.json": {
+    "bytes": 987,
+    "sha256": "ada717d8629c8e37b722b91249c7b6ace19e86fecdbe47ad614d54b8176d0a8b"
+  },
+  "R2-来源与计时/aa/seed-invalid-input/a.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/seed-invalid-input/a.stdout.log": {
+    "bytes": 1523,
+    "sha256": "c958bb581c0ffd9b845020b71c6be8d04205bc3881ff28912c2def463e678f68"
+  },
+  "R2-来源与计时/aa/seed-invalid-input/b.command.json": {
+    "bytes": 987,
+    "sha256": "ada717d8629c8e37b722b91249c7b6ace19e86fecdbe47ad614d54b8176d0a8b"
+  },
+  "R2-来源与计时/aa/seed-invalid-input/b.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/seed-invalid-input/b.stdout.log": {
+    "bytes": 1523,
+    "sha256": "c958bb581c0ffd9b845020b71c6be8d04205bc3881ff28912c2def463e678f68"
+  },
+  "R2-来源与计时/aa/seed-out/a.command.json": {
+    "bytes": 1169,
+    "sha256": "700c3de175f17c4c4d6e55f28cfdb9b98d2be7e45764548965a4c42b5aaa1f7f"
+  },
+  "R2-来源与计时/aa/seed-out/a.seed.json": {
+    "bytes": 134240,
+    "sha256": "6df1374b469af6a246433c336ef95fde8f7e70bb02cfede913446311a2d1dddc"
+  },
+  "R2-来源与计时/aa/seed-out/a.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/seed-out/a.stdout.log": {
+    "bytes": 135,
+    "sha256": "b59111bb9aabc99943115d8dd56231a7d9195988377325a391535acd672164ea"
+  },
+  "R2-来源与计时/aa/seed-out/b.command.json": {
+    "bytes": 1169,
+    "sha256": "700c3de175f17c4c4d6e55f28cfdb9b98d2be7e45764548965a4c42b5aaa1f7f"
+  },
+  "R2-来源与计时/aa/seed-out/b.seed.json": {
+    "bytes": 134240,
+    "sha256": "6df1374b469af6a246433c336ef95fde8f7e70bb02cfede913446311a2d1dddc"
+  },
+  "R2-来源与计时/aa/seed-out/b.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/seed-out/b.stdout.log": {
+    "bytes": 135,
+    "sha256": "b59111bb9aabc99943115d8dd56231a7d9195988377325a391535acd672164ea"
+  },
+  "R2-来源与计时/aa/summary.json": {
+    "bytes": 1805,
+    "sha256": "a7148302e7af05a24f11b067c613c21622a598f83a90563fc2dd1bf636bab715"
+  },
+  "R2-来源与计时/aa/topology-contract/a.command.json": {
+    "bytes": 710,
+    "sha256": "231351d3c87d38df5de815f325133c7262a0a311f954c6f0fe1820926f150309"
+  },
+  "R2-来源与计时/aa/topology-contract/a.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/topology-contract/a.stdout.log": {
+    "bytes": 631240,
+    "sha256": "b8225f3a7d7e8487164302e5d990953b808f25ff6f0e96ceb22ae22028162967"
+  },
+  "R2-来源与计时/aa/topology-contract/b.command.json": {
+    "bytes": 710,
+    "sha256": "231351d3c87d38df5de815f325133c7262a0a311f954c6f0fe1820926f150309"
+  },
+  "R2-来源与计时/aa/topology-contract/b.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/topology-contract/b.stdout.log": {
+    "bytes": 631240,
+    "sha256": "b8225f3a7d7e8487164302e5d990953b808f25ff6f0e96ceb22ae22028162967"
+  },
+  "R2-来源与计时/aa/topology-invalid/a.command.json": {
+    "bytes": 796,
+    "sha256": "3b8a87226c503cbd45814493b0039b53ac37c42f29c4800192985565add21ce7"
+  },
+  "R2-来源与计时/aa/topology-invalid/a.stderr.log": {
+    "bytes": 47,
+    "sha256": "4408cc613f8cee9a80806d1ca423fe9c6b78bf0e8b13124186d36f28bae1227a"
+  },
+  "R2-来源与计时/aa/topology-invalid/a.stdout.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/topology-invalid/b.command.json": {
+    "bytes": 796,
+    "sha256": "3b8a87226c503cbd45814493b0039b53ac37c42f29c4800192985565add21ce7"
+  },
+  "R2-来源与计时/aa/topology-invalid/b.stderr.log": {
+    "bytes": 47,
+    "sha256": "4408cc613f8cee9a80806d1ca423fe9c6b78bf0e8b13124186d36f28bae1227a"
+  },
+  "R2-来源与计时/aa/topology-invalid/b.stdout.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/verify-batch/a.command.json": {
+    "bytes": 965,
+    "sha256": "d6b0b46528611678e615297440d5f050563b3b8cf383b9fb9e1b3e46fe3d9f5e"
+  },
+  "R2-来源与计时/aa/verify-batch/a.stderr.log": {
+    "bytes": 69,
+    "sha256": "bbef13b96e1337c66676ab2c1509988a413fa8e89ebcc07cd397d64b631ce00b"
+  },
+  "R2-来源与计时/aa/verify-batch/a.stdout.log": {
+    "bytes": 1086,
+    "sha256": "664072f3d224c0744fd8b6c154b6e69912a09875d0b0ca1c61be2362226cc5e6"
+  },
+  "R2-来源与计时/aa/verify-batch/b.command.json": {
+    "bytes": 965,
+    "sha256": "d6b0b46528611678e615297440d5f050563b3b8cf383b9fb9e1b3e46fe3d9f5e"
+  },
+  "R2-来源与计时/aa/verify-batch/b.stderr.log": {
+    "bytes": 69,
+    "sha256": "bbef13b96e1337c66676ab2c1509988a413fa8e89ebcc07cd397d64b631ce00b"
+  },
+  "R2-来源与计时/aa/verify-batch/b.stdout.log": {
+    "bytes": 1086,
+    "sha256": "664072f3d224c0744fd8b6c154b6e69912a09875d0b0ca1c61be2362226cc5e6"
+  },
+  "R2-来源与计时/aa/verify-batch-with-cycle-found/a.command.json": {
+    "bytes": 965,
+    "sha256": "80a914dbd527ff76908509edd56828400d99c2ecfb96175aab80c17d1530f6b1"
+  },
+  "R2-来源与计时/aa/verify-batch-with-cycle-found/a.stderr.log": {
+    "bytes": 124,
+    "sha256": "a213f8196a8234edc2a591156e3199b70b305be6477a90324d281d59aaa8a574"
+  },
+  "R2-来源与计时/aa/verify-batch-with-cycle-found/a.stdout.log": {
+    "bytes": 1917,
+    "sha256": "e2905051be53265bbc75735027a6aaecc6da634f58e0ed4aa72646967422eb86"
+  },
+  "R2-来源与计时/aa/verify-batch-with-cycle-found/b.command.json": {
+    "bytes": 965,
+    "sha256": "80a914dbd527ff76908509edd56828400d99c2ecfb96175aab80c17d1530f6b1"
+  },
+  "R2-来源与计时/aa/verify-batch-with-cycle-found/b.stderr.log": {
+    "bytes": 124,
+    "sha256": "a213f8196a8234edc2a591156e3199b70b305be6477a90324d281d59aaa8a574"
+  },
+  "R2-来源与计时/aa/verify-batch-with-cycle-found/b.stdout.log": {
+    "bytes": 1917,
+    "sha256": "e2905051be53265bbc75735027a6aaecc6da634f58e0ed4aa72646967422eb86"
+  },
+  "R2-来源与计时/aa/verify-cycle/a.command.json": {
+    "bytes": 987,
+    "sha256": "13d8e68a562cf6dba6b1dd2d84b90ae0f73534b8a0b425fd58b41c9af952348b"
+  },
+  "R2-来源与计时/aa/verify-cycle/a.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/verify-cycle/a.stdout.log": {
+    "bytes": 158,
+    "sha256": "b4c7a1a72e8b32e9db817c278c0c03fbd2090797fc1e13a7b043e029c90998e5"
+  },
+  "R2-来源与计时/aa/verify-cycle/b.command.json": {
+    "bytes": 987,
+    "sha256": "13d8e68a562cf6dba6b1dd2d84b90ae0f73534b8a0b425fd58b41c9af952348b"
+  },
+  "R2-来源与计时/aa/verify-cycle/b.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/verify-cycle/b.stdout.log": {
+    "bytes": 158,
+    "sha256": "b4c7a1a72e8b32e9db817c278c0c03fbd2090797fc1e13a7b043e029c90998e5"
+  },
+  "R2-来源与计时/aa/verify-cycle-found/a.command.json": {
+    "bytes": 999,
+    "sha256": "4d18e43881975d0aad99b47221c0808a8f67aee2d5fb3a1391554404cfb1dde8"
+  },
+  "R2-来源与计时/aa/verify-cycle-found/a.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/verify-cycle-found/a.stdout.log": {
+    "bytes": 356,
+    "sha256": "5587077d7afed47cff5b3366df9c3edbc0894d5d8ce60f03dbb7d6d6756d59a8"
+  },
+  "R2-来源与计时/aa/verify-cycle-found/b.command.json": {
+    "bytes": 999,
+    "sha256": "4d18e43881975d0aad99b47221c0808a8f67aee2d5fb3a1391554404cfb1dde8"
+  },
+  "R2-来源与计时/aa/verify-cycle-found/b.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/verify-cycle-found/b.stdout.log": {
+    "bytes": 356,
+    "sha256": "5587077d7afed47cff5b3366df9c3edbc0894d5d8ce60f03dbb7d6d6756d59a8"
+  },
+  "R2-来源与计时/aa/verify-cycle-invalid-input/a.command.json": {
+    "bytes": 1003,
+    "sha256": "44bee277693d4215a2893c274b127885168be4dd40869f7d431893c0dcc59d9d"
+  },
+  "R2-来源与计时/aa/verify-cycle-invalid-input/a.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/verify-cycle-invalid-input/a.stdout.log": {
+    "bytes": 1633,
+    "sha256": "5dd81cf8e5656cb1d775c2e476eea2398fc12c5e7e8dbfbeba233f672db74ceb"
+  },
+  "R2-来源与计时/aa/verify-cycle-invalid-input/b.command.json": {
+    "bytes": 1003,
+    "sha256": "44bee277693d4215a2893c274b127885168be4dd40869f7d431893c0dcc59d9d"
+  },
+  "R2-来源与计时/aa/verify-cycle-invalid-input/b.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/verify-cycle-invalid-input/b.stdout.log": {
+    "bytes": 1633,
+    "sha256": "5dd81cf8e5656cb1d775c2e476eea2398fc12c5e7e8dbfbeba233f672db74ceb"
+  },
+  "R2-来源与计时/aa/verify-record-delta/a.command.json": {
+    "bytes": 1005,
+    "sha256": "44e90d7b2d4a2e782bcaa79ebc40153f4109d32082865087947198559f05efe6"
+  },
+  "R2-来源与计时/aa/verify-record-delta/a.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/verify-record-delta/a.stdout.log": {
+    "bytes": 172,
+    "sha256": "2280943360644fcba8b4f4408424b98721d2d77f8235dda213f63bc5cc6f784d"
+  },
+  "R2-来源与计时/aa/verify-record-delta/b.command.json": {
+    "bytes": 1005,
+    "sha256": "44e90d7b2d4a2e782bcaa79ebc40153f4109d32082865087947198559f05efe6"
+  },
+  "R2-来源与计时/aa/verify-record-delta/b.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/verify-record-delta/b.stdout.log": {
+    "bytes": 172,
+    "sha256": "2280943360644fcba8b4f4408424b98721d2d77f8235dda213f63bc5cc6f784d"
+  },
+  "R2-来源与计时/aa/verify-record-full/a.command.json": {
+    "bytes": 1003,
+    "sha256": "6025d74e6a26a2be453f224a6db602c38d79f1cfb894f773477292351e83493e"
+  },
+  "R2-来源与计时/aa/verify-record-full/a.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/verify-record-full/a.stdout.log": {
+    "bytes": 171,
+    "sha256": "9bc6ca35f49d5d104032ed95a84feb7e7c1db23cb025b7ddbf41cd91e7616434"
+  },
+  "R2-来源与计时/aa/verify-record-full/b.command.json": {
+    "bytes": 1003,
+    "sha256": "6025d74e6a26a2be453f224a6db602c38d79f1cfb894f773477292351e83493e"
+  },
+  "R2-来源与计时/aa/verify-record-full/b.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/verify-record-full/b.stdout.log": {
+    "bytes": 171,
+    "sha256": "9bc6ca35f49d5d104032ed95a84feb7e7c1db23cb025b7ddbf41cd91e7616434"
+  },
+  "R2-来源与计时/aa/verify-record-invalid-input/a.command.json": {
+    "bytes": 1005,
+    "sha256": "8110ff34616909b247d919712813515d42be04d42839ab0f20d4bb724f2ccefb"
+  },
+  "R2-来源与计时/aa/verify-record-invalid-input/a.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/verify-record-invalid-input/a.stdout.log": {
+    "bytes": 1389,
+    "sha256": "713e3488e28502095762cd1b23a52bcc697dfa248fd22ef9a72bd143638d2a48"
+  },
+  "R2-来源与计时/aa/verify-record-invalid-input/b.command.json": {
+    "bytes": 1005,
+    "sha256": "8110ff34616909b247d919712813515d42be04d42839ab0f20d4bb724f2ccefb"
+  },
+  "R2-来源与计时/aa/verify-record-invalid-input/b.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/aa/verify-record-invalid-input/b.stdout.log": {
+    "bytes": 1389,
+    "sha256": "713e3488e28502095762cd1b23a52bcc697dfa248fd22ef9a72bd143638d2a48"
+  },
+  "R2-来源与计时/aa_extra.py": {
+    "bytes": 1101,
+    "sha256": "5fc67da7dc6da318affefce671244a4a43fe93dd797acdff62f5229eaf052446"
+  },
+  "R2-来源与计时/aa_probe.py": {
+    "bytes": 5452,
+    "sha256": "e0ffd98dbd7d873b047acc6f229f04fd13b6cd9ebffb318fcb4843217c43f162"
+  },
+  "R2-来源与计时/baseline.json": {
+    "bytes": 1916,
+    "sha256": "8cea8a340da5be4fe4ef724941db7febd66e9f67846f3c85c0a1cd6a14e8944d"
+  },
+  "R2-来源与计时/build-baseline.command.json": {
+    "bytes": 848,
+    "sha256": "ee93fc8709ce1167c4917b9af8dd208e47f855da721fd53dc37d65173c86b774"
+  },
+  "R2-来源与计时/build-baseline.stderr.log": {
+    "bytes": 727,
+    "sha256": "a763ce7a3867d1e87460c816cb432251949168309b5838834ea4cd397c876385"
+  },
+  "R2-来源与计时/build-baseline.stdout.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/build_baseline.py": {
+    "bytes": 1377,
+    "sha256": "00d7e77eb4000b932d3dfa420e4197429aa75bf2d92f481c3dc6db747c2dacce"
+  },
+  "R2-来源与计时/cache-origin/build.command.json": {
+    "bytes": 1021,
+    "sha256": "f286429b557a0d7139752d43d41f07b4c045e98e0c2be534a14dd1623aab8e83"
+  },
+  "R2-来源与计时/cache-origin/build.stderr.log": {
+    "bytes": 727,
+    "sha256": "acc941ed8bb71aae847c6ac33e6817384be6cde4056e600f29f7493268aaf1d2"
+  },
+  "R2-来源与计时/cache-origin/build.stdout.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/cache-origin/record.json": {
+    "bytes": 349699,
+    "sha256": "87f2590c46836654cc1de4f5d3b572870d65943eb653fd9aabeaa903de21d280"
+  },
+  "R2-来源与计时/cache-origin/run.command.json": {
+    "bytes": 1213,
+    "sha256": "bf54359a1f0480ef315456bd980612bc81fce7ee02bcb94a1124b9bf1b7b36d5"
+  },
+  "R2-来源与计时/cache-origin/run.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/cache-origin/run.stdout.log": {
+    "bytes": 144,
+    "sha256": "9578bcb8c475bdfab8ff6622f49f646cf42658fed34e553007956fbaea9c3622"
+  },
+  "R2-来源与计时/cache-origin/summary.json": {
+    "bytes": 713,
+    "sha256": "2a2faa5ec074cf46a8a00ea6d71a581978b058ddde911a42903fcb7b9d36d2fb"
+  },
+  "R2-来源与计时/cache_origin_probe.py": {
+    "bytes": 1492,
+    "sha256": "4cd1d2e3e139c2f52dba7b8b565fb4b2050b7dd519cb7488eb3bb046af00da79"
+  },
+  "R2-来源与计时/cargo.command.json": {
+    "bytes": 388,
+    "sha256": "e12029f97ea26bdb894b078d86274288bf9efb1db3fa919dd5b5f33b6cd92733"
+  },
+  "R2-来源与计时/cargo.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/cargo.stdout.log": {
+    "bytes": 67,
+    "sha256": "8e780a864fc0861c081cafaf20a5ea82a3e481f99e2bf02e2734621ef3ef5e77"
+  },
+  "R2-来源与计时/code-evidence.log": {
+    "bytes": 19129,
+    "sha256": "bac50b5d585179840e2ddc93e1f7eb5e0779c9d2d6182d8e6649cce29950cf7e"
+  },
+  "R2-来源与计时/commands.md": {
+    "bytes": 32158,
+    "sha256": "11b386d88580c57747eeb164d3f666eea0975e1a90824025d77eddd680ac8564"
+  },
+  "R2-来源与计时/delivery-validation.json": {
+    "bytes": 532,
+    "sha256": "b036f882b1b431df80b65cb1750a59e2b58349a0f4be0cdcff74901827e190a0"
+  },
+  "R2-来源与计时/git-after.command.json": {
+    "bytes": 528,
+    "sha256": "e2e0f35e7f43718e92e56afc71acd049864bcdee9ebc4e477ba1cff23e848bc5"
+  },
+  "R2-来源与计时/git-after.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/git-after.stdout.log": {
+    "bytes": 51664,
+    "sha256": "cc8a059db39cd2f5725a9f8812d46a1b290f0b28ae23717eda62eec2443eb14c"
+  },
+  "R2-来源与计时/git-before.command.json": {
+    "bytes": 528,
+    "sha256": "0beafc65b7abea7e57a4f9ec49a783fb707b2c45e04d8fd9b492f1603668ab4a"
+  },
+  "R2-来源与计时/git-before.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/git-before.stdout.log": {
+    "bytes": 1271,
+    "sha256": "a91080b42c410ea58c8637373cf256a20b2b27f60dfa5530ca738efbd38a6d57"
+  },
+  "R2-来源与计时/git-head.command.json": {
+    "bytes": 415,
+    "sha256": "e1682d98a6e183ffbe556dec69986512126bf5bf6ac1a2435ba1799cf620236d"
+  },
+  "R2-来源与计时/git-head.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/git-head.stdout.log": {
+    "bytes": 41,
+    "sha256": "2a366374a6e8ca8c00b2b3779b78c29124a8504df087248d228bdb6d263cf783"
+  },
+  "R2-来源与计时/git-history.command.json": {
+    "bytes": 478,
+    "sha256": "1c966bb8853a67879264994e6a0625f1bc5f5e7d4265f3ff3d22fdba88a396d0"
+  },
+  "R2-来源与计时/git-history.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/git-history.stdout.log": {
+    "bytes": 40425,
+    "sha256": "786cf437457ada502a33e70675194d5515292311fc2035836c6bfa1caedb2b64"
+  },
+  "R2-来源与计时/observed-unstable-fields.json": {
+    "bytes": 1891,
+    "sha256": "7cabbf76bf790647f9e72c4de08bba021f0c94fbe5959dfbfa7e9fad32970752"
+  },
+  "R2-来源与计时/probe_common.py": {
+    "bytes": 2185,
+    "sha256": "95e793d1f52c88e447d021254bd086bf062216768626b4e5363acfbe5f2ac6d0"
+  },
+  "R2-来源与计时/protect.py": {
+    "bytes": 1094,
+    "sha256": "6399a9374ca181ac23535c48f722e95974e738c88d03e3fb05d766bf8d709071"
+  },
+  "R2-来源与计时/protected-after.json": {
+    "bytes": 2021833,
+    "sha256": "c277fb03053de136d6ca00c5dd50b349e064a06f5d512294fbbc999405eb364d"
+  },
+  "R2-来源与计时/protected-before.json": {
+    "bytes": 1975473,
+    "sha256": "9520a8b69da6965b45231796b2d594fe924d16784dbfee8183d6d918614b6743"
+  },
+  "R2-来源与计时/protected-diff.json": {
+    "bytes": 65703,
+    "sha256": "cbf6d0d9f74c479315747de781d2ddb341bf1aadee282c3b89409eac36f4ee10"
+  },
+  "R2-来源与计时/protection-summary.json": {
+    "bytes": 543,
+    "sha256": "5dcacb9ddd867fed1c5df3c53444b318c82d36f61d8e4e1f2e84b6caf5719fbf"
+  },
+  "R2-来源与计时/rustc.command.json": {
+    "bytes": 390,
+    "sha256": "2e704d566061a1601a2f17a465487c17ffb7be167f60f771405a1b86e6306267"
+  },
+  "R2-来源与计时/rustc.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/rustc.stdout.log": {
+    "bytes": 227,
+    "sha256": "2ec72c4801964fef2625062a7df760735c5de02c26fbf3ed92c6a0fbc86947f5"
+  },
+  "R2-来源与计时/source/build-module-a.command.json": {
+    "bytes": 1082,
+    "sha256": "132dcbff983f23018e5bccb8c6dc4d3b75dff27b1c5bc42d6f4981ce466019c3"
+  },
+  "R2-来源与计时/source/build-module-a.stderr.log": {
+    "bytes": 154,
+    "sha256": "5f5882227c22ad53ab92354116b0ef5188e971678f4b79c89b20ce0f75689ab9"
+  },
+  "R2-来源与计时/source/build-module-a.stdout.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/source/build-module-b.command.json": {
+    "bytes": 1082,
+    "sha256": "5738397edbd2e45170286186ba979405e4aa39fabf55580f275d6f82bfea402b"
+  },
+  "R2-来源与计时/source/build-module-b.stderr.log": {
+    "bytes": 154,
+    "sha256": "eb39999bcf7ff28cb8aa530f6c6d8f2dd7aabcade8841a7f0c7cac2419294521"
+  },
+  "R2-来源与计时/source/build-module-b.stdout.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/source/build-tmp-marker.command.json": {
+    "bytes": 1082,
+    "sha256": "04b38692fcca8e6ae58137d69662a4a19e46d364c9f0330989614d011045c676"
+  },
+  "R2-来源与计时/source/build-tmp-marker.stderr.log": {
+    "bytes": 154,
+    "sha256": "7a81d7ef84aca6edd29746b0241eec9216bff6e6b6ac70ab9e4789d05d9bd7fc"
+  },
+  "R2-来源与计时/source/build-tmp-marker.stdout.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/source/build-tmp-original.command.json": {
+    "bytes": 1082,
+    "sha256": "436eb6f4bab8166ef231a09d26e0910de7614ea5e52215ebd20f27b3bd9c5356"
+  },
+  "R2-来源与计时/source/build-tmp-original.stderr.log": {
+    "bytes": 482,
+    "sha256": "a54a64b6027331d87f5ef69498667eb74869e1b04b282096473576163e16d3b4"
+  },
+  "R2-来源与计时/source/build-tmp-original.stdout.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/source/copy-manifest.json": {
+    "bytes": 10018,
+    "sha256": "5f814caa5f299c4d735f4a927782c3a348f0be3346e43ca97057fe2ee5ec784e"
+  },
+  "R2-来源与计时/source/current-record.json": {
+    "bytes": 349270,
+    "sha256": "2eb3a918abb70a8c12646780c1c2f658884391d56f61d4f8832ad1219b23e5bc"
+  },
+  "R2-来源与计时/source/existing-source-change.log": {
+    "bytes": 2992,
+    "sha256": "3be4e45f56058f20b186165aa2866321f37c56a243b9553a353c664f1e1e7c53"
+  },
+  "R2-来源与计时/source/module-a-record.command.json": {
+    "bytes": 1209,
+    "sha256": "8c112b0634ba5bf25330fd0c6620999d4d4f1ef361771d5e5d59ebce07c5bf0d"
+  },
+  "R2-来源与计时/source/module-a-record.json": {
+    "bytes": 349270,
+    "sha256": "0f3adb9c8845963bffb79ea526a29f21fa8efa8532fa66cee8a4badbcec5b46e"
+  },
+  "R2-来源与计时/source/module-a-record.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/source/module-a-record.stdout.log": {
+    "bytes": 146,
+    "sha256": "5dbff955a530262401c635ddf48ff5399ca30edaf6320753ec1f69946fd0eb82"
+  },
+  "R2-来源与计时/source/module-b-record.command.json": {
+    "bytes": 1209,
+    "sha256": "ca16d2165cd63a0b2e40e5a6163cfd3c8158606be4c03d65c5b0100d05171d98"
+  },
+  "R2-来源与计时/source/module-b-record.json": {
+    "bytes": 349270,
+    "sha256": "2eb3a918abb70a8c12646780c1c2f658884391d56f61d4f8832ad1219b23e5bc"
+  },
+  "R2-来源与计时/source/module-b-record.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/source/module-b-record.stdout.log": {
+    "bytes": 146,
+    "sha256": "5dbff955a530262401c635ddf48ff5399ca30edaf6320753ec1f69946fd0eb82"
+  },
+  "R2-来源与计时/source/module-wiring-change.log": {
+    "bytes": 2991,
+    "sha256": "aec16217bba501b538597b0d2faccbaa9e84a0f9d5f444f3a4c5e18dcfc10574"
+  },
+  "R2-来源与计时/source/old-binary-new-source.command.json": {
+    "bytes": 1217,
+    "sha256": "a2504689cc04cbf7e9e997b68489cb2810d8f4ccfb8b4a8ffe7ddd5de5bbd2b2"
+  },
+  "R2-来源与计时/source/old-binary-new-source.json": {
+    "bytes": 349333,
+    "sha256": "15adb8a9aa59b4c81f88441df5e4d675fe642f1ce921d2e0d4005a62d0e99877"
+  },
+  "R2-来源与计时/source/old-binary-new-source.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/source/old-binary-new-source.stdout.log": {
+    "bytes": 146,
+    "sha256": "5dbff955a530262401c635ddf48ff5399ca30edaf6320753ec1f69946fd0eb82"
+  },
+  "R2-来源与计时/source/original-before.command.json": {
+    "bytes": 1217,
+    "sha256": "a2504689cc04cbf7e9e997b68489cb2810d8f4ccfb8b4a8ffe7ddd5de5bbd2b2"
+  },
+  "R2-来源与计时/source/original-before.json": {
+    "bytes": 349333,
+    "sha256": "32a0d36da5ffc591322049fa3c347a6f59e4ed23f7fc7b1f949b36ffd59202db"
+  },
+  "R2-来源与计时/source/original-before.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/source/original-before.stdout.log": {
+    "bytes": 146,
+    "sha256": "5dbff955a530262401c635ddf48ff5399ca30edaf6320753ec1f69946fd0eb82"
+  },
+  "R2-来源与计时/source/rebuilt-new-source.command.json": {
+    "bytes": 1213,
+    "sha256": "e99d79aae1ebae09835d831d257116e062aec805d3086fa924dda1b6697b97cb"
+  },
+  "R2-来源与计时/source/rebuilt-new-source.json": {
+    "bytes": 349292,
+    "sha256": "cd507e64e5f1ad3812c0f9ca17ea73d65780ba9ec26882ccd28504fa482e21af"
+  },
+  "R2-来源与计时/source/rebuilt-new-source.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/source/rebuilt-new-source.stdout.log": {
+    "bytes": 146,
+    "sha256": "5dbff955a530262401c635ddf48ff5399ca30edaf6320753ec1f69946fd0eb82"
+  },
+  "R2-来源与计时/source/summary.json": {
+    "bytes": 4088,
+    "sha256": "3520dbae48f405d1c2c3e0d88d351b686329cbeb221380c536a0a25cffbc2911"
+  },
+  "R2-来源与计时/source/verify-module-a-after-module-edit.command.json": {
+    "bytes": 1005,
+    "sha256": "4d1c601f8fc7057b0515a5f3b058e9d1e9152f6ec9afe7381acc8497b4e0e56a"
+  },
+  "R2-来源与计时/source/verify-module-a-after-module-edit.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/source/verify-module-a-after-module-edit.stdout.log": {
+    "bytes": 172,
+    "sha256": "7675c8b242af141ed0a433f4b843014165672dded20f0721767d356f12553da2"
+  },
+  "R2-来源与计时/source/verify-new-on-old-record.command.json": {
+    "bytes": 1021,
+    "sha256": "ec39886401a9b947999dc033fc64c8ce64c9225ab439db4614bddeef147e41df"
+  },
+  "R2-来源与计时/source/verify-new-on-old-record.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/source/verify-new-on-old-record.stdout.log": {
+    "bytes": 1404,
+    "sha256": "05801832dd1e38fd71e128be1755230575c0fc0ac6977b26e7775e6f27951bfd"
+  },
+  "R2-来源与计时/source/verify-old-on-new-source-record.command.json": {
+    "bytes": 1025,
+    "sha256": "ebc53be47dc25af6d6609740327c367d242eb9280e02b056b0576372fe09e2c7"
+  },
+  "R2-来源与计时/source/verify-old-on-new-source-record.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/source/verify-old-on-new-source-record.stdout.log": {
+    "bytes": 178,
+    "sha256": "ff1e337084ebcf2dc9ac6a4796af11638a57eb477aa042b830268c080e5b335c"
+  },
+  "R2-来源与计时/source/verify-old-on-pre-edit-record.command.json": {
+    "bytes": 1013,
+    "sha256": "ee9c42a971ae5051a887b075cfcde9e086990cfbfda9ab5d43c8ff5bae3fa19f"
+  },
+  "R2-来源与计时/source/verify-old-on-pre-edit-record.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/source/verify-old-on-pre-edit-record.stdout.log": {
+    "bytes": 1463,
+    "sha256": "b48333c53d91df5dcd25093da5623cc7ca4d9f3f1b07e942e01f179dc0ea1f10"
+  },
+  "R2-来源与计时/source-initial-cache-reuse/build-tmp-original.command.json": {
+    "bytes": 1010,
+    "sha256": "4cac570e8a7090dd991f233163ac01d561a71c91b6e7b4fa24cfbce7fa13c7d4"
+  },
+  "R2-来源与计时/source-initial-cache-reuse/build-tmp-original.stderr.log": {
+    "bytes": 64,
+    "sha256": "87879709609715100e3d46ac18cd6266e47c40193e53dd66f1b620d1f3c225f5"
+  },
+  "R2-来源与计时/source-initial-cache-reuse/build-tmp-original.stdout.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/source-initial-cache-reuse/copy-manifest.json": {
+    "bytes": 10018,
+    "sha256": "ce905127ac6a00919c3e44f24bb027eb18c7f35655efa26160a4ce40fda4bdfb"
+  },
+  "R2-来源与计时/source-initial-cache-reuse/current-record.json": {
+    "bytes": 349699,
+    "sha256": "87f2590c46836654cc1de4f5d3b572870d65943eb653fd9aabeaa903de21d280"
+  },
+  "R2-来源与计时/source-initial-cache-reuse/existing-source-change.log": {
+    "bytes": 2992,
+    "sha256": "3be4e45f56058f20b186165aa2866321f37c56a243b9553a353c664f1e1e7c53"
+  },
+  "R2-来源与计时/source-initial-cache-reuse/old-binary-new-source.command.json": {
+    "bytes": 1217,
+    "sha256": "a2504689cc04cbf7e9e997b68489cb2810d8f4ccfb8b4a8ffe7ddd5de5bbd2b2"
+  },
+  "R2-来源与计时/source-initial-cache-reuse/old-binary-new-source.json": {
+    "bytes": 349699,
+    "sha256": "87f2590c46836654cc1de4f5d3b572870d65943eb653fd9aabeaa903de21d280"
+  },
+  "R2-来源与计时/source-initial-cache-reuse/old-binary-new-source.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/source-initial-cache-reuse/old-binary-new-source.stdout.log": {
+    "bytes": 146,
+    "sha256": "5dbff955a530262401c635ddf48ff5399ca30edaf6320753ec1f69946fd0eb82"
+  },
+  "R2-来源与计时/source-initial-cache-reuse/original-before.command.json": {
+    "bytes": 1217,
+    "sha256": "a2504689cc04cbf7e9e997b68489cb2810d8f4ccfb8b4a8ffe7ddd5de5bbd2b2"
+  },
+  "R2-来源与计时/source-initial-cache-reuse/original-before.json": {
+    "bytes": 349699,
+    "sha256": "87f2590c46836654cc1de4f5d3b572870d65943eb653fd9aabeaa903de21d280"
+  },
+  "R2-来源与计时/source-initial-cache-reuse/original-before.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/source-initial-cache-reuse/original-before.stdout.log": {
+    "bytes": 146,
+    "sha256": "5dbff955a530262401c635ddf48ff5399ca30edaf6320753ec1f69946fd0eb82"
+  },
+  "R2-来源与计时/source-initial-cache-reuse/verify-old-on-new-source-record.command.json": {
+    "bytes": 1025,
+    "sha256": "ebc53be47dc25af6d6609740327c367d242eb9280e02b056b0576372fe09e2c7"
+  },
+  "R2-来源与计时/source-initial-cache-reuse/verify-old-on-new-source-record.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/source-initial-cache-reuse/verify-old-on-new-source-record.stdout.log": {
+    "bytes": 178,
+    "sha256": "ff1e337084ebcf2dc9ac6a4796af11638a57eb477aa042b830268c080e5b335c"
+  },
+  "R2-来源与计时/source-initial-cache-reuse/verify-old-on-pre-edit-record.command.json": {
+    "bytes": 1013,
+    "sha256": "a7d5132ee77d5b5fd4818a4062b9e16a3da77c093bdeda2b0927b93b8df911e0"
+  },
+  "R2-来源与计时/source-initial-cache-reuse/verify-old-on-pre-edit-record.stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "R2-来源与计时/source-initial-cache-reuse/verify-old-on-pre-edit-record.stdout.log": {
+    "bytes": 172,
+    "sha256": "53d0068145be8a2579ec5eba5f9cbfdb2f0be1c7a3f5755c46d1d088959cce48"
+  },
+  "R2-来源与计时/source_probe.py": {
+    "bytes": 6414,
+    "sha256": "a7de9fb69544eac1ddcfce457ba5607cac8c4c99be24a0cfb847f5c625f34ad3"
+  },
+  "R2-来源与计时/summarize_protection.py": {
+    "bytes": 1304,
+    "sha256": "dc01f20b81e401caa55adaf24831c1da49e4ef65be33724ab2f74c45143a090e"
+  },
+  "R2-来源与计时/validate_delivery.py": {
+    "bytes": 2843,
+    "sha256": "04e716b6ded911291db7c3482bd750423fb4ddb47f777904ca1096e29dd032d9"
+  },
+  "R2-来源与计时/write_report.py": {
+    "bytes": 20880,
+    "sha256": "e2999d12e58dc4b158513d03c476ebb3e032da9163c420bd0ece65cec96718bf"
+  },
+  "R2-来源与计时.md": {
+    "bytes": 25847,
+    "sha256": "64e11d5e4398d154ed3194b6cb2bdbff016e6f007d68bd59371b32ee96c1d6c3"
+  }
+}

@@ -1,0 +1,111 @@
+{
+ "rows": 159,
+ "unique_paths": 159,
+ "resolve_ok": 159,
+ "expected_matches_source": 159,
+ "equivalent_equal": 159,
+ "current_is_current_sha": 159,
+ "current_is_expected_sha": 0,
+ "current_other": [],
+ "already_restored": 0,
+ "head_equals_current": 159,
+ "blob_220f7b6_equals_current": 159,
+ "history_check_fail": [],
+ "untracked_drift": 14,
+ "untracked_key_exists": true,
+ "untracked_key_current_is_after": true,
+ "untracked_key_source_matches_before": true,
+ "unresolved": [
+  {
+   "path": "crates/kernel/evidence/revision-r4/cli/empty-branch-run-result.json",
+   "exists": true,
+   "current_eq_after": false,
+   "bytes_before": 2032087,
+   "before": "f22f702d11dcda451b6a68c7c3794274ee4e995ab190277a788f4dd8ccf6f3dc"
+  },
+  {
+   "path": "crates/kernel/evidence/revision-r4/cli/full-branch-run-result.json",
+   "exists": true,
+   "current_eq_after": false,
+   "bytes_before": 2101870,
+   "before": "3fdecc6786d30fce310ed7c8ddcb7b7038d738c248030ac591ef2f1c38069697"
+  },
+  {
+   "path": "crates/kernel/evidence/revision-r4/cli/working-prefix-result.json",
+   "exists": true,
+   "current_eq_after": false,
+   "bytes_before": 1368307,
+   "before": "11ef72d89e26d73ac97fb0ef0db8c71a6e5aad5912a1b4c49cfd580f0c742a11"
+  },
+  {
+   "path": "crates/kernel/evidence/round6/revision-r5/cli/original-cycle.record.json",
+   "exists": true,
+   "current_eq_after": false,
+   "bytes_before": 1976331,
+   "before": "6a3a68e67f1f43f20ce62854e63728705d5ddf251029524de8a1b87d3e667723"
+  },
+  {
+   "path": "crates/kernel/evidence/round6/revision-r5/cli/negative/missing.json",
+   "exists": true,
+   "current_eq_after": true,
+   "bytes_before": 1974990,
+   "before": "bcf2d101855846ad07d0b7ca039fdcc09a4420d7735f84ebee4fc684b34427b9"
+  },
+  {
+   "path": "crates/kernel/evidence/round6/revision-r5/cli/negative/state.json",
+   "exists": true,
+   "current_eq_after": true,
+   "bytes_before": 1975032,
+   "before": "440213e08c4f9aecfcce8d77e9e61a80ca3b18c61fa9e7676232c61e6fdec583"
+  },
+  {
+   "path": "crates/kernel/evidence/round6/revision-r5/cli/negative/dependency.json",
+   "exists": true,
+   "current_eq_after": true,
+   "bytes_before": 1974872,
+   "before": "cf409d9b4134809dd0c4ffc9414b166a2c93515bc0a2ad8c5cff9bb66acf647c"
+  },
+  {
+   "path": "crates/kernel/evidence/round6/revision-r5/cli/negative/producer.json",
+   "exists": true,
+   "current_eq_after": true,
+   "bytes_before": 1974968,
+   "before": "ad3e8071633c05d3f9a8b64b23c84fe91a7c327b759d391fc5ce22adf128b4de"
+  },
+  {
+   "path": "crates/kernel/evidence/round6/revision-r5/cli/negative/hash.json",
+   "exists": true,
+   "current_eq_after": true,
+   "bytes_before": 1975036,
+   "before": "e10bc4b3cb2996d35ff38bbb2f4bc81d9a9e5a092357cd727cd9709b0a0fe008"
+  },
+  {
+   "path": "crates/kernel/evidence/round6/revision-r5/cli/reference-package/分流器三路轮询-full_state_each_instant.json",
+   "exists": true,
+   "current_eq_after": true,
+   "bytes_before": 2100944,
+   "before": "3e303f2c75a16f1a98edbc3b86a15364dc6d95a43124add79e61236200e1ee3b"
+  },
+  {
+   "path": "crates/kernel/evidence/round6/revision-r5/cli/reference-package/分流器三路轮询-checkpoint_delta.json",
+   "exists": true,
+   "current_eq_after": true,
+   "bytes_before": 1351842,
+   "before": "2a15dd6abb434f56b1418cd92b267267cad7f8d4cf37f6878179304f3271ddef"
+  },
+  {
+   "path": "crates/kernel/evidence/round6/revision-r5/cli/package/full_state_each_instant/records/record.json",
+   "exists": true,
+   "current_eq_after": false,
+   "bytes_before": 1975264,
+   "before": "8be82067990439c745bb93b5ee4ab9dcea8a646fa589687b1f8d04884d0ca279"
+  },
+  {
+   "path": "crates/kernel/evidence/round6/cli/referenced.record.json",
+   "exists": true,
+   "current_eq_after": true,
+   "bytes_before": 1976331,
+   "before": "6a3a68e67f1f43f20ce62854e63728705d5ddf251029524de8a1b87d3e667723"
+  }
+ ]
+}
