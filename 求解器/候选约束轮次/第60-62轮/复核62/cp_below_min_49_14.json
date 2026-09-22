@@ -1,0 +1,21 @@
+{
+  "R": [
+    49,
+    14,
+    21,
+    53
+  ],
+  "mode": "joint",
+  "allow_edge0_ports": false,
+  "fixed_P": null,
+  "cap": 188,
+  "workers": 1,
+  "seconds_limit": 90,
+  "status": "INFEASIBLE",
+  "build_seconds": 0.02836649100208888,
+  "solve_seconds": 9.052057075,
+  "bodies": 722,
+  "model_sha256": "e75e89d44dcfbe61753c6a0bc1c45bcd87e3481b99654db2568d1f7c396a7a6f",
+  "model_stats": "satisfaction model '': (model_fingerprint: 0x5ae8eeb49a88d1b3)\n#Variables: 1'934 (1'353 primary variables)\n  - 1'931 Booleans in [0,1]\n  - 1 in [0,12]\n  - 1 in [10,12]\n  - 1 constants in {1} \n#kBoolOr: 88 (#enforced: 88) (#literals: 88)\n#kLinear1: 712 (#enforced: 712)\n#kLinear2: 33 (#enforced: 20)\n#kLinear3: 324 (#enforced: 313)\n#kLinearN: 1'743 (#enforced: 551) (#terms: 24'153)",
+  "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 1687\nbooleans: 1625\nconflicts: 3208\nbranches: 265629\npropagations: 3421825\ninteger_propagations: 4443219\nrestarts: 26\nlp_iterations: 72335\nwalltime: 9.05206\nusertime: 9.05206\ndeterministic_time: 13.6951\ngap_integral: 0\n"
+}

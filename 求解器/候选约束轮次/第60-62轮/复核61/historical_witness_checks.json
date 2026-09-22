@@ -1,0 +1,134 @@
+[
+  {
+    "source": "求解器/几何/1113放松/异源核查/results/minS_edge0_W21H53_x49y5.json",
+    "claimed_optimum": 188,
+    "witness_checked": true,
+    "note": "Witness verification only; optimality uses source solver status."
+  },
+  {
+    "source": "求解器/几何/1113放松/异源核查/results/minS_edge0_W53H21_x5y49.json",
+    "claimed_optimum": 188,
+    "witness_checked": true,
+    "note": "Witness verification only; optimality uses source solver status."
+  },
+  {
+    "source": "求解器/几何/1113放松/异源核查/results/minS_edge0_W21H53_x49y6.json",
+    "claimed_optimum": 187,
+    "witness_checked": true,
+    "note": "Witness verification only; optimality uses source solver status."
+  },
+  {
+    "source": "求解器/几何/1113放松/异源核查/results/minS_edge0_W53H21_x6y49.json",
+    "claimed_optimum": 187,
+    "witness_checked": true,
+    "note": "Witness verification only; optimality uses source solver status."
+  },
+  {
+    "source": "求解器/几何/1113放松/异源核查/results/minS_edge0_W21H53_x49y7.json",
+    "claimed_optimum": 186,
+    "witness_checked": true,
+    "note": "Witness verification only; optimality uses source solver status."
+  },
+  {
+    "source": "求解器/几何/1113放松/异源核查/results/minS_edge0_W53H21_x7y49.json",
+    "claimed_optimum": 186,
+    "witness_checked": true,
+    "note": "Witness verification only; optimality uses source solver status."
+  },
+  {
+    "source": "求解器/几何/1113放松/异源核查/results/minS_edge0_W21H53_x49y8.json",
+    "claimed_optimum": 188,
+    "witness_checked": true,
+    "note": "Witness verification only; optimality uses source solver status."
+  },
+  {
+    "source": "求解器/几何/1113放松/异源核查/results/minS_edge0_W53H21_x8y49.json",
+    "claimed_optimum": 188,
+    "witness_checked": true,
+    "note": "Witness verification only; optimality uses source solver status."
+  },
+  {
+    "source": "求解器/几何/1113放松/异源核查/results/minS_edge0_W21H53_x49y9.json",
+    "claimed_optimum": 187,
+    "witness_checked": true,
+    "note": "Witness verification only; optimality uses source solver status."
+  },
+  {
+    "source": "求解器/几何/1113放松/异源核查/results/minS_edge0_W53H21_x9y49.json",
+    "claimed_optimum": 187,
+    "witness_checked": true,
+    "note": "Witness verification only; optimality uses source solver status."
+  },
+  {
+    "source": "求解器/几何/1113放松/异源核查/results/minS_edge0_W21H53_x49y10.json",
+    "claimed_optimum": 189,
+    "witness_checked": true,
+    "note": "Witness verification only; optimality uses source solver status."
+  },
+  {
+    "source": "求解器/几何/1113放松/异源核查/results/minS_edge0_W53H21_x10y49.json",
+    "claimed_optimum": 189,
+    "witness_checked": true,
+    "note": "Witness verification only; optimality uses source solver status."
+  },
+  {
+    "source": "求解器/几何/1113放松/异源核查/results/minS_edge0_W21H53_x49y11.json",
+    "claimed_optimum": 189,
+    "witness_checked": true,
+    "note": "Witness verification only; optimality uses source solver status."
+  },
+  {
+    "source": "求解器/几何/1113放松/异源核查/results/minS_edge0_W53H21_x11y49.json",
+    "claimed_optimum": 189,
+    "witness_checked": true,
+    "note": "Witness verification only; optimality uses source solver status."
+  },
+  {
+    "source": "求解器/几何/1113放松/异源核查/results/minS_edge0_W21H53_x49y12.json",
+    "claimed_optimum": 188,
+    "witness_checked": true,
+    "note": "Witness verification only; optimality uses source solver status."
+  },
+  {
+    "source": "求解器/几何/1113放松/异源核查/results/minS_edge0_W53H21_x12y49.json",
+    "claimed_optimum": 188,
+    "witness_checked": true,
+    "note": "Witness verification only; optimality uses source solver status."
+  },
+  {
+    "source": "求解器/几何/1113放松/异源核查/results/minS_edge0_W21H53_x49y13.json",
+    "claimed_optimum": 201,
+    "witness_checked": true,
+    "note": "Witness verification only; optimality uses source solver status."
+  },
+  {
+    "source": "求解器/几何/1113放松/异源核查/results/minS_edge0_W53H21_x13y49.json",
+    "claimed_optimum": 201,
+    "witness_checked": true,
+    "note": "Witness verification only; optimality uses source solver status."
+  },
+  {
+    "source": "求解器/几何/1113放松/异源核查/results/minS_edge0_W21H53_x49y14.json",
+    "claimed_optimum": 189,
+    "witness_checked": true,
+    "note": "Witness verification only; optimality uses source solver status."
+  },
+  {
+    "source": "求解器/几何/1113放松/异源核查/results/minS_edge0_W53H21_x14y49.json",
+    "claimed_optimum": 189,
+    "witness_checked": true,
+    "note": "Witness verification only; optimality uses source solver status."
+  },
+  {
+    "source": "求解器/几何/1113放松/异源核查/results/minS_edge0_W21H53_x49y17.json",
+    "claimed_optimum": 179,
+    "witness_checked": true,
+    "note": "Witness verification only; optimality uses source solver status."
+  },
+  {
+    "source": "求解器/几何/1113放松/异源核查/results/minS_edge0_W53H21_x17y49.json",
+    "claimed_optimum": 179,
+    "witness_checked": true,
+    "note": "Witness verification only; optimality uses source solver status."
+  }
+]

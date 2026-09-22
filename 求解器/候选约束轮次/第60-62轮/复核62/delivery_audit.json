@@ -1,0 +1,29 @@
+{
+  "status": "passed",
+  "report": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第60-62轮/复核62.md",
+  "report_sha256": "4f95cfabaa92a352897805aa4695b3153d9eca40f9a6a5fae4006cd5a259d6ef",
+  "linked_artifacts_checked": 13,
+  "position_rows_checked": 22,
+  "python_sources_parsed": 9,
+  "review_items": [
+    "standalone_scope_and_conclusion",
+    "status_matches_completed_runs",
+    "single_numerical_scope_per_table",
+    "all_links_exist",
+    "56_to_71_effects_separated",
+    "thread_violation_disclosed",
+    "relaxation_witness_not_factory_witness"
+  ],
+  "source_sha256": {
+    "boundary62.py": "7f761b4c17881f8b67b3ae817557de3d34e54eba05e59cf29f1a9444286ef32e",
+    "check62.py": "ada436e4b7274214a0a2d88d8c2c162eddea42f3f02f9985fe93876888c7587e",
+    "check_results62.py": "4aa08249dad53635c9c7122d35138ecc5e22955f920ca8b1cc9d046d698a172c",
+    "cp_certify62.py": "451123ea9e74b384653e9f7eb2c135d417691caf81f9dc2bf57c56aae34ff8cd",
+    "filter62.py": "6f3c2ec20fded89cabff4d562b0d0d33dd7cc502fe1871d443c3c413ecbdb51d",
+    "geometry_audit62.py": "b61423888815e4d7a5694f5525de46c95920b3e8c06263d50847537783bc415e",
+    "make_report62.py": "2b3b06078a75bdf014b1478b48e742147349aa6a9b48da739c379d5c81ab37fd",
+    "mip62.py": "d797e16b466798b6d09718acdc10d48c137d7c5d072d5b744dd0387a134b6b35",
+    "run_candidates62.py": "8510659ae269cf3ec7a8b4d9f7d58648fe765069629164f91d4d83791f5ef437"
+  },
+  "inputs_unchanged": true
+}

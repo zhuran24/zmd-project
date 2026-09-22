@@ -1,0 +1,57 @@
+Running HiGHS 1.12.0 (git hash: 4f96ee8f4): Copyright (c) 2025 HiGHS under MIT licence terms
+MIP has 2966 rows; 1977 cols; 27330 nonzeros; 1977 integer variables (1975 binary)
+Coefficient ranges:
+  Matrix  [1e+00, 2e+01]
+  Cost    [1e+00, 2e+01]
+  Bound   [1e+00, 1e+01]
+  RHS     [1e+00, 2e+02]
+Presolving model
+2829 rows, 1964 cols, 27067 nonzeros  0s
+2425 rows, 1642 cols, 22366 nonzeros  0s
+2088 rows, 1618 cols, 22879 nonzeros  0s
+Presolve reductions: rows 2088(-878); columns 1618(-359); nonzeros 22879(-4451) 
+Objective function is integral with scale 1
+
+Solving MIP model with:
+   2088 rows
+   1618 cols (1616 binary, 2 integer, 0 implied int., 0 continuous, 0 domain fixed)
+   22879 nonzeros
+
+Src: B => Branching; C => Central rounding; F => Feasibility pump; H => Heuristic;
+     I => Shifting; J => Feasibility jump; L => Sub-MIP; P => Empty MIP; R => Randomized rounding;
+     S => Solve LP; T => Evaluate node; U => Unbounded; X => User solution; Y => HiGHS solution;
+     Z => ZI Round; l => Trivial lower; p => Trivial point; u => Trivial upper; z => Trivial zero
+
+        Nodes      |    B&B Tree     |            Objective Bounds              |  Dynamic Constraints |       Work      
+Src  Proc. InQueue |  Leaves   Expl. | BestBound       BestSol              Gap |   Cuts   InLp Confl. | LpIters     Time
+
+ z       0       0         0   0.00%   -inf            160                Large        0      0      0         0     0.1s
+ R       0       0         0   0.00%   8.826459064     108               91.83%        0      0      0      1647     0.3s
+ L       0       0         0   0.00%   19.72987855     21                 6.05%     2390    117     58     10604     3.2s
+
+37.5% inactive integer columns, restarting
+Model after restart has 1069 rows, 718 cols (718 bin., 0 int., 0 impl., 0 cont., 0 dom.fix.), and 7080 nonzeros
+
+         0       0         0   0.00%   19.73231914     21                 6.04%       51      0      0     10900     3.4s
+         1       0         1 100.00%   20.25           21                 3.57%       51      0      0     11211     3.4s
+
+Solving report
+  Status            Optimal
+  Primal bound      21
+  Dual bound        21
+  Gap               0%
+  P-D integral      2.8411368012
+  Solution status   feasible
+                    21 (objective)
+                    0 (bound viol.)
+                    0 (int. viol.)
+                    0 (row viol.)
+  Timing            3.36
+  Max sub-MIP depth 1
+  Nodes             1
+  Repair LPs        0
+  LP iterations     11211
+                    0 (strong br.)
+                    8975 (separation)
+                    278 (heuristics)
+{"R": [49, 13, 21, 53], "mode": "joint", "allow_edge0_ports": false, "fixed_P": null, "cap": null, "solver": "scipy_highs", "threads": 1, "status": 0, "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)", "build_seconds": 0.01606681699922774, "solve_seconds": 3.3734690330020385, "bodies": 745, "rows": 2966, "variables": 1977, "matrix_sha256": "7cb3b24f06cdf96df54c6ab7f1fad64c8b86def276a22f8c2ad483a4190d0ac1", "lower_bound": 201.0, "gap": 0.0, "objective": 201, "P": 10, "J": 1, "hidden_boundary_poles": 0, "X": 26, "Y": 17, "S": 201, "rounded_matrix_check": true}

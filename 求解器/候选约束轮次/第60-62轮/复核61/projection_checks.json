@@ -1,0 +1,11 @@
+{
+  "counts": {
+    "projected_body_occurrences": 1195190,
+    "independent_bodies": 833366,
+    "rectangles": 644,
+    "corner_triple_direction_cases": 2,
+    "transpose_position_pairs": 11
+  },
+  "seconds": 55.0541167880001,
+  "all_passed": true
+}

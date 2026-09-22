@@ -1,0 +1,11 @@
+4 {'projected_body_occurrences': 24896, 'independent_bodies': 16606, 'rectangles': 14} 1.89
+9 {'projected_body_occurrences': 156190, 'independent_bodies': 106601, 'rectangles': 84} 7.84
+14 {'projected_body_occurrences': 293355, 'independent_bodies': 202609, 'rectangles': 154} 13.64
+19 {'projected_body_occurrences': 431260, 'independent_bodies': 299364, 'rectangles': 224} 19.41
+24 {'projected_body_occurrences': 569165, 'independent_bodies': 396119, 'rectangles': 294} 25.18
+29 {'projected_body_occurrences': 707070, 'independent_bodies': 492874, 'rectangles': 364} 31.17
+34 {'projected_body_occurrences': 844975, 'independent_bodies': 589629, 'rectangles': 434} 37.2
+39 {'projected_body_occurrences': 982888, 'independent_bodies': 686384, 'rectangles': 504} 43.16
+44 {'projected_body_occurrences': 1106939, 'independent_bodies': 772014, 'rectangles': 574} 48.78
+49 {'projected_body_occurrences': 1195190, 'independent_bodies': 833366, 'rectangles': 644, 'corner_triple_direction_cases': 2} 53.9
+PASS {'projected_body_occurrences': 1195190, 'independent_bodies': 833366, 'rectangles': 644, 'corner_triple_direction_cases': 2, 'transpose_position_pairs': 11}

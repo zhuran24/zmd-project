@@ -1,0 +1,24 @@
+{
+  "interval_models_checked": 2634,
+  "distinct_interval_models": 2634,
+  "counts": {
+    "initial": 1800,
+    "after_distance": 1288,
+    "after_corridor_length": 1260,
+    "after_exact_ports": 1200,
+    "interval_bound": 1178,
+    "survives": 22
+  },
+  "position_P_branches": 40,
+  "original22_missing": [],
+  "extra_vs_original22": [],
+  "retained8_missing": [],
+  "retained8_extra": [],
+  "mip_optimal_positions": 22,
+  "cp_statuses": {
+    "INFEASIBLE": 22
+  },
+  "final_input_changes": [],
+  "witness_check": true,
+  "geometry_check": true
+}

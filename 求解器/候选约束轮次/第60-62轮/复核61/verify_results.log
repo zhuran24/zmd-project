@@ -1,0 +1,109 @@
+{
+  "summary": {
+    "positions": 900,
+    "status_counts": {
+      "矩形离带": 256,
+      "矿石走廊长度": 14,
+      "INFEASIBLE": 596,
+      "矿石走廊端口数": 30,
+      "OPTIMAL": 4
+    },
+    "retained": [
+      [
+        49,
+        6,
+        21,
+        53
+      ],
+      [
+        49,
+        7,
+        21,
+        53
+      ],
+      [
+        49,
+        9,
+        21,
+        53
+      ],
+      [
+        49,
+        17,
+        21,
+        53
+      ]
+    ],
+    "cross": {
+      "pre_filter|矩形离带": 256,
+      "pre_filter|矿石走廊长度": 14,
+      "dp|INFEASIBLE": 589,
+      "corridor|矿石走廊端口数": 30,
+      "candidate|INFEASIBLE": 7,
+      "candidate|OPTIMAL": 4
+    },
+    "solver_runs": 600,
+    "retained_attempt_build_solve_seconds": 933.6063547159138,
+    "timing_note": "Sum covers retained attempts only; sweep.log elapsed also includes initial UNKNOWN attempts before retries.",
+    "two_orientations_via_transpose": {
+      "positions": 1800,
+      "retained": [
+        [
+          49,
+          6,
+          21,
+          53
+        ],
+        [
+          49,
+          7,
+          21,
+          53
+        ],
+        [
+          49,
+          9,
+          21,
+          53
+        ],
+        [
+          49,
+          17,
+          21,
+          53
+        ],
+        [
+          6,
+          49,
+          53,
+          21
+        ],
+        [
+          7,
+          49,
+          53,
+          21
+        ],
+        [
+          9,
+          49,
+          53,
+          21
+        ],
+        [
+          17,
+          49,
+          53,
+          21
+        ]
+      ]
+    },
+    "all_witnesses_rechecked": true
+  },
+  "integrity": {
+    "compared_files": 297,
+    "changed": [],
+    "added_to_protected_directory": [],
+    "all_unchanged": true
+  }
+}

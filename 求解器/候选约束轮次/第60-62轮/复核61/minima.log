@@ -1,0 +1,1 @@
+{'rect': (49, 5, 21, 53), 'edge0': True, 'minimize': True, 'status': 'FEASIBLE', 'seconds': 60.19312333600101, 'workers': 4, 'body_count': 808, 'best_bound': 169.0, 'P': 10, 'J': 1, 'X': 21, 'Y': 10, 'S': 189, 'missing': 0, 'missing_edge': 0, 'witness_checked': True}
