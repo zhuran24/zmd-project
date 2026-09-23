@@ -8,7 +8,7 @@ import check_examples as checker
 
 BASE = Path(__file__).resolve().parent
 PROFILE_PATH = BASE / 'kernel_profile_v1参数赋值.json'
-SUPPORTED_PROFILE_SHA256 = 'a6ecebadfb0e322726f22dd3967301691063965c45f56bd62e0d84965a810fee'
+SUPPORTED_PROFILE_SHA256 = '57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048'
 
 
 def is_splitter(data):
@@ -112,7 +112,7 @@ def profile_values(data, catalog):
 def validate_decision_tree(value, name='root'):
     """所有嵌套 Decision 先核封套；可运行状态另核所需已解状态。"""
     if isinstance(value, dict):
-        if 'status' in value and ('value' in value or 'basis' in value):
+        if 'status' in value and ('value' in value or 'basis' in value) and '.bridge_axes.' not in name:
             try:checker.decision(value, nullable=name.endswith('.empty_identity'))
             except checker.CheckError as error:raise checker.CheckError('Decision '+name+': '+str(error)) from error
         for key, child in value.items():
@@ -132,7 +132,7 @@ def empty_slot_ids(warehouse):
     return result
 
 
-def make_poll_memory(data, catalog, seed=None):
+def make_poll_memory(data, catalog, seed=None, only_units=None):
     """从实际库存、格选择、滞留及端口预算派生参考子集的当前可动级。"""
     kinds, units, ports, channels, _, _ = checker.geometry(data, catalog)
     order = {u:i for i,u in enumerate(data['construction']['selected_order'])}
@@ -154,16 +154,17 @@ def make_poll_memory(data, catalog, seed=None):
             if row['item'] is None or checker.quantity(row['quantity'])==0:return False
             item=row['item']
         else:
-            slot=next((s for s in inv if s.startswith(uid+':storage:') and inv[s]), None) if kind=='协议储存箱' else f"{uid}:{'transport' if family=='transport' else 'output'}:0"
+            slot=next((s for s in inv if s.startswith(uid+':storage:') and inv[s]), None) if kind=='协议储存箱' else f"{uid}:{ports[source]['axis'] if kind=='桥接器' else 'transport' if family=='transport' else 'output'}:0"
             rows=inv.get(slot,[])
             if not rows:return False
             row=rows[0];item=row['item']
+            if row.get('last_unit') == ports[target]['unit']:return False
             if checker.quantity(row['quantity'])<=0:return False
             if family=='transport':
                 checker.require(row['entered_at'] is not None,'运输物品缺入格时刻')
                 if time-checker.quantity(row['entered_at']['value'],integer=False)<1:return False
         uid=ports[target]['unit'];family=kinds[units[uid]['kind']]['family']
-        if family=='transport':slots=[f'{uid}:transport:0'];capacity=1
+        if family=='transport':slots=[f"{uid}:{ports[target]['axis'] or 'transport'}:0"];capacity=1
         elif units[uid]['kind']=='协议储存箱':
             slots=[s for s in inv if s.startswith(uid+':storage:')];capacity=50
             return any(not inv[s] or (inv[s][0]['item']==item and checker.quantity(inv[s][0]['quantity'])<capacity) for s in slots)
@@ -178,6 +179,8 @@ def make_poll_memory(data, catalog, seed=None):
     from polling_reference import build_sides, refresh_sides
     cmap={c['id']:c for c in channels}
     memory=build_sides(data,kinds,units,ports,channels)
+    if only_units is not None:
+        memory['sides']=[s for s in memory['sides'] if s['unit'] in only_units]
     arbitration=seed['semantic_context']['arbitration']['level_order'] if seed else [l['id'] for s in memory['sides'] for l in s['levels']]
     refresh_sides(data,memory['sides'],lambda cid:physical(cmap[cid]),arbitration)
     return memory

@@ -3,7 +3,7 @@
   "purpose": "synthetic_execution",
   "catalog": {
     "path": "../正式静态目录.json",
-    "sha256": "b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c"
+    "sha256": "3566e2ecb9d90b9a1afc01b273eb548178de738fb4e4f3b2af88fa05f809be29"
   },
   "timeline": {
     "events": [
@@ -1708,7 +1708,7 @@
   "parameters": {
     "axis_registry": {
       "path": "../../规格/选择点参数轴.md",
-      "sha256": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+      "sha256": "261da30db31063ec8292aaa493e2c11d026c0861852ef19550eeb92eb4da7665"
     },
     "profile_id": "kernel_profile_v1",
     "fixed": {
@@ -1880,9 +1880,9 @@
       },
       "bridge.scheduling_scope": {
         "status": "specified",
-        "value": "unit",
+        "value": "per_axis",
         "basis": [
-          "受限模型声明；内核输入 §5.2–5.4；known：unit，按单位存取两侧，存货共同分级、取货不分级；按轴拆调度排除。据：轮询、存货/取货优先级、桥接器"
+          "规则L24、L59、L63；现行内核配置 r25"
         ]
       },
       "connection.belt_shape": {
@@ -1970,6 +1970,27 @@
         "value": "advance_authorized",
         "basis": [
           "受限模型声明；内核输入 §5.2–5.4；open：advance_authorized（一次失败判定仅前移已给该边权限的侧）／no_attempt_hold（不足双方权限时不判定、均保持）／advance_both（两侧均前移，须说明无权限侧为何可前移）；后两项有规则29的字面冲突，待审不可默认执行。实际发生的失败尝试不前移已排除。据：轮询、判定；T3"
+        ]
+      },
+      "bridge.capacity": {
+        "status": "specified",
+        "value": 1,
+        "basis": [
+          "规则L24、L59、L63；现行内核配置 r25"
+        ]
+      },
+      "connection.bridge_first_contact": {
+        "status": "specified",
+        "value": "not_applicable",
+        "basis": [
+          "规则L24、L59、L63；现行内核配置 r25"
+        ]
+      },
+      "connection.bridge_tie": {
+        "status": "specified",
+        "value": "not_applicable",
+        "basis": [
+          "规则L24、L59、L63；现行内核配置 r25"
         ]
       }
     },
@@ -2279,23 +2300,6 @@
           "受限模型声明；内核输入 §5.2–5.4；open：同刻并列／以额外关系破平局；须与初次共享较晚端及轮询起点联合核。据：接通、轮询"
         ]
       },
-      "connection.bridge_first_contact": {
-        "status": "specified",
-        "value": "physical_contact",
-        "basis": [
-          "受限模型声明；内核输入 §5.2–5.4；open：按物理邻接先接／按有向通道形成先接；相邻桥接器循环依赖需历史核验，已知邻端须存取互补。据：桥接器、通道、接通"
-        ]
-      },
-      "connection.bridge_tie": {
-        "status": "specified",
-        "value": {
-          "policy": "stop",
-          "trigger": "先接并列或桥互依赖，不能由唯一无环见证定向"
-        },
-        "basis": [
-          "受限模型声明；内核输入 §5.2–5.4；open：合法互补方向的固定仲裁／联立关系；联立解不自动是可执行建造历史。据：桥接器、蓝图、通道"
-        ]
-      },
       "transfer.phase": {
         "status": "specified",
         "value": {
@@ -2556,10 +2560,10 @@
         "status": "specified",
         "value": {
           "policy": "stop",
-          "trigger": "离线需更新桥方向"
+          "trigger": "请求离线回放"
         },
         "basis": [
-          "受限模型声明；内核输入 §5.2–5.4；open：保留桥接器历史定向／新先接序的后效待审，必须核库存通路与端口相遇。据：离线、桥接器、通道"
+          "规则L24、L59、L63；现行内核配置 r25"
         ]
       },
       "offline.gate_total_effect": {
@@ -2718,13 +2722,6 @@
         },
         "basis": [
           "任务L2、L7—10、L13；规则L14；任务2§6.5；任务6 SP-11"
-        ]
-      },
-      "bridge.capacity": {
-        "status": "specified",
-        "value": 1,
-        "basis": [
-          "受限模型声明；内核输入 §5.2–5.4；open：1（仅个数例外的受限读法）／容量也例外但数值域待证；null 不是无限。据：运输单位、桥接器、约束·箱体过站/约束·运输下限"
         ]
       },
       "power.cell_rule": {
@@ -3988,9 +3985,9 @@
               "axis": "bridge.scheduling_scope",
               "value": {
                 "status": "specified",
-                "value": "unit",
+                "value": "per_axis",
                 "basis": [
-                  "受限模型声明；内核输入 §5.2–5.4；known：unit，按单位存取两侧，存货共同分级、取货不分级；按轴拆调度排除。据：轮询、存货/取货优先级、桥接器"
+                  "规则L24、L59、L63；现行内核配置 r25"
                 ]
               },
               "lifetime": "F"
@@ -4434,26 +4431,23 @@
               "axis": "connection.bridge_first_contact",
               "value": {
                 "status": "specified",
-                "value": "physical_contact",
+                "value": "not_applicable",
                 "basis": [
-                  "受限模型声明；内核输入 §5.2–5.4；open：按物理邻接先接／按有向通道形成先接；相邻桥接器循环依赖需历史核验，已知邻端须存取互补。据：桥接器、通道、接通"
+                  "规则L24、L59、L63；现行内核配置 r25"
                 ]
               },
-              "lifetime": "U"
+              "lifetime": "F"
             },
             {
               "axis": "connection.bridge_tie",
               "value": {
                 "status": "specified",
-                "value": {
-                  "policy": "stop",
-                  "trigger": "先接并列或桥互依赖，不能由唯一无环见证定向"
-                },
+                "value": "not_applicable",
                 "basis": [
-                  "受限模型声明；内核输入 §5.2–5.4；open：合法互补方向的固定仲裁／联立关系；联立解不自动是可执行建造历史。据：桥接器、蓝图、通道"
+                  "规则L24、L59、L63；现行内核配置 r25"
                 ]
               },
-              "lifetime": "U"
+              "lifetime": "F"
             },
             {
               "axis": "transfer.cooldown_scope",
@@ -4871,10 +4865,10 @@
                 "status": "specified",
                 "value": {
                   "policy": "stop",
-                  "trigger": "离线需更新桥方向"
+                  "trigger": "请求离线回放"
                 },
                 "basis": [
-                  "受限模型声明；内核输入 §5.2–5.4；open：保留桥接器历史定向／新先接序的后效待审，必须核库存通路与端口相遇。据：离线、桥接器、通道"
+                  "规则L24、L59、L63；现行内核配置 r25"
                 ]
               },
               "lifetime": "U"
@@ -5125,10 +5119,10 @@
                 "status": "specified",
                 "value": 1,
                 "basis": [
-                  "受限模型声明；内核输入 §5.2–5.4；open：1（仅个数例外的受限读法）／容量也例外但数值域待证；null 不是无限。据：运输单位、桥接器、约束·箱体过站/约束·运输下限"
+                  "规则L24、L59、L63；现行内核配置 r25"
                 ]
               },
-              "lifetime": "U"
+              "lifetime": "F"
             },
             {
               "axis": "power.cell_rule",

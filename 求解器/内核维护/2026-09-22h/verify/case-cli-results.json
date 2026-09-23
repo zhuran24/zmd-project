@@ -1,0 +1,74 @@
+[
+  {
+    "case": "straight",
+    "cli_pass": true
+  },
+  {
+    "case": "two-inward",
+    "cli_pass": true
+  },
+  {
+    "case": "chain-2-east-gaps",
+    "cli_pass": true
+  },
+  {
+    "case": "chain-2-west-gaps",
+    "cli_pass": true
+  },
+  {
+    "case": "chain-2-north-gaps",
+    "cli_pass": true
+  },
+  {
+    "case": "chain-2-south-gaps",
+    "cli_pass": true
+  },
+  {
+    "case": "chain-3-east-gaps",
+    "cli_pass": true
+  },
+  {
+    "case": "chain-3-west-gaps",
+    "cli_pass": true
+  },
+  {
+    "case": "chain-3-north-gaps",
+    "cli_pass": true
+  },
+  {
+    "case": "chain-3-south-gaps",
+    "cli_pass": true
+  },
+  {
+    "case": "empty-adjacent-r0",
+    "cli_pass": true
+  },
+  {
+    "case": "empty-adjacent-r90",
+    "cli_pass": true
+  },
+  {
+    "case": "empty-adjacent-r180",
+    "cli_pass": true
+  },
+  {
+    "case": "empty-adjacent-r270",
+    "cli_pass": true
+  },
+  {
+    "case": "axis-belt-control",
+    "cli_pass": true
+  },
+  {
+    "case": "axis-splitter-busy",
+    "cli_pass": true
+  },
+  {
+    "case": "axis-splitter-blocked",
+    "cli_pass": true
+  },
+  {
+    "case": "same-item-two-axes",
+    "cli_pass": true
+  }
+]

@@ -1,0 +1,686 @@
+[
+  {
+    "path": "求解器/数据/样例/桥接器双通路.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/桥接器双通路.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/密集制造闭环序1核验.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/密集制造闭环序1核验.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/阻尼连续带核验.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/阻尼连续带核验.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/kernel_profile_v1参数赋值.json",
+    "field": "profile_source",
+    "source": "求解器/规格/受限模型声明.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/kernel_profile_v1参数赋值.json",
+    "field": "configuration_source",
+    "source": "求解器/规格/内核配置-v1.json",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/kernel_profile_v1参数赋值.json",
+    "field": "axis_source",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/混做粉碎机两下游.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/混做粉碎机两下游.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/轮询均分序2核验.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/轮询均分序2核验.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/传输拒收与暂停核验.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/传输拒收与暂停核验.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/密集制造闭环序3核验.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/密集制造闭环序3核验.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/轮询均分序3核验.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/轮询均分序3核验.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/轮询均分序4核验.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/轮询均分序4核验.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/轮询均分序5核验.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/轮询均分序5核验.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/分流器三路轮询-参数赋值.json",
+    "field": "profile_source",
+    "source": "求解器/规格/受限模型声明.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/分流器三路轮询-参数赋值.json",
+    "field": "configuration_source",
+    "source": "求解器/规格/内核配置-v1.json",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/分流器三路轮询-参数赋值.json",
+    "field": "axis_source",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/研磨混做核验.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/研磨混做核验.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/密集制造闭环序4核验.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/密集制造闭环序4核验.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/阻尼切支恢复核验.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/阻尼切支恢复核验.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/分流器三路轮询.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/分流器三路轮询.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/密集结点闭环核验.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/密集结点闭环核验.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/密集结点核验.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/密集结点核验.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/轮询均分核验.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/轮询均分核验.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/密集制造闭环序5核验.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/密集制造闭环序5核验.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/双成品满仓起动试作.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/双成品满仓起动试作.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/双成品制造砖.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/双成品制造砖.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/生产循环环带.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/生产循环环带.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/轮询均分序0核验.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/轮询均分序0核验.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/密集制造闭环序0核验.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/密集制造闭环序0核验.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/密集结点循环种子核验.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/密集结点循环种子核验.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/轮询均分序1核验.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/轮询均分序1核验.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/密集制造闭环基础.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/密集制造闭环基础.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/密集制造闭环序2核验.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/密集制造闭环序2核验.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/任务7内核/身份实际切换.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/任务7内核/身份实际切换.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/任务7内核/静止成熟与暂停键.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/任务7内核/静止成熟与暂停键.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/任务7内核/累计调低保留.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/任务7内核/累计调低保留.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/任务7内核/无线空箱.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/任务7内核/无线空箱.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/任务7内核/同刻双箱争余量.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/任务7内核/同刻双箱争余量.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/任务7内核/无线多格歧义.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/任务7内核/无线多格歧义.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/任务7内核/生产环带.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/任务7内核/生产环带.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/任务7内核/无线多格全收.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/任务7内核/无线多格全收.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/任务7内核/成熟旧货重试.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/任务7内核/成熟旧货重试.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/任务7内核/累计审计与窗口周期.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/任务7内核/累计审计与窗口周期.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/任务7内核/阻尼恢复.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/任务7内核/阻尼恢复.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/任务7内核/无线部分接收.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/任务7内核/无线部分接收.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/任务7内核/身份断边恢复.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/任务7内核/身份断边恢复.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/任务7内核/无线全拒收.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/任务7内核/无线全拒收.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/任务7内核/累计调高资格.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/任务7内核/累计调高资格.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/任务7内核/装载与普通制造.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/任务7内核/装载与普通制造.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/任务7内核/无线一满一可收.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/任务7内核/无线一满一可收.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/任务7内核/双门窗口恢复.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/数据/样例/任务7内核/双门窗口恢复.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/crates/kernel/tests/fixtures/benchmark_brick.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/crates/kernel/tests/fixtures/benchmark_brick.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/crates/kernel/tests/fixtures/benchmark_1000.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/crates/kernel/tests/fixtures/benchmark_1000.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/crates/kernel/tests/fixtures/priority.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/crates/kernel/tests/fixtures/priority.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/crates/kernel/tests/fixtures/bridge.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/crates/kernel/tests/fixtures/bridge.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/crates/kernel/tests/fixtures/benchmark_brick_60.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/crates/kernel/tests/fixtures/benchmark_brick_60.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/crates/kernel/tests/fixtures/revision_r2_phase_control.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/crates/kernel/tests/fixtures/revision_r2_phase_control.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/crates/kernel/tests/fixtures/benchmark_candidate_b.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/crates/kernel/tests/fixtures/benchmark_candidate_b.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/crates/kernel/tests/fixtures/revision_r2_branch_cut.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/crates/kernel/tests/fixtures/revision_r2_branch_cut.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  },
+  {
+    "path": "求解器/crates/kernel/tests/fixtures/core_inbound.json",
+    "field": "catalog",
+    "source": "求解器/数据/正式静态目录.json",
+    "match": true
+  },
+  {
+    "path": "求解器/crates/kernel/tests/fixtures/core_inbound.json",
+    "field": "parameters.axis_registry",
+    "source": "求解器/规格/选择点参数轴.md",
+    "match": true
+  }
+]

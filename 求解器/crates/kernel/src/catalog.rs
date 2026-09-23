@@ -221,12 +221,15 @@ impl Catalog {
             port_rate,
         })
     }
-    /// 内核输入§2.3：目录声明每个单位所有格，桥容量由显式轴补齐。
+    /// 内核输入§2.3：目录声明每个单位所有格；桥每轴上限 1。
     pub fn slots(
         &self,
         units: &BTreeMap<String, Unit>,
         bridge_capacity: i64,
     ) -> Result<BTreeMap<String, Option<i64>>> {
+        if bridge_capacity != 1 {
+            return Err(Stop::invalid("bridge.capacity", "正式规则规定每对边上限1"));
+        }
         let mut result = BTreeMap::new();
         for (uid, u) in units {
             for s in &self.kinds[&u.kind].slots {
@@ -293,6 +296,26 @@ fn rotate(x: i64, y: i64, w: i64, h: i64, t: u8) -> (i64, i64) {
     }
 }
 impl Geometry {
+    pub(crate) fn scheduling_sides(
+        &self,
+        cat: &Catalog,
+    ) -> BTreeSet<(String, String, Option<String>)> {
+        self.units
+            .iter()
+            .filter(|(_, u)| cat.kinds[&u.kind].family != "power")
+            .flat_map(|(uid, u)| {
+                let axes = if u.kind == "桥接器" {
+                    vec![Some("vertical".to_string()), Some("horizontal".to_string())]
+                } else {
+                    vec![None]
+                };
+                axes.into_iter().flat_map(move |axis| {
+                    ["input", "output"].map(|side| (uid.clone(), side.into(), axis.clone()))
+                })
+            })
+            .collect()
+    }
+
     /// 内核输入§2.1–§2.3：从目录重建占格、全部 PC、BC 及正面积供电。
     pub fn build(layout: &Value, cat: &Catalog) -> Result<Self> {
         let mut units = BTreeMap::new();
@@ -371,44 +394,13 @@ impl Geometry {
                 if !row["port_layout"].is_null() {
                     return Err(Stop::invalid(&uid, "桥不能任选目录方向型"));
                 }
-                let mut e = BTreeMap::new();
-                for variant in &k.layouts {
-                    for edge in variant
-                        .as_array()
-                        .ok_or_else(|| Stop::invalid("catalog.ports", "型须为数组"))?
-                    {
-                        let side = edge["side"]
-                            .as_str()
-                            .ok_or_else(|| Stop::invalid(&uid, "端口边缺失"))?;
-                        let axis = edge["axis"]
-                            .as_str()
-                            .ok_or_else(|| Stop::invalid(&uid, "桥轴缺失"))?;
-                        let a = &row["bridge_axes"][axis];
-                        let status = a["status"].as_str();
-                        if status != Some("resolved") {
-                            return Err(Stop::unsupported(
-                                "connection.bridge_tie",
-                                format!("{uid}.bridge_axes.{axis}"),
-                                "桥轴未解",
-                            ));
-                        }
-                        let input = a["input_side"]
-                            .as_str()
-                            .ok_or_else(|| Stop::invalid(&uid, "桥输入方向缺失"))?;
-                        if !(if axis == "vertical" {
-                            ["south", "north"].contains(&input)
-                        } else {
-                            ["west", "east"].contains(&input)
-                        }) {
-                            return Err(Stop::invalid(&uid, "桥轴输入边不在该轴"));
-                        }
-                        let mut v = edge.clone();
-                        v["role"] =
-                            Value::String(if side == input { "input" } else { "output" }.into());
-                        e.insert(side.to_string(), v);
-                    }
+                if !row["bridge_axes"].is_null() {
+                    return Err(Stop::invalid(
+                        &uid,
+                        "桥四边固定双向，bridge_axes 必须为 null",
+                    ));
                 }
-                e.into_values().collect()
+                decode(k.layouts[0].clone(), &uid)?
             } else {
                 if !row["bridge_axes"].is_null() {
                     return Err(Stop::invalid(&uid, "非桥带桥轴"));
@@ -501,7 +493,7 @@ impl Geometry {
             return Err(Stop::invalid("layout.ports", "重复格边端口"));
         }
         for (id, p) in &ports {
-            if p.role != "output" {
+            if !["output", "bidirectional"].contains(&p.role.as_str()) {
                 continue;
             }
             let key = (
@@ -510,7 +502,7 @@ impl Geometry {
             );
             if let Some(other) = faces.get(&key) {
                 let q = &ports[*other];
-                if q.role == "input"
+                if ["input", "bidirectional"].contains(&q.role.as_str())
                     && (cat.kinds[&units[&p.unit].kind].family == "transport"
                         || cat.kinds[&units[&q.unit].kind].family == "transport")
                 {

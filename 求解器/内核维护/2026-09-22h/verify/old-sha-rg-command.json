@@ -1,0 +1,27 @@
+{
+  "argv": [
+    "rg",
+    "--hidden",
+    "--no-ignore",
+    "-n",
+    "-F",
+    "b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c",
+    ".",
+    "-g",
+    "!.git/**",
+    "-g",
+    "!**/target/**",
+    "-g",
+    "!**/__pycache__/**",
+    "-g",
+    "!求解器/crates/kernel/evidence/**",
+    "-g",
+    "!求解器/crates/kernel/复核/**",
+    "-g",
+    "!求解器/数据/复核/**",
+    "-g",
+    "!求解器/内核维护/2026-09-22h/verify/**"
+  ],
+  "exit": 0,
+  "text_lines": 544
+}

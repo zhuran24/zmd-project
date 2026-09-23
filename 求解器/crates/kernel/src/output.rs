@@ -279,7 +279,7 @@ fn coverage_with_manufacturing(
         if name.starts_with("polling.split_merge"){let ids:Vec<_>=events.iter().filter(|e|e["operation"]=="move"&&["success","failure"].contains(&e["outcome"].as_str().unwrap_or(""))).filter(|e|input.geometry.channels.get(e["target"].as_str().unwrap_or("")).is_some_and(|c|input.geometry.units[&input.geometry.ports[&c.source_port].unit].kind=="分流器"||input.geometry.units[&input.geometry.ports[&c.target_port].unit].kind=="汇流器")).filter_map(|e|e["event"].as_str().map(str::to_string)).collect();if !ids.is_empty(){status="exercised";ev=ids;}}
         if name=="connection.bridge_first_contact" && input.geometry.units.values().any(|u|u.kind=="桥接器") {
             status="input_checked";
-            ev=vec!["仅校验输入中已解桥方向及先接历史；运行段不执行建造/先接定向，后续搬运不构成定向事件。".into()];
+            ev=vec!["校验四边固定双向及先接轴为不适用；运行移动不构成先接定向事件。".into()];
         }
         if name.starts_with("bridge.") {
             let ids:Vec<_>=events.iter().filter(|e|e["operation"]=="move"&&e["outcome"]=="success").filter(|e|input.geometry.channels.get(e["target"].as_str().unwrap_or("")).is_some_and(|c|[&c.source_port,&c.target_port].iter().any(|p|input.geometry.units[&input.geometry.ports[*p].unit].kind=="桥接器"))).filter_map(|e|e["event"].as_str().map(str::to_string)).collect();

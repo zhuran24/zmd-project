@@ -17,7 +17,7 @@ ROTATIONS = {"r0": 0, "r90": 1, "r180": 2, "r270": 3}
 DIRECTIONS = {"south": (0, -1), "north": (0, 1), "west": (-1, 0), "east": (1, 0)}
 INITIAL_ITEMS = {"源矿", "蓝铁矿", "荞花", "砂叶", "荞花种子", "砂叶种子"}
 AXIS_PATH = ROOT / "求解器/规格/选择点参数轴.md"
-KNOWN_VALUES = {'polling.direct_peer': 'physical_peer', 'connection.port_meeting': 'shared_edge_opposite', 'initialization.rotation_stage': 'build_and_debug', 'gate.window_recovery': 'on_expiry_if_other_guards', 'transfer.judgment': 'unit', 'manufacturing.port_slot_relation': 'distributed', 'manufacturing.output_blocked': 'retain_whole_batch', 'gate.limit_requires_identity': True, 'warehouse.capacity': {'value': '80000', 'category': '条文直引'}, 'warehouse.delivery_count': 'actual_inbound', 'bridge.inventory_scope': 'two_independent_axis_slots', 'bridge.scheduling_scope': 'unit', 'judgment.order_scope': 'fixed_run_order', 'polling.both_failure': 'advance_authorized', 'transfer.cooldown_scope': 'box', 'transfer.failure_cooldown': 'every_attempt', 'transfer.partial_acceptance': 'max_receivable', 'gate.identity_recovery': 'current_conditions', 'gate.total_recovery': 'current_conditions', 'gate.window_clock': 'wall_clock', 'warehouse.acceptance': 'receivable_products', 'warehouse.acceptance_quantifier': 'all_candidate_and_actual_checks'}
+KNOWN_VALUES = {'polling.direct_peer': 'physical_peer', 'connection.port_meeting': 'shared_edge_opposite', 'initialization.rotation_stage': 'build_and_debug', 'gate.window_recovery': 'on_expiry_if_other_guards', 'transfer.judgment': 'unit', 'manufacturing.port_slot_relation': 'distributed', 'manufacturing.output_blocked': 'retain_whole_batch', 'gate.limit_requires_identity': True, 'warehouse.capacity': {'value': '80000', 'category': '条文直引'}, 'warehouse.delivery_count': 'actual_inbound', 'bridge.inventory_scope': 'two_independent_axis_slots', 'bridge.scheduling_scope': 'per_axis', 'bridge.capacity': 1, 'connection.bridge_first_contact': 'not_applicable', 'connection.bridge_tie': 'not_applicable', 'judgment.order_scope': 'fixed_run_order', 'polling.both_failure': 'advance_authorized', 'transfer.cooldown_scope': 'box', 'transfer.failure_cooldown': 'every_attempt', 'transfer.partial_acceptance': 'max_receivable', 'gate.identity_recovery': 'current_conditions', 'gate.total_recovery': 'current_conditions', 'gate.window_clock': 'wall_clock', 'warehouse.acceptance': 'receivable_products', 'warehouse.acceptance_quantifier': 'all_candidate_and_actual_checks'}
 
 
 def axis_registry():
@@ -44,7 +44,7 @@ def axis_registry():
 
 NAMES = ["桥接器双通路.json", "分流器三路轮询.json", "混做粉碎机两下游.json"]
 SOURCE_HASHES = {
-    "《明日方舟：终末地》游戏规则.txt": "52df4c12ce90975b861a6a663bd37873e03c9549658d200dc7e95fabc4bc29f3",
+    "《明日方舟：终末地》游戏规则.txt": "6e64e3903a65536c530b363c9f3aef8c1bb2a1c1193e866799125dd047159924",
     "求解任务.txt": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
     "求解约束.txt": "0c05976f6063f3332db6ee19d7746052ef35148d7c2a12dfa396c7bb8753f30f"
 }
@@ -156,21 +156,8 @@ def geometry(data, catalog, complete=True):
         index = unit["port_layout"]
         if unit["kind"] == "桥接器":
             require(index is None, "桥接器不能任选双轴端口型索引")
-            fields(unit["bridge_axes"], "vertical horizontal", "bridge_axes")
-            bridge_roles = {}
-            for axis, sides in (("vertical", ("south", "north")), ("horizontal", ("west", "east"))):
-                state = unit["bridge_axes"][axis]
-                fields(state, "status input_side basis", "bridge_axis")
-                require(state["status"] in {"pending", "resolved", "unresolved"} and state["basis"], "桥轴状态非法")
-                if state["status"] == "resolved":
-                    require(state["input_side"] in sides, "桥轴输入边非法")
-                    bridge_roles.update({side: "input" if side == state["input_side"] else "output" for side in sides})
-                else:
-                    require(state["input_side"] is None, "待定桥轴不能偷填方向")
-                    bridge_roles.update({side: None for side in sides})
-            # 取全部型的位置并集，不借目录首型定向。
-            edges = {edge["side"]: edge for variant in kind["ports"]["layouts"] for edge in variant}
-            edges = [dict(edge, role=bridge_roles[side]) for side, edge in edges.items()]
+            require(unit["bridge_axes"] is None, "桥四边固定双向，bridge_axes 必须为 null")
+            edges = kind["ports"]["layouts"][0]
         else:
             require(unit["bridge_axes"] is None, "非桥接器不应有桥轴状态")
             require(type(index) is int and 0 <= index < len(kind["ports"]["layouts"]), "端口型索引非法")
@@ -194,12 +181,12 @@ def geometry(data, catalog, complete=True):
     by_face = {(p["cell"], p["normal"]): pid for pid, p in ports.items()}
     require(len(by_face) == len(ports), "多个端口占同一格边")
     for pid, port in ports.items():
-        if port["role"] != "output":
+        if port["role"] not in {"output", "bidirectional"}:
             continue
         x, y = port["cell"]
         dx, dy = port["normal"]
         other = by_face.get(((x + dx, y + dy), (-dx, -dy)))
-        if other and ports[other]["role"] == "input" and "transport" in {port["family"], ports[other]["family"]}:
+        if other and ports[other]["role"] in {"input", "bidirectional"} and "transport" in {port["family"], ports[other]["family"]}:
             channels.append({"id": f"PC|{pid}|{other}", "source_port": pid, "target_port": other})
     buffers = []
     for uid, unit in units.items():
@@ -377,35 +364,8 @@ def check(data, path):
         merged["relations"].append({"before": before, "after": after, "relation": "occurs_before" if runtime else "strict", "basis": ["蓝图见证"]})
     for before, after in [(event, complete) for event in build_events] + [(complete, end)]:
         merged["relations"].append({"before": before, "after": after, "relation": "occurs_before", "basis": ["阶段边界"]})
-    bridge_evidence = []
-    for uid, unit in units.items():
-        if unit["kind"] != "桥接器":
-            continue
-        for axis in ("vertical", "horizontal"):
-            state = unit["bridge_axes"][axis]
-            peers = []
-            for pid, port in ports.items():
-                if port["unit"] != uid or port["axis"] != axis:
-                    continue
-                x, y = port["cell"]
-                dx, dy = port["normal"]
-                for other, peer in ports.items():
-                    if peer["cell"] == (x + dx, y + dy) and peer["normal"] == (-dx, -dy):
-                        peers.append((max(rank[uid], rank[peer["unit"]]), pid, other))
-            if not peers:
-                require(state["status"] == "pending", "unsupported: 无接触桥轴须给未定向状态及历史")
-                bridge_evidence.append({"unit": uid, "axis": axis, "status": "pending"})
-                continue
-            require(state["status"] == "resolved", "unsupported: 有邻口但桥轴方向未解决")
-            first_rank = min(row[0] for row in peers)
-            first = [row for row in peers if row[0] == first_rank]
-            require(len(first) == 1, "unsupported: 桥接器首次平局")
-            _, pid, other = first[0]
-            require(units[ports[other]["unit"]]["kind"] != "桥接器", "unsupported: 桥定向互依赖")
-            require(ports[pid]["role"] != ports[other]["role"], "unsupported: 桥先接读法分歧，不能无条件判桥方向非法")
-            directed = [row for row in peers if ports[row[1]]["role"] != ports[row[2]]["role"]]
-            require(directed and min(row[0] for row in directed) == first_rank, "unsupported: 桥先接读法分歧")
-            bridge_evidence.append({"unit": uid, "axis": axis, "first_peer": other, "scope": "两种已登记先接读法的一致唯一非桥见证"})
+    bridge_evidence = [{'unit': uid, 'status': 'permanent_bidirectional', 'axes': ['vertical', 'horizontal']}
+                       for uid, unit in units.items() if unit['kind'] == '桥接器']
     for field, derived in (("physical_channels", channels), ("buffer_channels", buffers)):
         declared = layout[field]
         if declared is not None:
@@ -609,7 +569,7 @@ def negative_tests(documents):
     reject("传送带抢先建造", 2, lambda d: d["construction"]["selected_order"].insert(0, d["construction"]["selected_order"].pop()), "传送带必须最后")
     reject("未知参数轴", 0, lambda d: d["parameters"]["fixedness_unproven"].update(invented_axis={}), "fixedness_unproven")
     reject("未知顶层字段", 0, lambda d: d.update(powered=True), "root")
-    reject("桥接器按轴调度", 0, lambda d: d["parameters"]["fixed"]["bridge.scheduling_scope"].update(value="per_axis"), "已定轴值不符")
+    reject("桥接器按整单位调度", 0, lambda d: d["parameters"]["fixed"]["bridge.scheduling_scope"].update(value="unit"), "已定轴值不符")
     reject("仓库非六类满", 0, lambda d: d["initial_state"]["warehouse"]["slots"][0]["quantity"].update(value="1"), "仓库初态不符")
     reject("桥接器路径跨轴", 0, lambda d: d["scenario"]["expected_paths"][0]["physical_channels"].__setitem__(1, d["scenario"]["expected_paths"][1]["physical_channels"][1]), "跨轴")
     reject("未给完整建造见证属于超子集", 0, lambda d: d["construction"].update(selected_order=None), "unsupported:")
@@ -618,11 +578,7 @@ def negative_tests(documents):
     reject("接通原因不能沿用无关建成", 0, lambda d: d["timeline"]["connection_events"][0].update(cause="build_0"), "较晚建成端")
     reject("隐含蓝图序与显式关系冲突", 0, lambda d: d["timeline"]["relations"].append({"before": "build_2", "after": "build_0", "relation": "strict", "basis": ["反例"]}), "成环")
     reject("调试前快照不得冒充最终验收", 0, lambda d: d["layout"]["post_debug"].update(status="specified", value="built_layout"), "unsupported:")
-    reject("未知桥轴不能静默缺边", 0, lambda d: d["layout"]["units"][2]["bridge_axes"]["horizontal"].update(status="unresolved", input_side=None), "unsupported:")
-    def ambiguous_bridge(data):
-        next(u for u in data["layout"]["units"] if u["id"] == "west_box")["rotation"] = "r90"
-        next(m for m in data["construction"]["moments"] if m["unit"] == "west_box")["placement"]["rotation"] = "r90"
-    reject("最早邻接与最早有向边分歧", 0, ambiguous_bridge, "unsupported: 桥先接读法分歧")
+    reject("旧桥方向声明不可继续生效", 0, lambda d: d["layout"]["units"][2].update(bridge_axes={"horizontal": {"status": "resolved", "input_side": "west"}}), "bridge_axes")
     return tests
 
 
@@ -645,7 +601,7 @@ def representation_tests(documents):
         unit["origin"][0]["value"] = str(x)
         next(m for m in idle_axis["construction"]["moments"] if m["unit"] == uid)["placement"]["origin"] = copy.deepcopy(unit["origin"])
     bridge = next(u for u in idle_axis["layout"]["units"] if u["kind"] == "桥接器")
-    bridge["bridge_axes"]["horizontal"] = {"status": "pending", "input_side": None, "basis": ["该轴未有相邻端口"]}
+    bridge["bridge_axes"] = None
     catalog = load_json(BASE.parent / "正式静态目录.json")
     channels = geometry(idle_axis, catalog)[3]
     idle_axis["layout"]["physical_channels"] = channels
@@ -657,7 +613,7 @@ def representation_tests(documents):
     idle_axis["scenario"]["expected_paths"] = idle_axis["scenario"]["expected_paths"][:1]
     idle_axis["scenario"]["assertions"] = []
     check(idle_axis, BASE / NAMES[0])
-    results.append("只接一轴的桥保留另一轴 pending 并通过结构检查")
+    results.append("只接一轴的桥另一轴仍固定双向，未接边不形成通道")
     # 时间线语法能区分离线与操作的两个方向；两者都不冒充后效合法。
     def relation(a, b, kind="occurs_before"):
         return {"before": a, "after": b, "relation": kind, "basis": ["表示回归"]}

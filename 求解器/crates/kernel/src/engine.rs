@@ -46,7 +46,7 @@ pub struct Engine {
     pub(crate) pending: Vec<Pending>,
     pub(crate) allocated: BTreeSet<String>,
     pub(crate) executed: BTreeSet<String>,
-    pub(crate) side_index: BTreeMap<(String, String), usize>,
+    pub(crate) side_index: BTreeMap<(String, String, Option<String>), usize>,
     pub(crate) gate_index: BTreeMap<String, usize>,
     pub(crate) t: i64,
     pub(crate) records: Vec<Event>,
@@ -232,7 +232,7 @@ impl Engine {
             .sides
             .iter()
             .enumerate()
-            .map(|(i, s)| ((s.unit.clone(), s.side.clone()), i))
+            .map(|(i, s)| ((s.unit.clone(), s.side.clone(), s.axis.clone()), i))
             .collect::<BTreeMap<_, _>>();
         let gate_index = state
             .logistics
@@ -623,14 +623,7 @@ impl Engine {
                 "实际边与门控原因不符",
             ));
         }
-        let expected_sides: BTreeSet<_> = self
-            .input
-            .geometry
-            .units
-            .iter()
-            .filter(|(_, u)| self.input.catalog.kinds[&u.kind].family != "power")
-            .flat_map(|(u, _)| [(u.clone(), "input".into()), (u.clone(), "output".into())])
-            .collect();
+        let expected_sides = self.input.geometry.scheduling_sides(&self.input.catalog);
         if expected_sides != self.side_index.keys().cloned().collect()
             || self.memory.sides.len() != expected_sides.len()
         {
@@ -875,7 +868,10 @@ impl Engine {
             // 规则L20：暂停只推迟完成。旧预计截止不能晚于当前剩余工作量的预计完成。
             // 这也使删审计deadline后，旧C身份不会占用同机后续批次的未来身份。
             if p.operation == "manufacture_complete" && deadline > expected {
-                return Err(Stop::invalid(&p.event, "旧制造预计截止晚于当前时间加剩余工作量"));
+                return Err(Stop::invalid(
+                    &p.event,
+                    "旧制造预计截止晚于当前时间加剩余工作量",
+                ));
             }
             if p.operation == "gate_window_expiry"
                 && (deadline != expected
@@ -920,6 +916,16 @@ impl Engine {
                 let n = c.quantity.integer(&row.slot)?;
                 if n <= 0 || c.item.is_empty() {
                     return Err(Stop::invalid(&row.slot, "库存数量/物种非法"));
+                }
+                if let Some(previous) = &c.last_unit {
+                    let connected = self.input.geometry.channels.values().any(|channel| {
+                        let from = &self.input.geometry.ports[&channel.source_port];
+                        let to = &self.input.geometry.ports[&channel.target_port];
+                        from.unit == *previous && to.unit == uid && to.axis.as_deref() == Some(role)
+                    });
+                    if unit.kind != "桥接器" || !connected {
+                        return Err(Stop::invalid(&row.slot, "桥物品来路不是本轴相邻单位"));
+                    }
                 }
                 items.insert(c.item.as_str());
                 sum = add(sum, n, &row.slot)?;
@@ -966,6 +972,7 @@ impl Engine {
                         item: item.clone(),
                         quantity: r.quantity.clone(),
                         entered_at: None,
+                        last_unit: None,
                     },
                 )
             }));
@@ -1065,6 +1072,9 @@ impl Engine {
             return Ok((None, "source_empty"));
         };
         let target_unit = &self.input.geometry.ports[&c.target_port].unit;
+        if content.last_unit.as_ref() == Some(target_unit) {
+            return Ok((None, "immediate_return"));
+        }
         if let Some(i) = self.gate_index.get(target_unit) {
             let g = &self.state.logistics.gate_counters[*i];
             let set = &self.input.gate_settings[target_unit];
@@ -1213,6 +1223,7 @@ impl Engine {
                 item: item.into(),
                 quantity: Quantity::calc(count),
                 entered_at: Some(Time::at(self.t)),
+                last_unit: None,
             });
             rows.sort_by(|a, b| a.item.cmp(&b.item));
         }

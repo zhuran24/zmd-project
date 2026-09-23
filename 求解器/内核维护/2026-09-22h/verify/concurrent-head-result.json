@@ -1,0 +1,14 @@
+{
+  "before_head": "1b9d5b64ea9bcc93cd8075777d9b5cbaacf07d20",
+  "after_head": "9615092ea16b42766aa942408bf1603ac618eb6b",
+  "commits": "9615092ea16b42766aa942408bf1603ac618eb6b 老项目补找（席位 A）：LBBD 方法论本身——冻结的独立判断、三种「方法论」分类、specs/10 与原生方法论的版本演变、实测支持与撤回清单、八处方法诊断（D1–D8）与对现行题的最低合同\n\nA\t求解器/老项目/LBBD方法论.md\n814202274392dcab8f8a3d70df0439e9bb8675ef 老项目补找（席位 B）：卡住以后的讨论和研究——8/3 至 9/9 时间线、各原因说法的支持程度、停点与回读路径、五例「读过方法论说理解了仍推不动」\n\nA\t求解器/老项目/卡住以后.md\n",
+  "changed_paths": [
+    "求解器/老项目/LBBD方法论.md",
+    "求解器/老项目/卡住以后.md"
+  ],
+  "intersection_with_sync": [],
+  "business_drift_during_verification": [],
+  "final_outside_scope": [
+    "?? 求解器/规则修订/2026-09-22-桥接器/约束核对.md"
+  ]
+}

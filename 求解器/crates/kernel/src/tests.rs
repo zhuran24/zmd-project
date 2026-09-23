@@ -18,6 +18,8 @@ mod revision_r3;
 mod revision_r4;
 #[path = "tests_round5.rs"]
 mod round5;
+#[path = "tests_bridge.rs"]
+mod bridge_rules;
 /// 第四轮§4.7：只读样例路径。
 fn root() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
@@ -91,7 +93,7 @@ fn config_axes_and_all_stop_values() {
         .filter(|(_, r)| r.disposition == Disposition::Stop)
         .map(|(a, _)| *a)
         .collect();
-    assert_eq!(stops.len(), 18);
+    assert_eq!(stops.len(), 17);
     let original = read_json(&root().join("数据/样例/混做粉碎机两下游.json")).unwrap();
     for axis in stops {
         let mut raw = original.clone();
@@ -476,7 +478,7 @@ fn total_exhaustion_survives_window_expiry() {
 #[test]
 fn membership_projection() {
     let mut e = engine("分流器三路轮询");
-    let i = e.side_index[&("splitter".into(), "output".into())];
+    let i = e.side_index[&("splitter".into(), "output".into(), None)];
     let members = e.memory.sides[i].levels[0].members.clone();
     assert_eq!(members.len(), 3);
     e.memory.sides[i].levels[0].next_channel = members[1].clone();
@@ -828,7 +830,7 @@ fn reload(mut e: Engine) -> Engine {
     raw["initial_state"]["nonwarehouse"]["value"] = json!(e.state);
     Engine::new(Input::parse(raw, &e.input.path, &config(), false).unwrap()).unwrap()
 }
-/// 受限转移§3.1、§4.1：桥的双轴各自滞留，物品不换轴，整体存取侧仍共享调度。
+/// 规则L63：桥的双轴分别核滞留、分级和轮询，物品不换轴。
 #[test]
 fn bridge_two_independent_slots_run() {
     let mut e = fixture("bridge");
@@ -888,7 +890,7 @@ fn output_level_damping_priority() {
     assert_eq!(e.damping(direct).unwrap(), 2);
     assert_eq!(e.damping(other).unwrap(), 1);
     assert!(e.input.connection_times[direct] < e.input.connection_times[other]);
-    let s = &e.memory.sides[e.side_index[&("source".into(), "output".into())]];
+    let s = &e.memory.sides[e.side_index[&("source".into(), "output".into(), None)]];
     assert_eq!(s.current_level.as_deref(), Some("L|source|output|other"));
     let tick = e.step(true).unwrap().unwrap();
     let first = tick["events"]
@@ -953,7 +955,7 @@ fn level_tie_reversal_changes_winner() {
 #[test]
 fn simultaneous_ring_restoration() {
     let mut e = engine("分流器三路轮询");
-    let i = e.side_index[&("splitter".into(), "output".into())];
+    let i = e.side_index[&("splitter".into(), "output".into(), None)];
     let members = e.memory.sides[i].levels[0].members.clone();
     for c in &members {
         e.active.remove(c);

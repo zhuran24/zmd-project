@@ -372,10 +372,13 @@ fn catalog_unit_properties_match_formal_reference_values() {
             "桥接器",
             1,
             1,
-            2,
-            2,
+            4,
+            4,
             false,
-            vec![("vertical", Some(1), None), ("horizontal", Some(1), None)],
+            vec![
+                ("vertical", Some(1), Some(1)),
+                ("horizontal", Some(1), Some(1)),
+            ],
         ),
         (
             "物品准入口",
@@ -461,7 +464,15 @@ fn catalog_unit_properties_match_formal_reference_values() {
                             }
                     );
                     assert!(seen.insert((side, p)));
-                    counts[if edge["role"] == "input" { 0 } else { 1 }] += 1;
+                    match edge["role"].as_str().unwrap() {
+                        "input" => counts[0] += 1,
+                        "output" => counts[1] += 1,
+                        "bidirectional" => {
+                            counts[0] += 1;
+                            counts[1] += 1;
+                        }
+                        role => panic!("未知端口角色 {role}"),
+                    }
                 }
             }
             assert_eq!(counts, [ins, outs], "{id}");
@@ -497,21 +508,12 @@ fn catalog_port_edges_match_formal_reference_layouts() {
                 .iter()
                 .map(|s| vec![edge("south", "input", vec![0]), edge(s, "output", vec![0])])
                 .collect(),
-            "桥接器" => [("south", "north"), ("north", "south")]
-                .iter()
-                .flat_map(|(a, b)| {
-                    [("west", "east"), ("east", "west")]
-                        .iter()
-                        .map(move |(c, d)| {
-                            vec![
-                                edge(a, "input", vec![0]),
-                                edge(b, "output", vec![0]),
-                                edge(c, "input", vec![0]),
-                                edge(d, "output", vec![0]),
-                            ]
-                        })
-                })
-                .collect(),
+            "桥接器" => vec![vec![
+                edge("south", "bidirectional", vec![0]),
+                edge("north", "bidirectional", vec![0]),
+                edge("west", "bidirectional", vec![0]),
+                edge("east", "bidirectional", vec![0]),
+            ]],
             "分流器" => vec![vec![
                 edge("south", "input", vec![0]),
                 edge("north", "output", vec![0]),
@@ -707,31 +709,79 @@ fn invalid_ore_machine_is_not_counted_as_dedicated() {
 
 #[test]
 fn core_storage_plan_accepts_only_products_at_any_grower_count() {
-    let plants = ["荞花", "砂叶", "荞花种子", "砂叶种子", "荞花粉末", "砂叶粉末", "细磨荞花粉末"];
-    let minerals = ["蓝铁矿", "源矿", "蓝铁块", "蓝铁粉末", "源石粉末", "致密蓝铁粉末", "致密源石粉末", "钢块", "钢制零件", "钢质瓶"];
+    let plants = [
+        "荞花",
+        "砂叶",
+        "荞花种子",
+        "砂叶种子",
+        "荞花粉末",
+        "砂叶粉末",
+        "细磨荞花粉末",
+    ];
+    let minerals = [
+        "蓝铁矿",
+        "源矿",
+        "蓝铁块",
+        "蓝铁粉末",
+        "源石粉末",
+        "致密蓝铁粉末",
+        "致密源石粉末",
+        "钢块",
+        "钢制零件",
+        "钢质瓶",
+    ];
     let products = ["高容谷地电池", "精选荞愈胶囊"];
     for growers in [32, 33] {
         for item in plants.iter().chain(minerals.iter()).chain(products.iter()) {
             let c = changed(|v| {
                 if growers == 33 {
-                    let mut m = v["machines"].as_array().unwrap().iter()
-                        .find(|m| m["kind"] == "种植机").unwrap().clone();
+                    let mut m = v["machines"]
+                        .as_array()
+                        .unwrap()
+                        .iter()
+                        .find(|m| m["kind"] == "种植机")
+                        .unwrap()
+                        .clone();
                     m["id"] = "EXTRA_GROWER".into();
                     v["machines"].as_array_mut().unwrap().push(m);
                 }
-                let e = v["logical_feeds"].as_array_mut().unwrap().iter_mut()
-                    .find(|e| e["target"] == "CORE").unwrap();
+                let e = v["logical_feeds"]
+                    .as_array_mut()
+                    .unwrap()
+                    .iter_mut()
+                    .find(|e| e["target"] == "CORE")
+                    .unwrap();
                 e["item"] = (*item).into();
             });
-            assert_eq!(c.machines.iter().filter(|m| m.kind == "种植机").count(), growers);
+            assert_eq!(
+                c.machines.iter().filter(|m| m.kind == "种植机").count(),
+                growers
+            );
             let r = validate(&c);
-            let check = r.checks.iter().find(|x| x.name == "矿系不入库/计划").unwrap();
-            assert_eq!(check.status, if products.contains(item) { Status::Pass } else { Status::Fail },
-                "growers={growers}, item={item}");
+            let check = r
+                .checks
+                .iter()
+                .find(|x| x.name == "矿系不入库/计划")
+                .unwrap();
+            assert_eq!(
+                check.status,
+                if products.contains(item) {
+                    Status::Pass
+                } else {
+                    Status::Fail
+                },
+                "growers={growers}, item={item}"
+            );
             // 核心计划结果不能替代实际循环的两途径与全参数证书。
             for name in ["矿系不入库", "非成品零入库", "传输按仓库余量判定"] {
-                assert_eq!(r.checks.iter().find(|x| x.name == format!("正式条目/{name}")).unwrap().status,
-                    Status::Unknown);
+                assert_eq!(
+                    r.checks
+                        .iter()
+                        .find(|x| x.name == format!("正式条目/{name}"))
+                        .unwrap()
+                        .status,
+                    Status::Unknown
+                );
             }
         }
     }

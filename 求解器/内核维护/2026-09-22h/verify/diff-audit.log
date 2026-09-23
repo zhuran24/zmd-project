@@ -1,0 +1,13 @@
+{
+  "rule_lines_changed": [
+    24,
+    59,
+    63
+  ],
+  "only_unit_changed": "桥接器",
+  "constraints_unchanged": 72,
+  "recipes_unchanged": 18,
+  "inputs_normalized_equal": 54,
+  "inputs_with_bridges": 12,
+  "unexpected_fields": 0
+}

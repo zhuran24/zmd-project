@@ -1,0 +1,11 @@
+build	0
+check	0
+clippy	0
+kernel-lib	0
+topology-lib	0
+kernel-reference	0
+topology-validation	0
+kernel-doc	0
+topology-doc	0
+catalog-verify	0
+catalog-regressions	1

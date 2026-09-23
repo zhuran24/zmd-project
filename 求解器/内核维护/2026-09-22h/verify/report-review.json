@@ -1,0 +1,16 @@
+{
+  "report_sha256": "074f9c85493009b4c3b54b22d4b0c047a22144435394fc5916c4e481473f6882",
+  "links_checked": 46,
+  "missing_links": [],
+  "numeric_summary_matches": true,
+  "head_matches_report": true,
+  "status_outside_verify_matches_snapshot": true,
+  "reader_review": {
+    "self_contained_verdict": true,
+    "historical_and_current_rules_distinguished": true,
+    "scope_failures_not_attributed_to_runtime": true,
+    "counts_do_not_double_count_reruns": true,
+    "own_temporary_write_deviation_disclosed": true,
+    "protected_history_evidence_linked": true
+  }
+}

@@ -132,8 +132,16 @@ impl Engine {
         let c = self.input.geometry.channels[cid].clone();
         let source_unit = self.input.geometry.ports[&c.source_port].unit.clone();
         let target_unit = self.input.geometry.ports[&c.target_port].unit.clone();
-        let a = self.side_index[&(source_unit, "output".into())];
-        let b = self.side_index[&(target_unit.clone(), "input".into())];
+        let a = self.side_index[&(
+            source_unit.clone(),
+            "output".into(),
+            self.input.geometry.ports[&c.source_port].axis.clone(),
+        )];
+        let b = self.side_index[&(
+            target_unit.clone(),
+            "input".into(),
+            self.input.geometry.ports[&c.target_port].axis.clone(),
+        )];
         let (ga, gb) = if self.active.contains(cid) {
             (self.grant(a, cid)?, self.grant(b, cid)?)
         } else {
@@ -225,6 +233,10 @@ impl Engine {
                 self.book("core_inbound",json!({"event":event,"channel":cid,"port":c.target_port,"item":route.item,"quantity":q(1)}));
             } else {
                 self.put(&route.target, &route.item, 1)?;
+                if self.input.geometry.units[&target_unit].kind == "桥接器" {
+                    self.state.inventory[self.inv[&route.target]].contents[0].last_unit =
+                        Some(source_unit.clone());
+                }
             }
             if self.warehouse.contains_key(&route.source) {
                 self.book("port_outbound",json!({"event":event,"channel":cid,"port":c.source_port,"slot":route.source,"item":route.item,"quantity":q(1)}));
@@ -819,7 +831,7 @@ impl Engine {
             .unwrap_or_else(|| "0".into());
         let cursor = |uid: &str| -> Option<String> {
             self.side_index
-                .get(&(uid.into(), "output".into()))
+                .get(&(uid.into(), "output".into(), None))
                 .and_then(|i| self.memory.sides[*i].levels.first())
                 .map(|l| l.next_channel.clone())
         };

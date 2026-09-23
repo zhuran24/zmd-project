@@ -1,7 +1,7 @@
 {
   "catalog": {
     "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
-    "sha256": "b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c"
+    "sha256": "3566e2ecb9d90b9a1afc01b273eb548178de738fb4e4f3b2af88fa05f809be29"
   },
   "construction": {
     "complete_event": "blueprint_complete",
@@ -704,10 +704,10 @@
               "lifetime": "F",
               "value": {
                 "basis": [
-                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；bridge.scheduling_scope"
+                  "规则L24、L59、L63；现行内核配置 r25"
                 ],
                 "status": "specified",
-                "value": "unit"
+                "value": "per_axis"
               }
             },
             {
@@ -1162,13 +1162,13 @@
             },
             {
               "axis": "connection.bridge_first_contact",
-              "lifetime": "U",
+              "lifetime": "F",
               "value": {
                 "basis": [
-                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；connection.bridge_first_contact"
+                  "规则L24、L59、L63；现行内核配置 r25"
                 ],
                 "status": "specified",
-                "value": "physical_contact"
+                "value": "not_applicable"
               }
             },
             {
@@ -1338,10 +1338,10 @@
             },
             {
               "axis": "bridge.capacity",
-              "lifetime": "U",
+              "lifetime": "F",
               "value": {
                 "basis": [
-                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；bridge.capacity"
+                  "规则L24、L59、L63；现行内核配置 r25"
                 ],
                 "status": "specified",
                 "value": 1
@@ -1592,16 +1592,13 @@
             },
             {
               "axis": "connection.bridge_tie",
-              "lifetime": "U",
+              "lifetime": "F",
               "value": {
                 "basis": [
-                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；connection.bridge_tie"
+                  "规则L24、L59、L63；现行内核配置 r25"
                 ],
                 "status": "specified",
-                "value": {
-                  "policy": "stop",
-                  "trigger": "先接并列或桥互依赖，不能由唯一无环见证定向"
-                }
+                "value": "not_applicable"
               }
             },
             {
@@ -1693,12 +1690,12 @@
               "lifetime": "U",
               "value": {
                 "basis": [
-                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；offline.direction_effect"
+                  "规则L24、L59、L63；现行内核配置 r25"
                 ],
                 "status": "specified",
                 "value": {
                   "policy": "stop",
-                  "trigger": "离线需更新桥方向"
+                  "trigger": "请求离线回放"
                 }
               }
             },
@@ -2268,7 +2265,7 @@
   "parameters": {
     "axis_registry": {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
-      "sha256": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+      "sha256": "261da30db31063ec8292aaa493e2c11d026c0861852ef19550eeb92eb4da7665"
     },
     "fixed": {
       "bridge.inventory_scope": {
@@ -2280,10 +2277,10 @@
       },
       "bridge.scheduling_scope": {
         "basis": [
-          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；bridge.scheduling_scope"
+          "规则L24、L59、L63；现行内核配置 r25"
         ],
         "status": "specified",
-        "value": "unit"
+        "value": "per_axis"
       },
       "connection.belt_shape": {
         "basis": [
@@ -2499,39 +2496,36 @@
         ],
         "status": "specified",
         "value": "actual_inbound"
-      }
-    },
-    "fixedness_unproven": {
+      },
       "bridge.capacity": {
         "basis": [
-          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；bridge.capacity"
+          "规则L24、L59、L63；现行内核配置 r25"
         ],
         "status": "specified",
         "value": 1
       },
+      "connection.bridge_first_contact": {
+        "basis": [
+          "规则L24、L59、L63；现行内核配置 r25"
+        ],
+        "status": "specified",
+        "value": "not_applicable"
+      },
+      "connection.bridge_tie": {
+        "basis": [
+          "规则L24、L59、L63；现行内核配置 r25"
+        ],
+        "status": "specified",
+        "value": "not_applicable"
+      }
+    },
+    "fixedness_unproven": {
       "cascade.buffer": {
         "basis": [
           "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；cascade.buffer"
         ],
         "status": "specified",
         "value": "same_instant"
-      },
-      "connection.bridge_first_contact": {
-        "basis": [
-          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；connection.bridge_first_contact"
-        ],
-        "status": "specified",
-        "value": "physical_contact"
-      },
-      "connection.bridge_tie": {
-        "basis": [
-          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；connection.bridge_tie"
-        ],
-        "status": "specified",
-        "value": {
-          "policy": "stop",
-          "trigger": "先接并列或桥互依赖，不能由唯一无环见证定向"
-        }
       },
       "connection.tie": {
         "basis": [
@@ -2842,12 +2836,12 @@
       },
       "offline.direction_effect": {
         "basis": [
-          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；offline.direction_effect"
+          "规则L24、L59、L63；现行内核配置 r25"
         ],
         "status": "specified",
         "value": {
           "policy": "stop",
-          "trigger": "离线需更新桥方向"
+          "trigger": "请求离线回放"
         }
       },
       "offline.events": {

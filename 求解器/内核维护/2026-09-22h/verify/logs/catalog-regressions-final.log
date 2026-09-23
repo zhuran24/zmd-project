@@ -1,0 +1,14 @@
+test_any_source_byte_drift_is_rejected (test_formal_catalog.FormalCatalogTests.test_any_source_byte_drift_is_rejected) ... ok
+test_basis_and_section_are_normative (test_formal_catalog.FormalCatalogTests.test_basis_and_section_are_normative) ... ok
+test_collections_and_unknown_fields_are_guarded (test_formal_catalog.FormalCatalogTests.test_collections_and_unknown_fields_are_guarded) ... ok
+test_every_unit_and_recipe_leaf_is_guarded (test_formal_catalog.FormalCatalogTests.test_every_unit_and_recipe_leaf_is_guarded) ... ok
+test_live_catalog_passes (test_formal_catalog.FormalCatalogTests.test_live_catalog_passes) ... ok
+test_projection_succeeds_without_plant_trigger (test_formal_catalog.FormalCatalogTests.test_projection_succeeds_without_plant_trigger) ... ok
+test_stale_plant_trigger_constant_is_rejected (test_formal_catalog.FormalCatalogTests.test_stale_plant_trigger_constant_is_rejected) ... ok
+test_threshold_target_and_unit_domains_cannot_drift (test_formal_catalog.FormalCatalogTests.test_threshold_target_and_unit_domains_cannot_drift) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 2.068s
+
+OK
+逐叶变异全部拒绝：{"units": 1174, "recipes": 154}

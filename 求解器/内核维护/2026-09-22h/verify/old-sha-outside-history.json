@@ -1,0 +1,2762 @@
+[
+  {
+    "path": "求解器/.codegraph/codegraph.db",
+    "line": 5999,
+    "text": "\u000f\u0000\u0000\u0003ـ��\u0001\u0004\u0000�&\u0000\u0000\u0003�!007ba74a6f17263e64d6ce09efe852426��A\u0002\u0003\u0001 1e242b0dfb08c7833e1a03337f1ea657��>\u0002\u0003\u0001\u00013��=\u0006\u0001\u0004\u0004\u0002\u001f26d6a98a63fcb0b8fd7ae05c89a1a28��C\u0002\u0003\u0002\u001f4832bc92d6864aff3c2c4f1a2c07192��@\u0002\u0003\u0001 73d1669886c0b81347c4c3d9cdf3c918��=\u0002\u0003\u0001 9d371fc3a5b551301a4f6fc1e56768ea��?\u0002\u0003\u0001\u0004args��B\u0006\u0001\u0004\u0002\u0001@b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c��A\u0006\u0001\u0004\u0002\u0001\u0006crates��?\b\u0001\u0004\u0003\u0006\u0001\u0004data��D\u0006\u0001\u0004\u0002\u0002\u001feba1d3c9cbe5c1f9ed9f69703cbffba��D\u0002\u0003\u0002\u0005igest��D"
+  },
+  {
+    "path": "求解器/.codegraph/codegraph.db",
+    "line": 751922,
+    "text": "\u0019\u0019O\u0019\u0001\u0001\b\u0001\u0000�\u0015\u0000\b\b\b\b\u0000\u0000\u0000\u0005variable:9916484d54bcb3a33b1c42c0ce711e3bvariableoldshaoldsha内核维护/2026-09-22h/audit.pypythonYYI= 'b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c'\u0001��U��\u0000\u0000\u0000�\u0010\u0016_"
+  },
+  {
+    "path": "求解器/.codegraph/codegraph.db",
+    "line": 774633,
+    "text": "J= 'b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c'\u0001��F��\u0000\u0000\u0003�&\u0017[\u0019++M\u0019\u0001\u0001\b\u0001\u0000�"
+  },
+  {
+    "path": "求解器/.codegraph/codegraph.db",
+    "line": 1498067,
+    "text": "J= 'b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c'\u0001��G"
+  },
+  {
+    "path": "求解器/.codegraph/codegraph.db",
+    "line": 1511216,
+    "text": "\u0019\u0019O\u0019\u0001\u0001\b\u0001\u0000�\u0015\u0000\b\b\b\b\u0000\u0000\u0000\u0005variable:9916484d54bcb3a33b1c42c0ce711e3bvariableoldshaoldsha内核维护/2026-09-22h/audit.pypythonYYI= 'b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c'\u0001��[�"
+  },
+  {
+    "path": "求解器/.codegraph/codegraph.db",
+    "line": 1519814,
+    "text": "H= 'b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c'\u0001��_���C��@\u0017_"
+  },
+  {
+    "path": "求解器/.codegraph/codegraph.db",
+    "line": 1524752,
+    "text": "\u0001\u0001\u0003\u0001\u0002\u0003\u0003\u0002is��\u000f\u0001\\\u0010\u0001\u0001\u0007\u0007\u0001\u0002\u0007\u0007+\u0006\u0001\u0004\u000f\u0001@b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c��\u0011\u0001�\u0007\u0006\u0001\u0004\u0002\u0002\u001f6cf7a6e8e8d28fa890b6e5e24d20204��l\u0002\u0003\u0002\u001f7278a6f95e6fb15d689c34fd78f6433��\u0002\u0001�\u0007\u0002\u0003\u0002\u001fa80fefa4d37b5458b914e60f72ceff3��i\u0002\u0003\u0002\u0005efore��u\u0001"
+  },
+  {
+    "path": "求解器/.codegraph/codegraph.db",
+    "line": 1526770,
+    "text": "\b\u0004\u0001\u0002\u0003\u0002\u001f1dfd3062cc2e99bcb722d2ece1173f9��G\u0002\u0003\u0002\u00012��+\u0006\u0001\u0004\u0011\u0003\u0001h��!\b\u0006\u0001\u0002\u0005\u0014\b\u0006\u0001\u0002\u0005\u0002\u001faa0298d3e5b0873e58d166f2717fbd1��$\u0002\u0003\u0001\u00013��=\u0006\u0001\u0004\u0004\u0002\u001f26d6a98a63fcb0b8fd7ae05c89a1a28��C\u0002\u0003\u0002\u001f4832bc92d6864aff3c2c4f1a2c07192��@\u0002\u0003\u0002\u001f6e61456946bc4835374ae05bc3603de��1\u0002\u0003\u0002\u001fab290441b92aa78f61a11e0a9293d10��.\u0002\u0003\u0002\u001ff6796627a467219e0ffa988223356ee��;\u0002\u0003\u0001 418622785ad5c358ca67fda0ae643cda��7\u0002\u0003\u0002\u001f6231f77bfa4be18b5919e6d8fc11acb��(\u0002\u0003\u0002\u001ff2a481f51d6a7a0d38500cb0f720d55��E\u0002\u0003\u0001 5440928cb87dbee6526cdda5ae440f9f��.\u0001\u0002\u001ff1c87a3a107110f8f6bae071deb51c2��<\u0002\u0003\u0001 64af1f5f8488d6c7d273b667f0e301d9��/\u0002\u0003\u0001 73d1669886c0b81347c4c3d9cdf3c918��=\u0002\u0003\u0002\u001fa9f920b5c19f524b3774003dd98b4b6��&\u0002\u0003\u0002\u001fb92a07365e81c5e7e2d35055c4b0f0e��6\u0002\u0003\u0002\u001fef890e5e6130248329e69e5fe0cf632��:\u0002\u0003\u0001 81eacf4c6f080681223d9659b38a94f1��2\u0002\u0003\u0002\u001f7fa5cfa5616fc5cbb5bcba5159d3b61��0\u0002\u0003\u0002\u001fda9c55ca38eef6bc5c790f997e889e5��#\u0002\u0003\u0001 901160d968a8dabecf860aa747678c1c��9\u0002\u0003\u0002\u001fd371fc3a5b551301a4f6fc1e56768ea��?\u0002\u0003\u0001 a30e0af6caec08f860a987f615eff9b5��)\u0002\u0003\u0002\u0003rgs��B\u0006\u0001\u0004\u0002\u0002\u0004udit��5\u000e\b\u0001\u0001\u0002\u0001\u0002\u0007\u0001@b573a299c5853dada4189f53b629733f826a535ca011c96"
+  },
+  {
+    "path": "求解器/规格/修订记录.md",
+    "line": 356,
+    "text": "依据提交 `dfc35cd` 的现行三份正式文件，使用 `数据/工具/formal_catalog.py` 的回源投影重建目录。目录版本 `2026-09-22-r24-constraints-72`，SHA-256 `b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c`；约束仍为 72 条。"
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/catalog-verify-active-before.json",
+    "line": 229,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/positive-run-active-before.json",
+    "line": 229,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/positive-verify-record-active-before.json",
+    "line": 229,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/positive-verify-record-active-after.json",
+    "line": 229,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/positive-check-active-before.json",
+    "line": 229,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/sync-plan.json",
+    "line": 5,
+    "text": "    \"after_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/catalog-verify-active-after.json",
+    "line": 229,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/positive-seed-active-after.json",
+    "line": 229,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/positive-check.log",
+    "line": 3,
+    "text": "  \"catalog_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/kernel-lib-active-after.json",
+    "line": 229,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/cargo-clippy-active-after.json",
+    "line": 229,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/topology-lib-active-before.json",
+    "line": 229,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/catalog-regressions-active-before.json",
+    "line": 229,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/changed-files.json",
+    "line": 5,
+    "text": "    \"after_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/topology-lib-active-after.json",
+    "line": 229,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/positive-check-active-after.json",
+    "line": 229,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/summary.json",
+    "line": 5,
+    "text": "  \"catalog_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 3,
+    "text": "  \"catalog_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 48,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 66,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 84,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 102,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 120,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 138,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 156,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 174,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 192,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 210,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 228,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 246,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 264,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 282,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 300,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 318,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 336,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 354,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 372,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 414,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 432,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 450,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 468,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 486,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 504,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 522,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 540,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 558,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 576,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 594,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 612,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 630,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 648,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 666,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 684,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 702,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 720,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 738,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 756,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 774,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 792,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 810,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 828,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 846,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 864,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 882,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 900,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 918,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 936,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 954,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 972,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 990,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 1008,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/audit.json",
+    "line": 1026,
+    "text": "          \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/cargo-build-active-before.json",
+    "line": 229,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/sync-changes.json",
+    "line": 3,
+    "text": "  \"catalog_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/sync-changes.json",
+    "line": 66,
+    "text": "      \"after_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/kernel-lib-active-before.json",
+    "line": 229,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/cargo-clippy-active-before.json",
+    "line": 229,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/kernel-reference-active-before.json",
+    "line": 229,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/topology-validation-active-after.json",
+    "line": 229,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/stale-catalog-negative-active-before.json",
+    "line": 229,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/positive-run-active-after.json",
+    "line": 229,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/记录.md",
+    "line": 7,
+    "text": "仓库 `/home/zhuran24/zmd-research-fresh`，开工 HEAD `8ab232419c0e9e1702a14c4881a173f15fdade84`。该 HEAD 已包含约束措辞提交 `dfc35cd` 与历史证据恢复提交 `8ab2324`。目录版本 `2026-09-22-r24-constraints-72`，SHA-256 `b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c`；仍为 **72 条**。共修改 **62 个业务文件**，重锁 **54 份内核输入（45 个样例、9 个 fixture）**；核验 **56 份输入／参数赋值的 114 个引用字段**和候选 B 的 **16 项来源**，同步不一致 **0 项**。"
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/kernel-doc-active-before.json",
+    "line": 229,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/catalog-regressions-active-after.json",
+    "line": 229,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/topology-validation-active-before.json",
+    "line": 229,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/positive-seed-active-before.json",
+    "line": 229,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/cargo-check-active-before.json",
+    "line": 229,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/cargo-check-active-after.json",
+    "line": 229,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/kernel-reference-active-after.json",
+    "line": 229,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/cargo-build-active-after.json",
+    "line": 229,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/topology-doc-active-after.json",
+    "line": 229,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/kernel-doc-active-after.json",
+    "line": 229,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 10,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 23,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 36,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 49,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 62,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 75,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 88,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 101,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 114,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 136,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 195,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 208,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 221,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 234,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 247,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 260,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 273,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 286,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 299,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 312,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 325,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 338,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 351,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 364,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 377,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 390,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 403,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 416,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 429,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 442,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 455,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 468,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 481,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 494,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 507,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 520,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 533,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 546,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 559,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 572,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 585,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 598,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 611,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 624,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 637,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 650,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 663,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 676,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 689,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 702,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 715,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 728,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 741,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 754,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 767,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/business.patch",
+    "line": 835,
+    "text": "+依据提交 `dfc35cd` 的现行三份正式文件，使用 `数据/工具/formal_catalog.py` 的回源投影重建目录。目录版本 `2026-09-22-r24-constraints-72`，SHA-256 `b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c`；约束仍为 72 条。"
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/topology-doc-active-before.json",
+    "line": 229,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/stale-catalog-negative-active-after.json",
+    "line": 229,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/topology-validation-after-active.json",
+    "line": 1599,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 10,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 23,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 36,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 49,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 62,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 75,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 88,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 101,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 114,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 136,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 195,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 208,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 221,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 234,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 247,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 260,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 273,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 286,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 299,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 312,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 325,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 338,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 351,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 364,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 377,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 390,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 403,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 416,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 429,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 442,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 455,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 468,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 481,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 494,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 507,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 520,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 533,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 546,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 559,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 572,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 585,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 598,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 611,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 624,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 637,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 650,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 663,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 676,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 689,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 702,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 715,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 728,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 741,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 754,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 767,
+    "text": "+    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial.patch",
+    "line": 835,
+    "text": "+依据提交 `dfc35cd` 的现行三份正式文件，使用 `数据/工具/formal_catalog.py` 的回源投影重建目录。目录版本 `2026-09-22-r24-constraints-72`，SHA-256 `b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c`；约束仍为 72 条。"
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/topology-lib-before-active.json",
+    "line": 1599,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/kernel-reference-before-active.json",
+    "line": 1599,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/catalog-regressions-after-active.json",
+    "line": 1599,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/kernel-doc-before-active.json",
+    "line": 1599,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/cargo-check-before-active.json",
+    "line": 1595,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/final-active.json",
+    "line": 1599,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/positive-check-after-active.json",
+    "line": 1599,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/kernel-lib-after-active.json",
+    "line": 1599,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/topology-validation-before-active.json",
+    "line": 1599,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/positive-seed-after-active.json",
+    "line": 1599,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/topology-doc-before-active.json",
+    "line": 1599,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/catalog-verify-before-active.json",
+    "line": 1599,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/catalog-regressions-before-active.json",
+    "line": 1599,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/cargo-clippy-after-active.json",
+    "line": 1595,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/initial-active.json",
+    "line": 1595,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/artifacts.json",
+    "line": 947,
+    "text": "      \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/positive-verify-record-before-active.json",
+    "line": 1599,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 43,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 44,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 63,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 64,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 83,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 84,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 103,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 104,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 123,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 124,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 143,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 144,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 163,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 164,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 183,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 184,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 203,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 204,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 223,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 224,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 243,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 244,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 263,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 264,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 283,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 284,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 303,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 304,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 323,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 324,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 343,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 344,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 363,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 364,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 383,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 384,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 403,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 404,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 450,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 451,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 470,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 471,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 490,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 491,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 510,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 511,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 530,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 531,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 550,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 551,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 570,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 571,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 590,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 591,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 610,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 611,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 630,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 631,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 650,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 651,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 670,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 671,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 690,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 691,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 710,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 711,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 730,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 731,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 750,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 751,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 770,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 771,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 790,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 791,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 810,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 811,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 830,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 831,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 850,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 851,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 870,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 871,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 890,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 891,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 910,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 911,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 930,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 931,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 950,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 951,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 970,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 971,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 990,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 991,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 1010,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 1011,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 1030,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 1031,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 1050,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 1051,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 1070,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 1071,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 1090,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 1091,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 1110,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 1111,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 1130,
+    "text": "          \"declared_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 1131,
+    "text": "          \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 1617,
+    "text": "      \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json",
+    "line": 1618,
+    "text": "      \"actual_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/cargo-build-after-active.json",
+    "line": 1595,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 37,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 47,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 57,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 67,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 77,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 87,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 97,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 107,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 117,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 1947,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 1967,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 1977,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 1987,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 2007,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 2017,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 2037,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 2047,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 2057,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 2087,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 2107,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 2117,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 2147,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 2157,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 2177,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 2187,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 2197,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 2207,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 2217,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 2237,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 2247,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 2257,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 2277,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 2457,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 2537,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 2577,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 2757,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 2837,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 2857,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 2917,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 2987,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 3127,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 3147,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 3157,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 3167,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 3317,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 3337,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 3357,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 3367,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 3387,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 3407,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 3447,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 3457,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 3487,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 3497,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 10987,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/all-catalog-inputs.json",
+    "line": 11007,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/catalog-audit.json",
+    "line": 24,
+    "text": "  \"new_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/catalog-audit.json",
+    "line": 25,
+    "text": "  \"rebuilt_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/topology-lib-after-active.json",
+    "line": 1599,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/positive-verify-record-after-active.json",
+    "line": 1599,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/topology-doc-after-active.json",
+    "line": 1599,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/记录.md",
+    "line": 30,
+    "text": "- 新目录与 [rebuilt-catalog.json](rebuilt-catalog.json) 的 SHA-256 均为 `b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c`，原始字节相等。"
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/stale-catalog-negative-after-active.json",
+    "line": 1599,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/positive-check.stdout.log",
+    "line": 3,
+    "text": "  \"catalog_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/positive-check-before-active.json",
+    "line": 1599,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/cargo-clippy-before-active.json",
+    "line": 1595,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/stale-catalog-negative-before-active.json",
+    "line": 1599,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/positive-seed-before-active.json",
+    "line": 1599,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/catalog-verify-after-active.json",
+    "line": 1599,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/positive-run-after-active.json",
+    "line": 1599,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/kernel-doc-after-active.json",
+    "line": 1599,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/kernel-lib-before-active.json",
+    "line": 1595,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/kernel-reference-after-active.json",
+    "line": 1599,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/cargo-build-before-active.json",
+    "line": 1595,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/cargo-check-after-active.json",
+    "line": 1595,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/positive-run-before-active.json",
+    "line": 1599,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/positive/input.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/positive/seed.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/positive/run.json",
+    "line": 14,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/verify/positive/run.json",
+    "line": 182,
+    "text": "      \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/positive/positive-run.json",
+    "line": 14,
+    "text": "        \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/positive/positive-run.json",
+    "line": 182,
+    "text": "      \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/positive/seed-output.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22g/positive/positive-input.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/sync.py",
+    "line": 11,
+    "text": "OLD_SHA='b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c'"
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/after-old-sha-inventory.json",
+    "line": 9,
+    "text": "    \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/final-old-sha-inventory.json",
+    "line": 9,
+    "text": "    \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before-old-sha-inventory.json",
+    "line": 9,
+    "text": "    \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/changed-files.json",
+    "line": 400,
+    "text": "    \"before_sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/initial-active.json",
+    "line": 229,
+    "text": "  \"求解器/数据/正式静态目录.json\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\","
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/artifacts.json",
+    "line": 425,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/记录.md",
+    "line": 57,
+    "text": "旧目录 SHA `b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c` 的全仓 `rg --hidden --no-ignore` 结果见 [final-old-sha-inventory.json](final-old-sha-inventory.json)。只排除 `.git`、target、Python缓存；余项均为旧维护记录、本轮备份／日志／负例和规格修订历史节，活动输入残留0。"
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/positive_finish.py",
+    "line": 18,
+    "text": "document['catalog']['sha256']='b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c'"
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/report.py",
+    "line": 128,
+    "text": "旧目录 SHA `b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c` 的全仓 `rg --hidden --no-ignore` 结果见 [final-old-sha-inventory.json](final-old-sha-inventory.json)。只排除 `.git`、target、Python缓存；余项均为旧维护记录、本轮备份／日志／负例和规格修订历史节，活动输入残留0。"
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/positive.py",
+    "line": 30,
+    "text": "document['catalog']['sha256']='b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c'"
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/audit.py",
+    "line": 89,
+    "text": "oldsha='b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c'"
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 779,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 963,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 1142,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 1321,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 1500,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 1790,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 1974,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 2158,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 2342,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 2788,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 3288,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 3470,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 3652,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 3834,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 4016,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 4198,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 4380,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 4562,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 4744,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 4926,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 5108,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 5290,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 5472,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 5654,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 5836,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 6018,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 6200,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 6382,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 6564,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 7009,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 7193,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 7372,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 7551,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 7943,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 8337,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 8731,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 9125,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 9519,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 9913,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 10307,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 10600,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 10780,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 11070,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 11366,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 11550,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 11730,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 11910,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 12090,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 12270,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 12450,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 12630,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 12810,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 12990,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 13170,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/business.patch",
+    "line": 13350,
+    "text": "-    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/规格/修订记录.md",
+    "line": 356,
+    "text": "依据提交 `dfc35cd` 的现行三份正式文件，使用 `数据/工具/formal_catalog.py` 的回源投影重建目录。目录版本 `2026-09-22-r24-constraints-72`，SHA-256 `b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c`；约束仍为 72 条。"
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/数据/候选B/来源清单.json",
+    "line": 64,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/数据/样例/桥接器双通路.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/数据/样例/密集制造闭环序1核验.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/数据/样例/阻尼连续带核验.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/数据/样例/混做粉碎机两下游.json",
+    "line": 6,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/数据/样例/轮询均分序2核验.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/数据/样例/传输拒收与暂停核验.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/数据/样例/密集制造闭环序3核验.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/数据/样例/轮询均分序3核验.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/数据/样例/轮询均分序4核验.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/数据/样例/轮询均分序5核验.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/数据/样例/研磨混做核验.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/数据/样例/密集制造闭环序4核验.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/数据/样例/阻尼切支恢复核验.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/数据/样例/分流器三路轮询.json",
+    "line": 6,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/数据/样例/密集结点闭环核验.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/数据/样例/密集结点核验.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/数据/样例/轮询均分核验.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/数据/样例/密集制造闭环序5核验.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/数据/样例/双成品满仓起动试作.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/数据/样例/双成品制造砖.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/数据/样例/生产循环环带.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/数据/样例/轮询均分序0核验.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/数据/样例/密集制造闭环序0核验.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/数据/样例/密集结点循环种子核验.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/数据/样例/轮询均分序1核验.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/数据/样例/密集制造闭环基础.json",
+    "line": 6,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/数据/样例/密集制造闭环序2核验.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/数据/样例/任务7内核/身份实际切换.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/数据/样例/任务7内核/静止成熟与暂停键.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/数据/样例/任务7内核/累计调低保留.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/数据/样例/任务7内核/无线空箱.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/数据/样例/任务7内核/同刻双箱争余量.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/数据/样例/任务7内核/无线多格歧义.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/数据/样例/任务7内核/生产环带.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/数据/样例/任务7内核/无线多格全收.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/数据/样例/任务7内核/成熟旧货重试.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/数据/样例/任务7内核/累计审计与窗口周期.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/数据/样例/任务7内核/阻尼恢复.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/数据/样例/任务7内核/无线部分接收.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/数据/样例/任务7内核/身份断边恢复.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/数据/样例/任务7内核/无线全拒收.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/数据/样例/任务7内核/累计调高资格.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/数据/样例/任务7内核/装载与普通制造.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/数据/样例/任务7内核/无线一满一可收.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/数据/样例/任务7内核/双门窗口恢复.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/crates/kernel/tests/fixtures/benchmark_brick.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/crates/kernel/tests/fixtures/benchmark_1000.json",
+    "line": 6,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/crates/kernel/tests/fixtures/priority.json",
+    "line": 6,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/crates/kernel/tests/fixtures/bridge.json",
+    "line": 6,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/crates/kernel/tests/fixtures/benchmark_brick_60.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/crates/kernel/tests/fixtures/revision_r2_phase_control.json",
+    "line": 6,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/crates/kernel/tests/fixtures/benchmark_candidate_b.json",
+    "line": 4,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/crates/kernel/tests/fixtures/revision_r2_branch_cut.json",
+    "line": 6,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/before/crates/kernel/tests/fixtures/core_inbound.json",
+    "line": 6,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  },
+  {
+    "path": "求解器/内核维护/2026-09-22h/positive/stale-catalog-input.json",
+    "line": 6,
+    "text": "    \"sha256\": \"b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c\""
+  }
+]

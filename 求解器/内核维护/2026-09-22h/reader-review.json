@@ -1,0 +1,22 @@
+{
+  "status": "pass",
+  "reviewed_utc": "2026-09-23T03:43:33.498497+00:00",
+  "record_sha256": "a7ab8be2150077c8d3102f72239a8240f8e186fa47fe7a15da9853b5959c4317",
+  "checked": [
+    "self-contained scope and chronology",
+    "current numbers versus historical iterations",
+    "eight test names and source location",
+    "all local links resolve",
+    "unresolved failures and out-of-scope issues separated",
+    "94 business files versus unrelated untracked work",
+    "history and seven protected files unchanged"
+  ],
+  "fixed": [
+    "constraint section row number collision",
+    "remaining bridge capacity paragraph",
+    "full schema last_unit field in both Content and CycleKey",
+    "precise new unit-test path",
+    "separate concurrent untracked directories"
+  ],
+  "remaining_issues": []
+}

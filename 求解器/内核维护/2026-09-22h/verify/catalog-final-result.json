@@ -1,0 +1,22 @@
+{
+  "head": "9615092ea16b42766aa942408bf1603ac618eb6b",
+  "equal": true,
+  "actual_sha256": "3566e2ecb9d90b9a1afc01b273eb548178de738fb4e4f3b2af88fa05f809be29",
+  "rebuilt_sha256": "3566e2ecb9d90b9a1afc01b273eb548178de738fb4e4f3b2af88fa05f809be29",
+  "keys": [
+    "recipes",
+    "constraints",
+    "schema",
+    "conventions",
+    "units",
+    "task",
+    "static_checks",
+    "sources",
+    "version",
+    "transcribed_at",
+    "source_root"
+  ],
+  "constraints": 72,
+  "units": 18,
+  "recipes": 18
+}

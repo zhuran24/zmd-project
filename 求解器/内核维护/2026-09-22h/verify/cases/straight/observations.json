@@ -1,0 +1,196 @@
+{
+  "result": {
+    "name": "straight",
+    "pass": true,
+    "ticks": 12,
+    "channels": 2,
+    "successful_moves": 2,
+    "return_guard_failures": 0,
+    "return_guard_with_empty_destination": 0,
+    "final_inventory": {
+      "out:transport:0": [
+        {
+          "item": "源矿",
+          "n": 1,
+          "entered": 1,
+          "last": null
+        }
+      ]
+    }
+  },
+  "moves": [
+    {
+      "tick": 0,
+      "item": "源矿",
+      "from": "in",
+      "to": "b",
+      "channel": "PC|in:north:0|b:south:0"
+    },
+    {
+      "tick": 1,
+      "item": "源矿",
+      "from": "b",
+      "to": "out",
+      "channel": "PC|b:north:0|out:south:0"
+    }
+  ],
+  "return_guards": [],
+  "states": [
+    {
+      "tick": 0,
+      "inventory": {
+        "b:vertical:0": [
+          {
+            "item": "源矿",
+            "n": 1,
+            "entered": 0,
+            "last": "in"
+          }
+        ]
+      }
+    },
+    {
+      "tick": 1,
+      "inventory": {
+        "out:transport:0": [
+          {
+            "item": "源矿",
+            "n": 1,
+            "entered": 1,
+            "last": null
+          }
+        ]
+      }
+    },
+    {
+      "tick": 2,
+      "inventory": {
+        "out:transport:0": [
+          {
+            "item": "源矿",
+            "n": 1,
+            "entered": 1,
+            "last": null
+          }
+        ]
+      }
+    },
+    {
+      "tick": 3,
+      "inventory": {
+        "out:transport:0": [
+          {
+            "item": "源矿",
+            "n": 1,
+            "entered": 1,
+            "last": null
+          }
+        ]
+      }
+    },
+    {
+      "tick": 4,
+      "inventory": {
+        "out:transport:0": [
+          {
+            "item": "源矿",
+            "n": 1,
+            "entered": 1,
+            "last": null
+          }
+        ]
+      }
+    },
+    {
+      "tick": 5,
+      "inventory": {
+        "out:transport:0": [
+          {
+            "item": "源矿",
+            "n": 1,
+            "entered": 1,
+            "last": null
+          }
+        ]
+      }
+    },
+    {
+      "tick": 6,
+      "inventory": {
+        "out:transport:0": [
+          {
+            "item": "源矿",
+            "n": 1,
+            "entered": 1,
+            "last": null
+          }
+        ]
+      }
+    },
+    {
+      "tick": 7,
+      "inventory": {
+        "out:transport:0": [
+          {
+            "item": "源矿",
+            "n": 1,
+            "entered": 1,
+            "last": null
+          }
+        ]
+      }
+    },
+    {
+      "tick": 8,
+      "inventory": {
+        "out:transport:0": [
+          {
+            "item": "源矿",
+            "n": 1,
+            "entered": 1,
+            "last": null
+          }
+        ]
+      }
+    },
+    {
+      "tick": 9,
+      "inventory": {
+        "out:transport:0": [
+          {
+            "item": "源矿",
+            "n": 1,
+            "entered": 1,
+            "last": null
+          }
+        ]
+      }
+    },
+    {
+      "tick": 10,
+      "inventory": {
+        "out:transport:0": [
+          {
+            "item": "源矿",
+            "n": 1,
+            "entered": 1,
+            "last": null
+          }
+        ]
+      }
+    },
+    {
+      "tick": 11,
+      "inventory": {
+        "out:transport:0": [
+          {
+            "item": "源矿",
+            "n": 1,
+            "entered": 1,
+            "last": null
+          }
+        ]
+      }
+    }
+  ]
+}

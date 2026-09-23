@@ -559,56 +559,7 @@ impl Input {
             geometry.channels.keys().cloned(),
             "timeline.connection_events",
         )?;
-        // 内核输入§3.2：桥先接必须是唯一已知非桥端，不能借有向图漏掉先接触。
-        for (u, unit) in &geometry.units {
-            if unit.kind != "桥接器" {
-                continue;
-            }
-            for axis in ["vertical", "horizontal"] {
-                let mut contacts = Vec::new();
-                for (p, port) in &geometry.ports {
-                    if port.unit != *u || port.axis.as_deref() != Some(axis) {
-                        continue;
-                    }
-                    for (q, peer) in &geometry.ports {
-                        if peer.unit == *u {
-                            continue;
-                        }
-                        if peer.cell == (port.cell.0 + port.normal.0, port.cell.1 + port.normal.1)
-                            && peer.normal == (-port.normal.0, -port.normal.1)
-                        {
-                            let r = rank[u].max(rank[&peer.unit]);
-                            let t = if structural {
-                                r as i64
-                            } else {
-                                instant(&events[&builds[u]]["time"], u)?
-                                    .max(instant(&events[&builds[&peer.unit]]["time"], &peer.unit)?)
-                            };
-                            contacts.push((t, p, q));
-                        }
-                    }
-                }
-                contacts.sort();
-                if contacts.is_empty() {
-                    continue;
-                }
-                if contacts.len() > 1 && contacts[0].0 == contacts[1].0 {
-                    return Err(Stop::unsupported(
-                        "connection.bridge_tie",
-                        format!("{u}.{axis}"),
-                        "先接端并列",
-                    ));
-                }
-                let (_, p, q) = contacts[0];
-                let peer = &geometry.ports[q];
-                if geometry.units[&peer.unit].kind == "桥接器" {
-                    return Err(Stop::unsupported("connection.bridge_tie", u, "桥互依赖"));
-                }
-                if geometry.ports[p].role == peer.role {
-                    return Err(Stop::invalid(u, "桥方向不与先接端互补"));
-                }
-            }
-        }
+        // 桥端口恒为双向，接通史只决定通道时刻和轮询次序。
         fields(
             &raw["settings"],
             "anchor switches gates warehouse_assignments",
@@ -901,7 +852,9 @@ impl Input {
                     .filter(|(_, c)| {
                         let source = &self.geometry.ports[&c.source_port];
                         source.unit == target.unit
-                            && (unit.kind != "桥接器" || source.axis == target.axis)
+                            && (unit.kind != "桥接器"
+                                || (source.axis == target.axis
+                                    && c.source_port != self.geometry.channels[&cid].target_port))
                     })
                     .map(|(id, _)| id.clone()),
             );

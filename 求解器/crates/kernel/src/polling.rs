@@ -30,7 +30,9 @@ impl Engine {
                 } else {
                     (&c.source_port, &c.target_port)
                 };
-                if self.input.geometry.ports[end].unit != *uid {
+                if self.input.geometry.ports[end].unit != *uid
+                    || self.input.geometry.ports[end].axis != prior.axis
+                {
                     continue;
                 }
                 let peer_kind =
@@ -50,7 +52,11 @@ impl Engine {
                     "ungraded".into()
                 };
                 groups
-                    .entry(format!("L|{uid}|{side}|{category}"))
+                    .entry(if let Some(axis) = &prior.axis {
+                        format!("L|{uid}|{axis}|{side}|{category}")
+                    } else {
+                        format!("L|{uid}|{side}|{category}")
+                    })
                     .or_default()
                     .push(cid.clone());
             }
@@ -85,6 +91,7 @@ impl Engine {
             result.push(Side {
                 unit: uid.clone(),
                 side: side.clone(),
+                axis: prior.axis.clone(),
                 graded,
                 current_level: None,
                 levels,
@@ -136,7 +143,10 @@ impl Engine {
                 .filter(|id| {
                     let p =
                         &self.input.geometry.ports[&self.input.geometry.channels[*id].source_port];
-                    p.unit == target.unit && (unit.kind != "桥接器" || p.axis == target.axis)
+                    p.unit == target.unit
+                        && (unit.kind != "桥接器"
+                            || (p.axis == target.axis
+                                && self.input.geometry.channels[*id].source_port != c.target_port))
                 })
                 .cloned()
                 .collect();
@@ -197,14 +207,7 @@ impl Engine {
         let mut ties: Vec<_> = self
             .tie_sides
             .iter()
-            .filter(|key| {
-                !dirty.iter().any(|i| {
-                    *key == &format!(
-                        "{}:{}",
-                        self.memory.sides[*i].unit, self.memory.sides[*i].side
-                    )
-                })
-            })
+            .filter(|key| !dirty.iter().any(|i| *key == &self.memory.sides[*i].label()))
             .cloned()
             .collect();
         for (index, s) in self.memory.sides.iter().enumerate() {
@@ -282,7 +285,7 @@ impl Engine {
                 .map(|(_, l)| l)
                 .collect();
             if equal.len() > 1 {
-                ties.push(format!("{}:{}", s.unit, s.side))
+                ties.push(s.label())
             }
             let chosen = equal
                 .iter()
@@ -300,7 +303,7 @@ impl Engine {
             self.memory
                 .sides
                 .iter()
-                .position(|s| *key == format!("{}:{}", s.unit, s.side))
+                .position(|s| *key == s.label())
                 .unwrap_or(usize::MAX)
         });
         self.tie_sides = ties;
@@ -358,7 +361,7 @@ impl Engine {
             .sides
             .iter()
             .enumerate()
-            .map(|(i, s)| ((s.unit.clone(), s.side.clone()), i))
+            .map(|(i, s)| ((s.unit.clone(), s.side.clone(), s.axis.clone()), i))
             .collect();
         self.refresh()
     }
@@ -441,8 +444,16 @@ impl Engine {
                 after.insert("identity_mismatch".to_string());
             }
             for (field, reason, count) in [
-                ("total_limit", "total_exhausted", g.total_received.integer(&g.unit)?),
-                ("window_limit", "window_exhausted", g.window_received.integer(&g.unit)?),
+                (
+                    "total_limit",
+                    "total_exhausted",
+                    g.total_received.integer(&g.unit)?,
+                ),
+                (
+                    "window_limit",
+                    "window_exhausted",
+                    g.window_received.integer(&g.unit)?,
+                ),
             ] {
                 if !set[field].is_null() && count >= num(&set[field], field)? {
                     after.insert(reason.to_string());
@@ -456,18 +467,30 @@ impl Engine {
         if changes.is_empty() {
             return Ok(None);
         }
-        let active: BTreeSet<_> = self.input.geometry.channels.iter().filter(|(_, c)| {
-            let uid = &self.input.geometry.ports[&c.target_port].unit;
-            next.iter().find(|g| g.unit == *uid).is_none_or(|g| g.blocked_reasons.is_empty())
-        }).map(|(cid, _)| cid.clone()).collect();
+        let active: BTreeSet<_> = self
+            .input
+            .geometry
+            .channels
+            .iter()
+            .filter(|(_, c)| {
+                let uid = &self.input.geometry.ports[&c.target_port].unit;
+                next.iter()
+                    .find(|g| g.unit == *uid)
+                    .is_none_or(|g| g.blocked_reasons.is_empty())
+            })
+            .map(|(cid, _)| cid.clone())
+            .collect();
         self.check_branch_graph(&active)?;
         let removed: Vec<_> = self.active.difference(&active).cloned().collect();
         let restored: Vec<_> = active.difference(&self.active).cloned().collect();
         self.state.logistics.gate_counters = next;
         self.rebuild_graph()?;
-        Ok(Some(serde_json::json!({
-            "gates":changes.iter().map(|c| c["unit"].clone()).collect::<Vec<_>>(),
-            "removed_channels":removed,"restored_channels":restored,"reason_changes":changes
-        }).to_string()))
+        Ok(Some(
+            serde_json::json!({
+                "gates":changes.iter().map(|c| c["unit"].clone()).collect::<Vec<_>>(),
+                "removed_channels":removed,"restored_channels":restored,"reason_changes":changes
+            })
+            .to_string(),
+        ))
     }
 }

@@ -1,0 +1,8 @@
+[package]
+name = "independent-bridge-layout-builder"
+version = "0.1.0"
+edition = "2021"
+[workspace]
+[dependencies]
+kernel = { path = "../../../../crates/kernel" }
+serde_json = "1"

@@ -14,7 +14,7 @@ def decision(basis, status='unresolved', value=None):
     return {'status': status, 'value': value, 'basis': [basis]}
 
 def unit(uid, kind, x, y, rotation='r0', port_layout=0):
-    return {'id': uid, 'kind': kind, 'origin': [quantity(x), quantity(y)], 'rotation': rotation, 'port_layout': None if kind == '桥接器' else port_layout, 'bridge_axes': {'vertical': {'status': 'resolved', 'input_side': 'south', 'basis': ['候选先接历史：南侧先接']}, 'horizontal': {'status': 'resolved', 'input_side': 'west', 'basis': ['候选先接历史：西侧先接']}} if kind == '桥接器' else None, 'occupied_cells': None}
+    return {'id': uid, 'kind': kind, 'origin': [quantity(x), quantity(y)], 'rotation': rotation, 'port_layout': None if kind == '桥接器' else port_layout, 'bridge_axes': None, 'occupied_cells': None}
 
 def make_parameters():
     registry = checker.axis_registry()

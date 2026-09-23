@@ -3,15 +3,15 @@
   "profile_id": "kernel_profile_v1",
   "profile_source": {
     "path": "../../规格/受限模型声明.md",
-    "sha256": "f427134b7307df16f3bcd709e47ad9dac5c48eeb2ffa393bbb47cf8ceec64719"
+    "sha256": "66359c590ad711b950bda55cb1b7e577ef9fb9671e0d87d426908d28bb244349"
   },
   "configuration_source": {
     "path": "../../规格/内核配置-v1.json",
-    "sha256": "a6ecebadfb0e322726f22dd3967301691063965c45f56bd62e0d84965a810fee"
+    "sha256": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048"
   },
   "axis_source": {
     "path": "../../规格/选择点参数轴.md",
-    "sha256": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+    "sha256": "261da30db31063ec8292aaa493e2c11d026c0861852ef19550eeb92eb4da7665"
   },
   "axes": [
     {
@@ -228,13 +228,13 @@
       "axis": "bridge.scheduling_scope",
       "decision": {
         "status": "specified",
-        "value": "unit",
+        "value": "per_axis",
         "basis": [
-          "受限模型声明；内核输入 §5.2–5.4；known：unit，按单位存取两侧，存货共同分级、取货不分级；按轴拆调度排除。据：轮询、存货/取货优先级、桥接器"
+          "规则L24、L59、L63；现行内核配置 r25"
         ]
       },
       "disposition": "已定",
-      "coverage_loss": "该已定范围无读法损失；关联未定轴另记"
+      "coverage_loss": "该已定范围无读法损失"
     },
     {
       "axis": "connection.belt_shape",
@@ -423,6 +423,42 @@
       },
       "disposition": "已定",
       "coverage_loss": "双端怎样构成一次尝试、授权侧识别、失败空转和同刻推进仍缺任务6推导"
+    },
+    {
+      "axis": "bridge.capacity",
+      "decision": {
+        "status": "specified",
+        "value": 1,
+        "basis": [
+          "规则L24、L59、L63；现行内核配置 r25"
+        ]
+      },
+      "disposition": "已定",
+      "coverage_loss": "该已定范围无读法损失"
+    },
+    {
+      "axis": "connection.bridge_first_contact",
+      "decision": {
+        "status": "specified",
+        "value": "not_applicable",
+        "basis": [
+          "规则L24、L59、L63；现行内核配置 r25"
+        ]
+      },
+      "disposition": "已定",
+      "coverage_loss": "该已定范围无读法损失"
+    },
+    {
+      "axis": "connection.bridge_tie",
+      "decision": {
+        "status": "specified",
+        "value": "not_applicable",
+        "basis": [
+          "规则L24、L59、L63；现行内核配置 r25"
+        ]
+      },
+      "disposition": "已定",
+      "coverage_loss": "该已定范围无读法损失"
     },
     {
       "axis": "connection.order",
@@ -738,33 +774,6 @@
       },
       "disposition": "由输入全称量化",
       "coverage_loss": "不遍历仲裁不等于仲裁鲁棒"
-    },
-    {
-      "axis": "connection.bridge_first_contact",
-      "decision": {
-        "status": "specified",
-        "value": "physical_contact",
-        "basis": [
-          "受限模型声明；内核输入 §5.2–5.4；open：按物理邻接先接／按有向通道形成先接；相邻桥接器循环依赖需历史核验，已知邻端须存取互补。据：桥接器、通道、接通"
-        ]
-      },
-      "disposition": "本版选值",
-      "coverage_loss": "有向成边先接及递归定向"
-    },
-    {
-      "axis": "connection.bridge_tie",
-      "decision": {
-        "status": "specified",
-        "value": {
-          "policy": "stop",
-          "trigger": "先接并列或桥互依赖，不能由唯一无环见证定向"
-        },
-        "basis": [
-          "受限模型声明；内核输入 §5.2–5.4；open：合法互补方向的固定仲裁／联立关系；联立解不自动是可执行建造历史。据：桥接器、蓝图、通道"
-        ]
-      },
-      "disposition": "超出覆盖即停",
-      "coverage_loss": "该事件/证明域全部未覆盖；stop是工程处置，不是游戏枚举值"
     },
     {
       "axis": "transfer.phase",
@@ -1088,10 +1097,10 @@
         "status": "specified",
         "value": {
           "policy": "stop",
-          "trigger": "离线需更新桥方向"
+          "trigger": "请求离线回放"
         },
         "basis": [
-          "受限模型声明；内核输入 §5.2–5.4；open：保留桥接器历史定向／新先接序的后效待审，必须核库存通路与端口相遇。据：离线、桥接器、通道"
+          "规则L24、L59、L63；现行内核配置 r25"
         ]
       },
       "disposition": "超出覆盖即停",
@@ -1329,18 +1338,6 @@
       },
       "disposition": "超出覆盖即停",
       "coverage_loss": "一般拿取/矿库存复原、恢复后状态覆盖及全部起点和固定参数覆盖仍待具体证明"
-    },
-    {
-      "axis": "bridge.capacity",
-      "decision": {
-        "status": "specified",
-        "value": 1,
-        "basis": [
-          "受限模型声明；内核输入 §5.2–5.4；open：1（仅个数例外的受限读法）／容量也例外但数值域待证；null 不是无限。据：运输单位、桥接器、约束·箱体过站/约束·运输下限"
-        ]
-      },
-      "disposition": "本版选值",
-      "coverage_loss": "容量也例外的未定域"
     },
     {
       "axis": "power.cell_rule",

@@ -1,0 +1,13 @@
+    Checking serde_core v1.0.229
+    Checking num-traits v0.2.19
+    Checking zmij v1.0.23
+    Checking itoa v1.0.18
+    Checking memchr v2.8.3
+    Checking num-integer v0.1.47
+    Checking num-bigint v0.4.8
+    Checking serde v1.0.229
+    Checking serde_json v1.0.151
+    Checking num-rational v0.4.2
+    Checking topology v0.1.0 (/home/zhuran24/zmd-research-fresh/求解器/crates/topology)
+    Checking kernel v0.1.0 (/home/zhuran24/zmd-research-fresh/求解器/crates/kernel)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.63s

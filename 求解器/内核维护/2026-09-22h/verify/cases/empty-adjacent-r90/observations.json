@@ -1,0 +1,40 @@
+{
+  "result": {
+    "name": "empty-adjacent-r90",
+    "pass": true,
+    "ticks": 6,
+    "channels": 2,
+    "successful_moves": 0,
+    "return_guard_failures": 0,
+    "return_guard_with_empty_destination": 0,
+    "final_inventory": {}
+  },
+  "moves": [],
+  "return_guards": [],
+  "states": [
+    {
+      "tick": 0,
+      "inventory": {}
+    },
+    {
+      "tick": 1,
+      "inventory": {}
+    },
+    {
+      "tick": 2,
+      "inventory": {}
+    },
+    {
+      "tick": 3,
+      "inventory": {}
+    },
+    {
+      "tick": 4,
+      "inventory": {}
+    },
+    {
+      "tick": 5,
+      "inventory": {}
+    }
+  ]
+}

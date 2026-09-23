@@ -81,32 +81,21 @@ impl Engine {
             return Ok(());
         }
         self.state.logistics.connection_order.value = json!("timeline_connection_history");
-        let expected: BTreeSet<_> = self
-            .input
-            .geometry
-            .units
-            .iter()
-            .filter(|(_, u)| self.input.catalog.kinds[&u.kind].family != "power")
-            .flat_map(|(u, _)| {
-                [
-                    (u.clone(), "input".to_string()),
-                    (u.clone(), "output".to_string()),
-                ]
-            })
-            .collect();
+        let expected = self.input.geometry.scheduling_sides(&self.input.catalog);
         if self
             .memory
             .sides
             .iter()
-            .map(|s| (s.unit.clone(), s.side.clone()))
+            .map(|s| (s.unit.clone(), s.side.clone(), s.axis.clone()))
             .collect::<BTreeSet<_>>()
             != expected
         {
             self.memory.sides = expected
                 .into_iter()
-                .map(|(unit, side)| Side {
+                .map(|(unit, side, axis)| Side {
                     unit,
                     side,
+                    axis,
                     graded: true,
                     current_level: None,
                     levels: vec![],

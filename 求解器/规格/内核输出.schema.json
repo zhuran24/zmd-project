@@ -147,6 +147,12 @@
               "type": "null"
             }
           ]
+        },
+        "last_unit": {
+          "type": [
+            "string",
+            "null"
+          ]
         }
       },
       "required": [
@@ -1653,6 +1659,12 @@
                               ],
                               "additionalProperties": false
                             }
+                          ]
+                        },
+                        "last_unit": {
+                          "type": [
+                            "string",
+                            "null"
                           ]
                         }
                       },

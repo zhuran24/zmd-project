@@ -1,0 +1,958 @@
+{
+  "result": {
+    "name": "chain-2-west-gaps",
+    "pass": true,
+    "ticks": 24,
+    "channels": 13,
+    "successful_moves": 27,
+    "return_guard_failures": 6,
+    "return_guard_with_empty_destination": 6,
+    "final_inventory": {
+      "exit3:transport:0": [
+        {
+          "item": "砂叶",
+          "n": 1,
+          "entered": 9,
+          "last": null
+        }
+      ],
+      "exit4:transport:0": [
+        {
+          "item": "蓝铁矿",
+          "n": 1,
+          "entered": 8,
+          "last": null
+        }
+      ],
+      "exit5:transport:0": [
+        {
+          "item": "源矿",
+          "n": 1,
+          "entered": 7,
+          "last": null
+        }
+      ]
+    }
+  },
+  "moves": [
+    {
+      "tick": 0,
+      "item": "源矿",
+      "from": "feed0",
+      "to": "b0",
+      "channel": "PC|feed0:north:0|b0:east:0"
+    },
+    {
+      "tick": 0,
+      "item": "蓝铁矿",
+      "from": "feed2",
+      "to": "feed1",
+      "channel": "PC|feed2:north:0|feed1:south:0"
+    },
+    {
+      "tick": 0,
+      "item": "砂叶",
+      "from": "feed4",
+      "to": "feed3",
+      "channel": "PC|feed4:north:0|feed3:south:0"
+    },
+    {
+      "tick": 1,
+      "item": "源矿",
+      "from": "b0",
+      "to": "b1",
+      "channel": "PC|b0:west:0|b1:south:0"
+    },
+    {
+      "tick": 1,
+      "item": "蓝铁矿",
+      "from": "feed1",
+      "to": "feed0",
+      "channel": "PC|feed1:north:0|feed0:south:0"
+    },
+    {
+      "tick": 1,
+      "item": "砂叶",
+      "from": "feed3",
+      "to": "feed2",
+      "channel": "PC|feed3:north:0|feed2:south:0"
+    },
+    {
+      "tick": 2,
+      "item": "源矿",
+      "from": "b1",
+      "to": "exit0",
+      "channel": "PC|b1:north:0|exit0:south:0"
+    },
+    {
+      "tick": 2,
+      "item": "蓝铁矿",
+      "from": "feed0",
+      "to": "b0",
+      "channel": "PC|feed0:north:0|b0:east:0"
+    },
+    {
+      "tick": 2,
+      "item": "砂叶",
+      "from": "feed2",
+      "to": "feed1",
+      "channel": "PC|feed2:north:0|feed1:south:0"
+    },
+    {
+      "tick": 3,
+      "item": "蓝铁矿",
+      "from": "b0",
+      "to": "b1",
+      "channel": "PC|b0:west:0|b1:south:0"
+    },
+    {
+      "tick": 3,
+      "item": "源矿",
+      "from": "exit0",
+      "to": "exit1",
+      "channel": "PC|exit0:north:0|exit1:south:0"
+    },
+    {
+      "tick": 3,
+      "item": "砂叶",
+      "from": "feed1",
+      "to": "feed0",
+      "channel": "PC|feed1:north:0|feed0:south:0"
+    },
+    {
+      "tick": 4,
+      "item": "蓝铁矿",
+      "from": "b1",
+      "to": "exit0",
+      "channel": "PC|b1:north:0|exit0:south:0"
+    },
+    {
+      "tick": 4,
+      "item": "源矿",
+      "from": "exit1",
+      "to": "exit2",
+      "channel": "PC|exit1:north:0|exit2:south:0"
+    },
+    {
+      "tick": 4,
+      "item": "砂叶",
+      "from": "feed0",
+      "to": "b0",
+      "channel": "PC|feed0:north:0|b0:east:0"
+    },
+    {
+      "tick": 5,
+      "item": "砂叶",
+      "from": "b0",
+      "to": "b1",
+      "channel": "PC|b0:west:0|b1:south:0"
+    },
+    {
+      "tick": 5,
+      "item": "蓝铁矿",
+      "from": "exit0",
+      "to": "exit1",
+      "channel": "PC|exit0:north:0|exit1:south:0"
+    },
+    {
+      "tick": 5,
+      "item": "源矿",
+      "from": "exit2",
+      "to": "exit3",
+      "channel": "PC|exit2:north:0|exit3:south:0"
+    },
+    {
+      "tick": 6,
+      "item": "砂叶",
+      "from": "b1",
+      "to": "exit0",
+      "channel": "PC|b1:north:0|exit0:south:0"
+    },
+    {
+      "tick": 6,
+      "item": "蓝铁矿",
+      "from": "exit1",
+      "to": "exit2",
+      "channel": "PC|exit1:north:0|exit2:south:0"
+    },
+    {
+      "tick": 6,
+      "item": "源矿",
+      "from": "exit3",
+      "to": "exit4",
+      "channel": "PC|exit3:north:0|exit4:south:0"
+    },
+    {
+      "tick": 7,
+      "item": "砂叶",
+      "from": "exit0",
+      "to": "exit1",
+      "channel": "PC|exit0:north:0|exit1:south:0"
+    },
+    {
+      "tick": 7,
+      "item": "蓝铁矿",
+      "from": "exit2",
+      "to": "exit3",
+      "channel": "PC|exit2:north:0|exit3:south:0"
+    },
+    {
+      "tick": 7,
+      "item": "源矿",
+      "from": "exit4",
+      "to": "exit5",
+      "channel": "PC|exit4:north:0|exit5:south:0"
+    },
+    {
+      "tick": 8,
+      "item": "砂叶",
+      "from": "exit1",
+      "to": "exit2",
+      "channel": "PC|exit1:north:0|exit2:south:0"
+    },
+    {
+      "tick": 8,
+      "item": "蓝铁矿",
+      "from": "exit3",
+      "to": "exit4",
+      "channel": "PC|exit3:north:0|exit4:south:0"
+    },
+    {
+      "tick": 9,
+      "item": "砂叶",
+      "from": "exit2",
+      "to": "exit3",
+      "channel": "PC|exit2:north:0|exit3:south:0"
+    }
+  ],
+  "return_guards": [
+    {
+      "tick": 1,
+      "channel": "PC|b1:south:0|b0:west:0",
+      "destination_empty": true
+    },
+    {
+      "tick": 1,
+      "channel": "PC|b1:south:0|b0:west:0",
+      "destination_empty": true
+    },
+    {
+      "tick": 3,
+      "channel": "PC|b1:south:0|b0:west:0",
+      "destination_empty": true
+    },
+    {
+      "tick": 3,
+      "channel": "PC|b1:south:0|b0:west:0",
+      "destination_empty": true
+    },
+    {
+      "tick": 5,
+      "channel": "PC|b1:south:0|b0:west:0",
+      "destination_empty": true
+    },
+    {
+      "tick": 5,
+      "channel": "PC|b1:south:0|b0:west:0",
+      "destination_empty": true
+    }
+  ],
+  "states": [
+    {
+      "tick": 0,
+      "inventory": {
+        "b0:horizontal:0": [
+          {
+            "item": "源矿",
+            "n": 1,
+            "entered": 0,
+            "last": "feed0"
+          }
+        ],
+        "feed1:transport:0": [
+          {
+            "item": "蓝铁矿",
+            "n": 1,
+            "entered": 0,
+            "last": null
+          }
+        ],
+        "feed3:transport:0": [
+          {
+            "item": "砂叶",
+            "n": 1,
+            "entered": 0,
+            "last": null
+          }
+        ]
+      }
+    },
+    {
+      "tick": 1,
+      "inventory": {
+        "b1:vertical:0": [
+          {
+            "item": "源矿",
+            "n": 1,
+            "entered": 1,
+            "last": "b0"
+          }
+        ],
+        "feed0:transport:0": [
+          {
+            "item": "蓝铁矿",
+            "n": 1,
+            "entered": 1,
+            "last": null
+          }
+        ],
+        "feed2:transport:0": [
+          {
+            "item": "砂叶",
+            "n": 1,
+            "entered": 1,
+            "last": null
+          }
+        ]
+      }
+    },
+    {
+      "tick": 2,
+      "inventory": {
+        "b0:horizontal:0": [
+          {
+            "item": "蓝铁矿",
+            "n": 1,
+            "entered": 2,
+            "last": "feed0"
+          }
+        ],
+        "exit0:transport:0": [
+          {
+            "item": "源矿",
+            "n": 1,
+            "entered": 2,
+            "last": null
+          }
+        ],
+        "feed1:transport:0": [
+          {
+            "item": "砂叶",
+            "n": 1,
+            "entered": 2,
+            "last": null
+          }
+        ]
+      }
+    },
+    {
+      "tick": 3,
+      "inventory": {
+        "b1:vertical:0": [
+          {
+            "item": "蓝铁矿",
+            "n": 1,
+            "entered": 3,
+            "last": "b0"
+          }
+        ],
+        "exit1:transport:0": [
+          {
+            "item": "源矿",
+            "n": 1,
+            "entered": 3,
+            "last": null
+          }
+        ],
+        "feed0:transport:0": [
+          {
+            "item": "砂叶",
+            "n": 1,
+            "entered": 3,
+            "last": null
+          }
+        ]
+      }
+    },
+    {
+      "tick": 4,
+      "inventory": {
+        "b0:horizontal:0": [
+          {
+            "item": "砂叶",
+            "n": 1,
+            "entered": 4,
+            "last": "feed0"
+          }
+        ],
+        "exit0:transport:0": [
+          {
+            "item": "蓝铁矿",
+            "n": 1,
+            "entered": 4,
+            "last": null
+          }
+        ],
+        "exit2:transport:0": [
+          {
+            "item": "源矿",
+            "n": 1,
+            "entered": 4,
+            "last": null
+          }
+        ]
+      }
+    },
+    {
+      "tick": 5,
+      "inventory": {
+        "b1:vertical:0": [
+          {
+            "item": "砂叶",
+            "n": 1,
+            "entered": 5,
+            "last": "b0"
+          }
+        ],
+        "exit1:transport:0": [
+          {
+            "item": "蓝铁矿",
+            "n": 1,
+            "entered": 5,
+            "last": null
+          }
+        ],
+        "exit3:transport:0": [
+          {
+            "item": "源矿",
+            "n": 1,
+            "entered": 5,
+            "last": null
+          }
+        ]
+      }
+    },
+    {
+      "tick": 6,
+      "inventory": {
+        "exit0:transport:0": [
+          {
+            "item": "砂叶",
+            "n": 1,
+            "entered": 6,
+            "last": null
+          }
+        ],
+        "exit2:transport:0": [
+          {
+            "item": "蓝铁矿",
+            "n": 1,
+            "entered": 6,
+            "last": null
+          }
+        ],
+        "exit4:transport:0": [
+          {
+            "item": "源矿",
+            "n": 1,
+            "entered": 6,
+            "last": null
+          }
+        ]
+      }
+    },
+    {
+      "tick": 7,
+      "inventory": {
+        "exit1:transport:0": [
+          {
+            "item": "砂叶",
+            "n": 1,
+            "entered": 7,
+            "last": null
+          }
+        ],
+        "exit3:transport:0": [
+          {
+            "item": "蓝铁矿",
+            "n": 1,
+            "entered": 7,
+            "last": null
+          }
+        ],
+        "exit5:transport:0": [
+          {
+            "item": "源矿",
+            "n": 1,
+            "entered": 7,
+            "last": null
+          }
+        ]
+      }
+    },
+    {
+      "tick": 8,
+      "inventory": {
+        "exit2:transport:0": [
+          {
+            "item": "砂叶",
+            "n": 1,
+            "entered": 8,
+            "last": null
+          }
+        ],
+        "exit4:transport:0": [
+          {
+            "item": "蓝铁矿",
+            "n": 1,
+            "entered": 8,
+            "last": null
+          }
+        ],
+        "exit5:transport:0": [
+          {
+            "item": "源矿",
+            "n": 1,
+            "entered": 7,
+            "last": null
+          }
+        ]
+      }
+    },
+    {
+      "tick": 9,
+      "inventory": {
+        "exit3:transport:0": [
+          {
+            "item": "砂叶",
+            "n": 1,
+            "entered": 9,
+            "last": null
+          }
+        ],
+        "exit4:transport:0": [
+          {
+            "item": "蓝铁矿",
+            "n": 1,
+            "entered": 8,
+            "last": null
+          }
+        ],
+        "exit5:transport:0": [
+          {
+            "item": "源矿",
+            "n": 1,
+            "entered": 7,
+            "last": null
+          }
+        ]
+      }
+    },
+    {
+      "tick": 10,
+      "inventory": {
+        "exit3:transport:0": [
+          {
+            "item": "砂叶",
+            "n": 1,
+            "entered": 9,
+            "last": null
+          }
+        ],
+        "exit4:transport:0": [
+          {
+            "item": "蓝铁矿",
+            "n": 1,
+            "entered": 8,
+            "last": null
+          }
+        ],
+        "exit5:transport:0": [
+          {
+            "item": "源矿",
+            "n": 1,
+            "entered": 7,
+            "last": null
+          }
+        ]
+      }
+    },
+    {
+      "tick": 11,
+      "inventory": {
+        "exit3:transport:0": [
+          {
+            "item": "砂叶",
+            "n": 1,
+            "entered": 9,
+            "last": null
+          }
+        ],
+        "exit4:transport:0": [
+          {
+            "item": "蓝铁矿",
+            "n": 1,
+            "entered": 8,
+            "last": null
+          }
+        ],
+        "exit5:transport:0": [
+          {
+            "item": "源矿",
+            "n": 1,
+            "entered": 7,
+            "last": null
+          }
+        ]
+      }
+    },
+    {
+      "tick": 12,
+      "inventory": {
+        "exit3:transport:0": [
+          {
+            "item": "砂叶",
+            "n": 1,
+            "entered": 9,
+            "last": null
+          }
+        ],
+        "exit4:transport:0": [
+          {
+            "item": "蓝铁矿",
+            "n": 1,
+            "entered": 8,
+            "last": null
+          }
+        ],
+        "exit5:transport:0": [
+          {
+            "item": "源矿",
+            "n": 1,
+            "entered": 7,
+            "last": null
+          }
+        ]
+      }
+    },
+    {
+      "tick": 13,
+      "inventory": {
+        "exit3:transport:0": [
+          {
+            "item": "砂叶",
+            "n": 1,
+            "entered": 9,
+            "last": null
+          }
+        ],
+        "exit4:transport:0": [
+          {
+            "item": "蓝铁矿",
+            "n": 1,
+            "entered": 8,
+            "last": null
+          }
+        ],
+        "exit5:transport:0": [
+          {
+            "item": "源矿",
+            "n": 1,
+            "entered": 7,
+            "last": null
+          }
+        ]
+      }
+    },
+    {
+      "tick": 14,
+      "inventory": {
+        "exit3:transport:0": [
+          {
+            "item": "砂叶",
+            "n": 1,
+            "entered": 9,
+            "last": null
+          }
+        ],
+        "exit4:transport:0": [
+          {
+            "item": "蓝铁矿",
+            "n": 1,
+            "entered": 8,
+            "last": null
+          }
+        ],
+        "exit5:transport:0": [
+          {
+            "item": "源矿",
+            "n": 1,
+            "entered": 7,
+            "last": null
+          }
+        ]
+      }
+    },
+    {
+      "tick": 15,
+      "inventory": {
+        "exit3:transport:0": [
+          {
+            "item": "砂叶",
+            "n": 1,
+            "entered": 9,
+            "last": null
+          }
+        ],
+        "exit4:transport:0": [
+          {
+            "item": "蓝铁矿",
+            "n": 1,
+            "entered": 8,
+            "last": null
+          }
+        ],
+        "exit5:transport:0": [
+          {
+            "item": "源矿",
+            "n": 1,
+            "entered": 7,
+            "last": null
+          }
+        ]
+      }
+    },
+    {
+      "tick": 16,
+      "inventory": {
+        "exit3:transport:0": [
+          {
+            "item": "砂叶",
+            "n": 1,
+            "entered": 9,
+            "last": null
+          }
+        ],
+        "exit4:transport:0": [
+          {
+            "item": "蓝铁矿",
+            "n": 1,
+            "entered": 8,
+            "last": null
+          }
+        ],
+        "exit5:transport:0": [
+          {
+            "item": "源矿",
+            "n": 1,
+            "entered": 7,
+            "last": null
+          }
+        ]
+      }
+    },
+    {
+      "tick": 17,
+      "inventory": {
+        "exit3:transport:0": [
+          {
+            "item": "砂叶",
+            "n": 1,
+            "entered": 9,
+            "last": null
+          }
+        ],
+        "exit4:transport:0": [
+          {
+            "item": "蓝铁矿",
+            "n": 1,
+            "entered": 8,
+            "last": null
+          }
+        ],
+        "exit5:transport:0": [
+          {
+            "item": "源矿",
+            "n": 1,
+            "entered": 7,
+            "last": null
+          }
+        ]
+      }
+    },
+    {
+      "tick": 18,
+      "inventory": {
+        "exit3:transport:0": [
+          {
+            "item": "砂叶",
+            "n": 1,
+            "entered": 9,
+            "last": null
+          }
+        ],
+        "exit4:transport:0": [
+          {
+            "item": "蓝铁矿",
+            "n": 1,
+            "entered": 8,
+            "last": null
+          }
+        ],
+        "exit5:transport:0": [
+          {
+            "item": "源矿",
+            "n": 1,
+            "entered": 7,
+            "last": null
+          }
+        ]
+      }
+    },
+    {
+      "tick": 19,
+      "inventory": {
+        "exit3:transport:0": [
+          {
+            "item": "砂叶",
+            "n": 1,
+            "entered": 9,
+            "last": null
+          }
+        ],
+        "exit4:transport:0": [
+          {
+            "item": "蓝铁矿",
+            "n": 1,
+            "entered": 8,
+            "last": null
+          }
+        ],
+        "exit5:transport:0": [
+          {
+            "item": "源矿",
+            "n": 1,
+            "entered": 7,
+            "last": null
+          }
+        ]
+      }
+    },
+    {
+      "tick": 20,
+      "inventory": {
+        "exit3:transport:0": [
+          {
+            "item": "砂叶",
+            "n": 1,
+            "entered": 9,
+            "last": null
+          }
+        ],
+        "exit4:transport:0": [
+          {
+            "item": "蓝铁矿",
+            "n": 1,
+            "entered": 8,
+            "last": null
+          }
+        ],
+        "exit5:transport:0": [
+          {
+            "item": "源矿",
+            "n": 1,
+            "entered": 7,
+            "last": null
+          }
+        ]
+      }
+    },
+    {
+      "tick": 21,
+      "inventory": {
+        "exit3:transport:0": [
+          {
+            "item": "砂叶",
+            "n": 1,
+            "entered": 9,
+            "last": null
+          }
+        ],
+        "exit4:transport:0": [
+          {
+            "item": "蓝铁矿",
+            "n": 1,
+            "entered": 8,
+            "last": null
+          }
+        ],
+        "exit5:transport:0": [
+          {
+            "item": "源矿",
+            "n": 1,
+            "entered": 7,
+            "last": null
+          }
+        ]
+      }
+    },
+    {
+      "tick": 22,
+      "inventory": {
+        "exit3:transport:0": [
+          {
+            "item": "砂叶",
+            "n": 1,
+            "entered": 9,
+            "last": null
+          }
+        ],
+        "exit4:transport:0": [
+          {
+            "item": "蓝铁矿",
+            "n": 1,
+            "entered": 8,
+            "last": null
+          }
+        ],
+        "exit5:transport:0": [
+          {
+            "item": "源矿",
+            "n": 1,
+            "entered": 7,
+            "last": null
+          }
+        ]
+      }
+    },
+    {
+      "tick": 23,
+      "inventory": {
+        "exit3:transport:0": [
+          {
+            "item": "砂叶",
+            "n": 1,
+            "entered": 9,
+            "last": null
+          }
+        ],
+        "exit4:transport:0": [
+          {
+            "item": "蓝铁矿",
+            "n": 1,
+            "entered": 8,
+            "last": null
+          }
+        ],
+        "exit5:transport:0": [
+          {
+            "item": "源矿",
+            "n": 1,
+            "entered": 7,
+            "last": null
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+task_verify_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
+if [[ ${1-} == */数据/工具/test_formal_catalog.py ]]; then
+    shift
+    exec /usr/bin/python3 -B "$task_verify_dir/catalog-tests.py" "$@"
+fi
+exec /usr/bin/python3 "$@"

@@ -1,0 +1,114 @@
+{
+  "positive_chain_pass": true,
+  "ticks": 6,
+  "north_box": 4,
+  "east_box": 4,
+  "negative_cases": [
+    {
+      "case": "old-catalog",
+      "status": "invalid_input",
+      "reason": "invalid_input input @ /home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json: 源文件指纹不符"
+    },
+    {
+      "case": "axis-overcapacity",
+      "status": "invalid_input",
+      "reason": "invalid_input input @ b:vertical:0: 超格容量"
+    },
+    {
+      "case": "legacy-direction",
+      "status": "invalid_input",
+      "reason": "invalid_input input @ b: 桥四边固定双向，bridge_axes 必须为 null"
+    }
+  ],
+  "commands": [
+    {
+      "label": "positive-seed",
+      "argv": [
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22h/verify/cargo-target/debug/kernel",
+        "seed",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22h/verify/positive/input.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22h/verify/positive/seed.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+      ],
+      "exit": 0
+    },
+    {
+      "label": "positive-check",
+      "argv": [
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22h/verify/cargo-target/debug/kernel",
+        "check",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22h/verify/positive/seed.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+      ],
+      "exit": 0
+    },
+    {
+      "label": "positive-run",
+      "argv": [
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22h/verify/cargo-target/debug/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22h/verify/positive/seed.json",
+        "--ticks",
+        "6",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22h/verify/positive/record.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+      ],
+      "exit": 0
+    },
+    {
+      "label": "positive-replay",
+      "argv": [
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22h/verify/cargo-target/debug/kernel",
+        "verify-record",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22h/verify/positive/record.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+      ],
+      "exit": 0
+    },
+    {
+      "label": "old-catalog",
+      "argv": [
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22h/verify/cargo-target/debug/kernel",
+        "seed",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22h/verify/positive/old-catalog-input.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22h/verify/positive/old-catalog-result.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+      ],
+      "exit": 2
+    },
+    {
+      "label": "axis-overcapacity",
+      "argv": [
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22h/verify/cargo-target/debug/kernel",
+        "seed",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22h/verify/positive/axis-overcapacity-input.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22h/verify/positive/axis-overcapacity-result.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+      ],
+      "exit": 2
+    },
+    {
+      "label": "legacy-direction",
+      "argv": [
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22h/verify/cargo-target/debug/kernel",
+        "seed",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22h/verify/positive/legacy-direction-input.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22h/verify/positive/legacy-direction-result.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+      ],
+      "exit": 2
+    }
+  ]
+}

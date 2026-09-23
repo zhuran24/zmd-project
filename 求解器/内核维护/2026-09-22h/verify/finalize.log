@@ -1,0 +1,59 @@
+{
+  "verdict": "FAIL",
+  "reason": "按指定历史目录排除和交付时git状态逐字验收；活动内核行为、目录和输入迁移未发现错误",
+  "time": "2026-09-23T00:05:21.471471-04:00",
+  "before_head": "1b9d5b64ea9bcc93cd8075777d9b5cbaacf07d20",
+  "final_head": "9615092ea16b42766aa942408bf1603ac618eb6b",
+  "counts": {
+    "sync_files": 94,
+    "relocked_inputs": 54,
+    "verified_source_references": 114,
+    "rust_tests": 142,
+    "python_tests": 8,
+    "independent_layouts": 18,
+    "independent_ticks": 288,
+    "return_guard_failures": 90,
+    "return_guard_with_empty_destination": 86,
+    "negative_controls": 3,
+    "historical_files": 3475,
+    "historical_bytes": 1018797945,
+    "history_changed": 0,
+    "protected_texts": 7,
+    "active_behavior_inconsistencies": 0,
+    "acceptance_scope_inconsistencies": 2,
+    "old_sha_text_lines": 544,
+    "old_sha_text_files": 158,
+    "final_outside_scope_files": 1
+  },
+  "test_counts": {
+    "kernel-lib": 108,
+    "topology-lib": 1,
+    "kernel-reference": 3,
+    "topology-validation": 30,
+    "kernel-doc": 0,
+    "topology-doc": 0
+  },
+  "history_counts": {
+    "求解器/crates/kernel/evidence": 566,
+    "求解器/crates/kernel/复核": 2094,
+    "求解器/数据/复核": 815
+  },
+  "outside_scope": [
+    "?? 求解器/规则修订/2026-09-22-桥接器/约束核对.md"
+  ],
+  "inconsistencies": [
+    {
+      "id": "V-001",
+      "description": "排除三个指定历史目录及本verify后，旧SHA仍见维护档案和规格修订历史；未满足零处文本命中。活动54份输入残留0。",
+      "lines": 544,
+      "files": 158
+    },
+    {
+      "id": "V-002",
+      "description": "交付时git status仍有范围外既有未跟踪文件；非同步席或本核验新增。",
+      "paths": [
+        "求解器/规则修订/2026-09-22-桥接器/约束核对.md"
+      ]
+    }
+  ]
+}

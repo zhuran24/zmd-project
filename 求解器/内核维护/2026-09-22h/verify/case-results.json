@@ -1,0 +1,468 @@
+[
+  {
+    "name": "straight",
+    "pass": true,
+    "ticks": 12,
+    "channels": 2,
+    "successful_moves": 2,
+    "return_guard_failures": 0,
+    "return_guard_with_empty_destination": 0,
+    "final_inventory": {
+      "out:transport:0": [
+        {
+          "item": "源矿",
+          "n": 1,
+          "entered": 1,
+          "last": null
+        }
+      ]
+    }
+  },
+  {
+    "name": "two-inward",
+    "pass": true,
+    "ticks": 12,
+    "channels": 2,
+    "successful_moves": 1,
+    "return_guard_failures": 0,
+    "return_guard_with_empty_destination": 0,
+    "final_inventory": {
+      "b:vertical:0": [
+        {
+          "item": "源矿",
+          "n": 1,
+          "entered": 0,
+          "last": "south"
+        }
+      ],
+      "north:transport:0": [
+        {
+          "item": "蓝铁矿",
+          "n": 1,
+          "entered": -1,
+          "last": null
+        }
+      ]
+    }
+  },
+  {
+    "name": "chain-2-east-gaps",
+    "pass": true,
+    "ticks": 24,
+    "channels": 13,
+    "successful_moves": 27,
+    "return_guard_failures": 9,
+    "return_guard_with_empty_destination": 9,
+    "final_inventory": {
+      "exit3:transport:0": [
+        {
+          "item": "砂叶",
+          "n": 1,
+          "entered": 9,
+          "last": null
+        }
+      ],
+      "exit4:transport:0": [
+        {
+          "item": "蓝铁矿",
+          "n": 1,
+          "entered": 8,
+          "last": null
+        }
+      ],
+      "exit5:transport:0": [
+        {
+          "item": "源矿",
+          "n": 1,
+          "entered": 7,
+          "last": null
+        }
+      ]
+    }
+  },
+  {
+    "name": "chain-2-west-gaps",
+    "pass": true,
+    "ticks": 24,
+    "channels": 13,
+    "successful_moves": 27,
+    "return_guard_failures": 6,
+    "return_guard_with_empty_destination": 6,
+    "final_inventory": {
+      "exit3:transport:0": [
+        {
+          "item": "砂叶",
+          "n": 1,
+          "entered": 9,
+          "last": null
+        }
+      ],
+      "exit4:transport:0": [
+        {
+          "item": "蓝铁矿",
+          "n": 1,
+          "entered": 8,
+          "last": null
+        }
+      ],
+      "exit5:transport:0": [
+        {
+          "item": "源矿",
+          "n": 1,
+          "entered": 7,
+          "last": null
+        }
+      ]
+    }
+  },
+  {
+    "name": "chain-2-north-gaps",
+    "pass": true,
+    "ticks": 24,
+    "channels": 13,
+    "successful_moves": 27,
+    "return_guard_failures": 6,
+    "return_guard_with_empty_destination": 6,
+    "final_inventory": {
+      "exit3:transport:0": [
+        {
+          "item": "砂叶",
+          "n": 1,
+          "entered": 9,
+          "last": null
+        }
+      ],
+      "exit4:transport:0": [
+        {
+          "item": "蓝铁矿",
+          "n": 1,
+          "entered": 8,
+          "last": null
+        }
+      ],
+      "exit5:transport:0": [
+        {
+          "item": "源矿",
+          "n": 1,
+          "entered": 7,
+          "last": null
+        }
+      ]
+    }
+  },
+  {
+    "name": "chain-2-south-gaps",
+    "pass": true,
+    "ticks": 24,
+    "channels": 13,
+    "successful_moves": 27,
+    "return_guard_failures": 9,
+    "return_guard_with_empty_destination": 9,
+    "final_inventory": {
+      "exit3:transport:0": [
+        {
+          "item": "砂叶",
+          "n": 1,
+          "entered": 9,
+          "last": null
+        }
+      ],
+      "exit4:transport:0": [
+        {
+          "item": "蓝铁矿",
+          "n": 1,
+          "entered": 8,
+          "last": null
+        }
+      ],
+      "exit5:transport:0": [
+        {
+          "item": "源矿",
+          "n": 1,
+          "entered": 7,
+          "last": null
+        }
+      ]
+    }
+  },
+  {
+    "name": "chain-3-east-gaps",
+    "pass": true,
+    "ticks": 24,
+    "channels": 15,
+    "successful_moves": 30,
+    "return_guard_failures": 15,
+    "return_guard_with_empty_destination": 15,
+    "final_inventory": {
+      "exit3:transport:0": [
+        {
+          "item": "砂叶",
+          "n": 1,
+          "entered": 10,
+          "last": null
+        }
+      ],
+      "exit4:transport:0": [
+        {
+          "item": "蓝铁矿",
+          "n": 1,
+          "entered": 9,
+          "last": null
+        }
+      ],
+      "exit5:transport:0": [
+        {
+          "item": "源矿",
+          "n": 1,
+          "entered": 8,
+          "last": null
+        }
+      ]
+    }
+  },
+  {
+    "name": "chain-3-west-gaps",
+    "pass": true,
+    "ticks": 24,
+    "channels": 15,
+    "successful_moves": 30,
+    "return_guard_failures": 15,
+    "return_guard_with_empty_destination": 13,
+    "final_inventory": {
+      "exit3:transport:0": [
+        {
+          "item": "砂叶",
+          "n": 1,
+          "entered": 10,
+          "last": null
+        }
+      ],
+      "exit4:transport:0": [
+        {
+          "item": "蓝铁矿",
+          "n": 1,
+          "entered": 9,
+          "last": null
+        }
+      ],
+      "exit5:transport:0": [
+        {
+          "item": "源矿",
+          "n": 1,
+          "entered": 8,
+          "last": null
+        }
+      ]
+    }
+  },
+  {
+    "name": "chain-3-north-gaps",
+    "pass": true,
+    "ticks": 24,
+    "channels": 15,
+    "successful_moves": 30,
+    "return_guard_failures": 12,
+    "return_guard_with_empty_destination": 12,
+    "final_inventory": {
+      "exit3:transport:0": [
+        {
+          "item": "砂叶",
+          "n": 1,
+          "entered": 10,
+          "last": null
+        }
+      ],
+      "exit4:transport:0": [
+        {
+          "item": "蓝铁矿",
+          "n": 1,
+          "entered": 9,
+          "last": null
+        }
+      ],
+      "exit5:transport:0": [
+        {
+          "item": "源矿",
+          "n": 1,
+          "entered": 8,
+          "last": null
+        }
+      ]
+    }
+  },
+  {
+    "name": "chain-3-south-gaps",
+    "pass": true,
+    "ticks": 24,
+    "channels": 15,
+    "successful_moves": 30,
+    "return_guard_failures": 18,
+    "return_guard_with_empty_destination": 16,
+    "final_inventory": {
+      "exit3:transport:0": [
+        {
+          "item": "砂叶",
+          "n": 1,
+          "entered": 10,
+          "last": null
+        }
+      ],
+      "exit4:transport:0": [
+        {
+          "item": "蓝铁矿",
+          "n": 1,
+          "entered": 9,
+          "last": null
+        }
+      ],
+      "exit5:transport:0": [
+        {
+          "item": "源矿",
+          "n": 1,
+          "entered": 8,
+          "last": null
+        }
+      ]
+    }
+  },
+  {
+    "name": "empty-adjacent-r0",
+    "pass": true,
+    "ticks": 6,
+    "channels": 2,
+    "successful_moves": 0,
+    "return_guard_failures": 0,
+    "return_guard_with_empty_destination": 0,
+    "final_inventory": {}
+  },
+  {
+    "name": "empty-adjacent-r90",
+    "pass": true,
+    "ticks": 6,
+    "channels": 2,
+    "successful_moves": 0,
+    "return_guard_failures": 0,
+    "return_guard_with_empty_destination": 0,
+    "final_inventory": {}
+  },
+  {
+    "name": "empty-adjacent-r180",
+    "pass": true,
+    "ticks": 6,
+    "channels": 2,
+    "successful_moves": 0,
+    "return_guard_failures": 0,
+    "return_guard_with_empty_destination": 0,
+    "final_inventory": {}
+  },
+  {
+    "name": "empty-adjacent-r270",
+    "pass": true,
+    "ticks": 6,
+    "channels": 2,
+    "successful_moves": 0,
+    "return_guard_failures": 0,
+    "return_guard_with_empty_destination": 0,
+    "final_inventory": {}
+  },
+  {
+    "name": "axis-belt-control",
+    "pass": true,
+    "ticks": 12,
+    "channels": 2,
+    "successful_moves": 2,
+    "return_guard_failures": 0,
+    "return_guard_with_empty_destination": 0,
+    "final_inventory": {
+      "east:transport:0": [
+        {
+          "item": "蓝铁矿",
+          "n": 1,
+          "entered": 1,
+          "last": null
+        }
+      ]
+    }
+  },
+  {
+    "name": "axis-splitter-busy",
+    "pass": true,
+    "ticks": 12,
+    "channels": 4,
+    "successful_moves": 4,
+    "return_guard_failures": 0,
+    "return_guard_with_empty_destination": 0,
+    "final_inventory": {
+      "east:transport:0": [
+        {
+          "item": "蓝铁矿",
+          "n": 1,
+          "entered": 1,
+          "last": null
+        }
+      ],
+      "north:transport:0": [
+        {
+          "item": "源矿",
+          "n": 1,
+          "entered": 1,
+          "last": null
+        }
+      ]
+    }
+  },
+  {
+    "name": "axis-splitter-blocked",
+    "pass": true,
+    "ticks": 12,
+    "channels": 3,
+    "successful_moves": 3,
+    "return_guard_failures": 0,
+    "return_guard_with_empty_destination": 0,
+    "final_inventory": {
+      "b:vertical:0": [
+        {
+          "item": "源矿",
+          "n": 1,
+          "entered": 0,
+          "last": "split"
+        }
+      ],
+      "east:transport:0": [
+        {
+          "item": "蓝铁矿",
+          "n": 1,
+          "entered": 1,
+          "last": null
+        }
+      ]
+    }
+  },
+  {
+    "name": "same-item-two-axes",
+    "pass": true,
+    "ticks": 12,
+    "channels": 2,
+    "successful_moves": 2,
+    "return_guard_failures": 0,
+    "return_guard_with_empty_destination": 0,
+    "final_inventory": {
+      "b:horizontal:0": [
+        {
+          "item": "源矿",
+          "n": 1,
+          "entered": 0,
+          "last": "west"
+        }
+      ],
+      "b:vertical:0": [
+        {
+          "item": "源矿",
+          "n": 1,
+          "entered": 0,
+          "last": "south"
+        }
+      ]
+    }
+  }
+]

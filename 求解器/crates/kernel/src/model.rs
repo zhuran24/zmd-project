@@ -8,6 +8,9 @@ pub struct Content {
     pub item: String,
     pub quantity: Quantity,
     pub entered_at: Option<Time>,
+    /// 桥格物品的直接来路；空值表示初态尚未移动。
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub last_unit: Option<String>,
 }
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(deny_unknown_fields)]
@@ -58,9 +61,20 @@ pub struct Level {
 pub struct Side {
     pub unit: String,
     pub side: String,
+    /// 桥按本地轴分开调度，其余单位为空。
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub axis: Option<String>,
     pub graded: bool,
     pub current_level: Option<String>,
     pub levels: Vec<Level>,
+}
+impl Side {
+    pub(crate) fn label(&self) -> String {
+        match &self.axis {
+            Some(axis) => format!("{}:{}:{}", self.unit, self.side, axis),
+            None => format!("{}:{}", self.unit, self.side),
+        }
+    }
 }
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(deny_unknown_fields)]

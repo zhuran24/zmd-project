@@ -1,7 +1,7 @@
 {
   "catalog": {
     "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
-    "sha256": "b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c"
+    "sha256": "3566e2ecb9d90b9a1afc01b273eb548178de738fb4e4f3b2af88fa05f809be29"
   },
   "construction": {
     "complete_event": "blueprint_complete",
@@ -466,36 +466,68 @@
                   "unit": "south_box"
                 },
                 {
-                  "current_level": "L|bridge|input|other",
+                  "current_level": "L|bridge|vertical|input|other",
                   "graded": true,
                   "levels": [
                     {
-                      "id": "L|bridge|input|other",
+                      "id": "L|bridge|vertical|input|other",
                       "members": [
-                        "PC|south_box:north:2|bridge:south:0",
-                        "PC|west_box:north:2|bridge:west:0"
+                        "PC|south_box:north:2|bridge:south:0"
                       ],
                       "next_channel": "PC|south_box:north:2|bridge:south:0"
                     }
                   ],
                   "side": "input",
-                  "unit": "bridge"
+                  "unit": "bridge",
+                  "axis": "vertical"
                 },
                 {
-                  "current_level": "L|bridge|output|ungraded",
+                  "axis": "horizontal",
+                  "unit": "bridge",
+                  "side": "input",
+                  "graded": true,
+                  "current_level": null,
+                  "levels": [
+                    {
+                      "id": "L|bridge|horizontal|input|other",
+                      "members": [
+                        "PC|west_box:north:2|bridge:west:0"
+                      ],
+                      "next_channel": "PC|west_box:north:2|bridge:west:0"
+                    }
+                  ]
+                },
+                {
+                  "current_level": "L|bridge|vertical|output|ungraded",
                   "graded": false,
                   "levels": [
                     {
-                      "id": "L|bridge|output|ungraded",
+                      "id": "L|bridge|vertical|output|ungraded",
                       "members": [
-                        "PC|bridge:north:0|north_box:south:0",
-                        "PC|bridge:east:0|east_box:south:0"
+                        "PC|bridge:north:0|north_box:south:0"
                       ],
                       "next_channel": "PC|bridge:north:0|north_box:south:0"
                     }
                   ],
                   "side": "output",
-                  "unit": "bridge"
+                  "unit": "bridge",
+                  "axis": "vertical"
+                },
+                {
+                  "axis": "horizontal",
+                  "unit": "bridge",
+                  "side": "output",
+                  "graded": false,
+                  "current_level": "L|bridge|horizontal|output|ungraded",
+                  "levels": [
+                    {
+                      "id": "L|bridge|horizontal|output|ungraded",
+                      "members": [
+                        "PC|bridge:east:0|east_box:south:0"
+                      ],
+                      "next_channel": "PC|bridge:east:0|east_box:south:0"
+                    }
+                  ]
                 },
                 {
                   "current_level": null,
@@ -653,8 +685,10 @@
           "arbitration": {
             "level_order": [
               "L|south_box|output|other",
-              "L|bridge|input|other",
-              "L|bridge|output|ungraded",
+              "L|bridge|vertical|input|other",
+              "L|bridge|horizontal|input|other",
+              "L|bridge|vertical|output|ungraded",
+              "L|bridge|horizontal|output|ungraded",
               "L|north_box|input|other",
               "L|west_box|output|other",
               "L|east_box|input|other"
@@ -698,10 +732,10 @@
               "axis": "bridge.scheduling_scope",
               "value": {
                 "basis": [
-                  "受限模型声明；内核输入 §5.2–5.4；known：unit，按单位存取两侧，存货共同分级、取货不分级；按轴拆调度排除。据：轮询、存货/取货优先级、桥接器"
+                  "规则L24、L59、L63；现行内核配置 r25"
                 ],
                 "status": "specified",
-                "value": "unit"
+                "value": "per_axis"
               },
               "lifetime": "F"
             },
@@ -911,12 +945,12 @@
               "axis": "bridge.capacity",
               "value": {
                 "basis": [
-                  "受限模型声明；内核输入 §5.2–5.4；open：1（仅个数例外的受限读法）／容量也例外但数值域待证；null 不是无限。据：运输单位、桥接器、约束·箱体过站/约束·运输下限"
+                  "规则L24、L59、L63；现行内核配置 r25"
                 ],
                 "status": "specified",
                 "value": 1
               },
-              "lifetime": "U"
+              "lifetime": "F"
             },
             {
               "axis": "cascade.buffer",
@@ -933,26 +967,23 @@
               "axis": "connection.bridge_first_contact",
               "value": {
                 "basis": [
-                  "受限模型声明；内核输入 §5.2–5.4；open：按物理邻接先接／按有向通道形成先接；相邻桥接器循环依赖需历史核验，已知邻端须存取互补。据：桥接器、通道、接通"
+                  "规则L24、L59、L63；现行内核配置 r25"
                 ],
                 "status": "specified",
-                "value": "physical_contact"
+                "value": "not_applicable"
               },
-              "lifetime": "U"
+              "lifetime": "F"
             },
             {
               "axis": "connection.bridge_tie",
               "value": {
                 "basis": [
-                  "受限模型声明；内核输入 §5.2–5.4；open：合法互补方向的固定仲裁／联立关系；联立解不自动是可执行建造历史。据：桥接器、蓝图、通道"
+                  "规则L24、L59、L63；现行内核配置 r25"
                 ],
                 "status": "specified",
-                "value": {
-                  "policy": "stop",
-                  "trigger": "先接并列或桥互依赖，不能由唯一无环见证定向"
-                }
+                "value": "not_applicable"
               },
-              "lifetime": "U"
+              "lifetime": "F"
             },
             {
               "axis": "connection.port_meeting",
@@ -1452,12 +1483,12 @@
               "axis": "offline.direction_effect",
               "value": {
                 "basis": [
-                  "受限模型声明；内核输入 §5.2–5.4；open：保留桥接器历史定向／新先接序的后效待审，必须核库存通路与端口相遇。据：离线、桥接器、通道"
+                  "规则L24、L59、L63；现行内核配置 r25"
                 ],
                 "status": "specified",
                 "value": {
                   "policy": "stop",
-                  "trigger": "离线需更新桥方向"
+                  "trigger": "请求离线回放"
                 }
               },
               "lifetime": "U"
@@ -2306,22 +2337,7 @@
         "rotation": "r0"
       },
       {
-        "bridge_axes": {
-          "horizontal": {
-            "basis": [
-              "候选先接历史：西侧先接"
-            ],
-            "input_side": "west",
-            "status": "resolved"
-          },
-          "vertical": {
-            "basis": [
-              "候选先接历史：南侧先接"
-            ],
-            "input_side": "south",
-            "status": "resolved"
-          }
-        },
+        "bridge_axes": null,
         "id": "bridge",
         "kind": "桥接器",
         "occupied_cells": null,
@@ -2415,7 +2431,7 @@
   "parameters": {
     "axis_registry": {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
-      "sha256": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+      "sha256": "261da30db31063ec8292aaa493e2c11d026c0861852ef19550eeb92eb4da7665"
     },
     "fixed": {
       "bridge.inventory_scope": {
@@ -2427,10 +2443,10 @@
       },
       "bridge.scheduling_scope": {
         "basis": [
-          "受限模型声明；内核输入 §5.2–5.4；known：unit，按单位存取两侧，存货共同分级、取货不分级；按轴拆调度排除。据：轮询、存货/取货优先级、桥接器"
+          "规则L24、L59、L63；现行内核配置 r25"
         ],
         "status": "specified",
-        "value": "unit"
+        "value": "per_axis"
       },
       "connection.belt_shape": {
         "basis": [
@@ -2637,39 +2653,36 @@
         "basis": [
           "任务L2、L9—10；任务2§6.5.1、§6.5.6"
         ]
-      }
-    },
-    "fixedness_unproven": {
+      },
       "bridge.capacity": {
         "basis": [
-          "受限模型声明；内核输入 §5.2–5.4；open：1（仅个数例外的受限读法）／容量也例外但数值域待证；null 不是无限。据：运输单位、桥接器、约束·箱体过站/约束·运输下限"
+          "规则L24、L59、L63；现行内核配置 r25"
         ],
         "status": "specified",
         "value": 1
       },
+      "connection.bridge_first_contact": {
+        "basis": [
+          "规则L24、L59、L63；现行内核配置 r25"
+        ],
+        "status": "specified",
+        "value": "not_applicable"
+      },
+      "connection.bridge_tie": {
+        "basis": [
+          "规则L24、L59、L63；现行内核配置 r25"
+        ],
+        "status": "specified",
+        "value": "not_applicable"
+      }
+    },
+    "fixedness_unproven": {
       "cascade.buffer": {
         "basis": [
           "受限模型声明；内核输入 §5.2–5.4；open：same_instant／next_instant；不把制造耗时压零、不拆整批；详见 T17。据：缓存格、判定、移动、配方"
         ],
         "status": "specified",
         "value": "same_instant"
-      },
-      "connection.bridge_first_contact": {
-        "basis": [
-          "受限模型声明；内核输入 §5.2–5.4；open：按物理邻接先接／按有向通道形成先接；相邻桥接器循环依赖需历史核验，已知邻端须存取互补。据：桥接器、通道、接通"
-        ],
-        "status": "specified",
-        "value": "physical_contact"
-      },
-      "connection.bridge_tie": {
-        "basis": [
-          "受限模型声明；内核输入 §5.2–5.4；open：合法互补方向的固定仲裁／联立关系；联立解不自动是可执行建造历史。据：桥接器、蓝图、通道"
-        ],
-        "status": "specified",
-        "value": {
-          "policy": "stop",
-          "trigger": "先接并列或桥互依赖，不能由唯一无环见证定向"
-        }
       },
       "connection.tie": {
         "basis": [
@@ -2980,12 +2993,12 @@
       },
       "offline.direction_effect": {
         "basis": [
-          "受限模型声明；内核输入 §5.2–5.4；open：保留桥接器历史定向／新先接序的后效待审，必须核库存通路与端口相遇。据：离线、桥接器、通道"
+          "规则L24、L59、L63；现行内核配置 r25"
         ],
         "status": "specified",
         "value": {
           "policy": "stop",
-          "trigger": "离线需更新桥方向"
+          "trigger": "请求离线回放"
         }
       },
       "offline.events": {

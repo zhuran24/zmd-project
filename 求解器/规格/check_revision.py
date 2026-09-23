@@ -40,7 +40,7 @@ for index, (row, (source_line, name)) in enumerate(zip(rows, expected), 1):
     assert row[2].strip() == '约束·' + name
 results.append('正式约束：条款名与源行一致')
 
-fingerprints = json.loads((spec_dir.parent / '内核维护/2026-09-22g/只读文件指纹.json').read_text())
+fingerprints = json.loads((spec_dir.parent / '内核维护/2026-09-22h/只读文件指纹.json').read_text())
 # 正式源与候选为只读；K线活动源码只记录当前字节，不冻结旧轮实现。
 protected_names = {'《明日方舟：终末地》游戏规则.txt', '求解任务.txt', '求解约束.txt', '候选约束.txt'}
 protected_fingerprints = {path: digest for path, digest in fingerprints.items() if Path(path).parent == root and Path(path).name in protected_names}

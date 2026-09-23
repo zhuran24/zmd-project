@@ -1,0 +1,31 @@
+{
+  "head": "1b9d5b64ea9bcc93cd8075777d9b5cbaacf07d20",
+  "old_catalog_sha256": "b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c",
+  "new_catalog_sha256": "3566e2ecb9d90b9a1afc01b273eb548178de738fb4e4f3b2af88fa05f809be29",
+  "active_inputs": 54,
+  "bad_inputs": [],
+  "reference_fields": 114,
+  "bad_refs": [],
+  "sync_scope_files": 94,
+  "outside_scope": [
+    {
+      "status": "??",
+      "path": "求解器/老项目/LBBD方法论.md",
+      "in_sync_scope": false,
+      "sha256": "0a99fdd6c92a84ac9e2b71b5565c42290d30e52b192980ff53475cbce1420817"
+    },
+    {
+      "status": "??",
+      "path": "求解器/老项目/卡住以后.md",
+      "in_sync_scope": false,
+      "sha256": "ed07d950d0a50d38390805db058ca5f0c68561d3f13870f87e12c1a19d1d5b9c"
+    },
+    {
+      "status": "??",
+      "path": "求解器/规则修订/2026-09-22-桥接器/约束核对.md",
+      "in_sync_scope": false,
+      "sha256": "a0d3cd4d2ffb24068de098e0b00fccdcf822adaa4311297d61b239184de1508c"
+    }
+  ],
+  "rg_lines": 544
+}

@@ -23,10 +23,11 @@ impl Engine {
                 cache.remove(cid);
                 let c = &self.input.geometry.channels[cid];
                 for (port, side) in [(&c.source_port, "output"), (&c.target_port, "input")] {
-                    if let Some(i) = self
-                        .side_index
-                        .get(&(self.input.geometry.ports[port].unit.clone(), side.into()))
-                    {
+                    if let Some(i) = self.side_index.get(&(
+                        self.input.geometry.ports[port].unit.clone(),
+                        side.into(),
+                        self.input.geometry.ports[port].axis.clone(),
+                    )) {
                         dirty.insert(*i);
                     }
                 }

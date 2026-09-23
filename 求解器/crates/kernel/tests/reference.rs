@@ -31,6 +31,30 @@ fn compare(a: &Value, b: &Value, path: &str) {
         _ => assert_eq!(a, b, "{path}"),
     }
 }
+/// 两个参考场景没有桥或离线。只在内存中迁移这五个不参与其转移的
+/// 配置声明行；保留存档原字节，库存、事件、游标等其余字段仍严格逐项比较。
+fn current_reference_ticks(record: &Value, input: &Input) -> Value {
+    assert!(input.geometry.units.values().all(|u| u.kind != "桥接器"));
+    let current = input.raw["initial_state"]["nonwarehouse"]["value"]["semantic_context"]
+        ["parameter_values"].as_array().unwrap();
+    let mut ticks = record["trace"]["ticks"].clone();
+    for tick in ticks.as_array_mut().unwrap() {
+        let rows = tick["state"]["semantic_context"]["parameter_values"].as_array_mut().unwrap();
+        for (axis, old, lifetime) in [
+            ("bridge.scheduling_scope", serde_json::json!("unit"), "F"),
+            ("bridge.capacity", serde_json::json!(1), "U"),
+            ("connection.bridge_first_contact", serde_json::json!("physical_contact"), "U"),
+            ("connection.bridge_tie", serde_json::json!({"policy":"stop","trigger":"先接并列或桥互依赖，不能由唯一无环见证定向"}), "U"),
+            ("offline.direction_effect", serde_json::json!({"policy":"stop","trigger":"离线需更新桥方向"}), "U"),
+        ] {
+            let row = rows.iter_mut().find(|r| r["axis"] == axis).unwrap();
+            assert_eq!(row["value"]["value"], old, "历史参考轴 {axis}");
+            assert_eq!(row["lifetime"], lifetime, "历史参考生命周期 {axis}");
+            *row = current.iter().find(|r| r["axis"] == axis).unwrap().clone();
+        }
+    }
+    ticks
+}
 /// 第四轮§4.7：粉碎机4刻完整轨迹、全部黄金字段相等。
 #[test]
 fn crusher_reference() {
@@ -49,7 +73,8 @@ fn differential(name: &str, golden: bool) {
     let input = Input::load(&path, &config, false).unwrap();
     let mut engine = Engine::new(input).unwrap();
     let record = read_json(&r.join(format!("数据/样例/{name}-参考运行记录.json"))).unwrap();
-    let expected = record["trace"]["ticks"].as_array().unwrap();
+    let migrated = current_reference_ticks(&record, &engine.input);
+    let expected = migrated.as_array().unwrap();
     let mut actual = Vec::new();
     for tick in expected {
         let got = engine.step(true).unwrap().unwrap();
@@ -87,15 +112,11 @@ fn live_python_differential() {
     let config = Config::parse(read_json(&r.join("规格/内核配置-v1.json")).unwrap()).unwrap();
     for name in ["混做粉碎机两下游", "分流器三路轮询"] {
         let reference = read_json(&r.join(format!("数据/样例/{name}-参考运行记录.json"))).unwrap();
-        compare(
-            &python[name],
-            &reference["trace"]["ticks"],
-            "python_vs_record",
-        );
         let mut e = Engine::new(
             Input::load(&r.join(format!("数据/样例/{name}.json")), &config, false).unwrap(),
         )
         .unwrap();
+        compare(&python[name], &current_reference_ticks(&reference, &e.input), "python_vs_record");
         for tick in python[name].as_array().unwrap() {
             compare(&e.step(true).unwrap().unwrap(), tick, "rust_vs_python");
         }

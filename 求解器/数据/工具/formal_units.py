@@ -90,23 +90,22 @@ def unit_projection(rule_text, constraints, quantity):
         raise AssertionError('运输单位格数前提变化，须审查投影')
     layouts = {
         '传送带': [[edge('south', 'input', [0]), edge(side, 'output', [0])] for side in ['north', 'east', 'west']],
-        '桥接器': [[edge(a, 'input', [0], 'vertical'), edge(b, 'output', [0], 'vertical'),
-                    edge(c, 'input', [0], 'horizontal'), edge(d, 'output', [0], 'horizontal')]
-                   for a, b in [('south', 'north'), ('north', 'south')]
-                   for c, d in [('west', 'east'), ('east', 'west')]],
+        '桥接器': [[edge(side, 'bidirectional', [0], axis)
+                    for axis, sides in [('vertical', ['south', 'north']), ('horizontal', ['west', 'east'])]
+                    for side in sides]],
         '物品准入口': opposed(1),
         '分流器': [[edge('south', 'input', [0])] + [edge(s, 'output', [0]) for s in ['north', 'east', 'west']]],
         '汇流器': [[edge(s, 'input', [0]) for s in ['south', 'east', 'west']] + [edge('north', 'output', [0])]],
     }
-    for name, counts in [('传送带', (1, 1)), ('桥接器', (2, 2)), ('物品准入口', (1, 1)),
+    for name, counts in [('传送带', (1, 1)), ('桥接器', (4, 4)), ('物品准入口', (1, 1)),
                           ('分流器', (1, 3)), ('汇流器', (3, 1))]:
         inventory = [slot('transport', 1, capacity, item_policy='single_item')]
         extra = {}
         if name == '桥接器':
-            inventory = [slot(axis, 1, None, capacity_status='unresolved', item_policy='single_item')
+            inventory = [slot(axis, 1, capacity, capacity_status='known', item_policy='single_item')
                          for axis in ['vertical', 'horizontal']]
-            extra = {'port_assignment': 'first_connected_peer',
-                     'notes': '规则第13行明确豁免桥接器：两对端口各自拥有物品格，可同时存放同一种物品，各轴每tick至多1件。容量例外的辖域未定；端口类型由先接端决定；轮询及分级按单位。'}
+            extra = {'port_assignment': 'permanent_bidirectional',
+                     'notes': '规则第13行明确豁免桥接器：两对端口各自拥有物品格，可同时存放同一种物品，各轴每tick至多1件。每对边上限1；四边一直双向；分级与轮询按每对边独立；物品不移回刚离开的单位。'}
         if name == '物品准入口':
             body = clauses[name]
             low, high, window, window_low, window_high = numbers(

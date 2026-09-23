@@ -1,0 +1,22 @@
+{
+  "positive_chain_pass": true,
+  "north_box": 4,
+  "east_box": 4,
+  "negative_cases": [
+    {
+      "case": "old-catalog",
+      "status": "invalid_input",
+      "reason": "invalid_input input @ /home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json: 源文件指纹不符"
+    },
+    {
+      "case": "axis-overcapacity",
+      "status": "invalid_input",
+      "reason": "invalid_input input @ b:vertical:0: 超格容量"
+    },
+    {
+      "case": "legacy-direction",
+      "status": "invalid_input",
+      "reason": "invalid_input input @ b: 桥四边固定双向，bridge_axes 必须为 null"
+    }
+  ]
+}

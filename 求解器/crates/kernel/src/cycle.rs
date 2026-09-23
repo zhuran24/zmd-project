@@ -376,11 +376,19 @@ fn encode_key(state: &State, input: &Input) -> Result<Value> {
             for c in row["contents"].as_array().unwrap() {
                 let item = c["item"].as_str().unwrap().to_string();
                 let old = counts.get(&item).copied().unwrap_or(0);
-                counts.insert(item, add(old, num(&c["quantity"], "cycle.inventory")?, "cycle.inventory")?);
+                counts.insert(
+                    item,
+                    add(
+                        old,
+                        num(&c["quantity"], "cycle.inventory")?,
+                        "cycle.inventory",
+                    )?,
+                );
             }
-            row["contents"] = json!(counts.into_iter().map(|(item, n)| {
-                json!({"item":item,"quantity":q(n),"entered_at":null})
-            }).collect::<Vec<_>>());
+            row["contents"] = json!(counts
+                .into_iter()
+                .map(|(item, n)| { json!({"item":item,"quantity":q(n),"entered_at":null}) })
+                .collect::<Vec<_>>());
         }
         row["contents"].as_array_mut().unwrap().sort_by_key(|c| {
             (
@@ -407,6 +415,7 @@ fn encode_key(state: &State, input: &Input) -> Result<Value> {
         (
             r["unit"].as_str().unwrap().to_string(),
             r["side"].as_str().unwrap().to_string(),
+            r["axis"].as_str().unwrap_or("").to_string(),
         )
     });
     for r in sides {
@@ -419,16 +428,25 @@ fn encode_key(state: &State, input: &Input) -> Result<Value> {
             .sort_by_key(Value::to_string);
         let uid = r["unit"].as_str().unwrap();
         let limit = &input.gate_settings[uid]["total_limit"];
-        r["total_received"] = if limit.is_null() { Value::Null } else {
+        r["total_received"] = if limit.is_null() {
+            Value::Null
+        } else {
             q(num(&r["total_received"], "gate.total")?.min(num(limit, "gate.limit")?))
         };
         r["window_started_at"] = if r["window_started_at"].is_null() {
             json!({"phase":"idle"})
         } else {
-            let elapsed = difference(t, instant(&r["window_started_at"], "elapsed")?, "cycle.elapsed")?;
+            let elapsed = difference(
+                t,
+                instant(&r["window_started_at"], "elapsed")?,
+                "cycle.elapsed",
+            )?;
             let remaining = input.catalog.kinds["物品准入口"].window - elapsed;
             if remaining <= 0 || elapsed < 0 {
-                return Err(Stop::invalid("cycle.window", "闭包后窗口尚未维护或起点在未来"));
+                return Err(Stop::invalid(
+                    "cycle.window",
+                    "闭包后窗口尚未维护或起点在未来",
+                ));
             }
             json!({"phase":"active","received":num(&r["window_received"], "gate.window")?,
                 "remaining":{"value":remaining.to_string()}})
@@ -456,12 +474,23 @@ fn encode_key(state: &State, input: &Input) -> Result<Value> {
             ));
         }
         let remaining = if r["operation"] == "manufacture_complete" {
-            let progress = state.progress.iter().find(|p| r["target"] == p.unit)
+            let progress = state
+                .progress
+                .iter()
+                .find(|p| r["target"] == p.unit)
                 .ok_or_else(|| Stop::invalid("cycle.pending", "完成事件缺制造进度"))?;
             r["trigger"]["kind"] = json!("remaining_work");
-            progress.remaining.as_ref().ok_or_else(|| Stop::invalid("cycle.pending", "缺剩余工作量"))?.integer("cycle.pending")?
+            progress
+                .remaining
+                .as_ref()
+                .ok_or_else(|| Stop::invalid("cycle.pending", "缺剩余工作量"))?
+                .integer("cycle.pending")?
         } else {
-            difference(instant(&r["trigger"]["value"], "pending")?, t, "cycle.pending")?
+            difference(
+                instant(&r["trigger"]["value"], "pending")?,
+                t,
+                "cycle.pending",
+            )?
         };
         r["event"] = json!([r["operation"], r["target"], remaining.to_string()]);
         r["trigger"]["value"] = tv(remaining);
@@ -527,11 +556,20 @@ fn reception_scope(a: i64, b: i64, proof: &Value) -> Value {
         "status":"proved","proof_sources":[proof]})
 }
 fn correspondence(proof: &Value) -> Value {
-    let group = |names: &[&str], status: &str, why: &str| json!({"status":status,"proof_sources":[],
-        "checks":names.iter().map(|name| json!({"condition":name,"status":status,"evidence":[why]})).collect::<Vec<_>>()});
-    let mut forward = group(&["production_representation","warehouse_label_noninterference",
-        "candidate_and_actual_acceptance","successor_time_delivery_preservation"],"unresolved",
-        "字段投影及代表接收经实现读取核对；一般真实事件推进到工程闭包的PC-06对应仍缺推导");
+    let group = |names: &[&str], status: &str, why: &str| {
+        json!({"status":status,"proof_sources":[],
+        "checks":names.iter().map(|name| json!({"condition":name,"status":status,"evidence":[why]})).collect::<Vec<_>>()})
+    };
+    let mut forward = group(
+        &[
+            "production_representation",
+            "warehouse_label_noninterference",
+            "candidate_and_actual_acceptance",
+            "successor_time_delivery_preservation",
+        ],
+        "unresolved",
+        "字段投影及代表接收经实现读取核对；一般真实事件推进到工程闭包的PC-06对应仍缺推导",
+    );
     forward["proof_sources"] = json!([proof]);
     json!({"forward_projection":forward,
         "reverse_reconstruction":group(&["reachable_start","fixed_parameters","positive_real_duration","repeated_production",
@@ -859,7 +897,7 @@ pub(crate) fn search(
         "kernel-input-v3",
         crate::cycle_io::input_producer(),
     )?;
-    let sources = output::fingerprints(&input,config_path,&[])?;
+    let sources = output::fingerprints(&input, config_path, &[])?;
     let scope = output::evidence_scope("diagnostic", "diagnostic", &sources);
     Ok((
         json!({"schema":"kernel-cycle-v3","evidence_scope":scope,"environment_assumption":"仓库收得下成品。","result_id":format!("cycle:{}:{max_ticks}:{max_sweeps}",input.path.file_stem().and_then(|s|s.to_str()).unwrap_or("input")),"status":status,"level":if cycle.is_null(){Value::Null}else{json!("production_part")},"execution_mode":"production_abstraction","port_meeting":input.parameters.value(Axis::ConnectionPortMeeting)?,

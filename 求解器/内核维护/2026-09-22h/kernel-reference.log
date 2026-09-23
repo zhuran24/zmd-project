@@ -1,0 +1,42 @@
+   Compiling kernel v0.1.0 (/home/zhuran24/zmd-research-fresh/求解器/crates/kernel)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.04s
+     Running tests/reference.rs (target/debug/deps/reference-1613ad1990138602)
+
+running 3 tests
+test crusher_reference ... FAILED
+test live_python_differential ... FAILED
+test splitter_reference ... FAILED
+
+failures:
+
+---- crusher_reference stdout ----
+
+thread 'crusher_reference' (1012497) panicked at crates/kernel/tests/reference.rs:31:14:
+assertion `left == right` failed: tick.state.semantic_context.parameter_values[12].value.basis[0]
+  left: String("规则L24、L59、L63；现行内核配置 r25")
+ right: String("受限模型声明；内核输入 §5.2–5.4；known：unit，按单位存取两侧，存货共同分级、取货不分级；按轴拆调度排除。据：轮询、存货/取货优先级、桥接器")
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- live_python_differential stdout ----
+
+thread 'live_python_differential' (1012504) panicked at crates/kernel/tests/reference.rs:31:14:
+assertion `left == right` failed: python_vs_record[0].state.semantic_context.parameter_values[12].value.basis[0]
+  left: String("规则L24、L59、L63；现行内核配置 r25")
+ right: String("受限模型声明；内核输入 §5.2–5.4；known：unit，按单位存取两侧，存货共同分级、取货不分级；按轴拆调度排除。据：轮询、存货/取货优先级、桥接器")
+
+---- splitter_reference stdout ----
+
+thread 'splitter_reference' (1012506) panicked at crates/kernel/tests/reference.rs:31:14:
+assertion `left == right` failed: tick.state.semantic_context.parameter_values[12].value.basis[0]
+  left: String("规则L24、L59、L63；现行内核配置 r25")
+ right: String("受限模型声明；内核输入 §5.2–5.4；known：unit，按单位存取两侧，存货共同分级、取货不分级；按轴拆调度排除。据：轮询、存货/取货优先级、桥接器")
+
+
+failures:
+    crusher_reference
+    live_python_differential
+    splitter_reference
+
+test result: FAILED. 0 passed; 3 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.34s
+
+error: test failed, to rerun pass `-p kernel --test reference`
