@@ -1,0 +1,15 @@
+{
+  "S_branch": 185,
+  "J_branch": 1,
+  "script_sha256": "7ef43b13e571bdaaded42f75713738d60512c0b182ad7f39c7a058cb1111e435",
+  "build_seconds": 0.9458468859957065,
+  "model_sha256": "6764bd47f879dbb1ac3fb30e26a29a99ee2715ea51eac58aa87e804fe5af5906",
+  "fixed_bodies": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第72-74轮/推导72/witness185.json",
+  "time_limit": 600.0,
+  "workers": 1,
+  "status": "FEASIBLE",
+  "seconds": 9.095247748991824,
+  "upper": 300.0,
+  "stats": "CpSolverResponse summary:\nstatus: FEASIBLE\nobjective: 221\nbest_bound: 300\nintegers: 5314\nbooleans: 5110\nconflicts: 285\nbranches: 2895317\npropagations: 468965\ninteger_propagations: 3472639\nrestarts: 5\nlp_iterations: 53319\nwalltime: 8.04725\nusertime: 8.04725\ndeterministic_time: 15.614\ngap_integral: 0\nsolution_fingerprint: 0x1bd3823f081f2111\n",
+  "min_union": 221
+}

@@ -1,0 +1,109 @@
+[
+  {
+    "name": "union_S185_J1",
+    "cmd": [
+      "python",
+      "-B",
+      "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第75-77轮/推导75/union_search75.py",
+      "--s",
+      "185",
+      "--j",
+      "1",
+      "--seconds",
+      "600",
+      "--workers",
+      "3",
+      "--hint",
+      "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第72-74轮/推导72/witness185.json",
+      "--name",
+      "union_S185_J1"
+    ],
+    "returncode": 0
+  },
+  {
+    "name": "union_S186_J0",
+    "cmd": [
+      "python",
+      "-B",
+      "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第75-77轮/推导75/union_search75.py",
+      "--s",
+      "186",
+      "--j",
+      "0",
+      "--seconds",
+      "600",
+      "--workers",
+      "3",
+      "--hint",
+      "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第72-74轮/推导72/witness185.json",
+      "--name",
+      "union_S186_J0"
+    ],
+    "returncode": 0
+  },
+  {
+    "name": "union_S187_J0",
+    "cmd": [
+      "python",
+      "-B",
+      "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第75-77轮/推导75/union_search75.py",
+      "--s",
+      "187",
+      "--j",
+      "0",
+      "--seconds",
+      "600",
+      "--workers",
+      "3",
+      "--hint",
+      "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第72-74轮/推导72/witness185.json",
+      "--name",
+      "union_S187_J0"
+    ],
+    "returncode": 0
+  },
+  {
+    "name": "fixed_bodies_S185_J1",
+    "cmd": [
+      "python",
+      "-B",
+      "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第75-77轮/推导75/union_search75.py",
+      "--s",
+      "185",
+      "--j",
+      "1",
+      "--seconds",
+      "600",
+      "--workers",
+      "1",
+      "--hint",
+      "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第72-74轮/推导72/witness185.json",
+      "--fixed-bodies",
+      "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第72-74轮/推导72/witness185.json",
+      "--name",
+      "fixed_bodies_S185_J1"
+    ],
+    "returncode": 0
+  },
+  {
+    "name": "linear_S185_J0",
+    "cmd": [
+      "python",
+      "-B",
+      "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第75-77轮/推导75/solve75.py",
+      "--engine",
+      "linear",
+      "--s",
+      "185",
+      "--j",
+      "0",
+      "--seconds",
+      "600",
+      "--workers",
+      "2",
+      "--name",
+      "linear_S185_J0"
+    ],
+    "returncode": 0
+  }
+]

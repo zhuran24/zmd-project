@@ -1,0 +1,723 @@
+{
+  "status": "M1_COMPLETE",
+  "start_utc": "2026-09-23T07:59:01+00:00",
+  "finish_utc": "2026-09-23T08:42:03.918716+00:00",
+  "elapsed_seconds": 2582.918716,
+  "elapsed_minutes": 43.04864526666667,
+  "wall_limit_seconds": 10800,
+  "heavy_compute_cpu_affinity": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "python": "3.14.7 (main, Aug 14 2026, 06:38:32) [GCC 16.2.1 20260810]",
+  "ortools": "9.15.6755",
+  "scipy": "1.18.1",
+  "M1_minimum": 185,
+  "complete_subset_relaxation_minimum": 185,
+  "canonical_branches": 6,
+  "including_transpose": 12,
+  "new_candidates": 2,
+  "new_position_exclusions": 0,
+  "formal_upper_bound": 1113,
+  "actual_P10_layout": "UNRESOLVED",
+  "J_necessary": 1,
+  "inherited_lower_bound": [
+    {
+      "path": "求解器/候选约束轮次/第72-74轮/推导72/cp_cap184.json",
+      "sha256": "5e952e2f48eaab85af97b266baab38eb5ce2f56cf0072a43102a579d8c3257fd",
+      "script_sha256": "697ade0b50a59f702ded7689babbe85f1ba26fe8ac62dc9e0dff799f913c475a",
+      "status": "INFEASIBLE"
+    },
+    {
+      "path": "求解器/候选约束轮次/第72-74轮/推导72/mip_J0_cap184.json",
+      "sha256": "8b000c57f0bfda4c6dc54c36da31f210dc545a56d6ab2c033fc0a06697d828ab",
+      "script_sha256": "3cd4239dfbd3c690b0d594e983975092454c8e0ffbc0f5274fdcd0d1ea4fa613",
+      "status": 2
+    },
+    {
+      "path": "求解器/候选约束轮次/第72-74轮/推导72/mip_J1_cap184.json",
+      "sha256": "fa1eef2a815d971716f17281cfd4b4df3703cd719bafe24f112adc2857ba9723",
+      "script_sha256": "3cd4239dfbd3c690b0d594e983975092454c8e0ffbc0f5274fdcd0d1ea4fa613",
+      "status": 2
+    }
+  ],
+  "residual_point_certificates": [
+    {
+      "S": 185,
+      "known": 21,
+      "required": 196,
+      "upper": 157,
+      "total_upper": 178,
+      "gap": 39,
+      "shift": [
+        0,
+        1
+      ],
+      "inside_poles": [
+        0,
+        1,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "outside_capacity": 23,
+      "inside_union": 134,
+      "residual_deficit": 41,
+      "total_charge": 52
+    },
+    {
+      "S": 186,
+      "known": 21,
+      "required": 196,
+      "upper": 158,
+      "total_upper": 179,
+      "gap": 38,
+      "shift": [
+        0,
+        1
+      ],
+      "inside_poles": [
+        0,
+        1,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "outside_capacity": 23,
+      "inside_union": 135,
+      "residual_deficit": 40,
+      "total_charge": 51
+    },
+    {
+      "S": 187,
+      "known": 21,
+      "required": 196,
+      "upper": 158,
+      "total_upper": 179,
+      "gap": 38,
+      "shift": [
+        0,
+        1
+      ],
+      "inside_poles": [
+        0,
+        1,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "outside_capacity": 23,
+      "inside_union": 135,
+      "residual_deficit": 40,
+      "total_charge": 51
+    }
+  ],
+  "experiments": [
+    {
+      "status": "OPTIMAL",
+      "seconds": 0.7330096829973627,
+      "time_limit": 300.0,
+      "workers": 4,
+      "scope": "local fixed-body M2 with all nine full capacity flows",
+      "file": "all_subsets_local.json"
+    },
+    {
+      "status": "UNKNOWN",
+      "seconds": 182.66840485700232,
+      "time_limit": 180.0,
+      "workers": 1,
+      "S_branch": 185,
+      "J_branch": 0,
+      "engine": "highs",
+      "file": "cheap_highs_S185_J0.json"
+    },
+    {
+      "status": "UNKNOWN",
+      "seconds": 181.59229686899926,
+      "time_limit": 180.0,
+      "workers": 1,
+      "S_branch": 185,
+      "J_branch": 1,
+      "engine": "highs",
+      "file": "cheap_highs_S185_J1.json"
+    },
+    {
+      "status": "UNKNOWN",
+      "seconds": 181.60310566599946,
+      "time_limit": 180.0,
+      "workers": 1,
+      "S_branch": 186,
+      "J_branch": 0,
+      "engine": "highs",
+      "file": "cheap_highs_S186_J0.json"
+    },
+    {
+      "status": "UNKNOWN",
+      "seconds": 181.6180386939959,
+      "time_limit": 180.0,
+      "workers": 1,
+      "S_branch": 186,
+      "J_branch": 1,
+      "engine": "highs",
+      "file": "cheap_highs_S186_J1.json"
+    },
+    {
+      "status": "UNKNOWN",
+      "seconds": 182.65723265999986,
+      "time_limit": 180.0,
+      "workers": 1,
+      "S_branch": 187,
+      "J_branch": 0,
+      "engine": "highs",
+      "file": "cheap_highs_S187_J0.json"
+    },
+    {
+      "status": "UNKNOWN",
+      "seconds": 181.5960926150001,
+      "time_limit": 180.0,
+      "workers": 1,
+      "S_branch": 187,
+      "J_branch": 1,
+      "engine": "highs",
+      "file": "cheap_highs_S187_J1.json"
+    },
+    {
+      "status": "INFEASIBLE",
+      "seconds": 88.67922664700018,
+      "time_limit": 180.0,
+      "workers": 1,
+      "S_branch": 185,
+      "J_branch": 0,
+      "engine": "native",
+      "file": "cheap_native_S185_J0.json"
+    },
+    {
+      "status": "UNKNOWN",
+      "seconds": 185.3763271279895,
+      "time_limit": 180.0,
+      "workers": 1,
+      "S_branch": 185,
+      "J_branch": 1,
+      "engine": "native",
+      "file": "cheap_native_S185_J1.json"
+    },
+    {
+      "status": "UNKNOWN",
+      "seconds": 190.7588799570076,
+      "time_limit": 180.0,
+      "workers": 1,
+      "S_branch": 186,
+      "J_branch": 0,
+      "engine": "native",
+      "file": "cheap_native_S186_J0.json"
+    },
+    {
+      "status": "UNKNOWN",
+      "seconds": 185.38268756600155,
+      "time_limit": 180.0,
+      "workers": 1,
+      "S_branch": 186,
+      "J_branch": 1,
+      "engine": "native",
+      "file": "cheap_native_S186_J1.json"
+    },
+    {
+      "status": "UNKNOWN",
+      "seconds": 190.72005895599432,
+      "time_limit": 180.0,
+      "workers": 1,
+      "S_branch": 187,
+      "J_branch": 0,
+      "engine": "native",
+      "file": "cheap_native_S187_J0.json"
+    },
+    {
+      "status": "UNKNOWN",
+      "seconds": 185.59029940300388,
+      "time_limit": 180.0,
+      "workers": 1,
+      "S_branch": 187,
+      "J_branch": 1,
+      "engine": "native",
+      "file": "cheap_native_S187_J1.json"
+    },
+    {
+      "status": "OPTIMAL",
+      "seconds": 1.8215192780044163,
+      "time_limit": 60.0,
+      "workers": 1,
+      "S_branch": 185,
+      "J_branch": 1,
+      "engine": "highs",
+      "file": "complete_replay_highs_S185.json"
+    },
+    {
+      "status": "OPTIMAL",
+      "seconds": 1.6947087709995685,
+      "time_limit": 60.0,
+      "workers": 1,
+      "S_branch": 186,
+      "J_branch": 1,
+      "engine": "highs",
+      "file": "complete_replay_highs_S186.json"
+    },
+    {
+      "status": "OPTIMAL",
+      "seconds": 1.7056552189897047,
+      "time_limit": 60.0,
+      "workers": 1,
+      "S_branch": 187,
+      "J_branch": 1,
+      "engine": "highs",
+      "file": "complete_replay_highs_S187.json"
+    },
+    {
+      "status": "OPTIMAL",
+      "seconds": 5.5470128699962515,
+      "time_limit": 60.0,
+      "workers": 1,
+      "S_branch": 185,
+      "J_branch": 1,
+      "engine": "native",
+      "file": "complete_replay_native_S185.json"
+    },
+    {
+      "status": "OPTIMAL",
+      "seconds": 5.835542532993713,
+      "time_limit": 60.0,
+      "workers": 1,
+      "S_branch": 186,
+      "J_branch": 1,
+      "engine": "native",
+      "file": "complete_replay_native_S186.json"
+    },
+    {
+      "status": "OPTIMAL",
+      "seconds": 5.54078205699625,
+      "time_limit": 60.0,
+      "workers": 1,
+      "S_branch": 187,
+      "J_branch": 1,
+      "engine": "native",
+      "file": "complete_replay_native_S187.json"
+    },
+    {
+      "status": "FEASIBLE",
+      "seconds": 9.095247748991824,
+      "time_limit": 600.0,
+      "workers": 1,
+      "S_branch": 185,
+      "J_branch": 1,
+      "min_union": 221,
+      "file": "fixed_bodies_S185_J1.json"
+    },
+    {
+      "status": "FEASIBLE",
+      "seconds": 9.090977429004852,
+      "time_limit": 600.0,
+      "workers": 1,
+      "S_branch": 185,
+      "J_branch": 1,
+      "min_union": 221,
+      "file": "fixed_bodies_S185_J1_best.json"
+    },
+    {
+      "status": "UNKNOWN",
+      "seconds": 602.4807155949966,
+      "time_limit": 600.0,
+      "workers": 2,
+      "S_branch": 185,
+      "J_branch": 0,
+      "engine": "linear",
+      "file": "linear_S185_J0.json"
+    },
+    {
+      "status": "INFEASIBLE",
+      "seconds": 52.14196197199635,
+      "time_limit": 600.0,
+      "workers": 1,
+      "cap": 187,
+      "scope": "independent linear M0 safe projection, J=0, S<=cap",
+      "subsolver": "quick_restart",
+      "file": "linear_project_cap187_J0.json"
+    },
+    {
+      "status": "OPTIMAL",
+      "seconds": 1.99711978599953,
+      "time_limit": 60.0,
+      "workers": 1,
+      "S_branch": 185,
+      "J_branch": 1,
+      "engine": "highs",
+      "file": "m2_replay_highs.json"
+    },
+    {
+      "status": "OPTIMAL",
+      "seconds": 6.390193115003058,
+      "time_limit": 60.0,
+      "workers": 1,
+      "S_branch": 185,
+      "J_branch": 1,
+      "engine": "native",
+      "file": "m2_replay_native.json"
+    },
+    {
+      "status": "INFEASIBLE",
+      "seconds": 411.4656431589974,
+      "time_limit": 600.0,
+      "workers": 1,
+      "cap": 185,
+      "scope": "M0 safe projection, S <= cap",
+      "engine": "highs",
+      "file": "project_highs_cap185_J0.json"
+    },
+    {
+      "status": "INFEASIBLE",
+      "seconds": 399.52841670399357,
+      "time_limit": 600.0,
+      "workers": 1,
+      "cap": 186,
+      "scope": "M0 safe projection, S <= cap",
+      "engine": "highs",
+      "file": "project_highs_cap186_J0.json"
+    },
+    {
+      "status": "INFEASIBLE",
+      "seconds": 374.56533174299693,
+      "time_limit": 600.0,
+      "workers": 1,
+      "cap": 187,
+      "scope": "M0 safe projection, S <= cap",
+      "engine": "highs",
+      "file": "project_highs_cap187_J0.json"
+    },
+    {
+      "status": "UNKNOWN",
+      "seconds": 600.3913285079907,
+      "time_limit": 600.0,
+      "workers": 2,
+      "cap": 186,
+      "scope": "M0 safe projection, S <= cap",
+      "engine": "native",
+      "file": "project_native_cap186_J0.json"
+    },
+    {
+      "status": "INFEASIBLE",
+      "seconds": 35.038797091998276,
+      "time_limit": 600.0,
+      "workers": 6,
+      "cap": 187,
+      "scope": "M0 safe projection, S <= cap",
+      "engine": "native",
+      "file": "project_native_cap187_J0.json"
+    },
+    {
+      "status": "OPTIMAL",
+      "seconds": 2.132609281994519,
+      "time_limit": 60.0,
+      "workers": 1,
+      "S_branch": 185,
+      "J_branch": 1,
+      "engine": "highs",
+      "file": "replay_highs_S185_J1.json"
+    },
+    {
+      "status": "OPTIMAL",
+      "seconds": 3.5494941959914286,
+      "time_limit": 60.0,
+      "workers": 1,
+      "S_branch": 186,
+      "J_branch": 1,
+      "engine": "highs",
+      "file": "replay_highs_S186_J1.json"
+    },
+    {
+      "status": "OPTIMAL",
+      "seconds": 3.5577621270058444,
+      "time_limit": 60.0,
+      "workers": 1,
+      "S_branch": 187,
+      "J_branch": 1,
+      "engine": "highs",
+      "file": "replay_highs_S187_J1.json"
+    },
+    {
+      "status": "OPTIMAL",
+      "seconds": 5.691992673993809,
+      "time_limit": 60.0,
+      "workers": 1,
+      "S_branch": 185,
+      "J_branch": 1,
+      "engine": "native",
+      "file": "replay_native_S185_J1.json"
+    },
+    {
+      "status": "OPTIMAL",
+      "seconds": 11.647246487991652,
+      "time_limit": 60.0,
+      "workers": 1,
+      "S_branch": 186,
+      "J_branch": 1,
+      "engine": "native",
+      "file": "replay_native_S186_J1.json"
+    },
+    {
+      "status": "OPTIMAL",
+      "seconds": 11.683074706990737,
+      "time_limit": 60.0,
+      "workers": 1,
+      "S_branch": 187,
+      "J_branch": 1,
+      "engine": "native",
+      "file": "replay_native_S187_J1.json"
+    },
+    {
+      "status": "INFEASIBLE",
+      "seconds": 1.2662076199922012,
+      "time_limit": 60.0,
+      "workers": 1,
+      "cap": 187,
+      "scope": "M0 plus residual all-pole union; no forced warehouse cells, no residual single-pole capacities",
+      "encoding": "A",
+      "fixed": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第75-77轮/推导75/complete_subsets_S185.json",
+      "file": "residual_fixed_A.json"
+    },
+    {
+      "status": "INFEASIBLE",
+      "seconds": 1.7341618979990017,
+      "time_limit": 60.0,
+      "workers": 1,
+      "cap": 187,
+      "scope": "M0 plus residual all-pole union; no forced warehouse cells, no residual single-pole capacities",
+      "encoding": "B",
+      "fixed": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第75-77轮/推导75/complete_subsets_S185.json",
+      "file": "residual_fixed_B.json"
+    },
+    {
+      "status": "UNKNOWN",
+      "seconds": 601.1689927609987,
+      "time_limit": 600.0,
+      "workers": 3,
+      "cap": 187,
+      "scope": "M0 plus residual all-pole union; no forced warehouse cells, no residual single-pole capacities",
+      "encoding": "A",
+      "file": "residual_global_A.json"
+    },
+    {
+      "status": "UNKNOWN",
+      "seconds": 601.236444929993,
+      "time_limit": 600.0,
+      "workers": 1,
+      "cap": 187,
+      "scope": "M0 plus residual all-pole union; no forced warehouse cells, no residual single-pole capacities",
+      "encoding": "A",
+      "subsolver": "quick_restart",
+      "file": "residual_global_A_quick.json"
+    },
+    {
+      "status": "UNKNOWN",
+      "seconds": 601.5356916960009,
+      "time_limit": 600.0,
+      "workers": 2,
+      "cap": 187,
+      "scope": "M0 plus residual all-pole union; no forced warehouse cells, no residual single-pole capacities",
+      "encoding": "B",
+      "file": "residual_global_B.json"
+    },
+    {
+      "status": "UNKNOWN",
+      "seconds": 601.5505026659957,
+      "time_limit": 600.0,
+      "workers": 1,
+      "cap": 187,
+      "scope": "M0 plus residual all-pole union; no forced warehouse cells, no residual single-pole capacities",
+      "encoding": "B",
+      "subsolver": "quick_restart",
+      "file": "residual_global_B_quick.json"
+    },
+    {
+      "status": "FEASIBLE",
+      "seconds": 17.82550988199364,
+      "time_limit": 600.0,
+      "workers": 3,
+      "S_branch": 185,
+      "J_branch": 1,
+      "min_union": 218,
+      "file": "union_S185_J1.json"
+    },
+    {
+      "status": "FEASIBLE",
+      "seconds": 17.80813687200134,
+      "time_limit": 600.0,
+      "workers": 3,
+      "S_branch": 185,
+      "J_branch": 1,
+      "min_union": 218,
+      "file": "union_S185_J1_best.json"
+    },
+    {
+      "status": "UNKNOWN",
+      "seconds": 601.0696086560056,
+      "time_limit": 600.0,
+      "workers": 3,
+      "S_branch": 186,
+      "J_branch": 0,
+      "file": "union_S186_J0.json"
+    },
+    {
+      "status": "UNKNOWN",
+      "seconds": 601.0620889660058,
+      "time_limit": 600.0,
+      "workers": 3,
+      "S_branch": 187,
+      "J_branch": 0,
+      "file": "union_S187_J0.json"
+    },
+    {
+      "status": "FEASIBLE",
+      "seconds": 9.090977429004852,
+      "time_limit": 600.0,
+      "workers": 1,
+      "S_branch": 185,
+      "J_branch": 1,
+      "min_union": 221,
+      "file": "variant0.json"
+    },
+    {
+      "status": "FEASIBLE",
+      "seconds": 9.090977429004852,
+      "time_limit": 600.0,
+      "workers": 1,
+      "S_branch": 185,
+      "J_branch": 1,
+      "min_union": 221,
+      "file": "variant4.json"
+    },
+    {
+      "status": "FEASIBLE",
+      "seconds": 9.090977429004852,
+      "time_limit": 600.0,
+      "workers": 1,
+      "S_branch": 185,
+      "J_branch": 1,
+      "min_union": 221,
+      "file": "variant5.json"
+    },
+    {
+      "status": "FEASIBLE",
+      "seconds": 9.090977429004852,
+      "time_limit": 600.0,
+      "workers": 1,
+      "S_branch": 185,
+      "J_branch": 1,
+      "min_union": 221,
+      "file": "variant6.json"
+    },
+    {
+      "status": "FEASIBLE",
+      "seconds": 9.090977429004852,
+      "time_limit": 600.0,
+      "workers": 1,
+      "S_branch": 185,
+      "J_branch": 1,
+      "min_union": 221,
+      "file": "variant7.json"
+    },
+    {
+      "status": "FEASIBLE",
+      "seconds": 9.090977429004852,
+      "time_limit": 600.0,
+      "workers": 1,
+      "S_branch": 185,
+      "J_branch": 1,
+      "min_union": 221,
+      "file": "witness_S185.json"
+    },
+    {
+      "status": "FEASIBLE",
+      "seconds": 9.090977429004852,
+      "time_limit": 600.0,
+      "workers": 1,
+      "S_branch": 185,
+      "J_branch": 1,
+      "min_union": 221,
+      "file": "witness_S185_transpose.json"
+    },
+    {
+      "status": "FEASIBLE",
+      "seconds": 9.090977429004852,
+      "time_limit": 600.0,
+      "workers": 1,
+      "S_branch": 186,
+      "J_branch": 1,
+      "file": "witness_S186.json"
+    },
+    {
+      "status": "FEASIBLE",
+      "seconds": 9.090977429004852,
+      "time_limit": 600.0,
+      "workers": 1,
+      "S_branch": 186,
+      "J_branch": 1,
+      "file": "witness_S186_J1.json"
+    },
+    {
+      "status": "FEASIBLE",
+      "seconds": 9.090977429004852,
+      "time_limit": 600.0,
+      "workers": 1,
+      "S_branch": 186,
+      "J_branch": 1,
+      "file": "witness_S186_transpose.json"
+    },
+    {
+      "status": "FEASIBLE",
+      "seconds": 9.090977429004852,
+      "time_limit": 600.0,
+      "workers": 1,
+      "S_branch": 187,
+      "J_branch": 1,
+      "file": "witness_S187.json"
+    },
+    {
+      "status": "FEASIBLE",
+      "seconds": 9.090977429004852,
+      "time_limit": 600.0,
+      "workers": 1,
+      "S_branch": 187,
+      "J_branch": 1,
+      "file": "witness_S187_J1.json"
+    },
+    {
+      "status": "FEASIBLE",
+      "seconds": 9.090977429004852,
+      "time_limit": 600.0,
+      "workers": 1,
+      "S_branch": 187,
+      "J_branch": 1,
+      "file": "witness_S187_transpose.json"
+    }
+  ]
+}

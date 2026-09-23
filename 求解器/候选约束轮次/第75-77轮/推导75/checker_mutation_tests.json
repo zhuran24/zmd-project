@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "checks": [
+    {
+      "case": "false score",
+      "rejected": true
+    },
+    {
+      "case": "duplicate pole",
+      "rejected": true
+    },
+    {
+      "case": "outside base",
+      "rejected": true
+    },
+    {
+      "case": "old 185 violates M1",
+      "rejected": true
+    }
+  ],
+  "script_sha256": "187eadc2b557afce8ba90d948e3a8e6b14d0bd99480f8e1c02eb3d686f9e71be"
+}

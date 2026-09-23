@@ -1,0 +1,70 @@
+{
+  "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt": {
+    "sha256": "6e64e3903a65536c530b363c9f3aef8c1bb2a1c1193e866799125dd047159924",
+    "size": 7241
+  },
+  "/home/zhuran24/zmd-research-fresh/求解任务.txt": {
+    "sha256": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+    "size": 1405
+  },
+  "/home/zhuran24/zmd-research-fresh/求解约束.txt": {
+    "sha256": "0c05976f6063f3332db6ee19d7746052ef35148d7c2a12dfa396c7bb8753f30f",
+    "size": 34766
+  },
+  "/home/zhuran24/zmd-research-fresh/候选约束.txt": {
+    "sha256": "c9737ed25c8fc445731a92020231719d0d37026afa41bcbb36392aaa2ce668c5",
+    "size": 357483
+  },
+  "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第72-74轮/复核74.md": {
+    "sha256": "6ff12c36e7cfb780e052f493f412a694d57b6330a1f3fbd130d43b9c615f72dd",
+    "size": 25918
+  },
+  "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第72-74轮/推导72.md": {
+    "sha256": "1cf6cb736a666bd7c4a1cb3771aa2fdc8c6c72b404c8f6e6d3f71c5897cb5987",
+    "size": 19243
+  },
+  "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第72-74轮/复核73.md": {
+    "sha256": "be014c91faf5c781477fb0a9839992e5a0e10d4e2966639ce647692aeaf6b6dc",
+    "size": 23833
+  },
+  "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第66-68轮/推导66/power_certificates.json": {
+    "sha256": "555d4b3a7a2b5ba3a574c641e946b52df7a9968830fb5867be6feb067e058042",
+    "size": 1906808
+  },
+  "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第69-71轮/推导69/supply_strip_certificates.json": {
+    "sha256": "e8152f1e6d8217ff9fbb0d7919500a2d85a7dca4e5a3e845aa4bf945eff3c569",
+    "size": 196771
+  },
+  "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第69-71轮/推导69/new_edge_local_certificate.json": {
+    "sha256": "1145545163831b7b187bb9b9575a25833a12e85de53cdebd87efee79c7f846e1",
+    "size": 51528
+  },
+  "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第72-74轮/推导72/cp72.py": {
+    "sha256": "697ade0b50a59f702ded7689babbe85f1ba26fe8ac62dc9e0dff799f913c475a",
+    "size": 10309
+  },
+  "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第72-74轮/推导72/mip72.py": {
+    "sha256": "3cd4239dfbd3c690b0d594e983975092454c8e0ffbc0f5274fdcd0d1ea4fa613",
+    "size": 11459
+  },
+  "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第72-74轮/推导72/check_witness.py": {
+    "sha256": "3acb8f3dab09d8021f422cd016d32d00aee112c482d1a6a28f321f03e0b52e29",
+    "size": 5464
+  },
+  "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第72-74轮/推导72/grid_certificate.py": {
+    "sha256": "eda338c4b0a1de189c1327c6372ad54706d05885e5c63f961017b0c4c3e057aa",
+    "size": 3632
+  },
+  "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第72-74轮/复核74/geometry74.py": {
+    "sha256": "ee5135d62bc79679aa7fb09a02bc75142ff744f02d6fb9f886d6402c68e4bbe0",
+    "size": 2850
+  },
+  "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第72-74轮/复核74/certificates74.py": {
+    "sha256": "09d7296fe331be4b5b94f2b8b0cb18f5aa6302e8f79ead943b19710532141ecf",
+    "size": 4358
+  },
+  "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第69-71轮/推导69/wall0_certificate.json": {
+    "sha256": "ddff62a2ea30c425e5b300b88e020f7c5c0073134d4744831e57717c3e6df2b2",
+    "size": 509
+  }
+}

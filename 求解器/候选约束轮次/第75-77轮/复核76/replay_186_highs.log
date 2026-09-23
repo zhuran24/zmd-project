@@ -1,0 +1,42 @@
+{'arguments': {'P': 10, 'j': 1, 'cap': 186, 'engine': 'highs', 'seconds': 60, 'workers': 1, 'full': True, 'fixed': '求解器/候选约束轮次/第75-77轮/推导75/complete_subsets_S186.json', 'name': 'replay_186_highs'}, 'units': {'s': 132, 'm': 132, 'l': 136, 'c': 108, 'p': 3462}, 'variables': 8455, 'constraints': 12884, 'matrix_sha256': '57d3c7d78414f67681efb91560f786ed7de712c6e351bbd1ab93d669aa483edf', 'source_sha256': {'geometry.py': '5d35b6c04cee936c4c2c7f81d4e163ae4daef1bd8cf55c4a5fc12c7983435f8f', 'model.py': '67e9a0efe49377d3f3cd02297f4346d6aaea4befab95fa8ec00e1f5dfdbf813c'}, 'build_seconds': 0.2732202230108669}
+Running HiGHS 1.12.0 (git hash: 4f96ee8f4): Copyright (c) 2025 HiGHS under MIT licence terms
+MIP has 12884 rows; 8455 cols; 173648 nonzeros; 8455 integer variables (8055 binary)
+Coefficient ranges:
+  Matrix  [1e+00, 1e+01]
+  Cost    [0e+00, 0e+00]
+  Bound   [1e+00, 9e+00]
+  RHS     [1e+00, 1e+02]
+Presolving model
+6365 rows, 594 cols, 6720 nonzeros  0s
+0 rows, 0 cols, 0 nonzeros  0s
+0 rows, 0 cols, 0 nonzeros  0s
+Presolve reductions: rows 0(-12884); columns 0(-8455); nonzeros 0(-173648) - Reduced to empty
+Presolve: Optimal
+
+Src: B => Branching; C => Central rounding; F => Feasibility pump; H => Heuristic;
+     I => Shifting; J => Feasibility jump; L => Sub-MIP; P => Empty MIP; R => Randomized rounding;
+     S => Solve LP; T => Evaluate node; U => Unbounded; X => User solution; Y => HiGHS solution;
+     Z => ZI Round; l => Trivial lower; p => Trivial point; u => Trivial upper; z => Trivial zero
+
+        Nodes      |    B&B Tree     |            Objective Bounds              |  Dynamic Constraints |       Work      
+Src  Proc. InQueue |  Leaves   Expl. | BestBound       BestSol              Gap |   Cuts   InLp Confl. | LpIters     Time
+
+         0       0         0   0.00%   0               0                  0.00%        0      0      0         0     0.0s
+
+Solving report
+  Status            Optimal
+  Primal bound      0
+  Dual bound        0
+  Gap               0%
+  P-D integral      0
+  Solution status   feasible
+                    0 (objective)
+                    0 (bound viol.)
+                    0 (int. viol.)
+                    0 (row viol.)
+  Timing            0.05
+  Max sub-MIP depth 0
+  Nodes             0
+  Repair LPs        0
+  LP iterations     0
+{'arguments': {'P': 10, 'j': 1, 'cap': 186, 'engine': 'highs', 'seconds': 60, 'workers': 1, 'full': True, 'fixed': '求解器/候选约束轮次/第75-77轮/推导75/complete_subsets_S186.json', 'name': 'replay_186_highs'}, 'units': {'s': 132, 'm': 132, 'l': 136, 'c': 108, 'p': 3462}, 'variables': 8455, 'constraints': 12884, 'matrix_sha256': '57d3c7d78414f67681efb91560f786ed7de712c6e351bbd1ab93d669aa483edf', 'source_sha256': {'geometry.py': '5d35b6c04cee936c4c2c7f81d4e163ae4daef1bd8cf55c4a5fc12c7983435f8f', 'model.py': '67e9a0efe49377d3f3cd02297f4346d6aaea4befab95fa8ec00e1f5dfdbf813c'}, 'build_seconds': 0.2732202230108669, 'status': 'OPTIMAL', 'message': 'Optimization terminated successfully. (HiGHS Status 7: Optimal)', 'version': '1.18.1', 'S': 186, 'seconds': 0.5057562670117477}

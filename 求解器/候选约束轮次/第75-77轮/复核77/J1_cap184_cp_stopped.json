@@ -1,0 +1,4 @@
+{
+  "status": "STOPPED",
+  "reason": "Independent rebuilt-edge run already proved J=1, S<=184 INFEASIBLE; no result claimed from this redundant uncut search."
+}

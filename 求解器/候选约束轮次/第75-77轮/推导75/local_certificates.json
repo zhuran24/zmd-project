@@ -1,0 +1,4356 @@
+{
+  "wall": {
+    "columns": 550,
+    "rows": 1352,
+    "upper": "1846/135",
+    "minimum_coefficient": "1"
+  },
+  "positions": [
+    {
+      "p": [
+        43,
+        1
+      ],
+      "columns": 550,
+      "rows": 1352,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "p": [
+        43,
+        2
+      ],
+      "columns": 610,
+      "rows": 1492,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        43,
+        3
+      ],
+      "columns": 670,
+      "rows": 1632,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        43,
+        4
+      ],
+      "columns": 734,
+      "rows": 1786,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "p": [
+        43,
+        5
+      ],
+      "columns": 802,
+      "rows": 1944,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        43,
+        6
+      ],
+      "columns": 878,
+      "rows": 2114,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        43,
+        7
+      ],
+      "columns": 955,
+      "rows": 2284,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "p": [
+        43,
+        8
+      ],
+      "columns": 1026,
+      "rows": 2442,
+      "upper": "24",
+      "minimum_coefficient": "1",
+      "cap": 24
+    },
+    {
+      "p": [
+        43,
+        9
+      ],
+      "columns": 1078,
+      "rows": 2562,
+      "upper": "24",
+      "minimum_coefficient": "1",
+      "cap": 24
+    },
+    {
+      "p": [
+        43,
+        10
+      ],
+      "columns": 1116,
+      "rows": 2654,
+      "upper": "23",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "p": [
+        43,
+        11
+      ],
+      "columns": 1118,
+      "rows": 2669,
+      "upper": "23",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "p": [
+        43,
+        12
+      ],
+      "columns": 1089,
+      "rows": 2605,
+      "upper": "23",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "p": [
+        43,
+        13
+      ],
+      "columns": 1061,
+      "rows": 2543,
+      "upper": "22",
+      "minimum_coefficient": "1",
+      "cap": 22
+    },
+    {
+      "p": [
+        43,
+        14
+      ],
+      "columns": 1033,
+      "rows": 2481,
+      "upper": "22",
+      "minimum_coefficient": "1",
+      "cap": 22
+    },
+    {
+      "p": [
+        43,
+        15
+      ],
+      "columns": 1005,
+      "rows": 2419,
+      "upper": "22",
+      "minimum_coefficient": "1",
+      "cap": 22
+    },
+    {
+      "p": [
+        43,
+        16
+      ],
+      "columns": 978,
+      "rows": 2359,
+      "upper": "21",
+      "minimum_coefficient": "1",
+      "cap": 21
+    },
+    {
+      "p": [
+        44,
+        1
+      ],
+      "columns": 550,
+      "rows": 1352,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "p": [
+        44,
+        2
+      ],
+      "columns": 610,
+      "rows": 1492,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        44,
+        3
+      ],
+      "columns": 670,
+      "rows": 1632,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        44,
+        4
+      ],
+      "columns": 734,
+      "rows": 1786,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "p": [
+        44,
+        5
+      ],
+      "columns": 802,
+      "rows": 1944,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        44,
+        6
+      ],
+      "columns": 876,
+      "rows": 2109,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        44,
+        7
+      ],
+      "columns": 949,
+      "rows": 2270,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "p": [
+        44,
+        8
+      ],
+      "columns": 1015,
+      "rows": 2417,
+      "upper": "24",
+      "minimum_coefficient": "1",
+      "cap": 24
+    },
+    {
+      "p": [
+        44,
+        9
+      ],
+      "columns": 1061,
+      "rows": 2524,
+      "upper": "24",
+      "minimum_coefficient": "1",
+      "cap": 24
+    },
+    {
+      "p": [
+        44,
+        10
+      ],
+      "columns": 1093,
+      "rows": 2603,
+      "upper": "23",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "p": [
+        44,
+        11
+      ],
+      "columns": 1089,
+      "rows": 2605,
+      "upper": "23",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "p": [
+        44,
+        12
+      ],
+      "columns": 1056,
+      "rows": 2532,
+      "upper": "23",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "p": [
+        44,
+        13
+      ],
+      "columns": 1025,
+      "rows": 2463,
+      "upper": "22",
+      "minimum_coefficient": "1",
+      "cap": 22
+    },
+    {
+      "p": [
+        44,
+        14
+      ],
+      "columns": 994,
+      "rows": 2394,
+      "upper": "22",
+      "minimum_coefficient": "1",
+      "cap": 22
+    },
+    {
+      "p": [
+        44,
+        15
+      ],
+      "columns": 963,
+      "rows": 2325,
+      "upper": "197/9",
+      "minimum_coefficient": "1",
+      "cap": 21
+    },
+    {
+      "p": [
+        44,
+        16
+      ],
+      "columns": 934,
+      "rows": 2260,
+      "upper": "62/3",
+      "minimum_coefficient": "1",
+      "cap": 20
+    },
+    {
+      "p": [
+        45,
+        1
+      ],
+      "columns": 550,
+      "rows": 1352,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "p": [
+        45,
+        2
+      ],
+      "columns": 610,
+      "rows": 1492,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        45,
+        3
+      ],
+      "columns": 670,
+      "rows": 1632,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        45,
+        4
+      ],
+      "columns": 734,
+      "rows": 1786,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "p": [
+        45,
+        5
+      ],
+      "columns": 802,
+      "rows": 1944,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        45,
+        6
+      ],
+      "columns": 874,
+      "rows": 2104,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        45,
+        7
+      ],
+      "columns": 943,
+      "rows": 2256,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "p": [
+        45,
+        8
+      ],
+      "columns": 1004,
+      "rows": 2392,
+      "upper": "24",
+      "minimum_coefficient": "1",
+      "cap": 24
+    },
+    {
+      "p": [
+        45,
+        9
+      ],
+      "columns": 1044,
+      "rows": 2486,
+      "upper": "24",
+      "minimum_coefficient": "1",
+      "cap": 24
+    },
+    {
+      "p": [
+        45,
+        10
+      ],
+      "columns": 1070,
+      "rows": 2552,
+      "upper": "22",
+      "minimum_coefficient": "1",
+      "cap": 22
+    },
+    {
+      "p": [
+        45,
+        11
+      ],
+      "columns": 1061,
+      "rows": 2543,
+      "upper": "22",
+      "minimum_coefficient": "1",
+      "cap": 22
+    },
+    {
+      "p": [
+        45,
+        12
+      ],
+      "columns": 1025,
+      "rows": 2463,
+      "upper": "22",
+      "minimum_coefficient": "1",
+      "cap": 22
+    },
+    {
+      "p": [
+        45,
+        13
+      ],
+      "columns": 992,
+      "rows": 2389,
+      "upper": "20",
+      "minimum_coefficient": "1",
+      "cap": 20
+    },
+    {
+      "p": [
+        45,
+        14
+      ],
+      "columns": 959,
+      "rows": 2315,
+      "upper": "20",
+      "minimum_coefficient": "1",
+      "cap": 20
+    },
+    {
+      "p": [
+        45,
+        15
+      ],
+      "columns": 926,
+      "rows": 2241,
+      "upper": "20",
+      "minimum_coefficient": "1",
+      "cap": 20
+    },
+    {
+      "p": [
+        45,
+        16
+      ],
+      "columns": 896,
+      "rows": 2171,
+      "upper": "18",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "p": [
+        46,
+        1
+      ],
+      "columns": 550,
+      "rows": 1352,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "p": [
+        46,
+        2
+      ],
+      "columns": 610,
+      "rows": 1492,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        46,
+        3
+      ],
+      "columns": 670,
+      "rows": 1632,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        46,
+        4
+      ],
+      "columns": 734,
+      "rows": 1786,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "p": [
+        46,
+        5
+      ],
+      "columns": 802,
+      "rows": 1944,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        46,
+        6
+      ],
+      "columns": 872,
+      "rows": 2099,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        46,
+        7
+      ],
+      "columns": 937,
+      "rows": 2242,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "p": [
+        46,
+        8
+      ],
+      "columns": 993,
+      "rows": 2367,
+      "upper": "24",
+      "minimum_coefficient": "1",
+      "cap": 24
+    },
+    {
+      "p": [
+        46,
+        9
+      ],
+      "columns": 1027,
+      "rows": 2448,
+      "upper": "24",
+      "minimum_coefficient": "1",
+      "cap": 24
+    },
+    {
+      "p": [
+        46,
+        10
+      ],
+      "columns": 1047,
+      "rows": 2501,
+      "upper": "22",
+      "minimum_coefficient": "1",
+      "cap": 22
+    },
+    {
+      "p": [
+        46,
+        11
+      ],
+      "columns": 1033,
+      "rows": 2481,
+      "upper": "22",
+      "minimum_coefficient": "1",
+      "cap": 22
+    },
+    {
+      "p": [
+        46,
+        12
+      ],
+      "columns": 994,
+      "rows": 2394,
+      "upper": "22",
+      "minimum_coefficient": "1",
+      "cap": 22
+    },
+    {
+      "p": [
+        46,
+        13
+      ],
+      "columns": 959,
+      "rows": 2315,
+      "upper": "20",
+      "minimum_coefficient": "1",
+      "cap": 20
+    },
+    {
+      "p": [
+        46,
+        14
+      ],
+      "columns": 926,
+      "rows": 2240,
+      "upper": "20",
+      "minimum_coefficient": "1",
+      "cap": 20
+    },
+    {
+      "p": [
+        46,
+        15
+      ],
+      "columns": 893,
+      "rows": 2165,
+      "upper": "20",
+      "minimum_coefficient": "1",
+      "cap": 20
+    },
+    {
+      "p": [
+        46,
+        16
+      ],
+      "columns": 863,
+      "rows": 2095,
+      "upper": "18",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "p": [
+        47,
+        1
+      ],
+      "columns": 550,
+      "rows": 1352,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "p": [
+        47,
+        2
+      ],
+      "columns": 610,
+      "rows": 1492,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        47,
+        3
+      ],
+      "columns": 670,
+      "rows": 1632,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        47,
+        4
+      ],
+      "columns": 734,
+      "rows": 1786,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "p": [
+        47,
+        5
+      ],
+      "columns": 802,
+      "rows": 1944,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        47,
+        6
+      ],
+      "columns": 870,
+      "rows": 2094,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        47,
+        7
+      ],
+      "columns": 931,
+      "rows": 2228,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "p": [
+        47,
+        8
+      ],
+      "columns": 982,
+      "rows": 2342,
+      "upper": "24",
+      "minimum_coefficient": "1",
+      "cap": 24
+    },
+    {
+      "p": [
+        47,
+        9
+      ],
+      "columns": 1010,
+      "rows": 2410,
+      "upper": "503/21",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "p": [
+        47,
+        10
+      ],
+      "columns": 1024,
+      "rows": 2450,
+      "upper": "22",
+      "minimum_coefficient": "1",
+      "cap": 22
+    },
+    {
+      "p": [
+        47,
+        11
+      ],
+      "columns": 1005,
+      "rows": 2419,
+      "upper": "22",
+      "minimum_coefficient": "1",
+      "cap": 22
+    },
+    {
+      "p": [
+        47,
+        12
+      ],
+      "columns": 963,
+      "rows": 2325,
+      "upper": "197/9",
+      "minimum_coefficient": "1",
+      "cap": 21
+    },
+    {
+      "p": [
+        47,
+        13
+      ],
+      "columns": 926,
+      "rows": 2241,
+      "upper": "20",
+      "minimum_coefficient": "1",
+      "cap": 20
+    },
+    {
+      "p": [
+        47,
+        14
+      ],
+      "columns": 893,
+      "rows": 2165,
+      "upper": "20",
+      "minimum_coefficient": "1",
+      "cap": 20
+    },
+    {
+      "p": [
+        47,
+        15
+      ],
+      "columns": 860,
+      "rows": 2089,
+      "upper": "928/47",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        47,
+        16
+      ],
+      "columns": 830,
+      "rows": 2019,
+      "upper": "323/18",
+      "minimum_coefficient": "1",
+      "cap": 17
+    },
+    {
+      "p": [
+        48,
+        1
+      ],
+      "columns": 550,
+      "rows": 1352,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "p": [
+        48,
+        2
+      ],
+      "columns": 610,
+      "rows": 1492,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        48,
+        3
+      ],
+      "columns": 670,
+      "rows": 1632,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        48,
+        4
+      ],
+      "columns": 734,
+      "rows": 1786,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "p": [
+        48,
+        5
+      ],
+      "columns": 802,
+      "rows": 1944,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        48,
+        6
+      ],
+      "columns": 868,
+      "rows": 2089,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        48,
+        7
+      ],
+      "columns": 925,
+      "rows": 2214,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "p": [
+        48,
+        8
+      ],
+      "columns": 971,
+      "rows": 2317,
+      "upper": "24",
+      "minimum_coefficient": "1",
+      "cap": 24
+    },
+    {
+      "p": [
+        48,
+        9
+      ],
+      "columns": 993,
+      "rows": 2372,
+      "upper": "71/3",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "p": [
+        48,
+        10
+      ],
+      "columns": 1001,
+      "rows": 2399,
+      "upper": "21",
+      "minimum_coefficient": "1",
+      "cap": 21
+    },
+    {
+      "p": [
+        48,
+        11
+      ],
+      "columns": 978,
+      "rows": 2359,
+      "upper": "21",
+      "minimum_coefficient": "1",
+      "cap": 21
+    },
+    {
+      "p": [
+        48,
+        12
+      ],
+      "columns": 934,
+      "rows": 2260,
+      "upper": "62/3",
+      "minimum_coefficient": "1",
+      "cap": 20
+    },
+    {
+      "p": [
+        48,
+        13
+      ],
+      "columns": 896,
+      "rows": 2171,
+      "upper": "18",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "p": [
+        48,
+        14
+      ],
+      "columns": 863,
+      "rows": 2095,
+      "upper": "18",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "p": [
+        48,
+        15
+      ],
+      "columns": 830,
+      "rows": 2019,
+      "upper": "323/18",
+      "minimum_coefficient": "1",
+      "cap": 17
+    },
+    {
+      "p": [
+        49,
+        1
+      ],
+      "columns": 550,
+      "rows": 1352,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "p": [
+        49,
+        2
+      ],
+      "columns": 610,
+      "rows": 1492,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        49,
+        3
+      ],
+      "columns": 670,
+      "rows": 1632,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        49,
+        4
+      ],
+      "columns": 734,
+      "rows": 1786,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "p": [
+        49,
+        5
+      ],
+      "columns": 802,
+      "rows": 1944,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        49,
+        6
+      ],
+      "columns": 866,
+      "rows": 2084,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        49,
+        7
+      ],
+      "columns": 919,
+      "rows": 2200,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "p": [
+        49,
+        8
+      ],
+      "columns": 960,
+      "rows": 2292,
+      "upper": "24",
+      "minimum_coefficient": "1",
+      "cap": 24
+    },
+    {
+      "p": [
+        49,
+        9
+      ],
+      "columns": 976,
+      "rows": 2334,
+      "upper": "71/3",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "p": [
+        49,
+        10
+      ],
+      "columns": 978,
+      "rows": 2348,
+      "upper": "21",
+      "minimum_coefficient": "1",
+      "cap": 21
+    },
+    {
+      "p": [
+        49,
+        11
+      ],
+      "columns": 951,
+      "rows": 2299,
+      "upper": "21",
+      "minimum_coefficient": "1",
+      "cap": 21
+    },
+    {
+      "p": [
+        49,
+        12
+      ],
+      "columns": 905,
+      "rows": 2195,
+      "upper": "62/3",
+      "minimum_coefficient": "1",
+      "cap": 20
+    },
+    {
+      "p": [
+        49,
+        13
+      ],
+      "columns": 866,
+      "rows": 2101,
+      "upper": "18",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "p": [
+        49,
+        14
+      ],
+      "columns": 833,
+      "rows": 2025,
+      "upper": "18",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "p": [
+        49,
+        15
+      ],
+      "columns": 794,
+      "rows": 1937,
+      "upper": "24707/1377",
+      "minimum_coefficient": "1",
+      "cap": 17
+    },
+    {
+      "p": [
+        50,
+        1
+      ],
+      "columns": 550,
+      "rows": 1352,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "p": [
+        50,
+        2
+      ],
+      "columns": 610,
+      "rows": 1492,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        50,
+        3
+      ],
+      "columns": 670,
+      "rows": 1632,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        50,
+        4
+      ],
+      "columns": 734,
+      "rows": 1786,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "p": [
+        50,
+        5
+      ],
+      "columns": 802,
+      "rows": 1944,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        50,
+        6
+      ],
+      "columns": 864,
+      "rows": 2079,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        50,
+        7
+      ],
+      "columns": 913,
+      "rows": 2186,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "p": [
+        50,
+        8
+      ],
+      "columns": 949,
+      "rows": 2267,
+      "upper": "24",
+      "minimum_coefficient": "1",
+      "cap": 24
+    },
+    {
+      "p": [
+        50,
+        9
+      ],
+      "columns": 959,
+      "rows": 2296,
+      "upper": "71/3",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "p": [
+        50,
+        10
+      ],
+      "columns": 955,
+      "rows": 2297,
+      "upper": "21",
+      "minimum_coefficient": "1",
+      "cap": 21
+    },
+    {
+      "p": [
+        50,
+        11
+      ],
+      "columns": 923,
+      "rows": 2237,
+      "upper": "21",
+      "minimum_coefficient": "1",
+      "cap": 21
+    },
+    {
+      "p": [
+        50,
+        12
+      ],
+      "columns": 872,
+      "rows": 2122,
+      "upper": "3896/189",
+      "minimum_coefficient": "1",
+      "cap": 20
+    },
+    {
+      "p": [
+        50,
+        13
+      ],
+      "columns": 828,
+      "rows": 2017,
+      "upper": "18",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "p": [
+        50,
+        14
+      ],
+      "columns": 789,
+      "rows": 1928,
+      "upper": "18",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "p": [
+        50,
+        15
+      ],
+      "columns": 750,
+      "rows": 1839,
+      "upper": "25664/1443",
+      "minimum_coefficient": "1",
+      "cap": 17
+    },
+    {
+      "p": [
+        51,
+        1
+      ],
+      "columns": 550,
+      "rows": 1352,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "p": [
+        51,
+        2
+      ],
+      "columns": 610,
+      "rows": 1492,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        51,
+        3
+      ],
+      "columns": 670,
+      "rows": 1632,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        51,
+        4
+      ],
+      "columns": 734,
+      "rows": 1786,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "p": [
+        51,
+        5
+      ],
+      "columns": 802,
+      "rows": 1944,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        51,
+        6
+      ],
+      "columns": 862,
+      "rows": 2074,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        51,
+        7
+      ],
+      "columns": 907,
+      "rows": 2172,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "p": [
+        51,
+        8
+      ],
+      "columns": 938,
+      "rows": 2242,
+      "upper": "24",
+      "minimum_coefficient": "1",
+      "cap": 24
+    },
+    {
+      "p": [
+        51,
+        9
+      ],
+      "columns": 942,
+      "rows": 2258,
+      "upper": "1100/47",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "p": [
+        51,
+        10
+      ],
+      "columns": 932,
+      "rows": 2246,
+      "upper": "20",
+      "minimum_coefficient": "1",
+      "cap": 20
+    },
+    {
+      "p": [
+        51,
+        11
+      ],
+      "columns": 895,
+      "rows": 2175,
+      "upper": "20",
+      "minimum_coefficient": "1",
+      "cap": 20
+    },
+    {
+      "p": [
+        51,
+        12
+      ],
+      "columns": 839,
+      "rows": 2049,
+      "upper": "2603/134",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        51,
+        13
+      ],
+      "columns": 790,
+      "rows": 1933,
+      "upper": "16",
+      "minimum_coefficient": "1",
+      "cap": 16
+    },
+    {
+      "p": [
+        51,
+        14
+      ],
+      "columns": 745,
+      "rows": 1831,
+      "upper": "16",
+      "minimum_coefficient": "1",
+      "cap": 16
+    },
+    {
+      "p": [
+        51,
+        15
+      ],
+      "columns": 700,
+      "rows": 1729,
+      "upper": "443/28",
+      "minimum_coefficient": "1",
+      "cap": 15
+    },
+    {
+      "p": [
+        52,
+        1
+      ],
+      "columns": 550,
+      "rows": 1352,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "p": [
+        52,
+        2
+      ],
+      "columns": 610,
+      "rows": 1492,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        52,
+        3
+      ],
+      "columns": 670,
+      "rows": 1632,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        52,
+        4
+      ],
+      "columns": 734,
+      "rows": 1786,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "p": [
+        52,
+        5
+      ],
+      "columns": 802,
+      "rows": 1944,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        52,
+        6
+      ],
+      "columns": 860,
+      "rows": 2069,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        52,
+        7
+      ],
+      "columns": 901,
+      "rows": 2158,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "p": [
+        52,
+        8
+      ],
+      "columns": 927,
+      "rows": 2217,
+      "upper": "24",
+      "minimum_coefficient": "1",
+      "cap": 24
+    },
+    {
+      "p": [
+        52,
+        9
+      ],
+      "columns": 925,
+      "rows": 2220,
+      "upper": "1100/47",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "p": [
+        52,
+        10
+      ],
+      "columns": 909,
+      "rows": 2195,
+      "upper": "20",
+      "minimum_coefficient": "1",
+      "cap": 20
+    },
+    {
+      "p": [
+        52,
+        11
+      ],
+      "columns": 867,
+      "rows": 2113,
+      "upper": "20",
+      "minimum_coefficient": "1",
+      "cap": 20
+    },
+    {
+      "p": [
+        52,
+        12
+      ],
+      "columns": 806,
+      "rows": 1976,
+      "upper": "23252/1197",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        52,
+        13
+      ],
+      "columns": 751,
+      "rows": 1847,
+      "upper": "16",
+      "minimum_coefficient": "1",
+      "cap": 16
+    },
+    {
+      "p": [
+        52,
+        14
+      ],
+      "columns": 700,
+      "rows": 1732,
+      "upper": "16",
+      "minimum_coefficient": "1",
+      "cap": 16
+    },
+    {
+      "p": [
+        52,
+        15
+      ],
+      "columns": 649,
+      "rows": 1617,
+      "upper": "443/28",
+      "minimum_coefficient": "1",
+      "cap": 15
+    },
+    {
+      "p": [
+        53,
+        1
+      ],
+      "columns": 550,
+      "rows": 1352,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "p": [
+        53,
+        2
+      ],
+      "columns": 610,
+      "rows": 1492,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        53,
+        3
+      ],
+      "columns": 670,
+      "rows": 1632,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        53,
+        4
+      ],
+      "columns": 734,
+      "rows": 1786,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "p": [
+        53,
+        5
+      ],
+      "columns": 802,
+      "rows": 1944,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        53,
+        6
+      ],
+      "columns": 858,
+      "rows": 2064,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        53,
+        7
+      ],
+      "columns": 895,
+      "rows": 2144,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "p": [
+        53,
+        8
+      ],
+      "columns": 916,
+      "rows": 2192,
+      "upper": "24",
+      "minimum_coefficient": "1",
+      "cap": 24
+    },
+    {
+      "p": [
+        53,
+        9
+      ],
+      "columns": 908,
+      "rows": 2182,
+      "upper": "12841/549",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "p": [
+        53,
+        10
+      ],
+      "columns": 886,
+      "rows": 2144,
+      "upper": "20",
+      "minimum_coefficient": "1",
+      "cap": 20
+    },
+    {
+      "p": [
+        53,
+        11
+      ],
+      "columns": 839,
+      "rows": 2048,
+      "upper": "20",
+      "minimum_coefficient": "1",
+      "cap": 20
+    },
+    {
+      "p": [
+        53,
+        12
+      ],
+      "columns": 773,
+      "rows": 1900,
+      "upper": "2038/105",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        53,
+        13
+      ],
+      "columns": 712,
+      "rows": 1758,
+      "upper": "16",
+      "minimum_coefficient": "1",
+      "cap": 16
+    },
+    {
+      "p": [
+        53,
+        14
+      ],
+      "columns": 655,
+      "rows": 1630,
+      "upper": "16",
+      "minimum_coefficient": "1",
+      "cap": 16
+    },
+    {
+      "p": [
+        53,
+        15
+      ],
+      "columns": 598,
+      "rows": 1502,
+      "upper": "12176/777",
+      "minimum_coefficient": "1",
+      "cap": 15
+    },
+    {
+      "p": [
+        54,
+        1
+      ],
+      "columns": 550,
+      "rows": 1352,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "p": [
+        54,
+        2
+      ],
+      "columns": 610,
+      "rows": 1492,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        54,
+        3
+      ],
+      "columns": 670,
+      "rows": 1632,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        54,
+        4
+      ],
+      "columns": 734,
+      "rows": 1786,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "p": [
+        54,
+        5
+      ],
+      "columns": 802,
+      "rows": 1944,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        54,
+        6
+      ],
+      "columns": 856,
+      "rows": 2056,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        54,
+        7
+      ],
+      "columns": 889,
+      "rows": 2123,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "p": [
+        54,
+        8
+      ],
+      "columns": 905,
+      "rows": 2155,
+      "upper": "24",
+      "minimum_coefficient": "1",
+      "cap": 24
+    },
+    {
+      "p": [
+        54,
+        9
+      ],
+      "columns": 891,
+      "rows": 2127,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "p": [
+        54,
+        10
+      ],
+      "columns": 863,
+      "rows": 2071,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        54,
+        11
+      ],
+      "columns": 813,
+      "rows": 1967,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        54,
+        12
+      ],
+      "columns": 745,
+      "rows": 1809,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "p": [
+        54,
+        13
+      ],
+      "columns": 681,
+      "rows": 1655,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        54,
+        14
+      ],
+      "columns": 621,
+      "rows": 1515,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        54,
+        15
+      ],
+      "columns": 561,
+      "rows": 1375,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "p": [
+        55,
+        1
+      ],
+      "columns": 550,
+      "rows": 1352,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "p": [
+        55,
+        2
+      ],
+      "columns": 610,
+      "rows": 1492,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        55,
+        3
+      ],
+      "columns": 670,
+      "rows": 1632,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        55,
+        4
+      ],
+      "columns": 734,
+      "rows": 1786,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "p": [
+        55,
+        5
+      ],
+      "columns": 802,
+      "rows": 1944,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        55,
+        6
+      ],
+      "columns": 855,
+      "rows": 2054,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        55,
+        7
+      ],
+      "columns": 887,
+      "rows": 2119,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "p": [
+        55,
+        8
+      ],
+      "columns": 902,
+      "rows": 2149,
+      "upper": "24",
+      "minimum_coefficient": "1",
+      "cap": 24
+    },
+    {
+      "p": [
+        55,
+        9
+      ],
+      "columns": 888,
+      "rows": 2121,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "p": [
+        55,
+        10
+      ],
+      "columns": 860,
+      "rows": 2065,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        55,
+        11
+      ],
+      "columns": 810,
+      "rows": 1961,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        55,
+        12
+      ],
+      "columns": 742,
+      "rows": 1803,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "p": [
+        55,
+        13
+      ],
+      "columns": 678,
+      "rows": 1649,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        55,
+        14
+      ],
+      "columns": 618,
+      "rows": 1509,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        55,
+        15
+      ],
+      "columns": 558,
+      "rows": 1369,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "p": [
+        56,
+        1
+      ],
+      "columns": 550,
+      "rows": 1352,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "p": [
+        56,
+        2
+      ],
+      "columns": 610,
+      "rows": 1492,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        56,
+        3
+      ],
+      "columns": 670,
+      "rows": 1632,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        56,
+        4
+      ],
+      "columns": 734,
+      "rows": 1786,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "p": [
+        56,
+        5
+      ],
+      "columns": 802,
+      "rows": 1944,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        56,
+        6
+      ],
+      "columns": 854,
+      "rows": 2052,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        56,
+        7
+      ],
+      "columns": 885,
+      "rows": 2115,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "p": [
+        56,
+        8
+      ],
+      "columns": 899,
+      "rows": 2143,
+      "upper": "24",
+      "minimum_coefficient": "1",
+      "cap": 24
+    },
+    {
+      "p": [
+        56,
+        9
+      ],
+      "columns": 885,
+      "rows": 2115,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "p": [
+        56,
+        10
+      ],
+      "columns": 857,
+      "rows": 2059,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        56,
+        11
+      ],
+      "columns": 807,
+      "rows": 1955,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        56,
+        12
+      ],
+      "columns": 739,
+      "rows": 1797,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "p": [
+        56,
+        13
+      ],
+      "columns": 675,
+      "rows": 1643,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        56,
+        14
+      ],
+      "columns": 615,
+      "rows": 1503,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        56,
+        15
+      ],
+      "columns": 555,
+      "rows": 1363,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "p": [
+        57,
+        1
+      ],
+      "columns": 550,
+      "rows": 1352,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "p": [
+        57,
+        2
+      ],
+      "columns": 610,
+      "rows": 1492,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        57,
+        3
+      ],
+      "columns": 670,
+      "rows": 1632,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        57,
+        4
+      ],
+      "columns": 734,
+      "rows": 1786,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "p": [
+        57,
+        5
+      ],
+      "columns": 802,
+      "rows": 1944,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        57,
+        6
+      ],
+      "columns": 853,
+      "rows": 2050,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        57,
+        7
+      ],
+      "columns": 883,
+      "rows": 2111,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "p": [
+        57,
+        8
+      ],
+      "columns": 897,
+      "rows": 2139,
+      "upper": "24",
+      "minimum_coefficient": "1",
+      "cap": 24
+    },
+    {
+      "p": [
+        57,
+        9
+      ],
+      "columns": 883,
+      "rows": 2111,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "p": [
+        57,
+        10
+      ],
+      "columns": 855,
+      "rows": 2055,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        57,
+        11
+      ],
+      "columns": 805,
+      "rows": 1951,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        57,
+        12
+      ],
+      "columns": 737,
+      "rows": 1793,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "p": [
+        57,
+        13
+      ],
+      "columns": 673,
+      "rows": 1639,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        57,
+        14
+      ],
+      "columns": 613,
+      "rows": 1499,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        57,
+        15
+      ],
+      "columns": 553,
+      "rows": 1359,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "p": [
+        58,
+        1
+      ],
+      "columns": 550,
+      "rows": 1352,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "p": [
+        58,
+        2
+      ],
+      "columns": 610,
+      "rows": 1492,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        58,
+        3
+      ],
+      "columns": 670,
+      "rows": 1632,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        58,
+        4
+      ],
+      "columns": 734,
+      "rows": 1786,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "p": [
+        58,
+        5
+      ],
+      "columns": 802,
+      "rows": 1944,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        58,
+        6
+      ],
+      "columns": 852,
+      "rows": 2048,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        58,
+        7
+      ],
+      "columns": 881,
+      "rows": 2107,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "p": [
+        58,
+        8
+      ],
+      "columns": 895,
+      "rows": 2135,
+      "upper": "24",
+      "minimum_coefficient": "1",
+      "cap": 24
+    },
+    {
+      "p": [
+        58,
+        9
+      ],
+      "columns": 881,
+      "rows": 2107,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "p": [
+        58,
+        10
+      ],
+      "columns": 853,
+      "rows": 2051,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        58,
+        11
+      ],
+      "columns": 803,
+      "rows": 1947,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        58,
+        12
+      ],
+      "columns": 735,
+      "rows": 1789,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "p": [
+        58,
+        13
+      ],
+      "columns": 671,
+      "rows": 1635,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        58,
+        14
+      ],
+      "columns": 611,
+      "rows": 1495,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        58,
+        15
+      ],
+      "columns": 551,
+      "rows": 1355,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "p": [
+        59,
+        1
+      ],
+      "columns": 537,
+      "rows": 1316,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "p": [
+        59,
+        2
+      ],
+      "columns": 595,
+      "rows": 1451,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        59,
+        3
+      ],
+      "columns": 653,
+      "rows": 1586,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        59,
+        4
+      ],
+      "columns": 715,
+      "rows": 1735,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "p": [
+        59,
+        5
+      ],
+      "columns": 781,
+      "rows": 1888,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        59,
+        6
+      ],
+      "columns": 829,
+      "rows": 1986,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        59,
+        7
+      ],
+      "columns": 857,
+      "rows": 2042,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "p": [
+        59,
+        8
+      ],
+      "columns": 871,
+      "rows": 2070,
+      "upper": "24",
+      "minimum_coefficient": "1",
+      "cap": 24
+    },
+    {
+      "p": [
+        59,
+        9
+      ],
+      "columns": 857,
+      "rows": 2042,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "p": [
+        59,
+        10
+      ],
+      "columns": 829,
+      "rows": 1986,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        59,
+        11
+      ],
+      "columns": 781,
+      "rows": 1888,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        59,
+        12
+      ],
+      "columns": 715,
+      "rows": 1735,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "p": [
+        59,
+        13
+      ],
+      "columns": 653,
+      "rows": 1586,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        59,
+        14
+      ],
+      "columns": 595,
+      "rows": 1451,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        59,
+        15
+      ],
+      "columns": 537,
+      "rows": 1316,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "p": [
+        60,
+        1
+      ],
+      "columns": 511,
+      "rows": 1252,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "p": [
+        60,
+        2
+      ],
+      "columns": 565,
+      "rows": 1378,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        60,
+        3
+      ],
+      "columns": 619,
+      "rows": 1504,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        60,
+        4
+      ],
+      "columns": 677,
+      "rows": 1644,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "p": [
+        60,
+        5
+      ],
+      "columns": 739,
+      "rows": 1788,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        60,
+        6
+      ],
+      "columns": 785,
+      "rows": 1882,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        60,
+        7
+      ],
+      "columns": 813,
+      "rows": 1938,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "p": [
+        60,
+        8
+      ],
+      "columns": 827,
+      "rows": 1966,
+      "upper": "24",
+      "minimum_coefficient": "1",
+      "cap": 24
+    },
+    {
+      "p": [
+        60,
+        9
+      ],
+      "columns": 813,
+      "rows": 1938,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "p": [
+        60,
+        10
+      ],
+      "columns": 785,
+      "rows": 1882,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        60,
+        11
+      ],
+      "columns": 739,
+      "rows": 1788,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        60,
+        12
+      ],
+      "columns": 677,
+      "rows": 1644,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "p": [
+        60,
+        13
+      ],
+      "columns": 619,
+      "rows": 1504,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        60,
+        14
+      ],
+      "columns": 565,
+      "rows": 1378,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        60,
+        15
+      ],
+      "columns": 511,
+      "rows": 1252,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "p": [
+        61,
+        1
+      ],
+      "columns": 478,
+      "rows": 1174,
+      "upper": "67232/5079",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "p": [
+        61,
+        2
+      ],
+      "columns": 527,
+      "rows": 1289,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        61,
+        3
+      ],
+      "columns": 576,
+      "rows": 1404,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        61,
+        4
+      ],
+      "columns": 629,
+      "rows": 1533,
+      "upper": "7544/423",
+      "minimum_coefficient": "1",
+      "cap": 17
+    },
+    {
+      "p": [
+        61,
+        5
+      ],
+      "columns": 686,
+      "rows": 1666,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        61,
+        6
+      ],
+      "columns": 729,
+      "rows": 1754,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        61,
+        7
+      ],
+      "columns": 756,
+      "rows": 1808,
+      "upper": "22291/978",
+      "minimum_coefficient": "1",
+      "cap": 22
+    },
+    {
+      "p": [
+        61,
+        8
+      ],
+      "columns": 769,
+      "rows": 1834,
+      "upper": "24",
+      "minimum_coefficient": "1",
+      "cap": 24
+    },
+    {
+      "p": [
+        61,
+        9
+      ],
+      "columns": 756,
+      "rows": 1808,
+      "upper": "574681564461390484839080295926010040469980920404135787994/25213699252178687550579699071423212435871949727215808065",
+      "minimum_coefficient": "1",
+      "cap": 22
+    },
+    {
+      "p": [
+        61,
+        10
+      ],
+      "columns": 729,
+      "rows": 1754,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        61,
+        11
+      ],
+      "columns": 686,
+      "rows": 1666,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        61,
+        12
+      ],
+      "columns": 629,
+      "rows": 1533,
+      "upper": "7544/423",
+      "minimum_coefficient": "1",
+      "cap": 17
+    },
+    {
+      "p": [
+        61,
+        13
+      ],
+      "columns": 576,
+      "rows": 1404,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        61,
+        14
+      ],
+      "columns": 527,
+      "rows": 1289,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        61,
+        15
+      ],
+      "columns": 478,
+      "rows": 1174,
+      "upper": "67232/5079",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "p": [
+        62,
+        1
+      ],
+      "columns": 439,
+      "rows": 1084,
+      "upper": "110/9",
+      "minimum_coefficient": "1",
+      "cap": 12
+    },
+    {
+      "p": [
+        62,
+        2
+      ],
+      "columns": 482,
+      "rows": 1186,
+      "upper": "53/4",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "p": [
+        62,
+        3
+      ],
+      "columns": 525,
+      "rows": 1288,
+      "upper": "41/3",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "p": [
+        62,
+        4
+      ],
+      "columns": 572,
+      "rows": 1404,
+      "upper": "11827/702",
+      "minimum_coefficient": "1",
+      "cap": 16
+    },
+    {
+      "p": [
+        62,
+        5
+      ],
+      "columns": 623,
+      "rows": 1524,
+      "upper": "18",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "p": [
+        62,
+        6
+      ],
+      "columns": 662,
+      "rows": 1604,
+      "upper": "129/7",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "p": [
+        62,
+        7
+      ],
+      "columns": 687,
+      "rows": 1654,
+      "upper": "32441/1522",
+      "minimum_coefficient": "1",
+      "cap": 21
+    },
+    {
+      "p": [
+        62,
+        8
+      ],
+      "columns": 699,
+      "rows": 1678,
+      "upper": "3912112/174843",
+      "minimum_coefficient": "1",
+      "cap": 22
+    },
+    {
+      "p": [
+        62,
+        9
+      ],
+      "columns": 687,
+      "rows": 1654,
+      "upper": "32441/1522",
+      "minimum_coefficient": "1",
+      "cap": 21
+    },
+    {
+      "p": [
+        62,
+        10
+      ],
+      "columns": 662,
+      "rows": 1604,
+      "upper": "129/7",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "p": [
+        62,
+        11
+      ],
+      "columns": 623,
+      "rows": 1524,
+      "upper": "18",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "p": [
+        62,
+        12
+      ],
+      "columns": 572,
+      "rows": 1404,
+      "upper": "11827/702",
+      "minimum_coefficient": "1",
+      "cap": 16
+    },
+    {
+      "p": [
+        62,
+        13
+      ],
+      "columns": 525,
+      "rows": 1288,
+      "upper": "41/3",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "p": [
+        62,
+        14
+      ],
+      "columns": 482,
+      "rows": 1186,
+      "upper": "53/4",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "p": [
+        62,
+        15
+      ],
+      "columns": 439,
+      "rows": 1084,
+      "upper": "110/9",
+      "minimum_coefficient": "1",
+      "cap": 12
+    },
+    {
+      "p": [
+        63,
+        1
+      ],
+      "columns": 400,
+      "rows": 994,
+      "upper": "11",
+      "minimum_coefficient": "1",
+      "cap": 11
+    },
+    {
+      "p": [
+        63,
+        2
+      ],
+      "columns": 437,
+      "rows": 1083,
+      "upper": "11",
+      "minimum_coefficient": "1",
+      "cap": 11
+    },
+    {
+      "p": [
+        63,
+        3
+      ],
+      "columns": 474,
+      "rows": 1172,
+      "upper": "11",
+      "minimum_coefficient": "1",
+      "cap": 11
+    },
+    {
+      "p": [
+        63,
+        4
+      ],
+      "columns": 515,
+      "rows": 1275,
+      "upper": "101/7",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        63,
+        5
+      ],
+      "columns": 560,
+      "rows": 1382,
+      "upper": "15",
+      "minimum_coefficient": "1",
+      "cap": 15
+    },
+    {
+      "p": [
+        63,
+        6
+      ],
+      "columns": 595,
+      "rows": 1454,
+      "upper": "15",
+      "minimum_coefficient": "1",
+      "cap": 15
+    },
+    {
+      "p": [
+        63,
+        7
+      ],
+      "columns": 618,
+      "rows": 1500,
+      "upper": "129/7",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "p": [
+        63,
+        8
+      ],
+      "columns": 629,
+      "rows": 1522,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        63,
+        9
+      ],
+      "columns": 618,
+      "rows": 1500,
+      "upper": "129/7",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "p": [
+        63,
+        10
+      ],
+      "columns": 595,
+      "rows": 1454,
+      "upper": "15",
+      "minimum_coefficient": "1",
+      "cap": 15
+    },
+    {
+      "p": [
+        63,
+        11
+      ],
+      "columns": 560,
+      "rows": 1382,
+      "upper": "15",
+      "minimum_coefficient": "1",
+      "cap": 15
+    },
+    {
+      "p": [
+        63,
+        12
+      ],
+      "columns": 515,
+      "rows": 1275,
+      "upper": "101/7",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        63,
+        13
+      ],
+      "columns": 474,
+      "rows": 1172,
+      "upper": "11",
+      "minimum_coefficient": "1",
+      "cap": 11
+    },
+    {
+      "p": [
+        63,
+        14
+      ],
+      "columns": 437,
+      "rows": 1083,
+      "upper": "11",
+      "minimum_coefficient": "1",
+      "cap": 11
+    },
+    {
+      "p": [
+        63,
+        15
+      ],
+      "columns": 400,
+      "rows": 994,
+      "upper": "11",
+      "minimum_coefficient": "1",
+      "cap": 11
+    },
+    {
+      "p": [
+        64,
+        1
+      ],
+      "columns": 364,
+      "rows": 910,
+      "upper": "2881/270",
+      "minimum_coefficient": "1",
+      "cap": 10
+    },
+    {
+      "p": [
+        64,
+        2
+      ],
+      "columns": 397,
+      "rows": 990,
+      "upper": "11",
+      "minimum_coefficient": "1",
+      "cap": 11
+    },
+    {
+      "p": [
+        64,
+        3
+      ],
+      "columns": 430,
+      "rows": 1070,
+      "upper": "11",
+      "minimum_coefficient": "1",
+      "cap": 11
+    },
+    {
+      "p": [
+        64,
+        4
+      ],
+      "columns": 467,
+      "rows": 1164,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        64,
+        5
+      ],
+      "columns": 508,
+      "rows": 1262,
+      "upper": "15",
+      "minimum_coefficient": "1",
+      "cap": 15
+    },
+    {
+      "p": [
+        64,
+        6
+      ],
+      "columns": 539,
+      "rows": 1326,
+      "upper": "15",
+      "minimum_coefficient": "1",
+      "cap": 15
+    },
+    {
+      "p": [
+        64,
+        7
+      ],
+      "columns": 560,
+      "rows": 1368,
+      "upper": "18",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "p": [
+        64,
+        8
+      ],
+      "columns": 570,
+      "rows": 1388,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "p": [
+        64,
+        9
+      ],
+      "columns": 560,
+      "rows": 1368,
+      "upper": "18",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "p": [
+        64,
+        10
+      ],
+      "columns": 539,
+      "rows": 1326,
+      "upper": "15",
+      "minimum_coefficient": "1",
+      "cap": 15
+    },
+    {
+      "p": [
+        64,
+        11
+      ],
+      "columns": 508,
+      "rows": 1262,
+      "upper": "15",
+      "minimum_coefficient": "1",
+      "cap": 15
+    },
+    {
+      "p": [
+        64,
+        12
+      ],
+      "columns": 467,
+      "rows": 1164,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        64,
+        13
+      ],
+      "columns": 430,
+      "rows": 1070,
+      "upper": "11",
+      "minimum_coefficient": "1",
+      "cap": 11
+    },
+    {
+      "p": [
+        64,
+        14
+      ],
+      "columns": 397,
+      "rows": 990,
+      "upper": "11",
+      "minimum_coefficient": "1",
+      "cap": 11
+    },
+    {
+      "p": [
+        64,
+        15
+      ],
+      "columns": 364,
+      "rows": 910,
+      "upper": "2881/270",
+      "minimum_coefficient": "1",
+      "cap": 10
+    },
+    {
+      "p": [
+        65,
+        1
+      ],
+      "columns": 331,
+      "rows": 830,
+      "upper": "311/33",
+      "minimum_coefficient": "1",
+      "cap": 9
+    },
+    {
+      "p": [
+        65,
+        2
+      ],
+      "columns": 362,
+      "rows": 905,
+      "upper": "41/4",
+      "minimum_coefficient": "1",
+      "cap": 10
+    },
+    {
+      "p": [
+        65,
+        3
+      ],
+      "columns": 393,
+      "rows": 980,
+      "upper": "32/3",
+      "minimum_coefficient": "1",
+      "cap": 10
+    },
+    {
+      "p": [
+        65,
+        4
+      ],
+      "columns": 428,
+      "rows": 1071,
+      "upper": "157/12",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "p": [
+        65,
+        5
+      ],
+      "columns": 467,
+      "rows": 1164,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        65,
+        6
+      ],
+      "columns": 496,
+      "rows": 1224,
+      "upper": "101/7",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        65,
+        7
+      ],
+      "columns": 515,
+      "rows": 1262,
+      "upper": "179219/10647",
+      "minimum_coefficient": "1",
+      "cap": 16
+    },
+    {
+      "p": [
+        65,
+        8
+      ],
+      "columns": 524,
+      "rows": 1280,
+      "upper": "3785/216",
+      "minimum_coefficient": "1",
+      "cap": 17
+    },
+    {
+      "p": [
+        65,
+        9
+      ],
+      "columns": 515,
+      "rows": 1262,
+      "upper": "179219/10647",
+      "minimum_coefficient": "1",
+      "cap": 16
+    },
+    {
+      "p": [
+        65,
+        10
+      ],
+      "columns": 496,
+      "rows": 1224,
+      "upper": "101/7",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        65,
+        11
+      ],
+      "columns": 467,
+      "rows": 1164,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        65,
+        12
+      ],
+      "columns": 428,
+      "rows": 1071,
+      "upper": "157/12",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "p": [
+        65,
+        13
+      ],
+      "columns": 393,
+      "rows": 980,
+      "upper": "32/3",
+      "minimum_coefficient": "1",
+      "cap": 10
+    },
+    {
+      "p": [
+        65,
+        14
+      ],
+      "columns": 362,
+      "rows": 905,
+      "upper": "41/4",
+      "minimum_coefficient": "1",
+      "cap": 10
+    },
+    {
+      "p": [
+        65,
+        15
+      ],
+      "columns": 331,
+      "rows": 830,
+      "upper": "311/33",
+      "minimum_coefficient": "1",
+      "cap": 9
+    },
+    {
+      "p": [
+        66,
+        1
+      ],
+      "columns": 300,
+      "rows": 755,
+      "upper": "8",
+      "minimum_coefficient": "1",
+      "cap": 8
+    },
+    {
+      "p": [
+        66,
+        2
+      ],
+      "columns": 330,
+      "rows": 825,
+      "upper": "8",
+      "minimum_coefficient": "1",
+      "cap": 8
+    },
+    {
+      "p": [
+        66,
+        3
+      ],
+      "columns": 360,
+      "rows": 895,
+      "upper": "8",
+      "minimum_coefficient": "1",
+      "cap": 8
+    },
+    {
+      "p": [
+        66,
+        4
+      ],
+      "columns": 393,
+      "rows": 980,
+      "upper": "32/3",
+      "minimum_coefficient": "1",
+      "cap": 10
+    },
+    {
+      "p": [
+        66,
+        5
+      ],
+      "columns": 430,
+      "rows": 1070,
+      "upper": "11",
+      "minimum_coefficient": "1",
+      "cap": 11
+    },
+    {
+      "p": [
+        66,
+        6
+      ],
+      "columns": 457,
+      "rows": 1126,
+      "upper": "11",
+      "minimum_coefficient": "1",
+      "cap": 11
+    },
+    {
+      "p": [
+        66,
+        7
+      ],
+      "columns": 474,
+      "rows": 1160,
+      "upper": "41/3",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "p": [
+        66,
+        8
+      ],
+      "columns": 482,
+      "rows": 1176,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        66,
+        9
+      ],
+      "columns": 474,
+      "rows": 1160,
+      "upper": "41/3",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "p": [
+        66,
+        10
+      ],
+      "columns": 457,
+      "rows": 1126,
+      "upper": "11",
+      "minimum_coefficient": "1",
+      "cap": 11
+    },
+    {
+      "p": [
+        66,
+        11
+      ],
+      "columns": 430,
+      "rows": 1070,
+      "upper": "11",
+      "minimum_coefficient": "1",
+      "cap": 11
+    },
+    {
+      "p": [
+        66,
+        12
+      ],
+      "columns": 393,
+      "rows": 980,
+      "upper": "32/3",
+      "minimum_coefficient": "1",
+      "cap": 10
+    },
+    {
+      "p": [
+        66,
+        13
+      ],
+      "columns": 360,
+      "rows": 895,
+      "upper": "8",
+      "minimum_coefficient": "1",
+      "cap": 8
+    },
+    {
+      "p": [
+        66,
+        14
+      ],
+      "columns": 330,
+      "rows": 825,
+      "upper": "8",
+      "minimum_coefficient": "1",
+      "cap": 8
+    },
+    {
+      "p": [
+        66,
+        15
+      ],
+      "columns": 300,
+      "rows": 755,
+      "upper": "8",
+      "minimum_coefficient": "1",
+      "cap": 8
+    },
+    {
+      "p": [
+        67,
+        1
+      ],
+      "columns": 270,
+      "rows": 685,
+      "upper": "565/72",
+      "minimum_coefficient": "1",
+      "cap": 7
+    },
+    {
+      "p": [
+        67,
+        2
+      ],
+      "columns": 300,
+      "rows": 755,
+      "upper": "8",
+      "minimum_coefficient": "1",
+      "cap": 8
+    },
+    {
+      "p": [
+        67,
+        3
+      ],
+      "columns": 330,
+      "rows": 825,
+      "upper": "8",
+      "minimum_coefficient": "1",
+      "cap": 8
+    },
+    {
+      "p": [
+        67,
+        4
+      ],
+      "columns": 362,
+      "rows": 905,
+      "upper": "41/4",
+      "minimum_coefficient": "1",
+      "cap": 10
+    },
+    {
+      "p": [
+        67,
+        5
+      ],
+      "columns": 397,
+      "rows": 990,
+      "upper": "11",
+      "minimum_coefficient": "1",
+      "cap": 11
+    },
+    {
+      "p": [
+        67,
+        6
+      ],
+      "columns": 422,
+      "rows": 1042,
+      "upper": "11",
+      "minimum_coefficient": "1",
+      "cap": 11
+    },
+    {
+      "p": [
+        67,
+        7
+      ],
+      "columns": 437,
+      "rows": 1072,
+      "upper": "53/4",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "p": [
+        67,
+        8
+      ],
+      "columns": 444,
+      "rows": 1086,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "p": [
+        67,
+        9
+      ],
+      "columns": 437,
+      "rows": 1072,
+      "upper": "53/4",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "p": [
+        67,
+        10
+      ],
+      "columns": 422,
+      "rows": 1042,
+      "upper": "11",
+      "minimum_coefficient": "1",
+      "cap": 11
+    },
+    {
+      "p": [
+        67,
+        11
+      ],
+      "columns": 397,
+      "rows": 990,
+      "upper": "11",
+      "minimum_coefficient": "1",
+      "cap": 11
+    },
+    {
+      "p": [
+        67,
+        12
+      ],
+      "columns": 362,
+      "rows": 905,
+      "upper": "41/4",
+      "minimum_coefficient": "1",
+      "cap": 10
+    },
+    {
+      "p": [
+        67,
+        13
+      ],
+      "columns": 330,
+      "rows": 825,
+      "upper": "8",
+      "minimum_coefficient": "1",
+      "cap": 8
+    },
+    {
+      "p": [
+        67,
+        14
+      ],
+      "columns": 300,
+      "rows": 755,
+      "upper": "8",
+      "minimum_coefficient": "1",
+      "cap": 8
+    },
+    {
+      "p": [
+        67,
+        15
+      ],
+      "columns": 270,
+      "rows": 685,
+      "upper": "565/72",
+      "minimum_coefficient": "1",
+      "cap": 7
+    },
+    {
+      "p": [
+        68,
+        1
+      ],
+      "columns": 240,
+      "rows": 615,
+      "upper": "94/13",
+      "minimum_coefficient": "1",
+      "cap": 7
+    },
+    {
+      "p": [
+        68,
+        2
+      ],
+      "columns": 270,
+      "rows": 685,
+      "upper": "565/72",
+      "minimum_coefficient": "1",
+      "cap": 7
+    },
+    {
+      "p": [
+        68,
+        3
+      ],
+      "columns": 300,
+      "rows": 755,
+      "upper": "8",
+      "minimum_coefficient": "1",
+      "cap": 8
+    },
+    {
+      "p": [
+        68,
+        4
+      ],
+      "columns": 331,
+      "rows": 830,
+      "upper": "311/33",
+      "minimum_coefficient": "1",
+      "cap": 9
+    },
+    {
+      "p": [
+        68,
+        5
+      ],
+      "columns": 364,
+      "rows": 910,
+      "upper": "2881/270",
+      "minimum_coefficient": "1",
+      "cap": 10
+    },
+    {
+      "p": [
+        68,
+        6
+      ],
+      "columns": 387,
+      "rows": 958,
+      "upper": "11",
+      "minimum_coefficient": "1",
+      "cap": 11
+    },
+    {
+      "p": [
+        68,
+        7
+      ],
+      "columns": 400,
+      "rows": 984,
+      "upper": "110/9",
+      "minimum_coefficient": "1",
+      "cap": 12
+    },
+    {
+      "p": [
+        68,
+        8
+      ],
+      "columns": 406,
+      "rows": 996,
+      "upper": "1914/149",
+      "minimum_coefficient": "1",
+      "cap": 12
+    },
+    {
+      "p": [
+        68,
+        9
+      ],
+      "columns": 400,
+      "rows": 984,
+      "upper": "110/9",
+      "minimum_coefficient": "1",
+      "cap": 12
+    },
+    {
+      "p": [
+        68,
+        10
+      ],
+      "columns": 387,
+      "rows": 958,
+      "upper": "11",
+      "minimum_coefficient": "1",
+      "cap": 11
+    },
+    {
+      "p": [
+        68,
+        11
+      ],
+      "columns": 364,
+      "rows": 910,
+      "upper": "2881/270",
+      "minimum_coefficient": "1",
+      "cap": 10
+    },
+    {
+      "p": [
+        68,
+        12
+      ],
+      "columns": 331,
+      "rows": 830,
+      "upper": "311/33",
+      "minimum_coefficient": "1",
+      "cap": 9
+    },
+    {
+      "p": [
+        68,
+        13
+      ],
+      "columns": 300,
+      "rows": 755,
+      "upper": "8",
+      "minimum_coefficient": "1",
+      "cap": 8
+    },
+    {
+      "p": [
+        68,
+        14
+      ],
+      "columns": 270,
+      "rows": 685,
+      "upper": "565/72",
+      "minimum_coefficient": "1",
+      "cap": 7
+    },
+    {
+      "p": [
+        68,
+        15
+      ],
+      "columns": 240,
+      "rows": 615,
+      "upper": "94/13",
+      "minimum_coefficient": "1",
+      "cap": 7
+    }
+  ],
+  "columns": 275888
+}

@@ -1,0 +1,22 @@
+{
+  "encoding": "B",
+  "scope": "M0 plus residual all-pole union; no forced warehouse cells, no residual single-pole capacities",
+  "cap": 187,
+  "shift": [
+    0,
+    1
+  ],
+  "workers": 1,
+  "time_limit": 600.0,
+  "center_count": 3376,
+  "group_count": 403,
+  "script_sha256": "3d58af1afb2132513588f3ac6f141807e8fe677219c35bca82976c80b5fd0036",
+  "build_seconds": 1.4240290629968513,
+  "model_sha256": "0c44361f154b92664b59c039e9cc6b60d0109fa21b33c305658abc2ac420542d",
+  "variables": 15488,
+  "constraints": 49891,
+  "subsolver": "quick_restart",
+  "status": "UNKNOWN",
+  "seconds": 601.5505026659957,
+  "stats": "CpSolverResponse summary:\nstatus: UNKNOWN\nobjective: 0\nbest_bound: 0\nintegers: 12369\nbooleans: 11828\nconflicts: 7392\nbranches: 38928370\npropagations: 429834301\ninteger_propagations: 658785807\nrestarts: 567\nlp_iterations: 1018746\nwalltime: 600.005\nusertime: 600.005\ndeterministic_time: 702.938\ngap_integral: 0\n"
+}

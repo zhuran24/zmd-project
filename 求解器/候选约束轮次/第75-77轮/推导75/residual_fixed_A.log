@@ -1,0 +1,80 @@
+BUILT {'encoding': 'A', 'scope': 'M0 plus residual all-pole union; no forced warehouse cells, no residual single-pole capacities', 'cap': 187, 'shift': [0, 1], 'workers': 1, 'time_limit': 60.0, 'fixed': '/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第75-77轮/推导75/complete_subsets_S185.json', 'center_count': 3376, 'group_count': 403, 'script_sha256': '9cd21941599882b902c86ee1ff3110a1d174603eb3ce43931da40e38d3ce7867', 'build_seconds': 1.0598920799966436, 'model_sha256': 'ebf6db2c25fd479f8cca51f854628ea592e7cdd0dab0bf4f72d6b12bbbbc03dc', 'variables': 12119, 'constraints': 46104}
+
+Starting CP-SAT solver v9.15.6755
+Parameters: max_time_in_seconds: 60 log_search_progress: true linearization_level: 2 num_search_workers: 1
+
+Initial satisfaction model '': (model_fingerprint: 0x90e54b3f4d1f9022)
+#Variables: 12'119 (4'510 primary variables)
+  - 11'703 Booleans in [0,1]
+  - 1 in [-4,16]
+  - 1 in [-4,21]
+  - 1 in [-4,48]
+  - 1 in [-4,53]
+  - 4 in [0,2]
+  - 400 in [0,9]
+  - 4 in [0,13]
+  - 2 in [0,23]
+  - 1 in [180,187]
+  - 1 constants in {1} 
+#kBoolOr: 96 (#enforced: 96) (#literals: 96)
+#kLinear1: 5'476 (#enforced: 1'504)
+#kLinear2: 31'130 (#enforced: 2 #multi: 2)
+#kLinear3: 140 (#enforced: 3 #multi: 3)
+#kLinearN: 9'257 (#enforced: 1'067 #multi: 267) (#terms: 752'832)
+#kTable: 5
+
+Starting presolve at 0.02s
+INFEASIBLE: 'linear: never in domain'
+Unsat after presolving constraint #42017 (warning, dump might be inconsistent): linear { vars: 11716 vars: 11717 vars: 11718 vars: 11719 vars: 11720 vars: 11736 vars: 11739 vars: 11740 vars: 11741 vars: 11742 vars: 11743 vars: 11749 vars: 11750 vars: 11751 vars: 11752 vars: 11753 vars: 11759 vars: 11762 vars: 11763 vars: 11765 vars: 11766 vars: 11772 vars: 11773 vars: 11774 vars: 11775 vars: 11776 vars: 11782 vars: 11785 vars: 11786 vars: 11787 vars: 11788 vars: 11789 vars: 11795 vars: 11796 vars: 11798 vars: 11799 vars: 11805 vars: 11808 vars: 11809 vars: 11810 vars: 11811 vars: 11812 vars: 11818 vars: 11819 vars: 11820 vars: 11821 vars: 11822 vars: 11828 vars: 11841 vars: 11842 vars: 11843 vars: 11844 vars: 11845 vars: 11848 vars: 11849 vars: 11850 vars: 11851 vars: 11871 vars: 11872 vars: 11873 vars: 11874 vars: 11894 vars: 11895 vars: 11897 vars: 11917 vars: 11918 vars: 11919 vars: 11920 vars: 11940 vars: 11941 vars: 11942 vars: 11943 vars: 11954 vars: 11955 vars: 11956 vars: 11957 vars: 11958 vars: 11973 vars: 11974 vars: 11975 vars: 11976 vars: 11977 vars: 11978 vars: 11979 vars: 11980 vars: 11981 vars: 11983 vars: 11984 vars: 11985 vars: 11986 vars: 11987 vars: 11988 vars: 11989 vars: 11996 vars: 11997 vars: 11998 vars: 11999 vars: 12000 vars: 12001 vars: 12002 vars: 12003 vars: 12004 vars: 12006 vars: 12007 vars: 12008 vars: 12009 vars: 12010 vars: 12011 vars: 12012 vars: 12015 vars: 12016 vars: 12017 vars: 12018 vars: 12019 vars: 12020 vars: 12022 vars: 12023 vars: 12024 vars: 12025 vars: 12029 vars: 12030 vars: 12032 vars: 12033 vars: 12034 vars: 12038 vars: 12039 vars: 12040 vars: 12041 vars: 12042 vars: 12043 vars: 12044 vars: 12045 vars: 12046 vars: 12047 vars: 12048 vars: 12052 vars: 12053 vars: 12055 vars: 12056 vars: 12057 vars: 12058 vars: 12061 vars: 12062 vars: 12063 vars: 12064 vars: 12065 vars: 12084 vars: 12085 vars: 12086 vars: 12087 vars: 12088 vars: 12089 vars: 12090 vars: 12091 vars: 12094 vars: 12095 vars: 12096 vars: 12099 vars: 12100 vars: 12101 vars: 12104 vars: 12105 vars: 12109 vars: 12110 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 coeffs: 1 domain: 165 domain: 166 }
+  4.72e-02s  0.00e+00d  [PresolveToFixPoint] 
+
+Presolve summary:
+  - 3 affine relations were detected.
+  - rule 'affine: new relation' was applied 3 times.
+  - rule 'bool_or: always true' was applied 29'723 times.
+  - rule 'bool_or: implications' was applied 1 time.
+  - rule 'bool_or: only one literal' was applied 916 times.
+  - rule 'bool_or: singleton' was applied 164 times.
+  - rule 'enforcement: false literal' was applied 1'044 times.
+  - rule 'enforcement: literal not used' was applied 2 times.
+  - rule 'enforcement: true literal' was applied 425 times.
+  - rule 'linear1: always true' was applied 1 time.
+  - rule 'linear1: x in domain' was applied 3'970 times.
+  - rule 'linear2: convert ax + by != cte to clauses' was applied 30'270 times.
+  - rule 'linear: always true' was applied 3'267 times.
+  - rule 'linear: empty' was applied 5'973 times.
+  - rule 'linear: fixed or dup variables' was applied 14'681 times.
+  - rule 'linear: negative clause' was applied 34 times.
+  - rule 'linear: positive clause' was applied 402 times.
+  - rule 'linear: reduced variable domains' was applied 5'791 times.
+  - rule 'linear: remapped using affine relations' was applied 3 times.
+  - rule 'new_bool: var with 2 values' was applied 3 times.
+  - rule 'presolve: iteration' was applied 1 time.
+  - rule 'table: all tuples!' was applied 1 time.
+  - rule 'table: only one column!' was applied 3 times.
+  - rule 'table: reduce variable domain' was applied 15 times.
+  - rule 'table: remove expressions' was applied 5 times.
+  - rule 'table: remove tuples' was applied 5 times.
+  - rule 'variables with 2 values: create encoding literal' was applied 3 times.
+  - rule 'variables with 2 values: new affine relation' was applied 3 times.
+  - rule 'variables: detect fully reified value encoding' was applied 48 times.
+  - rule 'variables: detect half reified value encoding' was applied 96 times.
+Problem closed by presolve.
+CpSolverResponse summary:
+status: INFEASIBLE
+objective: NA
+best_bound: NA
+integers: 0
+booleans: 0
+conflicts: 0
+branches: 0
+propagations: 0
+integer_propagations: 0
+restarts: 0
+lp_iterations: 0
+walltime: 0.104913
+usertime: 0.104913
+deterministic_time: 0
+gap_integral: 0
+
+{'encoding': 'A', 'scope': 'M0 plus residual all-pole union; no forced warehouse cells, no residual single-pole capacities', 'cap': 187, 'shift': [0, 1], 'workers': 1, 'time_limit': 60.0, 'fixed': '/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第75-77轮/推导75/complete_subsets_S185.json', 'center_count': 3376, 'group_count': 403, 'script_sha256': '9cd21941599882b902c86ee1ff3110a1d174603eb3ce43931da40e38d3ce7867', 'build_seconds': 1.0598920799966436, 'model_sha256': 'ebf6db2c25fd479f8cca51f854628ea592e7cdd0dab0bf4f72d6b12bbbbc03dc', 'variables': 12119, 'constraints': 46104, 'status': 'INFEASIBLE', 'seconds': 1.2662076199922012}

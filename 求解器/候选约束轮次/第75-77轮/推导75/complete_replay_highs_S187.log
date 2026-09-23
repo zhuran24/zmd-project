@@ -1,0 +1,43 @@
+BUILT {"engine": "highs", "S_branch": 187, "J_branch": 1, "groups": true, "workers": 1, "seed": 75, "source_sha256": "3cd4239dfbd3c690b0d594e983975092454c8e0ffbc0f5274fdcd0d1ea4fa613", "wrapper_sha256": "6daf8ce686237b86c099df03d64551e27af053dd4220d39c7abde37611c5c6fd", "time_limit": 60.0, "build_seconds": 1.4464442119933665, "domain_count": 3970, "domain_sha256": "1efb89cc4c937592424b4ab347be9233be1bf847ee52bc953dd7c119b6f548a1", "matrix_shape": [12028, 12130], "nonzeros": 996019, "matrix_sha256": "ee546d3b62102a9339e0efb5b2153d97753f288229bc7a53dcdba0e2fa1fc33c"}
+Running HiGHS 1.12.0 (git hash: 4f96ee8f4): Copyright (c) 2025 HiGHS under MIT licence terms
+MIP has 12028 rows; 12130 cols; 996019 nonzeros; 8500 integer variables (4130 binary)
+Coefficient ranges:
+  Matrix  [1e+00, 1e+01]
+  Cost    [0e+00, 0e+00]
+  Bound   [1e+00, 9e+00]
+  RHS     [1e+00, 2e+02]
+Presolving model
+8 rows, 50 cols, 55 nonzeros  0s
+2 rows, 47 cols, 48 nonzeros  0s
+0 rows, 0 cols, 0 nonzeros  0s
+0 rows, 0 cols, 0 nonzeros  0s
+Presolve reductions: rows 0(-12028); columns 0(-12130); nonzeros 0(-996019) - Reduced to empty
+Presolve: Optimal
+
+Src: B => Branching; C => Central rounding; F => Feasibility pump; H => Heuristic;
+     I => Shifting; J => Feasibility jump; L => Sub-MIP; P => Empty MIP; R => Randomized rounding;
+     S => Solve LP; T => Evaluate node; U => Unbounded; X => User solution; Y => HiGHS solution;
+     Z => ZI Round; l => Trivial lower; p => Trivial point; u => Trivial upper; z => Trivial zero
+
+        Nodes      |    B&B Tree     |            Objective Bounds              |  Dynamic Constraints |       Work      
+Src  Proc. InQueue |  Leaves   Expl. | BestBound       BestSol              Gap |   Cuts   InLp Confl. | LpIters     Time
+
+         0       0         0   0.00%   0               0                  0.00%        0      0      0         0     0.1s
+
+Solving report
+  Status            Optimal
+  Primal bound      0
+  Dual bound        0
+  Gap               0%
+  P-D integral      0
+  Solution status   feasible
+                    0 (objective)
+                    0 (bound viol.)
+                    0 (int. viol.)
+                    0 (row viol.)
+  Timing            0.11
+  Max sub-MIP depth 0
+  Nodes             0
+  Repair LPs        0
+  LP iterations     0
+{"engine": "highs", "S_branch": 187, "J_branch": 1, "groups": true, "workers": 1, "seed": 75, "source_sha256": "3cd4239dfbd3c690b0d594e983975092454c8e0ffbc0f5274fdcd0d1ea4fa613", "wrapper_sha256": "6daf8ce686237b86c099df03d64551e27af053dd4220d39c7abde37611c5c6fd", "time_limit": 60.0, "build_seconds": 1.4464442119933665, "domain_count": 3970, "domain_sha256": "1efb89cc4c937592424b4ab347be9233be1bf847ee52bc953dd7c119b6f548a1", "matrix_shape": [12028, 12130], "nonzeros": 996019, "matrix_sha256": "ee546d3b62102a9339e0efb5b2153d97753f288229bc7a53dcdba0e2fa1fc33c", "status": "OPTIMAL", "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)", "S": 187, "warehouse_gaps": [69, 0], "seconds": 1.7056552189897047}

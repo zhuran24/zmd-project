@@ -1,0 +1,166 @@
+built {'engine': 'cp', 'J': 1, 'cap': 187, 'full': True, 'fixed': '求解器/候选约束轮次/第75-77轮/推导75/complete_subsets_S187.json', 'edge_tables': False, 'assumed_S_lower_bound': None, 'units': 3970, 'variables': 8456, 'rows': 11520, 'model_sha256': '1f28f65431ae9afdf1ec39ca65c32bd4c4a27e53779677783109c45a350c984c', 'source_sha256': '7bb9554c9cd727e6a85c03dab508493defbd31ec68762ae2b3eb867fe9723953', 'build_seconds': 0.2149231900111772}
+
+Starting CP-SAT solver v9.15.6755
+Parameters: random_seed: 7701 max_time_in_seconds: 60 log_search_progress: true linearization_level: 2 num_search_workers: 1
+
+Initial satisfaction model '': (model_fingerprint: 0x45966b607ab9a203)
+#Variables: 8'456 (8'456 primary variables)
+  - 8'056 Booleans in [0,1]
+  - 400 in [0,9]
+#kLinear1: 7'942
+#kLinear2: 1'808
+#kLinear3: 536
+#kLinearN: 8'974 (#terms: 199'790)
+
+Starting presolve at 0.01s
+  7.25e-04s  0.00e+00d  [DetectDominanceRelations] 
+  3.53e-04s  0.00e+00d  [DetectDominanceRelations] 
+  1.03e-02s  0.00e+00d  [PresolveToFixPoint] #num_loops=5 #num_dual_strengthening=3 
+  2.82e-05s  0.00e+00d  [ExtractEncodingFromLinear] 
+  2.82e-05s  0.00e+00d  [DetectDuplicateColumns] 
+  1.87e-05s  0.00e+00d  [DetectDuplicateConstraints] 
+[Symmetry] Graph for symmetry has 8'456 nodes and 0 arcs.
+[Symmetry] Symmetry computation done. time: 0.000197668 dtime: 0.00050736
+  3.34e-05s  0.00e+00d  [DetectDuplicateConstraintsWithDifferentEnforcements] 
+  1.20e-03s  6.45e-04d  [Probe] #probed=12 
+  2.11e-05s  0.00e+00d  [MaxClique] 
+  4.45e-05s  0.00e+00d  [PresolveToFixPoint] 
+  1.50e-05s  0.00e+00d  [ProcessAtMostOneAndLinear] 
+  7.54e-06s  0.00e+00d  [DetectDuplicateConstraints] 
+  7.00e-06s  0.00e+00d  [DetectDuplicateConstraintsWithDifferentEnforcements] 
+  9.28e-06s  0.00e+00d  [DetectDominatedLinearConstraints] 
+  1.01e-05s  0.00e+00d  [DetectDifferentVariables] 
+  1.34e-05s  0.00e+00d  [ProcessSetPPC] 
+  3.04e-04s  0.00e+00d  [TransformClausesToExactlyOne] 
+  2.75e-05s  0.00e+00d  [DetectEncodedComplexDomains] 
+  2.29e-05s  0.00e+00d  [FindAlmostIdenticalLinearConstraints] 
+  5.66e-06s  0.00e+00d  [FindBigAtMostOneAndLinearOverlap] 
+  1.33e-05s  0.00e+00d  [FindBigVerticalLinearOverlap] 
+  1.74e-05s  0.00e+00d  [FindBigHorizontalLinearOverlap] 
+  1.75e-05s  0.00e+00d  [MergeClauses] 
+  2.90e-05s  0.00e+00d  [PresolveToFixPoint] 
+  2.05e-05s  0.00e+00d  [PresolveToFixPoint] 
+  1.01e-05s  0.00e+00d  [DetectDuplicateColumns] 
+  7.72e-06s  0.00e+00d  [DetectDuplicateConstraints] 
+[Symmetry] Graph for symmetry has 8'456 nodes and 0 arcs.
+[Symmetry] Symmetry computation done. time: 0.000131573 dtime: 0.00050736
+  2.74e-05s  0.00e+00d  [DetectDuplicateConstraintsWithDifferentEnforcements] 
+  1.01e-03s  6.45e-04d  [Probe] #probed=12 
+  1.98e-05s  0.00e+00d  [MaxClique] 
+  4.20e-05s  0.00e+00d  [PresolveToFixPoint] 
+  1.60e-05s  0.00e+00d  [ProcessAtMostOneAndLinear] 
+  7.73e-06s  0.00e+00d  [DetectDuplicateConstraints] 
+  6.90e-06s  0.00e+00d  [DetectDuplicateConstraintsWithDifferentEnforcements] 
+  9.17e-06s  0.00e+00d  [DetectDominatedLinearConstraints] 
+  9.97e-06s  0.00e+00d  [DetectDifferentVariables] 
+  1.33e-05s  0.00e+00d  [ProcessSetPPC] 
+  2.99e-04s  0.00e+00d  [TransformClausesToExactlyOne] 
+  2.94e-05s  0.00e+00d  [DetectEncodedComplexDomains] 
+  2.34e-05s  0.00e+00d  [FindAlmostIdenticalLinearConstraints] 
+  5.35e-06s  0.00e+00d  [FindBigAtMostOneAndLinearOverlap] 
+  1.29e-05s  0.00e+00d  [FindBigVerticalLinearOverlap] 
+  1.66e-05s  0.00e+00d  [FindBigHorizontalLinearOverlap] 
+  1.79e-05s  0.00e+00d  [MergeClauses] 
+  2.92e-05s  0.00e+00d  [PresolveToFixPoint] 
+  8.88e-06s  0.00e+00d  [MergeNoOverlap] 
+  9.63e-06s  0.00e+00d  [MergeNoOverlap2D] 
+
+Presolve summary:
+  - 3 affine relations were detected.
+  - rule 'TODO dual: only one blocking constraint?' was applied 92 times.
+  - rule 'TODO dual: tighten at most one' was applied 96 times.
+  - rule 'affine: new relation' was applied 3 times.
+  - rule 'at_most_one: dominated singleton' was applied 3 times.
+  - rule 'at_most_one: empty or all false' was applied 1 time.
+  - rule 'at_most_one: removed literals' was applied 1 time.
+  - rule 'at_most_one: satisfied' was applied 2 times.
+  - rule 'at_most_one: singleton' was applied 1 time.
+  - rule 'bool_and: x => x' was applied 6 times.
+  - rule 'bool_or: always true' was applied 977 times.
+  - rule 'bool_or: implications' was applied 7 times.
+  - rule 'bool_or: only one literal' was applied 3 times.
+  - rule 'domination: in at most one' was applied 46 times.
+  - rule 'dual: enforced equivalence' was applied 3 times.
+  - rule 'enforcement: false literal' was applied 1 time.
+  - rule 'enforcement: true literal' was applied 1 time.
+  - rule 'linear1: always true' was applied 2 times.
+  - rule 'linear1: x in domain' was applied 3'970 times.
+  - rule 'linear2: convert ax + by != cte to clauses' was applied 951 times.
+  - rule 'linear: always true' was applied 9'285 times.
+  - rule 'linear: empty' was applied 5'013 times.
+  - rule 'linear: extracted enforcement literal' was applied 6 times.
+  - rule 'linear: fixed or dup variables' was applied 14'248 times.
+  - rule 'linear: negative clause' was applied 34 times.
+  - rule 'linear: positive at most one' was applied 3 times.
+  - rule 'linear: positive clause' was applied 2 times.
+  - rule 'linear: reduced variable domains' was applied 3'897 times.
+  - rule 'linear: simplified rhs' was applied 1 time.
+  - rule 'linear: singleton column' was applied 400 times.
+  - rule 'presolve: 8053 unused variables removed.' was applied 1 time.
+  - rule 'presolve: iteration' was applied 2 times.
+
+Presolved satisfaction model '': (model_fingerprint: 0xa5b85c5e198ed849)
+#Variables: 0 (0 primary variables)
+
+[Symmetry] Graph for symmetry has 0 nodes and 0 arcs.
+
+Preloading model.
+The solution hint is complete and is feasible.
+
+Starting search at 0.03s with 1 workers.
+1 full problem subsolver: [main]
+
+[Precedences] num_relations=0 num_clauses=0
+[Probing] deterministic_time: 0 (limit: 1) wall_time: 2.26e-07 (0/0)
+Initial num_bool: 0
+
+Starting subsolver 'main' hint search at 0.03s
+Starting subsolver 'main' search at 0.03s
+#1       0.03s main
+
+Task timing           n [     min,      max]      avg      dev     time         n [     min,      max]      avg      dev    dtime
+      'main':         1 [ 65.15us,  65.15us]  65.15us   0.00ns  65.15us         0 [  0.00ns,   0.00ns]   0.00ns   0.00ns   0.00ns
+
+Search stats    Bools  Conflicts  Branches  Restarts  BacktrackToRoot  Backtrack  BoolPropag  IntegerPropag
+       'main':      0          0         0         0                0          0           0              0
+
+SAT formula    Fixed  Equiv  Total  VarLeft  BinaryClauses  PermanentClauses  TemporaryClauses
+      'main':      0      0      0        0              0                 0                 0
+
+SAT stats    ClassicMinim  LitRemoved  LitRemovedBinary  LitLearned  LitForgotten  Subsumed
+    'main':             0           0                 0           0             0         0
+
+Vivification    Clauses  Decisions  LitTrue  Subsumed  LitRemoved  DecisionReused  Conflicts
+       'main':        0          0        0         0           0               0          0
+
+Clause deletion    at_true  l_and_not(l)  to_binary  sub_conflict  sub_extra  sub_decisions  sub_eager  sub_vivify  sub_probing  sub_inpro  blocked  eliminated  forgotten  promoted  conflicts
+          'main':        0             0          0             0          0              0          0           0            0          0        0           0          0         0          0
+
+Solutions (1)    Num   Rank
+        'main':    1  [0,0]
+
+Solution repositories    Added  Queried  Synchro
+    'alternative_path':      0        0        0
+      'best_solutions':      1        0        1
+   'fj solution hints':      0        0        0
+
+LRAT_status: NA
+CpSolverResponse summary:
+status: OPTIMAL
+objective: NA
+best_bound: NA
+integers: 0
+booleans: 0
+conflicts: 0
+branches: 0
+propagations: 0
+integer_propagations: 0
+restarts: 0
+lp_iterations: 0
+walltime: 0.0333612
+usertime: 0.0333612
+deterministic_time: 0.00128992
+gap_integral: 0
+solution_fingerprint: 0xcf3457d3103a0a14
+
+{'engine': 'cp', 'J': 1, 'cap': 187, 'full': True, 'fixed': '求解器/候选约束轮次/第75-77轮/推导75/complete_subsets_S187.json', 'edge_tables': False, 'assumed_S_lower_bound': None, 'units': 3970, 'variables': 8456, 'rows': 11520, 'model_sha256': '1f28f65431ae9afdf1ec39ca65c32bd4c4a27e53779677783109c45a350c984c', 'source_sha256': '7bb9554c9cd727e6a85c03dab508493defbd31ec68762ae2b3eb867fe9723953', 'build_seconds': 0.2149231900111772, 'status': 'OPTIMAL', 'solver_version': '9.15.6755', 'S': 187, 'warehouse_gaps': [0, 0], 'seconds': 0.5429694470076356}

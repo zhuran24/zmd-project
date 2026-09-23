@@ -1,0 +1,22 @@
+{
+  "encoding": "B",
+  "scope": "M0 plus residual all-pole union; no forced warehouse cells, no residual single-pole capacities",
+  "cap": 187,
+  "shift": [
+    0,
+    1
+  ],
+  "workers": 1,
+  "time_limit": 60.0,
+  "fixed": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第75-77轮/推导75/complete_subsets_S185.json",
+  "center_count": 3376,
+  "group_count": 403,
+  "script_sha256": "9cd21941599882b902c86ee1ff3110a1d174603eb3ce43931da40e38d3ce7867",
+  "build_seconds": 1.4763673410052434,
+  "model_sha256": "d2d27769703e7d64a2bc081cbfdc599ac123ed36d67a48e6280d8e0300a4591e",
+  "variables": 15488,
+  "constraints": 53861,
+  "status": "INFEASIBLE",
+  "seconds": 1.7341618979990017,
+  "stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 0\nbooleans: 0\nconflicts: 0\nbranches: 0\npropagations: 0\ninteger_propagations: 0\nrestarts: 0\nlp_iterations: 0\nwalltime: 0.132938\nusertime: 0.132938\ndeterministic_time: 0\ngap_integral: 0\n"
+}

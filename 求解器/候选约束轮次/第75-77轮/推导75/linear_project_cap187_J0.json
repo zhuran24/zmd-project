@@ -1,0 +1,13 @@
+{
+  "scope": "independent linear M0 safe projection, J=0, S<=cap",
+  "cap": 187,
+  "workers": 1,
+  "subsolver": "quick_restart",
+  "time_limit": 600.0,
+  "script_sha256": "7aa027499031f617e8b5a2a4947894ced27a4bff8925b0d93367688ee9be27ee",
+  "model_sha256": "d16ac5296f9871bbd1eb71fb8603a9cc1012a86457e1b47670b5c69e2416de03",
+  "build_seconds": 0.4565909919911064,
+  "status": "INFEASIBLE",
+  "seconds": 52.14196197199635,
+  "stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 4399\nbooleans: 3884\nconflicts: 2181\nbranches: 2122219\npropagations: 40779339\ninteger_propagations: 68217764\nrestarts: 153\nlp_iterations: 169834\nwalltime: 51.6851\nusertime: 51.6851\ndeterministic_time: 63.3575\ngap_integral: 0\n"
+}

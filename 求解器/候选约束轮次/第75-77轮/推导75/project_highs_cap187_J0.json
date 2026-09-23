@@ -1,0 +1,15 @@
+{
+  "engine": "highs",
+  "cap": 187,
+  "J": 0,
+  "scope": "M0 safe projection, S <= cap",
+  "workers": 1,
+  "time_limit": 600.0,
+  "script_sha256": "61b0464b83e16fe41d78e8556dde3e0e783d8890796487dd3844d5ad8537794a",
+  "matrix_sha256": "5c9e0fe7572a02fa44941b40a69cca8c0ac28a6c789fd04a4876dad0d914188a",
+  "domain_count": 1945,
+  "build_seconds": 0.4088822829944547,
+  "status": "INFEASIBLE",
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "seconds": 374.56533174299693
+}

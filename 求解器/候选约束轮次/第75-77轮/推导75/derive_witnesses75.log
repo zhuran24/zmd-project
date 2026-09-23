@@ -1,0 +1,3 @@
+complete_subsets_S185 PASS [4, 8, 9, 6] 10 1 217
+complete_subsets_S186 PASS [4, 9, 9, 6] 10 1 217
+complete_subsets_S187 PASS [4, 10, 9, 6] 10 1 217

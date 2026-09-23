@@ -1,0 +1,13 @@
+{
+  "report_sha256": "1d47cdd12a6a8d76a5d94a46845cdf5e4dc81e0e78a183d5e9c12c4cf81d83a3",
+  "report_characters": 8932,
+  "links_checked": 14,
+  "broken_links": [],
+  "reader_audit": "PASS",
+  "formal_inputs_unchanged": true,
+  "verdicts": [
+    "未否证",
+    "未否证"
+  ],
+  "no_other_review_read": true
+}

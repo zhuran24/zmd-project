@@ -1,0 +1,2 @@
+{'status': 'PASS', 'known_manufacturing': 21, 'remaining_required': 196, 'residual_capacities': [23, 11, 23, 20, 22, 21, 18, 20, 22, 18], 'residual_upper': 157, 'total_manufacturing_upper': 178}
+[175, 162, 169, 174, 161, 170, 170, 157, 164]

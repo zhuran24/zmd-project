@@ -1,0 +1,1 @@
+{'wall': {'columns': 550, 'rows': 1352, 'upper': '1846/135', 'integer_upper': 13}, 'strip_positions': 395, 'strip_columns': 275888, 'strip_rows': 669475, 'right_edge': [7, 7, 8, 9, 10, 11, 12, 12, 12, 11, 10, 9, 8, 7, 7], 'grid_positions': 3511, 'center_pairs': 532890, 'excluded_P10': 49, 'seconds': 13.294594111008337}

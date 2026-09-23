@@ -1,0 +1,205 @@
+{
+  "status": "COMPLETE",
+  "coverage": "two transpose-related positions x S in {185,186,187} x J in {0,1}",
+  "lower_S_basis": "R72/R73/R74 independently verified M0 bound; original receipts hash-checked, not rerun here",
+  "branches": [
+    {
+      "position": [
+        49,
+        17
+      ],
+      "S": 185,
+      "J": 0,
+      "result": "INFEASIBLE",
+      "scope": "M0 safe projection, hence M1",
+      "evidence": [
+        "project_native_cap187_J0.json",
+        "linear_project_cap187_J0.json",
+        "project_highs_cap187_J0.json"
+      ],
+      "transpose_bijection": false
+    },
+    {
+      "position": [
+        49,
+        17
+      ],
+      "S": 185,
+      "J": 1,
+      "result": "FEASIBLE",
+      "scope": "M1 and all original subset-capacity cuts",
+      "witness": "complete_subsets_S185.json",
+      "audit": "complete_subsets_S185_audit.json",
+      "evidence": [
+        "complete_replay_native_S185.json",
+        "complete_replay_highs_S185.json"
+      ],
+      "transpose_bijection": false
+    },
+    {
+      "position": [
+        49,
+        17
+      ],
+      "S": 186,
+      "J": 0,
+      "result": "INFEASIBLE",
+      "scope": "M0 safe projection, hence M1",
+      "evidence": [
+        "project_native_cap187_J0.json",
+        "linear_project_cap187_J0.json",
+        "project_highs_cap187_J0.json"
+      ],
+      "transpose_bijection": false
+    },
+    {
+      "position": [
+        49,
+        17
+      ],
+      "S": 186,
+      "J": 1,
+      "result": "FEASIBLE",
+      "scope": "M1 and all original subset-capacity cuts",
+      "witness": "complete_subsets_S186.json",
+      "audit": "complete_subsets_S186_audit.json",
+      "evidence": [
+        "complete_replay_native_S186.json",
+        "complete_replay_highs_S186.json"
+      ],
+      "transpose_bijection": false
+    },
+    {
+      "position": [
+        49,
+        17
+      ],
+      "S": 187,
+      "J": 0,
+      "result": "INFEASIBLE",
+      "scope": "M0 safe projection, hence M1",
+      "evidence": [
+        "project_native_cap187_J0.json",
+        "linear_project_cap187_J0.json",
+        "project_highs_cap187_J0.json"
+      ],
+      "transpose_bijection": false
+    },
+    {
+      "position": [
+        49,
+        17
+      ],
+      "S": 187,
+      "J": 1,
+      "result": "FEASIBLE",
+      "scope": "M1 and all original subset-capacity cuts",
+      "witness": "complete_subsets_S187.json",
+      "audit": "complete_subsets_S187_audit.json",
+      "evidence": [
+        "complete_replay_native_S187.json",
+        "complete_replay_highs_S187.json"
+      ],
+      "transpose_bijection": false
+    },
+    {
+      "position": [
+        17,
+        49
+      ],
+      "S": 185,
+      "J": 0,
+      "result": "INFEASIBLE",
+      "scope": "M0 safe projection, hence M1",
+      "evidence": [
+        "project_native_cap187_J0.json",
+        "linear_project_cap187_J0.json",
+        "project_highs_cap187_J0.json"
+      ],
+      "transpose_bijection": true
+    },
+    {
+      "position": [
+        17,
+        49
+      ],
+      "S": 185,
+      "J": 1,
+      "result": "FEASIBLE",
+      "scope": "M1 and all original subset-capacity cuts",
+      "witness": "complete_subsets_S185_transpose.json",
+      "audit": "complete_subsets_S185_transpose_audit.json",
+      "evidence": [
+        "complete_replay_native_S185.json",
+        "complete_replay_highs_S185.json"
+      ],
+      "transpose_bijection": true
+    },
+    {
+      "position": [
+        17,
+        49
+      ],
+      "S": 186,
+      "J": 0,
+      "result": "INFEASIBLE",
+      "scope": "M0 safe projection, hence M1",
+      "evidence": [
+        "project_native_cap187_J0.json",
+        "linear_project_cap187_J0.json",
+        "project_highs_cap187_J0.json"
+      ],
+      "transpose_bijection": true
+    },
+    {
+      "position": [
+        17,
+        49
+      ],
+      "S": 186,
+      "J": 1,
+      "result": "FEASIBLE",
+      "scope": "M1 and all original subset-capacity cuts",
+      "witness": "complete_subsets_S186_transpose.json",
+      "audit": "complete_subsets_S186_transpose_audit.json",
+      "evidence": [
+        "complete_replay_native_S186.json",
+        "complete_replay_highs_S186.json"
+      ],
+      "transpose_bijection": true
+    },
+    {
+      "position": [
+        17,
+        49
+      ],
+      "S": 187,
+      "J": 0,
+      "result": "INFEASIBLE",
+      "scope": "M0 safe projection, hence M1",
+      "evidence": [
+        "project_native_cap187_J0.json",
+        "linear_project_cap187_J0.json",
+        "project_highs_cap187_J0.json"
+      ],
+      "transpose_bijection": true
+    },
+    {
+      "position": [
+        17,
+        49
+      ],
+      "S": 187,
+      "J": 1,
+      "result": "FEASIBLE",
+      "scope": "M1 and all original subset-capacity cuts",
+      "witness": "complete_subsets_S187_transpose.json",
+      "audit": "complete_subsets_S187_transpose_audit.json",
+      "evidence": [
+        "complete_replay_native_S187.json",
+        "complete_replay_highs_S187.json"
+      ],
+      "transpose_bijection": true
+    }
+  ]
+}

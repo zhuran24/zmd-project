@@ -1,0 +1,14 @@
+{
+  "S_branch": 186,
+  "J_branch": 0,
+  "script_sha256": "7ef43b13e571bdaaded42f75713738d60512c0b182ad7f39c7a058cb1111e435",
+  "build_seconds": 0.9505696889973478,
+  "model_sha256": "c459fcf49b6d4d7c6162b682512ea8fb7ef2d05dcaddb591f4ad1281cf131457",
+  "fixed_bodies": null,
+  "time_limit": 600.0,
+  "workers": 3,
+  "status": "UNKNOWN",
+  "seconds": 601.0696086560056,
+  "upper": 300.0,
+  "stats": "CpSolverResponse summary:\nstatus: UNKNOWN\nobjective: -0\nbest_bound: 300\nintegers: 9345\nbooleans: 9195\nconflicts: 166400\nbranches: 27813007\npropagations: 170638161\ninteger_propagations: 262002616\nrestarts: 702\nlp_iterations: 1720066\nwalltime: 600.013\nusertime: 600.013\ndeterministic_time: 3233.9\ngap_integral: 18421.3\n"
+}

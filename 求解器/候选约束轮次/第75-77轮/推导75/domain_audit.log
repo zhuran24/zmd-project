@@ -1,0 +1,1 @@
+{'status': 'PASS', 'domains': 3, 'all_options': 3970, 'counts': {'s': 132, 'm': 132, 'l': 136, 'c': 108, 'p': 3462}, 'projected_options': 1945, 'deleted_poles': 2025, 'pole_center_pairs': 530167, 'pole_partition_group_pairs': 761718, 'script_sha256': '6b4afbeb234cb1871c5035864591c792515f1b666dff47d825ca2107e5f29444'}

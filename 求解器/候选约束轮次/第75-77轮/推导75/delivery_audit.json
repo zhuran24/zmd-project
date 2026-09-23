@@ -1,0 +1,30 @@
+{
+  "status": "PASS",
+  "input_files_unchanged": 17,
+  "changed_inputs": [],
+  "report_sha256": "2ab3c5a2de8fbfbe18da4f188a27d0b8b79dc5cd46fc00a9a064a8849a6bcb4f",
+  "report_links_checked": 38,
+  "branch_coverage": "12 distinct records, all concluded",
+  "current_and_prior_source_versions_checked": true,
+  "output_types": [
+    ".gz",
+    ".json",
+    ".log",
+    ".md",
+    ".py"
+  ],
+  "oversize_uncompressed_files": [],
+  "reader_review": {
+    "status": "PASS",
+    "checks": [
+      "M1 feasibility is separate from actual factory feasibility",
+      "all six canonical branches have witnesses or independent exclusion receipts",
+      "new residual bound excludes only specified points; global UNKNOWN remains unresolved",
+      "new residual deficit is recomputed after subtracting known actual coverage",
+      "both transpose geometry and all 9216 subset inequalities checked",
+      "global solver receipts are distinguished from exact rational and matching certificates",
+      "formal upper bound and candidate status unchanged"
+    ]
+  },
+  "memory_facts_used_as_mathematical_premises": false
+}

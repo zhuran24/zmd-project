@@ -1,0 +1,32 @@
+{
+  "arguments": {
+    "P": 10,
+    "j": 1,
+    "cap": 184,
+    "engine": "cp",
+    "seconds": 600,
+    "workers": 2,
+    "full": false,
+    "fixed": null,
+    "name": "J1_cap184"
+  },
+  "units": {
+    "s": 132,
+    "m": 132,
+    "l": 136,
+    "c": 108,
+    "p": 1437
+  },
+  "variables": 4513,
+  "constraints": 6997,
+  "matrix_sha256": "5515f3b5b142921606ab953752723fb5e62c0edc95d70ec6480a53fba2a99335",
+  "source_sha256": {
+    "geometry.py": "5d35b6c04cee936c4c2c7f81d4e163ae4daef1bd8cf55c4a5fc12c7983435f8f",
+    "model.py": "67e9a0efe49377d3f3cd02297f4346d6aaea4befab95fa8ec00e1f5dfdbf813c"
+  },
+  "build_seconds": 0.24749014699773397,
+  "status": "UNKNOWN",
+  "version": "9.15.6755",
+  "stats": "CpSolverResponse summary:\nstatus: UNKNOWN\nobjective: 0\nbest_bound: 0\nintegers: 2339\nbooleans: 2558\nconflicts: 361356\nbranches: 17870801\npropagations: 212288329\ninteger_propagations: 323589380\nrestarts: 1233\nlp_iterations: 5127409\nwalltime: 600.006\nusertime: 600.006\ndeterministic_time: 2133.27\ngap_integral: 0\n",
+  "seconds": 600.5040308659954
+}

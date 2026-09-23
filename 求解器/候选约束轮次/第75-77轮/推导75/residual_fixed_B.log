@@ -1,0 +1,71 @@
+BUILT {'encoding': 'B', 'scope': 'M0 plus residual all-pole union; no forced warehouse cells, no residual single-pole capacities', 'cap': 187, 'shift': [0, 1], 'workers': 1, 'time_limit': 60.0, 'fixed': '/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第75-77轮/推导75/complete_subsets_S185.json', 'center_count': 3376, 'group_count': 403, 'script_sha256': '9cd21941599882b902c86ee1ff3110a1d174603eb3ce43931da40e38d3ce7867', 'build_seconds': 1.4763673410052434, 'model_sha256': 'd2d27769703e7d64a2bc081cbfdc599ac123ed36d67a48e6280d8e0300a4591e', 'variables': 15488, 'constraints': 53861}
+
+Starting CP-SAT solver v9.15.6755
+Parameters: max_time_in_seconds: 60 log_search_progress: true linearization_level: 2 num_search_workers: 1
+
+Initial satisfaction model '': (model_fingerprint: 0xd2a74b20814e9f1c)
+#Variables: 15'488 (7'888 primary variables)
+  - 15'088 Booleans in [0,1]
+  - 400 in [0,9]
+#kLinear1: 3'973
+#kLinear2: 32'545
+#kLinear3: 700
+#kLinearN: 16'643 (#terms: 884'922)
+
+Starting presolve at 0.03s
+INFEASIBLE: 'linear equation unsat.'
+  2.25e-03s  0.00e+00d  [DetectDominanceRelations] 
+  5.93e-02s  0.00e+00d  [PresolveToFixPoint] 
+
+Presolve summary:
+  - 1 affine relations were detected.
+  - rule 'TODO dual: only one blocking constraint?' was applied 2'258 times.
+  - rule 'TODO dual: tighten at most one' was applied 2'262 times.
+  - rule 'affine: new relation' was applied 1 time.
+  - rule 'at_most_one: empty or all false' was applied 238 times.
+  - rule 'at_most_one: removed literals' was applied 331 times.
+  - rule 'at_most_one: satisfied' was applied 3 times.
+  - rule 'at_most_one: size one' was applied 4 times.
+  - rule 'bool_and: x => x' was applied 2 times.
+  - rule 'bool_or: always true' was applied 30'622 times.
+  - rule 'bool_or: implications' was applied 6 times.
+  - rule 'bool_or: only one literal' was applied 680 times.
+  - rule 'domination: in at most one' was applied 968 times.
+  - rule 'dual: enforced equivalence' was applied 1 time.
+  - rule 'enforcement: false literal' was applied 1 time.
+  - rule 'enforcement: literal not used' was applied 1 time.
+  - rule 'enforcement: true literal' was applied 1 time.
+  - rule 'linear1: always true' was applied 2 times.
+  - rule 'linear1: x in domain' was applied 3'970 times.
+  - rule 'linear2: convert ax + by != cte to clauses' was applied 31'270 times.
+  - rule 'linear: always true' was applied 6'733 times.
+  - rule 'linear: divide by GCD' was applied 4 times.
+  - rule 'linear: empty' was applied 11'437 times.
+  - rule 'linear: extracted enforcement literal' was applied 3 times.
+  - rule 'linear: fixed or dup variables' was applied 27'748 times.
+  - rule 'linear: negative clause' was applied 34 times.
+  - rule 'linear: positive at most one' was applied 408 times.
+  - rule 'linear: positive clause' was applied 6 times.
+  - rule 'linear: reduced variable domains' was applied 9'552 times.
+  - rule 'linear: simplified rhs' was applied 1 time.
+  - rule 'linear: singleton column' was applied 3 times.
+  - rule 'presolve: iteration' was applied 1 time.
+Problem closed by presolve.
+CpSolverResponse summary:
+status: INFEASIBLE
+objective: NA
+best_bound: NA
+integers: 0
+booleans: 0
+conflicts: 0
+branches: 0
+propagations: 0
+integer_propagations: 0
+restarts: 0
+lp_iterations: 0
+walltime: 0.132938
+usertime: 0.132938
+deterministic_time: 0
+gap_integral: 0
+
+{'encoding': 'B', 'scope': 'M0 plus residual all-pole union; no forced warehouse cells, no residual single-pole capacities', 'cap': 187, 'shift': [0, 1], 'workers': 1, 'time_limit': 60.0, 'fixed': '/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第75-77轮/推导75/complete_subsets_S185.json', 'center_count': 3376, 'group_count': 403, 'script_sha256': '9cd21941599882b902c86ee1ff3110a1d174603eb3ce43931da40e38d3ce7867', 'build_seconds': 1.4763673410052434, 'model_sha256': 'd2d27769703e7d64a2bc081cbfdc599ac123ed36d67a48e6280d8e0300a4591e', 'variables': 15488, 'constraints': 53861, 'status': 'INFEASIBLE', 'seconds': 1.7341618979990017}

@@ -1,0 +1,32 @@
+{
+  "arguments": {
+    "P": 10,
+    "j": 0,
+    "cap": 187,
+    "engine": "highs",
+    "seconds": 600,
+    "workers": 1,
+    "full": false,
+    "fixed": null,
+    "name": "J0_cap187_highs"
+  },
+  "units": {
+    "s": 132,
+    "m": 132,
+    "l": 136,
+    "c": 108,
+    "p": 1437
+  },
+  "variables": 4513,
+  "constraints": 6997,
+  "matrix_sha256": "70b832039a30a85524a2d1f4cb2dd843b404e4b23fde2d73d8f052b4a7948f1e",
+  "source_sha256": {
+    "geometry.py": "5d35b6c04cee936c4c2c7f81d4e163ae4daef1bd8cf55c4a5fc12c7983435f8f",
+    "model.py": "67e9a0efe49377d3f3cd02297f4346d6aaea4befab95fa8ec00e1f5dfdbf813c"
+  },
+  "build_seconds": 0.23692533500434365,
+  "status": "INFEASIBLE",
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "version": "1.18.1",
+  "seconds": 378.1612310990022
+}

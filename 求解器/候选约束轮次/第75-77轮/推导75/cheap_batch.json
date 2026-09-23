@@ -1,0 +1,254 @@
+[
+  {
+    "name": "cheap_native_S185_J0",
+    "returncode": 0,
+    "cmd": [
+      "python",
+      "-B",
+      "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第75-77轮/推导75/solve75.py",
+      "--engine",
+      "native",
+      "--s",
+      "185",
+      "--j",
+      "0",
+      "--seconds",
+      "180",
+      "--workers",
+      "1",
+      "--name",
+      "cheap_native_S185_J0"
+    ]
+  },
+  {
+    "name": "cheap_highs_S185_J0",
+    "returncode": 0,
+    "cmd": [
+      "python",
+      "-B",
+      "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第75-77轮/推导75/solve75.py",
+      "--engine",
+      "highs",
+      "--s",
+      "185",
+      "--j",
+      "0",
+      "--seconds",
+      "180",
+      "--workers",
+      "1",
+      "--name",
+      "cheap_highs_S185_J0"
+    ]
+  },
+  {
+    "name": "cheap_native_S185_J1",
+    "returncode": 0,
+    "cmd": [
+      "python",
+      "-B",
+      "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第75-77轮/推导75/solve75.py",
+      "--engine",
+      "native",
+      "--s",
+      "185",
+      "--j",
+      "1",
+      "--seconds",
+      "180",
+      "--workers",
+      "1",
+      "--name",
+      "cheap_native_S185_J1"
+    ]
+  },
+  {
+    "name": "cheap_highs_S185_J1",
+    "returncode": 0,
+    "cmd": [
+      "python",
+      "-B",
+      "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第75-77轮/推导75/solve75.py",
+      "--engine",
+      "highs",
+      "--s",
+      "185",
+      "--j",
+      "1",
+      "--seconds",
+      "180",
+      "--workers",
+      "1",
+      "--name",
+      "cheap_highs_S185_J1"
+    ]
+  },
+  {
+    "name": "cheap_native_S186_J0",
+    "returncode": 0,
+    "cmd": [
+      "python",
+      "-B",
+      "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第75-77轮/推导75/solve75.py",
+      "--engine",
+      "native",
+      "--s",
+      "186",
+      "--j",
+      "0",
+      "--seconds",
+      "180",
+      "--workers",
+      "1",
+      "--name",
+      "cheap_native_S186_J0"
+    ]
+  },
+  {
+    "name": "cheap_highs_S186_J0",
+    "returncode": 0,
+    "cmd": [
+      "python",
+      "-B",
+      "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第75-77轮/推导75/solve75.py",
+      "--engine",
+      "highs",
+      "--s",
+      "186",
+      "--j",
+      "0",
+      "--seconds",
+      "180",
+      "--workers",
+      "1",
+      "--name",
+      "cheap_highs_S186_J0"
+    ]
+  },
+  {
+    "name": "cheap_native_S186_J1",
+    "returncode": 0,
+    "cmd": [
+      "python",
+      "-B",
+      "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第75-77轮/推导75/solve75.py",
+      "--engine",
+      "native",
+      "--s",
+      "186",
+      "--j",
+      "1",
+      "--seconds",
+      "180",
+      "--workers",
+      "1",
+      "--name",
+      "cheap_native_S186_J1"
+    ]
+  },
+  {
+    "name": "cheap_highs_S186_J1",
+    "returncode": 0,
+    "cmd": [
+      "python",
+      "-B",
+      "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第75-77轮/推导75/solve75.py",
+      "--engine",
+      "highs",
+      "--s",
+      "186",
+      "--j",
+      "1",
+      "--seconds",
+      "180",
+      "--workers",
+      "1",
+      "--name",
+      "cheap_highs_S186_J1"
+    ]
+  },
+  {
+    "name": "cheap_native_S187_J0",
+    "returncode": 0,
+    "cmd": [
+      "python",
+      "-B",
+      "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第75-77轮/推导75/solve75.py",
+      "--engine",
+      "native",
+      "--s",
+      "187",
+      "--j",
+      "0",
+      "--seconds",
+      "180",
+      "--workers",
+      "1",
+      "--name",
+      "cheap_native_S187_J0"
+    ]
+  },
+  {
+    "name": "cheap_highs_S187_J0",
+    "returncode": 0,
+    "cmd": [
+      "python",
+      "-B",
+      "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第75-77轮/推导75/solve75.py",
+      "--engine",
+      "highs",
+      "--s",
+      "187",
+      "--j",
+      "0",
+      "--seconds",
+      "180",
+      "--workers",
+      "1",
+      "--name",
+      "cheap_highs_S187_J0"
+    ]
+  },
+  {
+    "name": "cheap_native_S187_J1",
+    "returncode": 0,
+    "cmd": [
+      "python",
+      "-B",
+      "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第75-77轮/推导75/solve75.py",
+      "--engine",
+      "native",
+      "--s",
+      "187",
+      "--j",
+      "1",
+      "--seconds",
+      "180",
+      "--workers",
+      "1",
+      "--name",
+      "cheap_native_S187_J1"
+    ]
+  },
+  {
+    "name": "cheap_highs_S187_J1",
+    "returncode": 0,
+    "cmd": [
+      "python",
+      "-B",
+      "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第75-77轮/推导75/solve75.py",
+      "--engine",
+      "highs",
+      "--s",
+      "187",
+      "--j",
+      "1",
+      "--seconds",
+      "180",
+      "--workers",
+      "1",
+      "--name",
+      "cheap_highs_S187_J1"
+    ]
+  }
+]

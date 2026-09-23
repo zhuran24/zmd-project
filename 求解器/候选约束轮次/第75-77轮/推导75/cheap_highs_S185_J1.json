@@ -1,0 +1,23 @@
+{
+  "engine": "highs",
+  "S_branch": 185,
+  "J_branch": 1,
+  "groups": true,
+  "workers": 1,
+  "seed": 75,
+  "source_sha256": "3cd4239dfbd3c690b0d594e983975092454c8e0ffbc0f5274fdcd0d1ea4fa613",
+  "wrapper_sha256": "620abf71f03db41cd054001362619e03d1c13191a6e5c8dd42e403e172e77eb6",
+  "time_limit": 180.0,
+  "build_seconds": 1.4245113829965703,
+  "domain_count": 3970,
+  "domain_sha256": "1efb89cc4c937592424b4ab347be9233be1bf847ee52bc953dd7c119b6f548a1",
+  "matrix_shape": [
+    12028,
+    12130
+  ],
+  "nonzeros": 996019,
+  "matrix_sha256": "e1b36a3dc3825e84f38b5ed41b0668e82b09822418d58692cf7e2df4fea6e688",
+  "status": "UNKNOWN",
+  "message": "Time limit reached. (HiGHS Status 13: model_status is Time limit reached; primal_status is None)",
+  "seconds": 181.59229686899926
+}

@@ -1,0 +1,348 @@
+{
+  "inputs_unchanged": true,
+  "inputs": {
+    "《明日方舟：终末地》游戏规则.txt": "6e64e3903a65536c530b363c9f3aef8c1bb2a1c1193e866799125dd047159924",
+    "求解任务.txt": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+    "求解约束.txt": "0c05976f6063f3332db6ee19d7746052ef35148d7c2a12dfa396c7bb8753f30f",
+    "候选约束.txt": "c9737ed25c8fc445731a92020231719d0d37026afa41bcbb36392aaa2ce668c5",
+    "求解器/候选约束轮次/第75-77轮/推导75.md": "2ab3c5a2de8fbfbe18da4f188a27d0b8b79dc5cd46fc00a9a064a8849a6bcb4f"
+  },
+  "producer_branches": 12,
+  "independent_imports": {
+    "model.py": [
+      "os",
+      "geometry",
+      "argparse",
+      "time",
+      "hashlib",
+      "warnings",
+      "collections",
+      "ortools.sat.python",
+      "ortools",
+      "numpy",
+      "scipy",
+      "scipy.optimize",
+      "scipy.sparse"
+    ],
+    "quick.py": [
+      "model",
+      "ortools.sat.python",
+      "ortools"
+    ],
+    "geometry.py": [
+      "pathlib",
+      "collections",
+      "json"
+    ],
+    "certificates.py": [
+      "geometry",
+      "fractions",
+      "collections",
+      "math",
+      "hashlib",
+      "time"
+    ],
+    "audit.py": [
+      "geometry",
+      "hashlib",
+      "re",
+      "ast",
+      "sys"
+    ],
+    "witnesses.py": [
+      "geometry",
+      "fractions",
+      "itertools",
+      "copy",
+      "hashlib"
+    ]
+  },
+  "domain": {
+    "full": {
+      "s": 132,
+      "m": 132,
+      "l": 136,
+      "c": 108,
+      "p": 3462
+    },
+    "projected": {
+      "s": 132,
+      "m": 132,
+      "l": 136,
+      "c": 108,
+      "p": 1437
+    },
+    "deleted_poles": 2025,
+    "domain_sha256": "d89df44db76c382b1c6640828f89b8550b0577f12b1472b17e76097e1767b019",
+    "corners": [
+      {
+        "P": 10,
+        "corner_present": [
+          false,
+          false
+        ],
+        "corner_loss": 0,
+        "loss_budget": 13,
+        "excluded_by_loss": false
+      },
+      {
+        "P": 10,
+        "corner_present": [
+          true,
+          false
+        ],
+        "corner_loss": 15,
+        "loss_budget": 13,
+        "excluded_by_loss": true
+      },
+      {
+        "P": 10,
+        "corner_present": [
+          false,
+          true
+        ],
+        "corner_loss": 16,
+        "loss_budget": 13,
+        "excluded_by_loss": true
+      },
+      {
+        "P": 10,
+        "corner_present": [
+          true,
+          true
+        ],
+        "corner_loss": 31,
+        "loss_budget": 13,
+        "excluded_by_loss": true
+      },
+      {
+        "P": 11,
+        "corner_present": [
+          false,
+          false
+        ],
+        "corner_loss": 0,
+        "loss_budget": 36,
+        "excluded_by_loss": false
+      },
+      {
+        "P": 11,
+        "corner_present": [
+          true,
+          false
+        ],
+        "corner_loss": 15,
+        "loss_budget": 36,
+        "excluded_by_loss": false
+      },
+      {
+        "P": 11,
+        "corner_present": [
+          false,
+          true
+        ],
+        "corner_loss": 16,
+        "loss_budget": 36,
+        "excluded_by_loss": false
+      },
+      {
+        "P": 11,
+        "corner_present": [
+          true,
+          true
+        ],
+        "corner_loss": 31,
+        "loss_budget": 36,
+        "excluded_by_loss": false
+      },
+      {
+        "P": 12,
+        "corner_present": [
+          false,
+          false
+        ],
+        "corner_loss": 0,
+        "loss_budget": 59,
+        "excluded_by_loss": false
+      },
+      {
+        "P": 12,
+        "corner_present": [
+          true,
+          false
+        ],
+        "corner_loss": 15,
+        "loss_budget": 59,
+        "excluded_by_loss": false
+      },
+      {
+        "P": 12,
+        "corner_present": [
+          false,
+          true
+        ],
+        "corner_loss": 16,
+        "loss_budget": 59,
+        "excluded_by_loss": false
+      },
+      {
+        "P": 12,
+        "corner_present": [
+          true,
+          true
+        ],
+        "corner_loss": 31,
+        "loss_budget": 59,
+        "excluded_by_loss": false
+      }
+    ],
+    "residual_global_centers": 3376,
+    "residual_shift01_groups": 403
+  },
+  "own_runs": [
+    {
+      "name": "J0_cap187_cp",
+      "status": "INFEASIBLE",
+      "seconds": 127.71986280300189,
+      "matrix_sha256": "70b832039a30a85524a2d1f4cb2dd843b404e4b23fde2d73d8f052b4a7948f1e"
+    },
+    {
+      "name": "J0_cap187_highs",
+      "status": "INFEASIBLE",
+      "seconds": 378.1612310990022,
+      "matrix_sha256": "70b832039a30a85524a2d1f4cb2dd843b404e4b23fde2d73d8f052b4a7948f1e"
+    },
+    {
+      "name": "J1_cap184",
+      "status": "UNKNOWN",
+      "seconds": 600.5040308659954,
+      "matrix_sha256": "5515f3b5b142921606ab953752723fb5e62c0edc95d70ec6480a53fba2a99335"
+    },
+    {
+      "name": "J1_cap184_highs",
+      "status": "INFEASIBLE",
+      "seconds": 152.0494136299967,
+      "matrix_sha256": "5515f3b5b142921606ab953752723fb5e62c0edc95d70ec6480a53fba2a99335"
+    },
+    {
+      "name": "P11_cap187",
+      "status": "UNKNOWN",
+      "seconds": 600.933955525994,
+      "matrix_sha256": "f1360532814f093e2aca735d0c5bd9a18841de7f66ff9341e281f5ae91188406"
+    },
+    {
+      "name": "P12_cap187",
+      "status": "INFEASIBLE",
+      "seconds": 2.7625544390029972,
+      "matrix_sha256": "180a1ea34277f0976c6e6048b8398aea294f9a7dde07095786b04d0d420d9498"
+    },
+    {
+      "name": "P11_quick",
+      "status": "INFEASIBLE",
+      "seconds": 17.046962111999164,
+      "matrix_sha256": "f1360532814f093e2aca735d0c5bd9a18841de7f66ff9341e281f5ae91188406"
+    },
+    {
+      "name": "J1_quick",
+      "status": "INFEASIBLE",
+      "seconds": 7.058901544995024,
+      "matrix_sha256": "5515f3b5b142921606ab953752723fb5e62c0edc95d70ec6480a53fba2a99335"
+    },
+    {
+      "name": "replay_185_cp",
+      "status": "OPTIMAL",
+      "seconds": 0.5824258909997297,
+      "matrix_sha256": "70dd96083f957ca58f28aba5c11c55c53482d32ea35399ed1864ba669789e1cb"
+    },
+    {
+      "name": "replay_185_highs",
+      "status": "OPTIMAL",
+      "seconds": 0.48461532399232965,
+      "matrix_sha256": "70dd96083f957ca58f28aba5c11c55c53482d32ea35399ed1864ba669789e1cb"
+    },
+    {
+      "name": "replay_186_cp",
+      "status": "OPTIMAL",
+      "seconds": 0.5660266909981146,
+      "matrix_sha256": "57d3c7d78414f67681efb91560f786ed7de712c6e351bbd1ab93d669aa483edf"
+    },
+    {
+      "name": "replay_186_highs",
+      "status": "OPTIMAL",
+      "seconds": 0.5057562670117477,
+      "matrix_sha256": "57d3c7d78414f67681efb91560f786ed7de712c6e351bbd1ab93d669aa483edf"
+    },
+    {
+      "name": "replay_187_cp",
+      "status": "OPTIMAL",
+      "seconds": 0.5631157329917187,
+      "matrix_sha256": "d8b7edccc531556afa24d6beecae2d3f448965307e76e0854b75e03453975094"
+    },
+    {
+      "name": "replay_187_highs",
+      "status": "OPTIMAL",
+      "seconds": 0.4744042050006101,
+      "matrix_sha256": "d8b7edccc531556afa24d6beecae2d3f448965307e76e0854b75e03453975094"
+    }
+  ],
+  "report_sha256": "56dd21bde8beec14be1e72a7cd1615dc5257843f8a3e3830fd5950b85fefa0d0",
+  "links_checked": 28,
+  "reader_audit": {
+    "standalone": true,
+    "current_status_consistent": true,
+    "no_style_instruction_echo": true,
+    "numeric_scopes_separated": true,
+    "references_exist": true
+  },
+  "outputs": {
+    "witnesses.log": "095280ae1b40a5f6bf165cd59a42c748ce6e8487e13b562978e175603dbe061c",
+    "J1_quick.json": "8ef63d20654d068abcede4f2a312ac9dad05684dee97737103044a1e8181d35f",
+    "witness_table_checks.json": "345dc4f8c34ff8cd39db70e0ac5342d6949745aa0784b194a367d42f9203d642",
+    "certificates.json": "a32e570671cbd8f9b0d188b7d3d928cb23017ef3c8d18f9cf498edad7f0c66dc",
+    "P12_cap187.log": "91a8184e10da9c096bd958b5ad0b929b206832962b34939f74d0669ae2189275",
+    "certificates.log": "ff83af65cbf43e5dc3c4568283ac583965c511c1ece645d57533e32b483fd679",
+    "P12_cap187.json": "6383a738a4cd896a1d293f95855732233f91eedfc8ff4632a4e3b7b8417fa150",
+    "audit.log": "fb2b935c02c17531f162bb044bb923ef019512b5e0401ac1121de628a11fed41",
+    "replay_186_highs.log": "82ac393a92f6d9811957ead5d2c1a1ac0ac0d5f77b1e13c450c55213d92024d5",
+    "replay_187_cp.json": "1be96b10d965d6cf5e5cebc98f58990b550ee80fc3fb8481c408d987830f73a2",
+    "verdicts.json": "fb2f1663477fe3083616390a06149769dff315f442c6b3dc8736b940015874ae",
+    "J0_cap187_cp.json": "9f7b0273c18ebb007ea7b604e5316812ac5d3ce50e0d4adfd6ef5ebd76ef97a8",
+    "model.py": "67e9a0efe49377d3f3cd02297f4346d6aaea4befab95fa8ec00e1f5dfdbf813c",
+    "input_manifest.json": "e4cf9f01e5c489d478d1f43b8f69611c98af3f54b0769c85bb22af9eeecd7bbe",
+    "quick.py": "2ac146022e59fed93d918fc9b374ac00653efd0a6c2903852e938f2f5a03ec5d",
+    "replay_185_highs.json": "13b3edb52688d63165fa4303a6e579d46c66dfb1b1a8bb15274077a7c52709c2",
+    "J1_cap184_highs.json": "bab7b3d426bf2322e6d02f483ca7d4090fb3a09a79b1744b4003d93d2ae5348f",
+    "producer_receipts_audit.json": "bfcd58751d7c4c7c9deca8c6eeec713169db6434e55f1e8349a3f8b0bb7f88c9",
+    "P11_cap187.log": "a991fd08fb8fb0615a399f1c001483e96d6fbe7d11203da95b7dc11c85435ea0",
+    "P11_quick.json": "0c2973b83b469a0d3930a59113b1e89737a81b0fcb947a468cda212c61d3c921",
+    "final_audit.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "witness_187.json": "b958826cefbed2d812058635efeccf73462aa795f3b8ac7b2ea1741781c3cddf",
+    "replay_185_highs.log": "003fda5bf81818796f250f74d133510ea60f8f15baa862998064304c8b99aedd",
+    "replay_187_cp.log": "0012489c157541bfd50f99b5673d4b962c3eecd813116b0e93c2a2f5a71bb270",
+    "replay_185_cp.json": "bc8b70dc8e81d66d6e385563b2afd402c66bc5c7ff7e03f5eead9346312ed2dd",
+    "replay_185_cp.log": "5f32d1431018f2e7d703447a8c51e1dc82ed00903926fcb6bd3f639075879010",
+    "replay_186_cp.log": "75fa20b16a302ef2dc8b0b639c2abafb9e570ea8079037d916470fb11bcae604",
+    "replay_186_cp.json": "b977ce04cc9b753c6c6a875c1849bb1322b9b329b407dcb44751b8d9aa57eb54",
+    "J0_cap187_cp.log": "51ed755c3cfecf73378a0d4c04ab9dc38072f3469df1312249578952e932f4ed",
+    "geometry.py": "5d35b6c04cee936c4c2c7f81d4e163ae4daef1bd8cf55c4a5fc12c7983435f8f",
+    "replay_187_highs.json": "886cea24eeff8acd3f930889ceebdbf3bd8424747e4959b721138f29f8ef27db",
+    "certificates.py": "1dbae019759bfd85232e8d6ba66e4076c121230ae370b8c7ffbefee1440fc3a2",
+    "J0_cap187_highs.log": "debc62d65438ff988025955c891332d5c2a4566a3a1a539c9495bf4fea395094",
+    "J1_cap184_highs.log": "a5088b22a85209a8fe5500ee7636cc9fbc1bd137e13d397a91ce16014a9c6278",
+    "replay_186_highs.json": "409286b9c95c715e6c00e71940b73055403353d9220aa4329e4402f37b29dae1",
+    "P11_cap187.json": "03f0e64080793f7f6b8298a8b193b55e0ac801eb261311847810074e47c640bb",
+    "P11_quick.log": "11c459b8c888303143ca1951030735ebd3c7b33fedfa2c6e3fc4c2dda8484867",
+    "domain_audit.json": "925f96db063ed7b77f18c357cbc839a7d8effe1db0a1dbeed2c1994bdd8fb891",
+    "witness_186.json": "fc0b7f1aa9cd9d9238416bef2ec28d42e6cb02e8bc3acbd399345ffe2cd2ffad",
+    "J1_quick.log": "e9d5629eb826e1b368e69b588ff7fb373c0280e2173c84330ec6463c3606db63",
+    "audit.py": "e78111e38f5cdb096b840b6c8c681b5df0ca28137b44f0cc2807876906f1b2bb",
+    "capacities.json": "b31322bba99a192d900020cfb53b866fb22a12c9d43adbe55edd8c82685fde82",
+    "J1_cap184.log": "3e550542fad32ec5c0cc84dea9ffe9699d7ba4db302fef7e183a57897a281c28",
+    "witness_185.json": "f17251c7ecc456dd46a725945bd63dc448b0fd436559f25abcc6ec6f093cbc2e",
+    "replay_187_highs.log": "ea2f02c3c2ab5d42a6e1bc46b3f4ec4cc6fcc3395dee2ab46fe62ce79b940437",
+    "J0_cap187_highs.json": "f326965ae6f13ff62919b8034e3de370174ed3ddfe674872e811683bfed46dd4",
+    "J1_cap184.json": "5a6d33a3ca0d4e93c52346006c6b4a11d595fb20aca8a8e6ead33276be1eb957",
+    "witnesses.py": "9ae9dcc259c31e4d13466206de44c70543acd53528e1fb7e7a2583f04531584a",
+    "witness_summary.json": "095280ae1b40a5f6bf165cd59a42c748ce6e8487e13b562978e175603dbe061c"
+  }
+}

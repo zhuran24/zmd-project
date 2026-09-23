@@ -1,0 +1,20 @@
+{
+  "engine": "native",
+  "S_branch": 186,
+  "J_branch": 1,
+  "groups": true,
+  "workers": 1,
+  "seed": 75,
+  "source_sha256": "697ade0b50a59f702ded7689babbe85f1ba26fe8ac62dc9e0dff799f913c475a",
+  "wrapper_sha256": "620abf71f03db41cd054001362619e03d1c13191a6e5c8dd42e403e172e77eb6",
+  "time_limit": 180.0,
+  "build_seconds": 5.2347578839981,
+  "domain_count": 3970,
+  "domain_sha256": "dff299bb520aeee61628e1565bf3d9f790d0e93d8b521e04d7c4fe73ccf745f5",
+  "variables": 11988,
+  "constraints": 15330,
+  "model_sha256": "fefa900e2ff109d45f4a30c0e6d2f5546d0c7d5d6daf5474032184ff2b69c97d",
+  "status": "UNKNOWN",
+  "stats": "CpSolverResponse summary:\nstatus: UNKNOWN\nobjective: 0\nbest_bound: 0\nintegers: 7695\nbooleans: 7394\nconflicts: 16568\nbranches: 41494632\npropagations: 29179419\ninteger_propagations: 123649002\nrestarts: 106\nlp_iterations: 609959\nwalltime: 180.002\nusertime: 180.002\ndeterministic_time: 249.404\ngap_integral: 0\n",
+  "seconds": 185.38268756600155
+}

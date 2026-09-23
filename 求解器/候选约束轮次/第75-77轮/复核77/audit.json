@@ -1,0 +1,56 @@
+{
+  "inputs_unchanged": true,
+  "thresholds": {
+    "J0_cap187_cp": {
+      "status": "INFEASIBLE",
+      "seconds": 112.64789924499928,
+      "model_sha256": "9dfd4c48c9fc512dc09f474a53db61ba7f21b8717632262bd5129397fbf6293a"
+    },
+    "J0_cap187_highs": {
+      "status": "INFEASIBLE",
+      "seconds": 367.6187667560007,
+      "model_sha256": "9dfd4c48c9fc512dc09f474a53db61ba7f21b8717632262bd5129397fbf6293a"
+    },
+    "J1_cap184_rebuilt_edges": {
+      "status": "INFEASIBLE",
+      "seconds": 0.8345325249974849,
+      "model_sha256": "34ace6ad2864a57d85b99199a596930f92e2673824345102d28c77342804fc43"
+    }
+  },
+  "all_subset_values_rechecked": 55296,
+  "submitted_matchings_rechecked": 81,
+  "line_cut_witness_checks": 12,
+  "branch_count": 12,
+  "residual_global_domain": [
+    3376,
+    403
+  ],
+  "producer_unresolved": {
+    "residual_global_A": {
+      "status": "UNKNOWN",
+      "seconds": 601.1689927609987
+    },
+    "residual_global_B": {
+      "status": "UNKNOWN",
+      "seconds": 601.5356916960009
+    },
+    "residual_global_A_quick": {
+      "status": "UNKNOWN",
+      "seconds": 601.236444929993
+    },
+    "residual_global_B_quick": {
+      "status": "UNKNOWN",
+      "seconds": 601.5505026659957
+    }
+  },
+  "source_sha256": {
+    "accounting77.py": "1a140b9e0e2a195f7ba89bff9d7d2f076a82248a7392da3e1b0a605014a8b3cb",
+    "audit77.py": "b65a0ff543fd6b1df0f53c6be885b4e30061beb124f9df0533a5627ad93cdd3f",
+    "certificates77.py": "7216b7da04c7f0aacb45c9b0fb76490d10b12c17ddaaf18c7bf84f6c15ad036b",
+    "edges77.py": "ddf1b80fd195b96da49fcbff40dbf39dfe7e48f247d089ae8fbcb60dbe9f38a6",
+    "geometry77.py": "555274684b5cb4428d2b42791cb44bbae35c8207750b96827d95150195e0efc1",
+    "model77.py": "7bb9554c9cd727e6a85c03dab508493defbd31ec68762ae2b3eb867fe9723953",
+    "tighter77.py": "0bf330542408bab50dfb1edb3d994a6c53ceeb7767d46226115c060addbba5eb",
+    "witnesses77.py": "681e757db2db5aefa2d509d1ddef731db808af88ece20a3a3c8dd187e53aee7d"
+  }
+}

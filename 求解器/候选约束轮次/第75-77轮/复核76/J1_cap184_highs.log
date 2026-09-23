@@ -1,0 +1,83 @@
+{'arguments': {'P': 10, 'j': 1, 'cap': 184, 'engine': 'highs', 'seconds': 600, 'workers': 1, 'full': False, 'fixed': None, 'name': 'J1_cap184_highs'}, 'units': {'s': 132, 'm': 132, 'l': 136, 'c': 108, 'p': 1437}, 'variables': 4513, 'constraints': 6997, 'matrix_sha256': '5515f3b5b142921606ab953752723fb5e62c0edc95d70ec6480a53fba2a99335', 'source_sha256': {'geometry.py': '5d35b6c04cee936c4c2c7f81d4e163ae4daef1bd8cf55c4a5fc12c7983435f8f', 'model.py': '67e9a0efe49377d3f3cd02297f4346d6aaea4befab95fa8ec00e1f5dfdbf813c'}, 'build_seconds': 0.2556692979997024}
+Running HiGHS 1.12.0 (git hash: 4f96ee8f4): Copyright (c) 2025 HiGHS under MIT licence terms
+MIP has 6997 rows; 4513 cols; 157142 nonzeros; 4513 integer variables (4113 binary)
+Coefficient ranges:
+  Matrix  [1e+00, 1e+01]
+  Cost    [0e+00, 0e+00]
+  Bound   [1e+00, 9e+00]
+  RHS     [1e+00, 1e+02]
+Presolving model
+6965 rows, 4501 cols, 157035 nonzeros  0s
+4765 rows, 3518 cols, 88181 nonzeros  0s
+4257 rows, 3119 cols, 82452 nonzeros  1s
+Presolve reductions: rows 4257(-2740); columns 3119(-1394); nonzeros 82452(-74690) 
+Objective function is integral with scale 1
+
+Solving MIP model with:
+   4257 rows
+   3119 cols (2719 binary, 400 integer, 0 implied int., 0 continuous, 0 domain fixed)
+   82452 nonzeros
+
+Src: B => Branching; C => Central rounding; F => Feasibility pump; H => Heuristic;
+     I => Shifting; J => Feasibility jump; L => Sub-MIP; P => Empty MIP; R => Randomized rounding;
+     S => Solve LP; T => Evaluate node; U => Unbounded; X => User solution; Y => HiGHS solution;
+     Z => ZI Round; l => Trivial lower; p => Trivial point; u => Trivial upper; z => Trivial zero
+
+        Nodes      |    B&B Tree     |            Objective Bounds              |  Dynamic Constraints |       Work      
+Src  Proc. InQueue |  Leaves   Expl. | BestBound       BestSol              Gap |   Cuts   InLp Confl. | LpIters     Time
+
+         0       0         0   0.00%   0               inf                  inf        0      0      0         0     1.3s
+         0       0         0   0.00%   0               inf                  inf        0      0      4      1879     1.5s
+         0       0         0   0.00%   0               inf                  inf     2401     46    246     30194    11.5s
+
+0.0% inactive integer columns, restarting
+Model after restart has 4245 rows, 3114 cols (2714 bin., 400 int., 0 impl., 0 cont., 0 dom.fix.), and 82255 nonzeros
+
+         0       0         0   0.00%   0               inf                  inf       46      0      0     30194    11.6s
+         0       0         0   0.00%   0               inf                  inf       46     14      6     30910    11.7s
+         0       0         0   0.00%   0               inf                  inf     3147     47    247     58845    21.1s
+       205      13        91   0.87%   0               inf                  inf     5045    105   1005     91765    26.1s
+       223      17       103   0.90%   0               inf                  inf     6200    132   1113    125765    33.8s
+       325      15       153   1.00%   0               inf                  inf     6384    149   1481    156997    39.2s
+       423      19       202   1.15%   0               inf                  inf     6843    160   1935    209662    49.7s
+       445      18       209   1.18%   0               inf                  inf     6680     74   2010    234472    54.9s
+       536      29       253   1.27%   0               inf                  inf     6940     82   2391    261488    60.6s
+       562      26       267   1.58%   0               inf                  inf     7775    118   2513    290213    65.7s
+       740      27       350   2.26%   0               inf                  inf     7931     92   3395    322228    70.7s
+       874      32       419   2.96%   0               inf                  inf     8349     81   4348    354985    75.7s
+      1015      39       482   3.10%   0               inf                  inf     8688     96   5122    388239    80.8s
+      1162      51       554   7.16%   0               inf                  inf     9662    116   5815    422038    85.9s
+      1269      47       608   9.26%   0               inf                  inf     9986     83   6403    457165    90.9s
+      1391      51       665   9.46%   0               inf                  inf     9968     89   7113    491486    95.9s
+      1470      52       706  11.55%   0               inf                  inf    10142    136   7544    521493   101.1s
+
+        Nodes      |    B&B Tree     |            Objective Bounds              |  Dynamic Constraints |       Work      
+Src  Proc. InQueue |  Leaves   Expl. | BestBound       BestSol              Gap |   Cuts   InLp Confl. | LpIters     Time
+
+      1567      56       755  14.10%   0               inf                  inf    10191    136   7950    555963   106.1s
+      1665      55       802  14.48%   0               inf                  inf     9166    150   8442    588625   111.2s
+      1740      55       841  17.46%   0               inf                  inf    10323    111   8844    624655   116.3s
+      1829      53       884  19.06%   0               inf                  inf     9454    128   9270    659850   121.4s
+      1905      52       925  22.43%   0               inf                  inf     9999    134   9699    695064   126.5s
+      1987      46       966  26.28%   0               inf                  inf     9579    103   9832    729520   131.5s
+      2052      40      1003  30.08%   0               inf                  inf     9431    144   9829    764654   136.6s
+      2130      33      1045  44.78%   0               inf                  inf     9078    101   9526    799900   141.7s
+      2193      27      1081  51.25%   0               inf                  inf     9618    109   9866    835540   146.8s
+      2219       0      1107 100.00%   inf             inf                  inf     9412    131  10089    872672   151.6s
+
+Solving report
+  Status            Infeasible
+  Primal bound      inf
+  Dual bound        inf
+  Gap               inf
+  P-D integral      0
+  Solution status   -
+  Timing            151.62
+  Max sub-MIP depth 3
+  Nodes             2219
+  Repair LPs        0
+  LP iterations     872672
+                    0 (strong br.)
+                    27151 (separation)
+                    174589 (heuristics)
+{'arguments': {'P': 10, 'j': 1, 'cap': 184, 'engine': 'highs', 'seconds': 600, 'workers': 1, 'full': False, 'fixed': None, 'name': 'J1_cap184_highs'}, 'units': {'s': 132, 'm': 132, 'l': 136, 'c': 108, 'p': 1437}, 'variables': 4513, 'constraints': 6997, 'matrix_sha256': '5515f3b5b142921606ab953752723fb5e62c0edc95d70ec6480a53fba2a99335', 'source_sha256': {'geometry.py': '5d35b6c04cee936c4c2c7f81d4e163ae4daef1bd8cf55c4a5fc12c7983435f8f', 'model.py': '67e9a0efe49377d3f3cd02297f4346d6aaea4befab95fa8ec00e1f5dfdbf813c'}, 'build_seconds': 0.2556692979997024, 'status': 'INFEASIBLE', 'message': 'The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)', 'version': '1.18.1', 'seconds': 152.0494136299967}

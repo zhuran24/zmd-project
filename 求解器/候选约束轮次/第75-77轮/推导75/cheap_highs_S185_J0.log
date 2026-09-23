@@ -1,0 +1,46 @@
+BUILT {"engine": "highs", "S_branch": 185, "J_branch": 0, "groups": true, "workers": 1, "seed": 75, "source_sha256": "3cd4239dfbd3c690b0d594e983975092454c8e0ffbc0f5274fdcd0d1ea4fa613", "wrapper_sha256": "620abf71f03db41cd054001362619e03d1c13191a6e5c8dd42e403e172e77eb6", "time_limit": 180.0, "build_seconds": 2.406293744003051, "domain_count": 3970, "domain_sha256": "1efb89cc4c937592424b4ab347be9233be1bf847ee52bc953dd7c119b6f548a1", "matrix_shape": [12028, 12130], "nonzeros": 996019, "matrix_sha256": "aaf6c81c1a8b3d5b01fa67b1fc0753dcf2a7fb632323d47697f639be17ae0d25"}
+Running HiGHS 1.12.0 (git hash: 4f96ee8f4): Copyright (c) 2025 HiGHS under MIT licence terms
+MIP has 12028 rows; 12130 cols; 996019 nonzeros; 8500 integer variables (8100 binary)
+Coefficient ranges:
+  Matrix  [1e+00, 1e+01]
+  Cost    [0e+00, 0e+00]
+  Bound   [1e+00, 9e+00]
+  RHS     [1e+00, 2e+02]
+Presolving model
+11954 rows, 11826 cols, 962616 nonzeros  0s
+10498 rows, 11645 cols, 960619 nonzeros  18s
+Presolve reductions: rows 10498(-1530); columns 11645(-485); nonzeros 960619(-35400) 
+Objective function is integral with scale 1
+
+Solving MIP model with:
+   10498 rows
+   11645 cols (7865 binary, 400 integer, 3380 implied int., 0 continuous, 0 domain fixed)
+   960619 nonzeros
+
+Src: B => Branching; C => Central rounding; F => Feasibility pump; H => Heuristic;
+     I => Shifting; J => Feasibility jump; L => Sub-MIP; P => Empty MIP; R => Randomized rounding;
+     S => Solve LP; T => Evaluate node; U => Unbounded; X => User solution; Y => HiGHS solution;
+     Z => ZI Round; l => Trivial lower; p => Trivial point; u => Trivial upper; z => Trivial zero
+
+        Nodes      |    B&B Tree     |            Objective Bounds              |  Dynamic Constraints |       Work      
+Src  Proc. InQueue |  Leaves   Expl. | BestBound       BestSol              Gap |   Cuts   InLp Confl. | LpIters     Time
+
+         0       0         0   0.00%   0               inf                  inf        0      0      0         0    20.2s
+         0       0         0   0.00%   0               inf                  inf        0      0      2     56772   180.0s
+
+Solving report
+  Status            Time limit reached
+  Primal bound      inf
+  Dual bound        0
+  Gap               inf
+  P-D integral      0
+  Solution status   -
+  Timing            180.03
+  Max sub-MIP depth 0
+  Nodes             0
+  Repair LPs        0
+  LP iterations     56772
+                    0 (strong br.)
+                    0 (separation)
+                    0 (heuristics)
+{"engine": "highs", "S_branch": 185, "J_branch": 0, "groups": true, "workers": 1, "seed": 75, "source_sha256": "3cd4239dfbd3c690b0d594e983975092454c8e0ffbc0f5274fdcd0d1ea4fa613", "wrapper_sha256": "620abf71f03db41cd054001362619e03d1c13191a6e5c8dd42e403e172e77eb6", "time_limit": 180.0, "build_seconds": 2.406293744003051, "domain_count": 3970, "domain_sha256": "1efb89cc4c937592424b4ab347be9233be1bf847ee52bc953dd7c119b6f548a1", "matrix_shape": [12028, 12130], "nonzeros": 996019, "matrix_sha256": "aaf6c81c1a8b3d5b01fa67b1fc0753dcf2a7fb632323d47697f639be17ae0d25", "status": "UNKNOWN", "message": "Time limit reached. (HiGHS Status 13: model_status is Time limit reached; primal_status is None)", "seconds": 182.66840485700232}

@@ -1,0 +1,18 @@
+{
+  "arguments": {
+    "P": 11,
+    "j": null,
+    "cap": 187,
+    "name": "P11_quick"
+  },
+  "status": "INFEASIBLE",
+  "seconds": 17.046962111999164,
+  "stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 4248\nbooleans: 3790\nconflicts: 998\nbranches: 1239090\npropagations: 9716058\ninteger_propagations: 17041276\nrestarts: 44\nlp_iterations: 57937\nwalltime: 16.6928\nusertime: 16.6928\ndeterministic_time: 17.1304\ngap_integral: 0\n",
+  "version": "9.15.6755",
+  "matrix_sha256": "f1360532814f093e2aca735d0c5bd9a18841de7f66ff9341e281f5ae91188406",
+  "source_sha256": {
+    "geometry.py": "5d35b6c04cee936c4c2c7f81d4e163ae4daef1bd8cf55c4a5fc12c7983435f8f",
+    "model.py": "67e9a0efe49377d3f3cd02297f4346d6aaea4befab95fa8ec00e1f5dfdbf813c",
+    "quick.py": "2ac146022e59fed93d918fc9b374ac00653efd0a6c2903852e938f2f5a03ec5d"
+  }
+}

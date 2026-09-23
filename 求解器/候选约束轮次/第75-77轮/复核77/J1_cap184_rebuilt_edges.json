@@ -1,0 +1,17 @@
+{
+  "J": 1,
+  "cap": 184,
+  "units": 1945,
+  "rows": 5653,
+  "variables": 4540,
+  "model_sha256": "34ace6ad2864a57d85b99199a596930f92e2673824345102d28c77342804fc43",
+  "code_sha256": {
+    "geometry77.py": "555274684b5cb4428d2b42791cb44bbae35c8207750b96827d95150195e0efc1",
+    "model77.py": "7bb9554c9cd727e6a85c03dab508493defbd31ec68762ae2b3eb867fe9723953",
+    "edges77.py": "ddf1b80fd195b96da49fcbff40dbf39dfe7e48f247d089ae8fbcb60dbe9f38a6",
+    "tighter77.py": "0bf330542408bab50dfb1edb3d994a6c53ceeb7767d46226115c060addbba5eb"
+  },
+  "status": "INFEASIBLE",
+  "stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 2853\nbooleans: 2183\nconflicts: 0\nbranches: 4366\npropagations: 169438\ninteger_propagations: 272510\nrestarts: 0\nlp_iterations: 1139\nwalltime: 0.568956\nusertime: 0.568956\ndeterministic_time: 1.46398\ngap_integral: 0\n",
+  "seconds": 0.8345325249974849
+}

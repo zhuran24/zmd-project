@@ -1,0 +1,32 @@
+{
+  "arguments": {
+    "P": 12,
+    "j": null,
+    "cap": 187,
+    "engine": "cp",
+    "seconds": 600,
+    "workers": 2,
+    "full": false,
+    "fixed": null,
+    "name": "P12_cap187"
+  },
+  "units": {
+    "s": 132,
+    "m": 132,
+    "l": 136,
+    "c": 108,
+    "p": 1482
+  },
+  "variables": 4575,
+  "constraints": 7201,
+  "matrix_sha256": "180a1ea34277f0976c6e6048b8398aea294f9a7dde07095786b04d0d420d9498",
+  "source_sha256": {
+    "geometry.py": "5d35b6c04cee936c4c2c7f81d4e163ae4daef1bd8cf55c4a5fc12c7983435f8f",
+    "model.py": "67e9a0efe49377d3f3cd02297f4346d6aaea4befab95fa8ec00e1f5dfdbf813c"
+  },
+  "build_seconds": 0.23967855700175278,
+  "status": "INFEASIBLE",
+  "version": "9.15.6755",
+  "stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 3892\nbooleans: 3799\nconflicts: 232\nbranches: 147540\npropagations: 1405432\ninteger_propagations: 2065233\nrestarts: 2\nlp_iterations: 9375\nwalltime: 2.27187\nusertime: 2.27187\ndeterministic_time: 5.68514\ngap_integral: 0\n",
+  "seconds": 2.7625544390029972
+}

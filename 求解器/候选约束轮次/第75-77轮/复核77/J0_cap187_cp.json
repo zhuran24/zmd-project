@@ -1,0 +1,19 @@
+{
+  "engine": "cp",
+  "J": 0,
+  "cap": 187,
+  "full": false,
+  "fixed": null,
+  "edge_tables": false,
+  "assumed_S_lower_bound": null,
+  "units": 1945,
+  "variables": 4514,
+  "rows": 5633,
+  "model_sha256": "9dfd4c48c9fc512dc09f474a53db61ba7f21b8717632262bd5129397fbf6293a",
+  "source_sha256": "7bb9554c9cd727e6a85c03dab508493defbd31ec68762ae2b3eb867fe9723953",
+  "build_seconds": 0.11785978499392513,
+  "status": "INFEASIBLE",
+  "solver_version": "9.15.6755",
+  "stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 4034\nbooleans: 3253\nconflicts: 9185\nbranches: 6057967\npropagations: 92262016\ninteger_propagations: 158968498\nrestarts: 51\nlp_iterations: 288695\nwalltime: 112.276\nusertime: 112.276\ndeterministic_time: 767.115\ngap_integral: 0\n",
+  "seconds": 112.64789924499928
+}

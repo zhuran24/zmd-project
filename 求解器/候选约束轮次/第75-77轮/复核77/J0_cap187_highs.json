@@ -1,0 +1,19 @@
+{
+  "engine": "highs",
+  "J": 0,
+  "cap": 187,
+  "full": false,
+  "fixed": null,
+  "edge_tables": false,
+  "assumed_S_lower_bound": null,
+  "units": 1945,
+  "variables": 4514,
+  "rows": 5633,
+  "model_sha256": "9dfd4c48c9fc512dc09f474a53db61ba7f21b8717632262bd5129397fbf6293a",
+  "source_sha256": "7bb9554c9cd727e6a85c03dab508493defbd31ec68762ae2b3eb867fe9723953",
+  "build_seconds": 0.11840686899085995,
+  "status": "INFEASIBLE",
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "solver_version": "1.18.1",
+  "seconds": 367.6187667560007
+}

@@ -1,0 +1,15 @@
+{
+  "engine": "native",
+  "cap": 187,
+  "J": 0,
+  "scope": "M0 safe projection, S <= cap",
+  "workers": 6,
+  "time_limit": 600.0,
+  "script_sha256": "61b0464b83e16fe41d78e8556dde3e0e783d8890796487dd3844d5ad8537794a",
+  "model_sha256": "a45fdf1701444211af245b37c160073faaa074b0f30da683525e447aae1b5cb6",
+  "domain_count": 1945,
+  "build_seconds": 0.34308864299964625,
+  "status": "INFEASIBLE",
+  "stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 3955\nbooleans: 3516\nconflicts: 2636\nbranches: 1127624\npropagations: 22843908\ninteger_propagations: 38655127\nrestarts: 111\nlp_iterations: 114624\nwalltime: 34.6943\nusertime: 34.6943\ndeterministic_time: 279.365\ngap_integral: 0\n",
+  "seconds": 35.038797091998276
+}

@@ -1,0 +1,301 @@
+{
+  "arguments": {
+    "P": 10,
+    "j": 1,
+    "cap": 185,
+    "engine": "cp",
+    "seconds": 60,
+    "workers": 1,
+    "full": true,
+    "fixed": "求解器/候选约束轮次/第75-77轮/推导75/complete_subsets_S185.json",
+    "name": "replay_185_cp"
+  },
+  "units": {
+    "s": 132,
+    "m": 132,
+    "l": 136,
+    "c": 108,
+    "p": 3462
+  },
+  "variables": 8455,
+  "constraints": 12884,
+  "matrix_sha256": "70dd96083f957ca58f28aba5c11c55c53482d32ea35399ed1864ba669789e1cb",
+  "source_sha256": {
+    "geometry.py": "5d35b6c04cee936c4c2c7f81d4e163ae4daef1bd8cf55c4a5fc12c7983435f8f",
+    "model.py": "67e9a0efe49377d3f3cd02297f4346d6aaea4befab95fa8ec00e1f5dfdbf813c"
+  },
+  "build_seconds": 0.26013020500249695,
+  "status": "OPTIMAL",
+  "version": "9.15.6755",
+  "stats": "CpSolverResponse summary:\nstatus: OPTIMAL\nobjective: 0\nbest_bound: 0\nintegers: 0\nbooleans: 0\nconflicts: 0\nbranches: 0\npropagations: 0\ninteger_propagations: 0\nrestarts: 0\nlp_iterations: 0\nwalltime: 0.0356184\nusertime: 0.0356184\ndeterministic_time: 0.00134992\ngap_integral: 0\nsolution_fingerprint: 0xb2dea583ff79b4e1\n",
+  "S": 185,
+  "chosen": [
+    {
+      "kind": "s",
+      "x": 45,
+      "y": 67,
+      "w": 3,
+      "h": 3,
+      "axis": "h"
+    },
+    {
+      "kind": "s",
+      "x": 67,
+      "y": 13,
+      "w": 3,
+      "h": 3,
+      "axis": "v"
+    },
+    {
+      "kind": "m",
+      "x": 2,
+      "y": 65,
+      "w": 5,
+      "h": 5,
+      "axis": "h"
+    },
+    {
+      "kind": "m",
+      "x": 9,
+      "y": 65,
+      "w": 5,
+      "h": 5,
+      "axis": "h"
+    },
+    {
+      "kind": "m",
+      "x": 15,
+      "y": 65,
+      "w": 5,
+      "h": 5,
+      "axis": "h"
+    },
+    {
+      "kind": "m",
+      "x": 21,
+      "y": 65,
+      "w": 5,
+      "h": 5,
+      "axis": "h"
+    },
+    {
+      "kind": "m",
+      "x": 27,
+      "y": 65,
+      "w": 5,
+      "h": 5,
+      "axis": "h"
+    },
+    {
+      "kind": "m",
+      "x": 33,
+      "y": 65,
+      "w": 5,
+      "h": 5,
+      "axis": "h"
+    },
+    {
+      "kind": "m",
+      "x": 39,
+      "y": 65,
+      "w": 5,
+      "h": 5,
+      "axis": "h"
+    },
+    {
+      "kind": "m",
+      "x": 50,
+      "y": 12,
+      "w": 5,
+      "h": 5,
+      "axis": "h"
+    },
+    {
+      "kind": "m",
+      "x": 56,
+      "y": 12,
+      "w": 5,
+      "h": 5,
+      "axis": "h"
+    },
+    {
+      "kind": "m",
+      "x": 62,
+      "y": 12,
+      "w": 5,
+      "h": 5,
+      "axis": "h"
+    },
+    {
+      "kind": "m",
+      "x": 44,
+      "y": 22,
+      "w": 5,
+      "h": 5,
+      "axis": "v"
+    },
+    {
+      "kind": "m",
+      "x": 44,
+      "y": 28,
+      "w": 5,
+      "h": 5,
+      "axis": "v"
+    },
+    {
+      "kind": "m",
+      "x": 44,
+      "y": 44,
+      "w": 5,
+      "h": 5,
+      "axis": "v"
+    },
+    {
+      "kind": "m",
+      "x": 44,
+      "y": 50,
+      "w": 5,
+      "h": 5,
+      "axis": "v"
+    },
+    {
+      "kind": "m",
+      "x": 44,
+      "y": 56,
+      "w": 5,
+      "h": 5,
+      "axis": "v"
+    },
+    {
+      "kind": "m",
+      "x": 44,
+      "y": 62,
+      "w": 5,
+      "h": 5,
+      "axis": "v"
+    },
+    {
+      "kind": "m",
+      "x": 65,
+      "y": 2,
+      "w": 5,
+      "h": 5,
+      "axis": "v"
+    },
+    {
+      "kind": "l",
+      "x": 64,
+      "y": 8,
+      "w": 6,
+      "h": 4,
+      "axis": "v"
+    },
+    {
+      "kind": "l",
+      "x": 45,
+      "y": 16,
+      "w": 4,
+      "h": 6,
+      "axis": "h"
+    },
+    {
+      "kind": "c",
+      "x": 40,
+      "y": 34,
+      "w": 9,
+      "h": 9,
+      "axis": "v"
+    },
+    {
+      "kind": "p",
+      "x": 7,
+      "y": 8,
+      "w": 2,
+      "h": 2,
+      "axis": "-",
+      "loss": 0
+    },
+    {
+      "kind": "p",
+      "x": 7,
+      "y": 68,
+      "w": 2,
+      "h": 2,
+      "axis": "-",
+      "loss": 10
+    },
+    {
+      "kind": "p",
+      "x": 10,
+      "y": 39,
+      "w": 2,
+      "h": 2,
+      "axis": "-",
+      "loss": 0
+    },
+    {
+      "kind": "p",
+      "x": 22,
+      "y": 60,
+      "w": 2,
+      "h": 2,
+      "axis": "-",
+      "loss": 0
+    },
+    {
+      "kind": "p",
+      "x": 38,
+      "y": 33,
+      "w": 2,
+      "h": 2,
+      "axis": "-",
+      "loss": 0
+    },
+    {
+      "kind": "p",
+      "x": 39,
+      "y": 21,
+      "w": 2,
+      "h": 2,
+      "axis": "-",
+      "loss": 0
+    },
+    {
+      "kind": "p",
+      "x": 39,
+      "y": 61,
+      "w": 2,
+      "h": 2,
+      "axis": "-",
+      "loss": 0
+    },
+    {
+      "kind": "p",
+      "x": 40,
+      "y": 50,
+      "w": 2,
+      "h": 2,
+      "axis": "-",
+      "loss": 0
+    },
+    {
+      "kind": "p",
+      "x": 46,
+      "y": 7,
+      "w": 2,
+      "h": 2,
+      "axis": "-",
+      "loss": 0
+    },
+    {
+      "kind": "p",
+      "x": 61,
+      "y": 8,
+      "w": 2,
+      "h": 2,
+      "axis": "-",
+      "loss": 0
+    }
+  ],
+  "seconds": 0.5824258909997297
+}

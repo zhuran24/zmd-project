@@ -1,0 +1,210 @@
+{
+  "wall": [
+    {
+      "P": 10,
+      "mask": [
+        0,
+        0
+      ],
+      "min_S": 180
+    },
+    {
+      "P": 11,
+      "mask": [
+        0,
+        0
+      ],
+      "min_S": 190
+    },
+    {
+      "P": 12,
+      "mask": [
+        0,
+        0
+      ],
+      "min_S": 199
+    },
+    {
+      "P": 10,
+      "mask": [
+        0,
+        1
+      ],
+      "status": "EXCLUDED_BY_CORNER_LOSS",
+      "loss": 15,
+      "budget": 13
+    },
+    {
+      "P": 11,
+      "mask": [
+        0,
+        1
+      ],
+      "min_S": 189
+    },
+    {
+      "P": 12,
+      "mask": [
+        0,
+        1
+      ],
+      "min_S": 199
+    },
+    {
+      "P": 10,
+      "mask": [
+        1,
+        0
+      ],
+      "status": "EXCLUDED_BY_CORNER_LOSS",
+      "loss": 15,
+      "budget": 13
+    },
+    {
+      "P": 11,
+      "mask": [
+        1,
+        0
+      ],
+      "min_S": 189
+    },
+    {
+      "P": 12,
+      "mask": [
+        1,
+        0
+      ],
+      "min_S": 198
+    },
+    {
+      "P": 10,
+      "mask": [
+        1,
+        1
+      ],
+      "status": "EXCLUDED_BY_CORNER_LOSS",
+      "loss": 30,
+      "budget": 13
+    },
+    {
+      "P": 11,
+      "mask": [
+        1,
+        1
+      ],
+      "min_S": 191
+    },
+    {
+      "P": 12,
+      "mask": [
+        1,
+        1
+      ],
+      "min_S": 200
+    }
+  ],
+  "local": [
+    {
+      "P": 10,
+      "mask": [
+        0,
+        0
+      ],
+      "min_S": 180
+    },
+    {
+      "P": 11,
+      "mask": [
+        0,
+        0
+      ],
+      "min_S": 190
+    },
+    {
+      "P": 12,
+      "mask": [
+        0,
+        0
+      ],
+      "min_S": 199
+    },
+    {
+      "P": 10,
+      "mask": [
+        0,
+        1
+      ],
+      "status": "EXCLUDED_BY_CORNER_LOSS",
+      "loss": 16,
+      "budget": 13
+    },
+    {
+      "P": 11,
+      "mask": [
+        0,
+        1
+      ],
+      "min_S": 189
+    },
+    {
+      "P": 12,
+      "mask": [
+        0,
+        1
+      ],
+      "min_S": 199
+    },
+    {
+      "P": 10,
+      "mask": [
+        1,
+        0
+      ],
+      "status": "EXCLUDED_BY_CORNER_LOSS",
+      "loss": 15,
+      "budget": 13
+    },
+    {
+      "P": 11,
+      "mask": [
+        1,
+        0
+      ],
+      "min_S": 189
+    },
+    {
+      "P": 12,
+      "mask": [
+        1,
+        0
+      ],
+      "min_S": 198
+    },
+    {
+      "P": 10,
+      "mask": [
+        1,
+        1
+      ],
+      "status": "EXCLUDED_BY_CORNER_LOSS",
+      "loss": 31,
+      "budget": 13
+    },
+    {
+      "P": 11,
+      "mask": [
+        1,
+        1
+      ],
+      "min_S": 191
+    },
+    {
+      "P": 12,
+      "mask": [
+        1,
+        1
+      ],
+      "min_S": 200
+    }
+  ]
+}
