@@ -1,0 +1,13 @@
+{
+  "model": "compact_ore",
+  "rect": [
+    49,
+    6,
+    21,
+    53
+  ],
+  "validation_error": "",
+  "model_stats": "satisfaction model '': (model_fingerprint: 0x41f709f76b65542e)\n#Variables: 80'416 (59'047 primary variables)\n  - 75'653 Booleans in [0,1]\n  - 4'762 in [0,12]\n  - 1 in [10,12]\n#kBoolAnd: 28'586 (#enforced: 28'586) (#literals: 57'172)\n#kBoolOr: 35'889 (#enforced: 35'889) (#literals: 165'369)\n#kExactlyOne: 1 (#literals: 47)\n#kLinear1: 316 (#enforced: 175)\n#kLinear2: 64'285 (#enforced: 1'365)\n#kLinear3: 3'986 (#enforced: 2'264)\n#kLinearN: 75'860 (#enforced: 22'161) (#terms: 1'397'326)",
+  "build_seconds": 3.771535516003496,
+  "no_solver_called": true
+}

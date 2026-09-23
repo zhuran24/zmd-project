@@ -1,0 +1,16 @@
+{
+  "observed_utc": "2026-09-23T00:58:44.042019+00:00",
+  "component": "exported-witness checker only",
+  "bug": "machine shape variable overwrote warehouse port list",
+  "before_sha256": "08e3fdb8b81cf50c6a1a0f1c16c679c7ffab8a1d084bdc56be6718b7f76dfbc0",
+  "after_sha256": "9c8c334bd7f96a4b7d3e78ee6cc5504ee312ae73c5020d69035584a3f20ab77e",
+  "archived_before": "inputs/check_solution.before_variable_fix.py",
+  "before_matches_recorded_run_hash": true,
+  "before_exception": "TypeError: cannot unpack non-iterable int object",
+  "before_log": "logs/checker_negative_before_fix.log",
+  "after_log": "logs/checker_negative_after_fix.log",
+  "negative_control_rejected": true,
+  "negative_control_errors": 24,
+  "solver_model_changed": false,
+  "all_finished_position_runs_unknown_at_fix": true
+}

@@ -1,0 +1,23 @@
+{
+  "ok": true,
+  "errors": [],
+  "warehouse_patterns": 47,
+  "port_cases": 95598,
+  "power_overlap_cases": 55488,
+  "machine_count": 217,
+  "machine_area": 3291,
+  "all_machine_input": "609/2",
+  "all_machine_output": "5073/20",
+  "all_transport_source": "6113/20",
+  "transport_upper_by_P": {
+    "10": 237,
+    "11": 233,
+    "12": 229
+  },
+  "source_hashes": {
+    "flow_model.py": "b38aea2136ea3dd96161bd70009a0a4b5f5d05ce48c96df5f3347f0cbbb28033",
+    "check_solution.py": "9c8c334bd7f96a4b7d3e78ee6cc5504ee312ae73c5020d69035584a3f20ab77e",
+    "filter_positions.py": "9bceabcf7f7a9371d3bf469c3cc09611b29dec566f4861e491212e27a2c22a7e",
+    "geometry.py": "a0f700fd182a653795d9c4b5980818c289ebd0b01cee483c41132963b258ddff"
+  }
+}

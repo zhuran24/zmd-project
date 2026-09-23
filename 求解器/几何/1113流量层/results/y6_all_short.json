@@ -1,0 +1,149 @@
+{
+  "tag": "y6_all_short",
+  "rect": [
+    49,
+    6,
+    21,
+    53
+  ],
+  "layer": "all",
+  "cut_mode": "formal",
+  "started_utc": "2026-09-22T22:08:14.735167+00:00",
+  "ended_utc": "2026-09-22T22:09:50.355761+00:00",
+  "args": {
+    "y": 6,
+    "layer": "all",
+    "stage": "short",
+    "seconds": 90.0,
+    "workers": 8,
+    "seed": 20260922,
+    "probing": 0,
+    "symmetry": 2,
+    "linearization": 2,
+    "cut_mode": "formal",
+    "hint": null
+  },
+  "parameters": "random_seed: 20260922\nmax_time_in_seconds: 90\nlog_search_progress: true\nlinearization_level: 2\nnum_search_workers: 8\ncp_model_probing_level: 0\nsymmetry_level: 2\nlog_to_stdout: false",
+  "status": "UNKNOWN",
+  "solve_seconds": 90.65834529999847,
+  "solver_wall_seconds": 90.629912395,
+  "build_seconds": 4.536629299000197,
+  "total_seconds": 95.62074411299545,
+  "response_stats": "CpSolverResponse summary:\nstatus: UNKNOWN\nobjective: 0\nbest_bound: 0\nintegers: 351247\nbooleans: 336779\nconflicts: 2119\nbranches: 33568\npropagations: 57857616\ninteger_propagations: 58209395\nrestarts: 1\nlp_iterations: 109021\nwalltime: 90.6299\nusertime: 90.6299\ndeterministic_time: 531.191\ngap_integral: 0\n",
+  "model_stats": "satisfaction model '': (model_fingerprint: 0x4e9048c11fcc5ed6)\n#Variables: 360'991 (307'285 primary variables)\n  - 209'849 Booleans in [0,1]\n  - 11'552 in [0,4]\n  - 4'762 in [0,12]\n  - 86'259 in [0,20]\n  - 12'732 in [0,40]\n  - 24'284 in [0,60]\n  - 11'552 in [0,80]\n  - 1 in [10,12]\n#kBoolAnd: 28'586 (#enforced: 28'586) (#literals: 57'172)\n#kBoolOr: 35'889 (#enforced: 35'889) (#literals: 165'369)\n#kExactlyOne: 1 (#literals: 47)\n#kLinear1: 72'170 (#enforced: 357)\n#kLinear2: 265'714 (#enforced: 1'813)\n#kLinear3: 69'787 (#enforced: 66'423)\n#kLinearN: 336'632 (#enforced: 213'486) (#terms: 4'053'903)",
+  "model_sha256": "101e66c8911bb52fb4a75a9388045baf0ba976237c98340da2d5f71fc446ecd3",
+  "model_file": "/home/zhuran24/zmd-research-fresh/求解器/几何/1113流量层/models/y6_all_short.pb",
+  "load_samples": [
+    {
+      "utc": "2026-09-22T22:08:14.735207+00:00",
+      "load": [
+        9.359375,
+        8.59033203125,
+        4.94873046875
+      ],
+      "rss_bytes": 105426944,
+      "cpu_seconds": 0.16999999999999998,
+      "available_bytes": 41393606656
+    },
+    {
+      "utc": "2026-09-22T22:08:14.756094+00:00",
+      "load": [
+        9.359375,
+        8.59033203125,
+        4.94873046875
+      ],
+      "rss_bytes": 110440448,
+      "cpu_seconds": 0.21,
+      "available_bytes": 41378938880
+    },
+    {
+      "utc": "2026-09-22T22:08:29.792072+00:00",
+      "load": [
+        8.8427734375,
+        8.51171875,
+        4.982421875
+      ],
+      "rss_bytes": 1411457024,
+      "cpu_seconds": 15.209999999999999,
+      "available_bytes": 40179130368
+    },
+    {
+      "utc": "2026-09-22T22:08:44.792445+00:00",
+      "load": [
+        10.0654296875,
+        8.7978515625,
+        5.13330078125
+      ],
+      "rss_bytes": 10632642560,
+      "cpu_seconds": 116.96000000000001,
+      "available_bytes": 31578054656
+    },
+    {
+      "utc": "2026-09-22T22:08:59.792883+00:00",
+      "load": [
+        10.9560546875,
+        9.05419921875,
+        5.2763671875
+      ],
+      "rss_bytes": 11058233344,
+      "cpu_seconds": 247.12,
+      "available_bytes": 31383777280
+    },
+    {
+      "utc": "2026-09-22T22:09:14.793286+00:00",
+      "load": [
+        12.1474609375,
+        9.41162109375,
+        5.4541015625
+      ],
+      "rss_bytes": 11084050432,
+      "cpu_seconds": 374.06,
+      "available_bytes": 31111757824
+    },
+    {
+      "utc": "2026-09-22T22:09:29.793712+00:00",
+      "load": [
+        12.31787109375,
+        9.58740234375,
+        5.57568359375
+      ],
+      "rss_bytes": 10777313280,
+      "cpu_seconds": 495.29999999999995,
+      "available_bytes": 31182766080
+    },
+    {
+      "utc": "2026-09-22T22:09:44.794120+00:00",
+      "load": [
+        12.9248046875,
+        9.85400390625,
+        5.7275390625
+      ],
+      "rss_bytes": 10585128960,
+      "cpu_seconds": 614.33,
+      "available_bytes": 31097716736
+    },
+    {
+      "utc": "2026-09-22T22:09:50.355377+00:00",
+      "load": [
+        12.93115234375,
+        9.90625,
+        5.7666015625
+      ],
+      "rss_bytes": 6888255488,
+      "cpu_seconds": 653.87,
+      "available_bytes": 34897793024
+    }
+  ],
+  "environment": {
+    "python": "3.14.7",
+    "ortools": "9.15.6755",
+    "cpu_count": 24,
+    "platform": "Linux-7.2.6-1-cachyos-x86_64-with-glibc2.44"
+  },
+  "code_hashes": {
+    "check_solution.py": "0ed37ac846add63b501af90b795592a33052746830eb39812ba47a1b99b96658",
+    "filter_positions.py": "9bceabcf7f7a9371d3bf469c3cc09611b29dec566f4861e491212e27a2c22a7e",
+    "flow_model.py": "b38aea2136ea3dd96161bd70009a0a4b5f5d05ce48c96df5f3347f0cbbb28033",
+    "geometry.py": "a0f700fd182a653795d9c4b5980818c289ebd0b01cee483c41132963b258ddff"
+  }
+}

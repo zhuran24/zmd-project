@@ -1,0 +1,30 @@
+[
+  {
+    "y": 6,
+    "model_hash_equal": true,
+    "short_status": "UNKNOWN",
+    "long_status": "UNKNOWN",
+    "long_seconds": 600.2860923120024
+  },
+  {
+    "y": 7,
+    "model_hash_equal": true,
+    "short_status": "UNKNOWN",
+    "long_status": "UNKNOWN",
+    "long_seconds": 600.2794294299965
+  },
+  {
+    "y": 9,
+    "model_hash_equal": true,
+    "short_status": "UNKNOWN",
+    "long_status": "UNKNOWN",
+    "long_seconds": 600.6986769319992
+  },
+  {
+    "y": 17,
+    "model_hash_equal": true,
+    "short_status": "UNKNOWN",
+    "long_status": "UNKNOWN",
+    "long_seconds": 600.3059632850054
+  }
+]

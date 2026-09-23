@@ -1,0 +1,323 @@
+{
+  "tag": "y17_all_all_retry",
+  "rect": [
+    49,
+    17,
+    21,
+    53
+  ],
+  "layer": "all",
+  "cut_mode": "formal",
+  "started_utc": "2026-09-23T01:34:39.322701+00:00",
+  "ended_utc": "2026-09-23T01:39:45.136424+00:00",
+  "args": {
+    "y": 17,
+    "layer": "all",
+    "stage": "all_retry",
+    "seconds": 300.0,
+    "workers": 8,
+    "seed": 20260923,
+    "probing": 0,
+    "symmetry": 2,
+    "linearization": 2,
+    "cut_mode": "formal",
+    "hint": null
+  },
+  "parameters": "random_seed: 20260923\nmax_time_in_seconds: 300\nlog_search_progress: true\nlinearization_level: 2\nstop_after_first_solution: true\nnum_search_workers: 8\ncp_model_probing_level: 0\nsymmetry_level: 2\nlog_to_stdout: false",
+  "status": "UNKNOWN",
+  "solve_seconds": 300.6582616939995,
+  "solver_wall_seconds": 300.590494938,
+  "build_seconds": 4.658448784997745,
+  "total_seconds": 305.8137724199987,
+  "response_stats": "CpSolverResponse summary:\nstatus: UNKNOWN\nobjective: 297000\nbest_bound: 41\nintegers: 359850\nbooleans: 344573\nconflicts: 2306\nbranches: 74609\npropagations: 74193022\ninteger_propagations: 74581367\nrestarts: 1\nlp_iterations: 565225\nwalltime: 300.59\nusertime: 300.59\ndeterministic_time: 2146.4\ngap_integral: 26929.7\n",
+  "model_stats": "optimization model '': (model_fingerprint: 0x5403cdef401387b1)\n#Variables: 368'792 (#ints: 14'868 in objective) (314'085 primary variables)\n  - 214'377 Booleans in [0,1]\n  - 11'952 in [0,4]\n  - 4'762 in [0,12]\n  - 87'844 in [0,20]\n  - 12'976 in [0,40]\n  - 24'928 in [0,60]\n  - 11'952 in [0,80]\n  - 1 in [10,12]\n#kBoolAnd: 29'366 (#enforced: 29'366) (#literals: 58'732)\n#kBoolOr: 36'910 (#enforced: 36'910) (#literals: 170'418)\n#kExactlyOne: 1 (#literals: 47)\n#kLinear1: 74'217 (#enforced: 316)\n#kLinear2: 269'516 (#enforced: 1'500)\n#kLinear3: 71'519 (#enforced: 67'645)\n#kLinearN: 344'615 (#enforced: 219'198) (#terms: 4'218'599)",
+  "model_sha256": "88f28419e0795f6af19fe0e169c4c92f449f6b0b844a7797036dcdf495919413",
+  "model_file": "/home/zhuran24/zmd-research-fresh/求解器/几何/1113流量层/models/y17_all_all_retry.pb",
+  "load_samples": [
+    {
+      "utc": "2026-09-23T01:34:39.322732+00:00",
+      "load": [
+        8.57470703125,
+        8.541015625,
+        9.427734375
+      ],
+      "rss_bytes": 102715392,
+      "cpu_seconds": 0.16999999999999998,
+      "available_bytes": 40202100736
+    },
+    {
+      "utc": "2026-09-23T01:34:39.343401+00:00",
+      "load": [
+        8.57470703125,
+        8.541015625,
+        9.427734375
+      ],
+      "rss_bytes": 107806720,
+      "cpu_seconds": 0.21,
+      "available_bytes": 40211685376
+    },
+    {
+      "utc": "2026-09-23T01:34:54.394533+00:00",
+      "load": [
+        7.11767578125,
+        8.2197265625,
+        9.30810546875
+      ],
+      "rss_bytes": 1457950720,
+      "cpu_seconds": 15.22,
+      "available_bytes": 38220509184
+    },
+    {
+      "utc": "2026-09-23T01:35:09.394912+00:00",
+      "load": [
+        8.11328125,
+        8.388671875,
+        9.3466796875
+      ],
+      "rss_bytes": 13130596352,
+      "cpu_seconds": 97.89,
+      "available_bytes": 26793459712
+    },
+    {
+      "utc": "2026-09-23T01:35:24.397065+00:00",
+      "load": [
+        9.0966796875,
+        8.59765625,
+        9.39990234375
+      ],
+      "rss_bytes": 13370859520,
+      "cpu_seconds": 209.31,
+      "available_bytes": 26593226752
+    },
+    {
+      "utc": "2026-09-23T01:35:39.397502+00:00",
+      "load": [
+        8.86669921875,
+        8.56884765625,
+        9.376953125
+      ],
+      "rss_bytes": 13432127488,
+      "cpu_seconds": 326.07,
+      "available_bytes": 27746082816
+    },
+    {
+      "utc": "2026-09-23T01:35:54.397904+00:00",
+      "load": [
+        8.75439453125,
+        8.55712890625,
+        9.359375
+      ],
+      "rss_bytes": 13434179584,
+      "cpu_seconds": 444.3,
+      "available_bytes": 27898171392
+    },
+    {
+      "utc": "2026-09-23T01:36:09.398327+00:00",
+      "load": [
+        8.72900390625,
+        8.5625,
+        9.34814453125
+      ],
+      "rss_bytes": 13518880768,
+      "cpu_seconds": 563.51,
+      "available_bytes": 27833835520
+    },
+    {
+      "utc": "2026-09-23T01:36:24.398770+00:00",
+      "load": [
+        8.56689453125,
+        8.5341796875,
+        9.326171875
+      ],
+      "rss_bytes": 13649252352,
+      "cpu_seconds": 684.5300000000001,
+      "available_bytes": 27736289280
+    },
+    {
+      "utc": "2026-09-23T01:36:39.399144+00:00",
+      "load": [
+        8.4599609375,
+        8.5087890625,
+        9.30419921875
+      ],
+      "rss_bytes": 13708984320,
+      "cpu_seconds": 800.15,
+      "available_bytes": 27645296640
+    },
+    {
+      "utc": "2026-09-23T01:36:54.399487+00:00",
+      "load": [
+        8.42578125,
+        8.49951171875,
+        9.28759765625
+      ],
+      "rss_bytes": 13578809344,
+      "cpu_seconds": 916.62,
+      "available_bytes": 27657109504
+    },
+    {
+      "utc": "2026-09-23T01:37:09.399851+00:00",
+      "load": [
+        8.70166015625,
+        8.5576171875,
+        9.29345703125
+      ],
+      "rss_bytes": 13647204352,
+      "cpu_seconds": 1036.21,
+      "available_bytes": 27420745728
+    },
+    {
+      "utc": "2026-09-23T01:37:24.400210+00:00",
+      "load": [
+        8.8486328125,
+        8.5966796875,
+        9.29345703125
+      ],
+      "rss_bytes": 13669347328,
+      "cpu_seconds": 1154.9699999999998,
+      "available_bytes": 27182301184
+    },
+    {
+      "utc": "2026-09-23T01:37:39.400568+00:00",
+      "load": [
+        8.96240234375,
+        8.6337890625,
+        9.29345703125
+      ],
+      "rss_bytes": 13670031360,
+      "cpu_seconds": 1273.52,
+      "available_bytes": 26800812032
+    },
+    {
+      "utc": "2026-09-23T01:37:54.400962+00:00",
+      "load": [
+        9.173828125,
+        8.70068359375,
+        9.30419921875
+      ],
+      "rss_bytes": 13707927552,
+      "cpu_seconds": 1392.8400000000001,
+      "available_bytes": 26632441856
+    },
+    {
+      "utc": "2026-09-23T01:38:09.401336+00:00",
+      "load": [
+        8.9130859375,
+        8.66552734375,
+        9.2822265625
+      ],
+      "rss_bytes": 13678587904,
+      "cpu_seconds": 1511.28,
+      "available_bytes": 27469426688
+    },
+    {
+      "utc": "2026-09-23T01:38:24.401703+00:00",
+      "load": [
+        9.0869140625,
+        8.71533203125,
+        9.2880859375
+      ],
+      "rss_bytes": 13825753088,
+      "cpu_seconds": 1629.9199999999998,
+      "available_bytes": 27404640256
+    },
+    {
+      "utc": "2026-09-23T01:38:39.402102+00:00",
+      "load": [
+        8.919921875,
+        8.6962890625,
+        9.271484375
+      ],
+      "rss_bytes": 13707915264,
+      "cpu_seconds": 1749.89,
+      "available_bytes": 27501113344
+    },
+    {
+      "utc": "2026-09-23T01:38:54.402504+00:00",
+      "load": [
+        9.23974609375,
+        8.77783203125,
+        9.2890625
+      ],
+      "rss_bytes": 13740269568,
+      "cpu_seconds": 1868.1200000000001,
+      "available_bytes": 27035865088
+    },
+    {
+      "utc": "2026-09-23T01:39:09.402889+00:00",
+      "load": [
+        9.03173828125,
+        8.75537109375,
+        9.2724609375
+      ],
+      "rss_bytes": 13783883776,
+      "cpu_seconds": 1986.54,
+      "available_bytes": 27280269312
+    },
+    {
+      "utc": "2026-09-23T01:39:24.403282+00:00",
+      "load": [
+        8.87646484375,
+        8.734375,
+        9.25732421875
+      ],
+      "rss_bytes": 13831045120,
+      "cpu_seconds": 2104.08,
+      "available_bytes": 27284447232
+    },
+    {
+      "utc": "2026-09-23T01:39:39.403648+00:00",
+      "load": [
+        8.96630859375,
+        8.763671875,
+        9.2587890625
+      ],
+      "rss_bytes": 13753434112,
+      "cpu_seconds": 2220.36,
+      "available_bytes": 27405819904
+    },
+    {
+      "utc": "2026-09-23T01:39:45.136266+00:00",
+      "load": [
+        8.888671875,
+        8.7509765625,
+        9.251953125
+      ],
+      "rss_bytes": 6930640896,
+      "cpu_seconds": 2260.96,
+      "available_bytes": 34246840320
+    }
+  ],
+  "environment": {
+    "python": "3.14.7",
+    "ortools": "9.15.6755",
+    "cpu_count": 24,
+    "platform": "Linux-7.2.6-1-cachyos-x86_64-with-glibc2.44"
+  },
+  "code_hashes": {
+    "progress.py": "06b08c17ca0b825cf6d6ff3a3dbbc9089c1d28b018881be11d7669055006419e",
+    "check_solution.py": "9c8c334bd7f96a4b7d3e78ee6cc5504ee312ae73c5020d69035584a3f20ab77e",
+    "filter_positions.py": "9bceabcf7f7a9371d3bf469c3cc09611b29dec566f4861e491212e27a2c22a7e",
+    "flow_model_min_edges_domain.py": "c7b8643bb68b55ea61ed3e32f472326436d1d763c4a46ccc51947da5000625cc",
+    "make_report.py": "ef6855c9d7a4059637403bb2c96f06837f141084160404b8f5287972f125851d",
+    "flow_model.py": "b38aea2136ea3dd96161bd70009a0a4b5f5d05ce48c96df5f3347f0cbbb28033",
+    "flow_model_global.py": "bfbda588646370a37928335560668a3a8d462c476f4538c9f62859c3c680b9f0",
+    "flow_model_compact.py": "4b7a7fb221d6463498c18921b94f937479ee4c8592519160c6253dc69ff4dcac",
+    "test_checker_rejects_invalid.py": "30798009b655f91cdcc19e504297cdfce21f85aea3e212086b4e824a59cb35eb",
+    "run_campaign.py": "c4d2cc7d62ca1acceab01384a26d8242c22a75025d0653194442fd864dc59a01",
+    "geometry.py": "a0f700fd182a653795d9c4b5980818c289ebd0b01cee483c41132963b258ddff",
+    "test_flow_kernel.py": "6a872a525da45f74d9e4b6a4d08d1ae8d93e35899ac6f5167612ee8d48d3933d",
+    "flow_model_min_edges.py": "80e1607fc7d0ae718be38c1f5698328bc85aeb6f81c510ed6e52419f1faa3efa",
+    "recheck_original_domains.py": "f59ac4009d0fc690e150625acc0dae55371d2e966248e6e66f4a844063ed454f",
+    "audit_encoding.py": "a62fbbeed146ad54777fe309edefcb5f14704eeee8ab1611739b45edc5604935"
+  },
+  "variant": "global_min_edges_original_P_domain",
+  "variant_file": "flow_model_min_edges_domain.py",
+  "search_objective": "Minimize all-item transport-to-transport arc flow in units of 1/20; stop at first feasible solution. Feasible set unchanged.",
+  "P_domain_used": [
+    10,
+    11,
+    12
+  ],
+  "P_domain_source": "original_domain_recheck.json; same-source exact integer replay of previously audited boundary DP"
+}

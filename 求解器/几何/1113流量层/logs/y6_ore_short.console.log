@@ -1,0 +1,15 @@
+y6_ore_short: building, load=(8.00830078125, 4.25, 2.15673828125)
+satisfaction model '': (model_fingerprint: 0xfbf0b852bcd4bc57)
+#Variables: 137'710 (109'925 primary variables)
+  - 132'947 Booleans in [0,1]
+  - 4'762 in [0,12]
+  - 1 in [10,12]
+#kBoolAnd: 28'586 (#enforced: 28'586) (#literals: 57'172)
+#kBoolOr: 35'889 (#enforced: 35'889) (#literals: 165'369)
+#kExactlyOne: 1 (#literals: 47)
+#kLinear1: 316 (#enforced: 175)
+#kLinear2: 89'157 (#enforced: 1'373)
+#kLinear3: 3'994 (#enforced: 2'272)
+#kLinearN: 101'912 (#enforced: 41'243) (#terms: 1'582'480)
+y6_ore_short: solve starts; build=1.936s
+{"tag": "y6_ore_short", "status": "UNKNOWN", "solve_seconds": 60.28426650300389, "build_seconds": 1.93616899799963, "total_seconds": 62.40660157200182}

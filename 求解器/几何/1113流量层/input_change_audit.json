@@ -1,0 +1,45 @@
+{
+  "observed_utc": "20260923T002521Z",
+  "old_count": 71,
+  "new_count": 72,
+  "old_sha256": "cf44821f07779490b9b1d913bfb87d7757ae8abfe784c912bb7891868780f7f3",
+  "new_sha256": "0c05976f6063f3332db6ee19d7746052ef35148d7c2a12dfa396c7bb8753f30f",
+  "new_snapshot": "inputs/求解约束.20260923T002521Z.txt.md",
+  "unchanged_used_clauses": {
+    "取货口配置": true,
+    "机型下限": true,
+    "物料流量": true,
+    "满载配置": true,
+    "端口速率": true,
+    "端口对接": true,
+    "入库途径": true,
+    "通道下限": true,
+    "供电下限": true,
+    "面积预算": true,
+    "边带排布": true,
+    "核心离带": true,
+    "核心邻格": true,
+    "运输下限": true,
+    "侧旁供电": true,
+    "内带缺口": true,
+    "空矩形上界": true
+  },
+  "assessment": "All observed versions preserve the necessary propositions used by this no-box model.",
+  "changed_file": "求解约束.txt",
+  "revisions": [
+    {
+      "observed_utc": "20260922T224738Z",
+      "from_sha256": "cf44821f07779490b9b1d913bfb87d7757ae8abfe784c912bb7891868780f7f3",
+      "to_sha256": "a67c18dec5f6ae59c41e8620d270007f20c2d3e5b202521d0cca12f616bca3df",
+      "snapshot": "inputs/求解约束.20260922T224738Z.txt.md",
+      "assessment": "Used necessary propositions preserved; position clause matches this task. No model coefficient changes required."
+    },
+    {
+      "observed_utc": "20260923T002521Z",
+      "from_sha256": "a67c18dec5f6ae59c41e8620d270007f20c2d3e5b202521d0cca12f616bca3df",
+      "to_sha256": "0c05976f6063f3332db6ee19d7746052ef35148d7c2a12dfa396c7bb8753f30f",
+      "snapshot": "inputs/求解约束.20260923T002521Z.txt.md",
+      "assessment": "Only a storage-box transit sentence was removed. No boxes exist in the modeled A=1113 domain; all used clauses remain unchanged."
+    }
+  ]
+}

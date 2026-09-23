@@ -1,0 +1,278 @@
+{
+  "tag": "y7_all_all_retry",
+  "rect": [
+    49,
+    7,
+    21,
+    53
+  ],
+  "layer": "all",
+  "cut_mode": "formal",
+  "started_utc": "2026-09-23T01:30:24.562653+00:00",
+  "ended_utc": "2026-09-23T01:34:38.105096+00:00",
+  "args": {
+    "y": 7,
+    "layer": "all",
+    "stage": "all_retry",
+    "seconds": 247.69792714118955,
+    "workers": 8,
+    "seed": 20260923,
+    "probing": 0,
+    "symmetry": 2,
+    "linearization": 2,
+    "cut_mode": "formal",
+    "hint": null
+  },
+  "parameters": "random_seed: 20260923\nmax_time_in_seconds: 247.69792714118955\nlog_search_progress: true\nlinearization_level: 2\nstop_after_first_solution: true\nnum_search_workers: 8\ncp_model_probing_level: 0\nsymmetry_level: 2\nlog_to_stdout: false",
+  "status": "UNKNOWN",
+  "solve_seconds": 248.5530092830013,
+  "solver_wall_seconds": 248.495276506,
+  "build_seconds": 4.495518712996272,
+  "total_seconds": 253.54270050400373,
+  "response_stats": "CpSolverResponse summary:\nstatus: UNKNOWN\nobjective: 296160\nbest_bound: 0\nintegers: 355093\nbooleans: 336241\nconflicts: 0\nbranches: 10\npropagations: 5676\ninteger_propagations: 6930\nrestarts: 0\nlp_iterations: 13914\nwalltime: 248.495\nusertime: 248.495\ndeterministic_time: 1875.03\ngap_integral: 23505\n",
+  "model_stats": "optimization model '': (model_fingerprint: 0xa3ae8fc62f1715c8)\n#Variables: 360'219 (#ints: 14'826 in objective) (306'848 primary variables)\n  - 209'558 Booleans in [0,1]\n  - 11'552 in [0,4]\n  - 4'762 in [0,12]\n  - 85'778 in [0,20]\n  - 12'732 in [0,40]\n  - 24'284 in [0,60]\n  - 11'552 in [0,80]\n  - 1 in [10,12]\n#kBoolAnd: 28'334 (#enforced: 28'334) (#literals: 56'668)\n#kBoolOr: 35'855 (#enforced: 35'855) (#literals: 165'189)\n#kExactlyOne: 1 (#literals: 47)\n#kLinear1: 72'218 (#enforced: 404)\n#kLinear2: 264'613 (#enforced: 1'856)\n#kLinear3: 69'825 (#enforced: 66'480)\n#kLinearN: 336'108 (#enforced: 213'119) (#terms: 4'103'211)",
+  "model_sha256": "2b1d4ffe0001c9c5d346e185e1263d383059cbed032454373f41d5474d3dd795",
+  "model_file": "/home/zhuran24/zmd-research-fresh/求解器/几何/1113流量层/models/y7_all_all_retry.pb",
+  "load_samples": [
+    {
+      "utc": "2026-09-23T01:30:24.562685+00:00",
+      "load": [
+        9.3203125,
+        9.021484375,
+        9.87548828125
+      ],
+      "rss_bytes": 102707200,
+      "cpu_seconds": 0.18,
+      "available_bytes": 40436465664
+    },
+    {
+      "utc": "2026-09-23T01:30:24.593639+00:00",
+      "load": [
+        9.3203125,
+        9.021484375,
+        9.87548828125
+      ],
+      "rss_bytes": 111620096,
+      "cpu_seconds": 0.24,
+      "available_bytes": 40420765696
+    },
+    {
+      "utc": "2026-09-23T01:30:39.655003+00:00",
+      "load": [
+        7.54443359375,
+        8.64404296875,
+        9.73779296875
+      ],
+      "rss_bytes": 1447219200,
+      "cpu_seconds": 15.25,
+      "available_bytes": 39635025920
+    },
+    {
+      "utc": "2026-09-23T01:30:54.655374+00:00",
+      "load": [
+        7.54638671875,
+        8.58251953125,
+        9.69970703125
+      ],
+      "rss_bytes": 11351306240,
+      "cpu_seconds": 105.08,
+      "available_bytes": 30056816640
+    },
+    {
+      "utc": "2026-09-23T01:31:09.655872+00:00",
+      "load": [
+        7.64111328125,
+        8.55322265625,
+        9.671875
+      ],
+      "rss_bytes": 11927265280,
+      "cpu_seconds": 219.52,
+      "available_bytes": 29473353728
+    },
+    {
+      "utc": "2026-09-23T01:31:24.656267+00:00",
+      "load": [
+        7.8623046875,
+        8.55859375,
+        9.65478515625
+      ],
+      "rss_bytes": 12138295296,
+      "cpu_seconds": 334.74,
+      "available_bytes": 29335908352
+    },
+    {
+      "utc": "2026-09-23T01:31:39.656652+00:00",
+      "load": [
+        7.74560546875,
+        8.498046875,
+        9.61669921875
+      ],
+      "rss_bytes": 12225933312,
+      "cpu_seconds": 452.61,
+      "available_bytes": 29445906432
+    },
+    {
+      "utc": "2026-09-23T01:31:54.657047+00:00",
+      "load": [
+        7.87060546875,
+        8.48974609375,
+        9.595703125
+      ],
+      "rss_bytes": 12349464576,
+      "cpu_seconds": 569.8599999999999,
+      "available_bytes": 29163872256
+    },
+    {
+      "utc": "2026-09-23T01:32:09.657459+00:00",
+      "load": [
+        8.0478515625,
+        8.4990234375,
+        9.580078125
+      ],
+      "rss_bytes": 12436508672,
+      "cpu_seconds": 688.8499999999999,
+      "available_bytes": 29149065216
+    },
+    {
+      "utc": "2026-09-23T01:32:24.657855+00:00",
+      "load": [
+        8.3515625,
+        8.54150390625,
+        9.57568359375
+      ],
+      "rss_bytes": 12399915008,
+      "cpu_seconds": 807.08,
+      "available_bytes": 29202165760
+    },
+    {
+      "utc": "2026-09-23T01:32:39.658240+00:00",
+      "load": [
+        8.34130859375,
+        8.53076171875,
+        9.5546875
+      ],
+      "rss_bytes": 12192178176,
+      "cpu_seconds": 920.04,
+      "available_bytes": 29415780352
+    },
+    {
+      "utc": "2026-09-23T01:32:54.658636+00:00",
+      "load": [
+        8.419921875,
+        8.53759765625,
+        9.53955078125
+      ],
+      "rss_bytes": 12121817088,
+      "cpu_seconds": 1040.67,
+      "available_bytes": 29510729728
+    },
+    {
+      "utc": "2026-09-23T01:33:09.659027+00:00",
+      "load": [
+        8.24609375,
+        8.494140625,
+        9.50927734375
+      ],
+      "rss_bytes": 11941998592,
+      "cpu_seconds": 1156.82,
+      "available_bytes": 29433892864
+    },
+    {
+      "utc": "2026-09-23T01:33:24.659407+00:00",
+      "load": [
+        8.27099609375,
+        8.486328125,
+        9.48974609375
+      ],
+      "rss_bytes": 11910377472,
+      "cpu_seconds": 1272.9299999999998,
+      "available_bytes": 29349347328
+    },
+    {
+      "utc": "2026-09-23T01:33:39.659809+00:00",
+      "load": [
+        8.35888671875,
+        8.49560546875,
+        9.4755859375
+      ],
+      "rss_bytes": 11932286976,
+      "cpu_seconds": 1390.68,
+      "available_bytes": 29471772672
+    },
+    {
+      "utc": "2026-09-23T01:33:54.660208+00:00",
+      "load": [
+        8.49560546875,
+        8.5205078125,
+        9.46728515625
+      ],
+      "rss_bytes": 11724300288,
+      "cpu_seconds": 1509.79,
+      "available_bytes": 29213024256
+    },
+    {
+      "utc": "2026-09-23T01:34:09.660623+00:00",
+      "load": [
+        8.68798828125,
+        8.5615234375,
+        9.46435546875
+      ],
+      "rss_bytes": 11361992704,
+      "cpu_seconds": 1627.22,
+      "available_bytes": 28944121856
+    },
+    {
+      "utc": "2026-09-23T01:34:24.661017+00:00",
+      "load": [
+        8.46142578125,
+        8.51708984375,
+        9.4345703125
+      ],
+      "rss_bytes": 11340509184,
+      "cpu_seconds": 1744.9199999999998,
+      "available_bytes": 28912570368
+    },
+    {
+      "utc": "2026-09-23T01:34:38.104694+00:00",
+      "load": [
+        8.57470703125,
+        8.541015625,
+        9.427734375
+      ],
+      "rss_bytes": 6484721664,
+      "cpu_seconds": 1844.99,
+      "available_bytes": 33798004736
+    }
+  ],
+  "environment": {
+    "python": "3.14.7",
+    "ortools": "9.15.6755",
+    "cpu_count": 24,
+    "platform": "Linux-7.2.6-1-cachyos-x86_64-with-glibc2.44"
+  },
+  "code_hashes": {
+    "progress.py": "06b08c17ca0b825cf6d6ff3a3dbbc9089c1d28b018881be11d7669055006419e",
+    "check_solution.py": "9c8c334bd7f96a4b7d3e78ee6cc5504ee312ae73c5020d69035584a3f20ab77e",
+    "filter_positions.py": "9bceabcf7f7a9371d3bf469c3cc09611b29dec566f4861e491212e27a2c22a7e",
+    "flow_model_min_edges_domain.py": "c7b8643bb68b55ea61ed3e32f472326436d1d763c4a46ccc51947da5000625cc",
+    "make_report.py": "ef6855c9d7a4059637403bb2c96f06837f141084160404b8f5287972f125851d",
+    "flow_model.py": "b38aea2136ea3dd96161bd70009a0a4b5f5d05ce48c96df5f3347f0cbbb28033",
+    "flow_model_global.py": "bfbda588646370a37928335560668a3a8d462c476f4538c9f62859c3c680b9f0",
+    "flow_model_compact.py": "4b7a7fb221d6463498c18921b94f937479ee4c8592519160c6253dc69ff4dcac",
+    "test_checker_rejects_invalid.py": "30798009b655f91cdcc19e504297cdfce21f85aea3e212086b4e824a59cb35eb",
+    "run_campaign.py": "c4d2cc7d62ca1acceab01384a26d8242c22a75025d0653194442fd864dc59a01",
+    "geometry.py": "a0f700fd182a653795d9c4b5980818c289ebd0b01cee483c41132963b258ddff",
+    "test_flow_kernel.py": "6a872a525da45f74d9e4b6a4d08d1ae8d93e35899ac6f5167612ee8d48d3933d",
+    "flow_model_min_edges.py": "80e1607fc7d0ae718be38c1f5698328bc85aeb6f81c510ed6e52419f1faa3efa",
+    "recheck_original_domains.py": "f59ac4009d0fc690e150625acc0dae55371d2e966248e6e66f4a844063ed454f",
+    "audit_encoding.py": "a62fbbeed146ad54777fe309edefcb5f14704eeee8ab1611739b45edc5604935"
+  },
+  "variant": "global_min_edges_original_P_domain",
+  "variant_file": "flow_model_min_edges_domain.py",
+  "search_objective": "Minimize all-item transport-to-transport arc flow in units of 1/20; stop at first feasible solution. Feasible set unchanged.",
+  "P_domain_used": [
+    10,
+    11
+  ],
+  "P_domain_source": "original_domain_recheck.json; same-source exact integer replay of previously audited boundary DP"
+}

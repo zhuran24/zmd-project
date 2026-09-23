@@ -1,0 +1,20 @@
+y7_all_short: building, load=(12.93115234375, 9.90625, 5.7666015625)
+satisfaction model '': (model_fingerprint: 0xa3ffc1c38d0f9a71)
+#Variables: 360'219 (306'848 primary variables)
+  - 209'558 Booleans in [0,1]
+  - 11'552 in [0,4]
+  - 4'762 in [0,12]
+  - 85'778 in [0,20]
+  - 12'732 in [0,40]
+  - 24'284 in [0,60]
+  - 11'552 in [0,80]
+  - 1 in [10,12]
+#kBoolAnd: 28'334 (#enforced: 28'334) (#literals: 56'668)
+#kBoolOr: 35'855 (#enforced: 35'855) (#literals: 165'189)
+#kExactlyOne: 1 (#literals: 47)
+#kLinear1: 72'217 (#enforced: 404)
+#kLinear2: 264'613 (#enforced: 1'856)
+#kLinear3: 69'825 (#enforced: 66'480)
+#kLinearN: 336'104 (#enforced: 213'119) (#terms: 4'044'247)
+y7_all_short: solve starts; build=4.491s
+{"tag": "y7_all_short", "status": "UNKNOWN", "solve_seconds": 90.51859507900372, "build_seconds": 4.490997970002354, "total_seconds": 95.43260679599916}

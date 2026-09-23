@@ -1,0 +1,14 @@
+[
+  {
+    "y": 6,
+    "baseline_is_exact_prefix": true,
+    "old_sha256": "101e66c8911bb52fb4a75a9388045baf0ba976237c98340da2d5f71fc446ecd3",
+    "new_sha256": "fe72f46b4bb299d699788723a33e41afc21790e6f2dda2b9e5dee789782d36bd"
+  },
+  {
+    "y": 9,
+    "baseline_is_exact_prefix": true,
+    "old_sha256": "05410f2e436b22ff3416b4ff39876498debcc3c958cfbd6b5a591a431200f9eb",
+    "new_sha256": "62d0026e900bf4397d1d8c1997786cbc4973d515543e791b1672868e05f3a045"
+  }
+]

@@ -1,0 +1,135 @@
+{
+  "tag": "y9_ore_compact_short",
+  "rect": [
+    49,
+    9,
+    21,
+    53
+  ],
+  "layer": "ore",
+  "cut_mode": "formal",
+  "started_utc": "2026-09-22T22:57:03.448390+00:00",
+  "ended_utc": "2026-09-22T22:58:05.672314+00:00",
+  "args": {
+    "y": 9,
+    "layer": "ore",
+    "stage": "compact_short",
+    "seconds": 60.0,
+    "workers": 8,
+    "seed": 20260922,
+    "probing": 0,
+    "symmetry": 2,
+    "linearization": 2,
+    "cut_mode": "formal",
+    "hint": null
+  },
+  "parameters": "random_seed: 20260922\nmax_time_in_seconds: 60\nlog_search_progress: true\nlinearization_level: 2\nnum_search_workers: 8\ncp_model_probing_level: 0\nsymmetry_level: 2\nlog_to_stdout: false",
+  "status": "UNKNOWN",
+  "solve_seconds": 60.4403770170029,
+  "solver_wall_seconds": 60.428736470000004,
+  "build_seconds": 1.6355306430050405,
+  "total_seconds": 62.22397101700335,
+  "response_stats": "CpSolverResponse summary:\nstatus: UNKNOWN\nobjective: 0\nbest_bound: 0\nintegers: 71300\nbooleans: 70278\nconflicts: 96\nbranches: 57837\npropagations: 10279062\ninteger_propagations: 7617295\nrestarts: 1\nlp_iterations: 63714\nwalltime: 60.4287\nusertime: 60.4287\ndeterministic_time: 518.292\ngap_integral: 0\n",
+  "model_stats": "satisfaction model '': (model_fingerprint: 0x18a38914bfb0fa67)\n#Variables: 79'896 (58'883 primary variables)\n  - 75'133 Booleans in [0,1]\n  - 4'762 in [0,12]\n  - 1 in [10,12]\n#kBoolAnd: 28'076 (#enforced: 28'076) (#literals: 56'152)\n#kBoolOr: 35'855 (#enforced: 35'855) (#literals: 165'189)\n#kExactlyOne: 1 (#literals: 47)\n#kLinear1: 366 (#enforced: 225)\n#kLinear2: 63'628 (#enforced: 1'496)\n#kLinear3: 4'038 (#enforced: 2'320)\n#kLinearN: 75'477 (#enforced: 21'839) (#terms: 1'386'578)",
+  "model_sha256": "5e2321f479f0fdafd8d7275de54359fd013e73b7962b99c5ffd6e07dbfde9143",
+  "model_file": "/home/zhuran24/zmd-research-fresh/求解器/几何/1113流量层/models/y9_ore_compact_short.pb",
+  "load_samples": [
+    {
+      "utc": "2026-09-22T22:57:03.448424+00:00",
+      "load": [
+        8.1279296875,
+        8.68017578125,
+        10.22119140625
+      ],
+      "rss_bytes": 103792640,
+      "cpu_seconds": 0.16999999999999998,
+      "available_bytes": 39190249472
+    },
+    {
+      "utc": "2026-09-22T22:57:03.489493+00:00",
+      "load": [
+        8.1279296875,
+        8.68017578125,
+        10.22119140625
+      ],
+      "rss_bytes": 112533504,
+      "cpu_seconds": 0.23,
+      "available_bytes": 39178567680
+    },
+    {
+      "utc": "2026-09-22T22:57:18.545681+00:00",
+      "load": [
+        7.25732421875,
+        8.4521484375,
+        10.12109375
+      ],
+      "rss_bytes": 4043042816,
+      "cpu_seconds": 66.27,
+      "available_bytes": 34361479168
+    },
+    {
+      "utc": "2026-09-22T22:57:33.546100+00:00",
+      "load": [
+        7.81640625,
+        8.5126953125,
+        10.11328125
+      ],
+      "rss_bytes": 4761595904,
+      "cpu_seconds": 188.38,
+      "available_bytes": 33998024704
+    },
+    {
+      "utc": "2026-09-22T22:57:48.546485+00:00",
+      "load": [
+        8.24609375,
+        8.5703125,
+        10.10546875
+      ],
+      "rss_bytes": 4906086400,
+      "cpu_seconds": 308.46999999999997,
+      "available_bytes": 34116603904
+    },
+    {
+      "utc": "2026-09-22T22:58:03.546854+00:00",
+      "load": [
+        8.4814453125,
+        8.60791015625,
+        10.091796875
+      ],
+      "rss_bytes": 4967260160,
+      "cpu_seconds": 427.41999999999996,
+      "available_bytes": 33972318208
+    },
+    {
+      "utc": "2026-09-22T22:58:05.672095+00:00",
+      "load": [
+        8.44287109375,
+        8.59765625,
+        10.080078125
+      ],
+      "rss_bytes": 3008765952,
+      "cpu_seconds": 441.28999999999996,
+      "available_bytes": 35875401728
+    }
+  ],
+  "environment": {
+    "python": "3.14.7",
+    "ortools": "9.15.6755",
+    "cpu_count": 24,
+    "platform": "Linux-7.2.6-1-cachyos-x86_64-with-glibc2.44"
+  },
+  "code_hashes": {
+    "check_solution.py": "936500f8df28a98b59b42ebd3ae1087512e7f6a81f9adc2c791b343f925913d3",
+    "filter_positions.py": "9bceabcf7f7a9371d3bf469c3cc09611b29dec566f4861e491212e27a2c22a7e",
+    "make_report.py": "cca4c1a71abf22f727addea2ec6753ace5a6a6aa56521eff29e331b0796a4d9c",
+    "flow_model.py": "b38aea2136ea3dd96161bd70009a0a4b5f5d05ce48c96df5f3347f0cbbb28033",
+    "flow_model_global.py": "bfbda588646370a37928335560668a3a8d462c476f4538c9f62859c3c680b9f0",
+    "flow_model_compact.py": "4b7a7fb221d6463498c18921b94f937479ee4c8592519160c6253dc69ff4dcac",
+    "run_campaign.py": "e9872def3bf8930e3273545d5688b6f8ccfaa97574d729a1e332e35dd863ea68",
+    "geometry.py": "a0f700fd182a653795d9c4b5980818c289ebd0b01cee483c41132963b258ddff",
+    "test_flow_kernel.py": "6a872a525da45f74d9e4b6a4d08d1ae8d93e35899ac6f5167612ee8d48d3933d",
+    "audit_encoding.py": "a62fbbeed146ad54777fe309edefcb5f14704eeee8ab1611739b45edc5604935"
+  },
+  "variant": "compact_ore_with_recovered_labels",
+  "variant_file": "flow_model_compact.py"
+}

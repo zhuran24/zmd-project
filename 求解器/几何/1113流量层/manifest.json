@@ -1,0 +1,59 @@
+{
+  "start_utc": "2026-09-22T21:57:30.857150+00:00",
+  "source_files": {
+    "《明日方舟：终末地》游戏规则.txt": {
+      "sha256": "52df4c12ce90975b861a6a663bd37873e03c9549658d200dc7e95fabc4bc29f3",
+      "size": 7298
+    },
+    "求解任务.txt": {
+      "sha256": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+      "size": 1405
+    },
+    "求解约束.txt": {
+      "sha256": "cf44821f07779490b9b1d913bfb87d7757ae8abfe784c912bb7891868780f7f3",
+      "size": 34667
+    },
+    "求解器/几何/1113放松/solve_relaxation.py": {
+      "sha256": "054504b42f781f4da8d8723cd1f4d9e87cb7f9f74152c53fb0beccdf3037e4b7",
+      "size": 10077
+    },
+    "求解器/几何/1113放松/filter_positions.py": {
+      "sha256": "9bceabcf7f7a9371d3bf469c3cc09611b29dec566f4861e491212e27a2c22a7e",
+      "size": 9069
+    },
+    "求解器/几何/1113放松/positions.json": {
+      "sha256": "bc31ee22aa916303eb666ebbaf94035e8cc7308ba869fcaafafe83646ee3deea",
+      "size": 1353228
+    },
+    "求解器/几何/1113放松/报告.md": {
+      "sha256": "e62f9be13b763209a55c5a056a0e43540ca91942cfaa31e45a691d9c29d06a9f",
+      "size": 19489
+    },
+    "求解器/几何/1113放松/异源核查.md": {
+      "sha256": "54e859d2d5de3eeaa6933c98f66d55d49c7fcd73306ae66bdce8323caffeb191",
+      "size": 14893
+    },
+    "求解器/会议成果/会议3/共识稿-v4-7aae9e20.md": {
+      "sha256": "7aae9e20fdfab4edc5cb44b4de5a083436c86874449af654e9b0ee9871da5578",
+      "size": 39519
+    },
+    "求解器/会议成果/会议3/纪要.md": {
+      "sha256": "d6c92a966fd9b295d5ed9dab4fed9e63710b76206c13107a6897d86f42db9228",
+      "size": 6319
+    },
+    "求解器/会议成果/会议3/seat-opus-2/aggflow.py": {
+      "sha256": "8ca458aa5484e235bdac6bfdfbb5830e4a8427faded037e72a73a625c85f26f3",
+      "size": 18960
+    },
+    "求解器/会议成果/会议3/seat-opus-2/flowcheck.py": {
+      "sha256": "932fedf9007b0991f901a30f4e9ce72921e0a01a183d27a3976cc1191b9206f8",
+      "size": 5514
+    }
+  },
+  "load_start": [
+    0.95751953125,
+    0.79443359375,
+    0.8154296875
+  ],
+  "first_recorded_task_clock_utc": "2026-09-22T21:55:31+00:00"
+}

@@ -1,0 +1,311 @@
+{
+  "tag": "y17_ore_compact_long",
+  "rect": [
+    49,
+    17,
+    21,
+    53
+  ],
+  "layer": "ore",
+  "cut_mode": "formal",
+  "started_utc": "2026-09-22T23:16:33.527542+00:00",
+  "ended_utc": "2026-09-22T23:21:35.649838+00:00",
+  "args": {
+    "y": 17,
+    "layer": "ore",
+    "stage": "compact_long",
+    "seconds": 300.0,
+    "workers": 8,
+    "seed": 20260923,
+    "probing": 0,
+    "symmetry": 2,
+    "linearization": 2,
+    "cut_mode": "formal",
+    "hint": null
+  },
+  "parameters": "random_seed: 20260923\nmax_time_in_seconds: 300\nlog_search_progress: true\nlinearization_level: 2\nnum_search_workers: 8\ncp_model_probing_level: 0\nsymmetry_level: 2\nlog_to_stdout: false",
+  "status": "UNKNOWN",
+  "solve_seconds": 300.29918012700364,
+  "solver_wall_seconds": 300.292591184,
+  "build_seconds": 1.6750240649998887,
+  "total_seconds": 302.1223266809975,
+  "response_stats": "CpSolverResponse summary:\nstatus: UNKNOWN\nobjective: 0\nbest_bound: 0\nintegers: 72611\nbooleans: 71677\nconflicts: 344\nbranches: 74327\npropagations: 30526546\ninteger_propagations: 23632863\nrestarts: 2\nlp_iterations: 441830\nwalltime: 300.293\nusertime: 300.293\ndeterministic_time: 3496.9\ngap_integral: 0\n",
+  "model_stats": "satisfaction model '': (model_fingerprint: 0x31b3ebab9b29926c)\n#Variables: 81'540 (59'782 primary variables)\n  - 76'777 Booleans in [0,1]\n  - 4'762 in [0,12]\n  - 1 in [10,12]\n#kBoolAnd: 29'366 (#enforced: 29'366) (#literals: 58'732)\n#kBoolOr: 36'910 (#enforced: 36'910) (#literals: 170'418)\n#kExactlyOne: 1 (#literals: 47)\n#kLinear1: 293 (#enforced: 152)\n#kLinear2: 64'393 (#enforced: 1'172)\n#kLinear3: 4'282 (#enforced: 2'394)\n#kLinearN: 77'170 (#enforced: 22'499) (#terms: 1'427'954)",
+  "model_sha256": "dffbe8e5395dc3891918d79f4235baa3b0d30d591c66d909f2e43d186c0ba348",
+  "model_file": "/home/zhuran24/zmd-research-fresh/求解器/几何/1113流量层/models/y17_ore_compact_long.pb",
+  "load_samples": [
+    {
+      "utc": "2026-09-22T23:16:33.527575+00:00",
+      "load": [
+        9.2705078125,
+        9.33740234375,
+        9.4814453125
+      ],
+      "rss_bytes": 103751680,
+      "cpu_seconds": 0.16,
+      "available_bytes": 38458970112
+    },
+    {
+      "utc": "2026-09-22T23:16:33.548503+00:00",
+      "load": [
+        9.2705078125,
+        9.33740234375,
+        9.4814453125
+      ],
+      "rss_bytes": 108814336,
+      "cpu_seconds": 0.19999999999999998,
+      "available_bytes": 38446694400
+    },
+    {
+      "utc": "2026-09-22T23:16:48.594583+00:00",
+      "load": [
+        8.072265625,
+        9.06103515625,
+        9.3876953125
+      ],
+      "rss_bytes": 4112547840,
+      "cpu_seconds": 65.47,
+      "available_bytes": 34364534784
+    },
+    {
+      "utc": "2026-09-22T23:17:03.594973+00:00",
+      "load": [
+        8.5986328125,
+        9.1240234375,
+        9.40234375
+      ],
+      "rss_bytes": 4824756224,
+      "cpu_seconds": 187.2,
+      "available_bytes": 33975009280
+    },
+    {
+      "utc": "2026-09-22T23:17:18.595329+00:00",
+      "load": [
+        8.5458984375,
+        9.0849609375,
+        9.38427734375
+      ],
+      "rss_bytes": 4889849856,
+      "cpu_seconds": 307.98,
+      "available_bytes": 34065391616
+    },
+    {
+      "utc": "2026-09-22T23:17:33.595710+00:00",
+      "load": [
+        8.7333984375,
+        9.09765625,
+        9.3828125
+      ],
+      "rss_bytes": 4909940736,
+      "cpu_seconds": 428.36,
+      "available_bytes": 33955479552
+    },
+    {
+      "utc": "2026-09-22T23:17:48.596081+00:00",
+      "load": [
+        8.927734375,
+        9.12548828125,
+        9.38720703125
+      ],
+      "rss_bytes": 4926836736,
+      "cpu_seconds": 547.77,
+      "available_bytes": 34028007424
+    },
+    {
+      "utc": "2026-09-22T23:18:03.596444+00:00",
+      "load": [
+        8.78955078125,
+        9.08544921875,
+        9.369140625
+      ],
+      "rss_bytes": 4947337216,
+      "cpu_seconds": 666.85,
+      "available_bytes": 33965223936
+    },
+    {
+      "utc": "2026-09-22T23:18:18.596818+00:00",
+      "load": [
+        9.96630859375,
+        9.32763671875,
+        9.44384765625
+      ],
+      "rss_bytes": 4953722880,
+      "cpu_seconds": 786.6899999999999,
+      "available_bytes": 33430884352
+    },
+    {
+      "utc": "2026-09-22T23:18:33.597178+00:00",
+      "load": [
+        10.04150390625,
+        9.37646484375,
+        9.45849609375
+      ],
+      "rss_bytes": 4966612992,
+      "cpu_seconds": 905.5,
+      "available_bytes": 33877303296
+    },
+    {
+      "utc": "2026-09-22T23:18:48.597575+00:00",
+      "load": [
+        9.74951171875,
+        9.341796875,
+        9.44580078125
+      ],
+      "rss_bytes": 5030141952,
+      "cpu_seconds": 1024.5,
+      "available_bytes": 33862791168
+    },
+    {
+      "utc": "2026-09-22T23:19:03.597975+00:00",
+      "load": [
+        9.5029296875,
+        9.3076171875,
+        9.43310546875
+      ],
+      "rss_bytes": 5058838528,
+      "cpu_seconds": 1143.27,
+      "available_bytes": 33860898816
+    },
+    {
+      "utc": "2026-09-22T23:19:18.598363+00:00",
+      "load": [
+        9.2431640625,
+        9.25927734375,
+        9.4150390625
+      ],
+      "rss_bytes": 5065007104,
+      "cpu_seconds": 1262.01,
+      "available_bytes": 33705177088
+    },
+    {
+      "utc": "2026-09-22T23:19:33.598720+00:00",
+      "load": [
+        9.26318359375,
+        9.2626953125,
+        9.41357421875
+      ],
+      "rss_bytes": 5085011968,
+      "cpu_seconds": 1380.7,
+      "available_bytes": 33782546432
+    },
+    {
+      "utc": "2026-09-22T23:19:48.599122+00:00",
+      "load": [
+        9.14306640625,
+        9.23388671875,
+        9.4013671875
+      ],
+      "rss_bytes": 5098467328,
+      "cpu_seconds": 1499.3400000000001,
+      "available_bytes": 33944399872
+    },
+    {
+      "utc": "2026-09-22T23:20:03.599489+00:00",
+      "load": [
+        9.19140625,
+        9.2392578125,
+        9.39990234375
+      ],
+      "rss_bytes": 5139750912,
+      "cpu_seconds": 1617.99,
+      "available_bytes": 34390048768
+    },
+    {
+      "utc": "2026-09-22T23:20:18.599846+00:00",
+      "load": [
+        9.08056640625,
+        9.21044921875,
+        9.38720703125
+      ],
+      "rss_bytes": 5142036480,
+      "cpu_seconds": 1736.76,
+      "available_bytes": 34358804480
+    },
+    {
+      "utc": "2026-09-22T23:20:33.600233+00:00",
+      "load": [
+        9.00146484375,
+        9.18408203125,
+        9.375
+      ],
+      "rss_bytes": 5159747584,
+      "cpu_seconds": 1855.3,
+      "available_bytes": 34343374848
+    },
+    {
+      "utc": "2026-09-22T23:20:48.600630+00:00",
+      "load": [
+        9.00732421875,
+        9.1748046875,
+        9.3681640625
+      ],
+      "rss_bytes": 5166321664,
+      "cpu_seconds": 1973.8799999999999,
+      "available_bytes": 34293583872
+    },
+    {
+      "utc": "2026-09-22T23:21:03.600990+00:00",
+      "load": [
+        8.9248046875,
+        9.1494140625,
+        9.35595703125
+      ],
+      "rss_bytes": 5187784704,
+      "cpu_seconds": 2092.4700000000003,
+      "available_bytes": 34255548416
+    },
+    {
+      "utc": "2026-09-22T23:21:18.601358+00:00",
+      "load": [
+        9.09619140625,
+        9.17529296875,
+        9.36181640625
+      ],
+      "rss_bytes": 5327650816,
+      "cpu_seconds": 2210.8900000000003,
+      "available_bytes": 34125889536
+    },
+    {
+      "utc": "2026-09-22T23:21:33.601741+00:00",
+      "load": [
+        8.8525390625,
+        9.1171875,
+        9.33984375
+      ],
+      "rss_bytes": 5329051648,
+      "cpu_seconds": 2329.5499999999997,
+      "available_bytes": 34140749824
+    },
+    {
+      "utc": "2026-09-22T23:21:35.649687+00:00",
+      "load": [
+        8.7841796875,
+        9.0986328125,
+        9.33251953125
+      ],
+      "rss_bytes": 3190263808,
+      "cpu_seconds": 2343.8199999999997,
+      "available_bytes": 36234739712
+    }
+  ],
+  "environment": {
+    "python": "3.14.7",
+    "ortools": "9.15.6755",
+    "cpu_count": 24,
+    "platform": "Linux-7.2.6-1-cachyos-x86_64-with-glibc2.44"
+  },
+  "code_hashes": {
+    "check_solution.py": "936500f8df28a98b59b42ebd3ae1087512e7f6a81f9adc2c791b343f925913d3",
+    "filter_positions.py": "9bceabcf7f7a9371d3bf469c3cc09611b29dec566f4861e491212e27a2c22a7e",
+    "make_report.py": "a672de80e622ba154ed999c915e33addfd46869c6710d42e6e0e66b15ef2822a",
+    "flow_model.py": "b38aea2136ea3dd96161bd70009a0a4b5f5d05ce48c96df5f3347f0cbbb28033",
+    "flow_model_global.py": "bfbda588646370a37928335560668a3a8d462c476f4538c9f62859c3c680b9f0",
+    "flow_model_compact.py": "4b7a7fb221d6463498c18921b94f937479ee4c8592519160c6253dc69ff4dcac",
+    "run_campaign.py": "fada2f30dfbdb074d6af1c2ce5537a0736957f5b407bc8844cd7c5210fc870fc",
+    "geometry.py": "a0f700fd182a653795d9c4b5980818c289ebd0b01cee483c41132963b258ddff",
+    "test_flow_kernel.py": "6a872a525da45f74d9e4b6a4d08d1ae8d93e35899ac6f5167612ee8d48d3933d",
+    "audit_encoding.py": "a62fbbeed146ad54777fe309edefcb5f14704eeee8ab1611739b45edc5604935"
+  },
+  "variant": "compact_ore_with_recovered_labels",
+  "variant_file": "flow_model_compact.py"
+}

@@ -1,0 +1,13 @@
+{
+  "no_solver_called": true,
+  "baseline": "/home/zhuran24/zmd-research-fresh/求解器/几何/1113流量层/models/y6_all_global_delta_audit.pb",
+  "with_objective": "/home/zhuran24/zmd-research-fresh/求解器/几何/1113流量层/models/y6_all_min_edges_delta_audit.pb",
+  "baseline_is_exact_binary_prefix": true,
+  "appended_top_level_fields": [
+    4
+  ],
+  "only_objective_added": true,
+  "stop_after_first_solution": true,
+  "model_sha256": "90f9d467828b14c6d3c397816c9581b2f95e0cd1bdc664efddc693b53cd0cf3e",
+  "build_seconds": 6.159566057001939
+}

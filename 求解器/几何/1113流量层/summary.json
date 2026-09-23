@@ -1,0 +1,138 @@
+{
+  "generated_utc": "2026-09-23T01:49:16.070721+00:00",
+  "first_recorded_task_clock_utc": "2026-09-22T21:55:31+00:00",
+  "elapsed_wall_seconds": 14025.070721,
+  "experiment_complete": true,
+  "positions": [
+    {
+      "y": 6,
+      "status": "UNKNOWN",
+      "solve_seconds": 3100.3730525290084,
+      "total_seconds": 3123.059776932998,
+      "runs": [
+        "y6_ore_short",
+        "y6_all_short",
+        "y6_ore_ore_long",
+        "y6_ore_compact_short",
+        "y6_ore_compact_long",
+        "y6_all_all_long",
+        "y6_all_all_retry"
+      ],
+      "infeasible_runs": [],
+      "solution_runs": []
+    },
+    {
+      "y": 7,
+      "status": "UNKNOWN",
+      "solve_seconds": 3168.766720562002,
+      "total_seconds": 3191.5036715410024,
+      "runs": [
+        "y7_ore_short",
+        "y7_all_short",
+        "y7_ore_ore_long",
+        "y7_ore_compact_short",
+        "y7_ore_compact_long",
+        "y7_all_all_long",
+        "y7_all_all_retry"
+      ],
+      "infeasible_runs": [],
+      "solution_runs": []
+    },
+    {
+      "y": 9,
+      "status": "UNKNOWN",
+      "solve_seconds": 3123.383068258998,
+      "total_seconds": 3146.320291394004,
+      "runs": [
+        "y9_ore_short",
+        "y9_all_short",
+        "y9_ore_ore_long",
+        "y9_ore_compact_short",
+        "y9_ore_compact_long",
+        "y9_all_all_long",
+        "y9_all_all_retry"
+      ],
+      "infeasible_runs": [],
+      "solution_runs": []
+    },
+    {
+      "y": 17,
+      "status": "UNKNOWN",
+      "solve_seconds": 3214.623470109007,
+      "total_seconds": 3238.3489221160053,
+      "runs": [
+        "y17_ore_short",
+        "y17_all_short",
+        "y17_ore_ore_long",
+        "y17_ore_compact_short",
+        "y17_ore_compact_long",
+        "y17_all_all_long",
+        "y17_all_all_retry"
+      ],
+      "infeasible_runs": [],
+      "solution_runs": []
+    }
+  ],
+  "input_hashes_unchanged": {
+    "《明日方舟：终末地》游戏规则.txt": true,
+    "求解任务.txt": true,
+    "求解约束.txt": false,
+    "求解器/几何/1113放松/solve_relaxation.py": true,
+    "求解器/几何/1113放松/filter_positions.py": true,
+    "求解器/几何/1113放松/positions.json": true,
+    "求解器/几何/1113放松/报告.md": true,
+    "求解器/几何/1113放松/异源核查.md": true,
+    "求解器/会议成果/会议3/共识稿-v4-7aae9e20.md": true,
+    "求解器/会议成果/会议3/纪要.md": true,
+    "求解器/会议成果/会议3/seat-opus-2/aggflow.py": true,
+    "求解器/会议成果/会议3/seat-opus-2/flowcheck.py": true
+  },
+  "all_inputs_unchanged": false,
+  "input_change_audit": {
+    "observed_utc": "20260923T002521Z",
+    "old_count": 71,
+    "new_count": 72,
+    "old_sha256": "cf44821f07779490b9b1d913bfb87d7757ae8abfe784c912bb7891868780f7f3",
+    "new_sha256": "0c05976f6063f3332db6ee19d7746052ef35148d7c2a12dfa396c7bb8753f30f",
+    "new_snapshot": "inputs/求解约束.20260923T002521Z.txt.md",
+    "unchanged_used_clauses": {
+      "取货口配置": true,
+      "机型下限": true,
+      "物料流量": true,
+      "满载配置": true,
+      "端口速率": true,
+      "端口对接": true,
+      "入库途径": true,
+      "通道下限": true,
+      "供电下限": true,
+      "面积预算": true,
+      "边带排布": true,
+      "核心离带": true,
+      "核心邻格": true,
+      "运输下限": true,
+      "侧旁供电": true,
+      "内带缺口": true,
+      "空矩形上界": true
+    },
+    "assessment": "All observed versions preserve the necessary propositions used by this no-box model.",
+    "changed_file": "求解约束.txt",
+    "revisions": [
+      {
+        "observed_utc": "20260922T224738Z",
+        "from_sha256": "cf44821f07779490b9b1d913bfb87d7757ae8abfe784c912bb7891868780f7f3",
+        "to_sha256": "a67c18dec5f6ae59c41e8620d270007f20c2d3e5b202521d0cca12f616bca3df",
+        "snapshot": "inputs/求解约束.20260922T224738Z.txt.md",
+        "assessment": "Used necessary propositions preserved; position clause matches this task. No model coefficient changes required."
+      },
+      {
+        "observed_utc": "20260923T002521Z",
+        "from_sha256": "a67c18dec5f6ae59c41e8620d270007f20c2d3e5b202521d0cca12f616bca3df",
+        "to_sha256": "0c05976f6063f3332db6ee19d7746052ef35148d7c2a12dfa396c7bb8753f30f",
+        "snapshot": "inputs/求解约束.20260923T002521Z.txt.md",
+        "assessment": "Only a storage-box transit sentence was removed. No boxes exist in the modeled A=1113 domain; all used clauses remain unchanged."
+      }
+    ]
+  },
+  "current_constraints_match_reviewed_version": true,
+  "runs": 28
+}

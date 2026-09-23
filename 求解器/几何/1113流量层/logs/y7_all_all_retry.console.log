@@ -1,0 +1,20 @@
+y7_all_all_retry: building, load=(9.3203125, 9.021484375, 9.87548828125)
+optimization model '': (model_fingerprint: 0xa3ae8fc62f1715c8)
+#Variables: 360'219 (#ints: 14'826 in objective) (306'848 primary variables)
+  - 209'558 Booleans in [0,1]
+  - 11'552 in [0,4]
+  - 4'762 in [0,12]
+  - 85'778 in [0,20]
+  - 12'732 in [0,40]
+  - 24'284 in [0,60]
+  - 11'552 in [0,80]
+  - 1 in [10,12]
+#kBoolAnd: 28'334 (#enforced: 28'334) (#literals: 56'668)
+#kBoolOr: 35'855 (#enforced: 35'855) (#literals: 165'189)
+#kExactlyOne: 1 (#literals: 47)
+#kLinear1: 72'218 (#enforced: 404)
+#kLinear2: 264'613 (#enforced: 1'856)
+#kLinear3: 69'825 (#enforced: 66'480)
+#kLinearN: 336'108 (#enforced: 213'119) (#terms: 4'103'211)
+y7_all_all_retry: solve starts; build=4.496s
+{"tag": "y7_all_all_retry", "status": "UNKNOWN", "solve_seconds": 248.5530092830013, "build_seconds": 4.495518712996272, "total_seconds": 253.54270050400373}

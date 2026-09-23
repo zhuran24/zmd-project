@@ -1,0 +1,150 @@
+{
+  "ok": true,
+  "method": "same-source exact integer DP replay; no solver called",
+  "seconds": 0.12367417300265515,
+  "positions_sha256": "fd9d7255ca03f96d6c700331abd1fc45a660b3742038281f17108e6c917d550c",
+  "filter_sha256": "9bceabcf7f7a9371d3bf469c3cc09611b29dec566f4861e491212e27a2c22a7e",
+  "positions": [
+    {
+      "rect": [
+        49,
+        6,
+        21,
+        53
+      ],
+      "allowed_P": [
+        10,
+        11
+      ],
+      "branches": [
+        {
+          "P": 10,
+          "X_lower": 16,
+          "Y_lower": 9,
+          "allowed": 29,
+          "keep": true
+        },
+        {
+          "P": 11,
+          "X_lower": 12,
+          "Y_lower": 6,
+          "allowed": 19,
+          "keep": true
+        },
+        {
+          "P": 12,
+          "X_lower": 10,
+          "Y_lower": 3,
+          "allowed": 7,
+          "keep": false
+        }
+      ]
+    },
+    {
+      "rect": [
+        49,
+        7,
+        21,
+        53
+      ],
+      "allowed_P": [
+        10,
+        11
+      ],
+      "branches": [
+        {
+          "P": 10,
+          "X_lower": 16,
+          "Y_lower": 9,
+          "allowed": 29,
+          "keep": true
+        },
+        {
+          "P": 11,
+          "X_lower": 12,
+          "Y_lower": 6,
+          "allowed": 19,
+          "keep": true
+        },
+        {
+          "P": 12,
+          "X_lower": 10,
+          "Y_lower": 3,
+          "allowed": 7,
+          "keep": false
+        }
+      ]
+    },
+    {
+      "rect": [
+        49,
+        9,
+        21,
+        53
+      ],
+      "allowed_P": [
+        10,
+        11
+      ],
+      "branches": [
+        {
+          "P": 10,
+          "X_lower": 16,
+          "Y_lower": 9,
+          "allowed": 29,
+          "keep": true
+        },
+        {
+          "P": 11,
+          "X_lower": 12,
+          "Y_lower": 6,
+          "allowed": 19,
+          "keep": true
+        },
+        {
+          "P": 12,
+          "X_lower": 9,
+          "Y_lower": 3,
+          "allowed": 7,
+          "keep": false
+        }
+      ]
+    },
+    {
+      "rect": [
+        49,
+        17,
+        21,
+        53
+      ],
+      "allowed_P": [
+        10,
+        11,
+        12
+      ],
+      "branches": [
+        {
+          "P": 10,
+          "X_lower": 11,
+          "Y_lower": 8,
+          "allowed": 29,
+          "keep": true
+        },
+        {
+          "P": 11,
+          "X_lower": 8,
+          "Y_lower": 5,
+          "allowed": 19,
+          "keep": true
+        },
+        {
+          "P": 12,
+          "X_lower": 5,
+          "Y_lower": 2,
+          "allowed": 7,
+          "keep": true
+        }
+      ]
+    }
+  ]
+}

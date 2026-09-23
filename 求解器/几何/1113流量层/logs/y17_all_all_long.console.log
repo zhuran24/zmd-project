@@ -1,0 +1,20 @@
+y17_all_all_long: building, load=(13.14306640625, 13.39990234375, 12.26318359375)
+satisfaction model '': (model_fingerprint: 0x3dce5ffd4aeef795)
+#Variables: 368'792 (314'085 primary variables)
+  - 214'377 Booleans in [0,1]
+  - 11'952 in [0,4]
+  - 4'762 in [0,12]
+  - 87'844 in [0,20]
+  - 12'976 in [0,40]
+  - 24'928 in [0,60]
+  - 11'952 in [0,80]
+  - 1 in [10,12]
+#kBoolAnd: 29'366 (#enforced: 29'366) (#literals: 58'732)
+#kBoolOr: 36'910 (#enforced: 36'910) (#literals: 170'418)
+#kExactlyOne: 1 (#literals: 47)
+#kLinear1: 74'217 (#enforced: 316)
+#kLinear2: 269'516 (#enforced: 1'500)
+#kLinear3: 71'519 (#enforced: 67'645)
+#kLinearN: 344'615 (#enforced: 219'198) (#terms: 4'218'599)
+y17_all_all_long: solve starts; build=4.982s
+{"tag": "y17_all_all_long", "status": "UNKNOWN", "solve_seconds": 1801.628421816, "build_seconds": 4.982302320997405, "total_seconds": 1807.167788769002}

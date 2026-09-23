@@ -1,0 +1,22 @@
+[
+  {
+    "y": 6,
+    "global_preserves_baseline_prefix": true,
+    "retry_preserves_global_prefix": true
+  },
+  {
+    "y": 7,
+    "global_preserves_baseline_prefix": true,
+    "retry_preserves_global_prefix": true
+  },
+  {
+    "y": 9,
+    "global_preserves_baseline_prefix": true,
+    "retry_preserves_global_prefix": true
+  },
+  {
+    "y": 17,
+    "global_preserves_baseline_prefix": true,
+    "retry_preserves_global_prefix": true
+  }
+]

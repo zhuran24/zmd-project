@@ -1,0 +1,38 @@
+{
+  "checked_utc": "2026-09-23T01:49:17.306144+00:00",
+  "status": "reader-view pass complete",
+  "report_is_final": true,
+  "run_count": 28,
+  "all_position_runs_unknown": true,
+  "all_model_hashes_match": true,
+  "current_input_matches_reviewed_version": true,
+  "active_task_solver_processes": [],
+  "links": {
+    "报告.md": {
+      "count": 45,
+      "missing": []
+    },
+    "模型说明.md": {
+      "count": 3,
+      "missing": []
+    },
+    "输入变化.md": {
+      "count": 0,
+      "missing": []
+    }
+  },
+  "scope_checks": [
+    "position conclusions distinguish UNKNOWN from infeasibility or existence",
+    "all model bounds and layout-to-network mapping included",
+    "P-domain replay distinguished from independent proof",
+    "input changes recorded without modifying formal files",
+    "checker failure and corrected negative control scoped separately",
+    "no feasible skeleton or bottleneck flow claimed"
+  ],
+  "corrections": [
+    "disambiguated rectangle ordinate y0 from bridge count b",
+    "corrected corridor-bound source to 核心离带",
+    "defined exterior empty-cell count F",
+    "fixed warehouse-port list shadowing in witness checker; solver models unchanged"
+  ]
+}

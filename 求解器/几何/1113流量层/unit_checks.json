@@ -1,0 +1,32 @@
+[
+  {
+    "test": "normal_turn",
+    "status": "OPTIMAL",
+    "expected": "OPTIMAL"
+  },
+  {
+    "test": "bridge_turn_forbidden",
+    "status": "INFEASIBLE",
+    "expected": "INFEASIBLE"
+  },
+  {
+    "test": "bridge_cross",
+    "status": "OPTIMAL",
+    "expected": "OPTIMAL"
+  },
+  {
+    "test": "normal_cross_overload",
+    "status": "INFEASIBLE",
+    "expected": "INFEASIBLE"
+  },
+  {
+    "test": "bridge_axis_overload",
+    "status": "INFEASIBLE",
+    "expected": "INFEASIBLE"
+  },
+  {
+    "test": "unbalanced",
+    "status": "INFEASIBLE",
+    "expected": "INFEASIBLE"
+  }
+]
