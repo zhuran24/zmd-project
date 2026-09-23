@@ -1,0 +1,355 @@
+[
+  {
+    "case_id": "seed",
+    "passed": true,
+    "files": 4,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "seed-out",
+    "passed": true,
+    "files": 5,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "check",
+    "passed": true,
+    "files": 4,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "check-cycle-domain",
+    "passed": true,
+    "files": 4,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "request-fixed",
+    "passed": true,
+    "files": 4,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "request-stop",
+    "passed": true,
+    "files": 4,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "request-invalid",
+    "passed": true,
+    "files": 4,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "run-full",
+    "passed": true,
+    "files": 5,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "run-grinder",
+    "passed": true,
+    "files": 5,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "run-splitter",
+    "passed": true,
+    "files": 5,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "run-delta",
+    "passed": true,
+    "files": 5,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "run-no-cache",
+    "passed": true,
+    "files": 5,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "run-no-output",
+    "passed": true,
+    "files": 4,
+    "mappings": [
+      {
+        "artifact": "main.stdout.log",
+        "pointer": "/elapsed_ns",
+        "a": "8831771",
+        "b": "8881076",
+        "a_token": "\"8831771\"",
+        "b_token": "\"8881076\""
+      }
+    ],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "run-no-output-no-cache",
+    "passed": true,
+    "files": 4,
+    "mappings": [
+      {
+        "artifact": "main.stdout.log",
+        "pointer": "/elapsed_ns",
+        "a": "12160441",
+        "b": "12112155",
+        "a_token": "\"12160441\"",
+        "b_token": "\"12112155\""
+      }
+    ],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "run-no-output-zero",
+    "passed": true,
+    "files": 4,
+    "mappings": [
+      {
+        "artifact": "main.stdout.log",
+        "pointer": "/elapsed_ns",
+        "a": "1128",
+        "b": "955",
+        "a_token": "\"1128\"",
+        "b_token": "\"955\""
+      }
+    ],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "run-no-output-stop",
+    "passed": true,
+    "files": 4,
+    "mappings": [
+      {
+        "artifact": "main.stdout.log",
+        "pointer": "/elapsed_ns",
+        "a": "334137",
+        "b": "341871",
+        "a_token": "\"334137\"",
+        "b_token": "\"341871\""
+      }
+    ],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "run-no-output-out",
+    "passed": true,
+    "files": 5,
+    "mappings": [
+      {
+        "artifact": "artifacts/run-no-output-out.json",
+        "pointer": "/elapsed_ns",
+        "a": "8864346",
+        "b": "8877973",
+        "a_token": "\"8864346\"",
+        "b_token": "\"8877973\""
+      }
+    ],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "run-stopped",
+    "passed": true,
+    "files": 5,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "verify-record-full",
+    "passed": true,
+    "files": 7,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "verify-record-delta",
+    "passed": true,
+    "files": 7,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "checkpoint-record",
+    "passed": true,
+    "files": 8,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "cycle-referenced",
+    "passed": true,
+    "files": 6,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "cycle-no-record",
+    "passed": true,
+    "files": 4,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "cycle-budget",
+    "passed": true,
+    "files": 4,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "cycle-sweep-stop",
+    "passed": true,
+    "files": 4,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "verify-cycle",
+    "passed": true,
+    "files": 8,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "checkpoint-cycle",
+    "passed": true,
+    "files": 9,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "verify-batch",
+    "passed": true,
+    "files": 11,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "seed-invalid-input",
+    "passed": true,
+    "files": 4,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "check-invalid-input",
+    "passed": true,
+    "files": 4,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "run-invalid-input",
+    "passed": true,
+    "files": 4,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "cycle-invalid-input",
+    "passed": true,
+    "files": 4,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "verify-record-invalid-input",
+    "passed": true,
+    "files": 4,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "verify-cycle-invalid-input",
+    "passed": true,
+    "files": 4,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "checkpoint-invalid-input",
+    "passed": true,
+    "files": 4,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "cli-no-args",
+    "passed": true,
+    "files": 4,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "cli-unknown-command",
+    "passed": true,
+    "files": 4,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "topology-contract",
+    "passed": true,
+    "files": 5,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "topology-invalid",
+    "passed": true,
+    "files": 4,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "cycle-found-referenced",
+    "passed": true,
+    "files": 6,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "cycle-found-no-record",
+    "passed": true,
+    "files": 4,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "verify-cycle-found",
+    "passed": true,
+    "files": 8,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "checkpoint-cycle-found",
+    "passed": true,
+    "files": 9,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "verify-batch-with-cycle-found",
+    "passed": true,
+    "files": 15,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  }
+]

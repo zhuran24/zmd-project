@@ -1,0 +1,90 @@
+{
+  "label": "continue-aa-run-splitter-a-main",
+  "argv": [
+    "strace",
+    "-f",
+    "-qq",
+    "-yy",
+    "-s",
+    "4096",
+    "-e",
+    "trace=openat,openat2,execve,chdir",
+    "-o",
+    "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/continue-aa-run-splitter-a-main.trace.log",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/kernel",
+    "run",
+    "/tmp/kernel-audit2-v3r63b5w/求解器/数据/样例/分流器三路轮询.json",
+    "--config",
+    "/tmp/kernel-audit2-v3r63b5w/求解器/规格/内核配置-v1.json",
+    "--ticks",
+    "12",
+    "--out",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/run-splitter/artifacts/run-splitter.json"
+  ],
+  "cwd": "/tmp/kernel-audit2-v3r63b5w/求解器",
+  "returncode": 0,
+  "expected": 0,
+  "seconds": 0.25614121700346004,
+  "cpu_seconds": 0.22962300000000035,
+  "average_cores": 0.8964703247931337,
+  "max_total_threads": 2,
+  "max_runnable_threads": 1,
+  "affinity": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "violation": null,
+  "peak": [
+    {
+      "pid": 1423019,
+      "argv": "strace -f -qq -yy -s 4096 -e trace=openat,openat2,execve,chdir -o /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/continue-aa-run-splitter-a-main.trace.log /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/kernel run /tmp/kernel-audit2-v3r63b5w/求解器/数据/样例/分流器三路轮询.json --config /tmp/kernel-audit2-v3r63b5w/求解器/规格/内核配置-v1.json --ticks 12 --out /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/run-splitter/artifacts/run-splitter.json ",
+      "tasks": [
+        {
+          "tid": 1423019,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        }
+      ]
+    },
+    {
+      "pid": 1423021,
+      "argv": "/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/kernel run /tmp/kernel-audit2-v3r63b5w/求解器/数据/样例/分流器三路轮询.json --config /tmp/kernel-audit2-v3r63b5w/求解器/规格/内核配置-v1.json --ticks 12 --out /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/run-splitter/artifacts/run-splitter.json ",
+      "tasks": [
+        {
+          "tid": 1423021,
+          "state": "R",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 2
+        }
+      ]
+    }
+  ],
+  "environment": {
+    "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+    "CARGO_BUILD_JOBS": "2",
+    "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+    "RUST_TEST_THREADS": "1",
+    "RAYON_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "NODE_OPTIONS": "--v8-pool-size=1",
+    "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/kernel"
+  },
+  "stdout_sha256": "b49bd7077bf0b234867b6f403dcb21042f341764a7c09b5d45f7222f536ed561",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

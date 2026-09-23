@@ -1,0 +1,7 @@
+{
+  "passed": true,
+  "cases": 44,
+  "bindings": "binaries.json",
+  "fields": "comparison-fields.json",
+  "freeze": "continuation-freeze.json"
+}

@@ -1,0 +1,3 @@
+{
+  "reason": "kernel-cycle-v3 has no producer field; its compiled provenance is in fingerprints. kernel-output-v4 producer.path is checked explicitly. Invalid-input cycle certificates are expected verifier rejections. No production changes."
+}

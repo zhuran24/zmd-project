@@ -1,0 +1,30 @@
+[
+  {
+    "name": "rustc",
+    "invoked": "/usr/bin/rustc",
+    "resolved": "/usr/bin/rustc",
+    "sha256": "23aad380e95f6a3bfd3f49b745eb8ce4418d2ec96944bd9f49ebbde67de38d97",
+    "accepted": true
+  },
+  {
+    "name": "cargo",
+    "invoked": "/usr/bin/cargo",
+    "resolved": "/usr/bin/cargo",
+    "sha256": "29a290227dbeee28e20dd9692b7d71c46cd5f1d9295f90ab6975ce67c9ae9643",
+    "accepted": true
+  },
+  {
+    "name": "python",
+    "invoked": "/usr/bin/python",
+    "resolved": "/usr/bin/python3.14",
+    "sha256": "dd65a07e8f535525443d63e2bd6dd10efbf22bf22e0b6d65e634266acc7ac976",
+    "accepted": true
+  },
+  {
+    "name": "clang",
+    "invoked": "/usr/bin/clang",
+    "resolved": "/usr/bin/clang-22",
+    "sha256": "4f86569d7e27c2f2f8ead145099516206214ffd69f8f6ef46f032c1f11140fdb",
+    "accepted": true
+  }
+]

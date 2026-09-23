@@ -1,0 +1,45 @@
+{
+  "case_id": "run-no-output",
+  "label": "b",
+  "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/run-no-output",
+  "sealed": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/sealed/run-no-output/b",
+  "files": {
+    ".exclusive.json": {
+      "sha256": "11af06b9b697cb93fca7353406a9a6cc562a15c6c549377cc95ce1edb30c632f",
+      "size": 149
+    },
+    "artifacts/bad-input.json": {
+      "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+      "size": 3
+    },
+    "main.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    "main.stdout.log": {
+      "sha256": "472bb084eb30df80db37aeae454cd40cf528a0518761d8458bf88e2256d8d5d4",
+      "size": 484
+    }
+  },
+  "steps": [
+    {
+      "step": "main",
+      "returncode": 0,
+      "argv": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/kernel",
+        "run",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/数据/样例/生产循环环带.json",
+        "--config",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/规格/内核配置-v1.json",
+        "--ticks",
+        "20",
+        "--no-output"
+      ]
+    }
+  ],
+  "references": {
+    "artifacts/bad-input.json": [],
+    "main.stderr.log": [],
+    "main.stdout.log": []
+  }
+}

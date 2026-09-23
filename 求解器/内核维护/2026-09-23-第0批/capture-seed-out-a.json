@@ -1,0 +1,64 @@
+{
+  "case_id": "seed-out",
+  "label": "a",
+  "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/seed-out",
+  "sealed": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/sealed/seed-out/a",
+  "files": {
+    ".exclusive.json": {
+      "sha256": "a150c9ffe6910ffcdaeaaa0d030e619672bc4a1d23118bfd51242bde144f1a22",
+      "size": 149
+    },
+    "artifacts/bad-input.json": {
+      "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+      "size": 3
+    },
+    "artifacts/seed.json": {
+      "sha256": "872980b413724a58a5e2de35b1877cfb95cba7aa358fd0d48da4f29ef7c6a65d",
+      "size": 132433
+    },
+    "main.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    "main.stdout.log": {
+      "sha256": "892e9eb17ebce89831af58fd42b1581bf133271fba236f391bdca5afc1bf9010",
+      "size": 150
+    }
+  },
+  "steps": [
+    {
+      "step": "main",
+      "returncode": 0,
+      "argv": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+        "seed",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json",
+        "--config",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/seed-out/artifacts/seed.json"
+      ]
+    }
+  ],
+  "references": {
+    "artifacts/bad-input.json": [],
+    "artifacts/seed.json": [
+      {
+        "pointer": "/catalog",
+        "target": "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/正式静态目录.json",
+        "sha256": "3566e2ecb9d90b9a1afc01b273eb548178de738fb4e4f3b2af88fa05f809be29",
+        "nested_edges": 3,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/parameters/axis_registry",
+        "target": "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/选择点参数轴.md",
+        "sha256": "261da30db31063ec8292aaa493e2c11d026c0861852ef19550eeb92eb4da7665",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      }
+    ],
+    "main.stderr.log": [],
+    "main.stdout.log": []
+  }
+}

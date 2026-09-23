@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "aa_pairs": 44,
+  "closures": [
+    "continuation-reference-closure-a.json",
+    "continuation-reference-closure-b.json"
+  ],
+  "validation_receipts": 84,
+  "source_manifest_sha256": "91254deb96105c7d70ee8c0d06e59a0120256234f536ec5bdf05e7545f96e88b",
+  "runtime_manifest_sha256": "42f513c30331fd57f3de0fd8d8c99dcee3bcfa8e907f8f3aaae42ed324565412",
+  "binary_manifest_sha256": "2e155be8031d9adb63437e773e64e07596649983fca666efeb9ac7ab4b4f612d",
+  "cases_sha256": "732939b8cd5995e0f71e66bf1fb0018a1978ba752de10392fa2ecc8a3fa033a3",
+  "fields_sha256": "6f70c8c51bdc6e09ecfac2496ce02f8c38df378b95f124368abf58ddeec39c5e",
+  "runtime_manifest": "continuation-a-runtime-dependencies.json"
+}

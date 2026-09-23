@@ -1,0 +1,8 @@
+{
+  "pointer": "/fingerprints/0",
+  "source": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/复核/r3-规格保真-证据/tiny-expired-after-closure-input.json",
+  "source_sha256": "e532a59a7e11b9cc4b671d5708fdee1ca0be4c38db35654152e0eee27bf5ede4",
+  "target": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r3_cli-f0faf2fe4bdf42f2a438f916f84af4e5/tiny-expired-after-closure-input.json",
+  "target_sha256": "81d77b18a4b819d3b501b978b230907bc5ac40b8ed6d2fb6c787a03f85ca9840",
+  "mapping": "Only registered path tokens in the copied input change; rebind its one input fingerprint to the new raw bytes."
+}

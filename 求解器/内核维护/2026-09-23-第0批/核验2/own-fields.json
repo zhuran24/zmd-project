@@ -1,0 +1,62 @@
+[
+  {
+    "case_id": "run-no-output",
+    "artifact": "main.stdout.log",
+    "pointer": "/elapsed_ns",
+    "contract": "decimal nonnegative integer string",
+    "basis": "plan 3.5 original five R2 fields",
+    "a": "8858017",
+    "b": "8891317",
+    "a_token": "\"8858017\"",
+    "b_token": "\"8891317\"",
+    "validator": "continuation_aa.compare_bytes; raw JSON Pointer token replacement only"
+  },
+  {
+    "case_id": "run-no-output-no-cache",
+    "artifact": "main.stdout.log",
+    "pointer": "/elapsed_ns",
+    "contract": "decimal nonnegative integer string",
+    "basis": "plan 3.5 original five R2 fields",
+    "a": "12113253",
+    "b": "12065698",
+    "a_token": "\"12113253\"",
+    "b_token": "\"12065698\"",
+    "validator": "continuation_aa.compare_bytes; raw JSON Pointer token replacement only"
+  },
+  {
+    "case_id": "run-no-output-out",
+    "artifact": "artifacts/run-no-output-out.json",
+    "pointer": "/elapsed_ns",
+    "contract": "decimal nonnegative integer string",
+    "basis": "plan 3.5 original five R2 fields",
+    "a": "8926557",
+    "b": "8854654",
+    "a_token": "\"8926557\"",
+    "b_token": "\"8854654\"",
+    "validator": "continuation_aa.compare_bytes; raw JSON Pointer token replacement only"
+  },
+  {
+    "case_id": "run-no-output-stop",
+    "artifact": "main.stdout.log",
+    "pointer": "/elapsed_ns",
+    "contract": "decimal nonnegative integer string",
+    "basis": "plan 3.5 original five R2 fields",
+    "a": "335746",
+    "b": "332438",
+    "a_token": "\"335746\"",
+    "b_token": "\"332438\"",
+    "validator": "continuation_aa.compare_bytes; raw JSON Pointer token replacement only"
+  },
+  {
+    "case_id": "run-no-output-zero",
+    "artifact": "main.stdout.log",
+    "pointer": "/elapsed_ns",
+    "contract": "decimal nonnegative integer string",
+    "basis": "plan 3.5 original five R2 fields",
+    "a": "1347",
+    "b": "1122",
+    "a_token": "\"1347\"",
+    "b_token": "\"1122\"",
+    "validator": "continuation_aa.compare_bytes; raw JSON Pointer token replacement only"
+  }
+]

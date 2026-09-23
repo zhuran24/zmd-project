@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "checked_at": "2026-09-23T03:23:56.795199-04:00",
+  "report_sha256": "c3866f22f96995149e71e2b75b0cfe33586d7f0e0d53d38cd739991794024f78",
+  "local_links": 33,
+  "missing_links": [],
+  "checks": [
+    "self-contained scope and verdict",
+    "two history baselines unambiguous",
+    "all gate numbers derived from evidence",
+    "historical missing bytes retained as missing",
+    "R3 semantic coverage limitation explicit",
+    "corrected audit error disclosed",
+    "no commit verification overclaim"
+  ]
+}

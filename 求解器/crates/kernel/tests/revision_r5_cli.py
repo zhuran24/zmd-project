@@ -1,4 +1,5 @@
-"""修订r5公共入口回归；仅在round6/revision-r5内保存试样、JSON和原始日志。"""
+"""修订r5公共入口回归；仅在独占测试目录内保存试样、JSON和原始日志。"""
+from evidence_paths import instance_dir
 import copy
 import hashlib
 import json
@@ -15,7 +16,7 @@ from runtime_record import build_record
 
 ROOT = Path(__file__).resolve().parents[3]
 BASE = ROOT / '数据/样例'
-E = ROOT / 'crates/kernel/evidence/round6/revision-r5/cli'
+E = None
 BIN = Path(os.environ.get('KERNEL_BIN', ROOT / 'target/release/kernel'))
 CFG = ROOT / '规格/内核配置-v1.json'
 CASES = []
@@ -52,6 +53,8 @@ def relative_record(record, directory):
 
 
 def main():
+    global E
+    E = instance_dir('revision_r5_cli')
     E.mkdir(parents=True, exist_ok=True)
     positives = []
     source = BASE / '生产循环环带.json'

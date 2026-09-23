@@ -1,0 +1,38 @@
+{
+  "case_id": "cli-no-args",
+  "label": "b",
+  "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/cli-no-args",
+  "sealed": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/sealed/cli-no-args/b",
+  "files": {
+    ".exclusive.json": {
+      "sha256": "fa30aad3caa1628bca5f4a026fb9bd5413a4bb10bb6fa5960948ec6feb99470b",
+      "size": 145
+    },
+    "artifacts/bad-input.json": {
+      "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+      "size": 3
+    },
+    "main.stderr.log": {
+      "sha256": "fed99324b99a971a5a998dfc082424a78842f7bc83735a012bce5fe1b037052f",
+      "size": 221
+    },
+    "main.stdout.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    }
+  },
+  "steps": [
+    {
+      "step": "main",
+      "returncode": 2,
+      "argv": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/kernel"
+      ]
+    }
+  ],
+  "references": {
+    "artifacts/bad-input.json": [],
+    "main.stderr.log": [],
+    "main.stdout.log": []
+  }
+}

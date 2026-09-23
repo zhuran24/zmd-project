@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "old_assertions": 12,
+  "final_assertions": 17,
+  "removed_or_weakened_assertions": 0,
+  "cli_case_count": 59,
+  "same_case_exit_status_in_both_final_rounds": true,
+  "checkpoint_state_preserved": true
+}

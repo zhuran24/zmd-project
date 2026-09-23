@@ -1,0 +1,55 @@
+{
+  "label": "list-9",
+  "argv": [
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_r2_cli-02d118cfc7956648",
+    "--list"
+  ],
+  "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+  "returncode": 0,
+  "expected": 0,
+  "seconds": 0.036857193990726955,
+  "cpu_seconds": 0.00042400000001929783,
+  "average_cores": 0.011503860009689658,
+  "max_total_threads": 1,
+  "max_runnable_threads": 0,
+  "affinity": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "violation": null,
+  "peak": [
+    {
+      "pid": 1367067,
+      "argv": "",
+      "tasks": [
+        {
+          "tid": 1367067,
+          "state": "Z",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        }
+      ]
+    }
+  ],
+  "environment": {
+    "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+    "CARGO_BUILD_JOBS": "2",
+    "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+    "RUST_TEST_THREADS": "1",
+    "RAYON_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "NODE_OPTIONS": "--v8-pool-size=1"
+  },
+  "stdout_sha256": "d00dcc9efd02df6cd9be851f91f67cf76724b5bdd570b4487b128802fb750d5c",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

@@ -1,0 +1,5 @@
+{
+  "before": "3b6508c96b80369ca7bd43abc9458b839f7991f9680101da048e26133e5aefec",
+  "after": "4d3be4292d4d686ee633826a28cc2f77174c21685b3654e990f492a90865bae6",
+  "reason": "Embedded legacy run_record follows its input/profile fingerprint paths before rejection; relocate only path fields in a generated record, preserving original hashes and all assertions. Copy missing read-only transitive input at its original bytes."
+}

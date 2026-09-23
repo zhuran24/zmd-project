@@ -1,0 +1,29 @@
+{
+  "imports_no_write": true,
+  "explicit": [
+    "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/path_probe-58338c51dea641bcb918008e5cb6b3f3",
+    "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/path_probe-725ecda6dee7488dbbe9b50c5fb3c395"
+  ],
+  "illegal_roots": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence",
+      "error": "unregistered output root"
+    },
+    {
+      "path": "relative",
+      "error": "output root must be absolute without parent traversal"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/target/../crates/kernel/evidence",
+      "error": "output root must be absolute without parent traversal"
+    }
+  ],
+  "concurrent": [
+    "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/concurrent_probe-8b8a26818f68490bbc06fa15c295b49c",
+    "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/concurrent_probe-9413f279dc8640cc9fa2dcaa97cb72f4"
+  ],
+  "default": "/home/zhuran24/zmd-research-fresh/求解器/target/health-tests/run-cdf4cecb9fe2401783ac21d71947b2f9/default_probe-726eb7f7453e483893448b0f5bd7eeb7",
+  "unicode_spaces": "/home/zhuran24/zmd-research-fresh/求解器/target/health-tests/paths-c258f4b78cab410db55c804602941339/内核维护/中文 空格/cargo-test-evidence/unicode_probe-2da95f1935234cfe8783428ad36fc38e",
+  "symlink_rejected": "symlink in output path: /home/zhuran24/zmd-research-fresh/求解器/target/health-tests/paths-c258f4b78cab410db55c804602941339/ancestor-link",
+  "failure_retained": "/home/zhuran24/zmd-research-fresh/求解器/target/health-tests/paths-c258f4b78cab410db55c804602941339/内核维护/中文 空格/cargo-test-evidence/failure_probe-e1c58ecec730497a9b8b03a475c5fb27"
+}

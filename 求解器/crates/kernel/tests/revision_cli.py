@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
-"""第1轮修订：公开CLI负例与Python落盘验收变异；所有文件写入本crate证据目录。"""
+"""第1轮修订：公开CLI负例与Python落盘验收变异；所有文件写入独占测试目录。"""
 import copy
 import json
 import subprocess
 import sys
-import tempfile
+from evidence_paths import instance_dir
 from pathlib import Path
 import verify_outputs as verifier
 
 ROOT = Path(__file__).resolve().parents[3]
-EVIDENCE = ROOT / 'crates/kernel/evidence/revision-r2'
-OUT = EVIDENCE / 'tmp'
+EVIDENCE = None
+OUT = None
 CONFIG = ROOT / '规格/内核配置-v1.json'
-BIN = Path(sys.argv[1]).resolve()
+BIN = None
 
 
 def write(path, value):
@@ -97,7 +97,8 @@ def main():
 
 
 if __name__ == '__main__':
-    OUT.mkdir(parents=True, exist_ok=True)
-    with tempfile.TemporaryDirectory(prefix='cli-', dir=OUT) as directory:
-        OUT = Path(directory)
-        main()
+    EVIDENCE = instance_dir('revision_cli')
+    BIN = Path(sys.argv[1]).resolve()
+    OUT = EVIDENCE / 'tmp'
+    OUT.mkdir()
+    main()

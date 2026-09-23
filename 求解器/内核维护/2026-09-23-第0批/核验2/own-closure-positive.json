@@ -1,0 +1,134 @@
+{
+  "passed": true,
+  "artifacts": [
+    {
+      "target": {
+        "kind": [
+          "lib"
+        ],
+        "crate_types": [
+          "lib"
+        ],
+        "name": "topology",
+        "src_path": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/topology/src/lib.rs",
+        "edition": "2021",
+        "doc": true,
+        "doctest": true,
+        "test": true
+      },
+      "dep_info": "/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/topology-bf1fc1afc7f71deb.d",
+      "dep_info_sha256": "44d3766ea61ac3d9676b3b615f7c76a171bf5a80ed3a01450d224e337f8c78fb",
+      "dependencies": {
+        "/tmp/kernel-audit2-v3r63b5w/求解器/crates/topology/src/lib.rs": "bcca2c5f46391d5e83bf1f82b883274fbe85023fd742a500532c2b0cb4d7b709",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/数据/正式静态目录.json": "3566e2ecb9d90b9a1afc01b273eb548178de738fb4e4f3b2af88fa05f809be29"
+      }
+    },
+    {
+      "target": {
+        "kind": [
+          "bin"
+        ],
+        "crate_types": [
+          "bin"
+        ],
+        "name": "topology",
+        "src_path": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/topology/src/main.rs",
+        "edition": "2021",
+        "doc": true,
+        "doctest": false,
+        "test": true
+      },
+      "dep_info": "/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/topology.d",
+      "dep_info_sha256": "46cbfe75a649e6bedfe681b5e1d90e9bd7b9df5f4ae32d166db588a051eb842b",
+      "dependencies": {
+        "/tmp/kernel-audit2-v3r63b5w/求解器/crates/topology/src/lib.rs": "bcca2c5f46391d5e83bf1f82b883274fbe85023fd742a500532c2b0cb4d7b709",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/crates/topology/src/main.rs": "c10cc32045da0d2af89e45ee6ff95dd645813bf602f3d44e14977c9ccd0bf9f2",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/数据/正式静态目录.json": "3566e2ecb9d90b9a1afc01b273eb548178de738fb4e4f3b2af88fa05f809be29"
+      }
+    },
+    {
+      "target": {
+        "kind": [
+          "lib"
+        ],
+        "crate_types": [
+          "lib"
+        ],
+        "name": "kernel",
+        "src_path": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/lib.rs",
+        "edition": "2021",
+        "doc": true,
+        "doctest": true,
+        "test": true
+      },
+      "dep_info": "/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/kernel-ee4256eb8be4a7ed.d",
+      "dep_info_sha256": "7fe3471b38b6c35a0104aec41e11bf3988f45c47a0d08378b71fb8b7d3676e91",
+      "dependencies": {
+        "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/cache.rs": "07492543966219f3e7cbcdc0aceef96475d812cca0b10743c196f4f6de85b2ab",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/catalog.rs": "a38df132d8db440d5fb4d6eb33392e539f0549e436dbca210da8c9eb1edb983c",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/config.rs": "69676c866f8030ea877e662fdb85f600618f23edd99e4262699997adf9786f5a",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/cycle.rs": "5a0b2ace4003f63dd1c135621a5d13d9c69d7000471a3dabfb8ddccfe170056d",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/cycle_io.rs": "93afc189315738f11780b04ac4ff5cbabf93afb2fabc04233ef5c3dd63f4de30",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/digest.rs": "e8d8d5c8df1f7124ec5739fa158a41b4d7ca662f1b246d3604994cbe81eb1ef0",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/engine.rs": "5f77eab8562c5af23c61dbb447f8e50320386bd267ea7cc9f00ca667a92b09b3",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/event_identity.rs": "25a4f4442232845d2fedf80ed368fb02ce502f2c350e16e73355296183f3e70e",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/input.rs": "63fe621104d86461562e99ba216f12fa1f69737fdb2efd57c1d8a57a8b700502",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/interfaces.rs": "3ee13ba29adc7ae58abf29e09f938900895f12908fa5b428b261b9909da9d919",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/ledger.rs": "f85ecea3240dd1ec0598a026bafe3b863c13220c7bdb7cdb0aa24c1e2577d9e7",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/lib.rs": "5d63008aa0f7b9c8a1da93dc96b13496398cc3fbad93c3775d709d77340b4c6a",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/model.rs": "edeb17c43654ca3aa5bf5f3a83907585b4ecddf9241658a2e426d2560f3bfaef",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/output.rs": "e81896910da6fe9a1eabbcf23260a68cbd781a6d3e621226f62e35ca5ef6f0f5",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/polling.rs": "ff518fdb807c02a332c48acc565e0cc7b6b43d1fb98fb22374a0002ac8dd7635",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/seed.rs": "9c0f6cb5b5d06e163c5ea5335b911fc31f24cbfda173e6ea1e705422f02b5281",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/transition.rs": "fe21d21cb3fb83277486216ce0325891259d89353a7b3cb5bdd23a9f02f4cab5",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/value.rs": "0cd34a9c7877861580caa0711e643575cbb9ce631a445919c69f093c2392d32b",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/warehouse.rs": "6d50eb1678921d2f3621149d60766463e6c4ce4fd57e0978ae1af7253557d5f5",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/数据/正式静态目录.json": "3566e2ecb9d90b9a1afc01b273eb548178de738fb4e4f3b2af88fa05f809be29",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/规格/内核配置-v1.json": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048"
+      }
+    },
+    {
+      "target": {
+        "kind": [
+          "bin"
+        ],
+        "crate_types": [
+          "bin"
+        ],
+        "name": "kernel",
+        "src_path": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/main.rs",
+        "edition": "2021",
+        "doc": true,
+        "doctest": false,
+        "test": true
+      },
+      "dep_info": "/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/kernel.d",
+      "dep_info_sha256": "7b1bc4bfd7150de5626f3724726a67fb799b35e5ec9b63dec053399c9d26d7b4",
+      "dependencies": {
+        "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/cache.rs": "07492543966219f3e7cbcdc0aceef96475d812cca0b10743c196f4f6de85b2ab",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/catalog.rs": "a38df132d8db440d5fb4d6eb33392e539f0549e436dbca210da8c9eb1edb983c",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/config.rs": "69676c866f8030ea877e662fdb85f600618f23edd99e4262699997adf9786f5a",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/cycle.rs": "5a0b2ace4003f63dd1c135621a5d13d9c69d7000471a3dabfb8ddccfe170056d",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/cycle_io.rs": "93afc189315738f11780b04ac4ff5cbabf93afb2fabc04233ef5c3dd63f4de30",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/digest.rs": "e8d8d5c8df1f7124ec5739fa158a41b4d7ca662f1b246d3604994cbe81eb1ef0",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/engine.rs": "5f77eab8562c5af23c61dbb447f8e50320386bd267ea7cc9f00ca667a92b09b3",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/event_identity.rs": "25a4f4442232845d2fedf80ed368fb02ce502f2c350e16e73355296183f3e70e",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/input.rs": "63fe621104d86461562e99ba216f12fa1f69737fdb2efd57c1d8a57a8b700502",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/interfaces.rs": "3ee13ba29adc7ae58abf29e09f938900895f12908fa5b428b261b9909da9d919",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/ledger.rs": "f85ecea3240dd1ec0598a026bafe3b863c13220c7bdb7cdb0aa24c1e2577d9e7",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/lib.rs": "5d63008aa0f7b9c8a1da93dc96b13496398cc3fbad93c3775d709d77340b4c6a",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/main.rs": "b38a6cf3afd455a7b440f4e86bb3c27e5684ff872d4c0a2bfa8b84368f9f651d",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/model.rs": "edeb17c43654ca3aa5bf5f3a83907585b4ecddf9241658a2e426d2560f3bfaef",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/output.rs": "e81896910da6fe9a1eabbcf23260a68cbd781a6d3e621226f62e35ca5ef6f0f5",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/polling.rs": "ff518fdb807c02a332c48acc565e0cc7b6b43d1fb98fb22374a0002ac8dd7635",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/seed.rs": "9c0f6cb5b5d06e163c5ea5335b911fc31f24cbfda173e6ea1e705422f02b5281",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/transition.rs": "fe21d21cb3fb83277486216ce0325891259d89353a7b3cb5bdd23a9f02f4cab5",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/value.rs": "0cd34a9c7877861580caa0711e643575cbb9ce631a445919c69f093c2392d32b",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/warehouse.rs": "6d50eb1678921d2f3621149d60766463e6c4ce4fd57e0978ae1af7253557d5f5",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/数据/正式静态目录.json": "3566e2ecb9d90b9a1afc01b273eb548178de738fb4e4f3b2af88fa05f809be29",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/规格/内核配置-v1.json": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048"
+      }
+    }
+  ],
+  "checker_files": 20
+}

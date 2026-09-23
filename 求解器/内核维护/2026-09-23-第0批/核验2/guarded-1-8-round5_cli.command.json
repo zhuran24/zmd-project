@@ -1,0 +1,113 @@
+{
+  "label": "guarded-1-8-round5_cli",
+  "argv": [
+    "strace",
+    "-f",
+    "-qq",
+    "-yy",
+    "-s",
+    "4096",
+    "-e",
+    "trace=openat,openat2,execve,chdir",
+    "-o",
+    "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-1-8-round5_cli.trace.log",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/round5_cli-f12aa00d5116e14a",
+    "--test-threads=1",
+    "--nocapture"
+  ],
+  "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+  "returncode": 0,
+  "expected": 0,
+  "seconds": 0.2250826329982374,
+  "cpu_seconds": 0.19214800000000132,
+  "average_cores": 0.8536775913826546,
+  "max_total_threads": 4,
+  "max_runnable_threads": 0,
+  "affinity": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "violation": null,
+  "peak": [
+    {
+      "pid": 1370491,
+      "argv": "strace -f -qq -yy -s 4096 -e trace=openat,openat2,execve,chdir -o /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-1-8-round5_cli.trace.log /home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/round5_cli-f12aa00d5116e14a --test-threads=1 --nocapture ",
+      "tasks": [
+        {
+          "tid": 1370491,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 1
+        }
+      ]
+    },
+    {
+      "pid": 1370493,
+      "argv": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/round5_cli-f12aa00d5116e14a --test-threads=1 --nocapture ",
+      "tasks": [
+        {
+          "tid": 1370493,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        },
+        {
+          "tid": 1370494,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        }
+      ]
+    },
+    {
+      "pid": 1370524,
+      "argv": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/kernel cycle /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/round5_cli-a06b43a3da7b4dc59ab9eddd8fab2a70/invalid-cycle-input.json --config /tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json --max-ticks 2 --out /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/round5_cli-a06b43a3da7b4dc59ab9eddd8fab2a70/invalid-cycle-result.json ",
+      "tasks": [
+        {
+          "tid": 1370524,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        }
+      ]
+    }
+  ],
+  "environment": {
+    "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+    "CARGO_BUILD_JOBS": "2",
+    "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+    "RUST_TEST_THREADS": "1",
+    "RAYON_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "NODE_OPTIONS": "--v8-pool-size=1",
+    "HEALTH_RUN": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文",
+    "KERNEL_TEST_EVIDENCE_DIR": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence"
+  },
+  "stdout_sha256": "2f8044532f26c052a2f8d91d16661ab2cd261ceaf44d6cc116c74a18069050db",
+  "stderr_sha256": "eef07aba382618e99309deacbd3679382d5f030697b81d4913f7bd38a5caf63a"
+}

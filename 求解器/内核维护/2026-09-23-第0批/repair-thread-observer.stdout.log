@@ -1,0 +1,1 @@
+observer tolerates processes exiting between /proc reads; peak journal persists

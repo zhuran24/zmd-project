@@ -1,0 +1,221 @@
+{
+  "label": "tests-307b92bf1e28-2",
+  "argv": [
+    "cargo",
+    "clippy",
+    "--workspace",
+    "--all-targets",
+    "--message-format=json",
+    "--locked",
+    "--offline",
+    "-j",
+    "2",
+    "--profile",
+    "healthreg307b92bf1e28",
+    "--config",
+    "profile.healthreg307b92bf1e28.inherits=\"dev\"",
+    "--config",
+    "profile.healthreg307b92bf1e28.codegen-units=1"
+  ],
+  "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+  "returncode": 0,
+  "expected": 0,
+  "seconds": 2.0449111409980105,
+  "cpu_seconds": 3.261010000000001,
+  "cpu_cores_average": 1.5946952093030695,
+  "max_total_threads": 12,
+  "max_runnable_threads": 3,
+  "affinity": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "peak": [
+    {
+      "pid": 1310374,
+      "argv": "/usr/bin/cargo-clippy clippy --workspace --all-targets --message-format=json --locked --offline -j 2 --profile healthreg307b92bf1e28 --config profile.healthreg307b92bf1e28.inherits=\"dev\" --config profile.healthreg307b92bf1e28.codegen-units=1 ",
+      "tasks": [
+        {
+          "tid": 1310374,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "cargo-clippy"
+        }
+      ]
+    },
+    {
+      "pid": 1310375,
+      "argv": "/usr/bin/cargo check --workspace --all-targets --message-format=json --locked --offline -j 2 --profile healthreg307b92bf1e28 --config profile.healthreg307b92bf1e28.inherits=\"dev\" --config profile.healthreg307b92bf1e28.codegen-units=1 ",
+      "tasks": [
+        {
+          "tid": 1310375,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "cargo"
+        },
+        {
+          "tid": 1310380,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "futures-timer"
+        },
+        {
+          "tid": 1310382,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "cargo"
+        },
+        {
+          "tid": 1310383,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "cargo"
+        },
+        {
+          "tid": 1310384,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "cargo"
+        }
+      ]
+    },
+    {
+      "pid": 1310385,
+      "argv": "/usr/bin/clippy-driver rustc --crate-name kernel --edition=2021 crates/kernel/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata -C embed-bitcode=no -C codegen-units=1 -C debuginfo=2 --check-cfg cfg(docsrs,test) --check-cfg cfg(feature, values()) -C metadata=70926005a2e89466 -C extra-filename=-71f6e08f91a421f3 --out-dir /home/zhuran24/zmd-research-fresh/求解器/target/healthreg307b92bf1e28/deps -C incremental=/home/zhuran24/zmd-research-fresh/求解器/target/healthreg307b92bf1e28/incremental -L dependency=/home/zhuran24/zmd-research-fresh/求解器/target/healthreg307b92bf1e28/deps --extern serde=/home/zhuran24/zmd-research-fresh/求解器/target/healthreg307b92bf1e28/deps/libserde-c7253d238e94ba2f.rmeta --extern serde_json=/home/zhuran24/zmd-research-fresh/求解器/target/healthreg307b92bf1e28/deps/libserde_json-66a08e68629926dc.rmeta ",
+      "tasks": [
+        {
+          "tid": 1310385,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "clippy-driver"
+        },
+        {
+          "tid": 1310387,
+          "state": "R",
+          "cpu_ticks": 2,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "rustc"
+        },
+        {
+          "tid": 1310390,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "rustc"
+        }
+      ]
+    },
+    {
+      "pid": 1310386,
+      "argv": "/usr/bin/clippy-driver rustc --crate-name topology --edition=2021 crates/topology/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata -C embed-bitcode=no -C codegen-units=1 -C debuginfo=2 --check-cfg cfg(docsrs,test) --check-cfg cfg(feature, values()) -C metadata=2d4e61f13fcf772a -C extra-filename=-56139a26338113eb --out-dir /home/zhuran24/zmd-research-fresh/求解器/target/healthreg307b92bf1e28/deps -C incremental=/home/zhuran24/zmd-research-fresh/求解器/target/healthreg307b92bf1e28/incremental -L dependency=/home/zhuran24/zmd-research-fresh/求解器/target/healthreg307b92bf1e28/deps --extern num_bigint=/home/zhuran24/zmd-research-fresh/求解器/target/healthreg307b92bf1e28/deps/libnum_bigint-c24856da114e9bc0.rmeta --extern num_rational=/home/zhuran24/zmd-research-fresh/求解器/target/healthreg307b92bf1e28/deps/libnum_rational-0556b96e04e7013e.rmeta --extern num_traits=/home/zhuran24/zmd-research-fresh/求解器/target/healthreg307b92bf1e28/deps/libnum_traits-85ce812f923c8cc7.rmeta --extern serde=/home/zhuran24/zmd-research-fresh/求解器/target/healthreg307b92bf1e28/deps/libserde-c7253d238e94ba2f.rmeta --extern serde_json=/home/zhuran24/zmd-research-fresh/求解器/target/healthreg307b92bf1e28/deps/libserde_json-66a08e68629926dc.rmeta ",
+      "tasks": [
+        {
+          "tid": 1310386,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "clippy-driver"
+        },
+        {
+          "tid": 1310388,
+          "state": "R",
+          "cpu_ticks": 2,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "rustc"
+        },
+        {
+          "tid": 1310389,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "rustc"
+        }
+      ]
+    }
+  ],
+  "violation": null,
+  "protection_error": null,
+  "environment": {
+    "PATH": "/home/zhuran24/.codex/tmp/arg0/codex-arg07mihkU:/home/zhuran24/.cargo/bin:/home/zhuran24/.local/bin:/home/zhuran24/.opencode/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/home/zhuran24/.local/share/flatpak/exports/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/home/zhuran24/.config/Claude/local-agent-mode-sessions/skills-plugin/cf875e59-d94b-492e-ba7a-6d2a070f0f30/92f6071f-e8b1-40cd-8c37-9d23302ed76c/bin",
+    "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+    "CARGO_BUILD_JOBS": "2",
+    "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+    "RUST_TEST_THREADS": "1",
+    "RAYON_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "NODE_OPTIONS": "--v8-pool-size=1"
+  },
+  "stdout_sha256": "40ba0dca97482a75b65fba3d5ebc7b63d85b01469e9165bf9d8a4bc6fe8bf114",
+  "stderr_sha256": "c8927d4eb43b14b33e59f8c893aa8a9e0ab3341ee90d623c5c359f0b6eb6e6ee"
+}

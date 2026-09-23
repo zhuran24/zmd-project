@@ -1,0 +1,16 @@
+{
+  "求解器/crates/kernel/tests/revision_r3_cli.py": {
+    "before": {
+      "mode": 420,
+      "kind": "file",
+      "size": 8306,
+      "sha256": "decf98300c45ad2071bfc8d306b9d1542da8fa34498b2524294965678d7690a8"
+    },
+    "after": {
+      "mode": 420,
+      "kind": "file",
+      "size": 11273,
+      "sha256": "df9fc35ebd73a01a5fbee9231a7d2730b09308fdfa6a7a89d7f231afe0030427"
+    }
+  }
+}

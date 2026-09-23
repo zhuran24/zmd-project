@@ -1,0 +1,57 @@
+{
+  "label": "production-a-serial-build",
+  "argv": [
+    "cargo",
+    "build",
+    "--locked",
+    "--offline",
+    "--workspace",
+    "--bins",
+    "-j",
+    "1",
+    "--profile",
+    "health0serial20260923",
+    "--config",
+    "profile.health0serial20260923.inherits=\"dev\"",
+    "--config",
+    "profile.health0serial20260923.codegen-units=1",
+    "--message-format=json"
+  ],
+  "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+  "returncode": 0,
+  "expected": 0,
+  "seconds": 19.860806703567505,
+  "max_threads": 11,
+  "peak": [
+    {
+      "pid": 1079140,
+      "threads": 7,
+      "name": "rustc",
+      "tasks": [
+        "rustc",
+        "ctrl-c",
+        "rustc",
+        "rustc",
+        "rustc",
+        "coordinator",
+        "opt cgu.0"
+      ]
+    },
+    {
+      "pid": 1079132,
+      "threads": 4,
+      "name": "cargo",
+      "tasks": [
+        "cargo",
+        "futures-timer",
+        "cargo",
+        "cargo"
+      ]
+    }
+  ],
+  "affinity": [
+    0
+  ],
+  "stdout_sha256": "4926a8d266766182e3efc536faaa4f3f02fa7e20ef9f52b70c7f9770273ebf8f",
+  "stderr_sha256": "5cae2081e83a733f96d061fb694a723de231d621c736a7872a05fdc8b94a419f"
+}

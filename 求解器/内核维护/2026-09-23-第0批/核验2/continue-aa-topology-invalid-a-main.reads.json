@@ -1,0 +1,27 @@
+[
+  {
+    "path": "/etc/ld.so.cache",
+    "sha256": "e3a2ce52583e4bcb8b58dde61bed66c178f496386569d95667e09f06a9e4694f",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/libgcc_s.so.1",
+    "sha256": "571745fb27883c763315fab54a536906064c1df6804d1a7884713dac259da68d",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/libm.so.6",
+    "sha256": "97a73e24e715f4069fd3b205bad7392307276bca14fa183381dfd9276b9573ca",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/libc.so.6",
+    "sha256": "848dae1dfcff0fc864292b28b2d426b0093425002a856a55c3a2b8ed31e2ea40",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/topology-invalid/artifacts/bad-input.json",
+    "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+    "category": "output"
+  }
+]

@@ -1,16 +1,16 @@
-"""第2轮修订：双样例双编码元数据篡改及真实CLI输入反例，临时文件只在本crate内。"""
+"""第2轮修订：双样例双编码元数据篡改及真实CLI输入反例，临时文件只在独占测试目录内。"""
 import copy
 import json
 import subprocess
 import sys
-import tempfile
+from evidence_paths import instance_dir
 from pathlib import Path
 import verify_outputs as verifier
 
 ROOT = Path(__file__).resolve().parents[3]
-EVIDENCE = ROOT / 'crates/kernel/evidence/revision-r2'
+EVIDENCE = None
 CONFIG = ROOT / '规格/内核配置-v1.json'
-BIN = Path(sys.argv[1]).resolve()
+BIN = None
 
 
 def write(path, data):
@@ -142,6 +142,8 @@ def main(out):
 
 
 if __name__ == '__main__':
-    EVIDENCE.mkdir(exist_ok=True)
-    with tempfile.TemporaryDirectory(prefix='r2-cli-', dir=EVIDENCE) as directory:
-        main(Path(directory))
+    EVIDENCE = instance_dir('revision_r2_cli')
+    BIN = Path(sys.argv[1]).resolve()
+    directory = EVIDENCE / 'tmp'
+    directory.mkdir()
+    main(directory)

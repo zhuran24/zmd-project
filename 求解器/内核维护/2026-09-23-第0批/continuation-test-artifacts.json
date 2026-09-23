@@ -1,0 +1,693 @@
+[
+  {
+    "reason": "compiler-artifact",
+    "package_id": "path+file:///tmp/kernel-health-20260923-_5s65pp9/%E6%B1%82%E8%A7%A3%E5%99%A8/crates/topology#0.1.0",
+    "manifest_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/topology/Cargo.toml",
+    "target": {
+      "kind": [
+        "lib"
+      ],
+      "crate_types": [
+        "lib"
+      ],
+      "name": "topology",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/topology/src/lib.rs",
+      "edition": "2021",
+      "doc": true,
+      "doctest": true,
+      "test": true
+    },
+    "profile": {
+      "opt_level": "0",
+      "debuginfo": 2,
+      "debug_assertions": true,
+      "overflow_checks": true,
+      "test": false
+    },
+    "features": [],
+    "filenames": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/libtopology-bf1fc1afc7f71deb.rlib",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/libtopology-bf1fc1afc7f71deb.rmeta"
+    ],
+    "executable": null,
+    "fresh": false
+  },
+  {
+    "reason": "compiler-artifact",
+    "package_id": "path+file:///tmp/kernel-health-20260923-_5s65pp9/%E6%B1%82%E8%A7%A3%E5%99%A8/crates/topology#0.1.0",
+    "manifest_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/topology/Cargo.toml",
+    "target": {
+      "kind": [
+        "bin"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "topology",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/topology/src/main.rs",
+      "edition": "2021",
+      "doc": true,
+      "doctest": false,
+      "test": true
+    },
+    "profile": {
+      "opt_level": "0",
+      "debuginfo": 2,
+      "debug_assertions": true,
+      "overflow_checks": true,
+      "test": false
+    },
+    "features": [],
+    "filenames": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/topology"
+    ],
+    "executable": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/topology",
+    "fresh": false,
+    "sha256": "a8ddc0e9e7d8e9a5c121030ac6c2c9c1ed311755c3400dcc9a566f992ee0fa1e"
+  },
+  {
+    "reason": "compiler-artifact",
+    "package_id": "path+file:///tmp/kernel-health-20260923-_5s65pp9/%E6%B1%82%E8%A7%A3%E5%99%A8/crates/topology#0.1.0",
+    "manifest_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/topology/Cargo.toml",
+    "target": {
+      "kind": [
+        "test"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "validation",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/topology/tests/validation.rs",
+      "edition": "2021",
+      "doc": false,
+      "doctest": false,
+      "test": true
+    },
+    "profile": {
+      "opt_level": "0",
+      "debuginfo": 2,
+      "debug_assertions": true,
+      "overflow_checks": true,
+      "test": true
+    },
+    "features": [],
+    "filenames": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/validation-2d77b7ea08304438"
+    ],
+    "executable": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/validation-2d77b7ea08304438",
+    "fresh": false,
+    "sha256": "e3e627be2c1de9f1ab76c87cd0699cfab6b4e8d163fe8e1adebe13516114a693",
+    "dep_info": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/validation-2d77b7ea08304438.d",
+      "sha256": "8bc23acc7871581fed6a4601edd1073bc63e9442a89c0421d242563b956a5660",
+      "files": {
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/topology/tests/validation.rs": "b46816a0d23e1b1d845452b0a7d3f549ae9f0ca82dbe25d088778e03cd6bb724",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/候选B/contract.json": "a555045972861bc60a84ade0cfaf81a037a1abfff89be1aeee578b9ef0e1a2db",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/正式静态目录.json": "3566e2ecb9d90b9a1afc01b273eb548178de738fb4e4f3b2af88fa05f809be29"
+      }
+    }
+  },
+  {
+    "reason": "compiler-artifact",
+    "package_id": "path+file:///tmp/kernel-health-20260923-_5s65pp9/%E6%B1%82%E8%A7%A3%E5%99%A8/crates/topology#0.1.0",
+    "manifest_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/topology/Cargo.toml",
+    "target": {
+      "kind": [
+        "bin"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "topology",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/topology/src/main.rs",
+      "edition": "2021",
+      "doc": true,
+      "doctest": false,
+      "test": true
+    },
+    "profile": {
+      "opt_level": "0",
+      "debuginfo": 2,
+      "debug_assertions": true,
+      "overflow_checks": true,
+      "test": true
+    },
+    "features": [],
+    "filenames": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/topology-208981e14844f49e"
+    ],
+    "executable": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/topology-208981e14844f49e",
+    "fresh": false,
+    "sha256": "6f8b9aa8a252bfb2e6d549f8f01dce7589957b73e7e33e23dffc57cd32036fde",
+    "dep_info": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/topology-208981e14844f49e.d",
+      "sha256": "df63f3ba95063a9e0d652eab45fe4428ae585b281749117c3a70a6ff7e58ff72",
+      "files": {
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/topology/src/main.rs": "c10cc32045da0d2af89e45ee6ff95dd645813bf602f3d44e14977c9ccd0bf9f2"
+      }
+    }
+  },
+  {
+    "reason": "compiler-artifact",
+    "package_id": "path+file:///tmp/kernel-health-20260923-_5s65pp9/%E6%B1%82%E8%A7%A3%E5%99%A8/crates/topology#0.1.0",
+    "manifest_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/topology/Cargo.toml",
+    "target": {
+      "kind": [
+        "lib"
+      ],
+      "crate_types": [
+        "lib"
+      ],
+      "name": "topology",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/topology/src/lib.rs",
+      "edition": "2021",
+      "doc": true,
+      "doctest": true,
+      "test": true
+    },
+    "profile": {
+      "opt_level": "0",
+      "debuginfo": 2,
+      "debug_assertions": true,
+      "overflow_checks": true,
+      "test": true
+    },
+    "features": [],
+    "filenames": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/topology-84c684aecc288bbd"
+    ],
+    "executable": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/topology-84c684aecc288bbd",
+    "fresh": false,
+    "sha256": "1509733b0e08c48d7db0b303917191d13b1f8d709c1b94175ea44b4ba3297c15",
+    "dep_info": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/topology-84c684aecc288bbd.d",
+      "sha256": "ce7eaf5b9aa4bef730d42ddc29b8e9eecfbd1fde59fee18e6037cb8dedc48ac3",
+      "files": {
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/topology/src/lib.rs": "bcca2c5f46391d5e83bf1f82b883274fbe85023fd742a500532c2b0cb4d7b709",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/正式静态目录.json": "3566e2ecb9d90b9a1afc01b273eb548178de738fb4e4f3b2af88fa05f809be29"
+      }
+    }
+  },
+  {
+    "reason": "compiler-artifact",
+    "package_id": "path+file:///tmp/kernel-health-20260923-_5s65pp9/%E6%B1%82%E8%A7%A3%E5%99%A8/crates/kernel#0.1.0",
+    "manifest_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/Cargo.toml",
+    "target": {
+      "kind": [
+        "lib"
+      ],
+      "crate_types": [
+        "lib"
+      ],
+      "name": "kernel",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/lib.rs",
+      "edition": "2021",
+      "doc": true,
+      "doctest": true,
+      "test": true
+    },
+    "profile": {
+      "opt_level": "0",
+      "debuginfo": 2,
+      "debug_assertions": true,
+      "overflow_checks": true,
+      "test": false
+    },
+    "features": [],
+    "filenames": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/libkernel-ee4256eb8be4a7ed.rlib",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/libkernel-ee4256eb8be4a7ed.rmeta"
+    ],
+    "executable": null,
+    "fresh": false
+  },
+  {
+    "reason": "compiler-artifact",
+    "package_id": "path+file:///tmp/kernel-health-20260923-_5s65pp9/%E6%B1%82%E8%A7%A3%E5%99%A8/crates/kernel#0.1.0",
+    "manifest_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/Cargo.toml",
+    "target": {
+      "kind": [
+        "test"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "revision_cli",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/revision_cli.rs",
+      "edition": "2021",
+      "doc": false,
+      "doctest": false,
+      "test": true
+    },
+    "profile": {
+      "opt_level": "0",
+      "debuginfo": 2,
+      "debug_assertions": true,
+      "overflow_checks": true,
+      "test": true
+    },
+    "features": [],
+    "filenames": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_cli-16d2a8aca958a1e2"
+    ],
+    "executable": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_cli-16d2a8aca958a1e2",
+    "fresh": false,
+    "sha256": "243e9f7d26c6f4934e36db1e585e9b6f8484e7b6c88f6be645eadbf5785277a5",
+    "dep_info": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_cli-16d2a8aca958a1e2.d",
+      "sha256": "f5b67d22aa389d8d9499e613107d5a174986c9b873fff0a065802512c79e2a0e",
+      "files": {
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/revision_cli.rs": "2138def9d54db01de4259fcbc874901875cdb376bf34b76f9ab4a3fb61a3126a",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/support/mod.rs": "e371198fa97e2b3020594c9ad0602becd91498c1e7d7b7ecdebd179e01daceac"
+      }
+    }
+  },
+  {
+    "reason": "compiler-artifact",
+    "package_id": "path+file:///tmp/kernel-health-20260923-_5s65pp9/%E6%B1%82%E8%A7%A3%E5%99%A8/crates/kernel#0.1.0",
+    "manifest_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/Cargo.toml",
+    "target": {
+      "kind": [
+        "bin"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "kernel",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/main.rs",
+      "edition": "2021",
+      "doc": true,
+      "doctest": false,
+      "test": true
+    },
+    "profile": {
+      "opt_level": "0",
+      "debuginfo": 2,
+      "debug_assertions": true,
+      "overflow_checks": true,
+      "test": false
+    },
+    "features": [],
+    "filenames": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/kernel"
+    ],
+    "executable": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/kernel",
+    "fresh": false,
+    "sha256": "0e3a2d30d5e824bd8016e719b4a2d77f6ed83464b238f60d7ece70f88536479c"
+  },
+  {
+    "reason": "compiler-artifact",
+    "package_id": "path+file:///tmp/kernel-health-20260923-_5s65pp9/%E6%B1%82%E8%A7%A3%E5%99%A8/crates/kernel#0.1.0",
+    "manifest_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/Cargo.toml",
+    "target": {
+      "kind": [
+        "bin"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "kernel",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/main.rs",
+      "edition": "2021",
+      "doc": true,
+      "doctest": false,
+      "test": true
+    },
+    "profile": {
+      "opt_level": "0",
+      "debuginfo": 2,
+      "debug_assertions": true,
+      "overflow_checks": true,
+      "test": true
+    },
+    "features": [],
+    "filenames": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/kernel-a23b9231946580be"
+    ],
+    "executable": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/kernel-a23b9231946580be",
+    "fresh": false,
+    "sha256": "090b0858937e3f99cbf039bd6eee920352851361b1669c6f3c40251d32cb5fea",
+    "dep_info": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/kernel-a23b9231946580be.d",
+      "sha256": "6704439faea0bfbb874e4198910dfbcdec391d45490605b22d11aa4bd2e6c7c1",
+      "files": {
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/main.rs": "b38a6cf3afd455a7b440f4e86bb3c27e5684ff872d4c0a2bfa8b84368f9f651d"
+      }
+    }
+  },
+  {
+    "reason": "compiler-artifact",
+    "package_id": "path+file:///tmp/kernel-health-20260923-_5s65pp9/%E6%B1%82%E8%A7%A3%E5%99%A8/crates/kernel#0.1.0",
+    "manifest_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/Cargo.toml",
+    "target": {
+      "kind": [
+        "test"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "revision_r3_cli",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/revision_r3_cli.rs",
+      "edition": "2021",
+      "doc": false,
+      "doctest": false,
+      "test": true
+    },
+    "profile": {
+      "opt_level": "0",
+      "debuginfo": 2,
+      "debug_assertions": true,
+      "overflow_checks": true,
+      "test": true
+    },
+    "features": [],
+    "filenames": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_r3_cli-73bf228036d3dfbb"
+    ],
+    "executable": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_r3_cli-73bf228036d3dfbb",
+    "fresh": false,
+    "sha256": "2409a483657a5ff04e03cd5a8edab35bfc7e2d0112c5c2e75c5e4bcdb7cdc3db",
+    "dep_info": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_r3_cli-73bf228036d3dfbb.d",
+      "sha256": "7eae5323a0f3431afa94842133440a499bc71e7f322f45534754b863300fa03a",
+      "files": {
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/revision_r3_cli.rs": "02989b599252c11e91f8e3bf5618a6574920b6b61c8b0aef626164db2a95ce0e",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/support/mod.rs": "e371198fa97e2b3020594c9ad0602becd91498c1e7d7b7ecdebd179e01daceac"
+      }
+    }
+  },
+  {
+    "reason": "compiler-artifact",
+    "package_id": "path+file:///tmp/kernel-health-20260923-_5s65pp9/%E6%B1%82%E8%A7%A3%E5%99%A8/crates/kernel#0.1.0",
+    "manifest_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/Cargo.toml",
+    "target": {
+      "kind": [
+        "test"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "revision_r4_cli",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/revision_r4_cli.rs",
+      "edition": "2021",
+      "doc": false,
+      "doctest": false,
+      "test": true
+    },
+    "profile": {
+      "opt_level": "0",
+      "debuginfo": 2,
+      "debug_assertions": true,
+      "overflow_checks": true,
+      "test": true
+    },
+    "features": [],
+    "filenames": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_r4_cli-0ff84fdc55db31c8"
+    ],
+    "executable": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_r4_cli-0ff84fdc55db31c8",
+    "fresh": false,
+    "sha256": "b63a1e104ece1600d5e9d66085c5b64ef275bdb9fb74416a0a43255eb5a267be",
+    "dep_info": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_r4_cli-0ff84fdc55db31c8.d",
+      "sha256": "d3718681cfe62a29813c6287604f596cb0dffec46a6e5a518a4e58ab91be2e04",
+      "files": {
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/revision_r4_cli.rs": "ee1497ebf76729018d081a32f41303ee8a6d765b683c48a8d1246c0c712dc731",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/support/mod.rs": "e371198fa97e2b3020594c9ad0602becd91498c1e7d7b7ecdebd179e01daceac"
+      }
+    }
+  },
+  {
+    "reason": "compiler-artifact",
+    "package_id": "path+file:///tmp/kernel-health-20260923-_5s65pp9/%E6%B1%82%E8%A7%A3%E5%99%A8/crates/kernel#0.1.0",
+    "manifest_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/Cargo.toml",
+    "target": {
+      "kind": [
+        "test"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "reference",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/reference.rs",
+      "edition": "2021",
+      "doc": false,
+      "doctest": false,
+      "test": true
+    },
+    "profile": {
+      "opt_level": "0",
+      "debuginfo": 2,
+      "debug_assertions": true,
+      "overflow_checks": true,
+      "test": true
+    },
+    "features": [],
+    "filenames": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/reference-865fb275bacf969a"
+    ],
+    "executable": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/reference-865fb275bacf969a",
+    "fresh": false,
+    "sha256": "b608512595324dcfb0314add1cf008e53b1378aba78b1a38209c53219e7f3392",
+    "dep_info": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/reference-865fb275bacf969a.d",
+      "sha256": "20142b837348290a5342c62f72d3c5a489a4e8110aab30662afe669f5730cda1",
+      "files": {
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/reference.rs": "4674f801a969ce18d87442387bc64ecf6d4fa52ed32944fc7cba7788306c4044"
+      }
+    }
+  },
+  {
+    "reason": "compiler-artifact",
+    "package_id": "path+file:///tmp/kernel-health-20260923-_5s65pp9/%E6%B1%82%E8%A7%A3%E5%99%A8/crates/kernel#0.1.0",
+    "manifest_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/Cargo.toml",
+    "target": {
+      "kind": [
+        "test"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "round5_cli",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/round5_cli.rs",
+      "edition": "2021",
+      "doc": false,
+      "doctest": false,
+      "test": true
+    },
+    "profile": {
+      "opt_level": "0",
+      "debuginfo": 2,
+      "debug_assertions": true,
+      "overflow_checks": true,
+      "test": true
+    },
+    "features": [],
+    "filenames": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/round5_cli-f12aa00d5116e14a"
+    ],
+    "executable": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/round5_cli-f12aa00d5116e14a",
+    "fresh": false,
+    "sha256": "ed9ca3f477caf77675c06f7a68d6d6cd01c9dbab4a15d3a76b618d63515d3c8e",
+    "dep_info": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/round5_cli-f12aa00d5116e14a.d",
+      "sha256": "63f23094da35fb0987edfae4bfa00be5aa9d117d3aae9e89f85f06358306a7ac",
+      "files": {
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/round5_cli.rs": "cbc494cbedecfb64051d15f8c9cd4abeb83b636e163e86909ce874d103ae7c82",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/support/mod.rs": "e371198fa97e2b3020594c9ad0602becd91498c1e7d7b7ecdebd179e01daceac"
+      }
+    }
+  },
+  {
+    "reason": "compiler-artifact",
+    "package_id": "path+file:///tmp/kernel-health-20260923-_5s65pp9/%E6%B1%82%E8%A7%A3%E5%99%A8/crates/kernel#0.1.0",
+    "manifest_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/Cargo.toml",
+    "target": {
+      "kind": [
+        "test"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "revision_r2_cli",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/revision_r2_cli.rs",
+      "edition": "2021",
+      "doc": false,
+      "doctest": false,
+      "test": true
+    },
+    "profile": {
+      "opt_level": "0",
+      "debuginfo": 2,
+      "debug_assertions": true,
+      "overflow_checks": true,
+      "test": true
+    },
+    "features": [],
+    "filenames": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_r2_cli-02d118cfc7956648"
+    ],
+    "executable": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_r2_cli-02d118cfc7956648",
+    "fresh": false,
+    "sha256": "858c79f0955354cb5e4c1328e8e20094d5f12572b8711e469b29a9306dba39c3",
+    "dep_info": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_r2_cli-02d118cfc7956648.d",
+      "sha256": "a1907cc76fb28804081b5dbb5e53d989e27f4bd9ea74ad0056576776b5d402a9",
+      "files": {
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/revision_r2_cli.rs": "b5a609410118cd6d32db4362d131d00f48fee3140a2df74fe0f28656823a40e4",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/support/mod.rs": "e371198fa97e2b3020594c9ad0602becd91498c1e7d7b7ecdebd179e01daceac"
+      }
+    }
+  },
+  {
+    "reason": "compiler-artifact",
+    "package_id": "path+file:///tmp/kernel-health-20260923-_5s65pp9/%E6%B1%82%E8%A7%A3%E5%99%A8/crates/kernel#0.1.0",
+    "manifest_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/Cargo.toml",
+    "target": {
+      "kind": [
+        "test"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "round6_cli",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/round6_cli.rs",
+      "edition": "2021",
+      "doc": false,
+      "doctest": false,
+      "test": true
+    },
+    "profile": {
+      "opt_level": "0",
+      "debuginfo": 2,
+      "debug_assertions": true,
+      "overflow_checks": true,
+      "test": true
+    },
+    "features": [],
+    "filenames": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/round6_cli-48429a53f1b38e15"
+    ],
+    "executable": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/round6_cli-48429a53f1b38e15",
+    "fresh": false,
+    "sha256": "22b7157511ebdd4f81eed4bbc13eda84d4bc8b2772ecd38aeef162e2c9869396",
+    "dep_info": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/round6_cli-48429a53f1b38e15.d",
+      "sha256": "06de40006c1cf0e72d7f5630838b2f163e83d8d378cb3abe3bf603cdb22ccbaf",
+      "files": {
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/round6_cli.rs": "d06aa3615d92405282dcfd403122579ba3b2f4abd0c9fed7504429247a1b1fd3",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/support/mod.rs": "e371198fa97e2b3020594c9ad0602becd91498c1e7d7b7ecdebd179e01daceac"
+      }
+    }
+  },
+  {
+    "reason": "compiler-artifact",
+    "package_id": "path+file:///tmp/kernel-health-20260923-_5s65pp9/%E6%B1%82%E8%A7%A3%E5%99%A8/crates/kernel#0.1.0",
+    "manifest_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/Cargo.toml",
+    "target": {
+      "kind": [
+        "test"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "revision_r5_cli",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/revision_r5_cli.rs",
+      "edition": "2021",
+      "doc": false,
+      "doctest": false,
+      "test": true
+    },
+    "profile": {
+      "opt_level": "0",
+      "debuginfo": 2,
+      "debug_assertions": true,
+      "overflow_checks": true,
+      "test": true
+    },
+    "features": [],
+    "filenames": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_r5_cli-b79a20e6639e72e8"
+    ],
+    "executable": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_r5_cli-b79a20e6639e72e8",
+    "fresh": false,
+    "sha256": "65aa10a0c2f08035592b96375ff458ab5ca6a3bfafed829013a9eb7962cb4702",
+    "dep_info": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_r5_cli-b79a20e6639e72e8.d",
+      "sha256": "9f104e16267ffb0e4d92fc19374b52fb5887eb1c443a211985955fcc0e9c321d",
+      "files": {
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/revision_r5_cli.rs": "5c86c142a0e9179d48a518fd43e045dceb6397133c27e8d338e459a155b5f49d",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/support/mod.rs": "e371198fa97e2b3020594c9ad0602becd91498c1e7d7b7ecdebd179e01daceac"
+      }
+    }
+  },
+  {
+    "reason": "compiler-artifact",
+    "package_id": "path+file:///tmp/kernel-health-20260923-_5s65pp9/%E6%B1%82%E8%A7%A3%E5%99%A8/crates/kernel#0.1.0",
+    "manifest_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/Cargo.toml",
+    "target": {
+      "kind": [
+        "lib"
+      ],
+      "crate_types": [
+        "lib"
+      ],
+      "name": "kernel",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/lib.rs",
+      "edition": "2021",
+      "doc": true,
+      "doctest": true,
+      "test": true
+    },
+    "profile": {
+      "opt_level": "0",
+      "debuginfo": 2,
+      "debug_assertions": true,
+      "overflow_checks": true,
+      "test": true
+    },
+    "features": [],
+    "filenames": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/kernel-ab0acbad6798c3ae"
+    ],
+    "executable": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/kernel-ab0acbad6798c3ae",
+    "fresh": false,
+    "sha256": "d2a497c22f54801d3346a7030a830fb4dad9066a9fdbbdd5469b8ed2774c7af3",
+    "dep_info": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/kernel-ab0acbad6798c3ae.d",
+      "sha256": "890f054caae5d61bce106298e8397f8ac18f20b2047724d353cf7e27fed0ee89",
+      "files": {
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/lib.rs": "5d63008aa0f7b9c8a1da93dc96b13496398cc3fbad93c3775d709d77340b4c6a",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/cache.rs": "07492543966219f3e7cbcdc0aceef96475d812cca0b10743c196f4f6de85b2ab",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/catalog.rs": "a38df132d8db440d5fb4d6eb33392e539f0549e436dbca210da8c9eb1edb983c",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/config.rs": "69676c866f8030ea877e662fdb85f600618f23edd99e4262699997adf9786f5a",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/cycle.rs": "5a0b2ace4003f63dd1c135621a5d13d9c69d7000471a3dabfb8ddccfe170056d",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/cycle_io.rs": "93afc189315738f11780b04ac4ff5cbabf93afb2fabc04233ef5c3dd63f4de30",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/digest.rs": "e8d8d5c8df1f7124ec5739fa158a41b4d7ca662f1b246d3604994cbe81eb1ef0",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/engine.rs": "5f77eab8562c5af23c61dbb447f8e50320386bd267ea7cc9f00ca667a92b09b3",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/event_identity.rs": "25a4f4442232845d2fedf80ed368fb02ce502f2c350e16e73355296183f3e70e",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/input.rs": "63fe621104d86461562e99ba216f12fa1f69737fdb2efd57c1d8a57a8b700502",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/interfaces.rs": "3ee13ba29adc7ae58abf29e09f938900895f12908fa5b428b261b9909da9d919",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/ledger.rs": "f85ecea3240dd1ec0598a026bafe3b863c13220c7bdb7cdb0aa24c1e2577d9e7",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/model.rs": "edeb17c43654ca3aa5bf5f3a83907585b4ecddf9241658a2e426d2560f3bfaef",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/output.rs": "e81896910da6fe9a1eabbcf23260a68cbd781a6d3e621226f62e35ca5ef6f0f5",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/polling.rs": "ff518fdb807c02a332c48acc565e0cc7b6b43d1fb98fb22374a0002ac8dd7635",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/seed.rs": "9c0f6cb5b5d06e163c5ea5335b911fc31f24cbfda173e6ea1e705422f02b5281",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/transition.rs": "fe21d21cb3fb83277486216ce0325891259d89353a7b3cb5bdd23a9f02f4cab5",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/value.rs": "0cd34a9c7877861580caa0711e643575cbb9ce631a445919c69f093c2392d32b",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/warehouse.rs": "6d50eb1678921d2f3621149d60766463e6c4ce4fd57e0978ae1af7253557d5f5",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/tests.rs": "111ca609ae9486d2e324b13d52d645e22c74bab63f57d3c6cca18611039752ee",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/tests_revision.rs": "fdbec222b970566f88a7d711e44f6e46fbd7dc0062ba5bbf584159ca0217c0c1",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/tests_revision_r2.rs": "e42da5328e9946f8e745cdbf361b06e006fcb28e54656488e8f53346697f4377",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/tests_revision_r3.rs": "d67ebdbb093af916766fc35930b0bf31d2bfcf162de97d84f122ed5f0609d049",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/tests_revision_r4.rs": "ac9fad84090f652a7e36240ea500a5aa1a4aa26f35640e133927a82645b341ed",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/tests_round5.rs": "f3982a6c2c82290952d0f00bb0e882bbb4e661a805acffb4b24eda53bdeb0847",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/tests_bridge.rs": "095f5988a0360668112d65dba1181407b41d0f7ed46c45c8c9b7aa5b8632c2b8",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/tests_revision_r5.rs": "0b3d61ac0291913fe0d24bd5160a266b0ddc393eeeeddabfbb9c09c87293297b",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/tests_round6.rs": "66ce1f93167843132c2d31f3aed736409c61d4781828bf917689b94ee2547d7a",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/正式静态目录.json": "3566e2ecb9d90b9a1afc01b273eb548178de738fb4e4f3b2af88fa05f809be29",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048"
+      }
+    }
+  }
+]

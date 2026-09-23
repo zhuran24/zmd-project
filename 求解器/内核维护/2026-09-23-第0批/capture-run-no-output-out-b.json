@@ -1,0 +1,52 @@
+{
+  "case_id": "run-no-output-out",
+  "label": "b",
+  "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/run-no-output-out",
+  "sealed": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/sealed/run-no-output-out/b",
+  "files": {
+    ".exclusive.json": {
+      "sha256": "f9810b45bfba53112e258f17baacb31accccadce59e22595df714730bc1bf9e1",
+      "size": 167
+    },
+    "artifacts/bad-input.json": {
+      "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+      "size": 3
+    },
+    "artifacts/run-no-output-out.json": {
+      "sha256": "c19c1b03aff6c3f0918f3d4bc83fbc27b22193386fba1243698de8bc3325850b",
+      "size": 484
+    },
+    "main.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    "main.stdout.log": {
+      "sha256": "c9cbcc9cedb5161a81faf59639a7c49bcc7c8436d1c3d6a993b9532ccf022c67",
+      "size": 179
+    }
+  },
+  "steps": [
+    {
+      "step": "main",
+      "returncode": 0,
+      "argv": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+        "run",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json",
+        "--config",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json",
+        "--ticks",
+        "20",
+        "--no-output",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/run-no-output-out/artifacts/run-no-output-out.json"
+      ]
+    }
+  ],
+  "references": {
+    "artifacts/bad-input.json": [],
+    "artifacts/run-no-output-out.json": [],
+    "main.stderr.log": [],
+    "main.stdout.log": []
+  }
+}

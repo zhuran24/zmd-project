@@ -1,0 +1,180 @@
+{
+  "label": "suite-307b92bf1e28-revision_r5_cli",
+  "argv": [
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_r5_cli-b79a20e6639e72e8",
+    "--test-threads=1"
+  ],
+  "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+  "returncode": 0,
+  "expected": 0,
+  "seconds": 9.161265563001507,
+  "cpu_seconds": 9.352278000000002,
+  "cpu_cores_average": 1.0208500054588434,
+  "max_total_threads": 9,
+  "max_runnable_threads": 2,
+  "affinity": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "peak": [
+    {
+      "pid": 1323444,
+      "argv": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_r5_cli-b79a20e6639e72e8 --test-threads=1 ",
+      "tasks": [
+        {
+          "tid": 1323444,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "revision_r5_cli"
+        },
+        {
+          "tid": 1323445,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "revision_r5_pub"
+        }
+      ]
+    },
+    {
+      "pid": 1323448,
+      "argv": "python -B /tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/revision_r5_cli.py ",
+      "tasks": [
+        {
+          "tid": 1323448,
+          "state": "S",
+          "cpu_ticks": 10,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "python"
+        }
+      ]
+    },
+    {
+      "pid": 1325571,
+      "argv": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/kernel verify-batch /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r5_cli-bd726dd2613e4fd0bf93482f92bc64ba/package --config /tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json ",
+      "tasks": [
+        {
+          "tid": 1325571,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "kernel"
+        }
+      ]
+    },
+    {
+      "pid": 1325572,
+      "argv": "python -B /tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/verify_all.py --dry /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r5_cli-bd726dd2613e4fd0bf93482f92bc64ba/package --config /tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json ",
+      "tasks": [
+        {
+          "tid": 1325572,
+          "state": "S",
+          "cpu_ticks": 4,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "python"
+        }
+      ]
+    },
+    {
+      "pid": 1325573,
+      "argv": "node -e const fs=require('fs');const Ajv=require(process.argv[1]);const args=JSON.parse(fs.readFileSync(0,'utf8'));const schema=JSON.parse(fs.readFileSync(args.schema,'utf8'));const validate=new Ajv({strict:false,allErrors:true}).compile(schema);for(const path of args.paths){if(!validate(JSON.parse(fs.readFileSync(path,'utf8')))){console.error(JSON.stringify({path,errors:validate.errors}));process.exit(1);}} /home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/2020.js ",
+      "tasks": [
+        {
+          "tid": 1325573,
+          "state": "R",
+          "cpu_ticks": 2,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "node-MainThread"
+        },
+        {
+          "tid": 1325574,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "DelayedTaskSche"
+        },
+        {
+          "tid": 1325575,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "node-V8Worker"
+        },
+        {
+          "tid": 1325576,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "SignalInspector"
+        }
+      ]
+    }
+  ],
+  "violation": null,
+  "protection_error": null,
+  "environment": {
+    "PATH": "/home/zhuran24/.codex/tmp/arg0/codex-arg07mihkU:/home/zhuran24/.cargo/bin:/home/zhuran24/.local/bin:/home/zhuran24/.opencode/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/home/zhuran24/.local/share/flatpak/exports/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/home/zhuran24/.config/Claude/local-agent-mode-sessions/skills-plugin/cf875e59-d94b-492e-ba7a-6d2a070f0f30/92f6071f-e8b1-40cd-8c37-9d23302ed76c/bin",
+    "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+    "CARGO_BUILD_JOBS": "2",
+    "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+    "RUST_TEST_THREADS": "1",
+    "RAYON_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "NODE_OPTIONS": "--v8-pool-size=1",
+    "HEALTH_RUN": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批",
+    "KERNEL_TEST_EVIDENCE_DIR": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence"
+  },
+  "stdout_sha256": "fd35204518540fc6edd681600afe5de26707254c7e4a068e39b50a4ae74823ec",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

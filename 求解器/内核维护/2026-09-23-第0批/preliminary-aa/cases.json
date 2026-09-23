@@ -1,0 +1,1316 @@
+[
+  {
+    "id": "seed",
+    "role": "R2 branch template with fresh prerequisites",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "seed",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json",
+      "--config",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "environment": {
+      "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "input_hashes": {
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json": "69bc1f4afff489ea2f47adf5d0598478ddb16e4be2a9eabe3fb741283ba19526",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048"
+    },
+    "prerequisites": [],
+    "expected": 0,
+    "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/seed",
+    "outputs": "complete file tree including each prerequisite stdout/stderr, generated input, records and certificates"
+  },
+  {
+    "id": "seed-out",
+    "role": "R2 branch template with fresh prerequisites",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "seed",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json",
+      "--config",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/seed-out/artifacts/seed.json"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "environment": {
+      "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "input_hashes": {
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json": "69bc1f4afff489ea2f47adf5d0598478ddb16e4be2a9eabe3fb741283ba19526",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048"
+    },
+    "prerequisites": [],
+    "expected": 0,
+    "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/seed-out",
+    "outputs": "complete file tree including each prerequisite stdout/stderr, generated input, records and certificates"
+  },
+  {
+    "id": "check",
+    "role": "R2 branch template with fresh prerequisites",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "check",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json",
+      "--config",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "environment": {
+      "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "input_hashes": {
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json": "69bc1f4afff489ea2f47adf5d0598478ddb16e4be2a9eabe3fb741283ba19526",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048"
+    },
+    "prerequisites": [],
+    "expected": 0,
+    "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/check",
+    "outputs": "complete file tree including each prerequisite stdout/stderr, generated input, records and certificates"
+  },
+  {
+    "id": "check-cycle-domain",
+    "role": "R2 branch template with fresh prerequisites",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "check",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json",
+      "--config",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json",
+      "--cycle-domain"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "environment": {
+      "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "input_hashes": {
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json": "69bc1f4afff489ea2f47adf5d0598478ddb16e4be2a9eabe3fb741283ba19526",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048"
+    },
+    "prerequisites": [],
+    "expected": 0,
+    "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/check-cycle-domain",
+    "outputs": "complete file tree including each prerequisite stdout/stderr, generated input, records and certificates"
+  },
+  {
+    "id": "request-fixed",
+    "role": "R2 branch template with fresh prerequisites",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "request",
+      "time.domain",
+      "--config",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "environment": {
+      "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "input_hashes": {
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048"
+    },
+    "prerequisites": [],
+    "expected": 0,
+    "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/request-fixed",
+    "outputs": "complete file tree including each prerequisite stdout/stderr, generated input, records and certificates"
+  },
+  {
+    "id": "request-stop",
+    "role": "R2 branch template with fresh prerequisites",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "request",
+      "damping.no_terminal",
+      "--config",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "environment": {
+      "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "input_hashes": {
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048"
+    },
+    "prerequisites": [],
+    "expected": 2,
+    "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/request-stop",
+    "outputs": "complete file tree including each prerequisite stdout/stderr, generated input, records and certificates"
+  },
+  {
+    "id": "request-invalid",
+    "role": "R2 branch template with fresh prerequisites",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "request",
+      "r2.unknown.axis",
+      "--config",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "environment": {
+      "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "input_hashes": {
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048"
+    },
+    "prerequisites": [],
+    "expected": 2,
+    "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/request-invalid",
+    "outputs": "complete file tree including each prerequisite stdout/stderr, generated input, records and certificates"
+  },
+  {
+    "id": "run-full",
+    "role": "R2 branch template with fresh prerequisites",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "run",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json",
+      "--config",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "12",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/run-full/artifacts/run-full.json"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "environment": {
+      "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "input_hashes": {
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json": "69bc1f4afff489ea2f47adf5d0598478ddb16e4be2a9eabe3fb741283ba19526",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048"
+    },
+    "prerequisites": [],
+    "expected": 0,
+    "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/run-full",
+    "outputs": "complete file tree including each prerequisite stdout/stderr, generated input, records and certificates"
+  },
+  {
+    "id": "run-grinder",
+    "role": "R2 branch template with fresh prerequisites",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "run",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/混做粉碎机两下游.json",
+      "--config",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "4",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/run-grinder/artifacts/run-grinder.json"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "environment": {
+      "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "input_hashes": {
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/混做粉碎机两下游.json": "51116298a11f07279a0c5f9b3bad55855434145fe22bebd412a075ab0c676786",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048"
+    },
+    "prerequisites": [],
+    "expected": 0,
+    "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/run-grinder",
+    "outputs": "complete file tree including each prerequisite stdout/stderr, generated input, records and certificates"
+  },
+  {
+    "id": "run-splitter",
+    "role": "R2 branch template with fresh prerequisites",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "run",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/分流器三路轮询.json",
+      "--config",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "12",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/run-splitter/artifacts/run-splitter.json"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "environment": {
+      "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "input_hashes": {
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/分流器三路轮询.json": "e7e164c8b72932a8ef48cc21345d1639505853d76796ad7542b413b00cdc3a67",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048"
+    },
+    "prerequisites": [],
+    "expected": 0,
+    "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/run-splitter",
+    "outputs": "complete file tree including each prerequisite stdout/stderr, generated input, records and certificates"
+  },
+  {
+    "id": "run-delta",
+    "role": "R2 branch template with fresh prerequisites",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "run",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json",
+      "--config",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "12",
+      "--format",
+      "checkpoint_delta",
+      "--checkpoint-interval",
+      "3",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/run-delta/artifacts/run-delta.json"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "environment": {
+      "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "input_hashes": {
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json": "69bc1f4afff489ea2f47adf5d0598478ddb16e4be2a9eabe3fb741283ba19526",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048"
+    },
+    "prerequisites": [],
+    "expected": 0,
+    "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/run-delta",
+    "outputs": "complete file tree including each prerequisite stdout/stderr, generated input, records and certificates"
+  },
+  {
+    "id": "run-no-cache",
+    "role": "R2 branch template with fresh prerequisites",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "run",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json",
+      "--config",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "12",
+      "--no-cache",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/run-no-cache/artifacts/run-no-cache.json"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "environment": {
+      "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "input_hashes": {
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json": "69bc1f4afff489ea2f47adf5d0598478ddb16e4be2a9eabe3fb741283ba19526",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048"
+    },
+    "prerequisites": [],
+    "expected": 0,
+    "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/run-no-cache",
+    "outputs": "complete file tree including each prerequisite stdout/stderr, generated input, records and certificates"
+  },
+  {
+    "id": "run-no-output",
+    "role": "R2 branch template with fresh prerequisites",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "run",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json",
+      "--config",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "20",
+      "--no-output"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "environment": {
+      "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "input_hashes": {
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json": "69bc1f4afff489ea2f47adf5d0598478ddb16e4be2a9eabe3fb741283ba19526",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048"
+    },
+    "prerequisites": [],
+    "expected": 0,
+    "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/run-no-output",
+    "outputs": "complete file tree including each prerequisite stdout/stderr, generated input, records and certificates"
+  },
+  {
+    "id": "run-no-output-no-cache",
+    "role": "R2 branch template with fresh prerequisites",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "run",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json",
+      "--config",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "20",
+      "--no-output",
+      "--no-cache"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "environment": {
+      "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "input_hashes": {
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json": "69bc1f4afff489ea2f47adf5d0598478ddb16e4be2a9eabe3fb741283ba19526",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048"
+    },
+    "prerequisites": [],
+    "expected": 0,
+    "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/run-no-output-no-cache",
+    "outputs": "complete file tree including each prerequisite stdout/stderr, generated input, records and certificates"
+  },
+  {
+    "id": "run-no-output-zero",
+    "role": "R2 branch template with fresh prerequisites",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "run",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json",
+      "--config",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "0",
+      "--no-output"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "environment": {
+      "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "input_hashes": {
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json": "69bc1f4afff489ea2f47adf5d0598478ddb16e4be2a9eabe3fb741283ba19526",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048"
+    },
+    "prerequisites": [],
+    "expected": 0,
+    "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/run-no-output-zero",
+    "outputs": "complete file tree including each prerequisite stdout/stderr, generated input, records and certificates"
+  },
+  {
+    "id": "run-no-output-stop",
+    "role": "R2 branch template with fresh prerequisites",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "run",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json",
+      "--config",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "20",
+      "--max-sweeps",
+      "1",
+      "--no-output"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "environment": {
+      "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "input_hashes": {
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json": "69bc1f4afff489ea2f47adf5d0598478ddb16e4be2a9eabe3fb741283ba19526",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048"
+    },
+    "prerequisites": [],
+    "expected": 2,
+    "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/run-no-output-stop",
+    "outputs": "complete file tree including each prerequisite stdout/stderr, generated input, records and certificates"
+  },
+  {
+    "id": "run-no-output-out",
+    "role": "R2 branch template with fresh prerequisites",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "run",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json",
+      "--config",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "20",
+      "--no-output",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/run-no-output-out/artifacts/run-no-output-out.json"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "environment": {
+      "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "input_hashes": {
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json": "69bc1f4afff489ea2f47adf5d0598478ddb16e4be2a9eabe3fb741283ba19526",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048"
+    },
+    "prerequisites": [],
+    "expected": 0,
+    "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/run-no-output-out",
+    "outputs": "complete file tree including each prerequisite stdout/stderr, generated input, records and certificates"
+  },
+  {
+    "id": "run-stopped",
+    "role": "R2 branch template with fresh prerequisites",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "run",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json",
+      "--config",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "20",
+      "--max-sweeps",
+      "1",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/run-stopped/artifacts/run-stopped.json"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "environment": {
+      "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "input_hashes": {
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json": "69bc1f4afff489ea2f47adf5d0598478ddb16e4be2a9eabe3fb741283ba19526",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048"
+    },
+    "prerequisites": [],
+    "expected": 2,
+    "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/run-stopped",
+    "outputs": "complete file tree including each prerequisite stdout/stderr, generated input, records and certificates"
+  },
+  {
+    "id": "verify-record-full",
+    "role": "R2 branch template with fresh prerequisites",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "verify-record",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/verify-record-full/artifacts/run-full.json",
+      "--config",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "environment": {
+      "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "input_hashes": {
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048"
+    },
+    "prerequisites": [
+      {
+        "id": "generate-full",
+        "argv": [
+          "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+          "run",
+          "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json",
+          "--ticks",
+          "12",
+          "--out",
+          "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/verify-record-full/artifacts/run-full.json",
+          "--config",
+          "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json"
+        ],
+        "expected": 0
+      }
+    ],
+    "expected": 0,
+    "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/verify-record-full",
+    "outputs": "complete file tree including each prerequisite stdout/stderr, generated input, records and certificates"
+  },
+  {
+    "id": "verify-record-delta",
+    "role": "R2 branch template with fresh prerequisites",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "verify-record",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/verify-record-delta/artifacts/run-delta.json",
+      "--config",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "environment": {
+      "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "input_hashes": {
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048"
+    },
+    "prerequisites": [
+      {
+        "id": "generate-delta",
+        "argv": [
+          "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+          "run",
+          "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json",
+          "--ticks",
+          "12",
+          "--format",
+          "checkpoint_delta",
+          "--checkpoint-interval",
+          "3",
+          "--out",
+          "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/verify-record-delta/artifacts/run-delta.json",
+          "--config",
+          "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json"
+        ],
+        "expected": 0
+      }
+    ],
+    "expected": 0,
+    "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/verify-record-delta",
+    "outputs": "complete file tree including each prerequisite stdout/stderr, generated input, records and certificates"
+  },
+  {
+    "id": "checkpoint-record",
+    "role": "R2 branch template with fresh prerequisites",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "checkpoint",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/checkpoint-record/artifacts/run-full.json",
+      "--config",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/checkpoint-record/artifacts/checkpoint-record.json"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "environment": {
+      "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "input_hashes": {
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048"
+    },
+    "prerequisites": [
+      {
+        "id": "generate-full",
+        "argv": [
+          "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+          "run",
+          "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json",
+          "--ticks",
+          "12",
+          "--out",
+          "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/checkpoint-record/artifacts/run-full.json",
+          "--config",
+          "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json"
+        ],
+        "expected": 0
+      }
+    ],
+    "expected": 0,
+    "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/checkpoint-record",
+    "outputs": "complete file tree including each prerequisite stdout/stderr, generated input, records and certificates"
+  },
+  {
+    "id": "cycle-referenced",
+    "role": "R2 branch template with fresh prerequisites",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "cycle",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json",
+      "--config",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json",
+      "--max-ticks",
+      "20",
+      "--search-checkpoint-interval",
+      "3",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/cycle-referenced/batch/cycle.json"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "environment": {
+      "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "input_hashes": {
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json": "69bc1f4afff489ea2f47adf5d0598478ddb16e4be2a9eabe3fb741283ba19526",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048"
+    },
+    "prerequisites": [],
+    "expected": 0,
+    "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/cycle-referenced",
+    "outputs": "complete file tree including each prerequisite stdout/stderr, generated input, records and certificates"
+  },
+  {
+    "id": "cycle-no-record",
+    "role": "R2 branch template with fresh prerequisites",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "cycle",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json",
+      "--config",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json",
+      "--max-ticks",
+      "20",
+      "--no-record"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "environment": {
+      "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "input_hashes": {
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json": "69bc1f4afff489ea2f47adf5d0598478ddb16e4be2a9eabe3fb741283ba19526",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048"
+    },
+    "prerequisites": [],
+    "expected": 0,
+    "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/cycle-no-record",
+    "outputs": "complete file tree including each prerequisite stdout/stderr, generated input, records and certificates"
+  },
+  {
+    "id": "cycle-budget",
+    "role": "R2 branch template with fresh prerequisites",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "cycle",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json",
+      "--config",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json",
+      "--max-ticks",
+      "1",
+      "--no-record"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "environment": {
+      "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "input_hashes": {
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json": "69bc1f4afff489ea2f47adf5d0598478ddb16e4be2a9eabe3fb741283ba19526",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048"
+    },
+    "prerequisites": [],
+    "expected": 0,
+    "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/cycle-budget",
+    "outputs": "complete file tree including each prerequisite stdout/stderr, generated input, records and certificates"
+  },
+  {
+    "id": "cycle-sweep-stop",
+    "role": "R2 branch template with fresh prerequisites",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "cycle",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json",
+      "--config",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json",
+      "--max-ticks",
+      "20",
+      "--max-sweeps",
+      "1",
+      "--no-record"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "environment": {
+      "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "input_hashes": {
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json": "69bc1f4afff489ea2f47adf5d0598478ddb16e4be2a9eabe3fb741283ba19526",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048"
+    },
+    "prerequisites": [],
+    "expected": 0,
+    "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/cycle-sweep-stop",
+    "outputs": "complete file tree including each prerequisite stdout/stderr, generated input, records and certificates"
+  },
+  {
+    "id": "verify-cycle",
+    "role": "R2 branch template with fresh prerequisites",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "verify-cycle",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/verify-cycle/batch/cycle.json",
+      "--config",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "environment": {
+      "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "input_hashes": {
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048"
+    },
+    "prerequisites": [
+      {
+        "id": "generate-cycle",
+        "argv": [
+          "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+          "cycle",
+          "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json",
+          "--max-ticks",
+          "20",
+          "--search-checkpoint-interval",
+          "3",
+          "--out",
+          "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/verify-cycle/batch/cycle.json",
+          "--config",
+          "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json"
+        ],
+        "expected": 0
+      }
+    ],
+    "expected": 0,
+    "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/verify-cycle",
+    "outputs": "complete file tree including each prerequisite stdout/stderr, generated input, records and certificates"
+  },
+  {
+    "id": "checkpoint-cycle",
+    "role": "R2 branch template with fresh prerequisites",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "checkpoint",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/checkpoint-cycle/batch/cycle.json",
+      "--config",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/checkpoint-cycle/artifacts/checkpoint-cycle.json"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "environment": {
+      "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "input_hashes": {
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048"
+    },
+    "prerequisites": [
+      {
+        "id": "generate-cycle",
+        "argv": [
+          "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+          "cycle",
+          "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json",
+          "--max-ticks",
+          "20",
+          "--search-checkpoint-interval",
+          "3",
+          "--out",
+          "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/checkpoint-cycle/batch/cycle.json",
+          "--config",
+          "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json"
+        ],
+        "expected": 0
+      }
+    ],
+    "expected": 0,
+    "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/checkpoint-cycle",
+    "outputs": "complete file tree including each prerequisite stdout/stderr, generated input, records and certificates"
+  },
+  {
+    "id": "verify-batch",
+    "role": "R2 branch template with fresh prerequisites",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "verify-batch",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/verify-batch/batch",
+      "--config",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "environment": {
+      "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "input_hashes": {
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048"
+    },
+    "prerequisites": [
+      {
+        "id": "generate-finite-record",
+        "argv": [
+          "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+          "run",
+          "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json",
+          "--ticks",
+          "12",
+          "--out",
+          "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/verify-batch/batch/finite-record.json",
+          "--config",
+          "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json"
+        ],
+        "expected": 0
+      },
+      {
+        "id": "generate-cycle",
+        "argv": [
+          "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+          "cycle",
+          "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json",
+          "--max-ticks",
+          "20",
+          "--search-checkpoint-interval",
+          "3",
+          "--out",
+          "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/verify-batch/batch/cycle.json",
+          "--config",
+          "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json"
+        ],
+        "expected": 0
+      }
+    ],
+    "expected": 0,
+    "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/verify-batch",
+    "outputs": "complete file tree including each prerequisite stdout/stderr, generated input, records and certificates"
+  },
+  {
+    "id": "seed-invalid-input",
+    "role": "R2 branch template with fresh prerequisites",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "seed",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/seed-invalid-input/artifacts/bad-input.json",
+      "--config",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "environment": {
+      "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "input_hashes": {
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048"
+    },
+    "prerequisites": [],
+    "expected": 2,
+    "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/seed-invalid-input",
+    "outputs": "complete file tree including each prerequisite stdout/stderr, generated input, records and certificates"
+  },
+  {
+    "id": "check-invalid-input",
+    "role": "R2 branch template with fresh prerequisites",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "check",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/check-invalid-input/artifacts/bad-input.json",
+      "--config",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "environment": {
+      "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "input_hashes": {
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048"
+    },
+    "prerequisites": [],
+    "expected": 2,
+    "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/check-invalid-input",
+    "outputs": "complete file tree including each prerequisite stdout/stderr, generated input, records and certificates"
+  },
+  {
+    "id": "run-invalid-input",
+    "role": "R2 branch template with fresh prerequisites",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/run-invalid-input/artifacts/bad-input.json",
+      "--config",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json",
+      "--ticks",
+      "1",
+      "--no-output"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "environment": {
+      "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "input_hashes": {
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048"
+    },
+    "prerequisites": [],
+    "expected": 2,
+    "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/run-invalid-input",
+    "outputs": "complete file tree including each prerequisite stdout/stderr, generated input, records and certificates"
+  },
+  {
+    "id": "cycle-invalid-input",
+    "role": "R2 branch template with fresh prerequisites",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "cycle",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/cycle-invalid-input/artifacts/bad-input.json",
+      "--config",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json",
+      "--max-ticks",
+      "1",
+      "--no-record"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "environment": {
+      "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "input_hashes": {
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048"
+    },
+    "prerequisites": [],
+    "expected": 2,
+    "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/cycle-invalid-input",
+    "outputs": "complete file tree including each prerequisite stdout/stderr, generated input, records and certificates"
+  },
+  {
+    "id": "verify-record-invalid-input",
+    "role": "R2 branch template with fresh prerequisites",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "verify-record",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/verify-record-invalid-input/artifacts/bad-input.json",
+      "--config",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "environment": {
+      "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "input_hashes": {
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048"
+    },
+    "prerequisites": [],
+    "expected": 2,
+    "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/verify-record-invalid-input",
+    "outputs": "complete file tree including each prerequisite stdout/stderr, generated input, records and certificates"
+  },
+  {
+    "id": "verify-cycle-invalid-input",
+    "role": "R2 branch template with fresh prerequisites",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "verify-cycle",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/verify-cycle-invalid-input/artifacts/bad-input.json",
+      "--config",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "environment": {
+      "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "input_hashes": {
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048"
+    },
+    "prerequisites": [],
+    "expected": 2,
+    "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/verify-cycle-invalid-input",
+    "outputs": "complete file tree including each prerequisite stdout/stderr, generated input, records and certificates"
+  },
+  {
+    "id": "checkpoint-invalid-input",
+    "role": "R2 branch template with fresh prerequisites",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "checkpoint",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/checkpoint-invalid-input/artifacts/bad-input.json",
+      "--config",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "environment": {
+      "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "input_hashes": {
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048"
+    },
+    "prerequisites": [],
+    "expected": 2,
+    "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/checkpoint-invalid-input",
+    "outputs": "complete file tree including each prerequisite stdout/stderr, generated input, records and certificates"
+  },
+  {
+    "id": "cli-no-args",
+    "role": "R2 branch template with fresh prerequisites",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "environment": {
+      "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "input_hashes": {},
+    "prerequisites": [],
+    "expected": 2,
+    "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/cli-no-args",
+    "outputs": "complete file tree including each prerequisite stdout/stderr, generated input, records and certificates"
+  },
+  {
+    "id": "cli-unknown-command",
+    "role": "R2 branch template with fresh prerequisites",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "r2-unknown",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "environment": {
+      "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "input_hashes": {
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json": "69bc1f4afff489ea2f47adf5d0598478ddb16e4be2a9eabe3fb741283ba19526"
+    },
+    "prerequisites": [],
+    "expected": 2,
+    "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/cli-unknown-command",
+    "outputs": "complete file tree including each prerequisite stdout/stderr, generated input, records and certificates"
+  },
+  {
+    "id": "topology-contract",
+    "role": "R2 branch template with fresh prerequisites",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/topology",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/topology-contract/artifacts/contract.json"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "environment": {
+      "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "input_hashes": {},
+    "prerequisites": [],
+    "expected": 0,
+    "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/topology-contract",
+    "outputs": "complete file tree including each prerequisite stdout/stderr, generated input, records and certificates"
+  },
+  {
+    "id": "topology-invalid",
+    "role": "R2 branch template with fresh prerequisites",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/topology",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/topology-invalid/artifacts/bad-input.json"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "environment": {
+      "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "input_hashes": {},
+    "prerequisites": [],
+    "expected": 2,
+    "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/topology-invalid",
+    "outputs": "complete file tree including each prerequisite stdout/stderr, generated input, records and certificates"
+  },
+  {
+    "id": "cycle-found-referenced",
+    "role": "R2 branch template with fresh prerequisites",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "cycle",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json",
+      "--config",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json",
+      "--max-ticks",
+      "50",
+      "--search-checkpoint-interval",
+      "3",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/cycle-found-referenced/batch/cycle-found.json"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "environment": {
+      "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "input_hashes": {
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json": "69bc1f4afff489ea2f47adf5d0598478ddb16e4be2a9eabe3fb741283ba19526",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048"
+    },
+    "prerequisites": [],
+    "expected": 0,
+    "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/cycle-found-referenced",
+    "outputs": "complete file tree including each prerequisite stdout/stderr, generated input, records and certificates"
+  },
+  {
+    "id": "cycle-found-no-record",
+    "role": "R2 branch template with fresh prerequisites",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "cycle",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json",
+      "--config",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json",
+      "--max-ticks",
+      "50",
+      "--no-record"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "environment": {
+      "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "input_hashes": {
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json": "69bc1f4afff489ea2f47adf5d0598478ddb16e4be2a9eabe3fb741283ba19526",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048"
+    },
+    "prerequisites": [],
+    "expected": 0,
+    "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/cycle-found-no-record",
+    "outputs": "complete file tree including each prerequisite stdout/stderr, generated input, records and certificates"
+  },
+  {
+    "id": "verify-cycle-found",
+    "role": "R2 branch template with fresh prerequisites",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "verify-cycle",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/verify-cycle-found/batch/cycle-found.json",
+      "--config",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "environment": {
+      "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "input_hashes": {
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048"
+    },
+    "prerequisites": [
+      {
+        "id": "generate-cycle-found",
+        "argv": [
+          "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+          "cycle",
+          "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json",
+          "--max-ticks",
+          "50",
+          "--search-checkpoint-interval",
+          "3",
+          "--out",
+          "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/verify-cycle-found/batch/cycle-found.json",
+          "--config",
+          "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json"
+        ],
+        "expected": 0
+      }
+    ],
+    "expected": 0,
+    "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/verify-cycle-found",
+    "outputs": "complete file tree including each prerequisite stdout/stderr, generated input, records and certificates"
+  },
+  {
+    "id": "checkpoint-cycle-found",
+    "role": "R2 branch template with fresh prerequisites",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "checkpoint",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/checkpoint-cycle-found/batch/cycle-found.json",
+      "--config",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/checkpoint-cycle-found/artifacts/checkpoint-cycle-found.json"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "environment": {
+      "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "input_hashes": {
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048"
+    },
+    "prerequisites": [
+      {
+        "id": "generate-cycle-found",
+        "argv": [
+          "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+          "cycle",
+          "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json",
+          "--max-ticks",
+          "50",
+          "--search-checkpoint-interval",
+          "3",
+          "--out",
+          "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/checkpoint-cycle-found/batch/cycle-found.json",
+          "--config",
+          "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json"
+        ],
+        "expected": 0
+      }
+    ],
+    "expected": 0,
+    "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/checkpoint-cycle-found",
+    "outputs": "complete file tree including each prerequisite stdout/stderr, generated input, records and certificates"
+  },
+  {
+    "id": "verify-batch-with-cycle-found",
+    "role": "R2 branch template with fresh prerequisites",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "verify-batch",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/verify-batch-with-cycle-found/batch",
+      "--config",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "environment": {
+      "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "input_hashes": {
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048"
+    },
+    "prerequisites": [
+      {
+        "id": "generate-finite-record",
+        "argv": [
+          "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+          "run",
+          "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json",
+          "--ticks",
+          "12",
+          "--out",
+          "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/verify-batch-with-cycle-found/batch/finite-record.json",
+          "--config",
+          "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json"
+        ],
+        "expected": 0
+      },
+      {
+        "id": "generate-cycle",
+        "argv": [
+          "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+          "cycle",
+          "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json",
+          "--max-ticks",
+          "20",
+          "--search-checkpoint-interval",
+          "3",
+          "--out",
+          "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/verify-batch-with-cycle-found/batch/cycle.json",
+          "--config",
+          "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json"
+        ],
+        "expected": 0
+      },
+      {
+        "id": "generate-cycle-found",
+        "argv": [
+          "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+          "cycle",
+          "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json",
+          "--max-ticks",
+          "50",
+          "--search-checkpoint-interval",
+          "3",
+          "--out",
+          "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/verify-batch-with-cycle-found/batch/cycle-found.json",
+          "--config",
+          "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json"
+        ],
+        "expected": 0
+      }
+    ],
+    "expected": 0,
+    "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/cases/verify-batch-with-cycle-found",
+    "outputs": "complete file tree including each prerequisite stdout/stderr, generated input, records and certificates"
+  }
+]

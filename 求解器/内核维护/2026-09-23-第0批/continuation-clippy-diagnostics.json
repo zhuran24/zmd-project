@@ -1,0 +1,20 @@
+{
+  "logs": [
+    {
+      "log": "continue-safe-1-clippy.stdout.log",
+      "count": 0,
+      "warnings": []
+    },
+    {
+      "log": "continue-frozen-safe-1-clippy.stdout.log",
+      "count": 0,
+      "warnings": []
+    },
+    {
+      "log": "continue-frozen-safe-2-clippy.stdout.log",
+      "count": 0,
+      "warnings": []
+    }
+  ],
+  "new_warning_count": 0
+}

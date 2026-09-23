@@ -1,0 +1,341 @@
+{
+  "errors": [],
+  "concurrent": [
+    {
+      "path": "求解器/候选约束轮次/第72-74轮/推导72/check_witness.py",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 5464,
+        "sha256": "3acb8f3dab09d8021f422cd016d32d00aee112c482d1a6a28f321f03e0b52e29"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第72-74轮/推导72/cp72.py",
+      "before": {
+        "mode": 420,
+        "kind": "file",
+        "size": 7734,
+        "sha256": "a04ce5b969380664a7394b2a6446fb58bcfa8eba3237513291229b384f5b7987"
+      },
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 10309,
+        "sha256": "697ade0b50a59f702ded7689babbe85f1ba26fe8ac62dc9e0dff799f913c475a"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第72-74轮/推导72/cp_cap180.json",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 745,
+        "sha256": "e129d10515d662764054951fe2dc647540741f2f823f4d35d8229d840ad6d989"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第72-74轮/推导72/cp_cap180.log",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 20170,
+        "sha256": "4fce2fc8b86ff68c7dd14557724e0f33ff68614149e78f3fce9e43c5b045977f"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第72-74轮/推导72/cp_cap181.json",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 752,
+        "sha256": "382422d3d5ff003bd1dda756e87a641d40fcb83122307b99b375a5cf79db2bf4"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第72-74轮/推导72/cp_cap181.log",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 20527,
+        "sha256": "d2792ec449e0cf581ab7f36107b2c51e313076419302bd1f285bb99cd4503eca"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第72-74轮/推导72/cp_cap181_linear.json",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 746,
+        "sha256": "2da9afa3c2f3b3bb50facbeac331e242b26f1f0bc1b0e2084012f848edd8604e"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第72-74轮/推导72/cp_cap181_linear.log",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 20304,
+        "sha256": "c6ec3039de6f64bef2e0442844b63e6a9d7c16864bf00051ebe23aa58eb58414"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第72-74轮/推导72/dp_projected_cp.json",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 21571,
+        "sha256": "54c93c8552c6df1ba42c0f4d653a7873f46f27babaa4e8bc74ce6edcb92b2e05"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第72-74轮/推导72/dp_projected_cp.log",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 25190,
+        "sha256": "d5a722a82120b94f004619fabdf3104e23c337b447fc07e7f6c33a85cdf8d1f8"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第72-74轮/推导72/global_groups_cp.json",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 757,
+        "sha256": "3abaccab6c7cb2edccabd00eb83a6f7dcebf38305034064482e673da2640f393"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第72-74轮/推导72/global_groups_cp.log",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 22128,
+        "sha256": "d136bb97a05ee49bd76f3ce2f6b22e1f1c3581f617e6c9da46a4a590ba79cda2"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第72-74轮/推导72/global_groups_mip.log",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 2747,
+        "sha256": "9f518cee8301120bd0f029d2ec035a78016b9abbe565b0413ead665a472bceb5"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第72-74轮/推导72/grid_certificate.py",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 3632,
+        "sha256": "eda338c4b0a1de189c1327c6372ad54706d05885e5c63f961017b0c4c3e057aa"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第72-74轮/推导72/highs_cap183.json",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 502,
+        "sha256": "0b2d736777596b5d5f513d462800a32556561b1a5371159c8e79ecc16c2bbc06"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第72-74轮/推导72/highs_cap183.log",
+      "before": {
+        "mode": 420,
+        "kind": "file",
+        "size": 2043,
+        "sha256": "fec86f164e3b395bcdbf064bb9829390551ee12fb6c640283ede738468d8f5b6"
+      },
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 8832,
+        "sha256": "0e5798e5d0d83e4a7ada475cb83be3ecefacb20f6c04c058fe787002b7d7d1c6"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第72-74轮/推导72/initial_cp.json",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 20098,
+        "sha256": "936fdf7edb628136d80a12f72a931f10f35cc1e684fdd122b38acd930bade25d"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第72-74轮/推导72/initial_cp.log",
+      "before": {
+        "mode": 420,
+        "kind": "file",
+        "size": 15962,
+        "sha256": "3e0dca1e8ffc3185e5285c95ee041625b3f25a821d19d3f287a93491ba477e07"
+      },
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 23278,
+        "sha256": "679bce5c141c0fb59a1e5c4e6d8ce37a31c57a1129b7f82204b4f0c6a2c600de"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第72-74轮/推导72/mip72.py",
+      "before": {
+        "mode": 420,
+        "kind": "file",
+        "size": 8664,
+        "sha256": "f6733ef66d0dd8b08b8bcbc984e3fb8a54c8c24325eacea4680fba7e280dc056"
+      },
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 11367,
+        "sha256": "6492b9b6e75222d6b1e1c0ec2a555483793c300ed9913b37f77abe74836452ac"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第72-74轮/推导72/mip_cap180.json",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 626,
+        "sha256": "c48532536b3bc82ab152b0164d002b60a1f9b984298789db3f6dc7acf4b66879"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第72-74轮/推导72/mip_cap180.log",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 2736,
+        "sha256": "946354bc7a520fb31570ed861f11716676b91bbb8b2b1e1c77b017f3f9f9bc9a"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第72-74轮/推导72/mip_cap181.json",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 626,
+        "sha256": "a113d4c3a7fd0537dade3bc2e2a83b6992cff83bb9eac698655a46eea4178a41"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第72-74轮/推导72/mip_cap181.log",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 3274,
+        "sha256": "ef9dc005d2fb35c3c322c104e4b3f4f8cf53ed74dae520695d54061fea3b2302"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第72-74轮/推导72/mip_cap182.log",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 4606,
+        "sha256": "af87dfea8220d0dfea31f185ef31d0250fb8df1403d1d4407dc323b8bc75743f"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第72-74轮/推导72/projected_cp.json",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 20248,
+        "sha256": "e7f3ad40f2949eb2da94f8d1f537a79f62b7bdc7d92218d067c9fe6fd9dc56b0"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第72-74轮/推导72/projected_cp.log",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 22763,
+        "sha256": "1ce1a15f020aa70f56a205cd99bd0cbc6ca065842d751f8f48fcd9328bf290e3"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第72-74轮/推导72/projected_cp_checked.json",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 18766,
+        "sha256": "87b7a42d4e6a1745bcbba125bd16514ceadab9aa5abb65a2bd436618e387a83f"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第72-74轮/推导72/projected_cp_checked_grid.json",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 275293,
+        "sha256": "2a9fc1d1998d4b8ceb4ece1e06d64728d751ad0e468bf9358bd641155a95d9dd"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第72-74轮/推导72/strengthened_cp.json",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 20726,
+        "sha256": "424fe913b5ea893a72ccd9841cfd3f71a185f498af2464bbd30c4586caff7ef2"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第72-74轮/推导72/strengthened_cp.log",
+      "before": {
+        "mode": 420,
+        "kind": "file",
+        "size": 15944,
+        "sha256": "1f2bd076eea28df0a12cfb841536d784510648b28ff74216f9d318a72fe45a4d"
+      },
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 26540,
+        "sha256": "9a9f031da1ea0035b00cc6f595df3f02bd31e0be74b2b11158ca1592416b886b"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第72-74轮/推导72/strengthened_cp_checked.json",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 19406,
+        "sha256": "2c598c445ef4663e607c74e90697184ec9e39536b98964bc2749efe13f08b1ca"
+      }
+    }
+  ],
+  "unexpected": []
+}

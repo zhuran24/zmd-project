@@ -1,0 +1,8 @@
+{
+  "passed": true,
+  "rounds": 2,
+  "commands": 18,
+  "profile": "health0bsafe1149564",
+  "source_root": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+  "source_manifest_sha256": "144ca740d05af78f386ab4513473217ee3757e2ce0e61ad0b73c22166f4dd7ea"
+}

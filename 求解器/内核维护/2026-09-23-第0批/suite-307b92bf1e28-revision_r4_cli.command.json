@@ -1,0 +1,144 @@
+{
+  "label": "suite-307b92bf1e28-revision_r4_cli",
+  "argv": [
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_r4_cli-0ff84fdc55db31c8",
+    "--test-threads=1"
+  ],
+  "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+  "returncode": 0,
+  "expected": 0,
+  "seconds": 1.3903608289983822,
+  "cpu_seconds": 1.4403540000000055,
+  "cpu_cores_average": 1.0359569760301996,
+  "max_total_threads": 7,
+  "max_runnable_threads": 2,
+  "affinity": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "peak": [
+    {
+      "pid": 1322625,
+      "argv": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_r4_cli-0ff84fdc55db31c8 --test-threads=1 ",
+      "tasks": [
+        {
+          "tid": 1322625,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "revision_r4_cli"
+        },
+        {
+          "tid": 1322626,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "revision_r4_pub"
+        }
+      ]
+    },
+    {
+      "pid": 1322628,
+      "argv": "python -B /tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/revision_r4_cli.py ",
+      "tasks": [
+        {
+          "tid": 1322628,
+          "state": "S",
+          "cpu_ticks": 11,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "python"
+        }
+      ]
+    },
+    {
+      "pid": 1323349,
+      "argv": "node -e const fs=require('fs'),Ajv=require(process.argv[1]);\nconst payload=JSON.parse(fs.readFileSync(0,'utf8'));\nconst validate=new Ajv({strict:false,allErrors:true}).compile(payload.schema);\nconsole.log(JSON.stringify(payload.documents.map(d=>({name:d.name,valid:validate(d.value),errors:validate.errors})))); /home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/2020.js ",
+      "tasks": [
+        {
+          "tid": 1323349,
+          "state": "R",
+          "cpu_ticks": 1,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "node-MainThread"
+        },
+        {
+          "tid": 1323350,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "DelayedTaskSche"
+        },
+        {
+          "tid": 1323351,
+          "state": "R",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "node-V8Worker"
+        },
+        {
+          "tid": 1323352,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "SignalInspector"
+        }
+      ]
+    }
+  ],
+  "violation": null,
+  "protection_error": null,
+  "environment": {
+    "PATH": "/home/zhuran24/.codex/tmp/arg0/codex-arg07mihkU:/home/zhuran24/.cargo/bin:/home/zhuran24/.local/bin:/home/zhuran24/.opencode/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/home/zhuran24/.local/share/flatpak/exports/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/home/zhuran24/.config/Claude/local-agent-mode-sessions/skills-plugin/cf875e59-d94b-492e-ba7a-6d2a070f0f30/92f6071f-e8b1-40cd-8c37-9d23302ed76c/bin",
+    "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+    "CARGO_BUILD_JOBS": "2",
+    "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+    "RUST_TEST_THREADS": "1",
+    "RAYON_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "NODE_OPTIONS": "--v8-pool-size=1",
+    "HEALTH_RUN": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批",
+    "KERNEL_TEST_EVIDENCE_DIR": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence"
+  },
+  "stdout_sha256": "5f59f45e393f6ef88a1d3b198a5605c66a4f19fc6f879b389835b1ac83d46bbe",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

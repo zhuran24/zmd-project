@@ -1,0 +1,47 @@
+[
+  {
+    "name": "check-isolation",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "name": "wrong-profile",
+    "expected": 2,
+    "exit_code": 2
+  },
+  {
+    "name": "bad-binary",
+    "expected": 2,
+    "exit_code": 2
+  },
+  {
+    "name": "capture",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "name": "compare",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "name": "aa",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "name": "old-context",
+    "expected": 2,
+    "exit_code": 2
+  },
+  {
+    "name": "wrong-source-map",
+    "expected": 2,
+    "exit_code": 2
+  },
+  {
+    "name": "tests",
+    "expected": 0,
+    "exit_code": 0
+  }
+]

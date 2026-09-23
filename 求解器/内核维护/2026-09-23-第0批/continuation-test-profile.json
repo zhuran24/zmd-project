@@ -1,0 +1,348 @@
+{
+  "profile": "health0isolation1229858",
+  "source_root": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+  "metadata": {
+    "packages": [
+      {
+        "name": "topology",
+        "version": "0.1.0",
+        "id": "path+file:///tmp/kernel-health-20260923-_5s65pp9/%E6%B1%82%E8%A7%A3%E5%99%A8/crates/topology#0.1.0",
+        "license": null,
+        "license_file": null,
+        "description": null,
+        "source": null,
+        "dependencies": [
+          {
+            "name": "num-bigint",
+            "source": "registry+https://github.com/rust-lang/crates.io-index",
+            "req": "^0.4",
+            "kind": null,
+            "rename": null,
+            "optional": false,
+            "uses_default_features": true,
+            "features": [],
+            "target": null,
+            "registry": null
+          },
+          {
+            "name": "num-rational",
+            "source": "registry+https://github.com/rust-lang/crates.io-index",
+            "req": "^0.4",
+            "kind": null,
+            "rename": null,
+            "optional": false,
+            "uses_default_features": true,
+            "features": [],
+            "target": null,
+            "registry": null
+          },
+          {
+            "name": "num-traits",
+            "source": "registry+https://github.com/rust-lang/crates.io-index",
+            "req": "^0.2",
+            "kind": null,
+            "rename": null,
+            "optional": false,
+            "uses_default_features": true,
+            "features": [],
+            "target": null,
+            "registry": null
+          },
+          {
+            "name": "serde",
+            "source": "registry+https://github.com/rust-lang/crates.io-index",
+            "req": "^1",
+            "kind": null,
+            "rename": null,
+            "optional": false,
+            "uses_default_features": true,
+            "features": [
+              "derive"
+            ],
+            "target": null,
+            "registry": null
+          },
+          {
+            "name": "serde_json",
+            "source": "registry+https://github.com/rust-lang/crates.io-index",
+            "req": "^1",
+            "kind": null,
+            "rename": null,
+            "optional": false,
+            "uses_default_features": true,
+            "features": [],
+            "target": null,
+            "registry": null
+          }
+        ],
+        "targets": [
+          {
+            "kind": [
+              "lib"
+            ],
+            "crate_types": [
+              "lib"
+            ],
+            "name": "topology",
+            "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/topology/src/lib.rs",
+            "edition": "2021",
+            "doc": true,
+            "doctest": true,
+            "test": true
+          },
+          {
+            "kind": [
+              "bin"
+            ],
+            "crate_types": [
+              "bin"
+            ],
+            "name": "topology",
+            "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/topology/src/main.rs",
+            "edition": "2021",
+            "doc": true,
+            "doctest": false,
+            "test": true
+          },
+          {
+            "kind": [
+              "test"
+            ],
+            "crate_types": [
+              "bin"
+            ],
+            "name": "validation",
+            "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/topology/tests/validation.rs",
+            "edition": "2021",
+            "doc": false,
+            "doctest": false,
+            "test": true
+          }
+        ],
+        "features": {},
+        "manifest_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/topology/Cargo.toml",
+        "metadata": null,
+        "publish": null,
+        "authors": [],
+        "categories": [],
+        "keywords": [],
+        "readme": null,
+        "repository": null,
+        "homepage": null,
+        "documentation": null,
+        "edition": "2021",
+        "links": null,
+        "default_run": null,
+        "rust_version": null
+      },
+      {
+        "name": "kernel",
+        "version": "0.1.0",
+        "id": "path+file:///tmp/kernel-health-20260923-_5s65pp9/%E6%B1%82%E8%A7%A3%E5%99%A8/crates/kernel#0.1.0",
+        "license": null,
+        "license_file": null,
+        "description": null,
+        "source": null,
+        "dependencies": [
+          {
+            "name": "serde",
+            "source": "registry+https://github.com/rust-lang/crates.io-index",
+            "req": "^1",
+            "kind": null,
+            "rename": null,
+            "optional": false,
+            "uses_default_features": true,
+            "features": [
+              "derive"
+            ],
+            "target": null,
+            "registry": null
+          },
+          {
+            "name": "serde_json",
+            "source": "registry+https://github.com/rust-lang/crates.io-index",
+            "req": "^1",
+            "kind": null,
+            "rename": null,
+            "optional": false,
+            "uses_default_features": true,
+            "features": [],
+            "target": null,
+            "registry": null
+          }
+        ],
+        "targets": [
+          {
+            "kind": [
+              "lib"
+            ],
+            "crate_types": [
+              "lib"
+            ],
+            "name": "kernel",
+            "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/lib.rs",
+            "edition": "2021",
+            "doc": true,
+            "doctest": true,
+            "test": true
+          },
+          {
+            "kind": [
+              "bin"
+            ],
+            "crate_types": [
+              "bin"
+            ],
+            "name": "kernel",
+            "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/main.rs",
+            "edition": "2021",
+            "doc": true,
+            "doctest": false,
+            "test": true
+          },
+          {
+            "kind": [
+              "test"
+            ],
+            "crate_types": [
+              "bin"
+            ],
+            "name": "reference",
+            "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/reference.rs",
+            "edition": "2021",
+            "doc": false,
+            "doctest": false,
+            "test": true
+          },
+          {
+            "kind": [
+              "test"
+            ],
+            "crate_types": [
+              "bin"
+            ],
+            "name": "revision_cli",
+            "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/revision_cli.rs",
+            "edition": "2021",
+            "doc": false,
+            "doctest": false,
+            "test": true
+          },
+          {
+            "kind": [
+              "test"
+            ],
+            "crate_types": [
+              "bin"
+            ],
+            "name": "revision_r2_cli",
+            "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/revision_r2_cli.rs",
+            "edition": "2021",
+            "doc": false,
+            "doctest": false,
+            "test": true
+          },
+          {
+            "kind": [
+              "test"
+            ],
+            "crate_types": [
+              "bin"
+            ],
+            "name": "revision_r3_cli",
+            "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/revision_r3_cli.rs",
+            "edition": "2021",
+            "doc": false,
+            "doctest": false,
+            "test": true
+          },
+          {
+            "kind": [
+              "test"
+            ],
+            "crate_types": [
+              "bin"
+            ],
+            "name": "revision_r4_cli",
+            "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/revision_r4_cli.rs",
+            "edition": "2021",
+            "doc": false,
+            "doctest": false,
+            "test": true
+          },
+          {
+            "kind": [
+              "test"
+            ],
+            "crate_types": [
+              "bin"
+            ],
+            "name": "revision_r5_cli",
+            "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/revision_r5_cli.rs",
+            "edition": "2021",
+            "doc": false,
+            "doctest": false,
+            "test": true
+          },
+          {
+            "kind": [
+              "test"
+            ],
+            "crate_types": [
+              "bin"
+            ],
+            "name": "round5_cli",
+            "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/round5_cli.rs",
+            "edition": "2021",
+            "doc": false,
+            "doctest": false,
+            "test": true
+          },
+          {
+            "kind": [
+              "test"
+            ],
+            "crate_types": [
+              "bin"
+            ],
+            "name": "round6_cli",
+            "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/round6_cli.rs",
+            "edition": "2021",
+            "doc": false,
+            "doctest": false,
+            "test": true
+          }
+        ],
+        "features": {},
+        "manifest_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/Cargo.toml",
+        "metadata": null,
+        "publish": null,
+        "authors": [],
+        "categories": [],
+        "keywords": [],
+        "readme": null,
+        "repository": null,
+        "homepage": null,
+        "documentation": null,
+        "edition": "2021",
+        "links": null,
+        "default_run": null,
+        "rust_version": null
+      }
+    ],
+    "workspace_members": [
+      "path+file:///tmp/kernel-health-20260923-_5s65pp9/%E6%B1%82%E8%A7%A3%E5%99%A8/crates/topology#0.1.0",
+      "path+file:///tmp/kernel-health-20260923-_5s65pp9/%E6%B1%82%E8%A7%A3%E5%99%A8/crates/kernel#0.1.0"
+    ],
+    "workspace_default_members": [
+      "path+file:///tmp/kernel-health-20260923-_5s65pp9/%E6%B1%82%E8%A7%A3%E5%99%A8/crates/topology#0.1.0",
+      "path+file:///tmp/kernel-health-20260923-_5s65pp9/%E6%B1%82%E8%A7%A3%E5%99%A8/crates/kernel#0.1.0"
+    ],
+    "resolve": null,
+    "target_directory": "/home/zhuran24/zmd-research-fresh/求解器/target",
+    "build_directory": "/home/zhuran24/zmd-research-fresh/求解器/target",
+    "version": 1,
+    "workspace_root": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "metadata": null
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "status": "pass",
+  "reviewed_at": "2026-09-23T00:31:56.516868-04:00",
+  "links_checked": 20,
+  "missing_links": [],
+  "over_100MB": [],
+  "compiled_artifacts": [],
+  "checks": [
+    "BLOCKED 与所有未验收门槛一致",
+    "基础分配检查未称 CLI 隔离验收",
+    "四树及其他历史意外变化为零",
+    "观察器报错与迟补保护检查显式列出",
+    "生产与运行时逻辑无改动",
+    "并行候选变化独立列示",
+    "绝对记录路径和续接条件明确"
+  ],
+  "observer_finally_negative": true
+}

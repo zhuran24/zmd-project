@@ -1,0 +1,14 @@
+{
+  "topology": {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/topology",
+    "sha256": "a8ddc0e9e7d8e9a5c121030ac6c2c9c1ed311755c3400dcc9a566f992ee0fa1e",
+    "source_root": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "profile": "health0ab1115661"
+  },
+  "kernel": {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+    "sha256": "0e3a2d30d5e824bd8016e719b4a2d77f6ed83464b238f60d7ece70f88536479c",
+    "source_root": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "profile": "health0ab1115661"
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "status": "input_checked",
+  "read_only": true,
+  "records": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/verify-batch-with-cycle-found/batch/cycle-found.record.json",
+      "ticks": {
+        "ticks": 21,
+        "wireless_item_transactions": 1
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/verify-batch-with-cycle-found/batch/cycle.record.json",
+      "ticks": {
+        "ticks": 20,
+        "wireless_item_transactions": 1
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/verify-batch-with-cycle-found/batch/finite-record.json",
+      "ticks": {
+        "ticks": 12,
+        "wireless_item_transactions": 1
+      }
+    }
+  ],
+  "cycles": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/verify-batch-with-cycle-found/batch/cycle-found.json",
+      "verification": {
+        "checks": [
+          "引用原始字节/format/producer和完整来源链",
+          "原种子到达前缀及跨刻事件身份",
+          "独立重建D动态前件及周期账/率/接收域",
+          "从周期起点P次step_tick及完整终态"
+        ],
+        "cycle_replayed": true,
+        "period": 20,
+        "prefix_replayed": 21,
+        "start_time": 0,
+        "status": "input_checked"
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/verify-batch-with-cycle-found/batch/cycle.json",
+      "verification": {
+        "cycle_replayed": false,
+        "prefix_replayed": 20,
+        "reason": "原种子前缀及停止/预算位置已复现，无周期",
+        "status": "input_checked"
+      }
+    }
+  ],
+  "reference_records": 0,
+  "historical_records": [],
+  "scope": "当前v4记录和v3周期按现行源、schema、Rust重放及Python部分接收账验收；旧版本列作史料。"
+}

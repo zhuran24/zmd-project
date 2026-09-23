@@ -1,0 +1,127 @@
+{
+  "label": "safe-2-reference",
+  "argv": [
+    "cargo",
+    "test",
+    "-p",
+    "kernel",
+    "--test",
+    "reference",
+    "--locked",
+    "--offline",
+    "-j",
+    "2",
+    "--profile",
+    "healthaudit2safe1345845",
+    "--config",
+    "profile.healthaudit2safe1345845.inherits=\"dev\"",
+    "--config",
+    "profile.healthaudit2safe1345845.codegen-units=1",
+    "--",
+    "--test-threads=1"
+  ],
+  "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+  "returncode": 0,
+  "expected": 0,
+  "seconds": 0.6199878930056002,
+  "cpu_seconds": 0.5998200000000118,
+  "average_cores": 0.9674705050967726,
+  "max_total_threads": 5,
+  "max_runnable_threads": 1,
+  "affinity": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "violation": null,
+  "peak": [
+    {
+      "pid": 1366448,
+      "argv": "cargo test -p kernel --test reference --locked --offline -j 2 --profile healthaudit2safe1345845 --config profile.healthaudit2safe1345845.inherits=\"dev\" --config profile.healthaudit2safe1345845.codegen-units=1 -- --test-threads=1 ",
+      "tasks": [
+        {
+          "tid": 1366448,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        },
+        {
+          "tid": 1366449,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        }
+      ]
+    },
+    {
+      "pid": 1366451,
+      "argv": "/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2safe1345845/deps/reference-865fb275bacf969a --test-threads=1 ",
+      "tasks": [
+        {
+          "tid": 1366451,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        },
+        {
+          "tid": 1366459,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        }
+      ]
+    },
+    {
+      "pid": 1366460,
+      "argv": "python -B -c import json,sys;sys.path.insert(0,sys.argv[1]);import check_golden_trace as g;import check_examples as c;print(json.dumps({n:g.run(c.load_json(g.BASE/(n+'.json'))) for n in ['混做粉碎机两下游','分流器三路轮询']},ensure_ascii=False)) /tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例 ",
+      "tasks": [
+        {
+          "tid": 1366460,
+          "state": "R",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 1
+        }
+      ]
+    }
+  ],
+  "environment": {
+    "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+    "CARGO_BUILD_JOBS": "2",
+    "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+    "RUST_TEST_THREADS": "1",
+    "RAYON_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "NODE_OPTIONS": "--v8-pool-size=1"
+  },
+  "stdout_sha256": "a647cf7c3461b813aba1770ce6ee046b76667d6a058773449dab1b2ce481cd4d",
+  "stderr_sha256": "58e064f86551904b19d697a929178a5a4fe6e8701e1b50bfda6d127e3dfc38db"
+}

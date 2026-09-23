@@ -1,0 +1,15 @@
+{
+  "cutoff": "2026-09-23T00:42:17.280188-04:00",
+  "history_changed": 0,
+  "history_entry_changes": 0,
+  "old_maintenance_changes": 0,
+  "implementation_record_changes": 0,
+  "audit_period_concurrent_entries": 18,
+  "audit_period_concurrent_files": 16,
+  "unexpected_changes": [],
+  "implementation_period_all_differences": 108,
+  "implementation_period_concurrent_entries": 89,
+  "implementation_changed_entries": 19,
+  "snapshot_entries": 40989,
+  "snapshot_files": 37044
+}

@@ -1,0 +1,620 @@
+{
+  "case_id": "checkpoint-record",
+  "label": "a",
+  "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/checkpoint-record",
+  "sealed": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/sealed/checkpoint-record/a",
+  "files": {
+    ".exclusive.json": {
+      "sha256": "32a6dcd88ea2ff9e17aa55519df0731f2bf826db5fed36218ba7636d2885076d",
+      "size": 157
+    },
+    "artifacts/bad-input.json": {
+      "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+      "size": 3
+    },
+    "artifacts/checkpoint-record.json": {
+      "sha256": "b91a07fa91b85287e1ee3562cc2ffc4f7d9e740f015fba751349cc2b63c3b781",
+      "size": 133222
+    },
+    "artifacts/run-full.json": {
+      "sha256": "60afa5e3610acb0a9e0d1bc0bc2273f9adc3ca246b6c7fc3e47f222140a15a37",
+      "size": 1192221
+    },
+    "generate-full.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    "generate-full.stdout.log": {
+      "sha256": "a8a99d3736f26d56bdc62ea9eda57b5fe53f9ce9b4fe4bfd79908f718d96a599",
+      "size": 160
+    },
+    "main.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    "main.stdout.log": {
+      "sha256": "4b4d0d1704d57e399ae0016734cecf7913e79eb1f4a088b29311d44140871c61",
+      "size": 162
+    }
+  },
+  "steps": [
+    {
+      "step": "generate-full",
+      "returncode": 0,
+      "argv": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/kernel",
+        "run",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/数据/样例/生产循环环带.json",
+        "--ticks",
+        "12",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/checkpoint-record/artifacts/run-full.json",
+        "--config",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/规格/内核配置-v1.json"
+      ]
+    },
+    {
+      "step": "main",
+      "returncode": 0,
+      "argv": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/kernel",
+        "checkpoint",
+        "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/checkpoint-record/artifacts/run-full.json",
+        "--config",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/checkpoint-record/artifacts/checkpoint-record.json"
+      ]
+    }
+  ],
+  "references": {
+    "artifacts/bad-input.json": [],
+    "artifacts/checkpoint-record.json": [
+      {
+        "pointer": "/catalog",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/数据/正式静态目录.json",
+        "sha256": "3566e2ecb9d90b9a1afc01b273eb548178de738fb4e4f3b2af88fa05f809be29",
+        "nested_edges": 3,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/parameters/axis_registry",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/规格/选择点参数轴.md",
+        "sha256": "261da30db31063ec8292aaa493e2c11d026c0861852ef19550eeb92eb4da7665",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      }
+    ],
+    "artifacts/run-full.json": [
+      {
+        "pointer": "/evidence_scope/context_bindings/0",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/数据/样例/生产循环环带.json",
+        "sha256": "d3d0f733e90b23c4183e5d8892d2690e14c4efe6680b76a3257b60c3da13d3a6",
+        "nested_edges": 2,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/evidence_scope/context_bindings/1",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/规格/内核配置-v1.json",
+        "sha256": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/evidence_scope/context_bindings/2",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/数据/正式静态目录.json",
+        "sha256": "3566e2ecb9d90b9a1afc01b273eb548178de738fb4e4f3b2af88fa05f809be29",
+        "nested_edges": 3,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/evidence_scope/context_bindings/3",
+        "target": "/tmp/kernel-audit2-v3r63b5w/《明日方舟：终末地》游戏规则.txt",
+        "sha256": "6e64e3903a65536c530b363c9f3aef8c1bb2a1c1193e866799125dd047159924",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/evidence_scope/context_bindings/4",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解任务.txt",
+        "sha256": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/evidence_scope/context_bindings/5",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解约束.txt",
+        "sha256": "0c05976f6063f3332db6ee19d7746052ef35148d7c2a12dfa396c7bb8753f30f",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/evidence_scope/context_bindings/6",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/规格/选择点参数轴.md",
+        "sha256": "261da30db31063ec8292aaa493e2c11d026c0861852ef19550eeb92eb4da7665",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/evidence_scope/context_bindings/7",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/规格/受限模型声明.md",
+        "sha256": "66359c590ad711b950bda55cb1b7e577ef9fb9671e0d87d426908d28bb244349",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/evidence_scope/context_bindings/8",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/规格/受限转移定义.md",
+        "sha256": "3ef482467f5dc545f8fdf4bc0867eddf0a2a25a455850e0b863bfe13e368243e",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/evidence_scope/context_bindings/9",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/规格/运行语义.md",
+        "sha256": "91dfd6045e27ee83abf10905d511010b8fac4c2a751d6c00e54e6ea9d2aea31d",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/evidence_scope/context_bindings/10",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/规格/内核输入.md",
+        "sha256": "7e257cff649960f78a8da0023ac31e926a1e0b972fb68476b4b12d6fdcf90f41",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/evidence_scope/context_bindings/11",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/规格/内核输出.md",
+        "sha256": "e287c6e4bb388a814a5fe04d072084e29be494a0caff9b14388c34d67705bb3c",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/evidence_scope/context_bindings/12",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/规格/内核输出.schema.json",
+        "sha256": "dc8306328122fa95b44748c24ccc03ab408500132c9141f241038a4b13d050ec",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/evidence_scope/context_bindings/13",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/周期键读取审计.md",
+        "sha256": "00afb8223d32cb2b77015ff4e9797171813eab2c38f5e941eb015d512c437d60",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/evidence_scope/context_bindings/14",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/value.rs",
+        "sha256": "0cd34a9c7877861580caa0711e643575cbb9ce631a445919c69f093c2392d32b",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/evidence_scope/context_bindings/15",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/config.rs",
+        "sha256": "69676c866f8030ea877e662fdb85f600618f23edd99e4262699997adf9786f5a",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/evidence_scope/context_bindings/16",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/model.rs",
+        "sha256": "edeb17c43654ca3aa5bf5f3a83907585b4ecddf9241658a2e426d2560f3bfaef",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/evidence_scope/context_bindings/17",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/catalog.rs",
+        "sha256": "a38df132d8db440d5fb4d6eb33392e539f0549e436dbca210da8c9eb1edb983c",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/evidence_scope/context_bindings/18",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/input.rs",
+        "sha256": "63fe621104d86461562e99ba216f12fa1f69737fdb2efd57c1d8a57a8b700502",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/evidence_scope/context_bindings/19",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/interfaces.rs",
+        "sha256": "3ee13ba29adc7ae58abf29e09f938900895f12908fa5b428b261b9909da9d919",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/evidence_scope/context_bindings/20",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/engine.rs",
+        "sha256": "5f77eab8562c5af23c61dbb447f8e50320386bd267ea7cc9f00ca667a92b09b3",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/evidence_scope/context_bindings/21",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/event_identity.rs",
+        "sha256": "25a4f4442232845d2fedf80ed368fb02ce502f2c350e16e73355296183f3e70e",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/evidence_scope/context_bindings/22",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/warehouse.rs",
+        "sha256": "6d50eb1678921d2f3621149d60766463e6c4ce4fd57e0978ae1af7253557d5f5",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/evidence_scope/context_bindings/23",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/polling.rs",
+        "sha256": "ff518fdb807c02a332c48acc565e0cc7b6b43d1fb98fb22374a0002ac8dd7635",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/evidence_scope/context_bindings/24",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/transition.rs",
+        "sha256": "fe21d21cb3fb83277486216ce0325891259d89353a7b3cb5bdd23a9f02f4cab5",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/evidence_scope/context_bindings/25",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/output.rs",
+        "sha256": "e81896910da6fe9a1eabbcf23260a68cbd781a6d3e621226f62e35ca5ef6f0f5",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/evidence_scope/context_bindings/26",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/ledger.rs",
+        "sha256": "f85ecea3240dd1ec0598a026bafe3b863c13220c7bdb7cdb0aa24c1e2577d9e7",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/evidence_scope/context_bindings/27",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/cycle.rs",
+        "sha256": "5a0b2ace4003f63dd1c135621a5d13d9c69d7000471a3dabfb8ddccfe170056d",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/evidence_scope/context_bindings/28",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/cycle_io.rs",
+        "sha256": "93afc189315738f11780b04ac4ff5cbabf93afb2fabc04233ef5c3dd63f4de30",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/evidence_scope/context_bindings/29",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/digest.rs",
+        "sha256": "e8d8d5c8df1f7124ec5739fa158a41b4d7ca662f1b246d3604994cbe81eb1ef0",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/evidence_scope/context_bindings/30",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/seed.rs",
+        "sha256": "9c0f6cb5b5d06e163c5ea5335b911fc31f24cbfda173e6ea1e705422f02b5281",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/evidence_scope/context_bindings/31",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/cache.rs",
+        "sha256": "07492543966219f3e7cbcdc0aceef96475d812cca0b10743c196f4f6de85b2ab",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/evidence_scope/context_bindings/32",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/lib.rs",
+        "sha256": "5d63008aa0f7b9c8a1da93dc96b13496398cc3fbad93c3775d709d77340b4c6a",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/evidence_scope/context_bindings/33",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/main.rs",
+        "sha256": "b38a6cf3afd455a7b440f4e86bb3c27e5684ff872d4c0a2bfa8b84368f9f651d",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/evidence_scope/context_bindings/34",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/Cargo.toml",
+        "sha256": "279ef923475621d73a24e2d04781ae126c93fbfc82f9646947aee8025e96de95",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/evidence_scope/context_bindings/35",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/Cargo.lock",
+        "sha256": "031faaaec5455f074df40817d326fc59fa9ebb3d7ecd5e1a2af85a1c0b3a5a94",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/evidence_scope/context_bindings/36",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/Cargo.toml",
+        "sha256": "f547eba51b5e70d1054b513193e405869c9f62f794dea0382f758b031aee3b73",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/fingerprints/0",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/数据/样例/生产循环环带.json",
+        "sha256": "d3d0f733e90b23c4183e5d8892d2690e14c4efe6680b76a3257b60c3da13d3a6",
+        "nested_edges": 2,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/fingerprints/1",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/规格/内核配置-v1.json",
+        "sha256": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/fingerprints/2",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/数据/正式静态目录.json",
+        "sha256": "3566e2ecb9d90b9a1afc01b273eb548178de738fb4e4f3b2af88fa05f809be29",
+        "nested_edges": 3,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/fingerprints/3",
+        "target": "/tmp/kernel-audit2-v3r63b5w/《明日方舟：终末地》游戏规则.txt",
+        "sha256": "6e64e3903a65536c530b363c9f3aef8c1bb2a1c1193e866799125dd047159924",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/fingerprints/4",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解任务.txt",
+        "sha256": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/fingerprints/5",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解约束.txt",
+        "sha256": "0c05976f6063f3332db6ee19d7746052ef35148d7c2a12dfa396c7bb8753f30f",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/fingerprints/6",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/规格/选择点参数轴.md",
+        "sha256": "261da30db31063ec8292aaa493e2c11d026c0861852ef19550eeb92eb4da7665",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/fingerprints/7",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/规格/受限模型声明.md",
+        "sha256": "66359c590ad711b950bda55cb1b7e577ef9fb9671e0d87d426908d28bb244349",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/fingerprints/8",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/规格/受限转移定义.md",
+        "sha256": "3ef482467f5dc545f8fdf4bc0867eddf0a2a25a455850e0b863bfe13e368243e",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/fingerprints/9",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/规格/运行语义.md",
+        "sha256": "91dfd6045e27ee83abf10905d511010b8fac4c2a751d6c00e54e6ea9d2aea31d",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/fingerprints/10",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/规格/内核输入.md",
+        "sha256": "7e257cff649960f78a8da0023ac31e926a1e0b972fb68476b4b12d6fdcf90f41",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/fingerprints/11",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/规格/内核输出.md",
+        "sha256": "e287c6e4bb388a814a5fe04d072084e29be494a0caff9b14388c34d67705bb3c",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/fingerprints/12",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/规格/内核输出.schema.json",
+        "sha256": "dc8306328122fa95b44748c24ccc03ab408500132c9141f241038a4b13d050ec",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/fingerprints/13",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/周期键读取审计.md",
+        "sha256": "00afb8223d32cb2b77015ff4e9797171813eab2c38f5e941eb015d512c437d60",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/fingerprints/14",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/value.rs",
+        "sha256": "0cd34a9c7877861580caa0711e643575cbb9ce631a445919c69f093c2392d32b",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/fingerprints/15",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/config.rs",
+        "sha256": "69676c866f8030ea877e662fdb85f600618f23edd99e4262699997adf9786f5a",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/fingerprints/16",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/model.rs",
+        "sha256": "edeb17c43654ca3aa5bf5f3a83907585b4ecddf9241658a2e426d2560f3bfaef",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/fingerprints/17",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/catalog.rs",
+        "sha256": "a38df132d8db440d5fb4d6eb33392e539f0549e436dbca210da8c9eb1edb983c",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/fingerprints/18",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/input.rs",
+        "sha256": "63fe621104d86461562e99ba216f12fa1f69737fdb2efd57c1d8a57a8b700502",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/fingerprints/19",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/interfaces.rs",
+        "sha256": "3ee13ba29adc7ae58abf29e09f938900895f12908fa5b428b261b9909da9d919",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/fingerprints/20",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/engine.rs",
+        "sha256": "5f77eab8562c5af23c61dbb447f8e50320386bd267ea7cc9f00ca667a92b09b3",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/fingerprints/21",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/event_identity.rs",
+        "sha256": "25a4f4442232845d2fedf80ed368fb02ce502f2c350e16e73355296183f3e70e",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/fingerprints/22",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/warehouse.rs",
+        "sha256": "6d50eb1678921d2f3621149d60766463e6c4ce4fd57e0978ae1af7253557d5f5",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/fingerprints/23",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/polling.rs",
+        "sha256": "ff518fdb807c02a332c48acc565e0cc7b6b43d1fb98fb22374a0002ac8dd7635",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/fingerprints/24",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/transition.rs",
+        "sha256": "fe21d21cb3fb83277486216ce0325891259d89353a7b3cb5bdd23a9f02f4cab5",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/fingerprints/25",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/output.rs",
+        "sha256": "e81896910da6fe9a1eabbcf23260a68cbd781a6d3e621226f62e35ca5ef6f0f5",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/fingerprints/26",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/ledger.rs",
+        "sha256": "f85ecea3240dd1ec0598a026bafe3b863c13220c7bdb7cdb0aa24c1e2577d9e7",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/fingerprints/27",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/cycle.rs",
+        "sha256": "5a0b2ace4003f63dd1c135621a5d13d9c69d7000471a3dabfb8ddccfe170056d",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/fingerprints/28",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/cycle_io.rs",
+        "sha256": "93afc189315738f11780b04ac4ff5cbabf93afb2fabc04233ef5c3dd63f4de30",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/fingerprints/29",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/digest.rs",
+        "sha256": "e8d8d5c8df1f7124ec5739fa158a41b4d7ca662f1b246d3604994cbe81eb1ef0",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/fingerprints/30",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/seed.rs",
+        "sha256": "9c0f6cb5b5d06e163c5ea5335b911fc31f24cbfda173e6ea1e705422f02b5281",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/fingerprints/31",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/cache.rs",
+        "sha256": "07492543966219f3e7cbcdc0aceef96475d812cca0b10743c196f4f6de85b2ab",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/fingerprints/32",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/lib.rs",
+        "sha256": "5d63008aa0f7b9c8a1da93dc96b13496398cc3fbad93c3775d709d77340b4c6a",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/fingerprints/33",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/main.rs",
+        "sha256": "b38a6cf3afd455a7b440f4e86bb3c27e5684ff872d4c0a2bfa8b84368f9f651d",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/fingerprints/34",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/Cargo.toml",
+        "sha256": "279ef923475621d73a24e2d04781ae126c93fbfc82f9646947aee8025e96de95",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/fingerprints/35",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/Cargo.lock",
+        "sha256": "031faaaec5455f074df40817d326fc59fa9ebb3d7ecd5e1a2af85a1c0b3a5a94",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/fingerprints/36",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/Cargo.toml",
+        "sha256": "f547eba51b5e70d1054b513193e405869c9f62f794dea0382f758b031aee3b73",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      },
+      {
+        "pointer": "/parameter_assignment/axis_registry",
+        "target": "/tmp/kernel-audit2-v3r63b5w/求解器/规格/选择点参数轴.md",
+        "sha256": "261da30db31063ec8292aaa493e2c11d026c0861852ef19550eeb92eb4da7665",
+        "nested_edges": 0,
+        "mapping": "identity; original target bytes verified"
+      }
+    ],
+    "generate-full.stderr.log": [],
+    "generate-full.stdout.log": [],
+    "main.stderr.log": [],
+    "main.stdout.log": []
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "passed": true,
+  "cases": [
+    {
+      "name": "missing",
+      "rejected": true,
+      "error": "'/elapsed_ns'"
+    },
+    {
+      "name": "independent-missing",
+      "rejected": true,
+      "error": ""
+    },
+    {
+      "name": "wrong-type",
+      "rejected": true,
+      "error": "measurement type"
+    },
+    {
+      "name": "independent-wrong-type",
+      "rejected": true,
+      "error": ""
+    },
+    {
+      "name": "swapped-array",
+      "rejected": true,
+      "error": "unregistered byte difference"
+    },
+    {
+      "name": "independent-swapped-array",
+      "rejected": true,
+      "error": "non-whitelisted raw byte difference"
+    },
+    {
+      "name": "reordered-json",
+      "rejected": true,
+      "error": "unregistered byte difference"
+    },
+    {
+      "name": "independent-reordered-json",
+      "rejected": true,
+      "error": "non-whitelisted raw byte difference"
+    },
+    {
+      "name": "indent",
+      "rejected": true,
+      "error": "unregistered byte difference"
+    },
+    {
+      "name": "independent-indent",
+      "rejected": true,
+      "error": "non-whitelisted raw byte difference"
+    },
+    {
+      "name": "unregistered",
+      "rejected": true,
+      "error": "unregistered byte difference"
+    },
+    {
+      "name": "independent-unregistered",
+      "rejected": true,
+      "error": "non-whitelisted raw byte difference"
+    },
+    {
+      "name": "duplicate-key",
+      "rejected": true,
+      "error": "duplicate key"
+    },
+    {
+      "name": "independent-duplicate-key",
+      "rejected": true,
+      "error": "('duplicate key', 'elapsed_ns')"
+    },
+    {
+      "name": "wrong-source-map",
+      "rejected": true,
+      "error": "unregistered byte difference"
+    },
+    {
+      "name": "bad-reference-hash",
+      "rejected": true,
+      "error": "('bad reference hash', '/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/comparator-negative/bad.json', '', '/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/comparator-negative/target.json', 'ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356', '0000000000000000000000000000000000000000000000000000000000000000')"
+    },
+    {
+      "name": "missing-reference",
+      "rejected": true,
+      "error": "('missing reference', '/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/comparator-negative/absent.json')"
+    }
+  ]
+}

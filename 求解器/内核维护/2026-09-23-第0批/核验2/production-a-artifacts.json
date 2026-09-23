@@ -1,0 +1,132 @@
+[
+  {
+    "reason": "compiler-artifact",
+    "package_id": "path+file:///tmp/kernel-audit2-v3r63b5w/%E6%B1%82%E8%A7%A3%E5%99%A8/crates/topology#0.1.0",
+    "manifest_path": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/topology/Cargo.toml",
+    "target": {
+      "kind": [
+        "lib"
+      ],
+      "crate_types": [
+        "lib"
+      ],
+      "name": "topology",
+      "src_path": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/topology/src/lib.rs",
+      "edition": "2021",
+      "doc": true,
+      "doctest": true,
+      "test": true
+    },
+    "profile": {
+      "opt_level": "0",
+      "debuginfo": 2,
+      "debug_assertions": true,
+      "overflow_checks": true,
+      "test": false
+    },
+    "features": [],
+    "filenames": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/libtopology-bf1fc1afc7f71deb.rlib",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/libtopology-bf1fc1afc7f71deb.rmeta"
+    ],
+    "executable": null,
+    "fresh": false
+  },
+  {
+    "reason": "compiler-artifact",
+    "package_id": "path+file:///tmp/kernel-audit2-v3r63b5w/%E6%B1%82%E8%A7%A3%E5%99%A8/crates/topology#0.1.0",
+    "manifest_path": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/topology/Cargo.toml",
+    "target": {
+      "kind": [
+        "bin"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "topology",
+      "src_path": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/topology/src/main.rs",
+      "edition": "2021",
+      "doc": true,
+      "doctest": false,
+      "test": true
+    },
+    "profile": {
+      "opt_level": "0",
+      "debuginfo": 2,
+      "debug_assertions": true,
+      "overflow_checks": true,
+      "test": false
+    },
+    "features": [],
+    "filenames": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/topology"
+    ],
+    "executable": "/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/topology",
+    "fresh": false
+  },
+  {
+    "reason": "compiler-artifact",
+    "package_id": "path+file:///tmp/kernel-audit2-v3r63b5w/%E6%B1%82%E8%A7%A3%E5%99%A8/crates/kernel#0.1.0",
+    "manifest_path": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/Cargo.toml",
+    "target": {
+      "kind": [
+        "lib"
+      ],
+      "crate_types": [
+        "lib"
+      ],
+      "name": "kernel",
+      "src_path": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/lib.rs",
+      "edition": "2021",
+      "doc": true,
+      "doctest": true,
+      "test": true
+    },
+    "profile": {
+      "opt_level": "0",
+      "debuginfo": 2,
+      "debug_assertions": true,
+      "overflow_checks": true,
+      "test": false
+    },
+    "features": [],
+    "filenames": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/libkernel-ee4256eb8be4a7ed.rlib",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/libkernel-ee4256eb8be4a7ed.rmeta"
+    ],
+    "executable": null,
+    "fresh": false
+  },
+  {
+    "reason": "compiler-artifact",
+    "package_id": "path+file:///tmp/kernel-audit2-v3r63b5w/%E6%B1%82%E8%A7%A3%E5%99%A8/crates/kernel#0.1.0",
+    "manifest_path": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/Cargo.toml",
+    "target": {
+      "kind": [
+        "bin"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "kernel",
+      "src_path": "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/main.rs",
+      "edition": "2021",
+      "doc": true,
+      "doctest": false,
+      "test": true
+    },
+    "profile": {
+      "opt_level": "0",
+      "debuginfo": 2,
+      "debug_assertions": true,
+      "overflow_checks": true,
+      "test": false
+    },
+    "features": [],
+    "filenames": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/kernel"
+    ],
+    "executable": "/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/kernel",
+    "fresh": false
+  }
+]

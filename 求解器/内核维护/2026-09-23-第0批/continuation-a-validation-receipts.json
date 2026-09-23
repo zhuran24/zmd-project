@@ -1,0 +1,722 @@
+[
+  {
+    "case_id": "request-stop",
+    "label": "a",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/request-stop/main.stdout.log",
+    "sha256": "90a295992189713a716d2acade917cd716f5cea0f5d5b706f78dd5ac5af1c745",
+    "mode": "verify-record",
+    "expected": 2,
+    "exit_code": 2
+  },
+  {
+    "case_id": "request-invalid",
+    "label": "a",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/request-invalid/main.stdout.log",
+    "sha256": "ff6a6a5944f62d66b322f3d8e634551f185e79970ea01881bff8dd3b57b797f7",
+    "mode": "verify-record",
+    "expected": 2,
+    "exit_code": 2
+  },
+  {
+    "case_id": "run-full",
+    "label": "a",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/run-full/artifacts/run-full.json",
+    "sha256": "3940d2c9961d699a5511dd0fa7316d710176ace7b615e8e47928e6f4e0cbe119",
+    "mode": "verify-record",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "case_id": "run-grinder",
+    "label": "a",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/run-grinder/artifacts/run-grinder.json",
+    "sha256": "e612b7dcaba84827854a1c9cb8b22a090114846dd422c912cd077cd7a066e8d9",
+    "mode": "verify-record",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "case_id": "run-splitter",
+    "label": "a",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/run-splitter/artifacts/run-splitter.json",
+    "sha256": "b9ef302e2d7756ebb26ef31f2fd0aa592a4b13df0362b0ececb4ad62abd6e499",
+    "mode": "verify-record",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "case_id": "run-delta",
+    "label": "a",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/run-delta/artifacts/run-delta.json",
+    "sha256": "551b30ae799208c34eb8e95bf9b898ebb5435161698d186412f4fbb1b117c7f2",
+    "mode": "verify-record",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "case_id": "run-no-cache",
+    "label": "a",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/run-no-cache/artifacts/run-no-cache.json",
+    "sha256": "3940d2c9961d699a5511dd0fa7316d710176ace7b615e8e47928e6f4e0cbe119",
+    "mode": "verify-record",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "case_id": "run-stopped",
+    "label": "a",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/run-stopped/artifacts/run-stopped.json",
+    "sha256": "e290d57d875d9f878279a39fcead37fcae8c09cc3b9565bb4a2f59a5f84c6ea9",
+    "mode": "verify-record",
+    "expected": 2,
+    "exit_code": 2
+  },
+  {
+    "case_id": "verify-record-full",
+    "label": "a",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/verify-record-full/artifacts/run-full.json",
+    "sha256": "3940d2c9961d699a5511dd0fa7316d710176ace7b615e8e47928e6f4e0cbe119",
+    "mode": "verify-record",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "case_id": "verify-record-delta",
+    "label": "a",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/verify-record-delta/artifacts/run-delta.json",
+    "sha256": "551b30ae799208c34eb8e95bf9b898ebb5435161698d186412f4fbb1b117c7f2",
+    "mode": "verify-record",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "case_id": "checkpoint-record",
+    "label": "a",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/checkpoint-record/artifacts/run-full.json",
+    "sha256": "3940d2c9961d699a5511dd0fa7316d710176ace7b615e8e47928e6f4e0cbe119",
+    "mode": "verify-record",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "case_id": "cycle-referenced",
+    "label": "a",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/cycle-referenced/batch/cycle.json",
+    "sha256": "27e9418fad6a2b8421d225e45c151fd3d8c1f3c96fd067c66f2e94ade37aa3e6",
+    "mode": "verify-cycle",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "case_id": "cycle-referenced",
+    "label": "a",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/cycle-referenced/batch/cycle.record.json",
+    "sha256": "28e214a35031c5406ba119b33f7f88c87e97899e99e9cdf5bf55d387b6661294",
+    "verification": "covered by this capture cycle certificate"
+  },
+  {
+    "case_id": "cycle-no-record",
+    "label": "a",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/cycle-no-record/main.stdout.log",
+    "sha256": "52cdafa4f6962630cccba803735d4cec3291e7186cfe94ad379c1d9eb0064189",
+    "mode": "verify-cycle",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "case_id": "cycle-budget",
+    "label": "a",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/cycle-budget/main.stdout.log",
+    "sha256": "f014a67f851fe44b132d998be161c8144277f16448b3ac1a019b6154af0fbfd8",
+    "mode": "verify-cycle",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "case_id": "cycle-sweep-stop",
+    "label": "a",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/cycle-sweep-stop/main.stdout.log",
+    "sha256": "82d8a2b3c38d0b9f3b91a18027ea7a43cc262a6ddd3a9ae9537be3560462db0d",
+    "mode": "verify-cycle",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "case_id": "verify-cycle",
+    "label": "a",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/verify-cycle/batch/cycle.json",
+    "sha256": "afe46b80e9b47f2540f43186cf27c6f9497dbd04544dc575a89490d74570f165",
+    "mode": "verify-cycle",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "case_id": "verify-cycle",
+    "label": "a",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/verify-cycle/batch/cycle.record.json",
+    "sha256": "28e214a35031c5406ba119b33f7f88c87e97899e99e9cdf5bf55d387b6661294",
+    "verification": "covered by this capture cycle certificate"
+  },
+  {
+    "case_id": "checkpoint-cycle",
+    "label": "a",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/checkpoint-cycle/batch/cycle.json",
+    "sha256": "e1f69c572fa0a89aea9891e3315e4d59f762cd5c083f932cffc74b38a49d38cd",
+    "mode": "verify-cycle",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "case_id": "checkpoint-cycle",
+    "label": "a",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/checkpoint-cycle/batch/cycle.record.json",
+    "sha256": "28e214a35031c5406ba119b33f7f88c87e97899e99e9cdf5bf55d387b6661294",
+    "verification": "covered by this capture cycle certificate"
+  },
+  {
+    "case_id": "verify-batch",
+    "label": "a",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/verify-batch/batch/cycle.json",
+    "sha256": "6dd7d2e465f7e3cfff41565a7151528e19105ca116c5103579aa4077172c2276",
+    "mode": "verify-cycle",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "case_id": "verify-batch",
+    "label": "a",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/verify-batch/batch/cycle.record.json",
+    "sha256": "28e214a35031c5406ba119b33f7f88c87e97899e99e9cdf5bf55d387b6661294",
+    "verification": "covered by this capture cycle certificate"
+  },
+  {
+    "case_id": "verify-batch",
+    "label": "a",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/verify-batch/batch/finite-record.json",
+    "sha256": "3940d2c9961d699a5511dd0fa7316d710176ace7b615e8e47928e6f4e0cbe119",
+    "mode": "verify-record",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "case_id": "seed-invalid-input",
+    "label": "a",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/seed-invalid-input/main.stdout.log",
+    "sha256": "1e7e40c3866948aa69db80e487ffc248c976530a588967893b3f045964cdbcfc",
+    "mode": "verify-record",
+    "expected": 2,
+    "exit_code": 2
+  },
+  {
+    "case_id": "check-invalid-input",
+    "label": "a",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/check-invalid-input/main.stdout.log",
+    "sha256": "1e7e40c3866948aa69db80e487ffc248c976530a588967893b3f045964cdbcfc",
+    "mode": "verify-record",
+    "expected": 2,
+    "exit_code": 2
+  },
+  {
+    "case_id": "run-invalid-input",
+    "label": "a",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/run-invalid-input/main.stdout.log",
+    "sha256": "1e7e40c3866948aa69db80e487ffc248c976530a588967893b3f045964cdbcfc",
+    "mode": "verify-record",
+    "expected": 2,
+    "exit_code": 2
+  },
+  {
+    "case_id": "cycle-invalid-input",
+    "label": "a",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/cycle-invalid-input/main.stdout.log",
+    "sha256": "e8a23c17fc3d020949fb3dc93103aea3ba4435fd7063ac00a37f6ba4cf824539",
+    "mode": "verify-cycle",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "case_id": "verify-record-invalid-input",
+    "label": "a",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/verify-record-invalid-input/main.stdout.log",
+    "sha256": "27ab88a1ed2d5cd3d423bf08c8ed502057a8a973187f60937bd8b9280d80ddf3",
+    "mode": "verify-record",
+    "expected": 2,
+    "exit_code": 2
+  },
+  {
+    "case_id": "verify-cycle-invalid-input",
+    "label": "a",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/verify-cycle-invalid-input/main.stdout.log",
+    "sha256": "5e745100e630c1150b3accd5364185f54cba077a2a5e9addf4506802ff3210ca",
+    "mode": "verify-record",
+    "expected": 2,
+    "exit_code": 2
+  },
+  {
+    "case_id": "checkpoint-invalid-input",
+    "label": "a",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/checkpoint-invalid-input/main.stdout.log",
+    "sha256": "27ab88a1ed2d5cd3d423bf08c8ed502057a8a973187f60937bd8b9280d80ddf3",
+    "mode": "verify-record",
+    "expected": 2,
+    "exit_code": 2
+  },
+  {
+    "case_id": "cycle-found-referenced",
+    "label": "a",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/cycle-found-referenced/batch/cycle-found.json",
+    "sha256": "b8c6ce478100d8583577c7aa9ec5aaae36cee0390f745c8639f2336d34fc70d6",
+    "mode": "verify-cycle",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "case_id": "cycle-found-referenced",
+    "label": "a",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/cycle-found-referenced/batch/cycle-found.record.json",
+    "sha256": "45fbe0f0ce10f07dd1a568751bd8b86d0d09862174f7625760a87e0d930cbd25",
+    "verification": "covered by this capture cycle certificate"
+  },
+  {
+    "case_id": "cycle-found-no-record",
+    "label": "a",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/cycle-found-no-record/main.stdout.log",
+    "sha256": "686f3061ce6c9a99829043ce995e8aeaeaaddfbfa3aac6ae83fc66d322b67ea3",
+    "mode": "verify-cycle",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "case_id": "verify-cycle-found",
+    "label": "a",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/verify-cycle-found/batch/cycle-found.json",
+    "sha256": "f8537a4bbcf2d743a19a2501965c90c93391ac1f0ca641e5739c65922fac4924",
+    "mode": "verify-cycle",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "case_id": "verify-cycle-found",
+    "label": "a",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/verify-cycle-found/batch/cycle-found.record.json",
+    "sha256": "45fbe0f0ce10f07dd1a568751bd8b86d0d09862174f7625760a87e0d930cbd25",
+    "verification": "covered by this capture cycle certificate"
+  },
+  {
+    "case_id": "checkpoint-cycle-found",
+    "label": "a",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/checkpoint-cycle-found/batch/cycle-found.json",
+    "sha256": "63926275009afb7c64456bf6a05076e40e93edf295454af536b47847852892dc",
+    "mode": "verify-cycle",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "case_id": "checkpoint-cycle-found",
+    "label": "a",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/checkpoint-cycle-found/batch/cycle-found.record.json",
+    "sha256": "45fbe0f0ce10f07dd1a568751bd8b86d0d09862174f7625760a87e0d930cbd25",
+    "verification": "covered by this capture cycle certificate"
+  },
+  {
+    "case_id": "verify-batch-with-cycle-found",
+    "label": "a",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/verify-batch-with-cycle-found/batch/cycle-found.json",
+    "sha256": "3e49830caf380a3c3145f13553a6027fed7d25c4ce82a904f19774a0f728508e",
+    "mode": "verify-cycle",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "case_id": "verify-batch-with-cycle-found",
+    "label": "a",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/verify-batch-with-cycle-found/batch/cycle-found.record.json",
+    "sha256": "45fbe0f0ce10f07dd1a568751bd8b86d0d09862174f7625760a87e0d930cbd25",
+    "verification": "covered by this capture cycle certificate"
+  },
+  {
+    "case_id": "verify-batch-with-cycle-found",
+    "label": "a",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/verify-batch-with-cycle-found/batch/cycle.json",
+    "sha256": "062d5eebedc6dad077e67ed8ab08159d10127fdb99b01690e00bf1c90320c933",
+    "mode": "verify-cycle",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "case_id": "verify-batch-with-cycle-found",
+    "label": "a",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/verify-batch-with-cycle-found/batch/cycle.record.json",
+    "sha256": "28e214a35031c5406ba119b33f7f88c87e97899e99e9cdf5bf55d387b6661294",
+    "verification": "covered by this capture cycle certificate"
+  },
+  {
+    "case_id": "verify-batch-with-cycle-found",
+    "label": "a",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/verify-batch-with-cycle-found/batch/finite-record.json",
+    "sha256": "3940d2c9961d699a5511dd0fa7316d710176ace7b615e8e47928e6f4e0cbe119",
+    "mode": "verify-record",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "case_id": "request-stop",
+    "label": "b",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/request-stop/main.stdout.log",
+    "sha256": "90a295992189713a716d2acade917cd716f5cea0f5d5b706f78dd5ac5af1c745",
+    "mode": "verify-record",
+    "expected": 2,
+    "exit_code": 2
+  },
+  {
+    "case_id": "request-invalid",
+    "label": "b",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/request-invalid/main.stdout.log",
+    "sha256": "ff6a6a5944f62d66b322f3d8e634551f185e79970ea01881bff8dd3b57b797f7",
+    "mode": "verify-record",
+    "expected": 2,
+    "exit_code": 2
+  },
+  {
+    "case_id": "run-full",
+    "label": "b",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/run-full/artifacts/run-full.json",
+    "sha256": "3940d2c9961d699a5511dd0fa7316d710176ace7b615e8e47928e6f4e0cbe119",
+    "mode": "verify-record",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "case_id": "run-grinder",
+    "label": "b",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/run-grinder/artifacts/run-grinder.json",
+    "sha256": "e612b7dcaba84827854a1c9cb8b22a090114846dd422c912cd077cd7a066e8d9",
+    "mode": "verify-record",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "case_id": "run-splitter",
+    "label": "b",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/run-splitter/artifacts/run-splitter.json",
+    "sha256": "b9ef302e2d7756ebb26ef31f2fd0aa592a4b13df0362b0ececb4ad62abd6e499",
+    "mode": "verify-record",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "case_id": "run-delta",
+    "label": "b",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/run-delta/artifacts/run-delta.json",
+    "sha256": "551b30ae799208c34eb8e95bf9b898ebb5435161698d186412f4fbb1b117c7f2",
+    "mode": "verify-record",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "case_id": "run-no-cache",
+    "label": "b",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/run-no-cache/artifacts/run-no-cache.json",
+    "sha256": "3940d2c9961d699a5511dd0fa7316d710176ace7b615e8e47928e6f4e0cbe119",
+    "mode": "verify-record",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "case_id": "run-stopped",
+    "label": "b",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/run-stopped/artifacts/run-stopped.json",
+    "sha256": "e290d57d875d9f878279a39fcead37fcae8c09cc3b9565bb4a2f59a5f84c6ea9",
+    "mode": "verify-record",
+    "expected": 2,
+    "exit_code": 2
+  },
+  {
+    "case_id": "verify-record-full",
+    "label": "b",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/verify-record-full/artifacts/run-full.json",
+    "sha256": "3940d2c9961d699a5511dd0fa7316d710176ace7b615e8e47928e6f4e0cbe119",
+    "mode": "verify-record",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "case_id": "verify-record-delta",
+    "label": "b",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/verify-record-delta/artifacts/run-delta.json",
+    "sha256": "551b30ae799208c34eb8e95bf9b898ebb5435161698d186412f4fbb1b117c7f2",
+    "mode": "verify-record",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "case_id": "checkpoint-record",
+    "label": "b",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/checkpoint-record/artifacts/run-full.json",
+    "sha256": "3940d2c9961d699a5511dd0fa7316d710176ace7b615e8e47928e6f4e0cbe119",
+    "mode": "verify-record",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "case_id": "cycle-referenced",
+    "label": "b",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/cycle-referenced/batch/cycle.json",
+    "sha256": "27e9418fad6a2b8421d225e45c151fd3d8c1f3c96fd067c66f2e94ade37aa3e6",
+    "mode": "verify-cycle",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "case_id": "cycle-referenced",
+    "label": "b",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/cycle-referenced/batch/cycle.record.json",
+    "sha256": "28e214a35031c5406ba119b33f7f88c87e97899e99e9cdf5bf55d387b6661294",
+    "verification": "covered by this capture cycle certificate"
+  },
+  {
+    "case_id": "cycle-no-record",
+    "label": "b",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/cycle-no-record/main.stdout.log",
+    "sha256": "52cdafa4f6962630cccba803735d4cec3291e7186cfe94ad379c1d9eb0064189",
+    "mode": "verify-cycle",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "case_id": "cycle-budget",
+    "label": "b",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/cycle-budget/main.stdout.log",
+    "sha256": "f014a67f851fe44b132d998be161c8144277f16448b3ac1a019b6154af0fbfd8",
+    "mode": "verify-cycle",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "case_id": "cycle-sweep-stop",
+    "label": "b",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/cycle-sweep-stop/main.stdout.log",
+    "sha256": "82d8a2b3c38d0b9f3b91a18027ea7a43cc262a6ddd3a9ae9537be3560462db0d",
+    "mode": "verify-cycle",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "case_id": "verify-cycle",
+    "label": "b",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/verify-cycle/batch/cycle.json",
+    "sha256": "afe46b80e9b47f2540f43186cf27c6f9497dbd04544dc575a89490d74570f165",
+    "mode": "verify-cycle",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "case_id": "verify-cycle",
+    "label": "b",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/verify-cycle/batch/cycle.record.json",
+    "sha256": "28e214a35031c5406ba119b33f7f88c87e97899e99e9cdf5bf55d387b6661294",
+    "verification": "covered by this capture cycle certificate"
+  },
+  {
+    "case_id": "checkpoint-cycle",
+    "label": "b",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/checkpoint-cycle/batch/cycle.json",
+    "sha256": "e1f69c572fa0a89aea9891e3315e4d59f762cd5c083f932cffc74b38a49d38cd",
+    "mode": "verify-cycle",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "case_id": "checkpoint-cycle",
+    "label": "b",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/checkpoint-cycle/batch/cycle.record.json",
+    "sha256": "28e214a35031c5406ba119b33f7f88c87e97899e99e9cdf5bf55d387b6661294",
+    "verification": "covered by this capture cycle certificate"
+  },
+  {
+    "case_id": "verify-batch",
+    "label": "b",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/verify-batch/batch/cycle.json",
+    "sha256": "6dd7d2e465f7e3cfff41565a7151528e19105ca116c5103579aa4077172c2276",
+    "mode": "verify-cycle",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "case_id": "verify-batch",
+    "label": "b",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/verify-batch/batch/cycle.record.json",
+    "sha256": "28e214a35031c5406ba119b33f7f88c87e97899e99e9cdf5bf55d387b6661294",
+    "verification": "covered by this capture cycle certificate"
+  },
+  {
+    "case_id": "verify-batch",
+    "label": "b",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/verify-batch/batch/finite-record.json",
+    "sha256": "3940d2c9961d699a5511dd0fa7316d710176ace7b615e8e47928e6f4e0cbe119",
+    "mode": "verify-record",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "case_id": "seed-invalid-input",
+    "label": "b",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/seed-invalid-input/main.stdout.log",
+    "sha256": "1e7e40c3866948aa69db80e487ffc248c976530a588967893b3f045964cdbcfc",
+    "mode": "verify-record",
+    "expected": 2,
+    "exit_code": 2
+  },
+  {
+    "case_id": "check-invalid-input",
+    "label": "b",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/check-invalid-input/main.stdout.log",
+    "sha256": "1e7e40c3866948aa69db80e487ffc248c976530a588967893b3f045964cdbcfc",
+    "mode": "verify-record",
+    "expected": 2,
+    "exit_code": 2
+  },
+  {
+    "case_id": "run-invalid-input",
+    "label": "b",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/run-invalid-input/main.stdout.log",
+    "sha256": "1e7e40c3866948aa69db80e487ffc248c976530a588967893b3f045964cdbcfc",
+    "mode": "verify-record",
+    "expected": 2,
+    "exit_code": 2
+  },
+  {
+    "case_id": "cycle-invalid-input",
+    "label": "b",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/cycle-invalid-input/main.stdout.log",
+    "sha256": "e8a23c17fc3d020949fb3dc93103aea3ba4435fd7063ac00a37f6ba4cf824539",
+    "mode": "verify-cycle",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "case_id": "verify-record-invalid-input",
+    "label": "b",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/verify-record-invalid-input/main.stdout.log",
+    "sha256": "27ab88a1ed2d5cd3d423bf08c8ed502057a8a973187f60937bd8b9280d80ddf3",
+    "mode": "verify-record",
+    "expected": 2,
+    "exit_code": 2
+  },
+  {
+    "case_id": "verify-cycle-invalid-input",
+    "label": "b",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/verify-cycle-invalid-input/main.stdout.log",
+    "sha256": "5e745100e630c1150b3accd5364185f54cba077a2a5e9addf4506802ff3210ca",
+    "mode": "verify-record",
+    "expected": 2,
+    "exit_code": 2
+  },
+  {
+    "case_id": "checkpoint-invalid-input",
+    "label": "b",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/checkpoint-invalid-input/main.stdout.log",
+    "sha256": "27ab88a1ed2d5cd3d423bf08c8ed502057a8a973187f60937bd8b9280d80ddf3",
+    "mode": "verify-record",
+    "expected": 2,
+    "exit_code": 2
+  },
+  {
+    "case_id": "cycle-found-referenced",
+    "label": "b",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/cycle-found-referenced/batch/cycle-found.json",
+    "sha256": "b8c6ce478100d8583577c7aa9ec5aaae36cee0390f745c8639f2336d34fc70d6",
+    "mode": "verify-cycle",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "case_id": "cycle-found-referenced",
+    "label": "b",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/cycle-found-referenced/batch/cycle-found.record.json",
+    "sha256": "45fbe0f0ce10f07dd1a568751bd8b86d0d09862174f7625760a87e0d930cbd25",
+    "verification": "covered by this capture cycle certificate"
+  },
+  {
+    "case_id": "cycle-found-no-record",
+    "label": "b",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/cycle-found-no-record/main.stdout.log",
+    "sha256": "686f3061ce6c9a99829043ce995e8aeaeaaddfbfa3aac6ae83fc66d322b67ea3",
+    "mode": "verify-cycle",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "case_id": "verify-cycle-found",
+    "label": "b",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/verify-cycle-found/batch/cycle-found.json",
+    "sha256": "f8537a4bbcf2d743a19a2501965c90c93391ac1f0ca641e5739c65922fac4924",
+    "mode": "verify-cycle",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "case_id": "verify-cycle-found",
+    "label": "b",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/verify-cycle-found/batch/cycle-found.record.json",
+    "sha256": "45fbe0f0ce10f07dd1a568751bd8b86d0d09862174f7625760a87e0d930cbd25",
+    "verification": "covered by this capture cycle certificate"
+  },
+  {
+    "case_id": "checkpoint-cycle-found",
+    "label": "b",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/checkpoint-cycle-found/batch/cycle-found.json",
+    "sha256": "63926275009afb7c64456bf6a05076e40e93edf295454af536b47847852892dc",
+    "mode": "verify-cycle",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "case_id": "checkpoint-cycle-found",
+    "label": "b",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/checkpoint-cycle-found/batch/cycle-found.record.json",
+    "sha256": "45fbe0f0ce10f07dd1a568751bd8b86d0d09862174f7625760a87e0d930cbd25",
+    "verification": "covered by this capture cycle certificate"
+  },
+  {
+    "case_id": "verify-batch-with-cycle-found",
+    "label": "b",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/verify-batch-with-cycle-found/batch/cycle-found.json",
+    "sha256": "3e49830caf380a3c3145f13553a6027fed7d25c4ce82a904f19774a0f728508e",
+    "mode": "verify-cycle",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "case_id": "verify-batch-with-cycle-found",
+    "label": "b",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/verify-batch-with-cycle-found/batch/cycle-found.record.json",
+    "sha256": "45fbe0f0ce10f07dd1a568751bd8b86d0d09862174f7625760a87e0d930cbd25",
+    "verification": "covered by this capture cycle certificate"
+  },
+  {
+    "case_id": "verify-batch-with-cycle-found",
+    "label": "b",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/verify-batch-with-cycle-found/batch/cycle.json",
+    "sha256": "062d5eebedc6dad077e67ed8ab08159d10127fdb99b01690e00bf1c90320c933",
+    "mode": "verify-cycle",
+    "expected": 0,
+    "exit_code": 0
+  },
+  {
+    "case_id": "verify-batch-with-cycle-found",
+    "label": "b",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/verify-batch-with-cycle-found/batch/cycle.record.json",
+    "sha256": "28e214a35031c5406ba119b33f7f88c87e97899e99e9cdf5bf55d387b6661294",
+    "verification": "covered by this capture cycle certificate"
+  },
+  {
+    "case_id": "verify-batch-with-cycle-found",
+    "label": "b",
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/verify-batch-with-cycle-found/batch/finite-record.json",
+    "sha256": "3940d2c9961d699a5511dd0fa7316d710176ace7b615e8e47928e6f4e0cbe119",
+    "mode": "verify-record",
+    "expected": 0,
+    "exit_code": 0
+  }
+]

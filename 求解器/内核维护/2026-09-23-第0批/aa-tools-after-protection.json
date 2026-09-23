@@ -1,0 +1,198 @@
+{
+  "unexpected": [],
+  "authorized_markers": [
+    {
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/原字节缺失.json",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 1976,
+        "sha256": "2e93c12d5a25aa639b4d8858c60dbb9640dc8202bf9e4f364555a3395997f4dc"
+      }
+    },
+    {
+      "path": "求解器/crates/kernel/evidence/round6/cli/原字节缺失.json",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 914,
+        "sha256": "2b98e64f9c5526c9a9937b6717d9fedaf6cf49597780aa6106519fab70bd4500"
+      }
+    },
+    {
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/negative/原字节缺失.json",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 3026,
+        "sha256": "53825c13f39a0635a5975d8829ec9324b0b4be6291d1f8ee909c2e586627eed9"
+      }
+    },
+    {
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/package/full_state_each_instant/records/原字节缺失.json",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 996,
+        "sha256": "775106c75a6de08640885aa76558a8399c89c4c58de4ceadc369d32d4baf50a7"
+      }
+    },
+    {
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/reference-package/原字节缺失.json",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 1633,
+        "sha256": "209634be2721a2b7a63b2dbf6d4fb846aac77967d5af33c1a742f4df173d0660"
+      }
+    },
+    {
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/原字节缺失.json",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 946,
+        "sha256": "52b0ee1f23c3387f05642ae34949a39baec073646f527d9ad3dc51b089118ed3"
+      }
+    }
+  ],
+  "concurrent": [
+    {
+      "path": "候选约束.txt",
+      "before": {
+        "mode": 420,
+        "kind": "file",
+        "size": 298455,
+        "sha256": "e8c60f6b506f2c424745c33ec106237d172acc6a63c918632fd34a25e4504e1c"
+      },
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 317365,
+        "sha256": "527624e6f640c80250d909cb71e8eb9a1334cc17dc600412882e96eb29ba44a9"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第66-68轮",
+      "before": null,
+      "after": {
+        "mode": 493,
+        "kind": "directory"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第66-68轮/推导66",
+      "before": null,
+      "after": {
+        "mode": 493,
+        "kind": "directory"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第66-68轮/推导66/boundary_power.py",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 6978,
+        "sha256": "da5173f7978fa61e8e73d3c60e5810beaddd0142fe5d8f912b43da8e10b1db74"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第66-68轮/推导66/boundary_power_b9_P10.log",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第66-68轮/推导66/input_manifest.json",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 392,
+        "sha256": "d11939b5d41561f817e75e3a46112398a3a3517c87dbe7aa0bab76131ee98945"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第66-68轮/推导66/power_bound.log",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 251,
+        "sha256": "d3bb8a4f60d65618511939a0ee1dc565893e45fc3a7eed4881675e15afe0cea3"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第66-68轮/推导66/power_bound.py",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 2718,
+        "sha256": "2af9d809270c23536a2009b9e28078a8145717e7763678440e12e2e8018c77b1"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第66-68轮/推导66/power_certificates.json",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 1906808,
+        "sha256": "555d4b3a7a2b5ba3a574c641e946b52df7a9968830fb5867be6feb067e058042"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第66-68轮/推导66/《明日方舟：终末地》游戏规则.txt.md",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 7241,
+        "sha256": "6e64e3903a65536c530b363c9f3aef8c1bb2a1c1193e866799125dd047159924"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第66-68轮/推导66/候选约束.txt.md",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 317365,
+        "sha256": "527624e6f640c80250d909cb71e8eb9a1334cc17dc600412882e96eb29ba44a9"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第66-68轮/推导66/求解任务.txt.md",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 1405,
+        "sha256": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第66-68轮/推导66/求解约束.txt.md",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 34766,
+        "sha256": "0c05976f6063f3332db6ee19d7746052ef35148d7c2a12dfa396c7bb8753f30f"
+      }
+    }
+  ]
+}

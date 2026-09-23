@@ -1,0 +1,56 @@
+{
+  "status": "原字节缺失",
+  "files": [
+    {
+      "path": "crates/kernel/evidence/round6/revision-r5/cli/negative/missing.json",
+      "original_sha256": "bcf2d101855846ad07d0b7ca039fdcc09a4420d7735f84ebee4fc684b34427b9",
+      "original_bytes": 1984602,
+      "current_sha256": "5b9f7a06c49ab8a238f731b61a2b6f87d4ee38cf8c089dae0d4d23308e2dfca7",
+      "current_bytes": 1974990,
+      "disposition": "现存替代字节原地保留；不是原字节恢复",
+      "disposition_path": "crates/kernel/evidence/round6/revision-r5/cli/negative/missing.json"
+    },
+    {
+      "path": "crates/kernel/evidence/round6/revision-r5/cli/negative/state.json",
+      "original_sha256": "440213e08c4f9aecfcce8d77e9e61a80ca3b18c61fa9e7676232c61e6fdec583",
+      "original_bytes": 1984644,
+      "current_sha256": "8d7c54f287fe670b0d1f07f3355e8eaa997c377adf8fdad556de5bdbec8fc417",
+      "current_bytes": 1975032,
+      "disposition": "现存替代字节原地保留；不是原字节恢复",
+      "disposition_path": "crates/kernel/evidence/round6/revision-r5/cli/negative/state.json"
+    },
+    {
+      "path": "crates/kernel/evidence/round6/revision-r5/cli/negative/dependency.json",
+      "original_sha256": "cf409d9b4134809dd0c4ffc9414b166a2c93515bc0a2ad8c5cff9bb66acf647c",
+      "original_bytes": 1984484,
+      "current_sha256": "deaca728ab5374412814ad64163fd8cb116fa67753b16b446442286b67e1a281",
+      "current_bytes": 1974872,
+      "disposition": "现存替代字节原地保留；不是原字节恢复",
+      "disposition_path": "crates/kernel/evidence/round6/revision-r5/cli/negative/dependency.json"
+    },
+    {
+      "path": "crates/kernel/evidence/round6/revision-r5/cli/negative/producer.json",
+      "original_sha256": "ad3e8071633c05d3f9a8b64b23c84fe91a7c327b759d391fc5ce22adf128b4de",
+      "original_bytes": 1984580,
+      "current_sha256": "ed28dd09cdef2f9a0ace99fe3900a361305106682d135974d1e5faae066b88e7",
+      "current_bytes": 1974968,
+      "disposition": "现存替代字节原地保留；不是原字节恢复",
+      "disposition_path": "crates/kernel/evidence/round6/revision-r5/cli/negative/producer.json"
+    },
+    {
+      "path": "crates/kernel/evidence/round6/revision-r5/cli/negative/hash.json",
+      "original_sha256": "e10bc4b3cb2996d35ff38bbb2f4bc81d9a9e5a092357cd727cd9709b0a0fe008",
+      "original_bytes": 1984648,
+      "current_sha256": "fe5d8a39c730dd31da9712670c9f841eaae6cb2dc73aa0fe8d6e6ce6bb2a2b64",
+      "current_bytes": 1975036,
+      "disposition": "现存替代字节原地保留；不是原字节恢复",
+      "disposition_path": "crates/kernel/evidence/round6/revision-r5/cli/negative/hash.json"
+    }
+  ],
+  "search_basis": [
+    "内核维护/2026-09-22d/审查-opus/unresolved_targets.json",
+    "内核维护/2026-09-22d/审查处理核验/extra-facts.json"
+  ],
+  "search_limit": "沿用已记录的可访问范围与四个 Git 对象库未命中结果；未宣称全机穷尽。",
+  "continuation": "2026-09-23 第0批补记；现存历史文件字节未改。"
+}

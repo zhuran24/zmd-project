@@ -1,0 +1,307 @@
+{
+  "label": "production-a",
+  "argv": [
+    "cargo",
+    "build",
+    "--workspace",
+    "--bins",
+    "--locked",
+    "--offline",
+    "-j",
+    "2",
+    "--profile",
+    "healthaudit2prod1422118",
+    "--config",
+    "profile.healthaudit2prod1422118.inherits=\"dev\"",
+    "--config",
+    "profile.healthaudit2prod1422118.codegen-units=1",
+    "--message-format=json"
+  ],
+  "cwd": "/tmp/kernel-audit2-v3r63b5w/求解器",
+  "returncode": 0,
+  "expected": 0,
+  "seconds": 7.8053035820048535,
+  "cpu_seconds": 12.307708,
+  "average_cores": 1.5768391159538562,
+  "max_total_threads": 20,
+  "max_runnable_threads": 4,
+  "affinity": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "violation": null,
+  "peak": [
+    {
+      "pid": 1422130,
+      "argv": "cargo build --workspace --bins --locked --offline -j 2 --profile healthaudit2prod1422118 --config profile.healthaudit2prod1422118.inherits=\"dev\" --config profile.healthaudit2prod1422118.codegen-units=1 --message-format=json ",
+      "tasks": [
+        {
+          "tid": 1422130,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        },
+        {
+          "tid": 1422131,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        },
+        {
+          "tid": 1422132,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        },
+        {
+          "tid": 1422366,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        },
+        {
+          "tid": 1422419,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        }
+      ]
+    },
+    {
+      "pid": 1422367,
+      "argv": "rustc --crate-name serde_derive --edition=2021 /home/zhuran24/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_derive-1.0.229/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type proc-macro --emit=dep-info,link -C prefer-dynamic -C embed-bitcode=no --cfg feature=\"default\" --check-cfg cfg(docsrs,test) --check-cfg cfg(feature, values(\"default\", \"deserialize_in_place\")) -C metadata=78e9cd9b6027b655 -C extra-filename=-0600ff3e7650e339 --out-dir /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps -L dependency=/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps --extern proc_macro2=/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/libproc_macro2-55711b2b0fb8f36d.rlib --extern quote=/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/libquote-c1cbf251bf11eeb1.rlib --extern syn=/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/libsyn-23d48756d8308cf3.rlib --extern proc_macro --cap-lints allow ",
+      "tasks": [
+        {
+          "tid": 1422367,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        },
+        {
+          "tid": 1422368,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        },
+        {
+          "tid": 1422369,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 60
+        },
+        {
+          "tid": 1422370,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        }
+      ]
+    },
+    {
+      "pid": 1422420,
+      "argv": "rustc --crate-name serde_json --edition=2021 /home/zhuran24/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_json-1.0.151/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C codegen-units=1 -C debuginfo=2 --cfg feature=\"default\" --cfg feature=\"std\" --check-cfg cfg(docsrs,test) --check-cfg cfg(feature, values(\"alloc\", \"arbitrary_precision\", \"default\", \"float_roundtrip\", \"indexmap\", \"preserve_order\", \"raw_value\", \"std\", \"unbounded_depth\")) -C metadata=90d4909edad7ff65 -C extra-filename=-9e3a536667d77ac1 --out-dir /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps -L dependency=/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps --extern itoa=/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/libitoa-44889091234401f9.rmeta --extern memchr=/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/libmemchr-36e976fdf93bed29.rmeta --extern serde_core=/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/libserde_core-de353fed38fa7ecf.rmeta --extern zmij=/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/libzmij-ef99757271108ab2.rmeta --cap-lints allow --cfg fast_arithmetic=\"64\" --check-cfg cfg(fast_arithmetic, values(\"32\", \"64\")) ",
+      "tasks": [
+        {
+          "tid": 1422420,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        },
+        {
+          "tid": 1422421,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        },
+        {
+          "tid": 1422422,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 29
+        },
+        {
+          "tid": 1422423,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        },
+        {
+          "tid": 1422438,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        },
+        {
+          "tid": 1422439,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        },
+        {
+          "tid": 1422442,
+          "state": "R",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 2
+        }
+      ]
+    },
+    {
+      "pid": 1422443,
+      "argv": "x86_64-linux-gnu-gcc -Wl,--version-script=/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/rustcTLixJP/list -Wl,--no-undefined-version -m64 /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/rustcTLixJP/symbols.o /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.00.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.01.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.02.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.03.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.04.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.05.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.06.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.07.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.08.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.09.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.10.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.11.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.12.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.13.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.14.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.15.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/rustcTLixJP/rmeta.o /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/serde_derive-0600ff3e7650e339.39tm5jc19964gw64ync0ljj49.rcgu.o -Wl,--as-needed -Wl,-Bstatic /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/libsyn-23d48756d8308cf3.rlib /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/libquote-c1cbf251bf11eeb1.rlib /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/libproc_macro2-55711b2b0fb8f36d.rlib /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/libunicode_ident-0403180f0c539c21.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libproc_macro-098c7a2db8859e57.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/librustc_literal_escaper-0ea4a2390a20d866.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libstd-a4cf8c125ff393c3.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libpanic_unwind-c4a83d2ad5b7d77e.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libobject-a6cb8640d85c6f1f.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libmemchr-62cbba516e3fc54b.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libaddr2line-0657a5020a640ff4.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libgimli-7fe78241b5959c4f.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libcfg_if-fd09dfee45479524.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/librustc_demangle-9291a67a3fef95d3.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libstd_detect-ef2244ebec09afd3.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libhashbrown-4b90e78548d258ab.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/librustc_std_workspace_alloc-c92825398a256ed2.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libminiz_oxide-c09f01c945a98da6.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libadler2-308af124736e5ef4.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libunwind-47edb10cd9214bb3.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/liblibc-1df101c03ce96979.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/librustc_std_workspace_core-359051371bed5a93.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/liballoc-49d9bbd1df19ee71.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libcore-e2cbb3bcd1db4897.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libcompiler_builtins-6279323f4be9bcf8.rlib -Wl,-Bdynamic -lgcc_s -lutil -lrt -lpthread -lm -ldl -lc -L /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/rustcTLixJP/raw-dylibs -fuse-ld=lld -Wl,--eh-frame-hdr -Wl,-z,noexecstack -L /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib -o /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/libserde_derive-0600ff3e7650e339.so -Wl,--gc-sections -shared -Wl,-z,relro,-z,now -nodefaultlibs ",
+      "tasks": [
+        {
+          "tid": 1422443,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        }
+      ]
+    },
+    {
+      "pid": 1422444,
+      "argv": "/usr/lib/gcc/x86_64-pc-linux-gnu/16/collect2 -plugin /usr/lib/gcc/x86_64-pc-linux-gnu/16/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-pc-linux-gnu/16/lto-wrapper -plugin-opt=-fresolution=/tmp/cc7IW7Ep.res --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -shared -fuse-ld=lld -o /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/libserde_derive-0600ff3e7650e339.so /usr/lib/gcc/x86_64-pc-linux-gnu/16/../../../../lib/crti.o /usr/lib/gcc/x86_64-pc-linux-gnu/16/crtbeginS.o -L/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/rustcTLixJP/raw-dylibs -L/usr/lib/rustlib/x86_64-unknown-linux-gnu/lib -L/usr/lib/gcc/x86_64-pc-linux-gnu/16 -L/usr/lib/gcc/x86_64-pc-linux-gnu/16/../../../../lib -L/lib/../lib -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-pc-linux-gnu/16/../../.. -L/lib -L/usr/lib --version-script=/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/rustcTLixJP/list --no-undefined-version /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/rustcTLixJP/symbols.o /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.00.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.01.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.02.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.03.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.04.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.05.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.06.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.07.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.08.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.09.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.10.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.11.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.12.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.13.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.14.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.15.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/rustcTLixJP/rmeta.o /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/serde_derive-0600ff3e7650e339.39tm5jc19964gw64ync0ljj49.rcgu.o --as-needed -Bstatic /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/libsyn-23d48756d8308cf3.rlib /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/libquote-c1cbf251bf11eeb1.rlib /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/libproc_macro2-55711b2b0fb8f36d.rlib /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/deps/libunicode_ident-0403180f0c539c21.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libproc_macro-098c7a2db8859e57.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/librustc_literal_escaper-0ea4a2390a20d866.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libstd-a4cf8c125ff393c3.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libpanic_unwind-c4a83d2ad5b7d77e.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libobject-a6cb8640d85c6f1f.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libmemchr-62cbba516e3fc54b.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libaddr2line-0657a5020a640ff4.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libgimli-7fe78241b5959c4f.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libcfg_if-fd09dfee45479524.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/librustc_demangle-9291a67a3fef95d3.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libstd_detect-ef2244ebec09afd3.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libhashbrown-4b90e78548d258ab.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/librustc_std_workspace_alloc-c92825398a256ed2.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libminiz_oxide-c09f01c945a98da6.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libadler2-308af124736e5ef4.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libunwind-47edb10cd9214bb3.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/liblibc-1df101c03ce96979.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/librustc_std_workspace_core-359051371bed5a93.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/liballoc-49d9bbd1df19ee71.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libcore-e2cbb3bcd1db4897.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libcompiler_builtins-6279323f4be9bcf8.rlib -Bdynamic -lgcc_s -lutil -lrt -lpthread -lm -ldl -lc --eh-frame-hdr -z noexecstack --gc-sections -z relro -z now /usr/lib/gcc/x86_64-pc-linux-gnu/16/crtendS.o /usr/lib/gcc/x86_64-pc-linux-gnu/16/../../../../lib/crtn.o ",
+      "tasks": [
+        {
+          "tid": 1422444,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        }
+      ]
+    },
+    {
+      "pid": 1422445,
+      "argv": "",
+      "tasks": [
+        {
+          "tid": 1422445,
+          "state": "Z",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        },
+        {
+          "tid": 1422449,
+          "state": "R",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        }
+      ]
+    }
+  ],
+  "environment": {
+    "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+    "CARGO_BUILD_JOBS": "2",
+    "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+    "RUST_TEST_THREADS": "1",
+    "RAYON_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "NODE_OPTIONS": "--v8-pool-size=1"
+  },
+  "stdout_sha256": "9106453ed405848b768a163174ccde1c69960b5d2143fac6a86997003e8623f0",
+  "stderr_sha256": "d10544e625a8103ec8e4a29f69645ddc3adafa8d7e3cc1624818c7fa7827da51"
+}

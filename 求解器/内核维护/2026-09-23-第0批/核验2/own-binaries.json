@@ -1,0 +1,16 @@
+{
+  "topology": {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/topology",
+    "sha256": "f124f25eb741ccdb55163bcdfec5608742be63532573317a17e066d3a8f86328",
+    "source_root": "/tmp/kernel-audit2-v3r63b5w/求解器",
+    "profile": "healthaudit2prod1422118",
+    "sealed": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/production-a/topology"
+  },
+  "kernel": {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/kernel",
+    "sha256": "071c0932f40a05336df85bfb46b2ec610054e97cb4860c3d0f8d3a9ecab1d31d",
+    "source_root": "/tmp/kernel-audit2-v3r63b5w/求解器",
+    "profile": "healthaudit2prod1422118",
+    "sealed": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/production-a/kernel"
+  }
+}

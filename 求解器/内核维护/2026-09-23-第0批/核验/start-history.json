@@ -1,0 +1,32 @@
+{
+  "history_roots": [
+    "求解器/crates/kernel/evidence",
+    "求解器/crates/kernel/复核",
+    "求解器/数据/复核",
+    "求解器/规格/复核"
+  ],
+  "history_changes": [],
+  "old_maintenance_changes": [],
+  "coverage": [
+    {
+      "root": "求解器/crates/kernel/evidence",
+      "entries": 595,
+      "files": 566
+    },
+    {
+      "root": "求解器/crates/kernel/复核",
+      "entries": 2154,
+      "files": 2094
+    },
+    {
+      "root": "求解器/数据/复核",
+      "entries": 1015,
+      "files": 815
+    },
+    {
+      "root": "求解器/规格/复核",
+      "entries": 1370,
+      "files": 1247
+    }
+  ]
+}

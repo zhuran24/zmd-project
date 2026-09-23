@@ -1,0 +1,88 @@
+{
+  "label": "continue-aa-checkpoint-cycle-found-a-main",
+  "argv": [
+    "strace",
+    "-f",
+    "-qq",
+    "-yy",
+    "-s",
+    "4096",
+    "-e",
+    "trace=openat,openat2,execve,chdir",
+    "-o",
+    "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/continue-aa-checkpoint-cycle-found-a-main.trace.log",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/kernel",
+    "checkpoint",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/checkpoint-cycle-found/batch/cycle-found.json",
+    "--config",
+    "/tmp/kernel-audit2-v3r63b5w/求解器/规格/内核配置-v1.json",
+    "--out",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/checkpoint-cycle-found/artifacts/checkpoint-cycle-found.json"
+  ],
+  "cwd": "/tmp/kernel-audit2-v3r63b5w/求解器",
+  "returncode": 0,
+  "expected": 0,
+  "seconds": 0.8320016950019635,
+  "cpu_seconds": 0.7426819999999985,
+  "average_cores": 0.8926448160640416,
+  "max_total_threads": 2,
+  "max_runnable_threads": 1,
+  "affinity": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "violation": null,
+  "peak": [
+    {
+      "pid": 1429354,
+      "argv": "strace -f -qq -yy -s 4096 -e trace=openat,openat2,execve,chdir -o /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/continue-aa-checkpoint-cycle-found-a-main.trace.log /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/kernel checkpoint /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/checkpoint-cycle-found/batch/cycle-found.json --config /tmp/kernel-audit2-v3r63b5w/求解器/规格/内核配置-v1.json --out /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/checkpoint-cycle-found/artifacts/checkpoint-cycle-found.json ",
+      "tasks": [
+        {
+          "tid": 1429354,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 1
+        }
+      ]
+    },
+    {
+      "pid": 1429356,
+      "argv": "/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/kernel checkpoint /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/checkpoint-cycle-found/batch/cycle-found.json --config /tmp/kernel-audit2-v3r63b5w/求解器/规格/内核配置-v1.json --out /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/checkpoint-cycle-found/artifacts/checkpoint-cycle-found.json ",
+      "tasks": [
+        {
+          "tid": 1429356,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        }
+      ]
+    }
+  ],
+  "environment": {
+    "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+    "CARGO_BUILD_JOBS": "2",
+    "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+    "RUST_TEST_THREADS": "1",
+    "RAYON_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "NODE_OPTIONS": "--v8-pool-size=1",
+    "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/kernel"
+  },
+  "stdout_sha256": "4eaaef0aaa19dfaf91d6b7f4b37c1e2a78b29e82af1756692047862cf3559dfc",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

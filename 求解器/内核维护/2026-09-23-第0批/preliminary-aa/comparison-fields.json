@@ -1,0 +1,37 @@
+[
+  {
+    "case_id": "run-no-output",
+    "artifact": "main.stdout.log",
+    "pointer": "/elapsed_ns",
+    "contract": "decimal nonnegative integer string",
+    "basis": "plan 3.5 original five R2 fields"
+  },
+  {
+    "case_id": "run-no-output-no-cache",
+    "artifact": "main.stdout.log",
+    "pointer": "/elapsed_ns",
+    "contract": "decimal nonnegative integer string",
+    "basis": "plan 3.5 original five R2 fields"
+  },
+  {
+    "case_id": "run-no-output-out",
+    "artifact": "artifacts/run-no-output-out.json",
+    "pointer": "/elapsed_ns",
+    "contract": "decimal nonnegative integer string",
+    "basis": "plan 3.5 original five R2 fields"
+  },
+  {
+    "case_id": "run-no-output-stop",
+    "artifact": "main.stdout.log",
+    "pointer": "/elapsed_ns",
+    "contract": "decimal nonnegative integer string",
+    "basis": "plan 3.5 original five R2 fields"
+  },
+  {
+    "case_id": "run-no-output-zero",
+    "artifact": "main.stdout.log",
+    "pointer": "/elapsed_ns",
+    "contract": "decimal nonnegative integer string",
+    "basis": "plan 3.5 original five R2 fields"
+  }
+]

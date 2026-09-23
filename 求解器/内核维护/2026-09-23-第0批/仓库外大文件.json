@@ -1,0 +1,1506 @@
+{
+ "说明": "第 0 批证据中超过 1MB 的文件（多为逐刻 trace 日志与大 json）移到仓库外，按相对路径存放；sha256 为移动前后一致的哈希",
+ "外置目录": "/mnt/wd_external/zmd-模型快照/求解器/内核维护/2026-09-23-第0批",
+ "files": [
+  {
+   "path": "continuation-reference-closure-a.json",
+   "bytes": 1051582,
+   "sha256": "9355362efe1606407a4f37c047b4c756b90c7d5663986df98de82fee7b8f6713"
+  },
+  {
+   "path": "continuation-reference-closure-b.json",
+   "bytes": 1051582,
+   "sha256": "b1790db5d507080f3669e241642b9b66769a8dd71b737b078b34598e3ad7ee0c"
+  },
+  {
+   "path": "continuation-start.json",
+   "bytes": 9026551,
+   "sha256": "ba935a7ea6aa70c7a6d90a600b51fb6719ec38c8fe223c47c4229769a83065ab"
+  },
+  {
+   "path": "continue-aa-checkpoint-cycle-a-main.trace.log",
+   "bytes": 2292203,
+   "sha256": "82c943dfba87f86424928972d7bf65bc92faa774ace3eacca05caeff8a7b95b8"
+  },
+  {
+   "path": "continue-aa-checkpoint-cycle-b-main.trace.log",
+   "bytes": 2292203,
+   "sha256": "a2ec763f208bb386da2d6c192525b8ddad9692b3dfd32271454d69d7a890af6d"
+  },
+  {
+   "path": "continue-aa-checkpoint-cycle-found-a-main.trace.log",
+   "bytes": 2351221,
+   "sha256": "9a00cd19b53a3dd598f1ab33da130688a44fe6d86076971ad5eef3414553e1d5"
+  },
+  {
+   "path": "continue-aa-checkpoint-cycle-found-b-main.trace.log",
+   "bytes": 2351221,
+   "sha256": "dd79d6b8934ddf1073194bd887c95a5ae29a437246023090d03a5b88879b76f9"
+  },
+  {
+   "path": "continue-aa-checkpoint-record-a-main.trace.log",
+   "bytes": 1220321,
+   "sha256": "86497d1fe340c45b00fc5dc40d739c87b1d585712b2dbf57f2f610c78a58eabc"
+  },
+  {
+   "path": "continue-aa-checkpoint-record-b-main.trace.log",
+   "bytes": 1220321,
+   "sha256": "bf22b9d028fd6f0dfff0cac1a373c0e71bfb42abd0b79fa35c07a94d4879cf6f"
+  },
+  {
+   "path": "continue-aa-verify-batch-a-main.trace.log",
+   "bytes": 4478600,
+   "sha256": "1d14ac55155ab61a906537ece3ded69cced9659ad9dfb3eb6073e76662d6160e"
+  },
+  {
+   "path": "continue-aa-verify-batch-b-main.trace.log",
+   "bytes": 4478600,
+   "sha256": "9b6acb637bb5c5536798fe3b74563584de2d72a63fbd50d024ced78ef487fb48"
+  },
+  {
+   "path": "continue-aa-verify-batch-with-cycle-found-a-main.trace.log",
+   "bytes": 7821070,
+   "sha256": "b5c9acc977b9e04c21788d9361b01c5455687c49c7362ec0b8657904c7d446b7"
+  },
+  {
+   "path": "continue-aa-verify-batch-with-cycle-found-b-main.trace.log",
+   "bytes": 7821057,
+   "sha256": "fe44549ed8ea31ef75d7e08ec8b7c46ac9f94c3bede1a1dc445395ee3a4cf229"
+  },
+  {
+   "path": "continue-aa-verify-cycle-a-main.trace.log",
+   "bytes": 2174484,
+   "sha256": "03d6d11fb9e3b16e302869ee317d1660824fa8d8f2d3ebcc8bb739f5679ca75c"
+  },
+  {
+   "path": "continue-aa-verify-cycle-b-main.trace.log",
+   "bytes": 2174484,
+   "sha256": "02f652cfa6e11263d9f54d54f1c0f8a5915e85a7d7a516905daa3f2a4c52dbc2"
+  },
+  {
+   "path": "continue-aa-verify-cycle-found-a-main.trace.log",
+   "bytes": 2233466,
+   "sha256": "4aab031b1267de2129ade80d76758826910d3894b41bb58269510abc8df0c8e5"
+  },
+  {
+   "path": "continue-aa-verify-cycle-found-b-main.trace.log",
+   "bytes": 2233466,
+   "sha256": "f18f12b4b066a96e9acd4915e9c301b582a65f29685bc46e1fe4b529596a1e5f"
+  },
+  {
+   "path": "continue-aa-verify-record-delta-a-main.trace.log",
+   "bytes": 1102658,
+   "sha256": "862b973cf9d65320f2502e29264639e3009cf44420f7ceba8328cb0fb7123ea6"
+  },
+  {
+   "path": "continue-aa-verify-record-delta-b-main.trace.log",
+   "bytes": 1102658,
+   "sha256": "7b8180985bd64578278f4966d91837e5aa2df88d245776b4e88f20e250fa2ae0"
+  },
+  {
+   "path": "continue-aa-verify-record-full-a-main.trace.log",
+   "bytes": 1102652,
+   "sha256": "bae73411b4c7b84411d3734918f61a5ec1735420c51393ecd7563df5983fc56d"
+  },
+  {
+   "path": "continue-aa-verify-record-full-b-main.trace.log",
+   "bytes": 1102652,
+   "sha256": "12bf5caf8e0e082f39a00f723763ce09768b8ac839f1b4ee87344d26997b807e"
+  },
+  {
+   "path": "continue-artifact-verify-a-10.trace.log",
+   "bytes": 1102649,
+   "sha256": "dcca8ab1a63594b9457c6e47650ff8359b10ce7f8a6e9336bfecb4aa119f8135"
+  },
+  {
+   "path": "continue-artifact-verify-a-11.trace.log",
+   "bytes": 2174536,
+   "sha256": "1d73c6befa912b264d6c3109e1a26375814b0b17c1a7b8fc055cb015a097af3c"
+  },
+  {
+   "path": "continue-artifact-verify-a-13.trace.log",
+   "bytes": 1122648,
+   "sha256": "7a832f45a58826ca2e58fcea50e65faacf55336f29d6de41ceaed3488ae7f386"
+  },
+  {
+   "path": "continue-artifact-verify-a-14.trace.log",
+   "bytes": 1122639,
+   "sha256": "37e5a6660be5cee0def8bcc5e921813694cf37fb665023a3d9a14e174a04e6dc"
+  },
+  {
+   "path": "continue-artifact-verify-a-15.trace.log",
+   "bytes": 1122651,
+   "sha256": "6ca1ab5707b795306e6a97c7668d9602bc0ab9767f3387a6c8c010f30be7b898"
+  },
+  {
+   "path": "continue-artifact-verify-a-16.trace.log",
+   "bytes": 2174484,
+   "sha256": "9c85a680f525a474c1ce3887a9253088467f8e896fdef3235e7ed39a36770290"
+  },
+  {
+   "path": "continue-artifact-verify-a-18.trace.log",
+   "bytes": 2174536,
+   "sha256": "11fddf436ae839f5f4d5352c49d9282336ebe9e4c379f04eb6aa25bbe173ecd1"
+  },
+  {
+   "path": "continue-artifact-verify-a-2.trace.log",
+   "bytes": 1102622,
+   "sha256": "2a0bc3fb63b697e1f4aeeee2b6113b623f37da44e2d206d6ed1f3c0df3c3c0aa"
+  },
+  {
+   "path": "continue-artifact-verify-a-20.trace.log",
+   "bytes": 2174484,
+   "sha256": "eab37f790f44d3365f88e29503e00b293d1a35e89481a56e359f6f28ff90f241"
+  },
+  {
+   "path": "continue-artifact-verify-a-22.trace.log",
+   "bytes": 1102637,
+   "sha256": "19943fc1763257439a0449b34e0428bc46f4efcf199d8ea6c0a499192602ea8f"
+  },
+  {
+   "path": "continue-artifact-verify-a-3.trace.log",
+   "bytes": 1227168,
+   "sha256": "e44d5679ebced4767169c8e742483d79682e1ce1f3082eab8f3cd864c892b521"
+  },
+  {
+   "path": "continue-artifact-verify-a-30.trace.log",
+   "bytes": 2233518,
+   "sha256": "2a4c213516fb4ba7c135c4852c097cfc2b36a4b5ef15de95d168b6719160fe1b"
+  },
+  {
+   "path": "continue-artifact-verify-a-32.trace.log",
+   "bytes": 1181492,
+   "sha256": "ee8f1289320b7d1b67dc4fe9fffb6071c0681319c9c77e728c5cb34c1147f41c"
+  },
+  {
+   "path": "continue-artifact-verify-a-33.trace.log",
+   "bytes": 2233466,
+   "sha256": "7dd1220685acbafacf75e04726d542dfb699e3532db4ae29151a7efc5dd7c82c"
+  },
+  {
+   "path": "continue-artifact-verify-a-35.trace.log",
+   "bytes": 2233518,
+   "sha256": "b4cf25d2c12c9be18cd10af50b314c5df8119580dc9202418d3a160c02b33be8"
+  },
+  {
+   "path": "continue-artifact-verify-a-37.trace.log",
+   "bytes": 2233609,
+   "sha256": "36d015c76d1ad0928c87b00dcdbe783689f6a0dfb5f8e93cbe4893b5a9581299"
+  },
+  {
+   "path": "continue-artifact-verify-a-39.trace.log",
+   "bytes": 2174705,
+   "sha256": "32c65a5809b313df52bff1ac1d811e2547a8244bc5a767dd5e74402778a3f23e"
+  },
+  {
+   "path": "continue-artifact-verify-a-4.trace.log",
+   "bytes": 1164386,
+   "sha256": "67decc75611039ce6fe8ed0dfc20af08ea085ba831521408131afa2b51a750bb"
+  },
+  {
+   "path": "continue-artifact-verify-a-41.trace.log",
+   "bytes": 1102688,
+   "sha256": "a5e40ac51c52c047d60e46835a33675807eedba6fcbb3a0139f09dc57338b449"
+  },
+  {
+   "path": "continue-artifact-verify-a-5.trace.log",
+   "bytes": 1102628,
+   "sha256": "0cb7a9838eb5f8f941317d78fcaa1be27a1891c152fb7c7a53111f3079ad55ac"
+  },
+  {
+   "path": "continue-artifact-verify-a-6.trace.log",
+   "bytes": 1102646,
+   "sha256": "741960486b1ae2c69f5f164498dfe55201b3dbbc91b9714e8f0b06e51278b218"
+  },
+  {
+   "path": "continue-artifact-verify-a-8.trace.log",
+   "bytes": 1102652,
+   "sha256": "2fd952259dfecf89350c48030a899f0733d2d26833310567223808adba268e9f"
+  },
+  {
+   "path": "continue-artifact-verify-a-9.trace.log",
+   "bytes": 1102658,
+   "sha256": "3049eb9c707a65ae4e13b944e48e77b3d05103c9d18f5e09e0c0ab38d7c00554"
+  },
+  {
+   "path": "continue-artifact-verify-b-10.trace.log",
+   "bytes": 1102649,
+   "sha256": "6e5e1008719bb60303b1431e25f5d38cb3e0cbc48f53bc59085f044a8c1b9b78"
+  },
+  {
+   "path": "continue-artifact-verify-b-11.trace.log",
+   "bytes": 2174536,
+   "sha256": "7da59277581e28cb36470bcaed80bbf5780c055dcf3dbb5de7231d7674bad0ba"
+  },
+  {
+   "path": "continue-artifact-verify-b-13.trace.log",
+   "bytes": 1122648,
+   "sha256": "676a695f913c6f9bb207b870c1466a88a28bbf74d751c3048b9928c77806558d"
+  },
+  {
+   "path": "continue-artifact-verify-b-14.trace.log",
+   "bytes": 1122639,
+   "sha256": "abd08af279f2fb1c6596123e65427d62751a67364961f806ba7b5de075d9cd44"
+  },
+  {
+   "path": "continue-artifact-verify-b-15.trace.log",
+   "bytes": 1122651,
+   "sha256": "b565f225b537a6bb73d1989d3398a5e4d1888d43fcec960b6685397fbbf51572"
+  },
+  {
+   "path": "continue-artifact-verify-b-16.trace.log",
+   "bytes": 2174484,
+   "sha256": "0b2809835ca32387f2dc4803048650d0727371337161267132ea43f1e3ad6f62"
+  },
+  {
+   "path": "continue-artifact-verify-b-18.trace.log",
+   "bytes": 2174536,
+   "sha256": "f7c2f1cea5539a4ec46ad92e711cb9e29bdac55d64822df31ff6ffb3d783bd2e"
+  },
+  {
+   "path": "continue-artifact-verify-b-2.trace.log",
+   "bytes": 1102622,
+   "sha256": "385059c4f1600ea1d68376497c6d1ef9510a1531b14ce3a3796d900634e1198f"
+  },
+  {
+   "path": "continue-artifact-verify-b-20.trace.log",
+   "bytes": 2174484,
+   "sha256": "024a5925707341e7136190493570e854eb8434fc40357889127e2249785c6a5b"
+  },
+  {
+   "path": "continue-artifact-verify-b-22.trace.log",
+   "bytes": 1102637,
+   "sha256": "768c612c8a0dd88d01c1737272b1454a99c6cfa8ecf42405379f01c815e24f3a"
+  },
+  {
+   "path": "continue-artifact-verify-b-3.trace.log",
+   "bytes": 1227168,
+   "sha256": "8a0c08129aa56be0f80c93f3afb114104dd2d1c3a2a404b2d5cc6bbc4fb9719d"
+  },
+  {
+   "path": "continue-artifact-verify-b-30.trace.log",
+   "bytes": 2233518,
+   "sha256": "f64a37be1b49e783c31427c6f5ee87b08deaa64c73108c8afad4656013902da8"
+  },
+  {
+   "path": "continue-artifact-verify-b-32.trace.log",
+   "bytes": 1181492,
+   "sha256": "5377aff6d5fcc663f259c575d5c735c78b58a3813c0178eb37f946585428c67c"
+  },
+  {
+   "path": "continue-artifact-verify-b-33.trace.log",
+   "bytes": 2233466,
+   "sha256": "0c9da5a784792c9e96104b6991b5abb6a56b473d06850b3fb32f6bfc6eb89021"
+  },
+  {
+   "path": "continue-artifact-verify-b-35.trace.log",
+   "bytes": 2233518,
+   "sha256": "6d8c073f7ce3ae69b0c59c64abd146aae51fe1258984ab8903a2df5209f83c3d"
+  },
+  {
+   "path": "continue-artifact-verify-b-37.trace.log",
+   "bytes": 2233609,
+   "sha256": "a4b958218b15270b7eb149662aef0480f626846c9d7cb2660a30cd723049cacf"
+  },
+  {
+   "path": "continue-artifact-verify-b-39.trace.log",
+   "bytes": 2174705,
+   "sha256": "530a9eb2f533eccc7d34698496ce033b43c12b940be79e96982ec23a8b33465f"
+  },
+  {
+   "path": "continue-artifact-verify-b-4.trace.log",
+   "bytes": 1164386,
+   "sha256": "b46fcdc5d89cb88329a99ffa2a651f3d249962c790f5464f676f8b692c70255f"
+  },
+  {
+   "path": "continue-artifact-verify-b-41.trace.log",
+   "bytes": 1102688,
+   "sha256": "6c16040c8e5a9d16ec2775117a47238e1a6119e85c12571286b80e6da0d0d788"
+  },
+  {
+   "path": "continue-artifact-verify-b-5.trace.log",
+   "bytes": 1102628,
+   "sha256": "9c4bdfe671ae458fe088e892c85bdff31ce63978d065d41192472a8a504cf665"
+  },
+  {
+   "path": "continue-artifact-verify-b-6.trace.log",
+   "bytes": 1102646,
+   "sha256": "0ceec85be4209bf743b7b9cf92f1363752a713dcbdd950523a1d26d48956d0f9"
+  },
+  {
+   "path": "continue-artifact-verify-b-8.trace.log",
+   "bytes": 1102652,
+   "sha256": "e040f90b3f1813cc196401564a7587af3c1c7f2638486dbcd0e4c13ad0932fa0"
+  },
+  {
+   "path": "continue-artifact-verify-b-9.trace.log",
+   "bytes": 1102658,
+   "sha256": "4e1aff0ec3ceb6d84f115db27415e1a7b2c7e4d580d22dade2aa6137020a92e3"
+  },
+  {
+   "path": "continue-isolation-1-0-validation.trace.log",
+   "bytes": 3537584,
+   "sha256": "f30ea7e7fe5c04961c955cff6409e5471bf0ba264e5b1c7a574c434a0c82e88c"
+  },
+  {
+   "path": "continue-isolation-1-1-validation.trace.log",
+   "bytes": 3537584,
+   "sha256": "16fa1819dcd938586948731ec2cc2446b1ee113f6203faa8701f1850d4c03c1e"
+  },
+  {
+   "path": "continue-isolation-1-10-round6_cli.trace.log",
+   "bytes": 67985500,
+   "sha256": "c663265b81d4c11bfd59701c076e001d8436a97467e801d2262c706cec07f04a"
+  },
+  {
+   "path": "continue-isolation-1-11-revision_r5_cli.trace.log",
+   "bytes": 49181521,
+   "sha256": "8c5d0d7fb1d9be129b71737b31b0ff8518b3caa8780ee9ffec186b2c149b9064"
+  },
+  {
+   "path": "continue-isolation-1-12-kernel.trace.log",
+   "bytes": 87813801,
+   "sha256": "9415c55f429efc78bf7aa4783051346d2f543a454dd3323420188637fde3eb57"
+  },
+  {
+   "path": "continue-isolation-1-3-revision_cli.trace.log",
+   "bytes": 5296551,
+   "sha256": "44976ed26ba5ee0ce33d32233d3ef2c13385fc6569509d8c2a34a1b6ca6d74bd"
+  },
+  {
+   "path": "continue-isolation-1-3-revision_r3_cli.trace.log",
+   "bytes": 10206868,
+   "sha256": "be314df610f32830f35b30ff4a5b890e1f48b7f5db46851abb0c695eafcd10e8"
+  },
+  {
+   "path": "continue-isolation-1-3-round6_cli.trace.log",
+   "bytes": 67985512,
+   "sha256": "eb1c41a22de6225f50664e42af269e036d6a0799db111e25c6cef3d5a35679fb"
+  },
+  {
+   "path": "continue-isolation-1-4-revision_r5_cli.trace.log",
+   "bytes": 49181435,
+   "sha256": "a0546f0cd2b16faef95f02f51a7340bc129ac10de25cafed8d6df5d9b65be8d6"
+  },
+  {
+   "path": "continue-isolation-1-4-round6_cli.trace.log",
+   "bytes": 67985486,
+   "sha256": "4f93a2fd646f8ec24890bd416664621c1ba81d6a7e3008bafb2cfe6e6248975a"
+  },
+  {
+   "path": "continue-isolation-1-5-revision_r3_cli.trace.log",
+   "bytes": 10228852,
+   "sha256": "7ec0c7d77ed7bc3843e7224c753b84f0856249dd6864e6df6b8a859577d3f1fc"
+  },
+  {
+   "path": "continue-isolation-1-6-revision_r4_cli.trace.log",
+   "bytes": 6686359,
+   "sha256": "5112fb2923f3c1a7e623b96b64088e6db2d2372176540bf35bc8086d76636c04"
+  },
+  {
+   "path": "continue-isolation-1-7-revision_r2_cli.trace.log",
+   "bytes": 6780703,
+   "sha256": "c20d69f16c89bc041c3494a724f9adcbf2a65bd5db90d91af1a1f4ad77f36e7d"
+  },
+  {
+   "path": "continue-isolation-1-8-revision_r4_cli.trace.log",
+   "bytes": 6686359,
+   "sha256": "16ffb6b00fc0830b65ffce8de1b2c855c5f87bbe8e53f4a53d66cdcc4211dab4"
+  },
+  {
+   "path": "continue-isolation-1-9-revision_r2_cli.trace.log",
+   "bytes": 6780755,
+   "sha256": "35e1920e035a9b1cc04bf9659b4fc1d2db864bd2b10f6e45c3fa808837156e1f"
+  },
+  {
+   "path": "continue-isolation-1-9-revision_r3_cli.trace.log",
+   "bytes": 10223981,
+   "sha256": "6e6dba0a662c92d6b6537a6f7269bfe5071be9e74834d1bef6921279fc7291a6"
+  },
+  {
+   "path": "continue-isolation-2-0-validation.trace.log",
+   "bytes": 3177500,
+   "sha256": "4fb8fbecef5899527dc547c809907dd3fc385acbd479204cf2050fbbb5ed4ff1"
+  },
+  {
+   "path": "continue-isolation-2-10-round6_cli.trace.log",
+   "bytes": 67965640,
+   "sha256": "28070c177a7862165bae472324f5a6c215240e97aa0737dd75c8fb9954136db8"
+  },
+  {
+   "path": "continue-isolation-2-11-revision_r5_cli.trace.log",
+   "bytes": 49154049,
+   "sha256": "182ff9d6608ec3997eb71835d083de5956a577211fcf95c8df74f66ce8f4c190"
+  },
+  {
+   "path": "continue-isolation-2-12-kernel.trace.log",
+   "bytes": 74516630,
+   "sha256": "46744c46a6a0120dea00d1c7150d8274ea8e98a48d74db00ee1d47c1f1759016"
+  },
+  {
+   "path": "continue-isolation-2-3-revision_cli.trace.log",
+   "bytes": 4586151,
+   "sha256": "c37f91a57e818b14145f8352fe9339f2d1714f3b132354fd786e4c25c9cdc77c"
+  },
+  {
+   "path": "continue-isolation-2-5-revision_r3_cli.trace.log",
+   "bytes": 8701531,
+   "sha256": "b7b74fcea0f23aebee37cb74b59d52ef7e08ad149f4fa4dc620ed21cc8ee05f4"
+  },
+  {
+   "path": "continue-isolation-2-6-revision_r4_cli.trace.log",
+   "bytes": 5672655,
+   "sha256": "76570ac7f7da7998edc08e884a2373755dd337320f140683fb0405bf88b25525"
+  },
+  {
+   "path": "continue-isolation-2-9-revision_r2_cli.trace.log",
+   "bytes": 5899746,
+   "sha256": "9a80699731e4621c67416fbf892d8ddc6c539d14294c216940bbcc571dc9c109"
+  },
+  {
+   "path": "continue-matrix-chinese.trace.log",
+   "bytes": 4618388,
+   "sha256": "db393ce2e40342639663be17a2f5f9b1f6b8c36399c34c8b9b2bdc8e985c5ab2"
+  },
+  {
+   "path": "continue-matrix-default.trace.log",
+   "bytes": 3956230,
+   "sha256": "4535e52e1c0eadbcfa5ebe6ef1073106978647aff0285093dc7413ff90b1a625"
+  },
+  {
+   "path": "failed-batch-native-binding/continue-aa-verify-batch-a-main.trace.log",
+   "bytes": 4478587,
+   "sha256": "c24285c4afd5633cecd2ee3381e609e913f3f38b1fb7ca3aa2e05aeff489280f"
+  },
+  {
+   "path": "failed-isolation-terminfo/continue-isolation-1-0-validation.trace.log",
+   "bytes": 3537597,
+   "sha256": "f9dc1fe7a9d5af7128c4c1c8760e8f0f281d125aa17f19b9db39a7772be59726"
+  },
+  {
+   "path": "initial-protection.json",
+   "bytes": 9003791,
+   "sha256": "b9a96cb54ff2a3ae77e5612239aa18f151ca161efd16f61ee7b7597858c5af7a"
+  },
+  {
+   "path": "isolation-before-legacy-fix/continue-isolation-1-0-validation.trace.log",
+   "bytes": 3537597,
+   "sha256": "f47b053baec1c6bc61b85b8784c38cafddee734e1698bf3b5b84783128daee6e"
+  },
+  {
+   "path": "isolation-before-legacy-fix/continue-isolation-1-3-revision_r3_cli.trace.log",
+   "bytes": 10206868,
+   "sha256": "be314df610f32830f35b30ff4a5b890e1f48b7f5db46851abb0c695eafcd10e8"
+  },
+  {
+   "path": "isolation-before-legacy-fix/continue-isolation-1-4-round6_cli.trace.log",
+   "bytes": 67985486,
+   "sha256": "4f93a2fd646f8ec24890bd416664621c1ba81d6a7e3008bafb2cfe6e6248975a"
+  },
+  {
+   "path": "isolation-before-legacy-fix/continue-isolation-1-5-revision_r3_cli.trace.log",
+   "bytes": 10209169,
+   "sha256": "ab4f8e5e18f87fbe2a77d3674a4008f73ed78786b8bea427dcea8036da566408"
+  },
+  {
+   "path": "isolation-before-r3-fix/continue-isolation-1-0-validation.trace.log",
+   "bytes": 3537584,
+   "sha256": "17fc9d740a6c7037927b77b12527825a40a51a91dd8a1a5f4a9fab1055f4889c"
+  },
+  {
+   "path": "isolation-before-r3-fix/continue-isolation-1-3-revision_r3_cli.trace.log",
+   "bytes": 10206868,
+   "sha256": "be314df610f32830f35b30ff4a5b890e1f48b7f5db46851abb0c695eafcd10e8"
+  },
+  {
+   "path": "isolation-before-transitive-input-fix/continue-isolation-1-0-validation.trace.log",
+   "bytes": 3537597,
+   "sha256": "f47b053baec1c6bc61b85b8784c38cafddee734e1698bf3b5b84783128daee6e"
+  },
+  {
+   "path": "isolation-before-transitive-input-fix/continue-isolation-1-1-validation.trace.log",
+   "bytes": 3537584,
+   "sha256": "16fa1819dcd938586948731ec2cc2446b1ee113f6203faa8701f1850d4c03c1e"
+  },
+  {
+   "path": "isolation-before-transitive-input-fix/continue-isolation-1-3-revision_r3_cli.trace.log",
+   "bytes": 10206868,
+   "sha256": "be314df610f32830f35b30ff4a5b890e1f48b7f5db46851abb0c695eafcd10e8"
+  },
+  {
+   "path": "isolation-before-transitive-input-fix/continue-isolation-1-3-round6_cli.trace.log",
+   "bytes": 67985512,
+   "sha256": "eb1c41a22de6225f50664e42af269e036d6a0799db111e25c6cef3d5a35679fb"
+  },
+  {
+   "path": "isolation-before-transitive-input-fix/continue-isolation-1-4-revision_r5_cli.trace.log",
+   "bytes": 49181435,
+   "sha256": "a0546f0cd2b16faef95f02f51a7340bc129ac10de25cafed8d6df5d9b65be8d6"
+  },
+  {
+   "path": "isolation-before-transitive-input-fix/continue-isolation-1-4-round6_cli.trace.log",
+   "bytes": 67985486,
+   "sha256": "4f93a2fd646f8ec24890bd416664621c1ba81d6a7e3008bafb2cfe6e6248975a"
+  },
+  {
+   "path": "isolation-before-transitive-input-fix/continue-isolation-1-5-revision_r3_cli.trace.log",
+   "bytes": 10209169,
+   "sha256": "ab4f8e5e18f87fbe2a77d3674a4008f73ed78786b8bea427dcea8036da566408"
+  },
+  {
+   "path": "isolation-before-transitive-input-fix/continue-isolation-1-7-revision_r2_cli.trace.log",
+   "bytes": 6780703,
+   "sha256": "c20d69f16c89bc041c3494a724f9adcbf2a65bd5db90d91af1a1f4ad77f36e7d"
+  },
+  {
+   "path": "isolation-before-transitive-input-fix/continue-isolation-1-8-revision_r4_cli.trace.log",
+   "bytes": 6686359,
+   "sha256": "16ffb6b00fc0830b65ffce8de1b2c855c5f87bbe8e53f4a53d66cdcc4211dab4"
+  },
+  {
+   "path": "isolation-before-transitive-input-fix/continue-isolation-1-9-revision_r3_cli.trace.log",
+   "bytes": 10223981,
+   "sha256": "6e6dba0a662c92d6b6537a6f7269bfe5071be9e74834d1bef6921279fc7291a6"
+  },
+  {
+   "path": "matrix/内核维护/中文 空格/cargo-test-evidence/revision_cli-6e1153ab10754627903e8114fbf599e5/tmp/分流器三路轮询-checkpoint_delta-bad_summary.json",
+   "bytes": 1347817,
+   "sha256": "ed8aa513a0955823dfdb6717b0ac5bc5f508a046f96ff1af32e84a28ae09f81a"
+  },
+  {
+   "path": "matrix/内核维护/中文 空格/cargo-test-evidence/revision_cli-6e1153ab10754627903e8114fbf599e5/tmp/分流器三路轮询-checkpoint_delta-fake_count.json",
+   "bytes": 1347821,
+   "sha256": "db1148a76df1c7c3a4d13aa8e80f12ce7f355c454ff7ae691b3ec98f2e32bf91"
+  },
+  {
+   "path": "matrix/内核维护/中文 空格/cargo-test-evidence/revision_cli-6e1153ab10754627903e8114fbf599e5/tmp/分流器三路轮询-checkpoint_delta-fake_from.json",
+   "bytes": 1347820,
+   "sha256": "3e89ce19f516d974677026a000890177a49b0beb43eca4780d76c83f1d0c550e"
+  },
+  {
+   "path": "matrix/内核维护/中文 空格/cargo-test-evidence/revision_cli-6e1153ab10754627903e8114fbf599e5/tmp/分流器三路轮询-checkpoint_delta-fake_golden.json",
+   "bytes": 1347818,
+   "sha256": "3e1aef30f7b5aa63a929ad181baa5bb1846791d655803c5942b6b3097fbefaa6"
+  },
+  {
+   "path": "matrix/内核维护/中文 空格/cargo-test-evidence/revision_cli-6e1153ab10754627903e8114fbf599e5/tmp/分流器三路轮询-checkpoint_delta-fake_initial_history.json",
+   "bytes": 1347808,
+   "sha256": "69e86bdf1d9d2120c795df38d176f019842755786e01ffeced2978ed9b3bcd74"
+  },
+  {
+   "path": "matrix/内核维护/中文 空格/cargo-test-evidence/revision_cli-6e1153ab10754627903e8114fbf599e5/tmp/分流器三路轮询-checkpoint_delta-fake_through.json",
+   "bytes": 1347819,
+   "sha256": "d14f7a79e0877c060b2cf88fc548b194b7ecf41e8277ecf94db445e9392cbe45"
+  },
+  {
+   "path": "matrix/内核维护/中文 空格/cargo-test-evidence/revision_cli-6e1153ab10754627903e8114fbf599e5/tmp/分流器三路轮询-checkpoint_delta-record.json",
+   "bytes": 1347819,
+   "sha256": "beb7960891b2aad6355d856548a26b410b056d68a4957b9e560067d0c5ac583f"
+  },
+  {
+   "path": "matrix/内核维护/中文 空格/cargo-test-evidence/revision_cli-6e1153ab10754627903e8114fbf599e5/tmp/分流器三路轮询-checkpoint_delta-remove_all.json",
+   "bytes": 1339693,
+   "sha256": "4427613a5cf5affc7f8718e5b5413848fd350de03fa2dd7a0605189093308cb3"
+  },
+  {
+   "path": "matrix/内核维护/中文 空格/cargo-test-evidence/revision_cli-6e1153ab10754627903e8114fbf599e5/tmp/分流器三路轮询-checkpoint_delta-remove_checker.json",
+   "bytes": 1342946,
+   "sha256": "c71fcfea583bd5e8cc5afe5bf6eee08cd50ca0b2524fded107b4bcf7d8abb9eb"
+  },
+  {
+   "path": "matrix/内核维护/中文 空格/cargo-test-evidence/revision_cli-6e1153ab10754627903e8114fbf599e5/tmp/分流器三路轮询-checkpoint_delta-remove_formal.json",
+   "bytes": 1347195,
+   "sha256": "643786ea955d9438aa8119e75a524318f6f436e45e1435b2cff383e3387fffcc"
+  },
+  {
+   "path": "matrix/内核维护/中文 空格/cargo-test-evidence/revision_cli-6e1153ab10754627903e8114fbf599e5/tmp/分流器三路轮询-checkpoint_delta-true_certified.json",
+   "bytes": 1347818,
+   "sha256": "d776d230f581196a24c5219e6109a18793b1b15f24f6abb76e27f5246d92275f"
+  },
+  {
+   "path": "matrix/内核维护/中文 空格/cargo-test-evidence/revision_cli-6e1153ab10754627903e8114fbf599e5/tmp/分流器三路轮询-full_state_each_instant-bad_summary.json",
+   "bytes": 2089511,
+   "sha256": "8eaf3c17fe6e95bf8f8c6cd0ff07f4657438053073f62a75a664c6d4923f4154"
+  },
+  {
+   "path": "matrix/内核维护/中文 空格/cargo-test-evidence/revision_cli-6e1153ab10754627903e8114fbf599e5/tmp/分流器三路轮询-full_state_each_instant-fake_count.json",
+   "bytes": 2089515,
+   "sha256": "f982001df16175038ceadd068af01b56ff8353942840111c7209929418bc2972"
+  },
+  {
+   "path": "matrix/内核维护/中文 空格/cargo-test-evidence/revision_cli-6e1153ab10754627903e8114fbf599e5/tmp/分流器三路轮询-full_state_each_instant-fake_from.json",
+   "bytes": 2089514,
+   "sha256": "518bd361e7bdcff8307d858254af383ba5d2177c8a98d99556c6b35b9241096f"
+  },
+  {
+   "path": "matrix/内核维护/中文 空格/cargo-test-evidence/revision_cli-6e1153ab10754627903e8114fbf599e5/tmp/分流器三路轮询-full_state_each_instant-fake_golden.json",
+   "bytes": 2089512,
+   "sha256": "c1e8e18d7ae84d0cb3ff3d4cbf60023fb371d332f6570e985002cd5ba79b1543"
+  },
+  {
+   "path": "matrix/内核维护/中文 空格/cargo-test-evidence/revision_cli-6e1153ab10754627903e8114fbf599e5/tmp/分流器三路轮询-full_state_each_instant-fake_initial_history.json",
+   "bytes": 2089502,
+   "sha256": "f1f9c82fbfddeb60f1654bb2a37580b453505e367832fdb3e604da54b28a90d8"
+  },
+  {
+   "path": "matrix/内核维护/中文 空格/cargo-test-evidence/revision_cli-6e1153ab10754627903e8114fbf599e5/tmp/分流器三路轮询-full_state_each_instant-fake_through.json",
+   "bytes": 2089513,
+   "sha256": "b4c4347b8059155380e694b11b02645f45c81f0fa5db035f2b6edba4492381a2"
+  },
+  {
+   "path": "matrix/内核维护/中文 空格/cargo-test-evidence/revision_cli-6e1153ab10754627903e8114fbf599e5/tmp/分流器三路轮询-full_state_each_instant-record.json",
+   "bytes": 2089513,
+   "sha256": "b9ef302e2d7756ebb26ef31f2fd0aa592a4b13df0362b0ececb4ad62abd6e499"
+  },
+  {
+   "path": "matrix/内核维护/中文 空格/cargo-test-evidence/revision_cli-6e1153ab10754627903e8114fbf599e5/tmp/分流器三路轮询-full_state_each_instant-remove_all.json",
+   "bytes": 2081387,
+   "sha256": "2898a132ecba8c18e4ce4081dd357d59ca7e0de450d3ab03ce5ed27632e330a9"
+  },
+  {
+   "path": "matrix/内核维护/中文 空格/cargo-test-evidence/revision_cli-6e1153ab10754627903e8114fbf599e5/tmp/分流器三路轮询-full_state_each_instant-remove_checker.json",
+   "bytes": 2084640,
+   "sha256": "9a9c5b9d92ea9c076b068fa38307256036306a8cff13133b53f99b3b3edb55fc"
+  },
+  {
+   "path": "matrix/内核维护/中文 空格/cargo-test-evidence/revision_cli-6e1153ab10754627903e8114fbf599e5/tmp/分流器三路轮询-full_state_each_instant-remove_formal.json",
+   "bytes": 2088889,
+   "sha256": "85b130267078681f3474309ab0a7658a4885800f2adc73567c1ecb92cce10e2c"
+  },
+  {
+   "path": "matrix/内核维护/中文 空格/cargo-test-evidence/revision_cli-6e1153ab10754627903e8114fbf599e5/tmp/分流器三路轮询-full_state_each_instant-true_certified.json",
+   "bytes": 2089512,
+   "sha256": "e634c2960778e695ad43b62fbc49f7d12e7d4f8fb27a4a2c73df5351f2e148db"
+  },
+  {
+   "path": "核验/final-snapshot.json",
+   "bytes": 9055403,
+   "sha256": "ec6033e3ad5330ec47beb9ef80b31953e627dbfa42d32f7c962885b61aa24ef7"
+  },
+  {
+   "path": "核验/start-snapshot.json",
+   "bytes": 9051269,
+   "sha256": "9b8690359d31c8b1d5dfed12afc8f7c38025e1066811bde17daa736913966e9f"
+  },
+  {
+   "path": "核验2/continue-aa-checkpoint-cycle-a-main.trace.log",
+   "bytes": 2189106,
+   "sha256": "a1b4cff2576bf7736f6ee6e26a686cc3873a74e550d6ae0bc773d9b183c6edfd"
+  },
+  {
+   "path": "核验2/continue-aa-checkpoint-cycle-b-main.trace.log",
+   "bytes": 2189106,
+   "sha256": "e9751de80f04795ef91200aa46d7d18a7d0a75d254583dade213007c6b3821c5"
+  },
+  {
+   "path": "核验2/continue-aa-checkpoint-cycle-found-a-main.trace.log",
+   "bytes": 2245586,
+   "sha256": "2f3fb1baa6dcd2d0770ec4ab0b7624dfb030e9a8bb6810fdab346c4ff6d58255"
+  },
+  {
+   "path": "核验2/continue-aa-checkpoint-cycle-found-b-main.trace.log",
+   "bytes": 2245586,
+   "sha256": "268a1f44f0b983ed2b81f644324fd5116a77b27694e43bff0ac5a61dcfcd0f2a"
+  },
+  {
+   "path": "核验2/continue-aa-checkpoint-record-a-main.trace.log",
+   "bytes": 1165483,
+   "sha256": "ed73e3793411661cd4fc79b53010efbfd1d332135724c1e48bccaf3f8cc514ff"
+  },
+  {
+   "path": "核验2/continue-aa-checkpoint-record-b-main.trace.log",
+   "bytes": 1165483,
+   "sha256": "1a5ba1a569242dd98a0ac0084052061a47ae5bccc526ce12f773dcc57aa63945"
+  },
+  {
+   "path": "核验2/continue-aa-verify-batch-a-main.trace.log",
+   "bytes": 4277524,
+   "sha256": "665c79b28bf5e1e4ffee2c40062c7a1af87edd892eadf45933da5e5165deace4"
+  },
+  {
+   "path": "核验2/continue-aa-verify-batch-b-main.trace.log",
+   "bytes": 4277511,
+   "sha256": "f1b8c11328ba67ad6d8c1db4a38a2e16f6dcfbb0d6e580191adcccb1d940a4cf"
+  },
+  {
+   "path": "核验2/continue-aa-verify-batch-with-cycle-found-a-main.trace.log",
+   "bytes": 7469627,
+   "sha256": "9d3080839e0ce0c940200a11d64374d7706c70a68c9a343f730636941caa5a77"
+  },
+  {
+   "path": "核验2/continue-aa-verify-batch-with-cycle-found-b-main.trace.log",
+   "bytes": 7469627,
+   "sha256": "7f08821947df597e50c237c9b262a743e46501bfb3738a2da19e6de361b1b1f5"
+  },
+  {
+   "path": "核验2/continue-aa-verify-cycle-a-main.trace.log",
+   "bytes": 2076583,
+   "sha256": "d5df5e5754a0f48a091c7188f7d9ac8bdc6a6390ffba06c88b2b14952a70ef4c"
+  },
+  {
+   "path": "核验2/continue-aa-verify-cycle-b-main.trace.log",
+   "bytes": 2076583,
+   "sha256": "0473f4181b4afc0d8d9aeb7bb54f32c89edd08195fc2b156da93346540e85596"
+  },
+  {
+   "path": "核验2/continue-aa-verify-cycle-found-a-main.trace.log",
+   "bytes": 2133027,
+   "sha256": "9abedc177b6ee3e306e6cee9ac5fca62f6781d4fc8f9cb2463525acecc18a084"
+  },
+  {
+   "path": "核验2/continue-aa-verify-cycle-found-b-main.trace.log",
+   "bytes": 2133027,
+   "sha256": "0e02f47e9d19ac5f977ce99257600186bfc381115d15111b4bc063669dfabd52"
+  },
+  {
+   "path": "核验2/continue-aa-verify-record-delta-a-main.trace.log",
+   "bytes": 1053016,
+   "sha256": "7fef2e097d2eeb4ca3836e3633087c27d665cd11a2cbdebeec949760e9fedd26"
+  },
+  {
+   "path": "核验2/continue-aa-verify-record-delta-b-main.trace.log",
+   "bytes": 1053016,
+   "sha256": "3224170c61aa9b7d352514f86f46cfcc6d6690ef56535c8f06da7f9ccf7424ab"
+  },
+  {
+   "path": "核验2/continue-aa-verify-record-full-a-main.trace.log",
+   "bytes": 1053010,
+   "sha256": "d702b27a1dfb8feb7e479de07cd6d786ef2b31c4f80de6aa38f8101e1125152d"
+  },
+  {
+   "path": "核验2/continue-aa-verify-record-full-b-main.trace.log",
+   "bytes": 1053010,
+   "sha256": "df344a874fbffc21717d2997b40de577f8177518565c877f1cb6d4ed59e4983f"
+  },
+  {
+   "path": "核验2/final-snapshot.json",
+   "bytes": 10436330,
+   "sha256": "efe18039bdd0d907998289967bfcaababbdd38390d481c7bd735cc398ffbec2e"
+  },
+  {
+   "path": "核验2/fresh-independent-references.json",
+   "bytes": 2062412,
+   "sha256": "52aab72d678c7755738683946785aa30d9cbaa0a9501b91735f377f9cffca539"
+  },
+  {
+   "path": "核验2/guarded-1-0-validation.trace.log",
+   "bytes": 3537584,
+   "sha256": "3fc5e86ff49eefbdb9b3679fc30417c7ff6eae09a3b7bd2d101bf47a80f28d34"
+  },
+  {
+   "path": "核验2/guarded-1-10-round6_cli.trace.log",
+   "bytes": 68091153,
+   "sha256": "5cac562cc62876d306c4830704f2e27d8b13a869c8e123dafc0ed321dfd006d8"
+  },
+  {
+   "path": "核验2/guarded-1-11-revision_r5_cli.trace.log",
+   "bytes": 50696350,
+   "sha256": "f72bc9e3e5798f82d84317992f08c1aa7f3df4bf882b06dff7a4c3408fe6b18a"
+  },
+  {
+   "path": "核验2/guarded-1-12-kernel.trace.log",
+   "bytes": 87813801,
+   "sha256": "1429acce6351b908f63e648063fa75b2b38cb745bd63859254975b1db064ccc5"
+  },
+  {
+   "path": "核验2/guarded-1-3-revision_cli.trace.log",
+   "bytes": 5341834,
+   "sha256": "34836e98a325332b967d34adf2b5a0c9200d79d137bd7ca469a34aa7d45044bd"
+  },
+  {
+   "path": "核验2/guarded-1-5-revision_r3_cli.trace.log",
+   "bytes": 10358942,
+   "sha256": "f8289c087bdfbb4ecc86fdf163dbcae0cefd91ff62d0515e4ad7622dcc83de57"
+  },
+  {
+   "path": "核验2/guarded-1-6-revision_r4_cli.trace.log",
+   "bytes": 6736138,
+   "sha256": "a7945f6b0b461b0a79c3466cb4c4bf4a5a20d8285ab0aebfa99754ba276e275e"
+  },
+  {
+   "path": "核验2/guarded-1-9-revision_r2_cli.trace.log",
+   "bytes": 6858656,
+   "sha256": "61fee656c29e713dc6a87594d5a8d19139527feb00e38189775521cc39ec78d3"
+  },
+  {
+   "path": "核验2/guarded-2-0-validation.trace.log",
+   "bytes": 3177500,
+   "sha256": "b09fec7abbb64a81a7c23d6591eb6b1fc6d66e906713d83c9df97b023c71317c"
+  },
+  {
+   "path": "核验2/guarded-2-10-round6_cli.trace.log",
+   "bytes": 68071306,
+   "sha256": "ada12c8b8df01b87f0f9a6a19163edbad5a9f128f522c402e998325b64d34ad0"
+  },
+  {
+   "path": "核验2/guarded-2-11-revision_r5_cli.trace.log",
+   "bytes": 50669016,
+   "sha256": "a93baa18a1490cca88ee39cc51aa4ee75ae8db7b95957e603aef231be049e48a"
+  },
+  {
+   "path": "核验2/guarded-2-12-kernel.trace.log",
+   "bytes": 74516630,
+   "sha256": "83a9cc470703da7b2c863f2452479e2c4983a3d1f3c46e154f9839762f769cd9"
+  },
+  {
+   "path": "核验2/guarded-2-3-revision_cli.trace.log",
+   "bytes": 4631434,
+   "sha256": "ceeee37cd42756696b776bf10365822becacd9916463f95e6bb425fc46bfad2b"
+  },
+  {
+   "path": "核验2/guarded-2-5-revision_r3_cli.trace.log",
+   "bytes": 8831569,
+   "sha256": "01566943597a356cbe875264c3794b8919a8305af11ef8c2f927c8f969b132e5"
+  },
+  {
+   "path": "核验2/guarded-2-6-revision_r4_cli.trace.log",
+   "bytes": 5722408,
+   "sha256": "28efab9557c610842fba96f70a7ae1ee8237b9938f9b8d821232177accf81afb"
+  },
+  {
+   "path": "核验2/guarded-2-9-revision_r2_cli.trace.log",
+   "bytes": 5977647,
+   "sha256": "02c1ac1c52f38ea209ae8f18d256cd78401985df67ada8d43b1f759fb3d53894"
+  },
+  {
+   "path": "核验2/matrix-default.trace.log",
+   "bytes": 3956204,
+   "sha256": "921a868fd533f0863e3eac1567f514e9d9849aec1a9894cfd82a1de867a9afa2"
+  },
+  {
+   "path": "核验2/own-capture-index.json",
+   "bytes": 1921403,
+   "sha256": "8015234ab1471e666bc39d8946bfaecae12dcd11e43c7d2a0b44f1c37bf11056"
+  },
+  {
+   "path": "核验2/retained-independent-references.json",
+   "bytes": 2177638,
+   "sha256": "02b440ccff1d938dc21ec4b3b5a26f3c0301e53f4534acf2bfb6e86254318097"
+  },
+  {
+   "path": "核验2/start-snapshot.json",
+   "bytes": 10422135,
+   "sha256": "a76af9aae8502d7107807776f6d6ca8bdd29d6135afb6401949ea1f1f0eb0b88"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-32d2639c8be2413795151ab5b2544efa/tmp/分流器三路轮询-checkpoint_delta-bad_summary.json",
+   "bytes": 1347817,
+   "sha256": "ed8aa513a0955823dfdb6717b0ac5bc5f508a046f96ff1af32e84a28ae09f81a"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-32d2639c8be2413795151ab5b2544efa/tmp/分流器三路轮询-checkpoint_delta-fake_count.json",
+   "bytes": 1347821,
+   "sha256": "db1148a76df1c7c3a4d13aa8e80f12ce7f355c454ff7ae691b3ec98f2e32bf91"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-32d2639c8be2413795151ab5b2544efa/tmp/分流器三路轮询-checkpoint_delta-fake_from.json",
+   "bytes": 1347820,
+   "sha256": "3e89ce19f516d974677026a000890177a49b0beb43eca4780d76c83f1d0c550e"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-32d2639c8be2413795151ab5b2544efa/tmp/分流器三路轮询-checkpoint_delta-fake_golden.json",
+   "bytes": 1347818,
+   "sha256": "3e1aef30f7b5aa63a929ad181baa5bb1846791d655803c5942b6b3097fbefaa6"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-32d2639c8be2413795151ab5b2544efa/tmp/分流器三路轮询-checkpoint_delta-fake_initial_history.json",
+   "bytes": 1347808,
+   "sha256": "69e86bdf1d9d2120c795df38d176f019842755786e01ffeced2978ed9b3bcd74"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-32d2639c8be2413795151ab5b2544efa/tmp/分流器三路轮询-checkpoint_delta-fake_through.json",
+   "bytes": 1347819,
+   "sha256": "d14f7a79e0877c060b2cf88fc548b194b7ecf41e8277ecf94db445e9392cbe45"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-32d2639c8be2413795151ab5b2544efa/tmp/分流器三路轮询-checkpoint_delta-record.json",
+   "bytes": 1347819,
+   "sha256": "beb7960891b2aad6355d856548a26b410b056d68a4957b9e560067d0c5ac583f"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-32d2639c8be2413795151ab5b2544efa/tmp/分流器三路轮询-checkpoint_delta-remove_all.json",
+   "bytes": 1339693,
+   "sha256": "4427613a5cf5affc7f8718e5b5413848fd350de03fa2dd7a0605189093308cb3"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-32d2639c8be2413795151ab5b2544efa/tmp/分流器三路轮询-checkpoint_delta-remove_checker.json",
+   "bytes": 1342946,
+   "sha256": "c71fcfea583bd5e8cc5afe5bf6eee08cd50ca0b2524fded107b4bcf7d8abb9eb"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-32d2639c8be2413795151ab5b2544efa/tmp/分流器三路轮询-checkpoint_delta-remove_formal.json",
+   "bytes": 1347195,
+   "sha256": "643786ea955d9438aa8119e75a524318f6f436e45e1435b2cff383e3387fffcc"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-32d2639c8be2413795151ab5b2544efa/tmp/分流器三路轮询-checkpoint_delta-true_certified.json",
+   "bytes": 1347818,
+   "sha256": "d776d230f581196a24c5219e6109a18793b1b15f24f6abb76e27f5246d92275f"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-32d2639c8be2413795151ab5b2544efa/tmp/分流器三路轮询-full_state_each_instant-bad_summary.json",
+   "bytes": 2089511,
+   "sha256": "8eaf3c17fe6e95bf8f8c6cd0ff07f4657438053073f62a75a664c6d4923f4154"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-32d2639c8be2413795151ab5b2544efa/tmp/分流器三路轮询-full_state_each_instant-fake_count.json",
+   "bytes": 2089515,
+   "sha256": "f982001df16175038ceadd068af01b56ff8353942840111c7209929418bc2972"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-32d2639c8be2413795151ab5b2544efa/tmp/分流器三路轮询-full_state_each_instant-fake_from.json",
+   "bytes": 2089514,
+   "sha256": "518bd361e7bdcff8307d858254af383ba5d2177c8a98d99556c6b35b9241096f"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-32d2639c8be2413795151ab5b2544efa/tmp/分流器三路轮询-full_state_each_instant-fake_golden.json",
+   "bytes": 2089512,
+   "sha256": "c1e8e18d7ae84d0cb3ff3d4cbf60023fb371d332f6570e985002cd5ba79b1543"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-32d2639c8be2413795151ab5b2544efa/tmp/分流器三路轮询-full_state_each_instant-fake_initial_history.json",
+   "bytes": 2089502,
+   "sha256": "f1f9c82fbfddeb60f1654bb2a37580b453505e367832fdb3e604da54b28a90d8"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-32d2639c8be2413795151ab5b2544efa/tmp/分流器三路轮询-full_state_each_instant-fake_through.json",
+   "bytes": 2089513,
+   "sha256": "b4c4347b8059155380e694b11b02645f45c81f0fa5db035f2b6edba4492381a2"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-32d2639c8be2413795151ab5b2544efa/tmp/分流器三路轮询-full_state_each_instant-record.json",
+   "bytes": 2089513,
+   "sha256": "b9ef302e2d7756ebb26ef31f2fd0aa592a4b13df0362b0ececb4ad62abd6e499"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-32d2639c8be2413795151ab5b2544efa/tmp/分流器三路轮询-full_state_each_instant-remove_all.json",
+   "bytes": 2081387,
+   "sha256": "2898a132ecba8c18e4ce4081dd357d59ca7e0de450d3ab03ce5ed27632e330a9"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-32d2639c8be2413795151ab5b2544efa/tmp/分流器三路轮询-full_state_each_instant-remove_checker.json",
+   "bytes": 2084640,
+   "sha256": "9a9c5b9d92ea9c076b068fa38307256036306a8cff13133b53f99b3b3edb55fc"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-32d2639c8be2413795151ab5b2544efa/tmp/分流器三路轮询-full_state_each_instant-remove_formal.json",
+   "bytes": 2088889,
+   "sha256": "85b130267078681f3474309ab0a7658a4885800f2adc73567c1ecb92cce10e2c"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-32d2639c8be2413795151ab5b2544efa/tmp/分流器三路轮询-full_state_each_instant-true_certified.json",
+   "bytes": 2089512,
+   "sha256": "e634c2960778e695ad43b62fbc49f7d12e7d4f8fb27a4a2c73df5351f2e148db"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-75f8fe624a28457b822b38b68c325005/tmp/分流器三路轮询-checkpoint_delta-bad_summary.json",
+   "bytes": 1347817,
+   "sha256": "ed8aa513a0955823dfdb6717b0ac5bc5f508a046f96ff1af32e84a28ae09f81a"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-75f8fe624a28457b822b38b68c325005/tmp/分流器三路轮询-checkpoint_delta-fake_count.json",
+   "bytes": 1347821,
+   "sha256": "db1148a76df1c7c3a4d13aa8e80f12ce7f355c454ff7ae691b3ec98f2e32bf91"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-75f8fe624a28457b822b38b68c325005/tmp/分流器三路轮询-checkpoint_delta-fake_from.json",
+   "bytes": 1347820,
+   "sha256": "3e89ce19f516d974677026a000890177a49b0beb43eca4780d76c83f1d0c550e"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-75f8fe624a28457b822b38b68c325005/tmp/分流器三路轮询-checkpoint_delta-fake_golden.json",
+   "bytes": 1347818,
+   "sha256": "3e1aef30f7b5aa63a929ad181baa5bb1846791d655803c5942b6b3097fbefaa6"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-75f8fe624a28457b822b38b68c325005/tmp/分流器三路轮询-checkpoint_delta-fake_initial_history.json",
+   "bytes": 1347808,
+   "sha256": "69e86bdf1d9d2120c795df38d176f019842755786e01ffeced2978ed9b3bcd74"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-75f8fe624a28457b822b38b68c325005/tmp/分流器三路轮询-checkpoint_delta-fake_through.json",
+   "bytes": 1347819,
+   "sha256": "d14f7a79e0877c060b2cf88fc548b194b7ecf41e8277ecf94db445e9392cbe45"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-75f8fe624a28457b822b38b68c325005/tmp/分流器三路轮询-checkpoint_delta-record.json",
+   "bytes": 1347819,
+   "sha256": "beb7960891b2aad6355d856548a26b410b056d68a4957b9e560067d0c5ac583f"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-75f8fe624a28457b822b38b68c325005/tmp/分流器三路轮询-checkpoint_delta-remove_all.json",
+   "bytes": 1339693,
+   "sha256": "4427613a5cf5affc7f8718e5b5413848fd350de03fa2dd7a0605189093308cb3"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-75f8fe624a28457b822b38b68c325005/tmp/分流器三路轮询-checkpoint_delta-remove_checker.json",
+   "bytes": 1342946,
+   "sha256": "c71fcfea583bd5e8cc5afe5bf6eee08cd50ca0b2524fded107b4bcf7d8abb9eb"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-75f8fe624a28457b822b38b68c325005/tmp/分流器三路轮询-checkpoint_delta-remove_formal.json",
+   "bytes": 1347195,
+   "sha256": "643786ea955d9438aa8119e75a524318f6f436e45e1435b2cff383e3387fffcc"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-75f8fe624a28457b822b38b68c325005/tmp/分流器三路轮询-checkpoint_delta-true_certified.json",
+   "bytes": 1347818,
+   "sha256": "d776d230f581196a24c5219e6109a18793b1b15f24f6abb76e27f5246d92275f"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-75f8fe624a28457b822b38b68c325005/tmp/分流器三路轮询-full_state_each_instant-bad_summary.json",
+   "bytes": 2089511,
+   "sha256": "8eaf3c17fe6e95bf8f8c6cd0ff07f4657438053073f62a75a664c6d4923f4154"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-75f8fe624a28457b822b38b68c325005/tmp/分流器三路轮询-full_state_each_instant-fake_count.json",
+   "bytes": 2089515,
+   "sha256": "f982001df16175038ceadd068af01b56ff8353942840111c7209929418bc2972"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-75f8fe624a28457b822b38b68c325005/tmp/分流器三路轮询-full_state_each_instant-fake_from.json",
+   "bytes": 2089514,
+   "sha256": "518bd361e7bdcff8307d858254af383ba5d2177c8a98d99556c6b35b9241096f"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-75f8fe624a28457b822b38b68c325005/tmp/分流器三路轮询-full_state_each_instant-fake_golden.json",
+   "bytes": 2089512,
+   "sha256": "c1e8e18d7ae84d0cb3ff3d4cbf60023fb371d332f6570e985002cd5ba79b1543"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-75f8fe624a28457b822b38b68c325005/tmp/分流器三路轮询-full_state_each_instant-fake_initial_history.json",
+   "bytes": 2089502,
+   "sha256": "f1f9c82fbfddeb60f1654bb2a37580b453505e367832fdb3e604da54b28a90d8"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-75f8fe624a28457b822b38b68c325005/tmp/分流器三路轮询-full_state_each_instant-fake_through.json",
+   "bytes": 2089513,
+   "sha256": "b4c4347b8059155380e694b11b02645f45c81f0fa5db035f2b6edba4492381a2"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-75f8fe624a28457b822b38b68c325005/tmp/分流器三路轮询-full_state_each_instant-record.json",
+   "bytes": 2089513,
+   "sha256": "b9ef302e2d7756ebb26ef31f2fd0aa592a4b13df0362b0ececb4ad62abd6e499"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-75f8fe624a28457b822b38b68c325005/tmp/分流器三路轮询-full_state_each_instant-remove_all.json",
+   "bytes": 2081387,
+   "sha256": "2898a132ecba8c18e4ce4081dd357d59ca7e0de450d3ab03ce5ed27632e330a9"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-75f8fe624a28457b822b38b68c325005/tmp/分流器三路轮询-full_state_each_instant-remove_checker.json",
+   "bytes": 2084640,
+   "sha256": "9a9c5b9d92ea9c076b068fa38307256036306a8cff13133b53f99b3b3edb55fc"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-75f8fe624a28457b822b38b68c325005/tmp/分流器三路轮询-full_state_each_instant-remove_formal.json",
+   "bytes": 2088889,
+   "sha256": "85b130267078681f3474309ab0a7658a4885800f2adc73567c1ecb92cce10e2c"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-75f8fe624a28457b822b38b68c325005/tmp/分流器三路轮询-full_state_each_instant-true_certified.json",
+   "bytes": 2089512,
+   "sha256": "e634c2960778e695ad43b62fbc49f7d12e7d4f8fb27a4a2c73df5351f2e148db"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-89953c752e6e4fabb59309ae710005d0/tmp/分流器三路轮询-checkpoint_delta-bad_summary.json",
+   "bytes": 1347817,
+   "sha256": "ed8aa513a0955823dfdb6717b0ac5bc5f508a046f96ff1af32e84a28ae09f81a"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-89953c752e6e4fabb59309ae710005d0/tmp/分流器三路轮询-checkpoint_delta-fake_count.json",
+   "bytes": 1347821,
+   "sha256": "db1148a76df1c7c3a4d13aa8e80f12ce7f355c454ff7ae691b3ec98f2e32bf91"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-89953c752e6e4fabb59309ae710005d0/tmp/分流器三路轮询-checkpoint_delta-fake_from.json",
+   "bytes": 1347820,
+   "sha256": "3e89ce19f516d974677026a000890177a49b0beb43eca4780d76c83f1d0c550e"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-89953c752e6e4fabb59309ae710005d0/tmp/分流器三路轮询-checkpoint_delta-fake_golden.json",
+   "bytes": 1347818,
+   "sha256": "3e1aef30f7b5aa63a929ad181baa5bb1846791d655803c5942b6b3097fbefaa6"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-89953c752e6e4fabb59309ae710005d0/tmp/分流器三路轮询-checkpoint_delta-fake_initial_history.json",
+   "bytes": 1347808,
+   "sha256": "69e86bdf1d9d2120c795df38d176f019842755786e01ffeced2978ed9b3bcd74"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-89953c752e6e4fabb59309ae710005d0/tmp/分流器三路轮询-checkpoint_delta-fake_through.json",
+   "bytes": 1347819,
+   "sha256": "d14f7a79e0877c060b2cf88fc548b194b7ecf41e8277ecf94db445e9392cbe45"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-89953c752e6e4fabb59309ae710005d0/tmp/分流器三路轮询-checkpoint_delta-record.json",
+   "bytes": 1347819,
+   "sha256": "beb7960891b2aad6355d856548a26b410b056d68a4957b9e560067d0c5ac583f"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-89953c752e6e4fabb59309ae710005d0/tmp/分流器三路轮询-checkpoint_delta-remove_all.json",
+   "bytes": 1339693,
+   "sha256": "4427613a5cf5affc7f8718e5b5413848fd350de03fa2dd7a0605189093308cb3"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-89953c752e6e4fabb59309ae710005d0/tmp/分流器三路轮询-checkpoint_delta-remove_checker.json",
+   "bytes": 1342946,
+   "sha256": "c71fcfea583bd5e8cc5afe5bf6eee08cd50ca0b2524fded107b4bcf7d8abb9eb"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-89953c752e6e4fabb59309ae710005d0/tmp/分流器三路轮询-checkpoint_delta-remove_formal.json",
+   "bytes": 1347195,
+   "sha256": "643786ea955d9438aa8119e75a524318f6f436e45e1435b2cff383e3387fffcc"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-89953c752e6e4fabb59309ae710005d0/tmp/分流器三路轮询-checkpoint_delta-true_certified.json",
+   "bytes": 1347818,
+   "sha256": "d776d230f581196a24c5219e6109a18793b1b15f24f6abb76e27f5246d92275f"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-89953c752e6e4fabb59309ae710005d0/tmp/分流器三路轮询-full_state_each_instant-bad_summary.json",
+   "bytes": 2089511,
+   "sha256": "8eaf3c17fe6e95bf8f8c6cd0ff07f4657438053073f62a75a664c6d4923f4154"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-89953c752e6e4fabb59309ae710005d0/tmp/分流器三路轮询-full_state_each_instant-fake_count.json",
+   "bytes": 2089515,
+   "sha256": "f982001df16175038ceadd068af01b56ff8353942840111c7209929418bc2972"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-89953c752e6e4fabb59309ae710005d0/tmp/分流器三路轮询-full_state_each_instant-fake_from.json",
+   "bytes": 2089514,
+   "sha256": "518bd361e7bdcff8307d858254af383ba5d2177c8a98d99556c6b35b9241096f"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-89953c752e6e4fabb59309ae710005d0/tmp/分流器三路轮询-full_state_each_instant-fake_golden.json",
+   "bytes": 2089512,
+   "sha256": "c1e8e18d7ae84d0cb3ff3d4cbf60023fb371d332f6570e985002cd5ba79b1543"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-89953c752e6e4fabb59309ae710005d0/tmp/分流器三路轮询-full_state_each_instant-fake_initial_history.json",
+   "bytes": 2089502,
+   "sha256": "f1f9c82fbfddeb60f1654bb2a37580b453505e367832fdb3e604da54b28a90d8"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-89953c752e6e4fabb59309ae710005d0/tmp/分流器三路轮询-full_state_each_instant-fake_through.json",
+   "bytes": 2089513,
+   "sha256": "b4c4347b8059155380e694b11b02645f45c81f0fa5db035f2b6edba4492381a2"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-89953c752e6e4fabb59309ae710005d0/tmp/分流器三路轮询-full_state_each_instant-record.json",
+   "bytes": 2089513,
+   "sha256": "b9ef302e2d7756ebb26ef31f2fd0aa592a4b13df0362b0ececb4ad62abd6e499"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-89953c752e6e4fabb59309ae710005d0/tmp/分流器三路轮询-full_state_each_instant-remove_all.json",
+   "bytes": 2081387,
+   "sha256": "2898a132ecba8c18e4ce4081dd357d59ca7e0de450d3ab03ce5ed27632e330a9"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-89953c752e6e4fabb59309ae710005d0/tmp/分流器三路轮询-full_state_each_instant-remove_checker.json",
+   "bytes": 2084640,
+   "sha256": "9a9c5b9d92ea9c076b068fa38307256036306a8cff13133b53f99b3b3edb55fc"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-89953c752e6e4fabb59309ae710005d0/tmp/分流器三路轮询-full_state_each_instant-remove_formal.json",
+   "bytes": 2088889,
+   "sha256": "85b130267078681f3474309ab0a7658a4885800f2adc73567c1ecb92cce10e2c"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-89953c752e6e4fabb59309ae710005d0/tmp/分流器三路轮询-full_state_each_instant-true_certified.json",
+   "bytes": 2089512,
+   "sha256": "e634c2960778e695ad43b62fbc49f7d12e7d4f8fb27a4a2c73df5351f2e148db"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-99ec2b5c5560442e8d33f4138a9e7b06/tmp/分流器三路轮询-checkpoint_delta-bad_summary.json",
+   "bytes": 1347817,
+   "sha256": "ed8aa513a0955823dfdb6717b0ac5bc5f508a046f96ff1af32e84a28ae09f81a"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-99ec2b5c5560442e8d33f4138a9e7b06/tmp/分流器三路轮询-checkpoint_delta-fake_count.json",
+   "bytes": 1347821,
+   "sha256": "db1148a76df1c7c3a4d13aa8e80f12ce7f355c454ff7ae691b3ec98f2e32bf91"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-99ec2b5c5560442e8d33f4138a9e7b06/tmp/分流器三路轮询-checkpoint_delta-fake_from.json",
+   "bytes": 1347820,
+   "sha256": "3e89ce19f516d974677026a000890177a49b0beb43eca4780d76c83f1d0c550e"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-99ec2b5c5560442e8d33f4138a9e7b06/tmp/分流器三路轮询-checkpoint_delta-fake_golden.json",
+   "bytes": 1347818,
+   "sha256": "3e1aef30f7b5aa63a929ad181baa5bb1846791d655803c5942b6b3097fbefaa6"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-99ec2b5c5560442e8d33f4138a9e7b06/tmp/分流器三路轮询-checkpoint_delta-fake_initial_history.json",
+   "bytes": 1347808,
+   "sha256": "69e86bdf1d9d2120c795df38d176f019842755786e01ffeced2978ed9b3bcd74"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-99ec2b5c5560442e8d33f4138a9e7b06/tmp/分流器三路轮询-checkpoint_delta-fake_through.json",
+   "bytes": 1347819,
+   "sha256": "d14f7a79e0877c060b2cf88fc548b194b7ecf41e8277ecf94db445e9392cbe45"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-99ec2b5c5560442e8d33f4138a9e7b06/tmp/分流器三路轮询-checkpoint_delta-record.json",
+   "bytes": 1347819,
+   "sha256": "beb7960891b2aad6355d856548a26b410b056d68a4957b9e560067d0c5ac583f"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-99ec2b5c5560442e8d33f4138a9e7b06/tmp/分流器三路轮询-checkpoint_delta-remove_all.json",
+   "bytes": 1339693,
+   "sha256": "4427613a5cf5affc7f8718e5b5413848fd350de03fa2dd7a0605189093308cb3"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-99ec2b5c5560442e8d33f4138a9e7b06/tmp/分流器三路轮询-checkpoint_delta-remove_checker.json",
+   "bytes": 1342946,
+   "sha256": "c71fcfea583bd5e8cc5afe5bf6eee08cd50ca0b2524fded107b4bcf7d8abb9eb"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-99ec2b5c5560442e8d33f4138a9e7b06/tmp/分流器三路轮询-checkpoint_delta-remove_formal.json",
+   "bytes": 1347195,
+   "sha256": "643786ea955d9438aa8119e75a524318f6f436e45e1435b2cff383e3387fffcc"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-99ec2b5c5560442e8d33f4138a9e7b06/tmp/分流器三路轮询-checkpoint_delta-true_certified.json",
+   "bytes": 1347818,
+   "sha256": "d776d230f581196a24c5219e6109a18793b1b15f24f6abb76e27f5246d92275f"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-99ec2b5c5560442e8d33f4138a9e7b06/tmp/分流器三路轮询-full_state_each_instant-bad_summary.json",
+   "bytes": 2089511,
+   "sha256": "8eaf3c17fe6e95bf8f8c6cd0ff07f4657438053073f62a75a664c6d4923f4154"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-99ec2b5c5560442e8d33f4138a9e7b06/tmp/分流器三路轮询-full_state_each_instant-fake_count.json",
+   "bytes": 2089515,
+   "sha256": "f982001df16175038ceadd068af01b56ff8353942840111c7209929418bc2972"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-99ec2b5c5560442e8d33f4138a9e7b06/tmp/分流器三路轮询-full_state_each_instant-fake_from.json",
+   "bytes": 2089514,
+   "sha256": "518bd361e7bdcff8307d858254af383ba5d2177c8a98d99556c6b35b9241096f"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-99ec2b5c5560442e8d33f4138a9e7b06/tmp/分流器三路轮询-full_state_each_instant-fake_golden.json",
+   "bytes": 2089512,
+   "sha256": "c1e8e18d7ae84d0cb3ff3d4cbf60023fb371d332f6570e985002cd5ba79b1543"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-99ec2b5c5560442e8d33f4138a9e7b06/tmp/分流器三路轮询-full_state_each_instant-fake_initial_history.json",
+   "bytes": 2089502,
+   "sha256": "f1f9c82fbfddeb60f1654bb2a37580b453505e367832fdb3e604da54b28a90d8"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-99ec2b5c5560442e8d33f4138a9e7b06/tmp/分流器三路轮询-full_state_each_instant-fake_through.json",
+   "bytes": 2089513,
+   "sha256": "b4c4347b8059155380e694b11b02645f45c81f0fa5db035f2b6edba4492381a2"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-99ec2b5c5560442e8d33f4138a9e7b06/tmp/分流器三路轮询-full_state_each_instant-record.json",
+   "bytes": 2089513,
+   "sha256": "b9ef302e2d7756ebb26ef31f2fd0aa592a4b13df0362b0ececb4ad62abd6e499"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-99ec2b5c5560442e8d33f4138a9e7b06/tmp/分流器三路轮询-full_state_each_instant-remove_all.json",
+   "bytes": 2081387,
+   "sha256": "2898a132ecba8c18e4ce4081dd357d59ca7e0de450d3ab03ce5ed27632e330a9"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-99ec2b5c5560442e8d33f4138a9e7b06/tmp/分流器三路轮询-full_state_each_instant-remove_checker.json",
+   "bytes": 2084640,
+   "sha256": "9a9c5b9d92ea9c076b068fa38307256036306a8cff13133b53f99b3b3edb55fc"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-99ec2b5c5560442e8d33f4138a9e7b06/tmp/分流器三路轮询-full_state_each_instant-remove_formal.json",
+   "bytes": 2088889,
+   "sha256": "85b130267078681f3474309ab0a7658a4885800f2adc73567c1ecb92cce10e2c"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-99ec2b5c5560442e8d33f4138a9e7b06/tmp/分流器三路轮询-full_state_each_instant-true_certified.json",
+   "bytes": 2089512,
+   "sha256": "e634c2960778e695ad43b62fbc49f7d12e7d4f8fb27a4a2c73df5351f2e148db"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r2_cli-642b22cbcd05432fb257f71c1269da87/tmp/mutation.json",
+   "bytes": 1272457,
+   "sha256": "739fa40a5ee4eb33106fc513aadd834240e6069c35208c267d54f2ad5d83fc16"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r2_cli-642b22cbcd05432fb257f71c1269da87/tmp/分流器三路轮询-checkpoint_delta.json",
+   "bytes": 1272459,
+   "sha256": "cc2317168223372e482939d586ff3a585a8ca0c01765d342435b1437c42faca6"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r2_cli-642b22cbcd05432fb257f71c1269da87/tmp/分流器三路轮询-full_state_each_instant.json",
+   "bytes": 2089513,
+   "sha256": "b9ef302e2d7756ebb26ef31f2fd0aa592a4b13df0362b0ececb4ad62abd6e499"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r2_cli-b6a2d3b3d6f841cba9b5e43e19f7f9f1/tmp/mutation.json",
+   "bytes": 1272457,
+   "sha256": "739fa40a5ee4eb33106fc513aadd834240e6069c35208c267d54f2ad5d83fc16"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r2_cli-b6a2d3b3d6f841cba9b5e43e19f7f9f1/tmp/分流器三路轮询-checkpoint_delta.json",
+   "bytes": 1272459,
+   "sha256": "cc2317168223372e482939d586ff3a585a8ca0c01765d342435b1437c42faca6"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r2_cli-b6a2d3b3d6f841cba9b5e43e19f7f9f1/tmp/分流器三路轮询-full_state_each_instant.json",
+   "bytes": 2089513,
+   "sha256": "b9ef302e2d7756ebb26ef31f2fd0aa592a4b13df0362b0ececb4ad62abd6e499"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/empty-branch-run-result.json",
+   "bytes": 2019535,
+   "sha256": "b8bf9ceeb0cb09b1e2383fdf0fda944d89132fc4bf4ffd28e516d3cae408f841"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/full-branch-run-result.json",
+   "bytes": 2089318,
+   "sha256": "aedc6f3de767e893527750b944174d3df9946fad754c0a829c53f27233c3811b"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/working-prefix-result.json",
+   "bytes": 1355755,
+   "sha256": "285a0a9381b98c67f7b822b6d9c63e38ed256c4399de5b7da38ab0e57c1baae5"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-780445488a4c4d788cf38a5c6e9bad5f/empty-branch-run-result.json",
+   "bytes": 2019535,
+   "sha256": "4314d2bf055264c4e49ac92b76f843cd040129eb524f25b2f4eefc9fb62441ea"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-780445488a4c4d788cf38a5c6e9bad5f/full-branch-run-result.json",
+   "bytes": 2089318,
+   "sha256": "a91a2370b6aa4cd1d24edaa02e8ee77f174b84e6b99fd93ccc744f02a466064f"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-780445488a4c4d788cf38a5c6e9bad5f/working-prefix-result.json",
+   "bytes": 1355755,
+   "sha256": "f7a69165799db1479f43f4080e5e1b09059ba7beacc8cc67441ab8c1d0b2c1c2"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-431526d0aab842ae8d0cd9c715cdfed5/bounded-reference-package/分流器三路轮询-reference.json",
+   "bytes": 2060368,
+   "sha256": "63cfa899c8f94cf6fb6ae985624b001173cace6753f58033bdb267d009b7b377"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-431526d0aab842ae8d0cd9c715cdfed5/negative/dependency.json",
+   "bytes": 1956330,
+   "sha256": "0c204996246e55dde105789770557894442c5ce2af526d4111f9aa216ed76de7"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-431526d0aab842ae8d0cd9c715cdfed5/negative/hash.json",
+   "bytes": 1956575,
+   "sha256": "496398c9f19445dfaccb02ba4e76642aea02785a5458cd2c4b621c36d81fa98f"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-431526d0aab842ae8d0cd9c715cdfed5/negative/missing.json",
+   "bytes": 1956468,
+   "sha256": "e744a46d3d7b9fc8418691448560ab19f13e946e7d01df5953ed9505da2ac23e"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-431526d0aab842ae8d0cd9c715cdfed5/negative/producer.json",
+   "bytes": 1956507,
+   "sha256": "a0050fa1cdbf58cf5fd24b85c6b2f96351d8519d48b0f7120567256c3e2b7ebb"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-431526d0aab842ae8d0cd9c715cdfed5/negative/state.json",
+   "bytes": 1956571,
+   "sha256": "e2ed6adda9868533611de7eb813428df2e16d987b976eb78ff935ec00b8a9045"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-431526d0aab842ae8d0cd9c715cdfed5/original-cycle.record.json",
+   "bytes": 1955245,
+   "sha256": "45fbe0f0ce10f07dd1a568751bd8b86d0d09862174f7625760a87e0d930cbd25"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-431526d0aab842ae8d0cd9c715cdfed5/package/full_state_each_instant/records/record.json",
+   "bytes": 1956803,
+   "sha256": "74afe0876d23d40d11b9c53a841a326fcbccdbc1c28a4015eff86795976d51a7"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-431526d0aab842ae8d0cd9c715cdfed5/reference-package/分流器三路轮询-checkpoint_delta.json",
+   "bytes": 1349184,
+   "sha256": "d2e874c264f5da23130810f2a404a3fdea9ea23a25daef6641bfd2243b4b51bc"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-431526d0aab842ae8d0cd9c715cdfed5/reference-package/分流器三路轮询-full_state_each_instant.json",
+   "bytes": 2090878,
+   "sha256": "45c8affe62ebd46cf436e7e68c02fcebf5b809afcad1a83aaf62451e19bdbfd6"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-431526d0aab842ae8d0cd9c715cdfed5/分流器三路轮询-absolute.json",
+   "bytes": 2089513,
+   "sha256": "b9ef302e2d7756ebb26ef31f2fd0aa592a4b13df0362b0ececb4ad62abd6e499"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/bounded-reference-package/分流器三路轮询-reference.json",
+   "bytes": 2060368,
+   "sha256": "63cfa899c8f94cf6fb6ae985624b001173cace6753f58033bdb267d009b7b377"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/negative/dependency.json",
+   "bytes": 1956330,
+   "sha256": "0c204996246e55dde105789770557894442c5ce2af526d4111f9aa216ed76de7"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/negative/hash.json",
+   "bytes": 1956575,
+   "sha256": "496398c9f19445dfaccb02ba4e76642aea02785a5458cd2c4b621c36d81fa98f"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/negative/missing.json",
+   "bytes": 1956468,
+   "sha256": "e744a46d3d7b9fc8418691448560ab19f13e946e7d01df5953ed9505da2ac23e"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/negative/producer.json",
+   "bytes": 1956507,
+   "sha256": "a0050fa1cdbf58cf5fd24b85c6b2f96351d8519d48b0f7120567256c3e2b7ebb"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/negative/state.json",
+   "bytes": 1956571,
+   "sha256": "e2ed6adda9868533611de7eb813428df2e16d987b976eb78ff935ec00b8a9045"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/original-cycle.record.json",
+   "bytes": 1955245,
+   "sha256": "45fbe0f0ce10f07dd1a568751bd8b86d0d09862174f7625760a87e0d930cbd25"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/package/full_state_each_instant/records/record.json",
+   "bytes": 1956803,
+   "sha256": "74afe0876d23d40d11b9c53a841a326fcbccdbc1c28a4015eff86795976d51a7"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/reference-package/分流器三路轮询-checkpoint_delta.json",
+   "bytes": 1349184,
+   "sha256": "d2e874c264f5da23130810f2a404a3fdea9ea23a25daef6641bfd2243b4b51bc"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/reference-package/分流器三路轮询-full_state_each_instant.json",
+   "bytes": 2090878,
+   "sha256": "45c8affe62ebd46cf436e7e68c02fcebf5b809afcad1a83aaf62451e19bdbfd6"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/分流器三路轮询-absolute.json",
+   "bytes": 2089513,
+   "sha256": "b9ef302e2d7756ebb26ef31f2fd0aa592a4b13df0362b0ececb4ad62abd6e499"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/round6_cli-079be431d1c1446799b2c2e7514003e1/referenced.record.json",
+   "bytes": 1955245,
+   "sha256": "45fbe0f0ce10f07dd1a568751bd8b86d0d09862174f7625760a87e0d930cbd25"
+  },
+  {
+   "path": "核验2/内核维护/独立回归 中文/cargo-test-evidence/round6_cli-1d9bf539c9d64af6b190eee5e7ca603f/referenced.record.json",
+   "bytes": 1955245,
+   "sha256": "45fbe0f0ce10f07dd1a568751bd8b86d0d09862174f7625760a87e0d930cbd25"
+  }
+ ]
+}

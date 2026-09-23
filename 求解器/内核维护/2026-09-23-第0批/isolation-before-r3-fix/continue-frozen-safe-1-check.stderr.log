@@ -1,0 +1,13 @@
+    Checking serde_core v1.0.229
+    Checking zmij v1.0.23
+    Checking memchr v2.8.3
+    Checking itoa v1.0.18
+    Checking num-traits v0.2.19
+    Checking num-integer v0.1.47
+    Checking num-bigint v0.4.8
+    Checking serde v1.0.229
+    Checking serde_json v1.0.151
+    Checking num-rational v0.4.2
+    Checking kernel v0.1.0 (/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel)
+    Checking topology v0.1.0 (/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/topology)
+    Finished `health0bsafe1149564` profile [unoptimized + debuginfo] target(s) in 2.72s

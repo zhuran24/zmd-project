@@ -1,0 +1,678 @@
+{
+  "passed": true,
+  "cases_per_round": 59,
+  "unchanged_case_exit_status": true,
+  "runs": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r3_cli-e273b21f326042a6802d7c4973523405/results.json",
+      "cases": [
+        {
+          "case": "bridge-control",
+          "exit_code": 0,
+          "status": "completed"
+        },
+        {
+          "case": "checkpoint-seed",
+          "exit_code": 0,
+          "status": "kernel-input-v3"
+        },
+        {
+          "case": "checkpoint-run",
+          "exit_code": 0,
+          "status": "completed"
+        },
+        {
+          "case": "checkpoint-derived-run",
+          "exit_code": 0,
+          "status": "completed"
+        },
+        {
+          "case": "parameter-missing-run",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "parameter-missing-seed",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "parameter-missing-cycle",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "parameter-conflict-run",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "parameter-conflict-seed",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "parameter-conflict-cycle",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "parameter-top_only-run",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "parameter-top_only-seed",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "parameter-top_only-cycle",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "parameter-lifetime-run",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "parameter-lifetime-seed",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "parameter-lifetime-cycle",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "phase--1-run",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "phase--1-seed",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "phase--1-cycle",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "phase-6-run",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "phase-6-seed",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "phase-6-cycle",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "phase-1_2-run",
+          "exit_code": 2,
+          "status": "unsupported"
+        },
+        {
+          "case": "phase-1_2-seed",
+          "exit_code": 2,
+          "status": "unsupported"
+        },
+        {
+          "case": "phase-1_2-cycle",
+          "exit_code": 2,
+          "status": "stopped"
+        },
+        {
+          "case": "phase-not-a-Time-run",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "phase-not-a-Time-seed",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "phase-not-a-Time-cycle",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "slot_short-run",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "slot_short-seed",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "slot_short-cycle",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "slot_unknown-run",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "slot_unknown-seed",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "slot_unknown-cycle",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "boolean_seed-run",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "boolean_seed-seed",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "boolean_seed-cycle",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "boolean_context-run",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "boolean_context-seed",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "boolean_context-cycle",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "missing_inventory-run",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "missing_inventory-seed",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "missing_inventory-cycle",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "unknown_progress-run",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "unknown_progress-seed",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "unknown_progress-cycle",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "zero-ore-origin-run",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "zero-ore-origin-seed",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "zero-ore-origin-cycle",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "zero-ore-iron-run",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "zero-ore-iron-seed",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "zero-ore-iron-cycle",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "age-overflow-run",
+          "exit_code": 2,
+          "status": "inconclusive"
+        },
+        {
+          "case": "age-overflow-cycle",
+          "exit_code": 2,
+          "status": "inconclusive"
+        },
+        {
+          "case": "expired-after-closure-run",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "expired-after-closure-seed",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "expired-after-closure-cycle",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "legacy-late-window-cycle",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "legacy-late-window-record",
+          "exit_code": 2,
+          "status": "invalid_input"
+        }
+      ],
+      "expired": [
+        {
+          "case": "expired-after-closure-run",
+          "exit_code": 2,
+          "status": "invalid_input",
+          "open_items": [
+            "invalid_input input @ /tmp/kernel-health-20260923-_5s65pp9/求解器/数据/正式静态目录.json: 源文件指纹不符"
+          ]
+        },
+        {
+          "case": "expired-after-closure-seed",
+          "exit_code": 2,
+          "status": "invalid_input",
+          "open_items": [
+            "invalid_input input @ /tmp/kernel-health-20260923-_5s65pp9/求解器/数据/正式静态目录.json: 源文件指纹不符"
+          ]
+        },
+        {
+          "case": "expired-after-closure-cycle",
+          "exit_code": 2,
+          "status": "invalid_input",
+          "open_items": [
+            "invalid_input input @ /tmp/kernel-health-20260923-_5s65pp9/求解器/数据/正式静态目录.json: 源文件指纹不符",
+            "装载诊断未独立复现；技术停止不证明布局无解"
+          ]
+        },
+        {
+          "case": "legacy-late-window-record",
+          "exit_code": 2,
+          "status": "invalid_input",
+          "open_items": [
+            "invalid_input input @ /tmp/kernel-health-20260923-_5s65pp9/求解器/数据/正式静态目录.json: 源文件指纹不符"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r3_cli-f0faf2fe4bdf42f2a438f916f84af4e5/results.json",
+      "cases": [
+        {
+          "case": "bridge-control",
+          "exit_code": 0,
+          "status": "completed"
+        },
+        {
+          "case": "checkpoint-seed",
+          "exit_code": 0,
+          "status": "kernel-input-v3"
+        },
+        {
+          "case": "checkpoint-run",
+          "exit_code": 0,
+          "status": "completed"
+        },
+        {
+          "case": "checkpoint-derived-run",
+          "exit_code": 0,
+          "status": "completed"
+        },
+        {
+          "case": "parameter-missing-run",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "parameter-missing-seed",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "parameter-missing-cycle",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "parameter-conflict-run",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "parameter-conflict-seed",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "parameter-conflict-cycle",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "parameter-top_only-run",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "parameter-top_only-seed",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "parameter-top_only-cycle",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "parameter-lifetime-run",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "parameter-lifetime-seed",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "parameter-lifetime-cycle",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "phase--1-run",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "phase--1-seed",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "phase--1-cycle",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "phase-6-run",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "phase-6-seed",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "phase-6-cycle",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "phase-1_2-run",
+          "exit_code": 2,
+          "status": "unsupported"
+        },
+        {
+          "case": "phase-1_2-seed",
+          "exit_code": 2,
+          "status": "unsupported"
+        },
+        {
+          "case": "phase-1_2-cycle",
+          "exit_code": 2,
+          "status": "stopped"
+        },
+        {
+          "case": "phase-not-a-Time-run",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "phase-not-a-Time-seed",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "phase-not-a-Time-cycle",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "slot_short-run",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "slot_short-seed",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "slot_short-cycle",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "slot_unknown-run",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "slot_unknown-seed",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "slot_unknown-cycle",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "boolean_seed-run",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "boolean_seed-seed",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "boolean_seed-cycle",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "boolean_context-run",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "boolean_context-seed",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "boolean_context-cycle",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "missing_inventory-run",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "missing_inventory-seed",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "missing_inventory-cycle",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "unknown_progress-run",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "unknown_progress-seed",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "unknown_progress-cycle",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "zero-ore-origin-run",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "zero-ore-origin-seed",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "zero-ore-origin-cycle",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "zero-ore-iron-run",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "zero-ore-iron-seed",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "zero-ore-iron-cycle",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "age-overflow-run",
+          "exit_code": 2,
+          "status": "inconclusive"
+        },
+        {
+          "case": "age-overflow-cycle",
+          "exit_code": 2,
+          "status": "inconclusive"
+        },
+        {
+          "case": "expired-after-closure-run",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "expired-after-closure-seed",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "expired-after-closure-cycle",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "legacy-late-window-cycle",
+          "exit_code": 2,
+          "status": "invalid_input"
+        },
+        {
+          "case": "legacy-late-window-record",
+          "exit_code": 2,
+          "status": "invalid_input"
+        }
+      ],
+      "expired": [
+        {
+          "case": "expired-after-closure-run",
+          "exit_code": 2,
+          "status": "invalid_input",
+          "open_items": [
+            "invalid_input input @ /tmp/kernel-health-20260923-_5s65pp9/求解器/数据/正式静态目录.json: 源文件指纹不符"
+          ]
+        },
+        {
+          "case": "expired-after-closure-seed",
+          "exit_code": 2,
+          "status": "invalid_input",
+          "open_items": [
+            "invalid_input input @ /tmp/kernel-health-20260923-_5s65pp9/求解器/数据/正式静态目录.json: 源文件指纹不符"
+          ]
+        },
+        {
+          "case": "expired-after-closure-cycle",
+          "exit_code": 2,
+          "status": "invalid_input",
+          "open_items": [
+            "invalid_input input @ /tmp/kernel-health-20260923-_5s65pp9/求解器/数据/正式静态目录.json: 源文件指纹不符",
+            "装载诊断未独立复现；技术停止不证明布局无解"
+          ]
+        },
+        {
+          "case": "legacy-late-window-record",
+          "exit_code": 2,
+          "status": "invalid_input",
+          "open_items": [
+            "invalid_input input @ /tmp/kernel-health-20260923-_5s65pp9/求解器/数据/正式静态目录.json: 源文件指纹不符"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitation": "expired fixture is rejected for stale source fingerprint; does not demonstrate gate-state validation"
+}

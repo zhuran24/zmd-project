@@ -1,0 +1,58 @@
+[
+  {
+    "case_id": "seed",
+    "passed": true,
+    "files": 4,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "seed-out",
+    "passed": true,
+    "files": 5,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "check",
+    "passed": true,
+    "files": 4,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "check-cycle-domain",
+    "passed": true,
+    "files": 4,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "request-fixed",
+    "passed": true,
+    "files": 4,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "request-stop",
+    "passed": true,
+    "files": 4,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "request-invalid",
+    "passed": true,
+    "files": 4,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  },
+  {
+    "case_id": "run-full",
+    "passed": true,
+    "files": 5,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  }
+]

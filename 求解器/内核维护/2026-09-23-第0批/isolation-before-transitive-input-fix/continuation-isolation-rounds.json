@@ -1,0 +1,182 @@
+[
+  {
+    "round": 1,
+    "target": {
+      "kind": [
+        "bin"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "topology",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/topology/src/main.rs",
+      "edition": "2021",
+      "doc": true,
+      "doctest": false,
+      "test": true
+    },
+    "count": 0,
+    "command": "continue-isolation-1-0-topology",
+    "passed": true
+  },
+  {
+    "round": 1,
+    "target": {
+      "kind": [
+        "test"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "validation",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/topology/tests/validation.rs",
+      "edition": "2021",
+      "doc": false,
+      "doctest": false,
+      "test": true
+    },
+    "count": 30,
+    "command": "continue-isolation-1-1-validation",
+    "passed": true
+  },
+  {
+    "round": 1,
+    "target": {
+      "kind": [
+        "lib"
+      ],
+      "crate_types": [
+        "lib"
+      ],
+      "name": "topology",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/topology/src/lib.rs",
+      "edition": "2021",
+      "doc": true,
+      "doctest": true,
+      "test": true
+    },
+    "count": 1,
+    "command": "continue-isolation-1-2-topology",
+    "passed": true
+  },
+  {
+    "round": 1,
+    "target": {
+      "kind": [
+        "test"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "round6_cli",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/round6_cli.rs",
+      "edition": "2021",
+      "doc": false,
+      "doctest": false,
+      "test": true
+    },
+    "count": 1,
+    "command": "continue-isolation-1-3-round6_cli",
+    "passed": true
+  },
+  {
+    "round": 1,
+    "target": {
+      "kind": [
+        "test"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "revision_r5_cli",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/revision_r5_cli.rs",
+      "edition": "2021",
+      "doc": false,
+      "doctest": false,
+      "test": true
+    },
+    "count": 1,
+    "command": "continue-isolation-1-4-revision_r5_cli",
+    "passed": true
+  },
+  {
+    "round": 1,
+    "target": {
+      "kind": [
+        "bin"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "kernel",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/main.rs",
+      "edition": "2021",
+      "doc": true,
+      "doctest": false,
+      "test": true
+    },
+    "count": 0,
+    "command": "continue-isolation-1-5-kernel",
+    "passed": true
+  },
+  {
+    "round": 1,
+    "target": {
+      "kind": [
+        "test"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "reference",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/reference.rs",
+      "edition": "2021",
+      "doc": false,
+      "doctest": false,
+      "test": true
+    },
+    "count": 3,
+    "command": "continue-isolation-1-6-reference",
+    "passed": true
+  },
+  {
+    "round": 1,
+    "target": {
+      "kind": [
+        "test"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "revision_r2_cli",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/revision_r2_cli.rs",
+      "edition": "2021",
+      "doc": false,
+      "doctest": false,
+      "test": true
+    },
+    "count": 1,
+    "command": "continue-isolation-1-7-revision_r2_cli",
+    "passed": true
+  },
+  {
+    "round": 1,
+    "target": {
+      "kind": [
+        "test"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "revision_r4_cli",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/revision_r4_cli.rs",
+      "edition": "2021",
+      "doc": false,
+      "doctest": false,
+      "test": true
+    },
+    "count": 1,
+    "command": "continue-isolation-1-8-revision_r4_cli",
+    "passed": true
+  }
+]

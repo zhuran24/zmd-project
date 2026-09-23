@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/verify_all.py", line 58, in <module>
+    if __name__=='__main__':main()
+                            ~~~~^^
+  File "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/verify_all.py", line 45, in main
+    raise AssertionError(('当前批量入口仅支持kernel生产者；参考执行器尚未迁移v4',str(path)))
+AssertionError: ('当前批量入口仅支持kernel生产者；参考执行器尚未迁移v4', '/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/bounded-reference-package/分流器三路轮询-reference.json')

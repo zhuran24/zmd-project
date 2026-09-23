@@ -1,0 +1,5 @@
+{
+  "source": "frozen 数据/候选B/contract.json",
+  "transformation": "decode JSON and serialize with sorted keys; all values preserved, including required candidate=候选B",
+  "rejected_attempt": "changing candidate name produced exit 1 at topology contract identifier validation; generator fixed, production implementation unchanged"
+}

@@ -1,0 +1,338 @@
+{
+  "label": "safe-1-build",
+  "argv": [
+    "cargo",
+    "build",
+    "--workspace",
+    "--locked",
+    "--offline",
+    "-j",
+    "2",
+    "--profile",
+    "healthaudit2safe1345845",
+    "--config",
+    "profile.healthaudit2safe1345845.inherits=\"dev\"",
+    "--config",
+    "profile.healthaudit2safe1345845.codegen-units=1"
+  ],
+  "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+  "returncode": 0,
+  "expected": 0,
+  "seconds": 7.7536646260050475,
+  "cpu_seconds": 12.256241,
+  "average_cores": 1.5807030083418545,
+  "max_total_threads": 23,
+  "max_runnable_threads": 5,
+  "affinity": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "violation": null,
+  "peak": [
+    {
+      "pid": 1345877,
+      "argv": "cargo build --workspace --locked --offline -j 2 --profile healthaudit2safe1345845 --config profile.healthaudit2safe1345845.inherits=\"dev\" --config profile.healthaudit2safe1345845.codegen-units=1 ",
+      "tasks": [
+        {
+          "tid": 1345877,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        },
+        {
+          "tid": 1345878,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        },
+        {
+          "tid": 1345879,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        },
+        {
+          "tid": 1346083,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        },
+        {
+          "tid": 1346088,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        }
+      ]
+    },
+    {
+      "pid": 1346084,
+      "argv": "rustc --crate-name build_script_build --edition=2021 /home/zhuran24/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/build.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no --cfg feature=\"default\" --cfg feature=\"derive\" --cfg feature=\"serde_derive\" --cfg feature=\"std\" --check-cfg cfg(docsrs,test) --check-cfg cfg(feature, values(\"alloc\", \"default\", \"derive\", \"rc\", \"serde_derive\", \"std\", \"unstable\")) -C metadata=1f180cfe1de74411 -C extra-filename=-55cdac163b6fe607 --out-dir /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2safe1345845/build/serde-55cdac163b6fe607 -L dependency=/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2safe1345845/deps --cap-lints allow ",
+      "tasks": [
+        {
+          "tid": 1346084,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        },
+        {
+          "tid": 1346085,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        },
+        {
+          "tid": 1346086,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 1
+        },
+        {
+          "tid": 1346087,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        },
+        {
+          "tid": 1346093,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        },
+        {
+          "tid": 1346094,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        },
+        {
+          "tid": 1346095,
+          "state": "R",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 1
+        }
+      ]
+    },
+    {
+      "pid": 1346089,
+      "argv": "rustc --crate-name build_script_build --edition=2021 /home/zhuran24/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_json-1.0.151/build.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no --cfg feature=\"default\" --cfg feature=\"std\" --check-cfg cfg(docsrs,test) --check-cfg cfg(feature, values(\"alloc\", \"arbitrary_precision\", \"default\", \"float_roundtrip\", \"indexmap\", \"preserve_order\", \"raw_value\", \"std\", \"unbounded_depth\")) -C metadata=91f582597791da31 -C extra-filename=-3071db11d9f652de --out-dir /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2safe1345845/build/serde_json-3071db11d9f652de -L dependency=/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2safe1345845/deps --cap-lints allow ",
+      "tasks": [
+        {
+          "tid": 1346089,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        },
+        {
+          "tid": 1346090,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        },
+        {
+          "tid": 1346091,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        },
+        {
+          "tid": 1346092,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        }
+      ]
+    },
+    {
+      "pid": 1346099,
+      "argv": "x86_64-linux-gnu-gcc -m64 /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2safe1345845/build/serde_json-3071db11d9f652de/rustc6Voxwd/symbols.o /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2safe1345845/build/serde_json-3071db11d9f652de/build_script_build-3071db11d9f652de.build_script_build.4540f6810f9d9f60-cgu.0.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2safe1345845/build/serde_json-3071db11d9f652de/build_script_build-3071db11d9f652de.9mxz3wny8ivjssny6295vapns.rcgu.o -Wl,--as-needed -Wl,-Bstatic /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libstd-a4cf8c125ff393c3.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libpanic_unwind-c4a83d2ad5b7d77e.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libobject-a6cb8640d85c6f1f.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libmemchr-62cbba516e3fc54b.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libaddr2line-0657a5020a640ff4.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libgimli-7fe78241b5959c4f.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libcfg_if-fd09dfee45479524.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/librustc_demangle-9291a67a3fef95d3.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libstd_detect-ef2244ebec09afd3.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libhashbrown-4b90e78548d258ab.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/librustc_std_workspace_alloc-c92825398a256ed2.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libminiz_oxide-c09f01c945a98da6.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libadler2-308af124736e5ef4.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libunwind-47edb10cd9214bb3.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/liblibc-1df101c03ce96979.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/librustc_std_workspace_core-359051371bed5a93.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/liballoc-49d9bbd1df19ee71.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libcore-e2cbb3bcd1db4897.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libcompiler_builtins-6279323f4be9bcf8.rlib -Wl,-Bdynamic -lgcc_s -lutil -lrt -lpthread -lm -ldl -lc -L /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2safe1345845/build/serde_json-3071db11d9f652de/rustc6Voxwd/raw-dylibs -fuse-ld=lld -Wl,--eh-frame-hdr -Wl,-z,noexecstack -L /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib -o /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2safe1345845/build/serde_json-3071db11d9f652de/build_script_build-3071db11d9f652de -Wl,--gc-sections -pie -Wl,-z,relro,-z,now -nodefaultlibs ",
+      "tasks": [
+        {
+          "tid": 1346099,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        }
+      ]
+    },
+    {
+      "pid": 1346100,
+      "argv": "/usr/lib/gcc/x86_64-pc-linux-gnu/16/collect2 -plugin /usr/lib/gcc/x86_64-pc-linux-gnu/16/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-pc-linux-gnu/16/lto-wrapper -plugin-opt=-fresolution=/tmp/cc0HK3Cv.res --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -fuse-ld=lld -o /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2safe1345845/build/serde_json-3071db11d9f652de/build_script_build-3071db11d9f652de /usr/lib/gcc/x86_64-pc-linux-gnu/16/../../../../lib/Scrt1.o /usr/lib/gcc/x86_64-pc-linux-gnu/16/../../../../lib/crti.o /usr/lib/gcc/x86_64-pc-linux-gnu/16/crtbeginS.o -L/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2safe1345845/build/serde_json-3071db11d9f652de/rustc6Voxwd/raw-dylibs -L/usr/lib/rustlib/x86_64-unknown-linux-gnu/lib -L/usr/lib/gcc/x86_64-pc-linux-gnu/16 -L/usr/lib/gcc/x86_64-pc-linux-gnu/16/../../../../lib -L/lib/../lib -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-pc-linux-gnu/16/../../.. -L/lib -L/usr/lib /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2safe1345845/build/serde_json-3071db11d9f652de/rustc6Voxwd/symbols.o /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2safe1345845/build/serde_json-3071db11d9f652de/build_script_build-3071db11d9f652de.build_script_build.4540f6810f9d9f60-cgu.0.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2safe1345845/build/serde_json-3071db11d9f652de/build_script_build-3071db11d9f652de.9mxz3wny8ivjssny6295vapns.rcgu.o --as-needed -Bstatic /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libstd-a4cf8c125ff393c3.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libpanic_unwind-c4a83d2ad5b7d77e.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libobject-a6cb8640d85c6f1f.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libmemchr-62cbba516e3fc54b.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libaddr2line-0657a5020a640ff4.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libgimli-7fe78241b5959c4f.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libcfg_if-fd09dfee45479524.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/librustc_demangle-9291a67a3fef95d3.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libstd_detect-ef2244ebec09afd3.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libhashbrown-4b90e78548d258ab.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/librustc_std_workspace_alloc-c92825398a256ed2.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libminiz_oxide-c09f01c945a98da6.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libadler2-308af124736e5ef4.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libunwind-47edb10cd9214bb3.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/liblibc-1df101c03ce96979.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/librustc_std_workspace_core-359051371bed5a93.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/liballoc-49d9bbd1df19ee71.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libcore-e2cbb3bcd1db4897.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libcompiler_builtins-6279323f4be9bcf8.rlib -Bdynamic -lgcc_s -lutil -lrt -lpthread -lm -ldl -lc --eh-frame-hdr -z noexecstack --gc-sections -z relro -z now /usr/lib/gcc/x86_64-pc-linux-gnu/16/crtendS.o /usr/lib/gcc/x86_64-pc-linux-gnu/16/../../../../lib/crtn.o ",
+      "tasks": [
+        {
+          "tid": 1346100,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        }
+      ]
+    },
+    {
+      "pid": 1346101,
+      "argv": "/usr/bin/ld.lld -plugin /usr/lib/gcc/x86_64-pc-linux-gnu/16/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-pc-linux-gnu/16/lto-wrapper -plugin-opt=-fresolution=/tmp/cc0HK3Cv.res --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -o /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2safe1345845/build/serde_json-3071db11d9f652de/build_script_build-3071db11d9f652de /usr/lib/gcc/x86_64-pc-linux-gnu/16/../../../../lib/Scrt1.o /usr/lib/gcc/x86_64-pc-linux-gnu/16/../../../../lib/crti.o /usr/lib/gcc/x86_64-pc-linux-gnu/16/crtbeginS.o -L/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2safe1345845/build/serde_json-3071db11d9f652de/rustc6Voxwd/raw-dylibs -L/usr/lib/rustlib/x86_64-unknown-linux-gnu/lib -L/usr/lib/gcc/x86_64-pc-linux-gnu/16 -L/usr/lib/gcc/x86_64-pc-linux-gnu/16/../../../../lib -L/lib/../lib -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-pc-linux-gnu/16/../../.. -L/lib -L/usr/lib /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2safe1345845/build/serde_json-3071db11d9f652de/rustc6Voxwd/symbols.o /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2safe1345845/build/serde_json-3071db11d9f652de/build_script_build-3071db11d9f652de.build_script_build.4540f6810f9d9f60-cgu.0.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2safe1345845/build/serde_json-3071db11d9f652de/build_script_build-3071db11d9f652de.9mxz3wny8ivjssny6295vapns.rcgu.o --as-needed -Bstatic /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libstd-a4cf8c125ff393c3.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libpanic_unwind-c4a83d2ad5b7d77e.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libobject-a6cb8640d85c6f1f.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libmemchr-62cbba516e3fc54b.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libaddr2line-0657a5020a640ff4.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libgimli-7fe78241b5959c4f.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libcfg_if-fd09dfee45479524.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/librustc_demangle-9291a67a3fef95d3.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libstd_detect-ef2244ebec09afd3.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libhashbrown-4b90e78548d258ab.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/librustc_std_workspace_alloc-c92825398a256ed2.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libminiz_oxide-c09f01c945a98da6.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libadler2-308af124736e5ef4.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libunwind-47edb10cd9214bb3.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/liblibc-1df101c03ce96979.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/librustc_std_workspace_core-359051371bed5a93.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/liballoc-49d9bbd1df19ee71.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libcore-e2cbb3bcd1db4897.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libcompiler_builtins-6279323f4be9bcf8.rlib -Bdynamic -lgcc_s -lutil -lrt -lpthread -lm -ldl -lc --eh-frame-hdr -z noexecstack --gc-sections -z relro -z now /usr/lib/gcc/x86_64-pc-linux-gnu/16/crtendS.o /usr/lib/gcc/x86_64-pc-linux-gnu/16/../../../../lib/crtn.o ",
+      "tasks": [
+        {
+          "tid": 1346101,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        },
+        {
+          "tid": 1346102,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        },
+        {
+          "tid": 1346103,
+          "state": "R",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        },
+        {
+          "tid": 1346104,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        },
+        {
+          "tid": 1346105,
+          "state": "R",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        }
+      ]
+    }
+  ],
+  "environment": {
+    "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+    "CARGO_BUILD_JOBS": "2",
+    "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+    "RUST_TEST_THREADS": "1",
+    "RAYON_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "NODE_OPTIONS": "--v8-pool-size=1"
+  },
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "f11d39a192fa9a0dbd64dd618b2505c12908dcbbeb05dbc5fbab1708db25d286"
+}

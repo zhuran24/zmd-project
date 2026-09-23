@@ -1,0 +1,15 @@
+
+thread 'revision_cli_and_python_record_negatives' (1420926) panicked at crates/kernel/tests/support/mod.rs:15:5:
+output allocation failed: Traceback (most recent call last):
+  File "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/evidence_paths.py", line 76, in <module>
+    print(allocate(parser.parse_args().name))
+          ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/evidence_paths.py", line 45, in allocate
+    root = output_root()
+  File "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/evidence_paths.py", line 26, in output_root
+    root = real_directory(explicit)
+  File "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/evidence_paths.py", line 15, in real_directory
+    raise ValueError("output root must be absolute without parent traversal")
+ValueError: output root must be absolute without parent traversal
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

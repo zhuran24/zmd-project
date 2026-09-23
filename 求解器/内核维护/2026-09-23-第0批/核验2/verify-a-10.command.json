@@ -1,0 +1,58 @@
+{
+  "label": "verify-a-10",
+  "argv": [
+    "/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/kernel",
+    "verify-record",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/checkpoint-record/artifacts/run-full.json",
+    "--config",
+    "/tmp/kernel-audit2-v3r63b5w/求解器/规格/内核配置-v1.json"
+  ],
+  "cwd": "/tmp/kernel-audit2-v3r63b5w/求解器",
+  "returncode": 0,
+  "expected": 0,
+  "seconds": 0.1469502269901568,
+  "cpu_seconds": 0.12814399999999893,
+  "average_cores": 0.8720231511352644,
+  "max_total_threads": 1,
+  "max_runnable_threads": 1,
+  "affinity": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "violation": null,
+  "peak": [
+    {
+      "pid": 1433235,
+      "argv": "/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/kernel verify-record /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/checkpoint-record/artifacts/run-full.json --config /tmp/kernel-audit2-v3r63b5w/求解器/规格/内核配置-v1.json ",
+      "tasks": [
+        {
+          "tid": 1433235,
+          "state": "R",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        }
+      ]
+    }
+  ],
+  "environment": {
+    "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+    "CARGO_BUILD_JOBS": "2",
+    "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+    "RUST_TEST_THREADS": "1",
+    "RAYON_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "NODE_OPTIONS": "--v8-pool-size=1"
+  },
+  "stdout_sha256": "a0c67ece02718430d4a6e242efbc9b22b6d3a73a2064e4766ef483a81c8b7495",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

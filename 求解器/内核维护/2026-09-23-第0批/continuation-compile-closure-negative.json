@@ -1,0 +1,214 @@
+{
+  "passed": true,
+  "rejected": true,
+  "error": "{'lib_missing': ['/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/kernel/src/health_unregistered.rs'], 'uncompiled': []}",
+  "injected_module": "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/kernel/src/health_unregistered.rs",
+  "source_root": "/tmp/kernel-health-unregistered-zhjktrcj/求解器",
+  "profile": "health0negative1121206",
+  "artifacts": [
+    {
+      "artifact": {
+        "reason": "compiler-artifact",
+        "package_id": "path+file:///tmp/kernel-health-unregistered-zhjktrcj/%E6%B1%82%E8%A7%A3%E5%99%A8/crates/topology#0.1.0",
+        "manifest_path": "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/topology/Cargo.toml",
+        "target": {
+          "kind": [
+            "lib"
+          ],
+          "crate_types": [
+            "lib"
+          ],
+          "name": "topology",
+          "src_path": "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/topology/src/lib.rs",
+          "edition": "2021",
+          "doc": true,
+          "doctest": true,
+          "test": true
+        },
+        "profile": {
+          "opt_level": "0",
+          "debuginfo": 2,
+          "debug_assertions": true,
+          "overflow_checks": true,
+          "test": false
+        },
+        "features": [],
+        "filenames": [
+          "/home/zhuran24/zmd-research-fresh/求解器/target/health0negative1121206/deps/libtopology-bf1fc1afc7f71deb.rlib",
+          "/home/zhuran24/zmd-research-fresh/求解器/target/health0negative1121206/deps/libtopology-bf1fc1afc7f71deb.rmeta"
+        ],
+        "executable": null,
+        "fresh": false
+      },
+      "dep_info": "/home/zhuran24/zmd-research-fresh/求解器/target/health0negative1121206/deps/topology-bf1fc1afc7f71deb.d",
+      "sha256": "6cc6f4ff41c40ab0b2651d6c81c3131edb8f2ac38a918b01d2a2dea783001b4b",
+      "dependencies": [
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/topology/src/lib.rs",
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/数据/正式静态目录.json"
+      ]
+    },
+    {
+      "artifact": {
+        "reason": "compiler-artifact",
+        "package_id": "path+file:///tmp/kernel-health-unregistered-zhjktrcj/%E6%B1%82%E8%A7%A3%E5%99%A8/crates/topology#0.1.0",
+        "manifest_path": "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/topology/Cargo.toml",
+        "target": {
+          "kind": [
+            "bin"
+          ],
+          "crate_types": [
+            "bin"
+          ],
+          "name": "topology",
+          "src_path": "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/topology/src/main.rs",
+          "edition": "2021",
+          "doc": true,
+          "doctest": false,
+          "test": true
+        },
+        "profile": {
+          "opt_level": "0",
+          "debuginfo": 2,
+          "debug_assertions": true,
+          "overflow_checks": true,
+          "test": false
+        },
+        "features": [],
+        "filenames": [
+          "/home/zhuran24/zmd-research-fresh/求解器/target/health0negative1121206/topology"
+        ],
+        "executable": "/home/zhuran24/zmd-research-fresh/求解器/target/health0negative1121206/topology",
+        "fresh": false
+      },
+      "dep_info": "/home/zhuran24/zmd-research-fresh/求解器/target/health0negative1121206/topology.d",
+      "sha256": "3854319390b4db05a03c9474b02c5a1f7ff8d47bba85c80dd8a1fc45e0420d38",
+      "dependencies": [
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/topology/src/lib.rs",
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/topology/src/main.rs",
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/数据/正式静态目录.json"
+      ]
+    },
+    {
+      "artifact": {
+        "reason": "compiler-artifact",
+        "package_id": "path+file:///tmp/kernel-health-unregistered-zhjktrcj/%E6%B1%82%E8%A7%A3%E5%99%A8/crates/kernel#0.1.0",
+        "manifest_path": "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/kernel/Cargo.toml",
+        "target": {
+          "kind": [
+            "lib"
+          ],
+          "crate_types": [
+            "lib"
+          ],
+          "name": "kernel",
+          "src_path": "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/kernel/src/lib.rs",
+          "edition": "2021",
+          "doc": true,
+          "doctest": true,
+          "test": true
+        },
+        "profile": {
+          "opt_level": "0",
+          "debuginfo": 2,
+          "debug_assertions": true,
+          "overflow_checks": true,
+          "test": false
+        },
+        "features": [],
+        "filenames": [
+          "/home/zhuran24/zmd-research-fresh/求解器/target/health0negative1121206/deps/libkernel-ee4256eb8be4a7ed.rlib",
+          "/home/zhuran24/zmd-research-fresh/求解器/target/health0negative1121206/deps/libkernel-ee4256eb8be4a7ed.rmeta"
+        ],
+        "executable": null,
+        "fresh": false
+      },
+      "dep_info": "/home/zhuran24/zmd-research-fresh/求解器/target/health0negative1121206/deps/kernel-ee4256eb8be4a7ed.d",
+      "sha256": "04fa694268d746e3281522821a47e81033d73adbae393445eca8e09be39cdaee",
+      "dependencies": [
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/kernel/src/cache.rs",
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/kernel/src/catalog.rs",
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/kernel/src/config.rs",
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/kernel/src/cycle.rs",
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/kernel/src/cycle_io.rs",
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/kernel/src/digest.rs",
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/kernel/src/engine.rs",
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/kernel/src/event_identity.rs",
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/kernel/src/health_unregistered.rs",
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/kernel/src/input.rs",
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/kernel/src/interfaces.rs",
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/kernel/src/ledger.rs",
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/kernel/src/lib.rs",
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/kernel/src/model.rs",
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/kernel/src/output.rs",
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/kernel/src/polling.rs",
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/kernel/src/seed.rs",
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/kernel/src/transition.rs",
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/kernel/src/value.rs",
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/kernel/src/warehouse.rs",
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/数据/正式静态目录.json",
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/规格/内核配置-v1.json"
+      ]
+    },
+    {
+      "artifact": {
+        "reason": "compiler-artifact",
+        "package_id": "path+file:///tmp/kernel-health-unregistered-zhjktrcj/%E6%B1%82%E8%A7%A3%E5%99%A8/crates/kernel#0.1.0",
+        "manifest_path": "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/kernel/Cargo.toml",
+        "target": {
+          "kind": [
+            "bin"
+          ],
+          "crate_types": [
+            "bin"
+          ],
+          "name": "kernel",
+          "src_path": "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/kernel/src/main.rs",
+          "edition": "2021",
+          "doc": true,
+          "doctest": false,
+          "test": true
+        },
+        "profile": {
+          "opt_level": "0",
+          "debuginfo": 2,
+          "debug_assertions": true,
+          "overflow_checks": true,
+          "test": false
+        },
+        "features": [],
+        "filenames": [
+          "/home/zhuran24/zmd-research-fresh/求解器/target/health0negative1121206/kernel"
+        ],
+        "executable": "/home/zhuran24/zmd-research-fresh/求解器/target/health0negative1121206/kernel",
+        "fresh": false
+      },
+      "dep_info": "/home/zhuran24/zmd-research-fresh/求解器/target/health0negative1121206/kernel.d",
+      "sha256": "3d80ac7069cad82801c32770b725704423ef00b763a6e1e60d4596ca2d83b62c",
+      "dependencies": [
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/kernel/src/cache.rs",
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/kernel/src/catalog.rs",
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/kernel/src/config.rs",
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/kernel/src/cycle.rs",
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/kernel/src/cycle_io.rs",
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/kernel/src/digest.rs",
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/kernel/src/engine.rs",
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/kernel/src/event_identity.rs",
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/kernel/src/health_unregistered.rs",
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/kernel/src/input.rs",
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/kernel/src/interfaces.rs",
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/kernel/src/ledger.rs",
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/kernel/src/lib.rs",
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/kernel/src/main.rs",
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/kernel/src/model.rs",
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/kernel/src/output.rs",
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/kernel/src/polling.rs",
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/kernel/src/seed.rs",
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/kernel/src/transition.rs",
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/kernel/src/value.rs",
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/crates/kernel/src/warehouse.rs",
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/数据/正式静态目录.json",
+        "/tmp/kernel-health-unregistered-zhjktrcj/求解器/规格/内核配置-v1.json"
+      ]
+    }
+  ]
+}

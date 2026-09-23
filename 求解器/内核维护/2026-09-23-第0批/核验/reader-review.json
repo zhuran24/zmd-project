@@ -1,0 +1,17 @@
+{
+  "date": "2026-09-23T00:45:15.045876-04:00",
+  "report_sha256": "c27285500c43f269b8be26a4802ca5ea4a44fc2fa866ed980281919d13179e72",
+  "seven_checks": {
+    "self_contained": true,
+    "current_state_not_edit_history": true,
+    "status_and_body_consistent": true,
+    "no_style_instruction_echo": true,
+    "numbers_bound_to_final_snapshot": true,
+    "names_self_explanatory": true,
+    "all_links_exist": true
+  },
+  "linked_paths_checked": 22,
+  "missing_links": [],
+  "schema_validated": true,
+  "final_history_changed": 0
+}

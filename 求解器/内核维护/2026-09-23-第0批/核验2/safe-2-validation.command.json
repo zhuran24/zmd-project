@@ -1,0 +1,127 @@
+{
+  "label": "safe-2-validation",
+  "argv": [
+    "cargo",
+    "test",
+    "-p",
+    "topology",
+    "--test",
+    "validation",
+    "--locked",
+    "--offline",
+    "-j",
+    "2",
+    "--profile",
+    "healthaudit2safe1345845",
+    "--config",
+    "profile.healthaudit2safe1345845.inherits=\"dev\"",
+    "--config",
+    "profile.healthaudit2safe1345845.codegen-units=1",
+    "--",
+    "--test-threads=1"
+  ],
+  "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+  "returncode": 0,
+  "expected": 0,
+  "seconds": 6.078480826996383,
+  "cpu_seconds": 6.052375000000004,
+  "average_cores": 0.9957052053400522,
+  "max_total_threads": 5,
+  "max_runnable_threads": 2,
+  "affinity": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "violation": null,
+  "peak": [
+    {
+      "pid": 1366528,
+      "argv": "cargo test -p topology --test validation --locked --offline -j 2 --profile healthaudit2safe1345845 --config profile.healthaudit2safe1345845.inherits=\"dev\" --config profile.healthaudit2safe1345845.codegen-units=1 -- --test-threads=1 ",
+      "tasks": [
+        {
+          "tid": 1366528,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        },
+        {
+          "tid": 1366529,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        }
+      ]
+    },
+    {
+      "pid": 1366531,
+      "argv": "/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2safe1345845/deps/validation-2d77b7ea08304438 --test-threads=1 ",
+      "tasks": [
+        {
+          "tid": 1366531,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        },
+        {
+          "tid": 1366533,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        }
+      ]
+    },
+    {
+      "pid": 1366534,
+      "argv": "python /tmp/kernel-health-20260923-_5s65pp9/求解器/数据/工具/test_formal_catalog.py ",
+      "tasks": [
+        {
+          "tid": 1366534,
+          "state": "R",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 2
+        }
+      ]
+    }
+  ],
+  "environment": {
+    "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+    "CARGO_BUILD_JOBS": "2",
+    "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+    "RUST_TEST_THREADS": "1",
+    "RAYON_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "NODE_OPTIONS": "--v8-pool-size=1"
+  },
+  "stdout_sha256": "89c70652b2fd6342ed99920b23efe033318c25191d7c88b00eeb55585b947ef1",
+  "stderr_sha256": "aa3627e7e0433fb1f3af0c9e8b4bb3fbb3fb5904c56c2419bb94283be42a7ca6"
+}

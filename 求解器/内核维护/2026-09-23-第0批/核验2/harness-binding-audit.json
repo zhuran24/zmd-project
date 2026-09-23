@@ -1,0 +1,111 @@
+{
+  "passed": true,
+  "metadata_targets": 13,
+  "harnesses": [
+    {
+      "name": "validation",
+      "kind": [
+        "test"
+      ],
+      "count": 30,
+      "dep_info": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/validation-2d77b7ea08304438.d"
+    },
+    {
+      "name": "topology",
+      "kind": [
+        "bin"
+      ],
+      "count": 0,
+      "dep_info": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/topology-208981e14844f49e.d"
+    },
+    {
+      "name": "topology",
+      "kind": [
+        "lib"
+      ],
+      "count": 1,
+      "dep_info": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/topology-84c684aecc288bbd.d"
+    },
+    {
+      "name": "revision_cli",
+      "kind": [
+        "test"
+      ],
+      "count": 1,
+      "dep_info": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_cli-16d2a8aca958a1e2.d"
+    },
+    {
+      "name": "kernel",
+      "kind": [
+        "bin"
+      ],
+      "count": 0,
+      "dep_info": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/kernel-a23b9231946580be.d"
+    },
+    {
+      "name": "revision_r3_cli",
+      "kind": [
+        "test"
+      ],
+      "count": 1,
+      "dep_info": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_r3_cli-73bf228036d3dfbb.d"
+    },
+    {
+      "name": "revision_r4_cli",
+      "kind": [
+        "test"
+      ],
+      "count": 1,
+      "dep_info": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_r4_cli-0ff84fdc55db31c8.d"
+    },
+    {
+      "name": "reference",
+      "kind": [
+        "test"
+      ],
+      "count": 3,
+      "dep_info": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/reference-865fb275bacf969a.d"
+    },
+    {
+      "name": "round5_cli",
+      "kind": [
+        "test"
+      ],
+      "count": 1,
+      "dep_info": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/round5_cli-f12aa00d5116e14a.d"
+    },
+    {
+      "name": "revision_r2_cli",
+      "kind": [
+        "test"
+      ],
+      "count": 1,
+      "dep_info": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_r2_cli-02d118cfc7956648.d"
+    },
+    {
+      "name": "round6_cli",
+      "kind": [
+        "test"
+      ],
+      "count": 1,
+      "dep_info": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/round6_cli-48429a53f1b38e15.d"
+    },
+    {
+      "name": "revision_r5_cli",
+      "kind": [
+        "test"
+      ],
+      "count": 1,
+      "dep_info": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_r5_cli-b79a20e6639e72e8.d"
+    },
+    {
+      "name": "kernel",
+      "kind": [
+        "lib"
+      ],
+      "count": 108,
+      "dep_info": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/kernel-ab0acbad6798c3ae.d"
+    }
+  ],
+  "total": 149
+}

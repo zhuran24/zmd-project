@@ -1,0 +1,175 @@
+{
+  "unexpected": [],
+  "allowed_changes": [],
+  "concurrent": [
+    {
+      "path": "求解器/候选约束轮次/第63-65轮/A-运输格总量/calculate.py",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 5632,
+        "sha256": "2404794be7133f8c7fb973ae280075c19fdd7e118e1008ec37642ef0525089ce"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第63-65轮/A-运输格总量/corner_bound.py",
+      "before": {
+        "mode": 420,
+        "kind": "file",
+        "size": 3679,
+        "sha256": "08bf1c4a04dd858fb5ee41faabee99140b899d64cb3ab58ea197b118d01864c7"
+      },
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 3948,
+        "sha256": "eaaa899111a6605107a8b20f7e1273acf1ba167f0b6339354df48dc25065e29f"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第63-65轮/A-运输格总量/full_boundary.json",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 94684,
+        "sha256": "667519835b1b83b28049380e086064921cf78ce2fa4186347357c01daf5000ef"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第63-65轮/A-运输格总量/full_boundary.log",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 27330,
+        "sha256": "becfc8c35fe8d30068f0154689b3bd8b9bc5de6a6533104a8770761b4d4c3bb4"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第63-65轮/A-运输格总量/full_boundary.py",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 974,
+        "sha256": "da9126b86f6a2fda50d3cd0064dd3541e7abed836b713737c7b89176393a9ced"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第63-65轮/A-运输格总量/full_boundary_probe.json",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 8067,
+        "sha256": "13798ed44641cac3a2d401eb24ee95dbab16b69fe471bd266159859ec4436cbf"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第63-65轮/A-运输格总量/full_boundary_probe.log",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 2332,
+        "sha256": "fe333aaf361fa5ef2f1a0b2363ae4f99503acabb701b3f61f0e5c3665f2573ef"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第63-65轮/A-运输格总量/full_boundary_threshold.json",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 13202,
+        "sha256": "4d8b6eaabc1b11089c7643a8fa504585196b2733e1b34bfe3f6662493b8c79f3"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第63-65轮/A-运输格总量/full_boundary_threshold.log",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 4374,
+        "sha256": "0554225aed7a3185dc5236fe925eea026b8c5a3ce5efcf1416e1baea9d77f14d"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第63-65轮/A-运输格总量/relaxation_witness.json",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 7752,
+        "sha256": "51d7fedc86ebced22150d33b8272bd8105f04ff9daf5d24ffa632f302f40f82d"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第63-65轮/A-运输格总量/verify_corner.json",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 29182,
+        "sha256": "241c6d46cfa135397fc311e525356a057e49d1b6eaf87ff57e2a18034349cb31"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第63-65轮/A-运输格总量/verify_corner.log",
+      "before": {
+        "mode": 420,
+        "kind": "file",
+        "size": 3575,
+        "sha256": "2ba69454d6889b87c0832d9f3e7bacbfbb5bddf3aa96223c31e87d2c3f251e2a"
+      },
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 12004,
+        "sha256": "8e48a1b6e312d89b00463a8e065b0b11379aecfafcb22b4410383e2af8260cc9"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第63-65轮/A-运输格总量/verify_full_boundary.json",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 13861,
+        "sha256": "f1d01f7ac8f3e6332c91463a05e8fab4d41d2676e2c2adde23f3a7f32bcd1f6b"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第63-65轮/A-运输格总量/verify_full_boundary.log",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 11156,
+        "sha256": "f32990213fac619ed2aee58e542b4530673d0f9a14f58f3d7e9804b20b2031e6"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第63-65轮/A-运输格总量/verify_full_boundary.py",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 3945,
+        "sha256": "06f9187f98ea9c05e9eb57e2637c7ef52a76a775d68c4163f7aa56fe5ee9e6a5"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第63-65轮/B-切线容量",
+      "before": null,
+      "after": {
+        "mode": 493,
+        "kind": "directory"
+      }
+    }
+  ],
+  "history_changed": 0
+}

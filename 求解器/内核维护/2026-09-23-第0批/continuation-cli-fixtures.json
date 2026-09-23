@@ -1,0 +1,12 @@
+{
+  "files": [
+    {
+      "source": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/复核/r3-规格保真-证据/tiny-expired-after-closure-input.json",
+      "copy": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/复核/r3-规格保真-证据/tiny-expired-after-closure-input.json",
+      "sha256": "e532a59a7e11b9cc4b671d5708fdee1ca0be4c38db35654152e0eee27bf5ede4",
+      "size": 117587
+    }
+  ],
+  "classification": "read-only CLI historical test input; copied without relocation to preserve its original SHA-256. Not referenced by non-test dep-info or any of the 44 A/A captures.",
+  "production_context": "No production-consumed source/input/config/semantic/runtime dependency was added or changed; this test-only closure supplement is recorded separately from the A/A freeze."
+}

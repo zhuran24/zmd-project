@@ -1,0 +1,69 @@
+{
+  "label": "continue-aa-check-a-main",
+  "argv": [
+    "strace",
+    "-f",
+    "-qq",
+    "-yy",
+    "-s",
+    "4096",
+    "-e",
+    "trace=openat,openat2,execve,chdir",
+    "-o",
+    "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/continue-aa-check-a-main.trace.log",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/kernel",
+    "check",
+    "/tmp/kernel-audit2-v3r63b5w/求解器/数据/样例/生产循环环带.json",
+    "--config",
+    "/tmp/kernel-audit2-v3r63b5w/求解器/规格/内核配置-v1.json"
+  ],
+  "cwd": "/tmp/kernel-audit2-v3r63b5w/求解器",
+  "returncode": 0,
+  "expected": 0,
+  "seconds": 0.03686157499032561,
+  "cpu_seconds": 0.025070000000000148,
+  "average_cores": 0.6801120138404237,
+  "max_total_threads": 1,
+  "max_runnable_threads": 1,
+  "affinity": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "violation": null,
+  "peak": [
+    {
+      "pid": 1422656,
+      "argv": "strace -f -qq -yy -s 4096 -e trace=openat,openat2,execve,chdir -o /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/continue-aa-check-a-main.trace.log /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/kernel check /tmp/kernel-audit2-v3r63b5w/求解器/数据/样例/生产循环环带.json --config /tmp/kernel-audit2-v3r63b5w/求解器/规格/内核配置-v1.json ",
+      "tasks": [
+        {
+          "tid": 1422656,
+          "state": "R",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        }
+      ]
+    }
+  ],
+  "environment": {
+    "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+    "CARGO_BUILD_JOBS": "2",
+    "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+    "RUST_TEST_THREADS": "1",
+    "RAYON_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "NODE_OPTIONS": "--v8-pool-size=1",
+    "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/kernel"
+  },
+  "stdout_sha256": "fab901322c535b9f4f139f7b47fe5600774ba79d188e2f96a285a67cf62f9478",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

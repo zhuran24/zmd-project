@@ -1,0 +1,95 @@
+{
+  "verdict": "DONE",
+  "record_path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/记录.md",
+  "at": "2026-09-23T02:46:33.883463-04:00",
+  "history_changed": 6,
+  "existing_history_changed": 0,
+  "restoration_reconciled": true,
+  "history_recovery": "partial: 13 original byte streams unavailable and explicitly marked",
+  "safe_rounds": 2,
+  "safe_counts": {
+    "kernel-lib": 108,
+    "topology-lib": 1,
+    "reference": 3,
+    "validation": 30,
+    "kernel-doc": 0,
+    "topology-doc": 0
+  },
+  "harnesses": 13,
+  "tests_per_isolation_round": 149,
+  "cli_suites_per_round": 7,
+  "isolation_rounds": 2,
+  "compile_closure": true,
+  "omitted_module_rejected": true,
+  "production_byte_equal": true,
+  "aa_pairs": 44,
+  "reference_closure": true,
+  "entry_interfaces_validated": {
+    "passed": true,
+    "checks": [
+      {
+        "name": "check-isolation",
+        "expected": 0,
+        "exit_code": 0
+      },
+      {
+        "name": "wrong-profile",
+        "expected": 2,
+        "exit_code": 2
+      },
+      {
+        "name": "bad-binary",
+        "expected": 2,
+        "exit_code": 2
+      },
+      {
+        "name": "capture",
+        "expected": 0,
+        "exit_code": 0
+      },
+      {
+        "name": "compare",
+        "expected": 0,
+        "exit_code": 0
+      },
+      {
+        "name": "aa",
+        "expected": 0,
+        "exit_code": 0
+      },
+      {
+        "name": "old-context",
+        "expected": 2,
+        "exit_code": 2
+      },
+      {
+        "name": "wrong-source-map",
+        "expected": 2,
+        "exit_code": 2
+      },
+      {
+        "name": "tests",
+        "expected": 0,
+        "exit_code": 0
+      }
+    ],
+    "tests_safe_commands": 9,
+    "guarded_cli_suites": 7,
+    "positive_capture_context": "B explicitly bound to final source manifest",
+    "old_A_context_rejected": true
+  },
+  "clippy_warnings": 0,
+  "resource": {
+    "affinity": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "max_observed_average_cores": 1.9790072759824708,
+    "max_total_threads": 23
+  },
+  "git_operations": false,
+  "remaining": "none within batch 0 execution scope",
+  "known_limit": "R3 historical expired fixture keeps stale reference hashes and rejects at source validation; this is not new evidence of expired-gate semantic coverage."
+}

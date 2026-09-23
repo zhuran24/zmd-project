@@ -1,0 +1,69 @@
+{
+  "label": "continue-aa-check-invalid-input-b-main",
+  "argv": [
+    "strace",
+    "-f",
+    "-qq",
+    "-yy",
+    "-s",
+    "4096",
+    "-e",
+    "trace=openat,openat2,execve,chdir",
+    "-o",
+    "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/continue-aa-check-invalid-input-b-main.trace.log",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/kernel",
+    "check",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/check-invalid-input/artifacts/bad-input.json",
+    "--config",
+    "/tmp/kernel-audit2-v3r63b5w/求解器/规格/内核配置-v1.json"
+  ],
+  "cwd": "/tmp/kernel-audit2-v3r63b5w/求解器",
+  "returncode": 2,
+  "expected": 2,
+  "seconds": 0.03693309500522446,
+  "cpu_seconds": 0.0035910000000018982,
+  "average_cores": 0.09722986929456967,
+  "max_total_threads": 1,
+  "max_runnable_threads": 0,
+  "affinity": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "violation": null,
+  "peak": [
+    {
+      "pid": 1427968,
+      "argv": "",
+      "tasks": [
+        {
+          "tid": 1427968,
+          "state": "Z",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        }
+      ]
+    }
+  ],
+  "environment": {
+    "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+    "CARGO_BUILD_JOBS": "2",
+    "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+    "RUST_TEST_THREADS": "1",
+    "RAYON_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "NODE_OPTIONS": "--v8-pool-size=1",
+    "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/kernel"
+  },
+  "stdout_sha256": "0ffcce55932c2da8cba28c4b47cf2cc5a81f8479d782c72f37671f2cf2f74110",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

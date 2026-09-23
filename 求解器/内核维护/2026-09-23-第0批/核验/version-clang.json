@@ -1,0 +1,52 @@
+{
+  "label": "version-clang",
+  "argv": [
+    "/usr/bin/clang",
+    "--version"
+  ],
+  "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+  "profile": "healthaudit1790138325760877159",
+  "exit_code": 0,
+  "guard_reason": null,
+  "passed": true,
+  "command_tree_peak_threads": 1,
+  "observer_threads": 1,
+  "total_observed_lower_bound": 2,
+  "peak_processes": [
+    {
+      "pid": 1094159,
+      "threads": 1,
+      "name": "clang",
+      "state": "R (running)",
+      "thread_names": [
+        "clang"
+      ],
+      "argv": "/usr/bin/clang --version "
+    }
+  ],
+  "seconds": 0.006089077003707644,
+  "cpu_affinity": [
+    0
+  ],
+  "environment": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+    "CARGO_BUILD_JOBS": "1",
+    "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+    "RUST_TEST_THREADS": "1",
+    "RAYON_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "GIT_OPTIONAL_LOCKS": "0",
+    "CARGO_INCREMENTAL": "0",
+    "RUSTC_BOOTSTRAP": "1",
+    "RUSTC_WRAPPER": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验/rustc_serial.py",
+    "RUSTFLAGS": "-Z threads=1 -Z no-parallel-backend -C linker=clang -C link-arg=-fuse-ld=lld -C link-arg=-Wl,--threads=1",
+    "UV_THREADPOOL_SIZE": "1",
+    "NODE_OPTIONS": "--v8-pool-size=1"
+  },
+  "stdout_sha256": "b34bc07d6f612c599c0553d9ebfdb10c4cfba755e15e55fe31784394f657e202",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

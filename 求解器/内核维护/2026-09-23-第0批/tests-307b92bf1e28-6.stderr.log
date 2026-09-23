@@ -1,0 +1,3 @@
+   Compiling topology v0.1.0 (/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/topology)
+    Finished `healthreg307b92bf1e28` profile [unoptimized + debuginfo] target(s) in 0.41s
+     Running tests/validation.rs (/home/zhuran24/zmd-research-fresh/求解器/target/healthreg307b92bf1e28/deps/validation-2d77b7ea08304438)

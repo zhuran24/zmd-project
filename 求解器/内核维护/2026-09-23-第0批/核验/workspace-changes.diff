@@ -1,0 +1,694 @@
+--- a/求解器/crates/kernel/tests/benchmark_round6.py
++++ b/求解器/crates/kernel/tests/benchmark_round6.py
+@@ -1,6 +1,8 @@
+ """第六轮制造砖基准；实测含装载/输出的cycle墙钟和run内循环，阈值另列。"""
+ import sys
+ sys.dont_write_bytecode=True
++import os
++from evidence_paths import instance_dir
+ import argparse,hashlib,json,platform,subprocess,time
+ from types import SimpleNamespace
+ from pathlib import Path
+@@ -8,7 +10,7 @@
+ from generate_examples import unit
+ from runtime_example import quantity as q,time_value as t,decision
+ from migrate_round5 import migrate,save
+-ROOT=b.ROOT;E=ROOT/'crates/kernel/evidence/round6';BASE=ROOT/'数据/样例';BIN=ROOT/'target/release/kernel';CFG=ROOT/'规格/内核配置-v1.json'
++ROOT=b.ROOT;E=None;BASE=ROOT/'数据/样例';BIN=Path(os.environ.get('KERNEL_BIN',ROOT/'target/release/kernel'));CFG=ROOT/'规格/内核配置-v1.json'
+ PRODUCTS=('高容谷地电池','精选荞愈胶囊')
+ def call(args):
+  p=subprocess.run([str(BIN),*map(str,args),'--config',str(CFG)],capture_output=True,text=True)
+@@ -21,7 +23,7 @@
+   recipe=next(r for r in b.CATALOG['recipes'] if r['kind']==kind);recipes[f'm{i}']=recipe
+   units += [unit(f'm{i}',kind,x,y),unit(f'box{i}','协议储存箱',x,y+5),unit(f'power{i}','供电桩',x+6,y+3)]
+   units += [unit(f'b{i}_{j}','传送带',x+j,y+4) for j in range(3)]
+- b.OUT=BASE;d=b.generate('双成品制造砖',units)
++ b.OUT=E;d=b.generate('双成品制造砖',units)
+  b.set_axis(d,'warehouse.external_supply',{'kind':'sufficient'})
+  for s in d['settings']['switches']:s['enabled']=True
+  inventory=d['initial_state']['nonwarehouse']['value']['inventory']
+@@ -29,15 +31,16 @@
+   for j,item in enumerate(recipe['inputs']):next(r for r in inventory if r['slot']==f'{uid}:input:{j}')['contents']=[dict(item=item,quantity=q(50),entered_at=t(-1))]
+  d['initial_state']['reachability']=decision({'kind':'conditional_state','document':str(E/'实施与验证.md'),'scope':'性能专用条件预装原料；不声称从L6满仓可达，不作为K6达标布局'},'第六轮K5：正式配方真制造，初始两成品在仓内外均为零')
+  d['scenario']['assertions']=['9台末级制造、9箱无线入库；55单位/54PC，有限预置50件各原料，不是持续闭环。']
+- path=BASE/'双成品制造砖.json';save(path,migrate(d));call(['seed',path,'--out',path]);return path
++ path=E/'双成品制造砖.json';save(path,migrate(d));call(['seed',path,'--out',path]);return path
+ 
+ def main():
+  global E
+  parser=argparse.ArgumentParser();parser.add_argument('stage',choices=['before','final']);parser.add_argument('--generate',action='store_true');parser.add_argument('--out-dir',type=Path);args=parser.parse_args()
+- if args.out_dir:E=args.out_dir.resolve();E.mkdir(parents=True,exist_ok=True)
++ E=instance_dir('benchmark_round6')
++ if args.out_dir and args.out_dir.resolve()!=E: raise ValueError('--out-dir must be the allocated instance; use KERNEL_TEST_INSTANCE_DIR')
+  if args.generate:generate()
+  reports=[]
+- sources=[ROOT/'crates/kernel/tests/fixtures'/f'{name}.json' for name in ('benchmark_brick_60','benchmark_brick','benchmark_candidate_b')]+[BASE/'双成品制造砖.json']
++ sources=[ROOT/'crates/kernel/tests/fixtures'/f'{name}.json' for name in ('benchmark_brick_60','benchmark_brick','benchmark_candidate_b')]+[(E if args.generate else BASE)/'双成品制造砖.json']
+  for path in sources:
+   raw=json.loads(path.read_text());shape=dict(total_units=len(raw['layout']['units']),physical_channels=len(raw['layout']['physical_channels']),manufacturing_units=sum(u['kind'] in {r['kind'] for r in b.CATALOG['recipes']} for u in raw['layout']['units']))
+   ticks=32 if path.name=='双成品制造砖.json' else 12;measurements={}
+@@ -57,7 +60,7 @@
+   reports.append(dict(name=path.stem,shape=shape,ticks=ticks,input_sha256=hashlib.sha256(path.read_bytes()).hexdigest(),modes=measurements,target_ms_per_tick=target,run_target_met=measurements['run']['engine_ms_per_tick']<=target,cycle_wall_target_met=measurements['cycle']['wall_ms_per_tick']<=target))
+   print(path.stem,measurements,flush=True)
+  # 真制造和双成品实际入库另用可核v3记录证明；计时不含该有记录审计。
+- path=BASE/'双成品制造砖.json';record=BASE/'双成品制造砖-运行记录-v3-kernel.json'
++ path=(E if args.generate else BASE)/'双成品制造砖.json';record=E/'双成品制造砖-运行记录-v3-kernel.json'
+  call(['run',path,'--ticks',12,'--out',record]);call(['verify-record',record])
+  data=json.loads(record.read_text());totals={p:sum(int(r['actual_inbound']['value']) for tick in data['trace']['ticks'] for r in tick['warehouse_ledger']['totals'] if r['item']==p) for p in PRODUCTS}
+  assert all(v>0 for v in totals.values()) and int(data['validation_scope']['manufacturing_cycles_completed']['value'])>0
+--- a/求解器/crates/kernel/tests/evidence_paths.py
++++ b/求解器/crates/kernel/tests/evidence_paths.py
+@@ -0,0 +1,76 @@
++"""Allocate isolated test instances; importing this module never writes."""
++import argparse
++import json
++import os
++from pathlib import Path
++import re
++import sys
++import uuid
++
++SHARED_TARGET = Path("/home/zhuran24/zmd-research-fresh/求解器/target")
++
++def real_directory(path):
++    path = Path(path)
++    if not path.is_absolute() or ".." in path.parts:
++        raise ValueError("output root must be absolute without parent traversal")
++    for ancestor in (*reversed(path.parents), path):
++        if ancestor.is_symlink():
++            raise ValueError("symlink in output path: " + str(ancestor))
++    if path.exists() and not path.is_dir():
++        raise ValueError("not a directory: " + str(path))
++    return path
++
++def output_root():
++    explicit = os.environ.get("KERNEL_TEST_EVIDENCE_DIR")
++    if explicit:
++        root = real_directory(explicit)
++        run = real_directory(os.environ["HEALTH_RUN"])
++        registration = json.loads((run / "run-registration.json").read_text())
++        if registration != dict(run=str(run), evidence=str(root), created_empty=True):
++            raise ValueError("unregistered output root")
++        if root != run / "cargo-test-evidence" or run.parent.name != "内核维护":
++            raise ValueError("output root is outside this maintenance run")
++        if not root.is_dir():
++            raise ValueError("registered output root missing")
++    else:
++        base = real_directory(SHARED_TARGET / "health-tests")
++        base.mkdir(exist_ok=True)
++        root = base / ("run-" + uuid.uuid4().hex)
++        root.mkdir()
++    return root
++
++def allocate(name):
++    if not re.fullmatch(r"[a-z][a-z0-9_]*", name):
++        raise ValueError("invalid test name")
++    root = output_root()
++    instance = root / (name + "-" + uuid.uuid4().hex)
++    instance.mkdir(mode=0o700)
++    (instance / ".instance.json").write_text(json.dumps(dict(test=name, instance=str(instance), root=str(root))))
++    print("kernel test evidence retained: " + str(instance), file=sys.stderr)
++    return instance
++
++def instance_dir(name):
++    supplied = os.environ.get("KERNEL_TEST_INSTANCE_DIR")
++    if not supplied:
++        return allocate(name)
++    instance = real_directory(supplied)
++    if os.environ.get("KERNEL_TEST_EVIDENCE_DIR"):
++        parent = output_root()
++    else:
++        parent = real_directory(instance.parent)
++        base = real_directory(SHARED_TARGET / "health-tests")
++        if parent.parent != base or not re.fullmatch(r"run-[0-9a-f]{32}", parent.name):
++            raise ValueError("unregistered default instance")
++    if instance.parent != parent or not re.fullmatch(re.escape(name) + r"-[0-9a-f]{32}", instance.name):
++        raise ValueError("instance outside registered root")
++    manifest = json.loads((instance / ".instance.json").read_text())
++    if manifest != dict(test=name, instance=str(instance), root=str(parent)):
++        raise ValueError("instance identity mismatch")
++    if sorted(p.name for p in instance.iterdir()) != [".instance.json"]:
++        raise ValueError("instance is not new and empty")
++    (instance / "python-source.json").write_text(json.dumps(dict(file=str(Path(sys.argv[0]).resolve()), root=str(Path(__file__).resolve().parents[3]))))
++    return instance
++
++if __name__ == "__main__":
++    parser = argparse.ArgumentParser(); parser.add_argument("name")
++    print(allocate(parser.parse_args().name))
+--- a/求解器/crates/kernel/tests/revision_cli.py
++++ b/求解器/crates/kernel/tests/revision_cli.py
+@@ -1,18 +1,18 @@
+ #!/usr/bin/env python3
+-"""第1轮修订：公开CLI负例与Python落盘验收变异；所有文件写入本crate证据目录。"""
++"""第1轮修订：公开CLI负例与Python落盘验收变异；所有文件写入独占测试目录。"""
+ import copy
+ import json
+ import subprocess
+ import sys
+-import tempfile
++from evidence_paths import instance_dir
+ from pathlib import Path
+ import verify_outputs as verifier
+ 
+ ROOT = Path(__file__).resolve().parents[3]
+-EVIDENCE = ROOT / 'crates/kernel/evidence/revision-r2'
+-OUT = EVIDENCE / 'tmp'
++EVIDENCE = None
++OUT = None
+ CONFIG = ROOT / '规格/内核配置-v1.json'
+-BIN = Path(sys.argv[1]).resolve()
++BIN = None
+ 
+ 
+ def write(path, value):
+@@ -97,7 +97,8 @@
+ 
+ 
+ if __name__ == '__main__':
+-    OUT.mkdir(parents=True, exist_ok=True)
+-    with tempfile.TemporaryDirectory(prefix='cli-', dir=OUT) as directory:
+-        OUT = Path(directory)
+-        main()
++    EVIDENCE = instance_dir('revision_cli')
++    BIN = Path(sys.argv[1]).resolve()
++    OUT = EVIDENCE / 'tmp'
++    OUT.mkdir()
++    main()
+--- a/求解器/crates/kernel/tests/revision_cli.rs
++++ b/求解器/crates/kernel/tests/revision_cli.rs
+@@ -1,12 +1,15 @@
+ //! 第1轮修订：公开CLI和独立Python落盘验收均进入cargo test。
++mod support;
+ use std::{path::PathBuf, process::Command};
+ 
+ /// 内核输入§2、§3与内核输出§1–§3：生成真实文件再验收，篡改必须非零拒绝。
+ #[test]
+ fn revision_cli_and_python_record_negatives() {
++    let evidence = support::evidence_dir("revision_cli");
+     let script = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/revision_cli.py");
+     let output = Command::new("python")
+         .arg("-B")
++        .env("KERNEL_TEST_INSTANCE_DIR", &evidence)
+         .arg(script)
+         .arg(env!("CARGO_BIN_EXE_kernel"))
+         .env("PYTHONDONTWRITEBYTECODE", "1")
+--- a/求解器/crates/kernel/tests/revision_r2_cli.py
++++ b/求解器/crates/kernel/tests/revision_r2_cli.py
+@@ -1,16 +1,16 @@
+-"""第2轮修订：双样例双编码元数据篡改及真实CLI输入反例，临时文件只在本crate内。"""
++"""第2轮修订：双样例双编码元数据篡改及真实CLI输入反例，临时文件只在独占测试目录内。"""
+ import copy
+ import json
+ import subprocess
+ import sys
+-import tempfile
++from evidence_paths import instance_dir
+ from pathlib import Path
+ import verify_outputs as verifier
+ 
+ ROOT = Path(__file__).resolve().parents[3]
+-EVIDENCE = ROOT / 'crates/kernel/evidence/revision-r2'
++EVIDENCE = None
+ CONFIG = ROOT / '规格/内核配置-v1.json'
+-BIN = Path(sys.argv[1]).resolve()
++BIN = None
+ 
+ 
+ def write(path, data):
+@@ -142,6 +142,8 @@
+ 
+ 
+ if __name__ == '__main__':
+-    EVIDENCE.mkdir(exist_ok=True)
+-    with tempfile.TemporaryDirectory(prefix='r2-cli-', dir=EVIDENCE) as directory:
+-        main(Path(directory))
++    EVIDENCE = instance_dir('revision_r2_cli')
++    BIN = Path(sys.argv[1]).resolve()
++    directory = EVIDENCE / 'tmp'
++    directory.mkdir()
++    main(directory)
+--- a/求解器/crates/kernel/tests/revision_r2_cli.rs
++++ b/求解器/crates/kernel/tests/revision_r2_cli.rs
+@@ -1,12 +1,15 @@
+ //! 第2轮修订：实际CLI与独立Python验收的元数据和输入负例纳入cargo test。
++mod support;
+ use std::{path::PathBuf, process::Command};
+ 
+ /// 内核输出§3、内核输入§1–§6：真文件、真进程及有效对照同时核验。
+ #[test]
+ fn revision_r2_cli_and_python_record_negatives() {
++    let evidence = support::evidence_dir("revision_r2_cli");
+     let script = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/revision_r2_cli.py");
+     let output = Command::new("python")
+         .arg("-B")
++        .env("KERNEL_TEST_INSTANCE_DIR", &evidence)
+         .arg(script)
+         .arg(env!("CARGO_BIN_EXE_kernel"))
+         .env("PYTHONDONTWRITEBYTECODE", "1")
+--- a/求解器/crates/kernel/tests/revision_r3_cli.py
++++ b/求解器/crates/kernel/tests/revision_r3_cli.py
+@@ -1,5 +1,6 @@
+ #!/usr/bin/env python3
+ """第3轮公开CLI回归：错误须有JSON结果，检查点不修补，资源未决不降格。"""
++from evidence_paths import instance_dir
+ import copy
+ import hashlib
+ import json
+@@ -9,7 +10,7 @@
+ import sys
+ 
+ ROOT = Path(__file__).resolve().parents[3]
+-OUT = ROOT / 'crates/kernel/evidence/round6/regressions/revision-r3'
++OUT = None
+ BIN = Path(os.environ.get('KERNEL_BIN', ROOT / 'target/release/kernel'))
+ CFG = ROOT / '规格/内核配置-v1.json'
+ REPORTS = []
+@@ -63,6 +64,10 @@
+ 
+ 
+ def main():
++    global OUT
++    assert hashlib.sha256((ROOT / 'crates/kernel/复核/r3-规格保真-证据/gate-expired-after-closure-input.json').read_bytes()).hexdigest() == 'e3179739624643208053567874190b2dbc3e8a387b394e6105cc861cf62f5e19', 'required historical fixture mismatch: gate-expired-after-closure-input.json'
++    assert hashlib.sha256((ROOT / 'crates/kernel/复核/r3-规格保真-证据/tiny-expired-cycle.json').read_bytes()).hexdigest() == '5d7fb60fd4ba78be19d47b39b9e728c98fe4c0f0ff68ec99158ba229f94e711d', 'required historical fixture mismatch: tiny-expired-cycle.json'
++    OUT = instance_dir('revision_r3_cli')
+     OUT.mkdir(parents=True, exist_ok=True)
+     original = source('桥接器双通路')
+     record = invoke('bridge-control', 'run', save('bridge-input', original), 'completed', ticks=7)
+@@ -129,12 +134,11 @@
+     reject_all('expired-after-closure', read(expired))
+     # 原复核的小门证书只在循环起点之前有延迟W事件；必须先由独立身份检查拒收。
+     legacy = ROOT / 'crates/kernel/复核/r3-规格保真-证据/tiny-expired-cycle.json'
+-    if legacy.exists():
+-        bad = invoke('legacy-late-window-cycle', 'verify-cycle', legacy, 'invalid_input')
+-        # 第六轮拒收旧内嵌式版本；下方仍独立核其待事件时序错误。
+-        assert any('字段须恰为' in s or '版本不符' in s for s in bad['open_items']), bad
+-        embedded = save('legacy-late-window-record', read(legacy)['run_record'])
+-        invoke('legacy-late-window-record', 'verify-record', embedded, 'invalid_input')
++    bad = invoke('legacy-late-window-cycle', 'verify-cycle', legacy, 'invalid_input')
++    # 第六轮拒收旧内嵌式版本；下方仍独立核其待事件时序错误。
++    assert any('字段须恰为' in s or '版本不符' in s for s in bad['open_items']), bad
++    embedded = save('legacy-late-window-record', read(legacy)['run_record'])
++    invoke('legacy-late-window-record', 'verify-record', embedded, 'invalid_input')
+     result = dict(status='pass',binary=str(BIN),binary_sha256=hashlib.sha256(BIN.read_bytes()).hexdigest(),
+                   cases=REPORTS,checkpoint_state_preserved=True,checkpoint_resume_fields_equal=True)
+     save('results', result)
+--- a/求解器/crates/kernel/tests/revision_r3_cli.rs
++++ b/求解器/crates/kernel/tests/revision_r3_cli.rs
+@@ -1,10 +1,13 @@
+ //! 第3轮：公开入口回归必须由本次Cargo构建的CLI执行。
++mod support;
+ use std::process::Command;
+ 
+ #[test]
+ fn revision_r3_public_cli_regressions() {
++    let evidence = support::evidence_dir("revision_r3_cli");
+     let output = Command::new("python")
+         .arg("-B")
++        .env("KERNEL_TEST_INSTANCE_DIR", &evidence)
+         .arg(concat!(
+             env!("CARGO_MANIFEST_DIR"),
+             "/tests/revision_r3_cli.py"
+--- a/求解器/crates/kernel/tests/revision_r4_cli.py
++++ b/求解器/crates/kernel/tests/revision_r4_cli.py
+@@ -1,5 +1,6 @@
+ #!/usr/bin/env python3
+ """第4轮公开CLI证据：库存年龄、trigger封闭、空分支、未用轴和停止锚点。"""
++from evidence_paths import instance_dir
+ import copy
+ import hashlib
+ import json
+@@ -8,7 +9,7 @@
+ import subprocess
+ 
+ ROOT = Path(__file__).resolve().parents[3]
+-OUT = ROOT / 'crates/kernel/evidence/revision-r4/cli'
++OUT = None
+ BIN = Path(os.environ.get('KERNEL_BIN', ROOT / 'target/release/kernel'))
+ CFG = ROOT / '规格/内核配置-v1.json'
+ 
+@@ -32,6 +33,8 @@
+ 
+ 
+ def main():
++    global OUT
++    OUT = instance_dir('revision_r4_cli')
+     OUT.mkdir(parents=True, exist_ok=True)
+     cases = []
+ 
+--- a/求解器/crates/kernel/tests/revision_r4_cli.rs
++++ b/求解器/crates/kernel/tests/revision_r4_cli.rs
+@@ -1,13 +1,24 @@
+ //! 第4轮：使用本次Cargo构建的公开CLI核验真实文件及独立schema。
++mod support;
+ use std::process::Command;
+ 
+ #[test]
+ fn revision_r4_public_cli_regressions() {
++    let evidence = support::evidence_dir("revision_r4_cli");
+     let result = Command::new("python")
+         .arg("-B")
+-        .arg(concat!(env!("CARGO_MANIFEST_DIR"), "/tests/revision_r4_cli.py"))
++        .env("KERNEL_TEST_INSTANCE_DIR", &evidence)
++        .arg(concat!(
++            env!("CARGO_MANIFEST_DIR"),
++            "/tests/revision_r4_cli.py"
++        ))
+         .env("KERNEL_BIN", env!("CARGO_BIN_EXE_kernel"))
+         .output()
+         .unwrap();
+-    assert!(result.status.success(), "{}\n{}", String::from_utf8_lossy(&result.stdout), String::from_utf8_lossy(&result.stderr));
++    assert!(
++        result.status.success(),
++        "{}\n{}",
++        String::from_utf8_lossy(&result.stdout),
++        String::from_utf8_lossy(&result.stderr)
++    );
+ }
+--- a/求解器/crates/kernel/tests/revision_r5_cli.py
++++ b/求解器/crates/kernel/tests/revision_r5_cli.py
+@@ -1,4 +1,5 @@
+-"""修订r5公共入口回归；仅在round6/revision-r5内保存试样、JSON和原始日志。"""
++"""修订r5公共入口回归；仅在独占测试目录内保存试样、JSON和原始日志。"""
++from evidence_paths import instance_dir
+ import copy
+ import hashlib
+ import json
+@@ -15,7 +16,7 @@
+ 
+ ROOT = Path(__file__).resolve().parents[3]
+ BASE = ROOT / '数据/样例'
+-E = ROOT / 'crates/kernel/evidence/round6/revision-r5/cli'
++E = None
+ BIN = Path(os.environ.get('KERNEL_BIN', ROOT / 'target/release/kernel'))
+ CFG = ROOT / '规格/内核配置-v1.json'
+ CASES = []
+@@ -52,6 +53,8 @@
+ 
+ 
+ def main():
++    global E
++    E = instance_dir('revision_r5_cli')
+     E.mkdir(parents=True, exist_ok=True)
+     positives = []
+     source = BASE / '生产循环环带.json'
+--- a/求解器/crates/kernel/tests/revision_r5_cli.rs
++++ b/求解器/crates/kernel/tests/revision_r5_cli.rs
+@@ -1,10 +1,13 @@
+ //! 修订r5：公共入口回归包含不同cwd、两种记录编码及诊断恢复拒收。
++mod support;
+ use std::process::Command;
+ 
+ #[test]
+ fn revision_r5_public_cli_regressions() {
++    let evidence = support::evidence_dir("revision_r5_cli");
+     let result = Command::new("python")
+         .arg("-B")
++        .env("KERNEL_TEST_INSTANCE_DIR", &evidence)
+         .arg(concat!(
+             env!("CARGO_MANIFEST_DIR"),
+             "/tests/revision_r5_cli.py"
+--- a/求解器/crates/kernel/tests/round5_cli.rs
++++ b/求解器/crates/kernel/tests/round5_cli.rs
+@@ -1,4 +1,5 @@
+ //! 第五轮K5/K8：真实CLI的资源统计及装载停止仍遵守循环外壳。
++mod support;
+ use serde_json::{json, Value};
+ use std::{path::PathBuf, process::Command};
+ #[test]
+@@ -8,11 +9,7 @@
+         .canonicalize()
+         .unwrap();
+     let config = root.join("规格/内核配置-v1.json");
+-    let out = std::env::var_os("KERNEL_TEST_EVIDENCE_DIR")
+-        .map(PathBuf::from)
+-        .unwrap_or_else(|| root.join("crates/kernel/evidence/round5"))
+-        .join("round5_cli");
+-    std::fs::create_dir_all(&out).unwrap();
++    let out = support::evidence_dir("round5_cli");
+     let exported = out.join("relocated-seed.json");
+     let process = Command::new(env!("CARGO_BIN_EXE_kernel"))
+         .arg("seed")
+--- a/求解器/crates/kernel/tests/round6_cli.py
++++ b/求解器/crates/kernel/tests/round6_cli.py
+@@ -3,8 +3,9 @@
+ sys.dont_write_bytecode=True
+ import copy,hashlib,json,os,subprocess
+ from pathlib import Path
++from evidence_paths import instance_dir
+ from verify_all import schema_check
+-ROOT=Path(__file__).resolve().parents[3];E=ROOT/'crates/kernel/evidence/round6/cli';E.mkdir(parents=True,exist_ok=True)
++ROOT=Path(__file__).resolve().parents[3];E=None
+ BIN=Path(os.environ.get('KERNEL_BIN',ROOT/'target/release/kernel'));CFG=ROOT/'规格/内核配置-v1.json';BASE=ROOT/'数据/样例'
+ def read(p):return json.loads(p.read_text())
+ def save(p,d):p.write_text(json.dumps(d,ensure_ascii=False,indent=2)+'\n');return p
+@@ -12,74 +13,79 @@
+  p=subprocess.run([str(BIN),*map(str,args),'--config',str(CFG)],capture_output=True,text=True,cwd=cwd)
+  assert (p.returncode==0)==ok,(args,p.returncode,p.stdout,p.stderr)
+  return json.loads(p.stdout) if p.stdout.strip() else None
+-cases=[];positives=[]
+-for mode in ('referenced','none'):
+- cert=E/(mode+'.json');flags=['--no-record'] if mode=='none' else []
+- call('cycle',BASE/'生产循环环带.json','--max-ticks',50,'--out',cert,*flags)
+- r=read(cert);assert r['record_mode']==mode;assert 'run_record' not in r and 'replay_input' not in r
+- verified=call('verify-cycle',cert,cwd=ROOT.parent);assert verified['cycle_replayed'] and verified['prefix_replayed']>verified['period']
+- positives.append(cert)
+- relative=copy.deepcopy(r)
+- for ref in ('replay_input_ref','run_record_ref'):
+-  if relative[ref]:
+-   relative[ref]['path']=os.path.relpath(relative[ref]['path'],E)
+-   relative[ref]['producer']['path']=os.path.relpath(relative[ref]['producer']['path'],E)
+- for row in relative['fingerprints']:row['path']=os.path.relpath(row['path'],E)
+- relative['cycle']['normalization']['definition']['path']=os.path.relpath(relative['cycle']['normalization']['definition']['path'],E)
+- p=save(E/(mode+'-relative.json'),relative);call('verify-cycle',p,cwd=ROOT.parent);positives.append(p)
+- cases.append(dict(name=mode+'-relative-cwd',status='pass',verification=verified))
+- mutations=[('missing_input',lambda d:d['replay_input_ref'].update(path='missing.json')),
+- ('input_hash',lambda d:d['replay_input_ref'].update(sha256='0'*64)),
+- ('input_format',lambda d:d['replay_input_ref'].update(format='kernel-output-v3')),
+- ('input_producer',lambda d:d['replay_input_ref']['producer'].update(kind='input_generator')),
+- ('producer_claim',lambda d:d['replay_input_ref']['producer'].update(claim='冒名')),
+- ('seed_reachability',lambda d:d['seed'].update(reachability=None)),
+- ('parameter_point',lambda d:d['parameter_point']['input_axes'].clear()),
+- ('reading',lambda d:d['reading'].update(port_meeting='closed_segment_touch')),
+- ('missing_domain',lambda d:d['domain_report'].pop()),
+- ('static_as_cycle',lambda d:d['domain_report'][1].update(scope='static')),
+- ('rate',lambda d:d['cycle']['rates'][0].update(comparison='gt')),
+- ('ledger',lambda d:d['cycle']['ledger'].pop()),
+- ('acceptance',lambda d:d['cycle']['acceptance'][0]['products'][0].update(selected_acceptance=False)),
+- ('start_key',lambda d:d['cycle'].update(start_key=None)),
+- ('unreachable_start',lambda d:d['cycle']['start_state']['environment']['time']['value'].update(value='-500')),
+- ('prefix_erasure',lambda d:d['budget'].update(completed_ticks=0)),
+- ('full_base',lambda d:d.update(level='full_base'))]
+- if mode=='referenced':mutations += [('missing_record',lambda d:d['run_record_ref'].update(path='missing.json')),('record_format',lambda d:d['run_record_ref'].update(format='kernel-output-v3/checkpoint_delta')),('record_producer',lambda d:d['run_record_ref']['producer'].update(kind='bounded_reference_checker'))]
+- for name,change in mutations:
+-  bad=copy.deepcopy(r);change(bad);call('verify-cycle',save(E/'tamper.json',bad),ok=False);cases.append(dict(name=mode+'-'+name,status='rejected'))
+- if mode=='referenced':
+-  record=read(Path(r['run_record_ref']['path']));record['trace']['ticks'][0]['events'].append(copy.deepcopy(record['trace']['ticks'][0]['events'][0]))
+-  changed=save(E/'tampered-record.json',record);bad=copy.deepcopy(r);bad['run_record_ref']['path']=str(changed);bad['run_record_ref']['sha256']=hashlib.sha256(changed.read_bytes()).hexdigest()
+-  call('verify-cycle',save(E/'tamper.json',bad),ok=False);changed.unlink();cases.append(dict(name='resealed-record-duplicate-event',status='rejected'))
+- # 引用文件改字节，不改证书摘要。
+- original=Path(r['replay_input_ref']['path']);mutated=E/'mutated-input.json';mutated.write_bytes(original.read_bytes()+b' ')
+- bad=copy.deepcopy(r);bad['replay_input_ref']['path']=str(mutated);call('verify-cycle',save(E/'tamper.json',bad),ok=False);cases.append(dict(name=mode+'-changed_bytes',status='rejected'))
+- # 已装载首刻失败须保留可恢复种子和引用。
+- p=E/(mode+'-zero-prefix.json');call('cycle',BASE/'生产循环环带.json','--max-ticks',2,'--max-sweeps',1,'--out',p,*flags)
+- zero=read(p);assert zero['budget']['completed_ticks']==0 and zero['seed'] and zero['last_state'] and zero['replay_input_ref'];call('verify-cycle',p);positives.append(p)
+- if mode=='referenced':
+-  record=read(Path(zero['run_record_ref']['path']));assert record['trace']['ticks']==[] and record['trace']['end_time']==record['trace']['start_state']['environment']['time']
+- cases.append(dict(name=mode+'-loaded-zero-prefix',status='pass'))
+-# 检查点导出后第一个新时刻为t+1；固定参数、既有游标保持。
+-checkpoint=E/'checkpoint-input.json';call('checkpoint',E/'none.json','--out',checkpoint)
+-cp=read(checkpoint);state=read(E/'none.json')['cycle']['end_state'];assert cp['initial_state']['nonwarehouse']['value']==state
+-continued=E/'continued.json';call('cycle',checkpoint,'--no-record','--max-ticks',25,'--out',continued);call('verify-cycle',continued);positives.append(continued)
+-assert read(continued)['cycle']['start_state']==state
+-# 未装载整数溢出维持resource，结构合法，但不能给独立核验通过。
+-raw=read(BASE/'生产循环环带.json')
+-for ref in (raw['catalog'],raw['parameters']['axis_registry']):ref['path']=str((BASE/ref['path']).resolve())
+-next(r for r in raw['initial_state']['nonwarehouse']['value']['inventory'] if r['contents'])['contents'][0]['entered_at']['value']['value']=str(-(2**63))
+-source=save(E/'overflow-input.json',raw);shell=E/'overflow.json';call('cycle',source,'--max-ticks',2,'--out',shell,ok=False)
+-d=read(shell);assert d['status']=='inconclusive' and d['stop']['kind']=='resource' and d['replay_input_ref'] is None and d['last_state'] is None
+-diagnostic=call('verify-cycle',shell);assert diagnostic['diagnostic_replayed'] and not diagnostic['cycle_replayed'];positives.append(shell);cases.append(dict(name='KQ-09-load-resource',status='diagnostic_replayed_no_cycle'))
+-forged=copy.deepcopy(d)
+-for row in forged['fingerprints']:
+- if row['role']=='input':row.update(path=str(BASE/'生产循环环带.json'),sha256=hashlib.sha256((BASE/'生产循环环带.json').read_bytes()).hexdigest())
+-call('verify-cycle',save(E/'tamper.json',forged),ok=False);cases.append(dict(name='loaded-input-forged-as-load-shell',status='rejected'))
+-# 无轨迹静态入口。
+-static=call('check',BASE/'生产循环环带.json','--cycle-domain');assert static['trajectory_executed'] is False and all(r['scope']=='static' for r in static['domain_report']);save(E/'domain-static.json',static)
+-schema_check(positives)
+-(E/'tamper.json').unlink();(E/'mutated-input.json').unlink()
+-report=dict(status='pass',cases=cases,positive_schema_documents=len(positives),schema_sha256=hashlib.sha256((ROOT/'规格/内核输出.schema.json').read_bytes()).hexdigest())
+-save(E/'results.json',report);print(json.dumps(dict(status='pass',cases=len(cases),positive_schema_documents=len(positives)),ensure_ascii=False))
++def main():
++ global E
++ E=instance_dir('round6_cli')
++ cases=[];positives=[]
++ for mode in ('referenced','none'):
++  cert=E/(mode+'.json');flags=['--no-record'] if mode=='none' else []
++  call('cycle',BASE/'生产循环环带.json','--max-ticks',50,'--out',cert,*flags)
++  r=read(cert);assert r['record_mode']==mode;assert 'run_record' not in r and 'replay_input' not in r
++  verified=call('verify-cycle',cert,cwd=ROOT.parent);assert verified['cycle_replayed'] and verified['prefix_replayed']>verified['period']
++  positives.append(cert)
++  relative=copy.deepcopy(r)
++  for ref in ('replay_input_ref','run_record_ref'):
++   if relative[ref]:
++    relative[ref]['path']=os.path.relpath(relative[ref]['path'],E)
++    relative[ref]['producer']['path']=os.path.relpath(relative[ref]['producer']['path'],E)
++  for row in relative['fingerprints']:row['path']=os.path.relpath(row['path'],E)
++  relative['cycle']['normalization']['definition']['path']=os.path.relpath(relative['cycle']['normalization']['definition']['path'],E)
++  p=save(E/(mode+'-relative.json'),relative);call('verify-cycle',p,cwd=ROOT.parent);positives.append(p)
++  cases.append(dict(name=mode+'-relative-cwd',status='pass',verification=verified))
++  mutations=[('missing_input',lambda d:d['replay_input_ref'].update(path='missing.json')),
++  ('input_hash',lambda d:d['replay_input_ref'].update(sha256='0'*64)),
++  ('input_format',lambda d:d['replay_input_ref'].update(format='kernel-output-v3')),
++  ('input_producer',lambda d:d['replay_input_ref']['producer'].update(kind='input_generator')),
++  ('producer_claim',lambda d:d['replay_input_ref']['producer'].update(claim='冒名')),
++  ('seed_reachability',lambda d:d['seed'].update(reachability=None)),
++  ('parameter_point',lambda d:d['parameter_point']['input_axes'].clear()),
++  ('reading',lambda d:d['reading'].update(port_meeting='closed_segment_touch')),
++  ('missing_domain',lambda d:d['domain_report'].pop()),
++  ('static_as_cycle',lambda d:d['domain_report'][1].update(scope='static')),
++  ('rate',lambda d:d['cycle']['rates'][0].update(comparison='gt')),
++  ('ledger',lambda d:d['cycle']['ledger'].pop()),
++  ('acceptance',lambda d:d['cycle']['acceptance'][0]['products'][0].update(selected_acceptance=False)),
++  ('start_key',lambda d:d['cycle'].update(start_key=None)),
++  ('unreachable_start',lambda d:d['cycle']['start_state']['environment']['time']['value'].update(value='-500')),
++  ('prefix_erasure',lambda d:d['budget'].update(completed_ticks=0)),
++  ('full_base',lambda d:d.update(level='full_base'))]
++  if mode=='referenced':mutations += [('missing_record',lambda d:d['run_record_ref'].update(path='missing.json')),('record_format',lambda d:d['run_record_ref'].update(format='kernel-output-v3/checkpoint_delta')),('record_producer',lambda d:d['run_record_ref']['producer'].update(kind='bounded_reference_checker'))]
++  for name,change in mutations:
++   bad=copy.deepcopy(r);change(bad);call('verify-cycle',save(E/'tamper.json',bad),ok=False);cases.append(dict(name=mode+'-'+name,status='rejected'))
++  if mode=='referenced':
++   record=read(Path(r['run_record_ref']['path']));record['trace']['ticks'][0]['events'].append(copy.deepcopy(record['trace']['ticks'][0]['events'][0]))
++   changed=save(E/'tampered-record.json',record);bad=copy.deepcopy(r);bad['run_record_ref']['path']=str(changed);bad['run_record_ref']['sha256']=hashlib.sha256(changed.read_bytes()).hexdigest()
++   call('verify-cycle',save(E/'tamper.json',bad),ok=False);changed.unlink();cases.append(dict(name='resealed-record-duplicate-event',status='rejected'))
++  # 引用文件改字节，不改证书摘要。
++  original=Path(r['replay_input_ref']['path']);mutated=E/'mutated-input.json';mutated.write_bytes(original.read_bytes()+b' ')
++  bad=copy.deepcopy(r);bad['replay_input_ref']['path']=str(mutated);call('verify-cycle',save(E/'tamper.json',bad),ok=False);cases.append(dict(name=mode+'-changed_bytes',status='rejected'))
++  # 已装载首刻失败须保留可恢复种子和引用。
++  p=E/(mode+'-zero-prefix.json');call('cycle',BASE/'生产循环环带.json','--max-ticks',2,'--max-sweeps',1,'--out',p,*flags)
++  zero=read(p);assert zero['budget']['completed_ticks']==0 and zero['seed'] and zero['last_state'] and zero['replay_input_ref'];call('verify-cycle',p);positives.append(p)
++  if mode=='referenced':
++   record=read(Path(zero['run_record_ref']['path']));assert record['trace']['ticks']==[] and record['trace']['end_time']==record['trace']['start_state']['environment']['time']
++  cases.append(dict(name=mode+'-loaded-zero-prefix',status='pass'))
++ # 检查点导出后第一个新时刻为t+1；固定参数、既有游标保持。
++ checkpoint=E/'checkpoint-input.json';call('checkpoint',E/'none.json','--out',checkpoint)
++ cp=read(checkpoint);state=read(E/'none.json')['cycle']['end_state'];assert cp['initial_state']['nonwarehouse']['value']==state
++ continued=E/'continued.json';call('cycle',checkpoint,'--no-record','--max-ticks',25,'--out',continued);call('verify-cycle',continued);positives.append(continued)
++ assert read(continued)['cycle']['start_state']==state
++ # 未装载整数溢出维持resource，结构合法，但不能给独立核验通过。
++ raw=read(BASE/'生产循环环带.json')
++ for ref in (raw['catalog'],raw['parameters']['axis_registry']):ref['path']=str((BASE/ref['path']).resolve())
++ next(r for r in raw['initial_state']['nonwarehouse']['value']['inventory'] if r['contents'])['contents'][0]['entered_at']['value']['value']=str(-(2**63))
++ source=save(E/'overflow-input.json',raw);shell=E/'overflow.json';call('cycle',source,'--max-ticks',2,'--out',shell,ok=False)
++ d=read(shell);assert d['status']=='inconclusive' and d['stop']['kind']=='resource' and d['replay_input_ref'] is None and d['last_state'] is None
++ diagnostic=call('verify-cycle',shell);assert diagnostic['diagnostic_replayed'] and not diagnostic['cycle_replayed'];positives.append(shell);cases.append(dict(name='KQ-09-load-resource',status='diagnostic_replayed_no_cycle'))
++ forged=copy.deepcopy(d)
++ for row in forged['fingerprints']:
++  if row['role']=='input':row.update(path=str(BASE/'生产循环环带.json'),sha256=hashlib.sha256((BASE/'生产循环环带.json').read_bytes()).hexdigest())
++ call('verify-cycle',save(E/'tamper.json',forged),ok=False);cases.append(dict(name='loaded-input-forged-as-load-shell',status='rejected'))
++ # 无轨迹静态入口。
++ static=call('check',BASE/'生产循环环带.json','--cycle-domain');assert static['trajectory_executed'] is False and all(r['scope']=='static' for r in static['domain_report']);save(E/'domain-static.json',static)
++ schema_check(positives)
++ (E/'tamper.json').unlink();(E/'mutated-input.json').unlink()
++ report=dict(status='pass',cases=cases,positive_schema_documents=len(positives),schema_sha256=hashlib.sha256((ROOT/'规格/内核输出.schema.json').read_bytes()).hexdigest())
++ save(E/'results.json',report);print(json.dumps(dict(status='pass',cases=len(cases),positive_schema_documents=len(positives)),ensure_ascii=False))
++
++if __name__=='__main__':main()
+--- a/求解器/crates/kernel/tests/round6_cli.rs
++++ b/求解器/crates/kernel/tests/round6_cli.rs
+@@ -1,9 +1,12 @@
+ //! 第六轮公开CLI：引用、两模式、独立重跑、检查点及装载边界。
++mod support;
+ use std::process::Command;
+ #[test]
+ fn round6_public_cli_regressions() {
++    let evidence = support::evidence_dir("round6_cli");
+     let result = Command::new("python")
+         .arg("-B")
++        .env("KERNEL_TEST_INSTANCE_DIR", &evidence)
+         .arg(concat!(env!("CARGO_MANIFEST_DIR"), "/tests/round6_cli.py"))
+         .env("KERNEL_BIN", env!("CARGO_BIN_EXE_kernel"))
+         .output()
+--- a/求解器/crates/kernel/tests/support/mod.rs
++++ b/求解器/crates/kernel/tests/support/mod.rs
+@@ -0,0 +1,26 @@
++//! Test-only output allocation shared by all public CLI harnesses.
++use std::{path::PathBuf, process::Command};
++
++pub fn evidence_dir(name: &str) -> PathBuf {
++    let output = Command::new("python")
++        .arg("-B")
++        .arg(concat!(
++            env!("CARGO_MANIFEST_DIR"),
++            "/tests/evidence_paths.py"
++        ))
++        .arg(name)
++        .env("PYTHONDONTWRITEBYTECODE", "1")
++        .output()
++        .expect("start test output allocator");
++    assert!(
++        output.status.success(),
++        "output allocation failed: {}",
++        String::from_utf8_lossy(&output.stderr)
++    );
++    eprint!("{}", String::from_utf8_lossy(&output.stderr));
++    PathBuf::from(
++        String::from_utf8(output.stdout)
++            .expect("allocator path is UTF-8")
++            .trim(),
++    )
++}
+--- a/求解器/数据/工具/kernel_file_guard.py
++++ b/求解器/数据/工具/kernel_file_guard.py
+@@ -0,0 +1,40 @@
++#!/usr/bin/env python3
++"""Content guard: files, modes, directories and symlinks; no symlink traversal."""
++import argparse, hashlib, json, os, stat
++from pathlib import Path
++
++def digest(path):
++    with open(path, "rb") as f: return hashlib.file_digest(f, "sha256").hexdigest()
++
++def scan(root, excludes=()):
++    root=Path(root).absolute(); rows={}
++    def visit(p):
++        rel=str(p.relative_to(root))
++        if any(rel==e or rel.startswith(e+"/") for e in excludes): return
++        s=p.lstat(); row={"mode":stat.S_IMODE(s.st_mode)}
++        if stat.S_ISLNK(s.st_mode): row.update(kind="symlink",target=os.readlink(p),size=s.st_size)
++        elif stat.S_ISDIR(s.st_mode):
++            row.update(kind="directory")
++            for c in sorted(p.iterdir()): visit(c)
++        elif stat.S_ISREG(s.st_mode): row.update(kind="file",size=s.st_size,sha256=digest(p))
++        else: raise ValueError("unsupported file: "+str(p))
++        rows[rel]=row
++    visit(root)
++    return {"root":str(root),"excludes":list(excludes),"entries":rows}
++
++def changes(before, after):
++    a,b=before["entries"],after["entries"]
++    return [{"path":p,"before":a.get(p),"after":b.get(p)} for p in sorted(a.keys()|b.keys()) if a.get(p)!=b.get(p)]
++
++def write(path, data):
++    Path(path).write_text(json.dumps(data,ensure_ascii=False,indent=2)+"\n")
++
++def main():
++    p=argparse.ArgumentParser(); sub=p.add_subparsers(dest="action",required=True)
++    s=sub.add_parser("snapshot");s.add_argument("--root",required=True);s.add_argument("--out",required=True);s.add_argument("--exclude",action="append",default=[])
++    v=sub.add_parser("verify");v.add_argument("--before",required=True);v.add_argument("--out",required=True)
++    a=p.parse_args()
++    if a.action=="snapshot": write(a.out,scan(a.root,a.exclude))
++    else:
++        before=json.loads(Path(a.before).read_text()); diff=changes(before,scan(before["root"],before["excludes"]));write(a.out,{"passed":not diff,"changes":diff});return bool(diff)
++if __name__=="__main__": raise SystemExit(main())
+--- a/求解器/数据/工具/test_formal_catalog.py
++++ b/求解器/数据/工具/test_formal_catalog.py
+@@ -37,9 +37,7 @@
+             self.assertNotEqual(parse_constraints(changed), self.catalog['constraints'])
+ 
+     def test_any_source_byte_drift_is_rejected(self):
+-        directory = ROOT/'target'
+-        directory.mkdir(exist_ok=True)
+-        with tempfile.TemporaryDirectory(dir=directory) as name:
++        with tempfile.TemporaryDirectory(prefix='kernel-formal-catalog-', dir='/tmp') as name:
+             repo = Path(name)
+             for source in self.catalog['sources']:
+                 (repo/source['path']).write_bytes((ROOT.parent/source['path']).read_bytes())

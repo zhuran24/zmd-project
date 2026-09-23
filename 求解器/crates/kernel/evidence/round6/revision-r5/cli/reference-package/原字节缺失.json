@@ -1,0 +1,29 @@
+{
+  "status": "原字节缺失",
+  "files": [
+    {
+      "path": "crates/kernel/evidence/round6/revision-r5/cli/reference-package/分流器三路轮询-full_state_each_instant.json",
+      "original_sha256": "3e303f2c75a16f1a98edbc3b86a15364dc6d95a43124add79e61236200e1ee3b",
+      "original_bytes": 2103272,
+      "current_sha256": "6dafb4a9a5d318f29636e3349ec977fd46a0fe15311551e862df6ec4590fff5e",
+      "current_bytes": 2100944,
+      "disposition": "现存替代字节原地保留；不是原字节恢复",
+      "disposition_path": "crates/kernel/evidence/round6/revision-r5/cli/reference-package/分流器三路轮询-full_state_each_instant.json"
+    },
+    {
+      "path": "crates/kernel/evidence/round6/revision-r5/cli/reference-package/分流器三路轮询-checkpoint_delta.json",
+      "original_sha256": "2a15dd6abb434f56b1418cd92b267267cad7f8d4cf37f6878179304f3271ddef",
+      "original_bytes": 1346674,
+      "current_sha256": "e851d7fdd389bc627882b669a6fdb9eb24ab62fad1206ce426503ad244cc57d5",
+      "current_bytes": 1351842,
+      "disposition": "现存替代字节原地保留；不是原字节恢复",
+      "disposition_path": "crates/kernel/evidence/round6/revision-r5/cli/reference-package/分流器三路轮询-checkpoint_delta.json"
+    }
+  ],
+  "search_basis": [
+    "内核维护/2026-09-22d/审查-opus/unresolved_targets.json",
+    "内核维护/2026-09-22d/审查处理核验/extra-facts.json"
+  ],
+  "search_limit": "沿用已记录的可访问范围与四个 Git 对象库未命中结果；未宣称全机穷尽。",
+  "continuation": "2026-09-23 第0批补记；现存历史文件字节未改。"
+}

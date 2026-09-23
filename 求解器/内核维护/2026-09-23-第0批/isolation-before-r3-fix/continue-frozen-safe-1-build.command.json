@@ -1,0 +1,297 @@
+{
+  "label": "continue-frozen-safe-1-build",
+  "argv": [
+    "cargo",
+    "build",
+    "--workspace",
+    "--locked",
+    "--offline",
+    "-j",
+    "2",
+    "--profile",
+    "health0bsafe1149564",
+    "--config",
+    "profile.health0bsafe1149564.inherits=\"dev\"",
+    "--config",
+    "profile.health0bsafe1149564.codegen-units=1"
+  ],
+  "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+  "returncode": 0,
+  "expected": 0,
+  "seconds": 7.73886112600303,
+  "cpu_seconds": 12.276892,
+  "cpu_cores_average": 1.5863951814239072,
+  "max_total_threads": 19,
+  "max_runnable_threads": 3,
+  "affinity": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "peak": [
+    {
+      "pid": 1149930,
+      "argv": "cargo build --workspace --locked --offline -j 2 --profile health0bsafe1149564 --config profile.health0bsafe1149564.inherits=\"dev\" --config profile.health0bsafe1149564.codegen-units=1 ",
+      "tasks": [
+        {
+          "tid": 1149930,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "cargo"
+        },
+        {
+          "tid": 1149931,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "futures-timer"
+        },
+        {
+          "tid": 1149932,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "cargo"
+        },
+        {
+          "tid": 1150147,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "cargo"
+        },
+        {
+          "tid": 1150185,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "cargo"
+        }
+      ]
+    },
+    {
+      "pid": 1150148,
+      "argv": "rustc --crate-name serde_derive --edition=2021 /home/zhuran24/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_derive-1.0.229/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type proc-macro --emit=dep-info,link -C prefer-dynamic -C embed-bitcode=no --cfg feature=\"default\" --check-cfg cfg(docsrs,test) --check-cfg cfg(feature, values(\"default\", \"deserialize_in_place\")) -C metadata=78e9cd9b6027b655 -C extra-filename=-0600ff3e7650e339 --out-dir /home/zhuran24/zmd-research-fresh/求解器/target/health0bsafe1149564/deps -L dependency=/home/zhuran24/zmd-research-fresh/求解器/target/health0bsafe1149564/deps --extern proc_macro2=/home/zhuran24/zmd-research-fresh/求解器/target/health0bsafe1149564/deps/libproc_macro2-55711b2b0fb8f36d.rlib --extern quote=/home/zhuran24/zmd-research-fresh/求解器/target/health0bsafe1149564/deps/libquote-c1cbf251bf11eeb1.rlib --extern syn=/home/zhuran24/zmd-research-fresh/求解器/target/health0bsafe1149564/deps/libsyn-23d48756d8308cf3.rlib --extern proc_macro --cap-lints allow ",
+      "tasks": [
+        {
+          "tid": 1150148,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "rustc"
+        },
+        {
+          "tid": 1150149,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "ctrl-c"
+        },
+        {
+          "tid": 1150152,
+          "state": "S",
+          "cpu_ticks": 53,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "rustc"
+        },
+        {
+          "tid": 1150154,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "rustc"
+        },
+        {
+          "tid": 1150193,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "rustc"
+        },
+        {
+          "tid": 1150194,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "coordinator"
+        },
+        {
+          "tid": 1150195,
+          "state": "R",
+          "cpu_ticks": 2,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "opt cgu.00"
+        }
+      ]
+    },
+    {
+      "pid": 1150186,
+      "argv": "rustc --crate-name memchr --edition=2021 /home/zhuran24/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/memchr-2.8.3/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C codegen-units=1 -C debuginfo=2 --cfg feature=\"alloc\" --cfg feature=\"std\" --check-cfg cfg(docsrs,test) --check-cfg cfg(feature, values(\"alloc\", \"core\", \"default\", \"libc\", \"logging\", \"rustc-dep-of-std\", \"std\", \"use_std\")) -C metadata=c30da9bbf63c9675 -C extra-filename=-36e976fdf93bed29 --out-dir /home/zhuran24/zmd-research-fresh/求解器/target/health0bsafe1149564/deps -L dependency=/home/zhuran24/zmd-research-fresh/求解器/target/health0bsafe1149564/deps --cap-lints allow ",
+      "tasks": [
+        {
+          "tid": 1150186,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "rustc"
+        },
+        {
+          "tid": 1150187,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "ctrl-c"
+        },
+        {
+          "tid": 1150188,
+          "state": "S",
+          "cpu_ticks": 14,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "rustc"
+        },
+        {
+          "tid": 1150189,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "rustc"
+        },
+        {
+          "tid": 1150190,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "rustc"
+        },
+        {
+          "tid": 1150191,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "coordinator"
+        },
+        {
+          "tid": 1150192,
+          "state": "R",
+          "cpu_ticks": 5,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "opt cgu.0"
+        }
+      ]
+    }
+  ],
+  "violation": null,
+  "protection_error": null,
+  "environment": {
+    "PATH": "/home/zhuran24/.codex/tmp/arg0/codex-arg07mihkU:/home/zhuran24/.cargo/bin:/home/zhuran24/.local/bin:/home/zhuran24/.opencode/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/home/zhuran24/.local/share/flatpak/exports/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/home/zhuran24/.config/Claude/local-agent-mode-sessions/skills-plugin/cf875e59-d94b-492e-ba7a-6d2a070f0f30/92f6071f-e8b1-40cd-8c37-9d23302ed76c/bin",
+    "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+    "CARGO_BUILD_JOBS": "2",
+    "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+    "RUST_TEST_THREADS": "1",
+    "RAYON_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "NODE_OPTIONS": "--v8-pool-size=1"
+  },
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "cd9d251d2f867c747b1f2f981bab50dd4370e40487445506c874bdc427a41f02"
+}

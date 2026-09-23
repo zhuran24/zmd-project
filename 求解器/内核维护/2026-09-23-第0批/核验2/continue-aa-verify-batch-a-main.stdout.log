@@ -1,0 +1,34 @@
+{
+  "status": "input_checked",
+  "read_only": true,
+  "records": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/verify-batch/batch/cycle.record.json",
+      "ticks": {
+        "ticks": 20,
+        "wireless_item_transactions": 1
+      }
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/verify-batch/batch/finite-record.json",
+      "ticks": {
+        "ticks": 12,
+        "wireless_item_transactions": 1
+      }
+    }
+  ],
+  "cycles": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/verify-batch/batch/cycle.json",
+      "verification": {
+        "cycle_replayed": false,
+        "prefix_replayed": 20,
+        "reason": "原种子前缀及停止/预算位置已复现，无周期",
+        "status": "input_checked"
+      }
+    }
+  ],
+  "reference_records": 0,
+  "historical_records": [],
+  "scope": "当前v4记录和v3周期按现行源、schema、Rust重放及Python部分接收账验收；旧版本列作史料。"
+}

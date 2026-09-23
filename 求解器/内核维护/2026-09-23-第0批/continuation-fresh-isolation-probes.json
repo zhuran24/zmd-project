@@ -1,0 +1,112 @@
+{
+  "imports": [
+    {
+      "module": "revision_cli",
+      "exit_code": 0,
+      "stdout": "import and explicit main: pass\n",
+      "stderr": ""
+    },
+    {
+      "module": "revision_r2_cli",
+      "exit_code": 0,
+      "stdout": "import and explicit main: pass\n",
+      "stderr": ""
+    },
+    {
+      "module": "revision_r3_cli",
+      "exit_code": 0,
+      "stdout": "import and explicit main: pass\n",
+      "stderr": ""
+    },
+    {
+      "module": "revision_r4_cli",
+      "exit_code": 0,
+      "stdout": "import and explicit main: pass\n",
+      "stderr": ""
+    },
+    {
+      "module": "revision_r5_cli",
+      "exit_code": 0,
+      "stdout": "import and explicit main: pass\n",
+      "stderr": ""
+    },
+    {
+      "module": "round6_cli",
+      "exit_code": 0,
+      "stdout": "import and explicit main: pass\n",
+      "stderr": ""
+    }
+  ],
+  "positive": {
+    "two_instances_unique": true,
+    "explicit_paths": [
+      "/tmp/kernel-health-bounded-l9esezuv/probes/内核维护/中文 空格/cargo-test-evidence/audit_probe-65b94ec7cfb54a0cb0dda18955217fd2",
+      "/tmp/kernel-health-bounded-l9esezuv/probes/内核维护/中文 空格/cargo-test-evidence/audit_probe-ac03ff8bf41948c08e051e7a82673f6d"
+    ],
+    "rust_to_python_style_instance": "/tmp/kernel-health-bounded-l9esezuv/probes/内核维护/中文 空格/cargo-test-evidence/audit_probe-65b94ec7cfb54a0cb0dda18955217fd2",
+    "default_target_instance": "/home/zhuran24/zmd-research-fresh/求解器/target/health-tests/run-541ba5323082493ca8b07368fe767438/audit_default-17e3826782714674b82aa0e16c4457a1"
+  },
+  "negative": [
+    {
+      "case": "reused_instance",
+      "rejected": true,
+      "error": "instance is not new and empty"
+    },
+    {
+      "case": "illegal_root:relative",
+      "rejected": true,
+      "error": "output root must be absolute without parent traversal"
+    },
+    {
+      "case": "illegal_root:/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/evidence",
+      "rejected": true,
+      "error": "unregistered output root"
+    },
+    {
+      "case": "illegal_root:/tmp/kernel-health-bounded-l9esezuv/probes/../escape",
+      "rejected": true,
+      "error": "output root must be absolute without parent traversal"
+    },
+    {
+      "case": "ancestor_symlink",
+      "rejected": true,
+      "error": "symlink in output path: /tmp/kernel-health-bounded-l9esezuv/probes/link"
+    }
+  ],
+  "fixture_prefix": [
+    {
+      "case": "both_valid",
+      "reached_allocator": true,
+      "error": "revision_r3_cli",
+      "passed": true
+    },
+    {
+      "case": "missing_first",
+      "reached_allocator": false,
+      "error": "[Errno 2] No such file or directory: '/tmp/kernel-audit-fixtures-zzp84ype/missing_first/crates/kernel/复核/r3-规格保真-证据/gate-expired-after-closure-input.json'",
+      "passed": true
+    },
+    {
+      "case": "wrong_first",
+      "reached_allocator": false,
+      "error": "required historical fixture mismatch: gate-expired-after-closure-input.json",
+      "passed": true
+    },
+    {
+      "case": "missing_second",
+      "reached_allocator": false,
+      "error": "[Errno 2] No such file or directory: '/tmp/kernel-audit-fixtures-zzp84ype/missing_second/crates/kernel/复核/r3-规格保真-证据/tiny-expired-cycle.json'",
+      "passed": true
+    },
+    {
+      "case": "wrong_second",
+      "reached_allocator": false,
+      "error": "required historical fixture mismatch: tiny-expired-cycle.json",
+      "passed": true
+    }
+  ],
+  "fixture_sandbox": "/tmp/kernel-audit-fixtures-zzp84ype",
+  "full_cli_executed": false,
+  "scope": "allocator functions, import side-effect denial, and mandatory fixture prefix only",
+  "all_bounded_checks_pass": true
+}

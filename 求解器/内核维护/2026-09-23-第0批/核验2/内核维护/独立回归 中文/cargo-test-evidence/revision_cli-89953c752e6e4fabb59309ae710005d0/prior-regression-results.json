@@ -1,0 +1,311 @@
+{
+  "status": "通过",
+  "controls": 4,
+  "metadata_negatives": 40,
+  "cli_negatives": 5,
+  "checkpoint_resume_controls": 1,
+  "cases": [
+    {
+      "case": "混做粉碎机两下游-full_state_each_instant",
+      "kind": "有效对照",
+      "status": "通过"
+    },
+    {
+      "case": "混做粉碎机两下游-full_state_each_instant-remove_all",
+      "kind": "篡改拒收",
+      "status": "通过",
+      "reason": "来源清单不闭合"
+    },
+    {
+      "case": "混做粉碎机两下游-full_state_each_instant-remove_formal",
+      "kind": "篡改拒收",
+      "status": "通过",
+      "reason": "来源清单不闭合"
+    },
+    {
+      "case": "混做粉碎机两下游-full_state_each_instant-remove_checker",
+      "kind": "篡改拒收",
+      "status": "通过",
+      "reason": "来源清单不闭合"
+    },
+    {
+      "case": "混做粉碎机两下游-full_state_each_instant-fake_count",
+      "kind": "篡改拒收",
+      "status": "通过",
+      "reason": "验证范围与完整重算不符"
+    },
+    {
+      "case": "混做粉碎机两下游-full_state_each_instant-fake_from",
+      "kind": "篡改拒收",
+      "status": "通过",
+      "reason": "验证范围与完整重算不符"
+    },
+    {
+      "case": "混做粉碎机两下游-full_state_each_instant-fake_through",
+      "kind": "篡改拒收",
+      "status": "通过",
+      "reason": "验证范围与完整重算不符"
+    },
+    {
+      "case": "混做粉碎机两下游-full_state_each_instant-fake_golden",
+      "kind": "篡改拒收",
+      "status": "通过",
+      "reason": "验证范围与完整重算不符"
+    },
+    {
+      "case": "混做粉碎机两下游-full_state_each_instant-fake_initial_history",
+      "kind": "篡改拒收",
+      "status": "通过",
+      "reason": "$: oneOf 匹配数须为1，实为0"
+    },
+    {
+      "case": "混做粉碎机两下游-full_state_each_instant-true_certified",
+      "kind": "篡改拒收",
+      "status": "通过",
+      "reason": "$: oneOf 匹配数须为1，实为0"
+    },
+    {
+      "case": "混做粉碎机两下游-full_state_each_instant-bad_summary",
+      "kind": "篡改拒收",
+      "status": "通过",
+      "reason": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-89953c752e6e4fabb59309ae710005d0/tmp/混做粉碎机两下游-full_state_each_instant-bad_summary.json"
+    },
+    {
+      "case": "混做粉碎机两下游-checkpoint_delta",
+      "kind": "有效对照",
+      "status": "通过"
+    },
+    {
+      "case": "混做粉碎机两下游-checkpoint_delta-remove_all",
+      "kind": "篡改拒收",
+      "status": "通过",
+      "reason": "来源清单不闭合"
+    },
+    {
+      "case": "混做粉碎机两下游-checkpoint_delta-remove_formal",
+      "kind": "篡改拒收",
+      "status": "通过",
+      "reason": "来源清单不闭合"
+    },
+    {
+      "case": "混做粉碎机两下游-checkpoint_delta-remove_checker",
+      "kind": "篡改拒收",
+      "status": "通过",
+      "reason": "来源清单不闭合"
+    },
+    {
+      "case": "混做粉碎机两下游-checkpoint_delta-fake_count",
+      "kind": "篡改拒收",
+      "status": "通过",
+      "reason": "验证范围与完整重算不符"
+    },
+    {
+      "case": "混做粉碎机两下游-checkpoint_delta-fake_from",
+      "kind": "篡改拒收",
+      "status": "通过",
+      "reason": "验证范围与完整重算不符"
+    },
+    {
+      "case": "混做粉碎机两下游-checkpoint_delta-fake_through",
+      "kind": "篡改拒收",
+      "status": "通过",
+      "reason": "验证范围与完整重算不符"
+    },
+    {
+      "case": "混做粉碎机两下游-checkpoint_delta-fake_golden",
+      "kind": "篡改拒收",
+      "status": "通过",
+      "reason": "验证范围与完整重算不符"
+    },
+    {
+      "case": "混做粉碎机两下游-checkpoint_delta-fake_initial_history",
+      "kind": "篡改拒收",
+      "status": "通过",
+      "reason": "$: oneOf 匹配数须为1，实为0"
+    },
+    {
+      "case": "混做粉碎机两下游-checkpoint_delta-true_certified",
+      "kind": "篡改拒收",
+      "status": "通过",
+      "reason": "$: oneOf 匹配数须为1，实为0"
+    },
+    {
+      "case": "混做粉碎机两下游-checkpoint_delta-bad_summary",
+      "kind": "篡改拒收",
+      "status": "通过",
+      "reason": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-89953c752e6e4fabb59309ae710005d0/tmp/混做粉碎机两下游-checkpoint_delta-bad_summary.json"
+    },
+    {
+      "case": "分流器三路轮询-full_state_each_instant",
+      "kind": "有效对照",
+      "status": "通过"
+    },
+    {
+      "case": "分流器三路轮询-full_state_each_instant-remove_all",
+      "kind": "篡改拒收",
+      "status": "通过",
+      "reason": "来源清单不闭合"
+    },
+    {
+      "case": "分流器三路轮询-full_state_each_instant-remove_formal",
+      "kind": "篡改拒收",
+      "status": "通过",
+      "reason": "来源清单不闭合"
+    },
+    {
+      "case": "分流器三路轮询-full_state_each_instant-remove_checker",
+      "kind": "篡改拒收",
+      "status": "通过",
+      "reason": "来源清单不闭合"
+    },
+    {
+      "case": "分流器三路轮询-full_state_each_instant-fake_count",
+      "kind": "篡改拒收",
+      "status": "通过",
+      "reason": "验证范围与完整重算不符"
+    },
+    {
+      "case": "分流器三路轮询-full_state_each_instant-fake_from",
+      "kind": "篡改拒收",
+      "status": "通过",
+      "reason": "验证范围与完整重算不符"
+    },
+    {
+      "case": "分流器三路轮询-full_state_each_instant-fake_through",
+      "kind": "篡改拒收",
+      "status": "通过",
+      "reason": "验证范围与完整重算不符"
+    },
+    {
+      "case": "分流器三路轮询-full_state_each_instant-fake_golden",
+      "kind": "篡改拒收",
+      "status": "通过",
+      "reason": "验证范围与完整重算不符"
+    },
+    {
+      "case": "分流器三路轮询-full_state_each_instant-fake_initial_history",
+      "kind": "篡改拒收",
+      "status": "通过",
+      "reason": "$: oneOf 匹配数须为1，实为0"
+    },
+    {
+      "case": "分流器三路轮询-full_state_each_instant-true_certified",
+      "kind": "篡改拒收",
+      "status": "通过",
+      "reason": "$: oneOf 匹配数须为1，实为0"
+    },
+    {
+      "case": "分流器三路轮询-full_state_each_instant-bad_summary",
+      "kind": "篡改拒收",
+      "status": "通过",
+      "reason": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-89953c752e6e4fabb59309ae710005d0/tmp/分流器三路轮询-full_state_each_instant-bad_summary.json"
+    },
+    {
+      "case": "分流器三路轮询-checkpoint_delta",
+      "kind": "有效对照",
+      "status": "通过"
+    },
+    {
+      "case": "分流器三路轮询-checkpoint_delta-remove_all",
+      "kind": "篡改拒收",
+      "status": "通过",
+      "reason": "来源清单不闭合"
+    },
+    {
+      "case": "分流器三路轮询-checkpoint_delta-remove_formal",
+      "kind": "篡改拒收",
+      "status": "通过",
+      "reason": "来源清单不闭合"
+    },
+    {
+      "case": "分流器三路轮询-checkpoint_delta-remove_checker",
+      "kind": "篡改拒收",
+      "status": "通过",
+      "reason": "来源清单不闭合"
+    },
+    {
+      "case": "分流器三路轮询-checkpoint_delta-fake_count",
+      "kind": "篡改拒收",
+      "status": "通过",
+      "reason": "验证范围与完整重算不符"
+    },
+    {
+      "case": "分流器三路轮询-checkpoint_delta-fake_from",
+      "kind": "篡改拒收",
+      "status": "通过",
+      "reason": "验证范围与完整重算不符"
+    },
+    {
+      "case": "分流器三路轮询-checkpoint_delta-fake_through",
+      "kind": "篡改拒收",
+      "status": "通过",
+      "reason": "验证范围与完整重算不符"
+    },
+    {
+      "case": "分流器三路轮询-checkpoint_delta-fake_golden",
+      "kind": "篡改拒收",
+      "status": "通过",
+      "reason": "验证范围与完整重算不符"
+    },
+    {
+      "case": "分流器三路轮询-checkpoint_delta-fake_initial_history",
+      "kind": "篡改拒收",
+      "status": "通过",
+      "reason": "$: oneOf 匹配数须为1，实为0"
+    },
+    {
+      "case": "分流器三路轮询-checkpoint_delta-true_certified",
+      "kind": "篡改拒收",
+      "status": "通过",
+      "reason": "$: oneOf 匹配数须为1，实为0"
+    },
+    {
+      "case": "分流器三路轮询-checkpoint_delta-bad_summary",
+      "kind": "篡改拒收",
+      "status": "通过",
+      "reason": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-89953c752e6e4fabb59309ae710005d0/tmp/分流器三路轮询-checkpoint_delta-bad_summary.json"
+    },
+    {
+      "case": "snapshot_bool",
+      "kind": "CLI拒收",
+      "status": "通过",
+      "exit_code": 2,
+      "stop": "invalid_input input @ layout.snapshots[0]: 须为对象"
+    },
+    {
+      "case": "initial_duplicate_slot",
+      "kind": "CLI拒收",
+      "status": "通过",
+      "exit_code": 2,
+      "stop": "invalid_input input @ initial_state.warehouse.slots[1].slot: 初始仓库标签重复或占用单位格命名域"
+    },
+    {
+      "case": "ore_shortage",
+      "kind": "CLI拒收",
+      "status": "通过",
+      "exit_code": 2,
+      "stop": "invalid_input warehouse.external_supply @ J|0|0|0: instant=0: J|0|0|0：源矿将耗尽，显式补给史不满足持续可得"
+    },
+    {
+      "case": "gate_numeric",
+      "kind": "CLI拒收",
+      "status": "通过",
+      "exit_code": 2,
+      "stop": "invalid_input input @ settings.gates[0].item: 须为目录物品名或 null"
+    },
+    {
+      "case": "after_closure",
+      "kind": "CLI拒收",
+      "status": "通过",
+      "exit_code": 0,
+      "stop": "规格疑问见 求解器/规格/内核实现-对规格的疑问.md。"
+    },
+    {
+      "case": "pending_alias",
+      "kind": "CLI拒收",
+      "status": "通过",
+      "exit_code": 2,
+      "stop": "invalid_input input @ build_0: 一个事件被不同记录重复拥有"
+    }
+  ]
+}

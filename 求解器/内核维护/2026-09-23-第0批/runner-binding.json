@@ -1,0 +1,10 @@
+{
+  "files": {
+    "continuation_aa.py": "667da38a176566710247f51cb587b6e8c6cf3166124ab9586ab0ea070b1f6db7",
+    "continuation_guard.py": "7831a167202e85597545d5be4b0a7f6945bd1fe6f17b1b7ccc0b771c10b1face",
+    "continuation_runtime.py": "193df4023b72b881ee7fbdb0c7b4ebf9b05b32179c84d8ab6ae3dbae9bdd232d",
+    "bootstrap_guard.py": "35a76488174e0a4f09838c1ada070dc5e2deed890263b8d70bdff1def10fa457",
+    "../../数据/工具/kernel_regression.py": "0568cf778c7e8d2452b69ff81f8d5a8afb21557391cd2d284de8a566e90f9def"
+  },
+  "scope": "reviewed per-run implementation; capture requires an exact current frozen context"
+}

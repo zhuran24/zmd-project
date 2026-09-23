@@ -1,0 +1,269 @@
+{
+  "passed": true,
+  "cases": [
+    {
+      "case_id": "seed",
+      "argv_equal": true,
+      "expected_equal": true,
+      "fresh_prerequisites": 0
+    },
+    {
+      "case_id": "seed-out",
+      "argv_equal": true,
+      "expected_equal": true,
+      "fresh_prerequisites": 0
+    },
+    {
+      "case_id": "check",
+      "argv_equal": true,
+      "expected_equal": true,
+      "fresh_prerequisites": 0
+    },
+    {
+      "case_id": "check-cycle-domain",
+      "argv_equal": true,
+      "expected_equal": true,
+      "fresh_prerequisites": 0
+    },
+    {
+      "case_id": "request-fixed",
+      "argv_equal": true,
+      "expected_equal": true,
+      "fresh_prerequisites": 0
+    },
+    {
+      "case_id": "request-stop",
+      "argv_equal": true,
+      "expected_equal": true,
+      "fresh_prerequisites": 0
+    },
+    {
+      "case_id": "request-invalid",
+      "argv_equal": true,
+      "expected_equal": true,
+      "fresh_prerequisites": 0
+    },
+    {
+      "case_id": "run-full",
+      "argv_equal": true,
+      "expected_equal": true,
+      "fresh_prerequisites": 0
+    },
+    {
+      "case_id": "run-grinder",
+      "argv_equal": true,
+      "expected_equal": true,
+      "fresh_prerequisites": 0
+    },
+    {
+      "case_id": "run-splitter",
+      "argv_equal": true,
+      "expected_equal": true,
+      "fresh_prerequisites": 0
+    },
+    {
+      "case_id": "run-delta",
+      "argv_equal": true,
+      "expected_equal": true,
+      "fresh_prerequisites": 0
+    },
+    {
+      "case_id": "run-no-cache",
+      "argv_equal": true,
+      "expected_equal": true,
+      "fresh_prerequisites": 0
+    },
+    {
+      "case_id": "run-no-output",
+      "argv_equal": true,
+      "expected_equal": true,
+      "fresh_prerequisites": 0
+    },
+    {
+      "case_id": "run-no-output-no-cache",
+      "argv_equal": true,
+      "expected_equal": true,
+      "fresh_prerequisites": 0
+    },
+    {
+      "case_id": "run-no-output-zero",
+      "argv_equal": true,
+      "expected_equal": true,
+      "fresh_prerequisites": 0
+    },
+    {
+      "case_id": "run-no-output-stop",
+      "argv_equal": true,
+      "expected_equal": true,
+      "fresh_prerequisites": 0
+    },
+    {
+      "case_id": "run-no-output-out",
+      "argv_equal": true,
+      "expected_equal": true,
+      "fresh_prerequisites": 0
+    },
+    {
+      "case_id": "run-stopped",
+      "argv_equal": true,
+      "expected_equal": true,
+      "fresh_prerequisites": 0
+    },
+    {
+      "case_id": "verify-record-full",
+      "argv_equal": true,
+      "expected_equal": true,
+      "fresh_prerequisites": 1
+    },
+    {
+      "case_id": "verify-record-delta",
+      "argv_equal": true,
+      "expected_equal": true,
+      "fresh_prerequisites": 1
+    },
+    {
+      "case_id": "checkpoint-record",
+      "argv_equal": true,
+      "expected_equal": true,
+      "fresh_prerequisites": 1
+    },
+    {
+      "case_id": "cycle-referenced",
+      "argv_equal": true,
+      "expected_equal": true,
+      "fresh_prerequisites": 0
+    },
+    {
+      "case_id": "cycle-no-record",
+      "argv_equal": true,
+      "expected_equal": true,
+      "fresh_prerequisites": 0
+    },
+    {
+      "case_id": "cycle-budget",
+      "argv_equal": true,
+      "expected_equal": true,
+      "fresh_prerequisites": 0
+    },
+    {
+      "case_id": "cycle-sweep-stop",
+      "argv_equal": true,
+      "expected_equal": true,
+      "fresh_prerequisites": 0
+    },
+    {
+      "case_id": "verify-cycle",
+      "argv_equal": true,
+      "expected_equal": true,
+      "fresh_prerequisites": 1
+    },
+    {
+      "case_id": "checkpoint-cycle",
+      "argv_equal": true,
+      "expected_equal": true,
+      "fresh_prerequisites": 1
+    },
+    {
+      "case_id": "verify-batch",
+      "argv_equal": true,
+      "expected_equal": true,
+      "fresh_prerequisites": 2
+    },
+    {
+      "case_id": "seed-invalid-input",
+      "argv_equal": true,
+      "expected_equal": true,
+      "fresh_prerequisites": 0
+    },
+    {
+      "case_id": "check-invalid-input",
+      "argv_equal": true,
+      "expected_equal": true,
+      "fresh_prerequisites": 0
+    },
+    {
+      "case_id": "run-invalid-input",
+      "argv_equal": true,
+      "expected_equal": true,
+      "fresh_prerequisites": 0
+    },
+    {
+      "case_id": "cycle-invalid-input",
+      "argv_equal": true,
+      "expected_equal": true,
+      "fresh_prerequisites": 0
+    },
+    {
+      "case_id": "verify-record-invalid-input",
+      "argv_equal": true,
+      "expected_equal": true,
+      "fresh_prerequisites": 0
+    },
+    {
+      "case_id": "verify-cycle-invalid-input",
+      "argv_equal": true,
+      "expected_equal": true,
+      "fresh_prerequisites": 0
+    },
+    {
+      "case_id": "checkpoint-invalid-input",
+      "argv_equal": true,
+      "expected_equal": true,
+      "fresh_prerequisites": 0
+    },
+    {
+      "case_id": "cli-no-args",
+      "argv_equal": true,
+      "expected_equal": true,
+      "fresh_prerequisites": 0
+    },
+    {
+      "case_id": "cli-unknown-command",
+      "argv_equal": true,
+      "expected_equal": true,
+      "fresh_prerequisites": 0
+    },
+    {
+      "case_id": "topology-contract",
+      "argv_equal": true,
+      "expected_equal": true,
+      "fresh_prerequisites": 0
+    },
+    {
+      "case_id": "topology-invalid",
+      "argv_equal": true,
+      "expected_equal": true,
+      "fresh_prerequisites": 0
+    },
+    {
+      "case_id": "cycle-found-referenced",
+      "argv_equal": true,
+      "expected_equal": true,
+      "fresh_prerequisites": 0
+    },
+    {
+      "case_id": "cycle-found-no-record",
+      "argv_equal": true,
+      "expected_equal": true,
+      "fresh_prerequisites": 0
+    },
+    {
+      "case_id": "verify-cycle-found",
+      "argv_equal": true,
+      "expected_equal": true,
+      "fresh_prerequisites": 1
+    },
+    {
+      "case_id": "checkpoint-cycle-found",
+      "argv_equal": true,
+      "expected_equal": true,
+      "fresh_prerequisites": 1
+    },
+    {
+      "case_id": "verify-batch-with-cycle-found",
+      "argv_equal": true,
+      "expected_equal": true,
+      "fresh_prerequisites": 3
+    }
+  ]
+}

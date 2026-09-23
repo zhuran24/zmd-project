@@ -1,0 +1,6 @@
+{
+  "path": "/usr/share/terminfo/d/dumb",
+  "sha256": "123c85a2812a517d967db5f31660db0e6aded4a0b95ed943c5ab435368e7a25c",
+  "reason": "Rust test harness terminfo read. First validation harness returned 0, but read-boundary gate rejected its unregistered terminal data; rerun the entire isolation matrix after prebinding.",
+  "a_runtime_manifest": "continuation-a-runtime-dependencies.json"
+}

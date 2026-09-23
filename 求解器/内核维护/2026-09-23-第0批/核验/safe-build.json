@@ -1,0 +1,73 @@
+{
+  "label": "safe-build",
+  "argv": [
+    "/usr/bin/cargo",
+    "build",
+    "--locked",
+    "--offline",
+    "--workspace",
+    "-j",
+    "1",
+    "--profile",
+    "healthaudit1790138325760877159",
+    "--config",
+    "profile.healthaudit1790138325760877159.inherits=\"dev\"",
+    "--config",
+    "profile.healthaudit1790138325760877159.codegen-units=1"
+  ],
+  "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+  "profile": "healthaudit1790138325760877159",
+  "exit_code": 101,
+  "guard_reason": null,
+  "passed": false,
+  "command_tree_peak_threads": 2,
+  "observer_threads": 1,
+  "total_observed_lower_bound": 3,
+  "peak_processes": [
+    {
+      "pid": 1094161,
+      "threads": 1,
+      "name": "cargo",
+      "state": "R (running)",
+      "thread_names": [
+        "cargo"
+      ],
+      "argv": "/usr/bin/cargo build --locked --offline --workspace -j 1 --profile healthaudit1790138325760877159 --config profile.healthaudit1790138325760877159.inherits=\"dev\" --config profile.healthaudit1790138325760877159.codegen-units=1 "
+    },
+    {
+      "pid": 1094162,
+      "threads": 1,
+      "name": "cargo",
+      "state": "R (running)",
+      "thread_names": [
+        "cargo"
+      ],
+      "argv": "/usr/bin/cargo build --locked --offline --workspace -j 1 --profile healthaudit1790138325760877159 --config profile.healthaudit1790138325760877159.inherits=\"dev\" --config profile.healthaudit1790138325760877159.codegen-units=1 "
+    }
+  ],
+  "seconds": 0.02753799000493018,
+  "cpu_affinity": [
+    0
+  ],
+  "environment": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+    "CARGO_BUILD_JOBS": "1",
+    "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+    "RUST_TEST_THREADS": "1",
+    "RAYON_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "GIT_OPTIONAL_LOCKS": "0",
+    "CARGO_INCREMENTAL": "0",
+    "RUSTC_BOOTSTRAP": "1",
+    "RUSTC_WRAPPER": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验/rustc_serial.py",
+    "RUSTFLAGS": "-Z threads=1 -Z no-parallel-backend -C linker=clang -C link-arg=-fuse-ld=lld -C link-arg=-Wl,--threads=1",
+    "UV_THREADPOOL_SIZE": "1",
+    "NODE_OPTIONS": "--v8-pool-size=1"
+  },
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "4f965b0718ca2a07ee90bb1183e4381936b719a1d29ac7b42ef4fbb4b4c8c945"
+}

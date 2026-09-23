@@ -1,0 +1,151 @@
+{
+  "label": "schema-all-b",
+  "argv": [
+    "/usr/bin/python",
+    "-B",
+    "-c",
+    "import sys;from pathlib import Path;sys.path.insert(0,sys.argv[1]);from verify_all import schema_check;schema_check([Path(x) for x in sys.argv[2:]])",
+    "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/tests",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/request-stop/main.stdout.log",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/request-invalid/main.stdout.log",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/run-full/artifacts/run-full.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/run-grinder/artifacts/run-grinder.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/run-splitter/artifacts/run-splitter.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/run-delta/artifacts/run-delta.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/run-no-cache/artifacts/run-no-cache.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/run-stopped/artifacts/run-stopped.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/verify-record-full/artifacts/run-full.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/verify-record-delta/artifacts/run-delta.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/checkpoint-record/artifacts/run-full.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/cycle-referenced/batch/cycle.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/cycle-referenced/batch/cycle.record.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/cycle-no-record/main.stdout.log",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/cycle-budget/main.stdout.log",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/cycle-sweep-stop/main.stdout.log",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/verify-cycle/batch/cycle.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/verify-cycle/batch/cycle.record.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/checkpoint-cycle/batch/cycle.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/checkpoint-cycle/batch/cycle.record.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/verify-batch/batch/cycle.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/verify-batch/batch/cycle.record.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/verify-batch/batch/finite-record.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/seed-invalid-input/main.stdout.log",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/check-invalid-input/main.stdout.log",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/run-invalid-input/main.stdout.log",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/cycle-invalid-input/main.stdout.log",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/verify-record-invalid-input/main.stdout.log",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/verify-cycle-invalid-input/main.stdout.log",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/checkpoint-invalid-input/main.stdout.log",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/cycle-found-referenced/batch/cycle-found.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/cycle-found-referenced/batch/cycle-found.record.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/cycle-found-no-record/main.stdout.log",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/verify-cycle-found/batch/cycle-found.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/verify-cycle-found/batch/cycle-found.record.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/checkpoint-cycle-found/batch/cycle-found.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/checkpoint-cycle-found/batch/cycle-found.record.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/verify-batch-with-cycle-found/batch/cycle-found.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/verify-batch-with-cycle-found/batch/cycle-found.record.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/verify-batch-with-cycle-found/batch/cycle.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/verify-batch-with-cycle-found/batch/cycle.record.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/verify-batch-with-cycle-found/batch/finite-record.json"
+  ],
+  "cwd": "/tmp/kernel-audit2-v3r63b5w/求解器",
+  "returncode": 0,
+  "expected": 0,
+  "seconds": 0.2933810079994146,
+  "cpu_seconds": 0.35710499999999534,
+  "average_cores": 1.2172055799900583,
+  "max_total_threads": 5,
+  "max_runnable_threads": 2,
+  "affinity": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "violation": null,
+  "peak": [
+    {
+      "pid": 1436426,
+      "argv": "/usr/bin/python -B -c import sys;from pathlib import Path;sys.path.insert(0,sys.argv[1]);from verify_all import schema_check;schema_check([Path(x) for x in sys.argv[2:]]) /tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/tests /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/request-stop/main.stdout.log /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/request-invalid/main.stdout.log /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/run-full/artifacts/run-full.json /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/run-grinder/artifacts/run-grinder.json /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/run-splitter/artifacts/run-splitter.json /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/run-delta/artifacts/run-delta.json /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/run-no-cache/artifacts/run-no-cache.json /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/run-stopped/artifacts/run-stopped.json /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/verify-record-full/artifacts/run-full.json /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/verify-record-delta/artifacts/run-delta.json /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/checkpoint-record/artifacts/run-full.json /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/cycle-referenced/batch/cycle.json /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/cycle-referenced/batch/cycle.record.json /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/cycle-no-record/main.stdout.log /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/cycle-budget/main.stdout.log /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/cycle-sweep-stop/main.stdout.log /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/verify-cycle/batch/cycle.json /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/verify-cycle/batch/cycle.record.json /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/checkpoint-cycle/batch/cycle.json /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/checkpoint-cycle/batch/cycle.record.json /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/verify-batch/batch/cycle.json /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/verify-batch/batch/cycle.record.json /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/verify-batch/batch/finite-record.json /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/seed-invalid-input/main.stdout.log /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/check-invalid-input/main.stdout.log /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/run-invalid-input/main.stdout.log /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/cycle-invalid-input/main.stdout.log /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/verify-record-invalid-input/main.stdout.log /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/verify-cycle-invalid-input/main.stdout.log /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/checkpoint-invalid-input/main.stdout.log /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/cycle-found-referenced/batch/cycle-found.json /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/cycle-found-referenced/batch/cycle-found.record.json /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/cycle-found-no-record/main.stdout.log /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/verify-cycle-found/batch/cycle-found.json /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/verify-cycle-found/batch/cycle-found.record.json /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/checkpoint-cycle-found/batch/cycle-found.json /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/checkpoint-cycle-found/batch/cycle-found.record.json /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/verify-batch-with-cycle-found/batch/cycle-found.json /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/verify-batch-with-cycle-found/batch/cycle-found.record.json /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/verify-batch-with-cycle-found/batch/cycle.json /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/verify-batch-with-cycle-found/batch/cycle.record.json /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/verify-batch-with-cycle-found/batch/finite-record.json ",
+      "tasks": [
+        {
+          "tid": 1436426,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 2
+        }
+      ]
+    },
+    {
+      "pid": 1436427,
+      "argv": "node -e const fs=require('fs');const Ajv=require(process.argv[1]);const args=JSON.parse(fs.readFileSync(0,'utf8'));const schema=JSON.parse(fs.readFileSync(args.schema,'utf8'));const validate=new Ajv({strict:false,allErrors:true}).compile(schema);for(const path of args.paths){if(!validate(JSON.parse(fs.readFileSync(path,'utf8')))){console.error(JSON.stringify({path,errors:validate.errors}));process.exit(1);}} /home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/2020.js ",
+      "tasks": [
+        {
+          "tid": 1436427,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 1
+        },
+        {
+          "tid": 1436428,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        },
+        {
+          "tid": 1436429,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        },
+        {
+          "tid": 1436430,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        }
+      ]
+    }
+  ],
+  "environment": {
+    "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+    "CARGO_BUILD_JOBS": "2",
+    "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+    "RUST_TEST_THREADS": "1",
+    "RAYON_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "NODE_OPTIONS": "--v8-pool-size=1",
+    "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/kernel"
+  },
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

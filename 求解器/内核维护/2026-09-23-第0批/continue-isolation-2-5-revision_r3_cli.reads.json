@@ -1,0 +1,1512 @@
+[
+  {
+    "path": "/etc/ld.so.cache",
+    "sha256": "e3a2ce52583e4bcb8b58dde61bed66c178f496386569d95667e09f06a9e4694f",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/libgcc_s.so.1",
+    "sha256": "571745fb27883c763315fab54a536906064c1df6804d1a7884713dac259da68d",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/libc.so.6",
+    "sha256": "848dae1dfcff0fc864292b28b2d426b0093425002a856a55c3a2b8ed31e2ea40",
+    "category": "external"
+  },
+  {
+    "path": "/usr/share/terminfo/d/dumb",
+    "sha256": "123c85a2812a517d967db5f31660db0e6aded4a0b95ed943c5ab435368e7a25c",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/libpython3.14.so.1.0",
+    "sha256": "db4e8c8d56faaab4c8ca4c7315811f94e876881ffff08411ffeed08602922750",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/libm.so.6",
+    "sha256": "97a73e24e715f4069fd3b205bad7392307276bca14fa183381dfd9276b9573ca",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/locale/locale-archive",
+    "sha256": "5bcf83956eb7710088b4ba429f45780f7dfeb7cd26536e66fc7c5dce282ac6a2",
+    "category": "external"
+  },
+  {
+    "path": "/usr/share/locale/locale.alias",
+    "sha256": "d095f10b1cb8b551003bc3f7788fd94f1054dc076350e72f412f042d741801f5",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/locale/C.utf8/LC_CTYPE",
+    "sha256": "40680545df4f92443c15e7c6f51a7fdc9154ebedd9eff1ed5c48437039add365",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/gconv/gconv-modules.cache",
+    "sha256": "0fde9bfd93c2ac83b23f0ab2e89f438be92f3c368247410eff58ccc847d7a783",
+    "category": "external"
+  },
+  {
+    "path": "/usr/share/zoneinfo/America/New_York",
+    "sha256": "e9ed07d7bee0c76a9d442d091ef1f01668fee7c4f26014c0a868b19fe6c18a95",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/encodings/__pycache__/__init__.cpython-314.pyc",
+    "sha256": "e2792d104a4c0d96991ce36fa1069eb01f49d8859f1be0d349aa761c52ac59b2",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/encodings/__init__.py",
+    "sha256": "2b708410495acf12a6fad9d2de928dd89e567537c253eaa2b51aaae578e96c59",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/encodings/__pycache__/aliases.cpython-314.pyc",
+    "sha256": "a2feebb02c0c780d7551b8a0ddc497e8ac3d5d05757896ac39617b0c961287d4",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/encodings/aliases.py",
+    "sha256": "1ee993f8eb4986999b6501381e53947be9a04443626cb48b4190bcff2e87d3b4",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/encodings/__pycache__/utf_8.cpython-314.pyc",
+    "sha256": "c082d09345283ad5309c98e5d05660ee63f17f82cf2ca6c5686a06b97346dcc8",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/encodings/utf_8.py",
+    "sha256": "ba0cac060269583523ca9506473a755203037c57d466a11aa89a30a5f6756f3d",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/site-packages/distutils-precedence.pth",
+    "sha256": "2638ce9e2500e572a5e0de7faed6661eb569d1b696fcba07b0dd223da5f5d224",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/encodings/__pycache__/utf_8_sig.cpython-314.pyc",
+    "sha256": "6f368513109617a13975c19f66f50934fa59c49a7cbbe3f45fcdf390ec3217d0",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/encodings/utf_8_sig.py",
+    "sha256": "1ef3da8d8aa08149e7f274dc64dbfce2155da812e5258ca8e8f832428d3b5c2d",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/site-packages/_distutils_hack/__pycache__/__init__.cpython-314.pyc",
+    "sha256": "9e5962b9454ab0286ab4a6285605e3295615738be03b362f90786f30206851b7",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/site-packages/_distutils_hack/__init__.py",
+    "sha256": "ced72e54431ecf2d8d7dbd8a1e27724f1b171af3ca1503c304bf11c59a7fe861",
+    "category": "external"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/evidence_paths.py",
+    "sha256": "f91800440b210bd9125940a3afe54bb3110c7c3ddd39701e1e4f5aeefebad940",
+    "category": "source"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/argparse.cpython-314.pyc",
+    "sha256": "39891aed22456f463e3f104a6c4293b87df37295feb905b9e1e3c478b1db7677",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/argparse.py",
+    "sha256": "b9f0fa53be3d7c9c10a71a8eecc538a27c32fbe7abe337818d0d36e138bfc5c5",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/re/__pycache__/__init__.cpython-314.pyc",
+    "sha256": "718ee357ab4edf3fa333be5fb45503798bfef52b2e33e25b181173d425ff03db",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/re/__init__.py",
+    "sha256": "741a9de729ed8207bfa19db990f8826f1bf3661f33d0970a80c08cd1338ebc35",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/enum.cpython-314.pyc",
+    "sha256": "a02fb512ec78898223f05be23f789f1d5831a157386956d453fdbddfcc81c943",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/enum.py",
+    "sha256": "fd23a7598fa1104ef892abcd4154d3627283e6361eb7a91cd11dc4a7b6fb3a93",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/types.cpython-314.pyc",
+    "sha256": "22409dc63a64ced310427fc78f1b5e3960c8ad39681e52f6de26602ba8fd0de9",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/types.py",
+    "sha256": "8c54d3d5ffc1d1204237e6c69b25c27c7b05b483128f185eeed9ba7ef2229ac2",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/re/__pycache__/_compiler.cpython-314.pyc",
+    "sha256": "279f2f8caf465a5a98ba5768d6c66cd52c873bcc002938da0a09fd767079e8d2",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/re/_compiler.py",
+    "sha256": "d49f30cf9a1dbae33b200ed8befd9d0ce3ac612783a10ac35196536f98923e91",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/re/__pycache__/_parser.cpython-314.pyc",
+    "sha256": "791f040c4a9f949a4a6c8e00d671e978ed8a30f7b8007801189111bc1d42024b",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/re/_parser.py",
+    "sha256": "e57bd194a2d42398355ae7c1ccc2ddfb78421dd431eb81e3809dbe8ca9057dc4",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/re/__pycache__/_constants.cpython-314.pyc",
+    "sha256": "699b0ab281481e1a1a4b5fa16e1b1291810ffb5e8fcbeb4f8e6c748c65f1b232",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/re/_constants.py",
+    "sha256": "42253b3181b81aad6c46392f44a0ab26dcfa31feea411296f43ba16616a1ab0b",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/re/__pycache__/_casefix.cpython-314.pyc",
+    "sha256": "013aa7e563113ca5529a88dc63195e592be3c14e534a736d1119cbcfe7591818",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/re/_casefix.py",
+    "sha256": "1b12d9136f23db6c3f6f26053fefc15ca964b886838c7b9c1fabf8d2efc1e5c8",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/functools.cpython-314.pyc",
+    "sha256": "60f5f18dba8c59918b45649cf84dc52228934bdea26a1e542397e1e4853f0750",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/functools.py",
+    "sha256": "9db56d38172c4c9e689b21cc58c8538008b09d86b682faf4dd193b529cdd79d5",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/collections/__pycache__/__init__.cpython-314.pyc",
+    "sha256": "f4e01c6434efed2c75b02fc771c6f43010d910c691096adac47d3079c4f30854",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/collections/__init__.py",
+    "sha256": "cb8367b8edd188662143ea2e3942d360c2deae51c72fd779ec898f5076d2c2b9",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/keyword.cpython-314.pyc",
+    "sha256": "9101fcf1dc8a5f349decbbbae1ae4677624b378fd8a758310a82d958fb9b7e86",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/keyword.py",
+    "sha256": "18c2be738c04ad20ad375f6a71db34b3823c7f40b0340f5294d0e89f3c9b093b",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/operator.cpython-314.pyc",
+    "sha256": "b3c795092161240cda26d5529c1adb651a38f008c92ce3f646cfd639fa67688e",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/operator.py",
+    "sha256": "a9f9910965c31f841caad0447ee47299ac539a371422aefe200c86c60f3b4697",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/reprlib.cpython-314.pyc",
+    "sha256": "f89183301591c29753d44d7629bb5e059a524546fd2c32cfd1ad0dece37a0b18",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/reprlib.py",
+    "sha256": "b04872e10d76252e44eae50cc785eb0fe478491afc4d7f0825a93f82b2eaba5f",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/copyreg.cpython-314.pyc",
+    "sha256": "7701704865e99b0d1944083ea8c3aa8d869c47a43cf882d19d4ec45553784334",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/copyreg.py",
+    "sha256": "6376eb5722806396f5842997ac18add369ea9ac3ff4fcfe1460c41a088cac425",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/gettext.cpython-314.pyc",
+    "sha256": "8df33e5a3b919a028b1aea438ee1e0d07f960b8ea62378d62b6ecb0554fc9f09",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/gettext.py",
+    "sha256": "54c00df11915aafb017ed23860dcb5197ed063f7ee07e5612625ec86afadcaf5",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/json/__pycache__/__init__.cpython-314.pyc",
+    "sha256": "356251b3191c47d8ec525c373a767ae983e760decec4464520dd3e88c249d3a7",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/json/__init__.py",
+    "sha256": "2dd10f1bf4c9ea5478e589216805e7f279d0e4bce134a19efa297404fb87407d",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/json/__pycache__/decoder.cpython-314.pyc",
+    "sha256": "ed4e60cd2feaa8439eb9960a0a384aa5a0ef05d838931f915cdc7de04199d340",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/json/decoder.py",
+    "sha256": "dc98d3e677612ea7311303f06a144cec6b91ebadc7ec037d1777501647578a07",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/json/__pycache__/scanner.cpython-314.pyc",
+    "sha256": "38fee484e674668ffbd4c8bfe96086407da776f59f80e49281181bbafeeb30a6",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/json/scanner.py",
+    "sha256": "572958017eae8842eeddd0e3d18d3c56cc0a197348224915e1d87ce937841764",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/lib-dynload/_json.cpython-314-x86_64-linux-gnu.so",
+    "sha256": "77af91c41ba71b1cb538477dbf11b725a40ba4dfb6841c0574b234a1ed5060f6",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/json/__pycache__/encoder.cpython-314.pyc",
+    "sha256": "4771a7265a4360eb9b3bdef6c2c972c699cac71254abd656c54fbec692118e9f",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/json/encoder.py",
+    "sha256": "d68a4d04d2cfd95897498307f29349058b42c3f48ea6aa6739714a09200a7d01",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/pathlib/__pycache__/__init__.cpython-314.pyc",
+    "sha256": "49df139515fabffa1d74f32e77fb5e98fa90fb7e3fa4268aaf42c4ef7ee83d41",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/pathlib/__init__.py",
+    "sha256": "042a4d0a5e1ef66778daa86dc269af205bd42d06e793e53d8b99dff4c45928ca",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/glob.cpython-314.pyc",
+    "sha256": "9369cde6f8b2bac78aec1e1e9d5ed18b29e01d8c12c53cb936c095cb73d80106",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/glob.py",
+    "sha256": "21d290be171e3d0643a444e4b58a2c4ee9bfe2c1474bb36ead043794bb769365",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/contextlib.cpython-314.pyc",
+    "sha256": "1b986d2045eb30c506dff0a04035504b9cbd2ca9bd3bc17f16bbde5d166e5775",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/contextlib.py",
+    "sha256": "c1e0d67b2007de11ae93cd36cf6faf38d9ab32656a832d592a49325eec579f96",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/fnmatch.cpython-314.pyc",
+    "sha256": "ca667593060e404cb864499485ffc36dbded17fa14d5e91e593d16198a340dc8",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/fnmatch.py",
+    "sha256": "ce582bc266922e4c682e2a85d72095124430a6bf58716c6f2537103480eae742",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/lib-dynload/grp.cpython-314-x86_64-linux-gnu.so",
+    "sha256": "d93a9b169b1c9b79a49e5895009988da398774d516813f571d384884466dad27",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/pathlib/__pycache__/_os.cpython-314.pyc",
+    "sha256": "92f7343412e3c04fb8fa12ad3a64f2bc40c92a4df9773154373b67625f39ee7b",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/pathlib/_os.py",
+    "sha256": "61e844988e54bdf47c0b11ad2b3fd961f058bb370793428f4c6868bd40cab6f2",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/lib-dynload/fcntl.cpython-314-x86_64-linux-gnu.so",
+    "sha256": "f3777429704edbecf606951b70069803ad615367c83aadb195ba3265482722ca",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/uuid.cpython-314.pyc",
+    "sha256": "d57bc795d16b657ed7562a490785d0052750d0959cf5daa7c575923c672a4ede",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/uuid.py",
+    "sha256": "915321474fa4b27c3e289751e8ffc86e6a134b1244a37ca9053aeb2bf3c7e150",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/lib-dynload/_uuid.cpython-314-x86_64-linux-gnu.so",
+    "sha256": "fa8f5991ec7264c9c2370c61489e0c9c619755cd2e7a3c090a9e2b8408d4154c",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/libuuid.so.1.3.0",
+    "sha256": "b9042cfd960c1f40dff3eee304545c36fd276bd1c0c03497af80f23b55210761",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/locale.cpython-314.pyc",
+    "sha256": "8d64e6d1174e013fc9e426e6c047d6e812efb2a2a436517dcfd59a7ea673b953",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/locale.py",
+    "sha256": "f2e390ebde2bb52eabcf6d444a6a2e758749f3aa82c61427cbb053332fac56b2",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/shutil.cpython-314.pyc",
+    "sha256": "b9cb1f4871bda05ebce086c0f257ee2e9c73feaddc00776532f7d5e25b90ac98",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/shutil.py",
+    "sha256": "28a5df6415bf1a7ab36cbd544d6d35ae0f056a198e3872a786dc4e156d5fcd7d",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/lib-dynload/zlib.cpython-314-x86_64-linux-gnu.so",
+    "sha256": "a19ab2de628aa9b18e57365b5244299c4aa8cfeda886b1708df87da51c877a8c",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/libz.so.1.3.1.zlib-ng",
+    "sha256": "63e814634983bfa53890b48cb56760ca38840fbcf91f66a51222eef85eaa08b7",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/bz2.cpython-314.pyc",
+    "sha256": "dcf7959c09dd593cb710e697d65dee72b724ac486b21e8e55d86050f22def490",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/bz2.py",
+    "sha256": "368b9ee55f0b6dbfc81b15e1a17c51cccddb009389eae8e9a7acf2402ca4109a",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/compression/__pycache__/__init__.cpython-314.pyc",
+    "sha256": "80d500ee6056a700f796b8e6ea0189e463c15a3779fd8e2afd6c4a77165c4665",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/compression/__init__.py",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/compression/_common/__pycache__/__init__.cpython-314.pyc",
+    "sha256": "5bf3aa1ba43d8b37ec1d9c59d0aeb66c8a29c16f7d0cc77edf31e606409a2a5d",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/compression/_common/__init__.py",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/compression/_common/__pycache__/_streams.cpython-314.pyc",
+    "sha256": "7a98383b5b2b19207fde9ba258f6496042fe6e0a6e15ae3e40f399cc705417e1",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/compression/_common/_streams.py",
+    "sha256": "8b8e943815c748d030e540a023400cb87fb13f75c2f0615a63ec42ef9f156c92",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/lib-dynload/_bz2.cpython-314-x86_64-linux-gnu.so",
+    "sha256": "ba6a2902c27e5686ae2fc8d3717d42d7daee4928548c6a5e9649b4073c291ca7",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/libbz2.so.1.0.8",
+    "sha256": "c208e149de372d9aca88f752849b33dea032b8054d1718d662666bd3bad33f8b",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/lzma.cpython-314.pyc",
+    "sha256": "a67d7b0b4a1a1b41a5f3597f9ab216816e8589e29b1d2b6d856c62009cccf9e2",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/lzma.py",
+    "sha256": "b01a78a04c6a9ba6c645758cace78ed53a53871ea3ff88744e23f6263613d507",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/lib-dynload/_lzma.cpython-314-x86_64-linux-gnu.so",
+    "sha256": "161f5497cda96439fa6a86bb90ddc19dab55a207eb80802e7ac8ebd7315f0386",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/liblzma.so.5.8.3",
+    "sha256": "b6d8fd9301c8cb98e38d2798fb2d0f179b61da12e0690c7fb39dcbf86fd3b6b0",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/compression/zstd/__pycache__/__init__.cpython-314.pyc",
+    "sha256": "a9acba18d6e151bca8f4f21e054291c4663fe0ca7d9015d491a55d026adc187f",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/compression/zstd/__init__.py",
+    "sha256": "4575544839872594ad5c9be284d062384dd5abdd0ddcc0258f6d66dac2c51d60",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/lib-dynload/_zstd.cpython-314-x86_64-linux-gnu.so",
+    "sha256": "db758da9690b89f3d105f0f1bb547eaf68794303e8c2c12046c603e5131b3bee",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/libzstd.so.1.5.7",
+    "sha256": "f18105ff5aefdd6177cb99fd016f4822a676adf23706d4ddbdce632ed40882ca",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/compression/zstd/__pycache__/_zstdfile.cpython-314.pyc",
+    "sha256": "ade327ac2fbaa702fce71c3ceb4a6f5b36c9e543f4373626d95cb5466fde3800",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/compression/zstd/_zstdfile.py",
+    "sha256": "84da3160987a2ee10f3b99813a68e70f16ec42a52612fef32581eb628aabc720",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/_colorize.cpython-314.pyc",
+    "sha256": "0e47ffde6a6f0893dda7a20b6cdabfa3e791cae665093a16c35be9cdc9973c8e",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/_colorize.py",
+    "sha256": "15db41bec8e25fd1ba81cf234df2cc7446d0fbc10285fda73186176365efd730",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/dataclasses.cpython-314.pyc",
+    "sha256": "463d2d3b9ce042ce1763a90c6547f2c97744beb1557b86228b3113b8572398cc",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/dataclasses.py",
+    "sha256": "e8439c8b111856645a8b31e0dbbba532b494426399bad456079c0e5730ad322e",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/copy.cpython-314.pyc",
+    "sha256": "2ae8f43827e1473bfad5411a99eeb0105c242ee69d65ec47c9a901366a035522",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/copy.py",
+    "sha256": "15154fde290d6e65b5007905689a47a9a5a724822c5e06eec35d9ffbb2a3aa69",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/weakref.cpython-314.pyc",
+    "sha256": "f5b03bdaed57913ccee04c26d2f01e9bec7771a05d0f5c71328bb76d70db7d00",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/weakref.py",
+    "sha256": "5e5f727a19a858cb4c56dbaf3e0a138ded02fb954a9a58a840a0764216ae9522",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/_weakrefset.cpython-314.pyc",
+    "sha256": "0bbe2bcdc12c9021c34883b2ed2d0e70084cc8be1388fa87f572b89e5d494cf2",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/_weakrefset.py",
+    "sha256": "2dd7cb459d654fe78b00c5c47ee8e786c037ee77763304603f5e976dd62cbf81",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/inspect.cpython-314.pyc",
+    "sha256": "f11aa1821d90678ad53d30b915fa0660f79d84c61a0e56d297344fc9c99e739a",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/inspect.py",
+    "sha256": "7a2878507255eb568a6ecfa04e051009f197513aa052eebc9e7e60d667d78cb4",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/annotationlib.cpython-314.pyc",
+    "sha256": "02089eaaf07d6de5d1f52e5d5c0b8cceab7fd685dfc0dfe6d6b42d9789234184",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/annotationlib.py",
+    "sha256": "1cce29393714b91e3f71571ffbedacc7f73f11ad26be10701debeb86ec059a32",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/ast.cpython-314.pyc",
+    "sha256": "69a926852df9e3f1ca14f18cab9c4bc1d3788654ae852848f0ad0c59814453a8",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/ast.py",
+    "sha256": "5ea9a796353544bea0d706153516f04ef3d92be305d15a73238403837d77e34c",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/dis.cpython-314.pyc",
+    "sha256": "327778437a31718f65f17270c69d907079d9bb2c7f138e9fe93cc3ec82ea5321",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/dis.py",
+    "sha256": "17d4d9a9195c9ee5aa27a96f3e0871f9363fd501e3a64ef20cb1cc876d7ad553",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/opcode.cpython-314.pyc",
+    "sha256": "27624b7dddbc8004f2f59765fc90412dfe117bc68f1cb970ed2633ca19cae711",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/opcode.py",
+    "sha256": "1036d90c917bb27c540ac3205d22896ee747214df1f2682458ab915758e4fdf2",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/_opcode_metadata.cpython-314.pyc",
+    "sha256": "e5f0a98adff8787eef77b3876d06792ac72826d3bc17f67994a653d3e48bd1ea",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/_opcode_metadata.py",
+    "sha256": "d9badc5ab19a66415e230bf8f4299491b2207d584981a92b6e7c447cfa1aeac3",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/importlib/__pycache__/__init__.cpython-314.pyc",
+    "sha256": "43c87f7bc35fd3868e242567f503237320eab2d26ff5da217038daca83cc3497",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/importlib/__init__.py",
+    "sha256": "72b07de4133a7e39b2f6a7920465669aa04626f217e800779587bc0713fe002e",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/linecache.cpython-314.pyc",
+    "sha256": "14e571b2a3d8753107b3c8cdd9253dcfad888f2fd29f53d2a35728939a8ea336",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/linecache.py",
+    "sha256": "692daec68e2a419adf46bafc0eb2f8a2fb36c482183fa1ac47e00fec440f7d7e",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/tokenize.cpython-314.pyc",
+    "sha256": "4877b3cb019b886b99332044f2a6df33e9b2e6fa7eeaa64f3a1395b84ad89291",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/tokenize.py",
+    "sha256": "65ba1bacdc42e768382208ff27f3001ee77d9d61aafba686c67652d22b84b330",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/token.cpython-314.pyc",
+    "sha256": "fd682197534a5ea10ba576531b6725c6fa596621749e7a7fbb2c70ad93abbb3e",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/token.py",
+    "sha256": "61d4270311099c8a0c0b2e45fb363fd1c4e347a720bcc25f682b63dc28c34234",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/run-registration.json",
+    "sha256": "1461e5337dd1ddb86c0c699255fa12e6e68890696cd71de49654fc4f4dbac39c",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/.instance.json",
+    "sha256": "48be397e28845e2c9abf518767b15b79ef11526c42ea473c2186fcfc56d4f2bb",
+    "category": "output"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/revision_r3_cli.py",
+    "sha256": "df9fc35ebd73a01a5fbee9231a7d2730b09308fdfa6a7a89d7f231afe0030427",
+    "category": "source"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/hashlib.cpython-314.pyc",
+    "sha256": "721cda0027449f83917431a1cb7150fc82f9319f85ab77fe22fd17c46b588df9",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/hashlib.py",
+    "sha256": "88fa624821fbdee7eb2ef87c2437b207afe328cf117c7463367e2db5eb1af492",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/lib-dynload/_hashlib.cpython-314-x86_64-linux-gnu.so",
+    "sha256": "76143b032fab3fc62834dfdbcdebd0deb168b85a3b8e6cdb57c326a80939cced",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/libcrypto.so.3",
+    "sha256": "5ae0c61319c6bfa574e83994e9d0a48196cfd6a6bf37fe82d87627c7904c5d39",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/libbrotlienc.so.1.2.0",
+    "sha256": "dd19bedf12100d84f6a490af2017a49c8a5dff098dd4f2d03dea501ffaf47d56",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/libbrotlidec.so.1.2.0",
+    "sha256": "f747ed8ca1a29c53744f6e2b12dbd70d78838682a5914505b173c1ad50db4ca9",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/libbrotlicommon.so.1.2.0",
+    "sha256": "0a5a0d15264043c6cb99d3076501d4503bafde11eaea28f353e399b4ce6b2981",
+    "category": "external"
+  },
+  {
+    "path": "/etc/ssl/openssl.cnf",
+    "sha256": "25acad2e2fafa6d88052f22a6a0aa76da7382733b5e5a16e43d92389b6f0453c",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/lib-dynload/_blake2.cpython-314-x86_64-linux-gnu.so",
+    "sha256": "55be6d139c6a63389d5fe9e4982c6465bd99850f341c68df5f4c71159ebc3651",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/subprocess.cpython-314.pyc",
+    "sha256": "fa02857bba5785ce288b6d267f998d9466cba16f644d350740748c8ab1747c69",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/subprocess.py",
+    "sha256": "6628ffdd65c093a6c08cae01ffe82877d3ced515aac9e7be0cff16512c30a7d9",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/signal.cpython-314.pyc",
+    "sha256": "715e9c7120db4f176c4c506190b780d356234091f77e9cdc1aa7a6972ee36374",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/signal.py",
+    "sha256": "0363c964c90ac0b3e515de5749205e6e6454051a1211058375d84d91eab6071a",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/threading.cpython-314.pyc",
+    "sha256": "a9ed203bcd08d68c1dc782476e0db34c86f3b5092a565eb1d3ff60ec444d5fe7",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/threading.py",
+    "sha256": "5323909624ec2165e70b6d31333e4191b63d383d2dc5a7d7d516a3475ea2b7e3",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/warnings.cpython-314.pyc",
+    "sha256": "fea6bb3eaacecabaed6f6aab135b1f7326cd70c537219b3bc9e7fadcb2cff5fc",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/warnings.py",
+    "sha256": "142225786de63c593f1c9abdacf5b4fc0b05dd847f6bed0ebb4b4aa2d4d93b02",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/_py_warnings.cpython-314.pyc",
+    "sha256": "fac561cbf59927416ad462e0b1363ec60b900619a59cac1028192079a049b65f",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/_py_warnings.py",
+    "sha256": "7728580177727fa3b295478cef4777a9d2a364c5cbd809efcea352db31144f85",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/lib-dynload/_posixsubprocess.cpython-314-x86_64-linux-gnu.so",
+    "sha256": "f7f0d8e19b9ca728d1d38369dd0bc0a9595ba2050499fe19befa80d4fb48bb4b",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/lib-dynload/select.cpython-314-x86_64-linux-gnu.so",
+    "sha256": "6b38e0887f2b6aff037fd932dac629140582ec38e1df232d6f80e2eb60d07a69",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/selectors.cpython-314.pyc",
+    "sha256": "b1e8dcc79c4eb77434b75e29288778da966e02a342f70ef723cd8ef69428a4ad",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/selectors.py",
+    "sha256": "4b8a60cfbb619d080f87dffe1578372e56e8c0ac826f043224a154cf7b77606d",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/lib-dynload/math.cpython-314-x86_64-linux-gnu.so",
+    "sha256": "2d1d360dbbee679586aaab6e84ac3cb9e0ab83f28df1476e28cdfd5c11026e67",
+    "category": "external"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/复核/r3-规格保真-证据/gate-expired-after-closure-input.json",
+    "sha256": "e3179739624643208053567874190b2dbc3e8a387b394e6105cc861cf62f5e19",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/复核/r3-规格保真-证据/tiny-expired-cycle.json",
+    "sha256": "5d7fb60fd4ba78be19d47b39b9e728c98fe4c0f0ff68ec99158ba229f94e711d",
+    "category": "source"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/python-source.json",
+    "sha256": "802997189c9546e690203c78ae360b310cf2dc5f7cda04b7556e3dcadfb0a3bf",
+    "category": "output"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/桥接器双通路.json",
+    "sha256": "8c5a08f5d91668359e9a96a7c6017de5377e957be8085e7df3e8a5b92e1732b4",
+    "category": "source"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/bridge-input.json",
+    "sha256": "8c5a08f5d91668359e9a96a7c6017de5377e957be8085e7df3e8a5b92e1732b4",
+    "category": "output"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json",
+    "sha256": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048",
+    "category": "source"
+  },
+  {
+    "path": "/usr/lib/locale/C.utf8/LC_IDENTIFICATION",
+    "sha256": "be5c6f4aa0cc2c05ab5ce3ed43c538cd7decbf97b42bc7c73f19414292f4dd4c",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/locale/C.utf8/LC_MEASUREMENT",
+    "sha256": "bb14a6f2cbd5092a755e8f272079822d3e842620dd4542a8dfa1e5e72fc6115b",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/locale/C.utf8/LC_TELEPHONE",
+    "sha256": "f4caf0d12844219b65ba42edc7ec2f5ac1b2fc36a3c88c28887457275daca1ee",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/locale/C.utf8/LC_ADDRESS",
+    "sha256": "26e2800affab801cb36d4ff9625a95c3abceeda2b6553a7aecd0cfcf34c98099",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/locale/C.utf8/LC_NAME",
+    "sha256": "14507aad9f806112e464b9ca94c93b2e4d759ddc612b5f87922d7cac7170697d",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/locale/C.utf8/LC_PAPER",
+    "sha256": "cde048b81e2a026517cc707c906aebbd50f5ee3957b6f0c1c04699dffcb7c015",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/locale/C.utf8/LC_MESSAGES/SYS_LC_MESSAGES",
+    "sha256": "f9ad02f1d8eba721d4cbd50c365b5c681c39aec008f90bfc2be2dc80bfbaddcb",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/locale/C.utf8/LC_MONETARY",
+    "sha256": "bfd9e9975443b834582493fe9a8d7aefcd989376789c17470a1e548aee76fd55",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/locale/C.utf8/LC_COLLATE",
+    "sha256": "47a5f5359a8f324abc39d69a7f6241a2ac0e2fbbeae5b9c3a756e682b75d087b",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/locale/C.utf8/LC_TIME",
+    "sha256": "0910b595d1d5d4e52cc0f415bbb1ff07c015d6860d34aae02505dd9973a63154",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/locale/C.utf8/LC_NUMERIC",
+    "sha256": "f5976e6b3e6b24dfe03caad6a5b98d894d8110d8bd15507e690fd60fd3e04ab2",
+    "category": "external"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/正式静态目录.json",
+    "sha256": "3566e2ecb9d90b9a1afc01b273eb548178de738fb4e4f3b2af88fa05f809be29",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/《明日方舟：终末地》游戏规则.txt",
+    "sha256": "6e64e3903a65536c530b363c9f3aef8c1bb2a1c1193e866799125dd047159924",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解任务.txt",
+    "sha256": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解约束.txt",
+    "sha256": "0c05976f6063f3332db6ee19d7746052ef35148d7c2a12dfa396c7bb8753f30f",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/选择点参数轴.md",
+    "sha256": "261da30db31063ec8292aaa493e2c11d026c0861852ef19550eeb92eb4da7665",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/受限模型声明.md",
+    "sha256": "66359c590ad711b950bda55cb1b7e577ef9fb9671e0d87d426908d28bb244349",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/受限转移定义.md",
+    "sha256": "3ef482467f5dc545f8fdf4bc0867eddf0a2a25a455850e0b863bfe13e368243e",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/运行语义.md",
+    "sha256": "91dfd6045e27ee83abf10905d511010b8fac4c2a751d6c00e54e6ea9d2aea31d",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核输入.md",
+    "sha256": "7e257cff649960f78a8da0023ac31e926a1e0b972fb68476b4b12d6fdcf90f41",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核输出.md",
+    "sha256": "e287c6e4bb388a814a5fe04d072084e29be494a0caff9b14388c34d67705bb3c",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核输出.schema.json",
+    "sha256": "dc8306328122fa95b44748c24ccc03ab408500132c9141f241038a4b13d050ec",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/周期键读取审计.md",
+    "sha256": "00afb8223d32cb2b77015ff4e9797171813eab2c38f5e941eb015d512c437d60",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/value.rs",
+    "sha256": "0cd34a9c7877861580caa0711e643575cbb9ce631a445919c69f093c2392d32b",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/config.rs",
+    "sha256": "69676c866f8030ea877e662fdb85f600618f23edd99e4262699997adf9786f5a",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/model.rs",
+    "sha256": "edeb17c43654ca3aa5bf5f3a83907585b4ecddf9241658a2e426d2560f3bfaef",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/catalog.rs",
+    "sha256": "a38df132d8db440d5fb4d6eb33392e539f0549e436dbca210da8c9eb1edb983c",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/input.rs",
+    "sha256": "63fe621104d86461562e99ba216f12fa1f69737fdb2efd57c1d8a57a8b700502",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/interfaces.rs",
+    "sha256": "3ee13ba29adc7ae58abf29e09f938900895f12908fa5b428b261b9909da9d919",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/engine.rs",
+    "sha256": "5f77eab8562c5af23c61dbb447f8e50320386bd267ea7cc9f00ca667a92b09b3",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/event_identity.rs",
+    "sha256": "25a4f4442232845d2fedf80ed368fb02ce502f2c350e16e73355296183f3e70e",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/warehouse.rs",
+    "sha256": "6d50eb1678921d2f3621149d60766463e6c4ce4fd57e0978ae1af7253557d5f5",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/polling.rs",
+    "sha256": "ff518fdb807c02a332c48acc565e0cc7b6b43d1fb98fb22374a0002ac8dd7635",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/transition.rs",
+    "sha256": "fe21d21cb3fb83277486216ce0325891259d89353a7b3cb5bdd23a9f02f4cab5",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/output.rs",
+    "sha256": "e81896910da6fe9a1eabbcf23260a68cbd781a6d3e621226f62e35ca5ef6f0f5",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/ledger.rs",
+    "sha256": "f85ecea3240dd1ec0598a026bafe3b863c13220c7bdb7cdb0aa24c1e2577d9e7",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/cycle.rs",
+    "sha256": "5a0b2ace4003f63dd1c135621a5d13d9c69d7000471a3dabfb8ddccfe170056d",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/cycle_io.rs",
+    "sha256": "93afc189315738f11780b04ac4ff5cbabf93afb2fabc04233ef5c3dd63f4de30",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/digest.rs",
+    "sha256": "e8d8d5c8df1f7124ec5739fa158a41b4d7ca662f1b246d3604994cbe81eb1ef0",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/seed.rs",
+    "sha256": "9c0f6cb5b5d06e163c5ea5335b911fc31f24cbfda173e6ea1e705422f02b5281",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/cache.rs",
+    "sha256": "07492543966219f3e7cbcdc0aceef96475d812cca0b10743c196f4f6de85b2ab",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/lib.rs",
+    "sha256": "5d63008aa0f7b9c8a1da93dc96b13496398cc3fbad93c3775d709d77340b4c6a",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/main.rs",
+    "sha256": "b38a6cf3afd455a7b440f4e86bb3c27e5684ff872d4c0a2bfa8b84368f9f651d",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/Cargo.toml",
+    "sha256": "279ef923475621d73a24e2d04781ae126c93fbfc82f9646947aee8025e96de95",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/Cargo.lock",
+    "sha256": "031faaaec5455f074df40817d326fc59fa9ebb3d7ecd5e1a2af85a1c0b3a5a94",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/Cargo.toml",
+    "sha256": "f547eba51b5e70d1054b513193e405869c9f62f794dea0382f758b031aee3b73",
+    "category": "source"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/bridge-control-result.json",
+    "sha256": "3c6e55ca2ca4a55bff65c1c9de8ac2c9107a8419d083d9ec208da8632030b85c",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/checkpoint-control.json",
+    "sha256": "326fa41811653dd8bdd5ee3a2ad41b726fb78d4b80f950b6a1c40a62d4123a17",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/checkpoint-seed-result.json",
+    "sha256": "576776e19eaf6d539391d732b65b22018c2e683ecd0b3018f3856976d0bcd6ab",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/checkpoint-run-result.json",
+    "sha256": "5ed7e0053974b9de11e11ca90f985c82258c0ba0dc46815ba8462ca134d22480",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/checkpoint-derived-run-result.json",
+    "sha256": "313e14da3e2e3e6e7908a7bd084b68e3989e8b8bbc121bbb70843343c2cc0126",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/parameter-missing-input.json",
+    "sha256": "c2bc07e44ae18174d427275e8cc6f3ade32b2d7bf9ab3414c0217daaad241637",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/parameter-missing-run-result.json",
+    "sha256": "ae59c30000c32b699e28f78376f2598391e90a70ec75e20746ea4470fa79e2b7",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/parameter-missing-seed-result.json",
+    "sha256": "ae59c30000c32b699e28f78376f2598391e90a70ec75e20746ea4470fa79e2b7",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/parameter-missing-cycle-result.json",
+    "sha256": "5315b23485a29b998656be343e4084f53f65be72de49494f579a0732ad6fd53c",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/parameter-conflict-input.json",
+    "sha256": "21eb43808ca783c2332100e7b1c63fa4822391a467dc2c6a0d5cd524982a4faf",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/parameter-conflict-run-result.json",
+    "sha256": "ae59c30000c32b699e28f78376f2598391e90a70ec75e20746ea4470fa79e2b7",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/parameter-conflict-seed-result.json",
+    "sha256": "ae59c30000c32b699e28f78376f2598391e90a70ec75e20746ea4470fa79e2b7",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/parameter-conflict-cycle-result.json",
+    "sha256": "1f548f0c529fab65482428519b50a344155f5cb16cc31a9a5bff165fe1221731",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/parameter-top_only-input.json",
+    "sha256": "d0988debef699980a8e390aeb57197d656945d37f30b340f376149c498ba5b9c",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/parameter-top_only-run-result.json",
+    "sha256": "ae59c30000c32b699e28f78376f2598391e90a70ec75e20746ea4470fa79e2b7",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/parameter-top_only-seed-result.json",
+    "sha256": "ae59c30000c32b699e28f78376f2598391e90a70ec75e20746ea4470fa79e2b7",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/parameter-top_only-cycle-result.json",
+    "sha256": "244993e88cda4b946e55f6d3561651724712f11d4b0613a36867e8c3d457377a",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/parameter-lifetime-input.json",
+    "sha256": "f6771ee4d546525aab49aac0fba78ec01c886f73d45eeca769c0fb533105ead5",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/parameter-lifetime-run-result.json",
+    "sha256": "ae59c30000c32b699e28f78376f2598391e90a70ec75e20746ea4470fa79e2b7",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/parameter-lifetime-seed-result.json",
+    "sha256": "ae59c30000c32b699e28f78376f2598391e90a70ec75e20746ea4470fa79e2b7",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/parameter-lifetime-cycle-result.json",
+    "sha256": "5a79105825876b6963f87bd331a0fa0def22cdd154ed178d7f461d50f9faa4db",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/phase--1-input.json",
+    "sha256": "40bd2b3ddd08b002ceff54d56fa13d9c6b348eb0eb1cb1a9594770e90df26d01",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/phase--1-run-result.json",
+    "sha256": "964c99f17aa3f0defa1dce56a22e8073f930b1641f33205d1ed2a52f969bfa6b",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/phase--1-seed-result.json",
+    "sha256": "964c99f17aa3f0defa1dce56a22e8073f930b1641f33205d1ed2a52f969bfa6b",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/phase--1-cycle-result.json",
+    "sha256": "58d2a119b67e6fa94b92b4cbfa402a732760f39163e2a15e9bf482c537156c0b",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/phase-6-input.json",
+    "sha256": "fa8014bfbce95950cb4013426dfe01224f3b0a95639f48fdedeaed20fe387211",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/phase-6-run-result.json",
+    "sha256": "964c99f17aa3f0defa1dce56a22e8073f930b1641f33205d1ed2a52f969bfa6b",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/phase-6-seed-result.json",
+    "sha256": "964c99f17aa3f0defa1dce56a22e8073f930b1641f33205d1ed2a52f969bfa6b",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/phase-6-cycle-result.json",
+    "sha256": "576e66014e0c21b5788aedc43d9c1a18deea47d909f365ec84924ae862b1fe55",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/phase-1_2-input.json",
+    "sha256": "e488f258ea74569d27ddc3f6561e269cdb67743040a42841526a36ad393a622c",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/phase-1_2-run-result.json",
+    "sha256": "df26a9ec4351da2151b39aeea8e88fa1c9c5552c8613236b4dfec1503a51efc3",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/phase-1_2-seed-result.json",
+    "sha256": "df26a9ec4351da2151b39aeea8e88fa1c9c5552c8613236b4dfec1503a51efc3",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/phase-1_2-cycle-result.json",
+    "sha256": "1577659a941868ec643c2d7535353083813b8e1de4dfa819f2d7ca7935597ec3",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/phase-not-a-Time-input.json",
+    "sha256": "a3464d4c051155edd7b523232e81a6f48f0688fd12932902424671a62abdc024",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/phase-not-a-Time-run-result.json",
+    "sha256": "ae5f0a0967165c40e953aeecdefc3abe76ba8b0ee483fc7e4d0922460090f624",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/phase-not-a-Time-seed-result.json",
+    "sha256": "ae5f0a0967165c40e953aeecdefc3abe76ba8b0ee483fc7e4d0922460090f624",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/phase-not-a-Time-cycle-result.json",
+    "sha256": "96d4bd640cb3d97759038bae9e82c73e99b052a3761e0d809c829425cbca75a1",
+    "category": "output"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/混做粉碎机两下游.json",
+    "sha256": "51116298a11f07279a0c5f9b3bad55855434145fe22bebd412a075ab0c676786",
+    "category": "source"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/slot_short-input.json",
+    "sha256": "fc446c00950675745857085b8febe21e2c2983e4817b64d88dc2acfe37345a67",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/slot_short-run-result.json",
+    "sha256": "e6d7383c932c907d6031bb3d868b6731e424eb2fe0270fe54c0e6da9c07238ff",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/slot_short-seed-result.json",
+    "sha256": "e6d7383c932c907d6031bb3d868b6731e424eb2fe0270fe54c0e6da9c07238ff",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/slot_short-cycle-result.json",
+    "sha256": "b3f09d33f75fa4ebfb5923755b1f8c05aa5087fcb5337fc81e39d171d38ced08",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/slot_unknown-input.json",
+    "sha256": "da464763f61932cdef2ebb23df91a3d030d75e6759333406b8dff9af44b75c3a",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/slot_unknown-run-result.json",
+    "sha256": "90528c210e092f294b20cfd5bca32dafe5c5c353040d0352e629f762f265cd54",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/slot_unknown-seed-result.json",
+    "sha256": "90528c210e092f294b20cfd5bca32dafe5c5c353040d0352e629f762f265cd54",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/slot_unknown-cycle-result.json",
+    "sha256": "e4bea862d09a8b50e1b2d162431c65618c3c74fcb2fa7d3803709985fd255186",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/boolean_seed-input.json",
+    "sha256": "6fd20f4d462fe3ba009ecdd0154f99fb180813a98e0a669723f09f53a98e4198",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/boolean_seed-run-result.json",
+    "sha256": "6a21dca8b120ef3ce0145656cb05b648d9c5f94f5b287248f31db063f00b33e8",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/boolean_seed-seed-result.json",
+    "sha256": "6a21dca8b120ef3ce0145656cb05b648d9c5f94f5b287248f31db063f00b33e8",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/boolean_seed-cycle-result.json",
+    "sha256": "fc9619affcaab5a7c6f7a3c4ec02681a9d6d62b5150661341a21c10c13f6140d",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/boolean_context-input.json",
+    "sha256": "d21c278e3a532e29e7ae6a828461e964d1020c330417703a64b1d60191d07b7e",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/boolean_context-run-result.json",
+    "sha256": "b91de595cfafa1a5cd376ab03388068143ab6a20302024c992e785d88fdda6f5",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/boolean_context-seed-result.json",
+    "sha256": "b91de595cfafa1a5cd376ab03388068143ab6a20302024c992e785d88fdda6f5",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/boolean_context-cycle-result.json",
+    "sha256": "0f9bff99fb85743b352a12bdc15dc5486c912d141c82bf7eb8b07c98dc0907be",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/missing_inventory-input.json",
+    "sha256": "abb512688718fa9f54c6ba5c4654743e79832bcec67ed895ba7c60d9856d4553",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/missing_inventory-run-result.json",
+    "sha256": "30f27393d397e9b5296b621d88d6043e2086f816d9d918c1a8f63b637f1871c7",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/missing_inventory-seed-result.json",
+    "sha256": "30f27393d397e9b5296b621d88d6043e2086f816d9d918c1a8f63b637f1871c7",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/missing_inventory-cycle-result.json",
+    "sha256": "f6e7a9b9a69a355a215e5667963fd7339407e1816c7a583c37340c9aa6c7e4d6",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/unknown_progress-input.json",
+    "sha256": "1f68e47c607d1899f26d52d8262b8c7571397fb7550f4ce167acfc935eaccaf5",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/unknown_progress-run-result.json",
+    "sha256": "2c103ce94f708c1012e11015ee8d189be954f2a897fe6ec15a2c46877109c121",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/unknown_progress-seed-result.json",
+    "sha256": "2c103ce94f708c1012e11015ee8d189be954f2a897fe6ec15a2c46877109c121",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/unknown_progress-cycle-result.json",
+    "sha256": "27086fd434f9bca0c986e05a16df586884cc5684260df92286fd4ae5d18cf0d6",
+    "category": "output"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json",
+    "sha256": "69bc1f4afff489ea2f47adf5d0598478ddb16e4be2a9eabe3fb741283ba19526",
+    "category": "source"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/zero-ore-origin-input.json",
+    "sha256": "d25586a9825929e2caf2cf17d1d995fe5e6bab955a36c10e8d95caf7b6ba6a4e",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/zero-ore-origin-run-result.json",
+    "sha256": "6c5b7fe5756ee7e23502207093fd691c58ad00383655c6c68de313fd0586a1f8",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/zero-ore-origin-seed-result.json",
+    "sha256": "6c5b7fe5756ee7e23502207093fd691c58ad00383655c6c68de313fd0586a1f8",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/zero-ore-origin-cycle-result.json",
+    "sha256": "7c790edbfc0baaecf185724f2cabb2a67d81ab0d0b4420ff0561d481092fd938",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/zero-ore-iron-input.json",
+    "sha256": "83c30a8b2ca66c4c75c2563e6345416f0a75d4c12bf188af049dea6238aff783",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/zero-ore-iron-run-result.json",
+    "sha256": "f968e5a917021283a91061cea50852241a96a66720f5b32feada8024a62c51c7",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/zero-ore-iron-seed-result.json",
+    "sha256": "f968e5a917021283a91061cea50852241a96a66720f5b32feada8024a62c51c7",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/zero-ore-iron-cycle-result.json",
+    "sha256": "7ed56b5f91ec559460b18fd72a9de8014f0c04c7544695f212ae6d0fb8cc5354",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/age-overflow-input.json",
+    "sha256": "721c4c3f32777594d38c491a5144cfb351dfdcfd494f9c025814395323cd4ff0",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/age-overflow-run-result.json",
+    "sha256": "0aca784fbd3b13a418c079202a276fe2d4268dbf5232ec42a6ce710cc6f51067",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/age-overflow-cycle-result.json",
+    "sha256": "5fb897b3ab87b98291f2505c659fbefa136947ec7894a99f539f9c02e86d61d8",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/fixture-relocation.json",
+    "sha256": "e8e3b1aa88a14b8b64b090d9f85f9d5c2fa70910c89355d83cda5cb50341e982",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/expired-after-closure-input.json",
+    "sha256": "692f705af69bf61e854acbf930889d8fdd043ff285558794d58498d52dcef47d",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/expired-after-closure-run-result.json",
+    "sha256": "adf9e8a3c64162dfbe104726a899c83cdcb52f07a77352c7864c4dd5f8a97a7e",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/expired-after-closure-seed-result.json",
+    "sha256": "adf9e8a3c64162dfbe104726a899c83cdcb52f07a77352c7864c4dd5f8a97a7e",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/expired-after-closure-cycle-result.json",
+    "sha256": "fed5efd43ce1818d1bd9164bec0d7c83cabd761e8926079314dccb409410ab06",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/legacy-late-window-cycle-result.json",
+    "sha256": "5e745100e630c1150b3accd5364185f54cba077a2a5e9addf4506802ff3210ca",
+    "category": "output"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/复核/r3-规格保真-证据/tiny-expired-after-closure-input.json",
+    "sha256": "e532a59a7e11b9cc4b671d5708fdee1ca0be4c38db35654152e0eee27bf5ede4",
+    "category": "source"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/legacy-record-relocation.json",
+    "sha256": "a108483f74c2a6c586679feba4df0d6d8c8900b59b8c38f91cd942886ba5e7d0",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/legacy-input-relocation.json",
+    "sha256": "ca75e6eebaf244452da50a1103799b5d05fe385360bfb063fbb5757ba470ca29",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/tiny-expired-after-closure-input.json",
+    "sha256": "81d77b18a4b819d3b501b978b230907bc5ac40b8ed6d2fb6c787a03f85ca9840",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/legacy-input-reference-map.json",
+    "sha256": "d61a17db83aa43d708db624e92a6f07ebca8a1ecabc22c3ce9b0c868d915cef6",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/legacy-late-window-record.json",
+    "sha256": "8e0c280bcd8feae94eb6256051c7730b47602b3e52ad2f6e9c356e25e7e1481b",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/legacy-late-window-record-result.json",
+    "sha256": "adf9e8a3c64162dfbe104726a899c83cdcb52f07a77352c7864c4dd5f8a97a7e",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/kernel",
+    "sha256": "0e3a2d30d5e824bd8016e719b4a2d77f6ed83464b238f60d7ece70f88536479c",
+    "category": "executable"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/revision_r3_cli-b881182ffc944b8ba91a1903ff8dcad9/results.json",
+    "sha256": "19bebfb599e79d3ef87e6dd16075ad61e1faf02f0fc122875be640932644adc2",
+    "category": "output"
+  }
+]

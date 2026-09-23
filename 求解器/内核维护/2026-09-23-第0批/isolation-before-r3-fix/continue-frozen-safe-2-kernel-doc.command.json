@@ -1,0 +1,127 @@
+{
+  "label": "continue-frozen-safe-2-kernel-doc",
+  "argv": [
+    "cargo",
+    "test",
+    "-p",
+    "kernel",
+    "--doc",
+    "--locked",
+    "--offline",
+    "-j",
+    "2",
+    "--profile",
+    "health0bsafe1149564",
+    "--config",
+    "profile.health0bsafe1149564.inherits=\"dev\"",
+    "--config",
+    "profile.health0bsafe1149564.codegen-units=1",
+    "--",
+    "--test-threads=1"
+  ],
+  "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+  "returncode": 0,
+  "expected": 0,
+  "seconds": 0.15959747099986998,
+  "cpu_seconds": 0.12946499999999972,
+  "cpu_cores_average": 0.8111970646458752,
+  "max_total_threads": 5,
+  "max_runnable_threads": 1,
+  "affinity": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "peak": [
+    {
+      "pid": 1170538,
+      "argv": "cargo test -p kernel --doc --locked --offline -j 2 --profile health0bsafe1149564 --config profile.health0bsafe1149564.inherits=\"dev\" --config profile.health0bsafe1149564.codegen-units=1 -- --test-threads=1 ",
+      "tasks": [
+        {
+          "tid": 1170538,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "cargo"
+        },
+        {
+          "tid": 1170539,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "futures-timer"
+        }
+      ]
+    },
+    {
+      "pid": 1170541,
+      "argv": "rustdoc --edition=2021 --crate-type lib --color auto --crate-name kernel --test crates/kernel/src/lib.rs --test-run-directory /tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel --test-args --test-threads=1 --extern kernel=/home/zhuran24/zmd-research-fresh/求解器/target/health0bsafe1149564/deps/libkernel-ee4256eb8be4a7ed.rlib --extern serde=/home/zhuran24/zmd-research-fresh/求解器/target/health0bsafe1149564/deps/libserde-d058820476060590.rlib --extern serde_json=/home/zhuran24/zmd-research-fresh/求解器/target/health0bsafe1149564/deps/libserde_json-9e3a536667d77ac1.rlib -L dependency=/home/zhuran24/zmd-research-fresh/求解器/target/health0bsafe1149564/deps -C embed-bitcode=no --check-cfg cfg(docsrs,test) --check-cfg cfg(feature, values()) --error-format human ",
+      "tasks": [
+        {
+          "tid": 1170541,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "rustdoc"
+        },
+        {
+          "tid": 1170542,
+          "state": "R",
+          "cpu_ticks": 1,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "rustc"
+        },
+        {
+          "tid": 1170543,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "rustc"
+        }
+      ]
+    }
+  ],
+  "violation": null,
+  "protection_error": null,
+  "environment": {
+    "PATH": "/home/zhuran24/.codex/tmp/arg0/codex-arg07mihkU:/home/zhuran24/.cargo/bin:/home/zhuran24/.local/bin:/home/zhuran24/.opencode/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/home/zhuran24/.local/share/flatpak/exports/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/home/zhuran24/.config/Claude/local-agent-mode-sessions/skills-plugin/cf875e59-d94b-492e-ba7a-6d2a070f0f30/92f6071f-e8b1-40cd-8c37-9d23302ed76c/bin",
+    "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+    "CARGO_BUILD_JOBS": "2",
+    "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+    "RUST_TEST_THREADS": "1",
+    "RAYON_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "NODE_OPTIONS": "--v8-pool-size=1"
+  },
+  "stdout_sha256": "df166913f47ff1f04202cae9b31df67ed272d692d99a0023a8117dc3029100dd",
+  "stderr_sha256": "22ae2ef0f9e1b4abe137f9f263578948fbeb44821553ca66d4b90dcd7e747c23"
+}

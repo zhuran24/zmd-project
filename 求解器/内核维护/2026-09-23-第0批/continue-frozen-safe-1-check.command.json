@@ -1,0 +1,226 @@
+{
+  "label": "continue-frozen-safe-1-check",
+  "argv": [
+    "cargo",
+    "check",
+    "--workspace",
+    "--all-targets",
+    "--locked",
+    "--offline",
+    "-j",
+    "2",
+    "--profile",
+    "health0bsafe1229858",
+    "--config",
+    "profile.health0bsafe1229858.inherits=\"dev\"",
+    "--config",
+    "profile.health0bsafe1229858.codegen-units=1"
+  ],
+  "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+  "returncode": 0,
+  "expected": 0,
+  "seconds": 2.5094707920070505,
+  "cpu_seconds": 4.689426000000026,
+  "cpu_cores_average": 1.8686912057061513,
+  "max_total_threads": 13,
+  "max_runnable_threads": 2,
+  "affinity": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "peak": [
+    {
+      "pid": 1287334,
+      "argv": "cargo check --workspace --all-targets --locked --offline -j 2 --profile health0bsafe1229858 --config profile.health0bsafe1229858.inherits=\"dev\" --config profile.health0bsafe1229858.codegen-units=1 ",
+      "tasks": [
+        {
+          "tid": 1287334,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "cargo"
+        },
+        {
+          "tid": 1287335,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "futures-timer"
+        },
+        {
+          "tid": 1287336,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "cargo"
+        },
+        {
+          "tid": 1287337,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "cargo"
+        },
+        {
+          "tid": 1287338,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "cargo"
+        }
+      ]
+    },
+    {
+      "pid": 1287339,
+      "argv": "rustc --crate-name serde_core --edition=2021 /home/zhuran24/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_core-1.0.229/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata -C embed-bitcode=no -C codegen-units=1 -C debuginfo=2 --cfg feature=\"result\" --cfg feature=\"std\" --check-cfg cfg(docsrs,test) --check-cfg cfg(feature, values(\"alloc\", \"default\", \"rc\", \"result\", \"std\", \"unstable\")) -C metadata=79058290753947ea -C extra-filename=-b767c6348cdbae9c --out-dir /home/zhuran24/zmd-research-fresh/求解器/target/health0bsafe1229858/deps -L dependency=/home/zhuran24/zmd-research-fresh/求解器/target/health0bsafe1229858/deps --cap-lints allow --check-cfg cfg(if_docsrs_then_no_serde_core) --check-cfg cfg(no_core_cstr) --check-cfg cfg(no_core_error) --check-cfg cfg(no_core_net) --check-cfg cfg(no_core_num_saturating) --check-cfg cfg(no_diagnostic_namespace) --check-cfg cfg(no_serde_derive) --check-cfg cfg(no_std_atomic) --check-cfg cfg(no_std_atomic64) --check-cfg cfg(no_target_has_atomic) ",
+      "tasks": [
+        {
+          "tid": 1287339,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "rustc"
+        },
+        {
+          "tid": 1287342,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "ctrl-c"
+        },
+        {
+          "tid": 1287343,
+          "state": "R",
+          "cpu_ticks": 1,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "rustc"
+        },
+        {
+          "tid": 1287345,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "rustc"
+        }
+      ]
+    },
+    {
+      "pid": 1287340,
+      "argv": "rustc --crate-name zmij --edition=2021 /home/zhuran24/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zmij-1.0.23/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata -C embed-bitcode=no -C codegen-units=1 -C debuginfo=2 --check-cfg cfg(docsrs,test) --check-cfg cfg(feature, values(\"no-panic\")) -C metadata=4f2701a7dc65910b -C extra-filename=-eee4599ab6532946 --out-dir /home/zhuran24/zmd-research-fresh/求解器/target/health0bsafe1229858/deps -L dependency=/home/zhuran24/zmd-research-fresh/求解器/target/health0bsafe1229858/deps --cap-lints allow --check-cfg cfg(exhaustive) --check-cfg cfg(opt_level, values(\"s\")) --check-cfg cfg(zmij_no_select_unpredictable) ",
+      "tasks": [
+        {
+          "tid": 1287340,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "rustc"
+        },
+        {
+          "tid": 1287341,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "ctrl-c"
+        },
+        {
+          "tid": 1287344,
+          "state": "R",
+          "cpu_ticks": 2,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "rustc"
+        },
+        {
+          "tid": 1287346,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "rustc"
+        }
+      ]
+    }
+  ],
+  "violation": null,
+  "protection_error": null,
+  "environment": {
+    "PATH": "/home/zhuran24/.codex/tmp/arg0/codex-arg07mihkU:/home/zhuran24/.cargo/bin:/home/zhuran24/.local/bin:/home/zhuran24/.opencode/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/home/zhuran24/.local/share/flatpak/exports/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/home/zhuran24/.config/Claude/local-agent-mode-sessions/skills-plugin/cf875e59-d94b-492e-ba7a-6d2a070f0f30/92f6071f-e8b1-40cd-8c37-9d23302ed76c/bin",
+    "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+    "CARGO_BUILD_JOBS": "2",
+    "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+    "RUST_TEST_THREADS": "1",
+    "RAYON_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "NODE_OPTIONS": "--v8-pool-size=1"
+  },
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "6c116514670e8d349136de89c7c43afc748cdf38b1667bda9ca8b217a04f8f27"
+}

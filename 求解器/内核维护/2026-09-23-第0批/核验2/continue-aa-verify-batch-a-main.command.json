@@ -1,0 +1,153 @@
+{
+  "label": "continue-aa-verify-batch-a-main",
+  "argv": [
+    "strace",
+    "-f",
+    "-qq",
+    "-yy",
+    "-s",
+    "4096",
+    "-e",
+    "trace=openat,openat2,execve,chdir",
+    "-o",
+    "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/continue-aa-verify-batch-a-main.trace.log",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/kernel",
+    "verify-batch",
+    "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/verify-batch/batch",
+    "--config",
+    "/tmp/kernel-audit2-v3r63b5w/求解器/规格/内核配置-v1.json"
+  ],
+  "cwd": "/tmp/kernel-audit2-v3r63b5w/求解器",
+  "returncode": 0,
+  "expected": 0,
+  "seconds": 1.5737909320014296,
+  "cpu_seconds": 1.5518630000000018,
+  "average_cores": 0.9860668075056567,
+  "max_total_threads": 7,
+  "max_runnable_threads": 3,
+  "affinity": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "violation": null,
+  "peak": [
+    {
+      "pid": 1426809,
+      "argv": "strace -f -qq -yy -s 4096 -e trace=openat,openat2,execve,chdir -o /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/continue-aa-verify-batch-a-main.trace.log /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/kernel verify-batch /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/verify-batch/batch --config /tmp/kernel-audit2-v3r63b5w/求解器/规格/内核配置-v1.json ",
+      "tasks": [
+        {
+          "tid": 1426809,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        }
+      ]
+    },
+    {
+      "pid": 1426811,
+      "argv": "/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/kernel verify-batch /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/verify-batch/batch --config /tmp/kernel-audit2-v3r63b5w/求解器/规格/内核配置-v1.json ",
+      "tasks": [
+        {
+          "tid": 1426811,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        }
+      ]
+    },
+    {
+      "pid": 1426812,
+      "argv": "python -B /tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/tests/verify_all.py --dry /home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/verify-batch/batch --config /tmp/kernel-audit2-v3r63b5w/求解器/规格/内核配置-v1.json ",
+      "tasks": [
+        {
+          "tid": 1426812,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 4
+        }
+      ]
+    },
+    {
+      "pid": 1426813,
+      "argv": "node -e const fs=require('fs');const Ajv=require(process.argv[1]);const args=JSON.parse(fs.readFileSync(0,'utf8'));const schema=JSON.parse(fs.readFileSync(args.schema,'utf8'));const validate=new Ajv({strict:false,allErrors:true}).compile(schema);for(const path of args.paths){if(!validate(JSON.parse(fs.readFileSync(path,'utf8')))){console.error(JSON.stringify({path,errors:validate.errors}));process.exit(1);}} /home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/2020.js ",
+      "tasks": [
+        {
+          "tid": 1426813,
+          "state": "R",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 1
+        },
+        {
+          "tid": 1426814,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        },
+        {
+          "tid": 1426815,
+          "state": "R",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        },
+        {
+          "tid": 1426816,
+          "state": "S",
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "cpu_ticks": 0
+        }
+      ]
+    }
+  ],
+  "environment": {
+    "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+    "CARGO_BUILD_JOBS": "2",
+    "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+    "RUST_TEST_THREADS": "1",
+    "RAYON_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "NODE_OPTIONS": "--v8-pool-size=1",
+    "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/kernel"
+  },
+  "stdout_sha256": "22a3e84ce9efea8627f519d83c7565fdd45c4026d897cc1dd0a4bee62c0d1410",
+  "stderr_sha256": "bbef13b96e1337c66676ab2c1509988a413fa8e89ebcc07cd397d64b631ce00b"
+}

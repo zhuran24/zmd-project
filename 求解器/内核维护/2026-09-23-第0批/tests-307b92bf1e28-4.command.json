@@ -1,0 +1,199 @@
+{
+  "label": "tests-307b92bf1e28-4",
+  "argv": [
+    "cargo",
+    "test",
+    "-p",
+    "topology",
+    "--lib",
+    "--locked",
+    "--offline",
+    "-j",
+    "2",
+    "--profile",
+    "healthreg307b92bf1e28",
+    "--config",
+    "profile.healthreg307b92bf1e28.inherits=\"dev\"",
+    "--config",
+    "profile.healthreg307b92bf1e28.codegen-units=1",
+    "--",
+    "--test-threads=1"
+  ],
+  "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+  "returncode": 0,
+  "expected": 0,
+  "seconds": 0.540388408000581,
+  "cpu_seconds": 0.5494920000000043,
+  "cpu_cores_average": 1.0168463865335422,
+  "max_total_threads": 11,
+  "max_runnable_threads": 1,
+  "affinity": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "peak": [
+    {
+      "pid": 1320104,
+      "argv": "cargo test -p topology --lib --locked --offline -j 2 --profile healthreg307b92bf1e28 --config profile.healthreg307b92bf1e28.inherits=\"dev\" --config profile.healthreg307b92bf1e28.codegen-units=1 -- --test-threads=1 ",
+      "tasks": [
+        {
+          "tid": 1320104,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "cargo"
+        },
+        {
+          "tid": 1320105,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "futures-timer"
+        },
+        {
+          "tid": 1320106,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "cargo"
+        },
+        {
+          "tid": 1320107,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "cargo"
+        }
+      ]
+    },
+    {
+      "pid": 1320108,
+      "argv": "rustc --crate-name topology --edition=2021 crates/topology/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C codegen-units=1 -C debuginfo=2 --test --check-cfg cfg(docsrs,test) --check-cfg cfg(feature, values()) -C metadata=31b30326d8de22c7 -C extra-filename=-84c684aecc288bbd --out-dir /home/zhuran24/zmd-research-fresh/求解器/target/healthreg307b92bf1e28/deps -C incremental=/home/zhuran24/zmd-research-fresh/求解器/target/healthreg307b92bf1e28/incremental -L dependency=/home/zhuran24/zmd-research-fresh/求解器/target/healthreg307b92bf1e28/deps --extern num_bigint=/home/zhuran24/zmd-research-fresh/求解器/target/healthreg307b92bf1e28/deps/libnum_bigint-0a4569383d527ace.rlib --extern num_rational=/home/zhuran24/zmd-research-fresh/求解器/target/healthreg307b92bf1e28/deps/libnum_rational-6b2e5efc32fa1bee.rlib --extern num_traits=/home/zhuran24/zmd-research-fresh/求解器/target/healthreg307b92bf1e28/deps/libnum_traits-852f4b6cdbd4d613.rlib --extern serde=/home/zhuran24/zmd-research-fresh/求解器/target/healthreg307b92bf1e28/deps/libserde-d058820476060590.rlib --extern serde_json=/home/zhuran24/zmd-research-fresh/求解器/target/healthreg307b92bf1e28/deps/libserde_json-9e3a536667d77ac1.rlib ",
+      "tasks": [
+        {
+          "tid": 1320108,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "rustc"
+        },
+        {
+          "tid": 1320109,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "ctrl-c"
+        },
+        {
+          "tid": 1320110,
+          "state": "S",
+          "cpu_ticks": 38,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "rustc"
+        },
+        {
+          "tid": 1320111,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "rustc"
+        },
+        {
+          "tid": 1320112,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "rustc"
+        },
+        {
+          "tid": 1320113,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "coordinator"
+        },
+        {
+          "tid": 1320114,
+          "state": "R",
+          "cpu_ticks": 2,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "opt b1ni6h682hy"
+        }
+      ]
+    }
+  ],
+  "violation": null,
+  "protection_error": null,
+  "environment": {
+    "PATH": "/home/zhuran24/.codex/tmp/arg0/codex-arg07mihkU:/home/zhuran24/.cargo/bin:/home/zhuran24/.local/bin:/home/zhuran24/.opencode/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/home/zhuran24/.local/share/flatpak/exports/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/home/zhuran24/.config/Claude/local-agent-mode-sessions/skills-plugin/cf875e59-d94b-492e-ba7a-6d2a070f0f30/92f6071f-e8b1-40cd-8c37-9d23302ed76c/bin",
+    "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+    "CARGO_BUILD_JOBS": "2",
+    "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+    "RUST_TEST_THREADS": "1",
+    "RAYON_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "NODE_OPTIONS": "--v8-pool-size=1"
+  },
+  "stdout_sha256": "3d8bac7c199253cef88c0b0f3439fee2a32b8c23d58d771ec86c606ecc03b0a9",
+  "stderr_sha256": "4b6e7f55850080abc88d0285ea5284c42815a40b449d522296b6b72610be093f"
+}

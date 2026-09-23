@@ -1,0 +1,127 @@
+{
+  "label": "continue-frozen-safe-1-topology-doc",
+  "argv": [
+    "cargo",
+    "test",
+    "-p",
+    "topology",
+    "--doc",
+    "--locked",
+    "--offline",
+    "-j",
+    "2",
+    "--profile",
+    "health0bsafe1229858",
+    "--config",
+    "profile.health0bsafe1229858.inherits=\"dev\"",
+    "--config",
+    "profile.health0bsafe1229858.codegen-units=1",
+    "--",
+    "--test-threads=1"
+  ],
+  "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+  "returncode": 0,
+  "expected": 0,
+  "seconds": 0.06422623700200347,
+  "cpu_seconds": 0.05557100000001469,
+  "cpu_cores_average": 0.8652382981472386,
+  "max_total_threads": 5,
+  "max_runnable_threads": 1,
+  "affinity": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "peak": [
+    {
+      "pid": 1297576,
+      "argv": "cargo test -p topology --doc --locked --offline -j 2 --profile health0bsafe1229858 --config profile.health0bsafe1229858.inherits=\"dev\" --config profile.health0bsafe1229858.codegen-units=1 -- --test-threads=1 ",
+      "tasks": [
+        {
+          "tid": 1297576,
+          "state": "S",
+          "cpu_ticks": 1,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "cargo"
+        },
+        {
+          "tid": 1297577,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "futures-timer"
+        }
+      ]
+    },
+    {
+      "pid": 1297579,
+      "argv": "rustdoc --edition=2021 --crate-type lib --color auto --crate-name topology --test crates/topology/src/lib.rs --test-run-directory /tmp/kernel-health-20260923-_5s65pp9/求解器/crates/topology --test-args --test-threads=1 --extern num_bigint=/home/zhuran24/zmd-research-fresh/求解器/target/health0bsafe1229858/deps/libnum_bigint-0a4569383d527ace.rlib --extern num_rational=/home/zhuran24/zmd-research-fresh/求解器/target/health0bsafe1229858/deps/libnum_rational-6b2e5efc32fa1bee.rlib --extern num_traits=/home/zhuran24/zmd-research-fresh/求解器/target/health0bsafe1229858/deps/libnum_traits-852f4b6cdbd4d613.rlib --extern serde=/home/zhuran24/zmd-research-fresh/求解器/target/health0bsafe1229858/deps/libserde-d058820476060590.rlib --extern serde_json=/home/zhuran24/zmd-research-fresh/求解器/target/health0bsafe1229858/deps/libserde_json-9e3a536667d77ac1.rlib --extern topology=/home/zhuran24/zmd-research-fresh/求解器/target/health0bsafe1229858/deps/libtopology-bf1fc1afc7f71deb.rlib -L dependency=/home/zhuran24/zmd-research-fresh/求解器/target/health0bsafe1229858/deps -C embed-bitcode=no --check-cfg cfg(docsrs,test) --check-cfg cfg(feature, values()) --error-format human ",
+      "tasks": [
+        {
+          "tid": 1297579,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "rustdoc"
+        },
+        {
+          "tid": 1297580,
+          "state": "R",
+          "cpu_ticks": 2,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "rustc"
+        },
+        {
+          "tid": 1297581,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "rustc"
+        }
+      ]
+    }
+  ],
+  "violation": null,
+  "protection_error": null,
+  "environment": {
+    "PATH": "/home/zhuran24/.codex/tmp/arg0/codex-arg07mihkU:/home/zhuran24/.cargo/bin:/home/zhuran24/.local/bin:/home/zhuran24/.opencode/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/home/zhuran24/.local/share/flatpak/exports/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/home/zhuran24/.config/Claude/local-agent-mode-sessions/skills-plugin/cf875e59-d94b-492e-ba7a-6d2a070f0f30/92f6071f-e8b1-40cd-8c37-9d23302ed76c/bin",
+    "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+    "CARGO_BUILD_JOBS": "2",
+    "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+    "RUST_TEST_THREADS": "1",
+    "RAYON_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "NODE_OPTIONS": "--v8-pool-size=1"
+  },
+  "stdout_sha256": "df166913f47ff1f04202cae9b31df67ed272d692d99a0023a8117dc3029100dd",
+  "stderr_sha256": "abaaab95f857cc1618b85ad2608e67f7d3a03c2ce704b4d13c01212a1464da75"
+}

@@ -1,0 +1,14 @@
+{"command": ["/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/kernel", "verify-cycle", "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-431526d0aab842ae8d0cd9c715cdfed5/package/checkpoint_delta/certificates/cycle.json", "--config", "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json"], "cwd": "/tmp/kernel-health-20260923-_5s65pp9", "exit": 0}
+{
+  "checks": [
+    "引用原始字节/format/producer和完整来源链",
+    "原种子到达前缀及跨刻事件身份",
+    "独立重建D动态前件及周期账/率/接收域",
+    "从周期起点P次step_tick及完整终态"
+  ],
+  "cycle_replayed": true,
+  "period": 20,
+  "prefix_replayed": 21,
+  "start_time": 0,
+  "status": "input_checked"
+}

@@ -1,0 +1,39 @@
+{
+  "case_id": "topology-invalid",
+  "label": "b",
+  "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/topology-invalid",
+  "sealed": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/sealed/topology-invalid/b",
+  "files": {
+    ".exclusive.json": {
+      "sha256": "1fbd8928ea585df39e1b70ea970b535bb652b2e3b207e17339cbd00a555fb741",
+      "size": 165
+    },
+    "artifacts/bad-input.json": {
+      "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+      "size": 3
+    },
+    "main.stderr.log": {
+      "sha256": "4408cc613f8cee9a80806d1ca423fe9c6b78bf0e8b13124186d36f28bae1227a",
+      "size": 47
+    },
+    "main.stdout.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    }
+  },
+  "steps": [
+    {
+      "step": "main",
+      "returncode": 2,
+      "argv": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/topology",
+        "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/topology-invalid/artifacts/bad-input.json"
+      ]
+    }
+  ],
+  "references": {
+    "artifacts/bad-input.json": [],
+    "main.stderr.log": [],
+    "main.stdout.log": []
+  }
+}

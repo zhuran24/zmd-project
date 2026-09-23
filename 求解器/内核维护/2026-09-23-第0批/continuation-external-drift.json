@@ -1,0 +1,24 @@
+{
+  "path": "候选约束.txt",
+  "start": {
+    "mode": 420,
+    "kind": "file",
+    "size": 298455,
+    "sha256": "e8c60f6b506f2c424745c33ec106237d172acc6a63c918632fd34a25e4504e1c"
+  },
+  "first": {
+    "mode": 420,
+    "kind": "file",
+    "size": 317341,
+    "sha256": "86b68aab7e24bcf805823d38ed0242af09195987f250cf4fad194b20cc0e4936"
+  },
+  "after_all_test_processes_exited": {
+    "mode": 420,
+    "kind": "file",
+    "size": 317365,
+    "sha256": "527624e6f640c80250d909cb71e8eb9a1334cc17dc600412882e96eb29ba44a9"
+  },
+  "at": "2026-09-23T00:55:25.873563-04:00",
+  "attribution": "External writer: content changed again after this task child test exited; this task commands never write this root file. Owner explicitly prohibits touching root files.",
+  "action": "Halted active-workspace regression. Resume only on previously archived and hash-verified old source context. Never restore or update root file. Workspace first round invalid."
+}

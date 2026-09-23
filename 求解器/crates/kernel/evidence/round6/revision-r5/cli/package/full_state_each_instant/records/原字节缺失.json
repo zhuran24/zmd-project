@@ -1,0 +1,20 @@
+{
+  "status": "原字节缺失",
+  "files": [
+    {
+      "path": "crates/kernel/evidence/round6/revision-r5/cli/package/full_state_each_instant/records/record.json",
+      "original_sha256": "8be82067990439c745bb93b5ee4ab9dcea8a646fa589687b1f8d04884d0ca279",
+      "original_bytes": 1984870,
+      "current_sha256": "67f4af5ab295a03432f4e081772b0283dfee50bc72f652720e920e35759572e2",
+      "current_bytes": 1975264,
+      "disposition": "现存替代字节原地保留；不是原字节恢复",
+      "disposition_path": "crates/kernel/evidence/round6/revision-r5/cli/package/full_state_each_instant/records/record.json"
+    }
+  ],
+  "search_basis": [
+    "内核维护/2026-09-22d/审查-opus/unresolved_targets.json",
+    "内核维护/2026-09-22d/审查处理核验/extra-facts.json"
+  ],
+  "search_limit": "沿用已记录的可访问范围与四个 Git 对象库未命中结果；未宣称全机穷尽。",
+  "continuation": "2026-09-23 第0批补记；现存历史文件字节未改。"
+}

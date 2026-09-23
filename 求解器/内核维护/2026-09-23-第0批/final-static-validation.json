@@ -1,0 +1,30 @@
+{
+  "different_cwd": {
+    "cwd": "/tmp",
+    "exit": 0,
+    "instance": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence/different_cwd-4f0b9245c8a14d23baf8e8fb311572a3"
+  },
+  "required_fixture_rejections": [
+    {
+      "case": "missing-first",
+      "error": "[Errno 2] No such file or directory: '/home/zhuran24/zmd-research-fresh/求解器/target/health-tests/required-fixtures-73133a8c9e2a43f583edf72e900f33d1/crates/kernel/复核/r3-规格保真-证据/gate-expired-after-closure-input.json'",
+      "rejected_before_kernel": true
+    },
+    {
+      "case": "wrong-first",
+      "error": "required historical fixture mismatch: gate-expired-after-closure-input.json",
+      "rejected_before_kernel": true
+    },
+    {
+      "case": "missing-second",
+      "error": "[Errno 2] No such file or directory: '/home/zhuran24/zmd-research-fresh/求解器/target/health-tests/required-fixtures-73133a8c9e2a43f583edf72e900f33d1/crates/kernel/复核/r3-规格保真-证据/tiny-expired-cycle.json'",
+      "rejected_before_kernel": true
+    },
+    {
+      "case": "wrong-second",
+      "error": "required historical fixture mismatch: tiny-expired-cycle.json",
+      "rejected_before_kernel": true
+    }
+  ],
+  "restoration_readback": 160
+}

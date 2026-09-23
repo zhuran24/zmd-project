@@ -1,0 +1,11 @@
+{
+  "files": {
+    "gate-expired-after-closure-input.json": "e3179739624643208053567874190b2dbc3e8a387b394e6105cc861cf62f5e19",
+    "tiny-expired-cycle.json": "5d7fb60fd4ba78be19d47b39b9e728c98fe4c0f0ff68ec99158ba229f94e711d"
+  },
+  "negative_groups": [
+    "expired-after-closure (seed/run/cycle)",
+    "legacy-late-window (cycle/record)"
+  ],
+  "expected_calls": 5
+}

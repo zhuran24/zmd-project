@@ -1,0 +1,3522 @@
+[
+  {
+    "label": "guarded-1-0-validation",
+    "argv": [
+      "strace",
+      "-f",
+      "-qq",
+      "-yy",
+      "-s",
+      "4096",
+      "-e",
+      "trace=openat,openat2,execve,chdir",
+      "-o",
+      "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-1-0-validation.trace.log",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/validation-2d77b7ea08304438",
+      "--test-threads=1",
+      "--nocapture"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "returncode": 0,
+    "expected": 0,
+    "seconds": 6.5428965789906215,
+    "cpu_seconds": 6.462033,
+    "average_cores": 0.9876410122008842,
+    "max_total_threads": 4,
+    "max_runnable_threads": 2,
+    "affinity": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "violation": null,
+    "peak": [
+      {
+        "pid": 1367747,
+        "argv": "strace -f -qq -yy -s 4096 -e trace=openat,openat2,execve,chdir -o /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-1-0-validation.trace.log /home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/validation-2d77b7ea08304438 --test-threads=1 --nocapture ",
+        "tasks": [
+          {
+            "tid": 1367747,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      },
+      {
+        "pid": 1367749,
+        "argv": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/validation-2d77b7ea08304438 --test-threads=1 --nocapture ",
+        "tasks": [
+          {
+            "tid": 1367749,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          },
+          {
+            "tid": 1367751,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      },
+      {
+        "pid": 1367752,
+        "argv": "python /tmp/kernel-health-20260923-_5s65pp9/求解器/数据/工具/test_formal_catalog.py ",
+        "tasks": [
+          {
+            "tid": 1367752,
+            "state": "R",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 2
+          }
+        ]
+      }
+    ],
+    "environment": {
+      "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+      "CARGO_BUILD_JOBS": "2",
+      "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+      "RUST_TEST_THREADS": "1",
+      "RAYON_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "NODE_OPTIONS": "--v8-pool-size=1",
+      "HEALTH_RUN": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文",
+      "KERNEL_TEST_EVIDENCE_DIR": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence"
+    },
+    "stdout_sha256": "0d1cc8da45fc89e177bb7fae3795a216844fe9f567f8a37c86399b1e82a08b5b",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "passed_tests": 30,
+    "round": 1,
+    "target": {
+      "kind": [
+        "test"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "validation",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/topology/tests/validation.rs",
+      "edition": "2021",
+      "doc": false,
+      "doctest": false,
+      "test": true
+    }
+  },
+  {
+    "label": "guarded-1-1-topology",
+    "argv": [
+      "strace",
+      "-f",
+      "-qq",
+      "-yy",
+      "-s",
+      "4096",
+      "-e",
+      "trace=openat,openat2,execve,chdir",
+      "-o",
+      "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-1-1-topology.trace.log",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/topology-208981e14844f49e",
+      "--test-threads=1",
+      "--nocapture"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "returncode": 0,
+    "expected": 0,
+    "seconds": 0.036946815002011135,
+    "cpu_seconds": 0.0016820000000006274,
+    "average_cores": 0.045524898422477575,
+    "max_total_threads": 1,
+    "max_runnable_threads": 0,
+    "affinity": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "violation": null,
+    "peak": [
+      {
+        "pid": 1367848,
+        "argv": "",
+        "tasks": [
+          {
+            "tid": 1367848,
+            "state": "Z",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      }
+    ],
+    "environment": {
+      "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+      "CARGO_BUILD_JOBS": "2",
+      "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+      "RUST_TEST_THREADS": "1",
+      "RAYON_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "NODE_OPTIONS": "--v8-pool-size=1",
+      "HEALTH_RUN": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文",
+      "KERNEL_TEST_EVIDENCE_DIR": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence"
+    },
+    "stdout_sha256": "df166913f47ff1f04202cae9b31df67ed272d692d99a0023a8117dc3029100dd",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "passed_tests": 0,
+    "round": 1,
+    "target": {
+      "kind": [
+        "bin"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "topology",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/topology/src/main.rs",
+      "edition": "2021",
+      "doc": true,
+      "doctest": false,
+      "test": true
+    }
+  },
+  {
+    "label": "guarded-1-2-topology",
+    "argv": [
+      "strace",
+      "-f",
+      "-qq",
+      "-yy",
+      "-s",
+      "4096",
+      "-e",
+      "trace=openat,openat2,execve,chdir",
+      "-o",
+      "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-1-2-topology.trace.log",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/topology-84c684aecc288bbd",
+      "--test-threads=1",
+      "--nocapture"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "returncode": 0,
+    "expected": 0,
+    "seconds": 0.03703269200923387,
+    "cpu_seconds": 0.0035089999999995958,
+    "average_cores": 0.0947541161502558,
+    "max_total_threads": 1,
+    "max_runnable_threads": 0,
+    "affinity": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "violation": null,
+    "peak": [
+      {
+        "pid": 1367888,
+        "argv": "",
+        "tasks": [
+          {
+            "tid": 1367888,
+            "state": "Z",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      }
+    ],
+    "environment": {
+      "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+      "CARGO_BUILD_JOBS": "2",
+      "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+      "RUST_TEST_THREADS": "1",
+      "RAYON_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "NODE_OPTIONS": "--v8-pool-size=1",
+      "HEALTH_RUN": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文",
+      "KERNEL_TEST_EVIDENCE_DIR": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence"
+    },
+    "stdout_sha256": "3d8bac7c199253cef88c0b0f3439fee2a32b8c23d58d771ec86c606ecc03b0a9",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "passed_tests": 1,
+    "round": 1,
+    "target": {
+      "kind": [
+        "lib"
+      ],
+      "crate_types": [
+        "lib"
+      ],
+      "name": "topology",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/topology/src/lib.rs",
+      "edition": "2021",
+      "doc": true,
+      "doctest": true,
+      "test": true
+    }
+  },
+  {
+    "label": "guarded-1-3-revision_cli",
+    "argv": [
+      "strace",
+      "-f",
+      "-qq",
+      "-yy",
+      "-s",
+      "4096",
+      "-e",
+      "trace=openat,openat2,execve,chdir",
+      "-o",
+      "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-1-3-revision_cli.trace.log",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_cli-16d2a8aca958a1e2",
+      "--test-threads=1",
+      "--nocapture"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "returncode": 0,
+    "expected": 0,
+    "seconds": 5.25544266399811,
+    "cpu_seconds": 5.158759999999999,
+    "average_cores": 0.9816033262696545,
+    "max_total_threads": 5,
+    "max_runnable_threads": 2,
+    "affinity": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "violation": null,
+    "peak": [
+      {
+        "pid": 1367917,
+        "argv": "strace -f -qq -yy -s 4096 -e trace=openat,openat2,execve,chdir -o /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-1-3-revision_cli.trace.log /home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_cli-16d2a8aca958a1e2 --test-threads=1 --nocapture ",
+        "tasks": [
+          {
+            "tid": 1367917,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 1
+          }
+        ]
+      },
+      {
+        "pid": 1367919,
+        "argv": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_cli-16d2a8aca958a1e2 --test-threads=1 --nocapture ",
+        "tasks": [
+          {
+            "tid": 1367919,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          },
+          {
+            "tid": 1367920,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      },
+      {
+        "pid": 1367922,
+        "argv": "python -B /tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/revision_cli.py /home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/kernel ",
+        "tasks": [
+          {
+            "tid": 1367922,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 5
+          }
+        ]
+      },
+      {
+        "pid": 1367924,
+        "argv": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/kernel run /tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/混做粉碎机两下游.json --config /tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json --ticks 4 --format full_state_each_instant --checkpoint-interval 3 --out /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-99ec2b5c5560442e8d33f4138a9e7b06/tmp/混做粉碎机两下游-full_state_each_instant-record.json ",
+        "tasks": [
+          {
+            "tid": 1367924,
+            "state": "R",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      }
+    ],
+    "environment": {
+      "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+      "CARGO_BUILD_JOBS": "2",
+      "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+      "RUST_TEST_THREADS": "1",
+      "RAYON_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "NODE_OPTIONS": "--v8-pool-size=1",
+      "HEALTH_RUN": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文",
+      "KERNEL_TEST_EVIDENCE_DIR": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence"
+    },
+    "stdout_sha256": "78101b13a7ce59bd8f34db1ee66d1a6f51ddc3a99543c4a4a4baed2f486a2839",
+    "stderr_sha256": "3d4e38fb7736e1fcbb108ce3fcc86f5b37de5e773f610b66f81d1f152f9ad162",
+    "passed_tests": 1,
+    "round": 1,
+    "target": {
+      "kind": [
+        "test"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "revision_cli",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/revision_cli.rs",
+      "edition": "2021",
+      "doc": false,
+      "doctest": false,
+      "test": true
+    }
+  },
+  {
+    "label": "guarded-1-4-kernel",
+    "argv": [
+      "strace",
+      "-f",
+      "-qq",
+      "-yy",
+      "-s",
+      "4096",
+      "-e",
+      "trace=openat,openat2,execve,chdir",
+      "-o",
+      "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-1-4-kernel.trace.log",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/kernel-a23b9231946580be",
+      "--test-threads=1",
+      "--nocapture"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "returncode": 0,
+    "expected": 0,
+    "seconds": 0.03853433800395578,
+    "cpu_seconds": 0.002504000000001172,
+    "average_cores": 0.06498100472737124,
+    "max_total_threads": 1,
+    "max_runnable_threads": 0,
+    "affinity": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "violation": null,
+    "peak": [
+      {
+        "pid": 1368429,
+        "argv": "",
+        "tasks": [
+          {
+            "tid": 1368429,
+            "state": "Z",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      }
+    ],
+    "environment": {
+      "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+      "CARGO_BUILD_JOBS": "2",
+      "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+      "RUST_TEST_THREADS": "1",
+      "RAYON_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "NODE_OPTIONS": "--v8-pool-size=1",
+      "HEALTH_RUN": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文",
+      "KERNEL_TEST_EVIDENCE_DIR": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence"
+    },
+    "stdout_sha256": "df166913f47ff1f04202cae9b31df67ed272d692d99a0023a8117dc3029100dd",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "passed_tests": 0,
+    "round": 1,
+    "target": {
+      "kind": [
+        "bin"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "kernel",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/main.rs",
+      "edition": "2021",
+      "doc": true,
+      "doctest": false,
+      "test": true
+    }
+  },
+  {
+    "label": "guarded-1-5-revision_r3_cli",
+    "argv": [
+      "strace",
+      "-f",
+      "-qq",
+      "-yy",
+      "-s",
+      "4096",
+      "-e",
+      "trace=openat,openat2,execve,chdir",
+      "-o",
+      "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-1-5-revision_r3_cli.trace.log",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_r3_cli-73bf228036d3dfbb",
+      "--test-threads=1",
+      "--nocapture"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "returncode": 0,
+    "expected": 0,
+    "seconds": 3.3846682169969426,
+    "cpu_seconds": 3.235029,
+    "average_cores": 0.9557891032729611,
+    "max_total_threads": 5,
+    "max_runnable_threads": 2,
+    "affinity": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "violation": null,
+    "peak": [
+      {
+        "pid": 1368492,
+        "argv": "strace -f -qq -yy -s 4096 -e trace=openat,openat2,execve,chdir -o /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-1-5-revision_r3_cli.trace.log /home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_r3_cli-73bf228036d3dfbb --test-threads=1 --nocapture ",
+        "tasks": [
+          {
+            "tid": 1368492,
+            "state": "R",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 1
+          }
+        ]
+      },
+      {
+        "pid": 1368494,
+        "argv": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_r3_cli-73bf228036d3dfbb --test-threads=1 --nocapture ",
+        "tasks": [
+          {
+            "tid": 1368494,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          },
+          {
+            "tid": 1368495,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      },
+      {
+        "pid": 1368497,
+        "argv": "python -B /tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/revision_r3_cli.py ",
+        "tasks": [
+          {
+            "tid": 1368497,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 1
+          }
+        ]
+      },
+      {
+        "pid": 1368498,
+        "argv": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/kernel run /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r3_cli-f0faf2fe4bdf42f2a438f916f84af4e5/bridge-input.json --config /tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json --out /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r3_cli-f0faf2fe4bdf42f2a438f916f84af4e5/bridge-control-result.json --ticks 7 ",
+        "tasks": [
+          {
+            "tid": 1368498,
+            "state": "R",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      }
+    ],
+    "environment": {
+      "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+      "CARGO_BUILD_JOBS": "2",
+      "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+      "RUST_TEST_THREADS": "1",
+      "RAYON_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "NODE_OPTIONS": "--v8-pool-size=1",
+      "HEALTH_RUN": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文",
+      "KERNEL_TEST_EVIDENCE_DIR": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence"
+    },
+    "stdout_sha256": "13d6df199fc915412c4bae6908cdebe4e7199446f4c8ffd4fd88b031e20b3609",
+    "stderr_sha256": "cfc48e4eb145d8ee1fa13c6e0c8632568abe4a50ac1035cdbe26be93c64a2ee4",
+    "passed_tests": 1,
+    "round": 1,
+    "target": {
+      "kind": [
+        "test"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "revision_r3_cli",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/revision_r3_cli.rs",
+      "edition": "2021",
+      "doc": false,
+      "doctest": false,
+      "test": true
+    }
+  },
+  {
+    "label": "guarded-1-6-revision_r4_cli",
+    "argv": [
+      "strace",
+      "-f",
+      "-qq",
+      "-yy",
+      "-s",
+      "4096",
+      "-e",
+      "trace=openat,openat2,execve,chdir",
+      "-o",
+      "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-1-6-revision_r4_cli.trace.log",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_r4_cli-0ff84fdc55db31c8",
+      "--test-threads=1",
+      "--nocapture"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "returncode": 0,
+    "expected": 0,
+    "seconds": 2.579109434998827,
+    "cpu_seconds": 2.5021719999999994,
+    "average_cores": 0.9701689916857434,
+    "max_total_threads": 8,
+    "max_runnable_threads": 2,
+    "affinity": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "violation": null,
+    "peak": [
+      {
+        "pid": 1369643,
+        "argv": "strace -f -qq -yy -s 4096 -e trace=openat,openat2,execve,chdir -o /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-1-6-revision_r4_cli.trace.log /home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_r4_cli-0ff84fdc55db31c8 --test-threads=1 --nocapture ",
+        "tasks": [
+          {
+            "tid": 1369643,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 61
+          }
+        ]
+      },
+      {
+        "pid": 1369645,
+        "argv": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_r4_cli-0ff84fdc55db31c8 --test-threads=1 --nocapture ",
+        "tasks": [
+          {
+            "tid": 1369645,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          },
+          {
+            "tid": 1369646,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      },
+      {
+        "pid": 1369648,
+        "argv": "python -B /tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/revision_r4_cli.py ",
+        "tasks": [
+          {
+            "tid": 1369648,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 11
+          }
+        ]
+      },
+      {
+        "pid": 1370360,
+        "argv": "node -e const fs=require('fs'),Ajv=require(process.argv[1]);\nconst payload=JSON.parse(fs.readFileSync(0,'utf8'));\nconst validate=new Ajv({strict:false,allErrors:true}).compile(payload.schema);\nconsole.log(JSON.stringify(payload.documents.map(d=>({name:d.name,valid:validate(d.value),errors:validate.errors})))); /home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/2020.js ",
+        "tasks": [
+          {
+            "tid": 1370360,
+            "state": "R",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 1
+          },
+          {
+            "tid": 1370361,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          },
+          {
+            "tid": 1370362,
+            "state": "t",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          },
+          {
+            "tid": 1370363,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      }
+    ],
+    "environment": {
+      "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+      "CARGO_BUILD_JOBS": "2",
+      "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+      "RUST_TEST_THREADS": "1",
+      "RAYON_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "NODE_OPTIONS": "--v8-pool-size=1",
+      "HEALTH_RUN": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文",
+      "KERNEL_TEST_EVIDENCE_DIR": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence"
+    },
+    "stdout_sha256": "bb2582d0314d169fc48d5113c064259990c6fdcb2637b0ac8a0691bcb13bc130",
+    "stderr_sha256": "ad3990e27953f912b3aba2f64692b2222d0d9fb1a388ea6c2a6cd40f2150e5a0",
+    "passed_tests": 1,
+    "round": 1,
+    "target": {
+      "kind": [
+        "test"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "revision_r4_cli",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/revision_r4_cli.rs",
+      "edition": "2021",
+      "doc": false,
+      "doctest": false,
+      "test": true
+    }
+  },
+  {
+    "label": "guarded-1-7-reference",
+    "argv": [
+      "strace",
+      "-f",
+      "-qq",
+      "-yy",
+      "-s",
+      "4096",
+      "-e",
+      "trace=openat,openat2,execve,chdir",
+      "-o",
+      "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-1-7-reference.trace.log",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/reference-865fb275bacf969a",
+      "--test-threads=1",
+      "--nocapture"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "returncode": 0,
+    "expected": 0,
+    "seconds": 0.7038827950018458,
+    "cpu_seconds": 0.6683520000000018,
+    "average_cores": 0.949521716890735,
+    "max_total_threads": 4,
+    "max_runnable_threads": 2,
+    "affinity": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "violation": null,
+    "peak": [
+      {
+        "pid": 1370421,
+        "argv": "strace -f -qq -yy -s 4096 -e trace=openat,openat2,execve,chdir -o /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-1-7-reference.trace.log /home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/reference-865fb275bacf969a --test-threads=1 --nocapture ",
+        "tasks": [
+          {
+            "tid": 1370421,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 1
+          }
+        ]
+      },
+      {
+        "pid": 1370423,
+        "argv": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/reference-865fb275bacf969a --test-threads=1 --nocapture ",
+        "tasks": [
+          {
+            "tid": 1370423,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          },
+          {
+            "tid": 1370431,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      },
+      {
+        "pid": 1370432,
+        "argv": "python -B -c import json,sys;sys.path.insert(0,sys.argv[1]);import check_golden_trace as g;import check_examples as c;print(json.dumps({n:g.run(c.load_json(g.BASE/(n+'.json'))) for n in ['混做粉碎机两下游','分流器三路轮询']},ensure_ascii=False)) /tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例 ",
+        "tasks": [
+          {
+            "tid": 1370432,
+            "state": "R",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      }
+    ],
+    "environment": {
+      "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+      "CARGO_BUILD_JOBS": "2",
+      "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+      "RUST_TEST_THREADS": "1",
+      "RAYON_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "NODE_OPTIONS": "--v8-pool-size=1",
+      "HEALTH_RUN": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文",
+      "KERNEL_TEST_EVIDENCE_DIR": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence"
+    },
+    "stdout_sha256": "527c51b52b0cfa24e10522b824a3aba71286d9ee949049571b1e62a323f44a15",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "passed_tests": 3,
+    "round": 1,
+    "target": {
+      "kind": [
+        "test"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "reference",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/reference.rs",
+      "edition": "2021",
+      "doc": false,
+      "doctest": false,
+      "test": true
+    }
+  },
+  {
+    "label": "guarded-1-8-round5_cli",
+    "argv": [
+      "strace",
+      "-f",
+      "-qq",
+      "-yy",
+      "-s",
+      "4096",
+      "-e",
+      "trace=openat,openat2,execve,chdir",
+      "-o",
+      "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-1-8-round5_cli.trace.log",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/round5_cli-f12aa00d5116e14a",
+      "--test-threads=1",
+      "--nocapture"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "returncode": 0,
+    "expected": 0,
+    "seconds": 0.2250826329982374,
+    "cpu_seconds": 0.19214800000000132,
+    "average_cores": 0.8536775913826546,
+    "max_total_threads": 4,
+    "max_runnable_threads": 0,
+    "affinity": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "violation": null,
+    "peak": [
+      {
+        "pid": 1370491,
+        "argv": "strace -f -qq -yy -s 4096 -e trace=openat,openat2,execve,chdir -o /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-1-8-round5_cli.trace.log /home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/round5_cli-f12aa00d5116e14a --test-threads=1 --nocapture ",
+        "tasks": [
+          {
+            "tid": 1370491,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 1
+          }
+        ]
+      },
+      {
+        "pid": 1370493,
+        "argv": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/round5_cli-f12aa00d5116e14a --test-threads=1 --nocapture ",
+        "tasks": [
+          {
+            "tid": 1370493,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          },
+          {
+            "tid": 1370494,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      },
+      {
+        "pid": 1370524,
+        "argv": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/kernel cycle /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/round5_cli-a06b43a3da7b4dc59ab9eddd8fab2a70/invalid-cycle-input.json --config /tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json --max-ticks 2 --out /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/round5_cli-a06b43a3da7b4dc59ab9eddd8fab2a70/invalid-cycle-result.json ",
+        "tasks": [
+          {
+            "tid": 1370524,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      }
+    ],
+    "environment": {
+      "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+      "CARGO_BUILD_JOBS": "2",
+      "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+      "RUST_TEST_THREADS": "1",
+      "RAYON_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "NODE_OPTIONS": "--v8-pool-size=1",
+      "HEALTH_RUN": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文",
+      "KERNEL_TEST_EVIDENCE_DIR": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence"
+    },
+    "stdout_sha256": "2f8044532f26c052a2f8d91d16661ab2cd261ceaf44d6cc116c74a18069050db",
+    "stderr_sha256": "eef07aba382618e99309deacbd3679382d5f030697b81d4913f7bd38a5caf63a",
+    "passed_tests": 1,
+    "round": 1,
+    "target": {
+      "kind": [
+        "test"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "round5_cli",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/round5_cli.rs",
+      "edition": "2021",
+      "doc": false,
+      "doctest": false,
+      "test": true
+    }
+  },
+  {
+    "label": "guarded-1-9-revision_r2_cli",
+    "argv": [
+      "strace",
+      "-f",
+      "-qq",
+      "-yy",
+      "-s",
+      "4096",
+      "-e",
+      "trace=openat,openat2,execve,chdir",
+      "-o",
+      "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-1-9-revision_r2_cli.trace.log",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_r2_cli-02d118cfc7956648",
+      "--test-threads=1",
+      "--nocapture"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "returncode": 0,
+    "expected": 0,
+    "seconds": 8.520226107997587,
+    "cpu_seconds": 8.196204999999999,
+    "average_cores": 0.9619703627708375,
+    "max_total_threads": 5,
+    "max_runnable_threads": 2,
+    "affinity": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "violation": null,
+    "peak": [
+      {
+        "pid": 1370592,
+        "argv": "strace -f -qq -yy -s 4096 -e trace=openat,openat2,execve,chdir -o /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-1-9-revision_r2_cli.trace.log /home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_r2_cli-02d118cfc7956648 --test-threads=1 --nocapture ",
+        "tasks": [
+          {
+            "tid": 1370592,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 1
+          }
+        ]
+      },
+      {
+        "pid": 1370594,
+        "argv": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_r2_cli-02d118cfc7956648 --test-threads=1 --nocapture ",
+        "tasks": [
+          {
+            "tid": 1370594,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          },
+          {
+            "tid": 1370595,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      },
+      {
+        "pid": 1370597,
+        "argv": "python -B /tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/revision_r2_cli.py /home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/kernel ",
+        "tasks": [
+          {
+            "tid": 1370597,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 5
+          }
+        ]
+      },
+      {
+        "pid": 1370599,
+        "argv": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/kernel run /tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/混做粉碎机两下游.json --config /tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json --ticks 4 --format full_state_each_instant --checkpoint-interval 5 --out /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r2_cli-b6a2d3b3d6f841cba9b5e43e19f7f9f1/tmp/混做粉碎机两下游-full_state_each_instant.json ",
+        "tasks": [
+          {
+            "tid": 1370599,
+            "state": "R",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      }
+    ],
+    "environment": {
+      "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+      "CARGO_BUILD_JOBS": "2",
+      "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+      "RUST_TEST_THREADS": "1",
+      "RAYON_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "NODE_OPTIONS": "--v8-pool-size=1",
+      "HEALTH_RUN": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文",
+      "KERNEL_TEST_EVIDENCE_DIR": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence"
+    },
+    "stdout_sha256": "c519a6f6c21602a09a75a94acd4006697dd762158bb79b0eebc86dcc7b7f448f",
+    "stderr_sha256": "047ddb88e5cadb3e09df13e71a43de38311d944d1d08285e0954ae7a41a69aa5",
+    "passed_tests": 1,
+    "round": 1,
+    "target": {
+      "kind": [
+        "test"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "revision_r2_cli",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/revision_r2_cli.rs",
+      "edition": "2021",
+      "doc": false,
+      "doctest": false,
+      "test": true
+    }
+  },
+  {
+    "label": "guarded-1-10-round6_cli",
+    "argv": [
+      "strace",
+      "-f",
+      "-qq",
+      "-yy",
+      "-s",
+      "4096",
+      "-e",
+      "trace=openat,openat2,execve,chdir",
+      "-o",
+      "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-1-10-round6_cli.trace.log",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/round6_cli-48429a53f1b38e15",
+      "--test-threads=1",
+      "--nocapture"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "returncode": 0,
+    "expected": 0,
+    "seconds": 19.903933369001606,
+    "cpu_seconds": 19.174184999999998,
+    "average_cores": 0.9633364744810632,
+    "max_total_threads": 8,
+    "max_runnable_threads": 2,
+    "affinity": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "violation": null,
+    "peak": [
+      {
+        "pid": 1371153,
+        "argv": "strace -f -qq -yy -s 4096 -e trace=openat,openat2,execve,chdir -o /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-1-10-round6_cli.trace.log /home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/round6_cli-48429a53f1b38e15 --test-threads=1 --nocapture ",
+        "tasks": [
+          {
+            "tid": 1371153,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 609
+          }
+        ]
+      },
+      {
+        "pid": 1371155,
+        "argv": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/round6_cli-48429a53f1b38e15 --test-threads=1 --nocapture ",
+        "tasks": [
+          {
+            "tid": 1371155,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          },
+          {
+            "tid": 1371156,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      },
+      {
+        "pid": 1371158,
+        "argv": "python -B /tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/round6_cli.py ",
+        "tasks": [
+          {
+            "tid": 1371158,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 18
+          }
+        ]
+      },
+      {
+        "pid": 1378610,
+        "argv": "node -e const fs=require('fs');const Ajv=require(process.argv[1]);const args=JSON.parse(fs.readFileSync(0,'utf8'));const schema=JSON.parse(fs.readFileSync(args.schema,'utf8'));const validate=new Ajv({strict:false,allErrors:true}).compile(schema);for(const path of args.paths){if(!validate(JSON.parse(fs.readFileSync(path,'utf8')))){console.error(JSON.stringify({path,errors:validate.errors}));process.exit(1);}} /home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/2020.js ",
+        "tasks": [
+          {
+            "tid": 1378610,
+            "state": "R",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 2
+          },
+          {
+            "tid": 1378611,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          },
+          {
+            "tid": 1378612,
+            "state": "R",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          },
+          {
+            "tid": 1378613,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      }
+    ],
+    "environment": {
+      "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+      "CARGO_BUILD_JOBS": "2",
+      "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+      "RUST_TEST_THREADS": "1",
+      "RAYON_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "NODE_OPTIONS": "--v8-pool-size=1",
+      "HEALTH_RUN": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文",
+      "KERNEL_TEST_EVIDENCE_DIR": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence"
+    },
+    "stdout_sha256": "c35454b598fd0b8fca613a06278dff744820efade52e15cb2b2020778950a4ee",
+    "stderr_sha256": "6607bcfc4faaf377eed62a45bdbd3c3d5bce01b94aa6d677cd679af4c4f3b182",
+    "passed_tests": 1,
+    "round": 1,
+    "target": {
+      "kind": [
+        "test"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "round6_cli",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/round6_cli.rs",
+      "edition": "2021",
+      "doc": false,
+      "doctest": false,
+      "test": true
+    }
+  },
+  {
+    "label": "guarded-1-11-revision_r5_cli",
+    "argv": [
+      "strace",
+      "-f",
+      "-qq",
+      "-yy",
+      "-s",
+      "4096",
+      "-e",
+      "trace=openat,openat2,execve,chdir",
+      "-o",
+      "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-1-11-revision_r5_cli.trace.log",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_r5_cli-b79a20e6639e72e8",
+      "--test-threads=1",
+      "--nocapture"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "returncode": 0,
+    "expected": 0,
+    "seconds": 18.959171089998563,
+    "cpu_seconds": 16.995953999999998,
+    "average_cores": 0.896450267752781,
+    "max_total_threads": 10,
+    "max_runnable_threads": 3,
+    "affinity": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "violation": null,
+    "peak": [
+      {
+        "pid": 1378711,
+        "argv": "strace -f -qq -yy -s 4096 -e trace=openat,openat2,execve,chdir -o /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-1-11-revision_r5_cli.trace.log /home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_r5_cli-b79a20e6639e72e8 --test-threads=1 --nocapture ",
+        "tasks": [
+          {
+            "tid": 1378711,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 188
+          }
+        ]
+      },
+      {
+        "pid": 1378713,
+        "argv": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_r5_cli-b79a20e6639e72e8 --test-threads=1 --nocapture ",
+        "tasks": [
+          {
+            "tid": 1378713,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          },
+          {
+            "tid": 1378714,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      },
+      {
+        "pid": 1378716,
+        "argv": "python -B /tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/revision_r5_cli.py ",
+        "tasks": [
+          {
+            "tid": 1378716,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 11
+          }
+        ]
+      },
+      {
+        "pid": 1380866,
+        "argv": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/kernel verify-batch /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/package --config /tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json ",
+        "tasks": [
+          {
+            "tid": 1380866,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      },
+      {
+        "pid": 1380867,
+        "argv": "python -B /tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/verify_all.py --dry /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/package --config /tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json ",
+        "tasks": [
+          {
+            "tid": 1380867,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 5
+          }
+        ]
+      },
+      {
+        "pid": 1380868,
+        "argv": "node -e const fs=require('fs');const Ajv=require(process.argv[1]);const args=JSON.parse(fs.readFileSync(0,'utf8'));const schema=JSON.parse(fs.readFileSync(args.schema,'utf8'));const validate=new Ajv({strict:false,allErrors:true}).compile(schema);for(const path of args.paths){if(!validate(JSON.parse(fs.readFileSync(path,'utf8')))){console.error(JSON.stringify({path,errors:validate.errors}));process.exit(1);}} /home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/2020.js ",
+        "tasks": [
+          {
+            "tid": 1380868,
+            "state": "R",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 1
+          },
+          {
+            "tid": 1380869,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          },
+          {
+            "tid": 1380870,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          },
+          {
+            "tid": 1380871,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      }
+    ],
+    "environment": {
+      "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+      "CARGO_BUILD_JOBS": "2",
+      "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+      "RUST_TEST_THREADS": "1",
+      "RAYON_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "NODE_OPTIONS": "--v8-pool-size=1",
+      "HEALTH_RUN": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文",
+      "KERNEL_TEST_EVIDENCE_DIR": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence"
+    },
+    "stdout_sha256": "22aa9548ce139d45b610ded29eab371d2249ad213819d15d7c1df1d84bbc7f92",
+    "stderr_sha256": "d6924f2fd21681f866a9fd93a7d34aa0850f82a030c1c823ca5e3424ea4d8a3b",
+    "passed_tests": 1,
+    "round": 1,
+    "target": {
+      "kind": [
+        "test"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "revision_r5_cli",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/revision_r5_cli.rs",
+      "edition": "2021",
+      "doc": false,
+      "doctest": false,
+      "test": true
+    }
+  },
+  {
+    "label": "guarded-1-12-kernel",
+    "argv": [
+      "strace",
+      "-f",
+      "-qq",
+      "-yy",
+      "-s",
+      "4096",
+      "-e",
+      "trace=openat,openat2,execve,chdir",
+      "-o",
+      "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-1-12-kernel.trace.log",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/kernel-ab0acbad6798c3ae",
+      "--test-threads=1",
+      "--nocapture"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "returncode": 0,
+    "expected": 0,
+    "seconds": 61.91641282799537,
+    "cpu_seconds": 58.62552200000001,
+    "average_cores": 0.9468494591710682,
+    "max_total_threads": 3,
+    "max_runnable_threads": 2,
+    "affinity": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "violation": null,
+    "peak": [
+      {
+        "pid": 1384337,
+        "argv": "strace -f -qq -yy -s 4096 -e trace=openat,openat2,execve,chdir -o /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-1-12-kernel.trace.log /home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/kernel-ab0acbad6798c3ae --test-threads=1 --nocapture ",
+        "tasks": [
+          {
+            "tid": 1384337,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      },
+      {
+        "pid": 1384339,
+        "argv": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/kernel-ab0acbad6798c3ae --test-threads=1 --nocapture ",
+        "tasks": [
+          {
+            "tid": 1384339,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          },
+          {
+            "tid": 1384341,
+            "state": "R",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      }
+    ],
+    "environment": {
+      "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+      "CARGO_BUILD_JOBS": "2",
+      "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+      "RUST_TEST_THREADS": "1",
+      "RAYON_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "NODE_OPTIONS": "--v8-pool-size=1",
+      "HEALTH_RUN": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文",
+      "KERNEL_TEST_EVIDENCE_DIR": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence"
+    },
+    "stdout_sha256": "11fd97a73284340ca81c15ed9306575590b291fa2f45d44cb134a2115e8e877a",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "passed_tests": 108,
+    "round": 1,
+    "target": {
+      "kind": [
+        "lib"
+      ],
+      "crate_types": [
+        "lib"
+      ],
+      "name": "kernel",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/lib.rs",
+      "edition": "2021",
+      "doc": true,
+      "doctest": true,
+      "test": true
+    }
+  },
+  {
+    "label": "guarded-2-0-validation",
+    "argv": [
+      "strace",
+      "-f",
+      "-qq",
+      "-yy",
+      "-s",
+      "4096",
+      "-e",
+      "trace=openat,openat2,execve,chdir",
+      "-o",
+      "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-2-0-validation.trace.log",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/validation-2d77b7ea08304438",
+      "--test-threads=1",
+      "--nocapture"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9",
+    "returncode": 0,
+    "expected": 0,
+    "seconds": 6.5176525190036045,
+    "cpu_seconds": 6.45088299999999,
+    "average_cores": 0.9897555877965366,
+    "max_total_threads": 4,
+    "max_runnable_threads": 2,
+    "affinity": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "violation": null,
+    "peak": [
+      {
+        "pid": 1393992,
+        "argv": "strace -f -qq -yy -s 4096 -e trace=openat,openat2,execve,chdir -o /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-2-0-validation.trace.log /home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/validation-2d77b7ea08304438 --test-threads=1 --nocapture ",
+        "tasks": [
+          {
+            "tid": 1393992,
+            "state": "R",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      },
+      {
+        "pid": 1393994,
+        "argv": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/validation-2d77b7ea08304438 --test-threads=1 --nocapture ",
+        "tasks": [
+          {
+            "tid": 1393994,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          },
+          {
+            "tid": 1394003,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      },
+      {
+        "pid": 1394004,
+        "argv": "python /tmp/kernel-health-20260923-_5s65pp9/求解器/数据/工具/test_formal_catalog.py ",
+        "tasks": [
+          {
+            "tid": 1394004,
+            "state": "R",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 2
+          }
+        ]
+      }
+    ],
+    "environment": {
+      "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+      "CARGO_BUILD_JOBS": "2",
+      "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+      "RUST_TEST_THREADS": "1",
+      "RAYON_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "NODE_OPTIONS": "--v8-pool-size=1",
+      "HEALTH_RUN": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文",
+      "KERNEL_TEST_EVIDENCE_DIR": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence"
+    },
+    "stdout_sha256": "255b822e3bf7ad70820b495a4d64be93f5c61e58b4e0f440575ba5563113f1ea",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "passed_tests": 30,
+    "round": 2,
+    "target": {
+      "kind": [
+        "test"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "validation",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/topology/tests/validation.rs",
+      "edition": "2021",
+      "doc": false,
+      "doctest": false,
+      "test": true
+    }
+  },
+  {
+    "label": "guarded-2-1-topology",
+    "argv": [
+      "strace",
+      "-f",
+      "-qq",
+      "-yy",
+      "-s",
+      "4096",
+      "-e",
+      "trace=openat,openat2,execve,chdir",
+      "-o",
+      "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-2-1-topology.trace.log",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/topology-208981e14844f49e",
+      "--test-threads=1",
+      "--nocapture"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9",
+    "returncode": 0,
+    "expected": 0,
+    "seconds": 0.03689652300090529,
+    "cpu_seconds": 0.0018389999999968154,
+    "average_cores": 0.04984209487576089,
+    "max_total_threads": 1,
+    "max_runnable_threads": 0,
+    "affinity": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "violation": null,
+    "peak": [
+      {
+        "pid": 1394105,
+        "argv": "",
+        "tasks": [
+          {
+            "tid": 1394105,
+            "state": "Z",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      }
+    ],
+    "environment": {
+      "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+      "CARGO_BUILD_JOBS": "2",
+      "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+      "RUST_TEST_THREADS": "1",
+      "RAYON_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "NODE_OPTIONS": "--v8-pool-size=1",
+      "HEALTH_RUN": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文",
+      "KERNEL_TEST_EVIDENCE_DIR": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence"
+    },
+    "stdout_sha256": "df166913f47ff1f04202cae9b31df67ed272d692d99a0023a8117dc3029100dd",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "passed_tests": 0,
+    "round": 2,
+    "target": {
+      "kind": [
+        "bin"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "topology",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/topology/src/main.rs",
+      "edition": "2021",
+      "doc": true,
+      "doctest": false,
+      "test": true
+    }
+  },
+  {
+    "label": "guarded-2-2-topology",
+    "argv": [
+      "strace",
+      "-f",
+      "-qq",
+      "-yy",
+      "-s",
+      "4096",
+      "-e",
+      "trace=openat,openat2,execve,chdir",
+      "-o",
+      "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-2-2-topology.trace.log",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/topology-84c684aecc288bbd",
+      "--test-threads=1",
+      "--nocapture"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9",
+    "returncode": 0,
+    "expected": 0,
+    "seconds": 0.037100632005603984,
+    "cpu_seconds": 0.0035120000000006257,
+    "average_cores": 0.09466146020019671,
+    "max_total_threads": 1,
+    "max_runnable_threads": 0,
+    "affinity": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "violation": null,
+    "peak": [
+      {
+        "pid": 1394175,
+        "argv": "",
+        "tasks": [
+          {
+            "tid": 1394175,
+            "state": "Z",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      }
+    ],
+    "environment": {
+      "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+      "CARGO_BUILD_JOBS": "2",
+      "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+      "RUST_TEST_THREADS": "1",
+      "RAYON_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "NODE_OPTIONS": "--v8-pool-size=1",
+      "HEALTH_RUN": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文",
+      "KERNEL_TEST_EVIDENCE_DIR": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence"
+    },
+    "stdout_sha256": "3d8bac7c199253cef88c0b0f3439fee2a32b8c23d58d771ec86c606ecc03b0a9",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "passed_tests": 1,
+    "round": 2,
+    "target": {
+      "kind": [
+        "lib"
+      ],
+      "crate_types": [
+        "lib"
+      ],
+      "name": "topology",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/topology/src/lib.rs",
+      "edition": "2021",
+      "doc": true,
+      "doctest": true,
+      "test": true
+    }
+  },
+  {
+    "label": "guarded-2-3-revision_cli",
+    "argv": [
+      "strace",
+      "-f",
+      "-qq",
+      "-yy",
+      "-s",
+      "4096",
+      "-e",
+      "trace=openat,openat2,execve,chdir",
+      "-o",
+      "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-2-3-revision_cli.trace.log",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_cli-16d2a8aca958a1e2",
+      "--test-threads=1",
+      "--nocapture"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9",
+    "returncode": 0,
+    "expected": 0,
+    "seconds": 5.2054983349953545,
+    "cpu_seconds": 5.0884439999999955,
+    "average_cores": 0.9775133277426236,
+    "max_total_threads": 5,
+    "max_runnable_threads": 2,
+    "affinity": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "violation": null,
+    "peak": [
+      {
+        "pid": 1394252,
+        "argv": "strace -f -qq -yy -s 4096 -e trace=openat,openat2,execve,chdir -o /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-2-3-revision_cli.trace.log /home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_cli-16d2a8aca958a1e2 --test-threads=1 --nocapture ",
+        "tasks": [
+          {
+            "tid": 1394252,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      },
+      {
+        "pid": 1394254,
+        "argv": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_cli-16d2a8aca958a1e2 --test-threads=1 --nocapture ",
+        "tasks": [
+          {
+            "tid": 1394254,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          },
+          {
+            "tid": 1394255,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      },
+      {
+        "pid": 1394257,
+        "argv": "python -B /tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/revision_cli.py /home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/kernel ",
+        "tasks": [
+          {
+            "tid": 1394257,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 5
+          }
+        ]
+      },
+      {
+        "pid": 1394258,
+        "argv": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/kernel run /tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/混做粉碎机两下游.json --config /tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json --ticks 4 --format full_state_each_instant --checkpoint-interval 3 --out /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_cli-89953c752e6e4fabb59309ae710005d0/tmp/混做粉碎机两下游-full_state_each_instant-record.json ",
+        "tasks": [
+          {
+            "tid": 1394258,
+            "state": "R",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      }
+    ],
+    "environment": {
+      "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+      "CARGO_BUILD_JOBS": "2",
+      "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+      "RUST_TEST_THREADS": "1",
+      "RAYON_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "NODE_OPTIONS": "--v8-pool-size=1",
+      "HEALTH_RUN": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文",
+      "KERNEL_TEST_EVIDENCE_DIR": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence"
+    },
+    "stdout_sha256": "8276b4d52c74dbf6aed91336dfe385fa620901e58d253919e08db5f86e2021b0",
+    "stderr_sha256": "c0bc2a06183244c1304f14f4dfe91fa22a43ff005391bd07fe73bd93523788c1",
+    "passed_tests": 1,
+    "round": 2,
+    "target": {
+      "kind": [
+        "test"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "revision_cli",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/revision_cli.rs",
+      "edition": "2021",
+      "doc": false,
+      "doctest": false,
+      "test": true
+    }
+  },
+  {
+    "label": "guarded-2-4-kernel",
+    "argv": [
+      "strace",
+      "-f",
+      "-qq",
+      "-yy",
+      "-s",
+      "4096",
+      "-e",
+      "trace=openat,openat2,execve,chdir",
+      "-o",
+      "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-2-4-kernel.trace.log",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/kernel-a23b9231946580be",
+      "--test-threads=1",
+      "--nocapture"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9",
+    "returncode": 0,
+    "expected": 0,
+    "seconds": 0.0369463539973367,
+    "cpu_seconds": 0.001817000000016833,
+    "average_cores": 0.0491794129441788,
+    "max_total_threads": 1,
+    "max_runnable_threads": 0,
+    "affinity": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "violation": null,
+    "peak": [
+      {
+        "pid": 1394720,
+        "argv": "",
+        "tasks": [
+          {
+            "tid": 1394720,
+            "state": "Z",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      }
+    ],
+    "environment": {
+      "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+      "CARGO_BUILD_JOBS": "2",
+      "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+      "RUST_TEST_THREADS": "1",
+      "RAYON_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "NODE_OPTIONS": "--v8-pool-size=1",
+      "HEALTH_RUN": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文",
+      "KERNEL_TEST_EVIDENCE_DIR": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence"
+    },
+    "stdout_sha256": "df166913f47ff1f04202cae9b31df67ed272d692d99a0023a8117dc3029100dd",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "passed_tests": 0,
+    "round": 2,
+    "target": {
+      "kind": [
+        "bin"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "kernel",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/main.rs",
+      "edition": "2021",
+      "doc": true,
+      "doctest": false,
+      "test": true
+    }
+  },
+  {
+    "label": "guarded-2-5-revision_r3_cli",
+    "argv": [
+      "strace",
+      "-f",
+      "-qq",
+      "-yy",
+      "-s",
+      "4096",
+      "-e",
+      "trace=openat,openat2,execve,chdir",
+      "-o",
+      "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-2-5-revision_r3_cli.trace.log",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_r3_cli-73bf228036d3dfbb",
+      "--test-threads=1",
+      "--nocapture"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9",
+    "returncode": 0,
+    "expected": 0,
+    "seconds": 3.272015245005605,
+    "cpu_seconds": 3.120570999999991,
+    "average_cores": 0.9537152996958747,
+    "max_total_threads": 5,
+    "max_runnable_threads": 2,
+    "affinity": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "violation": null,
+    "peak": [
+      {
+        "pid": 1394777,
+        "argv": "strace -f -qq -yy -s 4096 -e trace=openat,openat2,execve,chdir -o /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-2-5-revision_r3_cli.trace.log /home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_r3_cli-73bf228036d3dfbb --test-threads=1 --nocapture ",
+        "tasks": [
+          {
+            "tid": 1394777,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 1
+          }
+        ]
+      },
+      {
+        "pid": 1394779,
+        "argv": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_r3_cli-73bf228036d3dfbb --test-threads=1 --nocapture ",
+        "tasks": [
+          {
+            "tid": 1394779,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          },
+          {
+            "tid": 1394780,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      },
+      {
+        "pid": 1394782,
+        "argv": "python -B /tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/revision_r3_cli.py ",
+        "tasks": [
+          {
+            "tid": 1394782,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 1
+          }
+        ]
+      },
+      {
+        "pid": 1394783,
+        "argv": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/kernel run /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r3_cli-e273b21f326042a6802d7c4973523405/bridge-input.json --config /tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json --out /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r3_cli-e273b21f326042a6802d7c4973523405/bridge-control-result.json --ticks 7 ",
+        "tasks": [
+          {
+            "tid": 1394783,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      }
+    ],
+    "environment": {
+      "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+      "CARGO_BUILD_JOBS": "2",
+      "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+      "RUST_TEST_THREADS": "1",
+      "RAYON_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "NODE_OPTIONS": "--v8-pool-size=1",
+      "HEALTH_RUN": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文",
+      "KERNEL_TEST_EVIDENCE_DIR": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence"
+    },
+    "stdout_sha256": "355afab2ec07bdc7d43b1026c43090a0de53abee9ad690049cf02cea9cc3792c",
+    "stderr_sha256": "c57118f2ada73a132cda88fb0965180c0992e8cf60356e4a318b030de26ff93b",
+    "passed_tests": 1,
+    "round": 2,
+    "target": {
+      "kind": [
+        "test"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "revision_r3_cli",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/revision_r3_cli.rs",
+      "edition": "2021",
+      "doc": false,
+      "doctest": false,
+      "test": true
+    }
+  },
+  {
+    "label": "guarded-2-6-revision_r4_cli",
+    "argv": [
+      "strace",
+      "-f",
+      "-qq",
+      "-yy",
+      "-s",
+      "4096",
+      "-e",
+      "trace=openat,openat2,execve,chdir",
+      "-o",
+      "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-2-6-revision_r4_cli.trace.log",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_r4_cli-0ff84fdc55db31c8",
+      "--test-threads=1",
+      "--nocapture"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9",
+    "returncode": 0,
+    "expected": 0,
+    "seconds": 2.461259481991874,
+    "cpu_seconds": 2.424285999999995,
+    "average_cores": 0.9849778203954519,
+    "max_total_threads": 8,
+    "max_runnable_threads": 2,
+    "affinity": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "violation": null,
+    "peak": [
+      {
+        "pid": 1395934,
+        "argv": "strace -f -qq -yy -s 4096 -e trace=openat,openat2,execve,chdir -o /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-2-6-revision_r4_cli.trace.log /home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_r4_cli-0ff84fdc55db31c8 --test-threads=1 --nocapture ",
+        "tasks": [
+          {
+            "tid": 1395934,
+            "state": "D",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 60
+          }
+        ]
+      },
+      {
+        "pid": 1395936,
+        "argv": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_r4_cli-0ff84fdc55db31c8 --test-threads=1 --nocapture ",
+        "tasks": [
+          {
+            "tid": 1395936,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          },
+          {
+            "tid": 1395937,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      },
+      {
+        "pid": 1395939,
+        "argv": "python -B /tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/revision_r4_cli.py ",
+        "tasks": [
+          {
+            "tid": 1395939,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 12
+          }
+        ]
+      },
+      {
+        "pid": 1396647,
+        "argv": "node -e const fs=require('fs'),Ajv=require(process.argv[1]);\nconst payload=JSON.parse(fs.readFileSync(0,'utf8'));\nconst validate=new Ajv({strict:false,allErrors:true}).compile(payload.schema);\nconsole.log(JSON.stringify(payload.documents.map(d=>({name:d.name,valid:validate(d.value),errors:validate.errors})))); /home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/2020.js ",
+        "tasks": [
+          {
+            "tid": 1396647,
+            "state": "t",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 1
+          },
+          {
+            "tid": 1396648,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          },
+          {
+            "tid": 1396649,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          },
+          {
+            "tid": 1396650,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      }
+    ],
+    "environment": {
+      "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+      "CARGO_BUILD_JOBS": "2",
+      "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+      "RUST_TEST_THREADS": "1",
+      "RAYON_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "NODE_OPTIONS": "--v8-pool-size=1",
+      "HEALTH_RUN": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文",
+      "KERNEL_TEST_EVIDENCE_DIR": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence"
+    },
+    "stdout_sha256": "791e0910fdc48ece7548d6e505fea3c6bd80de88dfb85c8db6c891a6e6b3338c",
+    "stderr_sha256": "92e82785234808e00858f845d1f0fd8911a96badbda49b270b63fd4e0c5fead6",
+    "passed_tests": 1,
+    "round": 2,
+    "target": {
+      "kind": [
+        "test"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "revision_r4_cli",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/revision_r4_cli.rs",
+      "edition": "2021",
+      "doc": false,
+      "doctest": false,
+      "test": true
+    }
+  },
+  {
+    "label": "guarded-2-7-reference",
+    "argv": [
+      "strace",
+      "-f",
+      "-qq",
+      "-yy",
+      "-s",
+      "4096",
+      "-e",
+      "trace=openat,openat2,execve,chdir",
+      "-o",
+      "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-2-7-reference.trace.log",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/reference-865fb275bacf969a",
+      "--test-threads=1",
+      "--nocapture"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9",
+    "returncode": 0,
+    "expected": 0,
+    "seconds": 0.6913925539993215,
+    "cpu_seconds": 0.6564529999999991,
+    "average_cores": 0.9494649547536829,
+    "max_total_threads": 4,
+    "max_runnable_threads": 2,
+    "affinity": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "violation": null,
+    "peak": [
+      {
+        "pid": 1396700,
+        "argv": "strace -f -qq -yy -s 4096 -e trace=openat,openat2,execve,chdir -o /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-2-7-reference.trace.log /home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/reference-865fb275bacf969a --test-threads=1 --nocapture ",
+        "tasks": [
+          {
+            "tid": 1396700,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 1
+          }
+        ]
+      },
+      {
+        "pid": 1396702,
+        "argv": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/reference-865fb275bacf969a --test-threads=1 --nocapture ",
+        "tasks": [
+          {
+            "tid": 1396702,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          },
+          {
+            "tid": 1396710,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      },
+      {
+        "pid": 1396711,
+        "argv": "python -B -c import json,sys;sys.path.insert(0,sys.argv[1]);import check_golden_trace as g;import check_examples as c;print(json.dumps({n:g.run(c.load_json(g.BASE/(n+'.json'))) for n in ['混做粉碎机两下游','分流器三路轮询']},ensure_ascii=False)) /tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例 ",
+        "tasks": [
+          {
+            "tid": 1396711,
+            "state": "R",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      }
+    ],
+    "environment": {
+      "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+      "CARGO_BUILD_JOBS": "2",
+      "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+      "RUST_TEST_THREADS": "1",
+      "RAYON_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "NODE_OPTIONS": "--v8-pool-size=1",
+      "HEALTH_RUN": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文",
+      "KERNEL_TEST_EVIDENCE_DIR": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence"
+    },
+    "stdout_sha256": "ce8c28abd80bb6ee92b189310c59e909c63fdef0d67a0d1c5e61a73f52b9b0db",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "passed_tests": 3,
+    "round": 2,
+    "target": {
+      "kind": [
+        "test"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "reference",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/reference.rs",
+      "edition": "2021",
+      "doc": false,
+      "doctest": false,
+      "test": true
+    }
+  },
+  {
+    "label": "guarded-2-8-round5_cli",
+    "argv": [
+      "strace",
+      "-f",
+      "-qq",
+      "-yy",
+      "-s",
+      "4096",
+      "-e",
+      "trace=openat,openat2,execve,chdir",
+      "-o",
+      "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-2-8-round5_cli.trace.log",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/round5_cli-f12aa00d5116e14a",
+      "--test-threads=1",
+      "--nocapture"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9",
+    "returncode": 0,
+    "expected": 0,
+    "seconds": 0.22090533800655976,
+    "cpu_seconds": 0.1885960000000182,
+    "average_cores": 0.8537412527098728,
+    "max_total_threads": 4,
+    "max_runnable_threads": 1,
+    "affinity": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "violation": null,
+    "peak": [
+      {
+        "pid": 1396797,
+        "argv": "strace -f -qq -yy -s 4096 -e trace=openat,openat2,execve,chdir -o /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-2-8-round5_cli.trace.log /home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/round5_cli-f12aa00d5116e14a --test-threads=1 --nocapture ",
+        "tasks": [
+          {
+            "tid": 1396797,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      },
+      {
+        "pid": 1396799,
+        "argv": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/round5_cli-f12aa00d5116e14a --test-threads=1 --nocapture ",
+        "tasks": [
+          {
+            "tid": 1396799,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          },
+          {
+            "tid": 1396800,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      },
+      {
+        "pid": 1396802,
+        "argv": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/kernel seed /tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/混做粉碎机两下游.json --config /tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json --out /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/round5_cli-150ff06763a04c44a718597e7b0aa0dc/relocated-seed.json ",
+        "tasks": [
+          {
+            "tid": 1396802,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      }
+    ],
+    "environment": {
+      "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+      "CARGO_BUILD_JOBS": "2",
+      "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+      "RUST_TEST_THREADS": "1",
+      "RAYON_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "NODE_OPTIONS": "--v8-pool-size=1",
+      "HEALTH_RUN": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文",
+      "KERNEL_TEST_EVIDENCE_DIR": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence"
+    },
+    "stdout_sha256": "9cbe784147cde3d6bd46a00eeeacc6c8da0455340d3002d6d1d874a45824ae2d",
+    "stderr_sha256": "13a82f392f0fedc2c81ceab205642f02cfe440abd46a0711398495edaee6e3c1",
+    "passed_tests": 1,
+    "round": 2,
+    "target": {
+      "kind": [
+        "test"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "round5_cli",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/round5_cli.rs",
+      "edition": "2021",
+      "doc": false,
+      "doctest": false,
+      "test": true
+    }
+  },
+  {
+    "label": "guarded-2-9-revision_r2_cli",
+    "argv": [
+      "strace",
+      "-f",
+      "-qq",
+      "-yy",
+      "-s",
+      "4096",
+      "-e",
+      "trace=openat,openat2,execve,chdir",
+      "-o",
+      "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-2-9-revision_r2_cli.trace.log",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_r2_cli-02d118cfc7956648",
+      "--test-threads=1",
+      "--nocapture"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9",
+    "returncode": 0,
+    "expected": 0,
+    "seconds": 8.1519191559928,
+    "cpu_seconds": 8.018788000000008,
+    "average_cores": 0.9836687345096005,
+    "max_total_threads": 5,
+    "max_runnable_threads": 2,
+    "affinity": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "violation": null,
+    "peak": [
+      {
+        "pid": 1396902,
+        "argv": "strace -f -qq -yy -s 4096 -e trace=openat,openat2,execve,chdir -o /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-2-9-revision_r2_cli.trace.log /home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_r2_cli-02d118cfc7956648 --test-threads=1 --nocapture ",
+        "tasks": [
+          {
+            "tid": 1396902,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 1
+          }
+        ]
+      },
+      {
+        "pid": 1396904,
+        "argv": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_r2_cli-02d118cfc7956648 --test-threads=1 --nocapture ",
+        "tasks": [
+          {
+            "tid": 1396904,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          },
+          {
+            "tid": 1396905,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      },
+      {
+        "pid": 1396907,
+        "argv": "python -B /tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/revision_r2_cli.py /home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/kernel ",
+        "tasks": [
+          {
+            "tid": 1396907,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 5
+          }
+        ]
+      },
+      {
+        "pid": 1396908,
+        "argv": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/kernel run /tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/混做粉碎机两下游.json --config /tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json --ticks 4 --format full_state_each_instant --checkpoint-interval 5 --out /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r2_cli-642b22cbcd05432fb257f71c1269da87/tmp/混做粉碎机两下游-full_state_each_instant.json ",
+        "tasks": [
+          {
+            "tid": 1396908,
+            "state": "t",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      }
+    ],
+    "environment": {
+      "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+      "CARGO_BUILD_JOBS": "2",
+      "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+      "RUST_TEST_THREADS": "1",
+      "RAYON_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "NODE_OPTIONS": "--v8-pool-size=1",
+      "HEALTH_RUN": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文",
+      "KERNEL_TEST_EVIDENCE_DIR": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence"
+    },
+    "stdout_sha256": "7828386f735df9468a055cf9d349b682a0d8a24d6e82fa078b299f854b7862c9",
+    "stderr_sha256": "8160759cb4f06f2748e05e0c45581a8e25003b99f4fffccc2deb8f1425376af1",
+    "passed_tests": 1,
+    "round": 2,
+    "target": {
+      "kind": [
+        "test"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "revision_r2_cli",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/revision_r2_cli.rs",
+      "edition": "2021",
+      "doc": false,
+      "doctest": false,
+      "test": true
+    }
+  },
+  {
+    "label": "guarded-2-10-round6_cli",
+    "argv": [
+      "strace",
+      "-f",
+      "-qq",
+      "-yy",
+      "-s",
+      "4096",
+      "-e",
+      "trace=openat,openat2,execve,chdir",
+      "-o",
+      "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-2-10-round6_cli.trace.log",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/round6_cli-48429a53f1b38e15",
+      "--test-threads=1",
+      "--nocapture"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9",
+    "returncode": 0,
+    "expected": 0,
+    "seconds": 21.430457796988776,
+    "cpu_seconds": 19.28253099999999,
+    "average_cores": 0.899772239243037,
+    "max_total_threads": 8,
+    "max_runnable_threads": 2,
+    "affinity": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "violation": null,
+    "peak": [
+      {
+        "pid": 1397462,
+        "argv": "strace -f -qq -yy -s 4096 -e trace=openat,openat2,execve,chdir -o /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-2-10-round6_cli.trace.log /home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/round6_cli-48429a53f1b38e15 --test-threads=1 --nocapture ",
+        "tasks": [
+          {
+            "tid": 1397462,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 632
+          }
+        ]
+      },
+      {
+        "pid": 1397464,
+        "argv": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/round6_cli-48429a53f1b38e15 --test-threads=1 --nocapture ",
+        "tasks": [
+          {
+            "tid": 1397464,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          },
+          {
+            "tid": 1397465,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      },
+      {
+        "pid": 1397467,
+        "argv": "python -B /tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/round6_cli.py ",
+        "tasks": [
+          {
+            "tid": 1397467,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 18
+          }
+        ]
+      },
+      {
+        "pid": 1404900,
+        "argv": "node -e const fs=require('fs');const Ajv=require(process.argv[1]);const args=JSON.parse(fs.readFileSync(0,'utf8'));const schema=JSON.parse(fs.readFileSync(args.schema,'utf8'));const validate=new Ajv({strict:false,allErrors:true}).compile(schema);for(const path of args.paths){if(!validate(JSON.parse(fs.readFileSync(path,'utf8')))){console.error(JSON.stringify({path,errors:validate.errors}));process.exit(1);}} /home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/2020.js ",
+        "tasks": [
+          {
+            "tid": 1404900,
+            "state": "R",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 1
+          },
+          {
+            "tid": 1404901,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          },
+          {
+            "tid": 1404902,
+            "state": "R",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          },
+          {
+            "tid": 1404903,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      }
+    ],
+    "environment": {
+      "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+      "CARGO_BUILD_JOBS": "2",
+      "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+      "RUST_TEST_THREADS": "1",
+      "RAYON_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "NODE_OPTIONS": "--v8-pool-size=1",
+      "HEALTH_RUN": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文",
+      "KERNEL_TEST_EVIDENCE_DIR": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence"
+    },
+    "stdout_sha256": "7381a9baa17acb12f579e179e1f8f485f5cc178bfbb1cae2f27d6e8404a21da6",
+    "stderr_sha256": "d3687b70b0dbae703aad38e6484fd920bcb838d0a4902f7260d426a1b2a693a1",
+    "passed_tests": 1,
+    "round": 2,
+    "target": {
+      "kind": [
+        "test"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "round6_cli",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/round6_cli.rs",
+      "edition": "2021",
+      "doc": false,
+      "doctest": false,
+      "test": true
+    }
+  },
+  {
+    "label": "guarded-2-11-revision_r5_cli",
+    "argv": [
+      "strace",
+      "-f",
+      "-qq",
+      "-yy",
+      "-s",
+      "4096",
+      "-e",
+      "trace=openat,openat2,execve,chdir",
+      "-o",
+      "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-2-11-revision_r5_cli.trace.log",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_r5_cli-b79a20e6639e72e8",
+      "--test-threads=1",
+      "--nocapture"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9",
+    "returncode": 0,
+    "expected": 0,
+    "seconds": 18.631048533003195,
+    "cpu_seconds": 16.54642900000001,
+    "average_cores": 0.8881104555489471,
+    "max_total_threads": 10,
+    "max_runnable_threads": 2,
+    "affinity": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "violation": null,
+    "peak": [
+      {
+        "pid": 1404957,
+        "argv": "strace -f -qq -yy -s 4096 -e trace=openat,openat2,execve,chdir -o /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-2-11-revision_r5_cli.trace.log /home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_r5_cli-b79a20e6639e72e8 --test-threads=1 --nocapture ",
+        "tasks": [
+          {
+            "tid": 1404957,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 186
+          }
+        ]
+      },
+      {
+        "pid": 1404959,
+        "argv": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/revision_r5_cli-b79a20e6639e72e8 --test-threads=1 --nocapture ",
+        "tasks": [
+          {
+            "tid": 1404959,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          },
+          {
+            "tid": 1404960,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      },
+      {
+        "pid": 1404962,
+        "argv": "python -B /tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/revision_r5_cli.py ",
+        "tasks": [
+          {
+            "tid": 1404962,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 11
+          }
+        ]
+      },
+      {
+        "pid": 1407134,
+        "argv": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/kernel verify-batch /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-431526d0aab842ae8d0cd9c715cdfed5/package --config /tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json ",
+        "tasks": [
+          {
+            "tid": 1407134,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      },
+      {
+        "pid": 1407135,
+        "argv": "python -B /tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/verify_all.py --dry /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-431526d0aab842ae8d0cd9c715cdfed5/package --config /tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json ",
+        "tasks": [
+          {
+            "tid": 1407135,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 4
+          }
+        ]
+      },
+      {
+        "pid": 1407136,
+        "argv": "node -e const fs=require('fs');const Ajv=require(process.argv[1]);const args=JSON.parse(fs.readFileSync(0,'utf8'));const schema=JSON.parse(fs.readFileSync(args.schema,'utf8'));const validate=new Ajv({strict:false,allErrors:true}).compile(schema);for(const path of args.paths){if(!validate(JSON.parse(fs.readFileSync(path,'utf8')))){console.error(JSON.stringify({path,errors:validate.errors}));process.exit(1);}} /home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/2020.js ",
+        "tasks": [
+          {
+            "tid": 1407136,
+            "state": "R",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 1
+          },
+          {
+            "tid": 1407137,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          },
+          {
+            "tid": 1407138,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          },
+          {
+            "tid": 1407139,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      }
+    ],
+    "environment": {
+      "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+      "CARGO_BUILD_JOBS": "2",
+      "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+      "RUST_TEST_THREADS": "1",
+      "RAYON_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "NODE_OPTIONS": "--v8-pool-size=1",
+      "HEALTH_RUN": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文",
+      "KERNEL_TEST_EVIDENCE_DIR": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence"
+    },
+    "stdout_sha256": "b5346c5592016b41b953294522ad7ea819e35b774d40ed71dd8b74e8bad49028",
+    "stderr_sha256": "cbc3ad7e52cbb32e191a36659d1ee7fb83eb6c754a91a076eef97082304cbfd3",
+    "passed_tests": 1,
+    "round": 2,
+    "target": {
+      "kind": [
+        "test"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "revision_r5_cli",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/revision_r5_cli.rs",
+      "edition": "2021",
+      "doc": false,
+      "doctest": false,
+      "test": true
+    }
+  },
+  {
+    "label": "guarded-2-12-kernel",
+    "argv": [
+      "strace",
+      "-f",
+      "-qq",
+      "-yy",
+      "-s",
+      "4096",
+      "-e",
+      "trace=openat,openat2,execve,chdir",
+      "-o",
+      "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-2-12-kernel.trace.log",
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/kernel-ab0acbad6798c3ae",
+      "--test-threads=1",
+      "--nocapture"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9",
+    "returncode": 0,
+    "expected": 0,
+    "seconds": 61.29063994099852,
+    "cpu_seconds": 57.82221300000001,
+    "average_cores": 0.9434101692470924,
+    "max_total_threads": 3,
+    "max_runnable_threads": 3,
+    "affinity": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "violation": null,
+    "peak": [
+      {
+        "pid": 1410639,
+        "argv": "strace -f -qq -yy -s 4096 -e trace=openat,openat2,execve,chdir -o /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/guarded-2-12-kernel.trace.log /home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/kernel-ab0acbad6798c3ae --test-threads=1 --nocapture ",
+        "tasks": [
+          {
+            "tid": 1410639,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      },
+      {
+        "pid": 1410641,
+        "argv": "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/deps/kernel-ab0acbad6798c3ae --test-threads=1 --nocapture ",
+        "tasks": [
+          {
+            "tid": 1410641,
+            "state": "S",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          },
+          {
+            "tid": 1410643,
+            "state": "R",
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "cpu_ticks": 0
+          }
+        ]
+      }
+    ],
+    "environment": {
+      "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+      "CARGO_BUILD_JOBS": "2",
+      "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+      "RUST_TEST_THREADS": "1",
+      "RAYON_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "NODE_OPTIONS": "--v8-pool-size=1",
+      "HEALTH_RUN": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文",
+      "KERNEL_TEST_EVIDENCE_DIR": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence"
+    },
+    "stdout_sha256": "0c57846e70d4ce21cec60eba97473835a5dc40a0d829e9d397646a44e31984cb",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "passed_tests": 108,
+    "round": 2,
+    "target": {
+      "kind": [
+        "lib"
+      ],
+      "crate_types": [
+        "lib"
+      ],
+      "name": "kernel",
+      "src_path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/lib.rs",
+      "edition": "2021",
+      "doc": true,
+      "doctest": true,
+      "test": true
+    }
+  }
+]

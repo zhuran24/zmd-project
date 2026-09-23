@@ -1,0 +1,1 @@
+invalid_input input @ cli: 子命令须为 run/check/request，并给输入或轴名

@@ -1,0 +1,9 @@
+[
+  {
+    "case_id": "seed",
+    "passed": true,
+    "files": 4,
+    "mappings": [],
+    "references": "all original target hashes validated before sealing; fixed-path identity mapping"
+  }
+]

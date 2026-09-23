@@ -1,0 +1,1 @@
+invalid_input input @ cli: 用法：kernel run <input.json> --config <配置.json> --ticks N --out <记录.json> [--format full_state_each_instant|checkpoint_delta] [--checkpoint-interval K]；输出关闭用 --no-output

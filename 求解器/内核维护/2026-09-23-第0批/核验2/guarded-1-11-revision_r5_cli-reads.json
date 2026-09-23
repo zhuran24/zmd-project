@@ -1,0 +1,2252 @@
+[
+  {
+    "path": "/etc/ld.so.cache",
+    "sha256": "e3a2ce52583e4bcb8b58dde61bed66c178f496386569d95667e09f06a9e4694f",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/libgcc_s.so.1",
+    "sha256": "571745fb27883c763315fab54a536906064c1df6804d1a7884713dac259da68d",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/libc.so.6",
+    "sha256": "848dae1dfcff0fc864292b28b2d426b0093425002a856a55c3a2b8ed31e2ea40",
+    "category": "external"
+  },
+  {
+    "path": "/usr/share/terminfo/d/dumb",
+    "sha256": "123c85a2812a517d967db5f31660db0e6aded4a0b95ed943c5ab435368e7a25c",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/libpython3.14.so.1.0",
+    "sha256": "db4e8c8d56faaab4c8ca4c7315811f94e876881ffff08411ffeed08602922750",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/libm.so.6",
+    "sha256": "97a73e24e715f4069fd3b205bad7392307276bca14fa183381dfd9276b9573ca",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/locale/locale-archive",
+    "sha256": "5bcf83956eb7710088b4ba429f45780f7dfeb7cd26536e66fc7c5dce282ac6a2",
+    "category": "external"
+  },
+  {
+    "path": "/usr/share/locale/locale.alias",
+    "sha256": "d095f10b1cb8b551003bc3f7788fd94f1054dc076350e72f412f042d741801f5",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/locale/C.utf8/LC_CTYPE",
+    "sha256": "40680545df4f92443c15e7c6f51a7fdc9154ebedd9eff1ed5c48437039add365",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/gconv/gconv-modules.cache",
+    "sha256": "0fde9bfd93c2ac83b23f0ab2e89f438be92f3c368247410eff58ccc847d7a783",
+    "category": "external"
+  },
+  {
+    "path": "/usr/share/zoneinfo/America/New_York",
+    "sha256": "e9ed07d7bee0c76a9d442d091ef1f01668fee7c4f26014c0a868b19fe6c18a95",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/encodings/__pycache__/__init__.cpython-314.pyc",
+    "sha256": "e2792d104a4c0d96991ce36fa1069eb01f49d8859f1be0d349aa761c52ac59b2",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/encodings/__init__.py",
+    "sha256": "2b708410495acf12a6fad9d2de928dd89e567537c253eaa2b51aaae578e96c59",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/encodings/__pycache__/aliases.cpython-314.pyc",
+    "sha256": "a2feebb02c0c780d7551b8a0ddc497e8ac3d5d05757896ac39617b0c961287d4",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/encodings/aliases.py",
+    "sha256": "1ee993f8eb4986999b6501381e53947be9a04443626cb48b4190bcff2e87d3b4",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/encodings/__pycache__/utf_8.cpython-314.pyc",
+    "sha256": "c082d09345283ad5309c98e5d05660ee63f17f82cf2ca6c5686a06b97346dcc8",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/encodings/utf_8.py",
+    "sha256": "ba0cac060269583523ca9506473a755203037c57d466a11aa89a30a5f6756f3d",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/site-packages/distutils-precedence.pth",
+    "sha256": "2638ce9e2500e572a5e0de7faed6661eb569d1b696fcba07b0dd223da5f5d224",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/encodings/__pycache__/utf_8_sig.cpython-314.pyc",
+    "sha256": "6f368513109617a13975c19f66f50934fa59c49a7cbbe3f45fcdf390ec3217d0",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/encodings/utf_8_sig.py",
+    "sha256": "1ef3da8d8aa08149e7f274dc64dbfce2155da812e5258ca8e8f832428d3b5c2d",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/site-packages/_distutils_hack/__pycache__/__init__.cpython-314.pyc",
+    "sha256": "9e5962b9454ab0286ab4a6285605e3295615738be03b362f90786f30206851b7",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/site-packages/_distutils_hack/__init__.py",
+    "sha256": "ced72e54431ecf2d8d7dbd8a1e27724f1b171af3ca1503c304bf11c59a7fe861",
+    "category": "external"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/evidence_paths.py",
+    "sha256": "f91800440b210bd9125940a3afe54bb3110c7c3ddd39701e1e4f5aeefebad940",
+    "category": "source"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/argparse.cpython-314.pyc",
+    "sha256": "39891aed22456f463e3f104a6c4293b87df37295feb905b9e1e3c478b1db7677",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/argparse.py",
+    "sha256": "b9f0fa53be3d7c9c10a71a8eecc538a27c32fbe7abe337818d0d36e138bfc5c5",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/re/__pycache__/__init__.cpython-314.pyc",
+    "sha256": "718ee357ab4edf3fa333be5fb45503798bfef52b2e33e25b181173d425ff03db",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/re/__init__.py",
+    "sha256": "741a9de729ed8207bfa19db990f8826f1bf3661f33d0970a80c08cd1338ebc35",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/enum.cpython-314.pyc",
+    "sha256": "a02fb512ec78898223f05be23f789f1d5831a157386956d453fdbddfcc81c943",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/enum.py",
+    "sha256": "fd23a7598fa1104ef892abcd4154d3627283e6361eb7a91cd11dc4a7b6fb3a93",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/types.cpython-314.pyc",
+    "sha256": "22409dc63a64ced310427fc78f1b5e3960c8ad39681e52f6de26602ba8fd0de9",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/types.py",
+    "sha256": "8c54d3d5ffc1d1204237e6c69b25c27c7b05b483128f185eeed9ba7ef2229ac2",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/re/__pycache__/_compiler.cpython-314.pyc",
+    "sha256": "279f2f8caf465a5a98ba5768d6c66cd52c873bcc002938da0a09fd767079e8d2",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/re/_compiler.py",
+    "sha256": "d49f30cf9a1dbae33b200ed8befd9d0ce3ac612783a10ac35196536f98923e91",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/re/__pycache__/_parser.cpython-314.pyc",
+    "sha256": "791f040c4a9f949a4a6c8e00d671e978ed8a30f7b8007801189111bc1d42024b",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/re/_parser.py",
+    "sha256": "e57bd194a2d42398355ae7c1ccc2ddfb78421dd431eb81e3809dbe8ca9057dc4",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/re/__pycache__/_constants.cpython-314.pyc",
+    "sha256": "699b0ab281481e1a1a4b5fa16e1b1291810ffb5e8fcbeb4f8e6c748c65f1b232",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/re/_constants.py",
+    "sha256": "42253b3181b81aad6c46392f44a0ab26dcfa31feea411296f43ba16616a1ab0b",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/re/__pycache__/_casefix.cpython-314.pyc",
+    "sha256": "013aa7e563113ca5529a88dc63195e592be3c14e534a736d1119cbcfe7591818",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/re/_casefix.py",
+    "sha256": "1b12d9136f23db6c3f6f26053fefc15ca964b886838c7b9c1fabf8d2efc1e5c8",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/functools.cpython-314.pyc",
+    "sha256": "60f5f18dba8c59918b45649cf84dc52228934bdea26a1e542397e1e4853f0750",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/functools.py",
+    "sha256": "9db56d38172c4c9e689b21cc58c8538008b09d86b682faf4dd193b529cdd79d5",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/collections/__pycache__/__init__.cpython-314.pyc",
+    "sha256": "f4e01c6434efed2c75b02fc771c6f43010d910c691096adac47d3079c4f30854",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/collections/__init__.py",
+    "sha256": "cb8367b8edd188662143ea2e3942d360c2deae51c72fd779ec898f5076d2c2b9",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/keyword.cpython-314.pyc",
+    "sha256": "9101fcf1dc8a5f349decbbbae1ae4677624b378fd8a758310a82d958fb9b7e86",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/keyword.py",
+    "sha256": "18c2be738c04ad20ad375f6a71db34b3823c7f40b0340f5294d0e89f3c9b093b",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/operator.cpython-314.pyc",
+    "sha256": "b3c795092161240cda26d5529c1adb651a38f008c92ce3f646cfd639fa67688e",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/operator.py",
+    "sha256": "a9f9910965c31f841caad0447ee47299ac539a371422aefe200c86c60f3b4697",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/reprlib.cpython-314.pyc",
+    "sha256": "f89183301591c29753d44d7629bb5e059a524546fd2c32cfd1ad0dece37a0b18",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/reprlib.py",
+    "sha256": "b04872e10d76252e44eae50cc785eb0fe478491afc4d7f0825a93f82b2eaba5f",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/copyreg.cpython-314.pyc",
+    "sha256": "7701704865e99b0d1944083ea8c3aa8d869c47a43cf882d19d4ec45553784334",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/copyreg.py",
+    "sha256": "6376eb5722806396f5842997ac18add369ea9ac3ff4fcfe1460c41a088cac425",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/gettext.cpython-314.pyc",
+    "sha256": "8df33e5a3b919a028b1aea438ee1e0d07f960b8ea62378d62b6ecb0554fc9f09",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/gettext.py",
+    "sha256": "54c00df11915aafb017ed23860dcb5197ed063f7ee07e5612625ec86afadcaf5",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/json/__pycache__/__init__.cpython-314.pyc",
+    "sha256": "356251b3191c47d8ec525c373a767ae983e760decec4464520dd3e88c249d3a7",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/json/__init__.py",
+    "sha256": "2dd10f1bf4c9ea5478e589216805e7f279d0e4bce134a19efa297404fb87407d",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/json/__pycache__/decoder.cpython-314.pyc",
+    "sha256": "ed4e60cd2feaa8439eb9960a0a384aa5a0ef05d838931f915cdc7de04199d340",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/json/decoder.py",
+    "sha256": "dc98d3e677612ea7311303f06a144cec6b91ebadc7ec037d1777501647578a07",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/json/__pycache__/scanner.cpython-314.pyc",
+    "sha256": "38fee484e674668ffbd4c8bfe96086407da776f59f80e49281181bbafeeb30a6",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/json/scanner.py",
+    "sha256": "572958017eae8842eeddd0e3d18d3c56cc0a197348224915e1d87ce937841764",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/lib-dynload/_json.cpython-314-x86_64-linux-gnu.so",
+    "sha256": "77af91c41ba71b1cb538477dbf11b725a40ba4dfb6841c0574b234a1ed5060f6",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/json/__pycache__/encoder.cpython-314.pyc",
+    "sha256": "4771a7265a4360eb9b3bdef6c2c972c699cac71254abd656c54fbec692118e9f",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/json/encoder.py",
+    "sha256": "d68a4d04d2cfd95897498307f29349058b42c3f48ea6aa6739714a09200a7d01",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/pathlib/__pycache__/__init__.cpython-314.pyc",
+    "sha256": "49df139515fabffa1d74f32e77fb5e98fa90fb7e3fa4268aaf42c4ef7ee83d41",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/pathlib/__init__.py",
+    "sha256": "042a4d0a5e1ef66778daa86dc269af205bd42d06e793e53d8b99dff4c45928ca",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/glob.cpython-314.pyc",
+    "sha256": "9369cde6f8b2bac78aec1e1e9d5ed18b29e01d8c12c53cb936c095cb73d80106",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/glob.py",
+    "sha256": "21d290be171e3d0643a444e4b58a2c4ee9bfe2c1474bb36ead043794bb769365",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/contextlib.cpython-314.pyc",
+    "sha256": "1b986d2045eb30c506dff0a04035504b9cbd2ca9bd3bc17f16bbde5d166e5775",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/contextlib.py",
+    "sha256": "c1e0d67b2007de11ae93cd36cf6faf38d9ab32656a832d592a49325eec579f96",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/fnmatch.cpython-314.pyc",
+    "sha256": "ca667593060e404cb864499485ffc36dbded17fa14d5e91e593d16198a340dc8",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/fnmatch.py",
+    "sha256": "ce582bc266922e4c682e2a85d72095124430a6bf58716c6f2537103480eae742",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/lib-dynload/grp.cpython-314-x86_64-linux-gnu.so",
+    "sha256": "d93a9b169b1c9b79a49e5895009988da398774d516813f571d384884466dad27",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/pathlib/__pycache__/_os.cpython-314.pyc",
+    "sha256": "92f7343412e3c04fb8fa12ad3a64f2bc40c92a4df9773154373b67625f39ee7b",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/pathlib/_os.py",
+    "sha256": "61e844988e54bdf47c0b11ad2b3fd961f058bb370793428f4c6868bd40cab6f2",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/lib-dynload/fcntl.cpython-314-x86_64-linux-gnu.so",
+    "sha256": "f3777429704edbecf606951b70069803ad615367c83aadb195ba3265482722ca",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/uuid.cpython-314.pyc",
+    "sha256": "d57bc795d16b657ed7562a490785d0052750d0959cf5daa7c575923c672a4ede",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/uuid.py",
+    "sha256": "915321474fa4b27c3e289751e8ffc86e6a134b1244a37ca9053aeb2bf3c7e150",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/lib-dynload/_uuid.cpython-314-x86_64-linux-gnu.so",
+    "sha256": "fa8f5991ec7264c9c2370c61489e0c9c619755cd2e7a3c090a9e2b8408d4154c",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/libuuid.so.1.3.0",
+    "sha256": "b9042cfd960c1f40dff3eee304545c36fd276bd1c0c03497af80f23b55210761",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/locale.cpython-314.pyc",
+    "sha256": "8d64e6d1174e013fc9e426e6c047d6e812efb2a2a436517dcfd59a7ea673b953",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/locale.py",
+    "sha256": "f2e390ebde2bb52eabcf6d444a6a2e758749f3aa82c61427cbb053332fac56b2",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/shutil.cpython-314.pyc",
+    "sha256": "b9cb1f4871bda05ebce086c0f257ee2e9c73feaddc00776532f7d5e25b90ac98",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/shutil.py",
+    "sha256": "28a5df6415bf1a7ab36cbd544d6d35ae0f056a198e3872a786dc4e156d5fcd7d",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/lib-dynload/zlib.cpython-314-x86_64-linux-gnu.so",
+    "sha256": "a19ab2de628aa9b18e57365b5244299c4aa8cfeda886b1708df87da51c877a8c",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/libz.so.1.3.1.zlib-ng",
+    "sha256": "63e814634983bfa53890b48cb56760ca38840fbcf91f66a51222eef85eaa08b7",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/bz2.cpython-314.pyc",
+    "sha256": "dcf7959c09dd593cb710e697d65dee72b724ac486b21e8e55d86050f22def490",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/bz2.py",
+    "sha256": "368b9ee55f0b6dbfc81b15e1a17c51cccddb009389eae8e9a7acf2402ca4109a",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/compression/__pycache__/__init__.cpython-314.pyc",
+    "sha256": "80d500ee6056a700f796b8e6ea0189e463c15a3779fd8e2afd6c4a77165c4665",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/compression/__init__.py",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/compression/_common/__pycache__/__init__.cpython-314.pyc",
+    "sha256": "5bf3aa1ba43d8b37ec1d9c59d0aeb66c8a29c16f7d0cc77edf31e606409a2a5d",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/compression/_common/__init__.py",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/compression/_common/__pycache__/_streams.cpython-314.pyc",
+    "sha256": "7a98383b5b2b19207fde9ba258f6496042fe6e0a6e15ae3e40f399cc705417e1",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/compression/_common/_streams.py",
+    "sha256": "8b8e943815c748d030e540a023400cb87fb13f75c2f0615a63ec42ef9f156c92",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/lib-dynload/_bz2.cpython-314-x86_64-linux-gnu.so",
+    "sha256": "ba6a2902c27e5686ae2fc8d3717d42d7daee4928548c6a5e9649b4073c291ca7",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/libbz2.so.1.0.8",
+    "sha256": "c208e149de372d9aca88f752849b33dea032b8054d1718d662666bd3bad33f8b",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/lzma.cpython-314.pyc",
+    "sha256": "a67d7b0b4a1a1b41a5f3597f9ab216816e8589e29b1d2b6d856c62009cccf9e2",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/lzma.py",
+    "sha256": "b01a78a04c6a9ba6c645758cace78ed53a53871ea3ff88744e23f6263613d507",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/lib-dynload/_lzma.cpython-314-x86_64-linux-gnu.so",
+    "sha256": "161f5497cda96439fa6a86bb90ddc19dab55a207eb80802e7ac8ebd7315f0386",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/liblzma.so.5.8.3",
+    "sha256": "b6d8fd9301c8cb98e38d2798fb2d0f179b61da12e0690c7fb39dcbf86fd3b6b0",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/compression/zstd/__pycache__/__init__.cpython-314.pyc",
+    "sha256": "a9acba18d6e151bca8f4f21e054291c4663fe0ca7d9015d491a55d026adc187f",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/compression/zstd/__init__.py",
+    "sha256": "4575544839872594ad5c9be284d062384dd5abdd0ddcc0258f6d66dac2c51d60",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/lib-dynload/_zstd.cpython-314-x86_64-linux-gnu.so",
+    "sha256": "db758da9690b89f3d105f0f1bb547eaf68794303e8c2c12046c603e5131b3bee",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/libzstd.so.1.5.7",
+    "sha256": "f18105ff5aefdd6177cb99fd016f4822a676adf23706d4ddbdce632ed40882ca",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/compression/zstd/__pycache__/_zstdfile.cpython-314.pyc",
+    "sha256": "ade327ac2fbaa702fce71c3ceb4a6f5b36c9e543f4373626d95cb5466fde3800",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/compression/zstd/_zstdfile.py",
+    "sha256": "84da3160987a2ee10f3b99813a68e70f16ec42a52612fef32581eb628aabc720",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/_colorize.cpython-314.pyc",
+    "sha256": "0e47ffde6a6f0893dda7a20b6cdabfa3e791cae665093a16c35be9cdc9973c8e",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/_colorize.py",
+    "sha256": "15db41bec8e25fd1ba81cf234df2cc7446d0fbc10285fda73186176365efd730",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/dataclasses.cpython-314.pyc",
+    "sha256": "463d2d3b9ce042ce1763a90c6547f2c97744beb1557b86228b3113b8572398cc",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/dataclasses.py",
+    "sha256": "e8439c8b111856645a8b31e0dbbba532b494426399bad456079c0e5730ad322e",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/copy.cpython-314.pyc",
+    "sha256": "2ae8f43827e1473bfad5411a99eeb0105c242ee69d65ec47c9a901366a035522",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/copy.py",
+    "sha256": "15154fde290d6e65b5007905689a47a9a5a724822c5e06eec35d9ffbb2a3aa69",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/weakref.cpython-314.pyc",
+    "sha256": "f5b03bdaed57913ccee04c26d2f01e9bec7771a05d0f5c71328bb76d70db7d00",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/weakref.py",
+    "sha256": "5e5f727a19a858cb4c56dbaf3e0a138ded02fb954a9a58a840a0764216ae9522",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/_weakrefset.cpython-314.pyc",
+    "sha256": "0bbe2bcdc12c9021c34883b2ed2d0e70084cc8be1388fa87f572b89e5d494cf2",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/_weakrefset.py",
+    "sha256": "2dd7cb459d654fe78b00c5c47ee8e786c037ee77763304603f5e976dd62cbf81",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/inspect.cpython-314.pyc",
+    "sha256": "f11aa1821d90678ad53d30b915fa0660f79d84c61a0e56d297344fc9c99e739a",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/inspect.py",
+    "sha256": "7a2878507255eb568a6ecfa04e051009f197513aa052eebc9e7e60d667d78cb4",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/annotationlib.cpython-314.pyc",
+    "sha256": "02089eaaf07d6de5d1f52e5d5c0b8cceab7fd685dfc0dfe6d6b42d9789234184",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/annotationlib.py",
+    "sha256": "1cce29393714b91e3f71571ffbedacc7f73f11ad26be10701debeb86ec059a32",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/ast.cpython-314.pyc",
+    "sha256": "69a926852df9e3f1ca14f18cab9c4bc1d3788654ae852848f0ad0c59814453a8",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/ast.py",
+    "sha256": "5ea9a796353544bea0d706153516f04ef3d92be305d15a73238403837d77e34c",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/dis.cpython-314.pyc",
+    "sha256": "327778437a31718f65f17270c69d907079d9bb2c7f138e9fe93cc3ec82ea5321",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/dis.py",
+    "sha256": "17d4d9a9195c9ee5aa27a96f3e0871f9363fd501e3a64ef20cb1cc876d7ad553",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/opcode.cpython-314.pyc",
+    "sha256": "27624b7dddbc8004f2f59765fc90412dfe117bc68f1cb970ed2633ca19cae711",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/opcode.py",
+    "sha256": "1036d90c917bb27c540ac3205d22896ee747214df1f2682458ab915758e4fdf2",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/_opcode_metadata.cpython-314.pyc",
+    "sha256": "e5f0a98adff8787eef77b3876d06792ac72826d3bc17f67994a653d3e48bd1ea",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/_opcode_metadata.py",
+    "sha256": "d9badc5ab19a66415e230bf8f4299491b2207d584981a92b6e7c447cfa1aeac3",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/importlib/__pycache__/__init__.cpython-314.pyc",
+    "sha256": "43c87f7bc35fd3868e242567f503237320eab2d26ff5da217038daca83cc3497",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/importlib/__init__.py",
+    "sha256": "72b07de4133a7e39b2f6a7920465669aa04626f217e800779587bc0713fe002e",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/linecache.cpython-314.pyc",
+    "sha256": "14e571b2a3d8753107b3c8cdd9253dcfad888f2fd29f53d2a35728939a8ea336",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/linecache.py",
+    "sha256": "692daec68e2a419adf46bafc0eb2f8a2fb36c482183fa1ac47e00fec440f7d7e",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/tokenize.cpython-314.pyc",
+    "sha256": "4877b3cb019b886b99332044f2a6df33e9b2e6fa7eeaa64f3a1395b84ad89291",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/tokenize.py",
+    "sha256": "65ba1bacdc42e768382208ff27f3001ee77d9d61aafba686c67652d22b84b330",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/token.cpython-314.pyc",
+    "sha256": "fd682197534a5ea10ba576531b6725c6fa596621749e7a7fbb2c70ad93abbb3e",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/token.py",
+    "sha256": "61d4270311099c8a0c0b2e45fb363fd1c4e347a720bcc25f682b63dc28c34234",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/run-registration.json",
+    "sha256": "b9797041f8c1dfd4cc9afd35767dfe47927bcebfeede8544e761f21d478ac394",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/.instance.json",
+    "sha256": "bedab9a2859ca7eac082214ac6a7cbaf808dd0c1b63e8353b99fde6f10f2ed8a",
+    "category": "output"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/revision_r5_cli.py",
+    "sha256": "e5e2c007e35db694f53022b282951088ce08df6a5e7ffffb11e02b216d42caba",
+    "category": "source"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/hashlib.cpython-314.pyc",
+    "sha256": "721cda0027449f83917431a1cb7150fc82f9319f85ab77fe22fd17c46b588df9",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/hashlib.py",
+    "sha256": "88fa624821fbdee7eb2ef87c2437b207afe328cf117c7463367e2db5eb1af492",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/lib-dynload/_hashlib.cpython-314-x86_64-linux-gnu.so",
+    "sha256": "76143b032fab3fc62834dfdbcdebd0deb168b85a3b8e6cdb57c326a80939cced",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/libcrypto.so.3",
+    "sha256": "5ae0c61319c6bfa574e83994e9d0a48196cfd6a6bf37fe82d87627c7904c5d39",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/libbrotlienc.so.1.2.0",
+    "sha256": "dd19bedf12100d84f6a490af2017a49c8a5dff098dd4f2d03dea501ffaf47d56",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/libbrotlidec.so.1.2.0",
+    "sha256": "f747ed8ca1a29c53744f6e2b12dbd70d78838682a5914505b173c1ad50db4ca9",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/libbrotlicommon.so.1.2.0",
+    "sha256": "0a5a0d15264043c6cb99d3076501d4503bafde11eaea28f353e399b4ce6b2981",
+    "category": "external"
+  },
+  {
+    "path": "/etc/ssl/openssl.cnf",
+    "sha256": "25acad2e2fafa6d88052f22a6a0aa76da7382733b5e5a16e43d92389b6f0453c",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/lib-dynload/_blake2.cpython-314-x86_64-linux-gnu.so",
+    "sha256": "55be6d139c6a63389d5fe9e4982c6465bd99850f341c68df5f4c71159ebc3651",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/subprocess.cpython-314.pyc",
+    "sha256": "fa02857bba5785ce288b6d267f998d9466cba16f644d350740748c8ab1747c69",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/subprocess.py",
+    "sha256": "6628ffdd65c093a6c08cae01ffe82877d3ced515aac9e7be0cff16512c30a7d9",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/signal.cpython-314.pyc",
+    "sha256": "715e9c7120db4f176c4c506190b780d356234091f77e9cdc1aa7a6972ee36374",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/signal.py",
+    "sha256": "0363c964c90ac0b3e515de5749205e6e6454051a1211058375d84d91eab6071a",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/threading.cpython-314.pyc",
+    "sha256": "a9ed203bcd08d68c1dc782476e0db34c86f3b5092a565eb1d3ff60ec444d5fe7",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/threading.py",
+    "sha256": "5323909624ec2165e70b6d31333e4191b63d383d2dc5a7d7d516a3475ea2b7e3",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/warnings.cpython-314.pyc",
+    "sha256": "fea6bb3eaacecabaed6f6aab135b1f7326cd70c537219b3bc9e7fadcb2cff5fc",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/warnings.py",
+    "sha256": "142225786de63c593f1c9abdacf5b4fc0b05dd847f6bed0ebb4b4aa2d4d93b02",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/_py_warnings.cpython-314.pyc",
+    "sha256": "fac561cbf59927416ad462e0b1363ec60b900619a59cac1028192079a049b65f",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/_py_warnings.py",
+    "sha256": "7728580177727fa3b295478cef4777a9d2a364c5cbd809efcea352db31144f85",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/lib-dynload/_posixsubprocess.cpython-314-x86_64-linux-gnu.so",
+    "sha256": "f7f0d8e19b9ca728d1d38369dd0bc0a9595ba2050499fe19befa80d4fb48bb4b",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/lib-dynload/select.cpython-314-x86_64-linux-gnu.so",
+    "sha256": "6b38e0887f2b6aff037fd932dac629140582ec38e1df232d6f80e2eb60d07a69",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/selectors.cpython-314.pyc",
+    "sha256": "b1e8dcc79c4eb77434b75e29288778da966e02a342f70ef723cd8ef69428a4ad",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/selectors.py",
+    "sha256": "4b8a60cfbb619d080f87dffe1578372e56e8c0ac826f043224a154cf7b77606d",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/lib-dynload/math.cpython-314-x86_64-linux-gnu.so",
+    "sha256": "2d1d360dbbee679586aaab6e84ac3cb9e0ab83f28df1476e28cdfd5c11026e67",
+    "category": "external"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/verify_all.py",
+    "sha256": "2108f0634698826030f69b17424e64c33300b64c863be9a4435fc39243dff1c1",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/audit_task7.py",
+    "sha256": "591f0226e01006416b25095cc9cfd0fce3af95ad0165938026a77a067d4b23fa",
+    "category": "source"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/fractions.cpython-314.pyc",
+    "sha256": "652a2edd59f5fe99d9291f3c54b713d9fa208ca515b383c4333aeb2866ef0a95",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/fractions.py",
+    "sha256": "7a95f1c506c9ac4b2277df5f2bdd9d61cc67b520c45021a5a961939770221ef6",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/numbers.cpython-314.pyc",
+    "sha256": "704b4e353ea6966458261460bc84ad6b61c8812ecdf3963e1c3e40b22c7844f5",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/numbers.py",
+    "sha256": "e5e73beba4a7674bd5e9a881a202d403a0c3e2b59af4181699155ea4827a7561",
+    "category": "external"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/checkpoint_delta.py",
+    "sha256": "c1215a258d104c07a1d1c2f93eb6718809a0c3b55db17ee49074f057d2461878",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/check_examples.py",
+    "sha256": "2f34d99d1a2566f8451af7ce946bc5139d681eb78c803706722d49ad940ea573",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/check_golden_trace.py",
+    "sha256": "e7d4623e493dd5d1cc7688b1976f090177476da8b1b63a435ba6e261dce97039",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/runtime_example.py",
+    "sha256": "8076228904fff6be2ffa1e782b6738f75fe871a9cb25ea6f6f504820a62c985d",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/runtime_record.py",
+    "sha256": "95fe02df7b58b6f182e9273c1948cc10b4b7b5254ad65e20ff00d2476c0ffb69",
+    "category": "source"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/python-source.json",
+    "sha256": "7e76a628232e391a1d3aab7d69a115b231a46b35711c00cd140e825261a647af",
+    "category": "output"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json",
+    "sha256": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json",
+    "sha256": "69bc1f4afff489ea2f47adf5d0598478ddb16e4be2a9eabe3fb741283ba19526",
+    "category": "source"
+  },
+  {
+    "path": "/usr/lib/locale/C.utf8/LC_IDENTIFICATION",
+    "sha256": "be5c6f4aa0cc2c05ab5ce3ed43c538cd7decbf97b42bc7c73f19414292f4dd4c",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/locale/C.utf8/LC_MEASUREMENT",
+    "sha256": "bb14a6f2cbd5092a755e8f272079822d3e842620dd4542a8dfa1e5e72fc6115b",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/locale/C.utf8/LC_TELEPHONE",
+    "sha256": "f4caf0d12844219b65ba42edc7ec2f5ac1b2fc36a3c88c28887457275daca1ee",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/locale/C.utf8/LC_ADDRESS",
+    "sha256": "26e2800affab801cb36d4ff9625a95c3abceeda2b6553a7aecd0cfcf34c98099",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/locale/C.utf8/LC_NAME",
+    "sha256": "14507aad9f806112e464b9ca94c93b2e4d759ddc612b5f87922d7cac7170697d",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/locale/C.utf8/LC_PAPER",
+    "sha256": "cde048b81e2a026517cc707c906aebbd50f5ee3957b6f0c1c04699dffcb7c015",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/locale/C.utf8/LC_MESSAGES/SYS_LC_MESSAGES",
+    "sha256": "f9ad02f1d8eba721d4cbd50c365b5c681c39aec008f90bfc2be2dc80bfbaddcb",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/locale/C.utf8/LC_MONETARY",
+    "sha256": "bfd9e9975443b834582493fe9a8d7aefcd989376789c17470a1e548aee76fd55",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/locale/C.utf8/LC_COLLATE",
+    "sha256": "47a5f5359a8f324abc39d69a7f6241a2ac0e2fbbeae5b9c3a756e682b75d087b",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/locale/C.utf8/LC_TIME",
+    "sha256": "0910b595d1d5d4e52cc0f415bbb1ff07c015d6860d34aae02505dd9973a63154",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/locale/C.utf8/LC_NUMERIC",
+    "sha256": "f5976e6b3e6b24dfe03caad6a5b98d894d8110d8bd15507e690fd60fd3e04ab2",
+    "category": "external"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/正式静态目录.json",
+    "sha256": "3566e2ecb9d90b9a1afc01b273eb548178de738fb4e4f3b2af88fa05f809be29",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/《明日方舟：终末地》游戏规则.txt",
+    "sha256": "6e64e3903a65536c530b363c9f3aef8c1bb2a1c1193e866799125dd047159924",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解任务.txt",
+    "sha256": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解约束.txt",
+    "sha256": "0c05976f6063f3332db6ee19d7746052ef35148d7c2a12dfa396c7bb8753f30f",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/选择点参数轴.md",
+    "sha256": "261da30db31063ec8292aaa493e2c11d026c0861852ef19550eeb92eb4da7665",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/周期键读取审计.md",
+    "sha256": "00afb8223d32cb2b77015ff4e9797171813eab2c38f5e941eb015d512c437d60",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/受限转移定义.md",
+    "sha256": "3ef482467f5dc545f8fdf4bc0867eddf0a2a25a455850e0b863bfe13e368243e",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/受限模型声明.md",
+    "sha256": "66359c590ad711b950bda55cb1b7e577ef9fb9671e0d87d426908d28bb244349",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/运行语义.md",
+    "sha256": "91dfd6045e27ee83abf10905d511010b8fac4c2a751d6c00e54e6ea9d2aea31d",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核输入.md",
+    "sha256": "7e257cff649960f78a8da0023ac31e926a1e0b972fb68476b4b12d6fdcf90f41",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核输出.md",
+    "sha256": "e287c6e4bb388a814a5fe04d072084e29be494a0caff9b14388c34d67705bb3c",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核输出.schema.json",
+    "sha256": "dc8306328122fa95b44748c24ccc03ab408500132c9141f241038a4b13d050ec",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/value.rs",
+    "sha256": "0cd34a9c7877861580caa0711e643575cbb9ce631a445919c69f093c2392d32b",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/config.rs",
+    "sha256": "69676c866f8030ea877e662fdb85f600618f23edd99e4262699997adf9786f5a",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/model.rs",
+    "sha256": "edeb17c43654ca3aa5bf5f3a83907585b4ecddf9241658a2e426d2560f3bfaef",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/catalog.rs",
+    "sha256": "a38df132d8db440d5fb4d6eb33392e539f0549e436dbca210da8c9eb1edb983c",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/input.rs",
+    "sha256": "63fe621104d86461562e99ba216f12fa1f69737fdb2efd57c1d8a57a8b700502",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/interfaces.rs",
+    "sha256": "3ee13ba29adc7ae58abf29e09f938900895f12908fa5b428b261b9909da9d919",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/engine.rs",
+    "sha256": "5f77eab8562c5af23c61dbb447f8e50320386bd267ea7cc9f00ca667a92b09b3",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/event_identity.rs",
+    "sha256": "25a4f4442232845d2fedf80ed368fb02ce502f2c350e16e73355296183f3e70e",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/warehouse.rs",
+    "sha256": "6d50eb1678921d2f3621149d60766463e6c4ce4fd57e0978ae1af7253557d5f5",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/polling.rs",
+    "sha256": "ff518fdb807c02a332c48acc565e0cc7b6b43d1fb98fb22374a0002ac8dd7635",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/transition.rs",
+    "sha256": "fe21d21cb3fb83277486216ce0325891259d89353a7b3cb5bdd23a9f02f4cab5",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/output.rs",
+    "sha256": "e81896910da6fe9a1eabbcf23260a68cbd781a6d3e621226f62e35ca5ef6f0f5",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/ledger.rs",
+    "sha256": "f85ecea3240dd1ec0598a026bafe3b863c13220c7bdb7cdb0aa24c1e2577d9e7",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/cycle.rs",
+    "sha256": "5a0b2ace4003f63dd1c135621a5d13d9c69d7000471a3dabfb8ddccfe170056d",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/cycle_io.rs",
+    "sha256": "93afc189315738f11780b04ac4ff5cbabf93afb2fabc04233ef5c3dd63f4de30",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/digest.rs",
+    "sha256": "e8d8d5c8df1f7124ec5739fa158a41b4d7ca662f1b246d3604994cbe81eb1ef0",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/seed.rs",
+    "sha256": "9c0f6cb5b5d06e163c5ea5335b911fc31f24cbfda173e6ea1e705422f02b5281",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/cache.rs",
+    "sha256": "07492543966219f3e7cbcdc0aceef96475d812cca0b10743c196f4f6de85b2ab",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/lib.rs",
+    "sha256": "5d63008aa0f7b9c8a1da93dc96b13496398cc3fbad93c3775d709d77340b4c6a",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/main.rs",
+    "sha256": "b38a6cf3afd455a7b440f4e86bb3c27e5684ff872d4c0a2bfa8b84368f9f651d",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/Cargo.toml",
+    "sha256": "279ef923475621d73a24e2d04781ae126c93fbfc82f9646947aee8025e96de95",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/Cargo.lock",
+    "sha256": "031faaaec5455f074df40817d326fc59fa9ebb3d7ecd5e1a2af85a1c0b3a5a94",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/Cargo.toml",
+    "sha256": "f547eba51b5e70d1054b513193e405869c9f62f794dea0382f758b031aee3b73",
+    "category": "source"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/original-cycle.record.json",
+    "sha256": "45fbe0f0ce10f07dd1a568751bd8b86d0d09862174f7625760a87e0d930cbd25",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/original-cycle.json",
+    "sha256": "68accae9799056c93866f928c61814bc37e5c4a030f4745493e5d5b68bc6eb8b",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/generate-cycle.log",
+    "sha256": "47eb3b7237c67fefa7762f64f6948c9bb3db868bcc88ffbf13d018949384b39e",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/package/full_state_each_instant/records/record.json",
+    "sha256": "74afe0876d23d40d11b9c53a841a326fcbccdbc1c28a4015eff86795976d51a7",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/full_state_each_instant-verify-root.log",
+    "sha256": "16f0529badcbd6bde58f326f4ad011726ee51aedf3922b7eaec92c50d5bb2704",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/full_state_each_instant-verify-local.log",
+    "sha256": "5c74aaea00b1c81f06ba193393c5bb46bde8ee25568780aaa9a41cb443c37fb1",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/full_state_each_instant-verify-foreign.log",
+    "sha256": "4cacef923b9100e1072680297673bee3c25e95f9a7aae57446df6ab9a4a66606",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/full_state_each_instant-checkpoint.json",
+    "sha256": "1cb5d73ec1f6616699537cd6eca2cbf715e6eeef8c5e1b9b65617207b91f6516",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/full_state_each_instant-checkpoint.log",
+    "sha256": "44d3845b79034cbe84422c2236e9f266028b7179aefd3a03d4ed59c29fa0a050",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/full_state_each_instant-continued.json",
+    "sha256": "58cc84f93a9d8609669142a50cdefe2d758cbd0d61566d9c0743dce8bba226a8",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/full_state_each_instant-continue.log",
+    "sha256": "fee2e3b40ca499bb1a573eae13a13e0c93dafe0de9288cebe6e02247de9da8b0",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/package/full_state_each_instant/certificates/cycle.json",
+    "sha256": "912996d66f3410b032f28bbc3686383bb81342f61c35c2c716f94bbbec30fcc9",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/full_state_each_instant-cycle-verify.log",
+    "sha256": "f9807e1f49c03bc16b0a2d64da7a9fa786fe025efeaa6591c467f8f4f33648b2",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/full_state_each_instant-cycle-input.json",
+    "sha256": "1cb5d73ec1f6616699537cd6eca2cbf715e6eeef8c5e1b9b65617207b91f6516",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/full_state_each_instant-cycle-checkpoint.log",
+    "sha256": "774a3cd821a3bfc26eba41040ca7ea80b47b3f0a721472b4913d3b00dd7bd3e0",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/package/checkpoint_delta/records/record.json",
+    "sha256": "2e4f6fb79d6f8075449af34ec35e48a4863c0ec45bee41b70ac9ba6afd0c0abd",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/checkpoint_delta-verify-root.log",
+    "sha256": "1aea70ed00947d1c024154e91d680067857cab8eb0200ad5a2be41640ab24c85",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/checkpoint_delta-verify-local.log",
+    "sha256": "d0a397e74e5908cfed706b019d8666f16ca323306f9b2431c2f3cac30d04c30b",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/checkpoint_delta-verify-foreign.log",
+    "sha256": "5aded7a1faa8d05ba99d7bd5dcb8a10bb0f0cc82fbc3c7c30762df135116c74f",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/checkpoint_delta-checkpoint.json",
+    "sha256": "1cb5d73ec1f6616699537cd6eca2cbf715e6eeef8c5e1b9b65617207b91f6516",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/checkpoint_delta-checkpoint.log",
+    "sha256": "af7d90f81553cc7fce9589141f4aa377319253bd4d842ff01820be04e6273c2c",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/checkpoint_delta-continued.json",
+    "sha256": "625d8f1929f6871c3f197cbf05fff8395cffb48a1ea7d9b2178cf8156768a3b5",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/checkpoint_delta-continue.log",
+    "sha256": "c8c390c4de51af0504932106cfdde27686d90f0f3b211f4b084497d20e30d6db",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/package/checkpoint_delta/certificates/cycle.json",
+    "sha256": "c4ca6aac764c8a910f01b0f2748150db937154bd37528ca42282148ad763d14d",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/checkpoint_delta-cycle-verify.log",
+    "sha256": "2e2c61b8ed2c99517fc369842b87a7b38dcf4ea6f5c384da0f2f122a7c3db268",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/checkpoint_delta-cycle-input.json",
+    "sha256": "1cb5d73ec1f6616699537cd6eca2cbf715e6eeef8c5e1b9b65617207b91f6516",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/checkpoint_delta-cycle-checkpoint.log",
+    "sha256": "490394f8df95ec8b33b6f02e136316faf722483956bfaa0c03f61ac8012a31d4",
+    "category": "output"
+  },
+  {
+    "path": "/usr/lib/libuv.so.1.0.0",
+    "sha256": "407e3422efb45bb97856fc517c34656ad1292debdb7bc29c5f3e06195aed1c6a",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/libada.so.4.0.0",
+    "sha256": "30c918d050f4f46aba4d5dfff4852b6fd23a686e40fae10fb1c0de1bc5e95c0b",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/libsimdjson.so.33.0.0",
+    "sha256": "8ed9852623a4d807d135abe39b3a09a31147462148cbd5b8aad34f490637712c",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/libcares.so.2.19.7",
+    "sha256": "87b3d8cf3ae3307e5b84613d0116da90b3f1667cc883fec062dfa16510b3b7ae",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/libnghttp2.so.14.29.5",
+    "sha256": "91c61845d03c19a251802a8292272301d8338538671ee117abcd6a4d37f13c5a",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/libffi.so.8.5.0",
+    "sha256": "ea7da6217398e85e0a83ae367e70cde716ec626c782d29221907b893fc43866e",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/libssl.so.3",
+    "sha256": "f1fbb3abbbe384aaba03a514f64db8c3a3d960d2fc8c0317652ea7ac32587fb7",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/libicui18n.so.78.3",
+    "sha256": "b431859c173611701d2d79f95086316395194f45eaa6ed0dad79e489f82fef9d",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/libicuuc.so.78.3",
+    "sha256": "a02f9e1ab2419219f990b416f981f20f779f5c6f301424c5d1948e52001c555c",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/libstdc++.so.6.0.36",
+    "sha256": "412e0fc561a10581aaff2d101206939a31fa12c696590d8d4a5ec3655953ffe0",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/libicudata.so.78.3",
+    "sha256": "d72003b08760852bee4c80cff32c1e6248ae6b1fda5bd313482733a4d5e70dc9",
+    "category": "external"
+  },
+  {
+    "path": "/usr/bin/node",
+    "sha256": "5a353e52b64c67e8ac76e95e42531855f81177515d3bb608a96e341c90dbcf28",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/package.json",
+    "sha256": "1f9033ee5a6515e7d76938b7072941862d1ed228a6879cc7fe10cdeb75107989",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/2020.js",
+    "sha256": "908e9670b478b2ba126802a221b7e47006f50cf467e2c5dd7935d3dbef10a20a",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/core.js",
+    "sha256": "51be29c7ed7288622f755c0f1bebd3da4a9907d77aa2c33b0f2a0a5b6b339603",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/compile/validate/index.js",
+    "sha256": "cb2103e5f890e04592c10d24b45857dad91155bae9f9460138a2459bdaaea2cd",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/compile/validate/boolSchema.js",
+    "sha256": "c08abdbdbd3d8b1dcc0552a20fbc7d837ed44f4ca6abb2e464985590ac94377f",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/compile/errors.js",
+    "sha256": "53990f8f2cc05922bba410ae68231d3f869de4f8343277ede5b4834fa564c6c2",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/compile/codegen/index.js",
+    "sha256": "f03b2b72597ef86878d1d4030580c2d0964046efad4867f3d05aa91065ba034c",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/compile/codegen/code.js",
+    "sha256": "1287153722f1fc3c5342647de7ae1d7b6fb68bdb3378a0776a937d273fc97e0d",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/compile/codegen/scope.js",
+    "sha256": "d2a0a97af2faa2cad88702314fe421e235ab17f11e0d62883d58d8d4dc734286",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/compile/util.js",
+    "sha256": "fa911f5631f29d4d6420adfe086cb693b94b08de2719475c78c54bcb82f831a5",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/compile/names.js",
+    "sha256": "3cab37a2240b996b9bed92fe7a041d91689cfe3ad2e9ae4c0ab99e4146408493",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/compile/validate/dataType.js",
+    "sha256": "697bd7005361ec7066a23c18830a10b0ef28aec1a33138b4e3098bf78c4fae52",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/compile/rules.js",
+    "sha256": "ec1d86500f497aa8e20f9f0c1695951159d9a909669d00a261ce1bb22b3cf0a9",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/compile/validate/applicability.js",
+    "sha256": "50c5cba5894a7fb9874b3432355b46ec71b73c9368dafb1323ded8567cca8fc0",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/compile/validate/defaults.js",
+    "sha256": "05721971df94faa57b09c8cfd60c2eef81b6d14910a7dea5f539d693a029c428",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/compile/validate/keyword.js",
+    "sha256": "ab8f070c75c25eee9be5c837f364748909b58f5db66149a2beccbd2f66afeb76",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/code.js",
+    "sha256": "9212ddf8bd0a4c3b1c4b44cdadd141183b2b36f561b91d13df53c83911e3bf63",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/compile/validate/subschema.js",
+    "sha256": "ca783d6052af91e65ebb59a5b48b47fb459a2241d37ca6a042f767d4ce451bdc",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/compile/resolve.js",
+    "sha256": "df75af0e0cf03fa1c6452e8dc61019f5aec645a8a5f6f494dc4e13cb5502d2d9",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/fast-deep-equal/package.json",
+    "sha256": "a5c63940db0260739be9e2ac67f3aac268df4db5770420ee4e34e493152f97d2",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/fast-deep-equal/index.js",
+    "sha256": "eb469e206280321a3878f2335ec98aa2104a155079d8ed83a23029098dccd215",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/json-schema-traverse/package.json",
+    "sha256": "156fb24af02845c190701360d06dfda35ef04282e34a734289ea9535ad9819ae",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/json-schema-traverse/index.js",
+    "sha256": "024191b747afac01b28ff11d744e9f82720bbad5f716163ba5c962eb62aa2350",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/runtime/validation_error.js",
+    "sha256": "11bf5b4affc8114e5e7cdf65b93006c2d997ab60ada1152c22e136f9b828b815",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/compile/ref_error.js",
+    "sha256": "81c98fdf34c3037c91bfcc02277ec32156c71e34048f36cfe4e084416e916cb7",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/compile/index.js",
+    "sha256": "05b34da22814f3787bfa3ac68dad59c9047f56e55a607e0a20719ebf5afe69ac",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/refs/data.json",
+    "sha256": "d24ab8a97c18b3f5afdde7d7024a0e0ac1df0614a16a41cb88f81379edcc2db3",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/runtime/uri.js",
+    "sha256": "d1d61baf97ed87d7310df847a78ed73d19c8cc003207bf5aaec977500bdb1578",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/fast-uri/package.json",
+    "sha256": "3b01e17f5de289a0905ad894187235c8a8bb284a1fd285b40227b1d862f86b4d",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/fast-uri/index.js",
+    "sha256": "79945eb0b513058251bd1c3b518b86c5c549bb73b8c37c77d717133d66277a97",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/fast-uri/lib/utils.js",
+    "sha256": "3394986f9670b821493943faafe5d83ccc15109aba908f1b5dd017e27b0d0ea7",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/fast-uri/lib/schemes.js",
+    "sha256": "0f9497f8e43c9b002d79c8a916709daa4ae8a6462735b1b5dc6ad587a28a5064",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/draft2020.js",
+    "sha256": "2d0dc3a14abd48a45ad1407a97f23a0f943fa5244923037f86e95a7de04a7445",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/core/index.js",
+    "sha256": "f420e1011b95e27b54c58323a7ed4ffbd0a88cdb4496f771bb6782c2aa22d23e",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/core/id.js",
+    "sha256": "49c8eff694ce4371450c1f9986e934fcbf4bd143311caef5332113f29175bc11",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/core/ref.js",
+    "sha256": "1422c1454b3621d890066042048f37746fe1cf213088307099816199889bbfd1",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/validation/index.js",
+    "sha256": "4a1839832de5f10ff423c1c0c6cb232b5b6e1b34980a28862cf56b2763136de4",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/validation/limitNumber.js",
+    "sha256": "3dd4bd41dbfc76c522078ff54b6479683485c4e97faa04cfcfaf2d8cb0fb8e65",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/validation/multipleOf.js",
+    "sha256": "df128c2a6ca74ae57c65fbfe3aea8a101447a3ae8c41fd53cfc5693fa23cc8bd",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/validation/limitLength.js",
+    "sha256": "379c28317faaf7784680b6049c3562692d3df6d65cce33f48e6c6c723beeeec2",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/runtime/ucs2length.js",
+    "sha256": "1df012dd3d23fced07255a7204798004509687cb1f431ae0ab976db436bbd890",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/validation/pattern.js",
+    "sha256": "86e84206bfc6a66ef18bf1fe43fbc56ebe7f7f4d57841197b6d044c529e0c195",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/validation/limitProperties.js",
+    "sha256": "8523a3f7b36c34882ca32b0ec71a2157d7930907cb86b778a97c1514fa6258ac",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/validation/required.js",
+    "sha256": "b953bc18d94274bd73374dd5b4282d7a21159cec8c0e7a357e1eaf3f326b9054",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/validation/limitItems.js",
+    "sha256": "49f0427d29b38aef2fa8aead26e68bda12deb9a2da22f7a7804ba0fed44e1fec",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/validation/uniqueItems.js",
+    "sha256": "666d1a2aa25c0dfe3cf41312d0f9d40e9f99eb2c19be7469134ad89005aadd52",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/runtime/equal.js",
+    "sha256": "c94467da09ee94e5d194483a7ab821b9bb3bf1c04397270f2ab53dea9de59274",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/validation/const.js",
+    "sha256": "ace994e9ab97a70899a9484794794f4be5ee03bfb3cf32242d3f091d77f0329a",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/validation/enum.js",
+    "sha256": "61062b318a40eb52fc5a8283e7f4781db98349841744961ef4fe04a4722ebf22",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/applicator/index.js",
+    "sha256": "5a61978f6d81bbabfa8b9ccb71d7de816ed6dd1fd7de5c72657439a76c2a7cb3",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/applicator/additionalItems.js",
+    "sha256": "7beb0fbda5e349907067c8398bb8cc3260a6267b6e5dff9793a5ab2171934099",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/applicator/prefixItems.js",
+    "sha256": "16264f7b3233a6dcb98b48700643efbd3ebc4d11e27b3eacffc83ccb5f44fb23",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/applicator/items.js",
+    "sha256": "fa87f74adc3aac1f1b5e3e7dddf73294e6850e1dd49ed131fca4352e9645c54e",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/applicator/items2020.js",
+    "sha256": "c449ef64aec16263c7935293ed450cfc2da3ba66f6df5f99c3198c05f169838f",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/applicator/contains.js",
+    "sha256": "56165dc93cd8b0b4611db50a97f1e7d7f9af6c5ffe95a7a5b054d6eeaa7f6a8c",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/applicator/dependencies.js",
+    "sha256": "c1a83bf484b6fde4d268935f079ddba5e74a2f589dfc6d15ca2e20ba4d06ee5b",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/applicator/propertyNames.js",
+    "sha256": "b3411cfeaff8efd5e6de12971bb5dc339e64b61fbe62d3b950794c077315c2e7",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/applicator/additionalProperties.js",
+    "sha256": "e237cb180cd2e3f2e676feb714d7dcc6a42116640f9db2ad830cd20d9dfc540a",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/applicator/properties.js",
+    "sha256": "c896873ae7251093a2c8880545b69b6e8cb55c44817a53ec830a49818d74104f",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/applicator/patternProperties.js",
+    "sha256": "0d43da49a82452c439ba990de7372ad5cedb663717918a5f6dae07025abff655",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/applicator/not.js",
+    "sha256": "ab2f2758d4ea97ac8763fe5540dd0f4d877859676fe5d6c750a18deca387f718",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/applicator/anyOf.js",
+    "sha256": "8d7368d4aebad0514b713191b934993b4f0bf570e1bab93b07dc69712db2cec5",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/applicator/oneOf.js",
+    "sha256": "e2aeb6c22d49fd5f348bedcf7f5c4d7b31f5a05dd7ff1a0c531374c6968792a2",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/applicator/allOf.js",
+    "sha256": "98f46a6434ebe5f851b406480e18b776dd7f1bcc275e28c16a13bfef3cc067c7",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/applicator/if.js",
+    "sha256": "42374ee5dc681433579cc689b0c4ae5343f5bf78d4d6a561722b9277c5335ec4",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/applicator/thenElse.js",
+    "sha256": "9bc42eb8699d57188a7ec2a710d3f38052f92bd78c5d4d0442cf98cf2ebbe22d",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/dynamic/index.js",
+    "sha256": "8c05d09948653957427f351d9c6172965b932a5663f7dcb63014a491a533cc0b",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/dynamic/dynamicAnchor.js",
+    "sha256": "78222a5b42bab186253d880f9af4b012394ae5988bfab78e79f2510caed0ccf7",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/dynamic/dynamicRef.js",
+    "sha256": "acc2913c91d11ff57150dde1751cdd5d9f486a0cb156037870ede203273af917",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/dynamic/recursiveAnchor.js",
+    "sha256": "9f6cb7e509f9deada1b884010f08c52876f8eace32dcf0e7da28f6d0d91f3f76",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/dynamic/recursiveRef.js",
+    "sha256": "7b0c651e2c5b5218639cd3ad7e5162f1e226fc9814107a85f4c3e47f5138670d",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/next.js",
+    "sha256": "491c4d9738e50a6c22b3090cb1df49911b4bb7c3b7dcafc2f2dd4c074c4d82e7",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/validation/dependentRequired.js",
+    "sha256": "cd69a90089328b24d2232c12edae57858c14f66aaa56923c12929eb3d673e8fa",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/applicator/dependentSchemas.js",
+    "sha256": "d17d23755b0cf8699c180dd98b8b7270b688d2e4fe5a4c4fcc53ffdcc18ee58e",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/validation/limitContains.js",
+    "sha256": "0ea6f2e43359add298e1ed9306fe5020c62e086392f2915f10226b01394b200d",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/unevaluated/index.js",
+    "sha256": "4e7936d1a55051e70e2ebbbfc8de94fbe7f1e7b055252df5a984481ea7c156a4",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/unevaluated/unevaluatedProperties.js",
+    "sha256": "665029a99612ec32e9bef99c9c4b09a4dc0be6c71d7b920594d414d404806ebe",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/unevaluated/unevaluatedItems.js",
+    "sha256": "4d7010c39f1b7af4a2fe1a62e5b65c8f763d4e58ac3d710099d367659f5e4fda",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/format/index.js",
+    "sha256": "d5dad5f95c9c5f48f8ca956cdbb927aafc7b56baabfca8c0b0403d92c5ebeb67",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/format/format.js",
+    "sha256": "6fae0d5124fd821b1a9959492f7d6d7b528bee8830d49a7a4759fc9a9ab81d5f",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/metadata.js",
+    "sha256": "45c178744a7ec57e20c85ceeaea8d9f36b5663636ab7e495ea2c3c1bf4a58609",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/discriminator/index.js",
+    "sha256": "b58b58025d2dbe5a6967376faec9295b860a338664c47037e9a1035c1e8fb88e",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/vocabularies/discriminator/types.js",
+    "sha256": "2365341d1f30dc72cece7703e908e47aacb8f904b9f66ec4019fe889ae1e57fa",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/refs/json-schema-2020-12/index.js",
+    "sha256": "2e39089b0aaa14efa7901ecf5384622ec3d5897b206e1d589d2420f17b9fa6e1",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/refs/json-schema-2020-12/schema.json",
+    "sha256": "5333c7df76bceee098e865881d0808238dea836126c6c60b49299ec85c6c7a56",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/refs/json-schema-2020-12/meta/applicator.json",
+    "sha256": "f1e465ff0c0cc86bee5c0cc4b51d2734c532e6ea12c75b60a2ac093a4577b2d4",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/refs/json-schema-2020-12/meta/unevaluated.json",
+    "sha256": "8f7f75f4274745faa32e4abdba12de99f49b21df225f52f723b5c62043b0edca",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/refs/json-schema-2020-12/meta/content.json",
+    "sha256": "7ede86f2c48d646202bf1332aefaf46db268c943d59752727db7247dc2920516",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/refs/json-schema-2020-12/meta/core.json",
+    "sha256": "c3a5947992d4fe67c95cda7910911207376bbae41c0a124ec9e7e699172e7a49",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/refs/json-schema-2020-12/meta/format-annotation.json",
+    "sha256": "1e31131b1ed21f98c007f04deb501343b8c4dd77f1c5a8494a9c2085f68d769d",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/refs/json-schema-2020-12/meta/meta-data.json",
+    "sha256": "eb008c756b29bdaa237c1f06d32ea4a21f6ef22148b03c6372cea5e4c0782273",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/refs/json-schema-2020-12/meta/validation.json",
+    "sha256": "3cae7069843679429e4ada7df261bb8961fa34cac15be89296026e69af312092",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/relative-production-batch.log",
+    "sha256": "51be3335a87893d1b58cd171aabce16adc8733d49971f6cd074933ad20bb1238",
+    "category": "output"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/混做粉碎机两下游.json",
+    "sha256": "51116298a11f07279a0c5f9b3bad55855434145fe22bebd412a075ab0c676786",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/polling_reference.py",
+    "sha256": "53aea8771b92712055d60b0af1e7d8895ea6b563b4c9346df1e81a59b2641971",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/ledger_reference.py",
+    "sha256": "e8ff4790fe45b166c934d8f2b1bda2dc841445a3fecb2a33b3c04ef08e8fb3b9",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/kernel_profile_v1参数赋值.json",
+    "sha256": "18463a0ab91fff7c049bc13ebcce2cf49c4caae5f42653b1661fbd034d26b0ae",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/混做粉碎机两下游-黄金轨迹.json",
+    "sha256": "bf0e705f9a92712cd495ae9fabebe95d910eac38ff825b6dc52da04f5b4b3959",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/混做粉碎机两下游-黄金轨迹.md",
+    "sha256": "1aa028fcfe4f89844372cb8e96e684f43c238487033aa07ba5a6397944ad7e4d",
+    "category": "source"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/混做粉碎机两下游-absolute.json",
+    "sha256": "e612b7dcaba84827854a1c9cb8b22a090114846dd422c912cd077cd7a066e8d9",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/混做粉碎机两下游-finite.log",
+    "sha256": "d11cce19b874c034f9c31894475d25da1a3ff5fb323b1a762ae59aebccc3cc79",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/reference-package/混做粉碎机两下游-full_state_each_instant.json",
+    "sha256": "58430efb9a333e86397205b7b20b54507a8b047a08630a1743e951b1bde83912",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/混做粉碎机两下游-full_state_each_instant.log",
+    "sha256": "c54f1fc3051e94a0bcebbe8b6cd02c0153864316bdcb413f707fb270bd35fb42",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/reference-package/混做粉碎机两下游-checkpoint_delta.json",
+    "sha256": "93186924cf2fd513ac0b5e6cd99a0176c2b4a15aa94603b50b2472b93dcf189d",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/混做粉碎机两下游-checkpoint_delta.log",
+    "sha256": "c35a1c9a4170caa69e1265cf38320ca08110813ef784e87130e0cd695ca5021f",
+    "category": "output"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/event_order.py",
+    "sha256": "9b8b828d361e3a5380c55b8eec0aa8bbdb25e0d0a2e0a155cd8ab558407359bb",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/test_runtime_input.py",
+    "sha256": "bbf9154af73f1ed28ba18e6c66c61714e733f7c2a6866aec6a9206dd2aaa40bd",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/check_port_meeting.py",
+    "sha256": "2fb0daf9fe68138d6b920b17e186bb0c1e23d02a0583c7692ed87619417d344c",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/check_splitter_trace.py",
+    "sha256": "19f7b339a6f581033b6462c944489feeedf8a9c3c5632f84afe7f4158f2d82c5",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/test_round4.py",
+    "sha256": "04619b85f352d76dc1ce56a7de25e9ef87e33d4f69328ee42ebfe127f9c5b31e",
+    "category": "source"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/bounded-reference-package/混做粉碎机两下游-reference.json",
+    "sha256": "95e2d79d574c659f4e8c01a658c85a47119e0a1b735a53b8a7d880006ea7eb44",
+    "category": "output"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/分流器三路轮询.json",
+    "sha256": "e7e164c8b72932a8ef48cc21345d1639505853d76796ad7542b413b00cdc3a67",
+    "category": "source"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/分流器三路轮询-参数赋值.json",
+    "sha256": "2fde9a89ddc2547dacdf600e0b8a624ccc880d730f56e1cf661a99d48041c227",
+    "category": "source"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/分流器三路轮询-absolute.json",
+    "sha256": "b9ef302e2d7756ebb26ef31f2fd0aa592a4b13df0362b0ececb4ad62abd6e499",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/分流器三路轮询-finite.log",
+    "sha256": "228984ab00ee880de10714722bb93960940a8ba66e5fd2aa156bde1a40d99894",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/reference-package/分流器三路轮询-full_state_each_instant.json",
+    "sha256": "45c8affe62ebd46cf436e7e68c02fcebf5b809afcad1a83aaf62451e19bdbfd6",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/分流器三路轮询-full_state_each_instant.log",
+    "sha256": "a8f5d6c70e2e921a8cb577d55d465fba3d313f21a2271d350c08eaf00b909479",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/reference-package/分流器三路轮询-checkpoint_delta.json",
+    "sha256": "d2e874c264f5da23130810f2a404a3fdea9ea23a25daef6641bfd2243b4b51bc",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/分流器三路轮询-checkpoint_delta.log",
+    "sha256": "6f5462bef0fa8059ac7bccf39da4f6684b3068c45f862ae5465b7a0dd7212556",
+    "category": "output"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/分流器三路轮询-运行说明.md",
+    "sha256": "8a11f1382e3e6b3d360132a01c6954cd245c4e3bf879a7a6657f41950cf245ab",
+    "category": "source"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/bounded-reference-package/分流器三路轮询-reference.json",
+    "sha256": "63cfa899c8f94cf6fb6ae985624b001173cace6753f58033bdb267d009b7b377",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/relative-reference-batch.log",
+    "sha256": "d3f9a7b7fe77f70edea46e14b80dfccad9a2321f197251fb4e88224a66a67221",
+    "category": "output"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/traceback.cpython-314.pyc",
+    "sha256": "0f69e2aa867c5de1a0af827f15b0dd2f5ba4e0d218ffa1f394dbda06181edbbe",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/traceback.py",
+    "sha256": "a8fbeea470aa4e29691560de889de136570bead76d9c8a2b6a891849c047a3b3",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/textwrap.cpython-314.pyc",
+    "sha256": "8abd27f32a1b5f609e1b59cf196e8531cbb1c89ea38cd4224f32b9622af738aa",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/textwrap.py",
+    "sha256": "7f05d89c983f5aa8cefcff707a9cc561ed60c51fc8a68e2e3ab61cc6dfa84544",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/codeop.cpython-314.pyc",
+    "sha256": "b05bb80288d92f0eba7a1cb94e3009fae62fc9fce24fa3fa9790b6ba9f3ebb19",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/codeop.py",
+    "sha256": "6777d19fa0f88c415d615c78e214ede057dd7507db8494744ca2c53fe9911a3a",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__pycache__/__future__.cpython-314.pyc",
+    "sha256": "ccfe63f7723d223f5ab8bf88accef0bbd084099629e3eff68c82a344ed741261",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/__future__.py",
+    "sha256": "981d4c398849f9ebcab72300d9c1fe288fd6d7f28957b3b3fa3a493a5836d95c",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/python3.14/lib-dynload/unicodedata.cpython-314-x86_64-linux-gnu.so",
+    "sha256": "0aa2fffcaff5f391b76e72a143c115e99e0212af44dd4f5b232534efc8a54f74",
+    "category": "external"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/bounded-reference-batch-unsupported.log",
+    "sha256": "74213074a09c42b8957a136ac14de2c2d48c192f4cf992cf8131f8f043422039",
+    "category": "output"
+  },
+  {
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/tests/fixtures/core_inbound.json",
+    "sha256": "350a6642e3e193e9564b45c35c403d6cee33399e208250ea8e9fa2541cae0139",
+    "category": "source"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/ore-79999-raw.json",
+    "sha256": "18c2a1bfe0b276fa0d20784124a0adc4138a5d9d4ba591d6a94358bb4c3cfb55",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/ore-79999-seed.json",
+    "sha256": "e0e325bc72015d0f3378b282055c3e86944d4f3022f6832cd5106342f29ee822",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/ore-79999-seed.log",
+    "sha256": "ee77bf6ea34809c98c03491260535ede0ede2ffcbee4dfc1759fe146af394411",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/ore-79999-finite.json",
+    "sha256": "60288695eb403f8905a1619592a7f3266b6b80b89ba37b831bcebb8b19eef21e",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/ore-79999-finite.log",
+    "sha256": "31001d3c5a71d26c86e0dac4d630468569742585dc5b88148ab52abc29650cb4",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/ore-80000-raw.json",
+    "sha256": "fa999e9b7cd298bbb8621cbfc444cedeb6831d55af9cb87b08bc66b32aec0602",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/ore-80000-seed.json",
+    "sha256": "a2a3b993bd2150270527b1747e1e155bb8f1e2f3f311c0ce29025769b9e6944e",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/ore-80000-seed.log",
+    "sha256": "477dc0cad295c0e515a77ef7de0428e38b9605576202e8cd3d073085feec71c0",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/ore-80000-finite.json",
+    "sha256": "5e468cdd9b53e77db494276884b3f1cc8bf000ee0b0452c01b0d739b002672d3",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/ore-80000-finite.log",
+    "sha256": "f753fad73fb77461e76188cc1eab28ec3f1e012c65bc274a5a429cbd6fcdea61",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/ore-crossed-seed.json",
+    "sha256": "d63978397a4bc817bac797bc072dde04b1cacf063bd20231c0eada7329d1a8fe",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/ore-79999-domain.log",
+    "sha256": "8776f9dade3f81dc2ec512a68765f7a1cdf49c74ed9e32e118acf86ff6c7184a",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/ore-79999-cycle.json",
+    "sha256": "e566cdb7ef35961fcf63976dd532f9fcb728710963460709830f88a4ccb18164",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/ore-79999-cycle.log",
+    "sha256": "3efbae9dbdba9805c334abc654d2c3d9e41837665e78b4be71185dec87d6c9ea",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/ore-79999-verify.log",
+    "sha256": "75409d64d061004702e8a5c5ec845da3aeb54ff4f35500c2b89dfcc746cc33f6",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/ore-80000-domain.log",
+    "sha256": "14876af4725cd87754e4bc476542025e7e8889214adb576f7701cc4e1d0a55ed",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/ore-80000-cycle.json",
+    "sha256": "4d93723f307c4384de0477e524b24e2b44008ea7d9e91450d9e387bf21b6cc6f",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/ore-80000-cycle.log",
+    "sha256": "ec1a7ebb85f94f993d83f04f1917085e74d55023b06855f43da296f78ab41f05",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/ore-80000-verify.log",
+    "sha256": "fa7c6d19fd77620c65d7eef686e3cda426cad4e7f0652389f61244e77c6485d1",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/ore-crossed-domain.log",
+    "sha256": "740d9719a1bbe9067ffe4d9d74037bedd2032201482cd3df856198f9619aed50",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/ore-crossed-cycle.json",
+    "sha256": "3b55b62becb91971f9c8787e409d6fcd864352e407ea346c56690d41331f57bc",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/ore-crossed-cycle.log",
+    "sha256": "a97c0bb93c53190937f9e2da2d95b745b64201239e0f9bc529a8688ab49217b0",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/ore-crossed-verify.log",
+    "sha256": "26269fa728538f820186b6ca5b3a37109d953295ae873c2949f3a839922cd2f2",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/ore-memory-comparison.json",
+    "sha256": "b0cb11e329c60a37498c2248eff8aac8f723c83925d3941b39200f197f92e80a",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/resource-input.json",
+    "sha256": "721c4c3f32777594d38c491a5144cfb351dfdcfd494f9c025814395323cd4ff0",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/resource-shell.json",
+    "sha256": "dc6c976d321a44d5853bd924e87570bad05bebbd04a62c20b1982b943ab7bc95",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/resource-shell-generate.log",
+    "sha256": "2eec71c0703026d50f1c80ddcbceeb1d5ccdee99a5c351b2e54227c4102266fe",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/resource-diagnostic.log",
+    "sha256": "41ac8dca7cce44b5635753f411c584a1bf70e5dc1e74e0cb8be73ce5a735fcd6",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/resource-checkpoint-result.json",
+    "sha256": "15caff3c48400274432bd558d13f958d108f44836e089f080b0aeb93a28c1252",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/resource-checkpoint.log",
+    "sha256": "14c579b8b75f1def77be5e0b04391870036b9a38d5d811fbb0f633d22ae60100",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/invalid-input.json",
+    "sha256": "1c5d9e79f3e3ff9ef0be20b204aadaf112f2fc54799aa8ea48274b922de02d6b",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/invalid-shell.json",
+    "sha256": "7bda96e4f5e601fc578220d77abe3ba18cf7dbe59aefb876c1f77fdb1df8c559",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/invalid-shell-generate.log",
+    "sha256": "1cbf78da98a5590c92f1397caf4a4d41714fe908875c4a901d52f65709efd056",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/invalid-diagnostic.log",
+    "sha256": "dab49990953eaefa93e71dedd9f85bf9aefbfb117b8ff12cf5ab71af953ad22e",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/invalid-checkpoint-result.json",
+    "sha256": "15caff3c48400274432bd558d13f958d108f44836e089f080b0aeb93a28c1252",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/invalid-checkpoint.log",
+    "sha256": "14b3e7958c4677dc7ad6f256b84a516d04dea4a57b27ab1e88a04c75cf9cca4f",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/unsupported-input.json",
+    "sha256": "c6180b37ccd8696fd7274308b32af7e58570326e2e542ba2640b66f88b17e962",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/unsupported-shell.json",
+    "sha256": "32be51d0222e2f35c88ece11f4cc78aa73195895327d6fa4fea7c2b20a198fc0",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/unsupported-shell-generate.log",
+    "sha256": "d88238a93cd6c82dab1618a38c356078a539715b40d2b893468ca0c244b84fd9",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/unsupported-diagnostic.log",
+    "sha256": "6f1ae11ae3b7ae9f300b123a19677730e07823132d54001bd6554d1338c297ec",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/unsupported-checkpoint-result.json",
+    "sha256": "15caff3c48400274432bd558d13f958d108f44836e089f080b0aeb93a28c1252",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/unsupported-checkpoint.log",
+    "sha256": "9e655a6fb1c8b128aa0db1e6b261a90a431d026ad2afec1a3545b05594fb6b0f",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/zero-prefix.json",
+    "sha256": "703dc4392b19d27860e1c10bc7658aa947752f39c0a24d50a7e3cf4ed3e8bfe7",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/zero-generate.log",
+    "sha256": "01d39946fc23ba917857f77ed1ce490ee1e0e0a58f729093cd38279b4d51c0da",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/zero-checkpoint.json",
+    "sha256": "872980b413724a58a5e2de35b1877cfb95cba7aa358fd0d48da4f29ef7c6a65d",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/zero-checkpoint.log",
+    "sha256": "cfadb1fc19bf61e40f26f1b335edf5e64589decc72b203c6895cb603bd0c5f52",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/negative/hash.json",
+    "sha256": "496398c9f19445dfaccb02ba4e76642aea02785a5458cd2c4b621c36d81fa98f",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/reject-hash.log",
+    "sha256": "dcc346040dc5d24d2407dde19dfcca04689f815f172ec52656935830df148090",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/negative/missing.json",
+    "sha256": "e744a46d3d7b9fc8418691448560ab19f13e946e7d01df5953ed9505da2ac23e",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/reject-missing.log",
+    "sha256": "9260193dd3ffe5d7689ab258691115fd1a6918e039620d2a33b7768cc09a6f8a",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/negative/dependency.json",
+    "sha256": "0c204996246e55dde105789770557894442c5ce2af526d4111f9aa216ed76de7",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/reject-dependency.log",
+    "sha256": "1ad7685e27303a173d7a4775c9ab801b149024a7ef79ff0e288c914a1d35e42c",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/negative/producer.json",
+    "sha256": "a0050fa1cdbf58cf5fd24b85c6b2f96351d8519d48b0f7120567256c3e2b7ebb",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/reject-producer.log",
+    "sha256": "668aabb9c77c6dac581cac072cd45c53dfa957506e3ff4710f9fc0846f14f8bb",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/negative/state.json",
+    "sha256": "e2ed6adda9868533611de7eb813428df2e16d987b976eb78ff935ec00b8a9045",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/reject-state.log",
+    "sha256": "641ff1386a5711933be046b77c845c5843276b8fd1ade35bde0b54626414b213",
+    "category": "output"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/results.json",
+    "sha256": "6e27b45c06305d5e7039b39083c626668187368792caef56da1b53f7d3c6e900",
+    "category": "output"
+  }
+]

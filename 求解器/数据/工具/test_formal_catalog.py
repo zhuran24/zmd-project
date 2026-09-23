@@ -37,9 +37,7 @@ class FormalCatalogTests(unittest.TestCase):
             self.assertNotEqual(parse_constraints(changed), self.catalog['constraints'])
 
     def test_any_source_byte_drift_is_rejected(self):
-        directory = ROOT/'target'
-        directory.mkdir(exist_ok=True)
-        with tempfile.TemporaryDirectory(dir=directory) as name:
+        with tempfile.TemporaryDirectory(prefix='kernel-formal-catalog-', dir='/tmp') as name:
             repo = Path(name)
             for source in self.catalog['sources']:
                 (repo/source['path']).write_bytes((ROOT.parent/source['path']).read_bytes())

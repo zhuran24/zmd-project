@@ -1,0 +1,42 @@
+{
+  "label": "production-a-build",
+  "argv": [
+    "cargo",
+    "build",
+    "--locked",
+    "--offline",
+    "--workspace",
+    "--bins",
+    "-j",
+    "1",
+    "--profile",
+    "health0prod1075400",
+    "--config",
+    "profile.health0prod1075400.inherits=\"dev\"",
+    "--config",
+    "profile.health0prod1075400.codegen-units=1",
+    "--message-format=json"
+  ],
+  "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+  "returncode": 0,
+  "expected": 0,
+  "seconds": 19.61013126373291,
+  "max_threads": 11,
+  "peak": [
+    {
+      "pid": 1076710,
+      "threads": 7,
+      "name": "rustc"
+    },
+    {
+      "pid": 1076702,
+      "threads": 4,
+      "name": "cargo"
+    }
+  ],
+  "affinity": [
+    0
+  ],
+  "stdout_sha256": "cb30ea859ed0b1cf0200aef124ea7e9f64c4e1a54fc62f2d7d26e182dbc4b2bf",
+  "stderr_sha256": "35c8108162552c92afb4bf40bded2e9df5e99b58ad0c4fbe9347ad26f03cf10c"
+}

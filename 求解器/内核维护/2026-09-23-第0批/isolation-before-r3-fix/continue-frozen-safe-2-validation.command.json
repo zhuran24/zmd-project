@@ -1,0 +1,134 @@
+{
+  "label": "continue-frozen-safe-2-validation",
+  "argv": [
+    "cargo",
+    "test",
+    "-p",
+    "topology",
+    "--test",
+    "validation",
+    "--locked",
+    "--offline",
+    "-j",
+    "2",
+    "--profile",
+    "health0bsafe1149564",
+    "--config",
+    "profile.health0bsafe1149564.inherits=\"dev\"",
+    "--config",
+    "profile.health0bsafe1149564.codegen-units=1",
+    "--",
+    "--test-threads=1"
+  ],
+  "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+  "returncode": 0,
+  "expected": 0,
+  "seconds": 6.0966200530019705,
+  "cpu_seconds": 6.051624999999991,
+  "cpu_cores_average": 0.9926196724396784,
+  "max_total_threads": 5,
+  "max_runnable_threads": 1,
+  "affinity": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "peak": [
+    {
+      "pid": 1170421,
+      "argv": "cargo test -p topology --test validation --locked --offline -j 2 --profile health0bsafe1149564 --config profile.health0bsafe1149564.inherits=\"dev\" --config profile.health0bsafe1149564.codegen-units=1 -- --test-threads=1 ",
+      "tasks": [
+        {
+          "tid": 1170421,
+          "state": "S",
+          "cpu_ticks": 1,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "cargo"
+        },
+        {
+          "tid": 1170422,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "futures-timer"
+        }
+      ]
+    },
+    {
+      "pid": 1170424,
+      "argv": "/home/zhuran24/zmd-research-fresh/求解器/target/health0bsafe1149564/deps/validation-2d77b7ea08304438 --test-threads=1 ",
+      "tasks": [
+        {
+          "tid": 1170424,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "validation-2d77"
+        },
+        {
+          "tid": 1170426,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "catalog_full_fi"
+        }
+      ]
+    },
+    {
+      "pid": 1170427,
+      "argv": "python /tmp/kernel-health-20260923-_5s65pp9/求解器/数据/工具/test_formal_catalog.py ",
+      "tasks": [
+        {
+          "tid": 1170427,
+          "state": "R",
+          "cpu_ticks": 1,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "python"
+        }
+      ]
+    }
+  ],
+  "violation": null,
+  "protection_error": null,
+  "environment": {
+    "PATH": "/home/zhuran24/.codex/tmp/arg0/codex-arg07mihkU:/home/zhuran24/.cargo/bin:/home/zhuran24/.local/bin:/home/zhuran24/.opencode/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/home/zhuran24/.local/share/flatpak/exports/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/home/zhuran24/.config/Claude/local-agent-mode-sessions/skills-plugin/cf875e59-d94b-492e-ba7a-6d2a070f0f30/92f6071f-e8b1-40cd-8c37-9d23302ed76c/bin",
+    "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+    "CARGO_BUILD_JOBS": "2",
+    "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+    "RUST_TEST_THREADS": "1",
+    "RAYON_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "NODE_OPTIONS": "--v8-pool-size=1"
+  },
+  "stdout_sha256": "89c70652b2fd6342ed99920b23efe033318c25191d7c88b00eeb55585b947ef1",
+  "stderr_sha256": "72a424a2943dd1dd2ad02b5fb748fa9ca115cbd0d14fcf1cd9c1fcfcb0a6f649"
+}

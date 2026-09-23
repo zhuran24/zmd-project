@@ -1,0 +1,3 @@
+   Compiling kernel v0.1.0 (/home/zhuran24/zmd-research-fresh/求解器/crates/kernel)
+    Finished `health0continue1103367` profile [unoptimized + debuginfo] target(s) in 6.14s
+     Running unittests src/lib.rs (target/health0continue1103367/deps/kernel-ab0acbad6798c3ae)

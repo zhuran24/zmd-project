@@ -1,0 +1,66 @@
+{
+  "unexpected": [],
+  "authorized_markers": [
+    {
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/原字节缺失.json",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 1976,
+        "sha256": "2e93c12d5a25aa639b4d8858c60dbb9640dc8202bf9e4f364555a3395997f4dc"
+      }
+    },
+    {
+      "path": "求解器/crates/kernel/evidence/round6/cli/原字节缺失.json",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 914,
+        "sha256": "2b98e64f9c5526c9a9937b6717d9fedaf6cf49597780aa6106519fab70bd4500"
+      }
+    },
+    {
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/negative/原字节缺失.json",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 3026,
+        "sha256": "53825c13f39a0635a5975d8829ec9324b0b4be6291d1f8ee909c2e586627eed9"
+      }
+    },
+    {
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/package/full_state_each_instant/records/原字节缺失.json",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 996,
+        "sha256": "775106c75a6de08640885aa76558a8399c89c4c58de4ceadc369d32d4baf50a7"
+      }
+    },
+    {
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/reference-package/原字节缺失.json",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 1633,
+        "sha256": "209634be2721a2b7a63b2dbf6d4fb846aac77967d5af33c1a742f4df173d0660"
+      }
+    },
+    {
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/原字节缺失.json",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 946,
+        "sha256": "52b0ee1f23c3387f05642ae34949a39baec073646f527d9ad3dc51b089118ed3"
+      }
+    }
+  ],
+  "concurrent": []
+}

@@ -1,4 +1,5 @@
 //! 第五轮K5/K8：真实CLI的资源统计及装载停止仍遵守循环外壳。
+mod support;
 use serde_json::{json, Value};
 use std::{path::PathBuf, process::Command};
 #[test]
@@ -8,11 +9,7 @@ fn round5_cli_resource_statistics_and_cycle_load_stop() {
         .canonicalize()
         .unwrap();
     let config = root.join("规格/内核配置-v1.json");
-    let out = std::env::var_os("KERNEL_TEST_EVIDENCE_DIR")
-        .map(PathBuf::from)
-        .unwrap_or_else(|| root.join("crates/kernel/evidence/round5"))
-        .join("round5_cli");
-    std::fs::create_dir_all(&out).unwrap();
+    let out = support::evidence_dir("round5_cli");
     let exported = out.join("relocated-seed.json");
     let process = Command::new(env!("CARGO_BIN_EXE_kernel"))
         .arg("seed")

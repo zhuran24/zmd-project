@@ -1,0 +1,7 @@
+[
+  {
+    "case_id": "seed",
+    "artifact": "main.stdout.log",
+    "pointer": "/catalog/path"
+  }
+]

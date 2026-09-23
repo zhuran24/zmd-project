@@ -1,0 +1,1 @@
+wrapper supplies serial flags to every rustc invocation, including host build dependencies

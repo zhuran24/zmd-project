@@ -1,0 +1,29 @@
+{
+  "changes": [
+    {
+      "path": "求解器/候选约束轮次/第63-65轮/A-运输格总量/verify_corner.json",
+      "before": null,
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 29182,
+        "sha256": "241c6d46cfa135397fc311e525356a057e49d1b6eaf87ff57e2a18034349cb31"
+      }
+    },
+    {
+      "path": "求解器/候选约束轮次/第63-65轮/A-运输格总量/verify_corner.log",
+      "before": {
+        "mode": 420,
+        "kind": "file",
+        "size": 3575,
+        "sha256": "2ba69454d6889b87c0832d9f3e7bacbfbb5bddf3aa96223c31e87d2c3f251e2a"
+      },
+      "after": {
+        "mode": 420,
+        "kind": "file",
+        "size": 12004,
+        "sha256": "8e48a1b6e312d89b00463a8e065b0b11379aecfafcb22b4410383e2af8260cc9"
+      }
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "verdict": "PASS",
+  "record_path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/核验报告.md",
+  "summary": "独立重做恢复对账、两轮安全回归与受守卫 suite、编译闭包、同路径生产二进制对照及44对 A/A，完成门槛通过。13项原字节仍缺失，R3过期 fixture 的语义覆盖限制仍保留。history_changed 按实施开工口径为6，均为新增缺失标记；既有历史文件改写和本次核验期间历史变化均为0。未执行 git 或修改实施席文件。",
+  "history_changed": 6,
+  "error": "核验首次 CLI 输出根未登记，已修正并完整重跑；无遗留执行错误。"
+}

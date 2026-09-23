@@ -1,0 +1,56 @@
+{
+  "passed": true,
+  "cases": [
+    {
+      "name": "missing",
+      "rejected": true,
+      "error": "'/elapsed_ns'"
+    },
+    {
+      "name": "type",
+      "rejected": true,
+      "error": "measurement type"
+    },
+    {
+      "name": "array-order",
+      "rejected": true,
+      "error": "unregistered byte difference"
+    },
+    {
+      "name": "key-order",
+      "rejected": true,
+      "error": "unregistered byte difference"
+    },
+    {
+      "name": "indent",
+      "rejected": true,
+      "error": "unregistered byte difference"
+    },
+    {
+      "name": "duplicate",
+      "rejected": true,
+      "error": "duplicate key"
+    },
+    {
+      "name": "unregistered",
+      "rejected": true,
+      "error": "unregistered byte difference"
+    },
+    {
+      "name": "wrong-source-mapping",
+      "rejected": true,
+      "error": "unregistered byte difference"
+    },
+    {
+      "name": "bad-reference-hash",
+      "rejected": true,
+      "error": "('bad reference hash', '/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/comparator-negative/bad.json', '', '/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/comparator-negative/target.json', 'ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356', '0000000000000000000000000000000000000000000000000000000000000000')"
+    },
+    {
+      "name": "missing-reference",
+      "rejected": true,
+      "error": "('missing reference', '/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/comparator-negative/absent.json')"
+    }
+  ],
+  "token_preserving_positive": true
+}

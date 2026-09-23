@@ -1,0 +1,22 @@
+[
+  {
+    "path": "/etc/ld.so.cache",
+    "sha256": "e3a2ce52583e4bcb8b58dde61bed66c178f496386569d95667e09f06a9e4694f",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/libgcc_s.so.1",
+    "sha256": "571745fb27883c763315fab54a536906064c1df6804d1a7884713dac259da68d",
+    "category": "external"
+  },
+  {
+    "path": "/usr/lib/libc.so.6",
+    "sha256": "848dae1dfcff0fc864292b28b2d426b0093425002a856a55c3a2b8ed31e2ea40",
+    "category": "external"
+  },
+  {
+    "path": "/usr/share/terminfo/d/dumb",
+    "sha256": "123c85a2812a517d967db5f31660db0e6aded4a0b95ed943c5ab435368e7a25c",
+    "category": "external"
+  }
+]

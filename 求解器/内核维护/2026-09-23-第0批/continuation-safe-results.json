@@ -1,0 +1,809 @@
+[
+  {
+    "label": "continue-safe-1-build",
+    "argv": [
+      "cargo",
+      "build",
+      "--workspace",
+      "--locked",
+      "--offline",
+      "-j",
+      "2",
+      "--profile",
+      "health0continue1103367",
+      "--config",
+      "profile.health0continue1103367.inherits=\"dev\"",
+      "--config",
+      "profile.health0continue1103367.codegen-units=1"
+    ],
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "returncode": 0,
+    "expected": 0,
+    "seconds": 8.061866497002484,
+    "cpu_seconds": 12.688952,
+    "cpu_cores_average": 1.5739471752252325,
+    "max_total_threads": 23,
+    "max_runnable_threads": 5,
+    "affinity": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "peak": [
+      {
+        "pid": 1103437,
+        "argv": "cargo build --workspace --locked --offline -j 2 --profile health0continue1103367 --config profile.health0continue1103367.inherits=\"dev\" --config profile.health0continue1103367.codegen-units=1 ",
+        "tasks": [
+          {
+            "tid": 1103437,
+            "state": "S",
+            "cpu_ticks": 1,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "cargo"
+          },
+          {
+            "tid": 1103444,
+            "state": "S",
+            "cpu_ticks": 0,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "futures-timer"
+          },
+          {
+            "tid": 1103448,
+            "state": "S",
+            "cpu_ticks": 0,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "cargo"
+          },
+          {
+            "tid": 1103671,
+            "state": "S",
+            "cpu_ticks": 0,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "cargo"
+          },
+          {
+            "tid": 1103729,
+            "state": "S",
+            "cpu_ticks": 0,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "cargo"
+          }
+        ]
+      },
+      {
+        "pid": 1103672,
+        "argv": "rustc --crate-name serde_derive --edition=2021 /home/zhuran24/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_derive-1.0.229/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type proc-macro --emit=dep-info,link -C prefer-dynamic -C embed-bitcode=no --cfg feature=\"default\" --check-cfg cfg(docsrs,test) --check-cfg cfg(feature, values(\"default\", \"deserialize_in_place\")) -C metadata=78e9cd9b6027b655 -C extra-filename=-0600ff3e7650e339 --out-dir /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps -L dependency=/home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps --extern proc_macro2=/home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/libproc_macro2-55711b2b0fb8f36d.rlib --extern quote=/home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/libquote-c1cbf251bf11eeb1.rlib --extern syn=/home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/libsyn-23d48756d8308cf3.rlib --extern proc_macro --cap-lints allow ",
+        "tasks": [
+          {
+            "tid": 1103672,
+            "state": "S",
+            "cpu_ticks": 0,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "rustc"
+          },
+          {
+            "tid": 1103674,
+            "state": "S",
+            "cpu_ticks": 0,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "ctrl-c"
+          },
+          {
+            "tid": 1103676,
+            "state": "S",
+            "cpu_ticks": 63,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "rustc"
+          },
+          {
+            "tid": 1103677,
+            "state": "S",
+            "cpu_ticks": 0,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "rustc"
+          }
+        ]
+      },
+      {
+        "pid": 1103730,
+        "argv": "rustc --crate-name serde_json --edition=2021 /home/zhuran24/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_json-1.0.151/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C codegen-units=1 -C debuginfo=2 --cfg feature=\"default\" --cfg feature=\"std\" --check-cfg cfg(docsrs,test) --check-cfg cfg(feature, values(\"alloc\", \"arbitrary_precision\", \"default\", \"float_roundtrip\", \"indexmap\", \"preserve_order\", \"raw_value\", \"std\", \"unbounded_depth\")) -C metadata=90d4909edad7ff65 -C extra-filename=-9e3a536667d77ac1 --out-dir /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps -L dependency=/home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps --extern itoa=/home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/libitoa-44889091234401f9.rmeta --extern memchr=/home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/libmemchr-36e976fdf93bed29.rmeta --extern serde_core=/home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/libserde_core-de353fed38fa7ecf.rmeta --extern zmij=/home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/libzmij-ef99757271108ab2.rmeta --cap-lints allow --cfg fast_arithmetic=\"64\" --check-cfg cfg(fast_arithmetic, values(\"32\", \"64\")) ",
+        "tasks": [
+          {
+            "tid": 1103730,
+            "state": "S",
+            "cpu_ticks": 0,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "rustc"
+          },
+          {
+            "tid": 1103731,
+            "state": "S",
+            "cpu_ticks": 0,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "ctrl-c"
+          },
+          {
+            "tid": 1103732,
+            "state": "S",
+            "cpu_ticks": 31,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "rustc"
+          },
+          {
+            "tid": 1103733,
+            "state": "S",
+            "cpu_ticks": 0,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "rustc"
+          },
+          {
+            "tid": 1103753,
+            "state": "S",
+            "cpu_ticks": 0,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "rustc"
+          },
+          {
+            "tid": 1103754,
+            "state": "S",
+            "cpu_ticks": 0,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "coordinator"
+          },
+          {
+            "tid": 1103759,
+            "state": "R",
+            "cpu_ticks": 1,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "opt cgu.0"
+          }
+        ]
+      },
+      {
+        "pid": 1103756,
+        "argv": "x86_64-linux-gnu-gcc -Wl,--version-script=/home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/rustcw37keZ/list -Wl,--no-undefined-version -m64 /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/rustcw37keZ/symbols.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.00.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.01.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.02.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.03.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.04.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.05.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.06.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.07.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.08.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.09.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.10.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.11.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.12.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.13.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.14.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.15.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/rustcw37keZ/rmeta.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.39tm5jc19964gw64ync0ljj49.rcgu.o -Wl,--as-needed -Wl,-Bstatic /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/libsyn-23d48756d8308cf3.rlib /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/libquote-c1cbf251bf11eeb1.rlib /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/libproc_macro2-55711b2b0fb8f36d.rlib /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/libunicode_ident-0403180f0c539c21.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libproc_macro-098c7a2db8859e57.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/librustc_literal_escaper-0ea4a2390a20d866.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libstd-a4cf8c125ff393c3.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libpanic_unwind-c4a83d2ad5b7d77e.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libobject-a6cb8640d85c6f1f.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libmemchr-62cbba516e3fc54b.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libaddr2line-0657a5020a640ff4.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libgimli-7fe78241b5959c4f.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libcfg_if-fd09dfee45479524.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/librustc_demangle-9291a67a3fef95d3.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libstd_detect-ef2244ebec09afd3.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libhashbrown-4b90e78548d258ab.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/librustc_std_workspace_alloc-c92825398a256ed2.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libminiz_oxide-c09f01c945a98da6.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libadler2-308af124736e5ef4.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libunwind-47edb10cd9214bb3.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/liblibc-1df101c03ce96979.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/librustc_std_workspace_core-359051371bed5a93.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/liballoc-49d9bbd1df19ee71.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libcore-e2cbb3bcd1db4897.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libcompiler_builtins-6279323f4be9bcf8.rlib -Wl,-Bdynamic -lgcc_s -lutil -lrt -lpthread -lm -ldl -lc -L /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/rustcw37keZ/raw-dylibs -fuse-ld=lld -Wl,--eh-frame-hdr -Wl,-z,noexecstack -L /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib -o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/libserde_derive-0600ff3e7650e339.so -Wl,--gc-sections -shared -Wl,-z,relro,-z,now -nodefaultlibs ",
+        "tasks": [
+          {
+            "tid": 1103756,
+            "state": "S",
+            "cpu_ticks": 0,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "x86_64-linux-gn"
+          }
+        ]
+      },
+      {
+        "pid": 1103757,
+        "argv": "/usr/lib/gcc/x86_64-pc-linux-gnu/16/collect2 -plugin /usr/lib/gcc/x86_64-pc-linux-gnu/16/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-pc-linux-gnu/16/lto-wrapper -plugin-opt=-fresolution=/tmp/ccwC3gaT.res --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -shared -fuse-ld=lld -o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/libserde_derive-0600ff3e7650e339.so /usr/lib/gcc/x86_64-pc-linux-gnu/16/../../../../lib/crti.o /usr/lib/gcc/x86_64-pc-linux-gnu/16/crtbeginS.o -L/home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/rustcw37keZ/raw-dylibs -L/usr/lib/rustlib/x86_64-unknown-linux-gnu/lib -L/usr/lib/gcc/x86_64-pc-linux-gnu/16 -L/usr/lib/gcc/x86_64-pc-linux-gnu/16/../../../../lib -L/lib/../lib -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-pc-linux-gnu/16/../../.. -L/lib -L/usr/lib --version-script=/home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/rustcw37keZ/list --no-undefined-version /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/rustcw37keZ/symbols.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.00.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.01.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.02.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.03.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.04.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.05.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.06.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.07.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.08.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.09.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.10.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.11.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.12.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.13.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.14.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.15.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/rustcw37keZ/rmeta.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.39tm5jc19964gw64ync0ljj49.rcgu.o --as-needed -Bstatic /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/libsyn-23d48756d8308cf3.rlib /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/libquote-c1cbf251bf11eeb1.rlib /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/libproc_macro2-55711b2b0fb8f36d.rlib /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/libunicode_ident-0403180f0c539c21.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libproc_macro-098c7a2db8859e57.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/librustc_literal_escaper-0ea4a2390a20d866.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libstd-a4cf8c125ff393c3.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libpanic_unwind-c4a83d2ad5b7d77e.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libobject-a6cb8640d85c6f1f.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libmemchr-62cbba516e3fc54b.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libaddr2line-0657a5020a640ff4.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libgimli-7fe78241b5959c4f.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libcfg_if-fd09dfee45479524.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/librustc_demangle-9291a67a3fef95d3.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libstd_detect-ef2244ebec09afd3.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libhashbrown-4b90e78548d258ab.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/librustc_std_workspace_alloc-c92825398a256ed2.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libminiz_oxide-c09f01c945a98da6.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libadler2-308af124736e5ef4.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libunwind-47edb10cd9214bb3.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/liblibc-1df101c03ce96979.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/librustc_std_workspace_core-359051371bed5a93.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/liballoc-49d9bbd1df19ee71.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libcore-e2cbb3bcd1db4897.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libcompiler_builtins-6279323f4be9bcf8.rlib -Bdynamic -lgcc_s -lutil -lrt -lpthread -lm -ldl -lc --eh-frame-hdr -z noexecstack --gc-sections -z relro -z now /usr/lib/gcc/x86_64-pc-linux-gnu/16/crtendS.o /usr/lib/gcc/x86_64-pc-linux-gnu/16/../../../../lib/crtn.o ",
+        "tasks": [
+          {
+            "tid": 1103757,
+            "state": "S",
+            "cpu_ticks": 0,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "collect2"
+          }
+        ]
+      },
+      {
+        "pid": 1103758,
+        "argv": "/usr/bin/ld.lld -plugin /usr/lib/gcc/x86_64-pc-linux-gnu/16/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-pc-linux-gnu/16/lto-wrapper -plugin-opt=-fresolution=/tmp/ccwC3gaT.res --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -shared -o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/libserde_derive-0600ff3e7650e339.so /usr/lib/gcc/x86_64-pc-linux-gnu/16/../../../../lib/crti.o /usr/lib/gcc/x86_64-pc-linux-gnu/16/crtbeginS.o -L/home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/rustcw37keZ/raw-dylibs -L/usr/lib/rustlib/x86_64-unknown-linux-gnu/lib -L/usr/lib/gcc/x86_64-pc-linux-gnu/16 -L/usr/lib/gcc/x86_64-pc-linux-gnu/16/../../../../lib -L/lib/../lib -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-pc-linux-gnu/16/../../.. -L/lib -L/usr/lib --version-script=/home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/rustcw37keZ/list --no-undefined-version /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/rustcw37keZ/symbols.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.00.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.01.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.02.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.03.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.04.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.05.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.06.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.07.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.08.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.09.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.10.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.11.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.12.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.13.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.14.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.serde_derive.35468d5c1e36ee18-cgu.15.rcgu.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/rustcw37keZ/rmeta.o /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/serde_derive-0600ff3e7650e339.39tm5jc19964gw64ync0ljj49.rcgu.o --as-needed -Bstatic /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/libsyn-23d48756d8308cf3.rlib /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/libquote-c1cbf251bf11eeb1.rlib /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/libproc_macro2-55711b2b0fb8f36d.rlib /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/libunicode_ident-0403180f0c539c21.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libproc_macro-098c7a2db8859e57.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/librustc_literal_escaper-0ea4a2390a20d866.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libstd-a4cf8c125ff393c3.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libpanic_unwind-c4a83d2ad5b7d77e.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libobject-a6cb8640d85c6f1f.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libmemchr-62cbba516e3fc54b.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libaddr2line-0657a5020a640ff4.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libgimli-7fe78241b5959c4f.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libcfg_if-fd09dfee45479524.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/librustc_demangle-9291a67a3fef95d3.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libstd_detect-ef2244ebec09afd3.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libhashbrown-4b90e78548d258ab.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/librustc_std_workspace_alloc-c92825398a256ed2.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libminiz_oxide-c09f01c945a98da6.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libadler2-308af124736e5ef4.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libunwind-47edb10cd9214bb3.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/liblibc-1df101c03ce96979.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/librustc_std_workspace_core-359051371bed5a93.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/liballoc-49d9bbd1df19ee71.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libcore-e2cbb3bcd1db4897.rlib /usr/lib/rustlib/x86_64-unknown-linux-gnu/lib/libcompiler_builtins-6279323f4be9bcf8.rlib -Bdynamic -lgcc_s -lutil -lrt -lpthread -lm -ldl -lc --eh-frame-hdr -z noexecstack --gc-sections -z relro -z now /usr/lib/gcc/x86_64-pc-linux-gnu/16/crtendS.o /usr/lib/gcc/x86_64-pc-linux-gnu/16/../../../../lib/crtn.o ",
+        "tasks": [
+          {
+            "tid": 1103758,
+            "state": "R",
+            "cpu_ticks": 0,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "ld.lld"
+          },
+          {
+            "tid": 1103760,
+            "state": "S",
+            "cpu_ticks": 0,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "ld.lld"
+          },
+          {
+            "tid": 1103761,
+            "state": "S",
+            "cpu_ticks": 0,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "ld.lld"
+          },
+          {
+            "tid": 1103762,
+            "state": "S",
+            "cpu_ticks": 0,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "ld.lld"
+          },
+          {
+            "tid": 1103763,
+            "state": "S",
+            "cpu_ticks": 0,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "ld.lld"
+          }
+        ]
+      }
+    ],
+    "violation": null,
+    "environment": {
+      "PATH": "/home/zhuran24/.codex/tmp/arg0/codex-arg07mihkU:/home/zhuran24/.cargo/bin:/home/zhuran24/.local/bin:/home/zhuran24/.opencode/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/home/zhuran24/.local/share/flatpak/exports/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/home/zhuran24/.config/Claude/local-agent-mode-sessions/skills-plugin/cf875e59-d94b-492e-ba7a-6d2a070f0f30/92f6071f-e8b1-40cd-8c37-9d23302ed76c/bin",
+      "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+      "CARGO_BUILD_JOBS": "2",
+      "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+      "RUST_TEST_THREADS": "1",
+      "RAYON_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "NODE_OPTIONS": "--v8-pool-size=1"
+    },
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "d4c973aec4215e2712713d4a7b241ec3520c91d27bf57e98fe201993b1931691"
+  },
+  {
+    "label": "continue-safe-1-check",
+    "argv": [
+      "cargo",
+      "check",
+      "--workspace",
+      "--all-targets",
+      "--locked",
+      "--offline",
+      "-j",
+      "2",
+      "--profile",
+      "health0continue1103367",
+      "--config",
+      "profile.health0continue1103367.inherits=\"dev\"",
+      "--config",
+      "profile.health0continue1103367.codegen-units=1"
+    ],
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "returncode": 0,
+    "expected": 0,
+    "seconds": 2.694092666999495,
+    "cpu_seconds": 4.599679000000002,
+    "cpu_cores_average": 1.7073202627149513,
+    "max_total_threads": 13,
+    "max_runnable_threads": 2,
+    "affinity": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "peak": [
+      {
+        "pid": 1103972,
+        "argv": "cargo check --workspace --all-targets --locked --offline -j 2 --profile health0continue1103367 --config profile.health0continue1103367.inherits=\"dev\" --config profile.health0continue1103367.codegen-units=1 ",
+        "tasks": [
+          {
+            "tid": 1103972,
+            "state": "S",
+            "cpu_ticks": 0,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "cargo"
+          },
+          {
+            "tid": 1103973,
+            "state": "S",
+            "cpu_ticks": 0,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "futures-timer"
+          },
+          {
+            "tid": 1103974,
+            "state": "S",
+            "cpu_ticks": 0,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "cargo"
+          },
+          {
+            "tid": 1103975,
+            "state": "S",
+            "cpu_ticks": 0,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "cargo"
+          },
+          {
+            "tid": 1103976,
+            "state": "S",
+            "cpu_ticks": 0,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "cargo"
+          }
+        ]
+      },
+      {
+        "pid": 1103977,
+        "argv": "rustc --crate-name serde_core --edition=2021 /home/zhuran24/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_core-1.0.229/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata -C embed-bitcode=no -C codegen-units=1 -C debuginfo=2 --cfg feature=\"result\" --cfg feature=\"std\" --check-cfg cfg(docsrs,test) --check-cfg cfg(feature, values(\"alloc\", \"default\", \"rc\", \"result\", \"std\", \"unstable\")) -C metadata=79058290753947ea -C extra-filename=-b767c6348cdbae9c --out-dir /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps -L dependency=/home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps --cap-lints allow --check-cfg cfg(if_docsrs_then_no_serde_core) --check-cfg cfg(no_core_cstr) --check-cfg cfg(no_core_error) --check-cfg cfg(no_core_net) --check-cfg cfg(no_core_num_saturating) --check-cfg cfg(no_diagnostic_namespace) --check-cfg cfg(no_serde_derive) --check-cfg cfg(no_std_atomic) --check-cfg cfg(no_std_atomic64) --check-cfg cfg(no_target_has_atomic) ",
+        "tasks": [
+          {
+            "tid": 1103977,
+            "state": "S",
+            "cpu_ticks": 0,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "rustc"
+          },
+          {
+            "tid": 1103979,
+            "state": "S",
+            "cpu_ticks": 0,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "ctrl-c"
+          },
+          {
+            "tid": 1103981,
+            "state": "R",
+            "cpu_ticks": 1,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "rustc"
+          },
+          {
+            "tid": 1103983,
+            "state": "S",
+            "cpu_ticks": 0,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "rustc"
+          }
+        ]
+      },
+      {
+        "pid": 1103978,
+        "argv": "rustc --crate-name zmij --edition=2021 /home/zhuran24/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zmij-1.0.23/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata -C embed-bitcode=no -C codegen-units=1 -C debuginfo=2 --check-cfg cfg(docsrs,test) --check-cfg cfg(feature, values(\"no-panic\")) -C metadata=4f2701a7dc65910b -C extra-filename=-eee4599ab6532946 --out-dir /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps -L dependency=/home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps --cap-lints allow --check-cfg cfg(exhaustive) --check-cfg cfg(opt_level, values(\"s\")) --check-cfg cfg(zmij_no_select_unpredictable) ",
+        "tasks": [
+          {
+            "tid": 1103978,
+            "state": "S",
+            "cpu_ticks": 0,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "rustc"
+          },
+          {
+            "tid": 1103980,
+            "state": "S",
+            "cpu_ticks": 0,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "ctrl-c"
+          },
+          {
+            "tid": 1103982,
+            "state": "R",
+            "cpu_ticks": 1,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "rustc"
+          },
+          {
+            "tid": 1103984,
+            "state": "S",
+            "cpu_ticks": 0,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "rustc"
+          }
+        ]
+      }
+    ],
+    "violation": null,
+    "environment": {
+      "PATH": "/home/zhuran24/.codex/tmp/arg0/codex-arg07mihkU:/home/zhuran24/.cargo/bin:/home/zhuran24/.local/bin:/home/zhuran24/.opencode/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/home/zhuran24/.local/share/flatpak/exports/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/home/zhuran24/.config/Claude/local-agent-mode-sessions/skills-plugin/cf875e59-d94b-492e-ba7a-6d2a070f0f30/92f6071f-e8b1-40cd-8c37-9d23302ed76c/bin",
+      "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+      "CARGO_BUILD_JOBS": "2",
+      "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+      "RUST_TEST_THREADS": "1",
+      "RAYON_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "NODE_OPTIONS": "--v8-pool-size=1"
+    },
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "6e10812d2fa303d846e7945bff96ac335e529477e9b11fbcdda88c6c53894dad"
+  },
+  {
+    "label": "continue-safe-1-clippy",
+    "argv": [
+      "cargo",
+      "clippy",
+      "--workspace",
+      "--all-targets",
+      "--message-format=json",
+      "--locked",
+      "--offline",
+      "-j",
+      "2",
+      "--profile",
+      "health0continue1103367",
+      "--config",
+      "profile.health0continue1103367.inherits=\"dev\"",
+      "--config",
+      "profile.health0continue1103367.codegen-units=1"
+    ],
+    "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+    "returncode": 0,
+    "expected": 0,
+    "seconds": 2.0160516999967513,
+    "cpu_seconds": 3.1800890000000006,
+    "cpu_cores_average": 1.5773846474299866,
+    "max_total_threads": 12,
+    "max_runnable_threads": 2,
+    "affinity": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "peak": [
+      {
+        "pid": 1104168,
+        "argv": "/usr/bin/cargo-clippy clippy --workspace --all-targets --message-format=json --locked --offline -j 2 --profile health0continue1103367 --config profile.health0continue1103367.inherits=\"dev\" --config profile.health0continue1103367.codegen-units=1 ",
+        "tasks": [
+          {
+            "tid": 1104168,
+            "state": "S",
+            "cpu_ticks": 0,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "cargo-clippy"
+          }
+        ]
+      },
+      {
+        "pid": 1104169,
+        "argv": "/usr/bin/cargo check --workspace --all-targets --message-format=json --locked --offline -j 2 --profile health0continue1103367 --config profile.health0continue1103367.inherits=\"dev\" --config profile.health0continue1103367.codegen-units=1 ",
+        "tasks": [
+          {
+            "tid": 1104169,
+            "state": "S",
+            "cpu_ticks": 0,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "cargo"
+          },
+          {
+            "tid": 1104174,
+            "state": "S",
+            "cpu_ticks": 0,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "futures-timer"
+          },
+          {
+            "tid": 1104176,
+            "state": "S",
+            "cpu_ticks": 0,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "cargo"
+          },
+          {
+            "tid": 1104177,
+            "state": "S",
+            "cpu_ticks": 0,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "cargo"
+          },
+          {
+            "tid": 1104178,
+            "state": "S",
+            "cpu_ticks": 0,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "cargo"
+          }
+        ]
+      },
+      {
+        "pid": 1104179,
+        "argv": "/usr/bin/clippy-driver rustc --crate-name kernel --edition=2021 crates/kernel/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata -C embed-bitcode=no -C codegen-units=1 -C debuginfo=2 --check-cfg cfg(docsrs,test) --check-cfg cfg(feature, values()) -C metadata=70926005a2e89466 -C extra-filename=-71f6e08f91a421f3 --out-dir /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps -C incremental=/home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/incremental -L dependency=/home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps --extern serde=/home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/libserde-c7253d238e94ba2f.rmeta --extern serde_json=/home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/libserde_json-66a08e68629926dc.rmeta ",
+        "tasks": [
+          {
+            "tid": 1104179,
+            "state": "S",
+            "cpu_ticks": 0,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "clippy-driver"
+          },
+          {
+            "tid": 1104182,
+            "state": "R",
+            "cpu_ticks": 1,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "rustc"
+          },
+          {
+            "tid": 1104183,
+            "state": "S",
+            "cpu_ticks": 0,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "rustc"
+          }
+        ]
+      },
+      {
+        "pid": 1104180,
+        "argv": "/usr/bin/clippy-driver rustc --crate-name topology --edition=2021 crates/topology/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata -C embed-bitcode=no -C codegen-units=1 -C debuginfo=2 --check-cfg cfg(docsrs,test) --check-cfg cfg(feature, values()) -C metadata=2d4e61f13fcf772a -C extra-filename=-56139a26338113eb --out-dir /home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps -C incremental=/home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/incremental -L dependency=/home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps --extern num_bigint=/home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/libnum_bigint-c24856da114e9bc0.rmeta --extern num_rational=/home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/libnum_rational-0556b96e04e7013e.rmeta --extern num_traits=/home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/libnum_traits-85ce812f923c8cc7.rmeta --extern serde=/home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/libserde-c7253d238e94ba2f.rmeta --extern serde_json=/home/zhuran24/zmd-research-fresh/求解器/target/health0continue1103367/deps/libserde_json-66a08e68629926dc.rmeta ",
+        "tasks": [
+          {
+            "tid": 1104180,
+            "state": "S",
+            "cpu_ticks": 0,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "clippy-driver"
+          },
+          {
+            "tid": 1104181,
+            "state": "R",
+            "cpu_ticks": 2,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "rustc"
+          },
+          {
+            "tid": 1104184,
+            "state": "S",
+            "cpu_ticks": 0,
+            "affinity": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "name": "rustc"
+          }
+        ]
+      }
+    ],
+    "violation": null,
+    "environment": {
+      "PATH": "/home/zhuran24/.codex/tmp/arg0/codex-arg07mihkU:/home/zhuran24/.cargo/bin:/home/zhuran24/.local/bin:/home/zhuran24/.opencode/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/home/zhuran24/.local/share/flatpak/exports/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/home/zhuran24/.config/Claude/local-agent-mode-sessions/skills-plugin/cf875e59-d94b-492e-ba7a-6d2a070f0f30/92f6071f-e8b1-40cd-8c37-9d23302ed76c/bin",
+      "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+      "CARGO_BUILD_JOBS": "2",
+      "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+      "RUST_TEST_THREADS": "1",
+      "RAYON_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "NODE_OPTIONS": "--v8-pool-size=1"
+    },
+    "stdout_sha256": "809f9d811594ced958b283e54aade49a7af1df55c87bc40781aff1343d57a7fc",
+    "stderr_sha256": "422d7a50983ed56cc8f3949469ac3c010ec5fe40472866daf3713f22164dbb57"
+  }
+]

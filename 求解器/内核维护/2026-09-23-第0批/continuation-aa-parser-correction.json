@@ -1,0 +1,4 @@
+{
+  "reason": "Static catalog sources resolve against catalog.source_root, per input.rs 342-353. Initial generic resolver incorrectly used JSON parent. No source bytes changed; failed capture retained.",
+  "preserved": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923/failed-seed-a-reference-parser"
+}

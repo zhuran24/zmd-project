@@ -1,0 +1,3 @@
+   Compiling kernel v0.1.0 (/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel)
+    Finished `healthreg307b92bf1e28` profile [unoptimized + debuginfo] target(s) in 6.25s
+     Running unittests src/lib.rs (/home/zhuran24/zmd-research-fresh/求解器/target/healthreg307b92bf1e28/deps/kernel-ab0acbad6798c3ae)

@@ -1,0 +1,8 @@
+{
+  "safe_build": false,
+  "safe_regression_rounds_completed": 0,
+  "cli_suite_executed": false,
+  "cli_reason": "isolation-accepted.json and kernel_regression.py check-isolation absent",
+  "stop_after": "safe-build-fixed",
+  "no_tests_claimed": true
+}

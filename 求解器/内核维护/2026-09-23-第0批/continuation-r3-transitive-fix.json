@@ -1,0 +1,9 @@
+{
+  "before": "4d3be4292d4d686ee633826a28cc2f77174c21685b3654e990f492a90865bae6",
+  "after": "df9fc35ebd73a01a5fbee9231a7d2730b09308fdfa6a7a89d7f231afe0030427",
+  "reason": "verify-record loads the fingerprinted input and follows its catalog before later record checks. Derive a relocated input under the instance root, prove original bytes match the old fingerprint, preserve non-path data and historical dependency hashes, then bind the generated record input reference to the derived raw bytes. All original fixture files remain byte-identical.",
+  "changed_test_fields": [
+    "path tokens in derived fixture and input",
+    "one derived run_record fingerprints.input SHA-256 matching the newly derived input"
+  ]
+}

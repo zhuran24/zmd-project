@@ -1,0 +1,20 @@
+{
+  "fixture": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/复核/r3-规格保真-证据/gate-expired-after-closure-input.json",
+  "fixture_sha256": "e3179739624643208053567874190b2dbc3e8a387b394e6105cc861cf62f5e19",
+  "mappings": [
+    {
+      "pointer": "/catalog/path",
+      "before": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+      "after": "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/正式静态目录.json",
+      "preserved_reference_sha256": "74d21a5bd37c6178f988a86a4aa78a03d1e4244ecff26f133bb5e700ada82e43",
+      "target_sha256": "3566e2ecb9d90b9a1afc01b273eb548178de738fb4e4f3b2af88fa05f809be29"
+    },
+    {
+      "pointer": "/parameters/axis_registry/path",
+      "before": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+      "after": "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/选择点参数轴.md",
+      "preserved_reference_sha256": "37427b530246a263018fa44a826893b46032c9d97eb8db1b6be06c7bcada080d",
+      "target_sha256": "261da30db31063ec8292aaa493e2c11d026c0861852ef19550eeb92eb4da7665"
+    }
+  ]
+}

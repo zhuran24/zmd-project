@@ -1,0 +1,23 @@
+{
+  "actual_inbound": {},
+  "completed_batches": 0,
+  "elapsed_ns": "955",
+  "final_inventory": {
+    "源矿": 80000,
+    "砂叶": 80000,
+    "砂叶种子": 80000,
+    "精选荞愈胶囊": 5,
+    "荞花": 80000,
+    "荞花种子": 80000,
+    "蓝铁矿": 80000,
+    "高容谷地电池": 1
+  },
+  "output": "disabled",
+  "statistics": {
+    "completed": 1,
+    "inconclusive": 0,
+    "stopped": 0
+  },
+  "status": "completed",
+  "ticks": 0
+}

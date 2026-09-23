@@ -1,0 +1,50 @@
+{
+  "label": "production-a-wrapped-build",
+  "argv": [
+    "cargo",
+    "build",
+    "--locked",
+    "--offline",
+    "--workspace",
+    "--bins",
+    "-j",
+    "1",
+    "--profile",
+    "health0wrapped20260923",
+    "--config",
+    "profile.health0wrapped20260923.inherits=\"dev\"",
+    "--config",
+    "profile.health0wrapped20260923.codegen-units=1",
+    "--message-format=json"
+  ],
+  "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+  "returncode": 101,
+  "expected": 0,
+  "seconds": 2.635525941848755,
+  "max_threads": 2,
+  "peak": [
+    {
+      "pid": 1082090,
+      "threads": 1,
+      "name": "rustc",
+      "argv": "rustc - --crate-name ___ --print=file-names -Z threads=1 -Z no-parallel-backend -C linker=clang -C link-arg=-fuse-ld=lld -C link-arg=-Wl,--threads=1 --crate-type bin --crate-type rlib --crate-type dylib --crate-type cdylib --crate-type staticlib --crate-type proc-macro --print=sysroot --print=split-debuginfo --print=crate-name --print=cfg -Wwarnings -Zthreads=1 -Zno-parallel-backend=yes ",
+      "tasks": [
+        "rustc"
+      ]
+    },
+    {
+      "pid": 1082087,
+      "threads": 1,
+      "name": "cargo",
+      "argv": "cargo build --locked --offline --workspace --bins -j 1 --profile health0wrapped20260923 --config profile.health0wrapped20260923.inherits=\"dev\" --config profile.health0wrapped20260923.codegen-units=1 --message-format=json ",
+      "tasks": [
+        "cargo"
+      ]
+    }
+  ],
+  "affinity": [
+    0
+  ],
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "48f942b31c97af0e08cbf04379ed255b18ef5bb9ed1dcf94408da0e62feecb9b"
+}

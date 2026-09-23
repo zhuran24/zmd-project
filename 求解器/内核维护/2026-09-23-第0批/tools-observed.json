@@ -1,0 +1,65 @@
+[
+  {
+    "name": "rustc",
+    "path": "/usr/bin/rustc",
+    "sha256": "23aad380e95f6a3bfd3f49b745eb8ce4418d2ec96944bd9f49ebbde67de38d97",
+    "version": "rustc 1.98.1 (48a229cea 2026-09-01) (Arch Linux rust 1:1.98.1-1.1)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "returncode": 0
+  },
+  {
+    "name": "cargo",
+    "path": "/usr/bin/cargo",
+    "sha256": "29a290227dbeee28e20dd9692b7d71c46cd5f1d9295f90ab6975ce67c9ae9643",
+    "version": "cargo 1.98.1 (797e8a9bc 2026-08-05) (Arch Linux rust 1:1.98.1-1.1)",
+    "returncode": 0
+  },
+  {
+    "name": "python",
+    "path": "/usr/bin/python3.14",
+    "sha256": "dd65a07e8f535525443d63e2bd6dd10efbf22bf22e0b6d65e634266acc7ac976",
+    "version": "Python 3.14.7",
+    "returncode": 0
+  },
+  {
+    "name": "node",
+    "path": "/usr/bin/node",
+    "sha256": "5a353e52b64c67e8ac76e95e42531855f81177515d3bb608a96e341c90dbcf28",
+    "version": "v26.8.2",
+    "returncode": 0
+  },
+  {
+    "name": "sha256sum",
+    "path": "/usr/bin/sha256sum",
+    "sha256": "3cb9cf89106cc7a067c38f9008a53bd0cab221424f76aee796ef81e222e2162d",
+    "version": "sha256sum (GNU coreutils) 9.11\nCopyright (C) 2026 Free Software Foundation, Inc.\nLicense GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.\nThis is free software: you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.\n\nWritten by Ulrich Drepper, Scott Miller, and David Madore.",
+    "returncode": 0
+  },
+  {
+    "name": "clang",
+    "path": "/usr/bin/clang-22",
+    "sha256": "4f86569d7e27c2f2f8ead145099516206214ffd69f8f6ef46f032c1f11140fdb",
+    "version": "clang version 22.1.8\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/bin",
+    "returncode": 0
+  },
+  {
+    "name": "ld.lld",
+    "path": "/usr/bin/ld.lld",
+    "sha256": "22eee89e7f46cd62e6c07935a58b257521f9e5800c26d58a48d3fa3460596832",
+    "version": "LLD 22.1.8 (compatible with GNU linkers)",
+    "returncode": 0
+  },
+  {
+    "name": "GNU time",
+    "path": "/tmp/r4-gnu-time-m5smi74t/usr/bin/time",
+    "sha256": "7b29eec93a6fce9aa554bf4fc7f94ef77121bc58f376cf730d060df07872ab63",
+    "version": "time (GNU Time) 1.10\nCopyright (C) 2026 Free Software Foundation, Inc.\nLicense GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.\nThis is free software: you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.\n\nWritten by David Keppel, David MacKenzie, and Assaf Gordon.",
+    "returncode": 0
+  },
+  {
+    "name": "AJV entry only",
+    "path": "/home/zhuran24/.local/lib/devspace/node_modules/ajv/dist/2020.js",
+    "sha256": "908e9670b478b2ba126802a221b7e47006f50cf467e2c5dd7935d3dbef10a20a",
+    "version": "8.20.0",
+    "closure_complete": false
+  }
+]

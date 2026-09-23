@@ -1,0 +1,238 @@
+{
+  "required_artifacts": [
+    {
+      "name": "isolation-accepted.json",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/isolation-accepted.json",
+      "exists": false
+    },
+    {
+      "name": "test-harnesses.json",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/test-harnesses.json",
+      "exists": false
+    },
+    {
+      "name": "cases.json",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cases.json",
+      "exists": false
+    },
+    {
+      "name": "binaries.json",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/binaries.json",
+      "exists": false
+    },
+    {
+      "name": "comparison-fields.json",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/comparison-fields.json",
+      "exists": false
+    },
+    {
+      "name": "kernel_regression.py",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/工具/kernel_regression.py",
+      "exists": false
+    }
+  ],
+  "metadata_targets": [
+    {
+      "package": "topology",
+      "name": "topology",
+      "kind": [
+        "lib"
+      ],
+      "src_path": "/home/zhuran24/zmd-research-fresh/求解器/crates/topology/src/lib.rs",
+      "test": true
+    },
+    {
+      "package": "topology",
+      "name": "topology",
+      "kind": [
+        "bin"
+      ],
+      "src_path": "/home/zhuran24/zmd-research-fresh/求解器/crates/topology/src/main.rs",
+      "test": true
+    },
+    {
+      "package": "topology",
+      "name": "validation",
+      "kind": [
+        "test"
+      ],
+      "src_path": "/home/zhuran24/zmd-research-fresh/求解器/crates/topology/tests/validation.rs",
+      "test": true
+    },
+    {
+      "package": "kernel",
+      "name": "kernel",
+      "kind": [
+        "lib"
+      ],
+      "src_path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs",
+      "test": true
+    },
+    {
+      "package": "kernel",
+      "name": "kernel",
+      "kind": [
+        "bin"
+      ],
+      "src_path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/main.rs",
+      "test": true
+    },
+    {
+      "package": "kernel",
+      "name": "reference",
+      "kind": [
+        "test"
+      ],
+      "src_path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/reference.rs",
+      "test": true
+    },
+    {
+      "package": "kernel",
+      "name": "revision_cli",
+      "kind": [
+        "test"
+      ],
+      "src_path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/revision_cli.rs",
+      "test": true
+    },
+    {
+      "package": "kernel",
+      "name": "revision_r2_cli",
+      "kind": [
+        "test"
+      ],
+      "src_path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/revision_r2_cli.rs",
+      "test": true
+    },
+    {
+      "package": "kernel",
+      "name": "revision_r3_cli",
+      "kind": [
+        "test"
+      ],
+      "src_path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/revision_r3_cli.rs",
+      "test": true
+    },
+    {
+      "package": "kernel",
+      "name": "revision_r4_cli",
+      "kind": [
+        "test"
+      ],
+      "src_path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/revision_r4_cli.rs",
+      "test": true
+    },
+    {
+      "package": "kernel",
+      "name": "revision_r5_cli",
+      "kind": [
+        "test"
+      ],
+      "src_path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/revision_r5_cli.rs",
+      "test": true
+    },
+    {
+      "package": "kernel",
+      "name": "round5_cli",
+      "kind": [
+        "test"
+      ],
+      "src_path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/round5_cli.rs",
+      "test": true
+    },
+    {
+      "package": "kernel",
+      "name": "round6_cli",
+      "kind": [
+        "test"
+      ],
+      "src_path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/round6_cli.rs",
+      "test": true
+    }
+  ],
+  "declared_cli_names": [
+    "revision_cli",
+    "revision_r2_cli",
+    "revision_r3_cli",
+    "revision_r4_cli",
+    "revision_r5_cli",
+    "round5_cli",
+    "round6_cli"
+  ],
+  "saved_thread_records_recalculated": [
+    {
+      "file": "production-a-build.command.json",
+      "reported": 11,
+      "recomputed_sum_of_saved_peak": 11,
+      "exit_code": 0,
+      "this_is_saved_evidence_not_new_measurement": true
+    },
+    {
+      "file": "production-a-serial-build.command.json",
+      "reported": 11,
+      "recomputed_sum_of_saved_peak": 11,
+      "exit_code": 0,
+      "this_is_saved_evidence_not_new_measurement": true
+    },
+    {
+      "file": "production-a-observed-build.command.json",
+      "reported": 11,
+      "recomputed_sum_of_saved_peak": 11,
+      "exit_code": 0,
+      "this_is_saved_evidence_not_new_measurement": true
+    }
+  ],
+  "round6_moved_body_ast_equal": true,
+  "r3_required_checks": [
+    {
+      "line": 68,
+      "assertion": "assert hashlib.sha256((ROOT / 'crates/kernel/复核/r3-规格保真-证据/gate-expired-after-closure-input.json').read_bytes()).hexdigest() == 'e3179739624643208053567874190b2dbc3e8a387b394e6105cc861cf62f5e19', 'required historical fixture mismatch: gate-expired-after-closure-input.json'"
+    },
+    {
+      "line": 69,
+      "assertion": "assert hashlib.sha256((ROOT / 'crates/kernel/复核/r3-规格保真-证据/tiny-expired-cycle.json').read_bytes()).hexdigest() == '5d7fb60fd4ba78be19d47b39b9e728c98fe4c0f0ff68ec99158ba229f94e711d', 'required historical fixture mismatch: tiny-expired-cycle.json'"
+    }
+  ],
+  "criteria": [
+    {
+      "id": "recovery",
+      "status": "FAIL",
+      "reason": "160+3 hashes match, seven originals removed and both versions locate; 13 lost originals lack six required directory markers"
+    },
+    {
+      "id": "scope",
+      "status": "PASS",
+      "reason": "18 changed files plus one directory, all test/output infrastructure; production and runtime verifier bytes unchanged"
+    },
+    {
+      "id": "protection",
+      "status": "PASS",
+      "reason": "final independent hashes: zero protected history changes; all audit-period external changes are in the separately identified concurrent candidate task"
+    },
+    {
+      "id": "isolation",
+      "status": "FAIL",
+      "reason": "bounded helper probes pass; no accepted harness/source credential"
+    },
+    {
+      "id": "two_safe_rounds",
+      "status": "FAIL",
+      "reason": "safe build rejected for actual thread budget; zero complete rounds"
+    },
+    {
+      "id": "compilation_closure",
+      "status": "FAIL",
+      "reason": "no exact artifact dep-info comparison or new-module rejection"
+    },
+    {
+      "id": "production_binary_equality",
+      "status": "FAIL",
+      "reason": "no same-path same-profile A/B binary pair"
+    },
+    {
+      "id": "aa_reference_closure",
+      "status": "FAIL",
+      "reason": "runner/cases/field rules/reference closure acceptance missing"
+    }
+  ]
+}

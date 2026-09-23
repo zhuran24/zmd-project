@@ -1,0 +1,7 @@
+{
+  "path": "求解器/crates/kernel/tests/revision_r3_cli.py",
+  "before_sha256": "decf98300c45ad2071bfc8d306b9d1542da8fa34498b2524294965678d7690a8",
+  "after_sha256": "3b6508c96b80369ca7bd43abc9458b839f7991f9680101da048e26133e5aefec",
+  "scope": "test-only fixture reference relocation; original fixture bytes, reference hashes, case names, expected statuses and existing assertions preserved",
+  "finding": "The historical catalog digest in the expired fixture is stale: the existing negative reaches source-hash rejection before gate-state validation. This batch does not relock the fixture or claim new gate-state coverage."
+}

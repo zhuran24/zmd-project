@@ -1,0 +1,26 @@
+[
+  {
+    "id": "seed",
+    "role": "R2 branch template with fresh prerequisites",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "seed",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json",
+      "--config",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json"
+    ],
+    "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+    "environment": {
+      "KERNEL_BIN": "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/kernel",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "input_hashes": {
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/数据/样例/生产循环环带.json": "69bc1f4afff489ea2f47adf5d0598478ddb16e4be2a9eabe3fb741283ba19526",
+      "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json": "57bba234a6cae9daf65f2039532e855ef183e2b7a991837e99d89e8f311eb048"
+    },
+    "prerequisites": [],
+    "expected": 0,
+    "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/seed",
+    "outputs": "complete file tree including each prerequisite stdout/stderr, generated input, records and certificates"
+  }
+]

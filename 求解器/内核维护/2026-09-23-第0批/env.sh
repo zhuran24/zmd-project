@@ -1,0 +1,21 @@
+export HEALTH_REPO='/home/zhuran24/zmd-research-fresh/求解器'
+export HEALTH_RUN='/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批'
+export HEALTH_SRC='/tmp/kernel-health-20260923-_5s65pp9/求解器'
+export HEALTH_PROFILE=health0observed20260923
+export CARGO_TARGET_DIR='/home/zhuran24/zmd-research-fresh/求解器/target'
+export CARGO_BUILD_JOBS=1
+export CARGO_PROFILE_DEV_CODEGEN_UNITS=1
+export CARGO_PROFILE_TEST_CODEGEN_UNITS=1
+export CARGO_PROFILE_RELEASE_CODEGEN_UNITS=1
+export RUST_TEST_THREADS=1
+export RAYON_NUM_THREADS=1
+export OMP_NUM_THREADS=1
+export OPENBLAS_NUM_THREADS=1
+export PYTHONDONTWRITEBYTECODE=1
+export GIT_OPTIONAL_LOCKS=0
+export UV_THREADPOOL_SIZE=1
+export NODE_OPTIONS=--v8-pool-size=1
+export RUSTFLAGS='-Z threads=1 -Z no-parallel-backend -C linker=clang -C link-arg=-fuse-ld=lld -C link-arg=-Wl,--threads=1'
+export KERNEL_TEST_EVIDENCE_DIR='/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/cargo-test-evidence'
+export RUSTC_BOOTSTRAP=1
+export RUSTC_WRAPPER=/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/rustc-wrapper.py

@@ -1,0 +1,79 @@
+{
+  "label": "safe-build-fixed",
+  "argv": [
+    "/usr/bin/cargo",
+    "build",
+    "--locked",
+    "--offline",
+    "--workspace",
+    "-j",
+    "1",
+    "--profile",
+    "healthaudit1790138353409234070",
+    "--config",
+    "profile.healthaudit1790138353409234070.inherits=\"dev\"",
+    "--config",
+    "profile.healthaudit1790138353409234070.codegen-units=1"
+  ],
+  "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+  "profile": "healthaudit1790138353409234070",
+  "exit_code": -15,
+  "guard_reason": "thread_budget_exceeded",
+  "passed": false,
+  "command_tree_peak_threads": 8,
+  "observer_threads": 1,
+  "total_observed_lower_bound": 9,
+  "peak_processes": [
+    {
+      "pid": 1094344,
+      "threads": 4,
+      "name": "cargo",
+      "state": "S (sleeping)",
+      "thread_names": [
+        "cargo",
+        "futures-timer",
+        "cargo",
+        "cargo"
+      ],
+      "argv": "/usr/bin/cargo build --locked --offline --workspace -j 1 --profile healthaudit1790138353409234070 --config profile.healthaudit1790138353409234070.inherits=\"dev\" --config profile.healthaudit1790138353409234070.codegen-units=1 "
+    },
+    {
+      "pid": 1094368,
+      "threads": 4,
+      "name": "rustc",
+      "state": "S (sleeping)",
+      "thread_names": [
+        "rustc",
+        "ctrl-c",
+        "rustc",
+        "rustc"
+      ],
+      "argv": "rustc -Zthreads=1 -Zno-parallel-backend -Ccodegen-units=1 --crate-name build_script_build --edition=2021 /home/zhuran24/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/proc-macro2-1.0.107/build.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no --cfg feature=\"proc-macro\" --check-cfg cfg(docsrs,test) --check-cfg cfg(feature, values(\"default\", \"nightly\", \"proc-macro\", \"span-locations\")) -C metadata=930d5c8bce8d4ab5 -C extra-filename=-5b341c0d43f488ed --out-dir /home/zhuran24/zmd-research-fresh/求解器/target/healthaudit1790138353409234070/build/proc-macro2-5b341c0d43f488ed -L dependency=/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit1790138353409234070/deps --cap-lints allow -Z threads=1 -Z no-parallel-backend -C linker=clang -C link-arg=-fuse-ld=lld -C link-arg=-Wl,--threads=1 "
+    }
+  ],
+  "seconds": 0.06118404900189489,
+  "cpu_affinity": [
+    0
+  ],
+  "environment": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+    "CARGO_BUILD_JOBS": "1",
+    "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+    "RUST_TEST_THREADS": "1",
+    "RAYON_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "GIT_OPTIONAL_LOCKS": "0",
+    "CARGO_INCREMENTAL": "0",
+    "RUSTC_BOOTSTRAP": "1",
+    "RUSTC_WRAPPER": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验/rustc_serial.py",
+    "RUSTFLAGS": "-Z threads=1 -Z no-parallel-backend -C linker=clang -C link-arg=-fuse-ld=lld -C link-arg=-Wl,--threads=1",
+    "UV_THREADPOOL_SIZE": "1",
+    "NODE_OPTIONS": "--v8-pool-size=1"
+  },
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "addd064340711e3457e6cb34b2683aa7936c6e801e0e63e4c99e27dd803d454e"
+}

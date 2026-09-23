@@ -1,0 +1,341 @@
+{
+  "status": "pass",
+  "cases": [
+    {
+      "name": "age-cohorts-seed",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/kernel",
+        "seed",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/age-cohorts-input.json",
+        "--config",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/age-cohorts-seed-result.json"
+      ],
+      "exit_code": 0,
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/age-cohorts-seed-result.json",
+      "status": "kernel-input-v3",
+      "stderr": ""
+    },
+    {
+      "name": "age-cohorts-run",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/age-cohorts-seed-result.json",
+        "--config",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/age-cohorts-run-result.json",
+        "--ticks",
+        "3"
+      ],
+      "exit_code": 0,
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/age-cohorts-run-result.json",
+      "status": "completed",
+      "stderr": ""
+    },
+    {
+      "name": "empty-branch-seed",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/kernel",
+        "seed",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/empty-branch-input.json",
+        "--config",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/empty-branch-seed-result.json"
+      ],
+      "exit_code": 0,
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/empty-branch-seed-result.json",
+      "status": "kernel-input-v3",
+      "stderr": ""
+    },
+    {
+      "name": "empty-branch-run",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/empty-branch-seed-result.json",
+        "--config",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/empty-branch-run-result.json",
+        "--ticks",
+        "12"
+      ],
+      "exit_code": 0,
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/empty-branch-run-result.json",
+      "status": "completed",
+      "stderr": ""
+    },
+    {
+      "name": "full-branch-run",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/full-branch-input.json",
+        "--config",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/full-branch-run-result.json",
+        "--ticks",
+        "12"
+      ],
+      "exit_code": 0,
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/full-branch-run-result.json",
+      "status": "completed",
+      "stderr": ""
+    },
+    {
+      "name": "working-prefix",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/working-input.json",
+        "--config",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/working-prefix-result.json",
+        "--ticks",
+        "12"
+      ],
+      "exit_code": 0,
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/working-prefix-result.json",
+      "status": "completed",
+      "stderr": ""
+    },
+    {
+      "name": "extra-trigger-seed",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/kernel",
+        "seed",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/extra-trigger-input.json",
+        "--config",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/extra-trigger-seed-result.json"
+      ],
+      "exit_code": 2,
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/extra-trigger-seed-result.json",
+      "status": "invalid_input",
+      "stderr": ""
+    },
+    {
+      "name": "extra-trigger-run",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/extra-trigger-input.json",
+        "--config",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/extra-trigger-run-result.json",
+        "--ticks",
+        "2"
+      ],
+      "exit_code": 2,
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/extra-trigger-run-result.json",
+      "status": "invalid_input",
+      "stderr": ""
+    },
+    {
+      "name": "extra-trigger-cycle",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/kernel",
+        "cycle",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/extra-trigger-input.json",
+        "--config",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/extra-trigger-cycle-result.json",
+        "--ticks",
+        "2"
+      ],
+      "exit_code": 2,
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/extra-trigger-cycle-result.json",
+      "status": "invalid_input",
+      "stderr": ""
+    },
+    {
+      "name": "closed-prefix",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/closed-input.json",
+        "--config",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/closed-prefix-result.json",
+        "--ticks",
+        "2"
+      ],
+      "exit_code": 0,
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/closed-prefix-result.json",
+      "status": "completed",
+      "stderr": ""
+    },
+    {
+      "name": "closed-seed",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/kernel",
+        "seed",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/closed-checkpoint-input.json",
+        "--config",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/closed-seed-result.json"
+      ],
+      "exit_code": 0,
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/closed-seed-result.json",
+      "status": "kernel-input-v3",
+      "stderr": ""
+    },
+    {
+      "name": "closed-stop-full_state_each_instant",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/closed-seed-result.json",
+        "--config",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/closed-stop-full_state_each_instant-result.json",
+        "--ticks",
+        "1",
+        "--max-sweeps",
+        "1",
+        "--format",
+        "full_state_each_instant"
+      ],
+      "exit_code": 2,
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/closed-stop-full_state_each_instant-result.json",
+      "status": "inconclusive",
+      "stderr": ""
+    },
+    {
+      "name": "closed-stop-checkpoint_delta",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/closed-seed-result.json",
+        "--config",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/closed-stop-checkpoint_delta-result.json",
+        "--ticks",
+        "1",
+        "--max-sweeps",
+        "1",
+        "--format",
+        "checkpoint_delta"
+      ],
+      "exit_code": 2,
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/closed-stop-checkpoint_delta-result.json",
+      "status": "inconclusive",
+      "stderr": ""
+    },
+    {
+      "name": "path-runs",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/path-runs-input.json",
+        "--config",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/path-runs-result.json",
+        "--ticks",
+        "3"
+      ],
+      "exit_code": 0,
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/path-runs-result.json",
+      "status": "completed",
+      "stderr": ""
+    },
+    {
+      "name": "age-overflow-cycle",
+      "command": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/kernel",
+        "cycle",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/age-overflow-input.json",
+        "--config",
+        "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/age-overflow-cycle-result.json",
+        "--ticks",
+        "2"
+      ],
+      "exit_code": 2,
+      "output": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r4_cli-495f4d6fc96a4f00ad7a3837e69b3bf9/age-overflow-cycle-result.json",
+      "status": "inconclusive",
+      "stderr": ""
+    }
+  ],
+  "schema_sha256": "dc8306328122fa95b44748c24ccc03ab408500132c9141f241038a4b13d050ec",
+  "schema_results": [
+    {
+      "name": "age-cohorts-run",
+      "valid": true,
+      "errors": null
+    },
+    {
+      "name": "empty-branch-run",
+      "valid": true,
+      "errors": null
+    },
+    {
+      "name": "full-branch-run",
+      "valid": true,
+      "errors": null
+    },
+    {
+      "name": "working-prefix",
+      "valid": true,
+      "errors": null
+    },
+    {
+      "name": "extra-trigger-seed",
+      "valid": true,
+      "errors": null
+    },
+    {
+      "name": "extra-trigger-run",
+      "valid": true,
+      "errors": null
+    },
+    {
+      "name": "extra-trigger-cycle",
+      "valid": true,
+      "errors": null
+    },
+    {
+      "name": "closed-prefix",
+      "valid": true,
+      "errors": null
+    },
+    {
+      "name": "closed-stop-full_state_each_instant",
+      "valid": true,
+      "errors": null
+    },
+    {
+      "name": "closed-stop-checkpoint_delta",
+      "valid": true,
+      "errors": null
+    },
+    {
+      "name": "path-runs",
+      "valid": true,
+      "errors": null
+    },
+    {
+      "name": "age-overflow-cycle",
+      "valid": true,
+      "errors": null
+    }
+  ],
+  "open_schema_gaps": [],
+  "forged_coverage_rejected": true,
+  "full_and_empty_branch_ticks_equal_except_parameter_point": true
+}

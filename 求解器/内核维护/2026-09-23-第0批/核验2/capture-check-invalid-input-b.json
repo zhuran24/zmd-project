@@ -1,0 +1,42 @@
+{
+  "case_id": "check-invalid-input",
+  "label": "b",
+  "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/check-invalid-input",
+  "sealed": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/sealed/check-invalid-input/b",
+  "files": {
+    ".exclusive.json": {
+      "sha256": "bf81c2ea94dc4c923deb14bb99c35b0a2eb722bd8788470a52c6e8b1f1e60ea8",
+      "size": 161
+    },
+    "artifacts/bad-input.json": {
+      "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+      "size": 3
+    },
+    "main.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    "main.stdout.log": {
+      "sha256": "0ffcce55932c2da8cba28c4b47cf2cc5a81f8479d782c72f37671f2cf2f74110",
+      "size": 1517
+    }
+  },
+  "steps": [
+    {
+      "step": "main",
+      "returncode": 2,
+      "argv": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2prod1422118/kernel",
+        "check",
+        "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/audit2-1422118/cases/check-invalid-input/artifacts/bad-input.json",
+        "--config",
+        "/tmp/kernel-audit2-v3r63b5w/求解器/规格/内核配置-v1.json"
+      ]
+    }
+  ],
+  "references": {
+    "artifacts/bad-input.json": [],
+    "main.stderr.log": [],
+    "main.stdout.log": []
+  }
+}

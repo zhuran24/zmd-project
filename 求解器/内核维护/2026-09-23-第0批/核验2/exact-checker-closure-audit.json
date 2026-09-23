@@ -1,0 +1,27 @@
+{
+  "passed": true,
+  "checker_count": 20,
+  "checker_paths": [
+    "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/value.rs",
+    "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/config.rs",
+    "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/model.rs",
+    "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/catalog.rs",
+    "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/input.rs",
+    "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/interfaces.rs",
+    "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/engine.rs",
+    "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/event_identity.rs",
+    "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/warehouse.rs",
+    "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/polling.rs",
+    "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/transition.rs",
+    "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/output.rs",
+    "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/ledger.rs",
+    "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/cycle.rs",
+    "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/cycle_io.rs",
+    "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/digest.rs",
+    "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/seed.rs",
+    "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/cache.rs",
+    "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/lib.rs",
+    "/tmp/kernel-audit2-v3r63b5w/求解器/crates/kernel/src/main.rs"
+  ],
+  "negative_reason": "{'lib_missing': ['/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/kernel/src/audit_unregistered.rs'], 'uncompiled': []}"
+}

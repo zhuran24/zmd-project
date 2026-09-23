@@ -1,0 +1,5 @@
+{
+  "prior_pairs": 8,
+  "prior_status": "preliminary only; no full acceptance",
+  "reason": "Complete runtime dependencies now bound before and after every command, plus strace read closure. Use schema-defined input-origin context for output raw parameter_assignment/input_history references. Preserve every prior capture and log. Optimize duplicate-key checking without changing raw-byte comparison."
+}

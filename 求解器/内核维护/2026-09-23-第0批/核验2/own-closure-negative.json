@@ -1,0 +1,135 @@
+{
+  "passed": true,
+  "rejected": true,
+  "reason": "{'lib_missing': ['/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/kernel/src/audit_unregistered.rs'], 'uncompiled': []}",
+  "source_root": "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器",
+  "profile": "healthaudit2negative1422118",
+  "artifacts": [
+    {
+      "target": {
+        "kind": [
+          "lib"
+        ],
+        "crate_types": [
+          "lib"
+        ],
+        "name": "topology",
+        "src_path": "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/topology/src/lib.rs",
+        "edition": "2021",
+        "doc": true,
+        "doctest": true,
+        "test": true
+      },
+      "dep_info": "/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2negative1422118/deps/topology-bf1fc1afc7f71deb.d",
+      "dependencies": [
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/topology/src/lib.rs",
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/数据/正式静态目录.json"
+      ]
+    },
+    {
+      "target": {
+        "kind": [
+          "bin"
+        ],
+        "crate_types": [
+          "bin"
+        ],
+        "name": "topology",
+        "src_path": "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/topology/src/main.rs",
+        "edition": "2021",
+        "doc": true,
+        "doctest": false,
+        "test": true
+      },
+      "dep_info": "/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2negative1422118/topology.d",
+      "dependencies": [
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/topology/src/lib.rs",
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/topology/src/main.rs",
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/数据/正式静态目录.json"
+      ]
+    },
+    {
+      "target": {
+        "kind": [
+          "lib"
+        ],
+        "crate_types": [
+          "lib"
+        ],
+        "name": "kernel",
+        "src_path": "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/kernel/src/lib.rs",
+        "edition": "2021",
+        "doc": true,
+        "doctest": true,
+        "test": true
+      },
+      "dep_info": "/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2negative1422118/deps/kernel-ee4256eb8be4a7ed.d",
+      "dependencies": [
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/kernel/src/audit_unregistered.rs",
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/kernel/src/cache.rs",
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/kernel/src/catalog.rs",
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/kernel/src/config.rs",
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/kernel/src/cycle.rs",
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/kernel/src/cycle_io.rs",
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/kernel/src/digest.rs",
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/kernel/src/engine.rs",
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/kernel/src/event_identity.rs",
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/kernel/src/input.rs",
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/kernel/src/interfaces.rs",
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/kernel/src/ledger.rs",
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/kernel/src/lib.rs",
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/kernel/src/model.rs",
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/kernel/src/output.rs",
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/kernel/src/polling.rs",
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/kernel/src/seed.rs",
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/kernel/src/transition.rs",
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/kernel/src/value.rs",
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/kernel/src/warehouse.rs",
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/数据/正式静态目录.json",
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/规格/内核配置-v1.json"
+      ]
+    },
+    {
+      "target": {
+        "kind": [
+          "bin"
+        ],
+        "crate_types": [
+          "bin"
+        ],
+        "name": "kernel",
+        "src_path": "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/kernel/src/main.rs",
+        "edition": "2021",
+        "doc": true,
+        "doctest": false,
+        "test": true
+      },
+      "dep_info": "/home/zhuran24/zmd-research-fresh/求解器/target/healthaudit2negative1422118/kernel.d",
+      "dependencies": [
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/kernel/src/audit_unregistered.rs",
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/kernel/src/cache.rs",
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/kernel/src/catalog.rs",
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/kernel/src/config.rs",
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/kernel/src/cycle.rs",
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/kernel/src/cycle_io.rs",
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/kernel/src/digest.rs",
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/kernel/src/engine.rs",
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/kernel/src/event_identity.rs",
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/kernel/src/input.rs",
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/kernel/src/interfaces.rs",
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/kernel/src/ledger.rs",
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/kernel/src/lib.rs",
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/kernel/src/main.rs",
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/kernel/src/model.rs",
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/kernel/src/output.rs",
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/kernel/src/polling.rs",
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/kernel/src/seed.rs",
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/kernel/src/transition.rs",
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/kernel/src/value.rs",
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/crates/kernel/src/warehouse.rs",
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/数据/正式静态目录.json",
+        "/tmp/kernel-audit2-negative-p3gvc15w/tree/求解器/规格/内核配置-v1.json"
+      ]
+    }
+  ]
+}

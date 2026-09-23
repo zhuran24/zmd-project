@@ -1,0 +1,26 @@
+[
+  {
+    "root": "crates/kernel/evidence",
+    "entries": 595,
+    "files": 566,
+    "bytes": 70874221
+  },
+  {
+    "root": "crates/kernel/复核",
+    "entries": 2154,
+    "files": 2094,
+    "bytes": 879118918
+  },
+  {
+    "root": "数据/复核",
+    "entries": 1015,
+    "files": 815,
+    "bytes": 68804806
+  },
+  {
+    "root": "规格/复核",
+    "entries": 1370,
+    "files": 1247,
+    "bytes": 136869878
+  }
+]

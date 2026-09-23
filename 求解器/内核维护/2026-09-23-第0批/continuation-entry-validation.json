@@ -1,0 +1,54 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "name": "check-isolation",
+      "expected": 0,
+      "exit_code": 0
+    },
+    {
+      "name": "wrong-profile",
+      "expected": 2,
+      "exit_code": 2
+    },
+    {
+      "name": "bad-binary",
+      "expected": 2,
+      "exit_code": 2
+    },
+    {
+      "name": "capture",
+      "expected": 0,
+      "exit_code": 0
+    },
+    {
+      "name": "compare",
+      "expected": 0,
+      "exit_code": 0
+    },
+    {
+      "name": "aa",
+      "expected": 0,
+      "exit_code": 0
+    },
+    {
+      "name": "old-context",
+      "expected": 2,
+      "exit_code": 2
+    },
+    {
+      "name": "wrong-source-map",
+      "expected": 2,
+      "exit_code": 2
+    },
+    {
+      "name": "tests",
+      "expected": 0,
+      "exit_code": 0
+    }
+  ],
+  "tests_safe_commands": 9,
+  "guarded_cli_suites": 7,
+  "positive_capture_context": "B explicitly bound to final source manifest",
+  "old_A_context_rejected": true
+}

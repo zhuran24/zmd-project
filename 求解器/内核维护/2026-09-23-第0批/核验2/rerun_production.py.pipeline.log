@@ -1,0 +1,227 @@
+production-a 0 7.81 sec 1.577 cores
+continue-aa-seed-a-main 0 0.04 sec 0.838 cores
+continue-aa-seed-b-main 0 0.04 sec 0.849 cores
+A/A seed PASS
+continue-aa-seed-out-a-main 0 0.04 sec 0.845 cores
+continue-aa-seed-out-b-main 0 0.04 sec 0.85 cores
+A/A seed-out PASS
+continue-aa-check-a-main 0 0.04 sec 0.68 cores
+continue-aa-check-b-main 0 0.04 sec 0.661 cores
+A/A check PASS
+continue-aa-check-cycle-domain-a-main 0 0.04 sec 0.734 cores
+continue-aa-check-cycle-domain-b-main 0 0.04 sec 0.731 cores
+A/A check-cycle-domain PASS
+continue-aa-request-fixed-a-main 0 0.04 sec 0.092 cores
+continue-aa-request-fixed-b-main 0 0.04 sec 0.092 cores
+A/A request-fixed PASS
+continue-aa-request-stop-a-main 2 0.04 sec 0.095 cores
+continue-aa-request-stop-b-main 2 0.04 sec 0.094 cores
+A/A request-stop PASS
+continue-aa-request-invalid-a-main 2 0.04 sec 0.096 cores
+continue-aa-request-invalid-b-main 2 0.04 sec 0.096 cores
+A/A request-invalid PASS
+continue-aa-run-full-a-main 0 0.15 sec 0.933 cores
+continue-aa-run-full-b-main 0 0.15 sec 0.932 cores
+A/A run-full PASS
+continue-aa-run-grinder-a-main 0 0.18 sec 0.833 cores
+continue-aa-run-grinder-b-main 0 0.18 sec 0.858 cores
+A/A run-grinder PASS
+continue-aa-run-splitter-a-main 0 0.26 sec 0.896 cores
+continue-aa-run-splitter-b-main 0 0.26 sec 0.899 cores
+A/A run-splitter PASS
+continue-aa-run-delta-a-main 0 0.15 sec 0.849 cores
+continue-aa-run-delta-b-main 0 0.15 sec 0.845 cores
+A/A run-delta PASS
+continue-aa-run-no-cache-a-main 0 0.15 sec 0.953 cores
+continue-aa-run-no-cache-b-main 0 0.19 sec 0.757 cores
+A/A run-no-cache PASS
+continue-aa-run-no-output-a-main 0 0.04 sec 0.943 cores
+continue-aa-run-no-output-b-main 0 0.04 sec 0.946 cores
+A/A run-no-output PASS
+continue-aa-run-no-output-no-cache-a-main 0 0.07 sec 0.521 cores
+continue-aa-run-no-output-no-cache-b-main 0 0.07 sec 0.519 cores
+A/A run-no-output-no-cache PASS
+continue-aa-run-no-output-zero-a-main 0 0.04 sec 0.705 cores
+continue-aa-run-no-output-zero-b-main 0 0.04 sec 0.705 cores
+A/A run-no-output-zero PASS
+continue-aa-run-no-output-stop-a-main 2 0.04 sec 0.716 cores
+continue-aa-run-no-output-stop-b-main 2 0.04 sec 0.737 cores
+A/A run-no-output-stop PASS
+continue-aa-run-no-output-out-a-main 0 0.04 sec 0.965 cores
+continue-aa-run-no-output-out-b-main 0 0.04 sec 0.974 cores
+A/A run-no-output-out PASS
+continue-aa-run-stopped-a-main 2 0.11 sec 0.9 cores
+continue-aa-run-stopped-b-main 2 0.11 sec 0.894 cores
+A/A run-stopped PASS
+continue-aa-verify-record-full-a-generate-full 0 0.15 sec 0.931 cores
+continue-aa-verify-record-full-a-main 0 0.29 sec 0.942 cores
+continue-aa-verify-record-full-b-generate-full 0 0.15 sec 0.923 cores
+continue-aa-verify-record-full-b-main 0 0.29 sec 0.935 cores
+A/A verify-record-full PASS
+continue-aa-verify-record-delta-a-generate-delta 0 0.15 sec 0.847 cores
+continue-aa-verify-record-delta-a-main 0 0.29 sec 0.918 cores
+continue-aa-verify-record-delta-b-generate-delta 0 0.15 sec 0.869 cores
+continue-aa-verify-record-delta-b-main 0 0.29 sec 0.909 cores
+A/A verify-record-delta PASS
+continue-aa-checkpoint-record-a-generate-full 0 0.15 sec 0.953 cores
+continue-aa-checkpoint-record-a-main 0 0.37 sec 0.906 cores
+continue-aa-checkpoint-record-b-generate-full 0 0.15 sec 0.967 cores
+continue-aa-checkpoint-record-b-main 0 0.37 sec 0.906 cores
+A/A checkpoint-record PASS
+continue-aa-cycle-referenced-a-main 0 0.33 sec 0.914 cores
+continue-aa-cycle-referenced-b-main 0 0.33 sec 0.896 cores
+A/A cycle-referenced PASS
+continue-aa-cycle-no-record-a-main 0 0.18 sec 0.817 cores
+continue-aa-cycle-no-record-b-main 0 0.18 sec 0.819 cores
+A/A cycle-no-record PASS
+continue-aa-cycle-budget-a-main 0 0.15 sec 0.744 cores
+continue-aa-cycle-budget-b-main 0 0.15 sec 0.735 cores
+A/A cycle-budget PASS
+continue-aa-cycle-sweep-stop-a-main 0 0.11 sec 0.97 cores
+continue-aa-cycle-sweep-stop-b-main 0 0.15 sec 0.74 cores
+A/A cycle-sweep-stop PASS
+continue-aa-verify-cycle-a-generate-cycle 0 0.33 sec 0.898 cores
+continue-aa-verify-cycle-a-main 0 0.62 sec 0.971 cores
+continue-aa-verify-cycle-b-generate-cycle 0 0.33 sec 0.901 cores
+continue-aa-verify-cycle-b-main 0 0.66 sec 0.924 cores
+A/A verify-cycle PASS
+continue-aa-checkpoint-cycle-a-generate-cycle 0 0.33 sec 0.911 cores
+continue-aa-checkpoint-cycle-a-main 0 0.69 sec 0.922 cores
+continue-aa-checkpoint-cycle-b-generate-cycle 0 0.33 sec 0.895 cores
+continue-aa-checkpoint-cycle-b-main 0 0.69 sec 0.934 cores
+A/A checkpoint-cycle PASS
+continue-aa-verify-batch-a-generate-finite-record 0 0.15 sec 0.927 cores
+continue-aa-verify-batch-a-generate-cycle 0 0.33 sec 0.907 cores
+continue-aa-verify-batch-a-main 0 1.57 sec 0.986 cores
+continue-aa-verify-batch-b-generate-finite-record 0 0.15 sec 0.96 cores
+continue-aa-verify-batch-b-generate-cycle 0 0.33 sec 0.903 cores
+continue-aa-verify-batch-b-main 0 1.54 sec 1.005 cores
+A/A verify-batch PASS
+continue-aa-seed-invalid-input-a-main 2 0.04 sec 0.107 cores
+continue-aa-seed-invalid-input-b-main 2 0.04 sec 0.098 cores
+A/A seed-invalid-input PASS
+continue-aa-check-invalid-input-a-main 2 0.04 sec 0.098 cores
+continue-aa-check-invalid-input-b-main 2 0.04 sec 0.097 cores
+A/A check-invalid-input PASS
+continue-aa-run-invalid-input-a-main 2 0.04 sec 0.099 cores
+continue-aa-run-invalid-input-b-main 2 0.04 sec 0.098 cores
+A/A run-invalid-input PASS
+continue-aa-cycle-invalid-input-a-main 2 0.07 sec 0.834 cores
+continue-aa-cycle-invalid-input-b-main 2 0.07 sec 0.838 cores
+A/A cycle-invalid-input PASS
+continue-aa-verify-record-invalid-input-a-main 2 0.04 sec 0.094 cores
+continue-aa-verify-record-invalid-input-b-main 2 0.04 sec 0.097 cores
+A/A verify-record-invalid-input PASS
+continue-aa-verify-cycle-invalid-input-a-main 2 0.04 sec 0.099 cores
+continue-aa-verify-cycle-invalid-input-b-main 2 0.04 sec 0.098 cores
+A/A verify-cycle-invalid-input PASS
+continue-aa-checkpoint-invalid-input-a-main 2 0.04 sec 0.098 cores
+continue-aa-checkpoint-invalid-input-b-main 2 0.04 sec 0.098 cores
+A/A checkpoint-invalid-input PASS
+continue-aa-cli-no-args-a-main 2 0.04 sec 0.047 cores
+continue-aa-cli-no-args-b-main 2 0.04 sec 0.049 cores
+A/A cli-no-args PASS
+continue-aa-cli-unknown-command-a-main 2 0.04 sec 0.048 cores
+continue-aa-cli-unknown-command-b-main 2 0.04 sec 0.048 cores
+A/A cli-unknown-command PASS
+continue-aa-topology-contract-a-main 0 0.07 sec 0.626 cores
+continue-aa-topology-contract-b-main 0 0.07 sec 0.629 cores
+A/A topology-contract PASS
+continue-aa-topology-invalid-a-main 2 0.04 sec 0.049 cores
+continue-aa-topology-invalid-b-main 2 0.04 sec 0.048 cores
+A/A topology-invalid PASS
+continue-aa-cycle-found-referenced-a-main 0 0.41 sec 0.813 cores
+continue-aa-cycle-found-referenced-b-main 0 0.38 sec 0.881 cores
+A/A cycle-found-referenced PASS
+continue-aa-cycle-found-no-record-a-main 0 0.22 sec 0.823 cores
+continue-aa-cycle-found-no-record-b-main 0 0.22 sec 0.829 cores
+A/A cycle-found-no-record PASS
+continue-aa-verify-cycle-found-a-generate-cycle-found 0 0.38 sec 0.891 cores
+continue-aa-verify-cycle-found-a-main 0 0.8 sec 0.874 cores
+continue-aa-verify-cycle-found-b-generate-cycle-found 0 0.38 sec 0.885 cores
+continue-aa-verify-cycle-found-b-main 0 0.79 sec 0.874 cores
+A/A verify-cycle-found PASS
+continue-aa-checkpoint-cycle-found-a-generate-cycle-found 0 0.37 sec 0.892 cores
+continue-aa-checkpoint-cycle-found-a-main 0 0.83 sec 0.893 cores
+continue-aa-checkpoint-cycle-found-b-generate-cycle-found 0 0.37 sec 0.896 cores
+continue-aa-checkpoint-cycle-found-b-main 0 0.84 sec 0.888 cores
+A/A checkpoint-cycle-found PASS
+continue-aa-verify-batch-with-cycle-found-a-generate-finite-record 0 0.15 sec 0.924 cores
+continue-aa-verify-batch-with-cycle-found-a-generate-cycle 0 0.33 sec 0.888 cores
+continue-aa-verify-batch-with-cycle-found-a-generate-cycle-found 0 0.37 sec 0.897 cores
+continue-aa-verify-batch-with-cycle-found-a-main 0 2.6 sec 0.987 cores
+continue-aa-verify-batch-with-cycle-found-b-generate-finite-record 0 0.15 sec 0.936 cores
+continue-aa-verify-batch-with-cycle-found-b-generate-cycle 0 0.33 sec 0.883 cores
+continue-aa-verify-batch-with-cycle-found-b-generate-cycle-found 0 0.37 sec 0.898 cores
+continue-aa-verify-batch-with-cycle-found-b-main 0 2.64 sec 0.977 cores
+A/A verify-batch-with-cycle-found PASS
+schema-all-a 0 0.29 sec 1.205 cores
+verify-a-0 2 0.04 sec 0.06 cores
+verify-a-1 2 0.04 sec 0.062 cores
+verify-a-2 0 0.15 sec 0.868 cores
+verify-a-3 0 0.15 sec 0.939 cores
+verify-a-4 0 0.26 sec 0.875 cores
+verify-a-5 0 0.15 sec 0.808 cores
+verify-a-6 0 0.15 sec 0.876 cores
+verify-a-7 2 0.07 sec 0.821 cores
+verify-a-8 0 0.15 sec 0.875 cores
+verify-a-9 0 0.15 sec 0.818 cores
+verify-a-10 0 0.15 sec 0.872 cores
+verify-a-11 0 0.33 sec 0.915 cores
+verify-a-13 0 0.18 sec 0.86 cores
+verify-a-14 0 0.11 sec 0.854 cores
+verify-a-15 0 0.11 sec 0.825 cores
+verify-a-16 0 0.33 sec 0.914 cores
+verify-a-18 0 0.33 sec 0.919 cores
+verify-a-20 0 0.33 sec 0.913 cores
+verify-a-22 0 0.15 sec 0.88 cores
+verify-a-23 2 0.04 sec 0.062 cores
+verify-a-24 2 0.04 sec 0.061 cores
+verify-a-25 2 0.04 sec 0.06 cores
+verify-a-26 0 0.07 sec 0.501 cores
+verify-a-27 2 0.04 sec 0.06 cores
+verify-a-28 2 0.04 sec 0.061 cores
+verify-a-29 2 0.04 sec 0.062 cores
+verify-a-30 0 0.4 sec 0.935 cores
+verify-a-32 0 0.22 sec 0.994 cores
+verify-a-33 0 0.4 sec 0.927 cores
+verify-a-35 0 0.4 sec 0.927 cores
+verify-a-37 0 0.4 sec 0.921 cores
+verify-a-39 0 0.33 sec 0.914 cores
+verify-a-41 0 0.15 sec 0.877 cores
+schema-all-b 0 0.29 sec 1.217 cores
+verify-b-0 2 0.04 sec 0.061 cores
+verify-b-1 2 0.04 sec 0.062 cores
+verify-b-2 0 0.15 sec 0.873 cores
+verify-b-3 0 0.15 sec 0.941 cores
+verify-b-4 0 0.26 sec 0.876 cores
+verify-b-5 0 0.15 sec 0.818 cores
+verify-b-6 0 0.15 sec 0.877 cores
+verify-b-7 2 0.07 sec 0.834 cores
+verify-b-8 0 0.15 sec 0.884 cores
+verify-b-9 0 0.15 sec 0.822 cores
+verify-b-10 0 0.15 sec 0.877 cores
+verify-b-11 0 0.33 sec 0.915 cores
+verify-b-13 0 0.18 sec 0.855 cores
+verify-b-14 0 0.11 sec 0.857 cores
+verify-b-15 0 0.11 sec 0.832 cores
+verify-b-16 0 0.33 sec 0.912 cores
+verify-b-18 0 0.33 sec 0.914 cores
+verify-b-20 0 0.33 sec 0.917 cores
+verify-b-22 0 0.15 sec 0.878 cores
+verify-b-23 2 0.04 sec 0.06 cores
+verify-b-24 2 0.04 sec 0.061 cores
+verify-b-25 2 0.04 sec 0.061 cores
+verify-b-26 0 0.07 sec 0.51 cores
+verify-b-27 2 0.04 sec 0.059 cores
+verify-b-28 2 0.04 sec 0.062 cores
+verify-b-29 2 0.04 sec 0.06 cores
+verify-b-30 0 0.4 sec 0.923 cores
+verify-b-32 0 0.22 sec 0.997 cores
+verify-b-33 0 0.4 sec 0.926 cores
+verify-b-35 0 0.4 sec 0.926 cores
+verify-b-37 0 0.4 sec 0.926 cores
+verify-b-39 0 0.33 sec 0.916 cores
+verify-b-41 0 0.15 sec 0.874 cores
+production-b 0 0.45 sec 1.217 cores
+negative-module 0 7.78 sec 1.59 cores

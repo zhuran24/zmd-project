@@ -1,0 +1,7 @@
+error: failed to run `rustc` to learn about target-specific information
+
+Caused by:
+  process didn't exit successfully: `/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/rustc-wrapper.py rustc - --crate-name ___ --print=file-names -Z threads=1 -Z no-parallel-backend -C linker=clang -C link-arg=-fuse-ld=lld -C link-arg=-Wl,--threads=1 --crate-type bin --crate-type rlib --crate-type dylib --crate-type cdylib --crate-type staticlib --crate-type proc-macro --print=sysroot --print=split-debuginfo --print=crate-name --print=cfg -Wwarnings` (exit status: 1)
+  --- stderr
+  error: incorrect value `yes` for unstable option `no-parallel-backend` - no value was expected
+

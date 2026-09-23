@@ -1,0 +1,38 @@
+{
+  "evidence_scope": {
+    "context_bindings": [],
+    "direction": "diagnostic",
+    "fixed_parameter_lifecycle": "judgment.order_scope=fixed_run_order；judgment.order整场固定，回放和端点逐值核对；本段无离线或玩家动作",
+    "initial_state_coverage": {
+      "description": "一个显式种子及其实际已重放前缀；调试程序全部可能后态另核",
+      "exact_reachable_set_enumerated": false
+    },
+    "kind": "diagnostic",
+    "proof_sources": [],
+    "review_status": "author_checked",
+    "support_domain": [
+      "固定布局、设定、global/event-order-v1及整数时钟的受限工程执行",
+      "ordered_sweeps与retain_survivors为明示工程组织；一般失败环真实唤醒对应仍待证明"
+    ]
+  },
+  "execution_mode": "finite_concrete",
+  "fingerprints": [],
+  "input_history": null,
+  "open_items": [
+    "invalid_input input @ StateSeed.inventory[0].slot: 未知或重复的目录格身份：bad"
+  ],
+  "parameter_assignment": null,
+  "port_meeting": "shared_edge_opposite",
+  "producer": {
+    "claim": "装载停止，未形成游戏后继",
+    "kind": "kernel",
+    "path": "/tmp/kernel-health-20260923-_5s65pp9/求解器/crates/kernel/src/lib.rs"
+  },
+  "profile_id": "kernel_profile_v1",
+  "run_id": "kernel:load-stop",
+  "schema": "kernel-output-v4",
+  "status": "invalid_input",
+  "trace": null,
+  "uncovered_axes": [],
+  "validation_scope": null
+}

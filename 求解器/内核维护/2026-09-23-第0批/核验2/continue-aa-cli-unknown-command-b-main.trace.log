@@ -1,0 +1,5 @@
+1428192 execve("/home/zhuran24/zmd-research-fresh/\346\261\202\350\247\243\345\231\250/target/healthaudit2prod1422118/kernel", ["/home/zhuran24/zmd-research-fresh/\346\261\202\350\247\243\345\231\250/target/healthaudit2prod1422118/kernel", "r2-unknown", "/tmp/kernel-audit2-v3r63b5w/\346\261\202\350\247\243\345\231\250/\346\225\260\346\215\256/\346\240\267\344\276\213/\347\224\237\344\272\247\345\276\252\347\216\257\347\216\257\345\270\246.json"], 0x7fff2e584398 /* 135 vars */) = 0
+1428192 openat(AT_FDCWD</tmp/kernel-audit2-v3r63b5w/\346\261\202\350\247\243\345\231\250>, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3</etc/ld.so.cache>
+1428192 openat(AT_FDCWD</tmp/kernel-audit2-v3r63b5w/\346\261\202\350\247\243\345\231\250>, "/usr/lib/libgcc_s.so.1", O_RDONLY|O_CLOEXEC) = 3</usr/lib/libgcc_s.so.1>
+1428192 openat(AT_FDCWD</tmp/kernel-audit2-v3r63b5w/\346\261\202\350\247\243\345\231\250>, "/usr/lib/libc.so.6", O_RDONLY|O_CLOEXEC) = 3</usr/lib/libc.so.6>
+1428192 openat(AT_FDCWD</tmp/kernel-audit2-v3r63b5w/\346\261\202\350\247\243\345\231\250>, "/proc/self/maps", O_RDONLY|O_CLOEXEC) = 3</proc/1428192/maps>

@@ -1,0 +1,32 @@
+{
+  "max_threads": 11,
+  "peak": [
+    {
+      "pid": 1083835,
+      "threads": 4,
+      "name": "cargo",
+      "argv": "cargo build --locked --offline --workspace --bins -j 1 --profile health0observed20260923 --config profile.health0observed20260923.inherits=\"dev\" --config profile.health0observed20260923.codegen-units=1 --message-format=json ",
+      "tasks": [
+        "cargo",
+        "futures-timer",
+        "cargo",
+        "cargo"
+      ]
+    },
+    {
+      "pid": 1083839,
+      "threads": 7,
+      "name": "rustc",
+      "argv": "rustc --crate-name build_script_build --edition=2021 /home/zhuran24/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/proc-macro2-1.0.107/build.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no --cfg feature=\"proc-macro\" --check-cfg cfg(docsrs,test) --check-cfg cfg(feature, values(\"default\", \"nightly\", \"proc-macro\", \"span-locations\")) -C metadata=930d5c8bce8d4ab5 -C extra-filename=-5b341c0d43f488ed --out-dir /home/zhuran24/zmd-research-fresh/求解器/target/health0observed20260923/build/proc-macro2-5b341c0d43f488ed -L dependency=/home/zhuran24/zmd-research-fresh/求解器/target/health0observed20260923/deps --cap-lints allow -Z threads=1 -Z no-parallel-backend -C linker=clang -C link-arg=-fuse-ld=lld -C link-arg=-Wl,--threads=1 -Zthreads=1 -Zno-parallel-backend ",
+      "tasks": [
+        "rustc",
+        "ctrl-c",
+        "rustc",
+        "rustc",
+        "rustc",
+        "coordinator",
+        "opt cgu.0"
+      ]
+    }
+  ]
+}

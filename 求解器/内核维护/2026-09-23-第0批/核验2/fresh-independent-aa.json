@@ -1,0 +1,307 @@
+{
+  "passed": true,
+  "pairs": 44,
+  "paired_files": 235,
+  "measurements": 5,
+  "results": [
+    {
+      "case_id": "seed",
+      "passed": true,
+      "files": 4,
+      "mappings": []
+    },
+    {
+      "case_id": "seed-out",
+      "passed": true,
+      "files": 5,
+      "mappings": []
+    },
+    {
+      "case_id": "check",
+      "passed": true,
+      "files": 4,
+      "mappings": []
+    },
+    {
+      "case_id": "check-cycle-domain",
+      "passed": true,
+      "files": 4,
+      "mappings": []
+    },
+    {
+      "case_id": "request-fixed",
+      "passed": true,
+      "files": 4,
+      "mappings": []
+    },
+    {
+      "case_id": "request-stop",
+      "passed": true,
+      "files": 4,
+      "mappings": []
+    },
+    {
+      "case_id": "request-invalid",
+      "passed": true,
+      "files": 4,
+      "mappings": []
+    },
+    {
+      "case_id": "run-full",
+      "passed": true,
+      "files": 5,
+      "mappings": []
+    },
+    {
+      "case_id": "run-grinder",
+      "passed": true,
+      "files": 5,
+      "mappings": []
+    },
+    {
+      "case_id": "run-splitter",
+      "passed": true,
+      "files": 5,
+      "mappings": []
+    },
+    {
+      "case_id": "run-delta",
+      "passed": true,
+      "files": 5,
+      "mappings": []
+    },
+    {
+      "case_id": "run-no-cache",
+      "passed": true,
+      "files": 5,
+      "mappings": []
+    },
+    {
+      "case_id": "run-no-output",
+      "passed": true,
+      "files": 4,
+      "mappings": [
+        {
+          "artifact": "main.stdout.log",
+          "pointer": "/elapsed_ns",
+          "a": "8831771",
+          "b": "8881076"
+        }
+      ]
+    },
+    {
+      "case_id": "run-no-output-no-cache",
+      "passed": true,
+      "files": 4,
+      "mappings": [
+        {
+          "artifact": "main.stdout.log",
+          "pointer": "/elapsed_ns",
+          "a": "12160441",
+          "b": "12112155"
+        }
+      ]
+    },
+    {
+      "case_id": "run-no-output-zero",
+      "passed": true,
+      "files": 4,
+      "mappings": [
+        {
+          "artifact": "main.stdout.log",
+          "pointer": "/elapsed_ns",
+          "a": "1128",
+          "b": "955"
+        }
+      ]
+    },
+    {
+      "case_id": "run-no-output-stop",
+      "passed": true,
+      "files": 4,
+      "mappings": [
+        {
+          "artifact": "main.stdout.log",
+          "pointer": "/elapsed_ns",
+          "a": "334137",
+          "b": "341871"
+        }
+      ]
+    },
+    {
+      "case_id": "run-no-output-out",
+      "passed": true,
+      "files": 5,
+      "mappings": [
+        {
+          "artifact": "artifacts/run-no-output-out.json",
+          "pointer": "/elapsed_ns",
+          "a": "8864346",
+          "b": "8877973"
+        }
+      ]
+    },
+    {
+      "case_id": "run-stopped",
+      "passed": true,
+      "files": 5,
+      "mappings": []
+    },
+    {
+      "case_id": "verify-record-full",
+      "passed": true,
+      "files": 7,
+      "mappings": []
+    },
+    {
+      "case_id": "verify-record-delta",
+      "passed": true,
+      "files": 7,
+      "mappings": []
+    },
+    {
+      "case_id": "checkpoint-record",
+      "passed": true,
+      "files": 8,
+      "mappings": []
+    },
+    {
+      "case_id": "cycle-referenced",
+      "passed": true,
+      "files": 6,
+      "mappings": []
+    },
+    {
+      "case_id": "cycle-no-record",
+      "passed": true,
+      "files": 4,
+      "mappings": []
+    },
+    {
+      "case_id": "cycle-budget",
+      "passed": true,
+      "files": 4,
+      "mappings": []
+    },
+    {
+      "case_id": "cycle-sweep-stop",
+      "passed": true,
+      "files": 4,
+      "mappings": []
+    },
+    {
+      "case_id": "verify-cycle",
+      "passed": true,
+      "files": 8,
+      "mappings": []
+    },
+    {
+      "case_id": "checkpoint-cycle",
+      "passed": true,
+      "files": 9,
+      "mappings": []
+    },
+    {
+      "case_id": "verify-batch",
+      "passed": true,
+      "files": 11,
+      "mappings": []
+    },
+    {
+      "case_id": "seed-invalid-input",
+      "passed": true,
+      "files": 4,
+      "mappings": []
+    },
+    {
+      "case_id": "check-invalid-input",
+      "passed": true,
+      "files": 4,
+      "mappings": []
+    },
+    {
+      "case_id": "run-invalid-input",
+      "passed": true,
+      "files": 4,
+      "mappings": []
+    },
+    {
+      "case_id": "cycle-invalid-input",
+      "passed": true,
+      "files": 4,
+      "mappings": []
+    },
+    {
+      "case_id": "verify-record-invalid-input",
+      "passed": true,
+      "files": 4,
+      "mappings": []
+    },
+    {
+      "case_id": "verify-cycle-invalid-input",
+      "passed": true,
+      "files": 4,
+      "mappings": []
+    },
+    {
+      "case_id": "checkpoint-invalid-input",
+      "passed": true,
+      "files": 4,
+      "mappings": []
+    },
+    {
+      "case_id": "cli-no-args",
+      "passed": true,
+      "files": 4,
+      "mappings": []
+    },
+    {
+      "case_id": "cli-unknown-command",
+      "passed": true,
+      "files": 4,
+      "mappings": []
+    },
+    {
+      "case_id": "topology-contract",
+      "passed": true,
+      "files": 5,
+      "mappings": []
+    },
+    {
+      "case_id": "topology-invalid",
+      "passed": true,
+      "files": 4,
+      "mappings": []
+    },
+    {
+      "case_id": "cycle-found-referenced",
+      "passed": true,
+      "files": 6,
+      "mappings": []
+    },
+    {
+      "case_id": "cycle-found-no-record",
+      "passed": true,
+      "files": 4,
+      "mappings": []
+    },
+    {
+      "case_id": "verify-cycle-found",
+      "passed": true,
+      "files": 8,
+      "mappings": []
+    },
+    {
+      "case_id": "checkpoint-cycle-found",
+      "passed": true,
+      "files": 9,
+      "mappings": []
+    },
+    {
+      "case_id": "verify-batch-with-cycle-found",
+      "passed": true,
+      "files": 15,
+      "mappings": []
+    }
+  ]
+}

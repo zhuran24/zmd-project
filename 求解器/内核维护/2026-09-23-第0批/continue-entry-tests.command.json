@@ -1,0 +1,64 @@
+{
+  "label": "continue-entry-tests",
+  "argv": [
+    "/usr/bin/python",
+    "-B",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/工具/kernel_regression.py",
+    "tests",
+    "--acceptance",
+    "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/isolation-accepted.json",
+    "--out",
+    "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/entry-tests"
+  ],
+  "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+  "returncode": 0,
+  "expected": 0,
+  "seconds": 203.299776079999,
+  "cpu_seconds": 233.156038,
+  "cpu_cores_average": 1.1468583118766078,
+  "max_total_threads": 1,
+  "max_runnable_threads": 1,
+  "affinity": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "peak": [
+    {
+      "pid": 1309700,
+      "argv": "/usr/bin/python -B /home/zhuran24/zmd-research-fresh/求解器/数据/工具/kernel_regression.py tests --acceptance /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/isolation-accepted.json --out /home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/entry-tests ",
+      "tasks": [
+        {
+          "tid": 1309700,
+          "state": "R",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "python"
+        }
+      ]
+    }
+  ],
+  "violation": null,
+  "protection_error": null,
+  "environment": {
+    "PATH": "/home/zhuran24/.codex/tmp/arg0/codex-arg07mihkU:/home/zhuran24/.cargo/bin:/home/zhuran24/.local/bin:/home/zhuran24/.opencode/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/home/zhuran24/.local/share/flatpak/exports/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/home/zhuran24/.config/Claude/local-agent-mode-sessions/skills-plugin/cf875e59-d94b-492e-ba7a-6d2a070f0f30/92f6071f-e8b1-40cd-8c37-9d23302ed76c/bin",
+    "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+    "CARGO_BUILD_JOBS": "2",
+    "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+    "RUST_TEST_THREADS": "1",
+    "RAYON_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "NODE_OPTIONS": "--v8-pool-size=1"
+  },
+  "stdout_sha256": "09fe96fefd1deee5ae356d49b83e1343e70d09bbf62e0c4637264ea2f79e30ba",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

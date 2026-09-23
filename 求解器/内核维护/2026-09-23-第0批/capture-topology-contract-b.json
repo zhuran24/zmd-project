@@ -1,0 +1,44 @@
+{
+  "case_id": "topology-contract",
+  "label": "b",
+  "root": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/topology-contract",
+  "sealed": "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/sealed/topology-contract/b",
+  "files": {
+    ".exclusive.json": {
+      "sha256": "e760f67ff80dd9409fc2f80847f81d5d05ac4175ce345ed1842c8e6312d909ff",
+      "size": 167
+    },
+    "artifacts/bad-input.json": {
+      "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+      "size": 3
+    },
+    "artifacts/contract.json": {
+      "sha256": "c85ef7be609a054e515acf3ce6eaf197bc35de62d4edf5c5f7f124c3e84e7c30",
+      "size": 356212
+    },
+    "main.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    "main.stdout.log": {
+      "sha256": "5285a28fcb3683b73e46e392b8f2237a57fe8570dcfc1e15b26fd4aeb05e1bec",
+      "size": 631499
+    }
+  },
+  "steps": [
+    {
+      "step": "main",
+      "returncode": 0,
+      "argv": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/health0ab1115661/topology",
+        "/home/zhuran24/zmd-research-fresh/求解器/target/health-capture/continuation-20260923-v2/cases/topology-contract/artifacts/contract.json"
+      ]
+    }
+  ],
+  "references": {
+    "artifacts/bad-input.json": [],
+    "artifacts/contract.json": [],
+    "main.stderr.log": [],
+    "main.stdout.log": []
+  }
+}

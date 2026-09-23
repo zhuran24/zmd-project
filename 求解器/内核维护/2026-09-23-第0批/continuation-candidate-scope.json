@@ -1,0 +1,4 @@
+{
+  "scope": "求解器/候选约束轮次/",
+  "reason": "User prohibits touching entire tree because another task writes it; independent writes progressed to 第66-68轮 after this task had no child command running; record all diffs without rollback."
+}

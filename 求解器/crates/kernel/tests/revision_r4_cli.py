@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """第4轮公开CLI证据：库存年龄、trigger封闭、空分支、未用轴和停止锚点。"""
+from evidence_paths import instance_dir
 import copy
 import hashlib
 import json
@@ -8,7 +9,7 @@ from pathlib import Path
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[3]
-OUT = ROOT / 'crates/kernel/evidence/revision-r4/cli'
+OUT = None
 BIN = Path(os.environ.get('KERNEL_BIN', ROOT / 'target/release/kernel'))
 CFG = ROOT / '规格/内核配置-v1.json'
 
@@ -32,6 +33,8 @@ def source(name):
 
 
 def main():
+    global OUT
+    OUT = instance_dir('revision_r4_cli')
     OUT.mkdir(parents=True, exist_ok=True)
     cases = []
 

@@ -1,0 +1,647 @@
+{
+  "status": "通过",
+  "controls": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r2_cli-b6a2d3b3d6f841cba9b5e43e19f7f9f1/tmp/混做粉碎机两下游-full_state_each_instant.json",
+      "ticks": 4,
+      "events": 156,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 37,
+        "exercised": 31,
+        "stop_not_triggered": 16,
+        "proof_pending": 1
+      },
+      "sha256": "e612b7dcaba84827854a1c9cb8b22a090114846dd422c912cd077cd7a066e8d9"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r2_cli-b6a2d3b3d6f841cba9b5e43e19f7f9f1/tmp/混做粉碎机两下游-checkpoint_delta.json",
+      "ticks": 4,
+      "events": 156,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 37,
+        "exercised": 31,
+        "stop_not_triggered": 16,
+        "proof_pending": 1
+      },
+      "sha256": "d96977fe5e7e4260dc0639ac1dcef8be2ef7eb9129d59ce2435685e86ff33a43"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r2_cli-b6a2d3b3d6f841cba9b5e43e19f7f9f1/tmp/分流器三路轮询-full_state_each_instant.json",
+      "ticks": 12,
+      "events": 794,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 45,
+        "exercised": 23,
+        "stop_not_triggered": 16,
+        "proof_pending": 1
+      },
+      "sha256": "b9ef302e2d7756ebb26ef31f2fd0aa592a4b13df0362b0ececb4ad62abd6e499"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r2_cli-b6a2d3b3d6f841cba9b5e43e19f7f9f1/tmp/分流器三路轮询-checkpoint_delta.json",
+      "ticks": 12,
+      "events": 794,
+      "coverage_status_counts": {
+        "input_checked": 14,
+        "not_exercised": 45,
+        "exercised": 23,
+        "stop_not_triggered": 16,
+        "proof_pending": 1
+      },
+      "sha256": "cc2317168223372e482939d586ff3a585a8ca0c01765d342435b1437c42faca6"
+    }
+  ],
+  "metadata_mutations": [
+    {
+      "sample": "混做粉碎机两下游",
+      "format": "full_state_each_instant",
+      "mutation": "unknown_axis",
+      "accepted": false,
+      "reason": "覆盖轴全集/处置/实际证据不符"
+    },
+    {
+      "sample": "混做粉碎机两下游",
+      "format": "full_state_each_instant",
+      "mutation": "missing_axis",
+      "accepted": false,
+      "reason": "覆盖轴全集/处置/实际证据不符"
+    },
+    {
+      "sample": "混做粉碎机两下游",
+      "format": "full_state_each_instant",
+      "mutation": "duplicate_axis",
+      "accepted": false,
+      "reason": "覆盖轴重复"
+    },
+    {
+      "sample": "混做粉碎机两下游",
+      "format": "full_state_each_instant",
+      "mutation": "wrong_disposition",
+      "accepted": false,
+      "reason": "覆盖轴全集/处置/实际证据不符"
+    },
+    {
+      "sample": "混做粉碎机两下游",
+      "format": "full_state_each_instant",
+      "mutation": "wrong_reason",
+      "accepted": false,
+      "reason": "覆盖轴全集/处置/实际证据不符"
+    },
+    {
+      "sample": "混做粉碎机两下游",
+      "format": "full_state_each_instant",
+      "mutation": "wrong_other_values",
+      "accepted": false,
+      "reason": "覆盖轴全集/处置/实际证据不符"
+    },
+    {
+      "sample": "混做粉碎机两下游",
+      "format": "full_state_each_instant",
+      "mutation": "missing_evidence",
+      "accepted": false,
+      "reason": "$: oneOf 匹配数须为1，实为0"
+    },
+    {
+      "sample": "混做粉碎机两下游",
+      "format": "full_state_each_instant",
+      "mutation": "fake_evidence",
+      "accepted": false,
+      "reason": "覆盖轴全集/处置/实际证据不符"
+    },
+    {
+      "sample": "混做粉碎机两下游",
+      "format": "full_state_each_instant",
+      "mutation": "exercised_with_existing_event",
+      "accepted": false,
+      "reason": "覆盖轴全集/处置/实际证据不符"
+    },
+    {
+      "sample": "混做粉碎机两下游",
+      "format": "full_state_each_instant",
+      "mutation": "wrong_status",
+      "accepted": false,
+      "reason": "覆盖轴全集/处置/实际证据不符"
+    },
+    {
+      "sample": "混做粉碎机两下游",
+      "format": "full_state_each_instant",
+      "mutation": "wrong_profile",
+      "accepted": false,
+      "reason": "profile身份不符"
+    },
+    {
+      "sample": "混做粉碎机两下游",
+      "format": "full_state_each_instant",
+      "mutation": "wrong_producer_path",
+      "accepted": false,
+      "reason": "('来源或producer路径不可访问', \"[Errno 2] No such file or directory: '/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r2_cli-b6a2d3b3d6f841cba9b5e43e19f7f9f1/tmp/fake.rs'\")"
+    },
+    {
+      "sample": "混做粉碎机两下游",
+      "format": "full_state_each_instant",
+      "mutation": "wrong_producer_claim",
+      "accepted": false,
+      "reason": "producer身份不符"
+    },
+    {
+      "sample": "混做粉碎机两下游",
+      "format": "full_state_each_instant",
+      "mutation": "wrong_run_id",
+      "accepted": false,
+      "reason": "run_id不符"
+    },
+    {
+      "sample": "混做粉碎机两下游",
+      "format": "full_state_each_instant",
+      "mutation": "missing_open_items",
+      "accepted": false,
+      "reason": "未决范围声明不符"
+    },
+    {
+      "sample": "混做粉碎机两下游",
+      "format": "full_state_each_instant",
+      "mutation": "bad_summary_control",
+      "accepted": false,
+      "reason": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r2_cli-b6a2d3b3d6f841cba9b5e43e19f7f9f1/tmp/mutation.json"
+    },
+    {
+      "sample": "混做粉碎机两下游",
+      "format": "checkpoint_delta",
+      "mutation": "unknown_axis",
+      "accepted": false,
+      "reason": "覆盖轴全集/处置/实际证据不符"
+    },
+    {
+      "sample": "混做粉碎机两下游",
+      "format": "checkpoint_delta",
+      "mutation": "missing_axis",
+      "accepted": false,
+      "reason": "覆盖轴全集/处置/实际证据不符"
+    },
+    {
+      "sample": "混做粉碎机两下游",
+      "format": "checkpoint_delta",
+      "mutation": "duplicate_axis",
+      "accepted": false,
+      "reason": "覆盖轴重复"
+    },
+    {
+      "sample": "混做粉碎机两下游",
+      "format": "checkpoint_delta",
+      "mutation": "wrong_disposition",
+      "accepted": false,
+      "reason": "覆盖轴全集/处置/实际证据不符"
+    },
+    {
+      "sample": "混做粉碎机两下游",
+      "format": "checkpoint_delta",
+      "mutation": "wrong_reason",
+      "accepted": false,
+      "reason": "覆盖轴全集/处置/实际证据不符"
+    },
+    {
+      "sample": "混做粉碎机两下游",
+      "format": "checkpoint_delta",
+      "mutation": "wrong_other_values",
+      "accepted": false,
+      "reason": "覆盖轴全集/处置/实际证据不符"
+    },
+    {
+      "sample": "混做粉碎机两下游",
+      "format": "checkpoint_delta",
+      "mutation": "missing_evidence",
+      "accepted": false,
+      "reason": "$: oneOf 匹配数须为1，实为0"
+    },
+    {
+      "sample": "混做粉碎机两下游",
+      "format": "checkpoint_delta",
+      "mutation": "fake_evidence",
+      "accepted": false,
+      "reason": "覆盖轴全集/处置/实际证据不符"
+    },
+    {
+      "sample": "混做粉碎机两下游",
+      "format": "checkpoint_delta",
+      "mutation": "exercised_with_existing_event",
+      "accepted": false,
+      "reason": "覆盖轴全集/处置/实际证据不符"
+    },
+    {
+      "sample": "混做粉碎机两下游",
+      "format": "checkpoint_delta",
+      "mutation": "wrong_status",
+      "accepted": false,
+      "reason": "覆盖轴全集/处置/实际证据不符"
+    },
+    {
+      "sample": "混做粉碎机两下游",
+      "format": "checkpoint_delta",
+      "mutation": "wrong_profile",
+      "accepted": false,
+      "reason": "profile身份不符"
+    },
+    {
+      "sample": "混做粉碎机两下游",
+      "format": "checkpoint_delta",
+      "mutation": "wrong_producer_path",
+      "accepted": false,
+      "reason": "('来源或producer路径不可访问', \"[Errno 2] No such file or directory: '/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r2_cli-b6a2d3b3d6f841cba9b5e43e19f7f9f1/tmp/fake.rs'\")"
+    },
+    {
+      "sample": "混做粉碎机两下游",
+      "format": "checkpoint_delta",
+      "mutation": "wrong_producer_claim",
+      "accepted": false,
+      "reason": "producer身份不符"
+    },
+    {
+      "sample": "混做粉碎机两下游",
+      "format": "checkpoint_delta",
+      "mutation": "wrong_run_id",
+      "accepted": false,
+      "reason": "run_id不符"
+    },
+    {
+      "sample": "混做粉碎机两下游",
+      "format": "checkpoint_delta",
+      "mutation": "missing_open_items",
+      "accepted": false,
+      "reason": "未决范围声明不符"
+    },
+    {
+      "sample": "混做粉碎机两下游",
+      "format": "checkpoint_delta",
+      "mutation": "bad_summary_control",
+      "accepted": false,
+      "reason": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r2_cli-b6a2d3b3d6f841cba9b5e43e19f7f9f1/tmp/mutation.json"
+    },
+    {
+      "sample": "分流器三路轮询",
+      "format": "full_state_each_instant",
+      "mutation": "unknown_axis",
+      "accepted": false,
+      "reason": "覆盖轴全集/处置/实际证据不符"
+    },
+    {
+      "sample": "分流器三路轮询",
+      "format": "full_state_each_instant",
+      "mutation": "missing_axis",
+      "accepted": false,
+      "reason": "覆盖轴全集/处置/实际证据不符"
+    },
+    {
+      "sample": "分流器三路轮询",
+      "format": "full_state_each_instant",
+      "mutation": "duplicate_axis",
+      "accepted": false,
+      "reason": "覆盖轴重复"
+    },
+    {
+      "sample": "分流器三路轮询",
+      "format": "full_state_each_instant",
+      "mutation": "wrong_disposition",
+      "accepted": false,
+      "reason": "覆盖轴全集/处置/实际证据不符"
+    },
+    {
+      "sample": "分流器三路轮询",
+      "format": "full_state_each_instant",
+      "mutation": "wrong_reason",
+      "accepted": false,
+      "reason": "覆盖轴全集/处置/实际证据不符"
+    },
+    {
+      "sample": "分流器三路轮询",
+      "format": "full_state_each_instant",
+      "mutation": "wrong_other_values",
+      "accepted": false,
+      "reason": "覆盖轴全集/处置/实际证据不符"
+    },
+    {
+      "sample": "分流器三路轮询",
+      "format": "full_state_each_instant",
+      "mutation": "missing_evidence",
+      "accepted": false,
+      "reason": "$: oneOf 匹配数须为1，实为0"
+    },
+    {
+      "sample": "分流器三路轮询",
+      "format": "full_state_each_instant",
+      "mutation": "fake_evidence",
+      "accepted": false,
+      "reason": "覆盖轴全集/处置/实际证据不符"
+    },
+    {
+      "sample": "分流器三路轮询",
+      "format": "full_state_each_instant",
+      "mutation": "exercised_with_existing_event",
+      "accepted": false,
+      "reason": "覆盖轴全集/处置/实际证据不符"
+    },
+    {
+      "sample": "分流器三路轮询",
+      "format": "full_state_each_instant",
+      "mutation": "wrong_status",
+      "accepted": false,
+      "reason": "覆盖轴全集/处置/实际证据不符"
+    },
+    {
+      "sample": "分流器三路轮询",
+      "format": "full_state_each_instant",
+      "mutation": "wrong_profile",
+      "accepted": false,
+      "reason": "profile身份不符"
+    },
+    {
+      "sample": "分流器三路轮询",
+      "format": "full_state_each_instant",
+      "mutation": "wrong_producer_path",
+      "accepted": false,
+      "reason": "('来源或producer路径不可访问', \"[Errno 2] No such file or directory: '/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r2_cli-b6a2d3b3d6f841cba9b5e43e19f7f9f1/tmp/fake.rs'\")"
+    },
+    {
+      "sample": "分流器三路轮询",
+      "format": "full_state_each_instant",
+      "mutation": "wrong_producer_claim",
+      "accepted": false,
+      "reason": "producer身份不符"
+    },
+    {
+      "sample": "分流器三路轮询",
+      "format": "full_state_each_instant",
+      "mutation": "wrong_run_id",
+      "accepted": false,
+      "reason": "run_id不符"
+    },
+    {
+      "sample": "分流器三路轮询",
+      "format": "full_state_each_instant",
+      "mutation": "missing_open_items",
+      "accepted": false,
+      "reason": "未决范围声明不符"
+    },
+    {
+      "sample": "分流器三路轮询",
+      "format": "full_state_each_instant",
+      "mutation": "bad_summary_control",
+      "accepted": false,
+      "reason": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r2_cli-b6a2d3b3d6f841cba9b5e43e19f7f9f1/tmp/mutation.json"
+    },
+    {
+      "sample": "分流器三路轮询",
+      "format": "checkpoint_delta",
+      "mutation": "unknown_axis",
+      "accepted": false,
+      "reason": "覆盖轴全集/处置/实际证据不符"
+    },
+    {
+      "sample": "分流器三路轮询",
+      "format": "checkpoint_delta",
+      "mutation": "missing_axis",
+      "accepted": false,
+      "reason": "覆盖轴全集/处置/实际证据不符"
+    },
+    {
+      "sample": "分流器三路轮询",
+      "format": "checkpoint_delta",
+      "mutation": "duplicate_axis",
+      "accepted": false,
+      "reason": "覆盖轴重复"
+    },
+    {
+      "sample": "分流器三路轮询",
+      "format": "checkpoint_delta",
+      "mutation": "wrong_disposition",
+      "accepted": false,
+      "reason": "覆盖轴全集/处置/实际证据不符"
+    },
+    {
+      "sample": "分流器三路轮询",
+      "format": "checkpoint_delta",
+      "mutation": "wrong_reason",
+      "accepted": false,
+      "reason": "覆盖轴全集/处置/实际证据不符"
+    },
+    {
+      "sample": "分流器三路轮询",
+      "format": "checkpoint_delta",
+      "mutation": "wrong_other_values",
+      "accepted": false,
+      "reason": "覆盖轴全集/处置/实际证据不符"
+    },
+    {
+      "sample": "分流器三路轮询",
+      "format": "checkpoint_delta",
+      "mutation": "missing_evidence",
+      "accepted": false,
+      "reason": "$: oneOf 匹配数须为1，实为0"
+    },
+    {
+      "sample": "分流器三路轮询",
+      "format": "checkpoint_delta",
+      "mutation": "fake_evidence",
+      "accepted": false,
+      "reason": "覆盖轴全集/处置/实际证据不符"
+    },
+    {
+      "sample": "分流器三路轮询",
+      "format": "checkpoint_delta",
+      "mutation": "exercised_with_existing_event",
+      "accepted": false,
+      "reason": "覆盖轴全集/处置/实际证据不符"
+    },
+    {
+      "sample": "分流器三路轮询",
+      "format": "checkpoint_delta",
+      "mutation": "wrong_status",
+      "accepted": false,
+      "reason": "覆盖轴全集/处置/实际证据不符"
+    },
+    {
+      "sample": "分流器三路轮询",
+      "format": "checkpoint_delta",
+      "mutation": "wrong_profile",
+      "accepted": false,
+      "reason": "profile身份不符"
+    },
+    {
+      "sample": "分流器三路轮询",
+      "format": "checkpoint_delta",
+      "mutation": "wrong_producer_path",
+      "accepted": false,
+      "reason": "('来源或producer路径不可访问', \"[Errno 2] No such file or directory: '/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r2_cli-b6a2d3b3d6f841cba9b5e43e19f7f9f1/tmp/fake.rs'\")"
+    },
+    {
+      "sample": "分流器三路轮询",
+      "format": "checkpoint_delta",
+      "mutation": "wrong_producer_claim",
+      "accepted": false,
+      "reason": "producer身份不符"
+    },
+    {
+      "sample": "分流器三路轮询",
+      "format": "checkpoint_delta",
+      "mutation": "wrong_run_id",
+      "accepted": false,
+      "reason": "run_id不符"
+    },
+    {
+      "sample": "分流器三路轮询",
+      "format": "checkpoint_delta",
+      "mutation": "missing_open_items",
+      "accepted": false,
+      "reason": "未决范围声明不符"
+    },
+    {
+      "sample": "分流器三路轮询",
+      "format": "checkpoint_delta",
+      "mutation": "bad_summary_control",
+      "accepted": false,
+      "reason": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r2_cli-b6a2d3b3d6f841cba9b5e43e19f7f9f1/tmp/mutation.json"
+    }
+  ],
+  "input_cases": [
+    {
+      "case": "reachability-NoneType",
+      "status": "invalid_input",
+      "exit_code": 2,
+      "stop": [
+        "invalid_input input @ initial_state.reachability: invalid type: null, expected struct Decision"
+      ]
+    },
+    {
+      "case": "reachability-int",
+      "status": "invalid_input",
+      "exit_code": 2,
+      "stop": [
+        "invalid_input input @ initial_state.reachability: invalid type: integer `7`, expected struct Decision"
+      ]
+    },
+    {
+      "case": "reachability-dict",
+      "status": "invalid_input",
+      "exit_code": 2,
+      "stop": [
+        "invalid_input input @ initial_state.reachability: missing field `status`"
+      ]
+    },
+    {
+      "case": "reachability-str",
+      "status": "invalid_input",
+      "exit_code": 2,
+      "stop": [
+        "invalid_input input @ initial_state.reachability: invalid type: string \"proof\", expected struct Decision"
+      ]
+    },
+    {
+      "case": "reachability-bool",
+      "status": "invalid_input",
+      "exit_code": 2,
+      "stop": [
+        "invalid_input input @ initial_state.reachability: invalid type: boolean `false`, expected struct Decision"
+      ]
+    },
+    {
+      "case": "reachability-list",
+      "status": "invalid_input",
+      "exit_code": 2,
+      "stop": [
+        "invalid_input input @ initial_state.reachability: invalid length 0, expected struct Decision with 3 elements"
+      ]
+    },
+    {
+      "case": "unlisted-missing",
+      "status": "invalid_input",
+      "exit_code": 2,
+      "stop": [
+        "invalid_input input @ initial_state.warehouse: 字段须恰为 slots unlisted"
+      ]
+    },
+    {
+      "case": "unlisted-filled",
+      "status": "invalid_input",
+      "exit_code": 2,
+      "stop": [
+        "invalid_input input @ initial_state.warehouse.unlisted: 任务初始仓库必须显式声明其他物品为空"
+      ]
+    },
+    {
+      "case": "unowned-runtime",
+      "status": "invalid_input",
+      "exit_code": 2,
+      "stop": [
+        "invalid_input input @ timeline.events.unowned_probe: 全局事件缺对应类型的拥有记录"
+      ]
+    },
+    {
+      "case": "unowned-connection_close",
+      "status": "invalid_input",
+      "exit_code": 2,
+      "stop": [
+        "invalid_input input @ timeline.events.unowned_probe: 全局事件缺对应类型的拥有记录"
+      ]
+    },
+    {
+      "case": "movement-build_0",
+      "status": "invalid_input",
+      "exit_code": 2,
+      "stop": [
+        "invalid_input input @ build_0: 一个事件被不同记录重复拥有"
+      ]
+    },
+    {
+      "case": "movement-J|2|0|0",
+      "status": "invalid_input",
+      "exit_code": 2,
+      "stop": [
+        "invalid_input input @ J|2|0|0: 成功账本与J实例时刻/扫描位置/模板不符"
+      ]
+    },
+    {
+      "case": "movement-None",
+      "status": "invalid_input",
+      "exit_code": 2,
+      "stop": [
+        "invalid_input input @ seed_executed:null: 拥有者缺事件身份"
+      ]
+    },
+    {
+      "case": "movement-valid",
+      "status": "completed",
+      "exit_code": 0,
+      "stop": []
+    },
+    {
+      "case": "phase-control",
+      "status": "completed",
+      "exit_code": 0,
+      "stop": []
+    },
+    {
+      "case": "phase-conflict",
+      "status": "invalid_input",
+      "exit_code": 2,
+      "stop": [
+        "invalid_input input @ timeline.relations: 先后图有环"
+      ]
+    },
+    {
+      "case": "branch-cut",
+      "status": "completed",
+      "exit_code": 0,
+      "stop": []
+    },
+    {
+      "case": "branch-retained",
+      "status": "completed",
+      "exit_code": 0,
+      "stop": []
+    }
+  ],
+  "metadata_rejected": 64,
+  "input_case_count": 18
+}

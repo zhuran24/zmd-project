@@ -1,0 +1,17 @@
+{
+  "restored_match": 160,
+  "early_match": 3,
+  "old_paths_absent": 7,
+  "versions_match": 14,
+  "lost_originals": 13,
+  "markers": [
+    "求解器/crates/kernel/evidence/revision-r4/cli/原字节缺失.json",
+    "求解器/crates/kernel/evidence/round6/revision-r5/cli/原字节缺失.json",
+    "求解器/crates/kernel/evidence/round6/revision-r5/cli/negative/原字节缺失.json",
+    "求解器/crates/kernel/evidence/round6/revision-r5/cli/reference-package/原字节缺失.json",
+    "求解器/crates/kernel/evidence/round6/revision-r5/cli/package/full_state_each_instant/records/原字节缺失.json",
+    "求解器/crates/kernel/evidence/round6/cli/原字节缺失.json"
+  ],
+  "history_recovery": "partial",
+  "note": "six explicitly requested marker additions; original historical bytes unchanged; no Git operations"
+}

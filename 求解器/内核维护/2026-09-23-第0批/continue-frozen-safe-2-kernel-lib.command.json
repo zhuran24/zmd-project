@@ -1,0 +1,115 @@
+{
+  "label": "continue-frozen-safe-2-kernel-lib",
+  "argv": [
+    "cargo",
+    "test",
+    "-p",
+    "kernel",
+    "--lib",
+    "--locked",
+    "--offline",
+    "-j",
+    "2",
+    "--profile",
+    "health0bsafe1229858",
+    "--config",
+    "profile.health0bsafe1229858.inherits=\"dev\"",
+    "--config",
+    "profile.health0bsafe1229858.codegen-units=1",
+    "--",
+    "--test-threads=1"
+  ],
+  "cwd": "/tmp/kernel-health-20260923-_5s65pp9/求解器",
+  "returncode": 0,
+  "expected": 0,
+  "seconds": 46.25665422699967,
+  "cpu_seconds": 46.218464999999966,
+  "cpu_cores_average": 0.9991744057663078,
+  "max_total_threads": 4,
+  "max_runnable_threads": 1,
+  "affinity": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "peak": [
+    {
+      "pid": 1297741,
+      "argv": "cargo test -p kernel --lib --locked --offline -j 2 --profile health0bsafe1229858 --config profile.health0bsafe1229858.inherits=\"dev\" --config profile.health0bsafe1229858.codegen-units=1 -- --test-threads=1 ",
+      "tasks": [
+        {
+          "tid": 1297741,
+          "state": "S",
+          "cpu_ticks": 1,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "cargo"
+        },
+        {
+          "tid": 1297749,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "futures-timer"
+        }
+      ]
+    },
+    {
+      "pid": 1297753,
+      "argv": "/home/zhuran24/zmd-research-fresh/求解器/target/health0bsafe1229858/deps/kernel-ab0acbad6798c3ae --test-threads=1 ",
+      "tasks": [
+        {
+          "tid": 1297753,
+          "state": "S",
+          "cpu_ticks": 0,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "kernel-ab0acbad"
+        },
+        {
+          "tid": 1297754,
+          "state": "R",
+          "cpu_ticks": 1,
+          "affinity": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "name": "digest::known_v"
+        }
+      ]
+    }
+  ],
+  "violation": null,
+  "protection_error": null,
+  "environment": {
+    "PATH": "/home/zhuran24/.codex/tmp/arg0/codex-arg07mihkU:/home/zhuran24/.cargo/bin:/home/zhuran24/.local/bin:/home/zhuran24/.opencode/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/home/zhuran24/.local/share/flatpak/exports/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/home/zhuran24/.config/Claude/local-agent-mode-sessions/skills-plugin/cf875e59-d94b-492e-ba7a-6d2a070f0f30/92f6071f-e8b1-40cd-8c37-9d23302ed76c/bin",
+    "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+    "CARGO_BUILD_JOBS": "2",
+    "CARGO_PROFILE_DEV_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_TEST_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+    "RUST_TEST_THREADS": "1",
+    "RAYON_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "NODE_OPTIONS": "--v8-pool-size=1"
+  },
+  "stdout_sha256": "2a60f6b427ddc1ddaa3df7bbb27e7546898c999796876415f0b61cd38d92ac57",
+  "stderr_sha256": "ff160477b2f082611aa264affa863530bf6fac6450e1a3b31381d09a0fbcf115"
+}

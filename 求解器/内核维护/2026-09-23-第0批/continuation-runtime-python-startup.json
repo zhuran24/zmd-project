@@ -1,0 +1,10 @@
+{
+  "added": [
+    "/usr/lib/gconv/gconv-modules.cache",
+    "/usr/lib/python3.14/site-packages/distutils-precedence.pth",
+    "/usr/lib/python3.14/site-packages/_distutils_hack/__pycache__/__init__.cpython-314.pyc",
+    "/usr/lib/python3.14/site-packages/_distutils_hack/__init__.py"
+  ],
+  "trace": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/continue-runtime-python.trace.log",
+  "purpose": "bind actual startup reads before any A/A or CLI validator uses Python/Node"
+}

@@ -1,0 +1,13 @@
+{
+  "at": "2026-09-23T01:40:45.129366-04:00",
+  "restoration_reconciled": true,
+  "history_missing_originals": 13,
+  "new_markers": 6,
+  "safe_rounds": 2,
+  "production_byte_equal": true,
+  "aa_pairs": 44,
+  "reference_closure": true,
+  "compile_closure_positive": true,
+  "unregistered_module_rejected": true,
+  "isolation": "running"
+}

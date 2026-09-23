@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "checks": [
+    "historical/current status language separated",
+    "all final gates tied to current B source hash",
+    "current two safe rounds and extra entry run distinguished",
+    "R3 59 cases and original 12 assertions retained",
+    "historical original bytes still missing explicitly stated",
+    "six authorized marker additions counted as history_changed",
+    "external research changes attributed separately without rollback",
+    "A runtime immutable binding retained after B test-only dependency additions",
+    "all record links exist",
+    "no individual delivery file exceeds 100MB",
+    "no ELF or ar archive build products in evidence directory"
+  ]
+}

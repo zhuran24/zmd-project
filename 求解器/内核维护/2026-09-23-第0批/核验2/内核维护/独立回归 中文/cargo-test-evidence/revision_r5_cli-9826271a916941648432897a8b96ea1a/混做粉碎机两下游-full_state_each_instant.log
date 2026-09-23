@@ -1,0 +1,5 @@
+{"command": ["/home/zhuran24/zmd-research-fresh/求解器/target/health0isolation1229858/kernel", "verify-record", "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/reference-package/混做粉碎机两下游-full_state_each_instant.json", "--config", "/tmp/kernel-health-20260923-_5s65pp9/求解器/规格/内核配置-v1.json"], "cwd": "/tmp/kernel-health-20260923-_5s65pp9", "exit": 0}
+{
+  "status": "input_checked",
+  "verified_record": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-23-第0批/核验2/内核维护/独立回归 中文/cargo-test-evidence/revision_r5_cli-9826271a916941648432897a8b96ea1a/reference-package/混做粉碎机两下游-full_state_each_instant.json"
+}

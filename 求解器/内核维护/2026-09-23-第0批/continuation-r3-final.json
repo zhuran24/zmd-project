@@ -1,0 +1,15 @@
+{
+  "before_sha256": "decf98300c45ad2071bfc8d306b9d1542da8fa34498b2524294965678d7690a8",
+  "after_sha256": "df9fc35ebd73a01a5fbee9231a7d2730b09308fdfa6a7a89d7f231afe0030427",
+  "scope": "test-only copied-fixture dependency/output management",
+  "original_fixture_bytes_unchanged": true,
+  "original_assertions_retained": true,
+  "added_readonly_input": "crates/kernel/复核/r3-规格保真-证据/tiny-expired-after-closure-input.json",
+  "source_hash": "e532a59a7e11b9cc4b671d5708fdee1ca0be4c38db35654152e0eee27bf5ede4",
+  "transforms": [
+    "relocate path fields in generated expired input and embedded legacy record",
+    "derive the legacy replay input under the instance root using only path-token substitutions",
+    "verify original input SHA-256, then update the one generated record input fingerprint to the derived raw bytes"
+  ],
+  "known_limit": "Historical dependency digests remain stale and trigger source rejection before expired-state validation; no new semantic coverage claimed."
+}
