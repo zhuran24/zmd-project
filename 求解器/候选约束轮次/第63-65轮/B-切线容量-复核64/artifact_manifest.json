@@ -1,0 +1,14 @@
+{
+  "求解器/候选约束轮次/第63-65轮/B-切线容量-复核64.md": "1adfb602197d80a46e9ff28fb1dbd456e99cfd948982ced4806f44f8bab2e321",
+  "求解器/候选约束轮次/第63-65轮/B-切线容量-复核64/audit.py": "50962f041416bb3a47309c368e36414af2bf2b27645da7c55859bf5f2f08e33a",
+  "求解器/候选约束轮次/第63-65轮/B-切线容量-复核64/delivery_audit.json": "b6afd4d13d475197117ce6e797d7b32a99ea6e42fe7e2740f41ced56818e26b4",
+  "求解器/候选约束轮次/第63-65轮/B-切线容量-复核64/exact_verification.json": "efa2c5e10893eee010f3e28b74339eab3fa6d12e4ef980c1e45ec491cd03176a",
+  "求解器/候选约束轮次/第63-65轮/B-切线容量-复核64/exact_verification.log": "cda6b565d5c4ee91f88558b064a06f6401234c1a5ff21bced4b45b2d51a89273",
+  "求解器/候选约束轮次/第63-65轮/B-切线容量-复核64/geometry.json": "1b5c62f8dd7ca17384541382e8b4da76b447ac4b29097adc1cdc4cbd3ad3189d",
+  "求解器/候选约束轮次/第63-65轮/B-切线容量-复核64/model.json": "769426ea9b01c993285f2935e7d81c2ed245ab1350722ef7b8aad05f3df2f06f",
+  "求解器/候选约束轮次/第63-65轮/B-切线容量-复核64/new_certificates.json": "7425533d40a2c8c22664f79cd4461a02e5675fb940e8bb9a34681b0e087bedf5",
+  "求解器/候选约束轮次/第63-65轮/B-切线容量-复核64/recipes.json": "6ff944e57b450ad7697a87d2515e018e3648e37e99f3d276f106f72cd53d1f03",
+  "求解器/候选约束轮次/第63-65轮/B-切线容量-复核64/results.json": "187f14b1d322e6b682b748e844a50ad6eb9725d4967f74abedb2eb5ea8fd77c1",
+  "求解器/候选约束轮次/第63-65轮/B-切线容量-复核64/scope_check.json": "16636e2b941c85e4b6fa6e4e1161ba8f84b23da023aa0360610a806833a5d42f",
+  "求解器/候选约束轮次/第63-65轮/B-切线容量-复核64/verdict_summary.json": "a715c3dba56af02441232b36961c70b791c04b1ae75e233aad220727331449f9"
+}

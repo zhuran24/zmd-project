@@ -1,0 +1,15 @@
+{
+  "b": 9,
+  "pole_lower_left": [
+    48,
+    64
+  ],
+  "pole_size": [
+    2,
+    2
+  ],
+  "literal_D_contribution": 2,
+  "lower_strip_D_contribution": 0,
+  "intersects_hole": false,
+  "is_full_layout_counterexample": false
+}

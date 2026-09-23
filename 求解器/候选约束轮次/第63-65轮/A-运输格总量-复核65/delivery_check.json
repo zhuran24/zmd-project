@@ -1,0 +1,30 @@
+{
+  "checked_at": "2026-09-23T04:34:44.922542+00:00",
+  "result": "PASS",
+  "current_inputs_equal_snapshot": true,
+  "geometry_cases": 47,
+  "branch_cases": 24,
+  "reference_targets": [
+    "../../../《明日方舟：终末地》游戏规则.txt",
+    "../../../求解任务.txt",
+    "../../../求解约束.txt",
+    "A-运输格总量-复核65/recompute_geometry.py",
+    "A-运输格总量-复核65/geometry_all.json",
+    "A-运输格总量-复核65/independent_witness.json",
+    "A-运输格总量-复核65/recompute_accounts.py",
+    "A-运输格总量-复核65/"
+  ],
+  "artifact_sha256": {
+    "求解器/候选约束轮次/第63-65轮/A-运输格总量-复核65/accounts.json": "de3fa4e6ab435ce921ec1a338dbafa2e7ff93340e4ca2adbd133e68ed01289e6",
+    "求解器/候选约束轮次/第63-65轮/A-运输格总量-复核65/accounts.log": "b60892d4778828374ecbff98feb851fbc1c38911b6e78bb9ea9046216c801ace",
+    "求解器/候选约束轮次/第63-65轮/A-运输格总量-复核65/delivery_check.py": "edff51624794928700f5ef36ffdcdb9598c1aa10c2f1c2d23fc9a72c81c79210",
+    "求解器/候选约束轮次/第63-65轮/A-运输格总量-复核65/geometry.log": "1efa766750800a6c498bbf0de53006cb0dd5be5ad8b65cf240ef3232f25cfb1d",
+    "求解器/候选约束轮次/第63-65轮/A-运输格总量-复核65/geometry_all.json": "8131e73173cb0d76fbf347e5a179efe2a832b86dbba0d3668c574db55e14d8cc",
+    "求解器/候选约束轮次/第63-65轮/A-运输格总量-复核65/independent_witness.json": "bb1fa50b97ce9ee323d1d83f9896c0aeaee4c53611e84f32f29e4c52a425bdf2",
+    "求解器/候选约束轮次/第63-65轮/A-运输格总量-复核65/inputs_snapshot.json": "dbd64c5f78c8597512928dafbefb1ab3c798b5d5f81b60dbf460d52538ca0dfc",
+    "求解器/候选约束轮次/第63-65轮/A-运输格总量-复核65/recompute_accounts.py": "c00199468fe23fa36d6f8ee96e254a044e621144f7f687f4655f0f3a3d17455d",
+    "求解器/候选约束轮次/第63-65轮/A-运输格总量-复核65/recompute_geometry.py": "bbf9ad498ff9ee627bc450df12031be80d3edf130e08813293981017f11937d2",
+    "求解器/候选约束轮次/第63-65轮/A-运输格总量-复核65/verdict.json": "629351268a676ae86212214983c995011182335137db689a276897c1f222430d",
+    "求解器/候选约束轮次/第63-65轮/A-运输格总量-复核65.md": "683dbd4ca30f773afd156bed607a4a7a99a0240232a451ab879e904e08b55b27"
+  }
+}

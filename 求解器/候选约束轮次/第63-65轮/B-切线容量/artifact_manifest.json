@@ -1,0 +1,122 @@
+[
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第63-65轮/B-切线容量/b7_certificate.log",
+    "bytes": 756,
+    "sha256": "c719597a7486921192ee64d3799585dec13f41cd7303996839dca108309c31ea"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第63-65轮/B-切线容量/b7_certificate_summary.json",
+    "bytes": 756,
+    "sha256": "c719597a7486921192ee64d3799585dec13f41cd7303996839dca108309c31ea"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第63-65轮/B-切线容量/b7_lp_model.json",
+    "bytes": 28330,
+    "sha256": "29dce10b1a053bd58fb9787503dd446d2e8d608b6b6317569640c0865a250a7e"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第63-65轮/B-切线容量/b7_optimization.json",
+    "bytes": 2046,
+    "sha256": "89e748d093bb5ec1673fe411ff18101cb6de892a34708779502ce3278eef9336"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第63-65轮/B-切线容量/b7_optimization.log",
+    "bytes": 2046,
+    "sha256": "89e748d093bb5ec1673fe411ff18101cb6de892a34708779502ce3278eef9336"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第63-65轮/B-切线容量/b7_rational_certificates.json",
+    "bytes": 436021,
+    "sha256": "8b3ec65a5d9d95798fdff4eb560486fddab593df7e6c299de660d6dc8a3d93d8"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第63-65轮/B-切线容量/calculate.log",
+    "bytes": 149,
+    "sha256": "e118d278376c9afffe95432ed64c8392550a4e5e5713283fe0080438f8bba57d"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第63-65轮/B-切线容量/calculate.py",
+    "bytes": 12808,
+    "sha256": "88e2b15d25ec8723fed3b0c186f6469a796ac106e9cdae6bd94729a812dd160a"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第63-65轮/B-切线容量/certificate_verification.json",
+    "bytes": 494,
+    "sha256": "63318a591d90d8581d43b957a3b59be183e86273e83e6f64456365e246debb49"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第63-65轮/B-切线容量/certify_b7.py",
+    "bytes": 4818,
+    "sha256": "3b7cc074f23b32a1eb0aa6f926a6457c5c615afd547b9b24cc0cda4ca5d23632"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第63-65轮/B-切线容量/delivery_audit.json",
+    "bytes": 729,
+    "sha256": "69b0105febcb1a215601ae3a322cc5a3681f23b83b5c9af930950415780fe967"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第63-65轮/B-切线容量/enumeration.json",
+    "bytes": 137753,
+    "sha256": "23ea726c636ac6ad4414b10f6a6e05485141b034b8f8e87614f662aea45483c4"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第63-65轮/B-切线容量/input_manifest.json",
+    "bytes": 788,
+    "sha256": "5ac77e0b6cdd11e8162b0ee247810ec5a9fb8a4faee7772e71bfb70e7f63071f"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第63-65轮/B-切线容量/integrity.json",
+    "bytes": 484,
+    "sha256": "8aac5c00591bb56621f74026c1bb784ad2de2d13fb879fcca503aa1a82f7cdd7"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第63-65轮/B-切线容量/mineral_cut_results.json",
+    "bytes": 4595,
+    "sha256": "098c0f1b6ffc15fb283388a0fb44707d0595a9dc5c77c3d166647650f2093a3e"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第63-65轮/B-切线容量/optimize_b7.py",
+    "bytes": 3914,
+    "sha256": "bd6a212b505e0f46538996866229a9ff5a0af76eeecf77f01c6f6ebe51c8770e"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第63-65轮/B-切线容量/recipe_accounting.json",
+    "bytes": 4782,
+    "sha256": "0da19e4c2b4c5346ce7a2ec60ab486a58c4743b97b8df7acaa5870a50e22796d"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第63-65轮/B-切线容量/results.json",
+    "bytes": 1810,
+    "sha256": "fd2c5c043415b327e70caf25d692cf51807140bbe8e8937d6c99e7023851e5d0"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第63-65轮/B-切线容量/verify_certificates.log",
+    "bytes": 494,
+    "sha256": "63318a591d90d8581d43b957a3b59be183e86273e83e6f64456365e246debb49"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第63-65轮/B-切线容量/verify_certificates.py",
+    "bytes": 6072,
+    "sha256": "e45550b99ab39e22beb034ca5bada64cac2ca4e610cc7dd9ab15d28ba0c30445"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第63-65轮/B-切线容量/求解任务快照.md",
+    "bytes": 1405,
+    "sha256": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第63-65轮/B-切线容量/求解约束快照.md",
+    "bytes": 34766,
+    "sha256": "0c05976f6063f3332db6ee19d7746052ef35148d7c2a12dfa396c7bb8753f30f"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第63-65轮/B-切线容量/游戏规则快照.md",
+    "bytes": 7241,
+    "sha256": "6e64e3903a65536c530b363c9f3aef8c1bb2a1c1193e866799125dd047159924"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第63-65轮/B-切线容量-推导.md",
+    "bytes": 19960,
+    "sha256": "60524a98c7afbe8ec1db68140de937e1b474c3903badf8884d70032c14d50323"
+  }
+]

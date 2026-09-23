@@ -1,0 +1,51 @@
+{
+  "status": "passed",
+  "official_inputs_unchanged": {
+    "《明日方舟：终末地》游戏规则.txt": true,
+    "求解任务.txt": true,
+    "求解约束.txt": true
+  },
+  "infeasible_boundary_cases": 47,
+  "position_power_cases_without_new_exclusion": 24,
+  "original_and_independent_witnesses_checked": true,
+  "report_links_checked": [
+    "../../../《明日方舟：终末地》游戏规则.txt",
+    "../../../求解任务.txt",
+    "../../../求解约束.txt",
+    "A-运输格总量-推导.md",
+    "A-运输格总量-复核64/recompute.py",
+    "A-运输格总量-复核64/bound_all.json",
+    "A-运输格总量-复核64/witness_3_0.json",
+    "A-运输格总量-复核64/witness_checked.json",
+    "A-运输格总量-复核64/",
+    "A-运输格总量-复核64/recompute.py",
+    "A-运输格总量-复核64/official_snapshot.json",
+    "A-运输格总量-复核64/bound_all.json",
+    "A-运输格总量-复核64/arithmetic.json",
+    "A-运输格总量-复核64/witness_3_0.json",
+    "A-运输格总量-复核64/witness_checked.json",
+    "A-运输格总量-复核64/input_unchanged.json"
+  ],
+  "reader_review": {
+    "completed": true,
+    "standalone_definitions_and_verdict": true,
+    "formal_basis_separate_from_derivation_material": true,
+    "all_numbers_match_current_evidence": true,
+    "relaxation_witness_not_claimed_as_game_layout": true,
+    "no_unresolved_rule_fact": true,
+    "references_and_status_consistent": true
+  },
+  "report_sha256": "f62ef2a5707bb2a95c65913aa2cfe65e0926c5978eba855641a1f8becb1dbd42",
+  "artifact_sha256": {
+    "arithmetic.json": "2b309750fa704232efee42bbcfac4f45ceefeb7113bb540883d41cc97212b521",
+    "bound_0_0.json": "57fa80263f980f69b93f7547f7f7330595b801565998ccb097f07bd261e7e52c",
+    "bound_all.json": "b8f37a823904a74c4f9875460217d9bc7dac225a19de1682540e93d5dcaf8e46",
+    "final_audit.py": "6ae7c7c4502e96b9cce788782f7c5eb1d203522bd5c702a3b35d396974fe5d6e",
+    "input_unchanged.json": "120fb864ae16c1b1f3de4aae19adf1072250d323d7a36466692b1fa46d43388b",
+    "official_snapshot.json": "c50bce3d36ac5bdee63f4eba1e377e371a529be72e2dfb5262e6b99b5e14f822",
+    "recompute.py": "a45591bd27d5d7e18d270355e521f97c3bd76947e3cb32e10cbc8926a074fb95",
+    "witness_0_3.json": "899258f79a5dca7dc5106160b1a135a94859779b32b3dc0516c75a8e7d930587",
+    "witness_3_0.json": "e728750558cd67a997f984d06018f35a10a0d4ecabd4e0e57373d3cb94ebccbb",
+    "witness_checked.json": "c194c84d0d9a5f40173e436a74fc132f47771b4658876e4cbe3d128332af55be"
+  }
+}

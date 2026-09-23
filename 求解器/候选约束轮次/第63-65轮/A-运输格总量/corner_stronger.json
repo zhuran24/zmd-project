@@ -1,0 +1,1026 @@
+[
+  {
+    "gap_left": 0,
+    "gap_bottom": 0,
+    "n": 8,
+    "cutoff": 12,
+    "sources": [
+      [
+        1,
+        2
+      ],
+      [
+        1,
+        5
+      ],
+      [
+        1,
+        8
+      ],
+      [
+        1,
+        11
+      ],
+      [
+        1,
+        14
+      ],
+      [
+        1,
+        17
+      ],
+      [
+        1,
+        20
+      ],
+      [
+        1,
+        23
+      ],
+      [
+        2,
+        1
+      ],
+      [
+        5,
+        1
+      ],
+      [
+        8,
+        1
+      ],
+      [
+        11,
+        1
+      ],
+      [
+        14,
+        1
+      ],
+      [
+        17,
+        1
+      ],
+      [
+        20,
+        1
+      ],
+      [
+        23,
+        1
+      ]
+    ],
+    "candidate_count": 473,
+    "status": "FEASIBLE",
+    "bound": -140.0,
+    "wall_time": 20.000710714,
+    "minimum_excess_or_incumbent": 37.0,
+    "assignment": [
+      {
+        "source": [
+          1,
+          2
+        ],
+        "machine": [
+          2,
+          2
+        ],
+        "distance": 1
+      },
+      {
+        "source": [
+          1,
+          5
+        ],
+        "machine": [
+          2,
+          5
+        ],
+        "distance": 1
+      },
+      {
+        "source": [
+          2,
+          1
+        ],
+        "machine": [
+          2,
+          8
+        ],
+        "distance": 7
+      },
+      {
+        "source": [
+          1,
+          14
+        ],
+        "machine": [
+          2,
+          11
+        ],
+        "distance": 2
+      },
+      {
+        "source": [
+          1,
+          17
+        ],
+        "machine": [
+          2,
+          14
+        ],
+        "distance": 2
+      },
+      {
+        "source": [
+          1,
+          20
+        ],
+        "machine": [
+          2,
+          17
+        ],
+        "distance": 2
+      },
+      {
+        "source": [
+          1,
+          23
+        ],
+        "machine": [
+          2,
+          23
+        ],
+        "distance": 1
+      },
+      {
+        "source": [
+          5,
+          1
+        ],
+        "machine": [
+          5,
+          4
+        ],
+        "distance": 3
+      },
+      {
+        "source": [
+          1,
+          8
+        ],
+        "machine": [
+          5,
+          8
+        ],
+        "distance": 4
+      },
+      {
+        "source": [
+          1,
+          11
+        ],
+        "machine": [
+          5,
+          12
+        ],
+        "distance": 5
+      },
+      {
+        "source": [
+          8,
+          1
+        ],
+        "machine": [
+          8,
+          2
+        ],
+        "distance": 1
+      },
+      {
+        "source": [
+          11,
+          1
+        ],
+        "machine": [
+          10,
+          5
+        ],
+        "distance": 4
+      },
+      {
+        "source": [
+          14,
+          1
+        ],
+        "machine": [
+          13,
+          7
+        ],
+        "distance": 6
+      },
+      {
+        "source": [
+          17,
+          1
+        ],
+        "machine": [
+          17,
+          8
+        ],
+        "distance": 7
+      },
+      {
+        "source": [
+          20,
+          1
+        ],
+        "machine": [
+          20,
+          2
+        ],
+        "distance": 1
+      },
+      {
+        "source": [
+          23,
+          1
+        ],
+        "machine": [
+          25,
+          5
+        ],
+        "distance": 6
+      }
+    ],
+    "dummy_sources": []
+  },
+  {
+    "gap_left": 3,
+    "gap_bottom": 0,
+    "n": 8,
+    "cutoff": 12,
+    "sources": [
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        5
+      ],
+      [
+        1,
+        8
+      ],
+      [
+        1,
+        11
+      ],
+      [
+        1,
+        14
+      ],
+      [
+        1,
+        17
+      ],
+      [
+        1,
+        20
+      ],
+      [
+        1,
+        23
+      ],
+      [
+        2,
+        1
+      ],
+      [
+        5,
+        1
+      ],
+      [
+        8,
+        1
+      ],
+      [
+        11,
+        1
+      ],
+      [
+        14,
+        1
+      ],
+      [
+        17,
+        1
+      ],
+      [
+        20,
+        1
+      ],
+      [
+        23,
+        1
+      ]
+    ],
+    "candidate_count": 474,
+    "status": "FEASIBLE",
+    "bound": -143.0,
+    "wall_time": 15.214694293,
+    "minimum_excess_or_incumbent": 21.0,
+    "assignment": [
+      {
+        "source": [
+          1,
+          1
+        ],
+        "machine": [
+          1,
+          2
+        ],
+        "distance": 1
+      },
+      {
+        "source": [
+          1,
+          5
+        ],
+        "machine": [
+          2,
+          5
+        ],
+        "distance": 1
+      },
+      {
+        "source": [
+          1,
+          11
+        ],
+        "machine": [
+          2,
+          9
+        ],
+        "distance": 1
+      },
+      {
+        "source": [
+          1,
+          17
+        ],
+        "machine": [
+          2,
+          12
+        ],
+        "distance": 4
+      },
+      {
+        "source": [
+          1,
+          14
+        ],
+        "machine": [
+          2,
+          15
+        ],
+        "distance": 2
+      },
+      {
+        "source": [
+          1,
+          20
+        ],
+        "machine": [
+          2,
+          20
+        ],
+        "distance": 1
+      },
+      {
+        "source": [
+          1,
+          23
+        ],
+        "machine": [
+          2,
+          24
+        ],
+        "distance": 2
+      },
+      {
+        "source": [
+          2,
+          1
+        ],
+        "machine": [
+          4,
+          2
+        ],
+        "distance": 3
+      },
+      {
+        "source": [
+          1,
+          8
+        ],
+        "machine": [
+          5,
+          8
+        ],
+        "distance": 4
+      },
+      {
+        "source": [
+          5,
+          1
+        ],
+        "machine": [
+          7,
+          2
+        ],
+        "distance": 3
+      },
+      {
+        "source": [
+          8,
+          1
+        ],
+        "machine": [
+          8,
+          5
+        ],
+        "distance": 4
+      },
+      {
+        "source": [
+          11,
+          1
+        ],
+        "machine": [
+          11,
+          2
+        ],
+        "distance": 1
+      },
+      {
+        "source": [
+          14,
+          1
+        ],
+        "machine": [
+          14,
+          3
+        ],
+        "distance": 2
+      },
+      {
+        "source": [
+          17,
+          1
+        ],
+        "machine": [
+          15,
+          6
+        ],
+        "distance": 5
+      },
+      {
+        "source": [
+          20,
+          1
+        ],
+        "machine": [
+          20,
+          2
+        ],
+        "distance": 1
+      },
+      {
+        "source": [
+          23,
+          1
+        ],
+        "machine": [
+          23,
+          3
+        ],
+        "distance": 2
+      }
+    ],
+    "dummy_sources": []
+  },
+  {
+    "gap_left": 6,
+    "gap_bottom": 0,
+    "n": 8,
+    "cutoff": 12,
+    "sources": [
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        4
+      ],
+      [
+        1,
+        8
+      ],
+      [
+        1,
+        11
+      ],
+      [
+        1,
+        14
+      ],
+      [
+        1,
+        17
+      ],
+      [
+        1,
+        20
+      ],
+      [
+        1,
+        23
+      ],
+      [
+        2,
+        1
+      ],
+      [
+        5,
+        1
+      ],
+      [
+        8,
+        1
+      ],
+      [
+        11,
+        1
+      ],
+      [
+        14,
+        1
+      ],
+      [
+        17,
+        1
+      ],
+      [
+        20,
+        1
+      ],
+      [
+        23,
+        1
+      ]
+    ],
+    "candidate_count": 474,
+    "status": "FEASIBLE",
+    "bound": -142.0,
+    "wall_time": 20.000665895,
+    "minimum_excess_or_incumbent": 32.0,
+    "assignment": [
+      {
+        "source": [
+          1,
+          1
+        ],
+        "machine": [
+          1,
+          5
+        ],
+        "distance": 4
+      },
+      {
+        "source": [
+          2,
+          1
+        ],
+        "machine": [
+          2,
+          2
+        ],
+        "distance": 1
+      },
+      {
+        "source": [
+          1,
+          8
+        ],
+        "machine": [
+          2,
+          8
+        ],
+        "distance": 1
+      },
+      {
+        "source": [
+          1,
+          14
+        ],
+        "machine": [
+          2,
+          12
+        ],
+        "distance": 1
+      },
+      {
+        "source": [
+          1,
+          17
+        ],
+        "machine": [
+          2,
+          17
+        ],
+        "distance": 1
+      },
+      {
+        "source": [
+          1,
+          20
+        ],
+        "machine": [
+          2,
+          20
+        ],
+        "distance": 1
+      },
+      {
+        "source": [
+          1,
+          4
+        ],
+        "machine": [
+          4,
+          5
+        ],
+        "distance": 4
+      },
+      {
+        "source": [
+          5,
+          1
+        ],
+        "machine": [
+          5,
+          2
+        ],
+        "distance": 1
+      },
+      {
+        "source": [
+          1,
+          11
+        ],
+        "machine": [
+          5,
+          11
+        ],
+        "distance": 4
+      },
+      {
+        "source": [
+          1,
+          23
+        ],
+        "machine": [
+          5,
+          23
+        ],
+        "distance": 4
+      },
+      {
+        "source": [
+          8,
+          1
+        ],
+        "machine": [
+          9,
+          2
+        ],
+        "distance": 2
+      },
+      {
+        "source": [
+          11,
+          1
+        ],
+        "machine": [
+          10,
+          5
+        ],
+        "distance": 4
+      },
+      {
+        "source": [
+          14,
+          1
+        ],
+        "machine": [
+          13,
+          5
+        ],
+        "distance": 4
+      },
+      {
+        "source": [
+          17,
+          1
+        ],
+        "machine": [
+          16,
+          5
+        ],
+        "distance": 4
+      },
+      {
+        "source": [
+          20,
+          1
+        ],
+        "machine": [
+          19,
+          5
+        ],
+        "distance": 4
+      },
+      {
+        "source": [
+          23,
+          1
+        ],
+        "machine": [
+          26,
+          6
+        ],
+        "distance": 8
+      }
+    ],
+    "dummy_sources": []
+  },
+  {
+    "gap_left": 9,
+    "gap_bottom": 0,
+    "n": 8,
+    "cutoff": 12,
+    "sources": [
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        4
+      ],
+      [
+        1,
+        7
+      ],
+      [
+        1,
+        11
+      ],
+      [
+        1,
+        14
+      ],
+      [
+        1,
+        17
+      ],
+      [
+        1,
+        20
+      ],
+      [
+        1,
+        23
+      ],
+      [
+        2,
+        1
+      ],
+      [
+        5,
+        1
+      ],
+      [
+        8,
+        1
+      ],
+      [
+        11,
+        1
+      ],
+      [
+        14,
+        1
+      ],
+      [
+        17,
+        1
+      ],
+      [
+        20,
+        1
+      ],
+      [
+        23,
+        1
+      ]
+    ],
+    "candidate_count": 474,
+    "status": "FEASIBLE",
+    "bound": -142.0,
+    "wall_time": 20.000908475000003,
+    "minimum_excess_or_incumbent": 42.0,
+    "assignment": [
+      {
+        "source": [
+          1,
+          7
+        ],
+        "machine": [
+          1,
+          8
+        ],
+        "distance": 1
+      },
+      {
+        "source": [
+          2,
+          1
+        ],
+        "machine": [
+          2,
+          2
+        ],
+        "distance": 1
+      },
+      {
+        "source": [
+          1,
+          4
+        ],
+        "machine": [
+          2,
+          5
+        ],
+        "distance": 2
+      },
+      {
+        "source": [
+          1,
+          11
+        ],
+        "machine": [
+          2,
+          12
+        ],
+        "distance": 2
+      },
+      {
+        "source": [
+          1,
+          17
+        ],
+        "machine": [
+          2,
+          20
+        ],
+        "distance": 4
+      },
+      {
+        "source": [
+          1,
+          20
+        ],
+        "machine": [
+          2,
+          23
+        ],
+        "distance": 4
+      },
+      {
+        "source": [
+          5,
+          1
+        ],
+        "machine": [
+          5,
+          2
+        ],
+        "distance": 1
+      },
+      {
+        "source": [
+          1,
+          1
+        ],
+        "machine": [
+          5,
+          5
+        ],
+        "distance": 8
+      },
+      {
+        "source": [
+          1,
+          14
+        ],
+        "machine": [
+          6,
+          15
+        ],
+        "distance": 6
+      },
+      {
+        "source": [
+          8,
+          1
+        ],
+        "machine": [
+          8,
+          2
+        ],
+        "distance": 1
+      },
+      {
+        "source": [
+          1,
+          23
+        ],
+        "machine": [
+          8,
+          23
+        ],
+        "distance": 7
+      },
+      {
+        "source": [
+          11,
+          1
+        ],
+        "machine": [
+          11,
+          2
+        ],
+        "distance": 1
+      },
+      {
+        "source": [
+          14,
+          1
+        ],
+        "machine": [
+          15,
+          4
+        ],
+        "distance": 4
+      },
+      {
+        "source": [
+          20,
+          1
+        ],
+        "machine": [
+          19,
+          8
+        ],
+        "distance": 7
+      },
+      {
+        "source": [
+          17,
+          1
+        ],
+        "machine": [
+          20,
+          2
+        ],
+        "distance": 4
+      },
+      {
+        "source": [
+          23,
+          1
+        ],
+        "machine": [
+          20,
+          5
+        ],
+        "distance": 5
+      }
+    ],
+    "dummy_sources": []
+  }
+]

@@ -1,0 +1,199 @@
+{
+  "original_coordinate_file_sha256": "51d7fedc86ebced22150d33b8272bd8105f04ff9daf5d24ffa632f302f40f82d",
+  "original": {
+    "extra": 8,
+    "body_cells": 414,
+    "holes": [
+      {
+        "rectangle": [
+          49,
+          6,
+          21,
+          53
+        ],
+        "transpose": false,
+        "conflicts": [],
+        "clear": true
+      },
+      {
+        "rectangle": [
+          49,
+          7,
+          21,
+          53
+        ],
+        "transpose": false,
+        "conflicts": [],
+        "clear": true
+      },
+      {
+        "rectangle": [
+          49,
+          9,
+          21,
+          53
+        ],
+        "transpose": false,
+        "conflicts": [],
+        "clear": true
+      },
+      {
+        "rectangle": [
+          49,
+          17,
+          21,
+          53
+        ],
+        "transpose": false,
+        "conflicts": [],
+        "clear": true
+      },
+      {
+        "rectangle": [
+          6,
+          49,
+          53,
+          21
+        ],
+        "transpose": true,
+        "conflicts": [],
+        "clear": true
+      },
+      {
+        "rectangle": [
+          7,
+          49,
+          53,
+          21
+        ],
+        "transpose": true,
+        "conflicts": [],
+        "clear": true
+      },
+      {
+        "rectangle": [
+          9,
+          49,
+          53,
+          21
+        ],
+        "transpose": true,
+        "conflicts": [],
+        "clear": true
+      },
+      {
+        "rectangle": [
+          17,
+          49,
+          53,
+          21
+        ],
+        "transpose": true,
+        "conflicts": [],
+        "clear": true
+      }
+    ],
+    "q": [
+      0,
+      3
+    ]
+  },
+  "independently_found": {
+    "extra": 8,
+    "body_cells": 414,
+    "holes": [
+      {
+        "rectangle": [
+          49,
+          6,
+          21,
+          53
+        ],
+        "transpose": false,
+        "conflicts": [],
+        "clear": true
+      },
+      {
+        "rectangle": [
+          49,
+          7,
+          21,
+          53
+        ],
+        "transpose": false,
+        "conflicts": [],
+        "clear": true
+      },
+      {
+        "rectangle": [
+          49,
+          9,
+          21,
+          53
+        ],
+        "transpose": false,
+        "conflicts": [],
+        "clear": true
+      },
+      {
+        "rectangle": [
+          49,
+          17,
+          21,
+          53
+        ],
+        "transpose": false,
+        "conflicts": [],
+        "clear": true
+      },
+      {
+        "rectangle": [
+          6,
+          49,
+          53,
+          21
+        ],
+        "transpose": true,
+        "conflicts": [],
+        "clear": true
+      },
+      {
+        "rectangle": [
+          7,
+          49,
+          53,
+          21
+        ],
+        "transpose": true,
+        "conflicts": [],
+        "clear": true
+      },
+      {
+        "rectangle": [
+          9,
+          49,
+          53,
+          21
+        ],
+        "transpose": true,
+        "conflicts": [],
+        "clear": true
+      },
+      {
+        "rectangle": [
+          17,
+          49,
+          53,
+          21
+        ],
+        "transpose": true,
+        "conflicts": [],
+        "clear": true
+      }
+    ],
+    "q": [
+      0,
+      3
+    ]
+  }
+}

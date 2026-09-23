@@ -1,0 +1,957 @@
+{
+  "python": "3.14.7",
+  "ortools": "9.15.6755",
+  "materials": {
+    "蓝铁矿": "34",
+    "源矿": "18",
+    "蓝铁块": "34",
+    "蓝铁粉末": "34",
+    "源石粉末": "18",
+    "砂叶粉末": "63/2",
+    "砂叶": "21",
+    "砂叶种子": "21",
+    "荞花": "11",
+    "荞花种子": "11",
+    "荞花粉末": "11",
+    "致密蓝铁粉末": "17",
+    "钢块": "17",
+    "致密源石粉末": "9",
+    "细磨荞花粉末": "11/2",
+    "钢制零件": "6",
+    "钢质瓶": "11/2",
+    "高容谷地电池": "3/5",
+    "精选荞愈胶囊": "11/20"
+  },
+  "total": "6113/20",
+  "raw_ore": "52",
+  "other_materials": "5073/20",
+  "counts": {
+    "粉碎机": 68,
+    "精炼炉": 51,
+    "研磨机": 32,
+    "塑形机": 6,
+    "配件机": 6,
+    "种植机": 32,
+    "采种机": 16,
+    "封装机": 3,
+    "灌装机": 3
+  },
+  "total_count": 217,
+  "machine_area": 3291,
+  "V_lower": "6273/20",
+  "slots_min": 314,
+  "weak_T": 159,
+  "edge_cases": [
+    {
+      "gaps": [
+        0,
+        0
+      ],
+      "q": [
+        0,
+        0
+      ],
+      "possible_neighbors": 0
+    },
+    {
+      "gaps": [
+        0,
+        3
+      ],
+      "q": [
+        3,
+        0
+      ],
+      "possible_neighbors": 1
+    },
+    {
+      "gaps": [
+        0,
+        6
+      ],
+      "q": [
+        6,
+        0
+      ],
+      "possible_neighbors": 1
+    },
+    {
+      "gaps": [
+        0,
+        9
+      ],
+      "q": [
+        9,
+        0
+      ],
+      "possible_neighbors": 1
+    },
+    {
+      "gaps": [
+        0,
+        12
+      ],
+      "q": [
+        12,
+        0
+      ],
+      "possible_neighbors": 1
+    },
+    {
+      "gaps": [
+        0,
+        15
+      ],
+      "q": [
+        15,
+        0
+      ],
+      "possible_neighbors": 1
+    },
+    {
+      "gaps": [
+        0,
+        18
+      ],
+      "q": [
+        18,
+        0
+      ],
+      "possible_neighbors": 1
+    },
+    {
+      "gaps": [
+        0,
+        21
+      ],
+      "q": [
+        21,
+        0
+      ],
+      "possible_neighbors": 1
+    },
+    {
+      "gaps": [
+        0,
+        24
+      ],
+      "q": [
+        24,
+        0
+      ],
+      "possible_neighbors": 1
+    },
+    {
+      "gaps": [
+        0,
+        27
+      ],
+      "q": [
+        27,
+        0
+      ],
+      "possible_neighbors": 1
+    },
+    {
+      "gaps": [
+        0,
+        30
+      ],
+      "q": [
+        30,
+        0
+      ],
+      "possible_neighbors": 1
+    },
+    {
+      "gaps": [
+        0,
+        33
+      ],
+      "q": [
+        33,
+        0
+      ],
+      "possible_neighbors": 1
+    },
+    {
+      "gaps": [
+        0,
+        36
+      ],
+      "q": [
+        36,
+        0
+      ],
+      "possible_neighbors": 1
+    },
+    {
+      "gaps": [
+        0,
+        39
+      ],
+      "q": [
+        39,
+        0
+      ],
+      "possible_neighbors": 1
+    },
+    {
+      "gaps": [
+        0,
+        42
+      ],
+      "q": [
+        42,
+        0
+      ],
+      "possible_neighbors": 1
+    },
+    {
+      "gaps": [
+        0,
+        45
+      ],
+      "q": [
+        45,
+        0
+      ],
+      "possible_neighbors": 1
+    },
+    {
+      "gaps": [
+        0,
+        48
+      ],
+      "q": [
+        48,
+        0
+      ],
+      "possible_neighbors": 1
+    },
+    {
+      "gaps": [
+        0,
+        51
+      ],
+      "q": [
+        51,
+        0
+      ],
+      "possible_neighbors": 1
+    },
+    {
+      "gaps": [
+        0,
+        54
+      ],
+      "q": [
+        54,
+        0
+      ],
+      "possible_neighbors": 1
+    },
+    {
+      "gaps": [
+        0,
+        57
+      ],
+      "q": [
+        57,
+        0
+      ],
+      "possible_neighbors": 1
+    },
+    {
+      "gaps": [
+        0,
+        60
+      ],
+      "q": [
+        60,
+        0
+      ],
+      "possible_neighbors": 1
+    },
+    {
+      "gaps": [
+        0,
+        63
+      ],
+      "q": [
+        63,
+        0
+      ],
+      "possible_neighbors": 1
+    },
+    {
+      "gaps": [
+        0,
+        66
+      ],
+      "q": [
+        66,
+        0
+      ],
+      "possible_neighbors": 1
+    },
+    {
+      "gaps": [
+        0,
+        69
+      ],
+      "q": [
+        69,
+        0
+      ],
+      "possible_neighbors": 1
+    },
+    {
+      "gaps": [
+        3,
+        0
+      ],
+      "q": [
+        0,
+        3
+      ],
+      "possible_neighbors": 1
+    },
+    {
+      "gaps": [
+        6,
+        0
+      ],
+      "q": [
+        0,
+        6
+      ],
+      "possible_neighbors": 1
+    },
+    {
+      "gaps": [
+        9,
+        0
+      ],
+      "q": [
+        0,
+        9
+      ],
+      "possible_neighbors": 1
+    },
+    {
+      "gaps": [
+        12,
+        0
+      ],
+      "q": [
+        0,
+        12
+      ],
+      "possible_neighbors": 1
+    },
+    {
+      "gaps": [
+        15,
+        0
+      ],
+      "q": [
+        0,
+        15
+      ],
+      "possible_neighbors": 1
+    },
+    {
+      "gaps": [
+        18,
+        0
+      ],
+      "q": [
+        0,
+        18
+      ],
+      "possible_neighbors": 1
+    },
+    {
+      "gaps": [
+        21,
+        0
+      ],
+      "q": [
+        0,
+        21
+      ],
+      "possible_neighbors": 1
+    },
+    {
+      "gaps": [
+        24,
+        0
+      ],
+      "q": [
+        0,
+        24
+      ],
+      "possible_neighbors": 1
+    },
+    {
+      "gaps": [
+        27,
+        0
+      ],
+      "q": [
+        0,
+        27
+      ],
+      "possible_neighbors": 1
+    },
+    {
+      "gaps": [
+        30,
+        0
+      ],
+      "q": [
+        0,
+        30
+      ],
+      "possible_neighbors": 1
+    },
+    {
+      "gaps": [
+        33,
+        0
+      ],
+      "q": [
+        0,
+        33
+      ],
+      "possible_neighbors": 1
+    },
+    {
+      "gaps": [
+        36,
+        0
+      ],
+      "q": [
+        0,
+        36
+      ],
+      "possible_neighbors": 1
+    },
+    {
+      "gaps": [
+        39,
+        0
+      ],
+      "q": [
+        0,
+        39
+      ],
+      "possible_neighbors": 1
+    },
+    {
+      "gaps": [
+        42,
+        0
+      ],
+      "q": [
+        0,
+        42
+      ],
+      "possible_neighbors": 1
+    },
+    {
+      "gaps": [
+        45,
+        0
+      ],
+      "q": [
+        0,
+        45
+      ],
+      "possible_neighbors": 1
+    },
+    {
+      "gaps": [
+        48,
+        0
+      ],
+      "q": [
+        0,
+        48
+      ],
+      "possible_neighbors": 1
+    },
+    {
+      "gaps": [
+        51,
+        0
+      ],
+      "q": [
+        0,
+        51
+      ],
+      "possible_neighbors": 1
+    },
+    {
+      "gaps": [
+        54,
+        0
+      ],
+      "q": [
+        0,
+        54
+      ],
+      "possible_neighbors": 1
+    },
+    {
+      "gaps": [
+        57,
+        0
+      ],
+      "q": [
+        0,
+        57
+      ],
+      "possible_neighbors": 1
+    },
+    {
+      "gaps": [
+        60,
+        0
+      ],
+      "q": [
+        0,
+        60
+      ],
+      "possible_neighbors": 1
+    },
+    {
+      "gaps": [
+        63,
+        0
+      ],
+      "q": [
+        0,
+        63
+      ],
+      "possible_neighbors": 1
+    },
+    {
+      "gaps": [
+        66,
+        0
+      ],
+      "q": [
+        0,
+        66
+      ],
+      "possible_neighbors": 1
+    },
+    {
+      "gaps": [
+        69,
+        0
+      ],
+      "q": [
+        0,
+        69
+      ],
+      "possible_neighbors": 1
+    }
+  ],
+  "branches": [
+    {
+      "rectangle": [
+        49,
+        6,
+        21,
+        53
+      ],
+      "P": 10,
+      "T_plus_F": 237,
+      "active_units_max": 236,
+      "capacity": 468,
+      "lower": "6273/20",
+      "gap": "3087/20",
+      "bridges_min": 78,
+      "excluded": false
+    },
+    {
+      "rectangle": [
+        49,
+        6,
+        21,
+        53
+      ],
+      "P": 11,
+      "T_plus_F": 233,
+      "active_units_max": 232,
+      "capacity": 460,
+      "lower": "6273/20",
+      "gap": "2927/20",
+      "bridges_min": 82,
+      "excluded": false
+    },
+    {
+      "rectangle": [
+        49,
+        6,
+        21,
+        53
+      ],
+      "P": 12,
+      "T_plus_F": 229,
+      "active_units_max": 228,
+      "capacity": 452,
+      "lower": "6273/20",
+      "gap": "2767/20",
+      "bridges_min": 86,
+      "excluded": false
+    },
+    {
+      "rectangle": [
+        49,
+        7,
+        21,
+        53
+      ],
+      "P": 10,
+      "T_plus_F": 237,
+      "active_units_max": 236,
+      "capacity": 468,
+      "lower": "6273/20",
+      "gap": "3087/20",
+      "bridges_min": 78,
+      "excluded": false
+    },
+    {
+      "rectangle": [
+        49,
+        7,
+        21,
+        53
+      ],
+      "P": 11,
+      "T_plus_F": 233,
+      "active_units_max": 232,
+      "capacity": 460,
+      "lower": "6273/20",
+      "gap": "2927/20",
+      "bridges_min": 82,
+      "excluded": false
+    },
+    {
+      "rectangle": [
+        49,
+        7,
+        21,
+        53
+      ],
+      "P": 12,
+      "T_plus_F": 229,
+      "active_units_max": 228,
+      "capacity": 452,
+      "lower": "6273/20",
+      "gap": "2767/20",
+      "bridges_min": 86,
+      "excluded": false
+    },
+    {
+      "rectangle": [
+        49,
+        9,
+        21,
+        53
+      ],
+      "P": 10,
+      "T_plus_F": 237,
+      "active_units_max": 236,
+      "capacity": 468,
+      "lower": "6273/20",
+      "gap": "3087/20",
+      "bridges_min": 78,
+      "excluded": false
+    },
+    {
+      "rectangle": [
+        49,
+        9,
+        21,
+        53
+      ],
+      "P": 11,
+      "T_plus_F": 233,
+      "active_units_max": 232,
+      "capacity": 460,
+      "lower": "6273/20",
+      "gap": "2927/20",
+      "bridges_min": 82,
+      "excluded": false
+    },
+    {
+      "rectangle": [
+        49,
+        9,
+        21,
+        53
+      ],
+      "P": 12,
+      "T_plus_F": 229,
+      "active_units_max": 228,
+      "capacity": 452,
+      "lower": "6273/20",
+      "gap": "2767/20",
+      "bridges_min": 86,
+      "excluded": false
+    },
+    {
+      "rectangle": [
+        49,
+        17,
+        21,
+        53
+      ],
+      "P": 10,
+      "T_plus_F": 237,
+      "active_units_max": 236,
+      "capacity": 468,
+      "lower": "6273/20",
+      "gap": "3087/20",
+      "bridges_min": 78,
+      "excluded": false
+    },
+    {
+      "rectangle": [
+        49,
+        17,
+        21,
+        53
+      ],
+      "P": 11,
+      "T_plus_F": 233,
+      "active_units_max": 232,
+      "capacity": 460,
+      "lower": "6273/20",
+      "gap": "2927/20",
+      "bridges_min": 82,
+      "excluded": false
+    },
+    {
+      "rectangle": [
+        49,
+        17,
+        21,
+        53
+      ],
+      "P": 12,
+      "T_plus_F": 229,
+      "active_units_max": 228,
+      "capacity": 452,
+      "lower": "6273/20",
+      "gap": "2767/20",
+      "bridges_min": 86,
+      "excluded": false
+    },
+    {
+      "rectangle": [
+        6,
+        49,
+        53,
+        21
+      ],
+      "P": 10,
+      "T_plus_F": 237,
+      "active_units_max": 236,
+      "capacity": 468,
+      "lower": "6273/20",
+      "gap": "3087/20",
+      "bridges_min": 78,
+      "excluded": false
+    },
+    {
+      "rectangle": [
+        6,
+        49,
+        53,
+        21
+      ],
+      "P": 11,
+      "T_plus_F": 233,
+      "active_units_max": 232,
+      "capacity": 460,
+      "lower": "6273/20",
+      "gap": "2927/20",
+      "bridges_min": 82,
+      "excluded": false
+    },
+    {
+      "rectangle": [
+        6,
+        49,
+        53,
+        21
+      ],
+      "P": 12,
+      "T_plus_F": 229,
+      "active_units_max": 228,
+      "capacity": 452,
+      "lower": "6273/20",
+      "gap": "2767/20",
+      "bridges_min": 86,
+      "excluded": false
+    },
+    {
+      "rectangle": [
+        7,
+        49,
+        53,
+        21
+      ],
+      "P": 10,
+      "T_plus_F": 237,
+      "active_units_max": 236,
+      "capacity": 468,
+      "lower": "6273/20",
+      "gap": "3087/20",
+      "bridges_min": 78,
+      "excluded": false
+    },
+    {
+      "rectangle": [
+        7,
+        49,
+        53,
+        21
+      ],
+      "P": 11,
+      "T_plus_F": 233,
+      "active_units_max": 232,
+      "capacity": 460,
+      "lower": "6273/20",
+      "gap": "2927/20",
+      "bridges_min": 82,
+      "excluded": false
+    },
+    {
+      "rectangle": [
+        7,
+        49,
+        53,
+        21
+      ],
+      "P": 12,
+      "T_plus_F": 229,
+      "active_units_max": 228,
+      "capacity": 452,
+      "lower": "6273/20",
+      "gap": "2767/20",
+      "bridges_min": 86,
+      "excluded": false
+    },
+    {
+      "rectangle": [
+        9,
+        49,
+        53,
+        21
+      ],
+      "P": 10,
+      "T_plus_F": 237,
+      "active_units_max": 236,
+      "capacity": 468,
+      "lower": "6273/20",
+      "gap": "3087/20",
+      "bridges_min": 78,
+      "excluded": false
+    },
+    {
+      "rectangle": [
+        9,
+        49,
+        53,
+        21
+      ],
+      "P": 11,
+      "T_plus_F": 233,
+      "active_units_max": 232,
+      "capacity": 460,
+      "lower": "6273/20",
+      "gap": "2927/20",
+      "bridges_min": 82,
+      "excluded": false
+    },
+    {
+      "rectangle": [
+        9,
+        49,
+        53,
+        21
+      ],
+      "P": 12,
+      "T_plus_F": 229,
+      "active_units_max": 228,
+      "capacity": 452,
+      "lower": "6273/20",
+      "gap": "2767/20",
+      "bridges_min": 86,
+      "excluded": false
+    },
+    {
+      "rectangle": [
+        17,
+        49,
+        53,
+        21
+      ],
+      "P": 10,
+      "T_plus_F": 237,
+      "active_units_max": 236,
+      "capacity": 468,
+      "lower": "6273/20",
+      "gap": "3087/20",
+      "bridges_min": 78,
+      "excluded": false
+    },
+    {
+      "rectangle": [
+        17,
+        49,
+        53,
+        21
+      ],
+      "P": 11,
+      "T_plus_F": 233,
+      "active_units_max": 232,
+      "capacity": 460,
+      "lower": "6273/20",
+      "gap": "2927/20",
+      "bridges_min": 82,
+      "excluded": false
+    },
+    {
+      "rectangle": [
+        17,
+        49,
+        53,
+        21
+      ],
+      "P": 12,
+      "T_plus_F": 229,
+      "active_units_max": 228,
+      "capacity": 452,
+      "lower": "6273/20",
+      "gap": "2767/20",
+      "bridges_min": 86,
+      "excluded": false
+    }
+  ],
+  "next_areas": [
+    1113,
+    1110,
+    1107,
+    1105,
+    1104,
+    1102
+  ]
+}

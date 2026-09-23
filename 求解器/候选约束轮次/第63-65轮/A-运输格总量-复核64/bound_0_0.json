@@ -1,0 +1,15 @@
+[
+  {
+    "left_gap": 0,
+    "bottom_gap": 0,
+    "cap": 7,
+    "status": "INFEASIBLE",
+    "legal_bodies": 4356,
+    "variables": 3430,
+    "cell_constraints": 1260,
+    "elapsed_seconds": 0.19854034700256307,
+    "branches": 0,
+    "conflicts": 0,
+    "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 0\nbooleans: 0\nconflicts: 0\nbranches: 0\npropagations: 0\ninteger_propagations: 0\nrestarts: 0\nlp_iterations: 0\nwalltime: 0.159138\nusertime: 0.159138\ndeterministic_time: 0.576545\ngap_integral: 0\n"
+  }
+]

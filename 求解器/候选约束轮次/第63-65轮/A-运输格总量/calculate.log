@@ -1,0 +1,22 @@
+{
+  "machine_area": 3291,
+  "base_nonpole_area": 3510,
+  "base_visits": "6113/20",
+  "extra_visits": 8,
+  "visits_lower": "6273/20",
+  "transport_slots_lower": 314,
+  "raw_ore_visits_lower": 60,
+  "non_ore_visits": "5073/20",
+  "nonbridge_lower": 4,
+  "transport_count_from_visits_alone": 159,
+  "cp_cases": 47,
+  "highs_cases": 47,
+  "relaxation_minimum_excess": 8,
+  "next_integer_area": 1110,
+  "versions": {
+    "python": "3.14.7",
+    "ortools": "9.15.6755",
+    "scipy": "1.18.1"
+  }
+}
+All 24 position/P rows saved; input hashes unchanged.

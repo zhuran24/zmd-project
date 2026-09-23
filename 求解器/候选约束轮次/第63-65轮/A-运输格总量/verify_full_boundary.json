@@ -1,0 +1,434 @@
+{
+  "cases": [
+    {
+      "gap_left": 0,
+      "gap_bottom": 0,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "variable_count": 3430,
+      "constraint_count": 1307,
+      "seconds": 9.009609892993467
+    },
+    {
+      "gap_left": 3,
+      "gap_bottom": 0,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "variable_count": 3429,
+      "constraint_count": 1310,
+      "seconds": 8.884960789000615
+    },
+    {
+      "gap_left": 6,
+      "gap_bottom": 0,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "variable_count": 3422,
+      "constraint_count": 1310,
+      "seconds": 0.15067784099665005
+    },
+    {
+      "gap_left": 9,
+      "gap_bottom": 0,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "variable_count": 3418,
+      "constraint_count": 1310,
+      "seconds": 0.14051086799736368
+    },
+    {
+      "gap_left": 12,
+      "gap_bottom": 0,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "variable_count": 3416,
+      "constraint_count": 1310,
+      "seconds": 0.1593902890017489
+    },
+    {
+      "gap_left": 15,
+      "gap_bottom": 0,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "variable_count": 3416,
+      "constraint_count": 1310,
+      "seconds": 0.14927454899589065
+    },
+    {
+      "gap_left": 18,
+      "gap_bottom": 0,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "variable_count": 3416,
+      "constraint_count": 1310,
+      "seconds": 0.14759000599588035
+    },
+    {
+      "gap_left": 21,
+      "gap_bottom": 0,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "variable_count": 3416,
+      "constraint_count": 1310,
+      "seconds": 0.1665001500005019
+    },
+    {
+      "gap_left": 24,
+      "gap_bottom": 0,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "variable_count": 3416,
+      "constraint_count": 1310,
+      "seconds": 0.1465541720026522
+    },
+    {
+      "gap_left": 27,
+      "gap_bottom": 0,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "variable_count": 3416,
+      "constraint_count": 1310,
+      "seconds": 0.1511582349994569
+    },
+    {
+      "gap_left": 30,
+      "gap_bottom": 0,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "variable_count": 3416,
+      "constraint_count": 1310,
+      "seconds": 0.1473751040030038
+    },
+    {
+      "gap_left": 33,
+      "gap_bottom": 0,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "variable_count": 3416,
+      "constraint_count": 1310,
+      "seconds": 0.15122487700136844
+    },
+    {
+      "gap_left": 36,
+      "gap_bottom": 0,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "variable_count": 3416,
+      "constraint_count": 1310,
+      "seconds": 0.14731870000105118
+    },
+    {
+      "gap_left": 39,
+      "gap_bottom": 0,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "variable_count": 3416,
+      "constraint_count": 1310,
+      "seconds": 0.1485079650010448
+    },
+    {
+      "gap_left": 42,
+      "gap_bottom": 0,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "variable_count": 3416,
+      "constraint_count": 1310,
+      "seconds": 0.14754641099716537
+    },
+    {
+      "gap_left": 45,
+      "gap_bottom": 0,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "variable_count": 3416,
+      "constraint_count": 1310,
+      "seconds": 0.1461417780010379
+    },
+    {
+      "gap_left": 48,
+      "gap_bottom": 0,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "variable_count": 3416,
+      "constraint_count": 1310,
+      "seconds": 0.14662444200075697
+    },
+    {
+      "gap_left": 51,
+      "gap_bottom": 0,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "variable_count": 3416,
+      "constraint_count": 1310,
+      "seconds": 0.14653327999985777
+    },
+    {
+      "gap_left": 54,
+      "gap_bottom": 0,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "variable_count": 3416,
+      "constraint_count": 1310,
+      "seconds": 0.14956617200368783
+    },
+    {
+      "gap_left": 57,
+      "gap_bottom": 0,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "variable_count": 3416,
+      "constraint_count": 1310,
+      "seconds": 0.1464251770012197
+    },
+    {
+      "gap_left": 60,
+      "gap_bottom": 0,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "variable_count": 3416,
+      "constraint_count": 1310,
+      "seconds": 0.1461449620037456
+    },
+    {
+      "gap_left": 63,
+      "gap_bottom": 0,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "variable_count": 3417,
+      "constraint_count": 1310,
+      "seconds": 0.13695713900233386
+    },
+    {
+      "gap_left": 66,
+      "gap_bottom": 0,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "variable_count": 3421,
+      "constraint_count": 1310,
+      "seconds": 0.14646211700164713
+    },
+    {
+      "gap_left": 69,
+      "gap_bottom": 0,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "variable_count": 3425,
+      "constraint_count": 1307,
+      "seconds": 0.1463834549940657
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 3,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "variable_count": 3429,
+      "constraint_count": 1310,
+      "seconds": 8.80465868399915
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 6,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "variable_count": 3422,
+      "constraint_count": 1310,
+      "seconds": 0.11174806400231319
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 9,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "variable_count": 3418,
+      "constraint_count": 1310,
+      "seconds": 0.17020002999925055
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 12,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "variable_count": 3416,
+      "constraint_count": 1310,
+      "seconds": 0.10770554400369292
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 15,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "variable_count": 3416,
+      "constraint_count": 1310,
+      "seconds": 0.10875027899601264
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 18,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "variable_count": 3416,
+      "constraint_count": 1310,
+      "seconds": 0.10849447100190446
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 21,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "variable_count": 3416,
+      "constraint_count": 1310,
+      "seconds": 0.10982817199692363
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 24,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "variable_count": 3416,
+      "constraint_count": 1310,
+      "seconds": 0.1084068229974946
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 27,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "variable_count": 3416,
+      "constraint_count": 1310,
+      "seconds": 0.1079364430042915
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 30,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "variable_count": 3416,
+      "constraint_count": 1310,
+      "seconds": 0.1084431159979431
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 33,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "variable_count": 3416,
+      "constraint_count": 1310,
+      "seconds": 0.10855748399626464
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 36,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "variable_count": 3416,
+      "constraint_count": 1310,
+      "seconds": 0.11058415099978447
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 39,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "variable_count": 3416,
+      "constraint_count": 1310,
+      "seconds": 0.11078842999995686
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 42,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "variable_count": 3416,
+      "constraint_count": 1310,
+      "seconds": 0.10851630400429713
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 45,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "variable_count": 3416,
+      "constraint_count": 1310,
+      "seconds": 0.11733251300029224
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 48,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "variable_count": 3416,
+      "constraint_count": 1310,
+      "seconds": 0.1091321709973272
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 51,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "variable_count": 3416,
+      "constraint_count": 1310,
+      "seconds": 0.10857795600168174
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 54,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "variable_count": 3416,
+      "constraint_count": 1310,
+      "seconds": 0.10871351000241702
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 57,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "variable_count": 3416,
+      "constraint_count": 1310,
+      "seconds": 0.10962524899514392
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 60,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "variable_count": 3416,
+      "constraint_count": 1310,
+      "seconds": 0.12618228000064846
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 63,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "variable_count": 3417,
+      "constraint_count": 1310,
+      "seconds": 0.11010596899723168
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 66,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "variable_count": 3421,
+      "constraint_count": 1310,
+      "seconds": 0.110115098003007
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 69,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "variable_count": 3425,
+      "constraint_count": 1307,
+      "seconds": 0.10498878600628814
+    }
+  ],
+  "all_infeasible": true,
+  "witness_check": {
+    "assignment_count": 46,
+    "occupied_cells": 414,
+    "excess": 8,
+    "scope": "distance relaxation only; not a running-layout witness"
+  }
+}

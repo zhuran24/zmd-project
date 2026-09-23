@@ -1,0 +1,93 @@
+{
+  "status": 0,
+  "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+  "variables": 44,
+  "constraints": 47,
+  "objective": 6.333333333333331,
+  "dual_bound": 6.333333333333331,
+  "model": "仅条带台数、平均配方率、20种物料守恒和第4行机身宽度；放宽所有端口、供电、时序和外部工厂",
+  "recipe_rates": [
+    {
+      "recipe": {
+        "kind": "粉碎机",
+        "inputs": {
+          "源矿": 1
+        },
+        "outputs": {
+          "源石粉末": 1
+        },
+        "ticks": 1,
+        "K_in": 1,
+        "K_out": 1,
+        "K_net_consumption": 0
+      },
+      "rate": 2.6666666666666665
+    },
+    {
+      "recipe": {
+        "kind": "粉碎机",
+        "inputs": {
+          "砂叶": 1
+        },
+        "outputs": {
+          "砂叶粉末": 3
+        },
+        "ticks": 1,
+        "K_in": 0,
+        "K_out": 0,
+        "K_net_consumption": 0
+      },
+      "rate": 0.3333333333333333
+    },
+    {
+      "recipe": {
+        "kind": "精炼炉",
+        "inputs": {
+          "蓝铁矿": 1
+        },
+        "outputs": {
+          "蓝铁块": 1
+        },
+        "ticks": 1,
+        "K_in": 1,
+        "K_out": 1,
+        "K_net_consumption": 0
+      },
+      "rate": 0.9999999999999991
+    },
+    {
+      "recipe": {
+        "kind": "研磨机",
+        "inputs": {
+          "源石粉末": 2,
+          "砂叶粉末": 1
+        },
+        "outputs": {
+          "致密源石粉末": 1
+        },
+        "ticks": 1,
+        "K_in": 2,
+        "K_out": 0,
+        "K_net_consumption": 2
+      },
+      "rate": 1.0
+    }
+  ],
+  "machine_counts": {
+    "粉碎机": 3,
+    "精炼炉": 1,
+    "配件机": 0,
+    "塑形机": 0,
+    "种植机": 0,
+    "采种机": 0
+  },
+  "blue_ore_sources": 1,
+  "absolute_net_item_flows": {
+    "源石粉末": 0.6666666666666665,
+    "源矿": 3.3333333333333335,
+    "砂叶": 0.3333333333333335,
+    "致密源石粉末": 1.0,
+    "蓝铁块": 0.9999999999999981
+  },
+  "minimum_slack": -9.992007221626409e-16
+}

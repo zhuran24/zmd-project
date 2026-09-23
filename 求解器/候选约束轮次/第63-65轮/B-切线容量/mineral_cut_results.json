@@ -1,0 +1,212 @@
+{
+  "status": "仅矿物切线阶段结果；全物料切线最终结果另见results.json",
+  "formal_item_count": 72,
+  "positions": [
+    {
+      "position": [
+        49,
+        6
+      ],
+      "rectangle_size": [
+        21,
+        53
+      ],
+      "cut": "x=48.5",
+      "source_rate": 7,
+      "geometric_capacity": 5,
+      "corrected_margin_formula": "-2 + 2G - D",
+      "other_arm_height": 11,
+      "excluded": true,
+      "excluded_P": [
+        10,
+        11,
+        12
+      ],
+      "decisive_deficit": 2,
+      "strongest_remaining_statement": "G=0，D≥0，缺2件/tick"
+    },
+    {
+      "position": [
+        49,
+        7
+      ],
+      "rectangle_size": [
+        21,
+        53
+      ],
+      "cut": "x=48.5",
+      "source_rate": 7,
+      "geometric_capacity": 6,
+      "corrected_margin_formula": "-1 + 2G - D",
+      "other_arm_height": 10,
+      "excluded": false,
+      "excluded_P": [],
+      "decisive_deficit": null,
+      "strongest_remaining_statement": "恰一台大制造单位且为研磨机，1/2≤G≤总批次率≤1，D=0；矿物切线余量0至1"
+    },
+    {
+      "position": [
+        49,
+        9
+      ],
+      "rectangle_size": [
+        21,
+        53
+      ],
+      "cut": "x=48.5",
+      "source_rate": 7,
+      "geometric_capacity": 8,
+      "corrected_margin_formula": "1 + 2G - D",
+      "other_arm_height": 8,
+      "excluded": false,
+      "excluded_P": [],
+      "decisive_deficit": null,
+      "strongest_remaining_statement": "余量为1+2G-D；G、D须随布局重算，未得固定正缺口"
+    },
+    {
+      "position": [
+        49,
+        17
+      ],
+      "rectangle_size": [
+        21,
+        53
+      ],
+      "cut": "x=48.5",
+      "source_rate": 7,
+      "geometric_capacity": 16,
+      "corrected_margin_formula": "9 + 2G - D",
+      "other_arm_height": 0,
+      "excluded": false,
+      "excluded_P": [],
+      "decisive_deficit": null,
+      "strongest_remaining_statement": "余量为9+2G-D；G、D须随布局重算，未得固定正缺口"
+    },
+    {
+      "position": [
+        6,
+        49
+      ],
+      "rectangle_size": [
+        53,
+        21
+      ],
+      "cut": "y=48.5",
+      "source_rate": 7,
+      "geometric_capacity": 5,
+      "corrected_margin_formula": "-2 + 2G - D",
+      "other_arm_height": 11,
+      "excluded": true,
+      "excluded_P": [
+        10,
+        11,
+        12
+      ],
+      "decisive_deficit": 2,
+      "strongest_remaining_statement": "G=0，D≥0，缺2件/tick"
+    },
+    {
+      "position": [
+        7,
+        49
+      ],
+      "rectangle_size": [
+        53,
+        21
+      ],
+      "cut": "y=48.5",
+      "source_rate": 7,
+      "geometric_capacity": 6,
+      "corrected_margin_formula": "-1 + 2G - D",
+      "other_arm_height": 10,
+      "excluded": false,
+      "excluded_P": [],
+      "decisive_deficit": null,
+      "strongest_remaining_statement": "恰一台大制造单位且为研磨机，1/2≤G≤总批次率≤1，D=0；矿物切线余量0至1"
+    },
+    {
+      "position": [
+        9,
+        49
+      ],
+      "rectangle_size": [
+        53,
+        21
+      ],
+      "cut": "y=48.5",
+      "source_rate": 7,
+      "geometric_capacity": 8,
+      "corrected_margin_formula": "1 + 2G - D",
+      "other_arm_height": 8,
+      "excluded": false,
+      "excluded_P": [],
+      "decisive_deficit": null,
+      "strongest_remaining_statement": "余量为1+2G-D；G、D须随布局重算，未得固定正缺口"
+    },
+    {
+      "position": [
+        17,
+        49
+      ],
+      "rectangle_size": [
+        53,
+        21
+      ],
+      "cut": "y=48.5",
+      "source_rate": 7,
+      "geometric_capacity": 16,
+      "corrected_margin_formula": "9 + 2G - D",
+      "other_arm_height": 0,
+      "excluded": false,
+      "excluded_P": [],
+      "decisive_deficit": null,
+      "strongest_remaining_statement": "余量为9+2G-D；G、D须随布局重算，未得固定正缺口"
+    }
+  ],
+  "excluded_positions": [
+    [
+      49,
+      6
+    ],
+    [
+      6,
+      49
+    ]
+  ],
+  "remaining_positions": [
+    [
+      49,
+      7
+    ],
+    [
+      49,
+      9
+    ],
+    [
+      49,
+      17
+    ],
+    [
+      7,
+      49
+    ],
+    [
+      9,
+      49
+    ],
+    [
+      17,
+      49
+    ]
+  ],
+  "b7_surviving_joint_border_patterns": 6,
+  "b7_removed_joint_border_patterns": 41,
+  "b7_grinder_gap_position_pairs": 10,
+  "candidate_status": "待审",
+  "area_upper_bound_after_this_cut": 1113,
+  "proof_not_claimed": [
+    "剩余六位置的存在性",
+    "任一完整循环态的达标",
+    "无箱范围以外的本条推广"
+  ]
+}

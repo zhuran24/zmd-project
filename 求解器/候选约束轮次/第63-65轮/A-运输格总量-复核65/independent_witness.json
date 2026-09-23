@@ -1,0 +1,568 @@
+{
+  "gap_left": 3,
+  "gap_bottom": 0,
+  "budget": 8,
+  "bodies_before_cost_cutoff": 3013,
+  "options": 3800,
+  "status": "OPTIMAL",
+  "seconds": 0.6688689139991766,
+  "response_stats": "CpSolverResponse summary:\nstatus: OPTIMAL\nobjective: 0\nbest_bound: 0\nintegers: 138\nbooleans: 3399\nconflicts: 51\nbranches: 34492\npropagations: 4282482\ninteger_propagations: 884786\nrestarts: 1\nlp_iterations: 0\nwalltime: 0.668768\nusertime: 0.668768\ndeterministic_time: 2.38779\ngap_integral: 0\nsolution_fingerprint: 0x847dd789150e1423\n",
+  "witness": {
+    "cost": 8,
+    "occupied_cells": 414,
+    "assignments": [
+      {
+        "source": [
+          1,
+          1
+        ],
+        "body": [
+          1,
+          2
+        ],
+        "distance": 1,
+        "extra": 0
+      },
+      {
+        "source": [
+          1,
+          5
+        ],
+        "body": [
+          2,
+          5
+        ],
+        "distance": 1,
+        "extra": 0
+      },
+      {
+        "source": [
+          1,
+          8
+        ],
+        "body": [
+          2,
+          8
+        ],
+        "distance": 1,
+        "extra": 0
+      },
+      {
+        "source": [
+          1,
+          11
+        ],
+        "body": [
+          2,
+          11
+        ],
+        "distance": 1,
+        "extra": 0
+      },
+      {
+        "source": [
+          1,
+          14
+        ],
+        "body": [
+          2,
+          14
+        ],
+        "distance": 1,
+        "extra": 0
+      },
+      {
+        "source": [
+          1,
+          17
+        ],
+        "body": [
+          2,
+          17
+        ],
+        "distance": 1,
+        "extra": 0
+      },
+      {
+        "source": [
+          1,
+          20
+        ],
+        "body": [
+          2,
+          20
+        ],
+        "distance": 1,
+        "extra": 0
+      },
+      {
+        "source": [
+          1,
+          23
+        ],
+        "body": [
+          2,
+          23
+        ],
+        "distance": 1,
+        "extra": 0
+      },
+      {
+        "source": [
+          1,
+          26
+        ],
+        "body": [
+          2,
+          26
+        ],
+        "distance": 1,
+        "extra": 0
+      },
+      {
+        "source": [
+          1,
+          29
+        ],
+        "body": [
+          2,
+          29
+        ],
+        "distance": 1,
+        "extra": 0
+      },
+      {
+        "source": [
+          1,
+          32
+        ],
+        "body": [
+          2,
+          32
+        ],
+        "distance": 1,
+        "extra": 0
+      },
+      {
+        "source": [
+          1,
+          35
+        ],
+        "body": [
+          2,
+          35
+        ],
+        "distance": 1,
+        "extra": 0
+      },
+      {
+        "source": [
+          1,
+          38
+        ],
+        "body": [
+          2,
+          38
+        ],
+        "distance": 1,
+        "extra": 0
+      },
+      {
+        "source": [
+          1,
+          41
+        ],
+        "body": [
+          2,
+          41
+        ],
+        "distance": 1,
+        "extra": 0
+      },
+      {
+        "source": [
+          1,
+          44
+        ],
+        "body": [
+          2,
+          44
+        ],
+        "distance": 1,
+        "extra": 0
+      },
+      {
+        "source": [
+          1,
+          47
+        ],
+        "body": [
+          2,
+          47
+        ],
+        "distance": 1,
+        "extra": 0
+      },
+      {
+        "source": [
+          1,
+          50
+        ],
+        "body": [
+          2,
+          50
+        ],
+        "distance": 1,
+        "extra": 0
+      },
+      {
+        "source": [
+          1,
+          53
+        ],
+        "body": [
+          2,
+          53
+        ],
+        "distance": 1,
+        "extra": 0
+      },
+      {
+        "source": [
+          1,
+          56
+        ],
+        "body": [
+          2,
+          56
+        ],
+        "distance": 1,
+        "extra": 0
+      },
+      {
+        "source": [
+          1,
+          59
+        ],
+        "body": [
+          2,
+          59
+        ],
+        "distance": 1,
+        "extra": 0
+      },
+      {
+        "source": [
+          1,
+          62
+        ],
+        "body": [
+          2,
+          62
+        ],
+        "distance": 1,
+        "extra": 0
+      },
+      {
+        "source": [
+          1,
+          65
+        ],
+        "body": [
+          2,
+          65
+        ],
+        "distance": 1,
+        "extra": 0
+      },
+      {
+        "source": [
+          1,
+          68
+        ],
+        "body": [
+          5,
+          66
+        ],
+        "distance": 4,
+        "extra": 3
+      },
+      {
+        "source": [
+          2,
+          1
+        ],
+        "body": [
+          4,
+          2
+        ],
+        "distance": 3,
+        "extra": 2
+      },
+      {
+        "source": [
+          5,
+          1
+        ],
+        "body": [
+          5,
+          5
+        ],
+        "distance": 4,
+        "extra": 3
+      },
+      {
+        "source": [
+          8,
+          1
+        ],
+        "body": [
+          7,
+          2
+        ],
+        "distance": 1,
+        "extra": 0
+      },
+      {
+        "source": [
+          11,
+          1
+        ],
+        "body": [
+          10,
+          2
+        ],
+        "distance": 1,
+        "extra": 0
+      },
+      {
+        "source": [
+          14,
+          1
+        ],
+        "body": [
+          13,
+          2
+        ],
+        "distance": 1,
+        "extra": 0
+      },
+      {
+        "source": [
+          17,
+          1
+        ],
+        "body": [
+          16,
+          2
+        ],
+        "distance": 1,
+        "extra": 0
+      },
+      {
+        "source": [
+          20,
+          1
+        ],
+        "body": [
+          19,
+          2
+        ],
+        "distance": 1,
+        "extra": 0
+      },
+      {
+        "source": [
+          23,
+          1
+        ],
+        "body": [
+          22,
+          2
+        ],
+        "distance": 1,
+        "extra": 0
+      },
+      {
+        "source": [
+          26,
+          1
+        ],
+        "body": [
+          25,
+          2
+        ],
+        "distance": 1,
+        "extra": 0
+      },
+      {
+        "source": [
+          29,
+          1
+        ],
+        "body": [
+          28,
+          2
+        ],
+        "distance": 1,
+        "extra": 0
+      },
+      {
+        "source": [
+          32,
+          1
+        ],
+        "body": [
+          31,
+          2
+        ],
+        "distance": 1,
+        "extra": 0
+      },
+      {
+        "source": [
+          35,
+          1
+        ],
+        "body": [
+          34,
+          2
+        ],
+        "distance": 1,
+        "extra": 0
+      },
+      {
+        "source": [
+          38,
+          1
+        ],
+        "body": [
+          37,
+          2
+        ],
+        "distance": 1,
+        "extra": 0
+      },
+      {
+        "source": [
+          41,
+          1
+        ],
+        "body": [
+          40,
+          2
+        ],
+        "distance": 1,
+        "extra": 0
+      },
+      {
+        "source": [
+          44,
+          1
+        ],
+        "body": [
+          43,
+          2
+        ],
+        "distance": 1,
+        "extra": 0
+      },
+      {
+        "source": [
+          47,
+          1
+        ],
+        "body": [
+          46,
+          2
+        ],
+        "distance": 1,
+        "extra": 0
+      },
+      {
+        "source": [
+          50,
+          1
+        ],
+        "body": [
+          49,
+          2
+        ],
+        "distance": 1,
+        "extra": 0
+      },
+      {
+        "source": [
+          53,
+          1
+        ],
+        "body": [
+          52,
+          2
+        ],
+        "distance": 1,
+        "extra": 0
+      },
+      {
+        "source": [
+          56,
+          1
+        ],
+        "body": [
+          55,
+          2
+        ],
+        "distance": 1,
+        "extra": 0
+      },
+      {
+        "source": [
+          59,
+          1
+        ],
+        "body": [
+          58,
+          2
+        ],
+        "distance": 1,
+        "extra": 0
+      },
+      {
+        "source": [
+          62,
+          1
+        ],
+        "body": [
+          61,
+          2
+        ],
+        "distance": 1,
+        "extra": 0
+      },
+      {
+        "source": [
+          65,
+          1
+        ],
+        "body": [
+          64,
+          2
+        ],
+        "distance": 1,
+        "extra": 0
+      },
+      {
+        "source": [
+          68,
+          1
+        ],
+        "body": [
+          67,
+          2
+        ],
+        "distance": 1,
+        "extra": 0
+      }
+    ]
+  }
+}

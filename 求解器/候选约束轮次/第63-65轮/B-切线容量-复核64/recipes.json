@@ -1,0 +1,301 @@
+{
+  "recipes": [
+    {
+      "kind": "粉碎机",
+      "inputs": {
+        "源矿": 1
+      },
+      "outputs": {
+        "源石粉末": 1
+      },
+      "ticks": 1,
+      "global_rate": "18",
+      "K_in": 1,
+      "K_out": 1,
+      "K_net_reduction": 0,
+      "K_input_per_tick_cap": "1"
+    },
+    {
+      "kind": "粉碎机",
+      "inputs": {
+        "蓝铁块": 1
+      },
+      "outputs": {
+        "蓝铁粉末": 1
+      },
+      "ticks": 1,
+      "global_rate": "34",
+      "K_in": 1,
+      "K_out": 1,
+      "K_net_reduction": 0,
+      "K_input_per_tick_cap": "1"
+    },
+    {
+      "kind": "粉碎机",
+      "inputs": {
+        "荞花": 1
+      },
+      "outputs": {
+        "荞花粉末": 2
+      },
+      "ticks": 1,
+      "global_rate": "11/2",
+      "K_in": 0,
+      "K_out": 0,
+      "K_net_reduction": 0,
+      "K_input_per_tick_cap": "0"
+    },
+    {
+      "kind": "粉碎机",
+      "inputs": {
+        "砂叶": 1
+      },
+      "outputs": {
+        "砂叶粉末": 3
+      },
+      "ticks": 1,
+      "global_rate": "21/2",
+      "K_in": 0,
+      "K_out": 0,
+      "K_net_reduction": 0,
+      "K_input_per_tick_cap": "0"
+    },
+    {
+      "kind": "精炼炉",
+      "inputs": {
+        "蓝铁矿": 1
+      },
+      "outputs": {
+        "蓝铁块": 1
+      },
+      "ticks": 1,
+      "global_rate": "34",
+      "K_in": 1,
+      "K_out": 1,
+      "K_net_reduction": 0,
+      "K_input_per_tick_cap": "1"
+    },
+    {
+      "kind": "精炼炉",
+      "inputs": {
+        "致密蓝铁粉末": 1
+      },
+      "outputs": {
+        "钢块": 1
+      },
+      "ticks": 1,
+      "global_rate": "17",
+      "K_in": 0,
+      "K_out": 0,
+      "K_net_reduction": 0,
+      "K_input_per_tick_cap": "0"
+    },
+    {
+      "kind": "精炼炉",
+      "inputs": {
+        "蓝铁粉末": 1
+      },
+      "outputs": {
+        "蓝铁块": 1
+      },
+      "ticks": 1,
+      "global_rate": "0",
+      "K_in": 1,
+      "K_out": 1,
+      "K_net_reduction": 0,
+      "K_input_per_tick_cap": "1"
+    },
+    {
+      "kind": "研磨机",
+      "inputs": {
+        "蓝铁粉末": 2,
+        "砂叶粉末": 1
+      },
+      "outputs": {
+        "致密蓝铁粉末": 1
+      },
+      "ticks": 1,
+      "global_rate": "17",
+      "K_in": 2,
+      "K_out": 0,
+      "K_net_reduction": 2,
+      "K_input_per_tick_cap": "2"
+    },
+    {
+      "kind": "研磨机",
+      "inputs": {
+        "源石粉末": 2,
+        "砂叶粉末": 1
+      },
+      "outputs": {
+        "致密源石粉末": 1
+      },
+      "ticks": 1,
+      "global_rate": "9",
+      "K_in": 2,
+      "K_out": 0,
+      "K_net_reduction": 2,
+      "K_input_per_tick_cap": "2"
+    },
+    {
+      "kind": "研磨机",
+      "inputs": {
+        "荞花粉末": 2,
+        "砂叶粉末": 1
+      },
+      "outputs": {
+        "细磨荞花粉末": 1
+      },
+      "ticks": 1,
+      "global_rate": "11/2",
+      "K_in": 0,
+      "K_out": 0,
+      "K_net_reduction": 0,
+      "K_input_per_tick_cap": "0"
+    },
+    {
+      "kind": "塑形机",
+      "inputs": {
+        "钢块": 2
+      },
+      "outputs": {
+        "钢质瓶": 1
+      },
+      "ticks": 1,
+      "global_rate": "11/2",
+      "K_in": 0,
+      "K_out": 0,
+      "K_net_reduction": 0,
+      "K_input_per_tick_cap": "0"
+    },
+    {
+      "kind": "配件机",
+      "inputs": {
+        "钢块": 1
+      },
+      "outputs": {
+        "钢制零件": 1
+      },
+      "ticks": 1,
+      "global_rate": "6",
+      "K_in": 0,
+      "K_out": 0,
+      "K_net_reduction": 0,
+      "K_input_per_tick_cap": "0"
+    },
+    {
+      "kind": "种植机",
+      "inputs": {
+        "荞花种子": 1
+      },
+      "outputs": {
+        "荞花": 1
+      },
+      "ticks": 1,
+      "global_rate": "11",
+      "K_in": 0,
+      "K_out": 0,
+      "K_net_reduction": 0,
+      "K_input_per_tick_cap": "0"
+    },
+    {
+      "kind": "种植机",
+      "inputs": {
+        "砂叶种子": 1
+      },
+      "outputs": {
+        "砂叶": 1
+      },
+      "ticks": 1,
+      "global_rate": "21",
+      "K_in": 0,
+      "K_out": 0,
+      "K_net_reduction": 0,
+      "K_input_per_tick_cap": "0"
+    },
+    {
+      "kind": "采种机",
+      "inputs": {
+        "荞花": 1
+      },
+      "outputs": {
+        "荞花种子": 2
+      },
+      "ticks": 1,
+      "global_rate": "11/2",
+      "K_in": 0,
+      "K_out": 0,
+      "K_net_reduction": 0,
+      "K_input_per_tick_cap": "0"
+    },
+    {
+      "kind": "采种机",
+      "inputs": {
+        "砂叶": 1
+      },
+      "outputs": {
+        "砂叶种子": 2
+      },
+      "ticks": 1,
+      "global_rate": "21/2",
+      "K_in": 0,
+      "K_out": 0,
+      "K_net_reduction": 0,
+      "K_input_per_tick_cap": "0"
+    },
+    {
+      "kind": "封装机",
+      "inputs": {
+        "钢制零件": 10,
+        "致密源石粉末": 15
+      },
+      "outputs": {
+        "高容谷地电池": 1
+      },
+      "ticks": 5,
+      "global_rate": "3/5",
+      "K_in": 0,
+      "K_out": 0,
+      "K_net_reduction": 0,
+      "K_input_per_tick_cap": "0"
+    },
+    {
+      "kind": "灌装机",
+      "inputs": {
+        "钢质瓶": 10,
+        "细磨荞花粉末": 10
+      },
+      "outputs": {
+        "精选荞愈胶囊": 1
+      },
+      "ticks": 5,
+      "global_rate": "11/20",
+      "K_in": 0,
+      "K_out": 0,
+      "K_net_reduction": 0,
+      "K_input_per_tick_cap": "0"
+    }
+  ],
+  "global_load": {
+    "粉碎机": "68",
+    "精炼炉": "51",
+    "研磨机": "63/2",
+    "塑形机": "11/2",
+    "配件机": "6",
+    "种植机": "32",
+    "采种机": "16",
+    "封装机": "3",
+    "灌装机": "11/4"
+  },
+  "per_machine_min_batches": {
+    "粉碎机": "1",
+    "精炼炉": "1",
+    "研磨机": "1/2",
+    "塑形机": "1/2",
+    "配件机": "1",
+    "种植机": "1",
+    "采种机": "1",
+    "封装机": "1/5",
+    "灌装机": "3/20"
+  }
+}

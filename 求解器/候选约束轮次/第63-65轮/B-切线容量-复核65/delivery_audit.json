@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "reader_review": {
+    "self_contained": true,
+    "current_status_matches_conclusions": true,
+    "numbers_consistent": true,
+    "all_relative_links_exist": true,
+    "no_full_layout_claim_for_relaxed_point": true,
+    "D_scope_explicit": true,
+    "all_24_position_P_branches_listed": true
+  },
+  "report_sha256": "652e3bc9a105bae1d8d7dc869a51f349b241a326e527ea8439fa9250e2f2409c",
+  "program_sha256": "9618818a7d318cbf95f43b2c877fe9e62d92707815d9510c69b84c53ef487856",
+  "files": {
+    "accounting.json": "6ded07a6e10766f38f423ffeb9077e073edd863c351b90cf4e4e80c9e9872500",
+    "geometry.json": "c9d316ad51af1eb4d6697c5fcbf18548955332f346ef22463725b88375fabf4f",
+    "independent_certificates.json": "8b3ec65a5d9d95798fdff4eb560486fddab593df7e6c299de660d6dc8a3d93d8",
+    "input_manifest.json": "1180ec78e9a4258e85091b6bf82e8bfff3dfb2c1cd09e09a00bcd7c3d635a872",
+    "rebuilt_model.json": "9822d6cbe891775c88ca08f341d2906cffdcaea7cb0f9a8c1210fe980fb27aba",
+    "recompute.py": "9618818a7d318cbf95f43b2c877fe9e62d92707815d9510c69b84c53ef487856",
+    "results.json": "1fa2b651f937f205e25c3001be917b78c5f3f98044a8b5a9c9f0c8b1fb031f93",
+    "verdicts.json": "560b4e1ae01c31339b4588e587c880453ce0e6a90964156e7ae2a62dea8fb1ad"
+  }
+}

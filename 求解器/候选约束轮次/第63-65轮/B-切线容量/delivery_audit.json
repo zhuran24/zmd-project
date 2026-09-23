@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "report": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第63-65轮/B-切线容量-推导.md",
+  "reader_review": {
+    "self_contained": true,
+    "candidate_format_complete": true,
+    "input_version_unique": true,
+    "source_vs_inference_separated": true,
+    "remaining_positions_not_claimed_feasible": true,
+    "b9_b17_missing_joint_bound_explicit": true,
+    "all_local_links_exist": true
+  },
+  "certificate_cases": 215,
+  "excluded_positions": 4,
+  "remaining_positions": 4,
+  "max_artifact_bytes": 436021,
+  "files_only_in_designated_delivery_paths": true,
+  "cargo_tests_run": false,
+  "git_commands_run": false,
+  "files_deleted": false,
+  "source_hashes_unchanged": true
+}

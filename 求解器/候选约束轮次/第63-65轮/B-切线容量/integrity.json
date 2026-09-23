@@ -1,0 +1,16 @@
+{
+  "sources_unchanged": true,
+  "changed": [],
+  "script_sha256": "88e2b15d25ec8723fed3b0c186f6469a796ac106e9cdae6bd94729a812dd160a",
+  "assertions": "passed",
+  "minimum_crossing_height_minus_K_intake": "2",
+  "facts_checked": [
+    "47种共同边带",
+    "188个位置与边带单体枚举组合",
+    "18条配方",
+    "两条且仅两条配方消耗K",
+    "b=6完整大机域为空",
+    "b=7完整大机为6×4且y=2",
+    "六种边带及十个研磨机起点组合"
+  ]
+}

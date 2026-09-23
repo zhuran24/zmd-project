@@ -1,0 +1,1537 @@
+{
+  "flows": {
+    "蓝铁矿": {
+      "fraction": "34",
+      "decimal": 34.0
+    },
+    "源矿": {
+      "fraction": "18",
+      "decimal": 18.0
+    },
+    "蓝铁块": {
+      "fraction": "34",
+      "decimal": 34.0
+    },
+    "蓝铁粉末": {
+      "fraction": "34",
+      "decimal": 34.0
+    },
+    "源石粉末": {
+      "fraction": "18",
+      "decimal": 18.0
+    },
+    "砂叶粉末": {
+      "fraction": "63/2",
+      "decimal": 31.5
+    },
+    "砂叶": {
+      "fraction": "21",
+      "decimal": 21.0
+    },
+    "砂叶种子": {
+      "fraction": "21",
+      "decimal": 21.0
+    },
+    "荞花": {
+      "fraction": "11",
+      "decimal": 11.0
+    },
+    "荞花种子": {
+      "fraction": "11",
+      "decimal": 11.0
+    },
+    "荞花粉末": {
+      "fraction": "11",
+      "decimal": 11.0
+    },
+    "致密蓝铁粉末": {
+      "fraction": "17",
+      "decimal": 17.0
+    },
+    "钢块": {
+      "fraction": "17",
+      "decimal": 17.0
+    },
+    "致密源石粉末": {
+      "fraction": "9",
+      "decimal": 9.0
+    },
+    "细磨荞花粉末": {
+      "fraction": "11/2",
+      "decimal": 5.5
+    },
+    "钢制零件": {
+      "fraction": "6",
+      "decimal": 6.0
+    },
+    "钢质瓶": {
+      "fraction": "11/2",
+      "decimal": 5.5
+    },
+    "高容谷地电池": {
+      "fraction": "3/5",
+      "decimal": 0.6
+    },
+    "精选荞愈胶囊": {
+      "fraction": "11/20",
+      "decimal": 0.55
+    }
+  },
+  "total": {
+    "fraction": "6113/20",
+    "decimal": 305.65
+  },
+  "raw_ores": {
+    "fraction": "52",
+    "decimal": 52.0
+  },
+  "non_raw": {
+    "fraction": "5073/20",
+    "decimal": 253.65
+  },
+  "new_lower_bound": {
+    "fraction": "6273/20",
+    "decimal": 313.65
+  },
+  "old_slots": 306,
+  "new_slots": 314,
+  "machine_batch_rates": {
+    "粉碎机": {
+      "fraction": "68",
+      "decimal": 68.0
+    },
+    "精炼炉": {
+      "fraction": "51",
+      "decimal": 51.0
+    },
+    "研磨机": {
+      "fraction": "63/2",
+      "decimal": 31.5
+    },
+    "塑形机": {
+      "fraction": "11/2",
+      "decimal": 5.5
+    },
+    "配件机": {
+      "fraction": "6",
+      "decimal": 6.0
+    },
+    "种植机": {
+      "fraction": "32",
+      "decimal": 32.0
+    },
+    "采种机": {
+      "fraction": "16",
+      "decimal": 16.0
+    },
+    "封装机": {
+      "fraction": "3/5",
+      "decimal": 0.6
+    },
+    "灌装机": {
+      "fraction": "11/20",
+      "decimal": 0.55
+    }
+  },
+  "machine_counts": {
+    "粉碎机": 68,
+    "精炼炉": 51,
+    "研磨机": 32,
+    "塑形机": 6,
+    "配件机": 6,
+    "种植机": 32,
+    "采种机": 16,
+    "封装机": 3,
+    "灌装机": 3
+  },
+  "machine_area": 3291,
+  "T_from_slots_and_four_turns": 159,
+  "area_shapes": {
+    "1110": [
+      [
+        30,
+        37
+      ]
+    ],
+    "1111": [],
+    "1112": [],
+    "1113": [
+      [
+        21,
+        53
+      ]
+    ]
+  },
+  "cases": [
+    {
+      "rectangle": [
+        49,
+        6,
+        21,
+        53
+      ],
+      "P": 10,
+      "T_plus_F": 237,
+      "capacity_before_q_turns": 474,
+      "positive_flow_units_at_most": 236,
+      "capacity": 468,
+      "V_lower_bound": {
+        "fraction": "6273/20",
+        "decimal": 313.65
+      },
+      "gap": {
+        "fraction": "3087/20",
+        "decimal": 154.35
+      },
+      "bridge_count_at_least": 78,
+      "excluded_by_this_account": false
+    },
+    {
+      "rectangle": [
+        49,
+        6,
+        21,
+        53
+      ],
+      "P": 11,
+      "T_plus_F": 233,
+      "capacity_before_q_turns": 466,
+      "positive_flow_units_at_most": 232,
+      "capacity": 460,
+      "V_lower_bound": {
+        "fraction": "6273/20",
+        "decimal": 313.65
+      },
+      "gap": {
+        "fraction": "2927/20",
+        "decimal": 146.35
+      },
+      "bridge_count_at_least": 82,
+      "excluded_by_this_account": false
+    },
+    {
+      "rectangle": [
+        49,
+        6,
+        21,
+        53
+      ],
+      "P": 12,
+      "T_plus_F": 229,
+      "capacity_before_q_turns": 458,
+      "positive_flow_units_at_most": 228,
+      "capacity": 452,
+      "V_lower_bound": {
+        "fraction": "6273/20",
+        "decimal": 313.65
+      },
+      "gap": {
+        "fraction": "2767/20",
+        "decimal": 138.35
+      },
+      "bridge_count_at_least": 86,
+      "excluded_by_this_account": false
+    },
+    {
+      "rectangle": [
+        49,
+        7,
+        21,
+        53
+      ],
+      "P": 10,
+      "T_plus_F": 237,
+      "capacity_before_q_turns": 474,
+      "positive_flow_units_at_most": 236,
+      "capacity": 468,
+      "V_lower_bound": {
+        "fraction": "6273/20",
+        "decimal": 313.65
+      },
+      "gap": {
+        "fraction": "3087/20",
+        "decimal": 154.35
+      },
+      "bridge_count_at_least": 78,
+      "excluded_by_this_account": false
+    },
+    {
+      "rectangle": [
+        49,
+        7,
+        21,
+        53
+      ],
+      "P": 11,
+      "T_plus_F": 233,
+      "capacity_before_q_turns": 466,
+      "positive_flow_units_at_most": 232,
+      "capacity": 460,
+      "V_lower_bound": {
+        "fraction": "6273/20",
+        "decimal": 313.65
+      },
+      "gap": {
+        "fraction": "2927/20",
+        "decimal": 146.35
+      },
+      "bridge_count_at_least": 82,
+      "excluded_by_this_account": false
+    },
+    {
+      "rectangle": [
+        49,
+        7,
+        21,
+        53
+      ],
+      "P": 12,
+      "T_plus_F": 229,
+      "capacity_before_q_turns": 458,
+      "positive_flow_units_at_most": 228,
+      "capacity": 452,
+      "V_lower_bound": {
+        "fraction": "6273/20",
+        "decimal": 313.65
+      },
+      "gap": {
+        "fraction": "2767/20",
+        "decimal": 138.35
+      },
+      "bridge_count_at_least": 86,
+      "excluded_by_this_account": false
+    },
+    {
+      "rectangle": [
+        49,
+        9,
+        21,
+        53
+      ],
+      "P": 10,
+      "T_plus_F": 237,
+      "capacity_before_q_turns": 474,
+      "positive_flow_units_at_most": 236,
+      "capacity": 468,
+      "V_lower_bound": {
+        "fraction": "6273/20",
+        "decimal": 313.65
+      },
+      "gap": {
+        "fraction": "3087/20",
+        "decimal": 154.35
+      },
+      "bridge_count_at_least": 78,
+      "excluded_by_this_account": false
+    },
+    {
+      "rectangle": [
+        49,
+        9,
+        21,
+        53
+      ],
+      "P": 11,
+      "T_plus_F": 233,
+      "capacity_before_q_turns": 466,
+      "positive_flow_units_at_most": 232,
+      "capacity": 460,
+      "V_lower_bound": {
+        "fraction": "6273/20",
+        "decimal": 313.65
+      },
+      "gap": {
+        "fraction": "2927/20",
+        "decimal": 146.35
+      },
+      "bridge_count_at_least": 82,
+      "excluded_by_this_account": false
+    },
+    {
+      "rectangle": [
+        49,
+        9,
+        21,
+        53
+      ],
+      "P": 12,
+      "T_plus_F": 229,
+      "capacity_before_q_turns": 458,
+      "positive_flow_units_at_most": 228,
+      "capacity": 452,
+      "V_lower_bound": {
+        "fraction": "6273/20",
+        "decimal": 313.65
+      },
+      "gap": {
+        "fraction": "2767/20",
+        "decimal": 138.35
+      },
+      "bridge_count_at_least": 86,
+      "excluded_by_this_account": false
+    },
+    {
+      "rectangle": [
+        49,
+        17,
+        21,
+        53
+      ],
+      "P": 10,
+      "T_plus_F": 237,
+      "capacity_before_q_turns": 474,
+      "positive_flow_units_at_most": 236,
+      "capacity": 468,
+      "V_lower_bound": {
+        "fraction": "6273/20",
+        "decimal": 313.65
+      },
+      "gap": {
+        "fraction": "3087/20",
+        "decimal": 154.35
+      },
+      "bridge_count_at_least": 78,
+      "excluded_by_this_account": false
+    },
+    {
+      "rectangle": [
+        49,
+        17,
+        21,
+        53
+      ],
+      "P": 11,
+      "T_plus_F": 233,
+      "capacity_before_q_turns": 466,
+      "positive_flow_units_at_most": 232,
+      "capacity": 460,
+      "V_lower_bound": {
+        "fraction": "6273/20",
+        "decimal": 313.65
+      },
+      "gap": {
+        "fraction": "2927/20",
+        "decimal": 146.35
+      },
+      "bridge_count_at_least": 82,
+      "excluded_by_this_account": false
+    },
+    {
+      "rectangle": [
+        49,
+        17,
+        21,
+        53
+      ],
+      "P": 12,
+      "T_plus_F": 229,
+      "capacity_before_q_turns": 458,
+      "positive_flow_units_at_most": 228,
+      "capacity": 452,
+      "V_lower_bound": {
+        "fraction": "6273/20",
+        "decimal": 313.65
+      },
+      "gap": {
+        "fraction": "2767/20",
+        "decimal": 138.35
+      },
+      "bridge_count_at_least": 86,
+      "excluded_by_this_account": false
+    },
+    {
+      "rectangle": [
+        6,
+        49,
+        53,
+        21
+      ],
+      "P": 10,
+      "T_plus_F": 237,
+      "capacity_before_q_turns": 474,
+      "positive_flow_units_at_most": 236,
+      "capacity": 468,
+      "V_lower_bound": {
+        "fraction": "6273/20",
+        "decimal": 313.65
+      },
+      "gap": {
+        "fraction": "3087/20",
+        "decimal": 154.35
+      },
+      "bridge_count_at_least": 78,
+      "excluded_by_this_account": false
+    },
+    {
+      "rectangle": [
+        6,
+        49,
+        53,
+        21
+      ],
+      "P": 11,
+      "T_plus_F": 233,
+      "capacity_before_q_turns": 466,
+      "positive_flow_units_at_most": 232,
+      "capacity": 460,
+      "V_lower_bound": {
+        "fraction": "6273/20",
+        "decimal": 313.65
+      },
+      "gap": {
+        "fraction": "2927/20",
+        "decimal": 146.35
+      },
+      "bridge_count_at_least": 82,
+      "excluded_by_this_account": false
+    },
+    {
+      "rectangle": [
+        6,
+        49,
+        53,
+        21
+      ],
+      "P": 12,
+      "T_plus_F": 229,
+      "capacity_before_q_turns": 458,
+      "positive_flow_units_at_most": 228,
+      "capacity": 452,
+      "V_lower_bound": {
+        "fraction": "6273/20",
+        "decimal": 313.65
+      },
+      "gap": {
+        "fraction": "2767/20",
+        "decimal": 138.35
+      },
+      "bridge_count_at_least": 86,
+      "excluded_by_this_account": false
+    },
+    {
+      "rectangle": [
+        7,
+        49,
+        53,
+        21
+      ],
+      "P": 10,
+      "T_plus_F": 237,
+      "capacity_before_q_turns": 474,
+      "positive_flow_units_at_most": 236,
+      "capacity": 468,
+      "V_lower_bound": {
+        "fraction": "6273/20",
+        "decimal": 313.65
+      },
+      "gap": {
+        "fraction": "3087/20",
+        "decimal": 154.35
+      },
+      "bridge_count_at_least": 78,
+      "excluded_by_this_account": false
+    },
+    {
+      "rectangle": [
+        7,
+        49,
+        53,
+        21
+      ],
+      "P": 11,
+      "T_plus_F": 233,
+      "capacity_before_q_turns": 466,
+      "positive_flow_units_at_most": 232,
+      "capacity": 460,
+      "V_lower_bound": {
+        "fraction": "6273/20",
+        "decimal": 313.65
+      },
+      "gap": {
+        "fraction": "2927/20",
+        "decimal": 146.35
+      },
+      "bridge_count_at_least": 82,
+      "excluded_by_this_account": false
+    },
+    {
+      "rectangle": [
+        7,
+        49,
+        53,
+        21
+      ],
+      "P": 12,
+      "T_plus_F": 229,
+      "capacity_before_q_turns": 458,
+      "positive_flow_units_at_most": 228,
+      "capacity": 452,
+      "V_lower_bound": {
+        "fraction": "6273/20",
+        "decimal": 313.65
+      },
+      "gap": {
+        "fraction": "2767/20",
+        "decimal": 138.35
+      },
+      "bridge_count_at_least": 86,
+      "excluded_by_this_account": false
+    },
+    {
+      "rectangle": [
+        9,
+        49,
+        53,
+        21
+      ],
+      "P": 10,
+      "T_plus_F": 237,
+      "capacity_before_q_turns": 474,
+      "positive_flow_units_at_most": 236,
+      "capacity": 468,
+      "V_lower_bound": {
+        "fraction": "6273/20",
+        "decimal": 313.65
+      },
+      "gap": {
+        "fraction": "3087/20",
+        "decimal": 154.35
+      },
+      "bridge_count_at_least": 78,
+      "excluded_by_this_account": false
+    },
+    {
+      "rectangle": [
+        9,
+        49,
+        53,
+        21
+      ],
+      "P": 11,
+      "T_plus_F": 233,
+      "capacity_before_q_turns": 466,
+      "positive_flow_units_at_most": 232,
+      "capacity": 460,
+      "V_lower_bound": {
+        "fraction": "6273/20",
+        "decimal": 313.65
+      },
+      "gap": {
+        "fraction": "2927/20",
+        "decimal": 146.35
+      },
+      "bridge_count_at_least": 82,
+      "excluded_by_this_account": false
+    },
+    {
+      "rectangle": [
+        9,
+        49,
+        53,
+        21
+      ],
+      "P": 12,
+      "T_plus_F": 229,
+      "capacity_before_q_turns": 458,
+      "positive_flow_units_at_most": 228,
+      "capacity": 452,
+      "V_lower_bound": {
+        "fraction": "6273/20",
+        "decimal": 313.65
+      },
+      "gap": {
+        "fraction": "2767/20",
+        "decimal": 138.35
+      },
+      "bridge_count_at_least": 86,
+      "excluded_by_this_account": false
+    },
+    {
+      "rectangle": [
+        17,
+        49,
+        53,
+        21
+      ],
+      "P": 10,
+      "T_plus_F": 237,
+      "capacity_before_q_turns": 474,
+      "positive_flow_units_at_most": 236,
+      "capacity": 468,
+      "V_lower_bound": {
+        "fraction": "6273/20",
+        "decimal": 313.65
+      },
+      "gap": {
+        "fraction": "3087/20",
+        "decimal": 154.35
+      },
+      "bridge_count_at_least": 78,
+      "excluded_by_this_account": false
+    },
+    {
+      "rectangle": [
+        17,
+        49,
+        53,
+        21
+      ],
+      "P": 11,
+      "T_plus_F": 233,
+      "capacity_before_q_turns": 466,
+      "positive_flow_units_at_most": 232,
+      "capacity": 460,
+      "V_lower_bound": {
+        "fraction": "6273/20",
+        "decimal": 313.65
+      },
+      "gap": {
+        "fraction": "2927/20",
+        "decimal": 146.35
+      },
+      "bridge_count_at_least": 82,
+      "excluded_by_this_account": false
+    },
+    {
+      "rectangle": [
+        17,
+        49,
+        53,
+        21
+      ],
+      "P": 12,
+      "T_plus_F": 229,
+      "capacity_before_q_turns": 458,
+      "positive_flow_units_at_most": 228,
+      "capacity": 452,
+      "V_lower_bound": {
+        "fraction": "6273/20",
+        "decimal": 313.65
+      },
+      "gap": {
+        "fraction": "2767/20",
+        "decimal": 138.35
+      },
+      "bridge_count_at_least": 86,
+      "excluded_by_this_account": false
+    }
+  ],
+  "boundary_gap_checks": [
+    {
+      "gap_left": 0,
+      "gap_bottom": 0,
+      "q": [
+        0,
+        0
+      ],
+      "possible_neighbors": []
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 3,
+      "q": [
+        3,
+        0
+      ],
+      "possible_neighbors": [
+        [
+          3,
+          1
+        ]
+      ]
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 6,
+      "q": [
+        6,
+        0
+      ],
+      "possible_neighbors": [
+        [
+          6,
+          1
+        ]
+      ]
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 9,
+      "q": [
+        9,
+        0
+      ],
+      "possible_neighbors": [
+        [
+          9,
+          1
+        ]
+      ]
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 12,
+      "q": [
+        12,
+        0
+      ],
+      "possible_neighbors": [
+        [
+          12,
+          1
+        ]
+      ]
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 15,
+      "q": [
+        15,
+        0
+      ],
+      "possible_neighbors": [
+        [
+          15,
+          1
+        ]
+      ]
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 18,
+      "q": [
+        18,
+        0
+      ],
+      "possible_neighbors": [
+        [
+          18,
+          1
+        ]
+      ]
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 21,
+      "q": [
+        21,
+        0
+      ],
+      "possible_neighbors": [
+        [
+          21,
+          1
+        ]
+      ]
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 24,
+      "q": [
+        24,
+        0
+      ],
+      "possible_neighbors": [
+        [
+          24,
+          1
+        ]
+      ]
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 27,
+      "q": [
+        27,
+        0
+      ],
+      "possible_neighbors": [
+        [
+          27,
+          1
+        ]
+      ]
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 30,
+      "q": [
+        30,
+        0
+      ],
+      "possible_neighbors": [
+        [
+          30,
+          1
+        ]
+      ]
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 33,
+      "q": [
+        33,
+        0
+      ],
+      "possible_neighbors": [
+        [
+          33,
+          1
+        ]
+      ]
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 36,
+      "q": [
+        36,
+        0
+      ],
+      "possible_neighbors": [
+        [
+          36,
+          1
+        ]
+      ]
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 39,
+      "q": [
+        39,
+        0
+      ],
+      "possible_neighbors": [
+        [
+          39,
+          1
+        ]
+      ]
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 42,
+      "q": [
+        42,
+        0
+      ],
+      "possible_neighbors": [
+        [
+          42,
+          1
+        ]
+      ]
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 45,
+      "q": [
+        45,
+        0
+      ],
+      "possible_neighbors": [
+        [
+          45,
+          1
+        ]
+      ]
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 48,
+      "q": [
+        48,
+        0
+      ],
+      "possible_neighbors": [
+        [
+          48,
+          1
+        ]
+      ]
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 51,
+      "q": [
+        51,
+        0
+      ],
+      "possible_neighbors": [
+        [
+          51,
+          1
+        ]
+      ]
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 54,
+      "q": [
+        54,
+        0
+      ],
+      "possible_neighbors": [
+        [
+          54,
+          1
+        ]
+      ]
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 57,
+      "q": [
+        57,
+        0
+      ],
+      "possible_neighbors": [
+        [
+          57,
+          1
+        ]
+      ]
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 60,
+      "q": [
+        60,
+        0
+      ],
+      "possible_neighbors": [
+        [
+          60,
+          1
+        ]
+      ]
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 63,
+      "q": [
+        63,
+        0
+      ],
+      "possible_neighbors": [
+        [
+          63,
+          1
+        ]
+      ]
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 66,
+      "q": [
+        66,
+        0
+      ],
+      "possible_neighbors": [
+        [
+          66,
+          1
+        ]
+      ]
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 69,
+      "q": [
+        69,
+        0
+      ],
+      "possible_neighbors": [
+        [
+          69,
+          1
+        ]
+      ]
+    },
+    {
+      "gap_left": 3,
+      "gap_bottom": 0,
+      "q": [
+        0,
+        3
+      ],
+      "possible_neighbors": [
+        [
+          1,
+          3
+        ]
+      ]
+    },
+    {
+      "gap_left": 6,
+      "gap_bottom": 0,
+      "q": [
+        0,
+        6
+      ],
+      "possible_neighbors": [
+        [
+          1,
+          6
+        ]
+      ]
+    },
+    {
+      "gap_left": 9,
+      "gap_bottom": 0,
+      "q": [
+        0,
+        9
+      ],
+      "possible_neighbors": [
+        [
+          1,
+          9
+        ]
+      ]
+    },
+    {
+      "gap_left": 12,
+      "gap_bottom": 0,
+      "q": [
+        0,
+        12
+      ],
+      "possible_neighbors": [
+        [
+          1,
+          12
+        ]
+      ]
+    },
+    {
+      "gap_left": 15,
+      "gap_bottom": 0,
+      "q": [
+        0,
+        15
+      ],
+      "possible_neighbors": [
+        [
+          1,
+          15
+        ]
+      ]
+    },
+    {
+      "gap_left": 18,
+      "gap_bottom": 0,
+      "q": [
+        0,
+        18
+      ],
+      "possible_neighbors": [
+        [
+          1,
+          18
+        ]
+      ]
+    },
+    {
+      "gap_left": 21,
+      "gap_bottom": 0,
+      "q": [
+        0,
+        21
+      ],
+      "possible_neighbors": [
+        [
+          1,
+          21
+        ]
+      ]
+    },
+    {
+      "gap_left": 24,
+      "gap_bottom": 0,
+      "q": [
+        0,
+        24
+      ],
+      "possible_neighbors": [
+        [
+          1,
+          24
+        ]
+      ]
+    },
+    {
+      "gap_left": 27,
+      "gap_bottom": 0,
+      "q": [
+        0,
+        27
+      ],
+      "possible_neighbors": [
+        [
+          1,
+          27
+        ]
+      ]
+    },
+    {
+      "gap_left": 30,
+      "gap_bottom": 0,
+      "q": [
+        0,
+        30
+      ],
+      "possible_neighbors": [
+        [
+          1,
+          30
+        ]
+      ]
+    },
+    {
+      "gap_left": 33,
+      "gap_bottom": 0,
+      "q": [
+        0,
+        33
+      ],
+      "possible_neighbors": [
+        [
+          1,
+          33
+        ]
+      ]
+    },
+    {
+      "gap_left": 36,
+      "gap_bottom": 0,
+      "q": [
+        0,
+        36
+      ],
+      "possible_neighbors": [
+        [
+          1,
+          36
+        ]
+      ]
+    },
+    {
+      "gap_left": 39,
+      "gap_bottom": 0,
+      "q": [
+        0,
+        39
+      ],
+      "possible_neighbors": [
+        [
+          1,
+          39
+        ]
+      ]
+    },
+    {
+      "gap_left": 42,
+      "gap_bottom": 0,
+      "q": [
+        0,
+        42
+      ],
+      "possible_neighbors": [
+        [
+          1,
+          42
+        ]
+      ]
+    },
+    {
+      "gap_left": 45,
+      "gap_bottom": 0,
+      "q": [
+        0,
+        45
+      ],
+      "possible_neighbors": [
+        [
+          1,
+          45
+        ]
+      ]
+    },
+    {
+      "gap_left": 48,
+      "gap_bottom": 0,
+      "q": [
+        0,
+        48
+      ],
+      "possible_neighbors": [
+        [
+          1,
+          48
+        ]
+      ]
+    },
+    {
+      "gap_left": 51,
+      "gap_bottom": 0,
+      "q": [
+        0,
+        51
+      ],
+      "possible_neighbors": [
+        [
+          1,
+          51
+        ]
+      ]
+    },
+    {
+      "gap_left": 54,
+      "gap_bottom": 0,
+      "q": [
+        0,
+        54
+      ],
+      "possible_neighbors": [
+        [
+          1,
+          54
+        ]
+      ]
+    },
+    {
+      "gap_left": 57,
+      "gap_bottom": 0,
+      "q": [
+        0,
+        57
+      ],
+      "possible_neighbors": [
+        [
+          1,
+          57
+        ]
+      ]
+    },
+    {
+      "gap_left": 60,
+      "gap_bottom": 0,
+      "q": [
+        0,
+        60
+      ],
+      "possible_neighbors": [
+        [
+          1,
+          60
+        ]
+      ]
+    },
+    {
+      "gap_left": 63,
+      "gap_bottom": 0,
+      "q": [
+        0,
+        63
+      ],
+      "possible_neighbors": [
+        [
+          1,
+          63
+        ]
+      ]
+    },
+    {
+      "gap_left": 66,
+      "gap_bottom": 0,
+      "q": [
+        0,
+        66
+      ],
+      "possible_neighbors": [
+        [
+          1,
+          66
+        ]
+      ]
+    },
+    {
+      "gap_left": 69,
+      "gap_bottom": 0,
+      "q": [
+        0,
+        69
+      ],
+      "possible_neighbors": [
+        [
+          1,
+          69
+        ]
+      ]
+    }
+  ],
+  "author_witness_check": {
+    "cost": 8,
+    "sources": 46,
+    "bodies": 46,
+    "body_cells": 414,
+    "rectangle_checks": [
+      {
+        "rectangle": [
+          49,
+          6,
+          21,
+          53
+        ],
+        "body_overlap": 0
+      },
+      {
+        "rectangle": [
+          49,
+          7,
+          21,
+          53
+        ],
+        "body_overlap": 0
+      },
+      {
+        "rectangle": [
+          49,
+          9,
+          21,
+          53
+        ],
+        "body_overlap": 0
+      },
+      {
+        "rectangle": [
+          49,
+          17,
+          21,
+          53
+        ],
+        "body_overlap": 0
+      },
+      {
+        "rectangle": [
+          6,
+          49,
+          53,
+          21
+        ],
+        "body_overlap": 0
+      },
+      {
+        "rectangle": [
+          7,
+          49,
+          53,
+          21
+        ],
+        "body_overlap": 0
+      },
+      {
+        "rectangle": [
+          9,
+          49,
+          53,
+          21
+        ],
+        "body_overlap": 0
+      },
+      {
+        "rectangle": [
+          17,
+          49,
+          53,
+          21
+        ],
+        "body_overlap": 0
+      }
+    ]
+  },
+  "independent_witness_check": {
+    "cost": 8,
+    "sources": 46,
+    "bodies": 46,
+    "body_cells": 414,
+    "rectangle_checks": [
+      {
+        "rectangle": [
+          49,
+          6,
+          21,
+          53
+        ],
+        "body_overlap": 0
+      },
+      {
+        "rectangle": [
+          49,
+          7,
+          21,
+          53
+        ],
+        "body_overlap": 0
+      },
+      {
+        "rectangle": [
+          49,
+          9,
+          21,
+          53
+        ],
+        "body_overlap": 0
+      },
+      {
+        "rectangle": [
+          49,
+          17,
+          21,
+          53
+        ],
+        "body_overlap": 0
+      },
+      {
+        "rectangle": [
+          6,
+          49,
+          53,
+          21
+        ],
+        "body_overlap": 0
+      },
+      {
+        "rectangle": [
+          7,
+          49,
+          53,
+          21
+        ],
+        "body_overlap": 0
+      },
+      {
+        "rectangle": [
+          9,
+          49,
+          53,
+          21
+        ],
+        "body_overlap": 0
+      },
+      {
+        "rectangle": [
+          17,
+          49,
+          53,
+          21
+        ],
+        "body_overlap": 0
+      }
+    ]
+  },
+  "formal_constraint_count": 72,
+  "geometry_infeasible_cases": 47,
+  "geometry_solver_seconds": 10.387400148007146
+}

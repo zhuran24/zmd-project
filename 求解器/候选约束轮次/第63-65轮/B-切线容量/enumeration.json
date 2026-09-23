@@ -1,0 +1,5860 @@
+{
+  "pattern_count": 47,
+  "cases": [
+    {
+      "b": 6,
+      "left_gap": 0,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 110,
+        "精炼炉": 110,
+        "塑形机": 110,
+        "配件机": 110
+      },
+      "crossing_by_kind": {
+        "粉碎机": 16,
+        "精炼炉": 16,
+        "研磨机": 10,
+        "塑形机": 16,
+        "配件机": 16,
+        "封装机": 10,
+        "灌装机": 10
+      },
+      "whole_grinder_count_in_singleton_domain": 0,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 6,
+      "left_gap": 0,
+      "bottom_gap": 3,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 110,
+        "精炼炉": 110,
+        "塑形机": 110,
+        "配件机": 110
+      },
+      "crossing_by_kind": {
+        "粉碎机": 16,
+        "精炼炉": 16,
+        "研磨机": 10,
+        "塑形机": 16,
+        "配件机": 16,
+        "封装机": 10,
+        "灌装机": 10
+      },
+      "whole_grinder_count_in_singleton_domain": 0,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 6,
+      "left_gap": 0,
+      "bottom_gap": 6,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 110,
+        "精炼炉": 110,
+        "塑形机": 110,
+        "配件机": 110
+      },
+      "crossing_by_kind": {
+        "粉碎机": 16,
+        "精炼炉": 16,
+        "研磨机": 10,
+        "塑形机": 16,
+        "配件机": 16,
+        "封装机": 10,
+        "灌装机": 10
+      },
+      "whole_grinder_count_in_singleton_domain": 0,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 6,
+      "left_gap": 0,
+      "bottom_gap": 9,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 110,
+        "精炼炉": 110,
+        "塑形机": 110,
+        "配件机": 110
+      },
+      "crossing_by_kind": {
+        "粉碎机": 16,
+        "精炼炉": 16,
+        "研磨机": 10,
+        "塑形机": 16,
+        "配件机": 16,
+        "封装机": 10,
+        "灌装机": 10
+      },
+      "whole_grinder_count_in_singleton_domain": 0,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 6,
+      "left_gap": 0,
+      "bottom_gap": 12,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 110,
+        "精炼炉": 110,
+        "塑形机": 110,
+        "配件机": 110
+      },
+      "crossing_by_kind": {
+        "粉碎机": 16,
+        "精炼炉": 16,
+        "研磨机": 10,
+        "塑形机": 16,
+        "配件机": 16,
+        "封装机": 10,
+        "灌装机": 10
+      },
+      "whole_grinder_count_in_singleton_domain": 0,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 6,
+      "left_gap": 0,
+      "bottom_gap": 15,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 110,
+        "精炼炉": 110,
+        "塑形机": 110,
+        "配件机": 110
+      },
+      "crossing_by_kind": {
+        "粉碎机": 16,
+        "精炼炉": 16,
+        "研磨机": 10,
+        "塑形机": 16,
+        "配件机": 16,
+        "封装机": 10,
+        "灌装机": 10
+      },
+      "whole_grinder_count_in_singleton_domain": 0,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 6,
+      "left_gap": 0,
+      "bottom_gap": 18,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 110,
+        "精炼炉": 110,
+        "塑形机": 110,
+        "配件机": 110
+      },
+      "crossing_by_kind": {
+        "粉碎机": 16,
+        "精炼炉": 16,
+        "研磨机": 10,
+        "塑形机": 16,
+        "配件机": 16,
+        "封装机": 10,
+        "灌装机": 10
+      },
+      "whole_grinder_count_in_singleton_domain": 0,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 6,
+      "left_gap": 0,
+      "bottom_gap": 21,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 110,
+        "精炼炉": 110,
+        "塑形机": 110,
+        "配件机": 110
+      },
+      "crossing_by_kind": {
+        "粉碎机": 16,
+        "精炼炉": 16,
+        "研磨机": 10,
+        "塑形机": 16,
+        "配件机": 16,
+        "封装机": 10,
+        "灌装机": 10
+      },
+      "whole_grinder_count_in_singleton_domain": 0,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 6,
+      "left_gap": 0,
+      "bottom_gap": 24,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 110,
+        "精炼炉": 110,
+        "塑形机": 110,
+        "配件机": 110
+      },
+      "crossing_by_kind": {
+        "粉碎机": 16,
+        "精炼炉": 16,
+        "研磨机": 10,
+        "塑形机": 16,
+        "配件机": 16,
+        "封装机": 10,
+        "灌装机": 10
+      },
+      "whole_grinder_count_in_singleton_domain": 0,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 6,
+      "left_gap": 0,
+      "bottom_gap": 27,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 110,
+        "精炼炉": 110,
+        "塑形机": 110,
+        "配件机": 110
+      },
+      "crossing_by_kind": {
+        "粉碎机": 16,
+        "精炼炉": 16,
+        "研磨机": 10,
+        "塑形机": 16,
+        "配件机": 16,
+        "封装机": 10,
+        "灌装机": 10
+      },
+      "whole_grinder_count_in_singleton_domain": 0,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 6,
+      "left_gap": 0,
+      "bottom_gap": 30,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 110,
+        "精炼炉": 110,
+        "塑形机": 110,
+        "配件机": 110
+      },
+      "crossing_by_kind": {
+        "粉碎机": 16,
+        "精炼炉": 16,
+        "研磨机": 10,
+        "塑形机": 16,
+        "配件机": 16,
+        "封装机": 10,
+        "灌装机": 10
+      },
+      "whole_grinder_count_in_singleton_domain": 0,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 6,
+      "left_gap": 0,
+      "bottom_gap": 33,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 110,
+        "精炼炉": 110,
+        "塑形机": 110,
+        "配件机": 110
+      },
+      "crossing_by_kind": {
+        "粉碎机": 16,
+        "精炼炉": 16,
+        "研磨机": 10,
+        "塑形机": 16,
+        "配件机": 16,
+        "封装机": 10,
+        "灌装机": 10
+      },
+      "whole_grinder_count_in_singleton_domain": 0,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 6,
+      "left_gap": 0,
+      "bottom_gap": 36,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 110,
+        "精炼炉": 110,
+        "塑形机": 110,
+        "配件机": 110
+      },
+      "crossing_by_kind": {
+        "粉碎机": 16,
+        "精炼炉": 16,
+        "研磨机": 10,
+        "塑形机": 16,
+        "配件机": 16,
+        "封装机": 10,
+        "灌装机": 10
+      },
+      "whole_grinder_count_in_singleton_domain": 0,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 6,
+      "left_gap": 0,
+      "bottom_gap": 39,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 110,
+        "精炼炉": 110,
+        "塑形机": 110,
+        "配件机": 110
+      },
+      "crossing_by_kind": {
+        "粉碎机": 16,
+        "精炼炉": 16,
+        "研磨机": 10,
+        "塑形机": 16,
+        "配件机": 16,
+        "封装机": 10,
+        "灌装机": 10
+      },
+      "whole_grinder_count_in_singleton_domain": 0,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 6,
+      "left_gap": 0,
+      "bottom_gap": 42,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 110,
+        "精炼炉": 110,
+        "塑形机": 110,
+        "配件机": 110
+      },
+      "crossing_by_kind": {
+        "粉碎机": 16,
+        "精炼炉": 16,
+        "研磨机": 10,
+        "塑形机": 16,
+        "配件机": 16,
+        "封装机": 10,
+        "灌装机": 10
+      },
+      "whole_grinder_count_in_singleton_domain": 0,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 6,
+      "left_gap": 0,
+      "bottom_gap": 45,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 110,
+        "精炼炉": 110,
+        "塑形机": 110,
+        "配件机": 110
+      },
+      "crossing_by_kind": {
+        "粉碎机": 16,
+        "精炼炉": 16,
+        "研磨机": 10,
+        "塑形机": 16,
+        "配件机": 16,
+        "封装机": 10,
+        "灌装机": 10
+      },
+      "whole_grinder_count_in_singleton_domain": 0,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 6,
+      "left_gap": 0,
+      "bottom_gap": 48,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 110,
+        "精炼炉": 110,
+        "塑形机": 110,
+        "配件机": 110
+      },
+      "crossing_by_kind": {
+        "粉碎机": 18,
+        "精炼炉": 18,
+        "研磨机": 10,
+        "塑形机": 18,
+        "配件机": 18,
+        "封装机": 10,
+        "灌装机": 10
+      },
+      "whole_grinder_count_in_singleton_domain": 0,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 6,
+      "left_gap": 0,
+      "bottom_gap": 51,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 112,
+        "精炼炉": 112,
+        "塑形机": 112,
+        "配件机": 112
+      },
+      "crossing_by_kind": {
+        "粉碎机": 16,
+        "精炼炉": 16,
+        "研磨机": 10,
+        "塑形机": 16,
+        "配件机": 16,
+        "封装机": 10,
+        "灌装机": 10
+      },
+      "whole_grinder_count_in_singleton_domain": 0,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 6,
+      "left_gap": 0,
+      "bottom_gap": 54,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 112,
+        "精炼炉": 112,
+        "塑形机": 112,
+        "配件机": 112
+      },
+      "crossing_by_kind": {
+        "粉碎机": 16,
+        "精炼炉": 16,
+        "研磨机": 10,
+        "塑形机": 16,
+        "配件机": 16,
+        "封装机": 10,
+        "灌装机": 10
+      },
+      "whole_grinder_count_in_singleton_domain": 0,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 6,
+      "left_gap": 0,
+      "bottom_gap": 57,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 112,
+        "精炼炉": 112,
+        "塑形机": 112,
+        "配件机": 112
+      },
+      "crossing_by_kind": {
+        "粉碎机": 16,
+        "精炼炉": 16,
+        "研磨机": 10,
+        "塑形机": 16,
+        "配件机": 16,
+        "封装机": 10,
+        "灌装机": 10
+      },
+      "whole_grinder_count_in_singleton_domain": 0,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 6,
+      "left_gap": 0,
+      "bottom_gap": 60,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 112,
+        "精炼炉": 112,
+        "塑形机": 112,
+        "配件机": 112
+      },
+      "crossing_by_kind": {
+        "粉碎机": 16,
+        "精炼炉": 16,
+        "研磨机": 10,
+        "塑形机": 16,
+        "配件机": 16,
+        "封装机": 10,
+        "灌装机": 10
+      },
+      "whole_grinder_count_in_singleton_domain": 0,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 6,
+      "left_gap": 0,
+      "bottom_gap": 63,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 112,
+        "精炼炉": 112,
+        "塑形机": 112,
+        "配件机": 112
+      },
+      "crossing_by_kind": {
+        "粉碎机": 16,
+        "精炼炉": 16,
+        "研磨机": 10,
+        "塑形机": 16,
+        "配件机": 16,
+        "封装机": 10,
+        "灌装机": 10
+      },
+      "whole_grinder_count_in_singleton_domain": 0,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 6,
+      "left_gap": 0,
+      "bottom_gap": 66,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 112,
+        "精炼炉": 112,
+        "塑形机": 112,
+        "配件机": 112
+      },
+      "crossing_by_kind": {
+        "粉碎机": 16,
+        "精炼炉": 16,
+        "研磨机": 10,
+        "塑形机": 16,
+        "配件机": 16,
+        "封装机": 10,
+        "灌装机": 10
+      },
+      "whole_grinder_count_in_singleton_domain": 0,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 6,
+      "left_gap": 0,
+      "bottom_gap": 69,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 110,
+        "精炼炉": 110,
+        "塑形机": 110,
+        "配件机": 110
+      },
+      "crossing_by_kind": {
+        "粉碎机": 16,
+        "精炼炉": 16,
+        "研磨机": 10,
+        "塑形机": 16,
+        "配件机": 16,
+        "封装机": 10,
+        "灌装机": 10
+      },
+      "whole_grinder_count_in_singleton_domain": 0,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 6,
+      "left_gap": 3,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 110,
+        "精炼炉": 110,
+        "塑形机": 110,
+        "配件机": 110
+      },
+      "crossing_by_kind": {
+        "粉碎机": 16,
+        "精炼炉": 16,
+        "研磨机": 10,
+        "塑形机": 16,
+        "配件机": 16,
+        "封装机": 10,
+        "灌装机": 10
+      },
+      "whole_grinder_count_in_singleton_domain": 0,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 6,
+      "left_gap": 6,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 110,
+        "精炼炉": 110,
+        "塑形机": 110,
+        "配件机": 110
+      },
+      "crossing_by_kind": {
+        "粉碎机": 16,
+        "精炼炉": 16,
+        "研磨机": 10,
+        "塑形机": 16,
+        "配件机": 16,
+        "封装机": 10,
+        "灌装机": 10
+      },
+      "whole_grinder_count_in_singleton_domain": 0,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 6,
+      "left_gap": 9,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 110,
+        "精炼炉": 110,
+        "塑形机": 110,
+        "配件机": 110
+      },
+      "crossing_by_kind": {
+        "粉碎机": 16,
+        "精炼炉": 16,
+        "研磨机": 10,
+        "塑形机": 16,
+        "配件机": 16,
+        "封装机": 10,
+        "灌装机": 10
+      },
+      "whole_grinder_count_in_singleton_domain": 0,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 6,
+      "left_gap": 12,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 110,
+        "精炼炉": 110,
+        "塑形机": 110,
+        "配件机": 110
+      },
+      "crossing_by_kind": {
+        "粉碎机": 16,
+        "精炼炉": 16,
+        "研磨机": 10,
+        "塑形机": 16,
+        "配件机": 16,
+        "封装机": 10,
+        "灌装机": 10
+      },
+      "whole_grinder_count_in_singleton_domain": 0,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 6,
+      "left_gap": 15,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 110,
+        "精炼炉": 110,
+        "塑形机": 110,
+        "配件机": 110
+      },
+      "crossing_by_kind": {
+        "粉碎机": 16,
+        "精炼炉": 16,
+        "研磨机": 10,
+        "塑形机": 16,
+        "配件机": 16,
+        "封装机": 10,
+        "灌装机": 10
+      },
+      "whole_grinder_count_in_singleton_domain": 0,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 6,
+      "left_gap": 18,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 110,
+        "精炼炉": 110,
+        "塑形机": 110,
+        "配件机": 110
+      },
+      "crossing_by_kind": {
+        "粉碎机": 16,
+        "精炼炉": 16,
+        "研磨机": 10,
+        "塑形机": 16,
+        "配件机": 16,
+        "封装机": 10,
+        "灌装机": 10
+      },
+      "whole_grinder_count_in_singleton_domain": 0,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 6,
+      "left_gap": 21,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 110,
+        "精炼炉": 110,
+        "塑形机": 110,
+        "配件机": 110
+      },
+      "crossing_by_kind": {
+        "粉碎机": 16,
+        "精炼炉": 16,
+        "研磨机": 10,
+        "塑形机": 16,
+        "配件机": 16,
+        "封装机": 10,
+        "灌装机": 10
+      },
+      "whole_grinder_count_in_singleton_domain": 0,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 6,
+      "left_gap": 24,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 110,
+        "精炼炉": 110,
+        "塑形机": 110,
+        "配件机": 110
+      },
+      "crossing_by_kind": {
+        "粉碎机": 16,
+        "精炼炉": 16,
+        "研磨机": 10,
+        "塑形机": 16,
+        "配件机": 16,
+        "封装机": 10,
+        "灌装机": 10
+      },
+      "whole_grinder_count_in_singleton_domain": 0,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 6,
+      "left_gap": 27,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 110,
+        "精炼炉": 110,
+        "塑形机": 110,
+        "配件机": 110
+      },
+      "crossing_by_kind": {
+        "粉碎机": 16,
+        "精炼炉": 16,
+        "研磨机": 10,
+        "塑形机": 16,
+        "配件机": 16,
+        "封装机": 10,
+        "灌装机": 10
+      },
+      "whole_grinder_count_in_singleton_domain": 0,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 6,
+      "left_gap": 30,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 110,
+        "精炼炉": 110,
+        "塑形机": 110,
+        "配件机": 110
+      },
+      "crossing_by_kind": {
+        "粉碎机": 16,
+        "精炼炉": 16,
+        "研磨机": 10,
+        "塑形机": 16,
+        "配件机": 16,
+        "封装机": 10,
+        "灌装机": 10
+      },
+      "whole_grinder_count_in_singleton_domain": 0,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 6,
+      "left_gap": 33,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 110,
+        "精炼炉": 110,
+        "塑形机": 110,
+        "配件机": 110
+      },
+      "crossing_by_kind": {
+        "粉碎机": 16,
+        "精炼炉": 16,
+        "研磨机": 10,
+        "塑形机": 16,
+        "配件机": 16,
+        "封装机": 10,
+        "灌装机": 10
+      },
+      "whole_grinder_count_in_singleton_domain": 0,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 6,
+      "left_gap": 36,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 110,
+        "精炼炉": 110,
+        "塑形机": 110,
+        "配件机": 110
+      },
+      "crossing_by_kind": {
+        "粉碎机": 16,
+        "精炼炉": 16,
+        "研磨机": 10,
+        "塑形机": 16,
+        "配件机": 16,
+        "封装机": 10,
+        "灌装机": 10
+      },
+      "whole_grinder_count_in_singleton_domain": 0,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 6,
+      "left_gap": 39,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 110,
+        "精炼炉": 110,
+        "塑形机": 110,
+        "配件机": 110
+      },
+      "crossing_by_kind": {
+        "粉碎机": 16,
+        "精炼炉": 16,
+        "研磨机": 10,
+        "塑形机": 16,
+        "配件机": 16,
+        "封装机": 10,
+        "灌装机": 10
+      },
+      "whole_grinder_count_in_singleton_domain": 0,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 6,
+      "left_gap": 42,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 110,
+        "精炼炉": 110,
+        "塑形机": 110,
+        "配件机": 110
+      },
+      "crossing_by_kind": {
+        "粉碎机": 16,
+        "精炼炉": 16,
+        "研磨机": 10,
+        "塑形机": 16,
+        "配件机": 16,
+        "封装机": 10,
+        "灌装机": 10
+      },
+      "whole_grinder_count_in_singleton_domain": 0,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 6,
+      "left_gap": 45,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 110,
+        "精炼炉": 110,
+        "塑形机": 110,
+        "配件机": 110
+      },
+      "crossing_by_kind": {
+        "粉碎机": 16,
+        "精炼炉": 16,
+        "研磨机": 10,
+        "塑形机": 16,
+        "配件机": 16,
+        "封装机": 10,
+        "灌装机": 10
+      },
+      "whole_grinder_count_in_singleton_domain": 0,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 6,
+      "left_gap": 48,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 110,
+        "精炼炉": 110,
+        "塑形机": 110,
+        "配件机": 110
+      },
+      "crossing_by_kind": {
+        "粉碎机": 16,
+        "精炼炉": 16,
+        "研磨机": 10,
+        "塑形机": 16,
+        "配件机": 16,
+        "封装机": 10,
+        "灌装机": 10
+      },
+      "whole_grinder_count_in_singleton_domain": 0,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 6,
+      "left_gap": 51,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 110,
+        "精炼炉": 110,
+        "塑形机": 110,
+        "配件机": 110
+      },
+      "crossing_by_kind": {
+        "粉碎机": 16,
+        "精炼炉": 16,
+        "研磨机": 10,
+        "塑形机": 16,
+        "配件机": 16,
+        "封装机": 10,
+        "灌装机": 10
+      },
+      "whole_grinder_count_in_singleton_domain": 0,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 6,
+      "left_gap": 54,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 110,
+        "精炼炉": 110,
+        "塑形机": 110,
+        "配件机": 110
+      },
+      "crossing_by_kind": {
+        "粉碎机": 16,
+        "精炼炉": 16,
+        "研磨机": 10,
+        "塑形机": 16,
+        "配件机": 16,
+        "封装机": 10,
+        "灌装机": 10
+      },
+      "whole_grinder_count_in_singleton_domain": 0,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 6,
+      "left_gap": 57,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 110,
+        "精炼炉": 110,
+        "塑形机": 110,
+        "配件机": 110
+      },
+      "crossing_by_kind": {
+        "粉碎机": 16,
+        "精炼炉": 16,
+        "研磨机": 10,
+        "塑形机": 16,
+        "配件机": 16,
+        "封装机": 10,
+        "灌装机": 10
+      },
+      "whole_grinder_count_in_singleton_domain": 0,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 6,
+      "left_gap": 60,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 110,
+        "精炼炉": 110,
+        "塑形机": 110,
+        "配件机": 110
+      },
+      "crossing_by_kind": {
+        "粉碎机": 16,
+        "精炼炉": 16,
+        "研磨机": 10,
+        "塑形机": 16,
+        "配件机": 16,
+        "封装机": 10,
+        "灌装机": 10
+      },
+      "whole_grinder_count_in_singleton_domain": 0,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 6,
+      "left_gap": 63,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 110,
+        "精炼炉": 110,
+        "塑形机": 110,
+        "配件机": 110
+      },
+      "crossing_by_kind": {
+        "粉碎机": 16,
+        "精炼炉": 16,
+        "研磨机": 10,
+        "塑形机": 16,
+        "配件机": 16,
+        "封装机": 10,
+        "灌装机": 10
+      },
+      "whole_grinder_count_in_singleton_domain": 0,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 6,
+      "left_gap": 66,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 110,
+        "精炼炉": 110,
+        "塑形机": 110,
+        "配件机": 110
+      },
+      "crossing_by_kind": {
+        "粉碎机": 16,
+        "精炼炉": 16,
+        "研磨机": 10,
+        "塑形机": 16,
+        "配件机": 16,
+        "封装机": 10,
+        "灌装机": 10
+      },
+      "whole_grinder_count_in_singleton_domain": 0,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 6,
+      "left_gap": 69,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 110,
+        "精炼炉": 110,
+        "塑形机": 110,
+        "配件机": 110
+      },
+      "crossing_by_kind": {
+        "粉碎机": 16,
+        "精炼炉": 16,
+        "研磨机": 10,
+        "塑形机": 16,
+        "配件机": 16,
+        "封装机": 10,
+        "灌装机": 10
+      },
+      "whole_grinder_count_in_singleton_domain": 0,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 7,
+      "left_gap": 0,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 184,
+        "精炼炉": 184,
+        "研磨机": 32,
+        "塑形机": 184,
+        "配件机": 184,
+        "种植机": 32,
+        "采种机": 32,
+        "封装机": 32,
+        "灌装机": 32
+      },
+      "crossing_by_kind": {
+        "粉碎机": 24,
+        "精炼炉": 24,
+        "研磨机": 20,
+        "塑形机": 24,
+        "配件机": 24,
+        "种植机": 16,
+        "采种机": 16,
+        "封装机": 20,
+        "灌装机": 20
+      },
+      "whole_grinder_count_in_singleton_domain": 32,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 7,
+      "left_gap": 0,
+      "bottom_gap": 3,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 184,
+        "精炼炉": 184,
+        "研磨机": 32,
+        "塑形机": 184,
+        "配件机": 184,
+        "种植机": 32,
+        "采种机": 32,
+        "封装机": 32,
+        "灌装机": 32
+      },
+      "crossing_by_kind": {
+        "粉碎机": 24,
+        "精炼炉": 24,
+        "研磨机": 20,
+        "塑形机": 24,
+        "配件机": 24,
+        "种植机": 16,
+        "采种机": 16,
+        "封装机": 20,
+        "灌装机": 20
+      },
+      "whole_grinder_count_in_singleton_domain": 32,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 7,
+      "left_gap": 0,
+      "bottom_gap": 6,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 184,
+        "精炼炉": 184,
+        "研磨机": 32,
+        "塑形机": 184,
+        "配件机": 184,
+        "种植机": 32,
+        "采种机": 32,
+        "封装机": 32,
+        "灌装机": 32
+      },
+      "crossing_by_kind": {
+        "粉碎机": 24,
+        "精炼炉": 24,
+        "研磨机": 20,
+        "塑形机": 24,
+        "配件机": 24,
+        "种植机": 16,
+        "采种机": 16,
+        "封装机": 20,
+        "灌装机": 20
+      },
+      "whole_grinder_count_in_singleton_domain": 32,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 7,
+      "left_gap": 0,
+      "bottom_gap": 9,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 184,
+        "精炼炉": 184,
+        "研磨机": 32,
+        "塑形机": 184,
+        "配件机": 184,
+        "种植机": 32,
+        "采种机": 32,
+        "封装机": 32,
+        "灌装机": 32
+      },
+      "crossing_by_kind": {
+        "粉碎机": 24,
+        "精炼炉": 24,
+        "研磨机": 20,
+        "塑形机": 24,
+        "配件机": 24,
+        "种植机": 16,
+        "采种机": 16,
+        "封装机": 20,
+        "灌装机": 20
+      },
+      "whole_grinder_count_in_singleton_domain": 32,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 7,
+      "left_gap": 0,
+      "bottom_gap": 12,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 184,
+        "精炼炉": 184,
+        "研磨机": 32,
+        "塑形机": 184,
+        "配件机": 184,
+        "种植机": 32,
+        "采种机": 32,
+        "封装机": 32,
+        "灌装机": 32
+      },
+      "crossing_by_kind": {
+        "粉碎机": 24,
+        "精炼炉": 24,
+        "研磨机": 20,
+        "塑形机": 24,
+        "配件机": 24,
+        "种植机": 16,
+        "采种机": 16,
+        "封装机": 20,
+        "灌装机": 20
+      },
+      "whole_grinder_count_in_singleton_domain": 32,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 7,
+      "left_gap": 0,
+      "bottom_gap": 15,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 184,
+        "精炼炉": 184,
+        "研磨机": 32,
+        "塑形机": 184,
+        "配件机": 184,
+        "种植机": 32,
+        "采种机": 32,
+        "封装机": 32,
+        "灌装机": 32
+      },
+      "crossing_by_kind": {
+        "粉碎机": 24,
+        "精炼炉": 24,
+        "研磨机": 20,
+        "塑形机": 24,
+        "配件机": 24,
+        "种植机": 16,
+        "采种机": 16,
+        "封装机": 20,
+        "灌装机": 20
+      },
+      "whole_grinder_count_in_singleton_domain": 32,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 7,
+      "left_gap": 0,
+      "bottom_gap": 18,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 184,
+        "精炼炉": 184,
+        "研磨机": 32,
+        "塑形机": 184,
+        "配件机": 184,
+        "种植机": 32,
+        "采种机": 32,
+        "封装机": 32,
+        "灌装机": 32
+      },
+      "crossing_by_kind": {
+        "粉碎机": 24,
+        "精炼炉": 24,
+        "研磨机": 20,
+        "塑形机": 24,
+        "配件机": 24,
+        "种植机": 16,
+        "采种机": 16,
+        "封装机": 20,
+        "灌装机": 20
+      },
+      "whole_grinder_count_in_singleton_domain": 32,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 7,
+      "left_gap": 0,
+      "bottom_gap": 21,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 184,
+        "精炼炉": 184,
+        "研磨机": 32,
+        "塑形机": 184,
+        "配件机": 184,
+        "种植机": 32,
+        "采种机": 32,
+        "封装机": 32,
+        "灌装机": 32
+      },
+      "crossing_by_kind": {
+        "粉碎机": 24,
+        "精炼炉": 24,
+        "研磨机": 20,
+        "塑形机": 24,
+        "配件机": 24,
+        "种植机": 16,
+        "采种机": 16,
+        "封装机": 20,
+        "灌装机": 20
+      },
+      "whole_grinder_count_in_singleton_domain": 32,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 7,
+      "left_gap": 0,
+      "bottom_gap": 24,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 184,
+        "精炼炉": 184,
+        "研磨机": 32,
+        "塑形机": 184,
+        "配件机": 184,
+        "种植机": 32,
+        "采种机": 32,
+        "封装机": 32,
+        "灌装机": 32
+      },
+      "crossing_by_kind": {
+        "粉碎机": 24,
+        "精炼炉": 24,
+        "研磨机": 20,
+        "塑形机": 24,
+        "配件机": 24,
+        "种植机": 16,
+        "采种机": 16,
+        "封装机": 20,
+        "灌装机": 20
+      },
+      "whole_grinder_count_in_singleton_domain": 32,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 7,
+      "left_gap": 0,
+      "bottom_gap": 27,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 184,
+        "精炼炉": 184,
+        "研磨机": 32,
+        "塑形机": 184,
+        "配件机": 184,
+        "种植机": 32,
+        "采种机": 32,
+        "封装机": 32,
+        "灌装机": 32
+      },
+      "crossing_by_kind": {
+        "粉碎机": 24,
+        "精炼炉": 24,
+        "研磨机": 20,
+        "塑形机": 24,
+        "配件机": 24,
+        "种植机": 16,
+        "采种机": 16,
+        "封装机": 20,
+        "灌装机": 20
+      },
+      "whole_grinder_count_in_singleton_domain": 32,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 7,
+      "left_gap": 0,
+      "bottom_gap": 30,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 184,
+        "精炼炉": 184,
+        "研磨机": 32,
+        "塑形机": 184,
+        "配件机": 184,
+        "种植机": 32,
+        "采种机": 32,
+        "封装机": 32,
+        "灌装机": 32
+      },
+      "crossing_by_kind": {
+        "粉碎机": 24,
+        "精炼炉": 24,
+        "研磨机": 20,
+        "塑形机": 24,
+        "配件机": 24,
+        "种植机": 16,
+        "采种机": 16,
+        "封装机": 20,
+        "灌装机": 20
+      },
+      "whole_grinder_count_in_singleton_domain": 32,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 7,
+      "left_gap": 0,
+      "bottom_gap": 33,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 184,
+        "精炼炉": 184,
+        "研磨机": 32,
+        "塑形机": 184,
+        "配件机": 184,
+        "种植机": 32,
+        "采种机": 32,
+        "封装机": 32,
+        "灌装机": 32
+      },
+      "crossing_by_kind": {
+        "粉碎机": 24,
+        "精炼炉": 24,
+        "研磨机": 20,
+        "塑形机": 24,
+        "配件机": 24,
+        "种植机": 16,
+        "采种机": 16,
+        "封装机": 20,
+        "灌装机": 20
+      },
+      "whole_grinder_count_in_singleton_domain": 32,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 7,
+      "left_gap": 0,
+      "bottom_gap": 36,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 184,
+        "精炼炉": 184,
+        "研磨机": 32,
+        "塑形机": 184,
+        "配件机": 184,
+        "种植机": 32,
+        "采种机": 32,
+        "封装机": 32,
+        "灌装机": 32
+      },
+      "crossing_by_kind": {
+        "粉碎机": 24,
+        "精炼炉": 24,
+        "研磨机": 20,
+        "塑形机": 24,
+        "配件机": 24,
+        "种植机": 16,
+        "采种机": 16,
+        "封装机": 20,
+        "灌装机": 20
+      },
+      "whole_grinder_count_in_singleton_domain": 32,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 7,
+      "left_gap": 0,
+      "bottom_gap": 39,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 184,
+        "精炼炉": 184,
+        "研磨机": 32,
+        "塑形机": 184,
+        "配件机": 184,
+        "种植机": 32,
+        "采种机": 32,
+        "封装机": 32,
+        "灌装机": 32
+      },
+      "crossing_by_kind": {
+        "粉碎机": 24,
+        "精炼炉": 24,
+        "研磨机": 20,
+        "塑形机": 24,
+        "配件机": 24,
+        "种植机": 16,
+        "采种机": 16,
+        "封装机": 20,
+        "灌装机": 20
+      },
+      "whole_grinder_count_in_singleton_domain": 32,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 7,
+      "left_gap": 0,
+      "bottom_gap": 42,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 184,
+        "精炼炉": 184,
+        "研磨机": 32,
+        "塑形机": 184,
+        "配件机": 184,
+        "种植机": 32,
+        "采种机": 32,
+        "封装机": 32,
+        "灌装机": 32
+      },
+      "crossing_by_kind": {
+        "粉碎机": 24,
+        "精炼炉": 24,
+        "研磨机": 20,
+        "塑形机": 24,
+        "配件机": 24,
+        "种植机": 16,
+        "采种机": 16,
+        "封装机": 20,
+        "灌装机": 20
+      },
+      "whole_grinder_count_in_singleton_domain": 32,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 7,
+      "left_gap": 0,
+      "bottom_gap": 45,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 184,
+        "精炼炉": 184,
+        "研磨机": 32,
+        "塑形机": 184,
+        "配件机": 184,
+        "种植机": 32,
+        "采种机": 32,
+        "封装机": 32,
+        "灌装机": 32
+      },
+      "crossing_by_kind": {
+        "粉碎机": 24,
+        "精炼炉": 24,
+        "研磨机": 20,
+        "塑形机": 24,
+        "配件机": 24,
+        "种植机": 16,
+        "采种机": 16,
+        "封装机": 20,
+        "灌装机": 20
+      },
+      "whole_grinder_count_in_singleton_domain": 32,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 7,
+      "left_gap": 0,
+      "bottom_gap": 48,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 184,
+        "精炼炉": 184,
+        "研磨机": 32,
+        "塑形机": 184,
+        "配件机": 184,
+        "种植机": 32,
+        "采种机": 32,
+        "封装机": 32,
+        "灌装机": 32
+      },
+      "crossing_by_kind": {
+        "粉碎机": 26,
+        "精炼炉": 26,
+        "研磨机": 20,
+        "塑形机": 26,
+        "配件机": 26,
+        "种植机": 16,
+        "采种机": 16,
+        "封装机": 20,
+        "灌装机": 20
+      },
+      "whole_grinder_count_in_singleton_domain": 32,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 7,
+      "left_gap": 0,
+      "bottom_gap": 51,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 186,
+        "精炼炉": 186,
+        "研磨机": 32,
+        "塑形机": 186,
+        "配件机": 186,
+        "种植机": 32,
+        "采种机": 32,
+        "封装机": 32,
+        "灌装机": 32
+      },
+      "crossing_by_kind": {
+        "粉碎机": 24,
+        "精炼炉": 24,
+        "研磨机": 20,
+        "塑形机": 24,
+        "配件机": 24,
+        "种植机": 16,
+        "采种机": 16,
+        "封装机": 20,
+        "灌装机": 20
+      },
+      "whole_grinder_count_in_singleton_domain": 32,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 7,
+      "left_gap": 0,
+      "bottom_gap": 54,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 186,
+        "精炼炉": 186,
+        "研磨机": 32,
+        "塑形机": 186,
+        "配件机": 186,
+        "种植机": 32,
+        "采种机": 32,
+        "封装机": 32,
+        "灌装机": 32
+      },
+      "crossing_by_kind": {
+        "粉碎机": 24,
+        "精炼炉": 24,
+        "研磨机": 20,
+        "塑形机": 24,
+        "配件机": 24,
+        "种植机": 16,
+        "采种机": 16,
+        "封装机": 20,
+        "灌装机": 20
+      },
+      "whole_grinder_count_in_singleton_domain": 32,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 7,
+      "left_gap": 0,
+      "bottom_gap": 57,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 186,
+        "精炼炉": 186,
+        "研磨机": 32,
+        "塑形机": 186,
+        "配件机": 186,
+        "种植机": 32,
+        "采种机": 32,
+        "封装机": 32,
+        "灌装机": 32
+      },
+      "crossing_by_kind": {
+        "粉碎机": 24,
+        "精炼炉": 24,
+        "研磨机": 20,
+        "塑形机": 24,
+        "配件机": 24,
+        "种植机": 16,
+        "采种机": 16,
+        "封装机": 20,
+        "灌装机": 20
+      },
+      "whole_grinder_count_in_singleton_domain": 32,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 7,
+      "left_gap": 0,
+      "bottom_gap": 60,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 186,
+        "精炼炉": 186,
+        "研磨机": 32,
+        "塑形机": 186,
+        "配件机": 186,
+        "种植机": 32,
+        "采种机": 32,
+        "封装机": 32,
+        "灌装机": 32
+      },
+      "crossing_by_kind": {
+        "粉碎机": 24,
+        "精炼炉": 24,
+        "研磨机": 20,
+        "塑形机": 24,
+        "配件机": 24,
+        "种植机": 16,
+        "采种机": 16,
+        "封装机": 20,
+        "灌装机": 20
+      },
+      "whole_grinder_count_in_singleton_domain": 32,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 7,
+      "left_gap": 0,
+      "bottom_gap": 63,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 186,
+        "精炼炉": 186,
+        "研磨机": 32,
+        "塑形机": 186,
+        "配件机": 186,
+        "种植机": 32,
+        "采种机": 32,
+        "封装机": 32,
+        "灌装机": 32
+      },
+      "crossing_by_kind": {
+        "粉碎机": 24,
+        "精炼炉": 24,
+        "研磨机": 20,
+        "塑形机": 24,
+        "配件机": 24,
+        "种植机": 16,
+        "采种机": 16,
+        "封装机": 20,
+        "灌装机": 20
+      },
+      "whole_grinder_count_in_singleton_domain": 32,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 7,
+      "left_gap": 0,
+      "bottom_gap": 66,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 186,
+        "精炼炉": 186,
+        "研磨机": 32,
+        "塑形机": 186,
+        "配件机": 186,
+        "种植机": 32,
+        "采种机": 32,
+        "封装机": 32,
+        "灌装机": 32
+      },
+      "crossing_by_kind": {
+        "粉碎机": 24,
+        "精炼炉": 24,
+        "研磨机": 20,
+        "塑形机": 24,
+        "配件机": 24,
+        "种植机": 16,
+        "采种机": 16,
+        "封装机": 20,
+        "灌装机": 20
+      },
+      "whole_grinder_count_in_singleton_domain": 32,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 7,
+      "left_gap": 0,
+      "bottom_gap": 69,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 184,
+        "精炼炉": 184,
+        "研磨机": 32,
+        "塑形机": 184,
+        "配件机": 184,
+        "种植机": 32,
+        "采种机": 32,
+        "封装机": 32,
+        "灌装机": 32
+      },
+      "crossing_by_kind": {
+        "粉碎机": 24,
+        "精炼炉": 24,
+        "研磨机": 20,
+        "塑形机": 24,
+        "配件机": 24,
+        "种植机": 16,
+        "采种机": 16,
+        "封装机": 20,
+        "灌装机": 20
+      },
+      "whole_grinder_count_in_singleton_domain": 32,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 7,
+      "left_gap": 3,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 184,
+        "精炼炉": 184,
+        "研磨机": 32,
+        "塑形机": 184,
+        "配件机": 184,
+        "种植机": 32,
+        "采种机": 32,
+        "封装机": 32,
+        "灌装机": 32
+      },
+      "crossing_by_kind": {
+        "粉碎机": 24,
+        "精炼炉": 24,
+        "研磨机": 20,
+        "塑形机": 24,
+        "配件机": 24,
+        "种植机": 16,
+        "采种机": 16,
+        "封装机": 20,
+        "灌装机": 20
+      },
+      "whole_grinder_count_in_singleton_domain": 32,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 7,
+      "left_gap": 6,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 184,
+        "精炼炉": 184,
+        "研磨机": 32,
+        "塑形机": 184,
+        "配件机": 184,
+        "种植机": 32,
+        "采种机": 32,
+        "封装机": 32,
+        "灌装机": 32
+      },
+      "crossing_by_kind": {
+        "粉碎机": 24,
+        "精炼炉": 24,
+        "研磨机": 20,
+        "塑形机": 24,
+        "配件机": 24,
+        "种植机": 16,
+        "采种机": 16,
+        "封装机": 20,
+        "灌装机": 20
+      },
+      "whole_grinder_count_in_singleton_domain": 32,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 7,
+      "left_gap": 9,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 184,
+        "精炼炉": 184,
+        "研磨机": 32,
+        "塑形机": 184,
+        "配件机": 184,
+        "种植机": 32,
+        "采种机": 32,
+        "封装机": 32,
+        "灌装机": 32
+      },
+      "crossing_by_kind": {
+        "粉碎机": 24,
+        "精炼炉": 24,
+        "研磨机": 20,
+        "塑形机": 24,
+        "配件机": 24,
+        "种植机": 16,
+        "采种机": 16,
+        "封装机": 20,
+        "灌装机": 20
+      },
+      "whole_grinder_count_in_singleton_domain": 32,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 7,
+      "left_gap": 12,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 184,
+        "精炼炉": 184,
+        "研磨机": 32,
+        "塑形机": 184,
+        "配件机": 184,
+        "种植机": 32,
+        "采种机": 32,
+        "封装机": 32,
+        "灌装机": 32
+      },
+      "crossing_by_kind": {
+        "粉碎机": 24,
+        "精炼炉": 24,
+        "研磨机": 20,
+        "塑形机": 24,
+        "配件机": 24,
+        "种植机": 16,
+        "采种机": 16,
+        "封装机": 20,
+        "灌装机": 20
+      },
+      "whole_grinder_count_in_singleton_domain": 32,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 7,
+      "left_gap": 15,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 184,
+        "精炼炉": 184,
+        "研磨机": 32,
+        "塑形机": 184,
+        "配件机": 184,
+        "种植机": 32,
+        "采种机": 32,
+        "封装机": 32,
+        "灌装机": 32
+      },
+      "crossing_by_kind": {
+        "粉碎机": 24,
+        "精炼炉": 24,
+        "研磨机": 20,
+        "塑形机": 24,
+        "配件机": 24,
+        "种植机": 16,
+        "采种机": 16,
+        "封装机": 20,
+        "灌装机": 20
+      },
+      "whole_grinder_count_in_singleton_domain": 32,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 7,
+      "left_gap": 18,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 184,
+        "精炼炉": 184,
+        "研磨机": 32,
+        "塑形机": 184,
+        "配件机": 184,
+        "种植机": 32,
+        "采种机": 32,
+        "封装机": 32,
+        "灌装机": 32
+      },
+      "crossing_by_kind": {
+        "粉碎机": 24,
+        "精炼炉": 24,
+        "研磨机": 20,
+        "塑形机": 24,
+        "配件机": 24,
+        "种植机": 16,
+        "采种机": 16,
+        "封装机": 20,
+        "灌装机": 20
+      },
+      "whole_grinder_count_in_singleton_domain": 32,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 7,
+      "left_gap": 21,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 184,
+        "精炼炉": 184,
+        "研磨机": 32,
+        "塑形机": 184,
+        "配件机": 184,
+        "种植机": 32,
+        "采种机": 32,
+        "封装机": 32,
+        "灌装机": 32
+      },
+      "crossing_by_kind": {
+        "粉碎机": 24,
+        "精炼炉": 24,
+        "研磨机": 20,
+        "塑形机": 24,
+        "配件机": 24,
+        "种植机": 16,
+        "采种机": 16,
+        "封装机": 20,
+        "灌装机": 20
+      },
+      "whole_grinder_count_in_singleton_domain": 32,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 7,
+      "left_gap": 24,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 184,
+        "精炼炉": 184,
+        "研磨机": 32,
+        "塑形机": 184,
+        "配件机": 184,
+        "种植机": 32,
+        "采种机": 32,
+        "封装机": 32,
+        "灌装机": 32
+      },
+      "crossing_by_kind": {
+        "粉碎机": 24,
+        "精炼炉": 24,
+        "研磨机": 20,
+        "塑形机": 24,
+        "配件机": 24,
+        "种植机": 16,
+        "采种机": 16,
+        "封装机": 20,
+        "灌装机": 20
+      },
+      "whole_grinder_count_in_singleton_domain": 32,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 7,
+      "left_gap": 27,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 184,
+        "精炼炉": 184,
+        "研磨机": 32,
+        "塑形机": 184,
+        "配件机": 184,
+        "种植机": 32,
+        "采种机": 32,
+        "封装机": 32,
+        "灌装机": 32
+      },
+      "crossing_by_kind": {
+        "粉碎机": 24,
+        "精炼炉": 24,
+        "研磨机": 20,
+        "塑形机": 24,
+        "配件机": 24,
+        "种植机": 16,
+        "采种机": 16,
+        "封装机": 20,
+        "灌装机": 20
+      },
+      "whole_grinder_count_in_singleton_domain": 32,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 7,
+      "left_gap": 30,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 184,
+        "精炼炉": 184,
+        "研磨机": 32,
+        "塑形机": 184,
+        "配件机": 184,
+        "种植机": 32,
+        "采种机": 32,
+        "封装机": 32,
+        "灌装机": 32
+      },
+      "crossing_by_kind": {
+        "粉碎机": 24,
+        "精炼炉": 24,
+        "研磨机": 20,
+        "塑形机": 24,
+        "配件机": 24,
+        "种植机": 16,
+        "采种机": 16,
+        "封装机": 20,
+        "灌装机": 20
+      },
+      "whole_grinder_count_in_singleton_domain": 32,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 7,
+      "left_gap": 33,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 184,
+        "精炼炉": 184,
+        "研磨机": 32,
+        "塑形机": 184,
+        "配件机": 184,
+        "种植机": 32,
+        "采种机": 32,
+        "封装机": 32,
+        "灌装机": 32
+      },
+      "crossing_by_kind": {
+        "粉碎机": 24,
+        "精炼炉": 24,
+        "研磨机": 20,
+        "塑形机": 24,
+        "配件机": 24,
+        "种植机": 16,
+        "采种机": 16,
+        "封装机": 20,
+        "灌装机": 20
+      },
+      "whole_grinder_count_in_singleton_domain": 32,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 7,
+      "left_gap": 36,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 184,
+        "精炼炉": 184,
+        "研磨机": 32,
+        "塑形机": 184,
+        "配件机": 184,
+        "种植机": 32,
+        "采种机": 32,
+        "封装机": 32,
+        "灌装机": 32
+      },
+      "crossing_by_kind": {
+        "粉碎机": 24,
+        "精炼炉": 24,
+        "研磨机": 20,
+        "塑形机": 24,
+        "配件机": 24,
+        "种植机": 16,
+        "采种机": 16,
+        "封装机": 20,
+        "灌装机": 20
+      },
+      "whole_grinder_count_in_singleton_domain": 32,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 7,
+      "left_gap": 39,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 184,
+        "精炼炉": 184,
+        "研磨机": 32,
+        "塑形机": 184,
+        "配件机": 184,
+        "种植机": 32,
+        "采种机": 32,
+        "封装机": 32,
+        "灌装机": 32
+      },
+      "crossing_by_kind": {
+        "粉碎机": 24,
+        "精炼炉": 24,
+        "研磨机": 20,
+        "塑形机": 24,
+        "配件机": 24,
+        "种植机": 16,
+        "采种机": 16,
+        "封装机": 20,
+        "灌装机": 20
+      },
+      "whole_grinder_count_in_singleton_domain": 32,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 7,
+      "left_gap": 42,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 184,
+        "精炼炉": 184,
+        "研磨机": 32,
+        "塑形机": 184,
+        "配件机": 184,
+        "种植机": 32,
+        "采种机": 32,
+        "封装机": 32,
+        "灌装机": 32
+      },
+      "crossing_by_kind": {
+        "粉碎机": 24,
+        "精炼炉": 24,
+        "研磨机": 20,
+        "塑形机": 24,
+        "配件机": 24,
+        "种植机": 16,
+        "采种机": 16,
+        "封装机": 20,
+        "灌装机": 20
+      },
+      "whole_grinder_count_in_singleton_domain": 32,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 7,
+      "left_gap": 45,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 184,
+        "精炼炉": 184,
+        "研磨机": 32,
+        "塑形机": 184,
+        "配件机": 184,
+        "种植机": 32,
+        "采种机": 32,
+        "封装机": 32,
+        "灌装机": 32
+      },
+      "crossing_by_kind": {
+        "粉碎机": 24,
+        "精炼炉": 24,
+        "研磨机": 20,
+        "塑形机": 24,
+        "配件机": 24,
+        "种植机": 16,
+        "采种机": 16,
+        "封装机": 20,
+        "灌装机": 20
+      },
+      "whole_grinder_count_in_singleton_domain": 32,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 7,
+      "left_gap": 48,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 184,
+        "精炼炉": 184,
+        "研磨机": 32,
+        "塑形机": 184,
+        "配件机": 184,
+        "种植机": 32,
+        "采种机": 32,
+        "封装机": 32,
+        "灌装机": 32
+      },
+      "crossing_by_kind": {
+        "粉碎机": 24,
+        "精炼炉": 24,
+        "研磨机": 20,
+        "塑形机": 24,
+        "配件机": 24,
+        "种植机": 16,
+        "采种机": 16,
+        "封装机": 20,
+        "灌装机": 20
+      },
+      "whole_grinder_count_in_singleton_domain": 32,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 7,
+      "left_gap": 51,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 184,
+        "精炼炉": 184,
+        "研磨机": 32,
+        "塑形机": 184,
+        "配件机": 184,
+        "种植机": 32,
+        "采种机": 32,
+        "封装机": 32,
+        "灌装机": 32
+      },
+      "crossing_by_kind": {
+        "粉碎机": 24,
+        "精炼炉": 24,
+        "研磨机": 20,
+        "塑形机": 24,
+        "配件机": 24,
+        "种植机": 16,
+        "采种机": 16,
+        "封装机": 20,
+        "灌装机": 20
+      },
+      "whole_grinder_count_in_singleton_domain": 32,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 7,
+      "left_gap": 54,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 184,
+        "精炼炉": 184,
+        "研磨机": 32,
+        "塑形机": 184,
+        "配件机": 184,
+        "种植机": 32,
+        "采种机": 32,
+        "封装机": 32,
+        "灌装机": 32
+      },
+      "crossing_by_kind": {
+        "粉碎机": 24,
+        "精炼炉": 24,
+        "研磨机": 20,
+        "塑形机": 24,
+        "配件机": 24,
+        "种植机": 16,
+        "采种机": 16,
+        "封装机": 20,
+        "灌装机": 20
+      },
+      "whole_grinder_count_in_singleton_domain": 32,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 7,
+      "left_gap": 57,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 184,
+        "精炼炉": 184,
+        "研磨机": 32,
+        "塑形机": 184,
+        "配件机": 184,
+        "种植机": 32,
+        "采种机": 32,
+        "封装机": 32,
+        "灌装机": 32
+      },
+      "crossing_by_kind": {
+        "粉碎机": 24,
+        "精炼炉": 24,
+        "研磨机": 20,
+        "塑形机": 24,
+        "配件机": 24,
+        "种植机": 16,
+        "采种机": 16,
+        "封装机": 20,
+        "灌装机": 20
+      },
+      "whole_grinder_count_in_singleton_domain": 32,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 7,
+      "left_gap": 60,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 184,
+        "精炼炉": 184,
+        "研磨机": 32,
+        "塑形机": 184,
+        "配件机": 184,
+        "种植机": 32,
+        "采种机": 32,
+        "封装机": 32,
+        "灌装机": 32
+      },
+      "crossing_by_kind": {
+        "粉碎机": 24,
+        "精炼炉": 24,
+        "研磨机": 20,
+        "塑形机": 24,
+        "配件机": 24,
+        "种植机": 16,
+        "采种机": 16,
+        "封装机": 20,
+        "灌装机": 20
+      },
+      "whole_grinder_count_in_singleton_domain": 32,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 7,
+      "left_gap": 63,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 184,
+        "精炼炉": 184,
+        "研磨机": 32,
+        "塑形机": 184,
+        "配件机": 184,
+        "种植机": 32,
+        "采种机": 32,
+        "封装机": 32,
+        "灌装机": 32
+      },
+      "crossing_by_kind": {
+        "粉碎机": 24,
+        "精炼炉": 24,
+        "研磨机": 20,
+        "塑形机": 24,
+        "配件机": 24,
+        "种植机": 16,
+        "采种机": 16,
+        "封装机": 20,
+        "灌装机": 20
+      },
+      "whole_grinder_count_in_singleton_domain": 32,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 7,
+      "left_gap": 66,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 184,
+        "精炼炉": 184,
+        "研磨机": 32,
+        "塑形机": 184,
+        "配件机": 184,
+        "种植机": 32,
+        "采种机": 32,
+        "封装机": 32,
+        "灌装机": 32
+      },
+      "crossing_by_kind": {
+        "粉碎机": 24,
+        "精炼炉": 24,
+        "研磨机": 20,
+        "塑形机": 24,
+        "配件机": 24,
+        "种植机": 16,
+        "采种机": 16,
+        "封装机": 20,
+        "灌装机": 20
+      },
+      "whole_grinder_count_in_singleton_domain": 32,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 7,
+      "left_gap": 69,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 184,
+        "精炼炉": 184,
+        "研磨机": 32,
+        "塑形机": 184,
+        "配件机": 184,
+        "种植机": 32,
+        "采种机": 32,
+        "封装机": 32,
+        "灌装机": 32
+      },
+      "crossing_by_kind": {
+        "粉碎机": 24,
+        "精炼炉": 24,
+        "研磨机": 20,
+        "塑形机": 24,
+        "配件机": 24,
+        "种植机": 16,
+        "采种机": 16,
+        "封装机": 20,
+        "灌装机": 20
+      },
+      "whole_grinder_count_in_singleton_domain": 32,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 9,
+      "left_gap": 0,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 332,
+        "精炼炉": 332,
+        "研磨机": 164,
+        "塑形机": 332,
+        "配件机": 332,
+        "种植机": 164,
+        "采种机": 164,
+        "封装机": 164,
+        "灌装机": 164
+      },
+      "crossing_by_kind": {
+        "粉碎机": 40,
+        "精炼炉": 40,
+        "研磨机": 52,
+        "塑形机": 40,
+        "配件机": 40,
+        "种植机": 48,
+        "采种机": 48,
+        "封装机": 52,
+        "灌装机": 52
+      },
+      "whole_grinder_count_in_singleton_domain": 164,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 9,
+      "left_gap": 0,
+      "bottom_gap": 3,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 332,
+        "精炼炉": 332,
+        "研磨机": 164,
+        "塑形机": 332,
+        "配件机": 332,
+        "种植机": 164,
+        "采种机": 164,
+        "封装机": 164,
+        "灌装机": 164
+      },
+      "crossing_by_kind": {
+        "粉碎机": 40,
+        "精炼炉": 40,
+        "研磨机": 52,
+        "塑形机": 40,
+        "配件机": 40,
+        "种植机": 48,
+        "采种机": 48,
+        "封装机": 52,
+        "灌装机": 52
+      },
+      "whole_grinder_count_in_singleton_domain": 164,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 9,
+      "left_gap": 0,
+      "bottom_gap": 6,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 332,
+        "精炼炉": 332,
+        "研磨机": 164,
+        "塑形机": 332,
+        "配件机": 332,
+        "种植机": 164,
+        "采种机": 164,
+        "封装机": 164,
+        "灌装机": 164
+      },
+      "crossing_by_kind": {
+        "粉碎机": 40,
+        "精炼炉": 40,
+        "研磨机": 52,
+        "塑形机": 40,
+        "配件机": 40,
+        "种植机": 48,
+        "采种机": 48,
+        "封装机": 52,
+        "灌装机": 52
+      },
+      "whole_grinder_count_in_singleton_domain": 164,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 9,
+      "left_gap": 0,
+      "bottom_gap": 9,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 332,
+        "精炼炉": 332,
+        "研磨机": 164,
+        "塑形机": 332,
+        "配件机": 332,
+        "种植机": 164,
+        "采种机": 164,
+        "封装机": 164,
+        "灌装机": 164
+      },
+      "crossing_by_kind": {
+        "粉碎机": 40,
+        "精炼炉": 40,
+        "研磨机": 52,
+        "塑形机": 40,
+        "配件机": 40,
+        "种植机": 48,
+        "采种机": 48,
+        "封装机": 52,
+        "灌装机": 52
+      },
+      "whole_grinder_count_in_singleton_domain": 164,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 9,
+      "left_gap": 0,
+      "bottom_gap": 12,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 332,
+        "精炼炉": 332,
+        "研磨机": 164,
+        "塑形机": 332,
+        "配件机": 332,
+        "种植机": 164,
+        "采种机": 164,
+        "封装机": 164,
+        "灌装机": 164
+      },
+      "crossing_by_kind": {
+        "粉碎机": 40,
+        "精炼炉": 40,
+        "研磨机": 52,
+        "塑形机": 40,
+        "配件机": 40,
+        "种植机": 48,
+        "采种机": 48,
+        "封装机": 52,
+        "灌装机": 52
+      },
+      "whole_grinder_count_in_singleton_domain": 164,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 9,
+      "left_gap": 0,
+      "bottom_gap": 15,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 332,
+        "精炼炉": 332,
+        "研磨机": 164,
+        "塑形机": 332,
+        "配件机": 332,
+        "种植机": 164,
+        "采种机": 164,
+        "封装机": 164,
+        "灌装机": 164
+      },
+      "crossing_by_kind": {
+        "粉碎机": 40,
+        "精炼炉": 40,
+        "研磨机": 52,
+        "塑形机": 40,
+        "配件机": 40,
+        "种植机": 48,
+        "采种机": 48,
+        "封装机": 52,
+        "灌装机": 52
+      },
+      "whole_grinder_count_in_singleton_domain": 164,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 9,
+      "left_gap": 0,
+      "bottom_gap": 18,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 332,
+        "精炼炉": 332,
+        "研磨机": 164,
+        "塑形机": 332,
+        "配件机": 332,
+        "种植机": 164,
+        "采种机": 164,
+        "封装机": 164,
+        "灌装机": 164
+      },
+      "crossing_by_kind": {
+        "粉碎机": 40,
+        "精炼炉": 40,
+        "研磨机": 52,
+        "塑形机": 40,
+        "配件机": 40,
+        "种植机": 48,
+        "采种机": 48,
+        "封装机": 52,
+        "灌装机": 52
+      },
+      "whole_grinder_count_in_singleton_domain": 164,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 9,
+      "left_gap": 0,
+      "bottom_gap": 21,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 332,
+        "精炼炉": 332,
+        "研磨机": 164,
+        "塑形机": 332,
+        "配件机": 332,
+        "种植机": 164,
+        "采种机": 164,
+        "封装机": 164,
+        "灌装机": 164
+      },
+      "crossing_by_kind": {
+        "粉碎机": 40,
+        "精炼炉": 40,
+        "研磨机": 52,
+        "塑形机": 40,
+        "配件机": 40,
+        "种植机": 48,
+        "采种机": 48,
+        "封装机": 52,
+        "灌装机": 52
+      },
+      "whole_grinder_count_in_singleton_domain": 164,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 9,
+      "left_gap": 0,
+      "bottom_gap": 24,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 332,
+        "精炼炉": 332,
+        "研磨机": 164,
+        "塑形机": 332,
+        "配件机": 332,
+        "种植机": 164,
+        "采种机": 164,
+        "封装机": 164,
+        "灌装机": 164
+      },
+      "crossing_by_kind": {
+        "粉碎机": 40,
+        "精炼炉": 40,
+        "研磨机": 52,
+        "塑形机": 40,
+        "配件机": 40,
+        "种植机": 48,
+        "采种机": 48,
+        "封装机": 52,
+        "灌装机": 52
+      },
+      "whole_grinder_count_in_singleton_domain": 164,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 9,
+      "left_gap": 0,
+      "bottom_gap": 27,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 332,
+        "精炼炉": 332,
+        "研磨机": 164,
+        "塑形机": 332,
+        "配件机": 332,
+        "种植机": 164,
+        "采种机": 164,
+        "封装机": 164,
+        "灌装机": 164
+      },
+      "crossing_by_kind": {
+        "粉碎机": 40,
+        "精炼炉": 40,
+        "研磨机": 52,
+        "塑形机": 40,
+        "配件机": 40,
+        "种植机": 48,
+        "采种机": 48,
+        "封装机": 52,
+        "灌装机": 52
+      },
+      "whole_grinder_count_in_singleton_domain": 164,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 9,
+      "left_gap": 0,
+      "bottom_gap": 30,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 332,
+        "精炼炉": 332,
+        "研磨机": 164,
+        "塑形机": 332,
+        "配件机": 332,
+        "种植机": 164,
+        "采种机": 164,
+        "封装机": 164,
+        "灌装机": 164
+      },
+      "crossing_by_kind": {
+        "粉碎机": 40,
+        "精炼炉": 40,
+        "研磨机": 52,
+        "塑形机": 40,
+        "配件机": 40,
+        "种植机": 48,
+        "采种机": 48,
+        "封装机": 52,
+        "灌装机": 52
+      },
+      "whole_grinder_count_in_singleton_domain": 164,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 9,
+      "left_gap": 0,
+      "bottom_gap": 33,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 332,
+        "精炼炉": 332,
+        "研磨机": 164,
+        "塑形机": 332,
+        "配件机": 332,
+        "种植机": 164,
+        "采种机": 164,
+        "封装机": 164,
+        "灌装机": 164
+      },
+      "crossing_by_kind": {
+        "粉碎机": 40,
+        "精炼炉": 40,
+        "研磨机": 52,
+        "塑形机": 40,
+        "配件机": 40,
+        "种植机": 48,
+        "采种机": 48,
+        "封装机": 52,
+        "灌装机": 52
+      },
+      "whole_grinder_count_in_singleton_domain": 164,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 9,
+      "left_gap": 0,
+      "bottom_gap": 36,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 332,
+        "精炼炉": 332,
+        "研磨机": 164,
+        "塑形机": 332,
+        "配件机": 332,
+        "种植机": 164,
+        "采种机": 164,
+        "封装机": 164,
+        "灌装机": 164
+      },
+      "crossing_by_kind": {
+        "粉碎机": 40,
+        "精炼炉": 40,
+        "研磨机": 52,
+        "塑形机": 40,
+        "配件机": 40,
+        "种植机": 48,
+        "采种机": 48,
+        "封装机": 52,
+        "灌装机": 52
+      },
+      "whole_grinder_count_in_singleton_domain": 164,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 9,
+      "left_gap": 0,
+      "bottom_gap": 39,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 332,
+        "精炼炉": 332,
+        "研磨机": 164,
+        "塑形机": 332,
+        "配件机": 332,
+        "种植机": 164,
+        "采种机": 164,
+        "封装机": 164,
+        "灌装机": 164
+      },
+      "crossing_by_kind": {
+        "粉碎机": 40,
+        "精炼炉": 40,
+        "研磨机": 52,
+        "塑形机": 40,
+        "配件机": 40,
+        "种植机": 48,
+        "采种机": 48,
+        "封装机": 52,
+        "灌装机": 52
+      },
+      "whole_grinder_count_in_singleton_domain": 164,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 9,
+      "left_gap": 0,
+      "bottom_gap": 42,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 332,
+        "精炼炉": 332,
+        "研磨机": 164,
+        "塑形机": 332,
+        "配件机": 332,
+        "种植机": 164,
+        "采种机": 164,
+        "封装机": 164,
+        "灌装机": 164
+      },
+      "crossing_by_kind": {
+        "粉碎机": 40,
+        "精炼炉": 40,
+        "研磨机": 52,
+        "塑形机": 40,
+        "配件机": 40,
+        "种植机": 48,
+        "采种机": 48,
+        "封装机": 52,
+        "灌装机": 52
+      },
+      "whole_grinder_count_in_singleton_domain": 164,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 9,
+      "left_gap": 0,
+      "bottom_gap": 45,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 332,
+        "精炼炉": 332,
+        "研磨机": 164,
+        "塑形机": 332,
+        "配件机": 332,
+        "种植机": 164,
+        "采种机": 164,
+        "封装机": 164,
+        "灌装机": 164
+      },
+      "crossing_by_kind": {
+        "粉碎机": 40,
+        "精炼炉": 40,
+        "研磨机": 52,
+        "塑形机": 40,
+        "配件机": 40,
+        "种植机": 48,
+        "采种机": 48,
+        "封装机": 52,
+        "灌装机": 52
+      },
+      "whole_grinder_count_in_singleton_domain": 164,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 9,
+      "left_gap": 0,
+      "bottom_gap": 48,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 332,
+        "精炼炉": 332,
+        "研磨机": 164,
+        "塑形机": 332,
+        "配件机": 332,
+        "种植机": 164,
+        "采种机": 164,
+        "封装机": 164,
+        "灌装机": 164
+      },
+      "crossing_by_kind": {
+        "粉碎机": 42,
+        "精炼炉": 42,
+        "研磨机": 52,
+        "塑形机": 42,
+        "配件机": 42,
+        "种植机": 48,
+        "采种机": 48,
+        "封装机": 52,
+        "灌装机": 52
+      },
+      "whole_grinder_count_in_singleton_domain": 164,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 9,
+      "left_gap": 0,
+      "bottom_gap": 51,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 334,
+        "精炼炉": 334,
+        "研磨机": 164,
+        "塑形机": 334,
+        "配件机": 334,
+        "种植机": 164,
+        "采种机": 164,
+        "封装机": 164,
+        "灌装机": 164
+      },
+      "crossing_by_kind": {
+        "粉碎机": 40,
+        "精炼炉": 40,
+        "研磨机": 52,
+        "塑形机": 40,
+        "配件机": 40,
+        "种植机": 48,
+        "采种机": 48,
+        "封装机": 52,
+        "灌装机": 52
+      },
+      "whole_grinder_count_in_singleton_domain": 164,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 9,
+      "left_gap": 0,
+      "bottom_gap": 54,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 334,
+        "精炼炉": 334,
+        "研磨机": 164,
+        "塑形机": 334,
+        "配件机": 334,
+        "种植机": 164,
+        "采种机": 164,
+        "封装机": 164,
+        "灌装机": 164
+      },
+      "crossing_by_kind": {
+        "粉碎机": 40,
+        "精炼炉": 40,
+        "研磨机": 52,
+        "塑形机": 40,
+        "配件机": 40,
+        "种植机": 48,
+        "采种机": 48,
+        "封装机": 52,
+        "灌装机": 52
+      },
+      "whole_grinder_count_in_singleton_domain": 164,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 9,
+      "left_gap": 0,
+      "bottom_gap": 57,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 334,
+        "精炼炉": 334,
+        "研磨机": 164,
+        "塑形机": 334,
+        "配件机": 334,
+        "种植机": 164,
+        "采种机": 164,
+        "封装机": 164,
+        "灌装机": 164
+      },
+      "crossing_by_kind": {
+        "粉碎机": 40,
+        "精炼炉": 40,
+        "研磨机": 52,
+        "塑形机": 40,
+        "配件机": 40,
+        "种植机": 48,
+        "采种机": 48,
+        "封装机": 52,
+        "灌装机": 52
+      },
+      "whole_grinder_count_in_singleton_domain": 164,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 9,
+      "left_gap": 0,
+      "bottom_gap": 60,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 334,
+        "精炼炉": 334,
+        "研磨机": 164,
+        "塑形机": 334,
+        "配件机": 334,
+        "种植机": 164,
+        "采种机": 164,
+        "封装机": 164,
+        "灌装机": 164
+      },
+      "crossing_by_kind": {
+        "粉碎机": 40,
+        "精炼炉": 40,
+        "研磨机": 52,
+        "塑形机": 40,
+        "配件机": 40,
+        "种植机": 48,
+        "采种机": 48,
+        "封装机": 52,
+        "灌装机": 52
+      },
+      "whole_grinder_count_in_singleton_domain": 164,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 9,
+      "left_gap": 0,
+      "bottom_gap": 63,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 334,
+        "精炼炉": 334,
+        "研磨机": 164,
+        "塑形机": 334,
+        "配件机": 334,
+        "种植机": 164,
+        "采种机": 164,
+        "封装机": 164,
+        "灌装机": 164
+      },
+      "crossing_by_kind": {
+        "粉碎机": 40,
+        "精炼炉": 40,
+        "研磨机": 52,
+        "塑形机": 40,
+        "配件机": 40,
+        "种植机": 48,
+        "采种机": 48,
+        "封装机": 52,
+        "灌装机": 52
+      },
+      "whole_grinder_count_in_singleton_domain": 164,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 9,
+      "left_gap": 0,
+      "bottom_gap": 66,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 334,
+        "精炼炉": 334,
+        "研磨机": 164,
+        "塑形机": 334,
+        "配件机": 334,
+        "种植机": 164,
+        "采种机": 164,
+        "封装机": 164,
+        "灌装机": 164
+      },
+      "crossing_by_kind": {
+        "粉碎机": 40,
+        "精炼炉": 40,
+        "研磨机": 52,
+        "塑形机": 40,
+        "配件机": 40,
+        "种植机": 48,
+        "采种机": 48,
+        "封装机": 52,
+        "灌装机": 52
+      },
+      "whole_grinder_count_in_singleton_domain": 164,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 9,
+      "left_gap": 0,
+      "bottom_gap": 69,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 332,
+        "精炼炉": 332,
+        "研磨机": 164,
+        "塑形机": 332,
+        "配件机": 332,
+        "种植机": 164,
+        "采种机": 164,
+        "封装机": 164,
+        "灌装机": 164
+      },
+      "crossing_by_kind": {
+        "粉碎机": 40,
+        "精炼炉": 40,
+        "研磨机": 52,
+        "塑形机": 40,
+        "配件机": 40,
+        "种植机": 48,
+        "采种机": 48,
+        "封装机": 52,
+        "灌装机": 52
+      },
+      "whole_grinder_count_in_singleton_domain": 164,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 9,
+      "left_gap": 3,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 332,
+        "精炼炉": 332,
+        "研磨机": 164,
+        "塑形机": 332,
+        "配件机": 332,
+        "种植机": 164,
+        "采种机": 164,
+        "封装机": 164,
+        "灌装机": 164
+      },
+      "crossing_by_kind": {
+        "粉碎机": 40,
+        "精炼炉": 40,
+        "研磨机": 52,
+        "塑形机": 40,
+        "配件机": 40,
+        "种植机": 48,
+        "采种机": 48,
+        "封装机": 52,
+        "灌装机": 52
+      },
+      "whole_grinder_count_in_singleton_domain": 164,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 9,
+      "left_gap": 6,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 332,
+        "精炼炉": 332,
+        "研磨机": 164,
+        "塑形机": 332,
+        "配件机": 332,
+        "种植机": 164,
+        "采种机": 164,
+        "封装机": 164,
+        "灌装机": 164
+      },
+      "crossing_by_kind": {
+        "粉碎机": 40,
+        "精炼炉": 40,
+        "研磨机": 52,
+        "塑形机": 40,
+        "配件机": 40,
+        "种植机": 48,
+        "采种机": 48,
+        "封装机": 52,
+        "灌装机": 52
+      },
+      "whole_grinder_count_in_singleton_domain": 164,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 9,
+      "left_gap": 9,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 332,
+        "精炼炉": 332,
+        "研磨机": 164,
+        "塑形机": 332,
+        "配件机": 332,
+        "种植机": 164,
+        "采种机": 164,
+        "封装机": 164,
+        "灌装机": 164
+      },
+      "crossing_by_kind": {
+        "粉碎机": 40,
+        "精炼炉": 40,
+        "研磨机": 52,
+        "塑形机": 40,
+        "配件机": 40,
+        "种植机": 48,
+        "采种机": 48,
+        "封装机": 52,
+        "灌装机": 52
+      },
+      "whole_grinder_count_in_singleton_domain": 164,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 9,
+      "left_gap": 12,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 332,
+        "精炼炉": 332,
+        "研磨机": 164,
+        "塑形机": 332,
+        "配件机": 332,
+        "种植机": 164,
+        "采种机": 164,
+        "封装机": 164,
+        "灌装机": 164
+      },
+      "crossing_by_kind": {
+        "粉碎机": 40,
+        "精炼炉": 40,
+        "研磨机": 52,
+        "塑形机": 40,
+        "配件机": 40,
+        "种植机": 48,
+        "采种机": 48,
+        "封装机": 52,
+        "灌装机": 52
+      },
+      "whole_grinder_count_in_singleton_domain": 164,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 9,
+      "left_gap": 15,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 332,
+        "精炼炉": 332,
+        "研磨机": 164,
+        "塑形机": 332,
+        "配件机": 332,
+        "种植机": 164,
+        "采种机": 164,
+        "封装机": 164,
+        "灌装机": 164
+      },
+      "crossing_by_kind": {
+        "粉碎机": 40,
+        "精炼炉": 40,
+        "研磨机": 52,
+        "塑形机": 40,
+        "配件机": 40,
+        "种植机": 48,
+        "采种机": 48,
+        "封装机": 52,
+        "灌装机": 52
+      },
+      "whole_grinder_count_in_singleton_domain": 164,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 9,
+      "left_gap": 18,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 332,
+        "精炼炉": 332,
+        "研磨机": 164,
+        "塑形机": 332,
+        "配件机": 332,
+        "种植机": 164,
+        "采种机": 164,
+        "封装机": 164,
+        "灌装机": 164
+      },
+      "crossing_by_kind": {
+        "粉碎机": 40,
+        "精炼炉": 40,
+        "研磨机": 52,
+        "塑形机": 40,
+        "配件机": 40,
+        "种植机": 48,
+        "采种机": 48,
+        "封装机": 52,
+        "灌装机": 52
+      },
+      "whole_grinder_count_in_singleton_domain": 164,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 9,
+      "left_gap": 21,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 332,
+        "精炼炉": 332,
+        "研磨机": 164,
+        "塑形机": 332,
+        "配件机": 332,
+        "种植机": 164,
+        "采种机": 164,
+        "封装机": 164,
+        "灌装机": 164
+      },
+      "crossing_by_kind": {
+        "粉碎机": 40,
+        "精炼炉": 40,
+        "研磨机": 52,
+        "塑形机": 40,
+        "配件机": 40,
+        "种植机": 48,
+        "采种机": 48,
+        "封装机": 52,
+        "灌装机": 52
+      },
+      "whole_grinder_count_in_singleton_domain": 164,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 9,
+      "left_gap": 24,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 332,
+        "精炼炉": 332,
+        "研磨机": 164,
+        "塑形机": 332,
+        "配件机": 332,
+        "种植机": 164,
+        "采种机": 164,
+        "封装机": 164,
+        "灌装机": 164
+      },
+      "crossing_by_kind": {
+        "粉碎机": 40,
+        "精炼炉": 40,
+        "研磨机": 52,
+        "塑形机": 40,
+        "配件机": 40,
+        "种植机": 48,
+        "采种机": 48,
+        "封装机": 52,
+        "灌装机": 52
+      },
+      "whole_grinder_count_in_singleton_domain": 164,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 9,
+      "left_gap": 27,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 332,
+        "精炼炉": 332,
+        "研磨机": 164,
+        "塑形机": 332,
+        "配件机": 332,
+        "种植机": 164,
+        "采种机": 164,
+        "封装机": 164,
+        "灌装机": 164
+      },
+      "crossing_by_kind": {
+        "粉碎机": 40,
+        "精炼炉": 40,
+        "研磨机": 52,
+        "塑形机": 40,
+        "配件机": 40,
+        "种植机": 48,
+        "采种机": 48,
+        "封装机": 52,
+        "灌装机": 52
+      },
+      "whole_grinder_count_in_singleton_domain": 164,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 9,
+      "left_gap": 30,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 332,
+        "精炼炉": 332,
+        "研磨机": 164,
+        "塑形机": 332,
+        "配件机": 332,
+        "种植机": 164,
+        "采种机": 164,
+        "封装机": 164,
+        "灌装机": 164
+      },
+      "crossing_by_kind": {
+        "粉碎机": 40,
+        "精炼炉": 40,
+        "研磨机": 52,
+        "塑形机": 40,
+        "配件机": 40,
+        "种植机": 48,
+        "采种机": 48,
+        "封装机": 52,
+        "灌装机": 52
+      },
+      "whole_grinder_count_in_singleton_domain": 164,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 9,
+      "left_gap": 33,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 332,
+        "精炼炉": 332,
+        "研磨机": 164,
+        "塑形机": 332,
+        "配件机": 332,
+        "种植机": 164,
+        "采种机": 164,
+        "封装机": 164,
+        "灌装机": 164
+      },
+      "crossing_by_kind": {
+        "粉碎机": 40,
+        "精炼炉": 40,
+        "研磨机": 52,
+        "塑形机": 40,
+        "配件机": 40,
+        "种植机": 48,
+        "采种机": 48,
+        "封装机": 52,
+        "灌装机": 52
+      },
+      "whole_grinder_count_in_singleton_domain": 164,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 9,
+      "left_gap": 36,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 332,
+        "精炼炉": 332,
+        "研磨机": 164,
+        "塑形机": 332,
+        "配件机": 332,
+        "种植机": 164,
+        "采种机": 164,
+        "封装机": 164,
+        "灌装机": 164
+      },
+      "crossing_by_kind": {
+        "粉碎机": 40,
+        "精炼炉": 40,
+        "研磨机": 52,
+        "塑形机": 40,
+        "配件机": 40,
+        "种植机": 48,
+        "采种机": 48,
+        "封装机": 52,
+        "灌装机": 52
+      },
+      "whole_grinder_count_in_singleton_domain": 164,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 9,
+      "left_gap": 39,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 332,
+        "精炼炉": 332,
+        "研磨机": 164,
+        "塑形机": 332,
+        "配件机": 332,
+        "种植机": 164,
+        "采种机": 164,
+        "封装机": 164,
+        "灌装机": 164
+      },
+      "crossing_by_kind": {
+        "粉碎机": 40,
+        "精炼炉": 40,
+        "研磨机": 52,
+        "塑形机": 40,
+        "配件机": 40,
+        "种植机": 48,
+        "采种机": 48,
+        "封装机": 52,
+        "灌装机": 52
+      },
+      "whole_grinder_count_in_singleton_domain": 164,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 9,
+      "left_gap": 42,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 332,
+        "精炼炉": 332,
+        "研磨机": 164,
+        "塑形机": 332,
+        "配件机": 332,
+        "种植机": 164,
+        "采种机": 164,
+        "封装机": 164,
+        "灌装机": 164
+      },
+      "crossing_by_kind": {
+        "粉碎机": 40,
+        "精炼炉": 40,
+        "研磨机": 52,
+        "塑形机": 40,
+        "配件机": 40,
+        "种植机": 48,
+        "采种机": 48,
+        "封装机": 52,
+        "灌装机": 52
+      },
+      "whole_grinder_count_in_singleton_domain": 164,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 9,
+      "left_gap": 45,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 332,
+        "精炼炉": 332,
+        "研磨机": 164,
+        "塑形机": 332,
+        "配件机": 332,
+        "种植机": 164,
+        "采种机": 164,
+        "封装机": 164,
+        "灌装机": 164
+      },
+      "crossing_by_kind": {
+        "粉碎机": 40,
+        "精炼炉": 40,
+        "研磨机": 52,
+        "塑形机": 40,
+        "配件机": 40,
+        "种植机": 48,
+        "采种机": 48,
+        "封装机": 52,
+        "灌装机": 52
+      },
+      "whole_grinder_count_in_singleton_domain": 164,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 9,
+      "left_gap": 48,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 332,
+        "精炼炉": 332,
+        "研磨机": 164,
+        "塑形机": 332,
+        "配件机": 332,
+        "种植机": 164,
+        "采种机": 164,
+        "封装机": 164,
+        "灌装机": 164
+      },
+      "crossing_by_kind": {
+        "粉碎机": 40,
+        "精炼炉": 40,
+        "研磨机": 52,
+        "塑形机": 40,
+        "配件机": 40,
+        "种植机": 48,
+        "采种机": 48,
+        "封装机": 52,
+        "灌装机": 52
+      },
+      "whole_grinder_count_in_singleton_domain": 164,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 9,
+      "left_gap": 51,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 332,
+        "精炼炉": 332,
+        "研磨机": 164,
+        "塑形机": 332,
+        "配件机": 332,
+        "种植机": 164,
+        "采种机": 164,
+        "封装机": 164,
+        "灌装机": 164
+      },
+      "crossing_by_kind": {
+        "粉碎机": 40,
+        "精炼炉": 40,
+        "研磨机": 52,
+        "塑形机": 40,
+        "配件机": 40,
+        "种植机": 48,
+        "采种机": 48,
+        "封装机": 52,
+        "灌装机": 52
+      },
+      "whole_grinder_count_in_singleton_domain": 164,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 9,
+      "left_gap": 54,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 332,
+        "精炼炉": 332,
+        "研磨机": 164,
+        "塑形机": 332,
+        "配件机": 332,
+        "种植机": 164,
+        "采种机": 164,
+        "封装机": 164,
+        "灌装机": 164
+      },
+      "crossing_by_kind": {
+        "粉碎机": 40,
+        "精炼炉": 40,
+        "研磨机": 52,
+        "塑形机": 40,
+        "配件机": 40,
+        "种植机": 48,
+        "采种机": 48,
+        "封装机": 52,
+        "灌装机": 52
+      },
+      "whole_grinder_count_in_singleton_domain": 164,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 9,
+      "left_gap": 57,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 332,
+        "精炼炉": 332,
+        "研磨机": 164,
+        "塑形机": 332,
+        "配件机": 332,
+        "种植机": 164,
+        "采种机": 164,
+        "封装机": 164,
+        "灌装机": 164
+      },
+      "crossing_by_kind": {
+        "粉碎机": 40,
+        "精炼炉": 40,
+        "研磨机": 52,
+        "塑形机": 40,
+        "配件机": 40,
+        "种植机": 48,
+        "采种机": 48,
+        "封装机": 52,
+        "灌装机": 52
+      },
+      "whole_grinder_count_in_singleton_domain": 164,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 9,
+      "left_gap": 60,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 332,
+        "精炼炉": 332,
+        "研磨机": 164,
+        "塑形机": 332,
+        "配件机": 332,
+        "种植机": 164,
+        "采种机": 164,
+        "封装机": 164,
+        "灌装机": 164
+      },
+      "crossing_by_kind": {
+        "粉碎机": 40,
+        "精炼炉": 40,
+        "研磨机": 52,
+        "塑形机": 40,
+        "配件机": 40,
+        "种植机": 48,
+        "采种机": 48,
+        "封装机": 52,
+        "灌装机": 52
+      },
+      "whole_grinder_count_in_singleton_domain": 164,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 9,
+      "left_gap": 63,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 332,
+        "精炼炉": 332,
+        "研磨机": 164,
+        "塑形机": 332,
+        "配件机": 332,
+        "种植机": 164,
+        "采种机": 164,
+        "封装机": 164,
+        "灌装机": 164
+      },
+      "crossing_by_kind": {
+        "粉碎机": 40,
+        "精炼炉": 40,
+        "研磨机": 52,
+        "塑形机": 40,
+        "配件机": 40,
+        "种植机": 48,
+        "采种机": 48,
+        "封装机": 52,
+        "灌装机": 52
+      },
+      "whole_grinder_count_in_singleton_domain": 164,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 9,
+      "left_gap": 66,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 332,
+        "精炼炉": 332,
+        "研磨机": 164,
+        "塑形机": 332,
+        "配件机": 332,
+        "种植机": 164,
+        "采种机": 164,
+        "封装机": 164,
+        "灌装机": 164
+      },
+      "crossing_by_kind": {
+        "粉碎机": 40,
+        "精炼炉": 40,
+        "研磨机": 52,
+        "塑形机": 40,
+        "配件机": 40,
+        "种植机": 48,
+        "采种机": 48,
+        "封装机": 52,
+        "灌装机": 52
+      },
+      "whole_grinder_count_in_singleton_domain": 164,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 9,
+      "left_gap": 69,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 332,
+        "精炼炉": 332,
+        "研磨机": 164,
+        "塑形机": 332,
+        "配件机": 332,
+        "种植机": 164,
+        "采种机": 164,
+        "封装机": 164,
+        "灌装机": 164
+      },
+      "crossing_by_kind": {
+        "粉碎机": 40,
+        "精炼炉": 40,
+        "研磨机": 52,
+        "塑形机": 40,
+        "配件机": 40,
+        "种植机": 48,
+        "采种机": 48,
+        "封装机": 52,
+        "灌装机": 52
+      },
+      "whole_grinder_count_in_singleton_domain": 164,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 17,
+      "left_gap": 0,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 924,
+        "精炼炉": 924,
+        "研磨机": 692,
+        "塑形机": 924,
+        "配件机": 924,
+        "种植机": 692,
+        "采种机": 692,
+        "封装机": 692,
+        "灌装机": 692
+      },
+      "crossing_by_kind": {
+        "粉碎机": 104,
+        "精炼炉": 104,
+        "研磨机": 180,
+        "塑形机": 104,
+        "配件机": 104,
+        "种植机": 176,
+        "采种机": 176,
+        "封装机": 180,
+        "灌装机": 180
+      },
+      "whole_grinder_count_in_singleton_domain": 692,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 17,
+      "left_gap": 0,
+      "bottom_gap": 3,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 924,
+        "精炼炉": 924,
+        "研磨机": 692,
+        "塑形机": 924,
+        "配件机": 924,
+        "种植机": 692,
+        "采种机": 692,
+        "封装机": 692,
+        "灌装机": 692
+      },
+      "crossing_by_kind": {
+        "粉碎机": 104,
+        "精炼炉": 104,
+        "研磨机": 180,
+        "塑形机": 104,
+        "配件机": 104,
+        "种植机": 176,
+        "采种机": 176,
+        "封装机": 180,
+        "灌装机": 180
+      },
+      "whole_grinder_count_in_singleton_domain": 692,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 17,
+      "left_gap": 0,
+      "bottom_gap": 6,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 924,
+        "精炼炉": 924,
+        "研磨机": 692,
+        "塑形机": 924,
+        "配件机": 924,
+        "种植机": 692,
+        "采种机": 692,
+        "封装机": 692,
+        "灌装机": 692
+      },
+      "crossing_by_kind": {
+        "粉碎机": 104,
+        "精炼炉": 104,
+        "研磨机": 180,
+        "塑形机": 104,
+        "配件机": 104,
+        "种植机": 176,
+        "采种机": 176,
+        "封装机": 180,
+        "灌装机": 180
+      },
+      "whole_grinder_count_in_singleton_domain": 692,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 17,
+      "left_gap": 0,
+      "bottom_gap": 9,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 924,
+        "精炼炉": 924,
+        "研磨机": 692,
+        "塑形机": 924,
+        "配件机": 924,
+        "种植机": 692,
+        "采种机": 692,
+        "封装机": 692,
+        "灌装机": 692
+      },
+      "crossing_by_kind": {
+        "粉碎机": 104,
+        "精炼炉": 104,
+        "研磨机": 180,
+        "塑形机": 104,
+        "配件机": 104,
+        "种植机": 176,
+        "采种机": 176,
+        "封装机": 180,
+        "灌装机": 180
+      },
+      "whole_grinder_count_in_singleton_domain": 692,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 17,
+      "left_gap": 0,
+      "bottom_gap": 12,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 924,
+        "精炼炉": 924,
+        "研磨机": 692,
+        "塑形机": 924,
+        "配件机": 924,
+        "种植机": 692,
+        "采种机": 692,
+        "封装机": 692,
+        "灌装机": 692
+      },
+      "crossing_by_kind": {
+        "粉碎机": 104,
+        "精炼炉": 104,
+        "研磨机": 180,
+        "塑形机": 104,
+        "配件机": 104,
+        "种植机": 176,
+        "采种机": 176,
+        "封装机": 180,
+        "灌装机": 180
+      },
+      "whole_grinder_count_in_singleton_domain": 692,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 17,
+      "left_gap": 0,
+      "bottom_gap": 15,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 924,
+        "精炼炉": 924,
+        "研磨机": 692,
+        "塑形机": 924,
+        "配件机": 924,
+        "种植机": 692,
+        "采种机": 692,
+        "封装机": 692,
+        "灌装机": 692
+      },
+      "crossing_by_kind": {
+        "粉碎机": 104,
+        "精炼炉": 104,
+        "研磨机": 180,
+        "塑形机": 104,
+        "配件机": 104,
+        "种植机": 176,
+        "采种机": 176,
+        "封装机": 180,
+        "灌装机": 180
+      },
+      "whole_grinder_count_in_singleton_domain": 692,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 17,
+      "left_gap": 0,
+      "bottom_gap": 18,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 924,
+        "精炼炉": 924,
+        "研磨机": 692,
+        "塑形机": 924,
+        "配件机": 924,
+        "种植机": 692,
+        "采种机": 692,
+        "封装机": 692,
+        "灌装机": 692
+      },
+      "crossing_by_kind": {
+        "粉碎机": 104,
+        "精炼炉": 104,
+        "研磨机": 180,
+        "塑形机": 104,
+        "配件机": 104,
+        "种植机": 176,
+        "采种机": 176,
+        "封装机": 180,
+        "灌装机": 180
+      },
+      "whole_grinder_count_in_singleton_domain": 692,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 17,
+      "left_gap": 0,
+      "bottom_gap": 21,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 924,
+        "精炼炉": 924,
+        "研磨机": 692,
+        "塑形机": 924,
+        "配件机": 924,
+        "种植机": 692,
+        "采种机": 692,
+        "封装机": 692,
+        "灌装机": 692
+      },
+      "crossing_by_kind": {
+        "粉碎机": 104,
+        "精炼炉": 104,
+        "研磨机": 180,
+        "塑形机": 104,
+        "配件机": 104,
+        "种植机": 176,
+        "采种机": 176,
+        "封装机": 180,
+        "灌装机": 180
+      },
+      "whole_grinder_count_in_singleton_domain": 692,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 17,
+      "left_gap": 0,
+      "bottom_gap": 24,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 924,
+        "精炼炉": 924,
+        "研磨机": 692,
+        "塑形机": 924,
+        "配件机": 924,
+        "种植机": 692,
+        "采种机": 692,
+        "封装机": 692,
+        "灌装机": 692
+      },
+      "crossing_by_kind": {
+        "粉碎机": 104,
+        "精炼炉": 104,
+        "研磨机": 180,
+        "塑形机": 104,
+        "配件机": 104,
+        "种植机": 176,
+        "采种机": 176,
+        "封装机": 180,
+        "灌装机": 180
+      },
+      "whole_grinder_count_in_singleton_domain": 692,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 17,
+      "left_gap": 0,
+      "bottom_gap": 27,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 924,
+        "精炼炉": 924,
+        "研磨机": 692,
+        "塑形机": 924,
+        "配件机": 924,
+        "种植机": 692,
+        "采种机": 692,
+        "封装机": 692,
+        "灌装机": 692
+      },
+      "crossing_by_kind": {
+        "粉碎机": 104,
+        "精炼炉": 104,
+        "研磨机": 180,
+        "塑形机": 104,
+        "配件机": 104,
+        "种植机": 176,
+        "采种机": 176,
+        "封装机": 180,
+        "灌装机": 180
+      },
+      "whole_grinder_count_in_singleton_domain": 692,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 17,
+      "left_gap": 0,
+      "bottom_gap": 30,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 924,
+        "精炼炉": 924,
+        "研磨机": 692,
+        "塑形机": 924,
+        "配件机": 924,
+        "种植机": 692,
+        "采种机": 692,
+        "封装机": 692,
+        "灌装机": 692
+      },
+      "crossing_by_kind": {
+        "粉碎机": 104,
+        "精炼炉": 104,
+        "研磨机": 180,
+        "塑形机": 104,
+        "配件机": 104,
+        "种植机": 176,
+        "采种机": 176,
+        "封装机": 180,
+        "灌装机": 180
+      },
+      "whole_grinder_count_in_singleton_domain": 692,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 17,
+      "left_gap": 0,
+      "bottom_gap": 33,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 924,
+        "精炼炉": 924,
+        "研磨机": 692,
+        "塑形机": 924,
+        "配件机": 924,
+        "种植机": 692,
+        "采种机": 692,
+        "封装机": 692,
+        "灌装机": 692
+      },
+      "crossing_by_kind": {
+        "粉碎机": 104,
+        "精炼炉": 104,
+        "研磨机": 180,
+        "塑形机": 104,
+        "配件机": 104,
+        "种植机": 176,
+        "采种机": 176,
+        "封装机": 180,
+        "灌装机": 180
+      },
+      "whole_grinder_count_in_singleton_domain": 692,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 17,
+      "left_gap": 0,
+      "bottom_gap": 36,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 924,
+        "精炼炉": 924,
+        "研磨机": 692,
+        "塑形机": 924,
+        "配件机": 924,
+        "种植机": 692,
+        "采种机": 692,
+        "封装机": 692,
+        "灌装机": 692
+      },
+      "crossing_by_kind": {
+        "粉碎机": 104,
+        "精炼炉": 104,
+        "研磨机": 180,
+        "塑形机": 104,
+        "配件机": 104,
+        "种植机": 176,
+        "采种机": 176,
+        "封装机": 180,
+        "灌装机": 180
+      },
+      "whole_grinder_count_in_singleton_domain": 692,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 17,
+      "left_gap": 0,
+      "bottom_gap": 39,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 924,
+        "精炼炉": 924,
+        "研磨机": 692,
+        "塑形机": 924,
+        "配件机": 924,
+        "种植机": 692,
+        "采种机": 692,
+        "封装机": 692,
+        "灌装机": 692
+      },
+      "crossing_by_kind": {
+        "粉碎机": 104,
+        "精炼炉": 104,
+        "研磨机": 180,
+        "塑形机": 104,
+        "配件机": 104,
+        "种植机": 176,
+        "采种机": 176,
+        "封装机": 180,
+        "灌装机": 180
+      },
+      "whole_grinder_count_in_singleton_domain": 692,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 17,
+      "left_gap": 0,
+      "bottom_gap": 42,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 924,
+        "精炼炉": 924,
+        "研磨机": 692,
+        "塑形机": 924,
+        "配件机": 924,
+        "种植机": 692,
+        "采种机": 692,
+        "封装机": 692,
+        "灌装机": 692
+      },
+      "crossing_by_kind": {
+        "粉碎机": 104,
+        "精炼炉": 104,
+        "研磨机": 180,
+        "塑形机": 104,
+        "配件机": 104,
+        "种植机": 176,
+        "采种机": 176,
+        "封装机": 180,
+        "灌装机": 180
+      },
+      "whole_grinder_count_in_singleton_domain": 692,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 17,
+      "left_gap": 0,
+      "bottom_gap": 45,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 924,
+        "精炼炉": 924,
+        "研磨机": 692,
+        "塑形机": 924,
+        "配件机": 924,
+        "种植机": 692,
+        "采种机": 692,
+        "封装机": 692,
+        "灌装机": 692
+      },
+      "crossing_by_kind": {
+        "粉碎机": 104,
+        "精炼炉": 104,
+        "研磨机": 180,
+        "塑形机": 104,
+        "配件机": 104,
+        "种植机": 176,
+        "采种机": 176,
+        "封装机": 180,
+        "灌装机": 180
+      },
+      "whole_grinder_count_in_singleton_domain": 692,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 17,
+      "left_gap": 0,
+      "bottom_gap": 48,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 924,
+        "精炼炉": 924,
+        "研磨机": 692,
+        "塑形机": 924,
+        "配件机": 924,
+        "种植机": 692,
+        "采种机": 692,
+        "封装机": 692,
+        "灌装机": 692
+      },
+      "crossing_by_kind": {
+        "粉碎机": 106,
+        "精炼炉": 106,
+        "研磨机": 180,
+        "塑形机": 106,
+        "配件机": 106,
+        "种植机": 176,
+        "采种机": 176,
+        "封装机": 180,
+        "灌装机": 180
+      },
+      "whole_grinder_count_in_singleton_domain": 692,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 17,
+      "left_gap": 0,
+      "bottom_gap": 51,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 926,
+        "精炼炉": 926,
+        "研磨机": 692,
+        "塑形机": 926,
+        "配件机": 926,
+        "种植机": 692,
+        "采种机": 692,
+        "封装机": 692,
+        "灌装机": 692
+      },
+      "crossing_by_kind": {
+        "粉碎机": 104,
+        "精炼炉": 104,
+        "研磨机": 180,
+        "塑形机": 104,
+        "配件机": 104,
+        "种植机": 176,
+        "采种机": 176,
+        "封装机": 180,
+        "灌装机": 180
+      },
+      "whole_grinder_count_in_singleton_domain": 692,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 17,
+      "left_gap": 0,
+      "bottom_gap": 54,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 926,
+        "精炼炉": 926,
+        "研磨机": 692,
+        "塑形机": 926,
+        "配件机": 926,
+        "种植机": 692,
+        "采种机": 692,
+        "封装机": 692,
+        "灌装机": 692
+      },
+      "crossing_by_kind": {
+        "粉碎机": 104,
+        "精炼炉": 104,
+        "研磨机": 180,
+        "塑形机": 104,
+        "配件机": 104,
+        "种植机": 176,
+        "采种机": 176,
+        "封装机": 180,
+        "灌装机": 180
+      },
+      "whole_grinder_count_in_singleton_domain": 692,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 17,
+      "left_gap": 0,
+      "bottom_gap": 57,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 926,
+        "精炼炉": 926,
+        "研磨机": 692,
+        "塑形机": 926,
+        "配件机": 926,
+        "种植机": 692,
+        "采种机": 692,
+        "封装机": 692,
+        "灌装机": 692
+      },
+      "crossing_by_kind": {
+        "粉碎机": 104,
+        "精炼炉": 104,
+        "研磨机": 180,
+        "塑形机": 104,
+        "配件机": 104,
+        "种植机": 176,
+        "采种机": 176,
+        "封装机": 180,
+        "灌装机": 180
+      },
+      "whole_grinder_count_in_singleton_domain": 692,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 17,
+      "left_gap": 0,
+      "bottom_gap": 60,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 926,
+        "精炼炉": 926,
+        "研磨机": 692,
+        "塑形机": 926,
+        "配件机": 926,
+        "种植机": 692,
+        "采种机": 692,
+        "封装机": 692,
+        "灌装机": 692
+      },
+      "crossing_by_kind": {
+        "粉碎机": 104,
+        "精炼炉": 104,
+        "研磨机": 180,
+        "塑形机": 104,
+        "配件机": 104,
+        "种植机": 176,
+        "采种机": 176,
+        "封装机": 180,
+        "灌装机": 180
+      },
+      "whole_grinder_count_in_singleton_domain": 692,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 17,
+      "left_gap": 0,
+      "bottom_gap": 63,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 926,
+        "精炼炉": 926,
+        "研磨机": 692,
+        "塑形机": 926,
+        "配件机": 926,
+        "种植机": 692,
+        "采种机": 692,
+        "封装机": 692,
+        "灌装机": 692
+      },
+      "crossing_by_kind": {
+        "粉碎机": 104,
+        "精炼炉": 104,
+        "研磨机": 180,
+        "塑形机": 104,
+        "配件机": 104,
+        "种植机": 176,
+        "采种机": 176,
+        "封装机": 180,
+        "灌装机": 180
+      },
+      "whole_grinder_count_in_singleton_domain": 692,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 17,
+      "left_gap": 0,
+      "bottom_gap": 66,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 926,
+        "精炼炉": 926,
+        "研磨机": 692,
+        "塑形机": 926,
+        "配件机": 926,
+        "种植机": 692,
+        "采种机": 692,
+        "封装机": 692,
+        "灌装机": 692
+      },
+      "crossing_by_kind": {
+        "粉碎机": 104,
+        "精炼炉": 104,
+        "研磨机": 180,
+        "塑形机": 104,
+        "配件机": 104,
+        "种植机": 176,
+        "采种机": 176,
+        "封装机": 180,
+        "灌装机": 180
+      },
+      "whole_grinder_count_in_singleton_domain": 692,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 17,
+      "left_gap": 0,
+      "bottom_gap": 69,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 924,
+        "精炼炉": 924,
+        "研磨机": 692,
+        "塑形机": 924,
+        "配件机": 924,
+        "种植机": 692,
+        "采种机": 692,
+        "封装机": 692,
+        "灌装机": 692
+      },
+      "crossing_by_kind": {
+        "粉碎机": 104,
+        "精炼炉": 104,
+        "研磨机": 180,
+        "塑形机": 104,
+        "配件机": 104,
+        "种植机": 176,
+        "采种机": 176,
+        "封装机": 180,
+        "灌装机": 180
+      },
+      "whole_grinder_count_in_singleton_domain": 692,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 17,
+      "left_gap": 3,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 924,
+        "精炼炉": 924,
+        "研磨机": 692,
+        "塑形机": 924,
+        "配件机": 924,
+        "种植机": 692,
+        "采种机": 692,
+        "封装机": 692,
+        "灌装机": 692
+      },
+      "crossing_by_kind": {
+        "粉碎机": 104,
+        "精炼炉": 104,
+        "研磨机": 180,
+        "塑形机": 104,
+        "配件机": 104,
+        "种植机": 176,
+        "采种机": 176,
+        "封装机": 180,
+        "灌装机": 180
+      },
+      "whole_grinder_count_in_singleton_domain": 692,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 17,
+      "left_gap": 6,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 924,
+        "精炼炉": 924,
+        "研磨机": 692,
+        "塑形机": 924,
+        "配件机": 924,
+        "种植机": 692,
+        "采种机": 692,
+        "封装机": 692,
+        "灌装机": 692
+      },
+      "crossing_by_kind": {
+        "粉碎机": 104,
+        "精炼炉": 104,
+        "研磨机": 180,
+        "塑形机": 104,
+        "配件机": 104,
+        "种植机": 176,
+        "采种机": 176,
+        "封装机": 180,
+        "灌装机": 180
+      },
+      "whole_grinder_count_in_singleton_domain": 692,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 17,
+      "left_gap": 9,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 924,
+        "精炼炉": 924,
+        "研磨机": 692,
+        "塑形机": 924,
+        "配件机": 924,
+        "种植机": 692,
+        "采种机": 692,
+        "封装机": 692,
+        "灌装机": 692
+      },
+      "crossing_by_kind": {
+        "粉碎机": 104,
+        "精炼炉": 104,
+        "研磨机": 180,
+        "塑形机": 104,
+        "配件机": 104,
+        "种植机": 176,
+        "采种机": 176,
+        "封装机": 180,
+        "灌装机": 180
+      },
+      "whole_grinder_count_in_singleton_domain": 692,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 17,
+      "left_gap": 12,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 924,
+        "精炼炉": 924,
+        "研磨机": 692,
+        "塑形机": 924,
+        "配件机": 924,
+        "种植机": 692,
+        "采种机": 692,
+        "封装机": 692,
+        "灌装机": 692
+      },
+      "crossing_by_kind": {
+        "粉碎机": 104,
+        "精炼炉": 104,
+        "研磨机": 180,
+        "塑形机": 104,
+        "配件机": 104,
+        "种植机": 176,
+        "采种机": 176,
+        "封装机": 180,
+        "灌装机": 180
+      },
+      "whole_grinder_count_in_singleton_domain": 692,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 17,
+      "left_gap": 15,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 924,
+        "精炼炉": 924,
+        "研磨机": 692,
+        "塑形机": 924,
+        "配件机": 924,
+        "种植机": 692,
+        "采种机": 692,
+        "封装机": 692,
+        "灌装机": 692
+      },
+      "crossing_by_kind": {
+        "粉碎机": 104,
+        "精炼炉": 104,
+        "研磨机": 180,
+        "塑形机": 104,
+        "配件机": 104,
+        "种植机": 176,
+        "采种机": 176,
+        "封装机": 180,
+        "灌装机": 180
+      },
+      "whole_grinder_count_in_singleton_domain": 692,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 17,
+      "left_gap": 18,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 924,
+        "精炼炉": 924,
+        "研磨机": 692,
+        "塑形机": 924,
+        "配件机": 924,
+        "种植机": 692,
+        "采种机": 692,
+        "封装机": 692,
+        "灌装机": 692
+      },
+      "crossing_by_kind": {
+        "粉碎机": 104,
+        "精炼炉": 104,
+        "研磨机": 180,
+        "塑形机": 104,
+        "配件机": 104,
+        "种植机": 176,
+        "采种机": 176,
+        "封装机": 180,
+        "灌装机": 180
+      },
+      "whole_grinder_count_in_singleton_domain": 692,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 17,
+      "left_gap": 21,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 924,
+        "精炼炉": 924,
+        "研磨机": 692,
+        "塑形机": 924,
+        "配件机": 924,
+        "种植机": 692,
+        "采种机": 692,
+        "封装机": 692,
+        "灌装机": 692
+      },
+      "crossing_by_kind": {
+        "粉碎机": 104,
+        "精炼炉": 104,
+        "研磨机": 180,
+        "塑形机": 104,
+        "配件机": 104,
+        "种植机": 176,
+        "采种机": 176,
+        "封装机": 180,
+        "灌装机": 180
+      },
+      "whole_grinder_count_in_singleton_domain": 692,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 17,
+      "left_gap": 24,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 924,
+        "精炼炉": 924,
+        "研磨机": 692,
+        "塑形机": 924,
+        "配件机": 924,
+        "种植机": 692,
+        "采种机": 692,
+        "封装机": 692,
+        "灌装机": 692
+      },
+      "crossing_by_kind": {
+        "粉碎机": 104,
+        "精炼炉": 104,
+        "研磨机": 180,
+        "塑形机": 104,
+        "配件机": 104,
+        "种植机": 176,
+        "采种机": 176,
+        "封装机": 180,
+        "灌装机": 180
+      },
+      "whole_grinder_count_in_singleton_domain": 692,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 17,
+      "left_gap": 27,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 924,
+        "精炼炉": 924,
+        "研磨机": 692,
+        "塑形机": 924,
+        "配件机": 924,
+        "种植机": 692,
+        "采种机": 692,
+        "封装机": 692,
+        "灌装机": 692
+      },
+      "crossing_by_kind": {
+        "粉碎机": 104,
+        "精炼炉": 104,
+        "研磨机": 180,
+        "塑形机": 104,
+        "配件机": 104,
+        "种植机": 176,
+        "采种机": 176,
+        "封装机": 180,
+        "灌装机": 180
+      },
+      "whole_grinder_count_in_singleton_domain": 692,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 17,
+      "left_gap": 30,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 924,
+        "精炼炉": 924,
+        "研磨机": 692,
+        "塑形机": 924,
+        "配件机": 924,
+        "种植机": 692,
+        "采种机": 692,
+        "封装机": 692,
+        "灌装机": 692
+      },
+      "crossing_by_kind": {
+        "粉碎机": 104,
+        "精炼炉": 104,
+        "研磨机": 180,
+        "塑形机": 104,
+        "配件机": 104,
+        "种植机": 176,
+        "采种机": 176,
+        "封装机": 180,
+        "灌装机": 180
+      },
+      "whole_grinder_count_in_singleton_domain": 692,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 17,
+      "left_gap": 33,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 924,
+        "精炼炉": 924,
+        "研磨机": 692,
+        "塑形机": 924,
+        "配件机": 924,
+        "种植机": 692,
+        "采种机": 692,
+        "封装机": 692,
+        "灌装机": 692
+      },
+      "crossing_by_kind": {
+        "粉碎机": 104,
+        "精炼炉": 104,
+        "研磨机": 180,
+        "塑形机": 104,
+        "配件机": 104,
+        "种植机": 176,
+        "采种机": 176,
+        "封装机": 180,
+        "灌装机": 180
+      },
+      "whole_grinder_count_in_singleton_domain": 692,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 17,
+      "left_gap": 36,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 924,
+        "精炼炉": 924,
+        "研磨机": 692,
+        "塑形机": 924,
+        "配件机": 924,
+        "种植机": 692,
+        "采种机": 692,
+        "封装机": 692,
+        "灌装机": 692
+      },
+      "crossing_by_kind": {
+        "粉碎机": 104,
+        "精炼炉": 104,
+        "研磨机": 180,
+        "塑形机": 104,
+        "配件机": 104,
+        "种植机": 176,
+        "采种机": 176,
+        "封装机": 180,
+        "灌装机": 180
+      },
+      "whole_grinder_count_in_singleton_domain": 692,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 17,
+      "left_gap": 39,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 924,
+        "精炼炉": 924,
+        "研磨机": 692,
+        "塑形机": 924,
+        "配件机": 924,
+        "种植机": 692,
+        "采种机": 692,
+        "封装机": 692,
+        "灌装机": 692
+      },
+      "crossing_by_kind": {
+        "粉碎机": 104,
+        "精炼炉": 104,
+        "研磨机": 180,
+        "塑形机": 104,
+        "配件机": 104,
+        "种植机": 176,
+        "采种机": 176,
+        "封装机": 180,
+        "灌装机": 180
+      },
+      "whole_grinder_count_in_singleton_domain": 692,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 17,
+      "left_gap": 42,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 924,
+        "精炼炉": 924,
+        "研磨机": 692,
+        "塑形机": 924,
+        "配件机": 924,
+        "种植机": 692,
+        "采种机": 692,
+        "封装机": 692,
+        "灌装机": 692
+      },
+      "crossing_by_kind": {
+        "粉碎机": 104,
+        "精炼炉": 104,
+        "研磨机": 180,
+        "塑形机": 104,
+        "配件机": 104,
+        "种植机": 176,
+        "采种机": 176,
+        "封装机": 180,
+        "灌装机": 180
+      },
+      "whole_grinder_count_in_singleton_domain": 692,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 17,
+      "left_gap": 45,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 924,
+        "精炼炉": 924,
+        "研磨机": 692,
+        "塑形机": 924,
+        "配件机": 924,
+        "种植机": 692,
+        "采种机": 692,
+        "封装机": 692,
+        "灌装机": 692
+      },
+      "crossing_by_kind": {
+        "粉碎机": 104,
+        "精炼炉": 104,
+        "研磨机": 180,
+        "塑形机": 104,
+        "配件机": 104,
+        "种植机": 176,
+        "采种机": 176,
+        "封装机": 180,
+        "灌装机": 180
+      },
+      "whole_grinder_count_in_singleton_domain": 692,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 17,
+      "left_gap": 48,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 924,
+        "精炼炉": 924,
+        "研磨机": 692,
+        "塑形机": 924,
+        "配件机": 924,
+        "种植机": 692,
+        "采种机": 692,
+        "封装机": 692,
+        "灌装机": 692
+      },
+      "crossing_by_kind": {
+        "粉碎机": 104,
+        "精炼炉": 104,
+        "研磨机": 180,
+        "塑形机": 104,
+        "配件机": 104,
+        "种植机": 176,
+        "采种机": 176,
+        "封装机": 180,
+        "灌装机": 180
+      },
+      "whole_grinder_count_in_singleton_domain": 692,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 17,
+      "left_gap": 51,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 924,
+        "精炼炉": 924,
+        "研磨机": 692,
+        "塑形机": 924,
+        "配件机": 924,
+        "种植机": 692,
+        "采种机": 692,
+        "封装机": 692,
+        "灌装机": 692
+      },
+      "crossing_by_kind": {
+        "粉碎机": 104,
+        "精炼炉": 104,
+        "研磨机": 180,
+        "塑形机": 104,
+        "配件机": 104,
+        "种植机": 176,
+        "采种机": 176,
+        "封装机": 180,
+        "灌装机": 180
+      },
+      "whole_grinder_count_in_singleton_domain": 692,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 17,
+      "left_gap": 54,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 924,
+        "精炼炉": 924,
+        "研磨机": 692,
+        "塑形机": 924,
+        "配件机": 924,
+        "种植机": 692,
+        "采种机": 692,
+        "封装机": 692,
+        "灌装机": 692
+      },
+      "crossing_by_kind": {
+        "粉碎机": 104,
+        "精炼炉": 104,
+        "研磨机": 180,
+        "塑形机": 104,
+        "配件机": 104,
+        "种植机": 176,
+        "采种机": 176,
+        "封装机": 180,
+        "灌装机": 180
+      },
+      "whole_grinder_count_in_singleton_domain": 692,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 17,
+      "left_gap": 57,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 924,
+        "精炼炉": 924,
+        "研磨机": 692,
+        "塑形机": 924,
+        "配件机": 924,
+        "种植机": 692,
+        "采种机": 692,
+        "封装机": 692,
+        "灌装机": 692
+      },
+      "crossing_by_kind": {
+        "粉碎机": 104,
+        "精炼炉": 104,
+        "研磨机": 180,
+        "塑形机": 104,
+        "配件机": 104,
+        "种植机": 176,
+        "采种机": 176,
+        "封装机": 180,
+        "灌装机": 180
+      },
+      "whole_grinder_count_in_singleton_domain": 692,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 17,
+      "left_gap": 60,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 924,
+        "精炼炉": 924,
+        "研磨机": 692,
+        "塑形机": 924,
+        "配件机": 924,
+        "种植机": 692,
+        "采种机": 692,
+        "封装机": 692,
+        "灌装机": 692
+      },
+      "crossing_by_kind": {
+        "粉碎机": 104,
+        "精炼炉": 104,
+        "研磨机": 180,
+        "塑形机": 104,
+        "配件机": 104,
+        "种植机": 176,
+        "采种机": 176,
+        "封装机": 180,
+        "灌装机": 180
+      },
+      "whole_grinder_count_in_singleton_domain": 692,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 17,
+      "left_gap": 63,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 924,
+        "精炼炉": 924,
+        "研磨机": 692,
+        "塑形机": 924,
+        "配件机": 924,
+        "种植机": 692,
+        "采种机": 692,
+        "封装机": 692,
+        "灌装机": 692
+      },
+      "crossing_by_kind": {
+        "粉碎机": 104,
+        "精炼炉": 104,
+        "研磨机": 180,
+        "塑形机": 104,
+        "配件机": 104,
+        "种植机": 176,
+        "采种机": 176,
+        "封装机": 180,
+        "灌装机": 180
+      },
+      "whole_grinder_count_in_singleton_domain": 692,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 17,
+      "left_gap": 66,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 924,
+        "精炼炉": 924,
+        "研磨机": 692,
+        "塑形机": 924,
+        "配件机": 924,
+        "种植机": 692,
+        "采种机": 692,
+        "封装机": 692,
+        "灌装机": 692
+      },
+      "crossing_by_kind": {
+        "粉碎机": 104,
+        "精炼炉": 104,
+        "研磨机": 180,
+        "塑形机": 104,
+        "配件机": 104,
+        "种植机": 176,
+        "采种机": 176,
+        "封装机": 180,
+        "灌装机": 180
+      },
+      "whole_grinder_count_in_singleton_domain": 692,
+      "crossing_delta_min": "2"
+    },
+    {
+      "b": 17,
+      "left_gap": 69,
+      "bottom_gap": 0,
+      "raw_ore_sources": 7,
+      "whole_by_kind": {
+        "粉碎机": 924,
+        "精炼炉": 924,
+        "研磨机": 692,
+        "塑形机": 924,
+        "配件机": 924,
+        "种植机": 692,
+        "采种机": 692,
+        "封装机": 692,
+        "灌装机": 692
+      },
+      "crossing_by_kind": {
+        "粉碎机": 104,
+        "精炼炉": 104,
+        "研磨机": 180,
+        "塑形机": 104,
+        "配件机": 104,
+        "种植机": 176,
+        "采种机": 176,
+        "封装机": 180,
+        "灌装机": 180
+      },
+      "whole_grinder_count_in_singleton_domain": 692,
+      "crossing_delta_min": "2"
+    }
+  ],
+  "b7_corridor_cases": [
+    {
+      "left_gap": 0,
+      "bottom_gap": 0,
+      "full_large_singleton_domain": 96,
+      "corridor_survivor_count": 0,
+      "corridor_survivor_starts": []
+    },
+    {
+      "left_gap": 0,
+      "bottom_gap": 3,
+      "full_large_singleton_domain": 96,
+      "corridor_survivor_count": 0,
+      "corridor_survivor_starts": []
+    },
+    {
+      "left_gap": 0,
+      "bottom_gap": 6,
+      "full_large_singleton_domain": 96,
+      "corridor_survivor_count": 0,
+      "corridor_survivor_starts": []
+    },
+    {
+      "left_gap": 0,
+      "bottom_gap": 9,
+      "full_large_singleton_domain": 96,
+      "corridor_survivor_count": 0,
+      "corridor_survivor_starts": []
+    },
+    {
+      "left_gap": 0,
+      "bottom_gap": 12,
+      "full_large_singleton_domain": 96,
+      "corridor_survivor_count": 0,
+      "corridor_survivor_starts": []
+    },
+    {
+      "left_gap": 0,
+      "bottom_gap": 15,
+      "full_large_singleton_domain": 96,
+      "corridor_survivor_count": 0,
+      "corridor_survivor_starts": []
+    },
+    {
+      "left_gap": 0,
+      "bottom_gap": 18,
+      "full_large_singleton_domain": 96,
+      "corridor_survivor_count": 0,
+      "corridor_survivor_starts": []
+    },
+    {
+      "left_gap": 0,
+      "bottom_gap": 21,
+      "full_large_singleton_domain": 96,
+      "corridor_survivor_count": 0,
+      "corridor_survivor_starts": []
+    },
+    {
+      "left_gap": 0,
+      "bottom_gap": 24,
+      "full_large_singleton_domain": 96,
+      "corridor_survivor_count": 0,
+      "corridor_survivor_starts": []
+    },
+    {
+      "left_gap": 0,
+      "bottom_gap": 27,
+      "full_large_singleton_domain": 96,
+      "corridor_survivor_count": 0,
+      "corridor_survivor_starts": []
+    },
+    {
+      "left_gap": 0,
+      "bottom_gap": 30,
+      "full_large_singleton_domain": 96,
+      "corridor_survivor_count": 0,
+      "corridor_survivor_starts": []
+    },
+    {
+      "left_gap": 0,
+      "bottom_gap": 33,
+      "full_large_singleton_domain": 96,
+      "corridor_survivor_count": 0,
+      "corridor_survivor_starts": []
+    },
+    {
+      "left_gap": 0,
+      "bottom_gap": 36,
+      "full_large_singleton_domain": 96,
+      "corridor_survivor_count": 0,
+      "corridor_survivor_starts": []
+    },
+    {
+      "left_gap": 0,
+      "bottom_gap": 39,
+      "full_large_singleton_domain": 96,
+      "corridor_survivor_count": 0,
+      "corridor_survivor_starts": []
+    },
+    {
+      "left_gap": 0,
+      "bottom_gap": 42,
+      "full_large_singleton_domain": 96,
+      "corridor_survivor_count": 0,
+      "corridor_survivor_starts": []
+    },
+    {
+      "left_gap": 0,
+      "bottom_gap": 45,
+      "full_large_singleton_domain": 96,
+      "corridor_survivor_count": 0,
+      "corridor_survivor_starts": []
+    },
+    {
+      "left_gap": 0,
+      "bottom_gap": 48,
+      "full_large_singleton_domain": 96,
+      "corridor_survivor_count": 0,
+      "corridor_survivor_starts": []
+    },
+    {
+      "left_gap": 0,
+      "bottom_gap": 51,
+      "full_large_singleton_domain": 96,
+      "corridor_survivor_count": 3,
+      "corridor_survivor_starts": [
+        50
+      ]
+    },
+    {
+      "left_gap": 0,
+      "bottom_gap": 54,
+      "full_large_singleton_domain": 96,
+      "corridor_survivor_count": 6,
+      "corridor_survivor_starts": [
+        50,
+        53
+      ]
+    },
+    {
+      "left_gap": 0,
+      "bottom_gap": 57,
+      "full_large_singleton_domain": 96,
+      "corridor_survivor_count": 6,
+      "corridor_survivor_starts": [
+        53,
+        56
+      ]
+    },
+    {
+      "left_gap": 0,
+      "bottom_gap": 60,
+      "full_large_singleton_domain": 96,
+      "corridor_survivor_count": 6,
+      "corridor_survivor_starts": [
+        56,
+        59
+      ]
+    },
+    {
+      "left_gap": 0,
+      "bottom_gap": 63,
+      "full_large_singleton_domain": 96,
+      "corridor_survivor_count": 6,
+      "corridor_survivor_starts": [
+        59,
+        62
+      ]
+    },
+    {
+      "left_gap": 0,
+      "bottom_gap": 66,
+      "full_large_singleton_domain": 96,
+      "corridor_survivor_count": 3,
+      "corridor_survivor_starts": [
+        62
+      ]
+    },
+    {
+      "left_gap": 0,
+      "bottom_gap": 69,
+      "full_large_singleton_domain": 96,
+      "corridor_survivor_count": 0,
+      "corridor_survivor_starts": []
+    },
+    {
+      "left_gap": 3,
+      "bottom_gap": 0,
+      "full_large_singleton_domain": 96,
+      "corridor_survivor_count": 0,
+      "corridor_survivor_starts": []
+    },
+    {
+      "left_gap": 6,
+      "bottom_gap": 0,
+      "full_large_singleton_domain": 96,
+      "corridor_survivor_count": 0,
+      "corridor_survivor_starts": []
+    },
+    {
+      "left_gap": 9,
+      "bottom_gap": 0,
+      "full_large_singleton_domain": 96,
+      "corridor_survivor_count": 0,
+      "corridor_survivor_starts": []
+    },
+    {
+      "left_gap": 12,
+      "bottom_gap": 0,
+      "full_large_singleton_domain": 96,
+      "corridor_survivor_count": 0,
+      "corridor_survivor_starts": []
+    },
+    {
+      "left_gap": 15,
+      "bottom_gap": 0,
+      "full_large_singleton_domain": 96,
+      "corridor_survivor_count": 0,
+      "corridor_survivor_starts": []
+    },
+    {
+      "left_gap": 18,
+      "bottom_gap": 0,
+      "full_large_singleton_domain": 96,
+      "corridor_survivor_count": 0,
+      "corridor_survivor_starts": []
+    },
+    {
+      "left_gap": 21,
+      "bottom_gap": 0,
+      "full_large_singleton_domain": 96,
+      "corridor_survivor_count": 0,
+      "corridor_survivor_starts": []
+    },
+    {
+      "left_gap": 24,
+      "bottom_gap": 0,
+      "full_large_singleton_domain": 96,
+      "corridor_survivor_count": 0,
+      "corridor_survivor_starts": []
+    },
+    {
+      "left_gap": 27,
+      "bottom_gap": 0,
+      "full_large_singleton_domain": 96,
+      "corridor_survivor_count": 0,
+      "corridor_survivor_starts": []
+    },
+    {
+      "left_gap": 30,
+      "bottom_gap": 0,
+      "full_large_singleton_domain": 96,
+      "corridor_survivor_count": 0,
+      "corridor_survivor_starts": []
+    },
+    {
+      "left_gap": 33,
+      "bottom_gap": 0,
+      "full_large_singleton_domain": 96,
+      "corridor_survivor_count": 0,
+      "corridor_survivor_starts": []
+    },
+    {
+      "left_gap": 36,
+      "bottom_gap": 0,
+      "full_large_singleton_domain": 96,
+      "corridor_survivor_count": 0,
+      "corridor_survivor_starts": []
+    },
+    {
+      "left_gap": 39,
+      "bottom_gap": 0,
+      "full_large_singleton_domain": 96,
+      "corridor_survivor_count": 0,
+      "corridor_survivor_starts": []
+    },
+    {
+      "left_gap": 42,
+      "bottom_gap": 0,
+      "full_large_singleton_domain": 96,
+      "corridor_survivor_count": 0,
+      "corridor_survivor_starts": []
+    },
+    {
+      "left_gap": 45,
+      "bottom_gap": 0,
+      "full_large_singleton_domain": 96,
+      "corridor_survivor_count": 0,
+      "corridor_survivor_starts": []
+    },
+    {
+      "left_gap": 48,
+      "bottom_gap": 0,
+      "full_large_singleton_domain": 96,
+      "corridor_survivor_count": 0,
+      "corridor_survivor_starts": []
+    },
+    {
+      "left_gap": 51,
+      "bottom_gap": 0,
+      "full_large_singleton_domain": 96,
+      "corridor_survivor_count": 0,
+      "corridor_survivor_starts": []
+    },
+    {
+      "left_gap": 54,
+      "bottom_gap": 0,
+      "full_large_singleton_domain": 96,
+      "corridor_survivor_count": 0,
+      "corridor_survivor_starts": []
+    },
+    {
+      "left_gap": 57,
+      "bottom_gap": 0,
+      "full_large_singleton_domain": 96,
+      "corridor_survivor_count": 0,
+      "corridor_survivor_starts": []
+    },
+    {
+      "left_gap": 60,
+      "bottom_gap": 0,
+      "full_large_singleton_domain": 96,
+      "corridor_survivor_count": 0,
+      "corridor_survivor_starts": []
+    },
+    {
+      "left_gap": 63,
+      "bottom_gap": 0,
+      "full_large_singleton_domain": 96,
+      "corridor_survivor_count": 0,
+      "corridor_survivor_starts": []
+    },
+    {
+      "left_gap": 66,
+      "bottom_gap": 0,
+      "full_large_singleton_domain": 96,
+      "corridor_survivor_count": 0,
+      "corridor_survivor_starts": []
+    },
+    {
+      "left_gap": 69,
+      "bottom_gap": 0,
+      "full_large_singleton_domain": 96,
+      "corridor_survivor_count": 0,
+      "corridor_survivor_starts": []
+    }
+  ],
+  "b7_survivors": [
+    {
+      "left_gap": 0,
+      "bottom_gap": 51,
+      "grinder_x": [
+        50
+      ],
+      "grinder_y": 2,
+      "width": 6,
+      "height": 4,
+      "input_side": "top",
+      "output_side": "bottom",
+      "mineral_recipe_rate_min": "1/2",
+      "total_recipe_rate_max": "1"
+    },
+    {
+      "left_gap": 0,
+      "bottom_gap": 54,
+      "grinder_x": [
+        50,
+        53
+      ],
+      "grinder_y": 2,
+      "width": 6,
+      "height": 4,
+      "input_side": "top",
+      "output_side": "bottom",
+      "mineral_recipe_rate_min": "1/2",
+      "total_recipe_rate_max": "1"
+    },
+    {
+      "left_gap": 0,
+      "bottom_gap": 57,
+      "grinder_x": [
+        53,
+        56
+      ],
+      "grinder_y": 2,
+      "width": 6,
+      "height": 4,
+      "input_side": "top",
+      "output_side": "bottom",
+      "mineral_recipe_rate_min": "1/2",
+      "total_recipe_rate_max": "1"
+    },
+    {
+      "left_gap": 0,
+      "bottom_gap": 60,
+      "grinder_x": [
+        56,
+        59
+      ],
+      "grinder_y": 2,
+      "width": 6,
+      "height": 4,
+      "input_side": "top",
+      "output_side": "bottom",
+      "mineral_recipe_rate_min": "1/2",
+      "total_recipe_rate_max": "1"
+    },
+    {
+      "left_gap": 0,
+      "bottom_gap": 63,
+      "grinder_x": [
+        59,
+        62
+      ],
+      "grinder_y": 2,
+      "width": 6,
+      "height": 4,
+      "input_side": "top",
+      "output_side": "bottom",
+      "mineral_recipe_rate_min": "1/2",
+      "total_recipe_rate_max": "1"
+    },
+    {
+      "left_gap": 0,
+      "bottom_gap": 66,
+      "grinder_x": [
+        62
+      ],
+      "grinder_y": 2,
+      "width": 6,
+      "height": 4,
+      "input_side": "top",
+      "output_side": "bottom",
+      "mineral_recipe_rate_min": "1/2",
+      "total_recipe_rate_max": "1"
+    }
+  ],
+  "cut_source_sweep": [
+    {
+      "first_column": 49,
+      "source_min": 7,
+      "source_max": 7
+    },
+    {
+      "first_column": 50,
+      "source_min": 6,
+      "source_max": 7
+    },
+    {
+      "first_column": 51,
+      "source_min": 6,
+      "source_max": 6
+    },
+    {
+      "first_column": 52,
+      "source_min": 6,
+      "source_max": 6
+    },
+    {
+      "first_column": 53,
+      "source_min": 5,
+      "source_max": 6
+    },
+    {
+      "first_column": 54,
+      "source_min": 5,
+      "source_max": 5
+    },
+    {
+      "first_column": 55,
+      "source_min": 5,
+      "source_max": 5
+    },
+    {
+      "first_column": 56,
+      "source_min": 4,
+      "source_max": 5
+    },
+    {
+      "first_column": 57,
+      "source_min": 4,
+      "source_max": 4
+    },
+    {
+      "first_column": 58,
+      "source_min": 4,
+      "source_max": 4
+    },
+    {
+      "first_column": 59,
+      "source_min": 3,
+      "source_max": 4
+    },
+    {
+      "first_column": 60,
+      "source_min": 3,
+      "source_max": 3
+    },
+    {
+      "first_column": 61,
+      "source_min": 3,
+      "source_max": 3
+    },
+    {
+      "first_column": 62,
+      "source_min": 2,
+      "source_max": 3
+    },
+    {
+      "first_column": 63,
+      "source_min": 2,
+      "source_max": 2
+    },
+    {
+      "first_column": 64,
+      "source_min": 2,
+      "source_max": 2
+    },
+    {
+      "first_column": 65,
+      "source_min": 1,
+      "source_max": 2
+    },
+    {
+      "first_column": 66,
+      "source_min": 1,
+      "source_max": 1
+    },
+    {
+      "first_column": 67,
+      "source_min": 1,
+      "source_max": 1
+    },
+    {
+      "first_column": 68,
+      "source_min": 0,
+      "source_max": 1
+    },
+    {
+      "first_column": 69,
+      "source_min": 0,
+      "source_max": 0
+    }
+  ]
+}

@@ -1,0 +1,481 @@
+{
+  "inputs": {
+    "《明日方舟：终末地》游戏规则.txt": "6e64e3903a65536c530b363c9f3aef8c1bb2a1c1193e866799125dd047159924",
+    "求解任务.txt": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+    "求解约束.txt": "0c05976f6063f3332db6ee19d7746052ef35148d7c2a12dfa396c7bb8753f30f"
+  },
+  "python": "3.14.7",
+  "ortools": "9.15.6755",
+  "cases": [
+    {
+      "gap_left": 0,
+      "gap_bottom": 0,
+      "budget": 7,
+      "bodies_before_cost_cutoff": 4356,
+      "options": 3430,
+      "status": "INFEASIBLE",
+      "seconds": 0.23193493799772114,
+      "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 137\nbooleans: 1926\nconflicts: 6\nbranches: 3911\npropagations: 101637\ninteger_propagations: 16081\nrestarts: 0\nlp_iterations: 1\nwalltime: 0.23168\nusertime: 0.23168\ndeterministic_time: 0.584362\ngap_integral: 0\n"
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 3,
+      "budget": 7,
+      "bodies_before_cost_cutoff": 4357,
+      "options": 3429,
+      "status": "INFEASIBLE",
+      "seconds": 0.3957086709997384,
+      "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 138\nbooleans: 2825\nconflicts: 69\nbranches: 29354\npropagations: 1711445\ninteger_propagations: 442525\nrestarts: 1\nlp_iterations: 0\nwalltime: 0.395627\nusertime: 0.395627\ndeterministic_time: 1.27704\ngap_integral: 0\n"
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 6,
+      "budget": 7,
+      "bodies_before_cost_cutoff": 4357,
+      "options": 3422,
+      "status": "INFEASIBLE",
+      "seconds": 0.31857095900340937,
+      "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 138\nbooleans: 2171\nconflicts: 28\nbranches: 21996\npropagations: 1076650\ninteger_propagations: 255308\nrestarts: 0\nlp_iterations: 0\nwalltime: 0.318492\nusertime: 0.318492\ndeterministic_time: 0.916207\ngap_integral: 0\n"
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 9,
+      "budget": 7,
+      "bodies_before_cost_cutoff": 4357,
+      "options": 3418,
+      "status": "INFEASIBLE",
+      "seconds": 0.21249999000428943,
+      "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 138\nbooleans: 1953\nconflicts: 12\nbranches: 19442\npropagations: 318759\ninteger_propagations: 49557\nrestarts: 0\nlp_iterations: 8\nwalltime: 0.212422\nusertime: 0.212422\ndeterministic_time: 0.514412\ngap_integral: 0\n"
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 12,
+      "budget": 7,
+      "bodies_before_cost_cutoff": 4357,
+      "options": 3416,
+      "status": "INFEASIBLE",
+      "seconds": 0.20701498499693116,
+      "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 138\nbooleans: 1939\nconflicts: 10\nbranches: 19247\npropagations: 312974\ninteger_propagations: 48945\nrestarts: 0\nlp_iterations: 8\nwalltime: 0.206933\nusertime: 0.206933\ndeterministic_time: 0.492592\ngap_integral: 0\n"
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 15,
+      "budget": 7,
+      "bodies_before_cost_cutoff": 4357,
+      "options": 3416,
+      "status": "INFEASIBLE",
+      "seconds": 0.20952737699553836,
+      "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 138\nbooleans: 1939\nconflicts: 10\nbranches: 19277\npropagations: 312814\ninteger_propagations: 48885\nrestarts: 0\nlp_iterations: 8\nwalltime: 0.209452\nusertime: 0.209452\ndeterministic_time: 0.529005\ngap_integral: 0\n"
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 18,
+      "budget": 7,
+      "bodies_before_cost_cutoff": 4357,
+      "options": 3416,
+      "status": "INFEASIBLE",
+      "seconds": 0.2083829440016416,
+      "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 138\nbooleans: 1939\nconflicts: 10\nbranches: 19278\npropagations: 312118\ninteger_propagations: 48830\nrestarts: 0\nlp_iterations: 8\nwalltime: 0.20831\nusertime: 0.20831\ndeterministic_time: 0.497308\ngap_integral: 0\n"
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 21,
+      "budget": 7,
+      "bodies_before_cost_cutoff": 4357,
+      "options": 3416,
+      "status": "INFEASIBLE",
+      "seconds": 0.20855730799667072,
+      "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 138\nbooleans: 1939\nconflicts: 10\nbranches: 19251\npropagations: 312235\ninteger_propagations: 48898\nrestarts: 0\nlp_iterations: 8\nwalltime: 0.208484\nusertime: 0.208484\ndeterministic_time: 0.53122\ngap_integral: 0\n"
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 24,
+      "budget": 7,
+      "bodies_before_cost_cutoff": 4357,
+      "options": 3416,
+      "status": "INFEASIBLE",
+      "seconds": 0.20875712700217264,
+      "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 138\nbooleans: 1939\nconflicts: 10\nbranches: 19273\npropagations: 311718\ninteger_propagations: 48743\nrestarts: 0\nlp_iterations: 8\nwalltime: 0.208684\nusertime: 0.208684\ndeterministic_time: 0.53912\ngap_integral: 0\n"
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 27,
+      "budget": 7,
+      "bodies_before_cost_cutoff": 4357,
+      "options": 3416,
+      "status": "INFEASIBLE",
+      "seconds": 0.2084548100028769,
+      "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 138\nbooleans: 1939\nconflicts: 10\nbranches: 19279\npropagations: 312115\ninteger_propagations: 48843\nrestarts: 0\nlp_iterations: 8\nwalltime: 0.208382\nusertime: 0.208382\ndeterministic_time: 0.501839\ngap_integral: 0\n"
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 30,
+      "budget": 7,
+      "bodies_before_cost_cutoff": 4357,
+      "options": 3416,
+      "status": "INFEASIBLE",
+      "seconds": 0.20890658799908124,
+      "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 138\nbooleans: 1939\nconflicts: 10\nbranches: 19256\npropagations: 311297\ninteger_propagations: 48664\nrestarts: 0\nlp_iterations: 9\nwalltime: 0.208829\nusertime: 0.208829\ndeterministic_time: 0.527412\ngap_integral: 0\n"
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 33,
+      "budget": 7,
+      "bodies_before_cost_cutoff": 4357,
+      "options": 3416,
+      "status": "INFEASIBLE",
+      "seconds": 0.2081805420020828,
+      "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 138\nbooleans: 1939\nconflicts: 10\nbranches: 19273\npropagations: 311435\ninteger_propagations: 48682\nrestarts: 0\nlp_iterations: 8\nwalltime: 0.208097\nusertime: 0.208097\ndeterministic_time: 0.524607\ngap_integral: 0\n"
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 36,
+      "budget": 7,
+      "bodies_before_cost_cutoff": 4357,
+      "options": 3416,
+      "status": "INFEASIBLE",
+      "seconds": 0.20847954000055324,
+      "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 138\nbooleans: 1939\nconflicts: 10\nbranches: 19272\npropagations: 311498\ninteger_propagations: 48696\nrestarts: 0\nlp_iterations: 8\nwalltime: 0.208406\nusertime: 0.208406\ndeterministic_time: 0.505405\ngap_integral: 0\n"
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 39,
+      "budget": 7,
+      "bodies_before_cost_cutoff": 4357,
+      "options": 3416,
+      "status": "INFEASIBLE",
+      "seconds": 0.20926705499732634,
+      "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 138\nbooleans: 1939\nconflicts: 10\nbranches: 19245\npropagations: 311212\ninteger_propagations: 48643\nrestarts: 0\nlp_iterations: 8\nwalltime: 0.209189\nusertime: 0.209189\ndeterministic_time: 0.533103\ngap_integral: 0\n"
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 42,
+      "budget": 7,
+      "bodies_before_cost_cutoff": 4357,
+      "options": 3416,
+      "status": "INFEASIBLE",
+      "seconds": 0.21797513999626972,
+      "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 138\nbooleans: 1939\nconflicts: 10\nbranches: 19234\npropagations: 310993\ninteger_propagations: 48618\nrestarts: 0\nlp_iterations: 9\nwalltime: 0.217903\nusertime: 0.217903\ndeterministic_time: 0.53478\ngap_integral: 0\n"
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 45,
+      "budget": 7,
+      "bodies_before_cost_cutoff": 4357,
+      "options": 3416,
+      "status": "INFEASIBLE",
+      "seconds": 0.20880827600194607,
+      "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 138\nbooleans: 1939\nconflicts: 9\nbranches: 19255\npropagations: 310512\ninteger_propagations: 48670\nrestarts: 0\nlp_iterations: 8\nwalltime: 0.208728\nusertime: 0.208728\ndeterministic_time: 0.535023\ngap_integral: 0\n"
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 48,
+      "budget": 7,
+      "bodies_before_cost_cutoff": 4357,
+      "options": 3416,
+      "status": "INFEASIBLE",
+      "seconds": 0.21011947700026212,
+      "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 138\nbooleans: 1939\nconflicts: 9\nbranches: 19246\npropagations: 310523\ninteger_propagations: 48686\nrestarts: 0\nlp_iterations: 8\nwalltime: 0.210036\nusertime: 0.210036\ndeterministic_time: 0.514705\ngap_integral: 0\n"
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 51,
+      "budget": 7,
+      "bodies_before_cost_cutoff": 4357,
+      "options": 3416,
+      "status": "INFEASIBLE",
+      "seconds": 0.20898383799794829,
+      "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 138\nbooleans: 1939\nconflicts: 10\nbranches: 19240\npropagations: 311361\ninteger_propagations: 48710\nrestarts: 0\nlp_iterations: 8\nwalltime: 0.208905\nusertime: 0.208905\ndeterministic_time: 0.527976\ngap_integral: 0\n"
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 54,
+      "budget": 7,
+      "bodies_before_cost_cutoff": 4357,
+      "options": 3416,
+      "status": "INFEASIBLE",
+      "seconds": 0.20774958400579635,
+      "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 138\nbooleans: 1939\nconflicts: 10\nbranches: 19234\npropagations: 311279\ninteger_propagations: 48687\nrestarts: 0\nlp_iterations: 8\nwalltime: 0.207672\nusertime: 0.207672\ndeterministic_time: 0.506752\ngap_integral: 0\n"
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 57,
+      "budget": 7,
+      "bodies_before_cost_cutoff": 4357,
+      "options": 3416,
+      "status": "INFEASIBLE",
+      "seconds": 0.20863269599794876,
+      "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 138\nbooleans: 1940\nconflicts: 9\nbranches: 19249\npropagations: 311436\ninteger_propagations: 48847\nrestarts: 0\nlp_iterations: 8\nwalltime: 0.208551\nusertime: 0.208551\ndeterministic_time: 0.508514\ngap_integral: 0\n"
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 60,
+      "budget": 7,
+      "bodies_before_cost_cutoff": 4357,
+      "options": 3416,
+      "status": "INFEASIBLE",
+      "seconds": 0.2075990710000042,
+      "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 138\nbooleans: 1941\nconflicts: 10\nbranches: 19251\npropagations: 312450\ninteger_propagations: 48903\nrestarts: 0\nlp_iterations: 8\nwalltime: 0.207524\nusertime: 0.207524\ndeterministic_time: 0.506438\ngap_integral: 0\n"
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 63,
+      "budget": 7,
+      "bodies_before_cost_cutoff": 4357,
+      "options": 3417,
+      "status": "INFEASIBLE",
+      "seconds": 0.20738464500027476,
+      "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 138\nbooleans: 1946\nconflicts: 9\nbranches: 19303\npropagations: 312760\ninteger_propagations: 48969\nrestarts: 0\nlp_iterations: 8\nwalltime: 0.207306\nusertime: 0.207306\ndeterministic_time: 0.512911\ngap_integral: 0\n"
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 66,
+      "budget": 7,
+      "bodies_before_cost_cutoff": 4357,
+      "options": 3421,
+      "status": "INFEASIBLE",
+      "seconds": 0.20749782799975947,
+      "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 138\nbooleans: 1942\nconflicts: 10\nbranches: 19325\npropagations: 315735\ninteger_propagations: 49021\nrestarts: 0\nlp_iterations: 7\nwalltime: 0.207418\nusertime: 0.207418\ndeterministic_time: 0.504362\ngap_integral: 0\n"
+    },
+    {
+      "gap_left": 0,
+      "gap_bottom": 69,
+      "budget": 7,
+      "bodies_before_cost_cutoff": 4356,
+      "options": 3425,
+      "status": "INFEASIBLE",
+      "seconds": 0.2044411540045985,
+      "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 138\nbooleans: 1943\nconflicts: 9\nbranches: 19311\npropagations: 315606\ninteger_propagations: 48706\nrestarts: 0\nlp_iterations: 8\nwalltime: 0.204358\nusertime: 0.204358\ndeterministic_time: 0.499434\ngap_integral: 0\n"
+    },
+    {
+      "gap_left": 3,
+      "gap_bottom": 0,
+      "budget": 7,
+      "bodies_before_cost_cutoff": 4357,
+      "options": 3429,
+      "status": "INFEASIBLE",
+      "seconds": 0.4087519480017363,
+      "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 138\nbooleans: 2825\nconflicts: 34\nbranches: 29172\npropagations: 1674571\ninteger_propagations: 434256\nrestarts: 0\nlp_iterations: 0\nwalltime: 0.408672\nusertime: 0.408672\ndeterministic_time: 1.30907\ngap_integral: 0\n"
+    },
+    {
+      "gap_left": 6,
+      "gap_bottom": 0,
+      "budget": 7,
+      "bodies_before_cost_cutoff": 4357,
+      "options": 3422,
+      "status": "INFEASIBLE",
+      "seconds": 0.29315390300325816,
+      "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 138\nbooleans: 2171\nconflicts: 18\nbranches: 21868\npropagations: 1110416\ninteger_propagations: 263954\nrestarts: 0\nlp_iterations: 0\nwalltime: 0.293065\nusertime: 0.293065\ndeterministic_time: 0.821395\ngap_integral: 0\n"
+    },
+    {
+      "gap_left": 9,
+      "gap_bottom": 0,
+      "budget": 7,
+      "bodies_before_cost_cutoff": 4357,
+      "options": 3418,
+      "status": "INFEASIBLE",
+      "seconds": 0.20739639199746307,
+      "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 138\nbooleans: 1953\nconflicts: 12\nbranches: 19465\npropagations: 318311\ninteger_propagations: 49311\nrestarts: 0\nlp_iterations: 9\nwalltime: 0.207324\nusertime: 0.207324\ndeterministic_time: 0.499095\ngap_integral: 0\n"
+    },
+    {
+      "gap_left": 12,
+      "gap_bottom": 0,
+      "budget": 7,
+      "bodies_before_cost_cutoff": 4357,
+      "options": 3416,
+      "status": "INFEASIBLE",
+      "seconds": 0.2068972550041508,
+      "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 138\nbooleans: 1939\nconflicts: 11\nbranches: 19308\npropagations: 315047\ninteger_propagations: 49059\nrestarts: 0\nlp_iterations: 8\nwalltime: 0.206814\nusertime: 0.206814\ndeterministic_time: 0.521998\ngap_integral: 0\n"
+    },
+    {
+      "gap_left": 15,
+      "gap_bottom": 0,
+      "budget": 7,
+      "bodies_before_cost_cutoff": 4357,
+      "options": 3416,
+      "status": "INFEASIBLE",
+      "seconds": 0.2049442379939137,
+      "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 138\nbooleans: 1939\nconflicts: 11\nbranches: 19277\npropagations: 315067\ninteger_propagations: 49127\nrestarts: 0\nlp_iterations: 8\nwalltime: 0.204865\nusertime: 0.204865\ndeterministic_time: 0.525032\ngap_integral: 0\n"
+    },
+    {
+      "gap_left": 18,
+      "gap_bottom": 0,
+      "budget": 7,
+      "bodies_before_cost_cutoff": 4357,
+      "options": 3416,
+      "status": "INFEASIBLE",
+      "seconds": 0.2074320070023532,
+      "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 138\nbooleans: 1939\nconflicts: 11\nbranches: 19285\npropagations: 314504\ninteger_propagations: 49115\nrestarts: 0\nlp_iterations: 8\nwalltime: 0.207356\nusertime: 0.207356\ndeterministic_time: 0.524508\ngap_integral: 0\n"
+    },
+    {
+      "gap_left": 21,
+      "gap_bottom": 0,
+      "budget": 7,
+      "bodies_before_cost_cutoff": 4357,
+      "options": 3416,
+      "status": "INFEASIBLE",
+      "seconds": 0.20656929999677232,
+      "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 138\nbooleans: 1939\nconflicts: 11\nbranches: 19303\npropagations: 314212\ninteger_propagations: 49108\nrestarts: 0\nlp_iterations: 8\nwalltime: 0.206494\nusertime: 0.206494\ndeterministic_time: 0.527134\ngap_integral: 0\n"
+    },
+    {
+      "gap_left": 24,
+      "gap_bottom": 0,
+      "budget": 7,
+      "bodies_before_cost_cutoff": 4357,
+      "options": 3416,
+      "status": "INFEASIBLE",
+      "seconds": 0.20579094300046563,
+      "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 138\nbooleans: 1939\nconflicts: 11\nbranches: 19297\npropagations: 314073\ninteger_propagations: 49096\nrestarts: 0\nlp_iterations: 8\nwalltime: 0.20572\nusertime: 0.20572\ndeterministic_time: 0.500517\ngap_integral: 0\n"
+    },
+    {
+      "gap_left": 27,
+      "gap_bottom": 0,
+      "budget": 7,
+      "bodies_before_cost_cutoff": 4357,
+      "options": 3416,
+      "status": "INFEASIBLE",
+      "seconds": 0.21127185899968026,
+      "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 138\nbooleans: 1939\nconflicts: 11\nbranches: 19313\npropagations: 313978\ninteger_propagations: 49138\nrestarts: 0\nlp_iterations: 8\nwalltime: 0.211197\nusertime: 0.211197\ndeterministic_time: 0.511429\ngap_integral: 0\n"
+    },
+    {
+      "gap_left": 30,
+      "gap_bottom": 0,
+      "budget": 7,
+      "bodies_before_cost_cutoff": 4357,
+      "options": 3416,
+      "status": "INFEASIBLE",
+      "seconds": 0.21276858499913942,
+      "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 138\nbooleans: 1939\nconflicts: 11\nbranches: 19304\npropagations: 313656\ninteger_propagations: 49070\nrestarts: 0\nlp_iterations: 8\nwalltime: 0.212695\nusertime: 0.212695\ndeterministic_time: 0.54358\ngap_integral: 0\n"
+    },
+    {
+      "gap_left": 33,
+      "gap_bottom": 0,
+      "budget": 7,
+      "bodies_before_cost_cutoff": 4357,
+      "options": 3416,
+      "status": "INFEASIBLE",
+      "seconds": 0.2065497290022904,
+      "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 138\nbooleans: 1939\nconflicts: 11\nbranches: 19309\npropagations: 313760\ninteger_propagations: 49065\nrestarts: 0\nlp_iterations: 8\nwalltime: 0.206467\nusertime: 0.206467\ndeterministic_time: 0.503557\ngap_integral: 0\n"
+    },
+    {
+      "gap_left": 36,
+      "gap_bottom": 0,
+      "budget": 7,
+      "bodies_before_cost_cutoff": 4357,
+      "options": 3416,
+      "status": "INFEASIBLE",
+      "seconds": 0.2060359259994584,
+      "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 138\nbooleans: 1939\nconflicts: 11\nbranches: 19322\npropagations: 313648\ninteger_propagations: 49075\nrestarts: 0\nlp_iterations: 8\nwalltime: 0.205952\nusertime: 0.205952\ndeterministic_time: 0.498655\ngap_integral: 0\n"
+    },
+    {
+      "gap_left": 39,
+      "gap_bottom": 0,
+      "budget": 7,
+      "bodies_before_cost_cutoff": 4357,
+      "options": 3416,
+      "status": "INFEASIBLE",
+      "seconds": 0.20707625200157054,
+      "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 138\nbooleans: 1939\nconflicts: 11\nbranches: 19246\npropagations: 312956\ninteger_propagations: 48969\nrestarts: 0\nlp_iterations: 8\nwalltime: 0.206995\nusertime: 0.206996\ndeterministic_time: 0.51667\ngap_integral: 0\n"
+    },
+    {
+      "gap_left": 42,
+      "gap_bottom": 0,
+      "budget": 7,
+      "bodies_before_cost_cutoff": 4357,
+      "options": 3416,
+      "status": "INFEASIBLE",
+      "seconds": 0.20626979400549317,
+      "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 138\nbooleans: 1939\nconflicts: 11\nbranches: 19280\npropagations: 313257\ninteger_propagations: 48979\nrestarts: 0\nlp_iterations: 8\nwalltime: 0.206194\nusertime: 0.206194\ndeterministic_time: 0.522084\ngap_integral: 0\n"
+    },
+    {
+      "gap_left": 45,
+      "gap_bottom": 0,
+      "budget": 7,
+      "bodies_before_cost_cutoff": 4357,
+      "options": 3416,
+      "status": "INFEASIBLE",
+      "seconds": 0.20697186900360975,
+      "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 138\nbooleans: 1939\nconflicts: 11\nbranches: 19243\npropagations: 312870\ninteger_propagations: 48963\nrestarts: 0\nlp_iterations: 8\nwalltime: 0.206891\nusertime: 0.206891\ndeterministic_time: 0.503782\ngap_integral: 0\n"
+    },
+    {
+      "gap_left": 48,
+      "gap_bottom": 0,
+      "budget": 7,
+      "bodies_before_cost_cutoff": 4357,
+      "options": 3416,
+      "status": "INFEASIBLE",
+      "seconds": 0.2074569309988874,
+      "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 138\nbooleans: 1939\nconflicts: 11\nbranches: 19239\npropagations: 312860\ninteger_propagations: 48906\nrestarts: 0\nlp_iterations: 8\nwalltime: 0.207379\nusertime: 0.207379\ndeterministic_time: 0.519618\ngap_integral: 0\n"
+    },
+    {
+      "gap_left": 51,
+      "gap_bottom": 0,
+      "budget": 7,
+      "bodies_before_cost_cutoff": 4357,
+      "options": 3416,
+      "status": "INFEASIBLE",
+      "seconds": 0.20738072800304508,
+      "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 138\nbooleans: 1939\nconflicts: 11\nbranches: 19237\npropagations: 313058\ninteger_propagations: 48930\nrestarts: 0\nlp_iterations: 8\nwalltime: 0.207301\nusertime: 0.207301\ndeterministic_time: 0.534062\ngap_integral: 0\n"
+    },
+    {
+      "gap_left": 54,
+      "gap_bottom": 0,
+      "budget": 7,
+      "bodies_before_cost_cutoff": 4357,
+      "options": 3416,
+      "status": "INFEASIBLE",
+      "seconds": 0.21086656500119716,
+      "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 138\nbooleans: 1939\nconflicts: 11\nbranches: 19248\npropagations: 313457\ninteger_propagations: 48981\nrestarts: 0\nlp_iterations: 8\nwalltime: 0.21079\nusertime: 0.21079\ndeterministic_time: 0.501268\ngap_integral: 0\n"
+    },
+    {
+      "gap_left": 57,
+      "gap_bottom": 0,
+      "budget": 7,
+      "bodies_before_cost_cutoff": 4357,
+      "options": 3416,
+      "status": "INFEASIBLE",
+      "seconds": 0.20976910599711118,
+      "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 138\nbooleans: 1940\nconflicts: 11\nbranches: 19234\npropagations: 313474\ninteger_propagations: 48931\nrestarts: 0\nlp_iterations: 8\nwalltime: 0.209693\nusertime: 0.209693\ndeterministic_time: 0.530942\ngap_integral: 0\n"
+    },
+    {
+      "gap_left": 60,
+      "gap_bottom": 0,
+      "budget": 7,
+      "bodies_before_cost_cutoff": 4357,
+      "options": 3416,
+      "status": "INFEASIBLE",
+      "seconds": 0.20484538699383847,
+      "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 138\nbooleans: 1941\nconflicts: 11\nbranches: 19258\npropagations: 314026\ninteger_propagations: 48954\nrestarts: 0\nlp_iterations: 8\nwalltime: 0.20477\nusertime: 0.20477\ndeterministic_time: 0.497924\ngap_integral: 0\n"
+    },
+    {
+      "gap_left": 63,
+      "gap_bottom": 0,
+      "budget": 7,
+      "bodies_before_cost_cutoff": 4357,
+      "options": 3417,
+      "status": "INFEASIBLE",
+      "seconds": 0.20392245699622435,
+      "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 138\nbooleans: 1946\nconflicts: 11\nbranches: 19328\npropagations: 315187\ninteger_propagations: 49077\nrestarts: 0\nlp_iterations: 8\nwalltime: 0.203845\nusertime: 0.203845\ndeterministic_time: 0.495318\ngap_integral: 0\n"
+    },
+    {
+      "gap_left": 66,
+      "gap_bottom": 0,
+      "budget": 7,
+      "bodies_before_cost_cutoff": 4357,
+      "options": 3421,
+      "status": "INFEASIBLE",
+      "seconds": 0.20627565099857748,
+      "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 138\nbooleans: 1942\nconflicts: 11\nbranches: 19299\npropagations: 316695\ninteger_propagations: 48963\nrestarts: 0\nlp_iterations: 8\nwalltime: 0.206202\nusertime: 0.206202\ndeterministic_time: 0.509037\ngap_integral: 0\n"
+    },
+    {
+      "gap_left": 69,
+      "gap_bottom": 0,
+      "budget": 7,
+      "bodies_before_cost_cutoff": 4356,
+      "options": 3425,
+      "status": "INFEASIBLE",
+      "seconds": 0.2055687800020678,
+      "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 138\nbooleans: 1943\nconflicts: 11\nbranches: 19310\npropagations: 318173\ninteger_propagations: 48816\nrestarts: 0\nlp_iterations: 8\nwalltime: 0.205501\nusertime: 0.205501\ndeterministic_time: 0.517119\ngap_integral: 0\n"
+    }
+  ]
+}

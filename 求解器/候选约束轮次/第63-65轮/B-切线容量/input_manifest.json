@@ -1,0 +1,23 @@
+{
+  "timestamp": "2026-09-23T00:29:16.563796-04:00",
+  "sources": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+      "sha256": "6e64e3903a65536c530b363c9f3aef8c1bb2a1c1193e866799125dd047159924",
+      "bytes": 7241,
+      "snapshot": "游戏规则快照.md"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解任务.txt",
+      "sha256": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+      "bytes": 1405,
+      "snapshot": "求解任务快照.md"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解约束.txt",
+      "sha256": "0c05976f6063f3332db6ee19d7746052ef35148d7c2a12dfa396c7bb8753f30f",
+      "bytes": 34766,
+      "snapshot": "求解约束快照.md"
+    }
+  ]
+}

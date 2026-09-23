@@ -1,0 +1,15 @@
+{
+  "status": "complete",
+  "reader_review": {
+    "scope_explicit": true,
+    "all_24_position_P_entries_present": true,
+    "LP_points_not_claimed_as_layouts": true,
+    "geometric_scope_check_not_claimed_as_counterexample": true,
+    "all_link_targets_exist": true,
+    "report_matches_computations": true
+  },
+  "same_optimum_for_each_old_and_new_branch": true,
+  "formal_files_unchanged": true,
+  "report_sha256": "1adfb602197d80a46e9ff28fb1dbd456e99cfd948982ced4806f44f8bab2e321",
+  "linked_targets": 11
+}
