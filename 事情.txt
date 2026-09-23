@@ -39,7 +39,7 @@
 充分条件三审
 
 
-求解思路重写稿在 ~/zmd-project-cc/scratchpad/131b25c1-c5af-4b3b-81ff-e962b909c8cc/scratchpad/思路重写2/求解思路-重写稿.txt，还没写进仓库；写之前要补上 9 月 23 日夜里的结果（内核同步、第 0 批、第 63—77 轮）和今天关于 LBBD 的讨论。
+求解思路重写稿在 ~/zmd-project-cc/scratchpad/131b25c1-c5af-4b3b-81ff-e962b909c8cc/scratchpad/思路重写2/求解思路-重写稿.txt，还没写进仓库；写之前要补上 9 月 23 日凌晨的结果（内核同步、第 0 批、第 63—77 轮）和今天关于 LBBD 的讨论。
 ---
 求解思路重写稿
 
