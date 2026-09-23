@@ -1,0 +1,162 @@
+{
+  "candidate_sha256": "eead98c6a852a17b33c6ed7ea084f19d692fe70226db2b18da6a43463b0ea9ef",
+  "strict_infeasible_exact": true,
+  "zero_row_contradictions": [
+    {
+      "name": "source:('OUT_L01', 0, 1)",
+      "terms": [],
+      "relation": "eq",
+      "rhs": "1"
+    },
+    {
+      "name": "source:('OUT_L04', 0, 1)",
+      "terms": [],
+      "relation": "eq",
+      "rhs": "1"
+    },
+    {
+      "name": "source:('OUT_B00', 1, 1)",
+      "terms": [],
+      "relation": "eq",
+      "rhs": "1"
+    },
+    {
+      "name": "source:('OUT_B06', 1, 1)",
+      "terms": [],
+      "relation": "eq",
+      "rhs": "1"
+    },
+    {
+      "name": "target:高容谷地电池",
+      "terms": [],
+      "relation": "le",
+      "rhs": "-3/5"
+    }
+  ],
+  "relaxed_total_flow": {
+    "primal_dual_equal": true,
+    "objective": "0",
+    "columns_checked": 780,
+    "nonzero_dual_multipliers": 688
+  },
+  "all_batches_forced_zero": true,
+  "batch_columns_checked": 219,
+  "per_item": {
+    "源石粉末": {
+      "primal_dual_equal": true,
+      "objective": "0",
+      "columns_checked": 780,
+      "nonzero_dual_multipliers": 30
+    },
+    "源矿": {
+      "primal_dual_equal": true,
+      "objective": "0",
+      "columns_checked": 780,
+      "nonzero_dual_multipliers": 66
+    },
+    "砂叶": {
+      "primal_dual_equal": true,
+      "objective": "0",
+      "columns_checked": 780,
+      "nonzero_dual_multipliers": 97
+    },
+    "砂叶种子": {
+      "primal_dual_equal": true,
+      "objective": "0",
+      "columns_checked": 780,
+      "nonzero_dual_multipliers": 87
+    },
+    "砂叶粉末": {
+      "primal_dual_equal": true,
+      "objective": "0",
+      "columns_checked": 780,
+      "nonzero_dual_multipliers": 66
+    },
+    "精选荞愈胶囊": {
+      "primal_dual_equal": true,
+      "objective": "0",
+      "columns_checked": 780,
+      "nonzero_dual_multipliers": 52
+    },
+    "细磨荞花粉末": {
+      "primal_dual_equal": true,
+      "objective": "0",
+      "columns_checked": 780,
+      "nonzero_dual_multipliers": 36
+    },
+    "致密源石粉末": {
+      "primal_dual_equal": true,
+      "objective": "0",
+      "columns_checked": 780,
+      "nonzero_dual_multipliers": 9
+    },
+    "致密蓝铁粉末": {
+      "primal_dual_equal": true,
+      "objective": "0",
+      "columns_checked": 780,
+      "nonzero_dual_multipliers": 56
+    },
+    "荞花": {
+      "primal_dual_equal": true,
+      "objective": "0",
+      "columns_checked": 780,
+      "nonzero_dual_multipliers": 87
+    },
+    "荞花种子": {
+      "primal_dual_equal": true,
+      "objective": "0",
+      "columns_checked": 780,
+      "nonzero_dual_multipliers": 68
+    },
+    "荞花粉末": {
+      "primal_dual_equal": true,
+      "objective": "0",
+      "columns_checked": 780,
+      "nonzero_dual_multipliers": 11
+    },
+    "蓝铁块": {
+      "primal_dual_equal": true,
+      "objective": "0",
+      "columns_checked": 780,
+      "nonzero_dual_multipliers": 115
+    },
+    "蓝铁矿": {
+      "primal_dual_equal": true,
+      "objective": "0",
+      "columns_checked": 780,
+      "nonzero_dual_multipliers": 188
+    },
+    "蓝铁粉末": {
+      "primal_dual_equal": true,
+      "objective": "0",
+      "columns_checked": 780,
+      "nonzero_dual_multipliers": 34
+    },
+    "钢制零件": {
+      "primal_dual_equal": true,
+      "objective": "0",
+      "columns_checked": 780,
+      "nonzero_dual_multipliers": 43
+    },
+    "钢块": {
+      "primal_dual_equal": true,
+      "objective": "0",
+      "columns_checked": 780,
+      "nonzero_dual_multipliers": 66
+    },
+    "钢质瓶": {
+      "primal_dual_equal": true,
+      "objective": "0",
+      "columns_checked": 780,
+      "nonzero_dual_multipliers": 43
+    },
+    "高容谷地电池": {
+      "primal_dual_equal": true,
+      "objective": "0",
+      "columns_checked": 780,
+      "nonzero_dual_multipliers": 34
+    }
+  },
+  "solver_called": false,
+  "scope": "固定快照、配方和物品支持；严格模型由矛盾行否证；最优值证书仅用于矿源<=1且去目标的放宽模型。"
+}

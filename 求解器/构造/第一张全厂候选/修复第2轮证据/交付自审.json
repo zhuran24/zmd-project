@@ -1,0 +1,19 @@
+{
+  "document": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/生成/报告.md",
+  "state": "部分修复，pass=false，全部修正尚未完成",
+  "checks": {
+    "standalone_reader_context": true,
+    "current_numbers_bound_to_candidate_hash": true,
+    "historical_search_results_separate": true,
+    "regressions_and_zero_production_disclosed": true,
+    "cli_version_rejection_not_replaced_by_component_diagnostics": true,
+    "no_L_or_U_update": true,
+    "failure_domains_and_UNKNOWN_distinguished": true
+  },
+  "technical_recheck": {
+    "candidate_sha256": "677c3fb13a3550047d74dd35c67d224a88d179689c158519e642a41ca7e2bf6b",
+    "protected_files_unchanged": 373,
+    "independent_structure_and_flow_evidence_present": true
+  },
+  "review_result": "PASS for report accuracy and scope; candidate remains rejected"
+}

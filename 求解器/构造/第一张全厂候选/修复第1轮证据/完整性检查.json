@@ -1,0 +1,18 @@
+{
+  "candidate_sha256": "eead98c6a852a17b33c6ed7ea084f19d692fe70226db2b18da6a43463b0ea9ef",
+  "A_implementation_hash_matches_final_report": true,
+  "A_B_independent_reports_bound_to_current_candidate": true,
+  "protected_original_files_checked": 164,
+  "protected_original_files_unchanged": true,
+  "B_files_checked": 32,
+  "gate_evidence_files_checked": 54,
+  "violations": [],
+  "original_files_allowed_to_change": [
+    "检查器A目录",
+    "生成/候选.json",
+    "生成/报告.md"
+  ],
+  "original_files_deleted": [],
+  "task_complete": false,
+  "candidate_pass": false
+}

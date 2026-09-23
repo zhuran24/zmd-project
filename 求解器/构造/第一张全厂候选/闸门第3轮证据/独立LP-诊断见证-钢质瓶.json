@@ -1,0 +1,112 @@
+{
+  "item": "钢质瓶",
+  "scope": "sources<=1,no targets; each item separately maximized",
+  "nonzero_values": [],
+  "solver": {
+    "status": 0,
+    "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+    "variables": 774,
+    "rows": 18581,
+    "equalities": 17331,
+    "inequalities": 1250,
+    "iterations": 0,
+    "presolve": true,
+    "exact_primal": true,
+    "exact_dual": true,
+    "objective": "0",
+    "nonzero_variables": 0,
+    "certificate": {
+      "bound": "0",
+      "multipliers": [
+        {
+          "row": "slot:('T63_23', 'single'):钢块",
+          "value": "1/2"
+        },
+        {
+          "row": "slot:('T63_24', 'single'):钢块",
+          "value": "1/2"
+        },
+        {
+          "row": "slot:('T64_24', 'single'):钢块",
+          "value": "1/2"
+        },
+        {
+          "row": "slot:('T65_17', 'single'):致密蓝铁粉末",
+          "value": "1/2"
+        },
+        {
+          "row": "slot:('T65_24', 'single'):钢块",
+          "value": "1/2"
+        },
+        {
+          "row": "slot:('T66_21', 'single'):钢块",
+          "value": "1/2"
+        },
+        {
+          "row": "slot:('T66_22', 'single'):钢块",
+          "value": "1/2"
+        },
+        {
+          "row": "slot:('T66_23', 'single'):钢块",
+          "value": "1/2"
+        },
+        {
+          "row": "slot:('T66_24', 'single'):钢块",
+          "value": "1/2"
+        },
+        {
+          "row": "slot:('T67_25', 'single'):钢块",
+          "value": "1/2"
+        },
+        {
+          "row": "machine:M103:in:致密蓝铁粉末",
+          "value": "1/2"
+        },
+        {
+          "row": "machine:M103:out:钢块",
+          "value": "-1/2"
+        },
+        {
+          "row": "machine:M104:in:致密蓝铁粉末",
+          "value": "1/2"
+        },
+        {
+          "row": "machine:M104:out:钢块",
+          "value": "-1/2"
+        },
+        {
+          "row": "machine:M127:in:砂叶粉末",
+          "value": "1/2"
+        },
+        {
+          "row": "machine:M127:out:致密蓝铁粉末",
+          "value": "-1/2"
+        },
+        {
+          "row": "machine:M152:in:钢块",
+          "value": "1/2"
+        },
+        {
+          "row": "machine:M153:in:钢块",
+          "value": "1/2"
+        },
+        {
+          "row": "machine:M154:in:钢块",
+          "value": "1/2"
+        },
+        {
+          "row": "machine:M155:in:钢块",
+          "value": "1/2"
+        },
+        {
+          "row": "machine:M156:in:钢块",
+          "value": "1/2"
+        },
+        {
+          "row": "machine:M157:in:钢块",
+          "value": "1/2"
+        }
+      ]
+    }
+  }
+}

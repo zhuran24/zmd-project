@@ -1,0 +1,8 @@
+{
+  "checked_files": 25,
+  "changes_since_start": {
+    "求解器/构造/第一张全厂候选/检查器A/projections.py": "643adc88777d9f5ca314d295923fc6dd1b0f41530cd6743534ae4cdfbc31144a"
+  },
+  "changes_since_final_rerun": {},
+  "candidate_sha256": "e147866f410737324d49190dea83bfd19de04ebdcc9b1c9998152bbf7a80f404"
+}

@@ -1,0 +1,68 @@
+{
+  "item": "荞花粉末",
+  "scope": "sources<=1,no targets; each item separately maximized",
+  "nonzero_values": [],
+  "solver": {
+    "status": 0,
+    "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+    "variables": 780,
+    "rows": 18627,
+    "equalities": 17369,
+    "inequalities": 1258,
+    "iterations": 0,
+    "presolve": true,
+    "exact_primal": true,
+    "exact_dual": true,
+    "objective": "0",
+    "nonzero_variables": 0,
+    "certificate": {
+      "bound": "0",
+      "multipliers": [
+        {
+          "row": "slot:('T36_48', 'single'):荞花粉末",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T37_48', 'single'):荞花粉末",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T38_48', 'single'):荞花粉末",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M052:out:荞花粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M053:out:荞花粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M054:in:荞花",
+          "value": "2"
+        },
+        {
+          "row": "machine:M055:out:荞花粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M056:out:荞花粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M057:in:荞花",
+          "value": "2"
+        },
+        {
+          "row": "machine:M146:in:砂叶粉末",
+          "value": "2"
+        },
+        {
+          "row": "machine:M146:in:荞花粉末",
+          "value": "-1"
+        }
+      ]
+    }
+  }
+}

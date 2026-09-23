@@ -1,0 +1,40 @@
+[
+  {
+    "source": "M216",
+    "item": "精选荞愈胶囊",
+    "possible_components": [],
+    "routed": false
+  },
+  {
+    "source": "M217",
+    "item": "精选荞愈胶囊",
+    "possible_components": [],
+    "routed": false
+  },
+  {
+    "source": "M218",
+    "item": "精选荞愈胶囊",
+    "possible_components": [
+      22
+    ],
+    "routed": true
+  },
+  {
+    "source": "M213",
+    "item": "高容谷地电池",
+    "possible_components": [],
+    "routed": false
+  },
+  {
+    "source": "M214",
+    "item": "高容谷地电池",
+    "possible_components": [],
+    "routed": false
+  },
+  {
+    "source": "M215",
+    "item": "高容谷地电池",
+    "possible_components": [],
+    "routed": false
+  }
+]

@@ -1,0 +1,24 @@
+{
+  "status": "passed",
+  "report_sha256": "49e2f1cb1af0e4d98aa6adc77a42bd33733f67f7499246be063e1e6874b4031c",
+  "reviewer": "本轮主会话；未声称第二位独立人工审稿",
+  "reader_pass": {
+    "self_contained": true,
+    "current_state_separated_from_historical_snapshots": true,
+    "header_matches_evidence": true,
+    "no_instruction_echo": true,
+    "numbers_and_units_consistent": true,
+    "names_self_explanatory": true,
+    "cross_references_exist": true
+  },
+  "checks": {
+    "seven_fields_match_footer": true,
+    "formal_rows": 72,
+    "difference_rows": 20,
+    "local_links": 29,
+    "markdown_tables": 8,
+    "syntax_parsed_scripts": 8,
+    "input_files_stable": 49
+  },
+  "scope": "交付物自审；候选结论仍是pass=false，静态与LP失败；没有运行认证。"
+}

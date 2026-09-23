@@ -1,0 +1,27 @@
+FREE_COMPONENTS 100 largest [(0, 270), (43, 120), (71, 53), (35, 49), (21, 40)]
+ORE_RELAXATION_MATCHING 20
+ROUTE 0 98 best 98 cells 331 seconds 0.02
+ROUTE 1 98 best 98 cells 351 seconds 0.05
+ROUTE 2 97 best 98 cells 352 seconds 0.06
+ROUTE 3 97 best 98 cells 352 seconds 0.08
+ROUTE 4 97 best 98 cells 343 seconds 0.1
+ROUTE 5 97 best 98 cells 350 seconds 0.13
+ROUTE 6 97 best 98 cells 350 seconds 0.15
+ROUTE 7 97 best 98 cells 350 seconds 0.16
+ROUTE 8 97 best 98 cells 352 seconds 0.18
+ROUTE 9 97 best 98 cells 354 seconds 0.2
+ROUTE 10 97 best 98 cells 354 seconds 0.22
+ROUTE 11 98 best 98 cells 362 seconds 0.24
+ROUTE 12 98 best 98 cells 360 seconds 0.25
+ROUTE 13 98 best 98 cells 368 seconds 0.27
+ROUTE 14 98 best 98 cells 364 seconds 0.29
+ROUTE 15 98 best 98 cells 367 seconds 0.3
+ROUTE 16 98 best 98 cells 383 seconds 0.32
+ROUTE 17 98 best 98 cells 378 seconds 0.34
+ROUTE 18 98 best 98 cells 362 seconds 0.36
+ROUTE 19 98 best 98 cells 360 seconds 0.38
+ROUTE 20 98 best 98 cells 360 seconds 0.39
+ROUTE 21 98 best 98 cells 356 seconds 0.41
+ROUTE 22 98 best 98 cells 357 seconds 0.43
+ROUTE 23 98 best 98 cells 349 seconds 0.45
+ROUTE 24 99 best 99 cells 346 seconds 0.47

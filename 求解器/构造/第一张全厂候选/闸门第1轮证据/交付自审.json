@@ -1,0 +1,16 @@
+{
+  "status": "completed",
+  "report_self_review": [
+    "面向独立读者并包含输入身份",
+    "原始检查与诊断分开",
+    "72条按名称逐条对齐",
+    "失败/未执行/运行义务不冒充通过",
+    "目标不可行与放宽模型零流分开",
+    "所有关键数字与JSON一致",
+    "报告文件引用存在",
+    "共享目录docstring变化已精确定位并复跑，最终版本稳定"
+  ],
+  "formal_rows": 72,
+  "final_run_inputs_unchanged": 25,
+  "pass": false
+}

@@ -1,0 +1,13 @@
+{
+  "original_sha256": "193bba2b2af25309a665f6560099854d0fa5f4ae1bf1dba781ade95c0888f933",
+  "legacy": {
+    "channels": 999,
+    "errors": [],
+    "warnings": []
+  },
+  "new_geometry_internal_channels": 935,
+  "removed_virtual_interfaces": 64,
+  "lossless_full_factory_conversion": false,
+  "reason": "virtual ore/plant powder/output interfaces; absent real outlets/power/full factory; W/H are local",
+  "partial_v1_status": "REJECTED"
+}

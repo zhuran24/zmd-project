@@ -1,0 +1,11 @@
+{
+  "W": 10,
+  "H": 10,
+  "status": "INFEASIBLE",
+  "wall": 0.3,
+  "build_s": 0.1,
+  "nvars": 1744,
+  "ncons": 9492,
+  "first_sol": null,
+  "trace": []
+}

@@ -1,0 +1,3752 @@
+{
+  "status": "INVALID_NOT_ADOPTED",
+  "workers": 5,
+  "source_count": 52,
+  "sink_count": 52,
+  "movable": [
+    "M000",
+    "M001",
+    "M002",
+    "M003",
+    "M004",
+    "M005",
+    "M006",
+    "M007",
+    "M008",
+    "M009",
+    "M010",
+    "M011",
+    "M012",
+    "M013",
+    "M014",
+    "M015",
+    "M016",
+    "M017",
+    "M018",
+    "M019",
+    "M020",
+    "M021",
+    "M022",
+    "M023",
+    "M024",
+    "M025",
+    "M026",
+    "M027",
+    "M028",
+    "M029",
+    "M030",
+    "M031",
+    "M032",
+    "M033",
+    "M034",
+    "M035",
+    "M036",
+    "M037",
+    "M038",
+    "M039",
+    "M040",
+    "M041",
+    "M042",
+    "M043",
+    "M044",
+    "M045",
+    "M046",
+    "M047",
+    "M048",
+    "M049",
+    "M050",
+    "M051",
+    "M052",
+    "M053",
+    "M054",
+    "M055",
+    "M056",
+    "M057",
+    "M058",
+    "M059",
+    "M060",
+    "M061",
+    "M062",
+    "M063",
+    "M064",
+    "M065",
+    "M066",
+    "M067",
+    "M068",
+    "M069",
+    "M070",
+    "M071",
+    "M072",
+    "M073",
+    "M074",
+    "M075",
+    "M076",
+    "M077",
+    "M078",
+    "M079",
+    "M080",
+    "M081",
+    "M082",
+    "M083",
+    "M084",
+    "M085",
+    "M086",
+    "M087",
+    "M088",
+    "M089",
+    "M090",
+    "M091",
+    "M092",
+    "M093",
+    "M094",
+    "M095",
+    "M096",
+    "M097",
+    "M098",
+    "M099",
+    "M100",
+    "M101",
+    "M102",
+    "M103",
+    "M104",
+    "M105",
+    "M106",
+    "M107",
+    "M108",
+    "M109",
+    "M110",
+    "M111",
+    "M112",
+    "M113",
+    "M114",
+    "M115",
+    "M116",
+    "M117",
+    "M118",
+    "M119",
+    "M120",
+    "M121",
+    "M122",
+    "M123",
+    "M124",
+    "M125",
+    "M126",
+    "M127",
+    "M128",
+    "M129",
+    "M130",
+    "M131",
+    "M132",
+    "M133",
+    "M134",
+    "M135",
+    "M136",
+    "M137",
+    "M138",
+    "M139",
+    "M140",
+    "M141",
+    "M142",
+    "M143",
+    "M144",
+    "M145",
+    "M146",
+    "M147",
+    "M148",
+    "M149",
+    "M150",
+    "M151",
+    "M152",
+    "M153",
+    "M154",
+    "M155",
+    "M156",
+    "M157",
+    "M158",
+    "M159",
+    "M160",
+    "M161",
+    "M162",
+    "M163",
+    "M164",
+    "M165",
+    "M166",
+    "M167",
+    "M168",
+    "M169",
+    "M170",
+    "M171",
+    "M172",
+    "M173",
+    "M174",
+    "M175",
+    "M176",
+    "M177",
+    "M178",
+    "M179",
+    "M180",
+    "M181",
+    "M182",
+    "M183",
+    "M184",
+    "M185",
+    "M186",
+    "M187",
+    "M188",
+    "M189",
+    "M190",
+    "M191",
+    "M192",
+    "M193",
+    "M194",
+    "M195",
+    "M196",
+    "M197",
+    "M198",
+    "M199",
+    "M200",
+    "M201",
+    "M202",
+    "M203",
+    "M204",
+    "M205",
+    "M206",
+    "M207",
+    "M208",
+    "M209",
+    "M210",
+    "M211",
+    "M212",
+    "M213",
+    "M214",
+    "M215",
+    "M216",
+    "M217",
+    "M218",
+    "P000"
+  ],
+  "scope": "219台机器允许平移1格、任意合法朝向，角区5台与1桩允许平移5格；核心及其他桩固定。只核52矿口路径及端口空格计数，不核其余生产链和成品流。",
+  "placements": {
+    "M045": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 6,
+      "y0": 47,
+      "x1": 8,
+      "y1": 49,
+      "Din": 0,
+      "id": "M045",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M064": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 33,
+      "y0": 38,
+      "x1": 35,
+      "y1": 40,
+      "Din": 1,
+      "id": "M064",
+      "recipe_ids": [
+        "粉碎-砂叶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M073": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 61,
+      "y0": 2,
+      "x1": 63,
+      "y1": 4,
+      "Din": 3,
+      "id": "M073",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M033": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 32,
+      "y0": 6,
+      "x1": 34,
+      "y1": 8,
+      "Din": 2,
+      "id": "M033",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M087": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 2,
+      "y0": 31,
+      "x1": 4,
+      "y1": 33,
+      "Din": 2,
+      "id": "M087",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M198": {
+      "model": "采种机",
+      "kind": "中",
+      "x0": 14,
+      "y0": 60,
+      "x1": 18,
+      "y1": 64,
+      "Din": 2,
+      "id": "M198",
+      "recipe_ids": [
+        "采种-荞花"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M194": {
+      "model": "种植机",
+      "kind": "中",
+      "x0": 17,
+      "y0": 36,
+      "x1": 21,
+      "y1": 40,
+      "Din": 3,
+      "id": "M194",
+      "recipe_ids": [
+        "种植-砂叶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M099": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 2,
+      "y0": 16,
+      "x1": 4,
+      "y1": 18,
+      "Din": 2,
+      "id": "M099",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M176": {
+      "model": "种植机",
+      "kind": "中",
+      "x0": 11,
+      "y0": 36,
+      "x1": 15,
+      "y1": 40,
+      "Din": 0,
+      "id": "M176",
+      "recipe_ids": [
+        "种植-砂叶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M088": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 34,
+      "y0": 2,
+      "x1": 36,
+      "y1": 4,
+      "Din": 3,
+      "id": "M088",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M016": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 2,
+      "y0": 46,
+      "x1": 4,
+      "y1": 48,
+      "Din": 2,
+      "id": "M016",
+      "recipe_ids": [
+        "粉碎-源矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M187": {
+      "model": "种植机",
+      "kind": "中",
+      "x0": 49,
+      "y0": 38,
+      "x1": 53,
+      "y1": 42,
+      "Din": 2,
+      "id": "M187",
+      "recipe_ids": [
+        "种植-砂叶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M007": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 9,
+      "y0": 2,
+      "x1": 11,
+      "y1": 4,
+      "Din": 3,
+      "id": "M007",
+      "recipe_ids": [
+        "粉碎-源矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M051": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 29,
+      "y0": 45,
+      "x1": 31,
+      "y1": 47,
+      "Din": 1,
+      "id": "M051",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M036": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 5,
+      "y0": 29,
+      "x1": 7,
+      "y1": 31,
+      "Din": 1,
+      "id": "M036",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M054": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 43,
+      "y0": 7,
+      "x1": 45,
+      "y1": 9,
+      "Din": 3,
+      "id": "M054",
+      "recipe_ids": [
+        "粉碎-荞花"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M025": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 56,
+      "y0": 5,
+      "x1": 58,
+      "y1": 7,
+      "Din": 0,
+      "id": "M025",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M124": {
+      "model": "研磨机",
+      "kind": "大",
+      "x0": 58,
+      "y0": 49,
+      "x1": 63,
+      "y1": 52,
+      "Din": 3,
+      "id": "M124",
+      "recipe_ids": [
+        "研磨-致密蓝铁"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M094": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 18,
+      "y0": 2,
+      "x1": 20,
+      "y1": 4,
+      "Din": 3,
+      "id": "M094",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M139": {
+      "model": "研磨机",
+      "kind": "大",
+      "x0": 43,
+      "y0": 43,
+      "x1": 48,
+      "y1": 46,
+      "Din": 3,
+      "id": "M139",
+      "recipe_ids": [
+        "研磨-致密源石"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M000": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 2,
+      "y0": 61,
+      "x1": 4,
+      "y1": 63,
+      "Din": 2,
+      "id": "M000",
+      "recipe_ids": [
+        "粉碎-源矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M080": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 2,
+      "y0": 49,
+      "x1": 4,
+      "y1": 51,
+      "Din": 2,
+      "id": "M080",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M113": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 58,
+      "y0": 36,
+      "x1": 60,
+      "y1": 38,
+      "Din": 1,
+      "id": "M113",
+      "recipe_ids": [
+        "精炼-致密蓝铁"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M061": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 61,
+      "y0": 66,
+      "x1": 63,
+      "y1": 68,
+      "Din": 3,
+      "id": "M061",
+      "recipe_ids": [
+        "粉碎-砂叶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M093": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 2,
+      "y0": 67,
+      "x1": 4,
+      "y1": 69,
+      "Din": 2,
+      "id": "M093",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M101": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 2,
+      "y0": 19,
+      "x1": 4,
+      "y1": 21,
+      "Din": 2,
+      "id": "M101",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M112": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 64,
+      "y0": 18,
+      "x1": 66,
+      "y1": 20,
+      "Din": 3,
+      "id": "M112",
+      "recipe_ids": [
+        "精炼-致密蓝铁"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M217": {
+      "model": "灌装机",
+      "kind": "大",
+      "x0": 57,
+      "y0": 19,
+      "x1": 60,
+      "y1": 24,
+      "Din": 2,
+      "id": "M217",
+      "recipe_ids": [
+        "灌装-胶囊"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M161": {
+      "model": "配件机",
+      "kind": "小",
+      "x0": 62,
+      "y0": 45,
+      "x1": 64,
+      "y1": 47,
+      "Din": 1,
+      "id": "M161",
+      "recipe_ids": [
+        "配件-钢制零件"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M191": {
+      "model": "种植机",
+      "kind": "中",
+      "x0": 16,
+      "y0": 50,
+      "x1": 20,
+      "y1": 54,
+      "Din": 1,
+      "id": "M191",
+      "recipe_ids": [
+        "种植-砂叶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M022": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 63,
+      "y0": 5,
+      "x1": 65,
+      "y1": 7,
+      "Din": 2,
+      "id": "M022",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M049": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 22,
+      "y0": 33,
+      "x1": 24,
+      "y1": 35,
+      "Din": 2,
+      "id": "M049",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M197": {
+      "model": "采种机",
+      "kind": "中",
+      "x0": 22,
+      "y0": 27,
+      "x1": 26,
+      "y1": 31,
+      "Din": 3,
+      "id": "M197",
+      "recipe_ids": [
+        "采种-荞花"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M201": {
+      "model": "采种机",
+      "kind": "中",
+      "x0": 64,
+      "y0": 59,
+      "x1": 68,
+      "y1": 63,
+      "Din": 2,
+      "id": "M201",
+      "recipe_ids": [
+        "采种-荞花"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M024": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 5,
+      "y0": 63,
+      "x1": 7,
+      "y1": 65,
+      "Din": 3,
+      "id": "M024",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M065": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 25,
+      "y0": 34,
+      "x1": 27,
+      "y1": 36,
+      "Din": 2,
+      "id": "M065",
+      "recipe_ids": [
+        "粉碎-砂叶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M168": {
+      "model": "种植机",
+      "kind": "中",
+      "x0": 38,
+      "y0": 56,
+      "x1": 42,
+      "y1": 60,
+      "Din": 1,
+      "id": "M168",
+      "recipe_ids": [
+        "种植-荞花"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M035": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 6,
+      "y0": 67,
+      "x1": 8,
+      "y1": 69,
+      "Din": 2,
+      "id": "M035",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M114": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 28,
+      "y0": 48,
+      "x1": 30,
+      "y1": 50,
+      "Din": 3,
+      "id": "M114",
+      "recipe_ids": [
+        "精炼-致密蓝铁"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M156": {
+      "model": "塑形机",
+      "kind": "小",
+      "x0": 58,
+      "y0": 45,
+      "x1": 60,
+      "y1": 47,
+      "Din": 1,
+      "id": "M156",
+      "recipe_ids": [
+        "塑形-钢质瓶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M118": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 52,
+      "y0": 30,
+      "x1": 54,
+      "y1": 32,
+      "Din": 1,
+      "id": "M118",
+      "recipe_ids": [
+        "精炼-致密蓝铁"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M149": {
+      "model": "研磨机",
+      "kind": "大",
+      "x0": 49,
+      "y0": 16,
+      "x1": 52,
+      "y1": 21,
+      "Din": 2,
+      "id": "M149",
+      "recipe_ids": [
+        "研磨-细磨荞花"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M110": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 67,
+      "y0": 18,
+      "x1": 69,
+      "y1": 20,
+      "Din": 3,
+      "id": "M110",
+      "recipe_ids": [
+        "精炼-致密蓝铁"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M055": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 10,
+      "y0": 67,
+      "x1": 12,
+      "y1": 69,
+      "Din": 0,
+      "id": "M055",
+      "recipe_ids": [
+        "粉碎-荞花"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M039": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 50,
+      "y0": 5,
+      "x1": 52,
+      "y1": 7,
+      "Din": 2,
+      "id": "M039",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M167": {
+      "model": "种植机",
+      "kind": "中",
+      "x0": 14,
+      "y0": 65,
+      "x1": 18,
+      "y1": 69,
+      "Din": 0,
+      "id": "M167",
+      "recipe_ids": [
+        "种植-荞花"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M137": {
+      "model": "研磨机",
+      "kind": "大",
+      "x0": 30,
+      "y0": 64,
+      "x1": 33,
+      "y1": 69,
+      "Din": 2,
+      "id": "M137",
+      "recipe_ids": [
+        "研磨-致密源石"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M155": {
+      "model": "塑形机",
+      "kind": "小",
+      "x0": 53,
+      "y0": 17,
+      "x1": 55,
+      "y1": 19,
+      "Din": 3,
+      "id": "M155",
+      "recipe_ids": [
+        "塑形-钢质瓶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M207": {
+      "model": "采种机",
+      "kind": "中",
+      "x0": 44,
+      "y0": 21,
+      "x1": 48,
+      "y1": 25,
+      "Din": 3,
+      "id": "M207",
+      "recipe_ids": [
+        "采种-砂叶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M154": {
+      "model": "塑形机",
+      "kind": "小",
+      "x0": 49,
+      "y0": 58,
+      "x1": 51,
+      "y1": 60,
+      "Din": 2,
+      "id": "M154",
+      "recipe_ids": [
+        "塑形-钢质瓶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M132": {
+      "model": "研磨机",
+      "kind": "大",
+      "x0": 52,
+      "y0": 49,
+      "x1": 57,
+      "y1": 52,
+      "Din": 3,
+      "id": "M132",
+      "recipe_ids": [
+        "研磨-致密蓝铁"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M162": {
+      "model": "配件机",
+      "kind": "小",
+      "x0": 49,
+      "y0": 24,
+      "x1": 51,
+      "y1": 26,
+      "Din": 2,
+      "id": "M162",
+      "recipe_ids": [
+        "配件-钢制零件"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M146": {
+      "model": "研磨机",
+      "kind": "大",
+      "x0": 32,
+      "y0": 44,
+      "x1": 35,
+      "y1": 49,
+      "Din": 0,
+      "id": "M146",
+      "recipe_ids": [
+        "研磨-细磨荞花"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M063": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 45,
+      "y0": 67,
+      "x1": 47,
+      "y1": 69,
+      "Din": 0,
+      "id": "M063",
+      "recipe_ids": [
+        "粉碎-砂叶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M105": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 52,
+      "y0": 59,
+      "x1": 54,
+      "y1": 61,
+      "Din": 3,
+      "id": "M105",
+      "recipe_ids": [
+        "精炼-致密蓝铁"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M042": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 58,
+      "y0": 67,
+      "x1": 60,
+      "y1": 69,
+      "Din": 2,
+      "id": "M042",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M050": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 14,
+      "y0": 26,
+      "x1": 16,
+      "y1": 28,
+      "Din": 2,
+      "id": "M050",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M164": {
+      "model": "种植机",
+      "kind": "中",
+      "x0": 52,
+      "y0": 63,
+      "x1": 56,
+      "y1": 67,
+      "Din": 3,
+      "id": "M164",
+      "recipe_ids": [
+        "种植-荞花"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M165": {
+      "model": "种植机",
+      "kind": "中",
+      "x0": 43,
+      "y0": 57,
+      "x1": 47,
+      "y1": 61,
+      "Din": 0,
+      "id": "M165",
+      "recipe_ids": [
+        "种植-荞花"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M053": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 35,
+      "y0": 61,
+      "x1": 37,
+      "y1": 63,
+      "Din": 0,
+      "id": "M053",
+      "recipe_ids": [
+        "粉碎-荞花"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M133": {
+      "model": "研磨机",
+      "kind": "大",
+      "x0": 39,
+      "y0": 52,
+      "x1": 44,
+      "y1": 55,
+      "Din": 3,
+      "id": "M133",
+      "recipe_ids": [
+        "研磨-致密蓝铁"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M030": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 9,
+      "y0": 33,
+      "x1": 11,
+      "y1": 35,
+      "Din": 0,
+      "id": "M030",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M196": {
+      "model": "采种机",
+      "kind": "中",
+      "x0": 44,
+      "y0": 62,
+      "x1": 48,
+      "y1": 66,
+      "Din": 2,
+      "id": "M196",
+      "recipe_ids": [
+        "采种-荞花"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M190": {
+      "model": "种植机",
+      "kind": "中",
+      "x0": 39,
+      "y0": 11,
+      "x1": 43,
+      "y1": 15,
+      "Din": 2,
+      "id": "M190",
+      "recipe_ids": [
+        "种植-砂叶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M192": {
+      "model": "种植机",
+      "kind": "中",
+      "x0": 22,
+      "y0": 10,
+      "x1": 26,
+      "y1": 14,
+      "Din": 2,
+      "id": "M192",
+      "recipe_ids": [
+        "种植-砂叶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M020": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 6,
+      "y0": 32,
+      "x1": 8,
+      "y1": 34,
+      "Din": 0,
+      "id": "M020",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M066": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 33,
+      "y0": 21,
+      "x1": 35,
+      "y1": 23,
+      "Din": 3,
+      "id": "M066",
+      "recipe_ids": [
+        "粉碎-砂叶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M182": {
+      "model": "种植机",
+      "kind": "中",
+      "x0": 24,
+      "y0": 37,
+      "x1": 28,
+      "y1": 41,
+      "Din": 1,
+      "id": "M182",
+      "recipe_ids": [
+        "种植-砂叶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M011": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 2,
+      "y0": 22,
+      "x1": 4,
+      "y1": 24,
+      "Din": 2,
+      "id": "M011",
+      "recipe_ids": [
+        "粉碎-源矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M208": {
+      "model": "采种机",
+      "kind": "中",
+      "x0": 19,
+      "y0": 42,
+      "x1": 23,
+      "y1": 46,
+      "Din": 1,
+      "id": "M208",
+      "recipe_ids": [
+        "采种-砂叶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M098": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 31,
+      "y0": 2,
+      "x1": 33,
+      "y1": 4,
+      "Din": 3,
+      "id": "M098",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M195": {
+      "model": "种植机",
+      "kind": "中",
+      "x0": 45,
+      "y0": 10,
+      "x1": 49,
+      "y1": 14,
+      "Din": 3,
+      "id": "M195",
+      "recipe_ids": [
+        "种植-砂叶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M008": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 21,
+      "y0": 2,
+      "x1": 23,
+      "y1": 4,
+      "Din": 3,
+      "id": "M008",
+      "recipe_ids": [
+        "粉碎-源矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M040": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 5,
+      "y0": 57,
+      "x1": 7,
+      "y1": 59,
+      "Din": 3,
+      "id": "M040",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M052": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 49,
+      "y0": 67,
+      "x1": 51,
+      "y1": 69,
+      "Din": 0,
+      "id": "M052",
+      "recipe_ids": [
+        "粉碎-荞花"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M028": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 11,
+      "y0": 28,
+      "x1": 13,
+      "y1": 30,
+      "Din": 1,
+      "id": "M028",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "P000": {
+      "id": "P000",
+      "x0": 5,
+      "y0": 5,
+      "x1": 6,
+      "y1": 6,
+      "orientation": 0
+    },
+    "M141": {
+      "model": "研磨机",
+      "kind": "大",
+      "x0": 65,
+      "y0": 42,
+      "x1": 68,
+      "y1": 47,
+      "Din": 2,
+      "id": "M141",
+      "recipe_ids": [
+        "研磨-致密源石"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M111": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 67,
+      "y0": 26,
+      "x1": 69,
+      "y1": 28,
+      "Din": 1,
+      "id": "M111",
+      "recipe_ids": [
+        "精炼-致密蓝铁"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M083": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 2,
+      "y0": 37,
+      "x1": 4,
+      "y1": 39,
+      "Din": 2,
+      "id": "M083",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M004": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 55,
+      "y0": 2,
+      "x1": 57,
+      "y1": 4,
+      "Din": 3,
+      "id": "M004",
+      "recipe_ids": [
+        "粉碎-源矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M062": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 41,
+      "y0": 48,
+      "x1": 43,
+      "y1": 50,
+      "Din": 3,
+      "id": "M062",
+      "recipe_ids": [
+        "粉碎-砂叶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M027": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 21,
+      "y0": 67,
+      "x1": 23,
+      "y1": 69,
+      "Din": 2,
+      "id": "M027",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M084": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 28,
+      "y0": 2,
+      "x1": 30,
+      "y1": 4,
+      "Din": 3,
+      "id": "M084",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M185": {
+      "model": "种植机",
+      "kind": "中",
+      "x0": 47,
+      "y0": 28,
+      "x1": 51,
+      "y1": 32,
+      "Din": 0,
+      "id": "M185",
+      "recipe_ids": [
+        "种植-砂叶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M136": {
+      "model": "研磨机",
+      "kind": "大",
+      "x0": 39,
+      "y0": 64,
+      "x1": 42,
+      "y1": 69,
+      "Din": 0,
+      "id": "M136",
+      "recipe_ids": [
+        "研磨-致密蓝铁"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M123": {
+      "model": "研磨机",
+      "kind": "大",
+      "x0": 38,
+      "y0": 23,
+      "x1": 43,
+      "y1": 26,
+      "Din": 1,
+      "id": "M123",
+      "recipe_ids": [
+        "研磨-致密蓝铁"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M202": {
+      "model": "采种机",
+      "kind": "中",
+      "x0": 39,
+      "y0": 33,
+      "x1": 43,
+      "y1": 37,
+      "Din": 0,
+      "id": "M202",
+      "recipe_ids": [
+        "采种-砂叶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M078": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 2,
+      "y0": 55,
+      "x1": 4,
+      "y1": 57,
+      "Din": 2,
+      "id": "M078",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M138": {
+      "model": "研磨机",
+      "kind": "大",
+      "x0": 52,
+      "y0": 44,
+      "x1": 57,
+      "y1": 47,
+      "Din": 1,
+      "id": "M138",
+      "recipe_ids": [
+        "研磨-致密源石"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M160": {
+      "model": "配件机",
+      "kind": "小",
+      "x0": 11,
+      "y0": 64,
+      "x1": 13,
+      "y1": 66,
+      "Din": 3,
+      "id": "M160",
+      "recipe_ids": [
+        "配件-钢制零件"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M171": {
+      "model": "种植机",
+      "kind": "中",
+      "x0": 8,
+      "y0": 59,
+      "x1": 12,
+      "y1": 63,
+      "Din": 2,
+      "id": "M171",
+      "recipe_ids": [
+        "种植-荞花"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M107": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 62,
+      "y0": 53,
+      "x1": 64,
+      "y1": 55,
+      "Din": 2,
+      "id": "M107",
+      "recipe_ids": [
+        "精炼-致密蓝铁"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M082": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 43,
+      "y0": 2,
+      "x1": 45,
+      "y1": 4,
+      "Din": 3,
+      "id": "M082",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M122": {
+      "model": "研磨机",
+      "kind": "大",
+      "x0": 48,
+      "y0": 52,
+      "x1": 51,
+      "y1": 57,
+      "Din": 2,
+      "id": "M122",
+      "recipe_ids": [
+        "研磨-致密蓝铁"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M210": {
+      "model": "采种机",
+      "kind": "中",
+      "x0": 6,
+      "y0": 52,
+      "x1": 10,
+      "y1": 56,
+      "Din": 0,
+      "id": "M210",
+      "recipe_ids": [
+        "采种-砂叶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M152": {
+      "model": "塑形机",
+      "kind": "小",
+      "x0": 61,
+      "y0": 20,
+      "x1": 63,
+      "y1": 22,
+      "Din": 1,
+      "id": "M152",
+      "recipe_ids": [
+        "塑形-钢质瓶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M131": {
+      "model": "研磨机",
+      "kind": "大",
+      "x0": 53,
+      "y0": 53,
+      "x1": 56,
+      "y1": 58,
+      "Din": 0,
+      "id": "M131",
+      "recipe_ids": [
+        "研磨-致密蓝铁"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M079": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 7,
+      "y0": 19,
+      "x1": 9,
+      "y1": 21,
+      "Din": 0,
+      "id": "M079",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M046": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 35,
+      "y0": 5,
+      "x1": 37,
+      "y1": 7,
+      "Din": 0,
+      "id": "M046",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M166": {
+      "model": "种植机",
+      "kind": "中",
+      "x0": 33,
+      "y0": 31,
+      "x1": 37,
+      "y1": 35,
+      "Din": 2,
+      "id": "M166",
+      "recipe_ids": [
+        "种植-荞花"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M169": {
+      "model": "种植机",
+      "kind": "中",
+      "x0": 24,
+      "y0": 59,
+      "x1": 28,
+      "y1": 63,
+      "Din": 2,
+      "id": "M169",
+      "recipe_ids": [
+        "种植-荞花"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M013": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 64,
+      "y0": 2,
+      "x1": 66,
+      "y1": 4,
+      "Din": 3,
+      "id": "M013",
+      "recipe_ids": [
+        "粉碎-源矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M135": {
+      "model": "研磨机",
+      "kind": "大",
+      "x0": 52,
+      "y0": 34,
+      "x1": 57,
+      "y1": 37,
+      "Din": 1,
+      "id": "M135",
+      "recipe_ids": [
+        "研磨-致密蓝铁"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M037": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 45,
+      "y0": 51,
+      "x1": 47,
+      "y1": 53,
+      "Din": 2,
+      "id": "M037",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M018": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 29,
+      "y0": 41,
+      "x1": 31,
+      "y1": 43,
+      "Din": 3,
+      "id": "M018",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M019": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 8,
+      "y0": 29,
+      "x1": 10,
+      "y1": 31,
+      "Din": 1,
+      "id": "M019",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M127": {
+      "model": "研磨机",
+      "kind": "大",
+      "x0": 61,
+      "y0": 12,
+      "x1": 64,
+      "y1": 17,
+      "Din": 2,
+      "id": "M127",
+      "recipe_ids": [
+        "研磨-致密蓝铁"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M186": {
+      "model": "种植机",
+      "kind": "中",
+      "x0": 16,
+      "y0": 11,
+      "x1": 20,
+      "y1": 15,
+      "Din": 1,
+      "id": "M186",
+      "recipe_ids": [
+        "种植-砂叶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M048": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 5,
+      "y0": 24,
+      "x1": 7,
+      "y1": 26,
+      "Din": 3,
+      "id": "M048",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M216": {
+      "model": "灌装机",
+      "kind": "大",
+      "x0": 56,
+      "y0": 13,
+      "x1": 59,
+      "y1": 18,
+      "Din": 0,
+      "id": "M216",
+      "recipe_ids": [
+        "灌装-胶囊"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M097": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 37,
+      "y0": 2,
+      "x1": 39,
+      "y1": 4,
+      "Din": 3,
+      "id": "M097",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M034": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 31,
+      "y0": 50,
+      "x1": 33,
+      "y1": 52,
+      "Din": 3,
+      "id": "M034",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M206": {
+      "model": "采种机",
+      "kind": "中",
+      "x0": 18,
+      "y0": 6,
+      "x1": 22,
+      "y1": 10,
+      "Din": 1,
+      "id": "M206",
+      "recipe_ids": [
+        "采种-砂叶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M071": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 7,
+      "y0": 16,
+      "x1": 9,
+      "y1": 18,
+      "Din": 2,
+      "id": "M071",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M003": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 2,
+      "y0": 40,
+      "x1": 4,
+      "y1": 42,
+      "Din": 2,
+      "id": "M003",
+      "recipe_ids": [
+        "粉碎-源矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M077": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 2,
+      "y0": 43,
+      "x1": 4,
+      "y1": 45,
+      "Din": 2,
+      "id": "M077",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M091": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 2,
+      "y0": 52,
+      "x1": 4,
+      "y1": 54,
+      "Din": 2,
+      "id": "M091",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M134": {
+      "model": "研磨机",
+      "kind": "大",
+      "x0": 44,
+      "y0": 47,
+      "x1": 49,
+      "y1": 50,
+      "Din": 1,
+      "id": "M134",
+      "recipe_ids": [
+        "研磨-致密蓝铁"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M070": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 2,
+      "y0": 5,
+      "x1": 4,
+      "y1": 7,
+      "Din": 2,
+      "id": "M070",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M214": {
+      "model": "封装机",
+      "kind": "大",
+      "x0": 64,
+      "y0": 31,
+      "x1": 69,
+      "y1": 34,
+      "Din": 1,
+      "id": "M214",
+      "recipe_ids": [
+        "封装-电池"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M057": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 30,
+      "y0": 19,
+      "x1": 32,
+      "y1": 21,
+      "Din": 0,
+      "id": "M057",
+      "recipe_ids": [
+        "粉碎-荞花"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M026": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 5,
+      "y0": 44,
+      "x1": 7,
+      "y1": 46,
+      "Din": 3,
+      "id": "M026",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M175": {
+      "model": "种植机",
+      "kind": "中",
+      "x0": 38,
+      "y0": 28,
+      "x1": 42,
+      "y1": 32,
+      "Din": 1,
+      "id": "M175",
+      "recipe_ids": [
+        "种植-砂叶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M144": {
+      "model": "研磨机",
+      "kind": "大",
+      "x0": 12,
+      "y0": 6,
+      "x1": 17,
+      "y1": 9,
+      "Din": 3,
+      "id": "M144",
+      "recipe_ids": [
+        "研磨-致密源石"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M212": {
+      "model": "采种机",
+      "kind": "中",
+      "x0": 56,
+      "y0": 8,
+      "x1": 60,
+      "y1": 12,
+      "Din": 0,
+      "id": "M212",
+      "recipe_ids": [
+        "采种-砂叶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M181": {
+      "model": "种植机",
+      "kind": "中",
+      "x0": 37,
+      "y0": 38,
+      "x1": 41,
+      "y1": 42,
+      "Din": 0,
+      "id": "M181",
+      "recipe_ids": [
+        "种植-砂叶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M102": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 25,
+      "y0": 2,
+      "x1": 27,
+      "y1": 4,
+      "Din": 3,
+      "id": "M102",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M143": {
+      "model": "研磨机",
+      "kind": "大",
+      "x0": 27,
+      "y0": 28,
+      "x1": 32,
+      "y1": 31,
+      "Din": 1,
+      "id": "M143",
+      "recipe_ids": [
+        "研磨-致密源石"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M193": {
+      "model": "种植机",
+      "kind": "中",
+      "x0": 8,
+      "y0": 42,
+      "x1": 12,
+      "y1": 46,
+      "Din": 2,
+      "id": "M193",
+      "recipe_ids": [
+        "种植-砂叶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M213": {
+      "model": "封装机",
+      "kind": "大",
+      "x0": 25,
+      "y0": 64,
+      "x1": 28,
+      "y1": 69,
+      "Din": 0,
+      "id": "M213",
+      "recipe_ids": [
+        "封装-电池"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M178": {
+      "model": "种植机",
+      "kind": "中",
+      "x0": 58,
+      "y0": 56,
+      "x1": 62,
+      "y1": 60,
+      "Din": 2,
+      "id": "M178",
+      "recipe_ids": [
+        "种植-砂叶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M100": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 2,
+      "y0": 2,
+      "x1": 4,
+      "y1": 4,
+      "Din": 2,
+      "id": "M100",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M119": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 35,
+      "y0": 66,
+      "x1": 37,
+      "y1": 68,
+      "Din": 0,
+      "id": "M119",
+      "recipe_ids": [
+        "精炼-致密蓝铁"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M076": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 52,
+      "y0": 2,
+      "x1": 54,
+      "y1": 4,
+      "Din": 3,
+      "id": "M076",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M215": {
+      "model": "封装机",
+      "kind": "大",
+      "x0": 44,
+      "y0": 33,
+      "x1": 49,
+      "y1": 36,
+      "Din": 1,
+      "id": "M215",
+      "recipe_ids": [
+        "封装-电池"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M096": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 2,
+      "y0": 25,
+      "x1": 4,
+      "y1": 27,
+      "Din": 2,
+      "id": "M096",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M103": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 55,
+      "y0": 31,
+      "x1": 57,
+      "y1": 33,
+      "Din": 2,
+      "id": "M103",
+      "recipe_ids": [
+        "精炼-致密蓝铁"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M126": {
+      "model": "研磨机",
+      "kind": "大",
+      "x0": 30,
+      "y0": 57,
+      "x1": 33,
+      "y1": 62,
+      "Din": 2,
+      "id": "M126",
+      "recipe_ids": [
+        "研磨-致密蓝铁"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M043": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 53,
+      "y0": 6,
+      "x1": 55,
+      "y1": 8,
+      "Din": 1,
+      "id": "M043",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M163": {
+      "model": "配件机",
+      "kind": "小",
+      "x0": 20,
+      "y0": 61,
+      "x1": 22,
+      "y1": 63,
+      "Din": 0,
+      "id": "M163",
+      "recipe_ids": [
+        "配件-钢制零件"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M109": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 19,
+      "y0": 64,
+      "x1": 21,
+      "y1": 66,
+      "Din": 3,
+      "id": "M109",
+      "recipe_ids": [
+        "精炼-致密蓝铁"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M148": {
+      "model": "研磨机",
+      "kind": "大",
+      "x0": 34,
+      "y0": 52,
+      "x1": 37,
+      "y1": 57,
+      "Din": 2,
+      "id": "M148",
+      "recipe_ids": [
+        "研磨-细磨荞花"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M117": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 67,
+      "y0": 50,
+      "x1": 69,
+      "y1": 52,
+      "Din": 3,
+      "id": "M117",
+      "recipe_ids": [
+        "精炼-致密蓝铁"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M121": {
+      "model": "研磨机",
+      "kind": "大",
+      "x0": 18,
+      "y0": 28,
+      "x1": 21,
+      "y1": 33,
+      "Din": 2,
+      "id": "M121",
+      "recipe_ids": [
+        "研磨-致密蓝铁"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M086": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 2,
+      "y0": 64,
+      "x1": 4,
+      "y1": 66,
+      "Din": 2,
+      "id": "M086",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M069": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 2,
+      "y0": 13,
+      "x1": 4,
+      "y1": 15,
+      "Din": 2,
+      "id": "M069",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M090": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 46,
+      "y0": 2,
+      "x1": 48,
+      "y1": 4,
+      "Din": 3,
+      "id": "M090",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M044": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 66,
+      "y0": 8,
+      "x1": 68,
+      "y1": 10,
+      "Din": 1,
+      "id": "M044",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M150": {
+      "model": "研磨机",
+      "kind": "大",
+      "x0": 34,
+      "y0": 15,
+      "x1": 37,
+      "y1": 20,
+      "Din": 0,
+      "id": "M150",
+      "recipe_ids": [
+        "研磨-细磨荞花"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M074": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 2,
+      "y0": 34,
+      "x1": 4,
+      "y1": 36,
+      "Din": 2,
+      "id": "M074",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M017": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 21,
+      "y0": 15,
+      "x1": 23,
+      "y1": 17,
+      "Din": 1,
+      "id": "M017",
+      "recipe_ids": [
+        "粉碎-源矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M038": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 27,
+      "y0": 11,
+      "x1": 29,
+      "y1": 13,
+      "Din": 3,
+      "id": "M038",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M173": {
+      "model": "种植机",
+      "kind": "中",
+      "x0": 65,
+      "y0": 12,
+      "x1": 69,
+      "y1": 16,
+      "Din": 1,
+      "id": "M173",
+      "recipe_ids": [
+        "种植-荞花"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M047": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 65,
+      "y0": 39,
+      "x1": 67,
+      "y1": 41,
+      "Din": 2,
+      "id": "M047",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M023": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 5,
+      "y0": 35,
+      "x1": 7,
+      "y1": 37,
+      "Din": 3,
+      "id": "M023",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M041": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 61,
+      "y0": 8,
+      "x1": 63,
+      "y1": 10,
+      "Din": 3,
+      "id": "M041",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M177": {
+      "model": "种植机",
+      "kind": "中",
+      "x0": 23,
+      "y0": 54,
+      "x1": 27,
+      "y1": 58,
+      "Din": 0,
+      "id": "M177",
+      "recipe_ids": [
+        "种植-砂叶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M184": {
+      "model": "种植机",
+      "kind": "中",
+      "x0": 39,
+      "y0": 18,
+      "x1": 43,
+      "y1": 22,
+      "Din": 0,
+      "id": "M184",
+      "recipe_ids": [
+        "种植-砂叶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M058": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 43,
+      "y0": 29,
+      "x1": 45,
+      "y1": 31,
+      "Din": 3,
+      "id": "M058",
+      "recipe_ids": [
+        "粉碎-砂叶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M147": {
+      "model": "研磨机",
+      "kind": "大",
+      "x0": 54,
+      "y0": 26,
+      "x1": 59,
+      "y1": 29,
+      "Din": 1,
+      "id": "M147",
+      "recipe_ids": [
+        "研磨-细磨荞花"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M104": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 44,
+      "y0": 26,
+      "x1": 46,
+      "y1": 28,
+      "Din": 2,
+      "id": "M104",
+      "recipe_ids": [
+        "精炼-致密蓝铁"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M125": {
+      "model": "研磨机",
+      "kind": "大",
+      "x0": 10,
+      "y0": 47,
+      "x1": 15,
+      "y1": 50,
+      "Din": 3,
+      "id": "M125",
+      "recipe_ids": [
+        "研磨-致密蓝铁"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M009": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 23,
+      "y0": 5,
+      "x1": 25,
+      "y1": 7,
+      "Din": 3,
+      "id": "M009",
+      "recipe_ids": [
+        "粉碎-源矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M092": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 58,
+      "y0": 2,
+      "x1": 60,
+      "y1": 4,
+      "Din": 3,
+      "id": "M092",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M218": {
+      "model": "灌装机",
+      "kind": "大",
+      "x0": 12,
+      "y0": 31,
+      "x1": 17,
+      "y1": 34,
+      "Din": 1,
+      "id": "M218",
+      "recipe_ids": [
+        "灌装-胶囊"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M075": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 2,
+      "y0": 58,
+      "x1": 4,
+      "y1": 60,
+      "Din": 2,
+      "id": "M075",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M029": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 55,
+      "y0": 59,
+      "x1": 57,
+      "y1": 61,
+      "Din": 1,
+      "id": "M029",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M128": {
+      "model": "研磨机",
+      "kind": "大",
+      "x0": 54,
+      "y0": 40,
+      "x1": 59,
+      "y1": 43,
+      "Din": 3,
+      "id": "M128",
+      "recipe_ids": [
+        "研磨-致密蓝铁"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M158": {
+      "model": "配件机",
+      "kind": "小",
+      "x0": 25,
+      "y0": 50,
+      "x1": 27,
+      "y1": 52,
+      "Din": 2,
+      "id": "M158",
+      "recipe_ids": [
+        "配件-钢制零件"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M014": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 2,
+      "y0": 9,
+      "x1": 4,
+      "y1": 11,
+      "Din": 2,
+      "id": "M014",
+      "recipe_ids": [
+        "粉碎-源矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M095": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 67,
+      "y0": 2,
+      "x1": 69,
+      "y1": 4,
+      "Din": 3,
+      "id": "M095",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M157": {
+      "model": "塑形机",
+      "kind": "小",
+      "x0": 52,
+      "y0": 23,
+      "x1": 54,
+      "y1": 25,
+      "Din": 3,
+      "id": "M157",
+      "recipe_ids": [
+        "塑形-钢质瓶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M200": {
+      "model": "采种机",
+      "kind": "中",
+      "x0": 51,
+      "y0": 11,
+      "x1": 55,
+      "y1": 15,
+      "Din": 3,
+      "id": "M200",
+      "recipe_ids": [
+        "采种-荞花"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M005": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 6,
+      "y0": 2,
+      "x1": 8,
+      "y1": 4,
+      "Din": 3,
+      "id": "M005",
+      "recipe_ids": [
+        "粉碎-源矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M089": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 15,
+      "y0": 2,
+      "x1": 17,
+      "y1": 4,
+      "Din": 3,
+      "id": "M089",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M174": {
+      "model": "种植机",
+      "kind": "中",
+      "x0": 65,
+      "y0": 54,
+      "x1": 69,
+      "y1": 58,
+      "Din": 1,
+      "id": "M174",
+      "recipe_ids": [
+        "种植-荞花"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M001": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 49,
+      "y0": 2,
+      "x1": 51,
+      "y1": 4,
+      "Din": 3,
+      "id": "M001",
+      "recipe_ids": [
+        "粉碎-源矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M205": {
+      "model": "采种机",
+      "kind": "中",
+      "x0": 37,
+      "y0": 43,
+      "x1": 41,
+      "y1": 47,
+      "Din": 0,
+      "id": "M205",
+      "recipe_ids": [
+        "采种-砂叶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M072": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 21,
+      "y0": 24,
+      "x1": 23,
+      "y1": 26,
+      "Din": 2,
+      "id": "M072",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M180": {
+      "model": "种植机",
+      "kind": "中",
+      "x0": 62,
+      "y0": 25,
+      "x1": 66,
+      "y1": 29,
+      "Din": 1,
+      "id": "M180",
+      "recipe_ids": [
+        "种植-砂叶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M188": {
+      "model": "种植机",
+      "kind": "中",
+      "x0": 11,
+      "y0": 51,
+      "x1": 15,
+      "y1": 55,
+      "Din": 0,
+      "id": "M188",
+      "recipe_ids": [
+        "种植-砂叶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M032": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 16,
+      "y0": 46,
+      "x1": 18,
+      "y1": 48,
+      "Din": 2,
+      "id": "M032",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M142": {
+      "model": "研磨机",
+      "kind": "大",
+      "x0": 29,
+      "y0": 33,
+      "x1": 32,
+      "y1": 38,
+      "Din": 2,
+      "id": "M142",
+      "recipe_ids": [
+        "研磨-致密源石"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M204": {
+      "model": "采种机",
+      "kind": "中",
+      "x0": 59,
+      "y0": 31,
+      "x1": 63,
+      "y1": 35,
+      "Din": 1,
+      "id": "M204",
+      "recipe_ids": [
+        "采种-砂叶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M209": {
+      "model": "采种机",
+      "kind": "中",
+      "x0": 31,
+      "y0": 9,
+      "x1": 35,
+      "y1": 13,
+      "Din": 2,
+      "id": "M209",
+      "recipe_ids": [
+        "采种-砂叶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M106": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 36,
+      "y0": 12,
+      "x1": 38,
+      "y1": 14,
+      "Din": 1,
+      "id": "M106",
+      "recipe_ids": [
+        "精炼-致密蓝铁"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M183": {
+      "model": "种植机",
+      "kind": "中",
+      "x0": 38,
+      "y0": 6,
+      "x1": 42,
+      "y1": 10,
+      "Din": 3,
+      "id": "M183",
+      "recipe_ids": [
+        "种植-砂叶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M085": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 2,
+      "y0": 28,
+      "x1": 4,
+      "y1": 30,
+      "Din": 2,
+      "id": "M085",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M130": {
+      "model": "研磨机",
+      "kind": "大",
+      "x0": 60,
+      "y0": 39,
+      "x1": 63,
+      "y1": 44,
+      "Din": 0,
+      "id": "M130",
+      "recipe_ids": [
+        "研磨-致密蓝铁"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M068": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 45,
+      "y0": 18,
+      "x1": 47,
+      "y1": 20,
+      "Din": 0,
+      "id": "M068",
+      "recipe_ids": [
+        "粉碎-砂叶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M115": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 58,
+      "y0": 53,
+      "x1": 60,
+      "y1": 55,
+      "Din": 2,
+      "id": "M115",
+      "recipe_ids": [
+        "精炼-致密蓝铁"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M059": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 7,
+      "y0": 39,
+      "x1": 9,
+      "y1": 41,
+      "Din": 2,
+      "id": "M059",
+      "recipe_ids": [
+        "粉碎-砂叶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M199": {
+      "model": "采种机",
+      "kind": "中",
+      "x0": 7,
+      "y0": 6,
+      "x1": 11,
+      "y1": 10,
+      "Din": 1,
+      "id": "M199",
+      "recipe_ids": [
+        "采种-荞花"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M021": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 30,
+      "y0": 24,
+      "x1": 32,
+      "y1": 26,
+      "Din": 1,
+      "id": "M021",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M129": {
+      "model": "研磨机",
+      "kind": "大",
+      "x0": 57,
+      "y0": 62,
+      "x1": 62,
+      "y1": 65,
+      "Din": 1,
+      "id": "M129",
+      "recipe_ids": [
+        "研磨-致密蓝铁"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M067": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 45,
+      "y0": 15,
+      "x1": 47,
+      "y1": 17,
+      "Din": 2,
+      "id": "M067",
+      "recipe_ids": [
+        "粉碎-砂叶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M081": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 13,
+      "y0": 10,
+      "x1": 15,
+      "y1": 12,
+      "Din": 0,
+      "id": "M081",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M012": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 12,
+      "y0": 14,
+      "x1": 14,
+      "y1": 16,
+      "Din": 2,
+      "id": "M012",
+      "recipe_ids": [
+        "粉碎-源矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M056": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 38,
+      "y0": 49,
+      "x1": 40,
+      "y1": 51,
+      "Din": 1,
+      "id": "M056",
+      "recipe_ids": [
+        "粉碎-荞花"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M211": {
+      "model": "采种机",
+      "kind": "中",
+      "x0": 14,
+      "y0": 41,
+      "x1": 18,
+      "y1": 45,
+      "Din": 0,
+      "id": "M211",
+      "recipe_ids": [
+        "采种-砂叶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M203": {
+      "model": "采种机",
+      "kind": "中",
+      "x0": 17,
+      "y0": 55,
+      "x1": 21,
+      "y1": 59,
+      "Din": 2,
+      "id": "M203",
+      "recipe_ids": [
+        "采种-砂叶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M145": {
+      "model": "研磨机",
+      "kind": "大",
+      "x0": 27,
+      "y0": 5,
+      "x1": 30,
+      "y1": 10,
+      "Din": 0,
+      "id": "M145",
+      "recipe_ids": [
+        "研磨-致密源石"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M153": {
+      "model": "塑形机",
+      "kind": "小",
+      "x0": 67,
+      "y0": 22,
+      "x1": 69,
+      "y1": 24,
+      "Din": 1,
+      "id": "M153",
+      "recipe_ids": [
+        "塑形-钢质瓶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M031": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 46,
+      "y0": 6,
+      "x1": 48,
+      "y1": 8,
+      "Din": 1,
+      "id": "M031",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M140": {
+      "model": "研磨机",
+      "kind": "大",
+      "x0": 43,
+      "y0": 38,
+      "x1": 48,
+      "y1": 41,
+      "Din": 1,
+      "id": "M140",
+      "recipe_ids": [
+        "研磨-致密源石"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M006": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 21,
+      "y0": 19,
+      "x1": 23,
+      "y1": 21,
+      "Din": 2,
+      "id": "M006",
+      "recipe_ids": [
+        "粉碎-源矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M116": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 13,
+      "y0": 57,
+      "x1": 15,
+      "y1": 59,
+      "Din": 3,
+      "id": "M116",
+      "recipe_ids": [
+        "精炼-致密蓝铁"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M170": {
+      "model": "种植机",
+      "kind": "中",
+      "x0": 25,
+      "y0": 21,
+      "x1": 29,
+      "y1": 25,
+      "Din": 3,
+      "id": "M170",
+      "recipe_ids": [
+        "种植-荞花"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M189": {
+      "model": "种植机",
+      "kind": "中",
+      "x0": 28,
+      "y0": 14,
+      "x1": 32,
+      "y1": 18,
+      "Din": 0,
+      "id": "M189",
+      "recipe_ids": [
+        "种植-砂叶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M120": {
+      "model": "研磨机",
+      "kind": "大",
+      "x0": 24,
+      "y0": 44,
+      "x1": 27,
+      "y1": 49,
+      "Din": 0,
+      "id": "M120",
+      "recipe_ids": [
+        "研磨-致密蓝铁"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M151": {
+      "model": "研磨机",
+      "kind": "大",
+      "x0": 24,
+      "y0": 15,
+      "x1": 27,
+      "y1": 20,
+      "Din": 0,
+      "id": "M151",
+      "recipe_ids": [
+        "研磨-细磨荞花"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M060": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 30,
+      "y0": 53,
+      "x1": 32,
+      "y1": 55,
+      "Din": 2,
+      "id": "M060",
+      "recipe_ids": [
+        "粉碎-砂叶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M010": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 12,
+      "y0": 2,
+      "x1": 14,
+      "y1": 4,
+      "Din": 3,
+      "id": "M010",
+      "recipe_ids": [
+        "粉碎-源矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M108": {
+      "model": "精炼炉",
+      "kind": "小",
+      "x0": 20,
+      "y0": 47,
+      "x1": 22,
+      "y1": 49,
+      "Din": 2,
+      "id": "M108",
+      "recipe_ids": [
+        "精炼-致密蓝铁"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M002": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 8,
+      "y0": 25,
+      "x1": 10,
+      "y1": 27,
+      "Din": 3,
+      "id": "M002",
+      "recipe_ids": [
+        "粉碎-源矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M172": {
+      "model": "种植机",
+      "kind": "中",
+      "x0": 6,
+      "y0": 11,
+      "x1": 10,
+      "y1": 15,
+      "Din": 0,
+      "id": "M172",
+      "recipe_ids": [
+        "种植-荞花"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M179": {
+      "model": "种植机",
+      "kind": "中",
+      "x0": 33,
+      "y0": 25,
+      "x1": 37,
+      "y1": 29,
+      "Din": 1,
+      "id": "M179",
+      "recipe_ids": [
+        "种植-砂叶"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M159": {
+      "model": "配件机",
+      "kind": "小",
+      "x0": 66,
+      "y0": 36,
+      "x1": 68,
+      "y1": 38,
+      "Din": 1,
+      "id": "M159",
+      "recipe_ids": [
+        "配件-钢制零件"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "M015": {
+      "model": "粉碎机",
+      "kind": "小",
+      "x0": 40,
+      "y0": 2,
+      "x1": 42,
+      "y1": 4,
+      "Din": 3,
+      "id": "M015",
+      "recipe_ids": [
+        "粉碎-源矿"
+      ],
+      "settings": {
+        "manufacture_on": true
+      }
+    },
+    "P026": {
+      "id": "P026",
+      "x0": 11,
+      "y0": 11,
+      "x1": 12,
+      "y1": 12,
+      "orientation": 0
+    }
+  },
+  "reason": "人工修改后的占格复核发现M206与M192/P005重叠，且M010/M069未供电；未用于导出。"
+}

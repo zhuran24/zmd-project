@@ -1,0 +1,1 @@
+{"three_rebuilds_equal": true, "channels": 424, "constraints_compared": 72, "strict_exact_contradictions": 37, "relaxed_total_flow_exact_max": "0", "original_files_unchanged": 24, "final_run_inputs_unchanged": 25, "metadata_counterexample": "B original FAIL -> spelling-normalized PASS"}

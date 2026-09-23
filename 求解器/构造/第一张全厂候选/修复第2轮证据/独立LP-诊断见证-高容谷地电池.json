@@ -1,0 +1,104 @@
+{
+  "item": "高容谷地电池",
+  "scope": "sources<=1,no targets; each item separately maximized",
+  "nonzero_values": [],
+  "solver": {
+    "status": 0,
+    "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+    "variables": 774,
+    "rows": 18581,
+    "equalities": 17331,
+    "inequalities": 1250,
+    "iterations": 0,
+    "presolve": true,
+    "exact_primal": true,
+    "exact_dual": true,
+    "objective": "0",
+    "nonzero_variables": 0,
+    "certificate": {
+      "bound": "0",
+      "multipliers": [
+        {
+          "row": "slot:('T44_37', 'single'):致密源石粉末",
+          "value": "1/15"
+        },
+        {
+          "row": "slot:('T64_41', 'single'):钢块",
+          "value": "1/10"
+        },
+        {
+          "row": "slot:('T64_42', 'single'):钢块",
+          "value": "1/10"
+        },
+        {
+          "row": "slot:('T64_43', 'single'):钢块",
+          "value": "1/10"
+        },
+        {
+          "row": "slot:('T64_44', 'single'):钢块",
+          "value": "1/10"
+        },
+        {
+          "row": "slot:('T68_39', 'single'):钢制零件",
+          "value": "1/10"
+        },
+        {
+          "row": "slot:('T69_35', 'single'):钢制零件",
+          "value": "1/10"
+        },
+        {
+          "row": "slot:('T69_36', 'single'):钢制零件",
+          "value": "1/10"
+        },
+        {
+          "row": "slot:('T69_37', 'single'):钢制零件",
+          "value": "1/10"
+        },
+        {
+          "row": "slot:('T69_38', 'single'):钢制零件",
+          "value": "1/10"
+        },
+        {
+          "row": "slot:('T69_39', 'single'):钢制零件",
+          "value": "1/10"
+        },
+        {
+          "row": "machine:M115:in:致密蓝铁粉末",
+          "value": "1/10"
+        },
+        {
+          "row": "machine:M115:out:钢块",
+          "value": "-1/10"
+        },
+        {
+          "row": "machine:M140:in:源石粉末",
+          "value": "1/30"
+        },
+        {
+          "row": "machine:M140:out:致密源石粉末",
+          "value": "-1/15"
+        },
+        {
+          "row": "machine:M159:out:钢制零件",
+          "value": "-1/10"
+        },
+        {
+          "row": "machine:M159:in:钢块",
+          "value": "1/10"
+        },
+        {
+          "row": "machine:M213:in:致密源石粉末",
+          "value": "1/15"
+        },
+        {
+          "row": "machine:M214:in:钢制零件",
+          "value": "1/10"
+        },
+        {
+          "row": "machine:M215:in:致密源石粉末",
+          "value": "1/15"
+        }
+      ]
+    }
+  }
+}

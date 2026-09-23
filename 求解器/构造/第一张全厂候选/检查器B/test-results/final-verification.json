@@ -1,0 +1,34 @@
+{
+  "status": "PASS",
+  "selftests": {
+    "passed": 56,
+    "total": 56,
+    "status": "PASS",
+    "code_fingerprints_match": true
+  },
+  "cli": {
+    "exit_code": 1,
+    "status": "REJECTED",
+    "candidate_sha_matches": true,
+    "code_fingerprints_match": true,
+    "constraint_count": 72
+  },
+  "official_files_match_supported_profile": {
+    "rules": true,
+    "task": true,
+    "constraints": true
+  },
+  "catalog_exactly_matches_current_source": true,
+  "official_file_external_change_record": "source-version-transition.json",
+  "legacy_copy_exact": true,
+  "documentation_reader_pass": {
+    "status": "PASS",
+    "missing_links": [],
+    "full_factory_positive_claim": false
+  },
+  "test_source_sha256": {
+    "selftest.py": "5fbd0266fe100a7be4666497a007b990404633051522d8878a30e520c1678799",
+    "component_tests.py": "418aebc5b4ffd9d608e3d4d951442c9566c3cb4f85a16f70900240be3848e188",
+    "legacy_check.py": "8f9448a0431e643e3d71b3c888e98669613e832a93f87bca549d1f1757dea832"
+  }
+}

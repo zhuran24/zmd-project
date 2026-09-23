@@ -1,0 +1,485 @@
+{
+  "scope": "部件正反例及不完整全厂拒绝；没有全厂可行正例",
+  "total": 61,
+  "passed": 61,
+  "failed": 0,
+  "results": [
+    {
+      "name": "格式示例整体拒绝、通道2、矩形2870、精确Farkas",
+      "status": "pass",
+      "seconds": 0.2447,
+      "detail": {
+        "channels": 2,
+        "area": 2870,
+        "Farkas_bound": "163/20",
+        "full_factory": "rejected as expected"
+      }
+    },
+    {
+      "name": "严格JSON重复键和非有限常量",
+      "status": "pass",
+      "seconds": 0.0,
+      "detail": null
+    },
+    {
+      "name": "语法-未知根字段",
+      "status": "pass",
+      "seconds": 0.0,
+      "detail": null
+    },
+    {
+      "name": "语法-布尔坐标",
+      "status": "pass",
+      "seconds": 0.0001,
+      "detail": null
+    },
+    {
+      "name": "语法-浮点坐标",
+      "status": "pass",
+      "seconds": 0.0,
+      "detail": null
+    },
+    {
+      "name": "语法-尺寸非70",
+      "status": "pass",
+      "seconds": 0.0,
+      "detail": null
+    },
+    {
+      "name": "语法-虚拟输入",
+      "status": "pass",
+      "seconds": 0.0,
+      "detail": null
+    },
+    {
+      "name": "语法-虚拟输出",
+      "status": "pass",
+      "seconds": 0.0,
+      "detail": null
+    },
+    {
+      "name": "语法-缺core",
+      "status": "pass",
+      "seconds": 0.0,
+      "detail": null
+    },
+    {
+      "name": "语法-错误核心口",
+      "status": "pass",
+      "seconds": 0.0,
+      "detail": null
+    },
+    {
+      "name": "语法-降低目标",
+      "status": "pass",
+      "seconds": 0.0,
+      "detail": null
+    },
+    {
+      "name": "语法-非约分速率",
+      "status": "pass",
+      "seconds": 0.0,
+      "detail": null
+    },
+    {
+      "name": "语法-未知单位字段",
+      "status": "pass",
+      "seconds": 0.0,
+      "detail": null
+    },
+    {
+      "name": "语法-越界矩形",
+      "status": "pass",
+      "seconds": 0.0,
+      "detail": null
+    },
+    {
+      "name": "语法-整数开关",
+      "status": "pass",
+      "seconds": 0.0,
+      "detail": null
+    },
+    {
+      "name": "语法-配方机型错误",
+      "status": "pass",
+      "seconds": 0.0,
+      "detail": null
+    },
+    {
+      "name": "语法-未知物品",
+      "status": "pass",
+      "seconds": 0.0,
+      "detail": null
+    },
+    {
+      "name": "语法-重复单位ID",
+      "status": "pass",
+      "seconds": 0.0,
+      "detail": null
+    },
+    {
+      "name": "语法-gate无限种却限量",
+      "status": "pass",
+      "seconds": 0.0,
+      "detail": null
+    },
+    {
+      "name": "真实取货口手算端点及部分供电",
+      "status": "pass",
+      "seconds": 0.0209,
+      "detail": {
+        "exact_endpoint_pairs": 2
+      }
+    },
+    {
+      "name": "占格冲突及大型旋转尺寸",
+      "status": "pass",
+      "seconds": 0.0412,
+      "detail": null
+    },
+    {
+      "name": "正式文件指纹拒绝",
+      "status": "pass",
+      "seconds": 0.0004,
+      "detail": null
+    },
+    {
+      "name": "N5a-omit",
+      "status": "pass",
+      "seconds": 0.0203,
+      "detail": null
+    },
+    {
+      "name": "N5a-extra",
+      "status": "pass",
+      "seconds": 0.0205,
+      "detail": null
+    },
+    {
+      "name": "N5a-offset",
+      "status": "pass",
+      "seconds": 0.0195,
+      "detail": null
+    },
+    {
+      "name": "非运输贴靠不成通道",
+      "status": "pass",
+      "seconds": 0.0097,
+      "detail": null
+    },
+    {
+      "name": "三类制造尺寸与四方向",
+      "status": "pass",
+      "seconds": 0.1164,
+      "detail": {
+        "orientations": 12
+      }
+    },
+    {
+      "name": "核心四方向20口与逐口种类",
+      "status": "pass",
+      "seconds": 0.0428,
+      "detail": {
+        "orientations": 4,
+        "input_ports": 14,
+        "output_ports": 6
+      }
+    },
+    {
+      "name": "供电范围一格重叠和相碰",
+      "status": "pass",
+      "seconds": 0.0,
+      "detail": null
+    },
+    {
+      "name": "桥四朝向双轴",
+      "status": "pass",
+      "seconds": 0.0377,
+      "detail": {
+        "orientations": 4,
+        "channels_each": 4
+      }
+    },
+    {
+      "name": "桥反例-one_end",
+      "status": "pass",
+      "seconds": 0.0108,
+      "detail": null
+    },
+    {
+      "name": "桥反例-same_type",
+      "status": "pass",
+      "seconds": 0.0095,
+      "detail": null
+    },
+    {
+      "name": "桥反例-claim",
+      "status": "pass",
+      "seconds": 0.0096,
+      "detail": null
+    },
+    {
+      "name": "桥反例-idle_neighbor",
+      "status": "pass",
+      "seconds": 0.0108,
+      "detail": null
+    },
+    {
+      "name": "未用桥轴仍占格",
+      "status": "pass",
+      "seconds": 0.0103,
+      "detail": null
+    },
+    {
+      "name": "N1核心同样参加分级",
+      "status": "pass",
+      "seconds": 0.0108,
+      "detail": null
+    },
+    {
+      "name": "N2桥两轴按物理单位汇总",
+      "status": "pass",
+      "seconds": 0.0096,
+      "detail": null
+    },
+    {
+      "name": "N3a累计上限",
+      "status": "pass",
+      "seconds": 0.0093,
+      "detail": null
+    },
+    {
+      "name": "N3b无替代出口",
+      "status": "pass",
+      "seconds": 0.0096,
+      "detail": null
+    },
+    {
+      "name": "N3b共用侧有替代出口",
+      "status": "pass",
+      "seconds": 0.0092,
+      "detail": null
+    },
+    {
+      "name": "误料",
+      "status": "pass",
+      "seconds": 0.0195,
+      "detail": null
+    },
+    {
+      "name": "设计外配方",
+      "status": "pass",
+      "seconds": 0.0192,
+      "detail": null
+    },
+    {
+      "name": "allowed_items不能挡货",
+      "status": "pass",
+      "seconds": 0.019,
+      "detail": null
+    },
+    {
+      "name": "P2纯料路径",
+      "status": "pass",
+      "seconds": 0.0195,
+      "detail": null
+    },
+    {
+      "name": "P2中途换料拒绝",
+      "status": "pass",
+      "seconds": 0.0197,
+      "detail": null
+    },
+    {
+      "name": "P1箱体拒绝且占9格",
+      "status": "pass",
+      "seconds": 0.0201,
+      "detail": null
+    },
+    {
+      "name": "P6多配方粉碎拒绝",
+      "status": "pass",
+      "seconds": 0.0198,
+      "detail": null
+    },
+    {
+      "name": "纯运输循环拒绝",
+      "status": "pass",
+      "seconds": 0.0217,
+      "detail": null
+    },
+    {
+      "name": "最大空矩形独立穷举150图",
+      "status": "pass",
+      "seconds": 0.0847,
+      "detail": {
+        "random_cases": 150,
+        "oracle": "穷举全部x0,x1,y0,y1，与行区间算法独立"
+      }
+    },
+    {
+      "name": "同面积短边择优",
+      "status": "pass",
+      "seconds": 0.0001,
+      "detail": {
+        "area": 72,
+        "short_side": 8,
+        "bounds": {
+          "x0": 10,
+          "y0": 0,
+          "x1": 17,
+          "y1": 8
+        }
+      }
+    },
+    {
+      "name": "连续三分之一精确核验",
+      "status": "pass",
+      "seconds": 0.002,
+      "detail": {
+        "exact_values": [
+          "1/3",
+          "2/3"
+        ]
+      }
+    },
+    {
+      "name": "共享容量超载精确否证",
+      "status": "pass",
+      "seconds": 0.0014,
+      "detail": {
+        "bound": "1/5",
+        "multipliers": [
+          {
+            "row": 1,
+            "value": "-1"
+          },
+          {
+            "row": 3,
+            "value": "-1"
+          },
+          {
+            "row": 4,
+            "value": "-1"
+          }
+        ],
+        "inequality": "A^T y <= c, y <= 0; c*x >= b*y"
+      }
+    },
+    {
+      "name": "delta零的精确对偶",
+      "status": "pass",
+      "seconds": 0.0011,
+      "detail": {
+        "bound": "0",
+        "multipliers": [
+          {
+            "row": 0,
+            "value": "-1"
+          },
+          {
+            "row": 2,
+            "value": "-1"
+          }
+        ],
+        "inequality": "A^T y <= c, y <= 0; c*x >= b*y"
+      }
+    },
+    {
+      "name": "局部流正例和篡改见证",
+      "status": "pass",
+      "seconds": 0.0341,
+      "detail": {
+        "scope": "局部 LP 组装测试，去掉全厂目标及断开核心来源，并显式开放测试汇；绝非全厂通过",
+        "delta": "1"
+      }
+    },
+    {
+      "name": "无电制造局部流否证",
+      "status": "pass",
+      "seconds": 0.0336,
+      "detail": null
+    },
+    {
+      "name": "重复见证条目",
+      "status": "pass",
+      "seconds": 0.0339,
+      "detail": null
+    },
+    {
+      "name": "箱体平均守恒及关传输",
+      "status": "pass",
+      "seconds": 0.0308,
+      "detail": {
+        "box_balance_rows": 38,
+        "wireless_zero_rows": 38
+      }
+    },
+    {
+      "name": "会议rt_k16/k17历史回归与v1拒绝",
+      "status": "pass",
+      "seconds": 0.0317,
+      "detail": [
+        {
+          "file": "rt_k16.json",
+          "channels": 999,
+          "new_format": "rejected"
+        },
+        {
+          "file": "rt_k17.json",
+          "channels": 1186,
+          "new_format": "rejected"
+        }
+      ]
+    },
+    {
+      "name": "候选B219台315送料联合流正例",
+      "status": "pass",
+      "seconds": 0.61,
+      "detail": {
+        "scope": "候选B纯速率层，315条逻辑送料各拆为两条测试弧；位置、真实端口offset、供电均未验证，不可作静态全厂输入",
+        "machines": 219,
+        "logical_feeds": 315,
+        "test_channels": 630,
+        "sources": 52,
+        "LP_status": "checked",
+        "delta": "3/20",
+        "exact_rows": 32421,
+        "variables": 850,
+        "planned_delta": "3/20"
+      }
+    },
+    {
+      "name": "不用求解器复算并篡改Farkas证书",
+      "status": "pass",
+      "seconds": 0.0242,
+      "detail": {
+        "verified": true,
+        "kind": "Farkas",
+        "exact_bound": "163/20",
+        "rows": 424,
+        "variables": 4,
+        "nonzero_multipliers": 12
+      }
+    },
+    {
+      "name": "静态投影拒绝伪造零流",
+      "status": "pass",
+      "seconds": 0.1259,
+      "detail": {
+        "scope": "直接给投影层伪造零流，核对其真实支撑条件；不经认证入口",
+        "rejected_constraints": [
+          18,
+          21,
+          43,
+          44,
+          49,
+          50,
+          51,
+          69,
+          71
+        ]
+      }
+    }
+  ]
+}

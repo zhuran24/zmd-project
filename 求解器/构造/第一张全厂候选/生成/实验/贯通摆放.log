@@ -1,0 +1,2 @@
+stats {"placements": 118848, "core": 2670, "cells": 4629, "build_s": 5.1}
+{"status": "UNKNOWN", "wall": 300.3, "stats": {"placements": 118848, "core": 2670, "cells": 4629, "build_s": 5.1}, "rect": "64,64,6,6", "flow": 0, "power": 0, "tu": 1, "threads": 6}

@@ -1,0 +1,522 @@
+{
+  "scope": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选",
+  "modified_existing_files": [
+    "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/生成/候选.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/生成/报告.md"
+  ],
+  "created_directory": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据",
+  "files": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/生成/候选.json",
+      "bytes": 327375,
+      "sha256": "677c3fb13a3550047d74dd35c67d224a88d179689c158519e642a41ca7e2bf6b"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/生成/报告.md",
+      "bytes": 9697,
+      "sha256": "e677dff98666809a3f85eb73d45c8ee33abc7aa6333c56c2326e35ac19cafd8a"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/A供电矿口阶段.json",
+      "bytes": 134364,
+      "sha256": "f08fd5c89c6ebd09cd67da2a6c0478c79f7c23f603afe59ffd15acd357f647a0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/A供电矿口阶段.log",
+      "bytes": 192,
+      "sha256": "7bd11b16dbb6cec4c3eccfdc08703906a0df692dfe1506c8d22c8e459c88ab14"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/A当前入口.json",
+      "bytes": 64706,
+      "sha256": "19adbb1e3ca1196e0d2c0a6e4ad4a0177bad24fd0d7572cc26ab282223ed2e54"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/A当前入口.log",
+      "bytes": 255,
+      "sha256": "9313d5aca76d1d2146472ad1307f7cbef86ad8481c6e6094e77a72ed2d901f49"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/A矿口阶段.json",
+      "bytes": 126173,
+      "sha256": "b09157fc588bb22b9792fbaa5c57fec610d02df52a205c1d9ebb78b22106c27a"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/A矿口阶段.log",
+      "bytes": 847,
+      "sha256": "f61e00731671590b22540d7c8acfa52a36c707641cfbef6049db34ca17fa558f"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/A组件复核.json",
+      "bytes": 132309,
+      "sha256": "5c2ca4c9537cedc343cf305336f9ea2fae185eb94da743e170dddfe8e33abf56"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/A组件复核.log",
+      "bytes": 192,
+      "sha256": "ccac169eea6c203765c0d4d7600c1c1779b539bc677acb85a2b8e4e127068af6"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/B当前入口.json",
+      "bytes": 67921,
+      "sha256": "f0f30e35ede611fbc1c2353350f87d4eef1ab20cdc9edaa3a6b445cefd69fe24"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/B当前入口.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/B组件复核.json",
+      "bytes": 215254,
+      "sha256": "b1721e6818c043a3edacb12cc1bec55a65d03c143e7c8319cbca0c0a3eb75439"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/B组件复核.log",
+      "bytes": 199,
+      "sha256": "13615d2ca1b5d5f2dd3aa82ed9f67afd80b26de0a19a41be23102816c82261c7"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/交付自审.json",
+      "bytes": 853,
+      "sha256": "3a8b35621c653ac820233324d29e177e081cda797184228ec7f2090e93a69f0f"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/人工局部修复摆放.json",
+      "bytes": 65952,
+      "sha256": "96914f7788f07fe0ef9804981fe9a7320419a240960d41f4a473d06e5734de89"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/供电矿口修复.json",
+      "bytes": 3001,
+      "sha256": "5d16c62abc2cca50774a5d1101ddfe46e23519b0e07448f0863019a7380e7a99"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/供电矿口修复.log",
+      "bytes": 20476,
+      "sha256": "9074d6516ddfcc7be17302b77ffadce1ccb660627e3097e0f6b441fe76f46271"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/供电矿口修复.py",
+      "bytes": 7505,
+      "sha256": "7d61e811fa07610dae31d4d20c15bd3d661ae7bcb61c14713b365fd603582b55"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/供电矿口成品联合修复.json",
+      "bytes": 3121,
+      "sha256": "0b91db356f3c89d999888cf5013313064fdc6fad396a0ffac5835b536c3cf18e"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/供电矿口成品联合修复.log",
+      "bytes": 40487,
+      "sha256": "865991ad0590115585575e8b4019af0b55fd039f0fcc17df43dda155fd4de137"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/供电矿口成品联合修复.py",
+      "bytes": 10233,
+      "sha256": "38ba8f49c0335a82bd837db132a0d4afcdc594dc366ae9f28796dac34f7346ef"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/保矿布线-增桩.log",
+      "bytes": 4108,
+      "sha256": "afe817ebcf75665fb64a29b178e7e43ca48d4b2750b73ffd804a06010ec19162"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/保矿布线-增桩24.log",
+      "bytes": 4108,
+      "sha256": "f803026d56c14b3c86f482b9be6b292200bf6ba74dc7a912ca0fb0f01e03297d"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/保矿布线-增桩25.log",
+      "bytes": 4110,
+      "sha256": "c1d67ab4109c17c3d65759b6e1be390b53b221e8419080554e90b25e4028784b"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/保矿布线-局部.log",
+      "bytes": 4107,
+      "sha256": "5f556afa60e17dcd53d9b721b0c68de2267af9c8c149800c28e6a82c05603405"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/保矿布线.py",
+      "bytes": 9746,
+      "sha256": "f070712ed276a5bff675a53823fa3cf3c0b3453a187558897abe8eff44d6e0e3"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/候选-供电矿口修复.json",
+      "bytes": 333045,
+      "sha256": "c2f235a91914aa8a856e9a7ff659366198ca597d368baace0c825feb7acd0a63"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/候选-修复前.json",
+      "bytes": 331786,
+      "sha256": "eead98c6a852a17b33c6ed7ea084f19d692fe70226db2b18da6a43463b0ea9ef"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/候选-待交付.json",
+      "bytes": 327375,
+      "sha256": "677c3fb13a3550047d74dd35c67d224a88d179689c158519e642a41ca7e2bf6b"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/候选-矿口修复.json",
+      "bytes": 315542,
+      "sha256": "41269929b81eae1103124906120219a082ca7e3b33e565bed84585250fe6cc57"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/候选只读快照.json",
+      "bytes": 327375,
+      "sha256": "677c3fb13a3550047d74dd35c67d224a88d179689c158519e642a41ca7e2bf6b"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/候选改动明细.json",
+      "bytes": 123921,
+      "sha256": "872676e77cb388e600498a835fde7fa4f0f5f4b3310e295d4586bbf649adc4b7"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/全机局部矿口修复.json",
+      "bytes": 85890,
+      "sha256": "732973750084d13903b97885acc11346dff1423708d08457ec3efb71dc613348"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/全机局部矿口修复.log",
+      "bytes": 49759,
+      "sha256": "c46a77b444ebd2eb78d04cdf34aa14bb5f99368e7a3f90aaf591e00d81f9bb8d"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/全机局部矿口修复.py",
+      "bytes": 6866,
+      "sha256": "4de1b1c3e1f46f72b7435a41ea4297e3e1302c1612bff749e81222b731598a43"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/增桩矿口修复.json",
+      "bytes": 90777,
+      "sha256": "a474cc0680b4c25e306db9e2db25b9854efda5603316f28f1032bf6751fdb5a8"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/增桩矿口修复.log",
+      "bytes": 52499,
+      "sha256": "823ce4bb5b8af0aa7e8eb8a44224af3064e062400a164cf677708abf3acdf922"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/增桩矿口修复.py",
+      "bytes": 7748,
+      "sha256": "6aff0a7f2f059f9b9e400ccbc6a8445cfcb95abc0f9f11e006c2bad55d9f4de6"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/增桩矿口成品修复.json",
+      "bytes": 3198,
+      "sha256": "e926d7745a4d118b6018fe84508cd8f4525203e9d3a941555a78a4a67e88b355"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/增桩矿口成品修复.log",
+      "bytes": 43689,
+      "sha256": "0eb1b86ceb1d21ffbf19780f8c09d9749bd9c300f376df04f94feb762c457034"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/增桩矿口成品修复.py",
+      "bytes": 10704,
+      "sha256": "90e7695fe2c06fb38e46c3df19530f7a93e8e53a989868485b53680bf3b2a7f2"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/复验.log",
+      "bytes": 571,
+      "sha256": "a1ea1b355e58a597633896b0c7e755e1242b51c4abbc48b31e42acb7becbd880"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/复验.py",
+      "bytes": 3150,
+      "sha256": "25dced82e32da37002efa3ea0d6ab1ca20f4cba008bbeec7ccd7b09300afdf7a"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/复验汇总.json",
+      "bytes": 507,
+      "sha256": "10ecffa48cc735c1fa8799f937082846631f4835fb47e89fe40706dc672e47d5"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/完整性检查.json",
+      "bytes": 586,
+      "sha256": "b5e2da6efc5985461df0e30399966d0053fc398fd510246e745e5cf1457782cb"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/实验/导出摘要.json",
+      "bytes": 2855,
+      "sha256": "2d3ca12e210aadb88d23c047394243a3abf6f7f8a2433cfa46817de4e742995a"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/实验/已完成路径.json",
+      "bytes": 42020,
+      "sha256": "7fdf189b56915fbdf4c69f27f39e400d6b6b7b295e0c5ca8ecae1e1fd7f587f2"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/实验/布线-全机局部矿口修复-22.json",
+      "bytes": 261301,
+      "sha256": "694d56230436bd5ad368db1c48adfc86d550d23e485cca8699c09195b4a4e9c7"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/实验/布线-增桩矿口修复-23.json",
+      "bytes": 259530,
+      "sha256": "bf986be7902701c537d778be41d42d4310f9dd8639dca736497c8d7e3ab32d65"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/实验/布线-增桩矿口修复-24.json",
+      "bytes": 258883,
+      "sha256": "d427df6719e82ebf7646b0d1e27520fbd8554152591b8902d1c8ce8b73c288a7"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/实验/布线-增桩矿口修复-25.json",
+      "bytes": 259613,
+      "sha256": "8464fef9f873d5fe01f709b67d305efaaae883c92c4fd72f5a36d7ff7875364b"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/导出-供电矿口.log",
+      "bytes": 61,
+      "sha256": "36134353c3d3344a64615a55dff3d320395893112a05a32da0c2714fc1231b0f"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/导出-待交付.log",
+      "bytes": 61,
+      "sha256": "3c1308763c678f43f27e3e800f0cbffd63c65e00d953f4ffb9971d7ac83d0875"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/导出.log",
+      "bytes": 61,
+      "sha256": "0b74aa53a2e4141b3b749d6e3e6ac63958145b9db27f47195849aa7c461a9345"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/导出修复候选.py",
+      "bytes": 5068,
+      "sha256": "cced330826a5575c27c6ae9a4727666ff2175ba62a4347445f7a66fa5d75b9c7"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/执行状态.json",
+      "bytes": 2195,
+      "sha256": "6e606dcf371f3b331d470d3396e76aeafd61464af40060713d9165658c3d0fae"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/扩展桩位矿口修复.json",
+      "bytes": 3017,
+      "sha256": "555c3e50fe908a208d9e47a100c6f2fbfbe43714fd16aa5e166b882b47490986"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/扩展桩位矿口修复.log",
+      "bytes": 20501,
+      "sha256": "4a840f003966ffb5c659ac2b28f436991f7285b47747f8be061c33eb5a746946"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/扩展桩位矿口修复.py",
+      "bytes": 7549,
+      "sha256": "4ceb71e60b666ec68b4c7133b4f34b0c8cc7b08b0f87c5b5428efe082f9c8578"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/报告-修复前.md",
+      "bytes": 7914,
+      "sha256": "9559e4fe517baf91256fa5efbe361ff78cfc67f25730b464bb0773c4d22d5803"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/搜索范围台账.json",
+      "bytes": 3882,
+      "sha256": "085bc880ea676698935189b2f16eb6f96c043720171045a09a538672980c2373"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/整理修复报告.py",
+      "bytes": 11226,
+      "sha256": "fff940fdf4e6a4cbd435b921328036d65da1610b286e04c8f5091e19fbc0d8a9"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/正式版本审查.json",
+      "bytes": 3195,
+      "sha256": "3f7b84384f310b5216af1a6b995fdd76f4443d0437ed7be6624e9bc4a70cb5e7"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/独立LP-诊断见证-总流.json",
+      "bytes": 67057,
+      "sha256": "2a0eeae741a555d728e54fc3dc8561f236348a92685330d354f8d5405e40f9d8"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/独立LP-诊断见证-源石粉末.json",
+      "bytes": 2243,
+      "sha256": "c68f29298d9d40873d925e4768cfd8e5af1a7ce546c220da08d253cc7b51fe7e"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/独立LP-诊断见证-源矿.json",
+      "bytes": 10794,
+      "sha256": "98084cccb4d25c2bcafaeb7662928f44a4b9797c792373b43e7228a22a08fe8d"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/独立LP-诊断见证-砂叶.json",
+      "bytes": 11742,
+      "sha256": "e18132d5f98bbf39bec35cfd9f1519123ec7155f1f87e5d86cb95c8dde88e965"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/独立LP-诊断见证-砂叶种子.json",
+      "bytes": 8935,
+      "sha256": "85b4f634634f2c83e0f70e8dff3bffde66306ca94cddf9d13a1dc62813f0e32d"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/独立LP-诊断见证-砂叶粉末.json",
+      "bytes": 6200,
+      "sha256": "b697c3b15eb4da5c41299c454ffb3bd78f0c0374c1578386dae9408189d4cc37"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/独立LP-诊断见证-精选荞愈胶囊.json",
+      "bytes": 3451,
+      "sha256": "f51eab345ec98f62b2a1b454b2d137f7a3f7dfdb6d05a6537a98caaf1d08b795"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/独立LP-诊断见证-细磨荞花粉末.json",
+      "bytes": 2778,
+      "sha256": "bfaccd14c8c0e6f7c5331d6cbeb9146e84cd563fea0ed1aa8908a56284f7e46e"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/独立LP-诊断见证-致密源石粉末.json",
+      "bytes": 1412,
+      "sha256": "b56b45dfa77d27077a31190a33596dc6dca95601d5dcfdd969f417861b4c636d"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/独立LP-诊断见证-致密蓝铁粉末.json",
+      "bytes": 8801,
+      "sha256": "1b146a37e3c2a3161ee9ea7904f7fe7ac27fb08b9a7a3cb64d95484abba8255d"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/独立LP-诊断见证-荞花.json",
+      "bytes": 5388,
+      "sha256": "1b8eef564f8e64b03af7ad85499a6d6d6b6f1d216d839deec8bda48c0ce88b2c"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/独立LP-诊断见证-荞花种子.json",
+      "bytes": 5704,
+      "sha256": "4d41c7df288d830685bcba497c86ed30e96fa4c5ab6225c285d565d3372104d6"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/独立LP-诊断见证-荞花粉末.json",
+      "bytes": 1879,
+      "sha256": "2d5044a830548e844c664fcb2276fd938dba2e1e709a5960924b71ceb2197103"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/独立LP-诊断见证-蓝铁块.json",
+      "bytes": 9350,
+      "sha256": "4ba51e0a63f583c59d4f1071b48e6fab70d4319ee23f06f136d20faa88328411"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/独立LP-诊断见证-蓝铁矿.json",
+      "bytes": 19762,
+      "sha256": "2125b1bdccb0edd9bda4749d8775955b139b6743d4a7caca5f6d590b56f44697"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/独立LP-诊断见证-蓝铁粉末.json",
+      "bytes": 3663,
+      "sha256": "cff3be58a1c4cb53aac5dbb5604fe9a6564ddec0feca315508fa2ec727ec93e5"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/独立LP-诊断见证-钢制零件.json",
+      "bytes": 4465,
+      "sha256": "61ab3e1d845631a157de18949198c4b948a2c4628db78dd3c29d851da48939ee"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/独立LP-诊断见证-钢块.json",
+      "bytes": 3389,
+      "sha256": "58bad932b00beecf983741c8d90b61d3de3246b3ff199f3a385bbded1e4010f7"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/独立LP-诊断见证-钢质瓶.json",
+      "bytes": 2666,
+      "sha256": "d75c97aa466ce2e61e4a35135e7be300a1ffc5c1646be3c850e3a5e800e260c7"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/独立LP-诊断见证-高容谷地电池.json",
+      "bytes": 2587,
+      "sha256": "f960b2f72d91c55f0886cd4a42619ff1bde42e6b3c8b3bbc2b7b2a7fa0cdee35"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/独立LP.json",
+      "bytes": 380005,
+      "sha256": "7f6d9b64bae52211cff99132a9b3a66511416eb187240ecf6a5077ffb969e4c2"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/独立LP.log",
+      "bytes": 1013,
+      "sha256": "0feded5e41f856e1675b4c21064955cb81f231be9d1880c458e0c3dc31d69f4c"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/独立LP.py",
+      "bytes": 16133,
+      "sha256": "ac8eebd47d0ea083d631f2041a2de854ddb59d0cf034ed103df394c74e127e66"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/独立LP矩阵.json",
+      "bytes": 2494715,
+      "sha256": "ac7890fb5154ef75f71a20236934fff8c28e5a6333719d10535ad0a78a84d965"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/独立证书回放.json",
+      "bytes": 3661,
+      "sha256": "2240da9a379154472a6214a345cc31fd2b9de41694f6c0e140c795662a5a2686"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/独立证书回放.log",
+      "bytes": 543,
+      "sha256": "699dcb6c72e3ad4b2a46e19c2cd7db64e5a528ac547cf090da0af2bb18c09ec5"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/独立证书回放.py",
+      "bytes": 4075,
+      "sha256": "6f813072cc875dce5e2284b45f40756a700fc1085b5752f69b6b07a312becc58"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/矿口成品联合修复.json",
+      "bytes": 3041,
+      "sha256": "da7d83138bfc86307ddc4daed27300750f1a00577b3f7dd2283cc28d196a06a2"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/矿口成品联合修复.log",
+      "bytes": 42862,
+      "sha256": "c8cb904f256369b7d75c6368cd03db972fd48e0a8567e2edf4fb035484e6c829"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/矿口成品联合修复.py",
+      "bytes": 8306,
+      "sha256": "230bed3eaeb294f0d0d44ff757d3700549f3e6a38e7df0b28c72edf236110a0e"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/矿口联合修复.json",
+      "bytes": 364,
+      "sha256": "6d82468941e4c60d9de3d6c7633bbf6b793b25dc1676391c1010714c17b5cd45"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/矿口联合修复.log",
+      "bytes": 5304,
+      "sha256": "c53a6334855b70ad96ee457108422bd34d1b9f00c5e1c9aa627b4ee92bc818e2"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/矿口联合修复.py",
+      "bytes": 6192,
+      "sha256": "905fb86eb388a348de15386bf87d3052c1bef345ed497b6bebea4ffac9781c55"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/组件复核.py",
+      "bytes": 2608,
+      "sha256": "c0bc35b590663d02abfbc8a29f795c74ab578a29a2c0d2f18c6365b65ae76b3f"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/起始哈希.json",
+      "bytes": 52748,
+      "sha256": "757a56558159fd76b5039c365219c8ccd705dcd6e841e3d2d0b7d0fa71066f24"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/道路连通矿口修复.json",
+      "bytes": 3088,
+      "sha256": "7cb5228863ecd062552db17f51c0e0f2da5839607890d367a2c66bc749e7ba79"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/道路连通矿口修复.log",
+      "bytes": 37666,
+      "sha256": "4c9682373ca298dddde6bae89636b371d349f70b4a66e9168c6af7d14aa6e9e5"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/道路连通矿口修复.py",
+      "bytes": 7923,
+      "sha256": "9c3e0f44618124d1f067fc4adcd538b3ef2c5c3f203907b42abea2b155496550"
+    }
+  ],
+  "self_hash_note": "此清单不包含自身哈希。",
+  "candidate_pass": false
+}

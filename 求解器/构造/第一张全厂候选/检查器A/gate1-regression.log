@@ -1,0 +1,73 @@
+{
+  "scope": "闸门第1轮检查器A修复回归；不认证全厂可行",
+  "total": 7,
+  "passed": 7,
+  "failed": 0,
+  "results": [
+    {
+      "name": "D1-current-version-and-D7-P2",
+      "pass": true,
+      "detail": {
+        "channels": 424,
+        "area": 48,
+        "LP": "violation",
+        "P2": "blocked",
+        "ledger": 72
+      }
+    },
+    {
+      "name": "D1-old-fingerprint-not-silently-accepted",
+      "pass": true,
+      "detail": {
+        "status": "rejected"
+      }
+    },
+    {
+      "name": "D1-1113-position-predicate",
+      "pass": true,
+      "detail": {
+        "legal_cases": 8,
+        "illegal_cases": 2,
+        "scope": "只替换投影层矩形输入，不是合法全厂实例"
+      }
+    },
+    {
+      "name": "D3-provenance-versus-preservation",
+      "pass": true,
+      "detail": {
+        "channels_unchanged": 424,
+        "provenance_only": "no B_feeds obligation",
+        "explicit_preservation_without_LF": "violation"
+      }
+    },
+    {
+      "name": "D2-recipe-registration",
+      "pass": true,
+      "detail": {
+        "natural_single_recipe": "no extra requirement",
+        "actual_subset": "requires registration",
+        "wrong_statement": "violation",
+        "unknown_registration": "unresolved"
+      }
+    },
+    {
+      "name": "single-ended-bridge-iff-reconstruction",
+      "pass": true,
+      "detail": {
+        "gate_fixture_edges": 1,
+        "direction_and_io_cases": 8,
+        "N4a": "violation",
+        "omitted_declared_edge_N5a": "violation"
+      }
+    },
+    {
+      "name": "full-candidate-no-channel-regression",
+      "pass": true,
+      "detail": {
+        "exact_endpoint_list_equal": true,
+        "channels": 424,
+        "candidate_sha256": "e147866f410737324d49190dea83bfd19de04ebdcc9b1c9998152bbf7a80f404"
+      }
+    }
+  ]
+}

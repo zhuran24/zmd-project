@@ -1,0 +1,6065 @@
+{
+  "before_sha256": "eead98c6a852a17b33c6ed7ea084f19d692fe70226db2b18da6a43463b0ea9ef",
+  "after_sha256": "677c3fb13a3550047d74dd35c67d224a88d179689c158519e642a41ca7e2bf6b",
+  "machine_records_changed": 115,
+  "machine_changes": [
+    {
+      "id": "M002",
+      "before": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 8,
+        "y0": 25,
+        "x1": 10,
+        "y1": 27,
+        "Din": 3,
+        "id": "M002",
+        "recipe_ids": [
+          "粉碎-源矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 8,
+        "y0": 25,
+        "x1": 10,
+        "y1": 27,
+        "Din": 0,
+        "id": "M002",
+        "recipe_ids": [
+          "粉碎-源矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M005",
+      "before": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 7,
+        "y0": 2,
+        "x1": 9,
+        "y1": 4,
+        "Din": 3,
+        "id": "M005",
+        "recipe_ids": [
+          "粉碎-源矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 5,
+        "y0": 2,
+        "x1": 7,
+        "y1": 4,
+        "Din": 3,
+        "id": "M005",
+        "recipe_ids": [
+          "粉碎-源矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M007",
+      "before": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 10,
+        "y0": 2,
+        "x1": 12,
+        "y1": 4,
+        "Din": 3,
+        "id": "M007",
+        "recipe_ids": [
+          "粉碎-源矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 8,
+        "y0": 2,
+        "x1": 10,
+        "y1": 4,
+        "Din": 3,
+        "id": "M007",
+        "recipe_ids": [
+          "粉碎-源矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M008",
+      "before": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 22,
+        "y0": 2,
+        "x1": 24,
+        "y1": 4,
+        "Din": 3,
+        "id": "M008",
+        "recipe_ids": [
+          "粉碎-源矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 21,
+        "y0": 2,
+        "x1": 23,
+        "y1": 4,
+        "Din": 3,
+        "id": "M008",
+        "recipe_ids": [
+          "粉碎-源矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M009",
+      "before": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 21,
+        "y0": 5,
+        "x1": 23,
+        "y1": 7,
+        "Din": 2,
+        "id": "M009",
+        "recipe_ids": [
+          "粉碎-源矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 22,
+        "y0": 5,
+        "x1": 24,
+        "y1": 7,
+        "Din": 2,
+        "id": "M009",
+        "recipe_ids": [
+          "粉碎-源矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M010",
+      "before": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 13,
+        "y0": 2,
+        "x1": 15,
+        "y1": 4,
+        "Din": 3,
+        "id": "M010",
+        "recipe_ids": [
+          "粉碎-源矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 11,
+        "y0": 2,
+        "x1": 13,
+        "y1": 4,
+        "Din": 3,
+        "id": "M010",
+        "recipe_ids": [
+          "粉碎-源矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M012",
+      "before": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 12,
+        "y0": 14,
+        "x1": 14,
+        "y1": 16,
+        "Din": 2,
+        "id": "M012",
+        "recipe_ids": [
+          "粉碎-源矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 13,
+        "y0": 14,
+        "x1": 15,
+        "y1": 16,
+        "Din": 2,
+        "id": "M012",
+        "recipe_ids": [
+          "粉碎-源矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M017",
+      "before": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 20,
+        "y0": 15,
+        "x1": 22,
+        "y1": 17,
+        "Din": 1,
+        "id": "M017",
+        "recipe_ids": [
+          "粉碎-源矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 22,
+        "y0": 16,
+        "x1": 24,
+        "y1": 18,
+        "Din": 3,
+        "id": "M017",
+        "recipe_ids": [
+          "粉碎-源矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M018",
+      "before": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 29,
+        "y0": 41,
+        "x1": 31,
+        "y1": 43,
+        "Din": 3,
+        "id": "M018",
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 6,
+        "y0": 32,
+        "x1": 8,
+        "y1": 34,
+        "Din": 0,
+        "id": "M018",
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M019",
+      "before": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 8,
+        "y0": 29,
+        "x1": 10,
+        "y1": 31,
+        "Din": 1,
+        "id": "M019",
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 14,
+        "y0": 27,
+        "x1": 16,
+        "y1": 29,
+        "Din": 2,
+        "id": "M019",
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M020",
+      "before": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 6,
+        "y0": 32,
+        "x1": 8,
+        "y1": 34,
+        "Din": 0,
+        "id": "M020",
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 8,
+        "y0": 29,
+        "x1": 10,
+        "y1": 31,
+        "Din": 1,
+        "id": "M020",
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M025",
+      "before": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 56,
+        "y0": 5,
+        "x1": 58,
+        "y1": 7,
+        "Din": 0,
+        "id": "M025",
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 53,
+        "y0": 6,
+        "x1": 55,
+        "y1": 8,
+        "Din": 1,
+        "id": "M025",
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M026",
+      "before": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 5,
+        "y0": 44,
+        "x1": 7,
+        "y1": 46,
+        "Din": 3,
+        "id": "M026",
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 16,
+        "y0": 46,
+        "x1": 18,
+        "y1": 48,
+        "Din": 2,
+        "id": "M026",
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M027",
+      "before": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 21,
+        "y0": 67,
+        "x1": 23,
+        "y1": 69,
+        "Din": 2,
+        "id": "M027",
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 5,
+        "y0": 57,
+        "x1": 7,
+        "y1": 59,
+        "Din": 3,
+        "id": "M027",
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M028",
+      "before": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 11,
+        "y0": 28,
+        "x1": 13,
+        "y1": 30,
+        "Din": 1,
+        "id": "M028",
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 6,
+        "y0": 47,
+        "x1": 8,
+        "y1": 49,
+        "Din": 0,
+        "id": "M028",
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M029",
+      "before": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 55,
+        "y0": 59,
+        "x1": 57,
+        "y1": 61,
+        "Din": 1,
+        "id": "M029",
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 20,
+        "y0": 47,
+        "x1": 22,
+        "y1": 49,
+        "Din": 2,
+        "id": "M029",
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M030",
+      "before": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 9,
+        "y0": 33,
+        "x1": 11,
+        "y1": 35,
+        "Din": 0,
+        "id": "M030",
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 28,
+        "y0": 11,
+        "x1": 30,
+        "y1": 13,
+        "Din": 3,
+        "id": "M030",
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M032",
+      "before": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 16,
+        "y0": 46,
+        "x1": 18,
+        "y1": 48,
+        "Din": 2,
+        "id": "M032",
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 5,
+        "y0": 44,
+        "x1": 7,
+        "y1": 46,
+        "Din": 3,
+        "id": "M032",
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M033",
+      "before": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 32,
+        "y0": 6,
+        "x1": 34,
+        "y1": 8,
+        "Din": 2,
+        "id": "M033",
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 32,
+        "y0": 6,
+        "x1": 34,
+        "y1": 8,
+        "Din": 3,
+        "id": "M033",
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M034",
+      "before": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 31,
+        "y0": 50,
+        "x1": 33,
+        "y1": 52,
+        "Din": 3,
+        "id": "M034",
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 9,
+        "y0": 33,
+        "x1": 11,
+        "y1": 35,
+        "Din": 0,
+        "id": "M034",
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M035",
+      "before": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 6,
+        "y0": 67,
+        "x1": 8,
+        "y1": 69,
+        "Din": 2,
+        "id": "M035",
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 6,
+        "y0": 66,
+        "x1": 8,
+        "y1": 68,
+        "Din": 2,
+        "id": "M035",
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M038",
+      "before": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 27,
+        "y0": 11,
+        "x1": 29,
+        "y1": 13,
+        "Din": 3,
+        "id": "M038",
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 22,
+        "y0": 33,
+        "x1": 24,
+        "y1": 35,
+        "Din": 2,
+        "id": "M038",
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M040",
+      "before": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 5,
+        "y0": 57,
+        "x1": 7,
+        "y1": 59,
+        "Din": 3,
+        "id": "M040",
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 55,
+        "y0": 59,
+        "x1": 57,
+        "y1": 61,
+        "Din": 1,
+        "id": "M040",
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M041",
+      "before": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 61,
+        "y0": 8,
+        "x1": 63,
+        "y1": 10,
+        "Din": 3,
+        "id": "M041",
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 56,
+        "y0": 5,
+        "x1": 58,
+        "y1": 7,
+        "Din": 0,
+        "id": "M041",
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M042",
+      "before": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 57,
+        "y0": 67,
+        "x1": 59,
+        "y1": 69,
+        "Din": 2,
+        "id": "M042",
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 10,
+        "y0": 67,
+        "x1": 12,
+        "y1": 69,
+        "Din": 0,
+        "id": "M042",
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M043",
+      "before": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 53,
+        "y0": 6,
+        "x1": 55,
+        "y1": 8,
+        "Din": 1,
+        "id": "M043",
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 31,
+        "y0": 50,
+        "x1": 33,
+        "y1": 52,
+        "Din": 3,
+        "id": "M043",
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M045",
+      "before": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 6,
+        "y0": 47,
+        "x1": 8,
+        "y1": 49,
+        "Din": 0,
+        "id": "M045",
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 28,
+        "y0": 48,
+        "x1": 30,
+        "y1": 50,
+        "Din": 3,
+        "id": "M045",
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M047",
+      "before": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 65,
+        "y0": 39,
+        "x1": 67,
+        "y1": 41,
+        "Din": 2,
+        "id": "M047",
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 33,
+        "y0": 21,
+        "x1": 35,
+        "y1": 23,
+        "Din": 3,
+        "id": "M047",
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M049",
+      "before": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 22,
+        "y0": 33,
+        "x1": 24,
+        "y1": 35,
+        "Din": 2,
+        "id": "M049",
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 44,
+        "y0": 26,
+        "x1": 46,
+        "y1": 28,
+        "Din": 2,
+        "id": "M049",
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M050",
+      "before": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 14,
+        "y0": 26,
+        "x1": 16,
+        "y1": 28,
+        "Din": 2,
+        "id": "M050",
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 11,
+        "y0": 28,
+        "x1": 13,
+        "y1": 30,
+        "Din": 1,
+        "id": "M050",
+        "recipe_ids": [
+          "粉碎-蓝铁块"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M053",
+      "before": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 35,
+        "y0": 61,
+        "x1": 37,
+        "y1": 63,
+        "Din": 0,
+        "id": "M053",
+        "recipe_ids": [
+          "粉碎-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 35,
+        "y0": 66,
+        "x1": 37,
+        "y1": 68,
+        "Din": 0,
+        "id": "M053",
+        "recipe_ids": [
+          "粉碎-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M055",
+      "before": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 10,
+        "y0": 67,
+        "x1": 12,
+        "y1": 69,
+        "Din": 0,
+        "id": "M055",
+        "recipe_ids": [
+          "粉碎-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 55,
+        "y0": 31,
+        "x1": 57,
+        "y1": 33,
+        "Din": 2,
+        "id": "M055",
+        "recipe_ids": [
+          "粉碎-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M057",
+      "before": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 30,
+        "y0": 19,
+        "x1": 32,
+        "y1": 21,
+        "Din": 0,
+        "id": "M057",
+        "recipe_ids": [
+          "粉碎-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 30,
+        "y0": 20,
+        "x1": 32,
+        "y1": 22,
+        "Din": 0,
+        "id": "M057",
+        "recipe_ids": [
+          "粉碎-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M058",
+      "before": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 43,
+        "y0": 29,
+        "x1": 45,
+        "y1": 31,
+        "Din": 3,
+        "id": "M058",
+        "recipe_ids": [
+          "粉碎-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 29,
+        "y0": 41,
+        "x1": 31,
+        "y1": 43,
+        "Din": 3,
+        "id": "M058",
+        "recipe_ids": [
+          "粉碎-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M061",
+      "before": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 61,
+        "y0": 66,
+        "x1": 63,
+        "y1": 68,
+        "Din": 3,
+        "id": "M061",
+        "recipe_ids": [
+          "粉碎-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 43,
+        "y0": 29,
+        "x1": 45,
+        "y1": 31,
+        "Din": 3,
+        "id": "M061",
+        "recipe_ids": [
+          "粉碎-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M063",
+      "before": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 45,
+        "y0": 67,
+        "x1": 47,
+        "y1": 69,
+        "Din": 0,
+        "id": "M063",
+        "recipe_ids": [
+          "粉碎-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 61,
+        "y0": 8,
+        "x1": 63,
+        "y1": 10,
+        "Din": 3,
+        "id": "M063",
+        "recipe_ids": [
+          "粉碎-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M064",
+      "before": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 33,
+        "y0": 38,
+        "x1": 35,
+        "y1": 40,
+        "Din": 1,
+        "id": "M064",
+        "recipe_ids": [
+          "粉碎-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 66,
+        "y0": 36,
+        "x1": 68,
+        "y1": 38,
+        "Din": 1,
+        "id": "M064",
+        "recipe_ids": [
+          "粉碎-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M066",
+      "before": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 33,
+        "y0": 21,
+        "x1": 35,
+        "y1": 23,
+        "Din": 3,
+        "id": "M066",
+        "recipe_ids": [
+          "粉碎-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "粉碎机",
+        "kind": "小",
+        "x0": 33,
+        "y0": 38,
+        "x1": 35,
+        "y1": 40,
+        "Din": 1,
+        "id": "M066",
+        "recipe_ids": [
+          "粉碎-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M070",
+      "before": {
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 5,
+        "y0": 8,
+        "x1": 7,
+        "y1": 10,
+        "Din": 1,
+        "id": "M070",
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 5,
+        "y0": 11,
+        "x1": 7,
+        "y1": 13,
+        "Din": 3,
+        "id": "M070",
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M081",
+      "before": {
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 8,
+        "y0": 5,
+        "x1": 10,
+        "y1": 7,
+        "Din": 0,
+        "id": "M081",
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 12,
+        "y0": 5,
+        "x1": 14,
+        "y1": 7,
+        "Din": 2,
+        "id": "M081",
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M089",
+      "before": {
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 16,
+        "y0": 2,
+        "x1": 18,
+        "y1": 4,
+        "Din": 3,
+        "id": "M089",
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 14,
+        "y0": 2,
+        "x1": 16,
+        "y1": 4,
+        "Din": 3,
+        "id": "M089",
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M094",
+      "before": {
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 19,
+        "y0": 2,
+        "x1": 21,
+        "y1": 4,
+        "Din": 3,
+        "id": "M094",
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 18,
+        "y0": 2,
+        "x1": 20,
+        "y1": 4,
+        "Din": 3,
+        "id": "M094",
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M102",
+      "before": {
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 25,
+        "y0": 2,
+        "x1": 27,
+        "y1": 4,
+        "Din": 3,
+        "id": "M102",
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 24,
+        "y0": 2,
+        "x1": 26,
+        "y1": 4,
+        "Din": 3,
+        "id": "M102",
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M103",
+      "before": {
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 55,
+        "y0": 31,
+        "x1": 57,
+        "y1": 33,
+        "Din": 2,
+        "id": "M103",
+        "recipe_ids": [
+          "精炼-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 64,
+        "y0": 18,
+        "x1": 66,
+        "y1": 20,
+        "Din": 3,
+        "id": "M103",
+        "recipe_ids": [
+          "精炼-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M104",
+      "before": {
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 44,
+        "y0": 26,
+        "x1": 46,
+        "y1": 28,
+        "Din": 2,
+        "id": "M104",
+        "recipe_ids": [
+          "精炼-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 67,
+        "y0": 26,
+        "x1": 69,
+        "y1": 28,
+        "Din": 1,
+        "id": "M104",
+        "recipe_ids": [
+          "精炼-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M105",
+      "before": {
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 52,
+        "y0": 59,
+        "x1": 54,
+        "y1": 61,
+        "Din": 3,
+        "id": "M105",
+        "recipe_ids": [
+          "精炼-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 58,
+        "y0": 36,
+        "x1": 60,
+        "y1": 38,
+        "Din": 1,
+        "id": "M105",
+        "recipe_ids": [
+          "精炼-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M108",
+      "before": {
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 20,
+        "y0": 47,
+        "x1": 22,
+        "y1": 49,
+        "Din": 2,
+        "id": "M108",
+        "recipe_ids": [
+          "精炼-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 25,
+        "y0": 50,
+        "x1": 27,
+        "y1": 52,
+        "Din": 2,
+        "id": "M108",
+        "recipe_ids": [
+          "精炼-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M109",
+      "before": {
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 19,
+        "y0": 64,
+        "x1": 21,
+        "y1": 66,
+        "Din": 3,
+        "id": "M109",
+        "recipe_ids": [
+          "精炼-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 35,
+        "y0": 61,
+        "x1": 37,
+        "y1": 63,
+        "Din": 0,
+        "id": "M109",
+        "recipe_ids": [
+          "精炼-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M111",
+      "before": {
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 67,
+        "y0": 26,
+        "x1": 69,
+        "y1": 28,
+        "Din": 1,
+        "id": "M111",
+        "recipe_ids": [
+          "精炼-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 58,
+        "y0": 53,
+        "x1": 60,
+        "y1": 55,
+        "Din": 2,
+        "id": "M111",
+        "recipe_ids": [
+          "精炼-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M112",
+      "before": {
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 64,
+        "y0": 18,
+        "x1": 66,
+        "y1": 20,
+        "Din": 3,
+        "id": "M112",
+        "recipe_ids": [
+          "精炼-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 58,
+        "y0": 67,
+        "x1": 60,
+        "y1": 69,
+        "Din": 2,
+        "id": "M112",
+        "recipe_ids": [
+          "精炼-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M113",
+      "before": {
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 58,
+        "y0": 36,
+        "x1": 60,
+        "y1": 38,
+        "Din": 1,
+        "id": "M113",
+        "recipe_ids": [
+          "精炼-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 61,
+        "y0": 66,
+        "x1": 63,
+        "y1": 68,
+        "Din": 3,
+        "id": "M113",
+        "recipe_ids": [
+          "精炼-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M114",
+      "before": {
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 28,
+        "y0": 48,
+        "x1": 30,
+        "y1": 50,
+        "Din": 3,
+        "id": "M114",
+        "recipe_ids": [
+          "精炼-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 52,
+        "y0": 59,
+        "x1": 54,
+        "y1": 61,
+        "Din": 3,
+        "id": "M114",
+        "recipe_ids": [
+          "精炼-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M115",
+      "before": {
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 58,
+        "y0": 53,
+        "x1": 60,
+        "y1": 55,
+        "Din": 2,
+        "id": "M115",
+        "recipe_ids": [
+          "精炼-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 62,
+        "y0": 45,
+        "x1": 64,
+        "y1": 47,
+        "Din": 1,
+        "id": "M115",
+        "recipe_ids": [
+          "精炼-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M119",
+      "before": {
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 35,
+        "y0": 66,
+        "x1": 37,
+        "y1": 68,
+        "Din": 0,
+        "id": "M119",
+        "recipe_ids": [
+          "精炼-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 19,
+        "y0": 62,
+        "x1": 21,
+        "y1": 64,
+        "Din": 3,
+        "id": "M119",
+        "recipe_ids": [
+          "精炼-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M122",
+      "before": {
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 48,
+        "y0": 52,
+        "x1": 51,
+        "y1": 57,
+        "Din": 2,
+        "id": "M122",
+        "recipe_ids": [
+          "研磨-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 60,
+        "y0": 39,
+        "x1": 63,
+        "y1": 44,
+        "Din": 0,
+        "id": "M122",
+        "recipe_ids": [
+          "研磨-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M128",
+      "before": {
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 54,
+        "y0": 40,
+        "x1": 59,
+        "y1": 43,
+        "Din": 3,
+        "id": "M128",
+        "recipe_ids": [
+          "研磨-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 34,
+        "y0": 52,
+        "x1": 37,
+        "y1": 57,
+        "Din": 2,
+        "id": "M128",
+        "recipe_ids": [
+          "研磨-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M129",
+      "before": {
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 57,
+        "y0": 62,
+        "x1": 62,
+        "y1": 65,
+        "Din": 1,
+        "id": "M129",
+        "recipe_ids": [
+          "研磨-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 48,
+        "y0": 52,
+        "x1": 51,
+        "y1": 57,
+        "Din": 2,
+        "id": "M129",
+        "recipe_ids": [
+          "研磨-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M130",
+      "before": {
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 60,
+        "y0": 39,
+        "x1": 63,
+        "y1": 44,
+        "Din": 0,
+        "id": "M130",
+        "recipe_ids": [
+          "研磨-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 57,
+        "y0": 62,
+        "x1": 62,
+        "y1": 65,
+        "Din": 1,
+        "id": "M130",
+        "recipe_ids": [
+          "研磨-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M132",
+      "before": {
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 52,
+        "y0": 49,
+        "x1": 57,
+        "y1": 52,
+        "Din": 3,
+        "id": "M132",
+        "recipe_ids": [
+          "研磨-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 42,
+        "y0": 42,
+        "x1": 47,
+        "y1": 45,
+        "Din": 3,
+        "id": "M132",
+        "recipe_ids": [
+          "研磨-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M136",
+      "before": {
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 39,
+        "y0": 64,
+        "x1": 42,
+        "y1": 69,
+        "Din": 0,
+        "id": "M136",
+        "recipe_ids": [
+          "研磨-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 25,
+        "y0": 64,
+        "x1": 28,
+        "y1": 69,
+        "Din": 0,
+        "id": "M136",
+        "recipe_ids": [
+          "研磨-致密蓝铁"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M137",
+      "before": {
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 30,
+        "y0": 64,
+        "x1": 33,
+        "y1": 69,
+        "Din": 2,
+        "id": "M137",
+        "recipe_ids": [
+          "研磨-致密源石"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 54,
+        "y0": 40,
+        "x1": 59,
+        "y1": 43,
+        "Din": 3,
+        "id": "M137",
+        "recipe_ids": [
+          "研磨-致密源石"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M139",
+      "before": {
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 43,
+        "y0": 43,
+        "x1": 48,
+        "y1": 46,
+        "Din": 3,
+        "id": "M139",
+        "recipe_ids": [
+          "研磨-致密源石"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 52,
+        "y0": 49,
+        "x1": 57,
+        "y1": 52,
+        "Din": 3,
+        "id": "M139",
+        "recipe_ids": [
+          "研磨-致密源石"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M142",
+      "before": {
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 29,
+        "y0": 33,
+        "x1": 32,
+        "y1": 38,
+        "Din": 2,
+        "id": "M142",
+        "recipe_ids": [
+          "研磨-致密源石"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 27,
+        "y0": 28,
+        "x1": 32,
+        "y1": 31,
+        "Din": 1,
+        "id": "M142",
+        "recipe_ids": [
+          "研磨-致密源石"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M143",
+      "before": {
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 27,
+        "y0": 28,
+        "x1": 32,
+        "y1": 31,
+        "Din": 1,
+        "id": "M143",
+        "recipe_ids": [
+          "研磨-致密源石"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 29,
+        "y0": 33,
+        "x1": 32,
+        "y1": 38,
+        "Din": 2,
+        "id": "M143",
+        "recipe_ids": [
+          "研磨-致密源石"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M144",
+      "before": {
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 11,
+        "y0": 6,
+        "x1": 14,
+        "y1": 11,
+        "Din": 0,
+        "id": "M144",
+        "recipe_ids": [
+          "研磨-致密源石"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 13,
+        "y0": 8,
+        "x1": 16,
+        "y1": 13,
+        "Din": 0,
+        "id": "M144",
+        "recipe_ids": [
+          "研磨-致密源石"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M145",
+      "before": {
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 24,
+        "y0": 6,
+        "x1": 29,
+        "y1": 9,
+        "Din": 3,
+        "id": "M145",
+        "recipe_ids": [
+          "研磨-致密源石"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 26,
+        "y0": 6,
+        "x1": 31,
+        "y1": 9,
+        "Din": 3,
+        "id": "M145",
+        "recipe_ids": [
+          "研磨-致密源石"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M147",
+      "before": {
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 54,
+        "y0": 26,
+        "x1": 59,
+        "y1": 29,
+        "Din": 1,
+        "id": "M147",
+        "recipe_ids": [
+          "研磨-细磨荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 49,
+        "y0": 16,
+        "x1": 52,
+        "y1": 21,
+        "Din": 2,
+        "id": "M147",
+        "recipe_ids": [
+          "研磨-细磨荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M148",
+      "before": {
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 34,
+        "y0": 52,
+        "x1": 37,
+        "y1": 57,
+        "Din": 2,
+        "id": "M148",
+        "recipe_ids": [
+          "研磨-细磨荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 30,
+        "y0": 64,
+        "x1": 33,
+        "y1": 69,
+        "Din": 2,
+        "id": "M148",
+        "recipe_ids": [
+          "研磨-细磨荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M149",
+      "before": {
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 49,
+        "y0": 16,
+        "x1": 52,
+        "y1": 21,
+        "Din": 2,
+        "id": "M149",
+        "recipe_ids": [
+          "研磨-细磨荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 57,
+        "y0": 19,
+        "x1": 60,
+        "y1": 24,
+        "Din": 2,
+        "id": "M149",
+        "recipe_ids": [
+          "研磨-细磨荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M151",
+      "before": {
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 24,
+        "y0": 15,
+        "x1": 27,
+        "y1": 20,
+        "Din": 0,
+        "id": "M151",
+        "recipe_ids": [
+          "研磨-细磨荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "研磨机",
+        "kind": "大",
+        "x0": 25,
+        "y0": 16,
+        "x1": 28,
+        "y1": 21,
+        "Din": 0,
+        "id": "M151",
+        "recipe_ids": [
+          "研磨-细磨荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M154",
+      "before": {
+        "model": "塑形机",
+        "kind": "小",
+        "x0": 49,
+        "y0": 58,
+        "x1": 51,
+        "y1": 60,
+        "Din": 2,
+        "id": "M154",
+        "recipe_ids": [
+          "塑形-钢质瓶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "塑形机",
+        "kind": "小",
+        "x0": 52,
+        "y0": 23,
+        "x1": 54,
+        "y1": 25,
+        "Din": 3,
+        "id": "M154",
+        "recipe_ids": [
+          "塑形-钢质瓶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M156",
+      "before": {
+        "model": "塑形机",
+        "kind": "小",
+        "x0": 58,
+        "y0": 45,
+        "x1": 60,
+        "y1": 47,
+        "Din": 1,
+        "id": "M156",
+        "recipe_ids": [
+          "塑形-钢质瓶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "塑形机",
+        "kind": "小",
+        "x0": 22,
+        "y0": 61,
+        "x1": 24,
+        "y1": 63,
+        "Din": 3,
+        "id": "M156",
+        "recipe_ids": [
+          "塑形-钢质瓶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M157",
+      "before": {
+        "model": "塑形机",
+        "kind": "小",
+        "x0": 52,
+        "y0": 23,
+        "x1": 54,
+        "y1": 25,
+        "Din": 3,
+        "id": "M157",
+        "recipe_ids": [
+          "塑形-钢质瓶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "塑形机",
+        "kind": "小",
+        "x0": 45,
+        "y0": 67,
+        "x1": 47,
+        "y1": 69,
+        "Din": 0,
+        "id": "M157",
+        "recipe_ids": [
+          "塑形-钢质瓶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M158",
+      "before": {
+        "model": "配件机",
+        "kind": "小",
+        "x0": 25,
+        "y0": 50,
+        "x1": 27,
+        "y1": 52,
+        "Din": 2,
+        "id": "M158",
+        "recipe_ids": [
+          "配件-钢制零件"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "配件机",
+        "kind": "小",
+        "x0": 49,
+        "y0": 58,
+        "x1": 51,
+        "y1": 60,
+        "Din": 2,
+        "id": "M158",
+        "recipe_ids": [
+          "配件-钢制零件"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M159",
+      "before": {
+        "model": "配件机",
+        "kind": "小",
+        "x0": 66,
+        "y0": 36,
+        "x1": 68,
+        "y1": 38,
+        "Din": 1,
+        "id": "M159",
+        "recipe_ids": [
+          "配件-钢制零件"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "配件机",
+        "kind": "小",
+        "x0": 65,
+        "y0": 39,
+        "x1": 67,
+        "y1": 41,
+        "Din": 2,
+        "id": "M159",
+        "recipe_ids": [
+          "配件-钢制零件"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M161",
+      "before": {
+        "model": "配件机",
+        "kind": "小",
+        "x0": 62,
+        "y0": 45,
+        "x1": 64,
+        "y1": 47,
+        "Din": 1,
+        "id": "M161",
+        "recipe_ids": [
+          "配件-钢制零件"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "配件机",
+        "kind": "小",
+        "x0": 58,
+        "y0": 45,
+        "x1": 60,
+        "y1": 47,
+        "Din": 1,
+        "id": "M161",
+        "recipe_ids": [
+          "配件-钢制零件"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M163",
+      "before": {
+        "model": "配件机",
+        "kind": "小",
+        "x0": 20,
+        "y0": 61,
+        "x1": 22,
+        "y1": 63,
+        "Din": 0,
+        "id": "M163",
+        "recipe_ids": [
+          "配件-钢制零件"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "配件机",
+        "kind": "小",
+        "x0": 21,
+        "y0": 67,
+        "x1": 23,
+        "y1": 69,
+        "Din": 2,
+        "id": "M163",
+        "recipe_ids": [
+          "配件-钢制零件"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M166",
+      "before": {
+        "model": "种植机",
+        "kind": "中",
+        "x0": 33,
+        "y0": 31,
+        "x1": 37,
+        "y1": 35,
+        "Din": 2,
+        "id": "M166",
+        "recipe_ids": [
+          "种植-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "种植机",
+        "kind": "中",
+        "x0": 33,
+        "y0": 25,
+        "x1": 37,
+        "y1": 29,
+        "Din": 1,
+        "id": "M166",
+        "recipe_ids": [
+          "种植-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M167",
+      "before": {
+        "model": "种植机",
+        "kind": "中",
+        "x0": 14,
+        "y0": 65,
+        "x1": 18,
+        "y1": 69,
+        "Din": 0,
+        "id": "M167",
+        "recipe_ids": [
+          "种植-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "种植机",
+        "kind": "中",
+        "x0": 33,
+        "y0": 31,
+        "x1": 37,
+        "y1": 35,
+        "Din": 2,
+        "id": "M167",
+        "recipe_ids": [
+          "种植-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M169",
+      "before": {
+        "model": "种植机",
+        "kind": "中",
+        "x0": 24,
+        "y0": 59,
+        "x1": 28,
+        "y1": 63,
+        "Din": 2,
+        "id": "M169",
+        "recipe_ids": [
+          "种植-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "种植机",
+        "kind": "中",
+        "x0": 25,
+        "y0": 59,
+        "x1": 29,
+        "y1": 63,
+        "Din": 2,
+        "id": "M169",
+        "recipe_ids": [
+          "种植-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M170",
+      "before": {
+        "model": "种植机",
+        "kind": "中",
+        "x0": 25,
+        "y0": 21,
+        "x1": 29,
+        "y1": 25,
+        "Din": 3,
+        "id": "M170",
+        "recipe_ids": [
+          "种植-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "种植机",
+        "kind": "中",
+        "x0": 11,
+        "y0": 51,
+        "x1": 15,
+        "y1": 55,
+        "Din": 0,
+        "id": "M170",
+        "recipe_ids": [
+          "种植-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M172",
+      "before": {
+        "model": "种植机",
+        "kind": "中",
+        "x0": 6,
+        "y0": 11,
+        "x1": 10,
+        "y1": 15,
+        "Din": 0,
+        "id": "M172",
+        "recipe_ids": [
+          "种植-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "种植机",
+        "kind": "中",
+        "x0": 8,
+        "y0": 11,
+        "x1": 12,
+        "y1": 15,
+        "Din": 3,
+        "id": "M172",
+        "recipe_ids": [
+          "种植-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M173",
+      "before": {
+        "model": "种植机",
+        "kind": "中",
+        "x0": 65,
+        "y0": 12,
+        "x1": 69,
+        "y1": 16,
+        "Din": 1,
+        "id": "M173",
+        "recipe_ids": [
+          "种植-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "种植机",
+        "kind": "中",
+        "x0": 17,
+        "y0": 6,
+        "x1": 21,
+        "y1": 10,
+        "Din": 1,
+        "id": "M173",
+        "recipe_ids": [
+          "种植-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M174",
+      "before": {
+        "model": "种植机",
+        "kind": "中",
+        "x0": 65,
+        "y0": 54,
+        "x1": 69,
+        "y1": 58,
+        "Din": 1,
+        "id": "M174",
+        "recipe_ids": [
+          "种植-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "种植机",
+        "kind": "中",
+        "x0": 29,
+        "y0": 15,
+        "x1": 33,
+        "y1": 19,
+        "Din": 3,
+        "id": "M174",
+        "recipe_ids": [
+          "种植-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M175",
+      "before": {
+        "model": "种植机",
+        "kind": "中",
+        "x0": 38,
+        "y0": 28,
+        "x1": 42,
+        "y1": 32,
+        "Din": 1,
+        "id": "M175",
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "种植机",
+        "kind": "中",
+        "x0": 37,
+        "y0": 38,
+        "x1": 41,
+        "y1": 42,
+        "Din": 0,
+        "id": "M175",
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M178",
+      "before": {
+        "model": "种植机",
+        "kind": "中",
+        "x0": 58,
+        "y0": 56,
+        "x1": 62,
+        "y1": 60,
+        "Din": 2,
+        "id": "M178",
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "种植机",
+        "kind": "中",
+        "x0": 38,
+        "y0": 28,
+        "x1": 42,
+        "y1": 32,
+        "Din": 1,
+        "id": "M178",
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M179",
+      "before": {
+        "model": "种植机",
+        "kind": "中",
+        "x0": 33,
+        "y0": 25,
+        "x1": 37,
+        "y1": 29,
+        "Din": 1,
+        "id": "M179",
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "种植机",
+        "kind": "中",
+        "x0": 65,
+        "y0": 54,
+        "x1": 69,
+        "y1": 58,
+        "Din": 1,
+        "id": "M179",
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M180",
+      "before": {
+        "model": "种植机",
+        "kind": "中",
+        "x0": 62,
+        "y0": 25,
+        "x1": 66,
+        "y1": 29,
+        "Din": 1,
+        "id": "M180",
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "种植机",
+        "kind": "中",
+        "x0": 56,
+        "y0": 8,
+        "x1": 60,
+        "y1": 12,
+        "Din": 1,
+        "id": "M180",
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M181",
+      "before": {
+        "model": "种植机",
+        "kind": "中",
+        "x0": 37,
+        "y0": 38,
+        "x1": 41,
+        "y1": 42,
+        "Din": 0,
+        "id": "M181",
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "种植机",
+        "kind": "中",
+        "x0": 62,
+        "y0": 25,
+        "x1": 66,
+        "y1": 29,
+        "Din": 1,
+        "id": "M181",
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M183",
+      "before": {
+        "model": "种植机",
+        "kind": "中",
+        "x0": 38,
+        "y0": 6,
+        "x1": 42,
+        "y1": 10,
+        "Din": 3,
+        "id": "M183",
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "种植机",
+        "kind": "中",
+        "x0": 37,
+        "y0": 43,
+        "x1": 41,
+        "y1": 47,
+        "Din": 0,
+        "id": "M183",
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M184",
+      "before": {
+        "model": "种植机",
+        "kind": "中",
+        "x0": 39,
+        "y0": 18,
+        "x1": 43,
+        "y1": 22,
+        "Din": 0,
+        "id": "M184",
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "种植机",
+        "kind": "中",
+        "x0": 65,
+        "y0": 12,
+        "x1": 69,
+        "y1": 16,
+        "Din": 1,
+        "id": "M184",
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M185",
+      "before": {
+        "model": "种植机",
+        "kind": "中",
+        "x0": 47,
+        "y0": 28,
+        "x1": 51,
+        "y1": 32,
+        "Din": 0,
+        "id": "M185",
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "种植机",
+        "kind": "中",
+        "x0": 44,
+        "y0": 21,
+        "x1": 48,
+        "y1": 25,
+        "Din": 3,
+        "id": "M185",
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M186",
+      "before": {
+        "model": "种植机",
+        "kind": "中",
+        "x0": 15,
+        "y0": 11,
+        "x1": 19,
+        "y1": 15,
+        "Din": 1,
+        "id": "M186",
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "种植机",
+        "kind": "中",
+        "x0": 39,
+        "y0": 18,
+        "x1": 43,
+        "y1": 22,
+        "Din": 0,
+        "id": "M186",
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M187",
+      "before": {
+        "model": "种植机",
+        "kind": "中",
+        "x0": 49,
+        "y0": 38,
+        "x1": 53,
+        "y1": 42,
+        "Din": 2,
+        "id": "M187",
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "种植机",
+        "kind": "中",
+        "x0": 58,
+        "y0": 56,
+        "x1": 62,
+        "y1": 60,
+        "Din": 2,
+        "id": "M187",
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M188",
+      "before": {
+        "model": "种植机",
+        "kind": "中",
+        "x0": 11,
+        "y0": 51,
+        "x1": 15,
+        "y1": 55,
+        "Din": 0,
+        "id": "M188",
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "种植机",
+        "kind": "中",
+        "x0": 49,
+        "y0": 38,
+        "x1": 53,
+        "y1": 42,
+        "Din": 2,
+        "id": "M188",
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M189",
+      "before": {
+        "model": "种植机",
+        "kind": "中",
+        "x0": 28,
+        "y0": 14,
+        "x1": 32,
+        "y1": 18,
+        "Din": 0,
+        "id": "M189",
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "种植机",
+        "kind": "中",
+        "x0": 23,
+        "y0": 11,
+        "x1": 27,
+        "y1": 15,
+        "Din": 2,
+        "id": "M189",
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M190",
+      "before": {
+        "model": "种植机",
+        "kind": "中",
+        "x0": 39,
+        "y0": 11,
+        "x1": 43,
+        "y1": 15,
+        "Din": 2,
+        "id": "M190",
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "种植机",
+        "kind": "中",
+        "x0": 38,
+        "y0": 6,
+        "x1": 42,
+        "y1": 10,
+        "Din": 3,
+        "id": "M190",
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M191",
+      "before": {
+        "model": "种植机",
+        "kind": "中",
+        "x0": 16,
+        "y0": 50,
+        "x1": 20,
+        "y1": 54,
+        "Din": 1,
+        "id": "M191",
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "种植机",
+        "kind": "中",
+        "x0": 15,
+        "y0": 65,
+        "x1": 19,
+        "y1": 69,
+        "Din": 0,
+        "id": "M191",
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M192",
+      "before": {
+        "model": "种植机",
+        "kind": "中",
+        "x0": 22,
+        "y0": 10,
+        "x1": 26,
+        "y1": 14,
+        "Din": 2,
+        "id": "M192",
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "种植机",
+        "kind": "中",
+        "x0": 19,
+        "y0": 42,
+        "x1": 23,
+        "y1": 46,
+        "Din": 1,
+        "id": "M192",
+        "recipe_ids": [
+          "种植-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M199",
+      "before": {
+        "model": "采种机",
+        "kind": "中",
+        "x0": 2,
+        "y0": 2,
+        "x1": 6,
+        "y1": 6,
+        "Din": 1,
+        "id": "M199",
+        "recipe_ids": [
+          "采种-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "采种机",
+        "kind": "中",
+        "x0": 6,
+        "y0": 52,
+        "x1": 10,
+        "y1": 56,
+        "Din": 0,
+        "id": "M199",
+        "recipe_ids": [
+          "采种-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M200",
+      "before": {
+        "model": "采种机",
+        "kind": "中",
+        "x0": 51,
+        "y0": 11,
+        "x1": 55,
+        "y1": 15,
+        "Din": 3,
+        "id": "M200",
+        "recipe_ids": [
+          "采种-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "采种机",
+        "kind": "中",
+        "x0": 6,
+        "y0": 6,
+        "x1": 10,
+        "y1": 10,
+        "Din": 2,
+        "id": "M200",
+        "recipe_ids": [
+          "采种-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M201",
+      "before": {
+        "model": "采种机",
+        "kind": "中",
+        "x0": 64,
+        "y0": 59,
+        "x1": 68,
+        "y1": 63,
+        "Din": 2,
+        "id": "M201",
+        "recipe_ids": [
+          "采种-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "采种机",
+        "kind": "中",
+        "x0": 25,
+        "y0": 22,
+        "x1": 29,
+        "y1": 26,
+        "Din": 3,
+        "id": "M201",
+        "recipe_ids": [
+          "采种-荞花"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M202",
+      "before": {
+        "model": "采种机",
+        "kind": "中",
+        "x0": 39,
+        "y0": 33,
+        "x1": 43,
+        "y1": 37,
+        "Din": 0,
+        "id": "M202",
+        "recipe_ids": [
+          "采种-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "采种机",
+        "kind": "中",
+        "x0": 47,
+        "y0": 28,
+        "x1": 51,
+        "y1": 32,
+        "Din": 0,
+        "id": "M202",
+        "recipe_ids": [
+          "采种-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M203",
+      "before": {
+        "model": "采种机",
+        "kind": "中",
+        "x0": 17,
+        "y0": 55,
+        "x1": 21,
+        "y1": 59,
+        "Din": 2,
+        "id": "M203",
+        "recipe_ids": [
+          "采种-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "采种机",
+        "kind": "中",
+        "x0": 39,
+        "y0": 33,
+        "x1": 43,
+        "y1": 37,
+        "Din": 0,
+        "id": "M203",
+        "recipe_ids": [
+          "采种-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M204",
+      "before": {
+        "model": "采种机",
+        "kind": "中",
+        "x0": 59,
+        "y0": 31,
+        "x1": 63,
+        "y1": 35,
+        "Din": 1,
+        "id": "M204",
+        "recipe_ids": [
+          "采种-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "采种机",
+        "kind": "中",
+        "x0": 64,
+        "y0": 59,
+        "x1": 68,
+        "y1": 63,
+        "Din": 2,
+        "id": "M204",
+        "recipe_ids": [
+          "采种-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M205",
+      "before": {
+        "model": "采种机",
+        "kind": "中",
+        "x0": 37,
+        "y0": 43,
+        "x1": 41,
+        "y1": 47,
+        "Din": 0,
+        "id": "M205",
+        "recipe_ids": [
+          "采种-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "采种机",
+        "kind": "中",
+        "x0": 59,
+        "y0": 31,
+        "x1": 63,
+        "y1": 35,
+        "Din": 1,
+        "id": "M205",
+        "recipe_ids": [
+          "采种-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M206",
+      "before": {
+        "model": "采种机",
+        "kind": "中",
+        "x0": 16,
+        "y0": 6,
+        "x1": 20,
+        "y1": 10,
+        "Din": 1,
+        "id": "M206",
+        "recipe_ids": [
+          "采种-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "采种机",
+        "kind": "中",
+        "x0": 31,
+        "y0": 10,
+        "x1": 35,
+        "y1": 14,
+        "Din": 2,
+        "id": "M206",
+        "recipe_ids": [
+          "采种-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M207",
+      "before": {
+        "model": "采种机",
+        "kind": "中",
+        "x0": 44,
+        "y0": 21,
+        "x1": 48,
+        "y1": 25,
+        "Din": 3,
+        "id": "M207",
+        "recipe_ids": [
+          "采种-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "采种机",
+        "kind": "中",
+        "x0": 39,
+        "y0": 11,
+        "x1": 43,
+        "y1": 15,
+        "Din": 2,
+        "id": "M207",
+        "recipe_ids": [
+          "采种-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M208",
+      "before": {
+        "model": "采种机",
+        "kind": "中",
+        "x0": 19,
+        "y0": 42,
+        "x1": 23,
+        "y1": 46,
+        "Din": 1,
+        "id": "M208",
+        "recipe_ids": [
+          "采种-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "采种机",
+        "kind": "中",
+        "x0": 17,
+        "y0": 55,
+        "x1": 21,
+        "y1": 59,
+        "Din": 2,
+        "id": "M208",
+        "recipe_ids": [
+          "采种-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M209",
+      "before": {
+        "model": "采种机",
+        "kind": "中",
+        "x0": 30,
+        "y0": 9,
+        "x1": 34,
+        "y1": 13,
+        "Din": 2,
+        "id": "M209",
+        "recipe_ids": [
+          "采种-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "采种机",
+        "kind": "中",
+        "x0": 17,
+        "y0": 12,
+        "x1": 21,
+        "y1": 16,
+        "Din": 1,
+        "id": "M209",
+        "recipe_ids": [
+          "采种-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M210",
+      "before": {
+        "model": "采种机",
+        "kind": "中",
+        "x0": 6,
+        "y0": 52,
+        "x1": 10,
+        "y1": 56,
+        "Din": 0,
+        "id": "M210",
+        "recipe_ids": [
+          "采种-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "采种机",
+        "kind": "中",
+        "x0": 16,
+        "y0": 50,
+        "x1": 20,
+        "y1": 54,
+        "Din": 1,
+        "id": "M210",
+        "recipe_ids": [
+          "采种-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M212",
+      "before": {
+        "model": "采种机",
+        "kind": "中",
+        "x0": 56,
+        "y0": 8,
+        "x1": 60,
+        "y1": 12,
+        "Din": 2,
+        "id": "M212",
+        "recipe_ids": [
+          "采种-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "采种机",
+        "kind": "中",
+        "x0": 51,
+        "y0": 11,
+        "x1": 55,
+        "y1": 15,
+        "Din": 3,
+        "id": "M212",
+        "recipe_ids": [
+          "采种-砂叶"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M213",
+      "before": {
+        "model": "封装机",
+        "kind": "大",
+        "x0": 25,
+        "y0": 64,
+        "x1": 28,
+        "y1": 69,
+        "Din": 0,
+        "id": "M213",
+        "recipe_ids": [
+          "封装-电池"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "封装机",
+        "kind": "大",
+        "x0": 12,
+        "y0": 31,
+        "x1": 17,
+        "y1": 34,
+        "Din": 1,
+        "id": "M213",
+        "recipe_ids": [
+          "封装-电池"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M217",
+      "before": {
+        "model": "灌装机",
+        "kind": "大",
+        "x0": 57,
+        "y0": 19,
+        "x1": 60,
+        "y1": 24,
+        "Din": 2,
+        "id": "M217",
+        "recipe_ids": [
+          "灌装-胶囊"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "灌装机",
+        "kind": "大",
+        "x0": 54,
+        "y0": 26,
+        "x1": 59,
+        "y1": 29,
+        "Din": 1,
+        "id": "M217",
+        "recipe_ids": [
+          "灌装-胶囊"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    },
+    {
+      "id": "M218",
+      "before": {
+        "model": "灌装机",
+        "kind": "大",
+        "x0": 12,
+        "y0": 31,
+        "x1": 17,
+        "y1": 34,
+        "Din": 1,
+        "id": "M218",
+        "recipe_ids": [
+          "灌装-胶囊"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      },
+      "after": {
+        "model": "灌装机",
+        "kind": "大",
+        "x0": 39,
+        "y0": 64,
+        "x1": 42,
+        "y1": 69,
+        "Din": 0,
+        "id": "M218",
+        "recipe_ids": [
+          "灌装-胶囊"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    }
+  ],
+  "geometry_set_changes": {
+    "removed": [
+      [
+        "中",
+        2,
+        2,
+        6,
+        6,
+        1
+      ],
+      [
+        "中",
+        6,
+        11,
+        10,
+        15,
+        0
+      ],
+      [
+        "中",
+        14,
+        65,
+        18,
+        69,
+        0
+      ],
+      [
+        "中",
+        15,
+        11,
+        19,
+        15,
+        1
+      ],
+      [
+        "中",
+        16,
+        6,
+        20,
+        10,
+        1
+      ],
+      [
+        "中",
+        22,
+        10,
+        26,
+        14,
+        2
+      ],
+      [
+        "中",
+        24,
+        59,
+        28,
+        63,
+        2
+      ],
+      [
+        "中",
+        25,
+        21,
+        29,
+        25,
+        3
+      ],
+      [
+        "中",
+        28,
+        14,
+        32,
+        18,
+        0
+      ],
+      [
+        "中",
+        30,
+        9,
+        34,
+        13,
+        2
+      ],
+      [
+        "中",
+        56,
+        8,
+        60,
+        12,
+        2
+      ],
+      [
+        "大",
+        11,
+        6,
+        14,
+        11,
+        0
+      ],
+      [
+        "大",
+        24,
+        6,
+        29,
+        9,
+        3
+      ],
+      [
+        "大",
+        24,
+        15,
+        27,
+        20,
+        0
+      ],
+      [
+        "大",
+        43,
+        43,
+        48,
+        46,
+        3
+      ],
+      [
+        "小",
+        5,
+        8,
+        7,
+        10,
+        1
+      ],
+      [
+        "小",
+        6,
+        67,
+        8,
+        69,
+        2
+      ],
+      [
+        "小",
+        7,
+        2,
+        9,
+        4,
+        3
+      ],
+      [
+        "小",
+        8,
+        5,
+        10,
+        7,
+        0
+      ],
+      [
+        "小",
+        8,
+        25,
+        10,
+        27,
+        3
+      ],
+      [
+        "小",
+        10,
+        2,
+        12,
+        4,
+        3
+      ],
+      [
+        "小",
+        12,
+        14,
+        14,
+        16,
+        2
+      ],
+      [
+        "小",
+        13,
+        2,
+        15,
+        4,
+        3
+      ],
+      [
+        "小",
+        14,
+        26,
+        16,
+        28,
+        2
+      ],
+      [
+        "小",
+        16,
+        2,
+        18,
+        4,
+        3
+      ],
+      [
+        "小",
+        19,
+        2,
+        21,
+        4,
+        3
+      ],
+      [
+        "小",
+        19,
+        64,
+        21,
+        66,
+        3
+      ],
+      [
+        "小",
+        20,
+        15,
+        22,
+        17,
+        1
+      ],
+      [
+        "小",
+        20,
+        61,
+        22,
+        63,
+        0
+      ],
+      [
+        "小",
+        21,
+        5,
+        23,
+        7,
+        2
+      ],
+      [
+        "小",
+        22,
+        2,
+        24,
+        4,
+        3
+      ],
+      [
+        "小",
+        25,
+        2,
+        27,
+        4,
+        3
+      ],
+      [
+        "小",
+        27,
+        11,
+        29,
+        13,
+        3
+      ],
+      [
+        "小",
+        30,
+        19,
+        32,
+        21,
+        0
+      ],
+      [
+        "小",
+        32,
+        6,
+        34,
+        8,
+        2
+      ],
+      [
+        "小",
+        57,
+        67,
+        59,
+        69,
+        2
+      ]
+    ],
+    "added": [
+      [
+        "中",
+        6,
+        6,
+        10,
+        10,
+        2
+      ],
+      [
+        "中",
+        8,
+        11,
+        12,
+        15,
+        3
+      ],
+      [
+        "中",
+        15,
+        65,
+        19,
+        69,
+        0
+      ],
+      [
+        "中",
+        17,
+        6,
+        21,
+        10,
+        1
+      ],
+      [
+        "中",
+        17,
+        12,
+        21,
+        16,
+        1
+      ],
+      [
+        "中",
+        23,
+        11,
+        27,
+        15,
+        2
+      ],
+      [
+        "中",
+        25,
+        22,
+        29,
+        26,
+        3
+      ],
+      [
+        "中",
+        25,
+        59,
+        29,
+        63,
+        2
+      ],
+      [
+        "中",
+        29,
+        15,
+        33,
+        19,
+        3
+      ],
+      [
+        "中",
+        31,
+        10,
+        35,
+        14,
+        2
+      ],
+      [
+        "中",
+        56,
+        8,
+        60,
+        12,
+        1
+      ],
+      [
+        "大",
+        13,
+        8,
+        16,
+        13,
+        0
+      ],
+      [
+        "大",
+        25,
+        16,
+        28,
+        21,
+        0
+      ],
+      [
+        "大",
+        26,
+        6,
+        31,
+        9,
+        3
+      ],
+      [
+        "大",
+        42,
+        42,
+        47,
+        45,
+        3
+      ],
+      [
+        "小",
+        5,
+        2,
+        7,
+        4,
+        3
+      ],
+      [
+        "小",
+        5,
+        11,
+        7,
+        13,
+        3
+      ],
+      [
+        "小",
+        6,
+        66,
+        8,
+        68,
+        2
+      ],
+      [
+        "小",
+        8,
+        2,
+        10,
+        4,
+        3
+      ],
+      [
+        "小",
+        8,
+        25,
+        10,
+        27,
+        0
+      ],
+      [
+        "小",
+        11,
+        2,
+        13,
+        4,
+        3
+      ],
+      [
+        "小",
+        12,
+        5,
+        14,
+        7,
+        2
+      ],
+      [
+        "小",
+        13,
+        14,
+        15,
+        16,
+        2
+      ],
+      [
+        "小",
+        14,
+        2,
+        16,
+        4,
+        3
+      ],
+      [
+        "小",
+        14,
+        27,
+        16,
+        29,
+        2
+      ],
+      [
+        "小",
+        18,
+        2,
+        20,
+        4,
+        3
+      ],
+      [
+        "小",
+        19,
+        62,
+        21,
+        64,
+        3
+      ],
+      [
+        "小",
+        21,
+        2,
+        23,
+        4,
+        3
+      ],
+      [
+        "小",
+        22,
+        5,
+        24,
+        7,
+        2
+      ],
+      [
+        "小",
+        22,
+        16,
+        24,
+        18,
+        3
+      ],
+      [
+        "小",
+        22,
+        61,
+        24,
+        63,
+        3
+      ],
+      [
+        "小",
+        24,
+        2,
+        26,
+        4,
+        3
+      ],
+      [
+        "小",
+        28,
+        11,
+        30,
+        13,
+        3
+      ],
+      [
+        "小",
+        30,
+        20,
+        32,
+        22,
+        0
+      ],
+      [
+        "小",
+        32,
+        6,
+        34,
+        8,
+        3
+      ],
+      [
+        "小",
+        58,
+        67,
+        60,
+        69,
+        2
+      ]
+    ]
+  },
+  "other_layout_changes": {
+    "warehouse_outlets": {
+      "before": [
+        {
+          "id": "OUT_L00",
+          "x0": 0,
+          "y0": 1,
+          "x1": 0,
+          "y1": 3,
+          "Dout": 0,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_L01",
+          "x0": 0,
+          "y0": 4,
+          "x1": 0,
+          "y1": 6,
+          "Dout": 0,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_L02",
+          "x0": 0,
+          "y0": 7,
+          "x1": 0,
+          "y1": 9,
+          "Dout": 0,
+          "item": "源矿"
+        },
+        {
+          "id": "OUT_L03",
+          "x0": 0,
+          "y0": 10,
+          "x1": 0,
+          "y1": 12,
+          "Dout": 0,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_L04",
+          "x0": 0,
+          "y0": 13,
+          "x1": 0,
+          "y1": 15,
+          "Dout": 0,
+          "item": "源矿"
+        },
+        {
+          "id": "OUT_L05",
+          "x0": 0,
+          "y0": 16,
+          "x1": 0,
+          "y1": 18,
+          "Dout": 0,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_L06",
+          "x0": 0,
+          "y0": 19,
+          "x1": 0,
+          "y1": 21,
+          "Dout": 0,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_L07",
+          "x0": 0,
+          "y0": 22,
+          "x1": 0,
+          "y1": 24,
+          "Dout": 0,
+          "item": "源矿"
+        },
+        {
+          "id": "OUT_L08",
+          "x0": 0,
+          "y0": 25,
+          "x1": 0,
+          "y1": 27,
+          "Dout": 0,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_L09",
+          "x0": 0,
+          "y0": 28,
+          "x1": 0,
+          "y1": 30,
+          "Dout": 0,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_L10",
+          "x0": 0,
+          "y0": 31,
+          "x1": 0,
+          "y1": 33,
+          "Dout": 0,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_L11",
+          "x0": 0,
+          "y0": 34,
+          "x1": 0,
+          "y1": 36,
+          "Dout": 0,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_L12",
+          "x0": 0,
+          "y0": 37,
+          "x1": 0,
+          "y1": 39,
+          "Dout": 0,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_L13",
+          "x0": 0,
+          "y0": 40,
+          "x1": 0,
+          "y1": 42,
+          "Dout": 0,
+          "item": "源矿"
+        },
+        {
+          "id": "OUT_L14",
+          "x0": 0,
+          "y0": 43,
+          "x1": 0,
+          "y1": 45,
+          "Dout": 0,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_L15",
+          "x0": 0,
+          "y0": 46,
+          "x1": 0,
+          "y1": 48,
+          "Dout": 0,
+          "item": "源矿"
+        },
+        {
+          "id": "OUT_L16",
+          "x0": 0,
+          "y0": 49,
+          "x1": 0,
+          "y1": 51,
+          "Dout": 0,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_L17",
+          "x0": 0,
+          "y0": 52,
+          "x1": 0,
+          "y1": 54,
+          "Dout": 0,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_L18",
+          "x0": 0,
+          "y0": 55,
+          "x1": 0,
+          "y1": 57,
+          "Dout": 0,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_L19",
+          "x0": 0,
+          "y0": 58,
+          "x1": 0,
+          "y1": 60,
+          "Dout": 0,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_L20",
+          "x0": 0,
+          "y0": 61,
+          "x1": 0,
+          "y1": 63,
+          "Dout": 0,
+          "item": "源矿"
+        },
+        {
+          "id": "OUT_L21",
+          "x0": 0,
+          "y0": 64,
+          "x1": 0,
+          "y1": 66,
+          "Dout": 0,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_L22",
+          "x0": 0,
+          "y0": 67,
+          "x1": 0,
+          "y1": 69,
+          "Dout": 0,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_B00",
+          "x0": 1,
+          "y0": 0,
+          "x1": 3,
+          "y1": 0,
+          "Dout": 1,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_B01",
+          "x0": 4,
+          "y0": 0,
+          "x1": 6,
+          "y1": 0,
+          "Dout": 1,
+          "item": "源矿"
+        },
+        {
+          "id": "OUT_B02",
+          "x0": 7,
+          "y0": 0,
+          "x1": 9,
+          "y1": 0,
+          "Dout": 1,
+          "item": "源矿"
+        },
+        {
+          "id": "OUT_B03",
+          "x0": 10,
+          "y0": 0,
+          "x1": 12,
+          "y1": 0,
+          "Dout": 1,
+          "item": "源矿"
+        },
+        {
+          "id": "OUT_B04",
+          "x0": 13,
+          "y0": 0,
+          "x1": 15,
+          "y1": 0,
+          "Dout": 1,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_B05",
+          "x0": 16,
+          "y0": 0,
+          "x1": 18,
+          "y1": 0,
+          "Dout": 1,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_B06",
+          "x0": 19,
+          "y0": 0,
+          "x1": 21,
+          "y1": 0,
+          "Dout": 1,
+          "item": "源矿"
+        },
+        {
+          "id": "OUT_B07",
+          "x0": 22,
+          "y0": 0,
+          "x1": 24,
+          "y1": 0,
+          "Dout": 1,
+          "item": "源矿"
+        },
+        {
+          "id": "OUT_B08",
+          "x0": 25,
+          "y0": 0,
+          "x1": 27,
+          "y1": 0,
+          "Dout": 1,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_B09",
+          "x0": 28,
+          "y0": 0,
+          "x1": 30,
+          "y1": 0,
+          "Dout": 1,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_B10",
+          "x0": 31,
+          "y0": 0,
+          "x1": 33,
+          "y1": 0,
+          "Dout": 1,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_B11",
+          "x0": 34,
+          "y0": 0,
+          "x1": 36,
+          "y1": 0,
+          "Dout": 1,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_B12",
+          "x0": 37,
+          "y0": 0,
+          "x1": 39,
+          "y1": 0,
+          "Dout": 1,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_B13",
+          "x0": 40,
+          "y0": 0,
+          "x1": 42,
+          "y1": 0,
+          "Dout": 1,
+          "item": "源矿"
+        },
+        {
+          "id": "OUT_B14",
+          "x0": 43,
+          "y0": 0,
+          "x1": 45,
+          "y1": 0,
+          "Dout": 1,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_B15",
+          "x0": 46,
+          "y0": 0,
+          "x1": 48,
+          "y1": 0,
+          "Dout": 1,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_B16",
+          "x0": 49,
+          "y0": 0,
+          "x1": 51,
+          "y1": 0,
+          "Dout": 1,
+          "item": "源矿"
+        },
+        {
+          "id": "OUT_B17",
+          "x0": 52,
+          "y0": 0,
+          "x1": 54,
+          "y1": 0,
+          "Dout": 1,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_B18",
+          "x0": 55,
+          "y0": 0,
+          "x1": 57,
+          "y1": 0,
+          "Dout": 1,
+          "item": "源矿"
+        },
+        {
+          "id": "OUT_B19",
+          "x0": 58,
+          "y0": 0,
+          "x1": 60,
+          "y1": 0,
+          "Dout": 1,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_B20",
+          "x0": 61,
+          "y0": 0,
+          "x1": 63,
+          "y1": 0,
+          "Dout": 1,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_B21",
+          "x0": 64,
+          "y0": 0,
+          "x1": 66,
+          "y1": 0,
+          "Dout": 1,
+          "item": "源矿"
+        },
+        {
+          "id": "OUT_B22",
+          "x0": 67,
+          "y0": 0,
+          "x1": 69,
+          "y1": 0,
+          "Dout": 1,
+          "item": "蓝铁矿"
+        }
+      ],
+      "after": [
+        {
+          "id": "OUT_L00",
+          "x0": 0,
+          "y0": 1,
+          "x1": 0,
+          "y1": 3,
+          "Dout": 0,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_L01",
+          "x0": 0,
+          "y0": 4,
+          "x1": 0,
+          "y1": 6,
+          "Dout": 0,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_L02",
+          "x0": 0,
+          "y0": 7,
+          "x1": 0,
+          "y1": 9,
+          "Dout": 0,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_L03",
+          "x0": 0,
+          "y0": 10,
+          "x1": 0,
+          "y1": 12,
+          "Dout": 0,
+          "item": "源矿"
+        },
+        {
+          "id": "OUT_L04",
+          "x0": 0,
+          "y0": 13,
+          "x1": 0,
+          "y1": 15,
+          "Dout": 0,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_L05",
+          "x0": 0,
+          "y0": 16,
+          "x1": 0,
+          "y1": 18,
+          "Dout": 0,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_L06",
+          "x0": 0,
+          "y0": 19,
+          "x1": 0,
+          "y1": 21,
+          "Dout": 0,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_L07",
+          "x0": 0,
+          "y0": 22,
+          "x1": 0,
+          "y1": 24,
+          "Dout": 0,
+          "item": "源矿"
+        },
+        {
+          "id": "OUT_L08",
+          "x0": 0,
+          "y0": 25,
+          "x1": 0,
+          "y1": 27,
+          "Dout": 0,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_L09",
+          "x0": 0,
+          "y0": 28,
+          "x1": 0,
+          "y1": 30,
+          "Dout": 0,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_L10",
+          "x0": 0,
+          "y0": 31,
+          "x1": 0,
+          "y1": 33,
+          "Dout": 0,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_L11",
+          "x0": 0,
+          "y0": 34,
+          "x1": 0,
+          "y1": 36,
+          "Dout": 0,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_L12",
+          "x0": 0,
+          "y0": 37,
+          "x1": 0,
+          "y1": 39,
+          "Dout": 0,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_L13",
+          "x0": 0,
+          "y0": 40,
+          "x1": 0,
+          "y1": 42,
+          "Dout": 0,
+          "item": "源矿"
+        },
+        {
+          "id": "OUT_L14",
+          "x0": 0,
+          "y0": 43,
+          "x1": 0,
+          "y1": 45,
+          "Dout": 0,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_L15",
+          "x0": 0,
+          "y0": 46,
+          "x1": 0,
+          "y1": 48,
+          "Dout": 0,
+          "item": "源矿"
+        },
+        {
+          "id": "OUT_L16",
+          "x0": 0,
+          "y0": 49,
+          "x1": 0,
+          "y1": 51,
+          "Dout": 0,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_L17",
+          "x0": 0,
+          "y0": 52,
+          "x1": 0,
+          "y1": 54,
+          "Dout": 0,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_L18",
+          "x0": 0,
+          "y0": 55,
+          "x1": 0,
+          "y1": 57,
+          "Dout": 0,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_L19",
+          "x0": 0,
+          "y0": 58,
+          "x1": 0,
+          "y1": 60,
+          "Dout": 0,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_L20",
+          "x0": 0,
+          "y0": 61,
+          "x1": 0,
+          "y1": 63,
+          "Dout": 0,
+          "item": "源矿"
+        },
+        {
+          "id": "OUT_L21",
+          "x0": 0,
+          "y0": 64,
+          "x1": 0,
+          "y1": 66,
+          "Dout": 0,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_L22",
+          "x0": 0,
+          "y0": 67,
+          "x1": 0,
+          "y1": 69,
+          "Dout": 0,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_B00",
+          "x0": 1,
+          "y0": 0,
+          "x1": 3,
+          "y1": 0,
+          "Dout": 1,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_B01",
+          "x0": 4,
+          "y0": 0,
+          "x1": 6,
+          "y1": 0,
+          "Dout": 1,
+          "item": "源矿"
+        },
+        {
+          "id": "OUT_B02",
+          "x0": 7,
+          "y0": 0,
+          "x1": 9,
+          "y1": 0,
+          "Dout": 1,
+          "item": "源矿"
+        },
+        {
+          "id": "OUT_B03",
+          "x0": 10,
+          "y0": 0,
+          "x1": 12,
+          "y1": 0,
+          "Dout": 1,
+          "item": "源矿"
+        },
+        {
+          "id": "OUT_B04",
+          "x0": 13,
+          "y0": 0,
+          "x1": 15,
+          "y1": 0,
+          "Dout": 1,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_B05",
+          "x0": 16,
+          "y0": 0,
+          "x1": 18,
+          "y1": 0,
+          "Dout": 1,
+          "item": "源矿"
+        },
+        {
+          "id": "OUT_B06",
+          "x0": 19,
+          "y0": 0,
+          "x1": 21,
+          "y1": 0,
+          "Dout": 1,
+          "item": "源矿"
+        },
+        {
+          "id": "OUT_B07",
+          "x0": 22,
+          "y0": 0,
+          "x1": 24,
+          "y1": 0,
+          "Dout": 1,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_B08",
+          "x0": 25,
+          "y0": 0,
+          "x1": 27,
+          "y1": 0,
+          "Dout": 1,
+          "item": "源矿"
+        },
+        {
+          "id": "OUT_B09",
+          "x0": 28,
+          "y0": 0,
+          "x1": 30,
+          "y1": 0,
+          "Dout": 1,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_B10",
+          "x0": 31,
+          "y0": 0,
+          "x1": 33,
+          "y1": 0,
+          "Dout": 1,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_B11",
+          "x0": 34,
+          "y0": 0,
+          "x1": 36,
+          "y1": 0,
+          "Dout": 1,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_B12",
+          "x0": 37,
+          "y0": 0,
+          "x1": 39,
+          "y1": 0,
+          "Dout": 1,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_B13",
+          "x0": 40,
+          "y0": 0,
+          "x1": 42,
+          "y1": 0,
+          "Dout": 1,
+          "item": "源矿"
+        },
+        {
+          "id": "OUT_B14",
+          "x0": 43,
+          "y0": 0,
+          "x1": 45,
+          "y1": 0,
+          "Dout": 1,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_B15",
+          "x0": 46,
+          "y0": 0,
+          "x1": 48,
+          "y1": 0,
+          "Dout": 1,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_B16",
+          "x0": 49,
+          "y0": 0,
+          "x1": 51,
+          "y1": 0,
+          "Dout": 1,
+          "item": "源矿"
+        },
+        {
+          "id": "OUT_B17",
+          "x0": 52,
+          "y0": 0,
+          "x1": 54,
+          "y1": 0,
+          "Dout": 1,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_B18",
+          "x0": 55,
+          "y0": 0,
+          "x1": 57,
+          "y1": 0,
+          "Dout": 1,
+          "item": "源矿"
+        },
+        {
+          "id": "OUT_B19",
+          "x0": 58,
+          "y0": 0,
+          "x1": 60,
+          "y1": 0,
+          "Dout": 1,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_B20",
+          "x0": 61,
+          "y0": 0,
+          "x1": 63,
+          "y1": 0,
+          "Dout": 1,
+          "item": "蓝铁矿"
+        },
+        {
+          "id": "OUT_B21",
+          "x0": 64,
+          "y0": 0,
+          "x1": 66,
+          "y1": 0,
+          "Dout": 1,
+          "item": "源矿"
+        },
+        {
+          "id": "OUT_B22",
+          "x0": 67,
+          "y0": 0,
+          "x1": 69,
+          "y1": 0,
+          "Dout": 1,
+          "item": "蓝铁矿"
+        }
+      ]
+    },
+    "power_poles": {
+      "before": [
+        {
+          "id": "P000",
+          "x0": 8,
+          "y0": 8,
+          "x1": 9,
+          "y1": 9,
+          "orientation": 0
+        },
+        {
+          "id": "P001",
+          "x0": 8,
+          "y0": 22,
+          "x1": 9,
+          "y1": 23,
+          "orientation": 0
+        },
+        {
+          "id": "P002",
+          "x0": 8,
+          "y0": 36,
+          "x1": 9,
+          "y1": 37,
+          "orientation": 0
+        },
+        {
+          "id": "P003",
+          "x0": 8,
+          "y0": 50,
+          "x1": 9,
+          "y1": 51,
+          "orientation": 0
+        },
+        {
+          "id": "P004",
+          "x0": 8,
+          "y0": 64,
+          "x1": 9,
+          "y1": 65,
+          "orientation": 0
+        },
+        {
+          "id": "P005",
+          "x0": 22,
+          "y0": 8,
+          "x1": 23,
+          "y1": 9,
+          "orientation": 0
+        },
+        {
+          "id": "P006",
+          "x0": 22,
+          "y0": 22,
+          "x1": 23,
+          "y1": 23,
+          "orientation": 0
+        },
+        {
+          "id": "P007",
+          "x0": 22,
+          "y0": 36,
+          "x1": 23,
+          "y1": 37,
+          "orientation": 0
+        },
+        {
+          "id": "P008",
+          "x0": 22,
+          "y0": 50,
+          "x1": 23,
+          "y1": 51,
+          "orientation": 0
+        },
+        {
+          "id": "P009",
+          "x0": 22,
+          "y0": 64,
+          "x1": 23,
+          "y1": 65,
+          "orientation": 0
+        },
+        {
+          "id": "P010",
+          "x0": 36,
+          "y0": 8,
+          "x1": 37,
+          "y1": 9,
+          "orientation": 0
+        },
+        {
+          "id": "P011",
+          "x0": 36,
+          "y0": 22,
+          "x1": 37,
+          "y1": 23,
+          "orientation": 0
+        },
+        {
+          "id": "P012",
+          "x0": 36,
+          "y0": 36,
+          "x1": 37,
+          "y1": 37,
+          "orientation": 0
+        },
+        {
+          "id": "P013",
+          "x0": 36,
+          "y0": 50,
+          "x1": 37,
+          "y1": 51,
+          "orientation": 0
+        },
+        {
+          "id": "P014",
+          "x0": 36,
+          "y0": 64,
+          "x1": 37,
+          "y1": 65,
+          "orientation": 0
+        },
+        {
+          "id": "P015",
+          "x0": 50,
+          "y0": 8,
+          "x1": 51,
+          "y1": 9,
+          "orientation": 0
+        },
+        {
+          "id": "P016",
+          "x0": 50,
+          "y0": 22,
+          "x1": 51,
+          "y1": 23,
+          "orientation": 0
+        },
+        {
+          "id": "P017",
+          "x0": 50,
+          "y0": 36,
+          "x1": 51,
+          "y1": 37,
+          "orientation": 0
+        },
+        {
+          "id": "P018",
+          "x0": 50,
+          "y0": 50,
+          "x1": 51,
+          "y1": 51,
+          "orientation": 0
+        },
+        {
+          "id": "P019",
+          "x0": 50,
+          "y0": 64,
+          "x1": 51,
+          "y1": 65,
+          "orientation": 0
+        },
+        {
+          "id": "P020",
+          "x0": 64,
+          "y0": 8,
+          "x1": 65,
+          "y1": 9,
+          "orientation": 0
+        },
+        {
+          "id": "P021",
+          "x0": 64,
+          "y0": 22,
+          "x1": 65,
+          "y1": 23,
+          "orientation": 0
+        },
+        {
+          "id": "P022",
+          "x0": 64,
+          "y0": 36,
+          "x1": 65,
+          "y1": 37,
+          "orientation": 0
+        },
+        {
+          "id": "P023",
+          "x0": 64,
+          "y0": 50,
+          "x1": 65,
+          "y1": 51,
+          "orientation": 0
+        },
+        {
+          "id": "P024",
+          "x0": 55,
+          "y0": 68,
+          "x1": 56,
+          "y1": 69,
+          "orientation": 0
+        },
+        {
+          "id": "P025",
+          "x0": 63,
+          "y0": 56,
+          "x1": 64,
+          "y1": 57,
+          "orientation": 0
+        }
+      ],
+      "after": [
+        {
+          "id": "P000",
+          "x0": 11,
+          "y0": 8,
+          "x1": 12,
+          "y1": 9,
+          "orientation": 0
+        },
+        {
+          "id": "P001",
+          "x0": 8,
+          "y0": 22,
+          "x1": 9,
+          "y1": 23,
+          "orientation": 0
+        },
+        {
+          "id": "P002",
+          "x0": 8,
+          "y0": 36,
+          "x1": 9,
+          "y1": 37,
+          "orientation": 0
+        },
+        {
+          "id": "P003",
+          "x0": 8,
+          "y0": 50,
+          "x1": 9,
+          "y1": 51,
+          "orientation": 0
+        },
+        {
+          "id": "P004",
+          "x0": 8,
+          "y0": 64,
+          "x1": 9,
+          "y1": 65,
+          "orientation": 0
+        },
+        {
+          "id": "P005",
+          "x0": 22,
+          "y0": 8,
+          "x1": 23,
+          "y1": 9,
+          "orientation": 0
+        },
+        {
+          "id": "P006",
+          "x0": 22,
+          "y0": 22,
+          "x1": 23,
+          "y1": 23,
+          "orientation": 0
+        },
+        {
+          "id": "P007",
+          "x0": 22,
+          "y0": 36,
+          "x1": 23,
+          "y1": 37,
+          "orientation": 0
+        },
+        {
+          "id": "P008",
+          "x0": 22,
+          "y0": 50,
+          "x1": 23,
+          "y1": 51,
+          "orientation": 0
+        },
+        {
+          "id": "P009",
+          "x0": 22,
+          "y0": 64,
+          "x1": 23,
+          "y1": 65,
+          "orientation": 0
+        },
+        {
+          "id": "P010",
+          "x0": 36,
+          "y0": 8,
+          "x1": 37,
+          "y1": 9,
+          "orientation": 0
+        },
+        {
+          "id": "P011",
+          "x0": 36,
+          "y0": 22,
+          "x1": 37,
+          "y1": 23,
+          "orientation": 0
+        },
+        {
+          "id": "P012",
+          "x0": 36,
+          "y0": 36,
+          "x1": 37,
+          "y1": 37,
+          "orientation": 0
+        },
+        {
+          "id": "P013",
+          "x0": 36,
+          "y0": 50,
+          "x1": 37,
+          "y1": 51,
+          "orientation": 0
+        },
+        {
+          "id": "P014",
+          "x0": 36,
+          "y0": 64,
+          "x1": 37,
+          "y1": 65,
+          "orientation": 0
+        },
+        {
+          "id": "P015",
+          "x0": 50,
+          "y0": 8,
+          "x1": 51,
+          "y1": 9,
+          "orientation": 0
+        },
+        {
+          "id": "P016",
+          "x0": 50,
+          "y0": 22,
+          "x1": 51,
+          "y1": 23,
+          "orientation": 0
+        },
+        {
+          "id": "P017",
+          "x0": 50,
+          "y0": 36,
+          "x1": 51,
+          "y1": 37,
+          "orientation": 0
+        },
+        {
+          "id": "P018",
+          "x0": 50,
+          "y0": 50,
+          "x1": 51,
+          "y1": 51,
+          "orientation": 0
+        },
+        {
+          "id": "P019",
+          "x0": 50,
+          "y0": 64,
+          "x1": 51,
+          "y1": 65,
+          "orientation": 0
+        },
+        {
+          "id": "P020",
+          "x0": 64,
+          "y0": 8,
+          "x1": 65,
+          "y1": 9,
+          "orientation": 0
+        },
+        {
+          "id": "P021",
+          "x0": 64,
+          "y0": 22,
+          "x1": 65,
+          "y1": 23,
+          "orientation": 0
+        },
+        {
+          "id": "P022",
+          "x0": 64,
+          "y0": 36,
+          "x1": 65,
+          "y1": 37,
+          "orientation": 0
+        },
+        {
+          "id": "P023",
+          "x0": 64,
+          "y0": 50,
+          "x1": 65,
+          "y1": 51,
+          "orientation": 0
+        },
+        {
+          "id": "P024",
+          "x0": 55,
+          "y0": 68,
+          "x1": 56,
+          "y1": 69,
+          "orientation": 0
+        },
+        {
+          "id": "P025",
+          "x0": 63,
+          "y0": 56,
+          "x1": 64,
+          "y1": 57,
+          "orientation": 0
+        },
+        {
+          "id": "P026",
+          "x0": 6,
+          "y0": 14,
+          "x1": 7,
+          "y1": 15,
+          "orientation": 0
+        }
+      ]
+    }
+  },
+  "old_channels": 561,
+  "new_channels": 555,
+  "old_transport": 414,
+  "new_transport": 404,
+  "metadata_changes": {
+    "candidate_id": {
+      "before": "factory-static-repair-0001",
+      "after": "factory-static-repair-0002"
+    },
+    "source_fingerprints": {
+      "before": {
+        "rules": "52df4c12ce90975b861a6a663bd37873e03c9549658d200dc7e95fabc4bc29f3",
+        "task": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+        "constraints": "a67c18dec5f6ae59c41e8620d270007f20c2d3e5b202521d0cca12f616bca3df"
+      },
+      "after": {
+        "rules": "52df4c12ce90975b861a6a663bd37873e03c9549658d200dc7e95fabc4bc29f3",
+        "task": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+        "constraints": "0c05976f6063f3332db6ee19d7746052ef35148d7c2a12dfa396c7bb8753f30f"
+      }
+    }
+  },
+  "restrictions_after": [
+    {
+      "id": "P1",
+      "source": [
+        "shape"
+      ],
+      "statement": "只用传送带和桥，不用分流器、汇流器、准入口或协议储存箱。 来源：会议3冻结稿§1.3及第三节第3条、格式.md§8.2。",
+      "coverage_loss": "不覆盖违反该受限类条件但可能依靠混料、特殊运输、优先级或动态调试运行的布局。",
+      "release_obligations": "撤去后须按完整单位语义补表示、物品/容量核验以及相应先后与运行证明。",
+      "failure_scope": "只覆盖本候选字节固定的占格、朝向、设定、配方和通道；LP仍放开允许物品的连续流与批率。生成器的有限搜索失败不排除其他摆放或指派。初态、调试、全部合法先后和可达循环态未覆盖，不降低U，也不更新L。"
+    },
+    {
+      "id": "P2",
+      "source": [
+        "shape"
+      ],
+      "statement": "每条非运输端口到非运输端口路径只声明一种物品，桥不换轴，途中不经过其他非运输单位。 来源：会议3冻结稿§1.3及第三节第3条、格式.md§8.2。",
+      "coverage_loss": "不覆盖违反该受限类条件但可能依靠混料、特殊运输、优先级或动态调试运行的布局。",
+      "release_obligations": "撤去后须按完整单位语义补表示、物品/容量核验以及相应先后与运行证明。",
+      "failure_scope": "只覆盖本候选字节固定的占格、朝向、设定、配方和通道；LP仍放开允许物品的连续流与批率。生成器的有限搜索失败不排除其他摆放或指派。初态、调试、全部合法先后和可达循环态未覆盖，不降低U，也不更新L。"
+    },
+    {
+      "id": "P3",
+      "source": [
+        "dynamic"
+      ],
+      "statement": "要求形成的结构通道均承载严格正设计流；本文件是待验候选，不以登记本项宣告其满足。 来源：会议3冻结稿§1.3及第三节第3条、格式.md§8.2。",
+      "coverage_loss": "不覆盖违反该受限类条件但可能依靠混料、特殊运输、优先级或动态调试运行的布局。",
+      "release_obligations": "撤去后须按完整单位语义补表示、物品/容量核验以及相应先后与运行证明。",
+      "failure_scope": "只覆盖本候选字节固定的占格、朝向、设定、配方和通道；LP仍放开允许物品的连续流与批率。生成器的有限搜索失败不排除其他摆放或指派。初态、调试、全部合法先后和可达循环态未覆盖，不降低U，也不更新L。"
+    },
+    {
+      "id": "P4",
+      "source": [
+        "dynamic"
+      ],
+      "statement": "要求桥的使用轴双端均在用，未用轴两端没有相向端口。 来源：会议3冻结稿§1.3及第三节第3条、格式.md§8.2。",
+      "coverage_loss": "不覆盖违反该受限类条件但可能依靠混料、特殊运输、优先级或动态调试运行的布局。",
+      "release_obligations": "撤去后须按完整单位语义补表示、物品/容量核验以及相应先后与运行证明。",
+      "failure_scope": "只覆盖本候选字节固定的占格、朝向、设定、配方和通道；LP仍放开允许物品的连续流与批率。生成器的有限搜索失败不排除其他摆放或指派。初态、调试、全部合法先后和可达循环态未覆盖，不降低U，也不更新L。"
+    },
+    {
+      "id": "P5",
+      "source": [
+        "shape"
+      ],
+      "statement": "两座桥不得正交相邻。 来源：会议3冻结稿§1.3及第三节第3条、格式.md§8.2。",
+      "coverage_loss": "不覆盖违反该受限类条件但可能依靠混料、特殊运输、优先级或动态调试运行的布局。",
+      "release_obligations": "撤去后须按完整单位语义补表示、物品/容量核验以及相应先后与运行证明。",
+      "failure_scope": "只覆盖本候选字节固定的占格、朝向、设定、配方和通道；LP仍放开允许物品的连续流与批率。生成器的有限搜索失败不排除其他摆放或指派。初态、调试、全部合法先后和可达循环态未覆盖，不降低U，也不更新L。"
+    },
+    {
+      "id": "P6",
+      "source": [
+        "dynamic"
+      ],
+      "statement": "每台粉碎机与采种机只声明一种配方。 来源：会议3冻结稿§1.3及第三节第3条、格式.md§8.2。",
+      "coverage_loss": "不覆盖违反该受限类条件但可能依靠混料、特殊运输、优先级或动态调试运行的布局。",
+      "release_obligations": "撤去后须按完整单位语义补表示、物品/容量核验以及相应先后与运行证明。",
+      "failure_scope": "只覆盖本候选字节固定的占格、朝向、设定、配方和通道；LP仍放开允许物品的连续流与批率。生成器的有限搜索失败不排除其他摆放或指派。初态、调试、全部合法先后和可达循环态未覆盖，不降低U，也不更新L。"
+    },
+    {
+      "id": "N1",
+      "source": [
+        "dynamic"
+      ],
+      "statement": "有至少两条取货通道的非运输单位不得直连汇流器。 来源：会议3冻结稿§1.3及第三节第3条、格式.md§8.2。",
+      "coverage_loss": "不覆盖违反该受限类条件但可能依靠混料、特殊运输、优先级或动态调试运行的布局。",
+      "release_obligations": "撤去后须按完整单位语义补表示、物品/容量核验以及相应先后与运行证明。",
+      "failure_scope": "只覆盖本候选字节固定的占格、朝向、设定、配方和通道；LP仍放开允许物品的连续流与批率。生成器的有限搜索失败不排除其他摆放或指派。初态、调试、全部合法先后和可达循环态未覆盖，不降低U，也不更新L。"
+    },
+    {
+      "id": "N2",
+      "source": [
+        "dynamic"
+      ],
+      "statement": "有至少两条存货通道的单位不得有来自分流器的通道，桥按物理单位汇总。 来源：会议3冻结稿§1.3及第三节第3条、格式.md§8.2。",
+      "coverage_loss": "不覆盖违反该受限类条件但可能依靠混料、特殊运输、优先级或动态调试运行的布局。",
+      "release_obligations": "撤去后须按完整单位语义补表示、物品/容量核验以及相应先后与运行证明。",
+      "failure_scope": "只覆盖本候选字节固定的占格、朝向、设定、配方和通道；LP仍放开允许物品的连续流与批率。生成器的有限搜索失败不排除其他摆放或指派。初态、调试、全部合法先后和可达循环态未覆盖，不降低U，也不更新L。"
+    },
+    {
+      "id": "N3a",
+      "source": [
+        "dynamic"
+      ],
+      "statement": "承载正流的准入口累计上限必须为空。 来源：会议3冻结稿§1.3及第三节第3条、格式.md§8.2。",
+      "coverage_loss": "不覆盖违反该受限类条件但可能依靠混料、特殊运输、优先级或动态调试运行的布局。",
+      "release_obligations": "撤去后须按完整单位语义补表示、物品/容量核验以及相应先后与运行证明。",
+      "failure_scope": "只覆盖本候选字节固定的占格、朝向、设定、配方和通道；LP仍放开允许物品的连续流与批率。生成器的有限搜索失败不排除其他摆放或指派。初态、调试、全部合法先后和可达循环态未覆盖，不降低U，也不更新L。"
+    },
+    {
+      "id": "N3b",
+      "source": [
+        "dynamic"
+      ],
+      "statement": "限种准入口直接上游被拒物品须有同物品格的另一条不按身份拒绝的结构出口。 来源：会议3冻结稿§1.3及第三节第3条、格式.md§8.2。",
+      "coverage_loss": "不覆盖违反该受限类条件但可能依靠混料、特殊运输、优先级或动态调试运行的布局。",
+      "release_obligations": "撤去后须按完整单位语义补表示、物品/容量核验以及相应先后与运行证明。",
+      "failure_scope": "只覆盖本候选字节固定的占格、朝向、设定、配方和通道；LP仍放开允许物品的连续流与批率。生成器的有限搜索失败不排除其他摆放或指派。初态、调试、全部合法先后和可达循环态未覆盖，不降低U，也不更新L。"
+    },
+    {
+      "id": "N4a",
+      "source": [
+        "dynamic"
+      ],
+      "statement": "桥轴方向由两端邻端口一取一存推导，与声明相符；未用轴双端均无朝它的端口。 来源：会议3冻结稿§1.3及第三节第3条、格式.md§8.2。",
+      "coverage_loss": "不覆盖违反该受限类条件但可能依靠混料、特殊运输、优先级或动态调试运行的布局。",
+      "release_obligations": "撤去后须按完整单位语义补表示、物品/容量核验以及相应先后与运行证明。",
+      "failure_scope": "只覆盖本候选字节固定的占格、朝向、设定、配方和通道；LP仍放开允许物品的连续流与批率。生成器的有限搜索失败不排除其他摆放或指派。初态、调试、全部合法先后和可达循环态未覆盖，不降低U，也不更新L。"
+    },
+    {
+      "id": "N4b",
+      "source": [
+        "shape"
+      ],
+      "statement": "不允许两桥正交相邻。 来源：会议3冻结稿§1.3及第三节第3条、格式.md§8.2。",
+      "coverage_loss": "不覆盖违反该受限类条件但可能依靠混料、特殊运输、优先级或动态调试运行的布局。",
+      "release_obligations": "撤去后须按完整单位语义补表示、物品/容量核验以及相应先后与运行证明。",
+      "failure_scope": "只覆盖本候选字节固定的占格、朝向、设定、配方和通道；LP仍放开允许物品的连续流与批率。生成器的有限搜索失败不排除其他摆放或指派。初态、调试、全部合法先后和可达循环态未覆盖，不降低U，也不更新L。"
+    },
+    {
+      "id": "N5a",
+      "source": [
+        "dynamic"
+      ],
+      "statement": "全部物理通道由端口相遇当且仅当重算，必须与声明端点集合相等。 来源：会议3冻结稿§1.3及第三节第3条、格式.md§8.2。",
+      "coverage_loss": "不覆盖违反该受限类条件但可能依靠混料、特殊运输、优先级或动态调试运行的布局。",
+      "release_obligations": "撤去后须按完整单位语义补表示、物品/容量核验以及相应先后与运行证明。",
+      "failure_scope": "只覆盖本候选字节固定的占格、朝向、设定、配方和通道；LP仍放开允许物品的连续流与批率。生成器的有限搜索失败不排除其他摆放或指派。初态、调试、全部合法先后和可达循环态未覆盖，不降低U，也不更新L。"
+    },
+    {
+      "id": "N5b",
+      "source": [
+        "dynamic"
+      ],
+      "statement": "全部结构通道的物品流之和严格为正，须由共同delta或精确正流见证确认。 来源：会议3冻结稿§1.3及第三节第3条、格式.md§8.2。",
+      "coverage_loss": "不覆盖违反该受限类条件但可能依靠混料、特殊运输、优先级或动态调试运行的布局。",
+      "release_obligations": "撤去后须按完整单位语义补表示、物品/容量核验以及相应先后与运行证明。",
+      "failure_scope": "只覆盖本候选字节固定的占格、朝向、设定、配方和通道；LP仍放开允许物品的连续流与批率。生成器的有限搜索失败不排除其他摆放或指派。初态、调试、全部合法先后和可达循环态未覆盖，不降低U，也不更新L。"
+    },
+    {
+      "id": "recipe-subsets",
+      "source": [
+        "dynamic"
+      ],
+      "statement": "recipe_ids 限定本候选的配方集合；不把它当成游戏开关。",
+      "coverage_loss": "本候选全部机器只列一个配方；P6以外的单配方是独立构造选择。排除其他机型混做配方的布局。",
+      "release_obligations": "补逐机多配方连续批率和实际配方触发、清空及误料证明。",
+      "failure_scope": "只覆盖本候选字节固定的占格、朝向、设定、配方和通道；LP仍放开允许物品的连续流与批率。生成器的有限搜索失败不排除其他摆放或指派。初态、调试、全部合法先后和可达循环态未覆盖，不降低U，也不更新L。"
+    },
+    {
+      "id": "fixed-layout",
+      "source": [
+        "shape",
+        "numeric"
+      ],
+      "statement": "本候选文件固定全部单位的位置、朝向与设定。",
+      "coverage_loss": "固定219台和B的逐机单配方；固定角格空的边带与当前实体；重新选择矿口身份和实际路径；不附logical_feeds，连续LP不预设315条B指派或其速率。此实例以52矿口真实路径为构造硬约束，其他路径按物品/速率类别启发式重指派，未布通的供需不豁免。排除其他台数、配方、边带、摆放和支持选择。",
+      "release_obligations": "fixed-b-counts：允许变台数、混做配方后重新核物料平衡、尺寸、误料与全部受限类条件。；fixed-border：开放空格位置与来源映射，并重新按端口和矿石能力布线。；fixed-placement：开放摆放并重新求解全部路径、覆盖和最大空矩形；固定摆放失败不证明全域失败。；search-feed-reassignment：开放指派、速率及布线支持后补完整实体路径；所有缺失供需仍在LP内，不能由省略路径免掉。",
+      "failure_scope": "fixed-b-counts：只覆盖本候选字节固定的占格、朝向、设定、配方和通道；LP仍放开允许物品的连续流与批率。生成器的有限搜索失败不排除其他摆放或指派。初态、调试、全部合法先后和可达循环态未覆盖，不降低U，也不更新L。；fixed-border：只覆盖本候选字节固定的占格、朝向、设定、配方和通道；LP仍放开允许物品的连续流与批率。生成器的有限搜索失败不排除其他摆放或指派。初态、调试、全部合法先后和可达循环态未覆盖，不降低U，也不更新L。；fixed-placement：只覆盖本候选字节固定的占格、朝向、设定、配方和通道；LP仍放开允许物品的连续流与批率。生成器的有限搜索失败不排除其他摆放或指派。初态、调试、全部合法先后和可达循环态未覆盖，不降低U，也不更新L。；search-feed-reassignment：只覆盖本候选字节固定的占格、朝向、设定、配方和通道；LP仍放开允许物品的连续流与批率。生成器的有限搜索失败不排除其他摆放或指派。初态、调试、全部合法先后和可达循环态未覆盖，不降低U，也不更新L。"
+    }
+  ]
+}

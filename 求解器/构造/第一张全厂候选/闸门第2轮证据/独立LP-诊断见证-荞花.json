@@ -1,0 +1,372 @@
+{
+  "item": "荞花",
+  "scope": "sources<=1,no targets; each item separately maximized",
+  "nonzero_values": [],
+  "solver": {
+    "status": 0,
+    "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+    "variables": 780,
+    "rows": 18627,
+    "equalities": 17369,
+    "inequalities": 1258,
+    "iterations": 0,
+    "presolve": true,
+    "exact_primal": true,
+    "exact_dual": true,
+    "objective": "0",
+    "nonzero_variables": 0,
+    "certificate": {
+      "bound": "0",
+      "multipliers": [
+        {
+          "row": "slot:('T13_60', 'H'):荞花",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T13_67', 'single'):荞花",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T19_60', 'single'):荞花种子",
+          "value": "-1/2"
+        },
+        {
+          "row": "slot:('T20_60', 'single'):荞花种子",
+          "value": "-1/2"
+        },
+        {
+          "row": "slot:('T21_60', 'single'):荞花种子",
+          "value": "-1/2"
+        },
+        {
+          "row": "slot:('T22_60', 'single'):荞花种子",
+          "value": "-1/2"
+        },
+        {
+          "row": "slot:('T23_60', 'single'):荞花种子",
+          "value": "-1/2"
+        },
+        {
+          "row": "slot:('T25_26', 'V'):荞花",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T26_32', 'single'):荞花种子",
+          "value": "-1/2"
+        },
+        {
+          "row": "slot:('T27_32', 'single'):荞花种子",
+          "value": "-1/2"
+        },
+        {
+          "row": "slot:('T28_32', 'H'):荞花种子",
+          "value": "-1/2"
+        },
+        {
+          "row": "slot:('T29_32', 'single'):荞花种子",
+          "value": "-1/2"
+        },
+        {
+          "row": "slot:('T29_63', 'H'):荞花",
+          "value": "-3/2"
+        },
+        {
+          "row": "slot:('T30_32', 'single'):荞花种子",
+          "value": "-1/2"
+        },
+        {
+          "row": "slot:('T30_63', 'single'):荞花",
+          "value": "-3/2"
+        },
+        {
+          "row": "slot:('T31_32', 'single'):荞花种子",
+          "value": "-1/2"
+        },
+        {
+          "row": "slot:('T31_63', 'single'):荞花",
+          "value": "-3/2"
+        },
+        {
+          "row": "slot:('T32_32', 'single'):荞花种子",
+          "value": "-1/2"
+        },
+        {
+          "row": "slot:('T32_63', 'single'):荞花",
+          "value": "-3/2"
+        },
+        {
+          "row": "slot:('T33_63', 'single'):荞花",
+          "value": "-3/2"
+        },
+        {
+          "row": "slot:('T34_63', 'single'):荞花",
+          "value": "-3/2"
+        },
+        {
+          "row": "slot:('T34_64', 'single'):荞花",
+          "value": "-3/2"
+        },
+        {
+          "row": "slot:('T34_65', 'single'):荞花",
+          "value": "-3/2"
+        },
+        {
+          "row": "slot:('T34_66', 'single'):荞花",
+          "value": "-3/2"
+        },
+        {
+          "row": "slot:('T34_67', 'single'):荞花",
+          "value": "-3/2"
+        },
+        {
+          "row": "slot:('T34_68', 'single'):荞花",
+          "value": "-3/2"
+        },
+        {
+          "row": "slot:('T34_69', 'single'):荞花",
+          "value": "-3/2"
+        },
+        {
+          "row": "slot:('T35_69', 'single'):荞花",
+          "value": "-3/2"
+        },
+        {
+          "row": "slot:('T36_48', 'single'):荞花粉末",
+          "value": "-1/2"
+        },
+        {
+          "row": "slot:('T36_69', 'single'):荞花",
+          "value": "-3/2"
+        },
+        {
+          "row": "slot:('T37_48', 'single'):荞花粉末",
+          "value": "-1/2"
+        },
+        {
+          "row": "slot:('T37_69', 'single'):荞花",
+          "value": "-3/2"
+        },
+        {
+          "row": "slot:('T38_48', 'single'):荞花粉末",
+          "value": "-1/2"
+        },
+        {
+          "row": "slot:('T38_52', 'single'):荞花",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T38_53', 'single'):荞花",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T38_54', 'single'):荞花",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T38_55', 'single'):荞花",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T38_63', 'single'):荞花",
+          "value": "-3/2"
+        },
+        {
+          "row": "slot:('T38_64', 'single'):荞花",
+          "value": "-3/2"
+        },
+        {
+          "row": "slot:('T38_65', 'single'):荞花",
+          "value": "-3/2"
+        },
+        {
+          "row": "slot:('T38_66', 'V'):荞花",
+          "value": "-3/2"
+        },
+        {
+          "row": "slot:('T38_67', 'single'):荞花",
+          "value": "-3/2"
+        },
+        {
+          "row": "slot:('T38_68', 'single'):荞花",
+          "value": "-3/2"
+        },
+        {
+          "row": "slot:('T38_69', 'single'):荞花",
+          "value": "-3/2"
+        },
+        {
+          "row": "slot:('T42_61', 'single'):荞花",
+          "value": "-2"
+        },
+        {
+          "row": "slot:('T42_62', 'single'):荞花",
+          "value": "-2"
+        },
+        {
+          "row": "slot:('T43_62', 'single'):荞花",
+          "value": "-2"
+        },
+        {
+          "row": "slot:('T48_61', 'single'):荞花种子",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T49_61', 'single'):荞花种子",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T49_62', 'single'):荞花种子",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T49_63', 'single'):荞花种子",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T50_63', 'single'):荞花种子",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T51_62', 'single'):荞花种子",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T51_63', 'single'):荞花种子",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T52_62', 'single'):荞花种子",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T52_68', 'single'):荞花",
+          "value": "-2"
+        },
+        {
+          "row": "machine:M052:in:荞花",
+          "value": "-2"
+        },
+        {
+          "row": "machine:M052:out:荞花粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M053:in:荞花",
+          "value": "-3/2"
+        },
+        {
+          "row": "machine:M053:out:荞花粉末",
+          "value": "3/4"
+        },
+        {
+          "row": "machine:M055:in:荞花",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M055:out:荞花粉末",
+          "value": "1/2"
+        },
+        {
+          "row": "machine:M056:in:荞花",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M056:out:荞花粉末",
+          "value": "1/2"
+        },
+        {
+          "row": "machine:M146:in:砂叶粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M146:in:荞花粉末",
+          "value": "-1/2"
+        },
+        {
+          "row": "machine:M164:out:荞花",
+          "value": "2"
+        },
+        {
+          "row": "machine:M164:in:荞花种子",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M165:out:荞花",
+          "value": "2"
+        },
+        {
+          "row": "machine:M165:in:荞花种子",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M166:out:荞花",
+          "value": "3/2"
+        },
+        {
+          "row": "machine:M166:in:荞花种子",
+          "value": "-1/2"
+        },
+        {
+          "row": "machine:M167:out:荞花",
+          "value": "1"
+        },
+        {
+          "row": "machine:M168:out:荞花",
+          "value": "1"
+        },
+        {
+          "row": "machine:M169:out:荞花",
+          "value": "3/2"
+        },
+        {
+          "row": "machine:M169:in:荞花种子",
+          "value": "-1/2"
+        },
+        {
+          "row": "machine:M170:out:荞花",
+          "value": "1"
+        },
+        {
+          "row": "machine:M171:out:荞花",
+          "value": "1"
+        },
+        {
+          "row": "machine:M172:out:荞花",
+          "value": "1"
+        },
+        {
+          "row": "machine:M173:out:荞花",
+          "value": "1"
+        },
+        {
+          "row": "machine:M174:out:荞花",
+          "value": "1"
+        },
+        {
+          "row": "machine:M196:in:荞花",
+          "value": "-2"
+        },
+        {
+          "row": "machine:M196:out:荞花种子",
+          "value": "1"
+        },
+        {
+          "row": "machine:M197:in:荞花",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M197:out:荞花种子",
+          "value": "1/2"
+        },
+        {
+          "row": "machine:M198:in:荞花",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M198:out:荞花种子",
+          "value": "1/2"
+        }
+      ]
+    }
+  }
+}

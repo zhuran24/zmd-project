@@ -1,0 +1,23 @@
+{
+  "A初次": {
+    "exit_code": 1,
+    "status": "rejected"
+  },
+  "B初次": {
+    "exit_code": 1,
+    "status": "REJECTED"
+  },
+  "A当前正式版本": {
+    "exit_code": 1,
+    "status": "rejected"
+  },
+  "B当前正式版本": {
+    "exit_code": 2,
+    "status": "INVALID_INPUT"
+  },
+  "独立LP": {
+    "exit_code": 0,
+    "strict_solver_status": 2
+  },
+  "注": "程序退出0表示独立诊断正常完成，不表示LP可行；退出值记录自本轮工具结果。"
+}

@@ -1,0 +1,913 @@
+{
+  "scope": "内存元数据反例，非候选修改或新候选",
+  "geometry_same": true,
+  "B_feeds_original": {
+    "id": "B_feeds",
+    "basis": "格式§8.4",
+    "status": "violation",
+    "checked_instances": 1,
+    "examples": [
+      {
+        "count": 0
+      }
+    ],
+    "violations": [
+      {
+        "count": 0
+      }
+    ]
+  },
+  "B_feeds_without_provenance": null,
+  "checks": [
+    {
+      "id": "bounds",
+      "basis": "规则·基地；格式§2.2",
+      "status": "checked",
+      "checked_instances": 3961,
+      "examples": [
+        {
+          "unit": "M000",
+          "cell": [
+            34,
+            3
+          ]
+        },
+        {
+          "unit": "M000",
+          "cell": [
+            34,
+            4
+          ]
+        },
+        {
+          "unit": "M000",
+          "cell": [
+            34,
+            5
+          ]
+        }
+      ],
+      "violations": []
+    },
+    {
+      "id": "overlap",
+      "basis": "规则·单位大小；格式§2.2",
+      "status": "checked",
+      "checked_instances": 3961,
+      "examples": [
+        {
+          "unit": "M000",
+          "cell": [
+            34,
+            3
+          ],
+          "other": null
+        },
+        {
+          "unit": "M000",
+          "cell": [
+            34,
+            4
+          ],
+          "other": null
+        },
+        {
+          "unit": "M000",
+          "cell": [
+            34,
+            5
+          ],
+          "other": null
+        }
+      ],
+      "violations": []
+    },
+    {
+      "id": "machine_shape",
+      "basis": "规则·小/中/大制造单位；格式§5.1",
+      "status": "checked",
+      "checked_instances": 219,
+      "examples": [
+        {
+          "unit": "M000",
+          "expected": [
+            3,
+            3
+          ]
+        },
+        {
+          "unit": "M001",
+          "expected": [
+            3,
+            3
+          ]
+        },
+        {
+          "unit": "M002",
+          "expected": [
+            3,
+            3
+          ]
+        }
+      ],
+      "violations": []
+    },
+    {
+      "id": "unit_shape",
+      "basis": "规则·仓库取货口",
+      "status": "checked",
+      "checked_instances": 72,
+      "examples": [
+        {
+          "unit": "OUT_L00",
+          "expected": [
+            1,
+            3
+          ]
+        },
+        {
+          "unit": "OUT_L01",
+          "expected": [
+            1,
+            3
+          ]
+        },
+        {
+          "unit": "OUT_L02",
+          "expected": [
+            1,
+            3
+          ]
+        }
+      ],
+      "violations": []
+    },
+    {
+      "id": "outlet_boundary",
+      "basis": "任务·仓库取货口位置；规则·仓库取货口",
+      "status": "checked",
+      "checked_instances": 46,
+      "examples": [
+        {
+          "unit": "OUT_L00"
+        },
+        {
+          "unit": "OUT_L01"
+        },
+        {
+          "unit": "OUT_L02"
+        }
+      ],
+      "violations": []
+    },
+    {
+      "id": "N4b",
+      "basis": "共识§三.3 N4b；格式§6/8.2",
+      "status": "checked",
+      "checked_instances": 48,
+      "examples": [
+        {
+          "bridge": "T13_49",
+          "neighbor": "T14_49"
+        },
+        {
+          "bridge": "T13_49",
+          "neighbor": "M200"
+        },
+        {
+          "bridge": "T13_49",
+          "neighbor": "T12_49"
+        }
+      ],
+      "violations": []
+    },
+    {
+      "id": "N4a",
+      "basis": "规则·桥接器；共识§1.1.3、三.3；格式§6",
+      "status": "checked",
+      "checked_instances": 24,
+      "examples": [
+        {
+          "bridge": "T13_49",
+          "axis": "H",
+          "facing": {
+            "0": "in",
+            "2": "out"
+          },
+          "derived": 2,
+          "declared": 2
+        },
+        {
+          "bridge": "T13_49",
+          "axis": "V",
+          "facing": {
+            "1": "out",
+            "3": "in"
+          },
+          "derived": 1,
+          "declared": 1
+        },
+        {
+          "bridge": "T27_54",
+          "axis": "H",
+          "facing": {
+            "0": "in",
+            "2": "out"
+          },
+          "derived": 2,
+          "declared": 2
+        }
+      ],
+      "violations": []
+    },
+    {
+      "id": "N5a",
+      "basis": "规则·通道；约束#11 端口对接；共识 N5a；格式§8.1",
+      "status": "checked",
+      "checked_instances": 1,
+      "examples": [
+        {
+          "missing": [],
+          "extra": []
+        }
+      ],
+      "violations": []
+    },
+    {
+      "id": "N1",
+      "basis": "约束#5 取货分级；共识 N1；格式§8.2",
+      "status": "checked",
+      "checked_instances": 608,
+      "examples": [
+        {
+          "unit": "M000",
+          "outputs": [
+            5
+          ]
+        },
+        {
+          "unit": "M001",
+          "outputs": [
+            6
+          ]
+        },
+        {
+          "unit": "M002",
+          "outputs": []
+        }
+      ],
+      "violations": []
+    },
+    {
+      "id": "N2",
+      "basis": "规则·存货优先级；约束#6 密集结点；共识 N2",
+      "status": "checked",
+      "checked_instances": 608,
+      "examples": [
+        {
+          "unit": "M000",
+          "inputs": [
+            224
+          ]
+        },
+        {
+          "unit": "M001",
+          "inputs": []
+        },
+        {
+          "unit": "M002",
+          "inputs": []
+        }
+      ],
+      "violations": []
+    },
+    {
+      "id": "wrong_material",
+      "basis": "约束#20 存货误料停机与可用台数；格式§8.1",
+      "status": "checked",
+      "checked_instances": 219,
+      "examples": [
+        {
+          "unit": "M000",
+          "possible_wrong": []
+        },
+        {
+          "unit": "M001",
+          "possible_wrong": []
+        },
+        {
+          "unit": "M002",
+          "possible_wrong": []
+        }
+      ],
+      "violations": []
+    },
+    {
+      "id": "off_recipe",
+      "basis": "规则·配方/缓存格；格式§5.1/8.1",
+      "status": "checked",
+      "checked_instances": 219,
+      "examples": [
+        {
+          "unit": "M000",
+          "possible_off_design": []
+        },
+        {
+          "unit": "M001",
+          "possible_off_design": []
+        },
+        {
+          "unit": "M002",
+          "possible_off_design": []
+        }
+      ],
+      "violations": []
+    },
+    {
+      "id": "channel_possible_items",
+      "basis": "格式§8.1；设计物品集不是游戏过滤器",
+      "status": "checked",
+      "checked_instances": 424,
+      "examples": [
+        {
+          "channel": "PC000299",
+          "outside_allowed": []
+        },
+        {
+          "channel": "PC000290",
+          "outside_allowed": []
+        },
+        {
+          "channel": "PC000280",
+          "outside_allowed": []
+        }
+      ],
+      "violations": []
+    },
+    {
+      "id": "transport_endpoints",
+      "basis": "格式§8.2；共识 N5；纯运输环不能伪装送料",
+      "status": "checked",
+      "checked_instances": 1,
+      "examples": [
+        {
+          "no_source": [],
+          "no_sink": []
+        }
+      ],
+      "violations": []
+    },
+    {
+      "id": "P1",
+      "basis": "共识§1.3 P1；格式§8.2",
+      "status": "checked",
+      "checked_instances": 1,
+      "examples": [
+        {}
+      ],
+      "violations": []
+    },
+    {
+      "id": "P6",
+      "basis": "共识 P6；格式§8.2",
+      "status": "checked",
+      "checked_instances": 1,
+      "examples": [
+        {}
+      ],
+      "violations": []
+    },
+    {
+      "id": "P2",
+      "basis": "共识 P2；格式§8.2",
+      "status": "checked",
+      "checked_instances": 96,
+      "examples": [
+        {
+          "path_indices": [
+            0,
+            228,
+            220,
+            216
+          ],
+          "terminal": {
+            "unit": "M089",
+            "side": 1,
+            "offset": 2
+          },
+          "items": [
+            [
+              "蓝铁矿"
+            ],
+            [
+              "蓝铁矿"
+            ],
+            [
+              "蓝铁矿"
+            ],
+            [
+              "蓝铁矿"
+            ]
+          ]
+        },
+        {
+          "path_indices": [
+            1,
+            249,
+            255,
+            260,
+            264,
+            267,
+            289,
+            306,
+            308
+          ],
+          "terminal": {
+            "unit": "M085",
+            "side": 3,
+            "offset": 1
+          },
+          "items": [
+            [
+              "蓝铁矿"
+            ],
+            [
+              "蓝铁矿"
+            ],
+            [
+              "蓝铁矿"
+            ],
+            [
+              "蓝铁矿"
+            ],
+            [
+              "蓝铁矿"
+            ],
+            [
+              "蓝铁矿"
+            ],
+            [
+              "蓝铁矿"
+            ],
+            [
+              "蓝铁矿"
+            ],
+            [
+              "蓝铁矿"
+            ]
+          ]
+        },
+        {
+          "path_indices": [
+            2,
+            227,
+            226,
+            225,
+            237,
+            236,
+            235,
+            234,
+            233,
+            241
+          ],
+          "terminal": {
+            "unit": "M084",
+            "side": 3,
+            "offset": 0
+          },
+          "items": [
+            [
+              "蓝铁矿"
+            ],
+            [
+              "蓝铁矿"
+            ],
+            [
+              "蓝铁矿"
+            ],
+            [
+              "蓝铁矿"
+            ],
+            [
+              "蓝铁矿"
+            ],
+            [
+              "蓝铁矿"
+            ],
+            [
+              "蓝铁矿"
+            ],
+            [
+              "蓝铁矿"
+            ],
+            [
+              "蓝铁矿"
+            ],
+            [
+              "蓝铁矿"
+            ]
+          ]
+        }
+      ],
+      "violations": []
+    },
+    {
+      "id": "P4",
+      "basis": "共识 P4；正流另见 N5b/P3",
+      "status": "checked",
+      "derived_from": "N4a"
+    },
+    {
+      "id": "P5",
+      "basis": "共识 P5",
+      "status": "checked",
+      "derived_from": "N4b"
+    },
+    {
+      "id": "maximum_empty_rectangle",
+      "basis": "任务·目标；格式§7",
+      "status": "checked",
+      "checked_instances": 1,
+      "examples": [
+        {
+          "claimed": {
+            "x0": 62,
+            "y0": 64,
+            "x1": 69,
+            "y1": 69
+          },
+          "computed": {
+            "area": 48,
+            "short_side": 6,
+            "bounds": {
+              "x0": 62,
+              "y0": 64,
+              "x1": 69,
+              "y1": 69
+            }
+          }
+        }
+      ],
+      "violations": []
+    },
+    {
+      "id": "restrictions",
+      "basis": "格式§8.3；冻结共识§1.3",
+      "status": "checked",
+      "checked_instances": 1,
+      "examples": [
+        {
+          "missing": []
+        }
+      ],
+      "violations": []
+    },
+    {
+      "id": "restriction:all-single-recipe",
+      "basis": "格式§8.3",
+      "status": "unresolved",
+      "detail": "额外限制为自由文本，未实现可执行解释；不静默放行"
+    },
+    {
+      "id": "restriction:fixed-b-counts",
+      "basis": "格式§8.3",
+      "status": "unresolved",
+      "detail": "额外限制为自由文本，未实现可执行解释；不静默放行"
+    },
+    {
+      "id": "restriction:fixed-border",
+      "basis": "格式§8.3",
+      "status": "unresolved",
+      "detail": "额外限制为自由文本，未实现可执行解释；不静默放行"
+    },
+    {
+      "id": "restriction:fixed-placement",
+      "basis": "格式§8.3",
+      "status": "unresolved",
+      "detail": "额外限制为自由文本，未实现可执行解释；不静默放行"
+    },
+    {
+      "id": "restriction:search-feed-reassignment",
+      "basis": "格式§8.3",
+      "status": "unresolved",
+      "detail": "额外限制为自由文本，未实现可执行解释；不静默放行"
+    },
+    {
+      "id": "recipe_restriction_registration",
+      "basis": "格式§8.2 P6 后段",
+      "status": "violation",
+      "checked_instances": 1,
+      "examples": [
+        {
+          "single_recipe_other_models": [
+            "M069",
+            "M070",
+            "M071",
+            "M072",
+            "M073",
+            "M074",
+            "M075",
+            "M076",
+            "M077",
+            "M078",
+            "M079",
+            "M080",
+            "M081",
+            "M082",
+            "M083",
+            "M084",
+            "M085",
+            "M086",
+            "M087",
+            "M088",
+            "M089",
+            "M090",
+            "M091",
+            "M092",
+            "M093",
+            "M094",
+            "M095",
+            "M096",
+            "M097",
+            "M098",
+            "M099",
+            "M100",
+            "M101",
+            "M102",
+            "M103",
+            "M104",
+            "M105",
+            "M106",
+            "M107",
+            "M108",
+            "M109",
+            "M110",
+            "M111",
+            "M112",
+            "M113",
+            "M114",
+            "M115",
+            "M116",
+            "M117",
+            "M118",
+            "M119",
+            "M120",
+            "M121",
+            "M122",
+            "M123",
+            "M124",
+            "M125",
+            "M126",
+            "M127",
+            "M128",
+            "M129",
+            "M130",
+            "M131",
+            "M132",
+            "M133",
+            "M134",
+            "M135",
+            "M136",
+            "M137",
+            "M138",
+            "M139",
+            "M140",
+            "M141",
+            "M142",
+            "M143",
+            "M144",
+            "M145",
+            "M146",
+            "M147",
+            "M148",
+            "M149",
+            "M150",
+            "M151",
+            "M152",
+            "M153",
+            "M154",
+            "M155",
+            "M156",
+            "M157",
+            "M158",
+            "M159",
+            "M160",
+            "M161",
+            "M162",
+            "M163",
+            "M164",
+            "M165",
+            "M166",
+            "M167",
+            "M168",
+            "M169",
+            "M170",
+            "M171",
+            "M172",
+            "M173",
+            "M174",
+            "M175",
+            "M176",
+            "M177",
+            "M178",
+            "M179",
+            "M180",
+            "M181",
+            "M182",
+            "M183",
+            "M184",
+            "M185",
+            "M186",
+            "M187",
+            "M188",
+            "M189",
+            "M190",
+            "M191",
+            "M192",
+            "M193",
+            "M194",
+            "M195",
+            "M213",
+            "M214",
+            "M215",
+            "M216",
+            "M217",
+            "M218"
+          ]
+        }
+      ],
+      "violations": [
+        {
+          "single_recipe_other_models": [
+            "M069",
+            "M070",
+            "M071",
+            "M072",
+            "M073",
+            "M074",
+            "M075",
+            "M076",
+            "M077",
+            "M078",
+            "M079",
+            "M080",
+            "M081",
+            "M082",
+            "M083",
+            "M084",
+            "M085",
+            "M086",
+            "M087",
+            "M088",
+            "M089",
+            "M090",
+            "M091",
+            "M092",
+            "M093",
+            "M094",
+            "M095",
+            "M096",
+            "M097",
+            "M098",
+            "M099",
+            "M100",
+            "M101",
+            "M102",
+            "M103",
+            "M104",
+            "M105",
+            "M106",
+            "M107",
+            "M108",
+            "M109",
+            "M110",
+            "M111",
+            "M112",
+            "M113",
+            "M114",
+            "M115",
+            "M116",
+            "M117",
+            "M118",
+            "M119",
+            "M120",
+            "M121",
+            "M122",
+            "M123",
+            "M124",
+            "M125",
+            "M126",
+            "M127",
+            "M128",
+            "M129",
+            "M130",
+            "M131",
+            "M132",
+            "M133",
+            "M134",
+            "M135",
+            "M136",
+            "M137",
+            "M138",
+            "M139",
+            "M140",
+            "M141",
+            "M142",
+            "M143",
+            "M144",
+            "M145",
+            "M146",
+            "M147",
+            "M148",
+            "M149",
+            "M150",
+            "M151",
+            "M152",
+            "M153",
+            "M154",
+            "M155",
+            "M156",
+            "M157",
+            "M158",
+            "M159",
+            "M160",
+            "M161",
+            "M162",
+            "M163",
+            "M164",
+            "M165",
+            "M166",
+            "M167",
+            "M168",
+            "M169",
+            "M170",
+            "M171",
+            "M172",
+            "M173",
+            "M174",
+            "M175",
+            "M176",
+            "M177",
+            "M178",
+            "M179",
+            "M180",
+            "M181",
+            "M182",
+            "M183",
+            "M184",
+            "M185",
+            "M186",
+            "M187",
+            "M188",
+            "M189",
+            "M190",
+            "M191",
+            "M192",
+            "M193",
+            "M194",
+            "M195",
+            "M213",
+            "M214",
+            "M215",
+            "M216",
+            "M217",
+            "M218"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "source_binding",
+      "basis": "格式§8.4",
+      "status": "checked",
+      "checked_instances": 52,
+      "examples": [
+        {
+          "logical_source_id": "ORE000",
+          "port": {
+            "unit": "OUT_B11",
+            "side": 1,
+            "offset": 1
+          }
+        },
+        {
+          "logical_source_id": "ORE001",
+          "port": {
+            "unit": "OUT_L02",
+            "side": 0,
+            "offset": 1
+          }
+        },
+        {
+          "logical_source_id": "ORE002",
+          "port": {
+            "unit": "OUT_B03",
+            "side": 1,
+            "offset": 1
+          }
+        }
+      ],
+      "violations": []
+    }
+  ]
+}

@@ -1,0 +1,176 @@
+{
+  "item": "荞花",
+  "scope": "sources<=1,no targets; each item separately maximized",
+  "nonzero_values": [],
+  "solver": {
+    "status": 0,
+    "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+    "variables": 643,
+    "rows": 16550,
+    "equalities": 15526,
+    "inequalities": 1024,
+    "iterations": 0,
+    "presolve": true,
+    "exact_primal": true,
+    "exact_dual": true,
+    "objective": "0",
+    "nonzero_variables": 0,
+    "certificate": {
+      "bound": "0",
+      "multipliers": [
+        {
+          "row": "slot:('T20_69', 'single'):荞花",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T21_69', 'single'):荞花",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T55_43', 'single'):荞花粉末",
+          "value": "-1/2"
+        },
+        {
+          "row": "slot:('T56_42', 'single'):荞花粉末",
+          "value": "-1/2"
+        },
+        {
+          "row": "slot:('T56_43', 'single'):荞花粉末",
+          "value": "-1/2"
+        },
+        {
+          "row": "slot:('T58_43', 'single'):荞花粉末",
+          "value": "-1/2"
+        },
+        {
+          "row": "slot:('T59_43', 'single'):荞花粉末",
+          "value": "-1/2"
+        },
+        {
+          "row": "slot:('T60_39', 'single'):荞花",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T60_40', 'single'):荞花",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T61_47', 'single'):荞花",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T64_52', 'single'):荞花种子",
+          "value": "-1/2"
+        },
+        {
+          "row": "slot:('T65_52', 'single'):荞花种子",
+          "value": "-1/2"
+        },
+        {
+          "row": "slot:('T65_53', 'V'):荞花种子",
+          "value": "-1/2"
+        },
+        {
+          "row": "slot:('T69_59', 'single'):荞花",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M052:in:荞花",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M052:out:荞花粉末",
+          "value": "1/2"
+        },
+        {
+          "row": "machine:M056:in:荞花",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M056:out:荞花粉末",
+          "value": "1/2"
+        },
+        {
+          "row": "machine:M057:in:荞花",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M057:out:荞花粉末",
+          "value": "1/2"
+        },
+        {
+          "row": "machine:M146:in:砂叶粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M146:in:荞花粉末",
+          "value": "-1/2"
+        },
+        {
+          "row": "machine:M147:in:砂叶粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M147:in:荞花粉末",
+          "value": "-1/2"
+        },
+        {
+          "row": "machine:M164:out:荞花",
+          "value": "1"
+        },
+        {
+          "row": "machine:M165:out:荞花",
+          "value": "3/2"
+        },
+        {
+          "row": "machine:M165:in:荞花种子",
+          "value": "-1/2"
+        },
+        {
+          "row": "machine:M166:out:荞花",
+          "value": "1"
+        },
+        {
+          "row": "machine:M167:out:荞花",
+          "value": "1"
+        },
+        {
+          "row": "machine:M168:out:荞花",
+          "value": "1"
+        },
+        {
+          "row": "machine:M169:out:荞花",
+          "value": "1"
+        },
+        {
+          "row": "machine:M170:out:荞花",
+          "value": "1"
+        },
+        {
+          "row": "machine:M171:out:荞花",
+          "value": "1"
+        },
+        {
+          "row": "machine:M172:out:荞花",
+          "value": "1"
+        },
+        {
+          "row": "machine:M173:out:荞花",
+          "value": "1"
+        },
+        {
+          "row": "machine:M174:out:荞花",
+          "value": "1"
+        },
+        {
+          "row": "machine:M196:in:荞花",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M196:out:荞花种子",
+          "value": "1/2"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,719 @@
+{
+  "schema": "full-factory-static-v1",
+  "candidate_id": "factory-static-attempt-0001",
+  "source_fingerprints": {
+    "rules": "52df4c12ce90975b861a6a663bd37873e03c9549658d200dc7e95fabc4bc29f3",
+    "task": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+    "constraints": "a67c18dec5f6ae59c41e8620d270007f20c2d3e5b202521d0cca12f616bca3df"
+  },
+  "provenance": [
+    {
+      "path": "求解器/数据/候选B/contract.json",
+      "sha256": "a555045972861bc60a84ade0cfaf81a037a1abfff89be1aeee578b9ef0e1a2db"
+    },
+    {
+      "path": "求解器/会议成果/会议3/共识稿-v4-7aae9e20.md",
+      "sha256": "7aae9e20fdfab4edc5cb44b4de5a083436c86874449af654e9b0ee9871da5578"
+    },
+    {
+      "path": "求解器/构造/第一张全厂候选/格式.md",
+      "sha256": "c1da2787a0b8f86201f9e207c897be3b8ddf4e49dca3284d03f34bc334019987"
+    }
+  ],
+  "targets": {
+    "高容谷地电池": "3/5",
+    "精选荞愈胶囊": "11/20"
+  },
+  "layout": {
+    "W": 70,
+    "H": 70,
+    "machines": [],
+    "warehouse_outlets": [
+      {
+        "id": "OUT_L00",
+        "x0": 0,
+        "y0": 1,
+        "x1": 0,
+        "y1": 3,
+        "Dout": 0,
+        "item": "源矿"
+      }
+    ],
+    "core": {
+      "id": "CORE",
+      "x0": 34,
+      "y0": 24,
+      "x1": 42,
+      "y1": 32,
+      "Din": 0,
+      "output_items": [
+        {
+          "side": 1,
+          "offset": 7,
+          "item": "蓝铁矿"
+        },
+        {
+          "side": 3,
+          "offset": 1,
+          "item": "蓝铁矿"
+        },
+        {
+          "side": 1,
+          "offset": 4,
+          "item": "蓝铁矿"
+        },
+        {
+          "side": 1,
+          "offset": 1,
+          "item": "蓝铁矿"
+        },
+        {
+          "side": 3,
+          "offset": 4,
+          "item": "蓝铁矿"
+        },
+        {
+          "side": 3,
+          "offset": 7,
+          "item": "蓝铁矿"
+        }
+      ]
+    },
+    "power_poles": [],
+    "storage_boxes": [],
+    "transport": [
+      {
+        "id": "BR_TEST",
+        "x": 1,
+        "y": 2,
+        "type": "bridge",
+        "H_in": 2,
+        "V_in": null
+      }
+    ],
+    "vin": [],
+    "vout": []
+  },
+  "empty_rectangle": {
+    "x0": 62,
+    "y0": 64,
+    "x1": 69,
+    "y1": 69
+  },
+  "design": {
+    "class": "p2p",
+    "physical_channels": [],
+    "restrictions": [
+      {
+        "id": "P1",
+        "source": [
+          "shape"
+        ],
+        "statement": "只用传送带和桥，不用分流器、汇流器、准入口或协议储存箱。 来源：会议3冻结稿§1.3及第三节第3条、格式.md§8.2。",
+        "coverage_loss": "不覆盖违反该受限类条件但可能依靠混料、特殊运输、优先级或动态调试运行的布局。",
+        "release_obligations": "撤去后须按完整单位语义补表示、物品/容量核验以及相应先后与运行证明。",
+        "failure_scope": "只覆盖本候选字节固定的占格、朝向、设定、配方和通道；LP仍放开允许物品的连续流与批率。生成器的有限搜索失败不排除其他摆放或指派。初态、调试、全部合法先后和可达循环态未覆盖，不降低U，也不更新L。"
+      },
+      {
+        "id": "P2",
+        "source": [
+          "shape"
+        ],
+        "statement": "每条非运输端口到非运输端口路径只声明一种物品，桥不换轴，途中不经过其他非运输单位。 来源：会议3冻结稿§1.3及第三节第3条、格式.md§8.2。",
+        "coverage_loss": "不覆盖违反该受限类条件但可能依靠混料、特殊运输、优先级或动态调试运行的布局。",
+        "release_obligations": "撤去后须按完整单位语义补表示、物品/容量核验以及相应先后与运行证明。",
+        "failure_scope": "只覆盖本候选字节固定的占格、朝向、设定、配方和通道；LP仍放开允许物品的连续流与批率。生成器的有限搜索失败不排除其他摆放或指派。初态、调试、全部合法先后和可达循环态未覆盖，不降低U，也不更新L。"
+      },
+      {
+        "id": "P3",
+        "source": [
+          "dynamic"
+        ],
+        "statement": "要求形成的结构通道均承载严格正设计流；本文件是待验候选，不以登记本项宣告其满足。 来源：会议3冻结稿§1.3及第三节第3条、格式.md§8.2。",
+        "coverage_loss": "不覆盖违反该受限类条件但可能依靠混料、特殊运输、优先级或动态调试运行的布局。",
+        "release_obligations": "撤去后须按完整单位语义补表示、物品/容量核验以及相应先后与运行证明。",
+        "failure_scope": "只覆盖本候选字节固定的占格、朝向、设定、配方和通道；LP仍放开允许物品的连续流与批率。生成器的有限搜索失败不排除其他摆放或指派。初态、调试、全部合法先后和可达循环态未覆盖，不降低U，也不更新L。"
+      },
+      {
+        "id": "P4",
+        "source": [
+          "dynamic"
+        ],
+        "statement": "要求桥的使用轴双端均在用，未用轴两端没有相向端口。 来源：会议3冻结稿§1.3及第三节第3条、格式.md§8.2。",
+        "coverage_loss": "不覆盖违反该受限类条件但可能依靠混料、特殊运输、优先级或动态调试运行的布局。",
+        "release_obligations": "撤去后须按完整单位语义补表示、物品/容量核验以及相应先后与运行证明。",
+        "failure_scope": "只覆盖本候选字节固定的占格、朝向、设定、配方和通道；LP仍放开允许物品的连续流与批率。生成器的有限搜索失败不排除其他摆放或指派。初态、调试、全部合法先后和可达循环态未覆盖，不降低U，也不更新L。"
+      },
+      {
+        "id": "P5",
+        "source": [
+          "shape"
+        ],
+        "statement": "两座桥不得正交相邻。 来源：会议3冻结稿§1.3及第三节第3条、格式.md§8.2。",
+        "coverage_loss": "不覆盖违反该受限类条件但可能依靠混料、特殊运输、优先级或动态调试运行的布局。",
+        "release_obligations": "撤去后须按完整单位语义补表示、物品/容量核验以及相应先后与运行证明。",
+        "failure_scope": "只覆盖本候选字节固定的占格、朝向、设定、配方和通道；LP仍放开允许物品的连续流与批率。生成器的有限搜索失败不排除其他摆放或指派。初态、调试、全部合法先后和可达循环态未覆盖，不降低U，也不更新L。"
+      },
+      {
+        "id": "P6",
+        "source": [
+          "dynamic"
+        ],
+        "statement": "每台粉碎机与采种机只声明一种配方。 来源：会议3冻结稿§1.3及第三节第3条、格式.md§8.2。",
+        "coverage_loss": "不覆盖违反该受限类条件但可能依靠混料、特殊运输、优先级或动态调试运行的布局。",
+        "release_obligations": "撤去后须按完整单位语义补表示、物品/容量核验以及相应先后与运行证明。",
+        "failure_scope": "只覆盖本候选字节固定的占格、朝向、设定、配方和通道；LP仍放开允许物品的连续流与批率。生成器的有限搜索失败不排除其他摆放或指派。初态、调试、全部合法先后和可达循环态未覆盖，不降低U，也不更新L。"
+      },
+      {
+        "id": "N1",
+        "source": [
+          "dynamic"
+        ],
+        "statement": "有至少两条取货通道的非运输单位不得直连汇流器。 来源：会议3冻结稿§1.3及第三节第3条、格式.md§8.2。",
+        "coverage_loss": "不覆盖违反该受限类条件但可能依靠混料、特殊运输、优先级或动态调试运行的布局。",
+        "release_obligations": "撤去后须按完整单位语义补表示、物品/容量核验以及相应先后与运行证明。",
+        "failure_scope": "只覆盖本候选字节固定的占格、朝向、设定、配方和通道；LP仍放开允许物品的连续流与批率。生成器的有限搜索失败不排除其他摆放或指派。初态、调试、全部合法先后和可达循环态未覆盖，不降低U，也不更新L。"
+      },
+      {
+        "id": "N2",
+        "source": [
+          "dynamic"
+        ],
+        "statement": "有至少两条存货通道的单位不得有来自分流器的通道，桥按物理单位汇总。 来源：会议3冻结稿§1.3及第三节第3条、格式.md§8.2。",
+        "coverage_loss": "不覆盖违反该受限类条件但可能依靠混料、特殊运输、优先级或动态调试运行的布局。",
+        "release_obligations": "撤去后须按完整单位语义补表示、物品/容量核验以及相应先后与运行证明。",
+        "failure_scope": "只覆盖本候选字节固定的占格、朝向、设定、配方和通道；LP仍放开允许物品的连续流与批率。生成器的有限搜索失败不排除其他摆放或指派。初态、调试、全部合法先后和可达循环态未覆盖，不降低U，也不更新L。"
+      },
+      {
+        "id": "N3a",
+        "source": [
+          "dynamic"
+        ],
+        "statement": "承载正流的准入口累计上限必须为空。 来源：会议3冻结稿§1.3及第三节第3条、格式.md§8.2。",
+        "coverage_loss": "不覆盖违反该受限类条件但可能依靠混料、特殊运输、优先级或动态调试运行的布局。",
+        "release_obligations": "撤去后须按完整单位语义补表示、物品/容量核验以及相应先后与运行证明。",
+        "failure_scope": "只覆盖本候选字节固定的占格、朝向、设定、配方和通道；LP仍放开允许物品的连续流与批率。生成器的有限搜索失败不排除其他摆放或指派。初态、调试、全部合法先后和可达循环态未覆盖，不降低U，也不更新L。"
+      },
+      {
+        "id": "N3b",
+        "source": [
+          "dynamic"
+        ],
+        "statement": "限种准入口直接上游被拒物品须有同物品格的另一条不按身份拒绝的结构出口。 来源：会议3冻结稿§1.3及第三节第3条、格式.md§8.2。",
+        "coverage_loss": "不覆盖违反该受限类条件但可能依靠混料、特殊运输、优先级或动态调试运行的布局。",
+        "release_obligations": "撤去后须按完整单位语义补表示、物品/容量核验以及相应先后与运行证明。",
+        "failure_scope": "只覆盖本候选字节固定的占格、朝向、设定、配方和通道；LP仍放开允许物品的连续流与批率。生成器的有限搜索失败不排除其他摆放或指派。初态、调试、全部合法先后和可达循环态未覆盖，不降低U，也不更新L。"
+      },
+      {
+        "id": "N4a",
+        "source": [
+          "dynamic"
+        ],
+        "statement": "桥轴方向由两端邻端口一取一存推导，与声明相符；未用轴双端均无朝它的端口。 来源：会议3冻结稿§1.3及第三节第3条、格式.md§8.2。",
+        "coverage_loss": "不覆盖违反该受限类条件但可能依靠混料、特殊运输、优先级或动态调试运行的布局。",
+        "release_obligations": "撤去后须按完整单位语义补表示、物品/容量核验以及相应先后与运行证明。",
+        "failure_scope": "只覆盖本候选字节固定的占格、朝向、设定、配方和通道；LP仍放开允许物品的连续流与批率。生成器的有限搜索失败不排除其他摆放或指派。初态、调试、全部合法先后和可达循环态未覆盖，不降低U，也不更新L。"
+      },
+      {
+        "id": "N4b",
+        "source": [
+          "shape"
+        ],
+        "statement": "不允许两桥正交相邻。 来源：会议3冻结稿§1.3及第三节第3条、格式.md§8.2。",
+        "coverage_loss": "不覆盖违反该受限类条件但可能依靠混料、特殊运输、优先级或动态调试运行的布局。",
+        "release_obligations": "撤去后须按完整单位语义补表示、物品/容量核验以及相应先后与运行证明。",
+        "failure_scope": "只覆盖本候选字节固定的占格、朝向、设定、配方和通道；LP仍放开允许物品的连续流与批率。生成器的有限搜索失败不排除其他摆放或指派。初态、调试、全部合法先后和可达循环态未覆盖，不降低U，也不更新L。"
+      },
+      {
+        "id": "N5a",
+        "source": [
+          "dynamic"
+        ],
+        "statement": "全部物理通道由端口相遇当且仅当重算，必须与声明端点集合相等。 来源：会议3冻结稿§1.3及第三节第3条、格式.md§8.2。",
+        "coverage_loss": "不覆盖违反该受限类条件但可能依靠混料、特殊运输、优先级或动态调试运行的布局。",
+        "release_obligations": "撤去后须按完整单位语义补表示、物品/容量核验以及相应先后与运行证明。",
+        "failure_scope": "只覆盖本候选字节固定的占格、朝向、设定、配方和通道；LP仍放开允许物品的连续流与批率。生成器的有限搜索失败不排除其他摆放或指派。初态、调试、全部合法先后和可达循环态未覆盖，不降低U，也不更新L。"
+      },
+      {
+        "id": "N5b",
+        "source": [
+          "dynamic"
+        ],
+        "statement": "全部结构通道的物品流之和严格为正，须由共同delta或精确正流见证确认。 来源：会议3冻结稿§1.3及第三节第3条、格式.md§8.2。",
+        "coverage_loss": "不覆盖违反该受限类条件但可能依靠混料、特殊运输、优先级或动态调试运行的布局。",
+        "release_obligations": "撤去后须按完整单位语义补表示、物品/容量核验以及相应先后与运行证明。",
+        "failure_scope": "只覆盖本候选字节固定的占格、朝向、设定、配方和通道；LP仍放开允许物品的连续流与批率。生成器的有限搜索失败不排除其他摆放或指派。初态、调试、全部合法先后和可达循环态未覆盖，不降低U，也不更新L。"
+      },
+      {
+        "id": "fixed-b-counts",
+        "source": [
+          "shape"
+        ],
+        "statement": "沿用候选B的219台数和逐机单配方：粉碎69、精炼51、研磨32、塑形6、配件6、种植32、采种17、封装3、灌装3。所有制造开关开启。",
+        "coverage_loss": "不覆盖217/218台混做分支、增机以及其他单配方分配。",
+        "release_obligations": "允许变台数、混做配方后重新核物料平衡、尺寸、误料与全部受限类条件。",
+        "failure_scope": "只覆盖本候选字节固定的占格、朝向、设定、配方和通道；LP仍放开允许物品的连续流与批率。生成器的有限搜索失败不排除其他摆放或指派。初态、调试、全部合法先后和可达循环态未覆盖，不降低U，也不更新L。"
+      },
+      {
+        "id": "all-single-recipe",
+        "source": [
+          "dynamic"
+        ],
+        "statement": "P6以外的所有制造单位也各只声明一配方；来源是本轮候选构造选择，不归因于P2。",
+        "coverage_loss": "排除其他机型混做配方的布局。",
+        "release_obligations": "补逐机多配方连续批率和实际配方触发、清空及误料证明。",
+        "failure_scope": "只覆盖本候选字节固定的占格、朝向、设定、配方和通道；LP仍放开允许物品的连续流与批率。生成器的有限搜索失败不排除其他摆放或指派。初态、调试、全部合法先后和可达循环态未覆盖，不降低U，也不更新L。"
+      },
+      {
+        "id": "fixed-border",
+        "source": [
+          "shape"
+        ],
+        "statement": "左、下边均从坐标1起每3格放一口，角格(0,0)空；52个物理矿口与ORE身份一一绑定。来源：会议3测点的一个边带分支。",
+        "coverage_loss": "排除边带唯一空格在其他合法位置的排布与不同矿口身份指派。",
+        "release_obligations": "开放空格位置与来源映射，并重新按端口和矿石能力布线。",
+        "failure_scope": "只覆盖本候选字节固定的占格、朝向、设定、配方和通道；LP仍放开允许物品的连续流与批率。生成器的有限搜索失败不排除其他摆放或指派。初态、调试、全部合法先后和可达循环态未覆盖，不降低U，也不更新L。"
+      },
+      {
+        "id": "fixed-placement",
+        "source": [
+          "shape"
+        ],
+        "statement": "机器、核心及供电桩位置固定为本JSON；搜索预留右上(64,64)至(69,69)六乘六空区。",
+        "coverage_loss": "不覆盖其他实体位置、朝向、供电配置和留白位置。",
+        "release_obligations": "开放摆放并重新求解全部路径、覆盖和最大空矩形；固定摆放失败不证明全域失败。",
+        "failure_scope": "只覆盖本候选字节固定的占格、朝向、设定、配方和通道；LP仍放开允许物品的连续流与批率。生成器的有限搜索失败不排除其他摆放或指派。初态、调试、全部合法先后和可达循环态未覆盖，不降低U，也不更新L。"
+      },
+      {
+        "id": "search-feed-reassignment",
+        "source": [
+          "shape",
+          "numeric"
+        ],
+        "statement": "以候选B的物品和精确速率类别作启发式匹配标签，允许同物品同速率记录重指派目标；只导出已布通的完整路径。没有附logical_feeds，故最终LP不固定B速率/315条端点指派。来源：本轮指派与布线.py。",
+        "coverage_loss": "搜索未覆盖跨速率拆并、其他台数/配方及全体指派。未布通路径不充当已兑现接口。",
+        "release_obligations": "开放指派、速率及布线支持后补完整实体路径；所有缺失供需仍在LP内，不能由省略路径免掉。",
+        "failure_scope": "只覆盖本候选字节固定的占格、朝向、设定、配方和通道；LP仍放开允许物品的连续流与批率。生成器的有限搜索失败不排除其他摆放或指派。初态、调试、全部合法先后和可达循环态未覆盖，不降低U，也不更新L。"
+      }
+    ],
+    "source_bindings": [
+      {
+        "logical_source_id": "ORE000",
+        "port": {
+          "unit": "OUT_B11",
+          "side": 1,
+          "offset": 1
+        }
+      },
+      {
+        "logical_source_id": "ORE001",
+        "port": {
+          "unit": "OUT_L02",
+          "side": 0,
+          "offset": 1
+        }
+      },
+      {
+        "logical_source_id": "ORE002",
+        "port": {
+          "unit": "OUT_B03",
+          "side": 1,
+          "offset": 1
+        }
+      },
+      {
+        "logical_source_id": "ORE003",
+        "port": {
+          "unit": "OUT_B14",
+          "side": 1,
+          "offset": 1
+        }
+      },
+      {
+        "logical_source_id": "ORE004",
+        "port": {
+          "unit": "OUT_L03",
+          "side": 0,
+          "offset": 1
+        }
+      },
+      {
+        "logical_source_id": "ORE005",
+        "port": {
+          "unit": "OUT_L00",
+          "side": 0,
+          "offset": 1
+        }
+      },
+      {
+        "logical_source_id": "ORE006",
+        "port": {
+          "unit": "OUT_B06",
+          "side": 1,
+          "offset": 1
+        }
+      },
+      {
+        "logical_source_id": "ORE007",
+        "port": {
+          "unit": "OUT_L12",
+          "side": 0,
+          "offset": 1
+        }
+      },
+      {
+        "logical_source_id": "ORE008",
+        "port": {
+          "unit": "OUT_B08",
+          "side": 1,
+          "offset": 1
+        }
+      },
+      {
+        "logical_source_id": "ORE009",
+        "port": {
+          "unit": "OUT_B13",
+          "side": 1,
+          "offset": 1
+        }
+      },
+      {
+        "logical_source_id": "ORE010",
+        "port": {
+          "unit": "OUT_L10",
+          "side": 0,
+          "offset": 1
+        }
+      },
+      {
+        "logical_source_id": "ORE011",
+        "port": {
+          "unit": "OUT_L01",
+          "side": 0,
+          "offset": 1
+        }
+      },
+      {
+        "logical_source_id": "ORE012",
+        "port": {
+          "unit": "OUT_L04",
+          "side": 0,
+          "offset": 1
+        }
+      },
+      {
+        "logical_source_id": "ORE013",
+        "port": {
+          "unit": "OUT_B02",
+          "side": 1,
+          "offset": 1
+        }
+      },
+      {
+        "logical_source_id": "ORE014",
+        "port": {
+          "unit": "OUT_B04",
+          "side": 1,
+          "offset": 1
+        }
+      },
+      {
+        "logical_source_id": "ORE015",
+        "port": {
+          "unit": "OUT_B16",
+          "side": 1,
+          "offset": 1
+        }
+      },
+      {
+        "logical_source_id": "ORE016",
+        "port": {
+          "unit": "OUT_L06",
+          "side": 0,
+          "offset": 1
+        }
+      },
+      {
+        "logical_source_id": "ORE017",
+        "port": {
+          "unit": "OUT_B12",
+          "side": 1,
+          "offset": 1
+        }
+      },
+      {
+        "logical_source_id": "ORE018",
+        "port": {
+          "unit": "OUT_L14",
+          "side": 0,
+          "offset": 1
+        }
+      },
+      {
+        "logical_source_id": "ORE019",
+        "port": {
+          "unit": "OUT_B18",
+          "side": 1,
+          "offset": 1
+        }
+      },
+      {
+        "logical_source_id": "ORE020",
+        "port": {
+          "unit": "OUT_L16",
+          "side": 0,
+          "offset": 1
+        }
+      },
+      {
+        "logical_source_id": "ORE021",
+        "port": {
+          "unit": "OUT_B01",
+          "side": 1,
+          "offset": 1
+        }
+      },
+      {
+        "logical_source_id": "ORE022",
+        "port": {
+          "unit": "OUT_B21",
+          "side": 1,
+          "offset": 1
+        }
+      },
+      {
+        "logical_source_id": "ORE023",
+        "port": {
+          "unit": "CORE",
+          "side": 1,
+          "offset": 7
+        }
+      },
+      {
+        "logical_source_id": "ORE024",
+        "port": {
+          "unit": "OUT_B10",
+          "side": 1,
+          "offset": 1
+        }
+      },
+      {
+        "logical_source_id": "ORE025",
+        "port": {
+          "unit": "OUT_L15",
+          "side": 0,
+          "offset": 1
+        }
+      },
+      {
+        "logical_source_id": "ORE026",
+        "port": {
+          "unit": "OUT_L09",
+          "side": 0,
+          "offset": 1
+        }
+      },
+      {
+        "logical_source_id": "ORE027",
+        "port": {
+          "unit": "OUT_L22",
+          "side": 0,
+          "offset": 1
+        }
+      },
+      {
+        "logical_source_id": "ORE028",
+        "port": {
+          "unit": "OUT_B17",
+          "side": 1,
+          "offset": 1
+        }
+      },
+      {
+        "logical_source_id": "ORE029",
+        "port": {
+          "unit": "OUT_B19",
+          "side": 1,
+          "offset": 1
+        }
+      },
+      {
+        "logical_source_id": "ORE030",
+        "port": {
+          "unit": "OUT_L18",
+          "side": 0,
+          "offset": 1
+        }
+      },
+      {
+        "logical_source_id": "ORE031",
+        "port": {
+          "unit": "OUT_L05",
+          "side": 0,
+          "offset": 1
+        }
+      },
+      {
+        "logical_source_id": "ORE032",
+        "port": {
+          "unit": "OUT_L13",
+          "side": 0,
+          "offset": 1
+        }
+      },
+      {
+        "logical_source_id": "ORE033",
+        "port": {
+          "unit": "CORE",
+          "side": 3,
+          "offset": 1
+        }
+      },
+      {
+        "logical_source_id": "ORE034",
+        "port": {
+          "unit": "CORE",
+          "side": 1,
+          "offset": 4
+        }
+      },
+      {
+        "logical_source_id": "ORE035",
+        "port": {
+          "unit": "OUT_B20",
+          "side": 1,
+          "offset": 1
+        }
+      },
+      {
+        "logical_source_id": "ORE036",
+        "port": {
+          "unit": "OUT_L21",
+          "side": 0,
+          "offset": 1
+        }
+      },
+      {
+        "logical_source_id": "ORE037",
+        "port": {
+          "unit": "OUT_B00",
+          "side": 1,
+          "offset": 1
+        }
+      },
+      {
+        "logical_source_id": "ORE038",
+        "port": {
+          "unit": "CORE",
+          "side": 1,
+          "offset": 1
+        }
+      },
+      {
+        "logical_source_id": "ORE039",
+        "port": {
+          "unit": "OUT_L07",
+          "side": 0,
+          "offset": 1
+        }
+      },
+      {
+        "logical_source_id": "ORE040",
+        "port": {
+          "unit": "OUT_B22",
+          "side": 1,
+          "offset": 1
+        }
+      },
+      {
+        "logical_source_id": "ORE041",
+        "port": {
+          "unit": "OUT_B05",
+          "side": 1,
+          "offset": 1
+        }
+      },
+      {
+        "logical_source_id": "ORE042",
+        "port": {
+          "unit": "OUT_L11",
+          "side": 0,
+          "offset": 1
+        }
+      },
+      {
+        "logical_source_id": "ORE043",
+        "port": {
+          "unit": "OUT_B07",
+          "side": 1,
+          "offset": 1
+        }
+      },
+      {
+        "logical_source_id": "ORE044",
+        "port": {
+          "unit": "OUT_L19",
+          "side": 0,
+          "offset": 1
+        }
+      },
+      {
+        "logical_source_id": "ORE045",
+        "port": {
+          "unit": "OUT_L08",
+          "side": 0,
+          "offset": 1
+        }
+      },
+      {
+        "logical_source_id": "ORE046",
+        "port": {
+          "unit": "OUT_B09",
+          "side": 1,
+          "offset": 1
+        }
+      },
+      {
+        "logical_source_id": "ORE047",
+        "port": {
+          "unit": "CORE",
+          "side": 3,
+          "offset": 4
+        }
+      },
+      {
+        "logical_source_id": "ORE048",
+        "port": {
+          "unit": "OUT_B15",
+          "side": 1,
+          "offset": 1
+        }
+      },
+      {
+        "logical_source_id": "ORE049",
+        "port": {
+          "unit": "OUT_L17",
+          "side": 0,
+          "offset": 1
+        }
+      },
+      {
+        "logical_source_id": "ORE050",
+        "port": {
+          "unit": "CORE",
+          "side": 3,
+          "offset": 7
+        }
+      },
+      {
+        "logical_source_id": "ORE051",
+        "port": {
+          "unit": "OUT_L20",
+          "side": 0,
+          "offset": 1
+        }
+      }
+    ]
+  },
+  "flow_witness": null
+}

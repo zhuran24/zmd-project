@@ -1,0 +1,101 @@
+
+Starting CP-SAT solver v9.15.6755
+Parameters: random_seed: 222 max_time_in_seconds: 180 log_search_progress: true num_workers: 5
+
+Initial optimization model '': (model_fingerprint: 0x2a5ffafbe75d8d44)
+#Variables: 19'908 (#bools: 2'096 in objective) (8'388 primary variables)
+  - 19'908 Booleans in [0,1]
+#kExactlyOne: 6 (#literals: 822)
+#kLinear1: 5'641
+#kLinear2: 12'602
+#kLinear3: 152
+#kLinearN: 1'752 (#terms: 26'799)
+#kTable: 1'280
+
+Starting presolve at 0.02s
+  4.16e-03s  0.00e+00d  [DetectDominanceRelations] 
+  5.76e-02s  0.00e+00d  [PresolveToFixPoint] #num_loops=18 #num_dual_strengthening=1 
+  1.10e-04s  0.00e+00d  [ExtractEncodingFromLinear] #potential_supersets=398 
+  2.16e-03s  0.00e+00d  [DetectDuplicateColumns] 
+  1.40e-03s  0.00e+00d  [DetectDuplicateConstraints] #duplicates=1'619 
+[Symmetry] Graph for symmetry has 40'667 nodes and 80'955 arcs.
+[Symmetry] Symmetry computation done. time: 0.00981445 dtime: 0.0164192
+[Symmetry] #generators: 45, average support size: 8.71111
+[Symmetry] 127 orbits on 323 variables with sizes: 11,11,11,6,6,6,5,5,5,4,...
+[Symmetry] Num fixable by intersecting at_most_one with orbits: 3 largest_orbit: 11
+[Symmetry] Found orbitope of size 3 x 2
+[SAT presolve] num removable Booleans: 0 / 10'895
+[SAT presolve] num trivial clauses: 0
+[SAT presolve] [0s] clauses:4'733 literals:11'820 vars:2'665 one_side_vars:2058 simple_definition:137 singleton_clauses:0
+[SAT presolve] [0.000220341s] clauses:4'731 literals:11'808 vars:2'665 one_side_vars:2061 simple_definition:136 singleton_clauses:0
+[SAT presolve] [0.000651244s] clauses:4'731 literals:11'808 vars:2'665 one_side_vars:2061 simple_definition:136 singleton_clauses:0
+INFEASIBLE: 'during probing'
+  1.09e-01s  3.80e-01d  [Probe] #probed=11'290 
+  1.57e-07s  0.00e+00d  [DetectEncodedComplexDomains] 
+
+Presolve summary:
+  - 6419 affine relations were detected.
+  - rule 'TODO dual: only one blocking constraint?' was applied 1'025 times.
+  - rule 'affine: new relation' was applied 6'419 times.
+  - rule 'at_most_one: empty or all false' was applied 1 time.
+  - rule 'at_most_one: removed literals' was applied 25 times.
+  - rule 'bool_and: always false' was applied 1 time.
+  - rule 'bool_and: non-reified' was applied 32 times.
+  - rule 'bool_or: always true' was applied 1'412 times.
+  - rule 'bool_or: fixed literals' was applied 1 time.
+  - rule 'bool_or: implications' was applied 3'707 times.
+  - rule 'bool_or: only one literal' was applied 1 time.
+  - rule 'bool_or: removed enforcement literal' was applied 10 times.
+  - rule 'duplicate: removed constraint' was applied 1'619 times.
+  - rule 'enforcement: false literal' was applied 19 times.
+  - rule 'enforcement: true literal' was applied 32 times.
+  - rule 'exactly_one: removed literals' was applied 51 times.
+  - rule 'exactly_one: satisfied' was applied 4 times.
+  - rule 'exactly_one: simplified objective' was applied 1 time.
+  - rule 'exactly_one: size two' was applied 590 times.
+  - rule 'linear1: x in domain' was applied 5'487 times.
+  - rule 'linear2: convert ax + by != cte to clauses' was applied 5'059 times.
+  - rule 'linear: always true' was applied 2'034 times.
+  - rule 'linear: empty' was applied 96 times.
+  - rule 'linear: extracted enforcement literal' was applied 60 times.
+  - rule 'linear: fixed or dup variables' was applied 6'002 times.
+  - rule 'linear: negative clause' was applied 1'180 times.
+  - rule 'linear: positive at most one' was applied 74 times.
+  - rule 'linear: positive clause' was applied 2 times.
+  - rule 'linear: positive equal one' was applied 327 times.
+  - rule 'linear: reduced variable domains' was applied 96 times.
+  - rule 'linear: remapped using affine relations' was applied 5'833 times.
+  - rule 'linear: small Boolean expression' was applied 4 times.
+  - rule 'new_bool: table expansion' was applied 3'412 times.
+  - rule 'objective: variable not used elsewhere' was applied 475 times.
+  - rule 'presolve: iteration' was applied 1 time.
+  - rule 'probing: bool_or reduced to implication' was applied 604 times.
+  - rule 'probing: simplified clauses' was applied 95 times.
+  - rule 'symmetry: fixed to false in general orbit' was applied 3 times.
+  - rule 'table: all tuples!' was applied 472 times.
+  - rule 'table: expanded positive constraint' was applied 804 times.
+  - rule 'table: expanded positive constraint with two variables' was applied 1 time.
+  - rule 'table: only one column!' was applied 3 times.
+  - rule 'table: reduce variable domain' was applied 2'552 times.
+  - rule 'table: remove expressions' was applied 2'234 times.
+  - rule 'table: remove tuples' was applied 1'408 times.
+  - rule 'table: reused literals' was applied 804 times.
+Problem closed by presolve.
+CpSolverResponse summary:
+status: INFEASIBLE
+objective: NA
+best_bound: NA
+integers: 0
+booleans: 0
+conflicts: 0
+branches: 0
+propagations: 0
+integer_propagations: 0
+restarts: 0
+lp_iterations: 0
+walltime: 0.263029
+usertime: 0.263029
+deterministic_time: 0.379712
+gap_integral: 0
+
+{"status": "INFEASIBLE", "wall": 0.2635295100044459, "workers": 5, "source_count": 52, "sink_count": 52, "movable": ["M005", "M070", "M081", "M100", "M199", "P000"], "scope": "仅指定6个实体在局部[2,10]^2重摆，其余非运输实体固定；只核矿口路径，不核其余生产链、供电和成品流。"}

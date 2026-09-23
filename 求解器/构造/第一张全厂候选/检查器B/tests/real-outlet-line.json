@@ -1,0 +1,305 @@
+{
+  "schema": "full-factory-static-v1",
+  "candidate_id": "test-local",
+  "source_fingerprints": {
+    "rules": "52df4c12ce90975b861a6a663bd37873e03c9549658d200dc7e95fabc4bc29f3",
+    "task": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+    "constraints": "a67c18dec5f6ae59c41e8620d270007f20c2d3e5b202521d0cca12f616bca3df"
+  },
+  "targets": {
+    "高容谷地电池": "3/5",
+    "精选荞愈胶囊": "11/20"
+  },
+  "layout": {
+    "W": 70,
+    "H": 70,
+    "machines": [
+      {
+        "id": "M",
+        "model": "精炼炉",
+        "kind": "小",
+        "x0": 2,
+        "y0": 1,
+        "x1": 4,
+        "y1": 3,
+        "Din": 2,
+        "recipe_ids": [
+          "精炼-蓝铁矿"
+        ],
+        "settings": {
+          "manufacture_on": true
+        }
+      }
+    ],
+    "warehouse_outlets": [
+      {
+        "id": "O",
+        "x0": 0,
+        "y0": 1,
+        "x1": 0,
+        "y1": 3,
+        "Dout": 0,
+        "item": "蓝铁矿"
+      }
+    ],
+    "core": {
+      "id": "CORE",
+      "x0": 50,
+      "y0": 50,
+      "x1": 58,
+      "y1": 58,
+      "Din": 0,
+      "output_items": [
+        {
+          "side": 1,
+          "offset": 1,
+          "item": "源矿"
+        },
+        {
+          "side": 1,
+          "offset": 4,
+          "item": "蓝铁矿"
+        },
+        {
+          "side": 1,
+          "offset": 7,
+          "item": "蓝铁矿"
+        },
+        {
+          "side": 3,
+          "offset": 1,
+          "item": "源矿"
+        },
+        {
+          "side": 3,
+          "offset": 4,
+          "item": "蓝铁矿"
+        },
+        {
+          "side": 3,
+          "offset": 7,
+          "item": "蓝铁矿"
+        }
+      ]
+    },
+    "power_poles": [
+      {
+        "id": "P",
+        "x0": 6,
+        "y0": 6,
+        "x1": 7,
+        "y1": 7,
+        "orientation": 0
+      }
+    ],
+    "storage_boxes": [],
+    "transport": [
+      {
+        "id": "T",
+        "x": 1,
+        "y": 2,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      }
+    ],
+    "vin": [],
+    "vout": []
+  },
+  "empty_rectangle": {
+    "x0": 0,
+    "y0": 0,
+    "x1": 49,
+    "y1": 69
+  },
+  "design": {
+    "class": "p2p",
+    "physical_channels": [
+      {
+        "id": "PC0",
+        "from": {
+          "unit": "O",
+          "side": 0,
+          "offset": 1
+        },
+        "to": {
+          "unit": "T",
+          "side": 2,
+          "offset": 0
+        },
+        "allowed_items": [
+          "蓝铁矿"
+        ]
+      },
+      {
+        "id": "PC1",
+        "from": {
+          "unit": "T",
+          "side": 0,
+          "offset": 0
+        },
+        "to": {
+          "unit": "M",
+          "side": 2,
+          "offset": 1
+        },
+        "allowed_items": [
+          "蓝铁矿"
+        ]
+      }
+    ],
+    "restrictions": [
+      {
+        "id": "N1",
+        "source": [
+          "shape"
+        ],
+        "statement": "落实格式 §8.2 N1",
+        "coverage_loss": "不覆盖撤去本限制后的原问题合法布局。",
+        "release_obligations": "撤去后补相应结构、物料和运行证明。",
+        "failure_scope": "固定本候选；未覆盖初态、调试及全部合法先后；不排除其他布局。"
+      },
+      {
+        "id": "N2",
+        "source": [
+          "shape"
+        ],
+        "statement": "落实格式 §8.2 N2",
+        "coverage_loss": "不覆盖撤去本限制后的原问题合法布局。",
+        "release_obligations": "撤去后补相应结构、物料和运行证明。",
+        "failure_scope": "固定本候选；未覆盖初态、调试及全部合法先后；不排除其他布局。"
+      },
+      {
+        "id": "N3a",
+        "source": [
+          "shape"
+        ],
+        "statement": "落实格式 §8.2 N3a",
+        "coverage_loss": "不覆盖撤去本限制后的原问题合法布局。",
+        "release_obligations": "撤去后补相应结构、物料和运行证明。",
+        "failure_scope": "固定本候选；未覆盖初态、调试及全部合法先后；不排除其他布局。"
+      },
+      {
+        "id": "N3b",
+        "source": [
+          "shape"
+        ],
+        "statement": "落实格式 §8.2 N3b",
+        "coverage_loss": "不覆盖撤去本限制后的原问题合法布局。",
+        "release_obligations": "撤去后补相应结构、物料和运行证明。",
+        "failure_scope": "固定本候选；未覆盖初态、调试及全部合法先后；不排除其他布局。"
+      },
+      {
+        "id": "N4a",
+        "source": [
+          "shape"
+        ],
+        "statement": "落实格式 §8.2 N4a",
+        "coverage_loss": "不覆盖撤去本限制后的原问题合法布局。",
+        "release_obligations": "撤去后补相应结构、物料和运行证明。",
+        "failure_scope": "固定本候选；未覆盖初态、调试及全部合法先后；不排除其他布局。"
+      },
+      {
+        "id": "N4b",
+        "source": [
+          "shape"
+        ],
+        "statement": "落实格式 §8.2 N4b",
+        "coverage_loss": "不覆盖撤去本限制后的原问题合法布局。",
+        "release_obligations": "撤去后补相应结构、物料和运行证明。",
+        "failure_scope": "固定本候选；未覆盖初态、调试及全部合法先后；不排除其他布局。"
+      },
+      {
+        "id": "N5a",
+        "source": [
+          "shape"
+        ],
+        "statement": "落实格式 §8.2 N5a",
+        "coverage_loss": "不覆盖撤去本限制后的原问题合法布局。",
+        "release_obligations": "撤去后补相应结构、物料和运行证明。",
+        "failure_scope": "固定本候选；未覆盖初态、调试及全部合法先后；不排除其他布局。"
+      },
+      {
+        "id": "N5b",
+        "source": [
+          "shape"
+        ],
+        "statement": "落实格式 §8.2 N5b",
+        "coverage_loss": "不覆盖撤去本限制后的原问题合法布局。",
+        "release_obligations": "撤去后补相应结构、物料和运行证明。",
+        "failure_scope": "固定本候选；未覆盖初态、调试及全部合法先后；不排除其他布局。"
+      },
+      {
+        "id": "P1",
+        "source": [
+          "shape"
+        ],
+        "statement": "落实格式 §8.2 P1",
+        "coverage_loss": "不覆盖撤去本限制后的原问题合法布局。",
+        "release_obligations": "撤去后补相应结构、物料和运行证明。",
+        "failure_scope": "固定本候选；未覆盖初态、调试及全部合法先后；不排除其他布局。"
+      },
+      {
+        "id": "P2",
+        "source": [
+          "shape"
+        ],
+        "statement": "落实格式 §8.2 P2",
+        "coverage_loss": "不覆盖撤去本限制后的原问题合法布局。",
+        "release_obligations": "撤去后补相应结构、物料和运行证明。",
+        "failure_scope": "固定本候选；未覆盖初态、调试及全部合法先后；不排除其他布局。"
+      },
+      {
+        "id": "P3",
+        "source": [
+          "shape"
+        ],
+        "statement": "落实格式 §8.2 P3",
+        "coverage_loss": "不覆盖撤去本限制后的原问题合法布局。",
+        "release_obligations": "撤去后补相应结构、物料和运行证明。",
+        "failure_scope": "固定本候选；未覆盖初态、调试及全部合法先后；不排除其他布局。"
+      },
+      {
+        "id": "P4",
+        "source": [
+          "shape"
+        ],
+        "statement": "落实格式 §8.2 P4",
+        "coverage_loss": "不覆盖撤去本限制后的原问题合法布局。",
+        "release_obligations": "撤去后补相应结构、物料和运行证明。",
+        "failure_scope": "固定本候选；未覆盖初态、调试及全部合法先后；不排除其他布局。"
+      },
+      {
+        "id": "P5",
+        "source": [
+          "shape"
+        ],
+        "statement": "落实格式 §8.2 P5",
+        "coverage_loss": "不覆盖撤去本限制后的原问题合法布局。",
+        "release_obligations": "撤去后补相应结构、物料和运行证明。",
+        "failure_scope": "固定本候选；未覆盖初态、调试及全部合法先后；不排除其他布局。"
+      },
+      {
+        "id": "P6",
+        "source": [
+          "shape"
+        ],
+        "statement": "落实格式 §8.2 P6",
+        "coverage_loss": "不覆盖撤去本限制后的原问题合法布局。",
+        "release_obligations": "撤去后补相应结构、物料和运行证明。",
+        "failure_scope": "固定本候选；未覆盖初态、调试及全部合法先后；不排除其他布局。"
+      },
+      {
+        "id": "recipe-subsets",
+        "source": [
+          "shape"
+        ],
+        "statement": "recipe_ids 限定本候选的配方集合；不把它当成游戏开关。",
+        "coverage_loss": "不覆盖撤去本限制后的原问题合法布局。",
+        "release_obligations": "撤去后补相应结构、物料和运行证明。",
+        "failure_scope": "固定本候选；未覆盖初态、调试及全部合法先后；不排除其他布局。"
+      }
+    ]
+  },
+  "flow_witness": null
+}

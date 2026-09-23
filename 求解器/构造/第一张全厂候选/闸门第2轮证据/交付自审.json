@@ -1,0 +1,31 @@
+{
+  "time_utc": "2026-09-23T00:21:21.025175+00:00",
+  "reader_review_pass": true,
+  "checks": {
+    "self_contained_scope_and_inputs": true,
+    "current_state_not_edit_history": true,
+    "header_matches_failed_gate": true,
+    "no_style_instructions_echoed": true,
+    "numeric_scope_consistent": true,
+    "labels_identify_round_and_version": true,
+    "references_exist": true,
+    "formal_table_has_all_72_rows": true,
+    "markdown_tables_contiguous": true
+  },
+  "fixed_during_review": [
+    "动态生成表格行间空行移除，确保正常渲染",
+    "候选稳定性表述改为已核事实",
+    "细磨物品名称统一简体"
+  ],
+  "candidate_sha256": "eead98c6a852a17b33c6ed7ea084f19d692fe70226db2b18da6a43463b0ea9ef",
+  "current_formal_fingerprints": {
+    "求解约束.txt": "0c05976f6063f3332db6ee19d7746052ef35148d7c2a12dfa396c7bb8753f30f",
+    "《明日方舟：终末地》游戏规则.txt": "52df4c12ce90975b861a6a663bd37873e03c9549658d200dc7e95fabc4bc29f3",
+    "求解任务.txt": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac"
+  },
+  "protected_inputs_checked": 72,
+  "observed_external_changes": {
+    "/home/zhuran24/zmd-research-fresh/求解约束.txt": "0c05976f6063f3332db6ee19d7746052ef35148d7c2a12dfa396c7bb8753f30f"
+  },
+  "report_sha256": "206d3143e3f3fb01f67233419f8aaeb0400d739f32adae984961f805f97ee585"
+}

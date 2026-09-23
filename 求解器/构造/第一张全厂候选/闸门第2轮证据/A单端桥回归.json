@@ -1,0 +1,100 @@
+{
+  "scope": "局部几何回归，非候选修改，不运行流层",
+  "checker": "A",
+  "channels": [
+    [
+      [
+        "OUT_L00",
+        0,
+        1
+      ],
+      [
+        "BR_TEST",
+        2,
+        0
+      ]
+    ]
+  ],
+  "checks": [
+    {
+      "id": "N4a",
+      "basis": "规则·桥接器；共识§1.1.3、三.3；格式§6",
+      "status": "violation",
+      "checked_instances": 2,
+      "examples": [
+        {
+          "bridge": "BR_TEST",
+          "axis": "H",
+          "facing": {
+            "2": "out"
+          },
+          "derived": 2,
+          "declared": 2
+        },
+        {
+          "bridge": "BR_TEST",
+          "axis": "V",
+          "facing": {},
+          "derived": null,
+          "declared": null
+        }
+      ],
+      "violations": [
+        {
+          "bridge": "BR_TEST",
+          "axis": "H",
+          "facing": {
+            "2": "out"
+          },
+          "derived": 2,
+          "declared": 2
+        }
+      ]
+    },
+    {
+      "id": "N5a",
+      "basis": "规则·通道；约束#11 端口对接；共识 N5a；格式§8.1",
+      "status": "violation",
+      "checked_instances": 1,
+      "examples": [
+        {
+          "missing": [
+            {
+              "from": {
+                "unit": "OUT_L00",
+                "side": 0,
+                "offset": 1
+              },
+              "to": {
+                "unit": "BR_TEST",
+                "side": 2,
+                "offset": 0
+              }
+            }
+          ],
+          "extra": []
+        }
+      ],
+      "violations": [
+        {
+          "missing": [
+            {
+              "from": {
+                "unit": "OUT_L00",
+                "side": 0,
+                "offset": 1
+              },
+              "to": {
+                "unit": "BR_TEST",
+                "side": 2,
+                "offset": 0
+              }
+            }
+          ],
+          "extra": []
+        }
+      ]
+    }
+  ],
+  "expected_edge_preserved": true
+}

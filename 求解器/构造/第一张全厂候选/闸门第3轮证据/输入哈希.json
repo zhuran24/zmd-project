@@ -1,0 +1,250 @@
+{
+  "time": "2026-09-22T21:02:21.116571-04:00",
+  "files": {
+    "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt": {
+      "sha256": "52df4c12ce90975b861a6a663bd37873e03c9549658d200dc7e95fabc4bc29f3",
+      "size": 7298,
+      "mtime_ns": 1790108381720346326
+    },
+    "/home/zhuran24/zmd-research-fresh/求解任务.txt": {
+      "sha256": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+      "size": 1405,
+      "mtime_ns": 1789930680631466015
+    },
+    "/home/zhuran24/zmd-research-fresh/求解约束.txt": {
+      "sha256": "0c05976f6063f3332db6ee19d7746052ef35148d7c2a12dfa396c7bb8753f30f",
+      "size": 34766,
+      "mtime_ns": 1790121826140075188
+    },
+    "/home/zhuran24/zmd-research-fresh/候选约束.txt": {
+      "sha256": "e8c60f6b506f2c424745c33ec106237d172acc6a63c918632fd34a25e4504e1c",
+      "size": 298455,
+      "mtime_ns": 1790117168421153663
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/生成/候选.json": {
+      "sha256": "677c3fb13a3550047d74dd35c67d224a88d179689c158519e642a41ca7e2bf6b",
+      "size": 327375,
+      "mtime_ns": 1790125063858522237
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/cli_smoke.json": {
+      "sha256": "6b970e1a31b5f173f3ad4684e49aba3682eb63ced80a5edf34939df3d8613f27",
+      "size": 552,
+      "mtime_ns": 1790120712950167506
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/artifact_manifest.json": {
+      "sha256": "d2d3847ed82a6b1135a9fec6eebf7b9e819c2b80ea13da492edbead770fd70c8",
+      "size": 5814,
+      "mtime_ns": 1790121549221380662
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/legacy_regression.json": {
+      "sha256": "5e3985bf369993e1b6cadee78d2e9850376d3ff98db0ae912f1e1d5b33e5d0e9",
+      "size": 1123,
+      "mtime_ns": 1790120338769554508
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/catalog.py": {
+      "sha256": "a1fd6b583f8469b3b1ddcbcc524037e6dfd4e61f60b7ad600b2f96e867e88f9e",
+      "size": 3418,
+      "mtime_ns": 1790119505999526031
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/design.py": {
+      "sha256": "c28ccb0e5328e6c2f7e25993a1d5f0e99d11904af5a671abe6dc720807b7979a",
+      "size": 5747,
+      "mtime_ns": 1790120337612192589
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/selftest.py": {
+      "sha256": "ff4ed62aa780cb6eb7f99e719e76323196857161cfc9c7f07855c86de2997da9",
+      "size": 23370,
+      "mtime_ns": 1790119506000772634
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/schema.py": {
+      "sha256": "e19217f037a0c297856440ed1f5acc858470b776ee36a1fb65c9c4a7edad5925",
+      "size": 8008,
+      "mtime_ns": 1790115371494686743
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/gate1-original-candidate.json": {
+      "sha256": "c363a9c0a17f451902b0bbec5b25c6371bc3d24c186d09b2ba8ecfa36294a6b7",
+      "size": 288020,
+      "mtime_ns": 1790120365803427299
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/verify_certificate.py": {
+      "sha256": "ab848e722a5c8beb2e5450efad5120ca63376fc84baaf58897af312a8bac3def",
+      "size": 2192,
+      "mtime_ns": 1790116473932356096
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/check_full.py": {
+      "sha256": "d139be0b68bb529dca5575e6d4f1845d904c3ed8151b3b6aadfbf5ea2614e1fe",
+      "size": 10886,
+      "mtime_ns": 1790119945366851515
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/gate1-regression.json": {
+      "sha256": "1cdcfa371e241fc4d0274f88233d27147159d1580b18bca9c5406792fd3a3762",
+      "size": 1825,
+      "mtime_ns": 1790120366148424201
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/format_example.json": {
+      "sha256": "411266da23601be0fa818a06ffb4f251df85ecb0008923293235f07e40a21a85",
+      "size": 2905,
+      "mtime_ns": 1790120337683910377
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/flow.py": {
+      "sha256": "d2495b9dc7ac03dddea7f544142a128feeb50c671f529ab9352ec8bf83217bd9",
+      "size": 10112,
+      "mtime_ns": 1790116108699766418
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/projections.py": {
+      "sha256": "49021cc94e2bb99d63adaeeb6dc82ff33718495cc263dd2faafc34f055784d44",
+      "size": 20904,
+      "mtime_ns": 1790119618042765223
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/geometry.py": {
+      "sha256": "96bed1c6560cf02781353577b75d1cfb6cbf5ca5fd156bf09d375a84cac1462c",
+      "size": 12564,
+      "mtime_ns": 1790119506000428755
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/说明.md": {
+      "sha256": "40589357d942166a2a20727f9dc3b6a342440b52bb5ef9d808886ffb2285f9b1",
+      "size": 30604,
+      "mtime_ns": 1790121549138205569
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/gate1_regression.py": {
+      "sha256": "ad5f0059e6370e4b80f5456ce0b745915fb3f8bfd0742283687dd6948fb0bd7c",
+      "size": 6394,
+      "mtime_ns": 1790120337612329823
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/meeting_check_full.py": {
+      "sha256": "6fa0001e7b8d925c74eb4e8338566c28158f20751adf38bb7d10c93ae51ce8ab",
+      "size": 19185,
+      "mtime_ns": 1790115243645681178
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/certificate_replay.json": {
+      "sha256": "044f2e94a21d706459c248a917a88bfdb5dade09b8fa1fc759fa4fe926a4f59e",
+      "size": 132,
+      "mtime_ns": 1790120339403753347
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/candidate_b_rate_test.json": {
+      "sha256": "60e114630f8be631dec30bd3ef4b044fd5d0010f87d685ae88af9f6bd6f31225",
+      "size": 91347,
+      "mtime_ns": 1790120339377428476
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/format_example.report.json": {
+      "sha256": "4e2291e782602c1abede03ed5375aaa1ed5dffeefcb9a3378fff243b339587cb",
+      "size": 95971,
+      "mtime_ns": 1790120712780291108
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/selftest_results.json": {
+      "sha256": "a3830531c11d71d1a732e0166b7faed28226d60c06ecb85b719e5553592ea2fd",
+      "size": 10338,
+      "mtime_ns": 1790120339529966038
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器B/legacy_check.py": {
+      "sha256": "8f9448a0431e643e3d71b3c888e98669613e832a93f87bca549d1f1757dea832",
+      "size": 7798,
+      "mtime_ns": 1790115218838917937
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器B/catalog.py": {
+      "sha256": "7d83cf061f40f5157b03384c5e4501cccd14c92ffc5d0e8f66469857bf622a27",
+      "size": 3697,
+      "mtime_ns": 1790117346283681550
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器B/selftest.py": {
+      "sha256": "5fbd0266fe100a7be4666497a007b990404633051522d8878a30e520c1678799",
+      "size": 20266,
+      "mtime_ns": 1790117397711885549
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器B/schema.py": {
+      "sha256": "474869ed3dbc999d5a41208f6de521e79f82903ce799914250dc9e43071fc9af",
+      "size": 9453,
+      "mtime_ns": 1790117346283681550
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器B/flow.py": {
+      "sha256": "64455bd7b92d4b73a3e88a7a22e63543ac8704abb66ef804858b7e8c098c72cd",
+      "size": 10567,
+      "mtime_ns": 1790115640879756042
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器B/interfaces.py": {
+      "sha256": "78b1ed7d9a66a1810767d4a0d37b9d0a6acebf92f5c8732e61eafee7bd603cdd",
+      "size": 4989,
+      "mtime_ns": 1790115708870718900
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器B/geometry.py": {
+      "sha256": "db7667d9229d0f49148a95b08130970fbc04698d31e83562834c71409573ca36",
+      "size": 14407,
+      "mtime_ns": 1790116779105355005
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器B/constraint_catalog_71.json": {
+      "sha256": "eb3e61739f1e7b7e5b237ecb58da7edb4cd1bb97080bf9d41aca38e0138d94fd",
+      "size": 41517,
+      "mtime_ns": 1790117346232253477
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器B/说明.md": {
+      "sha256": "be217f6f29f063834c803392604fbb98a9189940d2f6c8250e57d6621b43e71b",
+      "size": 18644,
+      "mtime_ns": 1790117471924211253
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器B/check.py": {
+      "sha256": "ed3b6e8bd40ae838e037accefab64a3d6e7615bdd40113815e1ac42fc647a20d",
+      "size": 8850,
+      "mtime_ns": 1790117346284681554
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器B/audit.py": {
+      "sha256": "2a0fd154cdbe7c8a8186204fe2aa575c64e5ddab7c62a8209428c5b36e16ebfa",
+      "size": 30989,
+      "mtime_ns": 1790117560028639763
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器B/component_tests.py": {
+      "sha256": "418aebc5b4ffd9d608e3d4d951442c9566c3cb4f85a16f70900240be3848e188",
+      "size": 9646,
+      "mtime_ns": 1790117397711885549
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器B/constraint_catalog.json": {
+      "sha256": "41a5e190da98a02fafb36fbe187ec7eb1288bfb2523097e3378dfd73d7fa8a9e",
+      "size": 41826,
+      "mtime_ns": 1790117346254146853
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/会议3/纪要.md": {
+      "sha256": "d6c92a966fd9b295d5ed9dab4fed9e63710b76206c13107a6897d86f42db9228",
+      "size": 6319,
+      "mtime_ns": 1790110950995111281
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/会议3/共识稿-v4-7aae9e20.md": {
+      "sha256": "7aae9e20fdfab4edc5cb44b4de5a083436c86874449af654e9b0ee9871da5578",
+      "size": 39519,
+      "mtime_ns": 1790110158886238578
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/会议3/seat-codex-3.md": {
+      "sha256": "8debd2bbf4b8888714c090f2bbe92df7576b367162c7bc9bbbe0d43a14a87cba",
+      "size": 2620,
+      "mtime_ns": 1790111008839612446
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/会议3/seat-opus-1/fulllp.py": {
+      "sha256": "0b52ea0acdcedf541f9be07353796c008aa2f37e500cd0f7160acc2824bc594b",
+      "size": 5821,
+      "mtime_ns": 1790106870256855935
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/会议3/seat-opus-3/p2p.py": {
+      "sha256": "a05832a347d4c01cf6999147bfc6c080216f8b75948f7fccd90bec7ef6551779",
+      "size": 18975,
+      "mtime_ns": 1790108986367653577
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/会议3/seat-opus-3/router.py": {
+      "sha256": "b8595627ef5b61a3dd4d64a7c41c04760150c53b55c94b722b04190304052afe",
+      "size": 11438,
+      "mtime_ns": 1790108390338422717
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/会议3/seat-opus-3/check.py": {
+      "sha256": "8f9448a0431e643e3d71b3c888e98669613e832a93f87bca549d1f1757dea832",
+      "size": 7798,
+      "mtime_ns": 1790107642700324362
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/会议3/seat-opus-4/check_full.py": {
+      "sha256": "6fa0001e7b8d925c74eb4e8338566c28158f20751adf38bb7d10c93ae51ce8ab",
+      "size": 19185,
+      "mtime_ns": 1790107731614235143
+    },
+    "/home/zhuran24/zmd-research-fresh/求解器/会议成果/会议3/seat-opus-2/flowcheck.py": {
+      "sha256": "932fedf9007b0991f901a30f4e9ce72921e0a01a183d27a3976cc1191b9206f8",
+      "size": 5514,
+      "mtime_ns": 1790108562925816526
+    }
+  }
+}

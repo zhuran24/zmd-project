@@ -1,0 +1,16 @@
+{
+  "candidate_sha256": "eead98c6a852a17b33c6ed7ea084f19d692fe70226db2b18da6a43463b0ea9ef",
+  "strict_infeasible_exact": true,
+  "zero_rows": [
+    "source:('OUT_L01', 0, 1)",
+    "source:('OUT_L04', 0, 1)",
+    "source:('OUT_B00', 1, 1)",
+    "source:('OUT_B06', 1, 1)",
+    "target:高容谷地电池"
+  ],
+  "relaxed_zero_primal_exact": true,
+  "relaxed_max_total_channel_flow": "0",
+  "dual_columns_checked": 780,
+  "dual_nonzero_multipliers": 688,
+  "scope": "固定当前布局、配方与物品支持；原模型由零行否证，零流证书仅属于供矿<=1且去掉成品目标的放宽模型。"
+}

@@ -1,0 +1,611 @@
+{
+  "candidate_sha256": "eead98c6a852a17b33c6ed7ea084f19d692fe70226db2b18da6a43463b0ea9ef",
+  "task_complete": false,
+  "pass": false,
+  "files": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/A复验.json",
+      "change": "added",
+      "description": "同名检查、回归、摆放、布线、导出或证书的本轮机器可读结果。",
+      "sha256": "2a342e14261f7307ee70f029c4a821f5adf37e16ff60e8b04269d2241e1ca873",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/A复验.log",
+      "change": "added",
+      "description": "同名脚本或检查命令的本轮原始标准输出/错误日志。",
+      "sha256": "dd15e02569aaec5fb98b1b83c9880cc4801375935a89af2c6692c30b8e16a5f0",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/A新摆放.json",
+      "change": "added",
+      "description": "同名检查、回归、摆放、布线、导出或证书的本轮机器可读结果。",
+      "sha256": "2a342e14261f7307ee70f029c4a821f5adf37e16ff60e8b04269d2241e1ca873",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/A新摆放.log",
+      "change": "added",
+      "description": "同名脚本或检查命令的本轮原始标准输出/错误日志。",
+      "sha256": "032f2043d7f6118fdf57da797b3bd82dd823183472e0be9011e85efcc96b4cf9",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/A证书回放.json",
+      "change": "added",
+      "description": "同名检查、回归、摆放、布线、导出或证书的本轮机器可读结果。",
+      "sha256": "74475e3d16c561651ec8d81e61f3bb94ebbe6ac48a6e79bee8b45f5b42652dd1",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/A证书回放.log",
+      "change": "added",
+      "description": "同名脚本或检查命令的本轮原始标准输出/错误日志。",
+      "sha256": "74475e3d16c561651ec8d81e61f3bb94ebbe6ac48a6e79bee8b45f5b42652dd1",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/B复验.json",
+      "change": "added",
+      "description": "同名检查、回归、摆放、布线、导出或证书的本轮机器可读结果。",
+      "sha256": "069de4939197246ebcfd1227da1dfc66af62f07cbd0f71f160721c5470a20556",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/B复验.log",
+      "change": "added",
+      "description": "同名脚本或检查命令的本轮原始标准输出/错误日志。",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/B新摆放.json",
+      "change": "added",
+      "description": "同名检查、回归、摆放、布线、导出或证书的本轮机器可读结果。",
+      "sha256": "414a3ef56a2229579d820df811e517cd3a28ae0b34690d05d1b260ab0479f817",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/B新摆放.log",
+      "change": "added",
+      "description": "同名脚本或检查命令的本轮原始标准输出/错误日志。",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/供矿摆放试验.json",
+      "change": "added",
+      "description": "同名检查、回归、摆放、布线、导出或证书的本轮机器可读结果。",
+      "sha256": "b96ae741a0905d946cbf73b7938f9283783d3c60e4f0d9638297aad614af3f1c",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/供矿摆放试验.log",
+      "change": "added",
+      "description": "同名脚本或检查命令的本轮原始标准输出/错误日志。",
+      "sha256": "37f8f350e4bbee9f26b600c3391c67eb50adf76950399d7235337b72e1571c2c",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/供矿摆放试验.py",
+      "change": "added",
+      "description": "整条端口边预留与48口直供的受限摆放搜索；300.2秒UNKNOWN。",
+      "sha256": "7e6d9a76b6e3f561f99fed28ffcdb466478d0d082bb4d1735ba2dc9babab164a",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/修复导出候选.py",
+      "change": "added",
+      "description": "导出完整路径及实体通道，重算空矩形、补供电并保留规范登记。",
+      "sha256": "5caab06f1d3351903215da08f0cf83689efc90bbb484708574e86b72b69451b3",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/修复指派布线.py",
+      "change": "added",
+      "description": "本轮独立副本：摆放中的机器/矿源指派及60轮A*拆线重布。",
+      "sha256": "580abb83516fe99d0c7b630afc9e6249a8b397e1202bf6ee217524b664cdcd9a",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/候选-修复前.json",
+      "change": "added",
+      "description": "第1轮原候选的字节备份。",
+      "sha256": "e147866f410737324d49190dea83bfd19de04ebdcc9b1c9998152bbf7a80f404",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/候选-新摆放.json",
+      "change": "added",
+      "description": "两份检查器预验的新摆放文件，与最终生成/候选.json字节相同。",
+      "sha256": "eead98c6a852a17b33c6ed7ea084f19d692fe70226db2b18da6a43463b0ea9ef",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/候选登记修正.json",
+      "change": "added",
+      "description": "仅规范化登记时的字段差分与前后哈希，不冒充布线修复。",
+      "sha256": "7db727b18289d705e9fb4e3b6afae2ee7eee58d6e6940d7bd762261c58d2e772",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/复验.log",
+      "change": "added",
+      "description": "同名脚本或检查命令的本轮原始标准输出/错误日志。",
+      "sha256": "99e9a269fbedc6f50e72a04e015f5b73091551a023f95157a094985084dc2b93",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/复验.py",
+      "change": "added",
+      "description": "顺序调用A、B和A证书回放，逐端口对照独立LP及候选声明。",
+      "sha256": "a8a0dd29ccb2992986cdf066676833cf3628ca9e272ec239d21e00824226a49f",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/复验汇总.json",
+      "change": "added",
+      "description": "同名检查、回归、摆放、布线、导出或证书的本轮机器可读结果。",
+      "sha256": "99e9a269fbedc6f50e72a04e015f5b73091551a023f95157a094985084dc2b93",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/完整供矿摆放试验.json",
+      "change": "added",
+      "description": "同名检查、回归、摆放、布线、导出或证书的本轮机器可读结果。",
+      "sha256": "d85c5526c96a92d754ef481d854cf1503a785cca11c5e406da4c2a3183c7dc54",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/完整供矿摆放试验.log",
+      "change": "added",
+      "description": "同名脚本或检查命令的本轮原始标准输出/错误日志。",
+      "sha256": "f46338065838a311ed031092e9222b8acd3cb09b142490e92085d284f61ab3cb",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/完整供矿摆放试验.py",
+      "change": "added",
+      "description": "另加52源单位容量首加工矿流必要筛子；600.9秒UNKNOWN。",
+      "sha256": "1a898ab01ef06d1b9df2f7dce0651da05fc2b8f78f5cef9eeef182551fd88786",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/完整性检查.json",
+      "change": "added",
+      "description": "164个受保护原文件未变、B32文件和旧闸门54证据未变；最终候选/实现哈希一致。",
+      "sha256": "0454f0940732c307f49d3d96590d55da9337e758adc7ba9ff1b04ecd3a45c71b",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/实验/导出摘要.json",
+      "change": "added",
+      "description": "同名检查、回归、摆放、布线、导出或证书的本轮机器可读结果。",
+      "sha256": "c893b09114e5112822973f4db761c6bd769a7614d466735eb7e4dc6c56e0e8b0",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/实验/已完成路径.json",
+      "change": "added",
+      "description": "同名检查、回归、摆放、布线、导出或证书的本轮机器可读结果。",
+      "sha256": "614ec044a2a1d17bedd36072436b0b8f19e1044bac4e22388abb45c35baeec43",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/实验/布线-11.json",
+      "change": "added",
+      "description": "同名检查、回归、摆放、布线、导出或证书的本轮机器可读结果。",
+      "sha256": "acbfea6a05bfb90da9357615561455cc10c4f08891f4966694f35224545e1579",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/实验/矿源可达放松.json",
+      "change": "added",
+      "description": "同名检查、回归、摆放、布线、导出或证书的本轮机器可读结果。",
+      "sha256": "02810d87a7f1239234921ed24ab289508272755e066274cf0d8a46c2bd8e39d5",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/导出.log",
+      "change": "added",
+      "description": "同名脚本或检查命令的本轮原始标准输出/错误日志。",
+      "sha256": "00dd4ff15fff38d82d31daa2f5cc6cc408b05c886ae7134f783cece0d2877536",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/布线-11.log",
+      "change": "added",
+      "description": "同名脚本或检查命令的本轮原始标准输出/错误日志。",
+      "sha256": "cf5f81d13f409e7a9f80a838581acee32c2a94a82bb8cebf3e4066439b22d974",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/布线输入摆放.json",
+      "change": "added",
+      "description": "将端口分组摆放按尺寸转换为布线器的输入结构。",
+      "sha256": "9d761c4f23087d66fbca16ea3ca1766eaeb6d3f8bfd1715dedd0bd189b70b85b",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/成品路径可达诊断.json",
+      "change": "added",
+      "description": "当前六台末级机器到核心的无向空格道路放宽可达性；仅M218可达。",
+      "sha256": "7308e39c1120df1d2e9e83cf8028cd55551e666035594fba8087aeda45e9526d",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/报告-修复前.md",
+      "change": "added",
+      "description": "原生成报告的字节备份。",
+      "sha256": "19fba1ac0cf911d03f08bba9684b85671a003c6a7636305aba4e41bcb7000e74",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/文件变更清单.json",
+      "change": "added",
+      "description": "机器可读变更清单，含逐文件SHA-256；自身不自引用哈希。",
+      "sha256": null,
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/文件变更清单.md",
+      "change": "added",
+      "description": "所有新增/修改文件的绝对路径、变化类型及用途。",
+      "sha256": "fd5d1d2b04c7237aae052506956d86c036cf8a6639923156d2e9445c1fe43b79",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/独立LP-诊断见证-源石粉末.json",
+      "change": "added",
+      "description": "对应物品的供矿放宽、去目标诊断与精确原始/对偶见证。",
+      "sha256": "6451a97465a036d9bfc3b28e69eede6b1a301917625861e4d6bf22780212852d",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/独立LP-诊断见证-源矿.json",
+      "change": "added",
+      "description": "对应物品的供矿放宽、去目标诊断与精确原始/对偶见证。",
+      "sha256": "7945bda868687f6b686a00309dbef008ea8ceae090610dd8adaf9e4d4e85df30",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/独立LP-诊断见证-砂叶.json",
+      "change": "added",
+      "description": "对应物品的供矿放宽、去目标诊断与精确原始/对偶见证。",
+      "sha256": "7ef523f97e25991770a47d33d17b01f6f21185a6babb18f44f3c9be0d303d239",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/独立LP-诊断见证-砂叶种子.json",
+      "change": "added",
+      "description": "对应物品的供矿放宽、去目标诊断与精确原始/对偶见证。",
+      "sha256": "899e6eb95759ec314333f2180f7c4b1cb30cc640b94563bdda663e7c1155374c",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/独立LP-诊断见证-砂叶粉末.json",
+      "change": "added",
+      "description": "对应物品的供矿放宽、去目标诊断与精确原始/对偶见证。",
+      "sha256": "3f2858cf7a12646c9adf74f6b36f9f39087e312d8bae85af195eea41d89d6249",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/独立LP-诊断见证-精选荞愈胶囊.json",
+      "change": "added",
+      "description": "对应物品的供矿放宽、去目标诊断与精确原始/对偶见证。",
+      "sha256": "711c30207669a279800855ea0cb8042aaed692835dd3760ea73c4aa68ed8fddb",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/独立LP-诊断见证-细磨荞花粉末.json",
+      "change": "added",
+      "description": "对应物品的供矿放宽、去目标诊断与精确原始/对偶见证。",
+      "sha256": "638f5ad3a31e3af84c58d0359723f871f24879ca04362fe5dcae5653c7a8b917",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/独立LP-诊断见证-致密源石粉末.json",
+      "change": "added",
+      "description": "对应物品的供矿放宽、去目标诊断与精确原始/对偶见证。",
+      "sha256": "f1c0a9c39d10af822d65bc6af326cd40686202b80ec5c16e0dded25fd7302323",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/独立LP-诊断见证-致密蓝铁粉末.json",
+      "change": "added",
+      "description": "对应物品的供矿放宽、去目标诊断与精确原始/对偶见证。",
+      "sha256": "bf7423e244a66b86d0bc7e60bd21f7149c74647f1c5ac3d95103302719eda0c1",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/独立LP-诊断见证-荞花.json",
+      "change": "added",
+      "description": "对应物品的供矿放宽、去目标诊断与精确原始/对偶见证。",
+      "sha256": "ada6641529e3326e40017706054baffe9899be202f9b0767d2ec7ac65d23bbc6",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/独立LP-诊断见证-荞花种子.json",
+      "change": "added",
+      "description": "对应物品的供矿放宽、去目标诊断与精确原始/对偶见证。",
+      "sha256": "2c547964e621c42ffcbc16b7e9b07047d1fb2ff46744a150d993fd1037ed69ee",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/独立LP-诊断见证-荞花粉末.json",
+      "change": "added",
+      "description": "对应物品的供矿放宽、去目标诊断与精确原始/对偶见证。",
+      "sha256": "6311bdefc859084640794eb1300eb4093e1c34a2ee4cfa9f143b0b7168ac206c",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/独立LP-诊断见证-蓝铁块.json",
+      "change": "added",
+      "description": "对应物品的供矿放宽、去目标诊断与精确原始/对偶见证。",
+      "sha256": "416df224795b27c109f7e417d1c6a1536129933b93765b150eac935cf704d3df",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/独立LP-诊断见证-蓝铁矿.json",
+      "change": "added",
+      "description": "对应物品的供矿放宽、去目标诊断与精确原始/对偶见证。",
+      "sha256": "959db9aa8e5a759aa1320b953eb5dfae405b1705386057b3aa30cb6951a60701",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/独立LP-诊断见证-蓝铁粉末.json",
+      "change": "added",
+      "description": "对应物品的供矿放宽、去目标诊断与精确原始/对偶见证。",
+      "sha256": "f87775c57dfbda4094dbb4be9100bd69e9609d1630514f5dd57a7943ab055b74",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/独立LP-诊断见证-钢制零件.json",
+      "change": "added",
+      "description": "对应物品的供矿放宽、去目标诊断与精确原始/对偶见证。",
+      "sha256": "baf3aa2b6b48df66c4b73e43416b459dc137f7615a8664d4a0bb4cf04b189b98",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/独立LP-诊断见证-钢块.json",
+      "change": "added",
+      "description": "对应物品的供矿放宽、去目标诊断与精确原始/对偶见证。",
+      "sha256": "a94f6969aff03b4f99e3406abb816fd78ec0701a4f76a376869ddf1ccf81a872",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/独立LP-诊断见证-钢质瓶.json",
+      "change": "added",
+      "description": "对应物品的供矿放宽、去目标诊断与精确原始/对偶见证。",
+      "sha256": "9801bfc2267dc9877b9ad27d9e4b8614d285d9c7ecd3112190ad5c05aee0d392",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/独立LP-诊断见证-高容谷地电池.json",
+      "change": "added",
+      "description": "对应物品的供矿放宽、去目标诊断与精确原始/对偶见证。",
+      "sha256": "f6ffb82bf3f2217e592124d05858f806f54742166be36a51dbc66dac14e4b140",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/独立LP.json",
+      "change": "added",
+      "description": "同名检查、回归、摆放、布线、导出或证书的本轮机器可读结果。",
+      "sha256": "4ea23ca9ff0fa24c7bd229d64687c5e0ff0dfa66fb6033576ab05996888852b4",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/独立LP.log",
+      "change": "added",
+      "description": "同名脚本或检查命令的本轮原始标准输出/错误日志。",
+      "sha256": "906ff65679b1fc4b282dd2484ebdfb29dfa19454aaf7dc2f71187784ebce9ecd",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/独立LP.py",
+      "change": "added",
+      "description": "原闸门独立LP脚本的字节副本；重建当前候选并重跑全部诊断。",
+      "sha256": "9411a32c90250bdc30e4758fb5f2371286fcde60337d59a008fbec9154f190be",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/独立LP矩阵.json",
+      "change": "added",
+      "description": "当前候选的独立严格LP完整780变量、18629行矩阵。",
+      "sha256": "409aa82a8cc532a69d2eacd2a14a5b0d53d6b3e6065d5a311f913d9aea512043",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/独立证书回放.json",
+      "change": "added",
+      "description": "同名检查、回归、摆放、布线、导出或证书的本轮机器可读结果。",
+      "sha256": "6df202c4c2eb8f05bc33d4bfbb1401ca7e57958f4943e7e3e2c52f667494a8d5",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/独立证书回放.log",
+      "change": "added",
+      "description": "同名脚本或检查命令的本轮原始标准输出/错误日志。",
+      "sha256": "6df202c4c2eb8f05bc33d4bfbb1401ca7e57958f4943e7e3e2c52f667494a8d5",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/独立证书回放.py",
+      "change": "added",
+      "description": "不调用求解器，核五条空行矛盾及780列零流最优性证书。",
+      "sha256": "eaa91684b71342754908c99061784477ece5e0995abd962b8f3e569bf4e29de8",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/生成变更清单.py",
+      "change": "added",
+      "description": "重新生成A工件哈希与本轮完整文件变更清单；只允许既定原文件变化。",
+      "sha256": "f3108301c22ca9cd327fdab193d4774c93133eb6be2e0c81277543b0f53ee4cf",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/起始哈希.json",
+      "change": "added",
+      "description": "本轮操作前原文件的SHA-256基线。",
+      "sha256": "4ab1af8cc533b9dfe485e34b7a27ffdd2e8e8f8d39888700cf0e74bf6b1c93ae",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/逐机端口摆放试验.json",
+      "change": "added",
+      "description": "同名检查、回归、摆放、布线、导出或证书的本轮机器可读结果。",
+      "sha256": "b311eae3837bb947a753aee58f8b215f5f8a4aff01741ba26fd1657dad193f87",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/逐机端口摆放试验.log",
+      "change": "added",
+      "description": "同名脚本或检查命令的本轮原始标准输出/错误日志。",
+      "sha256": "7498aa28147c0320af342ef20c0687d5bcc2045dcbaaf5782e44c88a7237319c",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/逐机端口摆放试验.py",
+      "change": "added",
+      "description": "按B逐机端口数量分组预留；168.5秒取得本轮使用的满足性摆放。",
+      "sha256": "78847188330694c1c162f672ed3689ebce0ac7ff22c75fbeaf7af6cb64bcb084",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/artifact_manifest.json",
+      "change": "modified",
+      "description": "检查器A当前全部工件的绝对路径、大小与SHA-256。",
+      "sha256": "d2d3847ed82a6b1135a9fec6eebf7b9e819c2b80ea13da492edbead770fd70c8",
+      "before_sha256": "4523984a10f77e7b2d9c3bd69bd2aeece2f9d3eab4d120b27a4c66342e9b196b"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/catalog.py",
+      "change": "modified",
+      "description": "D1：支持当前72条正式约束指纹。",
+      "sha256": "a1fd6b583f8469b3b1ddcbcc524037e6dfd4e61f60b7ad600b2f96e867e88f9e",
+      "before_sha256": "26309c6b92ce201a276fd26190272ceaf800049b53cc33a35af51659de2f08a0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/check_full.py",
+      "change": "modified",
+      "description": "D1/D7：当前编号依赖、P2精确等速阶段、blocked状态及失败分类。",
+      "sha256": "d139be0b68bb529dca5575e6d4f1845d904c3ed8151b3b6aadfbf5ea2614e1fe",
+      "before_sha256": "3311126762954e63c00d139b3fbc137b522b8299ffacd0bf4707338ac6a60e55"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/cli_smoke.json",
+      "change": "modified",
+      "description": "同名检查、回归、摆放、布线、导出或证书的本轮机器可读结果。",
+      "sha256": "6b970e1a31b5f173f3ad4684e49aba3682eb63ced80a5edf34939df3d8613f27",
+      "before_sha256": "b5edc654aa1f45c3342906e2765dcde58a505ffa897e7cfc70db142838a12910"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/design.py",
+      "change": "modified",
+      "description": "D2/D3：实际配方子集登记、未知登记未决；仅显式保持声明触发候选B逐项核对。",
+      "sha256": "c28ccb0e5328e6c2f7e25993a1d5f0e99d11904af5a671abe6dc720807b7979a",
+      "before_sha256": "1a98b521379de2ca5af9d06730c5cecf758112389560b34bcbe76ac2858557a5"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/format_example.json",
+      "change": "modified",
+      "description": "同名检查、回归、摆放、布线、导出或证书的本轮机器可读结果。",
+      "sha256": "411266da23601be0fa818a06ffb4f251df85ecb0008923293235f07e40a21a85",
+      "before_sha256": "01e8e6cebe0947db705f40ac23c800d6e86f8bf70863b18b5fc10aefae1aeabf"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/format_example.report.json",
+      "change": "modified",
+      "description": "同名检查、回归、摆放、布线、导出或证书的本轮机器可读结果。",
+      "sha256": "4e2291e782602c1abede03ed5375aaa1ed5dffeefcb9a3378fff243b339587cb",
+      "before_sha256": "fe42226b954d1ecbc4a078eb0e3ec1fea842266753034d5c9fe19e485a826808"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/gate1-original-candidate.json",
+      "change": "added",
+      "description": "同名检查、回归、摆放、布线、导出或证书的本轮机器可读结果。",
+      "sha256": "c363a9c0a17f451902b0bbec5b25c6371bc3d24c186d09b2ba8ecfa36294a6b7",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/gate1-regression.json",
+      "change": "added",
+      "description": "同名检查、回归、摆放、布线、导出或证书的本轮机器可读结果。",
+      "sha256": "1cdcfa371e241fc4d0274f88233d27147159d1580b18bca9c5406792fd3a3762",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/gate1-regression.log",
+      "change": "added",
+      "description": "同名脚本或检查命令的本轮原始标准输出/错误日志。",
+      "sha256": "1cdcfa371e241fc4d0274f88233d27147159d1580b18bca9c5406792fd3a3762",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/gate1_regression.py",
+      "change": "added",
+      "description": "7组闸门针对性回归：版本、1113位置、登记、B来源、单端桥、原候选不回归。",
+      "sha256": "ad5f0059e6370e4b80f5456ce0b745915fb3f8bfd0742283687dd6948fb0bd7c",
+      "before_sha256": null
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/geometry.py",
+      "change": "modified",
+      "description": "单端桥真实边重建；分开P2_structure与完整P2。",
+      "sha256": "96bed1c6560cf02781353577b75d1cfb6cbf5ca5fd156bf09d375a84cac1462c",
+      "before_sha256": "8a78389f4645e0cdb955956ba86ab18c3fc1735d19432c7abb20eb17e7f6dcbd"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/projections.py",
+      "change": "modified",
+      "description": "D1：新增1113位置投影，迁移旧64–71编号及植物回路投影。",
+      "sha256": "49021cc94e2bb99d63adaeeb6dc82ff33718495cc263dd2faafc34f055784d44",
+      "before_sha256": "643adc88777d9f5ca314d295923fc6dd1b0f41530cd6743534ae4cdfbc31144a"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/selftest.log",
+      "change": "modified",
+      "description": "同名脚本或检查命令的本轮原始标准输出/错误日志。",
+      "sha256": "a3830531c11d71d1a732e0166b7faed28226d60c06ecb85b719e5553592ea2fd",
+      "before_sha256": "0a5566bced62dfa4d19ce42ea63872979f078d2584fb2467bfe7da3e9251b9bc"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/selftest.py",
+      "change": "modified",
+      "description": "将原61项自测迁移到当前指纹、72条编号及分阶段P2断言。",
+      "sha256": "ff4ed62aa780cb6eb7f99e719e76323196857161cfc9c7f07855c86de2997da9",
+      "before_sha256": "75322c1d9d45c3976b5d51640311c915598e60b8a77203c516b21eb066e4bfb0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/selftest_results.json",
+      "change": "modified",
+      "description": "同名检查、回归、摆放、布线、导出或证书的本轮机器可读结果。",
+      "sha256": "a3830531c11d71d1a732e0166b7faed28226d60c06ecb85b719e5553592ea2fd",
+      "before_sha256": "0a5566bced62dfa4d19ce42ea63872979f078d2584fb2467bfe7da3e9251b9bc"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/说明.md",
+      "change": "modified",
+      "description": "当前规则版本、72条覆盖表与本轮逐项修复/验证记录。",
+      "sha256": "40589357d942166a2a20727f9dc3b6a342440b52bb5ef9d808886ffb2285f9b1",
+      "before_sha256": "ce6a3c4036f43e11db67e98393bdf886aa134859d7b4dcfbd7383d23de1d46fe"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/生成/候选.json",
+      "change": "modified",
+      "description": "重摆219台和核心、重新指派供矿与布线、补供电；135路径/48接通矿口，规范化16项登记；仍拒绝。",
+      "sha256": "eead98c6a852a17b33c6ed7ea084f19d692fe70226db2b18da6a43463b0ea9ef",
+      "before_sha256": "e147866f410737324d49190dea83bfd19de04ebdcc9b1c9998152bbf7a80f404"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/生成/报告.md",
+      "change": "modified",
+      "description": "当前候选状态、逐项修订依据、新旧数值对照、全部复验、搜索覆盖与未完成项。",
+      "sha256": "9559e4fe517baf91256fa5efbe361ff78cfc67f25730b464bb0773c4d22d5803",
+      "before_sha256": "19fba1ac0cf911d03f08bba9684b85671a003c6a7636305aba4e41bcb7000e74"
+    }
+  ],
+  "file_count": 86,
+  "self_hash_excluded": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第1轮证据/文件变更清单.json"
+}

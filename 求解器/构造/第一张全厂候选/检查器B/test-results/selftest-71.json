@@ -1,0 +1,636 @@
+{
+  "status": "PASS",
+  "tests": [
+    {
+      "name": "real-outlet-offset-and-two-channels",
+      "status": "PASS",
+      "seconds": 0.26965,
+      "evidence": {
+        "channels": 2,
+        "local_structure": "pass",
+        "full_factory": "REJECTED"
+      }
+    },
+    {
+      "name": "schema-unknown-field",
+      "status": "PASS",
+      "seconds": 5e-05,
+      "evidence": true
+    },
+    {
+      "name": "schema-bool-coordinate",
+      "status": "PASS",
+      "seconds": 0.00018,
+      "evidence": true
+    },
+    {
+      "name": "schema-float-coordinate",
+      "status": "PASS",
+      "seconds": 0.00018,
+      "evidence": true
+    },
+    {
+      "name": "schema-float-rate",
+      "status": "PASS",
+      "seconds": 0.00011,
+      "evidence": true
+    },
+    {
+      "name": "schema-wrong-fingerprint",
+      "status": "PASS",
+      "seconds": 3e-05,
+      "evidence": true
+    },
+    {
+      "name": "schema-out-of-bound-transport",
+      "status": "PASS",
+      "seconds": 0.00016,
+      "evidence": true
+    },
+    {
+      "name": "schema-out-of-bound-core",
+      "status": "PASS",
+      "seconds": 0.00013,
+      "evidence": true
+    },
+    {
+      "name": "schema-virtual-interface",
+      "status": "PASS",
+      "seconds": 0.00011,
+      "evidence": true
+    },
+    {
+      "name": "schema-duplicate-unit-id",
+      "status": "PASS",
+      "seconds": 0.00016,
+      "evidence": true
+    },
+    {
+      "name": "schema-foreign-recipe",
+      "status": "PASS",
+      "seconds": 0.00012,
+      "evidence": true
+    },
+    {
+      "name": "schema-missing-bridge-fields",
+      "status": "PASS",
+      "seconds": 0.00015,
+      "evidence": true
+    },
+    {
+      "name": "schema-core-output-side",
+      "status": "PASS",
+      "seconds": 0.00014,
+      "evidence": true
+    },
+    {
+      "name": "schema-unknown-model",
+      "status": "PASS",
+      "seconds": 0.00011,
+      "evidence": true
+    },
+    {
+      "name": "schema-gate-limit-without-filter",
+      "status": "PASS",
+      "seconds": 0.00015,
+      "evidence": true
+    },
+    {
+      "name": "duplicate-json-key",
+      "status": "PASS",
+      "seconds": 3e-05,
+      "evidence": true
+    },
+    {
+      "name": "missing-automatic-channel",
+      "status": "PASS",
+      "seconds": 0.00051,
+      "evidence": null
+    },
+    {
+      "name": "phantom-channel",
+      "status": "PASS",
+      "seconds": 0.00048,
+      "evidence": null
+    },
+    {
+      "name": "nontransport-touch-no-channel",
+      "status": "PASS",
+      "seconds": 0.00037,
+      "evidence": null
+    },
+    {
+      "name": "overlap-and-large-machine-orientation",
+      "status": "PASS",
+      "seconds": 9e-05,
+      "evidence": null
+    },
+    {
+      "name": "power-exact-partial-intersection",
+      "status": "PASS",
+      "seconds": 1e-05,
+      "evidence": {
+        "covered_columns": "5..16",
+        "edge_contact_x17": "not covered",
+        "one_cell_overlap": "covered"
+      }
+    },
+    {
+      "name": "bridge-two-axes-same-item",
+      "status": "PASS",
+      "seconds": 0.00093,
+      "evidence": {
+        "same_item_on_two_axes": "PASS",
+        "channels": 4
+      }
+    },
+    {
+      "name": "bridge-same-direction",
+      "status": "PASS",
+      "seconds": 0.00061,
+      "evidence": [
+        {
+          "check": "N4a",
+          "status": "FAIL",
+          "basis": "规则·桥接器；共识 §1.1.3/三.3 N4a；格式 §6",
+          "evidence": {
+            "unit": "B",
+            "axis": 0,
+            "facing": {
+              "0": "out",
+              "2": "out"
+            },
+            "derived": null,
+            "claimed": 2
+          },
+          "remaining": ""
+        }
+      ]
+    },
+    {
+      "name": "bridge-single-end",
+      "status": "PASS",
+      "seconds": 0.00047,
+      "evidence": [
+        {
+          "check": "N4a",
+          "status": "FAIL",
+          "basis": "规则·桥接器；共识 §1.1.3/三.3 N4a；格式 §6",
+          "evidence": {
+            "unit": "B",
+            "axis": 0,
+            "facing": {
+              "2": "out"
+            },
+            "derived": 2,
+            "claimed": 2
+          },
+          "remaining": ""
+        },
+        {
+          "check": "N4a",
+          "status": "FAIL",
+          "basis": "规则·桥接器；共识 §1.1.3/三.3 N4a；格式 §6",
+          "evidence": {
+            "unit": "B",
+            "axis": 1,
+            "facing": {},
+            "derived": null,
+            "claimed": 3
+          },
+          "remaining": ""
+        }
+      ]
+    },
+    {
+      "name": "bridge-claim",
+      "status": "PASS",
+      "seconds": 0.00059,
+      "evidence": [
+        {
+          "check": "N4a",
+          "status": "FAIL",
+          "basis": "规则·桥接器；共识 §1.1.3/三.3 N4a；格式 §6",
+          "evidence": {
+            "unit": "B",
+            "axis": 0,
+            "facing": {
+              "0": "in",
+              "2": "out"
+            },
+            "derived": 2,
+            "claimed": 0
+          },
+          "remaining": ""
+        }
+      ]
+    },
+    {
+      "name": "bridge-adjacent",
+      "status": "PASS",
+      "seconds": 0.00041,
+      "evidence": [
+        {
+          "check": "N4b",
+          "status": "FAIL",
+          "basis": "规则·桥接器；共识 §三.3 N4b；格式 §8.2",
+          "evidence": {
+            "unit": "B",
+            "adjacent": [
+              "B2"
+            ]
+          },
+          "remaining": ""
+        },
+        {
+          "check": "N4a",
+          "status": "FAIL",
+          "basis": "规则·桥接器；共识 §1.1.3/三.3 N4a；格式 §6",
+          "evidence": {
+            "unit": "B",
+            "axis": 0,
+            "facing": {},
+            "derived": null,
+            "claimed": 2
+          },
+          "remaining": ""
+        },
+        {
+          "check": "N4a",
+          "status": "FAIL",
+          "basis": "规则·桥接器；共识 §1.1.3/三.3 N4a；格式 §6",
+          "evidence": {
+            "unit": "B",
+            "axis": 1,
+            "facing": {},
+            "derived": null,
+            "claimed": 3
+          },
+          "remaining": ""
+        },
+        {
+          "check": "N4b",
+          "status": "FAIL",
+          "basis": "规则·桥接器；共识 §三.3 N4b；格式 §8.2",
+          "evidence": {
+            "unit": "B2",
+            "adjacent": [
+              "B"
+            ]
+          },
+          "remaining": ""
+        },
+        {
+          "check": "N4a",
+          "status": "FAIL",
+          "basis": "规则·桥接器；共识 §1.1.3/三.3 N4a；格式 §6",
+          "evidence": {
+            "unit": "B2",
+            "axis": 0,
+            "facing": {},
+            "derived": null,
+            "claimed": null
+          },
+          "remaining": ""
+        },
+        {
+          "check": "N4a",
+          "status": "FAIL",
+          "basis": "规则·桥接器；共识 §1.1.3/三.3 N4a；格式 §6",
+          "evidence": {
+            "unit": "B2",
+            "axis": 1,
+            "facing": {},
+            "derived": null,
+            "claimed": null
+          },
+          "remaining": ""
+        }
+      ]
+    },
+    {
+      "name": "N1-priority",
+      "status": "PASS",
+      "seconds": 0.00039,
+      "evidence": null
+    },
+    {
+      "name": "N2-priority",
+      "status": "PASS",
+      "seconds": 0.00037,
+      "evidence": null
+    },
+    {
+      "name": "N2-bridge-physical-aggregation",
+      "status": "PASS",
+      "seconds": 0.00049,
+      "evidence": null
+    },
+    {
+      "name": "wrong-material-not-hidden-by-allowed",
+      "status": "PASS",
+      "seconds": 0.00043,
+      "evidence": null
+    },
+    {
+      "name": "outside-recipe-material",
+      "status": "PASS",
+      "seconds": 0.00043,
+      "evidence": null
+    },
+    {
+      "name": "core-source-items-per-port",
+      "status": "PASS",
+      "seconds": 0.00038,
+      "evidence": null
+    },
+    {
+      "name": "N3b-blocked",
+      "status": "PASS",
+      "seconds": 0.00035,
+      "evidence": {
+        "alternative": false,
+        "N3b": false,
+        "structural_gate_input": "retained"
+      }
+    },
+    {
+      "name": "N3b-real-alternative",
+      "status": "PASS",
+      "seconds": 0.00037,
+      "evidence": {
+        "alternative": true,
+        "N3b": true,
+        "structural_gate_input": "retained"
+      }
+    },
+    {
+      "name": "N3a-cumulative",
+      "status": "PASS",
+      "seconds": 0.00036,
+      "evidence": {
+        "alternative": true,
+        "N3b": true,
+        "structural_gate_input": "retained"
+      }
+    },
+    {
+      "name": "N3b-other-bridge-axis-no-alternative",
+      "status": "PASS",
+      "seconds": 0.00048,
+      "evidence": null
+    },
+    {
+      "name": "pure-transport-cycle",
+      "status": "PASS",
+      "seconds": 0.00039,
+      "evidence": null
+    },
+    {
+      "name": "box-recognition-unpowered-ports-p2p-rejection",
+      "status": "PASS",
+      "seconds": 0.00039,
+      "evidence": {
+        "recognized": true,
+        "physical_ports_when_unpowered": 2,
+        "p2p": "rejected"
+      }
+    },
+    {
+      "name": "maximum-rectangle-exhaustive-oracle",
+      "status": "PASS",
+      "seconds": 0.05615,
+      "evidence": {
+        "random_bruteforce_grids": 80,
+        "tie": {
+          "area": 72,
+          "short_side": 8,
+          "rectangles": [
+            {
+              "x0": 20,
+              "y0": 20,
+              "x1": 27,
+              "y1": 28
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "rectangle-declaration",
+      "status": "PASS",
+      "seconds": 0.0607,
+      "evidence": null
+    },
+    {
+      "name": "exact-LP-positive",
+      "status": "PASS",
+      "seconds": 0.00464,
+      "evidence": {
+        "base_solver_status": 0,
+        "base_message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+        "variables": 2,
+        "rows": 3,
+        "threads": 1,
+        "time_limit_seconds": 20,
+        "delta_solver_status": 0,
+        "delta_message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+        "floating_delta": 0.14285714285714285,
+        "status": "FEASIBLE_EXACT",
+        "certificate_denominator_limit": 1000,
+        "delta": "1/7",
+        "exact_rows": 3
+      }
+    },
+    {
+      "name": "exact-LP-zero",
+      "status": "PASS",
+      "seconds": 0.00399,
+      "evidence": {
+        "base_solver_status": 0,
+        "base_message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+        "variables": 2,
+        "rows": 3,
+        "threads": 1,
+        "time_limit_seconds": 20,
+        "delta_solver_status": 0,
+        "delta_message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+        "floating_delta": -0.0,
+        "status": "ZERO_SUPPORT_EXACT",
+        "certificate": {
+          "bound": "0",
+          "multipliers": [
+            {
+              "row": "x-fixed",
+              "value": "-1"
+            },
+            {
+              "row": "positive",
+              "value": "-1"
+            }
+          ],
+          "verified": "exact rational row signs, all columns, RHS"
+        }
+      }
+    },
+    {
+      "name": "exact-LP-infeasible",
+      "status": "PASS",
+      "seconds": 0.00521,
+      "evidence": {
+        "base_solver_status": 2,
+        "base_message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+        "variables": 2,
+        "rows": 4,
+        "threads": 1,
+        "time_limit_seconds": 20,
+        "status": "INFEASIBLE_EXACT",
+        "certificate": {
+          "bound": "1",
+          "multipliers": [
+            {
+              "row": "x-fixed",
+              "value": "1"
+            },
+            {
+              "row": "x-cap",
+              "value": "-1"
+            }
+          ],
+          "verified": "exact rational row signs, all columns, RHS"
+        }
+      }
+    },
+    {
+      "name": "candidate-B-rate-LP-and-tampered-witness",
+      "status": "PASS",
+      "seconds": 0.97801,
+      "evidence": {
+        "machines": 219,
+        "logical_feeds": 315,
+        "abstract_channels": 630,
+        "continuous_LP": {
+          "base_solver_status": 0,
+          "base_message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "variables": 850,
+          "rows": 16156,
+          "threads": 1,
+          "time_limit_seconds": 30,
+          "delta_solver_status": 0,
+          "delta_message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "floating_delta": 0.15000000000000002,
+          "status": "FEASIBLE_EXACT",
+          "certificate_denominator_limit": 1000,
+          "delta": "3/20",
+          "exact_rows": 16156
+        },
+        "fixed_B_exact": true,
+        "scope": "rate algebra only"
+      }
+    },
+    {
+      "name": "meeting-rt-k16",
+      "status": "PASS",
+      "seconds": 11.50413,
+      "evidence": {
+        "original_sha256": "193bba2b2af25309a665f6560099854d0fa5f4ae1bf1dba781ade95c0888f933",
+        "legacy": {
+          "channels": 999,
+          "errors": [],
+          "warnings": []
+        },
+        "new_geometry_internal_channels": 935,
+        "removed_virtual_interfaces": 64,
+        "lossless_full_factory_conversion": false,
+        "reason": "virtual ore/plant powder/output interfaces; absent real outlets/power/full factory; W/H are local",
+        "partial_v1_status": "REJECTED"
+      }
+    },
+    {
+      "name": "meeting-rt-k17",
+      "status": "PASS",
+      "seconds": 0.07131,
+      "evidence": {
+        "original_sha256": "764a47f0d87aa818baf2cf5e6a6f12709385d912d6de567747c1b0aa617b47cd",
+        "legacy": {
+          "channels": 1186,
+          "errors": [],
+          "warnings": []
+        },
+        "new_geometry_internal_channels": 1118,
+        "removed_virtual_interfaces": 68,
+        "lossless_full_factory_conversion": false,
+        "reason": "virtual ore/plant powder/output interfaces; absent real outlets/power/full factory; W/H are local",
+        "partial_v1_status": "REJECTED"
+      }
+    },
+    {
+      "name": "rate-canonical-encoding",
+      "status": "PASS",
+      "seconds": 0.00014,
+      "evidence": null
+    },
+    {
+      "name": "strict-nested-mutation-matrix",
+      "status": "PASS",
+      "seconds": 0.40499,
+      "evidence": {
+        "mutations": 1519,
+        "syntax_valid_semantically_rejected": 31
+      }
+    },
+    {
+      "name": "LP-bridge-axis-material-conservation",
+      "status": "PASS",
+      "seconds": 0.00088,
+      "evidence": "汇总总量相等但桥跨轴换物仍被逐轴逐物品守恒拒绝"
+    },
+    {
+      "name": "LP-splitter-merger-shared-capacity",
+      "status": "PASS",
+      "seconds": 0.00092,
+      "evidence": null
+    },
+    {
+      "name": "LP-gate-k5-and-cumulative",
+      "status": "PASS",
+      "seconds": 0.00116,
+      "evidence": null
+    },
+    {
+      "name": "LP-box-wireless-power-switch-and-nonproduct",
+      "status": "PASS",
+      "seconds": 0.00078,
+      "evidence": "真实箱体平均无线弧、供电开关与非成品零入库逐行核验；槽位/相位未模拟"
+    },
+    {
+      "name": "P6-explicit-recipe-restriction",
+      "status": "PASS",
+      "seconds": 0.00037,
+      "evidence": null
+    },
+    {
+      "name": "all-71-ledger-execution",
+      "status": "PASS",
+      "seconds": 0.35348,
+      "evidence": {
+        "rows": 71,
+        "blocked": 0,
+        "invalid_fixture_rejected": true
+      }
+    }
+  ],
+  "total": 54,
+  "passed": 54,
+  "checker_files_sha256": {
+    "check.py": "7349319f23cdb26758c2ad17714384e3fee58282752c69b9153ef39d2703c709",
+    "catalog.py": "c399bbd5d19768a049a416efc5bd21818e0ab34b23c4b7c697d5017feae817bf",
+    "schema.py": "a2255154e99b1b6bf965af14d600288aa6816a9fb92a3a876f43754fc499f5c7",
+    "geometry.py": "db7667d9229d0f49148a95b08130970fbc04698d31e83562834c71409573ca36",
+    "interfaces.py": "78b1ed7d9a66a1810767d4a0d37b9d0a6acebf92f5c8732e61eafee7bd603cdd",
+    "flow.py": "64455bd7b92d4b73a3e88a7a22e63543ac8704abb66ef804858b7e8c098c72cd",
+    "audit.py": "a0f6caf6d1a80f366f929ea8c10a1a2131c0c7a48fee77984dfb83b3d9cac9b8",
+    "constraint_catalog.json": "eb3e61739f1e7b7e5b237ecb58da7edb4cd1bb97080bf9d41aca38e0138d94fd"
+  },
+  "scope": "component/unit/regression tests; no certified complete factory candidate"
+}

@@ -1,0 +1,137 @@
+{
+  "pass": false,
+  "checkerA": "当前正式版指纹拒绝；本轮初次完整检查亦rejected：C55、N5b、P3违反；561通道；Farkas 1063/20精确回放。",
+  "checkerB": "当前正式版INVALID_INPUT指纹不匹配；本轮初次完整检查REJECTED：6 FAIL，561通道；OUT_L01空来源行0=1。",
+  "lp": "当前正式版本下连续LP不可行；780变量18629行，5条精确矛盾；供矿<=1去目标后全通道流和19物品单项产率最大值均精确为0，成品缺0.6/0.55。",
+  "disagreements": {
+    "source_version_change": {
+      "initial": {
+        "求解约束.txt": "a67c18dec5f6ae59c41e8620d270007f20c2d3e5b202521d0cca12f616bca3df",
+        "《明日方舟：终末地》游戏规则.txt": "52df4c12ce90975b861a6a663bd37873e03c9549658d200dc7e95fabc4bc29f3",
+        "求解任务.txt": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac"
+      },
+      "current": {
+        "求解约束.txt": "0c05976f6063f3332db6ee19d7746052ef35148d7c2a12dfa396c7bb8753f30f",
+        "《明日方舟：终末地》游戏规则.txt": "52df4c12ce90975b861a6a663bd37873e03c9549658d200dc7e95fabc4bc29f3",
+        "求解任务.txt": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac"
+      },
+      "initial_snapshot_reconstruction": "规则和任务字节未变；约束按A初次台账原文恢复原行，逐文件SHA匹配执行开始哈希。",
+      "changed_rows": [
+        {
+          "line": 76,
+          "initial": "传输按仓库余量判定：每个可到达的循环态中，有供电状态且传输开着的协议储存箱，在每次冷却已结束的传输判定前，若箱内有某种非成品，则仓库对该种物品的可接受余量必须为零；等价地，仓库对某种非成品还有余量时，该种物品在这次传输判定前的箱内数量必须为零。此条件分别适用于每种传输相位和固定判定次序；仓库已经满格且不会再出库的非成品，不因开启传输而被禁止经箱子的物理端口中转。",
+          "current": "传输按仓库余量判定：每个可到达的循环态中，有供电状态且传输开着的协议储存箱，在每次冷却已结束的传输判定前，若箱内有某种非成品，则仓库对该种物品的可接受余量必须为零；等价地，仓库对某种非成品还有余量时，该种物品在这次传输判定前的箱内数量必须为零。此条件分别适用于每种传输相位和固定判定次序。"
+        }
+      ]
+    },
+    "normalized_status_difference_numbers": [
+      3,
+      5,
+      6,
+      8,
+      10,
+      14,
+      21,
+      23,
+      30,
+      33,
+      39,
+      40,
+      45,
+      46,
+      48,
+      52,
+      53,
+      54,
+      67,
+      68
+    ],
+    "per_constraint": {
+      "3": {
+        "classification": "B状态标注过宽，非候选缺陷",
+        "explanation": "A无箱→前件不成立；B在audit.py:24–25无条件登记传输相位待证。本候选箱数0，根本没有该相位。B多报运行义务，不是漏边或错误放行。"
+      },
+      "5": {
+        "classification": "语义一致，非bug",
+        "explanation": "A的N1 checked与B前件不成立均来自无汇流器，取货侧多级排序对象不存在。"
+      },
+      "6": {
+        "classification": "语义一致，非bug",
+        "explanation": "A的N2 checked与B前件不成立均来自无分流器/汇流器，密集结点图样不存在。"
+      },
+      "8": {
+        "classification": "执行粒度不同，非候选此项反例",
+        "explanation": "B的PASS只核规范配方矿耗常量，remaining明确产率另由LP核；A在flow_checks精确流阶段核相关投影，本轮blocked。不能把B读成产率通过。"
+      },
+      "10": {
+        "classification": "执行粒度不同，非候选此项反例",
+        "explanation": "B只核采种1→2和种植1→1的配方常量；A等待全图守恒见证。植物回路本候选是否持续制造并未由B的PASS认证。"
+      },
+      "14": {
+        "classification": "候选满速部分确实失败；B只通过设置部分",
+        "explanation": "A partial_blocked；B只核两边23口和18/34设定，remaining说逐口满速另核。4个矿口0=1精确矛盾使完整条目失败。B未宣称满速已成立，不是此处算错。"
+      },
+      "21": {
+        "classification": "候选错误；A延后执行",
+        "explanation": "B先从结构计数证明通道不足；A在projections.py:flow_checks中依赖正流见证，因LP失败未执行。独立逐端口计数与B全部九机型数字相同，结构上界不足即可否证。"
+      },
+      "23": {
+        "classification": "候选错误；A延后执行",
+        "explanation": "B提前检出研磨至少3输入者0<31、塑形至少2输入者1<5；独立计数确认。A等待正支持，blocked不表示通过。采种17台使恰16台的子前件不成立。"
+      },
+      "30": {
+        "classification": "B未提前判无对象，非候选违反",
+        "explanation": "A因无准入口记前件不成立；B有关判定在flow_audit，LP失败后audit.finish补BLOCKED。独立核运输全为带/桥，本条前件不成立。"
+      },
+      "33": {
+        "classification": "B未提前判无对象；另有正式文本版本漂移",
+        "explanation": "A因无箱记前件不成立；B流阶段未执行而BLOCKED。两个正式版本该条都以箱为对象，本候选无箱，均无触发。正文版本差异及入口拒绝见版本段。"
+      },
+      "39": {
+        "classification": "未执行状态粒度不同，非候选已通过",
+        "explanation": "A泛记运行待证，B在flow_audit判断满载混做再登记，本轮未进入而BLOCKED。所有机器只列单配方，受限平均流无混做批次；本轮不提供真实事件序列证书，两者均不能当运行充分证书。"
+      },
+      "40": {
+        "classification": "未执行状态粒度不同，非候选此项数值反例",
+        "explanation": "32台种植前件成立；A保留库存运行义务，B在流阶段才登记而BLOCKED。本轮不核瞬时库存，两者均无库存达标结论。"
+      },
+      "45": {
+        "classification": "B未提前判无对象，非候选违反",
+        "explanation": "A无箱记免；B箱体运行/守恒条目在流阶段，故BLOCKED。箱数0使本条无对象；无箱不免除49–51的全局计数公式。"
+      },
+      "46": {
+        "classification": "未执行状态粒度不同，非候选已通过",
+        "explanation": "轮询前件含腾空时刻和出货分组。A运行待证；B在flow_audit尾部才记运行义务，未进入则BLOCKED。无实际时序可供两者判定。"
+      },
+      "48": {
+        "classification": "未执行状态粒度不同，非候选已通过",
+        "explanation": "与46同属含运行前件的定理；A待运行，B未进入流阶段。没有固定物品清单/全部先后证据，不能把单物品路径标签替代运行前件。"
+      },
+      "52": {
+        "classification": "B未提前判无对象，非候选违反",
+        "explanation": "无储存箱；A前件不成立，B把箱体检查放到流阶段导致BLOCKED。不是发现滞货占格。"
+      },
+      "53": {
+        "classification": "B未提前判无对象，非候选违反",
+        "explanation": "无储存箱；A前件不成立，B流阶段未执行。本候选不存在箱头限存对象。"
+      },
+      "54": {
+        "classification": "A保守阻塞、B部分投影通过；独立几何补核可收口",
+        "explanation": "A等正批率判每桩制造者≤23，B的remaining同样保留该项。独立重算每桩覆盖的全部机器最大仅14，制造者是其子集，故无需流即可推出≤23。本候选不是供电台数违规。"
+      },
+      "67": {
+        "classification": "A保守阻塞、B几何投影通过；本候选无侧旁对象",
+        "explanation": "矩形6×6，12格供电投影不可能完整落入其任一6格边跨度，故n_g为空，逐桩c_g无对象。B的weighted=0通过；A因一般流依赖记partial_blocked。在本候选可独立判明。"
+      },
+      "68": {
+        "classification": "语义一致，非bug",
+        "explanation": "A核A≤1005或远带条件的蕴含式为真；B记近带a/b∈{2,3}不成立。当前a=b=64，面积36，全部相关条件均无触发。"
+      }
+    },
+    "channel_sets_equal": true,
+    "note": "#55多投影合并与LP证书形式差异无结论冲突；首轮P2和单端桥bug本轮回归未复现。"
+  },
+  "area": "未认证；最大空矩形36，短边6，(64,64)至(69,69)，占地4062、空地838，不能更新L。",
+  "report_path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/闸门-第2轮.md",
+  "candidate_sha256": "eead98c6a852a17b33c6ed7ea084f19d692fe70226db2b18da6a43463b0ea9ef"
+}

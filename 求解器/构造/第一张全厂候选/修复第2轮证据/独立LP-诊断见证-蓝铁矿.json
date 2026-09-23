@@ -1,0 +1,828 @@
+{
+  "item": "蓝铁矿",
+  "scope": "sources<=1,no targets; each item separately maximized",
+  "nonzero_values": [],
+  "solver": {
+    "status": 0,
+    "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+    "variables": 774,
+    "rows": 18581,
+    "equalities": 17331,
+    "inequalities": 1250,
+    "iterations": 0,
+    "presolve": true,
+    "exact_primal": true,
+    "exact_dual": true,
+    "objective": "0",
+    "nonzero_variables": 0,
+    "certificate": {
+      "bound": "0",
+      "multipliers": [
+        {
+          "row": "slot:('T10_1', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T10_18', 'H'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T10_21', 'H'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T10_5', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T11_1', 'H'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T11_5', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T12_1', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T13_1', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T14_1', 'H'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T14_1', 'V'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T15_1', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T16_1', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T17_1', 'H'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T18_1', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T1_14', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T1_17', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T1_2', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T1_20', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T1_26', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T1_29', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T1_32', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T1_35', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T1_38', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T1_44', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T1_5', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T1_50', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T1_53', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T1_56', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T1_59', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T1_65', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T1_68', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T1_8', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T20_24', 'H'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T23_1', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T24_1', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T29_1', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T2_1', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T2_2', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T2_5', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T30_5', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T31_5', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T32_1', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T32_5', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T35_1', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T38_1', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T38_5', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T3_1', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T3_2', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T3_3', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T3_4', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T3_5', 'H'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T3_5', 'V'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T3_6', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T44_1', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T47_1', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T48_5', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T49_5', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T4_1', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T4_5', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T4_6', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T53_1', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T54_1', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T59_1', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T59_5', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T5_1', 'H'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T5_10', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T5_15', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T5_16', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T5_17', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T5_18', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T5_19', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T5_20', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T5_21', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T5_22', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T5_23', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T5_32', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T5_34', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T5_43', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T5_5', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T5_56', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T5_6', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T5_60', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T5_61', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T5_62', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T5_66', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T5_7', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T5_8', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T5_9', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T62_1', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T62_5', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T68_1', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T68_11', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T69_10', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T69_11', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T69_5', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T69_6', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T69_7', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T69_8', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T69_9', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T6_1', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T6_5', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T7_1', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T7_5', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T8_1', 'H'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T8_5', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T9_1', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T9_5', 'single'):蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M022:in:蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M022:out:蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M023:in:蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M023:out:蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M024:in:蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M024:out:蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M027:in:蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M027:out:蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M032:in:蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M032:out:蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M033:in:蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M033:out:蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M035:in:蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M035:out:蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M036:in:蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M036:out:蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M039:in:蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M039:out:蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M041:in:蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M041:out:蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M044:in:蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M044:out:蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M046:in:蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M046:out:蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M048:in:蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M048:out:蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M069:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M069:in:蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M070:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M070:in:蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M071:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M071:in:蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M072:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M072:in:蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M073:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M073:in:蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M074:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M074:in:蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M075:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M075:in:蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M076:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M076:in:蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M077:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M077:in:蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M078:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M078:in:蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M079:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M079:in:蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M080:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M080:in:蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M081:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M081:in:蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M082:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M082:in:蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M083:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M083:in:蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M084:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M084:in:蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M085:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M085:in:蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M086:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M086:in:蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M087:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M087:in:蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M088:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M088:in:蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M089:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M089:in:蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M090:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M090:in:蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M091:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M091:in:蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M092:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M092:in:蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M093:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M093:in:蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M094:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M094:in:蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M095:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M095:in:蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M096:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M096:in:蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M097:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M097:in:蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M098:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M098:in:蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M099:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M099:in:蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M100:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M100:in:蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M101:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M101:in:蓝铁矿",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M102:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M102:in:蓝铁矿",
+          "value": "-1"
+        }
+      ]
+    }
+  }
+}

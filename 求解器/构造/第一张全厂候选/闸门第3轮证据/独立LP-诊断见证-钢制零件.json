@@ -1,0 +1,188 @@
+{
+  "item": "钢制零件",
+  "scope": "sources<=1,no targets; each item separately maximized",
+  "nonzero_values": [],
+  "solver": {
+    "status": 0,
+    "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+    "variables": 774,
+    "rows": 18581,
+    "equalities": 17331,
+    "inequalities": 1250,
+    "iterations": 0,
+    "presolve": true,
+    "exact_primal": true,
+    "exact_dual": true,
+    "objective": "0",
+    "nonzero_variables": 0,
+    "certificate": {
+      "bound": "0",
+      "multipliers": [
+        {
+          "row": "slot:('T13_60', 'V'):钢块",
+          "value": "1"
+        },
+        {
+          "row": "slot:('T13_61', 'single'):钢块",
+          "value": "1"
+        },
+        {
+          "row": "slot:('T13_62', 'single'):钢块",
+          "value": "1"
+        },
+        {
+          "row": "slot:('T13_63', 'single'):钢块",
+          "value": "1"
+        },
+        {
+          "row": "slot:('T20_65', 'single'):钢块",
+          "value": "1"
+        },
+        {
+          "row": "slot:('T20_66', 'single'):钢块",
+          "value": "1"
+        },
+        {
+          "row": "slot:('T20_67', 'single'):钢块",
+          "value": "1"
+        },
+        {
+          "row": "slot:('T60_48', 'single'):钢块",
+          "value": "1"
+        },
+        {
+          "row": "slot:('T61_48', 'single'):钢块",
+          "value": "1"
+        },
+        {
+          "row": "slot:('T61_53', 'single'):致密蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "slot:('T62_48', 'single'):钢块",
+          "value": "1"
+        },
+        {
+          "row": "slot:('T63_48', 'single'):钢块",
+          "value": "1"
+        },
+        {
+          "row": "slot:('T64_41', 'single'):钢块",
+          "value": "1"
+        },
+        {
+          "row": "slot:('T64_42', 'single'):钢块",
+          "value": "1"
+        },
+        {
+          "row": "slot:('T64_43', 'single'):钢块",
+          "value": "1"
+        },
+        {
+          "row": "slot:('T64_44', 'single'):钢块",
+          "value": "1"
+        },
+        {
+          "row": "slot:('T64_48', 'single'):钢块",
+          "value": "1"
+        },
+        {
+          "row": "slot:('T65_48', 'single'):钢块",
+          "value": "1"
+        },
+        {
+          "row": "slot:('T65_53', 'single'):钢块",
+          "value": "1"
+        },
+        {
+          "row": "slot:('T66_48', 'single'):钢块",
+          "value": "1"
+        },
+        {
+          "row": "slot:('T66_49', 'single'):钢块",
+          "value": "1"
+        },
+        {
+          "row": "slot:('T66_50', 'single'):钢块",
+          "value": "1"
+        },
+        {
+          "row": "slot:('T66_51', 'single'):钢块",
+          "value": "1"
+        },
+        {
+          "row": "slot:('T66_52', 'single'):钢块",
+          "value": "1"
+        },
+        {
+          "row": "slot:('T66_53', 'single'):钢块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M107:in:致密蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M107:out:钢块",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M115:in:致密蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M115:out:钢块",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M116:in:致密蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M116:out:钢块",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M119:in:致密蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M119:out:钢块",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M124:in:砂叶粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M124:out:致密蓝铁粉末",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M158:out:钢制零件",
+          "value": "1"
+        },
+        {
+          "row": "machine:M159:in:钢块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M160:in:钢块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M161:in:钢块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M162:out:钢制零件",
+          "value": "1"
+        },
+        {
+          "row": "machine:M163:in:钢块",
+          "value": "1"
+        }
+      ]
+    }
+  }
+}

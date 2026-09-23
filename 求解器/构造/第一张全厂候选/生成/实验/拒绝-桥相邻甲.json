@@ -1,0 +1,1159 @@
+{
+  "schema_errors": [],
+  "geometry_errors": [
+    "N4b桥相邻 T62_7 T63_7",
+    "N4a桥邻端不成一取一存 T62_7 H_in {2: ('in', ('T61_7', 0, 0))}",
+    "桥声明方向不符 T62_7 H_in",
+    "N4b桥相邻 T63_7 T62_7",
+    "N4a桥邻端不成一取一存 T63_7 H_in {0: ('out', ('T64_7', 2, 0))}",
+    "桥声明方向不符 T63_7 H_in",
+    "N4b桥相邻 T67_47 T67_48",
+    "N4a桥邻端不成一取一存 T67_47 V_in {3: ('out', ('M109', 1, 0))}",
+    "桥声明方向不符 T67_47 V_in",
+    "N4b桥相邻 T67_48 T67_47",
+    "N4a桥邻端不成一取一存 T67_48 V_in {1: ('in', ('T67_49', 3, 0))}",
+    "桥声明方向不符 T67_48 V_in"
+  ],
+  "structural_errors": [
+    "运输断头或多接 ('T61_7', 0): in=0, out=1",
+    "运输断头或多接 ('T62_7', 0): in=0, out=0",
+    "运输断头或多接 ('T63_7', 0): in=0, out=0",
+    "运输断头或多接 ('T64_7', 0): in=1, out=0",
+    "运输断头或多接 ('T67_47', 1): in=0, out=0",
+    "运输断头或多接 ('T67_48', 1): in=0, out=0",
+    "运输断头或多接 ('T67_49', 0): in=0, out=1",
+    "N5a声明差异: 缺0 多6",
+    "P2源路径未到达非运输存货口 ('M052', 2, 1)",
+    "无非运输源的运输支撑 7 条"
+  ],
+  "channels": 465,
+  "paths": 100,
+  "maximum_rectangle": {
+    "x0": 62,
+    "y0": 64,
+    "x1": 69,
+    "y1": 69
+  },
+  "area": 48,
+  "short_side": 6,
+  "rectangle_pass": true,
+  "powered": 219,
+  "occupied": 4002,
+  "lp": {
+    "status": 2,
+    "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+    "variables": 684,
+    "equalities": 893,
+    "inequalities": 1050,
+    "base_feasible": false,
+    "certified": true,
+    "scope": "固定候选的真实结构通道、设计物品集、配方与设定；不覆盖其他布局或运行",
+    "empty_equalities": [
+      {
+        "row": "('source', ('OUT_L00', 0, 1), '源矿')",
+        "rhs": "1"
+      },
+      {
+        "row": "('source', ('OUT_L01', 0, 1), '蓝铁矿')",
+        "rhs": "1"
+      },
+      {
+        "row": "('source', ('OUT_L02', 0, 1), '源矿')",
+        "rhs": "1"
+      },
+      {
+        "row": "('source', ('OUT_L03', 0, 1), '蓝铁矿')",
+        "rhs": "1"
+      },
+      {
+        "row": "('source', ('OUT_L04', 0, 1), '源矿')",
+        "rhs": "1"
+      },
+      {
+        "row": "('source', ('OUT_L05', 0, 1), '蓝铁矿')",
+        "rhs": "1"
+      },
+      {
+        "row": "('source', ('OUT_L06', 0, 1), '蓝铁矿')",
+        "rhs": "1"
+      },
+      {
+        "row": "('source', ('OUT_L07', 0, 1), '蓝铁矿')",
+        "rhs": "1"
+      },
+      {
+        "row": "('source', ('OUT_L08', 0, 1), '蓝铁矿')",
+        "rhs": "1"
+      },
+      {
+        "row": "('source', ('OUT_L09', 0, 1), '蓝铁矿')",
+        "rhs": "1"
+      },
+      {
+        "row": "('source', ('OUT_L10', 0, 1), '源矿')",
+        "rhs": "1"
+      },
+      {
+        "row": "('source', ('OUT_L11', 0, 1), '蓝铁矿')",
+        "rhs": "1"
+      },
+      {
+        "row": "('source', ('OUT_L12', 0, 1), '源矿')",
+        "rhs": "1"
+      },
+      {
+        "row": "('source', ('OUT_L13', 0, 1), '蓝铁矿')",
+        "rhs": "1"
+      },
+      {
+        "row": "('source', ('OUT_L14', 0, 1), '蓝铁矿')",
+        "rhs": "1"
+      },
+      {
+        "row": "('source', ('OUT_L16', 0, 1), '蓝铁矿')",
+        "rhs": "1"
+      },
+      {
+        "row": "('source', ('OUT_L18', 0, 1), '蓝铁矿')",
+        "rhs": "1"
+      },
+      {
+        "row": "('source', ('OUT_L19', 0, 1), '蓝铁矿')",
+        "rhs": "1"
+      },
+      {
+        "row": "('source', ('OUT_L20', 0, 1), '蓝铁矿')",
+        "rhs": "1"
+      },
+      {
+        "row": "('source', ('OUT_L21', 0, 1), '蓝铁矿')",
+        "rhs": "1"
+      },
+      {
+        "row": "('source', ('OUT_L22', 0, 1), '源矿')",
+        "rhs": "1"
+      },
+      {
+        "row": "('source', ('OUT_B00', 1, 1), '蓝铁矿')",
+        "rhs": "1"
+      },
+      {
+        "row": "('source', ('OUT_B01', 1, 1), '蓝铁矿')",
+        "rhs": "1"
+      },
+      {
+        "row": "('source', ('OUT_B02', 1, 1), '源矿')",
+        "rhs": "1"
+      },
+      {
+        "row": "('source', ('OUT_B03', 1, 1), '源矿')",
+        "rhs": "1"
+      },
+      {
+        "row": "('source', ('OUT_B04', 1, 1), '蓝铁矿')",
+        "rhs": "1"
+      },
+      {
+        "row": "('source', ('OUT_B05', 1, 1), '蓝铁矿')",
+        "rhs": "1"
+      },
+      {
+        "row": "('source', ('OUT_B06', 1, 1), '源矿')",
+        "rhs": "1"
+      },
+      {
+        "row": "('source', ('OUT_B07', 1, 1), '蓝铁矿')",
+        "rhs": "1"
+      },
+      {
+        "row": "('source', ('OUT_B08', 1, 1), '蓝铁矿')",
+        "rhs": "1"
+      },
+      {
+        "row": "('source', ('OUT_B10', 1, 1), '源矿')",
+        "rhs": "1"
+      },
+      {
+        "row": "('source', ('OUT_B15', 1, 1), '源矿')",
+        "rhs": "1"
+      },
+      {
+        "row": "('source', ('OUT_B16', 1, 1), '蓝铁矿')",
+        "rhs": "1"
+      },
+      {
+        "row": "('source', ('OUT_B17', 1, 1), '蓝铁矿')",
+        "rhs": "1"
+      },
+      {
+        "row": "('source', ('OUT_B18', 1, 1), '蓝铁矿')",
+        "rhs": "1"
+      },
+      {
+        "row": "('source', ('OUT_B19', 1, 1), '源矿')",
+        "rhs": "1"
+      },
+      {
+        "row": "('source', ('OUT_B20', 1, 1), '源矿')",
+        "rhs": "1"
+      },
+      {
+        "row": "('source', ('OUT_B21', 1, 1), '蓝铁矿')",
+        "rhs": "1"
+      },
+      {
+        "row": "('source', ('OUT_B22', 1, 1), '蓝铁矿')",
+        "rhs": "1"
+      },
+      {
+        "row": "('source', ('CORE', 3, 1), '蓝铁矿')",
+        "rhs": "1"
+      },
+      {
+        "row": "('source', ('CORE', 1, 4), '蓝铁矿')",
+        "rhs": "1"
+      },
+      {
+        "row": "('source', ('CORE', 1, 1), '蓝铁矿')",
+        "rhs": "1"
+      }
+    ],
+    "certificate_kind": "精确矛盾 0 = 非零常数"
+  },
+  "formal_constraints": [
+    {
+      "name": "接通先后",
+      "status": "运行阶段待证",
+      "premise": "正式条文的循环态、可达性或时序前件未由静态数据提供",
+      "evidence": [],
+      "remaining": "须对调试后全部相关可达循环态和允许的先后取值证明"
+    },
+    {
+      "name": "分叉分支",
+      "status": "运行阶段待证",
+      "premise": "正式条文的循环态、可达性或时序前件未由静态数据提供",
+      "evidence": [],
+      "remaining": "须对调试后全部相关可达循环态和允许的先后取值证明"
+    },
+    {
+      "name": "传输相位",
+      "status": "运行阶段待证",
+      "premise": "正式条文的循环态、可达性或时序前件未由静态数据提供",
+      "evidence": [],
+      "remaining": "须对调试后全部相关可达循环态和允许的先后取值证明"
+    },
+    {
+      "name": "判定先后",
+      "status": "运行阶段待证",
+      "premise": "正式条文的循环态、可达性或时序前件未由静态数据提供",
+      "evidence": [],
+      "remaining": "须对调试后全部相关可达循环态和允许的先后取值证明"
+    },
+    {
+      "name": "取货分级",
+      "status": "运行阶段待证",
+      "premise": "正式条文的循环态、可达性或时序前件未由静态数据提供",
+      "evidence": [],
+      "remaining": "须对调试后全部相关可达循环态和允许的先后取值证明"
+    },
+    {
+      "name": "密集结点",
+      "status": "静态可证前件不成立",
+      "premise": "本候选无相应单位/单配方限制，或所查通道数前件不成立",
+      "evidence": [],
+      "remaining": "解除限制时须重审前件"
+    },
+    {
+      "name": "来源定序",
+      "status": "运行阶段待证",
+      "premise": "正式条文的循环态、可达性或时序前件未由静态数据提供",
+      "evidence": [],
+      "remaining": "须对调试后全部相关可达循环态和允许的先后取值证明"
+    },
+    {
+      "name": "单位矿耗",
+      "status": "运行阶段待证",
+      "premise": "正式条文的循环态、可达性或时序前件未由静态数据提供",
+      "evidence": [],
+      "remaining": "须对调试后全部相关可达循环态和允许的先后取值证明"
+    },
+    {
+      "name": "矿石需求",
+      "status": "平均流前置检查失败",
+      "premise": "联合LP必须先有精确正流见证，之后按见证判定条文前件",
+      "evidence": [
+        {
+          "lp_status": 2,
+          "certified": true
+        }
+      ],
+      "remaining": "即使LP可行仍须逐条补计数、再生路径与运行剩余义务"
+    },
+    {
+      "name": "种子自给",
+      "status": "运行阶段待证",
+      "premise": "正式条文的循环态、可达性或时序前件未由静态数据提供",
+      "evidence": [],
+      "remaining": "须对调试后全部相关可达循环态和允许的先后取值证明"
+    },
+    {
+      "name": "端口对接",
+      "status": "已核静态投影",
+      "premise": "由实体布局重算；涉及正流的计数仅在精确平均流见证存在时生效",
+      "evidence": [
+        465
+      ],
+      "remaining": "本项静态必要条件不证明运行达标"
+    },
+    {
+      "name": "端口速率",
+      "status": "平均流前置检查失败",
+      "premise": "联合LP必须先有精确正流见证，之后按见证判定条文前件",
+      "evidence": [
+        {
+          "lp_status": 2,
+          "certified": true
+        }
+      ],
+      "remaining": "即使LP可行仍须逐条补计数、再生路径与运行剩余义务"
+    },
+    {
+      "name": "出库上限",
+      "status": "已核静态投影",
+      "premise": "由实体布局重算；涉及正流的计数仅在精确平均流见证存在时生效",
+      "evidence": [
+        {
+          "0": 23,
+          "1": 23
+        }
+      ],
+      "remaining": "本项静态必要条件不证明运行达标"
+    },
+    {
+      "name": "取货口配置",
+      "status": "违反静态必要条件",
+      "premise": "由实体布局重算；涉及正流的计数仅在精确平均流见证存在时生效",
+      "evidence": [
+        {
+          "源矿": 18,
+          "蓝铁矿": 34
+        },
+        {
+          "missing_physical_outputs": [
+            {
+              "unit": "CORE",
+              "side": 1,
+              "offset": 1
+            },
+            {
+              "unit": "CORE",
+              "side": 1,
+              "offset": 4
+            },
+            {
+              "unit": "CORE",
+              "side": 3,
+              "offset": 1
+            },
+            {
+              "unit": "OUT_B00",
+              "side": 1,
+              "offset": 1
+            },
+            {
+              "unit": "OUT_B01",
+              "side": 1,
+              "offset": 1
+            },
+            {
+              "unit": "OUT_B02",
+              "side": 1,
+              "offset": 1
+            },
+            {
+              "unit": "OUT_B03",
+              "side": 1,
+              "offset": 1
+            },
+            {
+              "unit": "OUT_B04",
+              "side": 1,
+              "offset": 1
+            },
+            {
+              "unit": "OUT_B05",
+              "side": 1,
+              "offset": 1
+            },
+            {
+              "unit": "OUT_B06",
+              "side": 1,
+              "offset": 1
+            },
+            {
+              "unit": "OUT_B07",
+              "side": 1,
+              "offset": 1
+            },
+            {
+              "unit": "OUT_B08",
+              "side": 1,
+              "offset": 1
+            },
+            {
+              "unit": "OUT_B10",
+              "side": 1,
+              "offset": 1
+            },
+            {
+              "unit": "OUT_B15",
+              "side": 1,
+              "offset": 1
+            },
+            {
+              "unit": "OUT_B16",
+              "side": 1,
+              "offset": 1
+            },
+            {
+              "unit": "OUT_B17",
+              "side": 1,
+              "offset": 1
+            },
+            {
+              "unit": "OUT_B18",
+              "side": 1,
+              "offset": 1
+            },
+            {
+              "unit": "OUT_B19",
+              "side": 1,
+              "offset": 1
+            },
+            {
+              "unit": "OUT_B20",
+              "side": 1,
+              "offset": 1
+            },
+            {
+              "unit": "OUT_B21",
+              "side": 1,
+              "offset": 1
+            },
+            {
+              "unit": "OUT_B22",
+              "side": 1,
+              "offset": 1
+            },
+            {
+              "unit": "OUT_L00",
+              "side": 0,
+              "offset": 1
+            },
+            {
+              "unit": "OUT_L01",
+              "side": 0,
+              "offset": 1
+            },
+            {
+              "unit": "OUT_L02",
+              "side": 0,
+              "offset": 1
+            },
+            {
+              "unit": "OUT_L03",
+              "side": 0,
+              "offset": 1
+            },
+            {
+              "unit": "OUT_L04",
+              "side": 0,
+              "offset": 1
+            },
+            {
+              "unit": "OUT_L05",
+              "side": 0,
+              "offset": 1
+            },
+            {
+              "unit": "OUT_L06",
+              "side": 0,
+              "offset": 1
+            },
+            {
+              "unit": "OUT_L07",
+              "side": 0,
+              "offset": 1
+            },
+            {
+              "unit": "OUT_L08",
+              "side": 0,
+              "offset": 1
+            },
+            {
+              "unit": "OUT_L09",
+              "side": 0,
+              "offset": 1
+            },
+            {
+              "unit": "OUT_L10",
+              "side": 0,
+              "offset": 1
+            },
+            {
+              "unit": "OUT_L11",
+              "side": 0,
+              "offset": 1
+            },
+            {
+              "unit": "OUT_L12",
+              "side": 0,
+              "offset": 1
+            },
+            {
+              "unit": "OUT_L13",
+              "side": 0,
+              "offset": 1
+            },
+            {
+              "unit": "OUT_L14",
+              "side": 0,
+              "offset": 1
+            },
+            {
+              "unit": "OUT_L16",
+              "side": 0,
+              "offset": 1
+            },
+            {
+              "unit": "OUT_L18",
+              "side": 0,
+              "offset": 1
+            },
+            {
+              "unit": "OUT_L19",
+              "side": 0,
+              "offset": 1
+            },
+            {
+              "unit": "OUT_L20",
+              "side": 0,
+              "offset": 1
+            },
+            {
+              "unit": "OUT_L21",
+              "side": 0,
+              "offset": 1
+            },
+            {
+              "unit": "OUT_L22",
+              "side": 0,
+              "offset": 1
+            }
+          ]
+        }
+      ],
+      "remaining": "全部满速另由联合 LP 核验；真实循环态满速仍待证"
+    },
+    {
+      "name": "周期倍数",
+      "status": "运行阶段待证",
+      "premise": "正式条文的循环态、可达性或时序前件未由静态数据提供",
+      "evidence": [],
+      "remaining": "须对调试后全部相关可达循环态和允许的先后取值证明"
+    },
+    {
+      "name": "种子起动",
+      "status": "运行阶段待证",
+      "premise": "正式条文的循环态、可达性或时序前件未由静态数据提供",
+      "evidence": [],
+      "remaining": "须对调试后全部相关可达循环态和允许的先后取值证明"
+    },
+    {
+      "name": "入库途径",
+      "status": "平均流前置检查失败",
+      "premise": "联合LP必须先有精确正流见证，之后按见证判定条文前件",
+      "evidence": [
+        {
+          "lp_status": 2,
+          "certified": true
+        }
+      ],
+      "remaining": "即使LP可行仍须逐条补计数、再生路径与运行剩余义务"
+    },
+    {
+      "name": "物料流量",
+      "status": "平均流前置检查失败",
+      "premise": "联合LP必须先有精确正流见证，之后按见证判定条文前件",
+      "evidence": [
+        {
+          "lp_status": 2,
+          "certified": true
+        }
+      ],
+      "remaining": "即使LP可行仍须逐条补计数、再生路径与运行剩余义务"
+    },
+    {
+      "name": "机型下限",
+      "status": "已核静态投影",
+      "premise": "由实体布局重算；涉及正流的计数仅在精确平均流见证存在时生效",
+      "evidence": [
+        {
+          "粉碎机": 69,
+          "精炼炉": 51,
+          "研磨机": 32,
+          "塑形机": 6,
+          "配件机": 6,
+          "种植机": 32,
+          "采种机": 17,
+          "封装机": 3,
+          "灌装机": 3
+        }
+      ],
+      "remaining": "本项静态必要条件不证明运行达标"
+    },
+    {
+      "name": "存货误料停机与可用台数",
+      "status": "平均流前置检查失败",
+      "premise": "联合LP必须先有精确正流见证，之后按见证判定条文前件",
+      "evidence": [
+        {
+          "lp_status": 2,
+          "certified": true
+        }
+      ],
+      "remaining": "即使LP可行仍须逐条补计数、再生路径与运行剩余义务"
+    },
+    {
+      "name": "通道下限",
+      "status": "平均流前置检查失败",
+      "premise": "联合LP必须先有精确正流见证，之后按见证判定条文前件",
+      "evidence": [
+        {
+          "lp_status": 2,
+          "certified": true
+        }
+      ],
+      "remaining": "即使LP可行仍须逐条补计数、再生路径与运行剩余义务"
+    },
+    {
+      "name": "满载配置",
+      "status": "平均流前置检查失败",
+      "premise": "联合LP必须先有精确正流见证，之后按见证判定条文前件",
+      "evidence": [
+        {
+          "lp_status": 2,
+          "certified": true
+        }
+      ],
+      "remaining": "即使LP可行仍须逐条补计数、再生路径与运行剩余义务"
+    },
+    {
+      "name": "研磨进料",
+      "status": "平均流前置检查失败",
+      "premise": "联合LP必须先有精确正流见证，之后按见证判定条文前件",
+      "evidence": [
+        {
+          "lp_status": 2,
+          "certified": true
+        }
+      ],
+      "remaining": "即使LP可行仍须逐条补计数、再生路径与运行剩余义务"
+    },
+    {
+      "name": "封装进料",
+      "status": "平均流前置检查失败",
+      "premise": "联合LP必须先有精确正流见证，之后按见证判定条文前件",
+      "evidence": [
+        {
+          "lp_status": 2,
+          "certified": true
+        }
+      ],
+      "remaining": "即使LP可行仍须逐条补计数、再生路径与运行剩余义务"
+    },
+    {
+      "name": "双料逐机收支与存货界",
+      "status": "平均流前置检查失败",
+      "premise": "联合LP必须先有精确正流见证，之后按见证判定条文前件",
+      "evidence": [
+        {
+          "lp_status": 2,
+          "certified": true
+        }
+      ],
+      "remaining": "即使LP可行仍须逐条补计数、再生路径与运行剩余义务"
+    },
+    {
+      "name": "满速独占",
+      "status": "平均流前置检查失败",
+      "premise": "联合LP必须先有精确正流见证，之后按见证判定条文前件",
+      "evidence": [
+        {
+          "lp_status": 2,
+          "certified": true
+        }
+      ],
+      "remaining": "即使LP可行仍须逐条补计数、再生路径与运行剩余义务"
+    },
+    {
+      "name": "矿线专机",
+      "status": "平均流前置检查失败",
+      "premise": "联合LP必须先有精确正流见证，之后按见证判定条文前件",
+      "evidence": [
+        {
+          "lp_status": 2,
+          "certified": true
+        }
+      ],
+      "remaining": "即使LP可行仍须逐条补计数、再生路径与运行剩余义务"
+    },
+    {
+      "name": "灌装混线",
+      "status": "静态可证前件不成立",
+      "premise": "本候选无相应单位/单配方限制，或所查通道数前件不成立",
+      "evidence": [],
+      "remaining": "解除限制时须重审前件"
+    },
+    {
+      "name": "准入累计",
+      "status": "已核静态投影",
+      "premise": "由实体布局重算；涉及正流的计数仅在精确平均流见证存在时生效",
+      "evidence": [
+        "没有准入口"
+      ],
+      "remaining": "静态可证触发对象为空"
+    },
+    {
+      "name": "准入满额窗口",
+      "status": "静态可证前件不成立",
+      "premise": "本候选无相应单位/单配方限制，或所查通道数前件不成立",
+      "evidence": [],
+      "remaining": "解除限制时须重审前件"
+    },
+    {
+      "name": "矿系不入库",
+      "status": "平均流前置检查失败",
+      "premise": "联合LP必须先有精确正流见证，之后按见证判定条文前件",
+      "evidence": [
+        {
+          "lp_status": 2,
+          "certified": true
+        }
+      ],
+      "remaining": "即使LP可行仍须逐条补计数、再生路径与运行剩余义务"
+    },
+    {
+      "name": "非成品零入库",
+      "status": "平均流前置检查失败",
+      "premise": "联合LP必须先有精确正流见证，之后按见证判定条文前件",
+      "evidence": [
+        {
+          "lp_status": 2,
+          "certified": true
+        }
+      ],
+      "remaining": "即使LP可行仍须逐条补计数、再生路径与运行剩余义务"
+    },
+    {
+      "name": "传输按仓库余量判定",
+      "status": "静态可证前件不成立",
+      "premise": "本候选无相应单位/单配方限制，或所查通道数前件不成立",
+      "evidence": [],
+      "remaining": "解除限制时须重审前件"
+    },
+    {
+      "name": "成品汇入",
+      "status": "平均流前置检查失败",
+      "premise": "联合LP必须先有精确正流见证，之后按见证判定条文前件",
+      "evidence": [
+        {
+          "lp_status": 2,
+          "certified": true
+        }
+      ],
+      "remaining": "即使LP可行仍须逐条补计数、再生路径与运行剩余义务"
+    },
+    {
+      "name": "回路守恒",
+      "status": "平均流前置检查失败",
+      "premise": "联合LP必须先有精确正流见证，之后按见证判定条文前件",
+      "evidence": [
+        {
+          "lp_status": 2,
+          "certified": true
+        }
+      ],
+      "remaining": "即使LP可行仍须逐条补计数、再生路径与运行剩余义务"
+    },
+    {
+      "name": "植物分区收支",
+      "status": "平均流前置检查失败",
+      "premise": "联合LP必须先有精确正流见证，之后按见证判定条文前件",
+      "evidence": [
+        {
+          "lp_status": 2,
+          "certified": true
+        }
+      ],
+      "remaining": "即使LP可行仍须逐条补计数、再生路径与运行剩余义务"
+    },
+    {
+      "name": "植物再生来路",
+      "status": "平均流前置检查失败",
+      "premise": "联合LP必须先有精确正流见证，之后按见证判定条文前件",
+      "evidence": [
+        {
+          "lp_status": 2,
+          "certified": true
+        }
+      ],
+      "remaining": "即使LP可行仍须逐条补计数、再生路径与运行剩余义务"
+    },
+    {
+      "name": "混做清空",
+      "status": "静态可证前件不成立",
+      "premise": "本候选无相应单位/单配方限制，或所查通道数前件不成立",
+      "evidence": [],
+      "remaining": "解除限制时须重审前件"
+    },
+    {
+      "name": "混做连续批次出货",
+      "status": "静态可证前件不成立",
+      "premise": "本候选无相应单位/单配方限制，或所查通道数前件不成立",
+      "evidence": [],
+      "remaining": "解除限制时须重审前件"
+    },
+    {
+      "name": "回路存量",
+      "status": "运行阶段待证",
+      "premise": "正式条文的循环态、可达性或时序前件未由静态数据提供",
+      "evidence": [],
+      "remaining": "须对调试后全部相关可达循环态和允许的先后取值证明"
+    },
+    {
+      "name": "植物沿途存量",
+      "status": "运行阶段待证",
+      "premise": "正式条文的循环态、可达性或时序前件未由静态数据提供",
+      "evidence": [],
+      "remaining": "须对调试后全部相关可达循环态和允许的先后取值证明"
+    },
+    {
+      "name": "植株半分",
+      "status": "平均流前置检查失败",
+      "premise": "联合LP必须先有精确正流见证，之后按见证判定条文前件",
+      "evidence": [
+        {
+          "lp_status": 2,
+          "certified": true
+        }
+      ],
+      "remaining": "即使LP可行仍须逐条补计数、再生路径与运行剩余义务"
+    },
+    {
+      "name": "运输端口收支",
+      "status": "平均流前置检查失败",
+      "premise": "联合LP必须先有精确正流见证，之后按见证判定条文前件",
+      "evidence": [
+        {
+          "lp_status": 2,
+          "certified": true
+        }
+      ],
+      "remaining": "即使LP可行仍须逐条补计数、再生路径与运行剩余义务"
+    },
+    {
+      "name": "矿石分流与专机",
+      "status": "平均流前置检查失败",
+      "premise": "联合LP必须先有精确正流见证，之后按见证判定条文前件",
+      "evidence": [
+        {
+          "lp_status": 2,
+          "certified": true
+        }
+      ],
+      "remaining": "即使LP可行仍须逐条补计数、再生路径与运行剩余义务"
+    },
+    {
+      "name": "传输箱不满",
+      "status": "静态可证前件不成立",
+      "premise": "本候选无相应单位/单配方限制，或所查通道数前件不成立",
+      "evidence": [],
+      "remaining": "解除限制时须重审前件"
+    },
+    {
+      "name": "轮询均分",
+      "status": "运行阶段待证",
+      "premise": "正式条文的循环态、可达性或时序前件未由静态数据提供",
+      "evidence": [],
+      "remaining": "须对调试后全部相关可达循环态和允许的先后取值证明"
+    },
+    {
+      "name": "共用接货格余量",
+      "status": "平均流前置检查失败",
+      "premise": "联合LP必须先有精确正流见证，之后按见证判定条文前件",
+      "evidence": [
+        {
+          "lp_status": 2,
+          "certified": true
+        }
+      ],
+      "remaining": "即使LP可行仍须逐条补计数、再生路径与运行剩余义务"
+    },
+    {
+      "name": "混料轮询分料",
+      "status": "运行阶段待证",
+      "premise": "正式条文的循环态、可达性或时序前件未由静态数据提供",
+      "evidence": [],
+      "remaining": "须对调试后全部相关可达循环态和允许的先后取值证明"
+    },
+    {
+      "name": "箱体接口",
+      "status": "平均流前置检查失败",
+      "premise": "联合LP必须先有精确正流见证，之后按见证判定条文前件",
+      "evidence": [
+        {
+          "lp_status": 2,
+          "certified": true
+        }
+      ],
+      "remaining": "即使LP可行仍须逐条补计数、再生路径与运行剩余义务"
+    },
+    {
+      "name": "箱体预算",
+      "status": "平均流前置检查失败",
+      "premise": "联合LP必须先有精确正流见证，之后按见证判定条文前件",
+      "evidence": [
+        {
+          "lp_status": 2,
+          "certified": true
+        }
+      ],
+      "remaining": "即使LP可行仍须逐条补计数、再生路径与运行剩余义务"
+    },
+    {
+      "name": "箱体过站",
+      "status": "平均流前置检查失败",
+      "premise": "联合LP必须先有精确正流见证，之后按见证判定条文前件",
+      "evidence": [
+        {
+          "lp_status": 2,
+          "certified": true
+        }
+      ],
+      "remaining": "即使LP可行仍须逐条补计数、再生路径与运行剩余义务"
+    },
+    {
+      "name": "箱内滞货封住后格",
+      "status": "静态可证前件不成立",
+      "premise": "本候选无相应单位/单配方限制，或所查通道数前件不成立",
+      "evidence": [],
+      "remaining": "解除限制时须重审前件"
+    },
+    {
+      "name": "满速箱头限存",
+      "status": "静态可证前件不成立",
+      "premise": "本候选无相应单位/单配方限制，或所查通道数前件不成立",
+      "evidence": [],
+      "remaining": "解除限制时须重审前件"
+    },
+    {
+      "name": "供电下限",
+      "status": "已核静态投影",
+      "premise": "由实体布局重算；涉及正流的计数仅在精确平均流见证存在时生效",
+      "evidence": [
+        {
+          "poles": 25,
+          "powered": 219,
+          "unpowered": []
+        }
+      ],
+      "remaining": "覆盖和桩数已查；每桩24/23/14/8台几何上限及J预算另属未实现静态细项"
+    },
+    {
+      "name": "边带排布",
+      "status": "违反静态必要条件",
+      "premise": "由实体布局重算；涉及正流的计数仅在精确平均流见证存在时生效",
+      "evidence": [
+        {
+          "0": [
+            0
+          ],
+          "1": [
+            0
+          ]
+        },
+        {
+          "source_output_missing": 42
+        }
+      ],
+      "remaining": "本项静态必要条件不证明运行达标"
+    },
+    {
+      "name": "角区",
+      "status": "未实现静态细项",
+      "premise": "本版本未实现该条全部几何公式",
+      "evidence": [],
+      "remaining": "阻止全静态通过；不能列为运行范围外"
+    },
+    {
+      "name": "核心离带",
+      "status": "未实现静态细项",
+      "premise": "本版本未实现该条全部几何公式",
+      "evidence": [],
+      "remaining": "阻止全静态通过；不能列为运行范围外"
+    },
+    {
+      "name": "核心邻格",
+      "status": "违反静态必要条件",
+      "premise": "由实体布局重算；涉及正流的计数仅在精确平均流见证存在时生效",
+      "evidence": [
+        {
+          "connected_output_ports": 3
+        }
+      ],
+      "remaining": "核心周围空矩形接触细项未实现"
+    },
+    {
+      "name": "核心取货边朝带",
+      "status": "未实现静态细项",
+      "premise": "本版本未实现该条全部几何公式",
+      "evidence": [],
+      "remaining": "阻止全静态通过；不能列为运行范围外"
+    },
+    {
+      "name": "运输下限",
+      "status": "已核静态投影",
+      "premise": "由实体布局重算；涉及正流的计数仅在精确平均流见证存在时生效",
+      "evidence": [
+        {
+          "T": 358,
+          "b": 11
+        }
+      ],
+      "remaining": "一般下限已查；附条件207/208/209与200的细分另属未实现静态细项"
+    },
+    {
+      "name": "运输降幅",
+      "status": "未实现静态细项",
+      "premise": "本版本未实现该条全部几何公式",
+      "evidence": [],
+      "remaining": "阻止全静态通过；不能列为运行范围外"
+    },
+    {
+      "name": "占地下界",
+      "status": "已核静态投影",
+      "premise": "由实体布局重算；涉及正流的计数仅在精确平均流见证存在时生效",
+      "evidence": [
+        {
+          "occupied": 4002,
+          "bridges": 11
+        }
+      ],
+      "remaining": "本项静态必要条件不证明运行达标"
+    },
+    {
+      "name": "空矩形上界",
+      "status": "已核静态投影",
+      "premise": "由实体布局重算；涉及正流的计数仅在精确平均流见证存在时生效",
+      "evidence": [
+        {
+          "x0": 62,
+          "y0": 64,
+          "x1": 69,
+          "y1": 69
+        },
+        {
+          "area": 48
+        }
+      ],
+      "remaining": "本项静态必要条件不证明运行达标"
+    },
+    {
+      "name": "面积预算",
+      "status": "未实现静态细项",
+      "premise": "本版本未实现该条全部几何公式",
+      "evidence": [],
+      "remaining": "阻止全静态通过；不能列为运行范围外"
+    },
+    {
+      "name": "增机面积界",
+      "status": "已核静态投影",
+      "premise": "由实体布局重算；涉及正流的计数仅在精确平均流见证存在时生效",
+      "evidence": [
+        {
+          "area": 48
+        }
+      ],
+      "remaining": "本项静态必要条件不证明运行达标"
+    },
+    {
+      "name": "侧旁供电",
+      "status": "未实现静态细项",
+      "premise": "本版本未实现该条全部几何公式",
+      "evidence": [],
+      "remaining": "阻止全静态通过；不能列为运行范围外"
+    },
+    {
+      "name": "矩形离带",
+      "status": "未实现静态细项",
+      "premise": "本版本未实现该条全部几何公式",
+      "evidence": [],
+      "remaining": "阻止全静态通过；不能列为运行范围外"
+    },
+    {
+      "name": "回路转弯",
+      "status": "平均流前置检查失败",
+      "premise": "联合LP必须先有精确正流见证，之后按见证判定条文前件",
+      "evidence": [
+        {
+          "lp_status": 2,
+          "certified": true
+        }
+      ],
+      "remaining": "即使LP可行仍须逐条补计数、再生路径与运行剩余义务"
+    },
+    {
+      "name": "矿石走廊",
+      "status": "未实现静态细项",
+      "premise": "本版本未实现该条全部几何公式",
+      "evidence": [],
+      "remaining": "阻止全静态通过；不能列为运行范围外"
+    },
+    {
+      "name": "四通结点",
+      "status": "平均流前置检查失败",
+      "premise": "联合LP必须先有精确正流见证，之后按见证判定条文前件",
+      "evidence": [
+        {
+          "lp_status": 2,
+          "certified": true
+        }
+      ],
+      "remaining": "即使LP可行仍须逐条补计数、再生路径与运行剩余义务"
+    },
+    {
+      "name": "内带缺口",
+      "status": "未实现静态细项",
+      "premise": "本版本未实现该条全部几何公式",
+      "evidence": [],
+      "remaining": "阻止全静态通过；不能列为运行范围外"
+    }
+  ],
+  "all_static_pass": false,
+  "unimplemented_static": [
+    "角区",
+    "核心离带",
+    "核心取货边朝带",
+    "运输降幅",
+    "面积预算",
+    "侧旁供电",
+    "矩形离带",
+    "矿石走廊",
+    "内带缺口"
+  ],
+  "candidate_sha256": "25dde53bd3a77a859f63a4f04dcc3050d451cc2a8c6a7e87c9ea6be0740165e3",
+  "checker_sha256": "48186de9e748fd94fb77fe8c92b4f62696ad3c9e27bf9891b0e0f2e3336aa8e6",
+  "common_lp_sha256": "50dfb720f893a91e04decff417eeeac36673afec613c0813c40e034f176e61f8",
+  "scope": "p2p；几何/通道/物品传播和LP已实现，71条覆盖见逐项状态；缺项阻止全静态通过"
+}

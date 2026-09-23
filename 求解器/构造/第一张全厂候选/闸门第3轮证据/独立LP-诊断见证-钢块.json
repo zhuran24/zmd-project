@@ -1,0 +1,140 @@
+{
+  "item": "钢块",
+  "scope": "sources<=1,no targets; each item separately maximized",
+  "nonzero_values": [],
+  "solver": {
+    "status": 0,
+    "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+    "variables": 774,
+    "rows": 18581,
+    "equalities": 17331,
+    "inequalities": 1250,
+    "iterations": 0,
+    "presolve": true,
+    "exact_primal": true,
+    "exact_dual": true,
+    "objective": "0",
+    "nonzero_variables": 0,
+    "certificate": {
+      "bound": "0",
+      "multipliers": [
+        {
+          "row": "slot:('T52_58', 'single'):致密蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "slot:('T57_58', 'single'):蓝铁粉末",
+          "value": "1/2"
+        },
+        {
+          "row": "slot:('T61_53', 'single'):致密蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "slot:('T65_17', 'single'):致密蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M040:in:蓝铁块",
+          "value": "1/2"
+        },
+        {
+          "row": "machine:M040:out:蓝铁粉末",
+          "value": "-1/2"
+        },
+        {
+          "row": "machine:M103:in:致密蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M104:in:致密蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M105:out:钢块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M106:in:致密蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M107:in:致密蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M108:in:致密蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M109:out:钢块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M110:in:致密蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M111:in:致密蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M112:in:致密蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M113:out:钢块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M114:in:致密蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M115:in:致密蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M116:in:致密蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M117:in:致密蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M118:out:钢块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M119:in:致密蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M124:in:砂叶粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M124:out:致密蓝铁粉末",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M127:in:砂叶粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M127:out:致密蓝铁粉末",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M131:out:致密蓝铁粉末",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M131:in:蓝铁粉末",
+          "value": "1/2"
+        }
+      ]
+    }
+  }
+}

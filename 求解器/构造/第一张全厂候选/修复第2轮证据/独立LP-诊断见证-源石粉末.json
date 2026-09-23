@@ -1,0 +1,96 @@
+{
+  "item": "源石粉末",
+  "scope": "sources<=1,no targets; each item separately maximized",
+  "nonzero_values": [],
+  "solver": {
+    "status": 0,
+    "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+    "variables": 774,
+    "rows": 18581,
+    "equalities": 17331,
+    "inequalities": 1250,
+    "iterations": 0,
+    "presolve": true,
+    "exact_primal": true,
+    "exact_dual": true,
+    "objective": "0",
+    "nonzero_variables": 0,
+    "certificate": {
+      "bound": "0",
+      "multipliers": [
+        {
+          "row": "machine:M000:out:源石粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M001:out:源石粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M002:out:源石粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M003:out:源石粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M004:out:源石粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M005:out:源石粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M006:out:源石粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M007:out:源石粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M008:out:源石粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M009:out:源石粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M010:out:源石粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M011:out:源石粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M012:out:源石粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M013:out:源石粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M014:out:源石粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M015:out:源石粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M016:out:源石粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M017:out:源石粉末",
+          "value": "1"
+        }
+      ]
+    }
+  }
+}

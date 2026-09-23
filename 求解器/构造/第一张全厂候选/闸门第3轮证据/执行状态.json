@@ -1,0 +1,101 @@
+{
+  "A原始入口": {
+    "command": [
+      "python",
+      "-B",
+      "求解器/构造/第一张全厂候选/检查器A/check_full.py",
+      "求解器/构造/第一张全厂候选/闸门第3轮证据/候选只读快照.json",
+      "--out",
+      "求解器/构造/第一张全厂候选/闸门第3轮证据/A原始入口.json",
+      "--time-limit",
+      "60"
+    ],
+    "exit_code": 1,
+    "seconds": 0.0955575760017382
+  },
+  "B原始入口": {
+    "command": [
+      "python",
+      "-B",
+      "求解器/构造/第一张全厂候选/检查器B/check.py",
+      "求解器/构造/第一张全厂候选/闸门第3轮证据/候选只读快照.json",
+      "--output",
+      "求解器/构造/第一张全厂候选/闸门第3轮证据/B原始入口.json",
+      "--time-limit",
+      "60"
+    ],
+    "exit_code": 2,
+    "seconds": 0.08109727899864083
+  },
+  "A适配复核": {
+    "command": [
+      "python",
+      "-B",
+      "求解器/构造/第一张全厂候选/闸门第3轮证据/版本适配复核.py",
+      "A"
+    ],
+    "exit_code": 1,
+    "seconds": 1.2614575839979807
+  },
+  "B适配复核": {
+    "command": [
+      "python",
+      "-B",
+      "求解器/构造/第一张全厂候选/闸门第3轮证据/版本适配复核.py",
+      "B"
+    ],
+    "exit_code": 1,
+    "seconds": 0.7921573769999668
+  },
+  "独立LP": {
+    "command": [
+      "python",
+      "-B",
+      "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/闸门第3轮证据/独立LP.py"
+    ],
+    "exit_code": 0,
+    "evidence": "独立LP.log",
+    "note": "退出0表示复核程序正常结束，不表示候选通过。"
+  },
+  "独立证书回放": {
+    "command": [
+      "python",
+      "-B",
+      "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/闸门第3轮证据/独立证书回放.py"
+    ],
+    "exit_code": 0,
+    "evidence": "独立证书回放.log",
+    "note": "退出0表示复核程序正常结束，不表示候选通过。"
+  },
+  "逐条复核": {
+    "command": [
+      "python",
+      "-B",
+      "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/闸门第3轮证据/逐条复核.py"
+    ],
+    "exit_code": 0,
+    "evidence": "逐条复核.log",
+    "note": "退出0表示复核程序正常结束，不表示候选通过。"
+  },
+  "补核与版本对照": {
+    "command": [
+      "python",
+      "-B",
+      "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/闸门第3轮证据/补核与版本对照.py"
+    ],
+    "exit_code": 0,
+    "evidence": "补核与版本对照.log",
+    "note": "退出0表示复核程序正常结束，不表示候选通过。"
+  },
+  "A证书回放": {
+    "exit_code": 0,
+    "evidence": "A证书回放.json",
+    "command": [
+      "python",
+      "-B",
+      "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/verify_certificate.py",
+      "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/闸门第3轮证据/候选只读快照.json",
+      "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/闸门第3轮证据/A适配复核.json"
+    ]
+  }
+}

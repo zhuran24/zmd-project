@@ -1,0 +1,10 @@
+{
+  "basis": "闸门-第1轮.md §6 D2；闸门第1轮证据/B登记拼写对照.json",
+  "change": "仅把已有登记编码为recipe-subsets与fixed-layout；原四项定义和覆盖范围保留在fixed-layout的元数据中。",
+  "before_sha256": "e147866f410737324d49190dea83bfd19de04ebdcc9b1c9998152bbf7a80f404",
+  "after_sha256": "08201b770063cefcc4281c1d55da13d4dec56ab5edb53c6fd922b2330e8c513a",
+  "layout_channels_recipes_source_bindings_targets_unchanged": true,
+  "old_restrictions": 19,
+  "new_restrictions": 16,
+  "flow_repair": false
+}

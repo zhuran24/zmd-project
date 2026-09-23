@@ -1,0 +1,2609 @@
+{
+  "machine_channels": {
+    "粉碎机": {
+      "count": 69,
+      "input": 41,
+      "input_min": 68,
+      "output": 21,
+      "output_min": 95
+    },
+    "精炼炉": {
+      "count": 51,
+      "input": 40,
+      "input_min": 51,
+      "output": 20,
+      "output_min": 51
+    },
+    "研磨机": {
+      "count": 32,
+      "input": 21,
+      "input_min": 95,
+      "output": 12,
+      "output_min": 32
+    },
+    "塑形机": {
+      "count": 6,
+      "input": 3,
+      "input_min": 11,
+      "output": 2,
+      "output_min": 6
+    },
+    "配件机": {
+      "count": 6,
+      "input": 3,
+      "input_min": 6,
+      "output": 2,
+      "output_min": 6
+    },
+    "种植机": {
+      "count": 32,
+      "input": 11,
+      "input_min": 32,
+      "output": 18,
+      "output_min": 32
+    },
+    "采种机": {
+      "count": 17,
+      "input": 7,
+      "input_min": 16,
+      "output": 11,
+      "output_min": 32
+    },
+    "封装机": {
+      "count": 3,
+      "input": 4,
+      "input_min": 15,
+      "output": 0,
+      "output_min": 1
+    },
+    "灌装机": {
+      "count": 3,
+      "input": 4,
+      "input_min": 11,
+      "output": 1,
+      "output_min": 1
+    }
+  },
+  "machines": [
+    {
+      "id": "M000",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-源矿"
+      ],
+      "input_channels": [
+        "PC000012"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M001",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-源矿"
+      ],
+      "input_channels": [
+        "PC000014"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M002",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-源矿"
+      ],
+      "input_channels": [
+        "PC000016"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M003",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-源矿"
+      ],
+      "input_channels": [
+        "PC000018"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M004",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-源矿"
+      ],
+      "input_channels": [
+        "PC000020"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M005",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-源矿"
+      ],
+      "input_channels": [
+        "PC000024"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M006",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-源矿"
+      ],
+      "input_channels": [
+        "PC000026"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M007",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-源矿"
+      ],
+      "input_channels": [
+        "PC000030"
+      ],
+      "output_channels": [
+        "PC000000"
+      ]
+    },
+    {
+      "id": "M008",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-源矿"
+      ],
+      "input_channels": [
+        "PC000032"
+      ],
+      "output_channels": [
+        "PC000006"
+      ]
+    },
+    {
+      "id": "M009",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-源矿"
+      ],
+      "input_channels": [],
+      "output_channels": [
+        "PC000008"
+      ]
+    },
+    {
+      "id": "M010",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-源矿"
+      ],
+      "input_channels": [
+        "PC000036"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M011",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-源矿"
+      ],
+      "input_channels": [
+        "PC000038"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M012",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-源矿"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M013",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-源矿"
+      ],
+      "input_channels": [
+        "PC000040"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M014",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-源矿"
+      ],
+      "input_channels": [
+        "PC000044"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M015",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-源矿"
+      ],
+      "input_channels": [
+        "PC000046"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M016",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-源矿"
+      ],
+      "input_channels": [
+        "PC000048"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M017",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-源矿"
+      ],
+      "input_channels": [
+        "PC000050"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M018",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "input_channels": [],
+      "output_channels": [
+        "PC000480"
+      ]
+    },
+    {
+      "id": "M019",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M020",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M021",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "input_channels": [
+        "PC000356"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M022",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "input_channels": [
+        "PC000358"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M023",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "input_channels": [
+        "PC000360"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M024",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "input_channels": [
+        "PC000364"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M025",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M026",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "input_channels": [
+        "PC000366"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M027",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M028",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M029",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "input_channels": [],
+      "output_channels": [
+        "PC000483"
+      ]
+    },
+    {
+      "id": "M030",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M031",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "input_channels": [
+        "PC000379"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M032",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M033",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "input_channels": [
+        "PC000383"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M034",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M035",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "input_channels": [
+        "PC000386"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M036",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "input_channels": [
+        "PC000388"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M037",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "input_channels": [],
+      "output_channels": [
+        "PC000485"
+      ]
+    },
+    {
+      "id": "M038",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M039",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M040",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "input_channels": [
+        "PC000368"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M041",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "input_channels": [
+        "PC000393"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M042",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M043",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M044",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "input_channels": [
+        "PC000402"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M045",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M046",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "input_channels": [
+        "PC000404"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M047",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M048",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "input_channels": [
+        "PC000347"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M049",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M050",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "input_channels": [],
+      "output_channels": [
+        "PC000487"
+      ]
+    },
+    {
+      "id": "M051",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-蓝铁块"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M052",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-荞花"
+      ],
+      "input_channels": [
+        "PC000252"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M053",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-荞花"
+      ],
+      "input_channels": [
+        "PC000286"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M054",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-荞花"
+      ],
+      "input_channels": [],
+      "output_channels": [
+        "PC000317"
+      ]
+    },
+    {
+      "id": "M055",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-荞花"
+      ],
+      "input_channels": [
+        "PC000258"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M056",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-荞花"
+      ],
+      "input_channels": [
+        "PC000263"
+      ],
+      "output_channels": [
+        "PC000331"
+      ]
+    },
+    {
+      "id": "M057",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-荞花"
+      ],
+      "input_channels": [],
+      "output_channels": [
+        "PC000335"
+      ]
+    },
+    {
+      "id": "M058",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-砂叶"
+      ],
+      "input_channels": [
+        "PC000054"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M059",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-砂叶"
+      ],
+      "input_channels": [
+        "PC000061"
+      ],
+      "output_channels": [
+        "PC000137"
+      ]
+    },
+    {
+      "id": "M060",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-砂叶"
+      ],
+      "input_channels": [],
+      "output_channels": [
+        "PC000147",
+        "PC000149"
+      ]
+    },
+    {
+      "id": "M061",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-砂叶"
+      ],
+      "input_channels": [
+        "PC000068"
+      ],
+      "output_channels": [
+        "PC000157"
+      ]
+    },
+    {
+      "id": "M062",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-砂叶"
+      ],
+      "input_channels": [],
+      "output_channels": [
+        "PC000163",
+        "PC000165"
+      ]
+    },
+    {
+      "id": "M063",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-砂叶"
+      ],
+      "input_channels": [],
+      "output_channels": [
+        "PC000168"
+      ]
+    },
+    {
+      "id": "M064",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-砂叶"
+      ],
+      "input_channels": [
+        "PC000071"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M065",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-砂叶"
+      ],
+      "input_channels": [
+        "PC000073"
+      ],
+      "output_channels": [
+        "PC000171",
+        "PC000173"
+      ]
+    },
+    {
+      "id": "M066",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-砂叶"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M067",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-砂叶"
+      ],
+      "input_channels": [
+        "PC000075"
+      ],
+      "output_channels": [
+        "PC000178"
+      ]
+    },
+    {
+      "id": "M068",
+      "model": "粉碎机",
+      "recipe_ids": [
+        "粉碎-砂叶"
+      ],
+      "input_channels": [
+        "PC000090"
+      ],
+      "output_channels": [
+        "PC000180"
+      ]
+    },
+    {
+      "id": "M069",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "input_channels": [
+        "PC000408"
+      ],
+      "output_channels": [
+        "PC000338"
+      ]
+    },
+    {
+      "id": "M070",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M071",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "input_channels": [
+        "PC000410"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M072",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "input_channels": [
+        "PC000412"
+      ],
+      "output_channels": [
+        "PC000348"
+      ]
+    },
+    {
+      "id": "M073",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "input_channels": [
+        "PC000414"
+      ],
+      "output_channels": [
+        "PC000357"
+      ]
+    },
+    {
+      "id": "M074",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "input_channels": [
+        "PC000416"
+      ],
+      "output_channels": [
+        "PC000359"
+      ]
+    },
+    {
+      "id": "M075",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "input_channels": [
+        "PC000418"
+      ],
+      "output_channels": [
+        "PC000361"
+      ]
+    },
+    {
+      "id": "M076",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "input_channels": [
+        "PC000420"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M077",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "input_channels": [
+        "PC000422"
+      ],
+      "output_channels": [
+        "PC000365"
+      ]
+    },
+    {
+      "id": "M078",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "input_channels": [
+        "PC000424"
+      ],
+      "output_channels": [
+        "PC000367"
+      ]
+    },
+    {
+      "id": "M079",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "input_channels": [
+        "PC000426"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M080",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "input_channels": [
+        "PC000428"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M081",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M082",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "input_channels": [
+        "PC000437"
+      ],
+      "output_channels": [
+        "PC000369"
+      ]
+    },
+    {
+      "id": "M083",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "input_channels": [
+        "PC000439"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M084",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "input_channels": [
+        "PC000441"
+      ],
+      "output_channels": [
+        "PC000380"
+      ]
+    },
+    {
+      "id": "M085",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "input_channels": [
+        "PC000443"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M086",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "input_channels": [
+        "PC000445"
+      ],
+      "output_channels": [
+        "PC000384"
+      ]
+    },
+    {
+      "id": "M087",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "input_channels": [
+        "PC000447"
+      ],
+      "output_channels": [
+        "PC000387"
+      ]
+    },
+    {
+      "id": "M088",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "input_channels": [
+        "PC000449"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M089",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "input_channels": [
+        "PC000453"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M090",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "input_channels": [
+        "PC000455"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M091",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "input_channels": [
+        "PC000457"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M092",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "input_channels": [
+        "PC000459"
+      ],
+      "output_channels": [
+        "PC000389"
+      ]
+    },
+    {
+      "id": "M093",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "input_channels": [
+        "PC000461"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M094",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "input_channels": [
+        "PC000465"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M095",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "input_channels": [
+        "PC000467"
+      ],
+      "output_channels": [
+        "PC000394"
+      ]
+    },
+    {
+      "id": "M096",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "input_channels": [
+        "PC000469"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M097",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "input_channels": [
+        "PC000471"
+      ],
+      "output_channels": [
+        "PC000403"
+      ]
+    },
+    {
+      "id": "M098",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "input_channels": [
+        "PC000473"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M099",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "input_channels": [
+        "PC000475"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M100",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "input_channels": [
+        "PC000435"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M101",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "input_channels": [
+        "PC000477"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M102",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-蓝铁矿"
+      ],
+      "input_channels": [
+        "PC000479"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M103",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-致密蓝铁"
+      ],
+      "input_channels": [
+        "PC000248"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M104",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-致密蓝铁"
+      ],
+      "input_channels": [],
+      "output_channels": [
+        "PC000508"
+      ]
+    },
+    {
+      "id": "M105",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-致密蓝铁"
+      ],
+      "input_channels": [
+        "PC000221"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M106",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-致密蓝铁"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M107",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-致密蓝铁"
+      ],
+      "input_channels": [
+        "PC000215"
+      ],
+      "output_channels": [
+        "PC000511"
+      ]
+    },
+    {
+      "id": "M108",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-致密蓝铁"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M109",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-致密蓝铁"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M110",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-致密蓝铁"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M111",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-致密蓝铁"
+      ],
+      "input_channels": [],
+      "output_channels": [
+        "PC000521"
+      ]
+    },
+    {
+      "id": "M112",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-致密蓝铁"
+      ],
+      "input_channels": [
+        "PC000217"
+      ],
+      "output_channels": [
+        "PC000523"
+      ]
+    },
+    {
+      "id": "M113",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-致密蓝铁"
+      ],
+      "input_channels": [
+        "PC000219"
+      ],
+      "output_channels": [
+        "PC000532"
+      ]
+    },
+    {
+      "id": "M114",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-致密蓝铁"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M115",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-致密蓝铁"
+      ],
+      "input_channels": [
+        "PC000223"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M116",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-致密蓝铁"
+      ],
+      "input_channels": [],
+      "output_channels": [
+        "PC000549"
+      ]
+    },
+    {
+      "id": "M117",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-致密蓝铁"
+      ],
+      "input_channels": [
+        "PC000246"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M118",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-致密蓝铁"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M119",
+      "model": "精炼炉",
+      "recipe_ids": [
+        "精炼-致密蓝铁"
+      ],
+      "input_channels": [
+        "PC000250"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M120",
+      "model": "研磨机",
+      "recipe_ids": [
+        "研磨-致密蓝铁"
+      ],
+      "input_channels": [
+        "PC000482"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M121",
+      "model": "研磨机",
+      "recipe_ids": [
+        "研磨-致密蓝铁"
+      ],
+      "input_channels": [
+        "PC000488"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M122",
+      "model": "研磨机",
+      "recipe_ids": [
+        "研磨-致密蓝铁"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M123",
+      "model": "研磨机",
+      "recipe_ids": [
+        "研磨-致密蓝铁"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M124",
+      "model": "研磨机",
+      "recipe_ids": [
+        "研磨-致密蓝铁"
+      ],
+      "input_channels": [],
+      "output_channels": [
+        "PC000214"
+      ]
+    },
+    {
+      "id": "M125",
+      "model": "研磨机",
+      "recipe_ids": [
+        "研磨-致密蓝铁"
+      ],
+      "input_channels": [
+        "PC000146"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M126",
+      "model": "研磨机",
+      "recipe_ids": [
+        "研磨-致密蓝铁"
+      ],
+      "input_channels": [
+        "PC000156"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M127",
+      "model": "研磨机",
+      "recipe_ids": [
+        "研磨-致密蓝铁"
+      ],
+      "input_channels": [],
+      "output_channels": [
+        "PC000216"
+      ]
+    },
+    {
+      "id": "M128",
+      "model": "研磨机",
+      "recipe_ids": [
+        "研磨-致密蓝铁"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M129",
+      "model": "研磨机",
+      "recipe_ids": [
+        "研磨-致密蓝铁"
+      ],
+      "input_channels": [
+        "PC000162"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M130",
+      "model": "研磨机",
+      "recipe_ids": [
+        "研磨-致密蓝铁"
+      ],
+      "input_channels": [],
+      "output_channels": [
+        "PC000218"
+      ]
+    },
+    {
+      "id": "M131",
+      "model": "研磨机",
+      "recipe_ids": [
+        "研磨-致密蓝铁"
+      ],
+      "input_channels": [
+        "PC000484"
+      ],
+      "output_channels": [
+        "PC000220"
+      ]
+    },
+    {
+      "id": "M132",
+      "model": "研磨机",
+      "recipe_ids": [
+        "研磨-致密蓝铁"
+      ],
+      "input_channels": [],
+      "output_channels": [
+        "PC000222"
+      ]
+    },
+    {
+      "id": "M133",
+      "model": "研磨机",
+      "recipe_ids": [
+        "研磨-致密蓝铁"
+      ],
+      "input_channels": [
+        "PC000164"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M134",
+      "model": "研磨机",
+      "recipe_ids": [
+        "研磨-致密蓝铁"
+      ],
+      "input_channels": [
+        "PC000167",
+        "PC000486"
+      ],
+      "output_channels": [
+        "PC000224"
+      ]
+    },
+    {
+      "id": "M135",
+      "model": "研磨机",
+      "recipe_ids": [
+        "研磨-致密蓝铁"
+      ],
+      "input_channels": [],
+      "output_channels": [
+        "PC000247"
+      ]
+    },
+    {
+      "id": "M136",
+      "model": "研磨机",
+      "recipe_ids": [
+        "研磨-致密蓝铁"
+      ],
+      "input_channels": [
+        "PC000170"
+      ],
+      "output_channels": [
+        "PC000249"
+      ]
+    },
+    {
+      "id": "M137",
+      "model": "研磨机",
+      "recipe_ids": [
+        "研磨-致密源石"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M138",
+      "model": "研磨机",
+      "recipe_ids": [
+        "研磨-致密源石"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M139",
+      "model": "研磨机",
+      "recipe_ids": [
+        "研磨-致密源石"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M140",
+      "model": "研磨机",
+      "recipe_ids": [
+        "研磨-致密源石"
+      ],
+      "input_channels": [],
+      "output_channels": [
+        "PC000203"
+      ]
+    },
+    {
+      "id": "M141",
+      "model": "研磨机",
+      "recipe_ids": [
+        "研磨-致密源石"
+      ],
+      "input_channels": [],
+      "output_channels": [
+        "PC000205"
+      ]
+    },
+    {
+      "id": "M142",
+      "model": "研磨机",
+      "recipe_ids": [
+        "研磨-致密源石"
+      ],
+      "input_channels": [
+        "PC000172"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M143",
+      "model": "研磨机",
+      "recipe_ids": [
+        "研磨-致密源石"
+      ],
+      "input_channels": [
+        "PC000177"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M144",
+      "model": "研磨机",
+      "recipe_ids": [
+        "研磨-致密源石"
+      ],
+      "input_channels": [
+        "PC000005"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M145",
+      "model": "研磨机",
+      "recipe_ids": [
+        "研磨-致密源石"
+      ],
+      "input_channels": [
+        "PC000007",
+        "PC000010"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M146",
+      "model": "研磨机",
+      "recipe_ids": [
+        "研磨-细磨荞花"
+      ],
+      "input_channels": [
+        "PC000334"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M147",
+      "model": "研磨机",
+      "recipe_ids": [
+        "研磨-细磨荞花"
+      ],
+      "input_channels": [],
+      "output_channels": [
+        "PC000195"
+      ]
+    },
+    {
+      "id": "M148",
+      "model": "研磨机",
+      "recipe_ids": [
+        "研磨-细磨荞花"
+      ],
+      "input_channels": [
+        "PC000148"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M149",
+      "model": "研磨机",
+      "recipe_ids": [
+        "研磨-细磨荞花"
+      ],
+      "input_channels": [
+        "PC000179"
+      ],
+      "output_channels": [
+        "PC000198"
+      ]
+    },
+    {
+      "id": "M150",
+      "model": "研磨机",
+      "recipe_ids": [
+        "研磨-细磨荞花"
+      ],
+      "input_channels": [
+        "PC000188",
+        "PC000330"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M151",
+      "model": "研磨机",
+      "recipe_ids": [
+        "研磨-细磨荞花"
+      ],
+      "input_channels": [
+        "PC000337"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M152",
+      "model": "塑形机",
+      "recipe_ids": [
+        "塑形-钢质瓶"
+      ],
+      "input_channels": [
+        "PC000531",
+        "PC000548"
+      ],
+      "output_channels": [
+        "PC000554"
+      ]
+    },
+    {
+      "id": "M153",
+      "model": "塑形机",
+      "recipe_ids": [
+        "塑形-钢质瓶"
+      ],
+      "input_channels": [
+        "PC000522"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M154",
+      "model": "塑形机",
+      "recipe_ids": [
+        "塑形-钢质瓶"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M155",
+      "model": "塑形机",
+      "recipe_ids": [
+        "塑形-钢质瓶"
+      ],
+      "input_channels": [],
+      "output_channels": [
+        "PC000558"
+      ]
+    },
+    {
+      "id": "M156",
+      "model": "塑形机",
+      "recipe_ids": [
+        "塑形-钢质瓶"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M157",
+      "model": "塑形机",
+      "recipe_ids": [
+        "塑形-钢质瓶"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M158",
+      "model": "配件机",
+      "recipe_ids": [
+        "配件-钢制零件"
+      ],
+      "input_channels": [],
+      "output_channels": [
+        "PC000489"
+      ]
+    },
+    {
+      "id": "M159",
+      "model": "配件机",
+      "recipe_ids": [
+        "配件-钢制零件"
+      ],
+      "input_channels": [],
+      "output_channels": [
+        "PC000506"
+      ]
+    },
+    {
+      "id": "M160",
+      "model": "配件机",
+      "recipe_ids": [
+        "配件-钢制零件"
+      ],
+      "input_channels": [
+        "PC000553"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M161",
+      "model": "配件机",
+      "recipe_ids": [
+        "配件-钢制零件"
+      ],
+      "input_channels": [
+        "PC000520"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M162",
+      "model": "配件机",
+      "recipe_ids": [
+        "配件-钢制零件"
+      ],
+      "input_channels": [
+        "PC000510"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M163",
+      "model": "配件机",
+      "recipe_ids": [
+        "配件-钢制零件"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M164",
+      "model": "种植机",
+      "recipe_ids": [
+        "种植-荞花"
+      ],
+      "input_channels": [
+        "PC000300"
+      ],
+      "output_channels": [
+        "PC000251"
+      ]
+    },
+    {
+      "id": "M165",
+      "model": "种植机",
+      "recipe_ids": [
+        "种植-荞花"
+      ],
+      "input_channels": [
+        "PC000294"
+      ],
+      "output_channels": [
+        "PC000253"
+      ]
+    },
+    {
+      "id": "M166",
+      "model": "种植机",
+      "recipe_ids": [
+        "种植-荞花"
+      ],
+      "input_channels": [
+        "PC000308"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M167",
+      "model": "种植机",
+      "recipe_ids": [
+        "种植-荞花"
+      ],
+      "input_channels": [],
+      "output_channels": [
+        "PC000257"
+      ]
+    },
+    {
+      "id": "M168",
+      "model": "种植机",
+      "recipe_ids": [
+        "种植-荞花"
+      ],
+      "input_channels": [],
+      "output_channels": [
+        "PC000259"
+      ]
+    },
+    {
+      "id": "M169",
+      "model": "种植机",
+      "recipe_ids": [
+        "种植-荞花"
+      ],
+      "input_channels": [
+        "PC000314"
+      ],
+      "output_channels": [
+        "PC000264"
+      ]
+    },
+    {
+      "id": "M170",
+      "model": "种植机",
+      "recipe_ids": [
+        "种植-荞花"
+      ],
+      "input_channels": [],
+      "output_channels": [
+        "PC000287"
+      ]
+    },
+    {
+      "id": "M171",
+      "model": "种植机",
+      "recipe_ids": [
+        "种植-荞花"
+      ],
+      "input_channels": [],
+      "output_channels": [
+        "PC000289"
+      ]
+    },
+    {
+      "id": "M172",
+      "model": "种植机",
+      "recipe_ids": [
+        "种植-荞花"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M173",
+      "model": "种植机",
+      "recipe_ids": [
+        "种植-荞花"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M174",
+      "model": "种植机",
+      "recipe_ids": [
+        "种植-荞花"
+      ],
+      "input_channels": [
+        "PC000316"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M175",
+      "model": "种植机",
+      "recipe_ids": [
+        "种植-砂叶"
+      ],
+      "input_channels": [
+        "PC000105"
+      ],
+      "output_channels": [
+        "PC000051"
+      ]
+    },
+    {
+      "id": "M176",
+      "model": "种植机",
+      "recipe_ids": [
+        "种植-砂叶"
+      ],
+      "input_channels": [],
+      "output_channels": [
+        "PC000055"
+      ]
+    },
+    {
+      "id": "M177",
+      "model": "种植机",
+      "recipe_ids": [
+        "种植-砂叶"
+      ],
+      "input_channels": [
+        "PC000116"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M178",
+      "model": "种植机",
+      "recipe_ids": [
+        "种植-砂叶"
+      ],
+      "input_channels": [],
+      "output_channels": [
+        "PC000062"
+      ]
+    },
+    {
+      "id": "M179",
+      "model": "种植机",
+      "recipe_ids": [
+        "种植-砂叶"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M180",
+      "model": "种植机",
+      "recipe_ids": [
+        "种植-砂叶"
+      ],
+      "input_channels": [
+        "PC000118"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M181",
+      "model": "种植机",
+      "recipe_ids": [
+        "种植-砂叶"
+      ],
+      "input_channels": [],
+      "output_channels": [
+        "PC000069"
+      ]
+    },
+    {
+      "id": "M182",
+      "model": "种植机",
+      "recipe_ids": [
+        "种植-砂叶"
+      ],
+      "input_channels": [],
+      "output_channels": [
+        "PC000072"
+      ]
+    },
+    {
+      "id": "M183",
+      "model": "种植机",
+      "recipe_ids": [
+        "种植-砂叶"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M184",
+      "model": "种植机",
+      "recipe_ids": [
+        "种植-砂叶"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M185",
+      "model": "种植机",
+      "recipe_ids": [
+        "种植-砂叶"
+      ],
+      "input_channels": [
+        "PC000126"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M186",
+      "model": "种植机",
+      "recipe_ids": [
+        "种植-砂叶"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M187",
+      "model": "种植机",
+      "recipe_ids": [
+        "种植-砂叶"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M188",
+      "model": "种植机",
+      "recipe_ids": [
+        "种植-砂叶"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M189",
+      "model": "种植机",
+      "recipe_ids": [
+        "种植-砂叶"
+      ],
+      "input_channels": [
+        "PC000131"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M190",
+      "model": "种植机",
+      "recipe_ids": [
+        "种植-砂叶"
+      ],
+      "input_channels": [
+        "PC000136"
+      ],
+      "output_channels": [
+        "PC000074"
+      ]
+    },
+    {
+      "id": "M191",
+      "model": "种植机",
+      "recipe_ids": [
+        "种植-砂叶"
+      ],
+      "input_channels": [],
+      "output_channels": [
+        "PC000076"
+      ]
+    },
+    {
+      "id": "M192",
+      "model": "种植机",
+      "recipe_ids": [
+        "种植-砂叶"
+      ],
+      "input_channels": [],
+      "output_channels": [
+        "PC000080"
+      ]
+    },
+    {
+      "id": "M193",
+      "model": "种植机",
+      "recipe_ids": [
+        "种植-砂叶"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M194",
+      "model": "种植机",
+      "recipe_ids": [
+        "种植-砂叶"
+      ],
+      "input_channels": [],
+      "output_channels": [
+        "PC000084"
+      ]
+    },
+    {
+      "id": "M195",
+      "model": "种植机",
+      "recipe_ids": [
+        "种植-砂叶"
+      ],
+      "input_channels": [],
+      "output_channels": [
+        "PC000086",
+        "PC000091"
+      ]
+    },
+    {
+      "id": "M196",
+      "model": "采种机",
+      "recipe_ids": [
+        "采种-荞花"
+      ],
+      "input_channels": [
+        "PC000256"
+      ],
+      "output_channels": [
+        "PC000291",
+        "PC000295"
+      ]
+    },
+    {
+      "id": "M197",
+      "model": "采种机",
+      "recipe_ids": [
+        "采种-荞花"
+      ],
+      "input_channels": [
+        "PC000288"
+      ],
+      "output_channels": [
+        "PC000301"
+      ]
+    },
+    {
+      "id": "M198",
+      "model": "采种机",
+      "recipe_ids": [
+        "采种-荞花"
+      ],
+      "input_channels": [
+        "PC000290"
+      ],
+      "output_channels": [
+        "PC000309"
+      ]
+    },
+    {
+      "id": "M199",
+      "model": "采种机",
+      "recipe_ids": [
+        "采种-荞花"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M200",
+      "model": "采种机",
+      "recipe_ids": [
+        "采种-荞花"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M201",
+      "model": "采种机",
+      "recipe_ids": [
+        "采种-荞花"
+      ],
+      "input_channels": [],
+      "output_channels": [
+        "PC000315"
+      ]
+    },
+    {
+      "id": "M202",
+      "model": "采种机",
+      "recipe_ids": [
+        "采种-砂叶"
+      ],
+      "input_channels": [],
+      "output_channels": [
+        "PC000104"
+      ]
+    },
+    {
+      "id": "M203",
+      "model": "采种机",
+      "recipe_ids": [
+        "采种-砂叶"
+      ],
+      "input_channels": [],
+      "output_channels": [
+        "PC000106"
+      ]
+    },
+    {
+      "id": "M204",
+      "model": "采种机",
+      "recipe_ids": [
+        "采种-砂叶"
+      ],
+      "input_channels": [],
+      "output_channels": [
+        "PC000117"
+      ]
+    },
+    {
+      "id": "M205",
+      "model": "采种机",
+      "recipe_ids": [
+        "采种-砂叶"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M206",
+      "model": "采种机",
+      "recipe_ids": [
+        "采种-砂叶"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M207",
+      "model": "采种机",
+      "recipe_ids": [
+        "采种-砂叶"
+      ],
+      "input_channels": [],
+      "output_channels": [
+        "PC000119"
+      ]
+    },
+    {
+      "id": "M208",
+      "model": "采种机",
+      "recipe_ids": [
+        "采种-砂叶"
+      ],
+      "input_channels": [
+        "PC000079"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M209",
+      "model": "采种机",
+      "recipe_ids": [
+        "采种-砂叶"
+      ],
+      "input_channels": [
+        "PC000083"
+      ],
+      "output_channels": [
+        "PC000127",
+        "PC000132"
+      ]
+    },
+    {
+      "id": "M210",
+      "model": "采种机",
+      "recipe_ids": [
+        "采种-砂叶"
+      ],
+      "input_channels": [],
+      "output_channels": []
+    },
+    {
+      "id": "M211",
+      "model": "采种机",
+      "recipe_ids": [
+        "采种-砂叶"
+      ],
+      "input_channels": [
+        "PC000085"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M212",
+      "model": "采种机",
+      "recipe_ids": [
+        "采种-砂叶"
+      ],
+      "input_channels": [
+        "PC000103"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M213",
+      "model": "封装机",
+      "recipe_ids": [
+        "封装-电池"
+      ],
+      "input_channels": [
+        "PC000505"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M214",
+      "model": "封装机",
+      "recipe_ids": [
+        "封装-电池"
+      ],
+      "input_channels": [
+        "PC000213",
+        "PC000507"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M215",
+      "model": "封装机",
+      "recipe_ids": [
+        "封装-电池"
+      ],
+      "input_channels": [
+        "PC000204"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M216",
+      "model": "灌装机",
+      "recipe_ids": [
+        "灌装-胶囊"
+      ],
+      "input_channels": [
+        "PC000557"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M217",
+      "model": "灌装机",
+      "recipe_ids": [
+        "灌装-胶囊"
+      ],
+      "input_channels": [
+        "PC000197",
+        "PC000202",
+        "PC000560"
+      ],
+      "output_channels": []
+    },
+    {
+      "id": "M218",
+      "model": "灌装机",
+      "recipe_ids": [
+        "灌装-胶囊"
+      ],
+      "input_channels": [],
+      "output_channels": [
+        "PC000189"
+      ]
+    }
+  ],
+  "qualifying_inputs": {
+    "研磨机": {
+      "actual": 0,
+      "required": 31
+    },
+    "塑形机": {
+      "actual": 1,
+      "required": 5
+    }
+  },
+  "packaging_inputs": {
+    "M213": 1,
+    "M214": 2,
+    "M215": 1
+  },
+  "filling_inputs": {
+    "M216": 1,
+    "M217": 3,
+    "M218": 0
+  },
+  "S": 135,
+  "S_min": 312,
+  "R": 135,
+  "R_min": 307,
+  "S_plus_R": 270,
+  "S_plus_R_min_no_boxes_no_split_merge": 624,
+  "empty_cells": 838,
+  "empty_outside_max_rectangle": 802,
+  "max_manufacturers_covered_per_pole": 14,
+  "per_pole_cover_count": {
+    "P004": 13,
+    "P015": 14,
+    "P001": 11,
+    "P002": 14,
+    "P000": 12,
+    "P006": 9,
+    "P005": 12,
+    "P020": 11,
+    "P010": 11,
+    "P003": 12,
+    "P012": 8,
+    "P011": 10,
+    "P009": 8,
+    "P019": 8,
+    "P008": 10,
+    "P013": 10,
+    "P018": 7,
+    "P024": 5,
+    "P022": 8,
+    "P007": 10,
+    "P014": 6,
+    "P017": 9,
+    "P016": 11,
+    "P023": 9,
+    "P025": 8,
+    "P021": 10
+  },
+  "C59_antecedent_false": true,
+  "C67_no_side_poles": true,
+  "source_ports": [
+    {
+      "port": {
+        "unit": "OUT_B00",
+        "side": 1,
+        "offset": 1
+      },
+      "item": "蓝铁矿",
+      "front": [
+        2,
+        1
+      ],
+      "front_occupant": null,
+      "front_kind": null
+    },
+    {
+      "port": {
+        "unit": "OUT_B06",
+        "side": 1,
+        "offset": 1
+      },
+      "item": "源矿",
+      "front": [
+        20,
+        1
+      ],
+      "front_occupant": null,
+      "front_kind": null
+    },
+    {
+      "port": {
+        "unit": "OUT_L01",
+        "side": 0,
+        "offset": 1
+      },
+      "item": "蓝铁矿",
+      "front": [
+        1,
+        5
+      ],
+      "front_occupant": "T1_5",
+      "front_kind": "belt"
+    },
+    {
+      "port": {
+        "unit": "OUT_L04",
+        "side": 0,
+        "offset": 1
+      },
+      "item": "源矿",
+      "front": [
+        1,
+        14
+      ],
+      "front_occupant": null,
+      "front_kind": null
+    }
+  ],
+  "product_paths": [
+    {
+      "from": {
+        "unit": "M218",
+        "side": 3,
+        "offset": 5
+      },
+      "to": {
+        "unit": "CORE",
+        "side": 1,
+        "offset": 6
+      },
+      "item": "精选荞愈胶囊",
+      "channels": [
+        "PC000189",
+        "PC000190",
+        "PC000191",
+        "PC000192",
+        "PC000193",
+        "PC000194"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,232 @@
+{
+  "item": "精选荞愈胶囊",
+  "scope": "sources<=1,no targets; each item separately maximized",
+  "nonzero_values": [],
+  "solver": {
+    "status": 0,
+    "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+    "variables": 780,
+    "rows": 18627,
+    "equalities": 17369,
+    "inequalities": 1258,
+    "iterations": 0,
+    "presolve": true,
+    "exact_primal": true,
+    "exact_dual": true,
+    "objective": "0",
+    "nonzero_variables": 0,
+    "certificate": {
+      "bound": "0",
+      "multipliers": [
+        {
+          "row": "slot:('T53_21', 'single'):细磨荞花粉末",
+          "value": "1/10"
+        },
+        {
+          "row": "slot:('T54_21', 'single'):细磨荞花粉末",
+          "value": "1/10"
+        },
+        {
+          "row": "slot:('T55_21', 'single'):细磨荞花粉末",
+          "value": "1/10"
+        },
+        {
+          "row": "slot:('T56_21', 'single'):细磨荞花粉末",
+          "value": "1/10"
+        },
+        {
+          "row": "slot:('T56_24', 'single'):细磨荞花粉末",
+          "value": "1/10"
+        },
+        {
+          "row": "slot:('T56_25', 'single'):细磨荞花粉末",
+          "value": "1/10"
+        },
+        {
+          "row": "slot:('T58_30', 'single'):钢块",
+          "value": "1/20"
+        },
+        {
+          "row": "slot:('T58_31', 'single'):钢块",
+          "value": "1/20"
+        },
+        {
+          "row": "slot:('T58_32', 'single'):钢块",
+          "value": "1/20"
+        },
+        {
+          "row": "slot:('T58_33', 'single'):钢块",
+          "value": "1/20"
+        },
+        {
+          "row": "slot:('T58_34', 'single'):钢块",
+          "value": "1/20"
+        },
+        {
+          "row": "slot:('T58_35', 'single'):钢块",
+          "value": "1/20"
+        },
+        {
+          "row": "slot:('T59_30', 'single'):钢块",
+          "value": "1/20"
+        },
+        {
+          "row": "slot:('T59_39', 'single'):致密蓝铁粉末",
+          "value": "1/20"
+        },
+        {
+          "row": "slot:('T60_18', 'single'):钢质瓶",
+          "value": "1/10"
+        },
+        {
+          "row": "slot:('T60_30', 'single'):钢块",
+          "value": "1/20"
+        },
+        {
+          "row": "slot:('T61_18', 'single'):钢质瓶",
+          "value": "1/10"
+        },
+        {
+          "row": "slot:('T61_19', 'single'):钢质瓶",
+          "value": "1/10"
+        },
+        {
+          "row": "slot:('T61_23', 'single'):钢块",
+          "value": "1/20"
+        },
+        {
+          "row": "slot:('T61_24', 'single'):钢块",
+          "value": "1/20"
+        },
+        {
+          "row": "slot:('T61_25', 'single'):钢块",
+          "value": "1/20"
+        },
+        {
+          "row": "slot:('T61_26', 'single'):钢块",
+          "value": "1/20"
+        },
+        {
+          "row": "slot:('T61_27', 'single'):钢块",
+          "value": "1/20"
+        },
+        {
+          "row": "slot:('T61_28', 'single'):钢块",
+          "value": "1/20"
+        },
+        {
+          "row": "slot:('T61_29', 'single'):钢块",
+          "value": "1/20"
+        },
+        {
+          "row": "slot:('T61_30', 'single'):钢块",
+          "value": "1/20"
+        },
+        {
+          "row": "slot:('T63_23', 'single'):钢块",
+          "value": "1/20"
+        },
+        {
+          "row": "slot:('T63_24', 'single'):钢块",
+          "value": "1/20"
+        },
+        {
+          "row": "slot:('T64_24', 'single'):钢块",
+          "value": "1/20"
+        },
+        {
+          "row": "slot:('T65_17', 'single'):致密蓝铁粉末",
+          "value": "1/20"
+        },
+        {
+          "row": "slot:('T65_24', 'single'):钢块",
+          "value": "1/20"
+        },
+        {
+          "row": "slot:('T66_21', 'single'):钢块",
+          "value": "1/20"
+        },
+        {
+          "row": "slot:('T66_22', 'single'):钢块",
+          "value": "1/20"
+        },
+        {
+          "row": "slot:('T66_23', 'single'):钢块",
+          "value": "1/20"
+        },
+        {
+          "row": "slot:('T66_24', 'single'):钢块",
+          "value": "1/20"
+        },
+        {
+          "row": "machine:M112:in:致密蓝铁粉末",
+          "value": "1/20"
+        },
+        {
+          "row": "machine:M112:out:钢块",
+          "value": "-1/20"
+        },
+        {
+          "row": "machine:M113:in:致密蓝铁粉末",
+          "value": "1/20"
+        },
+        {
+          "row": "machine:M113:out:钢块",
+          "value": "-1/20"
+        },
+        {
+          "row": "machine:M127:in:砂叶粉末",
+          "value": "1/20"
+        },
+        {
+          "row": "machine:M127:out:致密蓝铁粉末",
+          "value": "-1/20"
+        },
+        {
+          "row": "machine:M130:in:砂叶粉末",
+          "value": "1/20"
+        },
+        {
+          "row": "machine:M130:out:致密蓝铁粉末",
+          "value": "-1/20"
+        },
+        {
+          "row": "machine:M147:in:砂叶粉末",
+          "value": "1/10"
+        },
+        {
+          "row": "machine:M147:out:细磨荞花粉末",
+          "value": "-1/10"
+        },
+        {
+          "row": "machine:M149:out:细磨荞花粉末",
+          "value": "-1/10"
+        },
+        {
+          "row": "machine:M149:in:荞花粉末",
+          "value": "1/20"
+        },
+        {
+          "row": "machine:M152:in:钢块",
+          "value": "1/20"
+        },
+        {
+          "row": "machine:M152:out:钢质瓶",
+          "value": "-1/10"
+        },
+        {
+          "row": "machine:M216:in:钢质瓶",
+          "value": "1/10"
+        },
+        {
+          "row": "machine:M217:in:细磨荞花粉末",
+          "value": "1/10"
+        },
+        {
+          "row": "machine:M218:in:细磨荞花粉末",
+          "value": "1/10"
+        }
+      ]
+    }
+  }
+}

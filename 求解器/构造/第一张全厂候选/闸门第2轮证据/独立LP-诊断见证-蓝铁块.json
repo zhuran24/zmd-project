@@ -1,0 +1,484 @@
+{
+  "item": "蓝铁块",
+  "scope": "sources<=1,no targets; each item separately maximized",
+  "nonzero_values": [],
+  "solver": {
+    "status": 0,
+    "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+    "variables": 780,
+    "rows": 18627,
+    "equalities": 17369,
+    "inequalities": 1258,
+    "iterations": 0,
+    "presolve": true,
+    "exact_primal": true,
+    "exact_dual": true,
+    "objective": "0",
+    "nonzero_variables": 0,
+    "certificate": {
+      "bound": "0",
+      "multipliers": [
+        {
+          "row": "slot:('T24_26', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T25_26', 'H'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T26_26', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T27_26', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T28_26', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T29_26', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T29_27', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T30_27', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T30_5', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T30_6', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T31_6', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T38_5', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T45_5', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T46_5', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T47_5', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T48_5', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T48_9', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T49_5', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T49_6', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T49_7', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T49_8', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T49_9', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T5_15', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T5_16', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T5_17', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T5_18', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T5_19', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T5_20', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T5_21', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T5_22', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T5_23', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T5_32', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T5_34', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T5_43', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T5_56', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T5_60', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T5_61', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T5_62', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T5_66', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T5_67', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T60_5', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T60_6', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T60_7', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T61_7', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T62_5', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T68_11', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T69_10', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T69_11', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T69_5', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T69_6', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T69_7', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T69_8', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T69_9', 'single'):蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M021:in:蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M021:out:蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M022:in:蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M022:out:蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M023:in:蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M023:out:蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M024:in:蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M024:out:蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M026:in:蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M026:out:蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M031:in:蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M031:out:蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M033:in:蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M033:out:蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M035:in:蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M035:out:蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M036:in:蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M036:out:蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M040:in:蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M040:out:蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M041:in:蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M041:out:蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M044:in:蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M044:out:蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M046:in:蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M046:out:蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M048:in:蓝铁块",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M048:out:蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M069:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M070:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M071:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M072:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M073:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M074:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M075:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M076:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M077:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M078:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M079:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M080:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M081:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M082:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M083:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M084:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M085:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M086:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M087:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M088:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M089:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M090:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M091:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M092:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M093:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M094:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M095:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M096:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M097:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M098:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M099:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M100:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M101:out:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M102:out:蓝铁块",
+          "value": "1"
+        }
+      ]
+    }
+  }
+}

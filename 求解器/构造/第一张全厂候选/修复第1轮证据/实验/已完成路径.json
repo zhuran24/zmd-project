@@ -1,0 +1,2858 @@
+[
+  {
+    "id": "LF007",
+    "from": {
+      "unit": "M007",
+      "side": 1,
+      "offset": 2
+    },
+    "to": {
+      "unit": "M144",
+      "side": 0,
+      "offset": 0
+    },
+    "item": "源石粉末",
+    "rate": "1",
+    "path": [
+      "PC000000",
+      "PC000001",
+      "PC000002",
+      "PC000003",
+      "PC000004",
+      "PC000005"
+    ]
+  },
+  {
+    "id": "LF008",
+    "from": {
+      "unit": "M008",
+      "side": 1,
+      "offset": 2
+    },
+    "to": {
+      "unit": "M145",
+      "side": 3,
+      "offset": 0
+    },
+    "item": "源石粉末",
+    "rate": "1",
+    "path": [
+      "PC000006",
+      "PC000007"
+    ]
+  },
+  {
+    "id": "LF009",
+    "from": {
+      "unit": "M009",
+      "side": 0,
+      "offset": 0
+    },
+    "to": {
+      "unit": "M145",
+      "side": 3,
+      "offset": 1
+    },
+    "item": "源石粉末",
+    "rate": "1",
+    "path": [
+      "PC000008",
+      "PC000009",
+      "PC000010"
+    ]
+  },
+  {
+    "id": "LF018",
+    "from": {
+      "unit": "OUT_L20",
+      "side": 0,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M000",
+      "side": 2,
+      "offset": 1
+    },
+    "item": "源矿",
+    "rate": "1",
+    "path": [
+      "PC000011",
+      "PC000012"
+    ]
+  },
+  {
+    "id": "LF019",
+    "from": {
+      "unit": "OUT_B16",
+      "side": 1,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M001",
+      "side": 3,
+      "offset": 1
+    },
+    "item": "源矿",
+    "rate": "1",
+    "path": [
+      "PC000013",
+      "PC000014"
+    ]
+  },
+  {
+    "id": "LF020",
+    "from": {
+      "unit": "CORE",
+      "side": 2,
+      "offset": 7
+    },
+    "to": {
+      "unit": "M002",
+      "side": 3,
+      "offset": 2
+    },
+    "item": "源矿",
+    "rate": "1",
+    "path": [
+      "PC000015",
+      "PC000016"
+    ]
+  },
+  {
+    "id": "LF021",
+    "from": {
+      "unit": "OUT_L13",
+      "side": 0,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M003",
+      "side": 2,
+      "offset": 1
+    },
+    "item": "源矿",
+    "rate": "1",
+    "path": [
+      "PC000017",
+      "PC000018"
+    ]
+  },
+  {
+    "id": "LF022",
+    "from": {
+      "unit": "OUT_B18",
+      "side": 1,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M004",
+      "side": 3,
+      "offset": 1
+    },
+    "item": "源矿",
+    "rate": "1",
+    "path": [
+      "PC000019",
+      "PC000020"
+    ]
+  },
+  {
+    "id": "LF023",
+    "from": {
+      "unit": "OUT_B01",
+      "side": 1,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M005",
+      "side": 3,
+      "offset": 0
+    },
+    "item": "源矿",
+    "rate": "1",
+    "path": [
+      "PC000021",
+      "PC000022",
+      "PC000023",
+      "PC000024"
+    ]
+  },
+  {
+    "id": "LF024",
+    "from": {
+      "unit": "CORE",
+      "side": 0,
+      "offset": 4
+    },
+    "to": {
+      "unit": "M006",
+      "side": 2,
+      "offset": 2
+    },
+    "item": "源矿",
+    "rate": "1",
+    "path": [
+      "PC000025",
+      "PC000026"
+    ]
+  },
+  {
+    "id": "LF025",
+    "from": {
+      "unit": "OUT_B02",
+      "side": 1,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M007",
+      "side": 3,
+      "offset": 0
+    },
+    "item": "源矿",
+    "rate": "1",
+    "path": [
+      "PC000027",
+      "PC000028",
+      "PC000029",
+      "PC000030"
+    ]
+  },
+  {
+    "id": "LF026",
+    "from": {
+      "unit": "OUT_B07",
+      "side": 1,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M008",
+      "side": 3,
+      "offset": 1
+    },
+    "item": "源矿",
+    "rate": "1",
+    "path": [
+      "PC000031",
+      "PC000032"
+    ]
+  },
+  {
+    "id": "LF028",
+    "from": {
+      "unit": "OUT_B03",
+      "side": 1,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M010",
+      "side": 3,
+      "offset": 0
+    },
+    "item": "源矿",
+    "rate": "1",
+    "path": [
+      "PC000033",
+      "PC000034",
+      "PC000035",
+      "PC000036"
+    ]
+  },
+  {
+    "id": "LF029",
+    "from": {
+      "unit": "OUT_L07",
+      "side": 0,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M011",
+      "side": 2,
+      "offset": 1
+    },
+    "item": "源矿",
+    "rate": "1",
+    "path": [
+      "PC000037",
+      "PC000038"
+    ]
+  },
+  {
+    "id": "LF031",
+    "from": {
+      "unit": "OUT_B21",
+      "side": 1,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M013",
+      "side": 3,
+      "offset": 1
+    },
+    "item": "源矿",
+    "rate": "1",
+    "path": [
+      "PC000039",
+      "PC000040"
+    ]
+  },
+  {
+    "id": "LF032",
+    "from": {
+      "unit": "OUT_L02",
+      "side": 0,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M014",
+      "side": 2,
+      "offset": 0
+    },
+    "item": "源矿",
+    "rate": "1",
+    "path": [
+      "PC000041",
+      "PC000042",
+      "PC000043",
+      "PC000044"
+    ]
+  },
+  {
+    "id": "LF033",
+    "from": {
+      "unit": "OUT_B13",
+      "side": 1,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M015",
+      "side": 3,
+      "offset": 1
+    },
+    "item": "源矿",
+    "rate": "1",
+    "path": [
+      "PC000045",
+      "PC000046"
+    ]
+  },
+  {
+    "id": "LF034",
+    "from": {
+      "unit": "OUT_L15",
+      "side": 0,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M016",
+      "side": 2,
+      "offset": 1
+    },
+    "item": "源矿",
+    "rate": "1",
+    "path": [
+      "PC000047",
+      "PC000048"
+    ]
+  },
+  {
+    "id": "LF035",
+    "from": {
+      "unit": "CORE",
+      "side": 0,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M017",
+      "side": 1,
+      "offset": 0
+    },
+    "item": "源矿",
+    "rate": "1",
+    "path": [
+      "PC000049",
+      "PC000050"
+    ]
+  },
+  {
+    "id": "LF036",
+    "from": {
+      "unit": "M175",
+      "side": 3,
+      "offset": 4
+    },
+    "to": {
+      "unit": "M058",
+      "side": 3,
+      "offset": 0
+    },
+    "item": "砂叶",
+    "rate": "1",
+    "path": [
+      "PC000051",
+      "PC000052",
+      "PC000053",
+      "PC000054"
+    ]
+  },
+  {
+    "id": "LF037",
+    "from": {
+      "unit": "M176",
+      "side": 2,
+      "offset": 2
+    },
+    "to": {
+      "unit": "M059",
+      "side": 2,
+      "offset": 0
+    },
+    "item": "砂叶",
+    "rate": "1",
+    "path": [
+      "PC000055",
+      "PC000056",
+      "PC000057",
+      "PC000058",
+      "PC000059",
+      "PC000060",
+      "PC000061"
+    ]
+  },
+  {
+    "id": "LF039",
+    "from": {
+      "unit": "M178",
+      "side": 0,
+      "offset": 4
+    },
+    "to": {
+      "unit": "M061",
+      "side": 3,
+      "offset": 2
+    },
+    "item": "砂叶",
+    "rate": "1",
+    "path": [
+      "PC000062",
+      "PC000063",
+      "PC000064",
+      "PC000065",
+      "PC000066",
+      "PC000067",
+      "PC000068"
+    ]
+  },
+  {
+    "id": "LF042",
+    "from": {
+      "unit": "M181",
+      "side": 2,
+      "offset": 3
+    },
+    "to": {
+      "unit": "M064",
+      "side": 1,
+      "offset": 2
+    },
+    "item": "砂叶",
+    "rate": "1",
+    "path": [
+      "PC000069",
+      "PC000070",
+      "PC000071"
+    ]
+  },
+  {
+    "id": "LF043",
+    "from": {
+      "unit": "M182",
+      "side": 3,
+      "offset": 0
+    },
+    "to": {
+      "unit": "M065",
+      "side": 2,
+      "offset": 2
+    },
+    "item": "砂叶",
+    "rate": "1",
+    "path": [
+      "PC000072",
+      "PC000073"
+    ]
+  },
+  {
+    "id": "LF051",
+    "from": {
+      "unit": "M190",
+      "side": 0,
+      "offset": 4
+    },
+    "to": {
+      "unit": "M067",
+      "side": 2,
+      "offset": 0
+    },
+    "item": "砂叶",
+    "rate": "1",
+    "path": [
+      "PC000074",
+      "PC000075"
+    ]
+  },
+  {
+    "id": "LF052",
+    "from": {
+      "unit": "M191",
+      "side": 3,
+      "offset": 3
+    },
+    "to": {
+      "unit": "M208",
+      "side": 1,
+      "offset": 0
+    },
+    "item": "砂叶",
+    "rate": "1",
+    "path": [
+      "PC000076",
+      "PC000077",
+      "PC000078",
+      "PC000079"
+    ]
+  },
+  {
+    "id": "LF053",
+    "from": {
+      "unit": "M192",
+      "side": 0,
+      "offset": 0
+    },
+    "to": {
+      "unit": "M209",
+      "side": 2,
+      "offset": 1
+    },
+    "item": "砂叶",
+    "rate": "1",
+    "path": [
+      "PC000080",
+      "PC000081",
+      "PC000082",
+      "PC000083"
+    ]
+  },
+  {
+    "id": "LF055",
+    "from": {
+      "unit": "M194",
+      "side": 1,
+      "offset": 2
+    },
+    "to": {
+      "unit": "M211",
+      "side": 0,
+      "offset": 0
+    },
+    "item": "砂叶",
+    "rate": "1",
+    "path": [
+      "PC000084",
+      "PC000085"
+    ]
+  },
+  {
+    "id": "LF056",
+    "from": {
+      "unit": "M195",
+      "side": 1,
+      "offset": 3
+    },
+    "to": {
+      "unit": "M068",
+      "side": 0,
+      "offset": 0
+    },
+    "item": "砂叶",
+    "rate": "1/2",
+    "path": [
+      "PC000086",
+      "PC000087",
+      "PC000088",
+      "PC000089",
+      "PC000090"
+    ]
+  },
+  {
+    "id": "LF057",
+    "from": {
+      "unit": "M195",
+      "side": 1,
+      "offset": 4
+    },
+    "to": {
+      "unit": "M212",
+      "side": 2,
+      "offset": 2
+    },
+    "item": "砂叶",
+    "rate": "1/2",
+    "path": [
+      "PC000091",
+      "PC000092",
+      "PC000093",
+      "PC000094",
+      "PC000095",
+      "PC000096",
+      "PC000097",
+      "PC000098",
+      "PC000099",
+      "PC000100",
+      "PC000101",
+      "PC000102",
+      "PC000103"
+    ]
+  },
+  {
+    "id": "LF058",
+    "from": {
+      "unit": "M202",
+      "side": 2,
+      "offset": 0
+    },
+    "to": {
+      "unit": "M175",
+      "side": 1,
+      "offset": 0
+    },
+    "item": "砂叶种子",
+    "rate": "1",
+    "path": [
+      "PC000104",
+      "PC000105"
+    ]
+  },
+  {
+    "id": "LF060",
+    "from": {
+      "unit": "M203",
+      "side": 0,
+      "offset": 0
+    },
+    "to": {
+      "unit": "M177",
+      "side": 0,
+      "offset": 0
+    },
+    "item": "砂叶种子",
+    "rate": "1",
+    "path": [
+      "PC000106",
+      "PC000107",
+      "PC000108",
+      "PC000109",
+      "PC000110",
+      "PC000111",
+      "PC000112",
+      "PC000113",
+      "PC000114",
+      "PC000115",
+      "PC000116"
+    ]
+  },
+  {
+    "id": "LF062",
+    "from": {
+      "unit": "M204",
+      "side": 3,
+      "offset": 3
+    },
+    "to": {
+      "unit": "M180",
+      "side": 1,
+      "offset": 0
+    },
+    "item": "砂叶种子",
+    "rate": "1",
+    "path": [
+      "PC000117",
+      "PC000118"
+    ]
+  },
+  {
+    "id": "LF068",
+    "from": {
+      "unit": "M207",
+      "side": 1,
+      "offset": 4
+    },
+    "to": {
+      "unit": "M185",
+      "side": 0,
+      "offset": 0
+    },
+    "item": "砂叶种子",
+    "rate": "1",
+    "path": [
+      "PC000119",
+      "PC000120",
+      "PC000121",
+      "PC000122",
+      "PC000123",
+      "PC000124",
+      "PC000125",
+      "PC000126"
+    ]
+  },
+  {
+    "id": "LF072",
+    "from": {
+      "unit": "M209",
+      "side": 0,
+      "offset": 4
+    },
+    "to": {
+      "unit": "M189",
+      "side": 0,
+      "offset": 0
+    },
+    "item": "砂叶种子",
+    "rate": "1",
+    "path": [
+      "PC000127",
+      "PC000128",
+      "PC000129",
+      "PC000130",
+      "PC000131"
+    ]
+  },
+  {
+    "id": "LF073",
+    "from": {
+      "unit": "M209",
+      "side": 0,
+      "offset": 2
+    },
+    "to": {
+      "unit": "M190",
+      "side": 2,
+      "offset": 0
+    },
+    "item": "砂叶种子",
+    "rate": "1",
+    "path": [
+      "PC000132",
+      "PC000133",
+      "PC000134",
+      "PC000135",
+      "PC000136"
+    ]
+  },
+  {
+    "id": "LF082",
+    "from": {
+      "unit": "M059",
+      "side": 0,
+      "offset": 2
+    },
+    "to": {
+      "unit": "M125",
+      "side": 3,
+      "offset": 3
+    },
+    "item": "砂叶粉末",
+    "rate": "1",
+    "path": [
+      "PC000137",
+      "PC000138",
+      "PC000139",
+      "PC000140",
+      "PC000141",
+      "PC000142",
+      "PC000143",
+      "PC000144",
+      "PC000145",
+      "PC000146"
+    ]
+  },
+  {
+    "id": "LF085",
+    "from": {
+      "unit": "M060",
+      "side": 0,
+      "offset": 0
+    },
+    "to": {
+      "unit": "M148",
+      "side": 2,
+      "offset": 1
+    },
+    "item": "砂叶粉末",
+    "rate": "1",
+    "path": [
+      "PC000147",
+      "PC000148"
+    ]
+  },
+  {
+    "id": "LF086",
+    "from": {
+      "unit": "M060",
+      "side": 0,
+      "offset": 2
+    },
+    "to": {
+      "unit": "M126",
+      "side": 2,
+      "offset": 0
+    },
+    "item": "砂叶粉末",
+    "rate": "1",
+    "path": [
+      "PC000149",
+      "PC000150",
+      "PC000151",
+      "PC000152",
+      "PC000153",
+      "PC000154",
+      "PC000155",
+      "PC000156"
+    ]
+  },
+  {
+    "id": "LF088",
+    "from": {
+      "unit": "M061",
+      "side": 1,
+      "offset": 0
+    },
+    "to": {
+      "unit": "M129",
+      "side": 1,
+      "offset": 3
+    },
+    "item": "砂叶粉末",
+    "rate": "1",
+    "path": [
+      "PC000157",
+      "PC000158",
+      "PC000159",
+      "PC000160",
+      "PC000161",
+      "PC000162"
+    ]
+  },
+  {
+    "id": "LF091",
+    "from": {
+      "unit": "M062",
+      "side": 1,
+      "offset": 0
+    },
+    "to": {
+      "unit": "M133",
+      "side": 3,
+      "offset": 2
+    },
+    "item": "砂叶粉末",
+    "rate": "1",
+    "path": [
+      "PC000163",
+      "PC000164"
+    ]
+  },
+  {
+    "id": "LF092",
+    "from": {
+      "unit": "M062",
+      "side": 1,
+      "offset": 2
+    },
+    "to": {
+      "unit": "M134",
+      "side": 1,
+      "offset": 0
+    },
+    "item": "砂叶粉末",
+    "rate": "1",
+    "path": [
+      "PC000165",
+      "PC000166",
+      "PC000167"
+    ]
+  },
+  {
+    "id": "LF094",
+    "from": {
+      "unit": "M063",
+      "side": 2,
+      "offset": 0
+    },
+    "to": {
+      "unit": "M136",
+      "side": 0,
+      "offset": 3
+    },
+    "item": "砂叶粉末",
+    "rate": "1",
+    "path": [
+      "PC000168",
+      "PC000169",
+      "PC000170"
+    ]
+  },
+  {
+    "id": "LF100",
+    "from": {
+      "unit": "M065",
+      "side": 0,
+      "offset": 0
+    },
+    "to": {
+      "unit": "M142",
+      "side": 2,
+      "offset": 1
+    },
+    "item": "砂叶粉末",
+    "rate": "1",
+    "path": [
+      "PC000171",
+      "PC000172"
+    ]
+  },
+  {
+    "id": "LF101",
+    "from": {
+      "unit": "M065",
+      "side": 0,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M143",
+      "side": 1,
+      "offset": 1
+    },
+    "item": "砂叶粉末",
+    "rate": "1",
+    "path": [
+      "PC000173",
+      "PC000174",
+      "PC000175",
+      "PC000176",
+      "PC000177"
+    ]
+  },
+  {
+    "id": "LF106",
+    "from": {
+      "unit": "M067",
+      "side": 0,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M149",
+      "side": 2,
+      "offset": 0
+    },
+    "item": "砂叶粉末",
+    "rate": "1",
+    "path": [
+      "PC000178",
+      "PC000179"
+    ]
+  },
+  {
+    "id": "LF110",
+    "from": {
+      "unit": "M068",
+      "side": 2,
+      "offset": 0
+    },
+    "to": {
+      "unit": "M150",
+      "side": 0,
+      "offset": 2
+    },
+    "item": "砂叶粉末",
+    "rate": "1/2",
+    "path": [
+      "PC000180",
+      "PC000181",
+      "PC000182",
+      "PC000183",
+      "PC000184",
+      "PC000185",
+      "PC000186",
+      "PC000187",
+      "PC000188"
+    ]
+  },
+  {
+    "id": "LF114",
+    "from": {
+      "unit": "M218",
+      "side": 3,
+      "offset": 5
+    },
+    "to": {
+      "unit": "CORE",
+      "side": 1,
+      "offset": 6
+    },
+    "item": "精选荞愈胶囊",
+    "rate": "3/20",
+    "path": [
+      "PC000189",
+      "PC000190",
+      "PC000191",
+      "PC000192",
+      "PC000193",
+      "PC000194"
+    ]
+  },
+  {
+    "id": "LF116",
+    "from": {
+      "unit": "M147",
+      "side": 3,
+      "offset": 2
+    },
+    "to": {
+      "unit": "M217",
+      "side": 2,
+      "offset": 5
+    },
+    "item": "细磨荞花粉末",
+    "rate": "1",
+    "path": [
+      "PC000195",
+      "PC000196",
+      "PC000197"
+    ]
+  },
+  {
+    "id": "LF118",
+    "from": {
+      "unit": "M149",
+      "side": 0,
+      "offset": 5
+    },
+    "to": {
+      "unit": "M217",
+      "side": 2,
+      "offset": 2
+    },
+    "item": "细磨荞花粉末",
+    "rate": "1",
+    "path": [
+      "PC000198",
+      "PC000199",
+      "PC000200",
+      "PC000201",
+      "PC000202"
+    ]
+  },
+  {
+    "id": "LF124",
+    "from": {
+      "unit": "M140",
+      "side": 3,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M215",
+      "side": 1,
+      "offset": 0
+    },
+    "item": "致密源石粉末",
+    "rate": "1",
+    "path": [
+      "PC000203",
+      "PC000204"
+    ]
+  },
+  {
+    "id": "LF125",
+    "from": {
+      "unit": "M141",
+      "side": 0,
+      "offset": 0
+    },
+    "to": {
+      "unit": "M214",
+      "side": 1,
+      "offset": 5
+    },
+    "item": "致密源石粉末",
+    "rate": "1",
+    "path": [
+      "PC000205",
+      "PC000206",
+      "PC000207",
+      "PC000208",
+      "PC000209",
+      "PC000210",
+      "PC000211",
+      "PC000212",
+      "PC000213"
+    ]
+  },
+  {
+    "id": "LF134",
+    "from": {
+      "unit": "M124",
+      "side": 1,
+      "offset": 3
+    },
+    "to": {
+      "unit": "M107",
+      "side": 2,
+      "offset": 0
+    },
+    "item": "致密蓝铁粉末",
+    "rate": "1",
+    "path": [
+      "PC000214",
+      "PC000215"
+    ]
+  },
+  {
+    "id": "LF137",
+    "from": {
+      "unit": "M127",
+      "side": 0,
+      "offset": 5
+    },
+    "to": {
+      "unit": "M112",
+      "side": 3,
+      "offset": 1
+    },
+    "item": "致密蓝铁粉末",
+    "rate": "1",
+    "path": [
+      "PC000216",
+      "PC000217"
+    ]
+  },
+  {
+    "id": "LF140",
+    "from": {
+      "unit": "M130",
+      "side": 2,
+      "offset": 0
+    },
+    "to": {
+      "unit": "M113",
+      "side": 1,
+      "offset": 1
+    },
+    "item": "致密蓝铁粉末",
+    "rate": "1",
+    "path": [
+      "PC000218",
+      "PC000219"
+    ]
+  },
+  {
+    "id": "LF141",
+    "from": {
+      "unit": "M131",
+      "side": 2,
+      "offset": 5
+    },
+    "to": {
+      "unit": "M105",
+      "side": 3,
+      "offset": 0
+    },
+    "item": "致密蓝铁粉末",
+    "rate": "1",
+    "path": [
+      "PC000220",
+      "PC000221"
+    ]
+  },
+  {
+    "id": "LF142",
+    "from": {
+      "unit": "M132",
+      "side": 1,
+      "offset": 5
+    },
+    "to": {
+      "unit": "M115",
+      "side": 2,
+      "offset": 0
+    },
+    "item": "致密蓝铁粉末",
+    "rate": "1",
+    "path": [
+      "PC000222",
+      "PC000223"
+    ]
+  },
+  {
+    "id": "LF144",
+    "from": {
+      "unit": "M134",
+      "side": 3,
+      "offset": 5
+    },
+    "to": {
+      "unit": "M117",
+      "side": 3,
+      "offset": 0
+    },
+    "item": "致密蓝铁粉末",
+    "rate": "1",
+    "path": [
+      "PC000224",
+      "PC000225",
+      "PC000226",
+      "PC000227",
+      "PC000228",
+      "PC000229",
+      "PC000230",
+      "PC000231",
+      "PC000232",
+      "PC000233",
+      "PC000234",
+      "PC000235",
+      "PC000236",
+      "PC000237",
+      "PC000238",
+      "PC000239",
+      "PC000240",
+      "PC000241",
+      "PC000242",
+      "PC000243",
+      "PC000244",
+      "PC000245",
+      "PC000246"
+    ]
+  },
+  {
+    "id": "LF145",
+    "from": {
+      "unit": "M135",
+      "side": 3,
+      "offset": 2
+    },
+    "to": {
+      "unit": "M103",
+      "side": 2,
+      "offset": 2
+    },
+    "item": "致密蓝铁粉末",
+    "rate": "1",
+    "path": [
+      "PC000247",
+      "PC000248"
+    ]
+  },
+  {
+    "id": "LF146",
+    "from": {
+      "unit": "M136",
+      "side": 2,
+      "offset": 2
+    },
+    "to": {
+      "unit": "M119",
+      "side": 0,
+      "offset": 0
+    },
+    "item": "致密蓝铁粉末",
+    "rate": "1",
+    "path": [
+      "PC000249",
+      "PC000250"
+    ]
+  },
+  {
+    "id": "LF147",
+    "from": {
+      "unit": "M164",
+      "side": 1,
+      "offset": 0
+    },
+    "to": {
+      "unit": "M052",
+      "side": 0,
+      "offset": 1
+    },
+    "item": "荞花",
+    "rate": "1",
+    "path": [
+      "PC000251",
+      "PC000252"
+    ]
+  },
+  {
+    "id": "LF148",
+    "from": {
+      "unit": "M165",
+      "side": 2,
+      "offset": 4
+    },
+    "to": {
+      "unit": "M196",
+      "side": 2,
+      "offset": 0
+    },
+    "item": "荞花",
+    "rate": "1",
+    "path": [
+      "PC000253",
+      "PC000254",
+      "PC000255",
+      "PC000256"
+    ]
+  },
+  {
+    "id": "LF150",
+    "from": {
+      "unit": "M167",
+      "side": 2,
+      "offset": 2
+    },
+    "to": {
+      "unit": "M055",
+      "side": 0,
+      "offset": 0
+    },
+    "item": "荞花",
+    "rate": "1",
+    "path": [
+      "PC000257",
+      "PC000258"
+    ]
+  },
+  {
+    "id": "LF151",
+    "from": {
+      "unit": "M168",
+      "side": 3,
+      "offset": 0
+    },
+    "to": {
+      "unit": "M056",
+      "side": 1,
+      "offset": 0
+    },
+    "item": "荞花",
+    "rate": "1",
+    "path": [
+      "PC000259",
+      "PC000260",
+      "PC000261",
+      "PC000262",
+      "PC000263"
+    ]
+  },
+  {
+    "id": "LF152",
+    "from": {
+      "unit": "M169",
+      "side": 0,
+      "offset": 4
+    },
+    "to": {
+      "unit": "M053",
+      "side": 0,
+      "offset": 2
+    },
+    "item": "荞花",
+    "rate": "1",
+    "path": [
+      "PC000264",
+      "PC000265",
+      "PC000266",
+      "PC000267",
+      "PC000268",
+      "PC000269",
+      "PC000270",
+      "PC000271",
+      "PC000272",
+      "PC000273",
+      "PC000274",
+      "PC000275",
+      "PC000276",
+      "PC000277",
+      "PC000278",
+      "PC000279",
+      "PC000280",
+      "PC000281",
+      "PC000282",
+      "PC000283",
+      "PC000284",
+      "PC000285",
+      "PC000286"
+    ]
+  },
+  {
+    "id": "LF153",
+    "from": {
+      "unit": "M170",
+      "side": 1,
+      "offset": 0
+    },
+    "to": {
+      "unit": "M197",
+      "side": 3,
+      "offset": 3
+    },
+    "item": "荞花",
+    "rate": "1",
+    "path": [
+      "PC000287",
+      "PC000288"
+    ]
+  },
+  {
+    "id": "LF154",
+    "from": {
+      "unit": "M171",
+      "side": 0,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M198",
+      "side": 2,
+      "offset": 0
+    },
+    "item": "荞花",
+    "rate": "1",
+    "path": [
+      "PC000289",
+      "PC000290"
+    ]
+  },
+  {
+    "id": "LF159",
+    "from": {
+      "unit": "M196",
+      "side": 0,
+      "offset": 0
+    },
+    "to": {
+      "unit": "M165",
+      "side": 0,
+      "offset": 4
+    },
+    "item": "荞花种子",
+    "rate": "1",
+    "path": [
+      "PC000291",
+      "PC000292",
+      "PC000293",
+      "PC000294"
+    ]
+  },
+  {
+    "id": "LF160",
+    "from": {
+      "unit": "M196",
+      "side": 0,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M164",
+      "side": 3,
+      "offset": 0
+    },
+    "item": "荞花种子",
+    "rate": "1",
+    "path": [
+      "PC000295",
+      "PC000296",
+      "PC000297",
+      "PC000298",
+      "PC000299",
+      "PC000300"
+    ]
+  },
+  {
+    "id": "LF161",
+    "from": {
+      "unit": "M197",
+      "side": 1,
+      "offset": 4
+    },
+    "to": {
+      "unit": "M166",
+      "side": 2,
+      "offset": 1
+    },
+    "item": "荞花种子",
+    "rate": "1",
+    "path": [
+      "PC000301",
+      "PC000302",
+      "PC000303",
+      "PC000304",
+      "PC000305",
+      "PC000306",
+      "PC000307",
+      "PC000308"
+    ]
+  },
+  {
+    "id": "LF163",
+    "from": {
+      "unit": "M198",
+      "side": 0,
+      "offset": 0
+    },
+    "to": {
+      "unit": "M169",
+      "side": 2,
+      "offset": 1
+    },
+    "item": "荞花种子",
+    "rate": "1",
+    "path": [
+      "PC000309",
+      "PC000310",
+      "PC000311",
+      "PC000312",
+      "PC000313",
+      "PC000314"
+    ]
+  },
+  {
+    "id": "LF169",
+    "from": {
+      "unit": "M201",
+      "side": 0,
+      "offset": 0
+    },
+    "to": {
+      "unit": "M174",
+      "side": 1,
+      "offset": 4
+    },
+    "item": "荞花种子",
+    "rate": "1",
+    "path": [
+      "PC000315",
+      "PC000316"
+    ]
+  },
+  {
+    "id": "LF174",
+    "from": {
+      "unit": "M054",
+      "side": 1,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M150",
+      "side": 0,
+      "offset": 1
+    },
+    "item": "荞花粉末",
+    "rate": "1",
+    "path": [
+      "PC000317",
+      "PC000318",
+      "PC000319",
+      "PC000320",
+      "PC000321",
+      "PC000322",
+      "PC000323",
+      "PC000324",
+      "PC000325",
+      "PC000326",
+      "PC000327",
+      "PC000328",
+      "PC000329",
+      "PC000330"
+    ]
+  },
+  {
+    "id": "LF178",
+    "from": {
+      "unit": "M056",
+      "side": 3,
+      "offset": 0
+    },
+    "to": {
+      "unit": "M146",
+      "side": 0,
+      "offset": 4
+    },
+    "item": "荞花粉末",
+    "rate": "1",
+    "path": [
+      "PC000331",
+      "PC000332",
+      "PC000333",
+      "PC000334"
+    ]
+  },
+  {
+    "id": "LF180",
+    "from": {
+      "unit": "M057",
+      "side": 2,
+      "offset": 0
+    },
+    "to": {
+      "unit": "M151",
+      "side": 0,
+      "offset": 4
+    },
+    "item": "荞花粉末",
+    "rate": "1",
+    "path": [
+      "PC000335",
+      "PC000336",
+      "PC000337"
+    ]
+  },
+  {
+    "id": "LF181",
+    "from": {
+      "unit": "M069",
+      "side": 0,
+      "offset": 2
+    },
+    "to": {
+      "unit": "M048",
+      "side": 3,
+      "offset": 0
+    },
+    "item": "蓝铁块",
+    "rate": "1",
+    "path": [
+      "PC000338",
+      "PC000339",
+      "PC000340",
+      "PC000341",
+      "PC000342",
+      "PC000343",
+      "PC000344",
+      "PC000345",
+      "PC000346",
+      "PC000347"
+    ]
+  },
+  {
+    "id": "LF184",
+    "from": {
+      "unit": "M072",
+      "side": 0,
+      "offset": 2
+    },
+    "to": {
+      "unit": "M021",
+      "side": 1,
+      "offset": 0
+    },
+    "item": "蓝铁块",
+    "rate": "1",
+    "path": [
+      "PC000348",
+      "PC000349",
+      "PC000350",
+      "PC000351",
+      "PC000352",
+      "PC000353",
+      "PC000354",
+      "PC000355",
+      "PC000356"
+    ]
+  },
+  {
+    "id": "LF185",
+    "from": {
+      "unit": "M073",
+      "side": 1,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M022",
+      "side": 2,
+      "offset": 0
+    },
+    "item": "蓝铁块",
+    "rate": "1",
+    "path": [
+      "PC000357",
+      "PC000358"
+    ]
+  },
+  {
+    "id": "LF186",
+    "from": {
+      "unit": "M074",
+      "side": 0,
+      "offset": 0
+    },
+    "to": {
+      "unit": "M023",
+      "side": 3,
+      "offset": 0
+    },
+    "item": "蓝铁块",
+    "rate": "1",
+    "path": [
+      "PC000359",
+      "PC000360"
+    ]
+  },
+  {
+    "id": "LF187",
+    "from": {
+      "unit": "M075",
+      "side": 0,
+      "offset": 2
+    },
+    "to": {
+      "unit": "M024",
+      "side": 3,
+      "offset": 0
+    },
+    "item": "蓝铁块",
+    "rate": "1",
+    "path": [
+      "PC000361",
+      "PC000362",
+      "PC000363",
+      "PC000364"
+    ]
+  },
+  {
+    "id": "LF189",
+    "from": {
+      "unit": "M077",
+      "side": 0,
+      "offset": 0
+    },
+    "to": {
+      "unit": "M026",
+      "side": 3,
+      "offset": 0
+    },
+    "item": "蓝铁块",
+    "rate": "1",
+    "path": [
+      "PC000365",
+      "PC000366"
+    ]
+  },
+  {
+    "id": "LF190",
+    "from": {
+      "unit": "M078",
+      "side": 0,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M040",
+      "side": 3,
+      "offset": 0
+    },
+    "item": "蓝铁块",
+    "rate": "1",
+    "path": [
+      "PC000367",
+      "PC000368"
+    ]
+  },
+  {
+    "id": "LF194",
+    "from": {
+      "unit": "M082",
+      "side": 1,
+      "offset": 2
+    },
+    "to": {
+      "unit": "M031",
+      "side": 1,
+      "offset": 2
+    },
+    "item": "蓝铁块",
+    "rate": "1",
+    "path": [
+      "PC000369",
+      "PC000370",
+      "PC000371",
+      "PC000372",
+      "PC000373",
+      "PC000374",
+      "PC000375",
+      "PC000376",
+      "PC000377",
+      "PC000378",
+      "PC000379"
+    ]
+  },
+  {
+    "id": "LF196",
+    "from": {
+      "unit": "M084",
+      "side": 1,
+      "offset": 2
+    },
+    "to": {
+      "unit": "M033",
+      "side": 2,
+      "offset": 0
+    },
+    "item": "蓝铁块",
+    "rate": "1",
+    "path": [
+      "PC000380",
+      "PC000381",
+      "PC000382",
+      "PC000383"
+    ]
+  },
+  {
+    "id": "LF198",
+    "from": {
+      "unit": "M086",
+      "side": 0,
+      "offset": 2
+    },
+    "to": {
+      "unit": "M035",
+      "side": 2,
+      "offset": 0
+    },
+    "item": "蓝铁块",
+    "rate": "1",
+    "path": [
+      "PC000384",
+      "PC000385",
+      "PC000386"
+    ]
+  },
+  {
+    "id": "LF199",
+    "from": {
+      "unit": "M087",
+      "side": 0,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M036",
+      "side": 1,
+      "offset": 0
+    },
+    "item": "蓝铁块",
+    "rate": "1",
+    "path": [
+      "PC000387",
+      "PC000388"
+    ]
+  },
+  {
+    "id": "LF204",
+    "from": {
+      "unit": "M092",
+      "side": 1,
+      "offset": 2
+    },
+    "to": {
+      "unit": "M041",
+      "side": 3,
+      "offset": 0
+    },
+    "item": "蓝铁块",
+    "rate": "1",
+    "path": [
+      "PC000389",
+      "PC000390",
+      "PC000391",
+      "PC000392",
+      "PC000393"
+    ]
+  },
+  {
+    "id": "LF207",
+    "from": {
+      "unit": "M095",
+      "side": 1,
+      "offset": 2
+    },
+    "to": {
+      "unit": "M044",
+      "side": 1,
+      "offset": 2
+    },
+    "item": "蓝铁块",
+    "rate": "1",
+    "path": [
+      "PC000394",
+      "PC000395",
+      "PC000396",
+      "PC000397",
+      "PC000398",
+      "PC000399",
+      "PC000400",
+      "PC000401",
+      "PC000402"
+    ]
+  },
+  {
+    "id": "LF209",
+    "from": {
+      "unit": "M097",
+      "side": 1,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M046",
+      "side": 0,
+      "offset": 0
+    },
+    "item": "蓝铁块",
+    "rate": "1",
+    "path": [
+      "PC000403",
+      "PC000404"
+    ]
+  },
+  {
+    "id": "LF215",
+    "from": {
+      "unit": "OUT_L03",
+      "side": 0,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M069",
+      "side": 2,
+      "offset": 0
+    },
+    "item": "蓝铁矿",
+    "rate": "1",
+    "path": [
+      "PC000405",
+      "PC000406",
+      "PC000407",
+      "PC000408"
+    ]
+  },
+  {
+    "id": "LF217",
+    "from": {
+      "unit": "CORE",
+      "side": 2,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M071",
+      "side": 0,
+      "offset": 2
+    },
+    "item": "蓝铁矿",
+    "rate": "1",
+    "path": [
+      "PC000409",
+      "PC000410"
+    ]
+  },
+  {
+    "id": "LF218",
+    "from": {
+      "unit": "CORE",
+      "side": 0,
+      "offset": 7
+    },
+    "to": {
+      "unit": "M072",
+      "side": 2,
+      "offset": 0
+    },
+    "item": "蓝铁矿",
+    "rate": "1",
+    "path": [
+      "PC000411",
+      "PC000412"
+    ]
+  },
+  {
+    "id": "LF219",
+    "from": {
+      "unit": "OUT_B20",
+      "side": 1,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M073",
+      "side": 3,
+      "offset": 1
+    },
+    "item": "蓝铁矿",
+    "rate": "1",
+    "path": [
+      "PC000413",
+      "PC000414"
+    ]
+  },
+  {
+    "id": "LF220",
+    "from": {
+      "unit": "OUT_L11",
+      "side": 0,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M074",
+      "side": 2,
+      "offset": 1
+    },
+    "item": "蓝铁矿",
+    "rate": "1",
+    "path": [
+      "PC000415",
+      "PC000416"
+    ]
+  },
+  {
+    "id": "LF221",
+    "from": {
+      "unit": "OUT_L19",
+      "side": 0,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M075",
+      "side": 2,
+      "offset": 1
+    },
+    "item": "蓝铁矿",
+    "rate": "1",
+    "path": [
+      "PC000417",
+      "PC000418"
+    ]
+  },
+  {
+    "id": "LF222",
+    "from": {
+      "unit": "OUT_B17",
+      "side": 1,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M076",
+      "side": 3,
+      "offset": 1
+    },
+    "item": "蓝铁矿",
+    "rate": "1",
+    "path": [
+      "PC000419",
+      "PC000420"
+    ]
+  },
+  {
+    "id": "LF223",
+    "from": {
+      "unit": "OUT_L14",
+      "side": 0,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M077",
+      "side": 2,
+      "offset": 1
+    },
+    "item": "蓝铁矿",
+    "rate": "1",
+    "path": [
+      "PC000421",
+      "PC000422"
+    ]
+  },
+  {
+    "id": "LF224",
+    "from": {
+      "unit": "OUT_L18",
+      "side": 0,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M078",
+      "side": 2,
+      "offset": 1
+    },
+    "item": "蓝铁矿",
+    "rate": "1",
+    "path": [
+      "PC000423",
+      "PC000424"
+    ]
+  },
+  {
+    "id": "LF225",
+    "from": {
+      "unit": "CORE",
+      "side": 2,
+      "offset": 4
+    },
+    "to": {
+      "unit": "M079",
+      "side": 0,
+      "offset": 2
+    },
+    "item": "蓝铁矿",
+    "rate": "1",
+    "path": [
+      "PC000425",
+      "PC000426"
+    ]
+  },
+  {
+    "id": "LF226",
+    "from": {
+      "unit": "OUT_L16",
+      "side": 0,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M080",
+      "side": 2,
+      "offset": 1
+    },
+    "item": "蓝铁矿",
+    "rate": "1",
+    "path": [
+      "PC000427",
+      "PC000428"
+    ]
+  },
+  {
+    "id": "LF227",
+    "from": {
+      "unit": "OUT_L00",
+      "side": 0,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M100",
+      "side": 2,
+      "offset": 0
+    },
+    "item": "蓝铁矿",
+    "rate": "1",
+    "path": [
+      "PC000429",
+      "PC000430",
+      "PC000431",
+      "PC000432",
+      "PC000433",
+      "PC000434",
+      "PC000435"
+    ]
+  },
+  {
+    "id": "LF228",
+    "from": {
+      "unit": "OUT_B14",
+      "side": 1,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M082",
+      "side": 3,
+      "offset": 1
+    },
+    "item": "蓝铁矿",
+    "rate": "1",
+    "path": [
+      "PC000436",
+      "PC000437"
+    ]
+  },
+  {
+    "id": "LF229",
+    "from": {
+      "unit": "OUT_L12",
+      "side": 0,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M083",
+      "side": 2,
+      "offset": 1
+    },
+    "item": "蓝铁矿",
+    "rate": "1",
+    "path": [
+      "PC000438",
+      "PC000439"
+    ]
+  },
+  {
+    "id": "LF230",
+    "from": {
+      "unit": "OUT_B09",
+      "side": 1,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M084",
+      "side": 3,
+      "offset": 1
+    },
+    "item": "蓝铁矿",
+    "rate": "1",
+    "path": [
+      "PC000440",
+      "PC000441"
+    ]
+  },
+  {
+    "id": "LF231",
+    "from": {
+      "unit": "OUT_L09",
+      "side": 0,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M085",
+      "side": 2,
+      "offset": 1
+    },
+    "item": "蓝铁矿",
+    "rate": "1",
+    "path": [
+      "PC000442",
+      "PC000443"
+    ]
+  },
+  {
+    "id": "LF232",
+    "from": {
+      "unit": "OUT_L21",
+      "side": 0,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M086",
+      "side": 2,
+      "offset": 1
+    },
+    "item": "蓝铁矿",
+    "rate": "1",
+    "path": [
+      "PC000444",
+      "PC000445"
+    ]
+  },
+  {
+    "id": "LF233",
+    "from": {
+      "unit": "OUT_L10",
+      "side": 0,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M087",
+      "side": 2,
+      "offset": 1
+    },
+    "item": "蓝铁矿",
+    "rate": "1",
+    "path": [
+      "PC000446",
+      "PC000447"
+    ]
+  },
+  {
+    "id": "LF234",
+    "from": {
+      "unit": "OUT_B11",
+      "side": 1,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M088",
+      "side": 3,
+      "offset": 1
+    },
+    "item": "蓝铁矿",
+    "rate": "1",
+    "path": [
+      "PC000448",
+      "PC000449"
+    ]
+  },
+  {
+    "id": "LF235",
+    "from": {
+      "unit": "OUT_B04",
+      "side": 1,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M089",
+      "side": 3,
+      "offset": 0
+    },
+    "item": "蓝铁矿",
+    "rate": "1",
+    "path": [
+      "PC000450",
+      "PC000451",
+      "PC000452",
+      "PC000453"
+    ]
+  },
+  {
+    "id": "LF236",
+    "from": {
+      "unit": "OUT_B15",
+      "side": 1,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M090",
+      "side": 3,
+      "offset": 1
+    },
+    "item": "蓝铁矿",
+    "rate": "1",
+    "path": [
+      "PC000454",
+      "PC000455"
+    ]
+  },
+  {
+    "id": "LF237",
+    "from": {
+      "unit": "OUT_L17",
+      "side": 0,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M091",
+      "side": 2,
+      "offset": 1
+    },
+    "item": "蓝铁矿",
+    "rate": "1",
+    "path": [
+      "PC000456",
+      "PC000457"
+    ]
+  },
+  {
+    "id": "LF238",
+    "from": {
+      "unit": "OUT_B19",
+      "side": 1,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M092",
+      "side": 3,
+      "offset": 1
+    },
+    "item": "蓝铁矿",
+    "rate": "1",
+    "path": [
+      "PC000458",
+      "PC000459"
+    ]
+  },
+  {
+    "id": "LF239",
+    "from": {
+      "unit": "OUT_L22",
+      "side": 0,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M093",
+      "side": 2,
+      "offset": 1
+    },
+    "item": "蓝铁矿",
+    "rate": "1",
+    "path": [
+      "PC000460",
+      "PC000461"
+    ]
+  },
+  {
+    "id": "LF240",
+    "from": {
+      "unit": "OUT_B05",
+      "side": 1,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M094",
+      "side": 3,
+      "offset": 0
+    },
+    "item": "蓝铁矿",
+    "rate": "1",
+    "path": [
+      "PC000462",
+      "PC000463",
+      "PC000464",
+      "PC000465"
+    ]
+  },
+  {
+    "id": "LF241",
+    "from": {
+      "unit": "OUT_B22",
+      "side": 1,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M095",
+      "side": 3,
+      "offset": 1
+    },
+    "item": "蓝铁矿",
+    "rate": "1",
+    "path": [
+      "PC000466",
+      "PC000467"
+    ]
+  },
+  {
+    "id": "LF242",
+    "from": {
+      "unit": "OUT_L08",
+      "side": 0,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M096",
+      "side": 2,
+      "offset": 1
+    },
+    "item": "蓝铁矿",
+    "rate": "1",
+    "path": [
+      "PC000468",
+      "PC000469"
+    ]
+  },
+  {
+    "id": "LF243",
+    "from": {
+      "unit": "OUT_B12",
+      "side": 1,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M097",
+      "side": 3,
+      "offset": 1
+    },
+    "item": "蓝铁矿",
+    "rate": "1",
+    "path": [
+      "PC000470",
+      "PC000471"
+    ]
+  },
+  {
+    "id": "LF244",
+    "from": {
+      "unit": "OUT_B10",
+      "side": 1,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M098",
+      "side": 3,
+      "offset": 1
+    },
+    "item": "蓝铁矿",
+    "rate": "1",
+    "path": [
+      "PC000472",
+      "PC000473"
+    ]
+  },
+  {
+    "id": "LF245",
+    "from": {
+      "unit": "OUT_L05",
+      "side": 0,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M099",
+      "side": 2,
+      "offset": 1
+    },
+    "item": "蓝铁矿",
+    "rate": "1",
+    "path": [
+      "PC000474",
+      "PC000475"
+    ]
+  },
+  {
+    "id": "LF247",
+    "from": {
+      "unit": "OUT_L06",
+      "side": 0,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M101",
+      "side": 2,
+      "offset": 1
+    },
+    "item": "蓝铁矿",
+    "rate": "1",
+    "path": [
+      "PC000476",
+      "PC000477"
+    ]
+  },
+  {
+    "id": "LF248",
+    "from": {
+      "unit": "OUT_B08",
+      "side": 1,
+      "offset": 1
+    },
+    "to": {
+      "unit": "M102",
+      "side": 3,
+      "offset": 1
+    },
+    "item": "蓝铁矿",
+    "rate": "1",
+    "path": [
+      "PC000478",
+      "PC000479"
+    ]
+  },
+  {
+    "id": "LF249",
+    "from": {
+      "unit": "M018",
+      "side": 1,
+      "offset": 0
+    },
+    "to": {
+      "unit": "M120",
+      "side": 0,
+      "offset": 0
+    },
+    "item": "蓝铁粉末",
+    "rate": "1",
+    "path": [
+      "PC000480",
+      "PC000481",
+      "PC000482"
+    ]
+  },
+  {
+    "id": "LF260",
+    "from": {
+      "unit": "M029",
+      "side": 3,
+      "offset": 2
+    },
+    "to": {
+      "unit": "M131",
+      "side": 0,
+      "offset": 5
+    },
+    "item": "蓝铁粉末",
+    "rate": "1",
+    "path": [
+      "PC000483",
+      "PC000484"
+    ]
+  },
+  {
+    "id": "LF268",
+    "from": {
+      "unit": "M037",
+      "side": 0,
+      "offset": 0
+    },
+    "to": {
+      "unit": "M134",
+      "side": 1,
+      "offset": 4
+    },
+    "item": "蓝铁粉末",
+    "rate": "1",
+    "path": [
+      "PC000485",
+      "PC000486"
+    ]
+  },
+  {
+    "id": "LF281",
+    "from": {
+      "unit": "M050",
+      "side": 0,
+      "offset": 2
+    },
+    "to": {
+      "unit": "M121",
+      "side": 2,
+      "offset": 0
+    },
+    "item": "蓝铁粉末",
+    "rate": "1",
+    "path": [
+      "PC000487",
+      "PC000488"
+    ]
+  },
+  {
+    "id": "LF283",
+    "from": {
+      "unit": "M158",
+      "side": 0,
+      "offset": 2
+    },
+    "to": {
+      "unit": "M213",
+      "side": 0,
+      "offset": 0
+    },
+    "item": "钢制零件",
+    "rate": "1",
+    "path": [
+      "PC000489",
+      "PC000490",
+      "PC000491",
+      "PC000492",
+      "PC000493",
+      "PC000494",
+      "PC000495",
+      "PC000496",
+      "PC000497",
+      "PC000498",
+      "PC000499",
+      "PC000500",
+      "PC000501",
+      "PC000502",
+      "PC000503",
+      "PC000504",
+      "PC000505"
+    ]
+  },
+  {
+    "id": "LF284",
+    "from": {
+      "unit": "M159",
+      "side": 3,
+      "offset": 0
+    },
+    "to": {
+      "unit": "M214",
+      "side": 1,
+      "offset": 2
+    },
+    "item": "钢制零件",
+    "rate": "1",
+    "path": [
+      "PC000506",
+      "PC000507"
+    ]
+  },
+  {
+    "id": "LF290",
+    "from": {
+      "unit": "M104",
+      "side": 0,
+      "offset": 0
+    },
+    "to": {
+      "unit": "M162",
+      "side": 2,
+      "offset": 2
+    },
+    "item": "钢块",
+    "rate": "1",
+    "path": [
+      "PC000508",
+      "PC000509",
+      "PC000510"
+    ]
+  },
+  {
+    "id": "LF293",
+    "from": {
+      "unit": "M107",
+      "side": 0,
+      "offset": 0
+    },
+    "to": {
+      "unit": "M161",
+      "side": 1,
+      "offset": 2
+    },
+    "item": "钢块",
+    "rate": "1",
+    "path": [
+      "PC000511",
+      "PC000512",
+      "PC000513",
+      "PC000514",
+      "PC000515",
+      "PC000516",
+      "PC000517",
+      "PC000518",
+      "PC000519",
+      "PC000520"
+    ]
+  },
+  {
+    "id": "LF297",
+    "from": {
+      "unit": "M111",
+      "side": 3,
+      "offset": 0
+    },
+    "to": {
+      "unit": "M153",
+      "side": 1,
+      "offset": 0
+    },
+    "item": "钢块",
+    "rate": "1",
+    "path": [
+      "PC000521",
+      "PC000522"
+    ]
+  },
+  {
+    "id": "LF298",
+    "from": {
+      "unit": "M112",
+      "side": 1,
+      "offset": 2
+    },
+    "to": {
+      "unit": "M152",
+      "side": 1,
+      "offset": 2
+    },
+    "item": "钢块",
+    "rate": "1",
+    "path": [
+      "PC000523",
+      "PC000524",
+      "PC000525",
+      "PC000526",
+      "PC000527",
+      "PC000528",
+      "PC000529",
+      "PC000530",
+      "PC000531"
+    ]
+  },
+  {
+    "id": "LF299",
+    "from": {
+      "unit": "M113",
+      "side": 3,
+      "offset": 0
+    },
+    "to": {
+      "unit": "M152",
+      "side": 1,
+      "offset": 0
+    },
+    "item": "钢块",
+    "rate": "1",
+    "path": [
+      "PC000532",
+      "PC000533",
+      "PC000534",
+      "PC000535",
+      "PC000536",
+      "PC000537",
+      "PC000538",
+      "PC000539",
+      "PC000540",
+      "PC000541",
+      "PC000542",
+      "PC000543",
+      "PC000544",
+      "PC000545",
+      "PC000546",
+      "PC000547",
+      "PC000548"
+    ]
+  },
+  {
+    "id": "LF302",
+    "from": {
+      "unit": "M116",
+      "side": 1,
+      "offset": 0
+    },
+    "to": {
+      "unit": "M160",
+      "side": 3,
+      "offset": 2
+    },
+    "item": "钢块",
+    "rate": "1",
+    "path": [
+      "PC000549",
+      "PC000550",
+      "PC000551",
+      "PC000552",
+      "PC000553"
+    ]
+  },
+  {
+    "id": "LF306",
+    "from": {
+      "unit": "M152",
+      "side": 3,
+      "offset": 0
+    },
+    "to": {
+      "unit": "M216",
+      "side": 0,
+      "offset": 5
+    },
+    "item": "钢质瓶",
+    "rate": "1",
+    "path": [
+      "PC000554",
+      "PC000555",
+      "PC000556",
+      "PC000557"
+    ]
+  },
+  {
+    "id": "LF309",
+    "from": {
+      "unit": "M155",
+      "side": 1,
+      "offset": 2
+    },
+    "to": {
+      "unit": "M217",
+      "side": 2,
+      "offset": 1
+    },
+    "item": "钢质瓶",
+    "rate": "1",
+    "path": [
+      "PC000558",
+      "PC000559",
+      "PC000560"
+    ]
+  }
+]

@@ -1,0 +1,160 @@
+{
+  "item": "蓝铁粉末",
+  "scope": "sources<=1,no targets; each item separately maximized",
+  "nonzero_values": [],
+  "solver": {
+    "status": 0,
+    "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+    "variables": 643,
+    "rows": 16550,
+    "equalities": 15526,
+    "inequalities": 1024,
+    "iterations": 0,
+    "presolve": true,
+    "exact_primal": true,
+    "exact_dual": true,
+    "objective": "0",
+    "nonzero_variables": 0,
+    "certificate": {
+      "bound": "0",
+      "multipliers": [
+        {
+          "row": "machine:M018:in:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M019:in:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M020:in:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M021:in:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M022:in:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M023:out:蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M024:in:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M025:in:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M026:in:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M027:in:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M028:in:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M029:in:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M030:in:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M031:in:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M032:out:蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M033:in:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M034:in:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M035:in:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M036:in:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M037:in:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M038:out:蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M039:in:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M040:in:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M041:in:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M042:in:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M043:out:蓝铁粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M044:in:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M045:in:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M046:in:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M047:in:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M048:in:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M049:in:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M050:in:蓝铁块",
+          "value": "1"
+        },
+        {
+          "row": "machine:M051:in:蓝铁块",
+          "value": "1"
+        }
+      ]
+    }
+  }
+}

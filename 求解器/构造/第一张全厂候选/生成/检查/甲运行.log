@@ -1,0 +1,3 @@
+/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/生成/代码/目录与流量.py:170: OptimizeWarning: Unrecognized options detected: {'threads': 1}. These will be passed to HiGHS verbatim.
+  r=linprog([0]*n,A_ub=U,b_ub=v,A_eq=A,b_eq=b,bounds=(0,None),method='highs',options={'threads':1})
+{"schema_errors": [], "channels": 424, "paths": 95, "area": 48, "all_static_pass": false, "candidate_sha256": "e147866f410737324d49190dea83bfd19de04ebdcc9b1c9998152bbf7a80f404"}

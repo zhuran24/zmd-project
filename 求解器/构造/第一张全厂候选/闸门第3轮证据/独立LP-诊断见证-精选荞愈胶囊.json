@@ -1,0 +1,136 @@
+{
+  "item": "精选荞愈胶囊",
+  "scope": "sources<=1,no targets; each item separately maximized",
+  "nonzero_values": [],
+  "solver": {
+    "status": 0,
+    "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+    "variables": 774,
+    "rows": 18581,
+    "equalities": 17331,
+    "inequalities": 1250,
+    "iterations": 0,
+    "presolve": true,
+    "exact_primal": true,
+    "exact_dual": true,
+    "objective": "0",
+    "nonzero_variables": 0,
+    "certificate": {
+      "bound": "0",
+      "multipliers": [
+        {
+          "row": "slot:('T43_67', 'single'):钢质瓶",
+          "value": "1/10"
+        },
+        {
+          "row": "slot:('T44_67', 'single'):钢质瓶",
+          "value": "1/10"
+        },
+        {
+          "row": "slot:('T56_24', 'single'):荞花粉末",
+          "value": "1/20"
+        },
+        {
+          "row": "slot:('T56_25', 'single'):荞花粉末",
+          "value": "1/20"
+        },
+        {
+          "row": "slot:('T57_25', 'single'):荞花粉末",
+          "value": "1/20"
+        },
+        {
+          "row": "slot:('T58_25', 'single'):荞花粉末",
+          "value": "1/20"
+        },
+        {
+          "row": "slot:('T58_30', 'single'):荞花粉末",
+          "value": "1/20"
+        },
+        {
+          "row": "slot:('T58_31', 'single'):荞花粉末",
+          "value": "1/20"
+        },
+        {
+          "row": "slot:('T59_25', 'single'):荞花粉末",
+          "value": "1/20"
+        },
+        {
+          "row": "slot:('T59_30', 'single'):荞花粉末",
+          "value": "1/20"
+        },
+        {
+          "row": "slot:('T60_18', 'single'):细磨荞花粉末",
+          "value": "1/10"
+        },
+        {
+          "row": "slot:('T60_25', 'single'):荞花粉末",
+          "value": "1/20"
+        },
+        {
+          "row": "slot:('T60_26', 'single'):荞花粉末",
+          "value": "1/20"
+        },
+        {
+          "row": "slot:('T60_27', 'single'):荞花粉末",
+          "value": "1/20"
+        },
+        {
+          "row": "slot:('T60_28', 'single'):荞花粉末",
+          "value": "1/20"
+        },
+        {
+          "row": "slot:('T60_29', 'single'):荞花粉末",
+          "value": "1/20"
+        },
+        {
+          "row": "slot:('T60_30', 'single'):荞花粉末",
+          "value": "1/20"
+        },
+        {
+          "row": "slot:('T61_18', 'single'):细磨荞花粉末",
+          "value": "1/10"
+        },
+        {
+          "row": "slot:('T61_19', 'single'):细磨荞花粉末",
+          "value": "1/10"
+        },
+        {
+          "row": "machine:M055:in:荞花",
+          "value": "1/10"
+        },
+        {
+          "row": "machine:M055:out:荞花粉末",
+          "value": "-1/20"
+        },
+        {
+          "row": "machine:M149:out:细磨荞花粉末",
+          "value": "-1/10"
+        },
+        {
+          "row": "machine:M149:in:荞花粉末",
+          "value": "1/20"
+        },
+        {
+          "row": "machine:M157:in:钢块",
+          "value": "1/20"
+        },
+        {
+          "row": "machine:M157:out:钢质瓶",
+          "value": "-1/10"
+        },
+        {
+          "row": "machine:M216:in:细磨荞花粉末",
+          "value": "1/10"
+        },
+        {
+          "row": "machine:M217:out:精选荞愈胶囊",
+          "value": "1"
+        },
+        {
+          "row": "machine:M218:in:钢质瓶",
+          "value": "1/10"
+        }
+      ]
+    }
+  }
+}

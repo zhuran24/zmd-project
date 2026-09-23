@@ -1,0 +1,256 @@
+{
+  "item": "源矿",
+  "scope": "sources<=1,no targets; each item separately maximized",
+  "nonzero_values": [],
+  "solver": {
+    "status": 0,
+    "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+    "variables": 643,
+    "rows": 16550,
+    "equalities": 15526,
+    "inequalities": 1024,
+    "iterations": 0,
+    "presolve": true,
+    "exact_primal": true,
+    "exact_dual": true,
+    "objective": "0",
+    "nonzero_variables": 0,
+    "certificate": {
+      "bound": "0",
+      "multipliers": [
+        {
+          "row": "slot:('T10_1', 'single'):源矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T11_1', 'single'):源矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T12_1', 'single'):源矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T12_5', 'single'):源矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T13_1', 'single'):源矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T13_5', 'single'):源矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T14_1', 'single'):源矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T14_5', 'single'):源矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T15_1', 'single'):源矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T15_5', 'single'):源矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T16_1', 'single'):源矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T16_2', 'single'):源矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T16_3', 'single'):源矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T16_4', 'single'):源矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T16_5', 'single'):源矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T1_2', 'single'):源矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T2_2', 'single'):源矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T35_1', 'single'):源矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T35_2', 'single'):源矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T36_6', 'single'):源石粉末",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T36_7', 'single'):源石粉末",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T37_7', 'single'):源石粉末",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T38_1', 'single'):源矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T38_2', 'single'):源矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T38_3', 'single'):源矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T39_1', 'single'):源矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T39_2', 'single'):源矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T39_7', 'single'):源石粉末",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T3_2', 'single'):源矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T40_1', 'single'):源矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T41_1', 'single'):源矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T43_1', 'single'):源矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T43_2', 'single'):源矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T43_3', 'single'):源矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T43_4', 'single'):源矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T43_5', 'single'):源矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T44_1', 'single'):源矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T4_2', 'single'):源矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T5_2', 'single'):源矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T6_2', 'single'):源矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T7_2', 'single'):源矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T8_2', 'single'):源矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T9_1', 'single'):源矿",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T9_2', 'single'):源矿",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M000:out:源石粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M000:in:源矿",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M003:out:源石粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M003:in:源矿",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M009:out:源石粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M009:in:源矿",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M013:out:源石粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M013:in:源矿",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M017:out:源石粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M017:in:源矿",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M137:in:源石粉末",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M137:in:砂叶粉末",
+          "value": "2"
+        },
+        {
+          "row": "machine:M140:in:源石粉末",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M140:in:砂叶粉末",
+          "value": "2"
+        }
+      ]
+    }
+  }
+}

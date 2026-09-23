@@ -1,0 +1,7 @@
+A当前入口 1
+B当前入口 2
+A组件复核 0
+B组件复核 0
+独立LP 0
+独立证书回放 0
+{"candidate_sha256": "677c3fb13a3550047d74dd35c67d224a88d179689c158519e642a41ca7e2bf6b", "pass": false, "original_cli_statuses": {"A": "rejected", "B": "INVALID_INPUT"}, "structure_three_way_equal": true, "channels": 555, "connected_mineral_sources": 52, "powered_manufacturers": 219, "independent_lp_status": 2, "certification_note": "原A/B入口不支持当前正式指纹；组件诊断不得替代原入口或全部72条认证。独立LP仍按实际固定图判定。"}

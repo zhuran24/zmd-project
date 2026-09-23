@@ -1,0 +1,412 @@
+{
+  "item": "砂叶",
+  "scope": "sources<=1,no targets; each item separately maximized",
+  "nonzero_values": [],
+  "solver": {
+    "status": 0,
+    "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+    "variables": 780,
+    "rows": 18627,
+    "equalities": 17369,
+    "inequalities": 1258,
+    "iterations": 0,
+    "presolve": true,
+    "exact_primal": true,
+    "exact_dual": true,
+    "objective": "0",
+    "nonzero_variables": 0,
+    "certificate": {
+      "bound": "0",
+      "multipliers": [
+        {
+          "row": "slot:('T10_38', 'single'):砂叶",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T10_41', 'single'):砂叶粉末",
+          "value": "-1/3"
+        },
+        {
+          "row": "slot:('T11_41', 'single'):砂叶粉末",
+          "value": "-1/3"
+        },
+        {
+          "row": "slot:('T12_41', 'single'):砂叶粉末",
+          "value": "-1/3"
+        },
+        {
+          "row": "slot:('T13_41', 'single'):砂叶粉末",
+          "value": "-1/3"
+        },
+        {
+          "row": "slot:('T13_42', 'single'):砂叶粉末",
+          "value": "-1/3"
+        },
+        {
+          "row": "slot:('T13_43', 'single'):砂叶粉末",
+          "value": "-1/3"
+        },
+        {
+          "row": "slot:('T13_44', 'single'):砂叶粉末",
+          "value": "-1/3"
+        },
+        {
+          "row": "slot:('T13_45', 'single'):砂叶粉末",
+          "value": "-1/3"
+        },
+        {
+          "row": "slot:('T13_46', 'single'):砂叶粉末",
+          "value": "-1/3"
+        },
+        {
+          "row": "slot:('T24_36', 'single'):砂叶",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T27_10', 'single'):砂叶",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T28_10', 'single'):砂叶",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T28_32', 'V'):砂叶粉末",
+          "value": "-1/3"
+        },
+        {
+          "row": "slot:('T28_33', 'single'):砂叶粉末",
+          "value": "-1/3"
+        },
+        {
+          "row": "slot:('T28_34', 'H'):砂叶粉末",
+          "value": "-1/3"
+        },
+        {
+          "row": "slot:('T28_34', 'V'):砂叶粉末",
+          "value": "-1/3"
+        },
+        {
+          "row": "slot:('T28_35', 'single'):砂叶粉末",
+          "value": "-1/3"
+        },
+        {
+          "row": "slot:('T29_10', 'single'):砂叶",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T33_14', 'single'):砂叶种子",
+          "value": "-1/2"
+        },
+        {
+          "row": "slot:('T34_14', 'single'):砂叶种子",
+          "value": "-1/2"
+        },
+        {
+          "row": "slot:('T35_11', 'single'):砂叶种子",
+          "value": "-1/2"
+        },
+        {
+          "row": "slot:('T35_13', 'single'):砂叶种子",
+          "value": "-1/2"
+        },
+        {
+          "row": "slot:('T35_14', 'single'):砂叶种子",
+          "value": "-1/2"
+        },
+        {
+          "row": "slot:('T35_41', 'single'):砂叶",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T36_11', 'single'):砂叶种子",
+          "value": "-1/2"
+        },
+        {
+          "row": "slot:('T36_41', 'single'):砂叶",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T37_11', 'single'):砂叶种子",
+          "value": "-1/2"
+        },
+        {
+          "row": "slot:('T38_11', 'single'):砂叶种子",
+          "value": "-1/2"
+        },
+        {
+          "row": "slot:('T42_27', 'single'):砂叶",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T43_27', 'single'):砂叶",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T43_28', 'single'):砂叶",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T44_15', 'H'):砂叶",
+          "value": "-3/2"
+        },
+        {
+          "row": "slot:('T48_16', 'H'):砂叶粉末",
+          "value": "-1/2"
+        },
+        {
+          "row": "slot:('T60_66', 'single'):砂叶粉末",
+          "value": "-1/3"
+        },
+        {
+          "row": "slot:('T60_67', 'single'):砂叶粉末",
+          "value": "-1/3"
+        },
+        {
+          "row": "slot:('T60_68', 'single'):砂叶粉末",
+          "value": "-1/3"
+        },
+        {
+          "row": "slot:('T60_69', 'single'):砂叶粉末",
+          "value": "-1/3"
+        },
+        {
+          "row": "slot:('T61_69', 'single'):砂叶粉末",
+          "value": "-1/3"
+        },
+        {
+          "row": "slot:('T63_60', 'single'):砂叶",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T63_61', 'single'):砂叶",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T63_62', 'single'):砂叶",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T63_63', 'single'):砂叶",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T63_64', 'single'):砂叶",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T63_65', 'single'):砂叶",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T6_38', 'single'):砂叶",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T6_39', 'single'):砂叶",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T7_38', 'single'):砂叶",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T8_38', 'single'):砂叶",
+          "value": "-1"
+        },
+        {
+          "row": "slot:('T9_38', 'single'):砂叶",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M058:in:砂叶",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M058:out:砂叶粉末",
+          "value": "1/3"
+        },
+        {
+          "row": "machine:M059:in:砂叶",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M059:out:砂叶粉末",
+          "value": "1/3"
+        },
+        {
+          "row": "machine:M061:in:砂叶",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M061:out:砂叶粉末",
+          "value": "1/3"
+        },
+        {
+          "row": "machine:M064:in:砂叶",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M064:out:砂叶粉末",
+          "value": "1/3"
+        },
+        {
+          "row": "machine:M065:in:砂叶",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M065:out:砂叶粉末",
+          "value": "1/3"
+        },
+        {
+          "row": "machine:M067:in:砂叶",
+          "value": "-3/2"
+        },
+        {
+          "row": "machine:M067:out:砂叶粉末",
+          "value": "1/2"
+        },
+        {
+          "row": "machine:M125:in:砂叶粉末",
+          "value": "-1/3"
+        },
+        {
+          "row": "machine:M125:out:致密蓝铁粉末",
+          "value": "1/3"
+        },
+        {
+          "row": "machine:M129:in:砂叶粉末",
+          "value": "-1/3"
+        },
+        {
+          "row": "machine:M129:out:致密蓝铁粉末",
+          "value": "1/3"
+        },
+        {
+          "row": "machine:M142:in:源石粉末",
+          "value": "1/6"
+        },
+        {
+          "row": "machine:M142:in:砂叶粉末",
+          "value": "-1/3"
+        },
+        {
+          "row": "machine:M143:in:源石粉末",
+          "value": "1/6"
+        },
+        {
+          "row": "machine:M143:in:砂叶粉末",
+          "value": "-1/3"
+        },
+        {
+          "row": "machine:M149:in:砂叶粉末",
+          "value": "-1/2"
+        },
+        {
+          "row": "machine:M149:in:荞花粉末",
+          "value": "1/4"
+        },
+        {
+          "row": "machine:M175:out:砂叶",
+          "value": "1"
+        },
+        {
+          "row": "machine:M176:out:砂叶",
+          "value": "1"
+        },
+        {
+          "row": "machine:M177:out:砂叶",
+          "value": "1"
+        },
+        {
+          "row": "machine:M178:out:砂叶",
+          "value": "1"
+        },
+        {
+          "row": "machine:M179:out:砂叶",
+          "value": "1"
+        },
+        {
+          "row": "machine:M180:out:砂叶",
+          "value": "1"
+        },
+        {
+          "row": "machine:M181:out:砂叶",
+          "value": "1"
+        },
+        {
+          "row": "machine:M182:out:砂叶",
+          "value": "1"
+        },
+        {
+          "row": "machine:M183:out:砂叶",
+          "value": "1"
+        },
+        {
+          "row": "machine:M184:out:砂叶",
+          "value": "1"
+        },
+        {
+          "row": "machine:M185:out:砂叶",
+          "value": "1"
+        },
+        {
+          "row": "machine:M186:out:砂叶",
+          "value": "1"
+        },
+        {
+          "row": "machine:M187:out:砂叶",
+          "value": "1"
+        },
+        {
+          "row": "machine:M188:out:砂叶",
+          "value": "1"
+        },
+        {
+          "row": "machine:M189:out:砂叶",
+          "value": "3/2"
+        },
+        {
+          "row": "machine:M189:in:砂叶种子",
+          "value": "-1/2"
+        },
+        {
+          "row": "machine:M190:out:砂叶",
+          "value": "3/2"
+        },
+        {
+          "row": "machine:M190:in:砂叶种子",
+          "value": "-1/2"
+        },
+        {
+          "row": "machine:M191:in:砂叶种子",
+          "value": "1"
+        },
+        {
+          "row": "machine:M192:out:砂叶",
+          "value": "1"
+        },
+        {
+          "row": "machine:M193:out:砂叶",
+          "value": "1"
+        },
+        {
+          "row": "machine:M194:in:砂叶种子",
+          "value": "1"
+        },
+        {
+          "row": "machine:M195:in:砂叶种子",
+          "value": "1"
+        },
+        {
+          "row": "machine:M209:in:砂叶",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M209:out:砂叶种子",
+          "value": "1/2"
+        }
+      ]
+    }
+  }
+}

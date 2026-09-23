@@ -1,0 +1,168 @@
+{
+  "item": "细磨荞花粉末",
+  "scope": "sources<=1,no targets; each item separately maximized",
+  "nonzero_values": [],
+  "solver": {
+    "status": 0,
+    "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+    "variables": 780,
+    "rows": 18627,
+    "equalities": 17369,
+    "inequalities": 1258,
+    "iterations": 0,
+    "presolve": true,
+    "exact_primal": true,
+    "exact_dual": true,
+    "objective": "0",
+    "nonzero_variables": 0,
+    "certificate": {
+      "bound": "0",
+      "multipliers": [
+        {
+          "row": "slot:('T28_19', 'single'):荞花粉末",
+          "value": "1/2"
+        },
+        {
+          "row": "slot:('T29_19', 'single'):荞花粉末",
+          "value": "1/2"
+        },
+        {
+          "row": "slot:('T29_56', 'single'):砂叶粉末",
+          "value": "1"
+        },
+        {
+          "row": "slot:('T29_57', 'single'):砂叶粉末",
+          "value": "1"
+        },
+        {
+          "row": "slot:('T30_56', 'single'):砂叶粉末",
+          "value": "1"
+        },
+        {
+          "row": "slot:('T31_56', 'single'):砂叶粉末",
+          "value": "1"
+        },
+        {
+          "row": "slot:('T32_56', 'single'):砂叶粉末",
+          "value": "1"
+        },
+        {
+          "row": "slot:('T33_53', 'single'):砂叶粉末",
+          "value": "1"
+        },
+        {
+          "row": "slot:('T33_55', 'single'):砂叶粉末",
+          "value": "1"
+        },
+        {
+          "row": "slot:('T33_56', 'single'):砂叶粉末",
+          "value": "1"
+        },
+        {
+          "row": "slot:('T38_16', 'single'):荞花粉末",
+          "value": "1/2"
+        },
+        {
+          "row": "slot:('T39_16', 'single'):荞花粉末",
+          "value": "1/2"
+        },
+        {
+          "row": "slot:('T40_16', 'single'):荞花粉末",
+          "value": "1/2"
+        },
+        {
+          "row": "slot:('T41_16', 'single'):荞花粉末",
+          "value": "1/2"
+        },
+        {
+          "row": "slot:('T42_16', 'single'):荞花粉末",
+          "value": "1/2"
+        },
+        {
+          "row": "slot:('T43_16', 'single'):荞花粉末",
+          "value": "1/2"
+        },
+        {
+          "row": "slot:('T44_10', 'single'):荞花粉末",
+          "value": "1/2"
+        },
+        {
+          "row": "slot:('T44_11', 'single'):荞花粉末",
+          "value": "1/2"
+        },
+        {
+          "row": "slot:('T44_12', 'single'):荞花粉末",
+          "value": "1/2"
+        },
+        {
+          "row": "slot:('T44_13', 'single'):荞花粉末",
+          "value": "1/2"
+        },
+        {
+          "row": "slot:('T44_14', 'single'):荞花粉末",
+          "value": "1/2"
+        },
+        {
+          "row": "slot:('T44_15', 'V'):荞花粉末",
+          "value": "1/2"
+        },
+        {
+          "row": "slot:('T44_16', 'single'):荞花粉末",
+          "value": "1/2"
+        },
+        {
+          "row": "machine:M054:in:荞花",
+          "value": "1"
+        },
+        {
+          "row": "machine:M054:out:荞花粉末",
+          "value": "-1/2"
+        },
+        {
+          "row": "machine:M057:in:荞花",
+          "value": "1"
+        },
+        {
+          "row": "machine:M057:out:荞花粉末",
+          "value": "-1/2"
+        },
+        {
+          "row": "machine:M060:in:砂叶",
+          "value": "3"
+        },
+        {
+          "row": "machine:M060:out:砂叶粉末",
+          "value": "-1"
+        },
+        {
+          "row": "machine:M126:in:砂叶粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M146:in:砂叶粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M147:in:砂叶粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M148:in:砂叶粉末",
+          "value": "1"
+        },
+        {
+          "row": "machine:M149:in:荞花粉末",
+          "value": "1/2"
+        },
+        {
+          "row": "machine:M150:in:荞花粉末",
+          "value": "1/2"
+        },
+        {
+          "row": "machine:M151:in:荞花粉末",
+          "value": "1/2"
+        }
+      ]
+    }
+  }
+}

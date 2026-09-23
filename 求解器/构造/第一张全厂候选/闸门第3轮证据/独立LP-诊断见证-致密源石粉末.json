@@ -1,0 +1,60 @@
+{
+  "item": "致密源石粉末",
+  "scope": "sources<=1,no targets; each item separately maximized",
+  "nonzero_values": [],
+  "solver": {
+    "status": 0,
+    "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+    "variables": 774,
+    "rows": 18581,
+    "equalities": 17331,
+    "inequalities": 1250,
+    "iterations": 0,
+    "presolve": true,
+    "exact_primal": true,
+    "exact_dual": true,
+    "objective": "0",
+    "nonzero_variables": 0,
+    "certificate": {
+      "bound": "0",
+      "multipliers": [
+        {
+          "row": "machine:M137:in:源石粉末",
+          "value": "1/2"
+        },
+        {
+          "row": "machine:M138:in:源石粉末",
+          "value": "1/2"
+        },
+        {
+          "row": "machine:M139:in:源石粉末",
+          "value": "1/2"
+        },
+        {
+          "row": "machine:M140:in:源石粉末",
+          "value": "1/2"
+        },
+        {
+          "row": "machine:M141:in:源石粉末",
+          "value": "1/2"
+        },
+        {
+          "row": "machine:M142:in:源石粉末",
+          "value": "1/2"
+        },
+        {
+          "row": "machine:M143:in:源石粉末",
+          "value": "1/2"
+        },
+        {
+          "row": "machine:M144:in:源石粉末",
+          "value": "1/2"
+        },
+        {
+          "row": "machine:M145:in:源石粉末",
+          "value": "1/2"
+        }
+      ]
+    }
+  }
+}

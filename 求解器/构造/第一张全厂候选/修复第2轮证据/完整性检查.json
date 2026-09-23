@@ -1,0 +1,12 @@
+{
+  "protected_files_checked": 373,
+  "changed_protected_files": [],
+  "missing_protected_files": [],
+  "candidate_sha256": "677c3fb13a3550047d74dd35c67d224a88d179689c158519e642a41ca7e2bf6b",
+  "canonical_equals_checked_snapshot": true,
+  "per_id_recipes_unchanged": true,
+  "complete_mineral_to_first_processor_paths": 52,
+  "distinct_first_processors": 52,
+  "formal_files_and_both_checkers_unchanged": true,
+  "writes_scope": "求解器/构造/第一张全厂候选/；本轮现有文件仅改生成/候选.json及生成/报告.md，其他写入为新修复第2轮证据目录。"
+}

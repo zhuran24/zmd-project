@@ -1,0 +1,72 @@
+{
+  "scope": "局部几何回归，非候选修改，不运行流层",
+  "checker": "B",
+  "channels": [
+    [
+      [
+        "OUT_L00",
+        0,
+        1
+      ],
+      [
+        "BR_TEST",
+        2,
+        0
+      ]
+    ]
+  ],
+  "checks": [
+    {
+      "check": "N4a",
+      "status": "FAIL",
+      "basis": "规则·桥接器；共识 §1.1.3/三.3 N4a；格式 §6",
+      "evidence": {
+        "unit": "BR_TEST",
+        "axis": 0,
+        "facing": {
+          "2": "out"
+        },
+        "derived": 2,
+        "claimed": 2
+      },
+      "remaining": ""
+    },
+    {
+      "check": "N4a",
+      "status": "PASS",
+      "basis": "规则·桥接器；共识 §1.1.3/三.3 N4a；格式 §6",
+      "evidence": {
+        "unit": "BR_TEST",
+        "axis": 1,
+        "facing": {},
+        "derived": null,
+        "claimed": null
+      },
+      "remaining": ""
+    },
+    {
+      "check": "N5a",
+      "status": "FAIL",
+      "basis": "规则·通道；约束·端口对接；格式 §8.2 N5a",
+      "evidence": {
+        "missing": [
+          [
+            [
+              "OUT_L00",
+              0,
+              1
+            ],
+            [
+              "BR_TEST",
+              2,
+              0
+            ]
+          ]
+        ],
+        "extra": []
+      },
+      "remaining": ""
+    }
+  ],
+  "expected_edge_preserved": true
+}

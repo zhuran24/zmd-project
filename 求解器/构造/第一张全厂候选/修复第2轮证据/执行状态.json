@@ -1,0 +1,66 @@
+[
+  {
+    "name": "A当前入口",
+    "command": [
+      "/usr/bin/python",
+      "-B",
+      "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/check_full.py",
+      "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/候选只读快照.json",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/A当前入口.json"
+    ],
+    "returncode": 1
+  },
+  {
+    "name": "B当前入口",
+    "command": [
+      "/usr/bin/python",
+      "-B",
+      "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器B/check.py",
+      "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/候选只读快照.json",
+      "--output",
+      "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/B当前入口.json"
+    ],
+    "returncode": 2
+  },
+  {
+    "name": "A组件复核",
+    "command": [
+      "/usr/bin/python",
+      "-B",
+      "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/组件复核.py",
+      "A",
+      "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/候选只读快照.json"
+    ],
+    "returncode": 0
+  },
+  {
+    "name": "B组件复核",
+    "command": [
+      "/usr/bin/python",
+      "-B",
+      "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/组件复核.py",
+      "B",
+      "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/候选只读快照.json"
+    ],
+    "returncode": 0
+  },
+  {
+    "name": "独立LP",
+    "command": [
+      "/usr/bin/python",
+      "-B",
+      "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/独立LP.py"
+    ],
+    "returncode": 0
+  },
+  {
+    "name": "独立证书回放",
+    "command": [
+      "/usr/bin/python",
+      "-B",
+      "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/修复第2轮证据/独立证书回放.py"
+    ],
+    "returncode": 0
+  }
+]

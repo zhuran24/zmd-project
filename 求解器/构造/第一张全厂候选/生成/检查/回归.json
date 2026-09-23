@@ -1,0 +1,111 @@
+{
+  "candidate_sha256": "e147866f410737324d49190dea83bfd19de04ebdcc9b1c9998152bbf7a80f404",
+  "cases": [
+    {
+      "name": "未知字段",
+      "A_reject": true,
+      "B_reject": true,
+      "A_evidence": [
+        "字段集合错误 {'provenance', 'targets', 'schema', 'empty_rectangle', 'extra', 'layout', 'candidate_id', 'design', 'flow_witness', 'source_fingerprints'} vs ['schema', 'candidate_id', 'source_fingerprints', 'targets', 'layout', 'empty_rectangle', 'design', 'flow_witness']"
+      ],
+      "B_evidence": [
+        "字段集合错误 {'provenance', 'targets', 'schema', 'empty_rectangle', 'extra', 'layout', 'candidate_id', 'design', 'flow_witness', 'source_fingerprints'} vs ['schema', 'candidate_id', 'source_fingerprints', 'targets', 'layout', 'empty_rectangle', 'design', 'flow_witness']"
+      ]
+    },
+    {
+      "name": "错误正式文件指纹",
+      "A_reject": true,
+      "B_reject": true,
+      "A_evidence": [
+        "正式文件指纹不符"
+      ],
+      "B_evidence": [
+        "正式文件指纹不符"
+      ]
+    },
+    {
+      "name": "删除真实通道声明",
+      "A_reject": true,
+      "B_reject": true,
+      "A_evidence": [
+        "N5a声明差异: 缺1 多0",
+        "P2通道声明不能挡货 281"
+      ],
+      "B_evidence": [
+        "声明通道不是当且仅当集合:漏1/多0",
+        "声明物品不符 281"
+      ]
+    },
+    {
+      "name": "制造单位实体重叠",
+      "A_reject": true,
+      "B_reject": true,
+      "A_evidence": [
+        "重叠 (34, 3): M000/M001",
+        "重叠 (34, 4): M000/M001",
+        "重叠 (34, 5): M000/M001",
+        "重叠 (35, 3): M000/M001"
+      ],
+      "B_evidence": [
+        "实体冲突 34,3",
+        "实体冲突 35,3",
+        "实体冲突 36,3",
+        "实体冲突 34,4"
+      ]
+    },
+    {
+      "name": "带子改向漏接",
+      "A_reject": true,
+      "B_reject": true,
+      "A_evidence": [
+        "运输断头或多接 ('T1_2', 0): in=1, out=0",
+        "运输断头或多接 ('T2_2', 0): in=0, out=1",
+        "N5a声明差异: 缺0 多1",
+        "P2源路径未到达非运输存货口 ('OUT_L00', 0, 1)"
+      ],
+      "B_evidence": [
+        "声明通道不是当且仅当集合:漏0/多1",
+        "运输物品格非一进一出 T1_2",
+        "运输物品格非一进一出 T2_2",
+        "路径断头 ('OUT_L00', 0, 1)"
+      ]
+    },
+    {
+      "name": "桥轴声明翻转",
+      "A_reject": true,
+      "B_reject": true,
+      "A_evidence": [
+        "桥声明方向不符 T13_49 H_in"
+      ],
+      "B_evidence": [
+        "桥方向声明错误 T13_49 H_in"
+      ]
+    },
+    {
+      "name": "通道假物品标签",
+      "A_reject": true,
+      "B_reject": true,
+      "A_evidence": [
+        "P2通道声明不能挡货 5"
+      ],
+      "B_evidence": [
+        "声明物品不符 5"
+      ]
+    }
+  ],
+  "rectangle_comparisons": [
+    {
+      "A_score": [
+        48,
+        6
+      ],
+      "B_score": [
+        48,
+        6
+      ],
+      "equal": true
+    }
+  ],
+  "all_pass": true,
+  "scope": "有限变异回归，验证所列拒绝路径；不是检查器全规格正确性证明"
+}

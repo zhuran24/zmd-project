@@ -1,0 +1,28 @@
+[
+  {
+    "input": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/会议3/seat-opus-3/rt_k16.json",
+    "sha256": "193bba2b2af25309a665f6560099854d0fa5f4ae1bf1dba781ade95c0888f933",
+    "legacy_result": {
+      "structural_channels": 999,
+      "channels_excluding_virtual": 935,
+      "errors": [],
+      "warnings": [],
+      "info": []
+    },
+    "new_format_result": "rejected",
+    "conversion": "不可无损转成完整v1：虚拟矿/砂叶粉来源、钢块虚拟去处，缺核心、46口、供电、植物/成品链；不伪造接口"
+  },
+  {
+    "input": "/home/zhuran24/zmd-research-fresh/求解器/会议成果/会议3/seat-opus-3/rt_k17.json",
+    "sha256": "764a47f0d87aa818baf2cf5e6a6f12709385d912d6de567747c1b0aa617b47cd",
+    "legacy_result": {
+      "structural_channels": 1186,
+      "channels_excluding_virtual": 1118,
+      "errors": [],
+      "warnings": [],
+      "info": []
+    },
+    "new_format_result": "rejected",
+    "conversion": "不可无损转成完整v1：虚拟矿/砂叶粉来源、钢块虚拟去处，缺核心、46口、供电、植物/成品链；不伪造接口"
+  }
+]

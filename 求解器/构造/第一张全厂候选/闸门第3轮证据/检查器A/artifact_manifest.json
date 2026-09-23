@@ -1,0 +1,123 @@
+{
+  "directory": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A",
+  "self_path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/artifact_manifest.json",
+  "files": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/candidate_b_rate_test.json",
+      "bytes": 91347,
+      "sha256": "60e114630f8be631dec30bd3ef4b044fd5d0010f87d685ae88af9f6bd6f31225"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/catalog.py",
+      "bytes": 3418,
+      "sha256": "a1fd6b583f8469b3b1ddcbcc524037e6dfd4e61f60b7ad600b2f96e867e88f9e"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/certificate_replay.json",
+      "bytes": 132,
+      "sha256": "044f2e94a21d706459c248a917a88bfdb5dade09b8fa1fc759fa4fe926a4f59e"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/check_full.py",
+      "bytes": 10886,
+      "sha256": "d139be0b68bb529dca5575e6d4f1845d904c3ed8151b3b6aadfbf5ea2614e1fe"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/cli_smoke.json",
+      "bytes": 552,
+      "sha256": "6b970e1a31b5f173f3ad4684e49aba3682eb63ced80a5edf34939df3d8613f27"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/design.py",
+      "bytes": 5747,
+      "sha256": "c28ccb0e5328e6c2f7e25993a1d5f0e99d11904af5a671abe6dc720807b7979a"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/flow.py",
+      "bytes": 10112,
+      "sha256": "d2495b9dc7ac03dddea7f544142a128feeb50c671f529ab9352ec8bf83217bd9"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/format_example.json",
+      "bytes": 2905,
+      "sha256": "411266da23601be0fa818a06ffb4f251df85ecb0008923293235f07e40a21a85"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/format_example.report.json",
+      "bytes": 95971,
+      "sha256": "4e2291e782602c1abede03ed5375aaa1ed5dffeefcb9a3378fff243b339587cb"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/gate1-original-candidate.json",
+      "bytes": 288020,
+      "sha256": "c363a9c0a17f451902b0bbec5b25c6371bc3d24c186d09b2ba8ecfa36294a6b7"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/gate1-regression.json",
+      "bytes": 1825,
+      "sha256": "1cdcfa371e241fc4d0274f88233d27147159d1580b18bca9c5406792fd3a3762"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/gate1-regression.log",
+      "bytes": 1825,
+      "sha256": "1cdcfa371e241fc4d0274f88233d27147159d1580b18bca9c5406792fd3a3762"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/gate1_regression.py",
+      "bytes": 6394,
+      "sha256": "ad5f0059e6370e4b80f5456ce0b745915fb3f8bfd0742283687dd6948fb0bd7c"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/geometry.py",
+      "bytes": 12564,
+      "sha256": "96bed1c6560cf02781353577b75d1cfb6cbf5ca5fd156bf09d375a84cac1462c"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/legacy_regression.json",
+      "bytes": 1123,
+      "sha256": "5e3985bf369993e1b6cadee78d2e9850376d3ff98db0ae912f1e1d5b33e5d0e9"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/meeting_check_full.py",
+      "bytes": 19185,
+      "sha256": "6fa0001e7b8d925c74eb4e8338566c28158f20751adf38bb7d10c93ae51ce8ab"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/projections.py",
+      "bytes": 20904,
+      "sha256": "49021cc94e2bb99d63adaeeb6dc82ff33718495cc263dd2faafc34f055784d44"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/schema.py",
+      "bytes": 8008,
+      "sha256": "e19217f037a0c297856440ed1f5acc858470b776ee36a1fb65c9c4a7edad5925"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/selftest.log",
+      "bytes": 10338,
+      "sha256": "a3830531c11d71d1a732e0166b7faed28226d60c06ecb85b719e5553592ea2fd"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/selftest.py",
+      "bytes": 23370,
+      "sha256": "ff4ed62aa780cb6eb7f99e719e76323196857161cfc9c7f07855c86de2997da9"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/selftest_results.json",
+      "bytes": 10338,
+      "sha256": "a3830531c11d71d1a732e0166b7faed28226d60c06ecb85b719e5553592ea2fd"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/verify_certificate.py",
+      "bytes": 2192,
+      "sha256": "ab848e722a5c8beb2e5450efad5120ca63376fc84baaf58897af312a8bac3def"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/说明.md",
+      "bytes": 30604,
+      "sha256": "40589357d942166a2a20727f9dc3b6a342440b52bb5ef9d808886ffb2285f9b1"
+    }
+  ],
+  "file_count_including_manifest": 24,
+  "write_scope": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选"
+}

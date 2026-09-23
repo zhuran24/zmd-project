@@ -1,0 +1,4902 @@
+{
+  "scope": "LP algebra on abstract split channels; no geometry, power or real-port certificate",
+  "solver": {
+    "base_solver_status": 0,
+    "base_message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+    "variables": 850,
+    "rows": 16156,
+    "threads": 1,
+    "time_limit_seconds": 30,
+    "delta_solver_status": 0,
+    "delta_message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+    "floating_delta": 0.15000000000000002,
+    "status": "FEASIBLE_EXACT",
+    "certificate_denominator_limit": 1000,
+    "delta": "3/20",
+    "exact_rows": 16156
+  },
+  "fixed_B_vector_exact": true,
+  "witness": {
+    "channel_flows": [
+      {
+        "channel_id": "C0",
+        "rates": {
+          "源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C1",
+        "rates": {
+          "源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C2",
+        "rates": {
+          "源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C3",
+        "rates": {
+          "源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C4",
+        "rates": {
+          "源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C5",
+        "rates": {
+          "源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C6",
+        "rates": {
+          "源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C7",
+        "rates": {
+          "源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C8",
+        "rates": {
+          "源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C9",
+        "rates": {
+          "源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C10",
+        "rates": {
+          "源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C11",
+        "rates": {
+          "源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C12",
+        "rates": {
+          "源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C13",
+        "rates": {
+          "源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C14",
+        "rates": {
+          "源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C15",
+        "rates": {
+          "源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C16",
+        "rates": {
+          "源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C17",
+        "rates": {
+          "源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C18",
+        "rates": {
+          "源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C19",
+        "rates": {
+          "源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C20",
+        "rates": {
+          "源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C21",
+        "rates": {
+          "源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C22",
+        "rates": {
+          "源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C23",
+        "rates": {
+          "源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C24",
+        "rates": {
+          "源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C25",
+        "rates": {
+          "源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C26",
+        "rates": {
+          "源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C27",
+        "rates": {
+          "源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C28",
+        "rates": {
+          "源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C29",
+        "rates": {
+          "源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C30",
+        "rates": {
+          "源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C31",
+        "rates": {
+          "源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C32",
+        "rates": {
+          "源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C33",
+        "rates": {
+          "源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C34",
+        "rates": {
+          "源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C35",
+        "rates": {
+          "源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C36",
+        "rates": {
+          "源矿": "1"
+        }
+      },
+      {
+        "channel_id": "C37",
+        "rates": {
+          "源矿": "1"
+        }
+      },
+      {
+        "channel_id": "C38",
+        "rates": {
+          "源矿": "1"
+        }
+      },
+      {
+        "channel_id": "C39",
+        "rates": {
+          "源矿": "1"
+        }
+      },
+      {
+        "channel_id": "C40",
+        "rates": {
+          "源矿": "1"
+        }
+      },
+      {
+        "channel_id": "C41",
+        "rates": {
+          "源矿": "1"
+        }
+      },
+      {
+        "channel_id": "C42",
+        "rates": {
+          "源矿": "1"
+        }
+      },
+      {
+        "channel_id": "C43",
+        "rates": {
+          "源矿": "1"
+        }
+      },
+      {
+        "channel_id": "C44",
+        "rates": {
+          "源矿": "1"
+        }
+      },
+      {
+        "channel_id": "C45",
+        "rates": {
+          "源矿": "1"
+        }
+      },
+      {
+        "channel_id": "C46",
+        "rates": {
+          "源矿": "1"
+        }
+      },
+      {
+        "channel_id": "C47",
+        "rates": {
+          "源矿": "1"
+        }
+      },
+      {
+        "channel_id": "C48",
+        "rates": {
+          "源矿": "1"
+        }
+      },
+      {
+        "channel_id": "C49",
+        "rates": {
+          "源矿": "1"
+        }
+      },
+      {
+        "channel_id": "C50",
+        "rates": {
+          "源矿": "1"
+        }
+      },
+      {
+        "channel_id": "C51",
+        "rates": {
+          "源矿": "1"
+        }
+      },
+      {
+        "channel_id": "C52",
+        "rates": {
+          "源矿": "1"
+        }
+      },
+      {
+        "channel_id": "C53",
+        "rates": {
+          "源矿": "1"
+        }
+      },
+      {
+        "channel_id": "C54",
+        "rates": {
+          "源矿": "1"
+        }
+      },
+      {
+        "channel_id": "C55",
+        "rates": {
+          "源矿": "1"
+        }
+      },
+      {
+        "channel_id": "C56",
+        "rates": {
+          "源矿": "1"
+        }
+      },
+      {
+        "channel_id": "C57",
+        "rates": {
+          "源矿": "1"
+        }
+      },
+      {
+        "channel_id": "C58",
+        "rates": {
+          "源矿": "1"
+        }
+      },
+      {
+        "channel_id": "C59",
+        "rates": {
+          "源矿": "1"
+        }
+      },
+      {
+        "channel_id": "C60",
+        "rates": {
+          "源矿": "1"
+        }
+      },
+      {
+        "channel_id": "C61",
+        "rates": {
+          "源矿": "1"
+        }
+      },
+      {
+        "channel_id": "C62",
+        "rates": {
+          "源矿": "1"
+        }
+      },
+      {
+        "channel_id": "C63",
+        "rates": {
+          "源矿": "1"
+        }
+      },
+      {
+        "channel_id": "C64",
+        "rates": {
+          "源矿": "1"
+        }
+      },
+      {
+        "channel_id": "C65",
+        "rates": {
+          "源矿": "1"
+        }
+      },
+      {
+        "channel_id": "C66",
+        "rates": {
+          "源矿": "1"
+        }
+      },
+      {
+        "channel_id": "C67",
+        "rates": {
+          "源矿": "1"
+        }
+      },
+      {
+        "channel_id": "C68",
+        "rates": {
+          "源矿": "1"
+        }
+      },
+      {
+        "channel_id": "C69",
+        "rates": {
+          "源矿": "1"
+        }
+      },
+      {
+        "channel_id": "C70",
+        "rates": {
+          "源矿": "1"
+        }
+      },
+      {
+        "channel_id": "C71",
+        "rates": {
+          "源矿": "1"
+        }
+      },
+      {
+        "channel_id": "C72",
+        "rates": {
+          "砂叶": "1"
+        }
+      },
+      {
+        "channel_id": "C73",
+        "rates": {
+          "砂叶": "1"
+        }
+      },
+      {
+        "channel_id": "C74",
+        "rates": {
+          "砂叶": "1"
+        }
+      },
+      {
+        "channel_id": "C75",
+        "rates": {
+          "砂叶": "1"
+        }
+      },
+      {
+        "channel_id": "C76",
+        "rates": {
+          "砂叶": "1"
+        }
+      },
+      {
+        "channel_id": "C77",
+        "rates": {
+          "砂叶": "1"
+        }
+      },
+      {
+        "channel_id": "C78",
+        "rates": {
+          "砂叶": "1"
+        }
+      },
+      {
+        "channel_id": "C79",
+        "rates": {
+          "砂叶": "1"
+        }
+      },
+      {
+        "channel_id": "C80",
+        "rates": {
+          "砂叶": "1"
+        }
+      },
+      {
+        "channel_id": "C81",
+        "rates": {
+          "砂叶": "1"
+        }
+      },
+      {
+        "channel_id": "C82",
+        "rates": {
+          "砂叶": "1"
+        }
+      },
+      {
+        "channel_id": "C83",
+        "rates": {
+          "砂叶": "1"
+        }
+      },
+      {
+        "channel_id": "C84",
+        "rates": {
+          "砂叶": "1"
+        }
+      },
+      {
+        "channel_id": "C85",
+        "rates": {
+          "砂叶": "1"
+        }
+      },
+      {
+        "channel_id": "C86",
+        "rates": {
+          "砂叶": "1"
+        }
+      },
+      {
+        "channel_id": "C87",
+        "rates": {
+          "砂叶": "1"
+        }
+      },
+      {
+        "channel_id": "C88",
+        "rates": {
+          "砂叶": "1"
+        }
+      },
+      {
+        "channel_id": "C89",
+        "rates": {
+          "砂叶": "1"
+        }
+      },
+      {
+        "channel_id": "C90",
+        "rates": {
+          "砂叶": "1"
+        }
+      },
+      {
+        "channel_id": "C91",
+        "rates": {
+          "砂叶": "1"
+        }
+      },
+      {
+        "channel_id": "C92",
+        "rates": {
+          "砂叶": "1"
+        }
+      },
+      {
+        "channel_id": "C93",
+        "rates": {
+          "砂叶": "1"
+        }
+      },
+      {
+        "channel_id": "C94",
+        "rates": {
+          "砂叶": "1"
+        }
+      },
+      {
+        "channel_id": "C95",
+        "rates": {
+          "砂叶": "1"
+        }
+      },
+      {
+        "channel_id": "C96",
+        "rates": {
+          "砂叶": "1"
+        }
+      },
+      {
+        "channel_id": "C97",
+        "rates": {
+          "砂叶": "1"
+        }
+      },
+      {
+        "channel_id": "C98",
+        "rates": {
+          "砂叶": "1"
+        }
+      },
+      {
+        "channel_id": "C99",
+        "rates": {
+          "砂叶": "1"
+        }
+      },
+      {
+        "channel_id": "C100",
+        "rates": {
+          "砂叶": "1"
+        }
+      },
+      {
+        "channel_id": "C101",
+        "rates": {
+          "砂叶": "1"
+        }
+      },
+      {
+        "channel_id": "C102",
+        "rates": {
+          "砂叶": "1"
+        }
+      },
+      {
+        "channel_id": "C103",
+        "rates": {
+          "砂叶": "1"
+        }
+      },
+      {
+        "channel_id": "C104",
+        "rates": {
+          "砂叶": "1"
+        }
+      },
+      {
+        "channel_id": "C105",
+        "rates": {
+          "砂叶": "1"
+        }
+      },
+      {
+        "channel_id": "C106",
+        "rates": {
+          "砂叶": "1"
+        }
+      },
+      {
+        "channel_id": "C107",
+        "rates": {
+          "砂叶": "1"
+        }
+      },
+      {
+        "channel_id": "C108",
+        "rates": {
+          "砂叶": "1"
+        }
+      },
+      {
+        "channel_id": "C109",
+        "rates": {
+          "砂叶": "1"
+        }
+      },
+      {
+        "channel_id": "C110",
+        "rates": {
+          "砂叶": "1"
+        }
+      },
+      {
+        "channel_id": "C111",
+        "rates": {
+          "砂叶": "1"
+        }
+      },
+      {
+        "channel_id": "C112",
+        "rates": {
+          "砂叶": "1/2"
+        }
+      },
+      {
+        "channel_id": "C113",
+        "rates": {
+          "砂叶": "1/2"
+        }
+      },
+      {
+        "channel_id": "C114",
+        "rates": {
+          "砂叶": "1/2"
+        }
+      },
+      {
+        "channel_id": "C115",
+        "rates": {
+          "砂叶": "1/2"
+        }
+      },
+      {
+        "channel_id": "C116",
+        "rates": {
+          "砂叶种子": "1"
+        }
+      },
+      {
+        "channel_id": "C117",
+        "rates": {
+          "砂叶种子": "1"
+        }
+      },
+      {
+        "channel_id": "C118",
+        "rates": {
+          "砂叶种子": "1"
+        }
+      },
+      {
+        "channel_id": "C119",
+        "rates": {
+          "砂叶种子": "1"
+        }
+      },
+      {
+        "channel_id": "C120",
+        "rates": {
+          "砂叶种子": "1"
+        }
+      },
+      {
+        "channel_id": "C121",
+        "rates": {
+          "砂叶种子": "1"
+        }
+      },
+      {
+        "channel_id": "C122",
+        "rates": {
+          "砂叶种子": "1"
+        }
+      },
+      {
+        "channel_id": "C123",
+        "rates": {
+          "砂叶种子": "1"
+        }
+      },
+      {
+        "channel_id": "C124",
+        "rates": {
+          "砂叶种子": "1"
+        }
+      },
+      {
+        "channel_id": "C125",
+        "rates": {
+          "砂叶种子": "1"
+        }
+      },
+      {
+        "channel_id": "C126",
+        "rates": {
+          "砂叶种子": "1"
+        }
+      },
+      {
+        "channel_id": "C127",
+        "rates": {
+          "砂叶种子": "1"
+        }
+      },
+      {
+        "channel_id": "C128",
+        "rates": {
+          "砂叶种子": "1"
+        }
+      },
+      {
+        "channel_id": "C129",
+        "rates": {
+          "砂叶种子": "1"
+        }
+      },
+      {
+        "channel_id": "C130",
+        "rates": {
+          "砂叶种子": "1"
+        }
+      },
+      {
+        "channel_id": "C131",
+        "rates": {
+          "砂叶种子": "1"
+        }
+      },
+      {
+        "channel_id": "C132",
+        "rates": {
+          "砂叶种子": "1"
+        }
+      },
+      {
+        "channel_id": "C133",
+        "rates": {
+          "砂叶种子": "1"
+        }
+      },
+      {
+        "channel_id": "C134",
+        "rates": {
+          "砂叶种子": "1"
+        }
+      },
+      {
+        "channel_id": "C135",
+        "rates": {
+          "砂叶种子": "1"
+        }
+      },
+      {
+        "channel_id": "C136",
+        "rates": {
+          "砂叶种子": "1"
+        }
+      },
+      {
+        "channel_id": "C137",
+        "rates": {
+          "砂叶种子": "1"
+        }
+      },
+      {
+        "channel_id": "C138",
+        "rates": {
+          "砂叶种子": "1"
+        }
+      },
+      {
+        "channel_id": "C139",
+        "rates": {
+          "砂叶种子": "1"
+        }
+      },
+      {
+        "channel_id": "C140",
+        "rates": {
+          "砂叶种子": "1"
+        }
+      },
+      {
+        "channel_id": "C141",
+        "rates": {
+          "砂叶种子": "1"
+        }
+      },
+      {
+        "channel_id": "C142",
+        "rates": {
+          "砂叶种子": "1"
+        }
+      },
+      {
+        "channel_id": "C143",
+        "rates": {
+          "砂叶种子": "1"
+        }
+      },
+      {
+        "channel_id": "C144",
+        "rates": {
+          "砂叶种子": "1"
+        }
+      },
+      {
+        "channel_id": "C145",
+        "rates": {
+          "砂叶种子": "1"
+        }
+      },
+      {
+        "channel_id": "C146",
+        "rates": {
+          "砂叶种子": "1"
+        }
+      },
+      {
+        "channel_id": "C147",
+        "rates": {
+          "砂叶种子": "1"
+        }
+      },
+      {
+        "channel_id": "C148",
+        "rates": {
+          "砂叶种子": "1"
+        }
+      },
+      {
+        "channel_id": "C149",
+        "rates": {
+          "砂叶种子": "1"
+        }
+      },
+      {
+        "channel_id": "C150",
+        "rates": {
+          "砂叶种子": "1"
+        }
+      },
+      {
+        "channel_id": "C151",
+        "rates": {
+          "砂叶种子": "1"
+        }
+      },
+      {
+        "channel_id": "C152",
+        "rates": {
+          "砂叶种子": "1"
+        }
+      },
+      {
+        "channel_id": "C153",
+        "rates": {
+          "砂叶种子": "1"
+        }
+      },
+      {
+        "channel_id": "C154",
+        "rates": {
+          "砂叶种子": "1"
+        }
+      },
+      {
+        "channel_id": "C155",
+        "rates": {
+          "砂叶种子": "1"
+        }
+      },
+      {
+        "channel_id": "C156",
+        "rates": {
+          "砂叶种子": "1"
+        }
+      },
+      {
+        "channel_id": "C157",
+        "rates": {
+          "砂叶种子": "1"
+        }
+      },
+      {
+        "channel_id": "C158",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C159",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C160",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C161",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C162",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C163",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C164",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C165",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C166",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C167",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C168",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C169",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C170",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C171",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C172",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C173",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C174",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C175",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C176",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C177",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C178",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C179",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C180",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C181",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C182",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C183",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C184",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C185",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C186",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C187",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C188",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C189",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C190",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C191",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C192",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C193",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C194",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C195",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C196",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C197",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C198",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C199",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C200",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C201",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C202",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C203",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C204",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C205",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C206",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C207",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C208",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C209",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C210",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C211",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C212",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C213",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C214",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C215",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C216",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C217",
+        "rates": {
+          "砂叶粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C218",
+        "rates": {
+          "砂叶粉末": "1/2"
+        }
+      },
+      {
+        "channel_id": "C219",
+        "rates": {
+          "砂叶粉末": "1/2"
+        }
+      },
+      {
+        "channel_id": "C220",
+        "rates": {
+          "砂叶粉末": "1/2"
+        }
+      },
+      {
+        "channel_id": "C221",
+        "rates": {
+          "砂叶粉末": "1/2"
+        }
+      },
+      {
+        "channel_id": "C222",
+        "rates": {
+          "砂叶粉末": "1/2"
+        }
+      },
+      {
+        "channel_id": "C223",
+        "rates": {
+          "砂叶粉末": "1/2"
+        }
+      },
+      {
+        "channel_id": "C224",
+        "rates": {
+          "精选荞愈胶囊": "1/5"
+        }
+      },
+      {
+        "channel_id": "C225",
+        "rates": {
+          "精选荞愈胶囊": "1/5"
+        }
+      },
+      {
+        "channel_id": "C226",
+        "rates": {
+          "精选荞愈胶囊": "1/5"
+        }
+      },
+      {
+        "channel_id": "C227",
+        "rates": {
+          "精选荞愈胶囊": "1/5"
+        }
+      },
+      {
+        "channel_id": "C228",
+        "rates": {
+          "精选荞愈胶囊": "3/20"
+        }
+      },
+      {
+        "channel_id": "C229",
+        "rates": {
+          "精选荞愈胶囊": "3/20"
+        }
+      },
+      {
+        "channel_id": "C230",
+        "rates": {
+          "细磨荞花粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C231",
+        "rates": {
+          "细磨荞花粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C232",
+        "rates": {
+          "细磨荞花粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C233",
+        "rates": {
+          "细磨荞花粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C234",
+        "rates": {
+          "细磨荞花粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C235",
+        "rates": {
+          "细磨荞花粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C236",
+        "rates": {
+          "细磨荞花粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C237",
+        "rates": {
+          "细磨荞花粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C238",
+        "rates": {
+          "细磨荞花粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C239",
+        "rates": {
+          "细磨荞花粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C240",
+        "rates": {
+          "细磨荞花粉末": "1/2"
+        }
+      },
+      {
+        "channel_id": "C241",
+        "rates": {
+          "细磨荞花粉末": "1/2"
+        }
+      },
+      {
+        "channel_id": "C242",
+        "rates": {
+          "致密源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C243",
+        "rates": {
+          "致密源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C244",
+        "rates": {
+          "致密源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C245",
+        "rates": {
+          "致密源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C246",
+        "rates": {
+          "致密源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C247",
+        "rates": {
+          "致密源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C248",
+        "rates": {
+          "致密源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C249",
+        "rates": {
+          "致密源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C250",
+        "rates": {
+          "致密源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C251",
+        "rates": {
+          "致密源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C252",
+        "rates": {
+          "致密源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C253",
+        "rates": {
+          "致密源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C254",
+        "rates": {
+          "致密源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C255",
+        "rates": {
+          "致密源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C256",
+        "rates": {
+          "致密源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C257",
+        "rates": {
+          "致密源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C258",
+        "rates": {
+          "致密源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C259",
+        "rates": {
+          "致密源石粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C260",
+        "rates": {
+          "致密蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C261",
+        "rates": {
+          "致密蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C262",
+        "rates": {
+          "致密蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C263",
+        "rates": {
+          "致密蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C264",
+        "rates": {
+          "致密蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C265",
+        "rates": {
+          "致密蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C266",
+        "rates": {
+          "致密蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C267",
+        "rates": {
+          "致密蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C268",
+        "rates": {
+          "致密蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C269",
+        "rates": {
+          "致密蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C270",
+        "rates": {
+          "致密蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C271",
+        "rates": {
+          "致密蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C272",
+        "rates": {
+          "致密蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C273",
+        "rates": {
+          "致密蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C274",
+        "rates": {
+          "致密蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C275",
+        "rates": {
+          "致密蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C276",
+        "rates": {
+          "致密蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C277",
+        "rates": {
+          "致密蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C278",
+        "rates": {
+          "致密蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C279",
+        "rates": {
+          "致密蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C280",
+        "rates": {
+          "致密蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C281",
+        "rates": {
+          "致密蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C282",
+        "rates": {
+          "致密蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C283",
+        "rates": {
+          "致密蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C284",
+        "rates": {
+          "致密蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C285",
+        "rates": {
+          "致密蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C286",
+        "rates": {
+          "致密蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C287",
+        "rates": {
+          "致密蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C288",
+        "rates": {
+          "致密蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C289",
+        "rates": {
+          "致密蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C290",
+        "rates": {
+          "致密蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C291",
+        "rates": {
+          "致密蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C292",
+        "rates": {
+          "致密蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C293",
+        "rates": {
+          "致密蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C294",
+        "rates": {
+          "荞花": "1"
+        }
+      },
+      {
+        "channel_id": "C295",
+        "rates": {
+          "荞花": "1"
+        }
+      },
+      {
+        "channel_id": "C296",
+        "rates": {
+          "荞花": "1"
+        }
+      },
+      {
+        "channel_id": "C297",
+        "rates": {
+          "荞花": "1"
+        }
+      },
+      {
+        "channel_id": "C298",
+        "rates": {
+          "荞花": "1"
+        }
+      },
+      {
+        "channel_id": "C299",
+        "rates": {
+          "荞花": "1"
+        }
+      },
+      {
+        "channel_id": "C300",
+        "rates": {
+          "荞花": "1"
+        }
+      },
+      {
+        "channel_id": "C301",
+        "rates": {
+          "荞花": "1"
+        }
+      },
+      {
+        "channel_id": "C302",
+        "rates": {
+          "荞花": "1"
+        }
+      },
+      {
+        "channel_id": "C303",
+        "rates": {
+          "荞花": "1"
+        }
+      },
+      {
+        "channel_id": "C304",
+        "rates": {
+          "荞花": "1"
+        }
+      },
+      {
+        "channel_id": "C305",
+        "rates": {
+          "荞花": "1"
+        }
+      },
+      {
+        "channel_id": "C306",
+        "rates": {
+          "荞花": "1"
+        }
+      },
+      {
+        "channel_id": "C307",
+        "rates": {
+          "荞花": "1"
+        }
+      },
+      {
+        "channel_id": "C308",
+        "rates": {
+          "荞花": "1"
+        }
+      },
+      {
+        "channel_id": "C309",
+        "rates": {
+          "荞花": "1"
+        }
+      },
+      {
+        "channel_id": "C310",
+        "rates": {
+          "荞花": "1"
+        }
+      },
+      {
+        "channel_id": "C311",
+        "rates": {
+          "荞花": "1"
+        }
+      },
+      {
+        "channel_id": "C312",
+        "rates": {
+          "荞花": "1"
+        }
+      },
+      {
+        "channel_id": "C313",
+        "rates": {
+          "荞花": "1"
+        }
+      },
+      {
+        "channel_id": "C314",
+        "rates": {
+          "荞花": "1/2"
+        }
+      },
+      {
+        "channel_id": "C315",
+        "rates": {
+          "荞花": "1/2"
+        }
+      },
+      {
+        "channel_id": "C316",
+        "rates": {
+          "荞花": "1/2"
+        }
+      },
+      {
+        "channel_id": "C317",
+        "rates": {
+          "荞花": "1/2"
+        }
+      },
+      {
+        "channel_id": "C318",
+        "rates": {
+          "荞花种子": "1"
+        }
+      },
+      {
+        "channel_id": "C319",
+        "rates": {
+          "荞花种子": "1"
+        }
+      },
+      {
+        "channel_id": "C320",
+        "rates": {
+          "荞花种子": "1"
+        }
+      },
+      {
+        "channel_id": "C321",
+        "rates": {
+          "荞花种子": "1"
+        }
+      },
+      {
+        "channel_id": "C322",
+        "rates": {
+          "荞花种子": "1"
+        }
+      },
+      {
+        "channel_id": "C323",
+        "rates": {
+          "荞花种子": "1"
+        }
+      },
+      {
+        "channel_id": "C324",
+        "rates": {
+          "荞花种子": "1"
+        }
+      },
+      {
+        "channel_id": "C325",
+        "rates": {
+          "荞花种子": "1"
+        }
+      },
+      {
+        "channel_id": "C326",
+        "rates": {
+          "荞花种子": "1"
+        }
+      },
+      {
+        "channel_id": "C327",
+        "rates": {
+          "荞花种子": "1"
+        }
+      },
+      {
+        "channel_id": "C328",
+        "rates": {
+          "荞花种子": "1"
+        }
+      },
+      {
+        "channel_id": "C329",
+        "rates": {
+          "荞花种子": "1"
+        }
+      },
+      {
+        "channel_id": "C330",
+        "rates": {
+          "荞花种子": "1"
+        }
+      },
+      {
+        "channel_id": "C331",
+        "rates": {
+          "荞花种子": "1"
+        }
+      },
+      {
+        "channel_id": "C332",
+        "rates": {
+          "荞花种子": "1"
+        }
+      },
+      {
+        "channel_id": "C333",
+        "rates": {
+          "荞花种子": "1"
+        }
+      },
+      {
+        "channel_id": "C334",
+        "rates": {
+          "荞花种子": "1"
+        }
+      },
+      {
+        "channel_id": "C335",
+        "rates": {
+          "荞花种子": "1"
+        }
+      },
+      {
+        "channel_id": "C336",
+        "rates": {
+          "荞花种子": "1"
+        }
+      },
+      {
+        "channel_id": "C337",
+        "rates": {
+          "荞花种子": "1"
+        }
+      },
+      {
+        "channel_id": "C338",
+        "rates": {
+          "荞花种子": "1"
+        }
+      },
+      {
+        "channel_id": "C339",
+        "rates": {
+          "荞花种子": "1"
+        }
+      },
+      {
+        "channel_id": "C340",
+        "rates": {
+          "荞花粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C341",
+        "rates": {
+          "荞花粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C342",
+        "rates": {
+          "荞花粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C343",
+        "rates": {
+          "荞花粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C344",
+        "rates": {
+          "荞花粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C345",
+        "rates": {
+          "荞花粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C346",
+        "rates": {
+          "荞花粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C347",
+        "rates": {
+          "荞花粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C348",
+        "rates": {
+          "荞花粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C349",
+        "rates": {
+          "荞花粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C350",
+        "rates": {
+          "荞花粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C351",
+        "rates": {
+          "荞花粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C352",
+        "rates": {
+          "荞花粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C353",
+        "rates": {
+          "荞花粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C354",
+        "rates": {
+          "荞花粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C355",
+        "rates": {
+          "荞花粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C356",
+        "rates": {
+          "荞花粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C357",
+        "rates": {
+          "荞花粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C358",
+        "rates": {
+          "荞花粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C359",
+        "rates": {
+          "荞花粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C360",
+        "rates": {
+          "荞花粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C361",
+        "rates": {
+          "荞花粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C362",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C363",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C364",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C365",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C366",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C367",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C368",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C369",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C370",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C371",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C372",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C373",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C374",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C375",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C376",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C377",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C378",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C379",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C380",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C381",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C382",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C383",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C384",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C385",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C386",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C387",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C388",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C389",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C390",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C391",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C392",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C393",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C394",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C395",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C396",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C397",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C398",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C399",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C400",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C401",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C402",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C403",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C404",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C405",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C406",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C407",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C408",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C409",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C410",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C411",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C412",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C413",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C414",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C415",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C416",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C417",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C418",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C419",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C420",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C421",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C422",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C423",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C424",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C425",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C426",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C427",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C428",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C429",
+        "rates": {
+          "蓝铁块": "1"
+        }
+      },
+      {
+        "channel_id": "C430",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C431",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C432",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C433",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C434",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C435",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C436",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C437",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C438",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C439",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C440",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C441",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C442",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C443",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C444",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C445",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C446",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C447",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C448",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C449",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C450",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C451",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C452",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C453",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C454",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C455",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C456",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C457",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C458",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C459",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C460",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C461",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C462",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C463",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C464",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C465",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C466",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C467",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C468",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C469",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C470",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C471",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C472",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C473",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C474",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C475",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C476",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C477",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C478",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C479",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C480",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C481",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C482",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C483",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C484",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C485",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C486",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C487",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C488",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C489",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C490",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C491",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C492",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C493",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C494",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C495",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C496",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C497",
+        "rates": {
+          "蓝铁矿": "1"
+        }
+      },
+      {
+        "channel_id": "C498",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C499",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C500",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C501",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C502",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C503",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C504",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C505",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C506",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C507",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C508",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C509",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C510",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C511",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C512",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C513",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C514",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C515",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C516",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C517",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C518",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C519",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C520",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C521",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C522",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C523",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C524",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C525",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C526",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C527",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C528",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C529",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C530",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C531",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C532",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C533",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C534",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C535",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C536",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C537",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C538",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C539",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C540",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C541",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C542",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C543",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C544",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C545",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C546",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C547",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C548",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C549",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C550",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C551",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C552",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C553",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C554",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C555",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C556",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C557",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C558",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C559",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C560",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C561",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C562",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C563",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C564",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C565",
+        "rates": {
+          "蓝铁粉末": "1"
+        }
+      },
+      {
+        "channel_id": "C566",
+        "rates": {
+          "钢制零件": "1"
+        }
+      },
+      {
+        "channel_id": "C567",
+        "rates": {
+          "钢制零件": "1"
+        }
+      },
+      {
+        "channel_id": "C568",
+        "rates": {
+          "钢制零件": "1"
+        }
+      },
+      {
+        "channel_id": "C569",
+        "rates": {
+          "钢制零件": "1"
+        }
+      },
+      {
+        "channel_id": "C570",
+        "rates": {
+          "钢制零件": "1"
+        }
+      },
+      {
+        "channel_id": "C571",
+        "rates": {
+          "钢制零件": "1"
+        }
+      },
+      {
+        "channel_id": "C572",
+        "rates": {
+          "钢制零件": "1"
+        }
+      },
+      {
+        "channel_id": "C573",
+        "rates": {
+          "钢制零件": "1"
+        }
+      },
+      {
+        "channel_id": "C574",
+        "rates": {
+          "钢制零件": "1"
+        }
+      },
+      {
+        "channel_id": "C575",
+        "rates": {
+          "钢制零件": "1"
+        }
+      },
+      {
+        "channel_id": "C576",
+        "rates": {
+          "钢制零件": "1"
+        }
+      },
+      {
+        "channel_id": "C577",
+        "rates": {
+          "钢制零件": "1"
+        }
+      },
+      {
+        "channel_id": "C578",
+        "rates": {
+          "钢块": "1"
+        }
+      },
+      {
+        "channel_id": "C579",
+        "rates": {
+          "钢块": "1"
+        }
+      },
+      {
+        "channel_id": "C580",
+        "rates": {
+          "钢块": "1"
+        }
+      },
+      {
+        "channel_id": "C581",
+        "rates": {
+          "钢块": "1"
+        }
+      },
+      {
+        "channel_id": "C582",
+        "rates": {
+          "钢块": "1"
+        }
+      },
+      {
+        "channel_id": "C583",
+        "rates": {
+          "钢块": "1"
+        }
+      },
+      {
+        "channel_id": "C584",
+        "rates": {
+          "钢块": "1"
+        }
+      },
+      {
+        "channel_id": "C585",
+        "rates": {
+          "钢块": "1"
+        }
+      },
+      {
+        "channel_id": "C586",
+        "rates": {
+          "钢块": "1"
+        }
+      },
+      {
+        "channel_id": "C587",
+        "rates": {
+          "钢块": "1"
+        }
+      },
+      {
+        "channel_id": "C588",
+        "rates": {
+          "钢块": "1"
+        }
+      },
+      {
+        "channel_id": "C589",
+        "rates": {
+          "钢块": "1"
+        }
+      },
+      {
+        "channel_id": "C590",
+        "rates": {
+          "钢块": "1"
+        }
+      },
+      {
+        "channel_id": "C591",
+        "rates": {
+          "钢块": "1"
+        }
+      },
+      {
+        "channel_id": "C592",
+        "rates": {
+          "钢块": "1"
+        }
+      },
+      {
+        "channel_id": "C593",
+        "rates": {
+          "钢块": "1"
+        }
+      },
+      {
+        "channel_id": "C594",
+        "rates": {
+          "钢块": "1"
+        }
+      },
+      {
+        "channel_id": "C595",
+        "rates": {
+          "钢块": "1"
+        }
+      },
+      {
+        "channel_id": "C596",
+        "rates": {
+          "钢块": "1"
+        }
+      },
+      {
+        "channel_id": "C597",
+        "rates": {
+          "钢块": "1"
+        }
+      },
+      {
+        "channel_id": "C598",
+        "rates": {
+          "钢块": "1"
+        }
+      },
+      {
+        "channel_id": "C599",
+        "rates": {
+          "钢块": "1"
+        }
+      },
+      {
+        "channel_id": "C600",
+        "rates": {
+          "钢块": "1"
+        }
+      },
+      {
+        "channel_id": "C601",
+        "rates": {
+          "钢块": "1"
+        }
+      },
+      {
+        "channel_id": "C602",
+        "rates": {
+          "钢块": "1"
+        }
+      },
+      {
+        "channel_id": "C603",
+        "rates": {
+          "钢块": "1"
+        }
+      },
+      {
+        "channel_id": "C604",
+        "rates": {
+          "钢块": "1"
+        }
+      },
+      {
+        "channel_id": "C605",
+        "rates": {
+          "钢块": "1"
+        }
+      },
+      {
+        "channel_id": "C606",
+        "rates": {
+          "钢块": "1"
+        }
+      },
+      {
+        "channel_id": "C607",
+        "rates": {
+          "钢块": "1"
+        }
+      },
+      {
+        "channel_id": "C608",
+        "rates": {
+          "钢块": "1"
+        }
+      },
+      {
+        "channel_id": "C609",
+        "rates": {
+          "钢块": "1"
+        }
+      },
+      {
+        "channel_id": "C610",
+        "rates": {
+          "钢块": "1"
+        }
+      },
+      {
+        "channel_id": "C611",
+        "rates": {
+          "钢块": "1"
+        }
+      },
+      {
+        "channel_id": "C612",
+        "rates": {
+          "钢质瓶": "1"
+        }
+      },
+      {
+        "channel_id": "C613",
+        "rates": {
+          "钢质瓶": "1"
+        }
+      },
+      {
+        "channel_id": "C614",
+        "rates": {
+          "钢质瓶": "1"
+        }
+      },
+      {
+        "channel_id": "C615",
+        "rates": {
+          "钢质瓶": "1"
+        }
+      },
+      {
+        "channel_id": "C616",
+        "rates": {
+          "钢质瓶": "1"
+        }
+      },
+      {
+        "channel_id": "C617",
+        "rates": {
+          "钢质瓶": "1"
+        }
+      },
+      {
+        "channel_id": "C618",
+        "rates": {
+          "钢质瓶": "1"
+        }
+      },
+      {
+        "channel_id": "C619",
+        "rates": {
+          "钢质瓶": "1"
+        }
+      },
+      {
+        "channel_id": "C620",
+        "rates": {
+          "钢质瓶": "1"
+        }
+      },
+      {
+        "channel_id": "C621",
+        "rates": {
+          "钢质瓶": "1"
+        }
+      },
+      {
+        "channel_id": "C622",
+        "rates": {
+          "钢质瓶": "1/2"
+        }
+      },
+      {
+        "channel_id": "C623",
+        "rates": {
+          "钢质瓶": "1/2"
+        }
+      },
+      {
+        "channel_id": "C624",
+        "rates": {
+          "高容谷地电池": "1/5"
+        }
+      },
+      {
+        "channel_id": "C625",
+        "rates": {
+          "高容谷地电池": "1/5"
+        }
+      },
+      {
+        "channel_id": "C626",
+        "rates": {
+          "高容谷地电池": "1/5"
+        }
+      },
+      {
+        "channel_id": "C627",
+        "rates": {
+          "高容谷地电池": "1/5"
+        }
+      },
+      {
+        "channel_id": "C628",
+        "rates": {
+          "高容谷地电池": "1/5"
+        }
+      },
+      {
+        "channel_id": "C629",
+        "rates": {
+          "高容谷地电池": "1/5"
+        }
+      }
+    ],
+    "batch_rates": [
+      {
+        "machine_id": "M000",
+        "recipe_id": "粉碎-源矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M001",
+        "recipe_id": "粉碎-源矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M002",
+        "recipe_id": "粉碎-源矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M003",
+        "recipe_id": "粉碎-源矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M004",
+        "recipe_id": "粉碎-源矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M005",
+        "recipe_id": "粉碎-源矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M006",
+        "recipe_id": "粉碎-源矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M007",
+        "recipe_id": "粉碎-源矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M008",
+        "recipe_id": "粉碎-源矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M009",
+        "recipe_id": "粉碎-源矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M010",
+        "recipe_id": "粉碎-源矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M011",
+        "recipe_id": "粉碎-源矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M012",
+        "recipe_id": "粉碎-源矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M013",
+        "recipe_id": "粉碎-源矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M014",
+        "recipe_id": "粉碎-源矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M015",
+        "recipe_id": "粉碎-源矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M016",
+        "recipe_id": "粉碎-源矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M017",
+        "recipe_id": "粉碎-源矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M018",
+        "recipe_id": "粉碎-蓝铁块",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M019",
+        "recipe_id": "粉碎-蓝铁块",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M020",
+        "recipe_id": "粉碎-蓝铁块",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M021",
+        "recipe_id": "粉碎-蓝铁块",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M022",
+        "recipe_id": "粉碎-蓝铁块",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M023",
+        "recipe_id": "粉碎-蓝铁块",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M024",
+        "recipe_id": "粉碎-蓝铁块",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M025",
+        "recipe_id": "粉碎-蓝铁块",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M026",
+        "recipe_id": "粉碎-蓝铁块",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M027",
+        "recipe_id": "粉碎-蓝铁块",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M028",
+        "recipe_id": "粉碎-蓝铁块",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M029",
+        "recipe_id": "粉碎-蓝铁块",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M030",
+        "recipe_id": "粉碎-蓝铁块",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M031",
+        "recipe_id": "粉碎-蓝铁块",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M032",
+        "recipe_id": "粉碎-蓝铁块",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M033",
+        "recipe_id": "粉碎-蓝铁块",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M034",
+        "recipe_id": "粉碎-蓝铁块",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M035",
+        "recipe_id": "粉碎-蓝铁块",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M036",
+        "recipe_id": "粉碎-蓝铁块",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M037",
+        "recipe_id": "粉碎-蓝铁块",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M038",
+        "recipe_id": "粉碎-蓝铁块",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M039",
+        "recipe_id": "粉碎-蓝铁块",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M040",
+        "recipe_id": "粉碎-蓝铁块",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M041",
+        "recipe_id": "粉碎-蓝铁块",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M042",
+        "recipe_id": "粉碎-蓝铁块",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M043",
+        "recipe_id": "粉碎-蓝铁块",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M044",
+        "recipe_id": "粉碎-蓝铁块",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M045",
+        "recipe_id": "粉碎-蓝铁块",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M046",
+        "recipe_id": "粉碎-蓝铁块",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M047",
+        "recipe_id": "粉碎-蓝铁块",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M048",
+        "recipe_id": "粉碎-蓝铁块",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M049",
+        "recipe_id": "粉碎-蓝铁块",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M050",
+        "recipe_id": "粉碎-蓝铁块",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M051",
+        "recipe_id": "粉碎-蓝铁块",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M052",
+        "recipe_id": "粉碎-荞花",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M053",
+        "recipe_id": "粉碎-荞花",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M054",
+        "recipe_id": "粉碎-荞花",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M055",
+        "recipe_id": "粉碎-荞花",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M056",
+        "recipe_id": "粉碎-荞花",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M057",
+        "recipe_id": "粉碎-荞花",
+        "rate": "1/2"
+      },
+      {
+        "machine_id": "M058",
+        "recipe_id": "粉碎-砂叶",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M059",
+        "recipe_id": "粉碎-砂叶",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M060",
+        "recipe_id": "粉碎-砂叶",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M061",
+        "recipe_id": "粉碎-砂叶",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M062",
+        "recipe_id": "粉碎-砂叶",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M063",
+        "recipe_id": "粉碎-砂叶",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M064",
+        "recipe_id": "粉碎-砂叶",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M065",
+        "recipe_id": "粉碎-砂叶",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M066",
+        "recipe_id": "粉碎-砂叶",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M067",
+        "recipe_id": "粉碎-砂叶",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M068",
+        "recipe_id": "粉碎-砂叶",
+        "rate": "1/2"
+      },
+      {
+        "machine_id": "M069",
+        "recipe_id": "精炼-蓝铁矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M070",
+        "recipe_id": "精炼-蓝铁矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M071",
+        "recipe_id": "精炼-蓝铁矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M072",
+        "recipe_id": "精炼-蓝铁矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M073",
+        "recipe_id": "精炼-蓝铁矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M074",
+        "recipe_id": "精炼-蓝铁矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M075",
+        "recipe_id": "精炼-蓝铁矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M076",
+        "recipe_id": "精炼-蓝铁矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M077",
+        "recipe_id": "精炼-蓝铁矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M078",
+        "recipe_id": "精炼-蓝铁矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M079",
+        "recipe_id": "精炼-蓝铁矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M080",
+        "recipe_id": "精炼-蓝铁矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M081",
+        "recipe_id": "精炼-蓝铁矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M082",
+        "recipe_id": "精炼-蓝铁矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M083",
+        "recipe_id": "精炼-蓝铁矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M084",
+        "recipe_id": "精炼-蓝铁矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M085",
+        "recipe_id": "精炼-蓝铁矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M086",
+        "recipe_id": "精炼-蓝铁矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M087",
+        "recipe_id": "精炼-蓝铁矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M088",
+        "recipe_id": "精炼-蓝铁矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M089",
+        "recipe_id": "精炼-蓝铁矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M090",
+        "recipe_id": "精炼-蓝铁矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M091",
+        "recipe_id": "精炼-蓝铁矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M092",
+        "recipe_id": "精炼-蓝铁矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M093",
+        "recipe_id": "精炼-蓝铁矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M094",
+        "recipe_id": "精炼-蓝铁矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M095",
+        "recipe_id": "精炼-蓝铁矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M096",
+        "recipe_id": "精炼-蓝铁矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M097",
+        "recipe_id": "精炼-蓝铁矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M098",
+        "recipe_id": "精炼-蓝铁矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M099",
+        "recipe_id": "精炼-蓝铁矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M100",
+        "recipe_id": "精炼-蓝铁矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M101",
+        "recipe_id": "精炼-蓝铁矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M102",
+        "recipe_id": "精炼-蓝铁矿",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M103",
+        "recipe_id": "精炼-致密蓝铁",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M104",
+        "recipe_id": "精炼-致密蓝铁",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M105",
+        "recipe_id": "精炼-致密蓝铁",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M106",
+        "recipe_id": "精炼-致密蓝铁",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M107",
+        "recipe_id": "精炼-致密蓝铁",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M108",
+        "recipe_id": "精炼-致密蓝铁",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M109",
+        "recipe_id": "精炼-致密蓝铁",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M110",
+        "recipe_id": "精炼-致密蓝铁",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M111",
+        "recipe_id": "精炼-致密蓝铁",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M112",
+        "recipe_id": "精炼-致密蓝铁",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M113",
+        "recipe_id": "精炼-致密蓝铁",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M114",
+        "recipe_id": "精炼-致密蓝铁",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M115",
+        "recipe_id": "精炼-致密蓝铁",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M116",
+        "recipe_id": "精炼-致密蓝铁",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M117",
+        "recipe_id": "精炼-致密蓝铁",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M118",
+        "recipe_id": "精炼-致密蓝铁",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M119",
+        "recipe_id": "精炼-致密蓝铁",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M120",
+        "recipe_id": "研磨-致密蓝铁",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M121",
+        "recipe_id": "研磨-致密蓝铁",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M122",
+        "recipe_id": "研磨-致密蓝铁",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M123",
+        "recipe_id": "研磨-致密蓝铁",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M124",
+        "recipe_id": "研磨-致密蓝铁",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M125",
+        "recipe_id": "研磨-致密蓝铁",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M126",
+        "recipe_id": "研磨-致密蓝铁",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M127",
+        "recipe_id": "研磨-致密蓝铁",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M128",
+        "recipe_id": "研磨-致密蓝铁",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M129",
+        "recipe_id": "研磨-致密蓝铁",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M130",
+        "recipe_id": "研磨-致密蓝铁",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M131",
+        "recipe_id": "研磨-致密蓝铁",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M132",
+        "recipe_id": "研磨-致密蓝铁",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M133",
+        "recipe_id": "研磨-致密蓝铁",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M134",
+        "recipe_id": "研磨-致密蓝铁",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M135",
+        "recipe_id": "研磨-致密蓝铁",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M136",
+        "recipe_id": "研磨-致密蓝铁",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M137",
+        "recipe_id": "研磨-致密源石",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M138",
+        "recipe_id": "研磨-致密源石",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M139",
+        "recipe_id": "研磨-致密源石",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M140",
+        "recipe_id": "研磨-致密源石",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M141",
+        "recipe_id": "研磨-致密源石",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M142",
+        "recipe_id": "研磨-致密源石",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M143",
+        "recipe_id": "研磨-致密源石",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M144",
+        "recipe_id": "研磨-致密源石",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M145",
+        "recipe_id": "研磨-致密源石",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M146",
+        "recipe_id": "研磨-细磨荞花",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M147",
+        "recipe_id": "研磨-细磨荞花",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M148",
+        "recipe_id": "研磨-细磨荞花",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M149",
+        "recipe_id": "研磨-细磨荞花",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M150",
+        "recipe_id": "研磨-细磨荞花",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M151",
+        "recipe_id": "研磨-细磨荞花",
+        "rate": "1/2"
+      },
+      {
+        "machine_id": "M152",
+        "recipe_id": "塑形-钢质瓶",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M153",
+        "recipe_id": "塑形-钢质瓶",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M154",
+        "recipe_id": "塑形-钢质瓶",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M155",
+        "recipe_id": "塑形-钢质瓶",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M156",
+        "recipe_id": "塑形-钢质瓶",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M157",
+        "recipe_id": "塑形-钢质瓶",
+        "rate": "1/2"
+      },
+      {
+        "machine_id": "M158",
+        "recipe_id": "配件-钢制零件",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M159",
+        "recipe_id": "配件-钢制零件",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M160",
+        "recipe_id": "配件-钢制零件",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M161",
+        "recipe_id": "配件-钢制零件",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M162",
+        "recipe_id": "配件-钢制零件",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M163",
+        "recipe_id": "配件-钢制零件",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M164",
+        "recipe_id": "种植-荞花",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M165",
+        "recipe_id": "种植-荞花",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M166",
+        "recipe_id": "种植-荞花",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M167",
+        "recipe_id": "种植-荞花",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M168",
+        "recipe_id": "种植-荞花",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M169",
+        "recipe_id": "种植-荞花",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M170",
+        "recipe_id": "种植-荞花",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M171",
+        "recipe_id": "种植-荞花",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M172",
+        "recipe_id": "种植-荞花",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M173",
+        "recipe_id": "种植-荞花",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M174",
+        "recipe_id": "种植-荞花",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M175",
+        "recipe_id": "种植-砂叶",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M176",
+        "recipe_id": "种植-砂叶",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M177",
+        "recipe_id": "种植-砂叶",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M178",
+        "recipe_id": "种植-砂叶",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M179",
+        "recipe_id": "种植-砂叶",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M180",
+        "recipe_id": "种植-砂叶",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M181",
+        "recipe_id": "种植-砂叶",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M182",
+        "recipe_id": "种植-砂叶",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M183",
+        "recipe_id": "种植-砂叶",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M184",
+        "recipe_id": "种植-砂叶",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M185",
+        "recipe_id": "种植-砂叶",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M186",
+        "recipe_id": "种植-砂叶",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M187",
+        "recipe_id": "种植-砂叶",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M188",
+        "recipe_id": "种植-砂叶",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M189",
+        "recipe_id": "种植-砂叶",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M190",
+        "recipe_id": "种植-砂叶",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M191",
+        "recipe_id": "种植-砂叶",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M192",
+        "recipe_id": "种植-砂叶",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M193",
+        "recipe_id": "种植-砂叶",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M194",
+        "recipe_id": "种植-砂叶",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M195",
+        "recipe_id": "种植-砂叶",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M196",
+        "recipe_id": "采种-荞花",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M197",
+        "recipe_id": "采种-荞花",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M198",
+        "recipe_id": "采种-荞花",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M199",
+        "recipe_id": "采种-荞花",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M200",
+        "recipe_id": "采种-荞花",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M201",
+        "recipe_id": "采种-荞花",
+        "rate": "1/2"
+      },
+      {
+        "machine_id": "M202",
+        "recipe_id": "采种-砂叶",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M203",
+        "recipe_id": "采种-砂叶",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M204",
+        "recipe_id": "采种-砂叶",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M205",
+        "recipe_id": "采种-砂叶",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M206",
+        "recipe_id": "采种-砂叶",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M207",
+        "recipe_id": "采种-砂叶",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M208",
+        "recipe_id": "采种-砂叶",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M209",
+        "recipe_id": "采种-砂叶",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M210",
+        "recipe_id": "采种-砂叶",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M211",
+        "recipe_id": "采种-砂叶",
+        "rate": "1"
+      },
+      {
+        "machine_id": "M212",
+        "recipe_id": "采种-砂叶",
+        "rate": "1/2"
+      },
+      {
+        "machine_id": "M213",
+        "recipe_id": "封装-电池",
+        "rate": "1/5"
+      },
+      {
+        "machine_id": "M214",
+        "recipe_id": "封装-电池",
+        "rate": "1/5"
+      },
+      {
+        "machine_id": "M215",
+        "recipe_id": "封装-电池",
+        "rate": "1/5"
+      },
+      {
+        "machine_id": "M216",
+        "recipe_id": "灌装-胶囊",
+        "rate": "1/5"
+      },
+      {
+        "machine_id": "M217",
+        "recipe_id": "灌装-胶囊",
+        "rate": "1/5"
+      },
+      {
+        "machine_id": "M218",
+        "recipe_id": "灌装-胶囊",
+        "rate": "3/20"
+      }
+    ],
+    "box_transfers": [],
+    "delta": "3/20"
+  }
+}

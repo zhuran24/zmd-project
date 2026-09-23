@@ -1,0 +1,1 @@
+{"checker": "B", "candidate_sha256": "677c3fb13a3550047d74dd35c67d224a88d179689c158519e642a41ca7e2bf6b", "static_certified": false, "edges": 555, "flow_status": "INFEASIBLE_EXACT", "violations": []}

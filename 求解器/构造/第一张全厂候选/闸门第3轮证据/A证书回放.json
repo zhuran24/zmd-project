@@ -1,0 +1,8 @@
+{
+  "verified": true,
+  "kind": "Farkas",
+  "exact_bound": "1063/20",
+  "rows": 36523,
+  "variables": 775,
+  "nonzero_multipliers": 473
+}

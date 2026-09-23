@@ -1,0 +1,102 @@
+{
+  "《明日方舟：终末地》游戏规则.txt": {
+    "sha256": "52df4c12ce90975b861a6a663bd37873e03c9549658d200dc7e95fabc4bc29f3",
+    "bytes": 7298
+  },
+  "求解任务.txt": {
+    "sha256": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+    "bytes": 1405
+  },
+  "求解约束.txt": {
+    "sha256": "a67c18dec5f6ae59c41e8620d270007f20c2d3e5b202521d0cca12f616bca3df",
+    "bytes": 34880
+  },
+  "求解器/会议成果/会议3/seat-opus-1/fulllp.py": {
+    "sha256": "0b52ea0acdcedf541f9be07353796c008aa2f37e500cd0f7160acc2824bc594b",
+    "bytes": 5821
+  },
+  "求解器/构造/第一张全厂候选/生成/候选.json": {
+    "sha256": "e147866f410737324d49190dea83bfd19de04ebdcc9b1c9998152bbf7a80f404",
+    "bytes": 277045
+  },
+  "求解器/构造/第一张全厂候选/检查器A/catalog.py": {
+    "sha256": "26309c6b92ce201a276fd26190272ceaf800049b53cc33a35af51659de2f08a0",
+    "bytes": 3418
+  },
+  "求解器/构造/第一张全厂候选/检查器A/design.py": {
+    "sha256": "1a98b521379de2ca5af9d06730c5cecf758112389560b34bcbe76ac2858557a5",
+    "bytes": 5147
+  },
+  "求解器/构造/第一张全厂候选/检查器A/selftest.py": {
+    "sha256": "75322c1d9d45c3976b5d51640311c915598e60b8a77203c516b21eb066e4bfb0",
+    "bytes": 23282
+  },
+  "求解器/构造/第一张全厂候选/检查器A/schema.py": {
+    "sha256": "e19217f037a0c297856440ed1f5acc858470b776ee36a1fb65c9c4a7edad5925",
+    "bytes": 8008
+  },
+  "求解器/构造/第一张全厂候选/检查器A/verify_certificate.py": {
+    "sha256": "ab848e722a5c8beb2e5450efad5120ca63376fc84baaf58897af312a8bac3def",
+    "bytes": 2192
+  },
+  "求解器/构造/第一张全厂候选/检查器A/check_full.py": {
+    "sha256": "3311126762954e63c00d139b3fbc137b522b8299ffacd0bf4707338ac6a60e55",
+    "bytes": 10045
+  },
+  "求解器/构造/第一张全厂候选/检查器A/flow.py": {
+    "sha256": "d2495b9dc7ac03dddea7f544142a128feeb50c671f529ab9352ec8bf83217bd9",
+    "bytes": 10112
+  },
+  "求解器/构造/第一张全厂候选/检查器A/projections.py": {
+    "sha256": "b699ef81e642cc67a9b8644b751cbc61eb2fd6131e0f018a138d0f1d81968918",
+    "bytes": 20685
+  },
+  "求解器/构造/第一张全厂候选/检查器A/geometry.py": {
+    "sha256": "8a78389f4645e0cdb955956ba86ab18c3fc1735d19432c7abb20eb17e7f6dcbd",
+    "bytes": 12236
+  },
+  "求解器/构造/第一张全厂候选/检查器A/meeting_check_full.py": {
+    "sha256": "6fa0001e7b8d925c74eb4e8338566c28158f20751adf38bb7d10c93ae51ce8ab",
+    "bytes": 19185
+  },
+  "求解器/构造/第一张全厂候选/检查器B/legacy_check.py": {
+    "sha256": "8f9448a0431e643e3d71b3c888e98669613e832a93f87bca549d1f1757dea832",
+    "bytes": 7798
+  },
+  "求解器/构造/第一张全厂候选/检查器B/catalog.py": {
+    "sha256": "7d83cf061f40f5157b03384c5e4501cccd14c92ffc5d0e8f66469857bf622a27",
+    "bytes": 3697
+  },
+  "求解器/构造/第一张全厂候选/检查器B/selftest.py": {
+    "sha256": "5fbd0266fe100a7be4666497a007b990404633051522d8878a30e520c1678799",
+    "bytes": 20266
+  },
+  "求解器/构造/第一张全厂候选/检查器B/schema.py": {
+    "sha256": "474869ed3dbc999d5a41208f6de521e79f82903ce799914250dc9e43071fc9af",
+    "bytes": 9453
+  },
+  "求解器/构造/第一张全厂候选/检查器B/flow.py": {
+    "sha256": "64455bd7b92d4b73a3e88a7a22e63543ac8704abb66ef804858b7e8c098c72cd",
+    "bytes": 10567
+  },
+  "求解器/构造/第一张全厂候选/检查器B/interfaces.py": {
+    "sha256": "78b1ed7d9a66a1810767d4a0d37b9d0a6acebf92f5c8732e61eafee7bd603cdd",
+    "bytes": 4989
+  },
+  "求解器/构造/第一张全厂候选/检查器B/geometry.py": {
+    "sha256": "db7667d9229d0f49148a95b08130970fbc04698d31e83562834c71409573ca36",
+    "bytes": 14407
+  },
+  "求解器/构造/第一张全厂候选/检查器B/check.py": {
+    "sha256": "ed3b6e8bd40ae838e037accefab64a3d6e7615bdd40113815e1ac42fc647a20d",
+    "bytes": 8850
+  },
+  "求解器/构造/第一张全厂候选/检查器B/audit.py": {
+    "sha256": "2a0fd154cdbe7c8a8186204fe2aa575c64e5ddab7c62a8209428c5b36e16ebfa",
+    "bytes": 30989
+  },
+  "求解器/构造/第一张全厂候选/检查器B/component_tests.py": {
+    "sha256": "418aebc5b4ffd9d608e3d4d951442c9566c3cb4f85a16f70900240be3848e188",
+    "bytes": 9646
+  }
+}

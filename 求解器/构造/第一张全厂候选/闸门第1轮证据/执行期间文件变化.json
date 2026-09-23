@@ -1,0 +1,8 @@
+{
+  "file": "求解器/构造/第一张全厂候选/检查器A/projections.py",
+  "before_sha256": "b699ef81e642cc67a9b8644b751cbc61eb2fd6131e0f018a138d0f1d81968918",
+  "after_sha256": "643adc88777d9f5ca314d295923fc6dd1b0f41530cd6743534ae4cdfbc31144a",
+  "only_change": "模块首行docstring改为明确仅支持旧71条；替换首行还原后SHA与开始快照完全一致",
+  "modified_by_this_task": false,
+  "semantic_code_changed": false
+}

@@ -1,0 +1,66 @@
+{
+  "task_complete": false,
+  "pass": false,
+  "candidate_sha256": "eead98c6a852a17b33c6ed7ea084f19d692fe70226db2b18da6a43463b0ea9ef",
+  "changes_scope": "候选限制登记规范化及新摆放布线；A修复D1/D2/D3/D7和单端桥；候选仍未达标",
+  "A": {
+    "status": "rejected",
+    "check_status_counts": {
+      "checked": 46,
+      "blocked": 1,
+      "violation": 3,
+      "antecedent_false": 7
+    },
+    "formal_constraints": 72,
+    "P2_structure": "checked",
+    "P2": "blocked",
+    "certificate": {
+      "verified": true,
+      "kind": "Farkas",
+      "exact_bound": "1063/20",
+      "rows": 36613,
+      "variables": 781,
+      "nonzero_multipliers": 424
+    }
+  },
+  "B": {
+    "status": "REJECTED",
+    "summary": {
+      "checks": 428,
+      "failed": 6,
+      "formal_constraints": 72,
+      "formal_blocked": 39,
+      "runtime_obligations": 6
+    },
+    "check_status_counts": {
+      "PASS": 420,
+      "INFO": 1,
+      "FAIL": 6,
+      "BLOCKED": 1
+    },
+    "flow": {
+      "status": "INFEASIBLE_EXACT",
+      "certificate": {
+        "zero_row": "source:('OUT_L01', 0, 1)",
+        "rhs": "1",
+        "relation": "eq",
+        "basis": "约束·取货口配置/矿石需求；格式 §9.2"
+      }
+    }
+  },
+  "exact_channel_sets_equal": true,
+  "channels": 561,
+  "geometry_unchanged": false,
+  "independent_LP_recomputed_for_current_candidate": true,
+  "independent_LP_note": "已重新运行严格LP、去预处理LP、放宽矿源但保留目标LP、19物品诊断及总通道流诊断；A精确证书另行重放。",
+  "remaining_defects": {
+    "disconnected_sources": 4,
+    "S": 135,
+    "R": 135,
+    "capsule_warehouse_paths": 1,
+    "battery_warehouse_paths": 0
+  },
+  "B_and_formal_files_unchanged": true,
+  "protected_files_checked": 36,
+  "solver_policy": "CP-SAT最多5 workers，LP/BLAS/OMP均1线程；LP调用顺序执行，合计配置不超过6。"
+}
