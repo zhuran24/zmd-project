@@ -1,7 +1,7 @@
 {
   "status": "pass",
   "binary": "/home/zhuran24/zmd-research-fresh/求解器/target/debug/kernel",
-  "binary_sha256": "e1bbca96ca4aa8476e40c3105fe6688a3731d3e93dc90eddcfb16a8686fe04f4",
+  "binary_sha256": "1e33ee193eba70e7abc001fc2de77d346e4b15b2cafc364275244ec7a0f4901c",
   "cases": [
     {
       "case": "bridge-control",
@@ -1365,7 +1365,7 @@
       "status": "invalid_input",
       "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/regressions/revision-r3/expired-after-closure-run-result.json",
       "open_items": [
-        "invalid_input input @ /home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json: 源文件指纹不符"
+        "invalid_input input @ W|5|probe_gate_a: 待事件时刻与进度不符"
       ],
       "stop": null,
       "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/regressions/revision-r3/expired-after-closure-run-result.json\",\"status\":\"invalid_input\"}\n",
@@ -1386,7 +1386,7 @@
       "status": "invalid_input",
       "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/regressions/revision-r3/expired-after-closure-seed-result.json",
       "open_items": [
-        "invalid_input input @ /home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json: 源文件指纹不符"
+        "invalid_input input @ W|5|probe_gate_a: 待事件时刻与进度不符"
       ],
       "stop": null,
       "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/regressions/revision-r3/expired-after-closure-seed-result.json\",\"status\":\"invalid_input\"}\n",
@@ -1409,15 +1409,15 @@
       "status": "invalid_input",
       "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/regressions/revision-r3/expired-after-closure-cycle-result.json",
       "open_items": [
-        "invalid_input input @ /home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json: 源文件指纹不符",
+        "invalid_input input @ W|5|probe_gate_a: 待事件时刻与进度不符",
         "装载诊断未独立复现；技术停止不证明布局无解"
       ],
       "stop": {
         "axis": "input",
-        "event": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+        "event": "W|5|probe_gate_a",
         "kind": "invalid_input",
         "partial_events": [],
-        "reason": "源文件指纹不符",
+        "reason": "待事件时刻与进度不符",
         "time": null
       },
       "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/regressions/revision-r3/expired-after-closure-cycle-result.json\",\"status\":\"invalid_input\"}\n",
@@ -1438,7 +1438,7 @@
       "status": "invalid_input",
       "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/regressions/revision-r3/legacy-late-window-cycle-result.json",
       "open_items": [
-        "invalid_input input @ cycle: 字段须恰为 schema result_id status level execution_mode port_meeting seed parameter_point reading support_domain domain_report fingerprints record_mode replay_input_ref run_record_ref last_state cycle stop budget open_items evidence_scope environment_assumption"
+        "invalid_input input @ cycle: 字段须恰为 schema result_id status level execution_mode port_meeting seed parameter_point reading support_domain domain_report fingerprints record_mode replay_input_ref run_record_ref last_state cycle stop budget open_items"
       ],
       "stop": null,
       "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/regressions/revision-r3/legacy-late-window-cycle-result.json\",\"status\":\"invalid_input\"}\n",
@@ -1459,7 +1459,7 @@
       "status": "invalid_input",
       "output": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/regressions/revision-r3/legacy-late-window-record-result.json",
       "open_items": [
-        "invalid_input input @ /home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json: 源文件指纹不符"
+        "invalid_input input @ /home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.md: 来源指纹不符，须重验而非刷新"
       ],
       "stop": null,
       "stdout": "{\"out\":\"/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/regressions/revision-r3/legacy-late-window-record-result.json\",\"status\":\"invalid_input\"}\n",
