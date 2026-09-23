@@ -1,0 +1,567 @@
+{
+  "status": "pass",
+  "cutoff": "2026-09-22T20:46:08.483719-04:00",
+  "catalog_version": "2026-09-22-r24-constraints-72",
+  "catalog_sha256": "b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c",
+  "constraints": 72,
+  "business_file_count": 62,
+  "relocked_inputs": 54,
+  "sample_inputs": 45,
+  "fixture_inputs": 9,
+  "audited_reference_documents": 56,
+  "audited_reference_fields": 114,
+  "candidate_sources": 16,
+  "rust_passed": 134,
+  "rust_failed": 0,
+  "python_cases": 8,
+  "tests": [
+    {
+      "name": "cargo-build",
+      "argv": [
+        "cargo",
+        "build",
+        "--workspace",
+        "-j",
+        "4"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 1.297,
+      "finished_utc": "2026-09-23T00:39:37.229721+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      },
+      "expected_exit_code": 0,
+      "meets_expectation": true
+    },
+    {
+      "name": "cargo-check",
+      "argv": [
+        "cargo",
+        "check",
+        "--workspace",
+        "-j",
+        "4"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 0.603,
+      "finished_utc": "2026-09-23T00:41:53.898041+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      },
+      "expected_exit_code": 0,
+      "meets_expectation": true
+    },
+    {
+      "name": "cargo-clippy",
+      "argv": [
+        "cargo",
+        "clippy",
+        "--workspace",
+        "-j",
+        "4"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 0.957,
+      "finished_utc": "2026-09-23T00:41:56.761775+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      },
+      "expected_exit_code": 0,
+      "meets_expectation": true
+    },
+    {
+      "name": "kernel-lib",
+      "argv": [
+        "cargo",
+        "test",
+        "-p",
+        "kernel",
+        "--lib",
+        "-j",
+        "4",
+        "--",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 79.122,
+      "finished_utc": "2026-09-23T00:43:17.786975+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      },
+      "expected_exit_code": 0,
+      "passed": 100,
+      "failed": 0,
+      "ignored": 0,
+      "meets_expectation": true
+    },
+    {
+      "name": "topology-lib",
+      "argv": [
+        "cargo",
+        "test",
+        "-p",
+        "topology",
+        "--lib",
+        "-j",
+        "4",
+        "--",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 0.511,
+      "finished_utc": "2026-09-23T00:43:20.759569+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      },
+      "expected_exit_code": 0,
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "meets_expectation": true
+    },
+    {
+      "name": "kernel-reference",
+      "argv": [
+        "cargo",
+        "test",
+        "-p",
+        "kernel",
+        "--test",
+        "reference",
+        "-j",
+        "4",
+        "--",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 1.688,
+      "finished_utc": "2026-09-23T00:43:24.411730+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      },
+      "expected_exit_code": 0,
+      "passed": 3,
+      "failed": 0,
+      "ignored": 0,
+      "meets_expectation": true
+    },
+    {
+      "name": "topology-validation",
+      "argv": [
+        "cargo",
+        "test",
+        "-p",
+        "topology",
+        "--test",
+        "validation",
+        "-j",
+        "4",
+        "--",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 11.824,
+      "finished_utc": "2026-09-23T00:43:38.235331+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      },
+      "expected_exit_code": 0,
+      "passed": 30,
+      "failed": 0,
+      "ignored": 0,
+      "meets_expectation": true
+    },
+    {
+      "name": "kernel-doc",
+      "argv": [
+        "cargo",
+        "test",
+        "-p",
+        "kernel",
+        "--doc",
+        "-j",
+        "4",
+        "--",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 0.332,
+      "finished_utc": "2026-09-23T00:43:40.630271+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      },
+      "expected_exit_code": 0,
+      "passed": 0,
+      "failed": 0,
+      "ignored": 0,
+      "meets_expectation": true
+    },
+    {
+      "name": "topology-doc",
+      "argv": [
+        "cargo",
+        "test",
+        "-p",
+        "topology",
+        "--doc",
+        "-j",
+        "4",
+        "--",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 0.116,
+      "finished_utc": "2026-09-23T00:43:42.693702+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      },
+      "expected_exit_code": 0,
+      "passed": 0,
+      "failed": 0,
+      "ignored": 0,
+      "meets_expectation": true
+    },
+    {
+      "name": "catalog-verify",
+      "argv": [
+        "python3",
+        "数据/工具/formal_catalog.py"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 0.066,
+      "finished_utc": "2026-09-23T00:43:44.479756+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      },
+      "expected_exit_code": 0,
+      "meets_expectation": true
+    },
+    {
+      "name": "catalog-regressions",
+      "argv": [
+        "python3",
+        "数据/工具/test_formal_catalog.py"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 2.837,
+      "finished_utc": "2026-09-23T00:43:49.268015+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      },
+      "expected_exit_code": 0,
+      "passed": 8,
+      "cases": 8,
+      "meets_expectation": true
+    },
+    {
+      "name": "positive-seed",
+      "argv": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/debug/kernel",
+        "seed",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22g/positive/positive-input.json",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22g/positive/seed-output.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 0.042,
+      "finished_utc": "2026-09-23T00:45:42.669810+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      },
+      "expected_exit_code": 0,
+      "meets_expectation": true
+    },
+    {
+      "name": "positive-check",
+      "argv": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/debug/kernel",
+        "check",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22g/positive/seed-output.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 0.027,
+      "finished_utc": "2026-09-23T00:45:44.500184+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      },
+      "expected_exit_code": 0,
+      "meets_expectation": true
+    },
+    {
+      "name": "positive-run",
+      "argv": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/debug/kernel",
+        "run",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22g/positive/seed-output.json",
+        "--ticks",
+        "6",
+        "--out",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22g/positive/positive-run.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 0.105,
+      "finished_utc": "2026-09-23T00:45:46.409198+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      },
+      "expected_exit_code": 0,
+      "meets_expectation": true
+    },
+    {
+      "name": "positive-verify-record",
+      "argv": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/debug/kernel",
+        "verify-record",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22g/positive/positive-run.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 0.194,
+      "finished_utc": "2026-09-23T00:45:48.419861+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      },
+      "expected_exit_code": 0,
+      "meets_expectation": true
+    },
+    {
+      "name": "stale-catalog-negative",
+      "argv": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/debug/kernel",
+        "seed",
+        "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22g/positive/stale-catalog-input.json",
+        "--config",
+        "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 2,
+      "seconds": 0.012,
+      "finished_utc": "2026-09-23T00:45:50.254773+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      },
+      "expected_exit_code": 2,
+      "meets_expectation": true
+    }
+  ],
+  "test_failures": [],
+  "sync_mismatches": [],
+  "known_out_of_scope_issues": [
+    {
+      "issue": "规格/check_revision.py:115 的 T12 旧断言",
+      "action": "断言未改；该文件仅变更第 44 行的只读快照入口；本轮未运行规格总自查"
+    },
+    {
+      "issue": "数据/样例/runtime_example.py 将桥轴对象按 Decision 校验",
+      "action": "文件原字节未变；本轮未运行 check_examples.py --self-test"
+    },
+    {
+      "issue": "内核配置-v1.json 与受限模型声明.md 的两处实现状态文字",
+      "action": "两个文件原字节未变"
+    }
+  ],
+  "history_counts": {
+    "crates/kernel/evidence": 566,
+    "crates/kernel/复核": 2094,
+    "数据/复核": 815
+  },
+  "history_total_files": 3475,
+  "history_ignored_files": 1,
+  "history_total_bytes": 1018797945,
+  "history_diff": {
+    "added": [],
+    "deleted": [],
+    "changed": []
+  },
+  "history_comparison_count": 37,
+  "history_checkpoints": [
+    "audit-after-history-diff.json",
+    "audit-before-history-diff.json",
+    "cargo-build-after-history-diff.json",
+    "cargo-build-before-history-diff.json",
+    "cargo-check-after-history-diff.json",
+    "cargo-check-before-history-diff.json",
+    "cargo-clippy-after-history-diff.json",
+    "cargo-clippy-before-history-diff.json",
+    "catalog-regressions-after-history-diff.json",
+    "catalog-regressions-before-history-diff.json",
+    "catalog-verify-after-history-diff.json",
+    "catalog-verify-before-history-diff.json",
+    "delivery-history-diff.json",
+    "kernel-doc-after-history-diff.json",
+    "kernel-doc-before-history-diff.json",
+    "kernel-lib-after-history-diff.json",
+    "kernel-lib-before-history-diff.json",
+    "kernel-reference-after-history-diff.json",
+    "kernel-reference-before-history-diff.json",
+    "positive-check-after-history-diff.json",
+    "positive-check-before-history-diff.json",
+    "positive-run-after-history-diff.json",
+    "positive-run-before-history-diff.json",
+    "positive-seed-after-history-diff.json",
+    "positive-seed-before-history-diff.json",
+    "positive-verify-record-after-history-diff.json",
+    "positive-verify-record-before-history-diff.json",
+    "stale-catalog-negative-after-history-diff.json",
+    "stale-catalog-negative-before-history-diff.json",
+    "sync-after-history-diff.json",
+    "sync-before-history-diff.json",
+    "topology-doc-after-history-diff.json",
+    "topology-doc-before-history-diff.json",
+    "topology-lib-after-history-diff.json",
+    "topology-lib-before-history-diff.json",
+    "topology-validation-after-history-diff.json",
+    "topology-validation-before-history-diff.json"
+  ],
+  "record_path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22g/记录.md"
+}

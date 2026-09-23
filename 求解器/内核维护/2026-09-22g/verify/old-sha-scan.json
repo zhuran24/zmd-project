@@ -1,0 +1,3705 @@
+{
+  "time": "2026-09-22T20:54:12.792567-04:00",
+  "argv": [
+    "rg",
+    "--hidden",
+    "--no-ignore",
+    "-l",
+    "-0",
+    "-F",
+    "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a",
+    ".",
+    "-g",
+    "!.git/**",
+    "-g",
+    "!**/target/**",
+    "-g",
+    "!**/__pycache__/**",
+    "-g",
+    "!**/.pytest_cache/**",
+    "-g",
+    "!**/.cache/**",
+    "-g",
+    "!求解器/内核维护/2026-09-22g/verify/**"
+  ],
+  "returncode": 0,
+  "excluded_audit_output": "求解器/内核维护/2026-09-22g/verify",
+  "files": [
+    {
+      "path": "求解器/规格/修订记录.md",
+      "category": "revision_history",
+      "occurrences": 1,
+      "lines": [
+        340
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/regen_constraints.log",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/relock.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 56,
+      "lines": [
+        7,
+        15,
+        30,
+        45,
+        60,
+        75,
+        90,
+        105,
+        120,
+        135,
+        165,
+        180,
+        195,
+        210,
+        225,
+        240,
+        255,
+        270,
+        285,
+        300,
+        315,
+        330,
+        345,
+        360,
+        375,
+        390,
+        405,
+        420,
+        435,
+        465,
+        480,
+        495,
+        510,
+        525,
+        540,
+        555,
+        570,
+        585,
+        600,
+        615,
+        630,
+        645,
+        660,
+        675,
+        690,
+        705,
+        720,
+        735,
+        750,
+        765,
+        780,
+        795,
+        810,
+        825,
+        840,
+        874
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/kernel-check.log",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        3
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/ignored-history-recovery.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        3
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/positive-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/catalog-regeneration.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/ignored-test-outputs/working-prefix-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/ignored-test-outputs/full-branch-run-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/ignored-test-outputs/record.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/ignored-test-outputs/empty-branch-run-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/ignored-test-outputs/original-cycle.record.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/relock.log",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        7
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/positive/kernel-check.log",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        3
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/positive/positive-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/positive/seed-output.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/positive/positive-run.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/positive/final/kernel-check.log",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        3
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/positive/final/positive-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/positive/final/seed-output.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/positive/final/positive-run.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/核验.md",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        54
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/round6_cli/attempt-2/referenced.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        8787,
+        8955
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/round6_cli/attempt-2/referenced-relative.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        8787,
+        8955
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/round6_cli/attempt-2/referenced-zero-prefix.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        68,
+        236
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/round6_cli/attempt-2/overflow.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/round6_cli/attempt-2/overflow-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/round6_cli/attempt-2/none-relative.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        8787,
+        8955
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/round6_cli/attempt-2/checkpoint-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/round6_cli/attempt-2/none.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        8787,
+        8955
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/round6_cli/attempt-2/referenced-zero-prefix.record.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/round6_cli/attempt-2/none-zero-prefix.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        68,
+        236
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/round6_cli/attempt-2/referenced.record.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/round6_cli/attempt-2/continued.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        8778,
+        8946
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/resume/positive-final-active-after.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        230
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/round6_cli/attempt-1/referenced.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        8787,
+        8955
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/round6_cli/attempt-1/referenced-relative.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        8787,
+        8955
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/round6_cli/attempt-1/referenced-zero-prefix.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        68,
+        236
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/round6_cli/attempt-1/overflow.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/resume/initial-worktree.patch",
+      "category": "older_maintenance_archive",
+      "occurrences": 55,
+      "lines": [
+        32,
+        45,
+        58,
+        71,
+        84,
+        97,
+        110,
+        123,
+        890,
+        1169,
+        1182,
+        1195,
+        1208,
+        1221,
+        1234,
+        1247,
+        1260,
+        1273,
+        1286,
+        1299,
+        1312,
+        1325,
+        1338,
+        1351,
+        1364,
+        1377,
+        1390,
+        1403,
+        1416,
+        1429,
+        1442,
+        1455,
+        1468,
+        1481,
+        1494,
+        1507,
+        1520,
+        1533,
+        1546,
+        1559,
+        1572,
+        1585,
+        1598,
+        1611,
+        1624,
+        1637,
+        1650,
+        1663,
+        1676,
+        1689,
+        1702,
+        1715,
+        1728,
+        1741,
+        2429
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/round6_cli/attempt-1/overflow-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/round6_cli/attempt-1/none-relative.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        8787,
+        8955
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/resume/cargo-check-final-active-before.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        230
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/round6_cli/attempt-1/checkpoint-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/round6_cli/attempt-1/none.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        8787,
+        8955
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/round6_cli/attempt-1/referenced-zero-prefix.record.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/round6_cli/attempt-1/none-zero-prefix.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        68,
+        236
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/round6_cli/attempt-1/referenced.record.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/resume/kernel-lib-final-active-before.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        230
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/round6_cli/attempt-1/continued.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        8778,
+        8946
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-2/ore-80000-finite.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-2/checkpoint_delta-continued.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-2/ore-80000-cycle.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-2/unsupported-shell.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-2/full_state_each_instant-checkpoint.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-2/混做粉碎机两下游-absolute.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        194
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-2/invalid-shell.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-2/resource-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-2/resource-shell.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-2/ore-80000-raw.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        6
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-2/zero-checkpoint.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-2/package/full_state_each_instant/records/record.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-2/package/full_state_each_instant/certificates/cycle.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        8787,
+        8955
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-2/package/checkpoint_delta/records/record.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-2/package/checkpoint_delta/certificates/cycle.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        8787,
+        8955
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/resume/spec-check-final-active-before.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        230
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/resume/audit-complete-active-after.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        230
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-2/reference-package/混做粉碎机两下游-checkpoint_delta.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        194
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-2/reference-package/分流器三路轮询-checkpoint_delta.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        186
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-2/reference-package/混做粉碎机两下游-full_state_each_instant.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        194
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/resume/topology-validation-final-active-after.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        230
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/resume/candidate-b-active-after.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        230
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-2/reference-package/分流器三路轮询-full_state_each_instant.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        186
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/resume/上一席记录-并发任务结束.md",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        7
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-2/ore-80000-seed.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-2/ore-79999-raw.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        6
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-2/ore-79999-cycle.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-2/unsupported-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-2/original-cycle.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        8787,
+        8955
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/resume/candidate-b-active-before.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        230
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-2/zero-prefix.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        68,
+        236
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-2/full_state_each_instant-continued.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/resume/audit-complete.log",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-2/bounded-reference-package/混做粉碎机两下游-reference.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        17,
+        150
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-2/bounded-reference-package/分流器三路轮询-reference.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        17,
+        146
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-2/checkpoint_delta-cycle-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-2/invalid-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-2/negative/hash.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-2/negative/producer.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-2/negative/dependency.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-2/negative/state.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-2/negative/missing.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-2/checkpoint_delta-checkpoint.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-2/ore-crossed-seed.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-2/ore-79999-finite.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-2/分流器三路轮询-absolute.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        186
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-2/full_state_each_instant-cycle-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-2/ore-79999-seed.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-2/ore-crossed-cycle.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-2/original-cycle.record.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/resume/cargo-clippy-final-active-after.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        230
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/resume/kernel-reference-final-active-after.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        230
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-1/ore-80000-finite.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-1/checkpoint_delta-continued.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-1/ore-80000-cycle.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-1/unsupported-shell.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-1/full_state_each_instant-checkpoint.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-1/混做粉碎机两下游-absolute.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        194
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/resume/audit-sync-final-active-after.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        230
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-1/invalid-shell.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/resume/structured-summary.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        3
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-1/resource-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-1/resource-shell.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-1/ore-80000-raw.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        6
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-1/zero-checkpoint.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/resume/kernel-doc-final-active-after.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        230
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-1/package/full_state_each_instant/records/record.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/resume/kernel-lib-final-active-after.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        230
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-1/package/full_state_each_instant/certificates/cycle.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        8787,
+        8955
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-1/package/checkpoint_delta/records/record.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-1/package/checkpoint_delta/certificates/cycle.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        8787,
+        8955
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-1/reference-package/混做粉碎机两下游-checkpoint_delta.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        194
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-1/reference-package/分流器三路轮询-checkpoint_delta.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        186
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-1/reference-package/混做粉碎机两下游-full_state_each_instant.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        194
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-1/reference-package/分流器三路轮询-full_state_each_instant.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        186
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-1/ore-80000-seed.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-1/ore-79999-raw.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        6
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/resume/positive-final-active-before.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        230
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-1/ore-79999-cycle.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-1/unsupported-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/resume/audit-sync-final-active-before.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        230
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-1/original-cycle.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        8787,
+        8955
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-1/zero-prefix.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        68,
+        236
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-1/full_state_each_instant-continued.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/resume/examples-active-before.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        230
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-1/bounded-reference-package/混做粉碎机两下游-reference.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        17,
+        150
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-1/bounded-reference-package/分流器三路轮询-reference.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        17,
+        146
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-1/checkpoint_delta-cycle-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-1/invalid-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/resume/audit-sync-final.log",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-1/negative/hash.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-1/negative/producer.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/resume/kernel-doc-final-active-before.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        230
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-1/negative/dependency.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-1/negative/state.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/resume/topology-doc-final-active-before.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        230
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-1/negative/missing.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-1/checkpoint_delta-checkpoint.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/resume/changed-files.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        471
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-1/ore-crossed-seed.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-1/ore-79999-finite.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-1/分流器三路轮询-absolute.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        186
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-1/full_state_each_instant-cycle-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/resume/spec-check-final-active-after.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        230
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-1/ore-79999-seed.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/resume/kernel-reference-final-active-before.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        230
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-1/ore-crossed-cycle.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-1/original-cycle.record.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-2/phase-1_2-cycle-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-2/parameter-top_only-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-2/zero-ore-origin-cycle-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-2/parameter-missing-cycle-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-2/phase-not-a-Time-cycle-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-2/phase-not-a-Time-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/resume/sync-audit.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-2/age-overflow-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/resume/topology-lib-final-active-after.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        230
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-2/slot_short-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        6
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-2/slot_unknown-cycle-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-2/zero-ore-iron-cycle-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/resume/topology-validation-final-active-before.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        230
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-2/zero-ore-origin-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-2/parameter-lifetime-cycle-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-2/age-overflow-cycle-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-2/parameter-top_only-cycle-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-2/unknown_progress-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        6
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-2/checkpoint-derived-run-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-2/slot_short-cycle-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-2/checkpoint-seed-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-2/parameter-conflict-cycle-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-2/parameter-missing-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-2/checkpoint-run-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-2/expired-after-closure-cycle-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-2/slot_unknown-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        6
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-2/boolean_seed-cycle-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-2/zero-ore-iron-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/resume/cargo-check-final-active-after.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        230
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-2/parameter-lifetime-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/resume/topology-lib-final-active-before.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        230
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-2/parameter-conflict-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-2/phase--1-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-2/boolean_seed-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        6
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-2/unknown_progress-cycle-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-2/phase-6-cycle-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-2/phase--1-cycle-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-2/phase-6-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-2/missing_inventory-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        6
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-2/missing_inventory-cycle-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-2/boolean_context-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        6
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-2/bridge-control-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-2/bridge-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-2/phase-1_2-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-2/checkpoint-control.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-2/boolean_context-cycle-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-1/phase-1_2-cycle-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/resume/audit-complete-active-before.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        230
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/resume/cargo-clippy-final-active-before.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        230
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/resume/initial-worktree.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        68
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-1/parameter-top_only-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-1/zero-ore-origin-cycle-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-1/parameter-missing-cycle-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-1/phase-not-a-Time-cycle-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/resume/topology-doc-final-active-after.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        230
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-1/phase-not-a-Time-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/resume/examples-active-after.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        230
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-1/age-overflow-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-1/slot_short-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        6
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-1/slot_unknown-cycle-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-1/zero-ore-iron-cycle-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/记录.md",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        7
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-1/zero-ore-origin-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-1/parameter-lifetime-cycle-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-1/age-overflow-cycle-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-1/parameter-top_only-cycle-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-1/unknown_progress-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        6
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-1/checkpoint-derived-run-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-1/slot_short-cycle-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-1/checkpoint-seed-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-1/parameter-conflict-cycle-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-1/parameter-missing-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/current-sync-audit.log",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/recover_ignored_history.py",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        9
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/relock-final.log",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        7
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-1/checkpoint-run-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/verify/positive-seed.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-1/expired-after-closure-cycle-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-1/slot_unknown-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        6
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r4_cli/attempt-2/closed-stop-full_state_each_instant-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-1/boolean_seed-cycle-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r4_cli/attempt-2/extra-trigger-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r4_cli/attempt-2/empty-branch-seed-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-1/zero-ore-iron-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r4_cli/attempt-2/working-prefix-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-1/parameter-lifetime-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r4_cli/attempt-2/age-overflow-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r4_cli/attempt-2/age-cohorts-run-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-1/parameter-conflict-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r4_cli/attempt-2/closed-checkpoint-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        6
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r4_cli/attempt-2/full-branch-run-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-1/phase--1-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r4_cli/attempt-2/extra-trigger-cycle-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/verify/grep-active-candidates.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        456
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-1/boolean_seed-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        6
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r4_cli/attempt-2/age-cohorts-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r4_cli/attempt-2/age-overflow-cycle-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-1/unknown_progress-cycle-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-1/phase-6-cycle-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-1/phase--1-cycle-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r4_cli/attempt-2/path-runs-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r4_cli/attempt-2/forged-adjacency.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-1/phase-6-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r4_cli/attempt-2/closed-seed-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-1/missing_inventory-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        6
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-1/missing_inventory-cycle-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r4_cli/attempt-2/closed-prefix-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-1/boolean_context-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        6
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r4_cli/attempt-2/empty-branch-run-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-1/bridge-control-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r4_cli/attempt-2/empty-branch-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        6
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-1/bridge-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/verify/positive-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r4_cli/attempt-2/closed-stop-checkpoint_delta-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-1/phase-1_2-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r4_cli/attempt-2/working-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/verify/positive-record.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-1/checkpoint-control.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/verify/static-audit.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 111,
+      "lines": [
+        2,
+        332,
+        333,
+        348,
+        349,
+        364,
+        365,
+        380,
+        381,
+        396,
+        397,
+        412,
+        413,
+        428,
+        429,
+        444,
+        445,
+        460,
+        461,
+        476,
+        477,
+        492,
+        493,
+        508,
+        509,
+        524,
+        525,
+        540,
+        541,
+        556,
+        557,
+        572,
+        573,
+        588,
+        589,
+        604,
+        605,
+        620,
+        621,
+        660,
+        661,
+        676,
+        677,
+        692,
+        693,
+        708,
+        709,
+        724,
+        725,
+        740,
+        741,
+        756,
+        757,
+        772,
+        773,
+        788,
+        789,
+        804,
+        805,
+        820,
+        821,
+        836,
+        837,
+        852,
+        853,
+        868,
+        869,
+        884,
+        885,
+        900,
+        901,
+        916,
+        917,
+        932,
+        933,
+        948,
+        949,
+        964,
+        965,
+        980,
+        981,
+        996,
+        997,
+        1012,
+        1013,
+        1028,
+        1029,
+        1044,
+        1045,
+        1060,
+        1061,
+        1076,
+        1077,
+        1092,
+        1093,
+        1108,
+        1109,
+        1124,
+        1125,
+        1140,
+        1141,
+        1156,
+        1157,
+        1172,
+        1173,
+        1188,
+        1189,
+        1204,
+        1205,
+        1310,
+        1311
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r4_cli/attempt-2/path-runs-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r3_cli/attempt-1/boolean_context-cycle-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r4_cli/attempt-2/age-cohorts-seed-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r4_cli/attempt-2/closed-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        6
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r4_cli/attempt-2/full-branch-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        6
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r4_cli/attempt-1/closed-stop-full_state_each_instant-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r4_cli/attempt-1/extra-trigger-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r4_cli/attempt-1/empty-branch-seed-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r4_cli/attempt-1/working-prefix-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r4_cli/attempt-1/age-overflow-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r4_cli/attempt-1/age-cohorts-run-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r4_cli/attempt-1/closed-checkpoint-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        6
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r4_cli/attempt-1/full-branch-run-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r4_cli/attempt-1/extra-trigger-cycle-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r4_cli/attempt-1/age-cohorts-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r4_cli/attempt-1/age-overflow-cycle-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        227
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/verify/positive-check.stdout.log",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        3
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r4_cli/attempt-1/path-runs-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r4_cli/attempt-1/forged-adjacency.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r4_cli/attempt-1/closed-seed-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r4_cli/attempt-1/closed-prefix-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/verify/worktree-final.patch",
+      "category": "older_maintenance_archive",
+      "occurrences": 55,
+      "lines": [
+        32,
+        54,
+        76,
+        98,
+        120,
+        142,
+        164,
+        186,
+        369,
+        670,
+        692,
+        714,
+        736,
+        758,
+        780,
+        802,
+        824,
+        846,
+        868,
+        890,
+        912,
+        934,
+        956,
+        978,
+        1000,
+        1022,
+        1044,
+        1066,
+        1110,
+        1132,
+        1154,
+        1176,
+        1198,
+        1220,
+        1242,
+        1264,
+        1286,
+        1308,
+        1330,
+        1352,
+        1374,
+        1396,
+        1418,
+        1440,
+        1462,
+        1484,
+        1506,
+        1528,
+        1550,
+        1572,
+        1594,
+        1616,
+        1638,
+        1660,
+        2115
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r4_cli/attempt-1/empty-branch-run-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r4_cli/attempt-1/empty-branch-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        6
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r4_cli/attempt-1/closed-stop-checkpoint_delta-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r4_cli/attempt-1/working-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r4_cli/attempt-1/path-runs-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r4_cli/attempt-1/age-cohorts-seed-result.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r4_cli/attempt-1/closed-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        6
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r4_cli/attempt-1/full-branch-input.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        6
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/test-evidence-tmp/round5_cli/relocated-seed.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/changed-files.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        344
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/seed-output.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/relock-initial.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 56,
+      "lines": [
+        7,
+        15,
+        25,
+        35,
+        45,
+        55,
+        65,
+        75,
+        85,
+        95,
+        105,
+        115,
+        125,
+        135,
+        145,
+        155,
+        165,
+        175,
+        185,
+        195,
+        205,
+        215,
+        225,
+        235,
+        245,
+        255,
+        265,
+        275,
+        285,
+        295,
+        305,
+        315,
+        325,
+        335,
+        345,
+        355,
+        365,
+        375,
+        385,
+        395,
+        405,
+        415,
+        425,
+        435,
+        445,
+        455,
+        465,
+        475,
+        485,
+        495,
+        505,
+        515,
+        525,
+        535,
+        545,
+        574
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/positive-run.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/current-sync-audit.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22e/changes.patch",
+      "category": "older_maintenance_archive",
+      "occurrences": 55,
+      "lines": [
+        32,
+        54,
+        76,
+        98,
+        120,
+        142,
+        164,
+        186,
+        369,
+        670,
+        692,
+        714,
+        736,
+        758,
+        780,
+        802,
+        824,
+        846,
+        868,
+        890,
+        912,
+        934,
+        956,
+        978,
+        1000,
+        1022,
+        1044,
+        1066,
+        1110,
+        1132,
+        1154,
+        1176,
+        1198,
+        1220,
+        1242,
+        1264,
+        1286,
+        1308,
+        1330,
+        1352,
+        1374,
+        1396,
+        1418,
+        1440,
+        1462,
+        1484,
+        1506,
+        1528,
+        1550,
+        1572,
+        1594,
+        1616,
+        1638,
+        1660,
+        2115
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22d/审查-opus/section8/positive/cycle.record.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22d/审查-opus/section8/positive/checkpoint.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22d/审查-opus/section8/positive/cycle.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        8787,
+        8955
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22d/审查-opus/section8/positive/resumed.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22d/审查-opus/section8/positive/run.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 2,
+      "lines": [
+        14,
+        182
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22d/审查-opus/section8/positive/seed.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22d/审查-opus/section8/positive/check.stdout.log",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        3
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22d/审查处理核验/protected-before.json",
+      "category": "older_maintenance_archive",
+      "occurrences": 1,
+      "lines": [
+        17048
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/business.patch",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 55,
+      "lines": [
+        9,
+        22,
+        35,
+        48,
+        61,
+        74,
+        87,
+        100,
+        113,
+        135,
+        194,
+        207,
+        220,
+        233,
+        246,
+        259,
+        272,
+        285,
+        298,
+        311,
+        324,
+        337,
+        350,
+        363,
+        376,
+        389,
+        402,
+        415,
+        428,
+        441,
+        454,
+        467,
+        480,
+        493,
+        506,
+        519,
+        532,
+        545,
+        558,
+        571,
+        584,
+        597,
+        610,
+        623,
+        636,
+        649,
+        662,
+        675,
+        688,
+        701,
+        714,
+        727,
+        740,
+        753,
+        766
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/work.py",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        12
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/inspection.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        3
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/positive/stale-catalog-input.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/记录.md",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        52
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/sync-plan.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/after-old-sha-inventory.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        10
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/artifacts.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        325
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/crates/kernel/tests/fixtures/core_inbound.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        6
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/changed-files.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/crates/kernel/tests/fixtures/revision_r2_branch_cut.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        6
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/initial-active.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        229
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before-old-sha-inventory.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        10
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/crates/kernel/tests/fixtures/benchmark_candidate_b.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/sync-changes.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        65
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/crates/kernel/tests/fixtures/revision_r2_phase_control.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        6
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/crates/kernel/tests/fixtures/priority.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        6
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/crates/kernel/tests/fixtures/benchmark_brick.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/规格/修订记录.md",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        340
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/crates/kernel/tests/fixtures/benchmark_brick_60.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/crates/kernel/tests/fixtures/benchmark_1000.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        6
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/候选B/来源清单.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        64
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/crates/kernel/tests/fixtures/bridge.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        6
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/分流器三路轮询.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        6
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/密集制造闭环序2核验.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/阻尼连续带核验.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/密集制造闭环序3核验.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/阻尼切支恢复核验.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/传输拒收与暂停核验.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/密集制造闭环序1核验.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/密集制造闭环基础.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        6
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/密集制造闭环序4核验.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/轮询均分序2核验.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/桥接器双通路.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/研磨混做核验.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/轮询均分序1核验.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/混做粉碎机两下游.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        6
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/轮询均分序4核验.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/轮询均分序5核验.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/双成品满仓起动试作.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/任务7内核/双门窗口恢复.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/轮询均分序3核验.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/密集结点核验.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/轮询均分核验.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/任务7内核/无线一满一可收.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/任务7内核/无线多格歧义.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/任务7内核/阻尼恢复.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/密集制造闭环序5核验.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/任务7内核/累计审计与窗口周期.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/密集结点闭环核验.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/任务7内核/同刻双箱争余量.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/任务7内核/静止成熟与暂停键.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/任务7内核/身份断边恢复.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/任务7内核/成熟旧货重试.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/任务7内核/装载与普通制造.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/密集结点循环种子核验.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/任务7内核/身份实际切换.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/任务7内核/累计调低保留.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/任务7内核/无线空箱.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/任务7内核/无线多格全收.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/任务7内核/无线全拒收.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/任务7内核/生产环带.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/任务7内核/累计调高资格.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/任务7内核/无线部分接收.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/密集制造闭环序0核验.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/轮询均分序0核验.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/生产循环环带.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/双成品制造砖.json",
+      "category": "this_relock_records_backups_and_negative",
+      "occurrences": 1,
+      "lines": [
+        4
+      ]
+    }
+  ],
+  "file_count": 391,
+  "occurrences": 930,
+  "category_counts": {
+    "revision_history": 1,
+    "older_maintenance_archive": 322,
+    "this_relock_records_backups_and_negative": 68
+  },
+  "outside_three_history_file_count": 391,
+  "outside_three_history_occurrences": 930
+}

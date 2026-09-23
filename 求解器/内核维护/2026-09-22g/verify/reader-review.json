@@ -1,0 +1,14 @@
+{
+  "time": "2026-09-22T21:02:09.826495-04:00",
+  "status": "pass",
+  "missing_links": [],
+  "checks": [
+    "status and issue count agree with summary",
+    "historical record and cutoff explicit",
+    "raw grep hits separated from active references",
+    "HEAD drift and ignored-file boundary explicit",
+    "test counts independently parsed and Python nested run not double-counted",
+    "initial versus final status distinguished",
+    "finite positive chain not a target certificate"
+  ]
+}

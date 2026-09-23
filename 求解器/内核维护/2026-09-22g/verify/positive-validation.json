@@ -1,0 +1,46 @@
+{
+  "binary": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22g/verify/target/debug/kernel",
+  "binary_sha256": "23c20f676e8215ebd5237300051437f578486a60c3345be519fef3967826fce7",
+  "source_input": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/无线多格全收.json",
+  "source_sha256": "dc613ebdead5c123833b781b24cd32fbe8718707124f721804a62a1dab87b979",
+  "positive": [
+    {
+      "name": "positive-seed",
+      "exit_code": 0,
+      "status": null,
+      "passed": true
+    },
+    {
+      "name": "positive-check",
+      "exit_code": 0,
+      "status": "input_checked",
+      "passed": true
+    },
+    {
+      "name": "positive-run",
+      "exit_code": 0,
+      "status": "completed",
+      "passed": true
+    },
+    {
+      "name": "positive-verify-record",
+      "exit_code": 0,
+      "status": "input_checked",
+      "passed": true
+    }
+  ],
+  "seed_schema": "kernel-input-v3",
+  "run_status": "completed",
+  "negative": {
+    "exit_code": 2,
+    "status": "invalid_input",
+    "reason": [
+      "invalid_input input @ /home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json: 源文件指纹不符"
+    ],
+    "passed": true,
+    "only_changed_field": [
+      ".catalog.sha256"
+    ]
+  },
+  "ticks": 6
+}

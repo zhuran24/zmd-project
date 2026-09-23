@@ -1,0 +1,18 @@
+{
+  "status": "pass",
+  "reviewed_documents": [
+    "记录.md",
+    "changed-files.md",
+    "规格/修订记录.md r24",
+    "数据/候选B/验证记录.md"
+  ],
+  "links_checked": 96,
+  "business_files": 62,
+  "scope_matches_git_diff": true,
+  "index_empty": true,
+  "history_comparisons_checked": 37,
+  "counts_consistent": true,
+  "historical_candidate_counts_labeled": true,
+  "known_issue_scope_preserved": true,
+  "record_sha256": "93e65fcdc4274483c4b053d6c24e944c29589229a6cec5dbbb5342fff523b671"
+}

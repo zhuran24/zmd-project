@@ -1,0 +1,27 @@
+{
+  "name": "topology-validation",
+  "argv": [
+    "cargo",
+    "test",
+    "-p",
+    "topology",
+    "--test",
+    "validation",
+    "-j",
+    "4",
+    "--",
+    "--test-threads=1"
+  ],
+  "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+  "started": "2026-09-22T20:57:15.613853-04:00",
+  "finished": "2026-09-22T20:57:24.073837-04:00",
+  "seconds": 8.459905723997508,
+  "exit_code": 0,
+  "expected_exit_code": 0,
+  "passed": true,
+  "environment": {
+    "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22g/verify/target",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "TMPDIR": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22g/verify/tmp"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "head": "be7ef368a7bce5078925993ecd760479a6641ccf",
+  "sources": [
+    {
+      "path": "《明日方舟：终末地》游戏规则.txt",
+      "head_sha256": "52df4c12ce90975b861a6a663bd37873e03c9549658d200dc7e95fabc4bc29f3",
+      "working_sha256": "52df4c12ce90975b861a6a663bd37873e03c9549658d200dc7e95fabc4bc29f3",
+      "working_equals_head": true
+    },
+    {
+      "path": "求解任务.txt",
+      "head_sha256": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+      "working_sha256": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+      "working_equals_head": true
+    },
+    {
+      "path": "求解约束.txt",
+      "head_sha256": "0c05976f6063f3332db6ee19d7746052ef35148d7c2a12dfa396c7bb8753f30f",
+      "working_sha256": "0c05976f6063f3332db6ee19d7746052ef35148d7c2a12dfa396c7bb8753f30f",
+      "working_equals_head": true
+    }
+  ],
+  "old_sha256": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a",
+  "new_sha256": "b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c",
+  "rebuilt_sha256": "b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c",
+  "byte_equal": true,
+  "semantic_differences": [],
+  "head_changed_leaves": [
+    ".constraints[32].text",
+    ".sources[2].sha256",
+    ".sources[2].lines[75]",
+    ".version"
+  ],
+  "constraints": 72,
+  "units": 18,
+  "recipes": 18,
+  "constants": 32,
+  "material_flow": 19,
+  "method": "HEAD formal source bytes; full projection of constraints/task/constants/flow/recipes/units; HEAD supplies serialization order, unit order, conventions, and transcription timestamp; explicit r24 version",
+  "generator_hashes": {
+    "formal_catalog.py": "129cad47b1e7ec1d4b732e6cfcdc5415fb2d854223e71cac2afe6d7abc6405cf",
+    "formal_units.py": "b7be215a4369d97dba931ce8dbff1fabdc1f35936f11dfc9a8acdf9ffc4913f3"
+  }
+}

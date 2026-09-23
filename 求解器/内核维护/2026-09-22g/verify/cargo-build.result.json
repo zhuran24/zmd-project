@@ -1,0 +1,22 @@
+{
+  "name": "cargo-build",
+  "argv": [
+    "cargo",
+    "build",
+    "--workspace",
+    "-j",
+    "4"
+  ],
+  "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+  "started": "2026-09-22T20:54:11.757754-04:00",
+  "finished": "2026-09-22T20:54:20.892323-04:00",
+  "seconds": 9.134406687000592,
+  "exit_code": 0,
+  "expected_exit_code": 0,
+  "passed": true,
+  "environment": {
+    "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22g/verify/target",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "TMPDIR": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22g/verify/tmp"
+  }
+}

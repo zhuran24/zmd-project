@@ -1,0 +1,3655 @@
+{
+  "counts": {
+    "business": 62,
+    "maintenance": 245,
+    "parallel": 596,
+    "out_of_scope": 6
+  },
+  "business": [
+    {
+      "status": " M",
+      "path": "求解器/crates/kernel/tests/fixtures/benchmark_1000.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/crates/kernel/tests/fixtures/benchmark_brick.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/crates/kernel/tests/fixtures/benchmark_brick_60.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/crates/kernel/tests/fixtures/benchmark_candidate_b.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/crates/kernel/tests/fixtures/bridge.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/crates/kernel/tests/fixtures/core_inbound.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/crates/kernel/tests/fixtures/priority.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/crates/kernel/tests/fixtures/revision_r2_branch_cut.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/crates/kernel/tests/fixtures/revision_r2_phase_control.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/候选B/来源清单.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/候选B/校验报告.md"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/候选B/验证记录.md"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/样例/check_examples.py"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/样例/任务7内核/双门窗口恢复.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/样例/任务7内核/同刻双箱争余量.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/样例/任务7内核/成熟旧货重试.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/样例/任务7内核/无线一满一可收.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/样例/任务7内核/无线全拒收.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/样例/任务7内核/无线多格全收.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/样例/任务7内核/无线多格歧义.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/样例/任务7内核/无线空箱.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/样例/任务7内核/无线部分接收.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/样例/任务7内核/生产环带.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/样例/任务7内核/累计审计与窗口周期.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/样例/任务7内核/累计调低保留.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/样例/任务7内核/累计调高资格.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/样例/任务7内核/装载与普通制造.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/样例/任务7内核/身份实际切换.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/样例/任务7内核/身份断边恢复.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/样例/任务7内核/阻尼恢复.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/样例/任务7内核/静止成熟与暂停键.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/样例/传输拒收与暂停核验.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/样例/分流器三路轮询.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/样例/双成品制造砖.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/样例/双成品满仓起动试作.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/样例/密集制造闭环基础.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/样例/密集制造闭环序0核验.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/样例/密集制造闭环序1核验.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/样例/密集制造闭环序2核验.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/样例/密集制造闭环序3核验.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/样例/密集制造闭环序4核验.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/样例/密集制造闭环序5核验.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/样例/密集结点循环种子核验.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/样例/密集结点核验.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/样例/密集结点闭环核验.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/样例/桥接器双通路.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/样例/混做粉碎机两下游.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/样例/生产循环环带.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/样例/研磨混做核验.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/样例/轮询均分序0核验.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/样例/轮询均分序1核验.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/样例/轮询均分序2核验.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/样例/轮询均分序3核验.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/样例/轮询均分序4核验.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/样例/轮询均分序5核验.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/样例/轮询均分核验.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/样例/阻尼切支恢复核验.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/样例/阻尼连续带核验.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/数据/正式静态目录.json"
+    },
+    {
+      "status": " M",
+      "path": "求解器/规格/check_revision.py"
+    },
+    {
+      "status": " M",
+      "path": "求解器/规格/修订记录.md"
+    },
+    {
+      "status": " M",
+      "path": "求解器/规格/运行语义.md"
+    }
+  ],
+  "maintenance": [
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/after-old-sha-inventory.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/artifacts.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/audit-after-history-diff.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/audit-after-history.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/audit-before-history-diff.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/audit-before-history.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/audit.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before-old-sha-inventory.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/crates/kernel/tests/fixtures/benchmark_1000.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/crates/kernel/tests/fixtures/benchmark_brick.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/crates/kernel/tests/fixtures/benchmark_brick_60.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/crates/kernel/tests/fixtures/benchmark_candidate_b.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/crates/kernel/tests/fixtures/bridge.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/crates/kernel/tests/fixtures/core_inbound.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/crates/kernel/tests/fixtures/priority.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/crates/kernel/tests/fixtures/revision_r2_branch_cut.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/crates/kernel/tests/fixtures/revision_r2_phase_control.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/候选B/来源清单.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/候选B/校验报告.md"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/候选B/验证记录.md"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/check_examples.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/任务7内核/双门窗口恢复.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/任务7内核/同刻双箱争余量.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/任务7内核/成熟旧货重试.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/任务7内核/无线一满一可收.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/任务7内核/无线全拒收.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/任务7内核/无线多格全收.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/任务7内核/无线多格歧义.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/任务7内核/无线空箱.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/任务7内核/无线部分接收.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/任务7内核/生产环带.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/任务7内核/累计审计与窗口周期.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/任务7内核/累计调低保留.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/任务7内核/累计调高资格.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/任务7内核/装载与普通制造.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/任务7内核/身份实际切换.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/任务7内核/身份断边恢复.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/任务7内核/阻尼恢复.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/任务7内核/静止成熟与暂停键.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/传输拒收与暂停核验.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/分流器三路轮询.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/双成品制造砖.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/双成品满仓起动试作.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/密集制造闭环基础.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/密集制造闭环序0核验.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/密集制造闭环序1核验.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/密集制造闭环序2核验.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/密集制造闭环序3核验.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/密集制造闭环序4核验.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/密集制造闭环序5核验.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/密集结点循环种子核验.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/密集结点核验.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/密集结点闭环核验.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/桥接器双通路.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/混做粉碎机两下游.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/生产循环环带.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/研磨混做核验.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/轮询均分序0核验.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/轮询均分序1核验.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/轮询均分序2核验.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/轮询均分序3核验.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/轮询均分序4核验.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/轮询均分序5核验.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/轮询均分核验.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/阻尼切支恢复核验.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/样例/阻尼连续带核验.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/数据/正式静态目录.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/规格/check_revision.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/规格/修订记录.md"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/before/求解器/规格/运行语义.md"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/business-diff-stat.txt"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/business.patch"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/cargo-build-active-after.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/cargo-build-active-before.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/cargo-build-after-history-diff.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/cargo-build-after-history.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/cargo-build-before-history-diff.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/cargo-build-before-history.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/cargo-build.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/cargo-check-active-after.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/cargo-check-active-before.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/cargo-check-after-history-diff.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/cargo-check-after-history.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/cargo-check-before-history-diff.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/cargo-check-before-history.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/cargo-check.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/cargo-clippy-active-after.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/cargo-clippy-active-before.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/cargo-clippy-after-history-diff.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/cargo-clippy-after-history.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/cargo-clippy-before-history-diff.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/cargo-clippy-before-history.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/cargo-clippy.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/catalog-regressions-active-after.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/catalog-regressions-active-before.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/catalog-regressions-after-history-diff.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/catalog-regressions-after-history.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/catalog-regressions-before-history-diff.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/catalog-regressions-before-history.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/catalog-regressions.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/catalog-verify-active-after.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/catalog-verify-active-before.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/catalog-verify-after-history-diff.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/catalog-verify-after-history.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/catalog-verify-before-history-diff.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/catalog-verify-before-history.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/catalog-verify.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/changed-files.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/changed-files.md"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/commands.jsonl"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/delivery-history-diff.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/delivery-history.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/final-status.txt"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/formal-sources.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/git-diff-check.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/guard.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/ignored-history-files.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/initial-active.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/initial-diff.patch"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/initial-head.txt"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/initial-history.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/initial-status.txt"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/inspection.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/kernel-doc-active-after.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/kernel-doc-active-before.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/kernel-doc-after-history-diff.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/kernel-doc-after-history.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/kernel-doc-before-history-diff.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/kernel-doc-before-history.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/kernel-doc.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/kernel-lib-active-after.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/kernel-lib-active-before.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/kernel-lib-after-history-diff.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/kernel-lib-after-history.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/kernel-lib-before-history-diff.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/kernel-lib-before-history.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/kernel-lib.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/kernel-reference-active-after.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/kernel-reference-active-before.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/kernel-reference-after-history-diff.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/kernel-reference-after-history.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/kernel-reference-before-history-diff.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/kernel-reference-before-history.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/kernel-reference.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/positive-check-active-after.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/positive-check-active-before.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/positive-check-after-history-diff.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/positive-check-after-history.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/positive-check-before-history-diff.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/positive-check-before-history.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/positive-check.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/positive-run-active-after.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/positive-run-active-before.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/positive-run-after-history-diff.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/positive-run-after-history.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/positive-run-before-history-diff.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/positive-run-before-history.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/positive-run.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/positive-seed-active-after.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/positive-seed-active-before.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/positive-seed-after-history-diff.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/positive-seed-after-history.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/positive-seed-before-history-diff.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/positive-seed-before-history.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/positive-seed.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/positive-validation.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/positive-verify-record-active-after.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/positive-verify-record-active-before.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/positive-verify-record-after-history-diff.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/positive-verify-record-after-history.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/positive-verify-record-before-history-diff.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/positive-verify-record-before-history.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/positive-verify-record.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/positive/positive-input.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/positive/positive-run.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/positive/seed-output.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/positive/stale-catalog-input.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/reader-review.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/reader_review.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/review.sh"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/run.sh"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/safe-suite.sh"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/stale-catalog-negative-active-after.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/stale-catalog-negative-active-before.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/stale-catalog-negative-after-history-diff.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/stale-catalog-negative-after-history.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/stale-catalog-negative-before-history-diff.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/stale-catalog-negative-before-history.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/stale-catalog-negative.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/summary.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/sync-after-history-diff.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/sync-after-history.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/sync-before-history-diff.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/sync-before-history.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/sync-changes.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/sync-plan.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/topology-doc-active-after.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/topology-doc-active-before.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/topology-doc-after-history-diff.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/topology-doc-after-history.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/topology-doc-before-history-diff.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/topology-doc-before-history.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/topology-doc.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/topology-lib-active-after.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/topology-lib-active-before.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/topology-lib-after-history-diff.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/topology-lib-after-history.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/topology-lib-before-history-diff.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/topology-lib-before-history.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/topology-lib.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/topology-validation-active-after.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/topology-validation-active-before.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/topology-validation-after-history-diff.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/topology-validation-after-history.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/topology-validation-before-history-diff.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/topology-validation-before-history.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/topology-validation.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/verify/baseline.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/verify/cargo-build-before-active-diff.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/verify/cargo-build-before-active.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/verify/cargo-build-before-history-diff.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/verify/cargo-build-before-history.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/verify/cargo-build.stderr.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/verify/cargo-build.stdout.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/verify/catalog-audit.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/verify/head-sources/《明日方舟：终末地》游戏规则.txt"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/verify/head-sources/求解任务.txt"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/verify/head-sources/求解约束.txt"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/verify/history-head.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/verify/history-ignored.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/verify/initial-active.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/verify/initial-history.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/verify/initial-status.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/verify/initial-status.txt"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/verify/initial-status.z"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/verify/initial.patch"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/verify/old-sha-scan.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/verify/old-sha-scan.stderr.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/verify/rebuilt-catalog.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/verify/references-audit.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/verify/run.sh"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/verify/verify.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/work.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/只读文件指纹.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/内核维护/2026-09-22g/记录.md"
+    }
+  ],
+  "parallel": [
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/audit_encoding.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/campaign_state.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/check_solution.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/checker_negative_control.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/compact_build_check.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/domain_objective_delta_audit.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/encoding_audit.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/filter_positions.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/flow_model.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/flow_model_compact.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/flow_model_global.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/flow_model_min_edges.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/flow_model_min_edges_domain.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/geometry.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/global_completed_model_checks.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/global_model_delta_audit.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/input_change_audit.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/inputs/aggflow.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/inputs/filter_positions.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/inputs/flowcheck.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/inputs/positions.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/inputs/solve_relaxation.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/inputs/《明日方舟：终末地》游戏规则.txt.md"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/inputs/共识稿-v4-7aae9e20.md"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/inputs/异源核查.md"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/inputs/报告.md"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/inputs/求解任务.txt.md"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/inputs/求解约束.20260922T224738Z.txt.md"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/inputs/求解约束.20260923T002521Z.txt.md"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/inputs/求解约束.txt.md"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/inputs/纪要.md"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/link_checks.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/campaign_all_long.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/campaign_compact_long.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/campaign_compact_short.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/campaign_ore_long.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/checker_negative_after_fix.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/checker_negative_before_fix.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/encoding_audit.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/original_domain_recheck.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/report_generation.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y17_all_all_long.console.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y17_all_all_long.load.jsonl"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y17_all_all_long.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y17_all_short.console.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y17_all_short.load.jsonl"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y17_all_short.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y17_ore_compact_long.console.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y17_ore_compact_long.load.jsonl"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y17_ore_compact_long.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y17_ore_compact_short.console.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y17_ore_compact_short.load.jsonl"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y17_ore_compact_short.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y17_ore_ore_long.console.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y17_ore_ore_long.load.jsonl"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y17_ore_ore_long.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y17_ore_short.console.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y17_ore_short.load.jsonl"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y17_ore_short.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y6_all_all_long.console.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y6_all_all_long.load.jsonl"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y6_all_all_long.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y6_all_short.console.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y6_all_short.load.jsonl"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y6_all_short.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y6_ore_compact_long.console.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y6_ore_compact_long.load.jsonl"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y6_ore_compact_long.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y6_ore_compact_short.console.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y6_ore_compact_short.load.jsonl"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y6_ore_compact_short.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y6_ore_ore_long.console.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y6_ore_ore_long.load.jsonl"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y6_ore_ore_long.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y6_ore_short.console.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y6_ore_short.load.jsonl"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y6_ore_short.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y7_all_all_long.console.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y7_all_all_long.load.jsonl"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y7_all_all_long.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y7_all_short.console.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y7_all_short.load.jsonl"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y7_all_short.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y7_ore_compact_long.console.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y7_ore_compact_long.load.jsonl"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y7_ore_compact_long.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y7_ore_compact_short.console.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y7_ore_compact_short.load.jsonl"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y7_ore_compact_short.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y7_ore_ore_long.console.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y7_ore_ore_long.load.jsonl"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y7_ore_ore_long.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y7_ore_short.console.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y7_ore_short.load.jsonl"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y7_ore_short.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y9_all_all_long.console.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y9_all_all_long.load.jsonl"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y9_all_all_long.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y9_all_short.console.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y9_all_short.load.jsonl"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y9_all_short.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y9_ore_compact_long.console.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y9_ore_compact_long.load.jsonl"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y9_ore_compact_long.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y9_ore_compact_short.console.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y9_ore_compact_short.load.jsonl"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y9_ore_compact_short.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y9_ore_ore_long.console.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y9_ore_ore_long.load.jsonl"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y9_ore_ore_long.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y9_ore_short.console.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y9_ore_short.load.jsonl"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/logs/y9_ore_short.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/make_report.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/manifest.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/original_domain_recheck.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/progress.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/recheck_original_domains.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/repeat_model_hash_check.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/results/y17_all_short.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/results/y17_ore_compact_long.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/results/y17_ore_compact_short.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/results/y17_ore_ore_long.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/results/y17_ore_short.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/results/y6_all_all_long.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/results/y6_all_short.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/results/y6_ore_compact_long.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/results/y6_ore_compact_short.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/results/y6_ore_ore_long.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/results/y6_ore_short.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/results/y7_all_all_long.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/results/y7_all_short.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/results/y7_ore_compact_long.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/results/y7_ore_compact_short.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/results/y7_ore_ore_long.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/results/y7_ore_short.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/results/y9_all_all_long.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/results/y9_all_short.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/results/y9_ore_compact_long.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/results/y9_ore_compact_short.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/results/y9_ore_ore_long.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/results/y9_ore_short.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/run_campaign.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/search_objective_delta_audit.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/summary.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/test_checker_rejects_invalid.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/test_flow_kernel.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/unit_checks.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/报告.md"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/模型说明.md"
+    },
+    {
+      "status": "??",
+      "path": "求解器/几何/1113流量层/输入变化.md"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/A复验.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/A复验.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/A新摆放.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/A新摆放.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/A证书回放.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/A证书回放.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/B复验.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/B复验.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/B新摆放.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/B新摆放.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/供矿摆放试验.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/供矿摆放试验.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/供矿摆放试验.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/修复导出候选.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/修复指派布线.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/候选-修复前.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/候选-新摆放.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/候选登记修正.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/复验.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/复验.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/复验汇总.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/完整供矿摆放试验.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/完整供矿摆放试验.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/完整供矿摆放试验.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/完整性检查.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/实验/导出摘要.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/实验/已完成路径.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/实验/布线-11.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/实验/矿源可达放松.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/导出.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/布线-11.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/布线输入摆放.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/成品路径可达诊断.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/报告-修复前.md"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/文件变更清单.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/文件变更清单.md"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/独立LP-诊断见证-源石粉末.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/独立LP-诊断见证-源矿.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/独立LP-诊断见证-砂叶.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/独立LP-诊断见证-砂叶种子.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/独立LP-诊断见证-砂叶粉末.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/独立LP-诊断见证-精选荞愈胶囊.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/独立LP-诊断见证-细磨荞花粉末.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/独立LP-诊断见证-致密源石粉末.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/独立LP-诊断见证-致密蓝铁粉末.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/独立LP-诊断见证-荞花.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/独立LP-诊断见证-荞花种子.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/独立LP-诊断见证-荞花粉末.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/独立LP-诊断见证-蓝铁块.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/独立LP-诊断见证-蓝铁矿.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/独立LP-诊断见证-蓝铁粉末.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/独立LP-诊断见证-钢制零件.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/独立LP-诊断见证-钢块.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/独立LP-诊断见证-钢质瓶.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/独立LP-诊断见证-高容谷地电池.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/独立LP.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/独立LP.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/独立LP.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/独立LP矩阵.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/独立证书回放.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/独立证书回放.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/独立证书回放.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/生成变更清单.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/起始哈希.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/逐机端口摆放试验.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/逐机端口摆放试验.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第1轮证据/逐机端口摆放试验.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/A供电矿口阶段.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/A供电矿口阶段.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/A当前入口.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/A当前入口.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/A矿口阶段.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/A矿口阶段.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/A组件复核.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/A组件复核.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/B当前入口.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/B当前入口.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/B组件复核.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/B组件复核.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/人工局部修复摆放.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/供电矿口修复.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/供电矿口修复.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/供电矿口修复.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/供电矿口成品联合修复.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/供电矿口成品联合修复.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/供电矿口成品联合修复.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/保矿布线-增桩.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/保矿布线-增桩24.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/保矿布线-增桩25.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/保矿布线-局部.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/保矿布线.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/候选-供电矿口修复.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/候选-修复前.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/候选-待交付.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/候选-矿口修复.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/候选只读快照.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/全机局部矿口修复.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/全机局部矿口修复.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/全机局部矿口修复.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/增桩矿口修复.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/增桩矿口修复.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/增桩矿口修复.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/增桩矿口成品修复.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/增桩矿口成品修复.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/增桩矿口成品修复.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/复验.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/复验.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/复验汇总.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/实验/导出摘要.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/实验/已完成路径.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/实验/布线-全机局部矿口修复-22.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/实验/布线-增桩矿口修复-23.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/实验/布线-增桩矿口修复-24.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/实验/布线-增桩矿口修复-25.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/导出-供电矿口.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/导出-待交付.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/导出.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/导出修复候选.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/执行状态.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/扩展桩位矿口修复.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/扩展桩位矿口修复.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/扩展桩位矿口修复.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/报告-修复前.md"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/正式版本审查.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/独立LP-诊断见证-总流.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/独立LP-诊断见证-源石粉末.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/独立LP-诊断见证-源矿.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/独立LP-诊断见证-砂叶.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/独立LP-诊断见证-砂叶种子.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/独立LP-诊断见证-砂叶粉末.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/独立LP-诊断见证-精选荞愈胶囊.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/独立LP-诊断见证-细磨荞花粉末.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/独立LP-诊断见证-致密源石粉末.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/独立LP-诊断见证-致密蓝铁粉末.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/独立LP-诊断见证-荞花.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/独立LP-诊断见证-荞花种子.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/独立LP-诊断见证-荞花粉末.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/独立LP-诊断见证-蓝铁块.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/独立LP-诊断见证-蓝铁矿.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/独立LP-诊断见证-蓝铁粉末.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/独立LP-诊断见证-钢制零件.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/独立LP-诊断见证-钢块.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/独立LP-诊断见证-钢质瓶.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/独立LP-诊断见证-高容谷地电池.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/独立LP.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/独立LP.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/独立LP.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/独立LP矩阵.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/独立证书回放.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/独立证书回放.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/独立证书回放.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/矿口成品联合修复.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/矿口成品联合修复.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/矿口成品联合修复.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/矿口联合修复.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/矿口联合修复.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/矿口联合修复.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/组件复核.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/起始哈希.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/道路连通矿口修复.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/道路连通矿口修复.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/修复第2轮证据/道路连通矿口修复.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/格式.md"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器A/artifact_manifest.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器A/candidate_b_rate_test.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器A/catalog.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器A/certificate_replay.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器A/check_full.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器A/cli_smoke.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器A/design.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器A/flow.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器A/format_example.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器A/format_example.report.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器A/gate1-original-candidate.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器A/gate1-regression.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器A/gate1-regression.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器A/gate1_regression.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器A/geometry.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器A/legacy_regression.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器A/meeting_check_full.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器A/projections.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器A/schema.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器A/selftest.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器A/selftest.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器A/selftest_results.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器A/verify_certificate.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器A/说明.md"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器B/audit.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器B/catalog.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器B/check.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器B/component_tests.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器B/constraint_catalog.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器B/constraint_catalog_71.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器B/flow.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器B/geometry.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器B/interfaces.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器B/legacy_check.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器B/schema.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器B/selftest.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器B/test-results/all-71-ledger-execution.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器B/test-results/all-72-ledger-execution.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器B/test-results/candidate-b-rate-layer.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器B/test-results/cli-real-outlet-line.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器B/test-results/final-verification.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器B/test-results/format-example.report.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器B/test-results/real-outlet-line.report.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器B/test-results/rt_k16.regression.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器B/test-results/rt_k16.report.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器B/test-results/rt_k17.regression.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器B/test-results/rt_k17.report.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器B/test-results/selftest-71.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器B/test-results/selftest.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器B/test-results/source-version-transition.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器B/tests/format-example.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器B/tests/real-outlet-line.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器B/tests/rt_k16.partial-v1.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器B/tests/rt_k17.partial-v1.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器B/tests/same-item-bridge.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/检查器B/说明.md"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/交付哈希.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/代码/会议副本/aggflow.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/代码/会议副本/check.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/代码/会议副本/check_full.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/代码/会议副本/flowcheck.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/代码/会议副本/fulllp.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/代码/会议副本/p2p.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/代码/会议副本/router.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/代码/全厂摆放.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/代码/匿名摆放.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/代码/匿名直供摆放.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/代码/固定矿线指派.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/代码/导出候选.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/代码/指派与布线.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/代码/整理报告.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/代码/检查器乙.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/代码/检查器回归.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/代码/检查器甲.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/代码/植物砖实验.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/代码/目录与流量.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/代码/矿源优先指派.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/代码/矿源割证书.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/代码/离散摆放.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/代码/贯通摆放.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/代码/连通指派与布线.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/候选.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/实验/71条版本乙.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/实验/71条版本候选.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/实验/匿名摆放.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/实验/匿名摆放状态.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/实验/匿名直供摆放.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/实验/匿名直供摆放.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/实验/导出摘要.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/实验/已完成路径.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/实验/布线-1.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/实验/布线-1.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/实验/布线-2.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/实验/布线-2.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/实验/布线-3.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/实验/布线-3.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/实验/布线-4.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/实验/布线-4.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/实验/布线-5.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/实验/布线-5.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/实验/拒绝-桥相邻乙.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/实验/拒绝-桥相邻候选.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/实验/拒绝-桥相邻甲.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/实验/摆放.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/实验/摆放状态.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/实验/植物砖-10x10.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/实验/植物砖-10x11.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/实验/植物砖-11x11.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/实验/植物砖.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/实验/矿源可达放松.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/实验/离散摆放-首版.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/实验/离散摆放.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/实验/离散摆放.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/实验/贯通摆放.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/实验/贯通摆放.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/布局图.md"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/报告.md"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/文件清单.md"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/检查/72条覆盖台账.md"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/检查/乙-重建通道.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/检查/乙.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/检查/乙运行.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/检查/回归.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/检查/正式文件版本快照.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/检查/甲-重建通道.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/检查/甲.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/检查/甲运行.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/检查/矿源割证书.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/检查/连续LP汇总.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/生成/静态复核命令.md"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门-第1轮.md"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门-第2轮.md"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/A-projections-最终字节.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/A-projections-首次字节.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/A单端桥对照.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/A原始.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/A原始.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/A来源误判对照.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/A证书回放.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/A适配诊断.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/A适配诊断.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/A适配诊断.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/B单端桥对照.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/B原始.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/B原始.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/B登记拼写对照.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/交付自审.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/候选只读快照.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/单端桥测例.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/原文件未变.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/复算与对照.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/复算与对照.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/执行期间文件变化.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/最终复跑输入哈希.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/独立LP-诊断见证-源石粉末.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/独立LP-诊断见证-源矿.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/独立LP-诊断见证-砂叶.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/独立LP-诊断见证-砂叶种子.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/独立LP-诊断见证-砂叶粉末.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/独立LP-诊断见证-精选荞愈胶囊.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/独立LP-诊断见证-细磨荞花粉末.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/独立LP-诊断见证-致密源石粉末.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/独立LP-诊断见证-致密蓝铁粉末.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/独立LP-诊断见证-荞花.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/独立LP-诊断见证-荞花种子.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/独立LP-诊断见证-荞花粉末.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/独立LP-诊断见证-蓝铁块.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/独立LP-诊断见证-蓝铁矿.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/独立LP-诊断见证-蓝铁粉末.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/独立LP-诊断见证-钢制零件.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/独立LP-诊断见证-钢块.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/独立LP-诊断见证-钢质瓶.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/独立LP-诊断见证-高容谷地电池.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/独立LP.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/独立LP.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/独立LP.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/独立LP矩阵.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/独立证书回放.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/生成报告.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/证据哈希.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/输入哈希.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/输入稳定性.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/逐条对照.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/闸门结论.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/首次-A原始.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第1轮证据/首次-A适配诊断.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/A初次.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/A初次.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/A单端桥回归.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/A单端桥回归.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/A当前正式版本.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/A当前正式版本.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/A证书回放.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/A证书回放.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/B初次.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/B初次.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/B单端桥回归.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/B单端桥回归.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/B当前正式版本.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/B当前正式版本.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/交付自审.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/候选只读快照.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/单端桥回归.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/执行期间文件变化.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/执行状态.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/检查器A/artifact_manifest.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/检查器A/candidate_b_rate_test.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/检查器A/catalog.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/检查器A/certificate_replay.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/检查器A/check_full.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/检查器A/cli_smoke.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/检查器A/design.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/检查器A/flow.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/检查器A/format_example.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/检查器A/format_example.report.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/检查器A/gate1-original-candidate.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/检查器A/gate1-regression.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/检查器A/gate1_regression.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/检查器A/geometry.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/检查器A/legacy_regression.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/检查器A/meeting_check_full.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/检查器A/projections.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/检查器A/schema.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/检查器A/selftest.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/检查器A/selftest_results.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/检查器A/verify_certificate.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/检查器A/说明.md"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/检查器B/audit.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/检查器B/catalog.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/检查器B/check.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/检查器B/component_tests.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/检查器B/constraint_catalog.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/检查器B/constraint_catalog_71.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/检查器B/flow.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/检查器B/geometry.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/检查器B/interfaces.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/检查器B/legacy_check.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/检查器B/schema.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/检查器B/selftest.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/检查器B/说明.md"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/正式文件初次快照/《明日方舟：终末地》游戏规则.txt"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/正式文件初次快照/求解任务.txt"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/正式文件初次快照/求解约束.txt"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/正式文件当前快照/《明日方舟：终末地》游戏规则.txt"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/正式文件当前快照/求解任务.txt"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/正式文件当前快照/求解约束.txt"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/正式版本对照.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/独立LP-诊断见证-源石粉末.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/独立LP-诊断见证-源矿.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/独立LP-诊断见证-砂叶.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/独立LP-诊断见证-砂叶种子.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/独立LP-诊断见证-砂叶粉末.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/独立LP-诊断见证-精选荞愈胶囊.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/独立LP-诊断见证-细磨荞花粉末.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/独立LP-诊断见证-致密源石粉末.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/独立LP-诊断见证-致密蓝铁粉末.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/独立LP-诊断见证-荞花.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/独立LP-诊断见证-荞花种子.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/独立LP-诊断见证-荞花粉末.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/独立LP-诊断见证-蓝铁块.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/独立LP-诊断见证-蓝铁矿.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/独立LP-诊断见证-蓝铁粉末.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/独立LP-诊断见证-钢制零件.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/独立LP-诊断见证-钢块.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/独立LP-诊断见证-钢质瓶.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/独立LP-诊断见证-高容谷地电池.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/独立LP.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/独立LP.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/独立LP.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/独立LP矩阵.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/独立证书回放.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/独立证书回放.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/独立证书回放.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/生成报告.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/结构补核.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/证据哈希.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/输入哈希.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/输入稳定性.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/逐条复核.log"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/逐条复核.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/逐条对照.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/构造/第一张全厂候选/闸门第2轮证据/闸门结论.json"
+    }
+  ],
+  "out_of_scope": [
+    {
+      "status": "??",
+      "path": "求解器/候选简化轮次/第1轮/复算.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/候选简化轮次/第1轮/复算结果.json"
+    },
+    {
+      "status": "??",
+      "path": "求解器/候选约束轮次/第57-59轮/充分复核-A-复算.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/候选约束轮次/第57-59轮/充分复核-A.md"
+    },
+    {
+      "status": "??",
+      "path": "求解器/候选约束轮次/第57-59轮/充分复核-B-复算.py"
+    },
+    {
+      "status": "??",
+      "path": "求解器/候选约束轮次/第57-59轮/充分复核-B.md"
+    }
+  ],
+  "missing_expected": [],
+  "staged": [],
+  "head": "be7ef368a7bce5078925993ecd760479a6641ccf"
+}

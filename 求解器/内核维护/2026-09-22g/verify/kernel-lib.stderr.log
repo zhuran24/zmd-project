@@ -1,0 +1,3 @@
+   Compiling kernel v0.1.0 (/home/zhuran24/zmd-research-fresh/求解器/crates/kernel)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.18s
+     Running unittests src/lib.rs (内核维护/2026-09-22g/verify/target/debug/deps/kernel-26241e85d1128675)

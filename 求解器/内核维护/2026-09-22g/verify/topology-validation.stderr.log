@@ -1,0 +1,3 @@
+   Compiling topology v0.1.0 (/home/zhuran24/zmd-research-fresh/求解器/crates/topology)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.53s
+     Running tests/validation.rs (内核维护/2026-09-22g/verify/target/debug/deps/validation-55f92a55e3fc13c3)

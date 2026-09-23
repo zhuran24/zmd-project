@@ -1,0 +1,11 @@
+{
+  "head": "3c5e7ee0ae4f73e9ec7aa58bb35bc9b4231d32e2",
+  "history_diff": "",
+  "head_history_changes_since_baseline": "",
+  "formal_sources_equal_current_head": {
+    "《明日方舟：终末地》游戏规则.txt": true,
+    "求解任务.txt": true,
+    "求解约束.txt": true
+  },
+  "commits_since_relock": "3c5e7ee0ae4f73e9ec7aa58bb35bc9b4231d32e2 候选充分条件：17 条两席独立复核，15 条未否证待三审，2 条（密集结点外来料避开取货时段、准入口不触发身份及限额阻断）两席都给了修正\n\nM\t候选充分条件.txt\nA\t求解器/候选约束轮次/第57-59轮/充分复核-A-复算.py\nA\t求解器/候选约束轮次/第57-59轮/充分复核-A.md\nA\t求解器/候选约束轮次/第57-59轮/充分复核-B-复算.py\nA\t求解器/候选约束轮次/第57-59轮/充分复核-B.md\nbe7ef368a7bce5078925993ecd760479a6641ccf 新建候选充分条件与求解充分条件（owner 定名）；第 57–59 轮 17 条充分条件移入候选，待审\n\nA\t候选充分条件.txt\nA\t求解充分条件.txt\n"
+}

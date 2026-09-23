@@ -1,0 +1,7 @@
+{
+  "independent_head": "be7ef368a7bce5078925993ecd760479a6641ccf",
+  "relock_head": "8ab232419c0e9e1702a14c4881a173f15fdade84",
+  "intervening_commits": "be7ef368a7bce5078925993ecd760479a6641ccf 新建候选充分条件与求解充分条件（owner 定名）；第 57–59 轮 17 条充分条件移入候选，待审\n",
+  "intervening_paths": "A\t候选充分条件.txt\nA\t求解充分条件.txt\n",
+  "dfc35cd_in_head": true
+}

@@ -1,0 +1,22 @@
+{
+  "name": "positive-verify-record",
+  "argv": [
+    "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22g/verify/target/debug/kernel",
+    "verify-record",
+    "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22g/verify/positive/run.json",
+    "--config",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+  ],
+  "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+  "started": "2026-09-22T20:58:08.310990-04:00",
+  "finished": "2026-09-22T20:58:08.511298-04:00",
+  "seconds": 0.200151746001211,
+  "exit_code": 0,
+  "expected_exit_code": 0,
+  "passed": true,
+  "environment": {
+    "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22g/verify/target",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "TMPDIR": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22g/verify/tmp"
+  }
+}

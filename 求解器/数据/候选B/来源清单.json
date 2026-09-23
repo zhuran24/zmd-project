@@ -9,7 +9,7 @@
   },
   {
     "path": "/home/zhuran24/zmd-research-fresh/求解约束.txt",
-    "sha256": "a67c18dec5f6ae59c41e8620d270007f20c2d3e5b202521d0cca12f616bca3df"
+    "sha256": "0c05976f6063f3332db6ee19d7746052ef35148d7c2a12dfa396c7bb8753f30f"
   },
   {
     "path": "/home/zhuran24/zmd-research-fresh/候选约束.txt",
@@ -61,6 +61,6 @@
   },
   {
     "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
-    "sha256": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+    "sha256": "b573a299c5853dada4189f53b629733f826a535ca011c969c6d658256d9af74c"
   }
 ]

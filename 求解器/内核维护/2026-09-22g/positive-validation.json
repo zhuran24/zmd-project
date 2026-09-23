@@ -1,0 +1,35 @@
+{
+  "status": "pass",
+  "binary_path": "/home/zhuran24/zmd-research-fresh/求解器/target/debug/kernel",
+  "binary_sha256": "23c20f676e8215ebd5237300051437f578486a60c3345be519fef3967826fce7",
+  "commands": [
+    {
+      "name": "positive-seed",
+      "exit_code": 0,
+      "status": null
+    },
+    {
+      "name": "positive-check",
+      "exit_code": 0,
+      "status": "input_checked"
+    },
+    {
+      "name": "positive-run",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "name": "positive-verify-record",
+      "exit_code": 0,
+      "status": "input_checked"
+    },
+    {
+      "name": "stale-catalog-negative",
+      "exit_code": 2,
+      "status": "invalid_input",
+      "reason": "invalid_input input @ /home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json: 源文件指纹不符"
+    }
+  ],
+  "ticks": 6,
+  "scope": "finite run and record replay; no target-cycle certification"
+}
