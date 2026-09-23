@@ -1,0 +1,13 @@
+{
+  "report": "求解器/候选约束轮次/第69-71轮/推导69.md",
+  "candidate_count": 4,
+  "local_links_checked": 25,
+  "checks": [
+    "result header matches candidates",
+    "P10 unknown separated from exact edge relaxation",
+    "P11 supply deficit and area deficit distinguished",
+    "all new variables defined",
+    "all local links exist",
+    "future-reader pass completed"
+  ]
+}

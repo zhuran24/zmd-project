@@ -1,0 +1,1 @@
+[{"file": "search_P10_edge_overlap.json", "status": "UNKNOWN", "no_witness": true}, {"file": "search_P10_edge.json", "status": "FEASIBLE", "S": 186, "gaps": [4, 9, 9, 6], "J": 1, "selected_counts": {"s": 2, "m": 13, "l": 7, "c": 1, "p": 10}, "pole_loss": 10, "known_machine_repeat": 11, "budget": 13, "combined_charge": 21, "overlap_budget_pass": false}]

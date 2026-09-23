@@ -1,0 +1,26 @@
+accounting PASS 217 3291
+wall PASS {'variables': 550, 'rows': 1352, 'terms': 38, 'bound_terms': 0, 'upper': '1846/135', 'integer_upper': 13, 'minimum_column_coefficient': '1'}
+local certificates 50
+local certificates 100
+local certificates 150
+local certificates 200
+local certificates 250
+local certificates 300
+local certificates 350
+local PASS 395 positions 275888 columns
+groups PASS 3511 532890
+boundary geometry PASS 652 bodies 1630 forbidden pairs
+edge PASS old (0, 0)
+edge PASS old (0, 1)
+edge PASS old (1, 0)
+edge PASS old (1, 1)
+edge PASS new (0, 0)
+edge PASS new (0, 1)
+edge PASS new (1, 0)
+edge PASS new (1, 1)
+edge PASS local (0, 0)
+edge PASS local (0, 1)
+edge PASS local (1, 0)
+edge PASS local (1, 1)
+witness PASS 186 10 11
+PASS: inputs unchanged

@@ -1,0 +1,9 @@
+{'P': 10, 'corner_mask': (0, 0), 'min_S': 180, 'resources': (1, 1, 10), 'boundary_cost': 20, 'omitted_J': 0, 'deficit': -7}
+{'P': 11, 'corner_mask': (0, 0), 'min_S': 190, 'resources': (1, 3, 30), 'boundary_cost': 14, 'omitted_J': 0, 'deficit': 3}
+{'P': 12, 'corner_mask': (0, 0), 'min_S': 199, 'resources': (1, 5, 50), 'boundary_cost': 7, 'omitted_J': 0, 'deficit': 12}
+{'P': 11, 'corner_mask': (0, 1), 'min_S': 189, 'resources': (1, 2, 20), 'boundary_cost': 15, 'omitted_J': 0, 'deficit': 2}
+{'P': 12, 'corner_mask': (0, 1), 'min_S': 199, 'resources': (1, 4, 40), 'boundary_cost': 9, 'omitted_J': 0, 'deficit': 12}
+{'P': 11, 'corner_mask': (1, 0), 'min_S': 189, 'resources': (1, 2, 20), 'boundary_cost': 15, 'omitted_J': 0, 'deficit': 2}
+{'P': 12, 'corner_mask': (1, 0), 'min_S': 198, 'resources': (1, 4, 40), 'boundary_cost': 8, 'omitted_J': 0, 'deficit': 11}
+{'P': 11, 'corner_mask': (1, 1), 'min_S': 191, 'resources': (1, 0, 0), 'boundary_cost': 19, 'omitted_J': 0, 'deficit': 4}
+{'P': 12, 'corner_mask': (1, 1), 'min_S': 200, 'resources': (1, 2, 27), 'boundary_cost': 12, 'omitted_J': 0, 'deficit': 13}

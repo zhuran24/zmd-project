@@ -1,0 +1,174 @@
+{
+  "推导69/audit69.log": {
+    "sha256": "300b3cd86f2cfcf9b313d41341f17e5a24ab87144ff34bd56bb15bc0f6f7fbc6",
+    "bytes": 1367
+  },
+  "推导69/audit69.py": {
+    "sha256": "045bf59992eb38fadb4675ef0c8414d961112a069a399d70dcd5b406b1a79435",
+    "bytes": 2438
+  },
+  "推导69/check69.log": {
+    "sha256": "11e72e26ef3c276ebdcd20f326c32b532ec1dbe3bbc0695d39757403e0f5b372",
+    "bytes": 1718
+  },
+  "推导69/check69.py": {
+    "sha256": "f0845c6dde934d6590fee905ae7303af073f3114aeacf5ee91c4ffb438d772b1",
+    "bytes": 9473
+  },
+  "推导69/check_supply.log": {
+    "sha256": "7a1a8270f9a061dea0687d749c3107def84ee55a8e1b911c0b05c75a6c37a939",
+    "bytes": 65
+  },
+  "推导69/check_supply.py": {
+    "sha256": "5f67bee778885ab1070c16b5bb39e5cd924c38a21d7676acdd049892059034d1",
+    "bytes": 1142
+  },
+  "推导69/delivery_audit.json": {
+    "sha256": "3c09f15e629ac84a0f0b8d90a38d1d80644e901abbf714f92de6e6dbca759b4f",
+    "bytes": 1482
+  },
+  "推导69/input_manifest.json": {
+    "sha256": "c8c0f016781f15f75ad322660863b080b37a39ccc0eaffb5d62597a36f1108eb",
+    "bytes": 2502
+  },
+  "推导69/inspect_search.log": {
+    "sha256": "04da4751c8fc3c1f338c9f172dc151ac83329aa369982a1d5fa78129fa9392ba",
+    "bytes": 355
+  },
+  "推导69/inspect_search.py": {
+    "sha256": "fedd4bdf2160dae5ad7836200726c37d0b3402ff9b3df3513a56e2d93c4e11eb",
+    "bytes": 1943
+  },
+  "推导69/local_power.log": {
+    "sha256": "7db011d693c7ec811355305332e426238059b00ceecacb2211b48c8a2eec3b7d",
+    "bytes": 445
+  },
+  "推导69/local_power.py": {
+    "sha256": "4a91eb8d7004e18e810b55dc384ea22f600d5cc1c85c64af2714662fd86a4933",
+    "bytes": 3689
+  },
+  "推导69/new_edge.log": {
+    "sha256": "d6ac1cb3c4db1b587a8eba554a687c1ecb091bb04ad7f08e2dd743a2a2cd0a20",
+    "bytes": 1108
+  },
+  "推导69/new_edge.py": {
+    "sha256": "5da3ec52053de9aa76ebce76eea6826027e08c4c8af02aa1eb825dff37c2f796",
+    "bytes": 977
+  },
+  "推导69/new_edge_certificate.json": {
+    "sha256": "1f4fe104a37cad8e6b02c88f6369921583035795c6609075248bd1a38c43d126",
+    "bytes": 51692
+  },
+  "推导69/new_edge_local.log": {
+    "sha256": "9af29d609bcaa1144e0668e1f5f1896eea75f11b98818b78e13b2373b088e4b8",
+    "bytes": 1108
+  },
+  "推导69/new_edge_local_certificate.json": {
+    "sha256": "1145545163831b7b187bb9b9575a25833a12e85de53cdebd87efee79c7f846e1",
+    "bytes": 51528
+  },
+  "推导69/rationalize.log": {
+    "sha256": "525b71d414e39208f764f818a592b9d71102d53f1efbe026330c37f1209df669",
+    "bytes": 23
+  },
+  "推导69/rationalize.py": {
+    "sha256": "28247d3bc581080c4392484436e1e5c88cdfd0ecdbd99cf8cb6855398500a705",
+    "bytes": 986
+  },
+  "推导69/reader_audit.json": {
+    "sha256": "53c9fdc089fa37929ac88924545b54ab87acf763b4bc47d40b13c7961300d585",
+    "bytes": 392
+  },
+  "推导69/search_P10_edge.json": {
+    "sha256": "b9b7661e1438b3ae02c21ad7ca5f540ddc27631366f444ca3f672d7902d915d0",
+    "bytes": 21047
+  },
+  "推导69/search_P10_edge.log": {
+    "sha256": "25af0895048283ccc924bcbe37bd42f4cc29aee3d473b795f550e34e8d3b66ba",
+    "bytes": 1266
+  },
+  "推导69/search_P10_edge_overlap.json": {
+    "sha256": "b97e141a13395e797669f76d36fb159f803686e24c24ce69c6bd3c4c4b2608ee",
+    "bytes": 221
+  },
+  "推导69/search_P10_edge_overlap.log": {
+    "sha256": "1e6733bf65eeab53144854a490270eabf6d151ffce626c74ceeb38f7e9a0c83f",
+    "bytes": 200
+  },
+  "推导69/search_boundary.py": {
+    "sha256": "3de70a5f26b5159093588fd6ce5c5f458d8ffc8ce9edc4982f6ceeb6692e55dd",
+    "bytes": 2631
+  },
+  "推导69/search_inspection.json": {
+    "sha256": "c04e81a0e17f39bbcba2e15310c7df55f58d5d591c16f2cfe182adf24f587299",
+    "bytes": 5609
+  },
+  "推导69/supply_scan.py": {
+    "sha256": "191b67554f9608c97bb38da6fc9613ec008791191b93a937345f175dfc8fb811",
+    "bytes": 3053
+  },
+  "推导69/supply_strip.log": {
+    "sha256": "61d11daf6d9ccadaf6a069b69790210f9abe2f434ac3d94a63fea41b6131c1c3",
+    "bytes": 10642
+  },
+  "推导69/supply_strip_certificates.json": {
+    "sha256": "e8152f1e6d8217ff9fbb0d7919500a2d85a7dca4e5a3e845aa4bf945eff3c569",
+    "bytes": 196771
+  },
+  "推导69/supply_verification.json": {
+    "sha256": "d25d3c82d2d940ac7f902401617e14dbe47f87ff2d3b2b0fcf79183af63e143e",
+    "bytes": 22865
+  },
+  "推导69/verification.json": {
+    "sha256": "c717c8606e5d9ab455cecec4cb5e17cd79fe09892ee7c3c56f57a2bc9d210c66",
+    "bytes": 3830
+  },
+  "推导69/wall0_certificate.json": {
+    "sha256": "ddff62a2ea30c425e5b300b88e020f7c5c0073134d4744831e57717c3e6df2b2",
+    "bytes": 509
+  },
+  "推导69/wall0_certificate.md": {
+    "sha256": "d77246c51b07eb031217b66355e7f13058eb2a1335b8f5d95a7a1167be25c6a0",
+    "bytes": 4220
+  },
+  "推导69/wall0_lp.json": {
+    "sha256": "53dae51256bf22327eacf0d6b12f34bfcf1124d4cb0f7a003eb439e096973e68",
+    "bytes": 11325
+  },
+  "推导69/wall0_model.json": {
+    "sha256": "4b2046cb33f2b40d117cda54cf5cd325fdf7fac174109bb49c9ff65da77de019",
+    "bytes": 1080675
+  },
+  "推导69/wall0_result.json": {
+    "sha256": "f7b87ac127f904af09dd86b77f93d017710fcbd0d9b0c297971164b58a6d3e5b",
+    "bytes": 6745
+  },
+  "推导69/weighted_integer.json": {
+    "sha256": "58556e2861d8a7a609910917cf0fb1eb476c8616f22abce6b6b57b0eac1dbd70",
+    "bytes": 23467
+  },
+  "推导69/weighted_integer.log": {
+    "sha256": "1d55aa018a4938bb76d113a3e1e2f7fb59c76a39067cba5f5758742e0b1f0afa",
+    "bytes": 199
+  },
+  "推导69/weighted_integer.py": {
+    "sha256": "494275a6e61ae7b61f4455da7c466330fe1d9206ef2a66dac5ac78d1716c6da2",
+    "bytes": 1036
+  },
+  "推导69/weighted_power.json": {
+    "sha256": "275c15c31852c2fda33e9a75821bd219ff64dc06e1f6b13a78b4ed3c2d02ca1f",
+    "bytes": 650
+  },
+  "推导69/weighted_power.log": {
+    "sha256": "4d61d6e7ce0f5685cec314552e169aaeabf687a5a43b402506d5f87550e81453",
+    "bytes": 510
+  },
+  "推导69/weighted_power.py": {
+    "sha256": "2c804b3b74de8392fa1ceb7f2398c1624d6e03a0d683c90b8af102eeb3b03be5",
+    "bytes": 576
+  },
+  "推导69.md": {
+    "sha256": "75dac8f5ce90ec06ced5ec03958d5b89034306aaf90184f7b8cd36065cd81043",
+    "bytes": 20072
+  }
+}

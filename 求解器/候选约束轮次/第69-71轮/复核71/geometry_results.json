@@ -1,0 +1,33 @@
+{
+  "all_single_units": 26921,
+  "touching_units": 652,
+  "multi_segment_units": [
+    {
+      "r": [
+        47,
+        68,
+        2,
+        2
+      ],
+      "kind": "P",
+      "lines": [
+        "N",
+        "W"
+      ]
+    },
+    {
+      "r": [
+        68,
+        15,
+        2,
+        2
+      ],
+      "kind": "P",
+      "lines": [
+        "E",
+        "S"
+      ]
+    }
+  ],
+  "forbidden_adjacent_pairs_checked": 1630
+}

@@ -1,0 +1,12 @@
+{
+  "P": 10,
+  "extra": false,
+  "overlap": true,
+  "vars": 7677,
+  "rows": 5680,
+  "status": "UNKNOWN",
+  "upper": 298.0,
+  "lower": 164.0,
+  "seconds": 180.00642030400195,
+  "power_positions_with_new_certificate": 395
+}

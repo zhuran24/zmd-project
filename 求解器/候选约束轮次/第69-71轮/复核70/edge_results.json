@@ -1,0 +1,569 @@
+{
+  "counts": {
+    "tables": 48,
+    "options": 7320,
+    "frontier_entries": 1274,
+    "bodies": 652,
+    "forbidden_adjacent_pairs": 1630
+  },
+  "results": [
+    {
+      "mode": "old",
+      "mask": [
+        0,
+        0
+      ],
+      "P": 10,
+      "corner_loss": 0,
+      "minimum": 22,
+      "one_resource_minimizer": [
+        1,
+        1,
+        9,
+        0,
+        22
+      ]
+    },
+    {
+      "mode": "old",
+      "mask": [
+        0,
+        0
+      ],
+      "P": 11,
+      "corner_loss": 0,
+      "minimum": 19,
+      "one_resource_minimizer": [
+        1,
+        4,
+        36,
+        0,
+        19
+      ]
+    },
+    {
+      "mode": "old",
+      "mask": [
+        0,
+        0
+      ],
+      "P": 12,
+      "corner_loss": 0,
+      "minimum": 16,
+      "one_resource_minimizer": [
+        1,
+        6,
+        54,
+        0,
+        16
+      ]
+    },
+    {
+      "mode": "old",
+      "mask": [
+        0,
+        1
+      ],
+      "P": 10,
+      "corner_loss": 15,
+      "minimum": null,
+      "reason": "corner loss exceeds budget"
+    },
+    {
+      "mode": "old",
+      "mask": [
+        0,
+        1
+      ],
+      "P": 11,
+      "corner_loss": 15,
+      "minimum": 19,
+      "one_resource_minimizer": [
+        1,
+        2,
+        18,
+        0,
+        19
+      ]
+    },
+    {
+      "mode": "old",
+      "mask": [
+        0,
+        1
+      ],
+      "P": 12,
+      "corner_loss": 15,
+      "minimum": 16,
+      "one_resource_minimizer": [
+        1,
+        4,
+        42,
+        0,
+        16
+      ]
+    },
+    {
+      "mode": "old",
+      "mask": [
+        1,
+        0
+      ],
+      "P": 10,
+      "corner_loss": 15,
+      "minimum": null,
+      "reason": "corner loss exceeds budget"
+    },
+    {
+      "mode": "old",
+      "mask": [
+        1,
+        0
+      ],
+      "P": 11,
+      "corner_loss": 15,
+      "minimum": 19,
+      "one_resource_minimizer": [
+        1,
+        2,
+        18,
+        0,
+        19
+      ]
+    },
+    {
+      "mode": "old",
+      "mask": [
+        1,
+        0
+      ],
+      "P": 12,
+      "corner_loss": 15,
+      "minimum": 16,
+      "one_resource_minimizer": [
+        1,
+        4,
+        36,
+        0,
+        16
+      ]
+    },
+    {
+      "mode": "old",
+      "mask": [
+        1,
+        1
+      ],
+      "P": 10,
+      "corner_loss": 30,
+      "minimum": null,
+      "reason": "corner loss exceeds budget"
+    },
+    {
+      "mode": "old",
+      "mask": [
+        1,
+        1
+      ],
+      "P": 11,
+      "corner_loss": 30,
+      "minimum": 19,
+      "one_resource_minimizer": [
+        1,
+        0,
+        0,
+        0,
+        19
+      ]
+    },
+    {
+      "mode": "old",
+      "mask": [
+        1,
+        1
+      ],
+      "P": 12,
+      "corner_loss": 30,
+      "minimum": 16,
+      "one_resource_minimizer": [
+        1,
+        2,
+        24,
+        0,
+        16
+      ]
+    },
+    {
+      "mode": "new",
+      "mask": [
+        0,
+        0
+      ],
+      "P": 10,
+      "corner_loss": 0,
+      "minimum": 180,
+      "one_resource_minimizer": [
+        1,
+        1,
+        10,
+        0,
+        20
+      ]
+    },
+    {
+      "mode": "new",
+      "mask": [
+        0,
+        0
+      ],
+      "P": 11,
+      "corner_loss": 0,
+      "minimum": 190,
+      "one_resource_minimizer": [
+        1,
+        3,
+        30,
+        0,
+        14
+      ]
+    },
+    {
+      "mode": "new",
+      "mask": [
+        0,
+        0
+      ],
+      "P": 12,
+      "corner_loss": 0,
+      "minimum": 199,
+      "one_resource_minimizer": [
+        1,
+        5,
+        50,
+        0,
+        7
+      ]
+    },
+    {
+      "mode": "new",
+      "mask": [
+        0,
+        1
+      ],
+      "P": 10,
+      "corner_loss": 15,
+      "minimum": null,
+      "reason": "corner loss exceeds budget"
+    },
+    {
+      "mode": "new",
+      "mask": [
+        0,
+        1
+      ],
+      "P": 11,
+      "corner_loss": 15,
+      "minimum": 189,
+      "one_resource_minimizer": [
+        1,
+        2,
+        20,
+        0,
+        15
+      ]
+    },
+    {
+      "mode": "new",
+      "mask": [
+        0,
+        1
+      ],
+      "P": 12,
+      "corner_loss": 15,
+      "minimum": 199,
+      "one_resource_minimizer": [
+        1,
+        4,
+        40,
+        0,
+        9
+      ]
+    },
+    {
+      "mode": "new",
+      "mask": [
+        1,
+        0
+      ],
+      "P": 10,
+      "corner_loss": 15,
+      "minimum": null,
+      "reason": "corner loss exceeds budget"
+    },
+    {
+      "mode": "new",
+      "mask": [
+        1,
+        0
+      ],
+      "P": 11,
+      "corner_loss": 15,
+      "minimum": 189,
+      "one_resource_minimizer": [
+        1,
+        2,
+        20,
+        0,
+        15
+      ]
+    },
+    {
+      "mode": "new",
+      "mask": [
+        1,
+        0
+      ],
+      "P": 12,
+      "corner_loss": 15,
+      "minimum": 198,
+      "one_resource_minimizer": [
+        1,
+        4,
+        40,
+        0,
+        8
+      ]
+    },
+    {
+      "mode": "new",
+      "mask": [
+        1,
+        1
+      ],
+      "P": 10,
+      "corner_loss": 30,
+      "minimum": null,
+      "reason": "corner loss exceeds budget"
+    },
+    {
+      "mode": "new",
+      "mask": [
+        1,
+        1
+      ],
+      "P": 11,
+      "corner_loss": 30,
+      "minimum": 191,
+      "one_resource_minimizer": [
+        1,
+        0,
+        0,
+        0,
+        19
+      ]
+    },
+    {
+      "mode": "new",
+      "mask": [
+        1,
+        1
+      ],
+      "P": 12,
+      "corner_loss": 30,
+      "minimum": 200,
+      "one_resource_minimizer": [
+        1,
+        2,
+        25,
+        0,
+        12
+      ]
+    },
+    {
+      "mode": "local",
+      "mask": [
+        0,
+        0
+      ],
+      "P": 10,
+      "corner_loss": 0,
+      "minimum": 180,
+      "one_resource_minimizer": [
+        1,
+        1,
+        10,
+        0,
+        20
+      ]
+    },
+    {
+      "mode": "local",
+      "mask": [
+        0,
+        0
+      ],
+      "P": 11,
+      "corner_loss": 0,
+      "minimum": 190,
+      "one_resource_minimizer": [
+        1,
+        3,
+        30,
+        0,
+        14
+      ]
+    },
+    {
+      "mode": "local",
+      "mask": [
+        0,
+        0
+      ],
+      "P": 12,
+      "corner_loss": 0,
+      "minimum": 199,
+      "one_resource_minimizer": [
+        1,
+        5,
+        50,
+        0,
+        7
+      ]
+    },
+    {
+      "mode": "local",
+      "mask": [
+        0,
+        1
+      ],
+      "P": 10,
+      "corner_loss": 16,
+      "minimum": null,
+      "reason": "corner loss exceeds budget"
+    },
+    {
+      "mode": "local",
+      "mask": [
+        0,
+        1
+      ],
+      "P": 11,
+      "corner_loss": 16,
+      "minimum": 189,
+      "one_resource_minimizer": [
+        1,
+        2,
+        20,
+        0,
+        15
+      ]
+    },
+    {
+      "mode": "local",
+      "mask": [
+        0,
+        1
+      ],
+      "P": 12,
+      "corner_loss": 16,
+      "minimum": 199,
+      "one_resource_minimizer": [
+        1,
+        4,
+        40,
+        0,
+        9
+      ]
+    },
+    {
+      "mode": "local",
+      "mask": [
+        1,
+        0
+      ],
+      "P": 10,
+      "corner_loss": 15,
+      "minimum": null,
+      "reason": "corner loss exceeds budget"
+    },
+    {
+      "mode": "local",
+      "mask": [
+        1,
+        0
+      ],
+      "P": 11,
+      "corner_loss": 15,
+      "minimum": 189,
+      "one_resource_minimizer": [
+        1,
+        2,
+        20,
+        0,
+        15
+      ]
+    },
+    {
+      "mode": "local",
+      "mask": [
+        1,
+        0
+      ],
+      "P": 12,
+      "corner_loss": 15,
+      "minimum": 198,
+      "one_resource_minimizer": [
+        1,
+        4,
+        40,
+        0,
+        8
+      ]
+    },
+    {
+      "mode": "local",
+      "mask": [
+        1,
+        1
+      ],
+      "P": 10,
+      "corner_loss": 31,
+      "minimum": null,
+      "reason": "corner loss exceeds budget"
+    },
+    {
+      "mode": "local",
+      "mask": [
+        1,
+        1
+      ],
+      "P": 11,
+      "corner_loss": 31,
+      "minimum": 191,
+      "one_resource_minimizer": [
+        1,
+        0,
+        0,
+        0,
+        19
+      ]
+    },
+    {
+      "mode": "local",
+      "mask": [
+        1,
+        1
+      ],
+      "P": 12,
+      "corner_loss": 31,
+      "minimum": 200,
+      "one_resource_minimizer": [
+        1,
+        2,
+        27,
+        0,
+        12
+      ]
+    }
+  ]
+}

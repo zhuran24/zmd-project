@@ -1,0 +1,90 @@
+{
+  "status": "PASS",
+  "report_sha256": "94322425f5220de7bae581f46cab8027fc6799af0dc1b3d938e19582e3ec80e3",
+  "report_bytes": 27368,
+  "input_hashes_unchanged": true,
+  "report_links_checked": 24,
+  "verdict_names_exact": true,
+  "standard_library_imports": [
+    "collections",
+    "copy",
+    "fractions",
+    "hashlib",
+    "itertools",
+    "json",
+    "pathlib",
+    "re",
+    "sys",
+    "time"
+  ],
+  "reader_audit": {
+    "self_contained": true,
+    "current_status_consistent": true,
+    "numeric_scopes_distinguished": true,
+    "all_claimed_P_branches_checked": true,
+    "P10_not_excluded": true,
+    "no_round70_material_used": true
+  },
+  "files": {
+    "accounting_debug.log": {
+      "bytes": 71,
+      "sha256": "494088f68e0074451f967247e060061fb565e37cd7a446892130b414ac0ad7f1"
+    },
+    "verdicts.json": {
+      "bytes": 1449,
+      "sha256": "92f736d51801ea7e8d7e8519a992cf9178af48f33a325c63002ccace9284e6a3"
+    },
+    "input_manifest.json": {
+      "bytes": 2910,
+      "sha256": "b056f77035a369d9c499071b90bb04d5b23bf2ab9b8dbd12166984fa2d1cb414"
+    },
+    "group_results.json": {
+      "bytes": 78,
+      "sha256": "6489bb26c72f5e710539f76dbc06e0e6b8e5f5f706b3feb03da67d99dc364073"
+    },
+    "geometry_results.json": {
+      "bytes": 430,
+      "sha256": "a8ce8b713c07671a652e2d848e58f0a5e00f925304b1e7df9dd1c6d5cd00e36b"
+    },
+    "edges_debug.log": {
+      "bytes": 371,
+      "sha256": "ee3cb0b37dbe8b9f2e24805ae04aa516bc0e3411084474da2ae9b0b2e21c8e21"
+    },
+    "results.json": {
+      "bytes": 92,
+      "sha256": "ea3a704aa868a3699de465cf4570a0c4793d2143191290dd7c7f7224d7e9c89a"
+    },
+    "edge_results.json": {
+      "bytes": 8649,
+      "sha256": "df3e378a10a232179c4b35ddb45c839184fb209e680c2e44f98672fcf67b84b1"
+    },
+    "point_results.json": {
+      "bytes": 605,
+      "sha256": "530d302801450a88b0224133203fff1e2f2b2e0fb866aa4a7346c1b9320aaed0"
+    },
+    "recompute.py": {
+      "bytes": 23325,
+      "sha256": "cd724a90fe4ca387f07a1a36c1b52639f20ace50d429edeef446e81f4e58932c"
+    },
+    "delivery_check.py": {
+      "bytes": 3533,
+      "sha256": "7158f5938aab45035b72c5129fb29a5b819b129a3a18f7c3adbdfeed7bf9df94"
+    },
+    "accounting_results.json": {
+      "bytes": 1241,
+      "sha256": "f1552969e89be16f75635d412e21a0fef802ad0595cd6cb66191d6e706701bcd"
+    },
+    "recompute.log": {
+      "bytes": 528,
+      "sha256": "96235182ff7074c27290184c2554b6caf00183a1b25274fd44cc4b0db97ddb30"
+    },
+    "local_results.json": {
+      "bytes": 98383,
+      "sha256": "dd1fd6eebf5867d4199c11e82c53f39a9b9852160dc21445a5fe62ee10a88297"
+    },
+    "stage1.json": {
+      "bytes": 91,
+      "sha256": "511692a8305caeaa293beabb47d41562be6a18779bc004e0e54ebf24a7ded1ff"
+    }
+  }
+}

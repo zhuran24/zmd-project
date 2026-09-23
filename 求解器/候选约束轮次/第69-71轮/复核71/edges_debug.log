@@ -1,0 +1,14 @@
+group certificates 3511 532890
+geometry 26921 652 1630
+edges old_XY (0, 0) PASS
+edges old_XY (0, 1) PASS
+edges old_XY (1, 0) PASS
+edges old_XY (1, 1) PASS
+edges new_S (0, 0) PASS
+edges new_S (0, 1) PASS
+edges new_S (1, 0) PASS
+edges new_S (1, 1) PASS
+edges new_local_S (0, 0) PASS
+edges new_local_S (0, 1) PASS
+edges new_local_S (1, 0) PASS
+edges new_local_S (1, 1) PASS

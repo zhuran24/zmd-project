@@ -1,0 +1,2 @@
+{'name': 'open', 'status': 'FEASIBLE', 'value': 32.0, 'upper': 46.0, 'seconds': 120.00442204800001}
+{'name': 'wall', 'status': 'OPTIMAL', 'value': 17.0, 'upper': 17.0, 'seconds': 0.6534083820000001}

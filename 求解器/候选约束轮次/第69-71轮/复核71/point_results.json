@@ -1,0 +1,48 @@
+{
+  "source": "推导69/search_P10_edge.json",
+  "status": "necessary-condition relaxation only; no item sources or cycle constructed",
+  "machines": 22,
+  "machine_sizes": {
+    "(3, 3)": 2,
+    "(5, 5)": 13,
+    "(6, 4)": 4,
+    "(4, 6)": 3
+  },
+  "posts": 10,
+  "coverage_multiplicities": [
+    1,
+    1,
+    2,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    3,
+    2,
+    1,
+    1,
+    2,
+    1,
+    1,
+    1,
+    2,
+    2
+  ],
+  "gaps": [
+    4,
+    9,
+    9,
+    6
+  ],
+  "J": 1,
+  "S": 186,
+  "single_post_loss": 10,
+  "repeat_coverage": 11,
+  "total_fee": 21,
+  "budget": 13
+}

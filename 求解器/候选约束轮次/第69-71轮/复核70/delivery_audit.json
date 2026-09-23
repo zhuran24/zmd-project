@@ -1,0 +1,29 @@
+{
+  "status": "PASS",
+  "input_files_unchanged": 16,
+  "local_links_checked": 18,
+  "verdicts_checked": 4,
+  "branch_combinations_checked": 36,
+  "reader_review": {
+    "standalone_subject_and_formal_inputs": true,
+    "header_matches_all_four_verdicts": true,
+    "one_current_numeric_account_per_model": true,
+    "all_P_and_corner_branches_explicit": true,
+    "conditional_bounds_distinguished_from_feasible_layouts": true,
+    "no_peer_current_review_read": true,
+    "cross_references_resolve": true
+  },
+  "output_hashes": {
+    "复核70.md": "6e3457a7a8463fdd5b8c440e1956cac324c28d3dc6f49bb43aea53405db630ef",
+    "复核70/accounting_results.json": "ea17b25754c5986d4c79aa4dc0f64f9183b22a94717b69e4cde9550ac295526e",
+    "复核70/delivery_check.py": "834917ce2d8ad27ef3d9a07f7f556c2d40065642b033741f2d6ff148893cd6dd",
+    "复核70/edge_results.json": "4c5da138333925d9cbc039bce088487f3e56890ff2c9cd9998bf661ded5f67b8",
+    "复核70/group_results.json": "37cdc457f35eb389a7f417c16286c01f0fb58cdf8a8f303dc0a05046706c78c6",
+    "复核70/input_manifest.json": "59fb4279d6961c256ef4a48ccc9215d437faadb8eb416fa1bf8a3fe11aaebeea",
+    "复核70/local_results.json": "5011948c38c6e84fb6345986999a40c993808e3826be9cd4c4bd1f932ba928e9",
+    "复核70/recheck.log": "9ab45a84534bcb7b871a0f6d0c8af86b8450c256a04e2764502fbe15134f8d22",
+    "复核70/recheck.py": "c3ff6e16fb09eace6e9da5a072bbcf6c1de417b3d6388f9bca4d71d493f999fe",
+    "复核70/verdicts.json": "14c06d80ef9d0b17a6ea067fc89874277915c2956e5ade6c0b05d0b1a4ea1e30",
+    "复核70/witness_results.json": "010ba9ab2af3b15e7f3752bad569aa3209d8c126976e9af5658ee4b124ee9e95"
+  }
+}

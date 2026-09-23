@@ -1,0 +1,2 @@
+{'name': 'wall0', 'walls': (-20, 7, -20, 32), 'n': 550, 'm': 1352, 'lp_status': 'Optimization terminated successfully. (HiGHS Status 7: Optimal)', 'lp_upper': 13.674074074074074}
+{'name': 'wall0', 'walls': (-20, 7, -20, 32), 'n': 550, 'm': 1352, 'lp_status': 'Optimization terminated successfully. (HiGHS Status 7: Optimal)', 'lp_upper': 13.674074074074074, 'cp_status': 'OPTIMAL', 'cp_upper': 13.0, 'cp_value': 13.0, 'cp_seconds': 0.138960139}
