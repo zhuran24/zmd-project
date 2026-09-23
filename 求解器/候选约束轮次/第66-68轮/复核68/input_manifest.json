@@ -1,0 +1,30 @@
+{
+  "《明日方舟：终末地》游戏规则.txt": {
+    "sha256": "6e64e3903a65536c530b363c9f3aef8c1bb2a1c1193e866799125dd047159924",
+    "bytes": 7241
+  },
+  "求解任务.txt": {
+    "sha256": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+    "bytes": 1405
+  },
+  "求解约束.txt": {
+    "sha256": "0c05976f6063f3332db6ee19d7746052ef35148d7c2a12dfa396c7bb8753f30f",
+    "bytes": 34766
+  },
+  "求解器/候选约束轮次/第66-68轮/推导66/power_certificates.json": {
+    "sha256": "555d4b3a7a2b5ba3a574c641e946b52df7a9968830fb5867be6feb067e058042",
+    "bytes": 1906808
+  },
+  "求解器/候选约束轮次/第66-68轮/推导66/edge_integer_certificate.json": {
+    "sha256": "17ef6113647679794310bfaa2549e573c1a6f7817e477e19cd769f6e69326ecd",
+    "bytes": 58136
+  },
+  "求解器/候选约束轮次/第66-68轮/推导66/joint17_integer_certificate.json": {
+    "sha256": "85f6c51272500461448e992ee87c97be5959d9fb6d44eb06d11f8255f7503f24",
+    "bytes": 46221
+  },
+  "求解器/候选约束轮次/第66-68轮/推导66/joint17_j_certificate.json": {
+    "sha256": "5fed0f735007d05f8a984800785b278ebd60ccf4a2ebb36731cdcea04d42d841",
+    "bytes": 51560
+  }
+}

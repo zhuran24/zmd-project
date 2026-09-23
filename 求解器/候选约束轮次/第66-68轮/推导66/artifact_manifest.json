@@ -1,0 +1,234 @@
+{
+  "推导66/audit_models.log": {
+    "bytes": 318,
+    "sha256": "9ce8fee5b53e70829b7ef3c71f480ba7a739dcead3360d2a48dcdd88749e0830"
+  },
+  "推导66/audit_models.py": {
+    "bytes": 2812,
+    "sha256": "a153702b4dcc69accfcec1c118157d2a1f4d3c251b56d8ef9edad3865e2b2e81"
+  },
+  "推导66/boundary_power.py": {
+    "bytes": 6978,
+    "sha256": "da5173f7978fa61e8e73d3c60e5810beaddd0142fe5d8f912b43da8e10b1db74"
+  },
+  "推导66/boundary_power_b17_P10.json": {
+    "bytes": 20506,
+    "sha256": "56f1b37f08ca3fed4dfbd355b1ef1b747ed6b9e46e9979d4c4b850e0ec888cc4"
+  },
+  "推导66/boundary_power_b17_P10.log": {
+    "bytes": 308,
+    "sha256": "78a2956894f60b2ac73b28e901612f1b5a33b0884958f207c125defd1c97dc88"
+  },
+  "推导66/boundary_power_b17_P11.json": {
+    "bytes": 20568,
+    "sha256": "5e872b42e76baa687bb379db93899283a73ce65e4a07e24a2131cd2c3677abed"
+  },
+  "推导66/boundary_power_b17_P11.log": {
+    "bytes": 309,
+    "sha256": "17781bc6f4f921b61960666f1c74a74eaa953953cc8435d26f65ab0ace5b0ea5"
+  },
+  "推导66/boundary_power_b17_P12.json": {
+    "bytes": 20879,
+    "sha256": "240162dc9fe3ceb1aef5d9248518fbc3472a53f7740b290fbf6316cedf13b190"
+  },
+  "推导66/boundary_power_b17_P12.log": {
+    "bytes": 339,
+    "sha256": "d2b6e4b51f3d9151458d51705f91388257593220a9289b7856dc0940e64574a9"
+  },
+  "推导66/boundary_power_b9_P10.json": {
+    "bytes": 23320,
+    "sha256": "bd8378cb29932aae6fb4feeee8985537797aa9fd4772ddd3274a847abc706cdb"
+  },
+  "推导66/boundary_power_b9_P10.log": {
+    "bytes": 327,
+    "sha256": "763b40244a2445cdb8994ec2a26162e4d7deb5e4d9fe116bb7e618f410a1a842"
+  },
+  "推导66/boundary_power_b9_P11.json": {
+    "bytes": 25553,
+    "sha256": "2686c59fdb3e66f7e9b6ca6da65fdf2891b9ff04b596088ac56760d9ecea62dd"
+  },
+  "推导66/boundary_power_b9_P11.log": {
+    "bytes": 325,
+    "sha256": "13fbb39b6d767a7116ad7cc5b993ea47222eaa7f3471eb971cad22900fd1917f"
+  },
+  "推导66/boundary_power_b9_P12.json": {
+    "bytes": 27371,
+    "sha256": "1820202bd4668f02ab36f8f1bde9635dc42bff6e62d4fc969ea0560354ddd94e"
+  },
+  "推导66/boundary_power_b9_P12.log": {
+    "bytes": 326,
+    "sha256": "4ce60472fcb47dd6af41111144e81c08f8ed2c8c745006508a23bb864c10098b"
+  },
+  "推导66/branch_power_dp.log": {
+    "bytes": 192,
+    "sha256": "902bbba393fb131e67cd788fb45a04391650d3721bef0bbe43ea11554ca5d2be"
+  },
+  "推导66/branch_power_dp.py": {
+    "bytes": 946,
+    "sha256": "20f4adebfdbfff990e5b2ca6a6b958b6d423ce8b6ceee72ba7ab489c70aa27e4"
+  },
+  "推导66/branch_power_dp_results.json": {
+    "bytes": 256,
+    "sha256": "ffbaf31fd1588ae14812ecbe0087234295618374c1a4d01296ed7548303a6c0f"
+  },
+  "推导66/delivery_audit.json": {
+    "bytes": 1299,
+    "sha256": "20a0c29e26643c19e5370a0f40a3611222c1bf74305744d5a02d705c656681d4"
+  },
+  "推导66/edge_dp.py": {
+    "bytes": 7281,
+    "sha256": "b030a182d906023a3f87a8843a5b46da831166a8a532c38be0a7688709932f33"
+  },
+  "推导66/edge_dp_results.json": {
+    "bytes": 683,
+    "sha256": "69ebd50344a9ddc08a87df333cf57b014f705d890d68b254e1af2d66adb741b3"
+  },
+  "推导66/edge_integer_certificate.json": {
+    "bytes": 58136,
+    "sha256": "17ef6113647679794310bfaa2549e573c1a6f7817e477e19cd769f6e69326ecd"
+  },
+  "推导66/exact_verification.json": {
+    "bytes": 4988,
+    "sha256": "092a480dee03e92ce3fc2a94ddcf10d076cbacf40bcf6d721d1b0ed748f5de3a"
+  },
+  "推导66/finalize.log": {
+    "bytes": 90,
+    "sha256": "52b62a8c341805971532de5ab0e2e743ac7dda9e056c770e81fd3b512c374668"
+  },
+  "推导66/finalize.py": {
+    "bytes": 4289,
+    "sha256": "b921d91c6faa885773f585e74e0d386273f6ccb7145cdf48d4611b12f39cbabe"
+  },
+  "推导66/input_manifest.json": {
+    "bytes": 392,
+    "sha256": "d11939b5d41561f817e75e3a46112398a3a3517c87dbe7aa0bab76131ee98945"
+  },
+  "推导66/joint17.log": {
+    "bytes": 813,
+    "sha256": "aa625e76d3d5001e437458f8c1f3d5b86aa43a7c37cb68e061406f275ec0e916"
+  },
+  "推导66/joint17.py": {
+    "bytes": 4281,
+    "sha256": "cf5401ebfea1f87299d59a94019b18af43cb56de3959c5967872a7243eff3492"
+  },
+  "推导66/joint17_integer_certificate.json": {
+    "bytes": 46221,
+    "sha256": "85f6c51272500461448e992ee87c97be5959d9fb6d44eb06d11f8255f7503f24"
+  },
+  "推导66/joint17_j.log": {
+    "bytes": 1106,
+    "sha256": "499de347534052cc0d95e82d6745f507dd445b048fce71274abed791bbd283ce"
+  },
+  "推导66/joint17_j.py": {
+    "bytes": 2821,
+    "sha256": "69ae39057d5d9583b7716cb97d50941941e0caa75433d5aae53a4a024ec2cd8c"
+  },
+  "推导66/joint17_j_certificate.json": {
+    "bytes": 51560,
+    "sha256": "5fed0f735007d05f8a984800785b278ebd60ccf4a2ebb36731cdcea04d42d841"
+  },
+  "推导66/lp_boundary.py": {
+    "bytes": 1308,
+    "sha256": "41b4adae5aaca4061ea292ed75876e34cd642e50325c79b3cf46411adda4a8e7"
+  },
+  "推导66/lp_boundary_b9_P10.json": {
+    "bytes": 98955,
+    "sha256": "1df7dd91fd34cdcafc24ca2c0d6a45cf6532d906053e04413dc8a9865ad8e71e"
+  },
+  "推导66/make_dp_certificate.log": {
+    "bytes": 29,
+    "sha256": "4dce6779e0ae9009968cbe001ce114dab860f82f00832c68d13f7d1d528d778f"
+  },
+  "推导66/make_dp_certificate.py": {
+    "bytes": 1360,
+    "sha256": "8fd632a858e7dfa7ab305cc6da2829821c05ad57dda48e16506be12175bcb6e2"
+  },
+  "推导66/model_audit.json": {
+    "bytes": 13983,
+    "sha256": "c4f1c814e86d4c0b84c95bb28e4c24b1335b294080dce0d7aef7df67127608be"
+  },
+  "推导66/power_bound.log": {
+    "bytes": 251,
+    "sha256": "d3bb8a4f60d65618511939a0ee1dc565893e45fc3a7eed4881675e15afe0cea3"
+  },
+  "推导66/power_bound.py": {
+    "bytes": 2718,
+    "sha256": "2af9d809270c23536a2009b9e28078a8145717e7763678440e12e2e8018c77b1"
+  },
+  "推导66/power_certificates.json": {
+    "bytes": 1906808,
+    "sha256": "555d4b3a7a2b5ba3a574c641e946b52df7a9968830fb5867be6feb067e058042"
+  },
+  "推导66/results.json": {
+    "bytes": 2755,
+    "sha256": "fe581fb95785e4abbdd98aff19908ddebbbe643346c7f24e99d2528b62fcb0da"
+  },
+  "推导66/run_edge_dp.log": {
+    "bytes": 471,
+    "sha256": "ff9fb7855c1bce249939f4e3c33ec0c3096e41040f4018cda06e4c90a7ecff2e"
+  },
+  "推导66/run_edge_dp.py": {
+    "bytes": 711,
+    "sha256": "b5ff41f9e2bccd74a27459f0d56a74987110fcf848dc89d4155a67a5ff7a2575"
+  },
+  "推导66/search_summary.json": {
+    "bytes": 1643,
+    "sha256": "d81015dfd9d567c373ee8e03f9e8eddd31d75597b3c9641dcd9d01a6bb99ba7c"
+  },
+  "推导66/strip_flow.py": {
+    "bytes": 8095,
+    "sha256": "df286b987307ec401a14de566e8672b45b29a34a880132d9f7010f6d5dd75aac"
+  },
+  "推导66/strip_flow_b17_P10.json": {
+    "bytes": 4679,
+    "sha256": "c7b3a8ee90e50921fc340afeb009934463ef5063b5520d4e0cb2b05744e8ff27"
+  },
+  "推导66/strip_flow_b17_P10.log": {
+    "bytes": 340,
+    "sha256": "02e85f28963be4a44309476721cafcdd056c805fd9e0191a4c22e434006cffd3"
+  },
+  "推导66/strip_flow_b17_P11.json": {
+    "bytes": 4680,
+    "sha256": "2e503eac7828e1b3e4500cf3754732f3b719a7cfe94d80d8807f83278bf96b86"
+  },
+  "推导66/strip_flow_b17_P11.log": {
+    "bytes": 342,
+    "sha256": "b5c44674d34e868ff076b867e214fd8f566ab8b933762ef809ed1a12d24fd057"
+  },
+  "推导66/strip_flow_b17_P11_strengthened.json": {
+    "bytes": 4680,
+    "sha256": "09304d5bc4bb3df67ea4f366613203f91b6f98572ab981c4421262c2579a5149"
+  },
+  "推导66/strip_flow_b17_P11_strengthened.log": {
+    "bytes": 341,
+    "sha256": "e833f4ba4d92bb4632841fb3380dd8d50e7eb50dfbe04e03cbd4dd3bb86a8d23"
+  },
+  "推导66/verify66.log": {
+    "bytes": 2913,
+    "sha256": "fddadd7eb8620baad171b242382cdbf5366e94735e1ba5426d73968dab2ecd37"
+  },
+  "推导66/verify66.py": {
+    "bytes": 12055,
+    "sha256": "fd443ab68a1ad858b02d3dc14807ca8a6adba4f1d9082c9d03ebbf0c5b5d88ec"
+  },
+  "推导66/《明日方舟：终末地》游戏规则.txt.md": {
+    "bytes": 7241,
+    "sha256": "6e64e3903a65536c530b363c9f3aef8c1bb2a1c1193e866799125dd047159924"
+  },
+  "推导66/候选约束.txt.md": {
+    "bytes": 317365,
+    "sha256": "527624e6f640c80250d909cb71e8eb9a1334cc17dc600412882e96eb29ba44a9"
+  },
+  "推导66/求解任务.txt.md": {
+    "bytes": 1405,
+    "sha256": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac"
+  },
+  "推导66/求解约束.txt.md": {
+    "bytes": 34766,
+    "sha256": "0c05976f6063f3332db6ee19d7746052ef35148d7c2a12dfa396c7bb8753f30f"
+  },
+  "推导66.md": {
+    "bytes": 21703,
+    "sha256": "54d7d262c62db44e00e5705bf19754b28a51d7b3704bd47dc5159cdbf8f97ce9"
+  }
+}

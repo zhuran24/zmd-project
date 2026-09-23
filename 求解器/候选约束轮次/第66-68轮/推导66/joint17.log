@@ -1,0 +1,9 @@
+{'P': 10, 'corner_mask': (0, 0), 'corner_loss': 0, 'XY': 22, 'allowed': 29, 'deficit': -7}
+{'P': 11, 'corner_mask': (0, 0), 'corner_loss': 0, 'XY': 19, 'allowed': 19, 'deficit': 0}
+{'P': 12, 'corner_mask': (0, 0), 'corner_loss': 0, 'XY': 16, 'allowed': 7, 'deficit': 9}
+{'P': 11, 'corner_mask': (0, 1), 'corner_loss': 15, 'XY': 19, 'allowed': 19, 'deficit': 0}
+{'P': 12, 'corner_mask': (0, 1), 'corner_loss': 15, 'XY': 16, 'allowed': 7, 'deficit': 9}
+{'P': 11, 'corner_mask': (1, 0), 'corner_loss': 15, 'XY': 19, 'allowed': 19, 'deficit': 0}
+{'P': 12, 'corner_mask': (1, 0), 'corner_loss': 15, 'XY': 16, 'allowed': 7, 'deficit': 9}
+{'P': 11, 'corner_mask': (1, 1), 'corner_loss': 30, 'XY': 19, 'allowed': 19, 'deficit': 0}
+{'P': 12, 'corner_mask': (1, 1), 'corner_loss': 30, 'XY': 16, 'allowed': 7, 'deficit': 9}

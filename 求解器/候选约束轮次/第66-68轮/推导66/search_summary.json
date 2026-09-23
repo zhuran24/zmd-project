@@ -1,0 +1,52 @@
+{
+  "searches": [
+    {
+      "file": "strip_flow_b17_P10.json",
+      "b": 17,
+      "P": 10,
+      "strengthened": false,
+      "status_code": 1,
+      "status": "UNKNOWN",
+      "message": "Time limit reached. (HiGHS Status 13: model_status is Time limit reached; primal_status is None)",
+      "elapsed_seconds": 91.02638729799946,
+      "build_seconds": 0.935896444003447,
+      "variables": 32940,
+      "constraints": 32595,
+      "has_primal": false,
+      "has_exact_exclusion_certificate": false
+    },
+    {
+      "file": "strip_flow_b17_P11.json",
+      "b": 17,
+      "P": 11,
+      "strengthened": false,
+      "status_code": 1,
+      "status": "UNKNOWN",
+      "message": "Time limit reached. (HiGHS Status 13: model_status is Time limit reached; primal_status is None)",
+      "elapsed_seconds": 97.22292666199792,
+      "build_seconds": 0.9386562820000108,
+      "variables": 32940,
+      "constraints": 32595,
+      "has_primal": false,
+      "has_exact_exclusion_certificate": false
+    },
+    {
+      "file": "strip_flow_b17_P11_strengthened.json",
+      "b": 17,
+      "P": 11,
+      "strengthened": true,
+      "status_code": 1,
+      "status": "UNKNOWN",
+      "message": "Time limit reached. (HiGHS Status 13: model_status is Time limit reached; primal_status is None)",
+      "elapsed_seconds": 181.23655634999886,
+      "build_seconds": 1.126669393001066,
+      "variables": 32940,
+      "constraints": 34338,
+      "has_primal": false,
+      "has_exact_exclusion_certificate": false
+    }
+  ],
+  "all_unknown": true,
+  "total_elapsed_seconds": 369.48587030999624,
+  "remaining_full_joint_optimum": "not determined"
+}

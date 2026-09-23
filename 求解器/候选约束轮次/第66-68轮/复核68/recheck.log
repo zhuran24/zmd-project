@@ -1,0 +1,7 @@
+power PASS 1047210
+body domains {9: 26082, 17: 26921}
+edges PASS [{'b': 9, 'branch': 'all', 'P': 10, 'X': 17, 'Y': 11, 'allowance': 29, 'excess': -1}, {'b': 9, 'branch': 'all', 'P': 11, 'X': 13, 'Y': 9, 'allowance': 19, 'excess': 3}, {'b': 9, 'branch': 'all', 'P': 12, 'X': 10, 'Y': 6, 'allowance': 7, 'excess': 9}, {'b': 17, 'branch': 'all', 'P': 10, 'X': 11, 'Y': 9, 'allowance': 29, 'excess': -9}, {'b': 17, 'branch': 'all', 'P': 11, 'X': 8, 'Y': 7, 'allowance': 19, 'excess': -4}, {'b': 17, 'branch': 'all', 'P': 12, 'X': 5, 'Y': 4, 'allowance': 7, 'excess': 2}, {'b': 9, 'branch': 'no_lower_pole', 'P': 10, 'X': 22, 'Y': 19, 'allowance': 29, 'excess': 12}, {'b': 9, 'branch': 'no_upper_pole', 'P': 10, 'X': 30, 'Y': 19, 'allowance': 29, 'excess': 20}]
+joint PASS [{'P': 10, 'mask': [0, 0], 'value': 180}, {'P': 11, 'mask': [0, 0], 'value': 187}, {'P': 12, 'mask': [0, 0], 'value': 196}, {'P': 10, 'mask': [0, 1], 'excluded_by_loss': 15}, {'P': 11, 'mask': [0, 1], 'value': 189}, {'P': 12, 'mask': [0, 1], 'value': 198}, {'P': 10, 'mask': [1, 0], 'excluded_by_loss': 15}, {'P': 11, 'mask': [1, 0], 'value': 189}, {'P': 12, 'mask': [1, 0], 'value': 198}, {'P': 10, 'mask': [1, 1], 'excluded_by_loss': 30}, {'P': 11, 'mask': [1, 1], 'value': 191}, {'P': 12, 'mask': [1, 1], 'value': 198}]
+accounting PASS ['18', '34', '11/2', '21/2', '34', '17', '0', '17', '9', '11/2', '11/2', '6', '11', '21', '11/2', '21/2', '3/5', '11/20', '18', '34']
+cut geometry PASS 65
+PASS 4.712

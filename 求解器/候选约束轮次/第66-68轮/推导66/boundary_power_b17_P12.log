@@ -1,0 +1,1 @@
+{"b": 17, "P": 12, "seconds": 60.15086516900192, "build_seconds": 0.12656369799515232, "status": 1, "message": "Time limit reached. (HiGHS Status 13: Time limit reached)", "vars": 7677, "rows": 5680, "extra": false, "cap": false, "numerical_bound": 189.0, "objective": 201.99999999998892, "numerical_max_violation": 9.759304475664976e-12}

@@ -1,0 +1,55 @@
+{
+  "status": "PASS",
+  "date": "2026-09-23",
+  "report_path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第66-68轮/复核67.md",
+  "formal_constraint_count": 72,
+  "all_input_hashes_unchanged": true,
+  "input_hashes": {
+    "《明日方舟：终末地》游戏规则.txt": "6e64e3903a65536c530b363c9f3aef8c1bb2a1c1193e866799125dd047159924",
+    "求解任务.txt": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+    "求解约束.txt": "0c05976f6063f3332db6ee19d7746052ef35148d7c2a12dfa396c7bb8753f30f",
+    "候选约束.txt": "527624e6f640c80250d909cb71e8eb9a1334cc17dc600412882e96eb29ba44a9",
+    "求解器/候选约束轮次/第66-68轮/推导66/edge_integer_certificate.json": "17ef6113647679794310bfaa2549e573c1a6f7817e477e19cd769f6e69326ecd",
+    "求解器/候选约束轮次/第66-68轮/推导66/joint17_j_certificate.json": "5fed0f735007d05f8a984800785b278ebd60ccf4a2ebb36731cdcea04d42d841",
+    "求解器/候选约束轮次/第66-68轮/推导66/joint17_integer_certificate.json": "85f6c51272500461448e992ee87c97be5959d9fb6d44eb06d11f8255f7503f24",
+    "求解器/候选约束轮次/第66-68轮/推导66/power_certificates.json": "555d4b3a7a2b5ba3a574c641e946b52df7a9968830fb5867be6feb067e058042",
+    "求解器/候选约束轮次/第66-68轮/推导66/model_audit.json": "c4f1c814e86d4c0b84c95bb28e4c24b1335b294080dce0d7aef7df67127608be",
+    "求解器/候选约束轮次/第66-68轮/推导66/exact_verification.json": "092a480dee03e92ce3fc2a94ddcf10d076cbacf40bcf6d721d1b0ed748f5de3a"
+  },
+  "report_link_count": 18,
+  "reader_review": {
+    "standalone_scope": true,
+    "final_state_consistent": true,
+    "no_conversational_instructions_in_body": true,
+    "numbers_consistent": true,
+    "terms_explained": true,
+    "cross_references_checked": true,
+    "proof_and_relaxation_separated": true
+  },
+  "artifact_hashes": {
+    "复核67.md": "991f76d00628b62ea1f35f68779128cb06fe183bfca72c1f1344b44553d86d0e",
+    "复核67/cut_accounting.log": "c5adc79032ec8aa3f6b3b4d895c109f975fe2269050978bb410b8b47c6a33e54",
+    "复核67/cut_accounting.py": "b8ccad1cdd0fb00898ef7c72188e8e62778d37dcfa49d4a8fe4f020c39c4a676",
+    "复核67/cut_geometry.json": "3dab5a57c40afffa0914b3dbeb4d00b97672f48331409fa378ab736db656bad8",
+    "复核67/edge_results.json": "871b46018b53e3a41ce08c6a1483b9a3df90c2b0899162c1b62532945fb2ef94",
+    "复核67/input_manifest.json": "28ce72d2fa5a2c45fabf64079868b8d808684706868350dadca7f9357e6d1946",
+    "复核67/joint_results.json": "4643463c2975f7436aaa9108ca91dd09e0fb58ee64b825ca9455917e08162200",
+    "复核67/power_audit.json": "8bc94b9cceed257d6b047f11df147baec0824e9103f537efafcaf717a64515d6",
+    "复核67/rebuilt_edge_tables.json": "69562b1e0d882b44451342f797f89d62993b204790fd1ee9c07ad7ae87e78c7d",
+    "复核67/rebuilt_joint_tables.json": "92233943e9ba3e28c4670f281fd29c12228d4faf87b308d8cad95a47b887c0b0",
+    "复核67/recipe_accounting.json": "e17d2901a94b58658819ee7b01ff921a5bee1d478ce5cd8ef70751ddddd0c614",
+    "复核67/recompute.log": "9f3bdbef6562c21fada5d5f6ca7d6ca5139ac31f25482905e688e6d9d376b42d",
+    "复核67/recompute.py": "036f2066a84398deb86d2326601bfc19780e0391a92c903901f69acc513695be",
+    "复核67/results.json": "5df88458e7b247fd9729e4e790f71e7fcdb03f107c5226389d729654db4367eb",
+    "复核67/search_geometry_audit.json": "ddfe145142b648ece645182af476a8c63174e09672c5cfcd08c9fdc44b8ee4d1",
+    "复核67/structured_summary.json": "1842304b622cc7c70f60c359f8e993b71cf074ead61dd673cfd00e92aa3b7035"
+  },
+  "checks": {
+    "both_recomputations_exit_zero": true,
+    "stdlib_only": true,
+    "all_five_verdicts_present": true,
+    "P10_overlap_disclosed_and_disjoint_cover_given": true,
+    "joint_four_masks_complete": true,
+    "formal_upper_bound_remains_1113": true
+  }
+}

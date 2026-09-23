@@ -1,0 +1,1 @@
+{"status": "PASS", "recipe_count": 18, "anchor_audits": [{"b": 9, "all_anchors": 4831, "strip_machine_anchors": 920}, {"b": 17, "all_anchors": 5629, "strip_machine_anchors": 1444}], "negative_controls": ["wrong pole cap rejected", "omitted body option rejected", "wrong DP bound rejected"], "joint_edge_patterns": 47}

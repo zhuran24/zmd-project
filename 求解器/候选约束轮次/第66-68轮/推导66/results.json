@@ -1,0 +1,187 @@
+{
+  "candidate_count": 4,
+  "full_new_position_exclusions": [
+    [
+      49,
+      9
+    ],
+    [
+      9,
+      49
+    ]
+  ],
+  "new_P12_exclusions": [
+    [
+      49,
+      17
+    ],
+    [
+      17,
+      49
+    ]
+  ],
+  "remaining": [
+    [
+      49,
+      17,
+      10
+    ],
+    [
+      49,
+      17,
+      11
+    ],
+    [
+      17,
+      49,
+      10
+    ],
+    [
+      17,
+      49,
+      11
+    ]
+  ],
+  "formal_area_upper_bound": 1113,
+  "area1110_proved": false,
+  "rows": [
+    {
+      "position": [
+        49,
+        9
+      ],
+      "P": 10,
+      "excluded": true,
+      "exact_budget_excess": [
+        12,
+        20
+      ]
+    },
+    {
+      "position": [
+        49,
+        9
+      ],
+      "P": 11,
+      "excluded": true,
+      "exact_budget_excess": [
+        3
+      ]
+    },
+    {
+      "position": [
+        49,
+        9
+      ],
+      "P": 12,
+      "excluded": true,
+      "exact_budget_excess": [
+        9
+      ]
+    },
+    {
+      "position": [
+        49,
+        17
+      ],
+      "P": 10,
+      "excluded": false,
+      "exact_boundary_relaxation_S": 180,
+      "remaining_budget": 7
+    },
+    {
+      "position": [
+        49,
+        17
+      ],
+      "P": 11,
+      "excluded": false,
+      "exact_boundary_relaxation_S": 187,
+      "remaining_budget": 0
+    },
+    {
+      "position": [
+        49,
+        17
+      ],
+      "P": 12,
+      "excluded": true,
+      "exact_boundary_relaxation_S": 196,
+      "remaining_budget": -9
+    },
+    {
+      "position": [
+        9,
+        49
+      ],
+      "P": 10,
+      "excluded": true,
+      "exact_budget_excess": [
+        12,
+        20
+      ]
+    },
+    {
+      "position": [
+        9,
+        49
+      ],
+      "P": 11,
+      "excluded": true,
+      "exact_budget_excess": [
+        3
+      ]
+    },
+    {
+      "position": [
+        9,
+        49
+      ],
+      "P": 12,
+      "excluded": true,
+      "exact_budget_excess": [
+        9
+      ]
+    },
+    {
+      "position": [
+        17,
+        49
+      ],
+      "P": 10,
+      "excluded": false,
+      "exact_boundary_relaxation_S": 180,
+      "remaining_budget": 7
+    },
+    {
+      "position": [
+        17,
+        49
+      ],
+      "P": 11,
+      "excluded": false,
+      "exact_boundary_relaxation_S": 187,
+      "remaining_budget": 0
+    },
+    {
+      "position": [
+        17,
+        49
+      ],
+      "P": 12,
+      "excluded": true,
+      "exact_boundary_relaxation_S": 196,
+      "remaining_budget": -9
+    }
+  ],
+  "P11_equalities": {
+    "J": 4,
+    "X_plus_Y": 19,
+    "loss_sum": 36,
+    "edge_pole_machines": 14,
+    "other_pole_machines": 23,
+    "machine_sum": 217,
+    "unique_cover": true
+  },
+  "proof_status": "exact integer certificates verified; all candidates pending review"
+}

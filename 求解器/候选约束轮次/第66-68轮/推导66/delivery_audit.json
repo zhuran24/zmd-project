@@ -1,0 +1,45 @@
+{
+  "status": "PASS",
+  "input_hashes_unchanged": {
+    "《明日方舟：终末地》游戏规则.txt": true,
+    "求解任务.txt": true,
+    "求解约束.txt": true,
+    "候选约束.txt": true
+  },
+  "python_sources_compiled_without_pycache": [
+    "lp_boundary.py",
+    "joint17.py",
+    "audit_models.py",
+    "make_dp_certificate.py",
+    "joint17_j.py",
+    "finalize.py",
+    "run_edge_dp.py",
+    "power_bound.py",
+    "branch_power_dp.py",
+    "edge_dp.py",
+    "strip_flow.py",
+    "verify66.py",
+    "boundary_power.py"
+  ],
+  "report_links_checked": 23,
+  "candidate_count": 4,
+  "exact_verifier": "PASS",
+  "negative_certificate_controls": [
+    "wrong pole cap rejected",
+    "omitted body option rejected",
+    "wrong DP bound rejected"
+  ],
+  "largest_file_bytes": 1906808,
+  "reader_review": {
+    "self_contained_definitions": true,
+    "final_status_matches_body": true,
+    "unproved_joint_optimum_explicit": true,
+    "numerical_search_not_used_as_proof": true,
+    "prior_pending_candidates_not_formal_premises": true,
+    "all_lower_and_upper_strips_addressed": true,
+    "no_full_layout_counterexample_claim": true,
+    "all_P_branches_reported": true,
+    "links_valid": true
+  },
+  "report_sha256": "54d7d262c62db44e00e5705bf19754b28a51d7b3704bd47dc5159cdbf8f97ce9"
+}

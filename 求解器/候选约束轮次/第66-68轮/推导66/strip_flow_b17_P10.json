@@ -1,0 +1,251 @@
+{
+  "b": 17,
+  "P": 10,
+  "status": 1,
+  "message": "Time limit reached. (HiGHS Status 13: model_status is Time limit reached; primal_status is None)",
+  "elapsed": 91.02638729799946,
+  "build_seconds": 0.935896444003447,
+  "vars": 32940,
+  "rows": 32595,
+  "model_info": {
+    "cuts": [
+      {
+        "first_column": 49,
+        "rows": [
+          1,
+          16
+        ],
+        "capacity": 16
+      },
+      {
+        "first_column": 56,
+        "rows": [
+          1,
+          16
+        ],
+        "capacity": 16
+      },
+      {
+        "first_column": 63,
+        "rows": [
+          1,
+          16
+        ],
+        "capacity": 16
+      }
+    ],
+    "recipe_count": 18,
+    "items": [
+      "源石粉末",
+      "源矿",
+      "砂叶",
+      "砂叶种子",
+      "砂叶粉末",
+      "精选荞愈胶囊",
+      "细磨荞花粉末",
+      "致密源石粉末",
+      "致密蓝铁粉末",
+      "荞花",
+      "荞花种子",
+      "荞花粉末",
+      "蓝铁块",
+      "蓝铁矿",
+      "蓝铁粉末",
+      "钢制零件",
+      "钢块",
+      "钢质瓶",
+      "高容谷地电池"
+    ],
+    "local_anchors": 1444,
+    "rate_vars": 8902,
+    "typed_vars": 4412,
+    "recipes": [
+      {
+        "kind": "粉碎机",
+        "inputs": {
+          "源矿": 1
+        },
+        "outputs": {
+          "源石粉末": 1
+        },
+        "ticks": 1
+      },
+      {
+        "kind": "粉碎机",
+        "inputs": {
+          "蓝铁块": 1
+        },
+        "outputs": {
+          "蓝铁粉末": 1
+        },
+        "ticks": 1
+      },
+      {
+        "kind": "粉碎机",
+        "inputs": {
+          "荞花": 1
+        },
+        "outputs": {
+          "荞花粉末": 2
+        },
+        "ticks": 1
+      },
+      {
+        "kind": "粉碎机",
+        "inputs": {
+          "砂叶": 1
+        },
+        "outputs": {
+          "砂叶粉末": 3
+        },
+        "ticks": 1
+      },
+      {
+        "kind": "精炼炉",
+        "inputs": {
+          "蓝铁矿": 1
+        },
+        "outputs": {
+          "蓝铁块": 1
+        },
+        "ticks": 1
+      },
+      {
+        "kind": "精炼炉",
+        "inputs": {
+          "致密蓝铁粉末": 1
+        },
+        "outputs": {
+          "钢块": 1
+        },
+        "ticks": 1
+      },
+      {
+        "kind": "精炼炉",
+        "inputs": {
+          "蓝铁粉末": 1
+        },
+        "outputs": {
+          "蓝铁块": 1
+        },
+        "ticks": 1
+      },
+      {
+        "kind": "研磨机",
+        "inputs": {
+          "蓝铁粉末": 2,
+          "砂叶粉末": 1
+        },
+        "outputs": {
+          "致密蓝铁粉末": 1
+        },
+        "ticks": 1
+      },
+      {
+        "kind": "研磨机",
+        "inputs": {
+          "源石粉末": 2,
+          "砂叶粉末": 1
+        },
+        "outputs": {
+          "致密源石粉末": 1
+        },
+        "ticks": 1
+      },
+      {
+        "kind": "研磨机",
+        "inputs": {
+          "荞花粉末": 2,
+          "砂叶粉末": 1
+        },
+        "outputs": {
+          "细磨荞花粉末": 1
+        },
+        "ticks": 1
+      },
+      {
+        "kind": "塑形机",
+        "inputs": {
+          "钢块": 2
+        },
+        "outputs": {
+          "钢质瓶": 1
+        },
+        "ticks": 1
+      },
+      {
+        "kind": "配件机",
+        "inputs": {
+          "钢块": 1
+        },
+        "outputs": {
+          "钢制零件": 1
+        },
+        "ticks": 1
+      },
+      {
+        "kind": "种植机",
+        "inputs": {
+          "荞花种子": 1
+        },
+        "outputs": {
+          "荞花": 1
+        },
+        "ticks": 1
+      },
+      {
+        "kind": "种植机",
+        "inputs": {
+          "砂叶种子": 1
+        },
+        "outputs": {
+          "砂叶": 1
+        },
+        "ticks": 1
+      },
+      {
+        "kind": "采种机",
+        "inputs": {
+          "荞花": 1
+        },
+        "outputs": {
+          "荞花种子": 2
+        },
+        "ticks": 1
+      },
+      {
+        "kind": "采种机",
+        "inputs": {
+          "砂叶": 1
+        },
+        "outputs": {
+          "砂叶种子": 2
+        },
+        "ticks": 1
+      },
+      {
+        "kind": "封装机",
+        "inputs": {
+          "钢制零件": 10,
+          "致密源石粉末": 15
+        },
+        "outputs": {
+          "高容谷地电池": 1
+        },
+        "ticks": 5
+      },
+      {
+        "kind": "灌装机",
+        "inputs": {
+          "钢质瓶": 10,
+          "细磨荞花粉末": 10
+        },
+        "outputs": {
+          "精选荞愈胶囊": 1
+        },
+        "ticks": 5
+      }
+    ]
+  },
+  "certificate": false
+}

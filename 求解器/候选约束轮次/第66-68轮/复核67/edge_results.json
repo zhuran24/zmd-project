@@ -1,0 +1,77 @@
+{
+  "results": [
+    {
+      "b": 9,
+      "branch": "all",
+      "P": 10,
+      "X": 17,
+      "Y": 11,
+      "allowed": 29,
+      "excess": -1
+    },
+    {
+      "b": 9,
+      "branch": "all",
+      "P": 11,
+      "X": 13,
+      "Y": 9,
+      "allowed": 19,
+      "excess": 3
+    },
+    {
+      "b": 9,
+      "branch": "all",
+      "P": 12,
+      "X": 10,
+      "Y": 6,
+      "allowed": 7,
+      "excess": 9
+    },
+    {
+      "b": 17,
+      "branch": "all",
+      "P": 10,
+      "X": 11,
+      "Y": 9,
+      "allowed": 29,
+      "excess": -9
+    },
+    {
+      "b": 17,
+      "branch": "all",
+      "P": 11,
+      "X": 8,
+      "Y": 7,
+      "allowed": 19,
+      "excess": -4
+    },
+    {
+      "b": 17,
+      "branch": "all",
+      "P": 12,
+      "X": 5,
+      "Y": 4,
+      "allowed": 7,
+      "excess": 2
+    },
+    {
+      "b": 9,
+      "branch": "no_lower_pole",
+      "P": 10,
+      "X": 22,
+      "Y": 19,
+      "allowed": 29,
+      "excess": 12
+    },
+    {
+      "b": 9,
+      "branch": "no_upper_pole",
+      "P": 10,
+      "X": 30,
+      "Y": 19,
+      "allowed": 29,
+      "excess": 20
+    }
+  ],
+  "adjacent_anchor_checks": 7624
+}

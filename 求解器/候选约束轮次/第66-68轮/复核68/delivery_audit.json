@@ -1,0 +1,58 @@
+{
+  "status": "PASS",
+  "input_hashes_unchanged": true,
+  "report_links_checked": 14,
+  "verdicts": 5,
+  "formal_constraints": 72,
+  "next_integer_area_below_1113": 1110,
+  "artifacts": {
+    "复核68.md": {
+      "bytes": 33375,
+      "sha256": "f9facc9908633dd406c9f7737df53296f0564c081f2ea7220b4b4b3a6e301053"
+    },
+    "复核68/accounting.json": {
+      "bytes": 4927,
+      "sha256": "6e366369b67de0143ce26aedea00339bdc1b7417dd08a7a366b6da000081f3ac"
+    },
+    "复核68/cut_geometry.json": {
+      "bytes": 8190,
+      "sha256": "87359de2a157bbe7f36104e348c4b874be040e79953e6a63b7ee016e165de98f"
+    },
+    "复核68/delivery_check.py": {
+      "bytes": 2358,
+      "sha256": "6226a0f8473ef8b9c62b676eb3c73f204bae6bd0f4f72ad2ff733c88e17d2d6d"
+    },
+    "复核68/edge_results.json": {
+      "bytes": 1198,
+      "sha256": "17fd358682883d8ec6a73bf11ea0bcbb0036bf55c3b10b94cd73021fa6d4bfab"
+    },
+    "复核68/input_manifest.json": {
+      "bytes": 1189,
+      "sha256": "d4c98f36d5ba300a9610ef3c5055e074a9d4bb13352b4826f77cb6dbe4f4ce96"
+    },
+    "复核68/joint_results.json": {
+      "bytes": 2469,
+      "sha256": "38ddc6aa1b288efe19d9e6807d394881faf25b2a91192a72d6f2eddd4bd201d6"
+    },
+    "复核68/power.json": {
+      "bytes": 947,
+      "sha256": "05ec5b802d6d8621ec89483f271cde249246b576b974e9f76d144ab88b7a97b6"
+    },
+    "复核68/recheck.log": {
+      "bytes": 1473,
+      "sha256": "b5c6b3110b8b0d07efaad44cf2bd473e87be94e5d994c5e2a436e211e007f2b5"
+    },
+    "复核68/recheck.py": {
+      "bytes": 23522,
+      "sha256": "11ead6c2c259b5ffc4a3759f8abfa29aef7c90d9dd02c8cfb49fbe12e42f0ca9"
+    },
+    "复核68/results.json": {
+      "bytes": 6034,
+      "sha256": "083dd8a2e1470e3626ae85a79c212fa04f04c7334712a3f8f25a671096349489"
+    },
+    "复核68/verdicts.json": {
+      "bytes": 1500,
+      "sha256": "a405b9572f7602d81292b97bcd77edf763c31588c0a7ad230f5110b655bddd55"
+    }
+  }
+}

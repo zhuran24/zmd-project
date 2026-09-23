@@ -1,0 +1,18 @@
+[
+  {
+    "forbidden_right_arm_poles": "lower",
+    "P": 10,
+    "X": 22,
+    "Y": 19,
+    "allowed": 29,
+    "deficit": 12
+  },
+  {
+    "forbidden_right_arm_poles": "upper",
+    "P": 10,
+    "X": 30,
+    "Y": 19,
+    "allowed": 29,
+    "deficit": 20
+  }
+]

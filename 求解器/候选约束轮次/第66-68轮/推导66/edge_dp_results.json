@@ -1,0 +1,56 @@
+[
+  {
+    "b": 9,
+    "P": 10,
+    "budget": 13,
+    "X": 17,
+    "Y": 11,
+    "allowed": 29,
+    "deficit": -1
+  },
+  {
+    "b": 9,
+    "P": 11,
+    "budget": 36,
+    "X": 13,
+    "Y": 9,
+    "allowed": 19,
+    "deficit": 3
+  },
+  {
+    "b": 9,
+    "P": 12,
+    "budget": 59,
+    "X": 10,
+    "Y": 6,
+    "allowed": 7,
+    "deficit": 9
+  },
+  {
+    "b": 17,
+    "P": 10,
+    "budget": 13,
+    "X": 11,
+    "Y": 9,
+    "allowed": 29,
+    "deficit": -9
+  },
+  {
+    "b": 17,
+    "P": 11,
+    "budget": 36,
+    "X": 8,
+    "Y": 7,
+    "allowed": 19,
+    "deficit": -4
+  },
+  {
+    "b": 17,
+    "P": 12,
+    "budget": 59,
+    "X": 5,
+    "Y": 4,
+    "allowed": 7,
+    "deficit": 2
+  }
+]

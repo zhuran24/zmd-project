@@ -1,0 +1,2 @@
+{"stage": "built", "seconds": 1.126669393001066, "vars": 32940, "rows": 34338}
+{"b": 17, "P": 11, "status": 1, "message": "Time limit reached. (HiGHS Status 13: model_status is Time limit reached; primal_status is None)", "elapsed": 181.23655634999886, "build_seconds": 1.126669393001066, "vars": 32940, "rows": 34338, "certificate": false}

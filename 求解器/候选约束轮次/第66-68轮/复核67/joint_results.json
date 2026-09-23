@@ -1,0 +1,198 @@
+{
+  "shared_bodies": [
+    [
+      47,
+      68,
+      2,
+      2
+    ],
+    [
+      68,
+      15,
+      2,
+      2
+    ]
+  ],
+  "results": [
+    {
+      "mask": [
+        0,
+        0
+      ],
+      "P": 10,
+      "corner_loss": 0,
+      "XY": 22,
+      "S": 180,
+      "resources": [
+        1,
+        1,
+        9
+      ],
+      "omitted_J": 0
+    },
+    {
+      "mask": [
+        0,
+        0
+      ],
+      "P": 11,
+      "corner_loss": 0,
+      "XY": 19,
+      "S": 187,
+      "resources": [
+        1,
+        4,
+        36
+      ],
+      "omitted_J": 0
+    },
+    {
+      "mask": [
+        0,
+        0
+      ],
+      "P": 12,
+      "corner_loss": 0,
+      "XY": 16,
+      "S": 196,
+      "resources": [
+        1,
+        6,
+        54
+      ],
+      "omitted_J": 0
+    },
+    {
+      "mask": [
+        0,
+        1
+      ],
+      "P": 10,
+      "corner_loss": 15,
+      "XY": null,
+      "S": null,
+      "resources": null,
+      "omitted_J": null
+    },
+    {
+      "mask": [
+        0,
+        1
+      ],
+      "P": 11,
+      "corner_loss": 15,
+      "XY": 19,
+      "S": 189,
+      "resources": [
+        1,
+        2,
+        18
+      ],
+      "omitted_J": 0
+    },
+    {
+      "mask": [
+        0,
+        1
+      ],
+      "P": 12,
+      "corner_loss": 15,
+      "XY": 16,
+      "S": 198,
+      "resources": [
+        1,
+        4,
+        42
+      ],
+      "omitted_J": 0
+    },
+    {
+      "mask": [
+        1,
+        0
+      ],
+      "P": 10,
+      "corner_loss": 15,
+      "XY": null,
+      "S": null,
+      "resources": null,
+      "omitted_J": null
+    },
+    {
+      "mask": [
+        1,
+        0
+      ],
+      "P": 11,
+      "corner_loss": 15,
+      "XY": 19,
+      "S": 189,
+      "resources": [
+        1,
+        2,
+        18
+      ],
+      "omitted_J": 0
+    },
+    {
+      "mask": [
+        1,
+        0
+      ],
+      "P": 12,
+      "corner_loss": 15,
+      "XY": 16,
+      "S": 198,
+      "resources": [
+        1,
+        4,
+        36
+      ],
+      "omitted_J": 0
+    },
+    {
+      "mask": [
+        1,
+        1
+      ],
+      "P": 10,
+      "corner_loss": 30,
+      "XY": null,
+      "S": null,
+      "resources": null,
+      "omitted_J": null
+    },
+    {
+      "mask": [
+        1,
+        1
+      ],
+      "P": 11,
+      "corner_loss": 30,
+      "XY": 19,
+      "S": 191,
+      "resources": [
+        1,
+        0,
+        0
+      ],
+      "omitted_J": 0
+    },
+    {
+      "mask": [
+        1,
+        1
+      ],
+      "P": 12,
+      "corner_loss": 30,
+      "XY": 16,
+      "S": 198,
+      "resources": [
+        1,
+        3,
+        27
+      ],
+      "omitted_J": 0
+    }
+  ]
+}

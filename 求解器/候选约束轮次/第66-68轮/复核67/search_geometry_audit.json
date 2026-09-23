@@ -1,0 +1,15 @@
+{
+  "anchor_audits": [
+    {
+      "b": 9,
+      "all_anchors": 4831,
+      "strip_machine_anchors": 920
+    },
+    {
+      "b": 17,
+      "all_anchors": 5629,
+      "strip_machine_anchors": 1444
+    }
+  ],
+  "not_a_feasibility_certificate": true
+}

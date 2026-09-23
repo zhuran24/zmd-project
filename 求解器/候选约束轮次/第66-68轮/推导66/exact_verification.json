@@ -1,0 +1,336 @@
+{
+  "joint17": [
+    {
+      "P": 10,
+      "corner_mask": [
+        0,
+        0
+      ],
+      "corner_loss": 0,
+      "XY": 22,
+      "allowed": 29,
+      "deficit": -7
+    },
+    {
+      "P": 11,
+      "corner_mask": [
+        0,
+        0
+      ],
+      "corner_loss": 0,
+      "XY": 19,
+      "allowed": 19,
+      "deficit": 0
+    },
+    {
+      "P": 12,
+      "corner_mask": [
+        0,
+        0
+      ],
+      "corner_loss": 0,
+      "XY": 16,
+      "allowed": 7,
+      "deficit": 9
+    },
+    {
+      "P": 11,
+      "corner_mask": [
+        0,
+        1
+      ],
+      "corner_loss": 15,
+      "XY": 19,
+      "allowed": 19,
+      "deficit": 0
+    },
+    {
+      "P": 12,
+      "corner_mask": [
+        0,
+        1
+      ],
+      "corner_loss": 15,
+      "XY": 16,
+      "allowed": 7,
+      "deficit": 9
+    },
+    {
+      "P": 11,
+      "corner_mask": [
+        1,
+        0
+      ],
+      "corner_loss": 15,
+      "XY": 19,
+      "allowed": 19,
+      "deficit": 0
+    },
+    {
+      "P": 12,
+      "corner_mask": [
+        1,
+        0
+      ],
+      "corner_loss": 15,
+      "XY": 16,
+      "allowed": 7,
+      "deficit": 9
+    },
+    {
+      "P": 11,
+      "corner_mask": [
+        1,
+        1
+      ],
+      "corner_loss": 30,
+      "XY": 19,
+      "allowed": 19,
+      "deficit": 0
+    },
+    {
+      "P": 12,
+      "corner_mask": [
+        1,
+        1
+      ],
+      "corner_loss": 30,
+      "XY": 16,
+      "allowed": 7,
+      "deficit": 9
+    }
+  ],
+  "joint17_with_J": [
+    {
+      "P": 10,
+      "corner_mask": [
+        0,
+        0
+      ],
+      "min_S": 180,
+      "resources": [
+        1,
+        1,
+        9
+      ],
+      "boundary_cost": 20,
+      "omitted_J": 0,
+      "deficit": -7
+    },
+    {
+      "P": 11,
+      "corner_mask": [
+        0,
+        0
+      ],
+      "min_S": 187,
+      "resources": [
+        1,
+        4,
+        36
+      ],
+      "boundary_cost": 11,
+      "omitted_J": 0,
+      "deficit": 0
+    },
+    {
+      "P": 12,
+      "corner_mask": [
+        0,
+        0
+      ],
+      "min_S": 196,
+      "resources": [
+        1,
+        6,
+        54
+      ],
+      "boundary_cost": 4,
+      "omitted_J": 0,
+      "deficit": 9
+    },
+    {
+      "P": 11,
+      "corner_mask": [
+        0,
+        1
+      ],
+      "min_S": 189,
+      "resources": [
+        1,
+        2,
+        18
+      ],
+      "boundary_cost": 15,
+      "omitted_J": 0,
+      "deficit": 2
+    },
+    {
+      "P": 12,
+      "corner_mask": [
+        0,
+        1
+      ],
+      "min_S": 198,
+      "resources": [
+        1,
+        4,
+        42
+      ],
+      "boundary_cost": 8,
+      "omitted_J": 0,
+      "deficit": 11
+    },
+    {
+      "P": 11,
+      "corner_mask": [
+        1,
+        0
+      ],
+      "min_S": 189,
+      "resources": [
+        1,
+        2,
+        18
+      ],
+      "boundary_cost": 15,
+      "omitted_J": 0,
+      "deficit": 2
+    },
+    {
+      "P": 12,
+      "corner_mask": [
+        1,
+        0
+      ],
+      "min_S": 198,
+      "resources": [
+        1,
+        4,
+        36
+      ],
+      "boundary_cost": 8,
+      "omitted_J": 0,
+      "deficit": 11
+    },
+    {
+      "P": 11,
+      "corner_mask": [
+        1,
+        1
+      ],
+      "min_S": 191,
+      "resources": [
+        1,
+        0,
+        0
+      ],
+      "boundary_cost": 19,
+      "omitted_J": 0,
+      "deficit": 4
+    },
+    {
+      "P": 12,
+      "corner_mask": [
+        1,
+        1
+      ],
+      "min_S": 198,
+      "resources": [
+        1,
+        3,
+        27
+      ],
+      "boundary_cost": 10,
+      "omitted_J": 0,
+      "deficit": 11
+    }
+  ],
+  "status": "PASS",
+  "power_poles": {
+    "9": 3490,
+    "17": 3511
+  },
+  "min_right_arm_loss": {
+    "lower": 7,
+    "upper": 7
+  },
+  "independent_adjacency_checks": 7624,
+  "results": [
+    {
+      "b": 9,
+      "branch": "all",
+      "P": 10,
+      "X": 17,
+      "Y": 11,
+      "allowance": 29,
+      "deficit": -1
+    },
+    {
+      "b": 9,
+      "branch": "all",
+      "P": 11,
+      "X": 13,
+      "Y": 9,
+      "allowance": 19,
+      "deficit": 3
+    },
+    {
+      "b": 9,
+      "branch": "all",
+      "P": 12,
+      "X": 10,
+      "Y": 6,
+      "allowance": 7,
+      "deficit": 9
+    },
+    {
+      "b": 17,
+      "branch": "all",
+      "P": 10,
+      "X": 11,
+      "Y": 9,
+      "allowance": 29,
+      "deficit": -9
+    },
+    {
+      "b": 17,
+      "branch": "all",
+      "P": 11,
+      "X": 8,
+      "Y": 7,
+      "allowance": 19,
+      "deficit": -4
+    },
+    {
+      "b": 17,
+      "branch": "all",
+      "P": 12,
+      "X": 5,
+      "Y": 4,
+      "allowance": 7,
+      "deficit": 2
+    },
+    {
+      "b": 9,
+      "branch": "no_lower_pole",
+      "P": 10,
+      "X": 22,
+      "Y": 19,
+      "allowance": 29,
+      "deficit": 12
+    },
+    {
+      "b": 9,
+      "branch": "no_upper_pole",
+      "P": 10,
+      "X": 30,
+      "Y": 19,
+      "allowance": 29,
+      "deficit": 20
+    }
+  ],
+  "seconds": 1.3319812400004594,
+  "formal_inputs_unchanged": true,
+  "solver_used": false
+}

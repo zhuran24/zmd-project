@@ -1,0 +1,12 @@
+{
+  "《明日方舟：终末地》游戏规则.txt": "6e64e3903a65536c530b363c9f3aef8c1bb2a1c1193e866799125dd047159924",
+  "求解任务.txt": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+  "求解约束.txt": "0c05976f6063f3332db6ee19d7746052ef35148d7c2a12dfa396c7bb8753f30f",
+  "候选约束.txt": "527624e6f640c80250d909cb71e8eb9a1334cc17dc600412882e96eb29ba44a9",
+  "求解器/候选约束轮次/第66-68轮/推导66/edge_integer_certificate.json": "17ef6113647679794310bfaa2549e573c1a6f7817e477e19cd769f6e69326ecd",
+  "求解器/候选约束轮次/第66-68轮/推导66/joint17_j_certificate.json": "5fed0f735007d05f8a984800785b278ebd60ccf4a2ebb36731cdcea04d42d841",
+  "求解器/候选约束轮次/第66-68轮/推导66/joint17_integer_certificate.json": "85f6c51272500461448e992ee87c97be5959d9fb6d44eb06d11f8255f7503f24",
+  "求解器/候选约束轮次/第66-68轮/推导66/power_certificates.json": "555d4b3a7a2b5ba3a574c641e946b52df7a9968830fb5867be6feb067e058042",
+  "求解器/候选约束轮次/第66-68轮/推导66/model_audit.json": "c4f1c814e86d4c0b84c95bb28e4c24b1335b294080dce0d7aef7df67127608be",
+  "求解器/候选约束轮次/第66-68轮/推导66/exact_verification.json": "092a480dee03e92ce3fc2a94ddcf10d076cbacf40bcf6d721d1b0ed748f5de3a"
+}
