@@ -1,0 +1,65 @@
+BUILT {"units": 1945, "kinds": {"s": 132, "m": 132, "l": 136, "c": 108, "p": 1437}, "variables": 4513, "constraints": 5107, "project": true, "J": 0, "P": 10, "cap": 184, "fixed": false, "edge_tables_used": false, "score_lower_bound_imposed": false, "script_sha256": "ca9576969abd26a61c7abb70b71a4d39d94a48df71ab1a09c301b5a22371b905", "geometry_script_sha256": "1d2917606944cfb1facd17b021ec3848683ddb5f27cb5c42d825e1542fd62009", "matrix_sha256": "01fc968983809766c2f433e4cd6a6ae38e9716ade35f6aca2f9c53d8ee4eb7f2"}
+/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第72-74轮/复核73/solve.py:114: RuntimeWarning: Unrecognized options detected: {'threads'}. These will be passed to HiGHS verbatim.
+  result=milp(obj,integrality=np.ones(len(names)),bounds=Bounds(lb,ub),constraints=LinearConstraint(mat,rl,ru),
+Running HiGHS 1.12.0 (git hash: 4f96ee8f4): Copyright (c) 2025 HiGHS under MIT licence terms
+MIP has 5107 rows; 4513 cols; 155252 nonzeros; 4513 integer variables (4113 binary)
+Coefficient ranges:
+  Matrix  [1e+00, 1e+01]
+  Cost    [1e+00, 9e+00]
+  Bound   [1e+00, 9e+00]
+  RHS     [1e+00, 1e+02]
+Presolving model
+4926 rows, 4101 cols, 148700 nonzeros  0s
+4402 rows, 3923 cols, 146467 nonzeros  0s
+Presolve reductions: rows 4402(-705); columns 3923(-590); nonzeros 146467(-8785) 
+Objective function is integral with scale 1
+
+Solving MIP model with:
+   4402 rows
+   3923 cols (3523 binary, 400 integer, 0 implied int., 0 continuous, 0 domain fixed)
+   146467 nonzeros
+
+Src: B => Branching; C => Central rounding; F => Feasibility pump; H => Heuristic;
+     I => Shifting; J => Feasibility jump; L => Sub-MIP; P => Empty MIP; R => Randomized rounding;
+     S => Solve LP; T => Evaluate node; U => Unbounded; X => User solution; Y => HiGHS solution;
+     Z => ZI Round; l => Trivial lower; p => Trivial point; u => Trivial upper; z => Trivial zero
+
+        Nodes      |    B&B Tree     |            Objective Bounds              |  Dynamic Constraints |       Work      
+Src  Proc. InQueue |  Leaves   Expl. | BestBound       BestSol              Gap |   Cuts   InLp Confl. | LpIters     Time
+
+         0       0         0   0.00%   -284            inf                  inf        0      0      0         0     0.6s
+         0       0         0   0.00%   -126.9125883    inf                  inf        0      0      2      5046     1.1s
+         0       0         0   0.00%   -123.7774797    inf                  inf     3533    236     60     19623     6.1s
+         0       0         0   0.00%   -122.6888574    inf                  inf     1324    106    172     50689    17.2s
+
+0.1% inactive integer columns, restarting
+Model after restart has 4392 rows, 3914 cols (3514 bin., 400 int., 0 impl., 0 cont., 0 dom.fix.), and 146037 nonzeros
+
+         0       0         0   0.00%   -122.6888574    inf                  inf      106      0      0     50689    17.6s
+         0       0         0   0.00%   -122.6554938    inf                  inf      106     81      2     58016    18.6s
+         0       0         0   0.00%   -119.9390436    inf                  inf     4335    225     56     70659    23.6s
+         0       0         0   0.00%   -119.2780797    inf                  inf     5209    104    160     97207    33.7s
+         5       0         1   6.25%   -119.2780797    inf                  inf     4023    104    168    225788    52.1s
+       103       4        49  30.42%   -119.2780797    inf                  inf     5441    246    467    255073    60.1s
+       209       5       101  51.90%   -118.7639322    inf                  inf     5831    270    755    280822    65.2s
+       303       6       148  60.10%   -118.7639322    inf                  inf     6247    197    999    305407    70.3s
+       403       8       197  61.66%   -118.7639322    inf                  inf     7083    193   1273    332909    75.6s
+       523       7       258  74.17%   -118.7639322    inf                  inf     8368    207   1642    353819    80.8s
+       528       0       263 100.00%   inf             inf                  inf     9678    206   1653    358391    82.2s
+
+Solving report
+  Status            Infeasible
+  Primal bound      inf
+  Dual bound        inf
+  Gap               inf
+  P-D integral      0
+  Solution status   -
+  Timing            82.22
+  Max sub-MIP depth 2
+  Nodes             528
+  Repair LPs        0
+  LP iterations     358391
+                    169093 (strong br.)
+                    59057 (separation)
+                    45360 (heuristics)
+RESULT {"units": 1945, "kinds": {"s": 132, "m": 132, "l": 136, "c": 108, "p": 1437}, "variables": 4513, "constraints": 5107, "project": true, "J": 0, "P": 10, "cap": 184, "fixed": false, "edge_tables_used": false, "score_lower_bound_imposed": false, "script_sha256": "ca9576969abd26a61c7abb70b71a4d39d94a48df71ab1a09c301b5a22371b905", "geometry_script_sha256": "1d2917606944cfb1facd17b021ec3848683ddb5f27cb5c42d825e1542fd62009", "matrix_sha256": "01fc968983809766c2f433e4cd6a6ae38e9716ade35f6aca2f9c53d8ee4eb7f2", "build_seconds": 0.2347132610011613, "engine": "HiGHS", "version": "1.18.1", "status": 2, "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)", "elapsed": 82.62288294400787}

@@ -1,0 +1,37 @@
+{
+  "report_path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第72-74轮/推导72.md",
+  "status": "未排除P=10",
+  "candidate_count": 2,
+  "formal_rectangle_upper": 1113,
+  "previous_edge_minimum": 180,
+  "joint_edge_minimum": 185,
+  "area_budget": 187,
+  "remaining_S_margin": 2,
+  "further_S_needed_to_exclude": 3,
+  "two_independent_encodings": true,
+  "two_engines": [
+    "CP-SAT",
+    "HiGHS"
+  ],
+  "highs_branches": {
+    "J=0": "INFEASIBLE at S<=184",
+    "J=1": "INFEASIBLE at S<=184"
+  },
+  "branches_disjoint_and_complete": "10J<=13 and integer J>=0 implies J in {0,1}",
+  "physical_witness": "witness185.json",
+  "witness_power_loss": 11,
+  "witness_actual_repeats": 2,
+  "witness_global_group_capacity": 184,
+  "global_group_joint_model": {
+    "minimum_lower_bound": 185,
+    "minimum_exact": null,
+    "feasible_witness": null,
+    "J0": "UNKNOWN",
+    "J1": "UNKNOWN"
+  },
+  "excluded_exploratory_objective_files": [
+    "initial_cp.json",
+    "strengthened_cp.json",
+    "highs_cap183.json"
+  ]
+}

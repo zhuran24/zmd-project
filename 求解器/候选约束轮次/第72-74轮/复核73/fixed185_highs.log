@@ -1,0 +1,46 @@
+BUILT {"units": 3970, "kinds": {"s": 132, "m": 132, "l": 136, "c": 108, "p": 3462}, "variables": 8455, "constraints": 10993, "project": false, "J": null, "P": 10, "cap": 185, "fixed": true, "edge_tables_used": false, "score_lower_bound_imposed": false, "script_sha256": "ca9576969abd26a61c7abb70b71a4d39d94a48df71ab1a09c301b5a22371b905", "geometry_script_sha256": "1d2917606944cfb1facd17b021ec3848683ddb5f27cb5c42d825e1542fd62009", "matrix_sha256": "b534a725a4370a80f017ece31b6fb0d9706b762cb23cef30516b7642b99877df"}
+/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第72-74轮/复核73/solve.py:114: RuntimeWarning: Unrecognized options detected: {'threads'}. These will be passed to HiGHS verbatim.
+  result=milp(obj,integrality=np.ones(len(names)),bounds=Bounds(lb,ub),constraints=LinearConstraint(mat,rl,ru),
+Running HiGHS 1.12.0 (git hash: 4f96ee8f4): Copyright (c) 2025 HiGHS under MIT licence terms
+MIP has 10993 rows; 8455 cols; 171587 nonzeros; 8455 integer variables (8055 binary)
+Coefficient ranges:
+  Matrix  [1e+00, 1e+01]
+  Cost    [1e+00, 9e+00]
+  Bound   [1e+00, 9e+00]
+  RHS     [1e+00, 1e+02]
+Presolving model
+4475 rows, 600 cols, 6792 nonzeros  0s
+83 rows, 43 cols, 1847 nonzeros  0s
+1 rows, 41 cols, 41 nonzeros  0s
+0 rows, 0 cols, 0 nonzeros  0s
+0 rows, 0 cols, 0 nonzeros  0s
+Presolve reductions: rows 0(-10993); columns 0(-8455); nonzeros 0(-171587) - Reduced to empty
+Presolve: Optimal
+
+Src: B => Branching; C => Central rounding; F => Feasibility pump; H => Heuristic;
+     I => Shifting; J => Feasibility jump; L => Sub-MIP; P => Empty MIP; R => Randomized rounding;
+     S => Solve LP; T => Evaluate node; U => Unbounded; X => User solution; Y => HiGHS solution;
+     Z => ZI Round; l => Trivial lower; p => Trivial point; u => Trivial upper; z => Trivial zero
+
+        Nodes      |    B&B Tree     |            Objective Bounds              |  Dynamic Constraints |       Work      
+Src  Proc. InQueue |  Leaves   Expl. | BestBound       BestSol              Gap |   Cuts   InLp Confl. | LpIters     Time
+
+         0       0         0   0.00%   -113            -113               0.00%        0      0      0         0     0.0s
+
+Solving report
+  Status            Optimal
+  Primal bound      -113
+  Dual bound        -113
+  Gap               0%
+  P-D integral      0
+  Solution status   feasible
+                    -113 (objective)
+                    0 (bound viol.)
+                    0 (int. viol.)
+                    0 (row viol.)
+  Timing            0.05
+  Max sub-MIP depth 0
+  Nodes             0
+  Repair LPs        0
+  LP iterations     0
+RESULT {"units": 3970, "kinds": {"s": 132, "m": 132, "l": 136, "c": 108, "p": 3462}, "variables": 8455, "constraints": 10993, "project": false, "J": null, "P": 10, "cap": 185, "fixed": true, "edge_tables_used": false, "score_lower_bound_imposed": false, "script_sha256": "ca9576969abd26a61c7abb70b71a4d39d94a48df71ab1a09c301b5a22371b905", "geometry_script_sha256": "1d2917606944cfb1facd17b021ec3848683ddb5f27cb5c42d825e1542fd62009", "matrix_sha256": "b534a725a4370a80f017ece31b6fb0d9706b762cb23cef30516b7642b99877df", "build_seconds": 0.2472376770019764, "engine": "HiGHS", "version": "1.18.1", "status": 0, "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)", "S": 185, "bound": 185.0, "integer_rows_checked": true, "elapsed": 0.4761743220005883}

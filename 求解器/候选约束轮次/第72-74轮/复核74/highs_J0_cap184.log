@@ -1,0 +1,57 @@
+built 1945 4560 6454 seconds 0.3266194110037759
+/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第72-74轮/复核74/model74.py:170: RuntimeWarning: Unrecognized options detected: {'threads'}. These will be passed to HiGHS verbatim.
+  res=milp(np.zeros(len(m.bounds)),integrality=np.ones(len(m.bounds)),bounds=Bounds(*zip(*m.bounds)),
+Running HiGHS 1.12.0 (git hash: 4f96ee8f4): Copyright (c) 2025 HiGHS under MIT licence terms
+MIP has 6454 rows; 4560 cols; 213810 nonzeros; 4560 integer variables (4159 binary)
+Coefficient ranges:
+  Matrix  [1e+00, 1e+01]
+  Cost    [0e+00, 0e+00]
+  Bound   [1e+00, 5e+02]
+  RHS     [1e+00, 3e+02]
+Presolving model
+6267 rows, 4140 cols, 203772 nonzeros  0s
+4817 rows, 3959 cols, 202415 nonzeros  0s
+4817 rows, 3959 cols, 202407 nonzeros  0s
+Presolve reductions: rows 4817(-1637); columns 3959(-601); nonzeros 202407(-11403) 
+Objective function is integral with scale 1
+
+Solving MIP model with:
+   4817 rows
+   3959 cols (3558 binary, 401 integer, 0 implied int., 0 continuous, 0 domain fixed)
+   202407 nonzeros
+
+Src: B => Branching; C => Central rounding; F => Feasibility pump; H => Heuristic;
+     I => Shifting; J => Feasibility jump; L => Sub-MIP; P => Empty MIP; R => Randomized rounding;
+     S => Solve LP; T => Evaluate node; U => Unbounded; X => User solution; Y => HiGHS solution;
+     Z => ZI Round; l => Trivial lower; p => Trivial point; u => Trivial upper; z => Trivial zero
+
+        Nodes      |    B&B Tree     |            Objective Bounds              |  Dynamic Constraints |       Work      
+Src  Proc. InQueue |  Leaves   Expl. | BestBound       BestSol              Gap |   Cuts   InLp Confl. | LpIters     Time
+
+         0       0         0   0.00%   0               inf                  inf        0      0      0         0     0.8s
+         0       0         0   0.00%   0               inf                  inf        0      0      2      1723     1.0s
+         0       0         0   0.00%   0               inf                  inf      483     72    542     23586    11.6s
+
+0.2% inactive integer columns, restarting
+Model after restart has 4807 rows, 3949 cols (3548 bin., 401 int., 0 impl., 0 cont., 0 dom.fix.), and 202458 nonzeros
+
+         0       0         0   0.00%   0               inf                  inf       25      0      0     25638    14.9s
+         0       0         0   0.00%   0               inf                  inf       25     20      2     26830    15.2s
+         1       0         1 100.00%   inf             inf                  inf      593     73     85     29897    18.3s
+
+Solving report
+  Status            Infeasible
+  Primal bound      inf
+  Dual bound        inf
+  Gap               inf
+  P-D integral      0
+  Solution status   -
+  Timing            18.29
+  Max sub-MIP depth 2
+  Nodes             1
+  Repair LPs        0
+  LP iterations     29897
+                    0 (strong br.)
+                    6446 (separation)
+                    20508 (heuristics)
+{'arguments': {'j': 0, 'cap': 184, 'engine': 'highs', 'seconds': 420, 'full': False, 'fixed': False, 'no_cuts': False, 'name': 'highs_J0_cap184'}, 'units': 1945, 'variables': 4560, 'constraints': 6454, 'matrix_sha256': 'c852a5a0dbcdfb26c98ceea7c88b5dcb793ce8002ae4ca34c46634becc65ef49', 'source_sha256': 'ca2d63951b599c43f6c97deb08e0dfe9375b02b2c661558c58057bfd76f52dba', 'status': 2, 'message': 'The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)', 'version': '1.18.1', 'seconds': 18.822206379001727}

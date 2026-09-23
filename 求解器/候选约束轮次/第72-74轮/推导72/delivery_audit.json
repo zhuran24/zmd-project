@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "input_hashes_unchanged": true,
+  "required_solver_certificates_checked": true,
+  "final_script_hashes_match_receipts": true,
+  "report_links_checked": 24,
+  "missing_links": [],
+  "allowed_extensions_only": true,
+  "largest_file_bytes": 275293,
+  "total_bytes": 1029423,
+  "files": 82,
+  "kernel_cargo_tests_run": false,
+  "git_operations_run": false,
+  "deleted_files": [],
+  "write_scope": [
+    "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第72-74轮/推导72.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第72-74轮/推导72"
+  ]
+}

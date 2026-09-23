@@ -1,0 +1,17 @@
+{
+  "solver": "SciPy HiGHS",
+  "version": "1.18.1",
+  "status": 1,
+  "message": "Time limit reached. (HiGHS Status 13: model_status is Time limit reached; primal_status is None)",
+  "seconds": 181.35659908798698,
+  "build_seconds": 1.2235240459995111,
+  "branch_J": null,
+  "strip": false,
+  "project": false,
+  "groups": true,
+  "cap": 187,
+  "domain_count": 3970,
+  "domain_sha256": "1efb89cc4c937592424b4ab347be9233be1bf847ee52bc953dd7c119b6f548a1",
+  "matrix_sha256": "878e6291bd4d5c33e7241386f2184d2ef07021ccc1789e861742e725e48f74a9",
+  "script_sha256": "6492b9b6e75222d6b1e1c0ec2a555483793c300ed9913b37f77abe74836452ac"
+}

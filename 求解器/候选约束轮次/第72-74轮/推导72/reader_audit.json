@@ -1,0 +1,25 @@
+{
+  "status": "PASS",
+  "date": "2026-09-23",
+  "audience_context_removed": true,
+  "current_status_consistent": true,
+  "instruction_echo_removed": true,
+  "numerical_scopes_separate": [
+    "old resource minimum 180",
+    "M0 exact minimum 185",
+    "M1 minimum unknown with lower bound 185",
+    "whole-factory feasibility unknown"
+  ],
+  "names_self_explanatory": true,
+  "links_checked": 24,
+  "no_missing_links": true,
+  "candidate_count": 2,
+  "not_a_full_layout": true,
+  "grid_fee_not_added_to_actual_repeat_fee": true,
+  "obsolete_wrong_objective_runs_flagged": true,
+  "final_reread_completed": true,
+  "corrections": [
+    "section title matches four result rows",
+    "move active-machine proof before edge-table introduction"
+  ]
+}

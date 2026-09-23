@@ -1,0 +1,45 @@
+built 3970 8502 12340 seconds 0.42776448400400113
+/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第72-74轮/复核74/model74.py:170: RuntimeWarning: Unrecognized options detected: {'threads'}. These will be passed to HiGHS verbatim.
+  res=milp(np.zeros(len(m.bounds)),integrality=np.ones(len(m.bounds)),bounds=Bounds(*zip(*m.bounds)),
+Running HiGHS 1.12.0 (git hash: 4f96ee8f4): Copyright (c) 2025 HiGHS under MIT licence terms
+MIP has 12340 rows; 8502 cols; 230145 nonzeros; 8502 integer variables (8101 binary)
+Coefficient ranges:
+  Matrix  [1e+00, 1e+01]
+  Cost    [0e+00, 0e+00]
+  Bound   [1e+00, 5e+02]
+  RHS     [1e+00, 3e+02]
+Presolving model
+5819 rows, 645 cols, 6013 nonzeros  0s
+2 rows, 47 cols, 48 nonzeros  0s
+0 rows, 0 cols, 0 nonzeros  0s
+0 rows, 0 cols, 0 nonzeros  0s
+Presolve reductions: rows 0(-12340); columns 0(-8502); nonzeros 0(-230145) - Reduced to empty
+Presolve: Optimal
+
+Src: B => Branching; C => Central rounding; F => Feasibility pump; H => Heuristic;
+     I => Shifting; J => Feasibility jump; L => Sub-MIP; P => Empty MIP; R => Randomized rounding;
+     S => Solve LP; T => Evaluate node; U => Unbounded; X => User solution; Y => HiGHS solution;
+     Z => ZI Round; l => Trivial lower; p => Trivial point; u => Trivial upper; z => Trivial zero
+
+        Nodes      |    B&B Tree     |            Objective Bounds              |  Dynamic Constraints |       Work      
+Src  Proc. InQueue |  Leaves   Expl. | BestBound       BestSol              Gap |   Cuts   InLp Confl. | LpIters     Time
+
+         0       0         0   0.00%   0               0                  0.00%        0      0      0         0     0.1s
+
+Solving report
+  Status            Optimal
+  Primal bound      0
+  Dual bound        0
+  Gap               0%
+  P-D integral      0
+  Solution status   feasible
+                    0 (objective)
+                    0 (bound viol.)
+                    0 (int. viol.)
+                    0 (row viol.)
+  Timing            0.06
+  Max sub-MIP depth 0
+  Nodes             0
+  Repair LPs        0
+  LP iterations     0
+{'arguments': {'j': None, 'cap': 185, 'engine': 'highs', 'seconds': 420, 'full': True, 'fixed': True, 'no_cuts': False, 'name': 'replay185'}, 'units': 3970, 'variables': 8502, 'constraints': 12340, 'matrix_sha256': '2a5eb3dd4672b1fb9698e70e431a7e89de22615d2561f1fdf8e208dfebd2a44b', 'source_sha256': 'ca2d63951b599c43f6c97deb08e0dfe9375b02b2c661558c58057bfd76f52dba', 'status': 0, 'message': 'Optimization terminated successfully. (HiGHS Status 7: Optimal)', 'version': '1.18.1', 'S': 185, 'seconds': 0.6999727039947174}

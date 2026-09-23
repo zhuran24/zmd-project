@@ -1,0 +1,162 @@
+{
+  "recipes": 18,
+  "materials": 19,
+  "raw_rates": [
+    "18",
+    "34"
+  ],
+  "machines": [
+    {
+      "kind": "粉碎机",
+      "rates": [
+        "18",
+        "34",
+        "11/2",
+        "21/2"
+      ],
+      "count": 68,
+      "per_machine_minimum": "1"
+    },
+    {
+      "kind": "精炼炉",
+      "rates": [
+        "34",
+        "17",
+        "0"
+      ],
+      "count": 51,
+      "per_machine_minimum": "1"
+    },
+    {
+      "kind": "研磨机",
+      "rates": [
+        "17",
+        "9",
+        "11/2"
+      ],
+      "count": 32,
+      "per_machine_minimum": "1/2"
+    },
+    {
+      "kind": "塑形机",
+      "rates": [
+        "11/2"
+      ],
+      "count": 6,
+      "per_machine_minimum": "1/2"
+    },
+    {
+      "kind": "配件机",
+      "rates": [
+        "6"
+      ],
+      "count": 6,
+      "per_machine_minimum": "1"
+    },
+    {
+      "kind": "种植机",
+      "rates": [
+        "11",
+        "21"
+      ],
+      "count": 32,
+      "per_machine_minimum": "1"
+    },
+    {
+      "kind": "采种机",
+      "rates": [
+        "11/2",
+        "21/2"
+      ],
+      "count": 16,
+      "per_machine_minimum": "1"
+    },
+    {
+      "kind": "封装机",
+      "rates": [
+        "3/5"
+      ],
+      "count": 3,
+      "per_machine_minimum": "1/5"
+    },
+    {
+      "kind": "灌装机",
+      "rates": [
+        "11/20"
+      ],
+      "count": 3,
+      "per_machine_minimum": "3/20"
+    }
+  ],
+  "size_counts": [
+    131,
+    48,
+    38
+  ],
+  "machine_area": 3291,
+  "total_machines": 217,
+  "S_cap": 187,
+  "otherwise": [
+    [
+      10,
+      1,
+      4610
+    ],
+    [
+      11,
+      4,
+      4620
+    ],
+    [
+      12,
+      6,
+      4632
+    ],
+    [
+      13,
+      9,
+      4642
+    ],
+    [
+      14,
+      11,
+      4654
+    ],
+    [
+      15,
+      14,
+      4664
+    ],
+    [
+      16,
+      16,
+      4676
+    ],
+    [
+      17,
+      17,
+      4690
+    ]
+  ],
+  "extra_machine_lower": 4646,
+  "P_cases": [
+    {
+      "P": 10,
+      "power_budget": 13,
+      "J_max": 1,
+      "T_plus_F": 237
+    },
+    {
+      "P": 11,
+      "power_budget": 36,
+      "J_max": 3,
+      "T_plus_F": 233
+    },
+    {
+      "P": 12,
+      "power_budget": 59,
+      "J_max": 5,
+      "T_plus_F": 229
+    }
+  ]
+}

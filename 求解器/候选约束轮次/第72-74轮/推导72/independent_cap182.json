@@ -1,0 +1,12 @@
+{
+  "encoding": "independent linear MIP",
+  "engine": "CP-SAT",
+  "status": "INFEASIBLE",
+  "cap": 182,
+  "project": true,
+  "groups": false,
+  "branch_J": null,
+  "seconds": 17.830255350010702,
+  "stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 4232\nbooleans: 3789\nconflicts: 3246\nbranches: 785476\npropagations: 12422345\ninteger_propagations: 20813549\nrestarts: 25\nlp_iterations: 73237\nwalltime: 17.4685\nusertime: 17.4685\ndeterministic_time: 21.705\ngap_integral: 0\n",
+  "mip_script_sha256": "6492b9b6e75222d6b1e1c0ec2a555483793c300ed9913b37f77abe74836452ac"
+}

@@ -1,0 +1,136 @@
+{
+  "input_unchanged": true,
+  "links": 24,
+  "outcomes": {
+    "highs_J0_cap184.json": 2,
+    "highs_J1_cap184.json": 2,
+    "replay185.json": 0
+  },
+  "reader_review": true,
+  "verdicts": {
+    "十七位置十桩边段下界": "未否证",
+    "共同格组供电并集界": "未否证"
+  },
+  "outputs": {
+    "accounting.json": {
+      "bytes": 2237,
+      "sha256": "c789af896e6070fc06edf6740ee9be1672bbf8d89f3989150c9bed9aa6d6ece7"
+    },
+    "accounting.log": {
+      "bytes": 1325,
+      "sha256": "802ad8029f437725dc8ed6475bec9022a961833012a956e30ee75d035a2dcd6f"
+    },
+    "accounting74.py": {
+      "bytes": 3610,
+      "sha256": "c60d6db8dd0a859fe787a0a0c939bb06335dff5b8dff7aa72494f4c75127b3ef"
+    },
+    "audit.log": {
+      "bytes": 32,
+      "sha256": "2ad5a3be2381b6d923ed5411d686691b11b672c3b78bc03b1abc1a000eed213e"
+    },
+    "audit74.py": {
+      "bytes": 5412,
+      "sha256": "58361c07ac1e2f8ef5b23fb96a16ff952e74f937bcf9c89b6ed3a8c4cdf0eec4"
+    },
+    "capacities.json": {
+      "bytes": 304532,
+      "sha256": "4bd1b4c885c34f2124021832c25daa2959318fd9f6a5384ab85a91bca43ef8d3"
+    },
+    "certificate_summary.json": {
+      "bytes": 243,
+      "sha256": "53d06f9921eee52ec9b8cdf511642dd43c52acf010ebef51feb4411569b6405e"
+    },
+    "certificates.log": {
+      "bytes": 270,
+      "sha256": "0d50a5e9af13382a5c1c18f3c2e9b8e5ef884a06533e916a16053d4325ac83b7"
+    },
+    "certificates74.py": {
+      "bytes": 4358,
+      "sha256": "09d7296fe331be4b5b94f2b8b0cb18f5aa6302e8f79ead943b19710532141ecf"
+    },
+    "common_grid_audit.json": {
+      "bytes": 189974,
+      "sha256": "a04da0be88b1d407a87ad867d55d19b1579819ad273c15e372c9fb687cc588b8"
+    },
+    "cp_cap184.json": {
+      "bytes": 4448,
+      "sha256": "1d0bc43f0cdbcfb2cec6c729b0cd00f6a5ee998ce7aa04bb699b70a255895e11"
+    },
+    "cp_cap184.log": {
+      "bytes": 19860,
+      "sha256": "02c489f33b186ca31a890338d5151a490a3dcc9e3f9756da7aad8b9236e5d713"
+    },
+    "geometry74.py": {
+      "bytes": 2850,
+      "sha256": "ee5135d62bc79679aa7fb09a02bc75142ff744f02d6fb9f886d6402c68e4bbe0"
+    },
+    "geometry_audit.json": {
+      "bytes": 381,
+      "sha256": "4a143d6c03ce22fa0e23c97ff5832c9b41ef33f0728c4e375778c4d70a0f1c8a"
+    },
+    "highs_J0_cap184.json": {
+      "bytes": 4216,
+      "sha256": "2d8e75bffc933b2c77b7d09be19dbadd369c79be1d32fff8e4b6b1f735c2ae10"
+    },
+    "highs_J0_cap184.log": {
+      "bytes": 3518,
+      "sha256": "47c37e5ff1acea3b188f44380f5bb1ec16a5ec57b091157198454a0fbbcfc52d"
+    },
+    "highs_J1_cap184.json": {
+      "bytes": 4215,
+      "sha256": "d7a9cf7c68895d35ec6b1f8438a77b72ec747111ba1ed264a84b2e330c95ba3f"
+    },
+    "highs_J1_cap184.log": {
+      "bytes": 7149,
+      "sha256": "2523618067af7689f3c979950a6568b497278ad34389973576110de5239a3be3"
+    },
+    "input_manifest.json": {
+      "bytes": 4632,
+      "sha256": "fe362a9c73268705e198ced7b1363bf4f10e304641d36fa0e491cd712bda000d"
+    },
+    "interval_results.json": {
+      "bytes": 45952,
+      "sha256": "34b2e305cc956de942de416d3c2210832f8f87def592ff21d9cc2cc917537986"
+    },
+    "intervals.log": {
+      "bytes": 895,
+      "sha256": "77986d3bae7e7920ce5ffc42ff911bdbcef101f65bcbeb9417522603d8a19eb5"
+    },
+    "intervals74.py": {
+      "bytes": 4583,
+      "sha256": "43f4c6f2b79583475696e1f131f95b062416bc2f10e42b0885dd4c8b967676ac"
+    },
+    "local_certificates.json": {
+      "bytes": 68356,
+      "sha256": "28626437015856fea4ff74c3bdb915ec36f23ed8d08c2d56cd0c2cf3454f5664"
+    },
+    "model74.py": {
+      "bytes": 10365,
+      "sha256": "ca2d63951b599c43f6c97deb08e0dfe9375b02b2c661558c58057bfd76f52dba"
+    },
+    "replay185.json": {
+      "bytes": 23776,
+      "sha256": "07620cb419598b0ca4076dd6d92128039dd03742b1a4ebee7ff95747615feef4"
+    },
+    "replay185.log": {
+      "bytes": 2594,
+      "sha256": "43d416483579cd958a442cb2d95497a7f3c930f8e65e8bc07f385a4058e249eb"
+    },
+    "witness.log": {
+      "bytes": 321,
+      "sha256": "7bcff2ccf6826e106e1383c445a2bf03a32843cab2794307b258ead6fe18a373"
+    },
+    "witness74.py": {
+      "bytes": 4926,
+      "sha256": "7b369ab103ba54e03181ff6c5941b07b4de91e5261e64ff77d1c73c5ac5b719a"
+    },
+    "witness_audit.json": {
+      "bytes": 19284,
+      "sha256": "ef0ae1c2e77769ea2f9049ae6caa40b96b297236fde578a090ff5d8c93ab0b8c"
+    }
+  },
+  "report": {
+    "bytes": 25918,
+    "sha256": "6ff12c36e7cfb780e052f493f412a694d57b6330a1f3fbd130d43b9c615f72dd"
+  }
+}

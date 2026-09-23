@@ -1,0 +1,17 @@
+{
+  "report_path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第72-74轮/复核73.md",
+  "verdicts": [
+    {
+      "name": "十七位置十桩边段下界",
+      "verdict": "未否证",
+      "reason": "独立坐标模型排除S≤184，185见证通过；P=10仍未排除。",
+      "revised_text": ""
+    },
+    {
+      "name": "共同格组供电并集界",
+      "verdict": "未否证",
+      "reason": "共同格组计数成立；185点上限复得184台，未覆盖全部十桩摆位。",
+      "revised_text": ""
+    }
+  ]
+}

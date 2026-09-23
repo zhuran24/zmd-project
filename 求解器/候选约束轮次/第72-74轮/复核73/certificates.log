@@ -1,0 +1,2 @@
+rational certificates: {'columns': 550, 'rows': 1352, 'upper': '1846/135', 'cap': 13} local 395
+{"wall": {"columns": 550, "rows": 1352, "upper": "1846/135", "cap": 13}, "local_positions": 395, "local_columns": 275888, "local_rows": 669475, "right_edge": [7, 7, 8, 9, 10, 11, 12, 12, 12, 11, 10, 9, 8, 7, 7], "group_positions": 3511, "center_count": 532890, "admissible": 3462, "excluded": 49, "corner_losses": [15, 16], "damaged_cap_rejected": true}

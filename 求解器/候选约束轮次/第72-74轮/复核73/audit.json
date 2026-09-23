@@ -1,0 +1,116 @@
+{
+  "blocks": {
+    "intersecting_machine_shapes": 962,
+    "same_group_pairs": 3969,
+    "all_pole_center_domains": 3511
+  },
+  "matching": [
+    [
+      0,
+      0,
+      184
+    ],
+    [
+      0,
+      1,
+      190
+    ],
+    [
+      0,
+      2,
+      190
+    ],
+    [
+      1,
+      0,
+      189
+    ],
+    [
+      1,
+      1,
+      195
+    ],
+    [
+      1,
+      2,
+      192
+    ],
+    [
+      2,
+      0,
+      184
+    ],
+    [
+      2,
+      1,
+      191
+    ],
+    [
+      2,
+      2,
+      192
+    ]
+  ],
+  "arithmetic": {
+    "rates": {
+      "粉碎机": "68",
+      "精炼炉": "51",
+      "研磨机": "63/2",
+      "塑形机": "11/2",
+      "配件机": "6",
+      "种植机": "32",
+      "采种机": "16",
+      "封装机": "3/5",
+      "灌装机": "11/20"
+    },
+    "counts": {
+      "粉碎机": 68,
+      "精炼炉": 51,
+      "研磨机": 32,
+      "塑形机": 6,
+      "配件机": 6,
+      "种植机": 32,
+      "采种机": 16,
+      "封装机": 3,
+      "灌装机": 3
+    },
+    "min_per_machine": {
+      "粉碎机": "1",
+      "精炼炉": "1",
+      "研磨机": "1/2",
+      "塑形机": "1/2",
+      "配件机": "1",
+      "种植机": "1",
+      "采种机": "1",
+      "封装机": "1/5",
+      "灌装机": "3/20"
+    },
+    "machines": 217,
+    "machine_area": 3291,
+    "area_remainder": 277,
+    "S_budget": 187,
+    "pole_branches": [
+      {
+        "P": 10,
+        "loss_budget": 13,
+        "Jmax": 1,
+        "TplusF": 237
+      },
+      {
+        "P": 11,
+        "loss_budget": 36,
+        "Jmax": 3,
+        "TplusF": 233
+      },
+      {
+        "P": 12,
+        "loss_budget": 59,
+        "Jmax": 5,
+        "TplusF": 229
+      }
+    ]
+  },
+  "input_hashes_unchanged": true,
+  "solver_receipts_and_source_hashes_pass": true,
+  "memory_not_used_as_math_premise": true
+}

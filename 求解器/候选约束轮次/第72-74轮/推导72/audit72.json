@@ -1,0 +1,32 @@
+{
+  "status": "PASS",
+  "domain_units": 3970,
+  "canonical_domains_equal": true,
+  "physical_poles": 3462,
+  "corner_multiplicity_checked": [
+    {
+      "cell": [
+        48,
+        69
+      ],
+      "weight": 2
+    },
+    {
+      "cell": [
+        69,
+        16
+      ],
+      "weight": 2
+    }
+  ],
+  "fixed_witness_cp": "OPTIMAL",
+  "fixed_witness_highs": "OPTIMAL",
+  "S": 185,
+  "grid_upper": 184,
+  "mutations_rejected": [
+    "duplicate pole",
+    "wrong objective"
+  ],
+  "inputs_unchanged": true,
+  "seconds": 1.838163167994935
+}

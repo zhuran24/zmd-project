@@ -1,0 +1,58 @@
+BUILT 1945 units (6453, 4540) matrix 213723 nonzeros
+Running HiGHS 1.12.0 (git hash: 4f96ee8f4): Copyright (c) 2025 HiGHS under MIT licence terms
+MIP has 6453 rows; 4540 cols; 213723 nonzeros; 2827 integer variables (2427 binary)
+Coefficient ranges:
+  Matrix  [1e+00, 1e+01]
+  Cost    [1e+00, 9e+00]
+  Bound   [1e+00, 9e+00]
+  RHS     [1e+00, 1e+02]
+Presolving model
+6420 rows, 4527 cols, 213613 nonzeros  0s
+5138 rows, 3457 cols, 111180 nonzeros  0s
+4642 rows, 3127 cols, 106687 nonzeros  1s
+Presolve reductions: rows 4642(-1811); columns 3127(-1413); nonzeros 106687(-107036) 
+Objective function is integral with scale 1
+
+Solving MIP model with:
+   4642 rows
+   3127 cols (1633 binary, 400 integer, 1094 implied int., 0 continuous, 0 domain fixed)
+   106687 nonzeros
+
+Src: B => Branching; C => Central rounding; F => Feasibility pump; H => Heuristic;
+     I => Shifting; J => Feasibility jump; L => Sub-MIP; P => Empty MIP; R => Randomized rounding;
+     S => Solve LP; T => Evaluate node; U => Unbounded; X => User solution; Y => HiGHS solution;
+     Z => ZI Round; l => Trivial lower; p => Trivial point; u => Trivial upper; z => Trivial zero
+
+        Nodes      |    B&B Tree     |            Objective Bounds              |  Dynamic Constraints |       Work      
+Src  Proc. InQueue |  Leaves   Expl. | BestBound       BestSol              Gap |   Cuts   InLp Confl. | LpIters     Time
+
+         0       0         0   0.00%   -250            inf                  inf        0      0      0         0     1.6s
+         0       0         0   0.00%   -117.9155146    inf                  inf        0      0      2      2032     1.7s
+         0       0         0   0.00%   -116            inf                  inf     4425     24    122     31271    10.4s
+        12       0         3   2.15%   -116            inf                  inf     4437     24    234     86168    16.1s
+        39       0        17   3.12%   -116            inf                  inf     4517     24    635    124333    21.1s
+        46       1        21   5.47%   -116            inf                  inf     4583     24    994    166814    27.1s
+       189       7        87   7.66%   -116            inf                  inf     4805     30   2163    202535    32.2s
+       360      22       163   8.75%   -116            inf                  inf     5899     54   3254    229518    37.2s
+       406      32       186   8.97%   -116            inf                  inf     8230    129   3688    262335    47.2s
+       481      23       222   9.77%   -116            inf                  inf     8689    159   3933    300331    52.2s
+       555      28       260  10.36%   -116            inf                  inf     8778    167   4485    327165    57.5s
+       721      27       340  11.34%   -116            inf                  inf     8803    123   5398    358101    62.5s
+       761       0       377 100.00%   inf             inf                  inf     9917    140   5664    376517    67.2s
+
+Solving report
+  Status            Infeasible
+  Primal bound      inf
+  Dual bound        inf
+  Gap               inf
+  P-D integral      0
+  Solution status   -
+  Timing            67.24
+  Max sub-MIP depth 2
+  Nodes             761
+  Repair LPs        0
+  LP iterations     376517
+                    172826 (strong br.)
+                    26046 (separation)
+                    40705 (heuristics)
+{"solver": "SciPy HiGHS", "version": "1.18.1", "status": 2, "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)", "seconds": 67.51673438498983, "build_seconds": 0.2566287569934502, "branch_J": 1, "strip": false, "project": true, "groups": false, "cap": 184, "domain_count": 1945, "domain_sha256": "c81dd334a701d2081a38484316ce473ed3d4f91b9d1aed2af0146a31e6359caf", "matrix_sha256": "50b8708d64bc936fb380b85b18dd21a0810447e4993ae2fb3ec6043a538de45e", "script_sha256": "3cd4239dfbd3c690b0d594e983975092454c8e0ffbc0f5274fdcd0d1ea4fa613"}

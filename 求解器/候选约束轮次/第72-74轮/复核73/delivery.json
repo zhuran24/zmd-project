@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "report_sha256": "be014c91faf5c781477fb0a9839992e5a0e10d4e2966639ce647692aeaf6b6dc",
+  "local_links_checked": 20,
+  "missing_links": [],
+  "reader_review_complete": true,
+  "input_hashes_unchanged": true,
+  "S185_group_subset_verified": true,
+  "verdict_count": 2
+}

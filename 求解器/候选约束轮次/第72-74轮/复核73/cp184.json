@@ -1,0 +1,28 @@
+{
+  "units": 1945,
+  "kinds": {
+    "s": 132,
+    "m": 132,
+    "l": 136,
+    "c": 108,
+    "p": 1437
+  },
+  "variables": 4513,
+  "constraints": 5106,
+  "project": true,
+  "J": null,
+  "P": 10,
+  "cap": 184,
+  "fixed": false,
+  "edge_tables_used": false,
+  "score_lower_bound_imposed": false,
+  "script_sha256": "ca9576969abd26a61c7abb70b71a4d39d94a48df71ab1a09c301b5a22371b905",
+  "geometry_script_sha256": "1d2917606944cfb1facd17b021ec3848683ddb5f27cb5c42d825e1542fd62009",
+  "matrix_sha256": "e7bb6436b0510d32e466a547e0aedf42711619c2e1bc3915982b36abb8f2e597",
+  "build_seconds": 0.2341501250048168,
+  "engine": "CP-SAT",
+  "version": "9.15.6755",
+  "status": "INFEASIBLE",
+  "stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 4270\nbooleans: 3859\nconflicts: 15485\nbranches: 7572717\npropagations: 152488106\ninteger_propagations: 243451030\nrestarts: 64\nlp_iterations: 1037003\nwalltime: 176.817\nusertime: 176.817\ndeterministic_time: 309.23\ngap_integral: 0\n",
+  "elapsed": 177.29156599999988
+}

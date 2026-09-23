@@ -1,0 +1,50 @@
+BUILT {"units": 1945, "kinds": {"s": 132, "m": 132, "l": 136, "c": 108, "p": 1437}, "variables": 4513, "constraints": 5107, "project": true, "J": 1, "P": 10, "cap": 184, "fixed": false, "edge_tables_used": false, "score_lower_bound_imposed": false, "script_sha256": "ca9576969abd26a61c7abb70b71a4d39d94a48df71ab1a09c301b5a22371b905", "geometry_script_sha256": "1d2917606944cfb1facd17b021ec3848683ddb5f27cb5c42d825e1542fd62009", "matrix_sha256": "82584b3ff2789c37eb067b9f3130d7197df035034ab3af2ac1099114425e73a8"}
+/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第72-74轮/复核73/solve.py:114: RuntimeWarning: Unrecognized options detected: {'threads'}. These will be passed to HiGHS verbatim.
+  result=milp(obj,integrality=np.ones(len(names)),bounds=Bounds(lb,ub),constraints=LinearConstraint(mat,rl,ru),
+Running HiGHS 1.12.0 (git hash: 4f96ee8f4): Copyright (c) 2025 HiGHS under MIT licence terms
+MIP has 5107 rows; 4513 cols; 155252 nonzeros; 4513 integer variables (4113 binary)
+Coefficient ranges:
+  Matrix  [1e+00, 1e+01]
+  Cost    [1e+00, 9e+00]
+  Bound   [1e+00, 9e+00]
+  RHS     [1e+00, 1e+02]
+Presolving model
+5075 rows, 4501 cols, 155145 nonzeros  0s
+4655 rows, 3159 cols, 84980 nonzeros  0s
+4172 rows, 3064 cols, 79712 nonzeros  0s
+Presolve reductions: rows 4172(-935); columns 3064(-1449); nonzeros 79712(-75540) 
+Objective function is integral with scale 1
+
+Solving MIP model with:
+   4172 rows
+   3064 cols (2664 binary, 400 integer, 0 implied int., 0 continuous, 0 domain fixed)
+   79712 nonzeros
+
+Src: B => Branching; C => Central rounding; F => Feasibility pump; H => Heuristic;
+     I => Shifting; J => Feasibility jump; L => Sub-MIP; P => Empty MIP; R => Randomized rounding;
+     S => Solve LP; T => Evaluate node; U => Unbounded; X => User solution; Y => HiGHS solution;
+     Z => ZI Round; l => Trivial lower; p => Trivial point; u => Trivial upper; z => Trivial zero
+
+        Nodes      |    B&B Tree     |            Objective Bounds              |  Dynamic Constraints |       Work      
+Src  Proc. InQueue |  Leaves   Expl. | BestBound       BestSol              Gap |   Cuts   InLp Confl. | LpIters     Time
+
+         0       0         0   0.00%   -250            inf                  inf        0      0      0         0     0.6s
+         0       0         0   0.00%   -116.4850427    inf                  inf        0      0      6      2921     0.8s
+         1       0         1 100.00%   inf             inf                  inf     5716     66    107      5355     2.6s
+
+Solving report
+  Status            Infeasible
+  Primal bound      inf
+  Dual bound        inf
+  Gap               inf
+  P-D integral      0
+  Solution status   -
+  Timing            2.58
+  Max sub-MIP depth 0
+  Nodes             1
+  Repair LPs        0
+  LP iterations     5355
+                    0 (strong br.)
+                    2432 (separation)
+                    0 (heuristics)
+RESULT {"units": 1945, "kinds": {"s": 132, "m": 132, "l": 136, "c": 108, "p": 1437}, "variables": 4513, "constraints": 5107, "project": true, "J": 1, "P": 10, "cap": 184, "fixed": false, "edge_tables_used": false, "score_lower_bound_imposed": false, "script_sha256": "ca9576969abd26a61c7abb70b71a4d39d94a48df71ab1a09c301b5a22371b905", "geometry_script_sha256": "1d2917606944cfb1facd17b021ec3848683ddb5f27cb5c42d825e1542fd62009", "matrix_sha256": "82584b3ff2789c37eb067b9f3130d7197df035034ab3af2ac1099114425e73a8", "build_seconds": 0.2425947720039403, "engine": "HiGHS", "version": "1.18.1", "status": 2, "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)", "elapsed": 2.9944678239990026}

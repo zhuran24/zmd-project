@@ -1,0 +1,17 @@
+{
+  "solver": "SciPy HiGHS",
+  "version": "1.18.1",
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "seconds": 16.62361238100857,
+  "build_seconds": 0.24999129099887796,
+  "branch_J": null,
+  "strip": false,
+  "project": true,
+  "groups": false,
+  "cap": 181,
+  "domain_count": 1945,
+  "domain_sha256": "c81dd334a701d2081a38484316ce473ed3d4f91b9d1aed2af0146a31e6359caf",
+  "matrix_sha256": "27f42f5a8c4771b1e10dfbbaa2684983ef8b1b9d8fba660d3f7e56b46cf7a96d",
+  "script_sha256": "6492b9b6e75222d6b1e1c0ec2a555483793c300ed9913b37f77abe74836452ac"
+}

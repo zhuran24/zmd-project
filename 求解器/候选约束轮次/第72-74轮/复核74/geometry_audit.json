@@ -1,0 +1,23 @@
+{
+  "poles": 3511,
+  "centers": 532890,
+  "small_block_cases": 1414,
+  "projected_options": 1945,
+  "full_options": 3970,
+  "machines_and_cores": 508,
+  "projected_poles": 1437,
+  "removed_poles": 2025,
+  "weighted_cells": 138,
+  "physical_cells": 136,
+  "double_cells": [
+    [
+      69,
+      16
+    ],
+    [
+      48,
+      69
+    ]
+  ],
+  "certificate_mutations_rejected": 2
+}

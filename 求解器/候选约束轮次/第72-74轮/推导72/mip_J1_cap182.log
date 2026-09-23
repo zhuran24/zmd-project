@@ -1,0 +1,60 @@
+BUILT 1945 units (6053, 4540) matrix 156274 nonzeros
+Running HiGHS 1.12.0 (git hash: 4f96ee8f4): Copyright (c) 2025 HiGHS under MIT licence terms
+MIP has 6053 rows; 4540 cols; 156274 nonzeros; 2427 integer variables (2427 binary)
+Coefficient ranges:
+  Matrix  [1e+00, 1e+01]
+  Cost    [1e+00, 9e+00]
+  Bound   [1e+00, 9e+00]
+  RHS     [1e+00, 1e+02]
+Presolving model
+6020 rows, 4527 cols, 156164 nonzeros  0s
+4738 rows, 3513 cols, 86501 nonzeros  0s
+4230 rows, 3128 cols, 81684 nonzeros  1s
+Presolve reductions: rows 4230(-1823); columns 3128(-1412); nonzeros 81684(-74590) 
+Objective function is integral with scale 1
+
+Solving MIP model with:
+   4230 rows
+   3128 cols (1634 binary, 0 integer, 1094 implied int., 400 continuous, 0 domain fixed)
+   81684 nonzeros
+
+Src: B => Branching; C => Central rounding; F => Feasibility pump; H => Heuristic;
+     I => Shifting; J => Feasibility jump; L => Sub-MIP; P => Empty MIP; R => Randomized rounding;
+     S => Solve LP; T => Evaluate node; U => Unbounded; X => User solution; Y => HiGHS solution;
+     Z => ZI Round; l => Trivial lower; p => Trivial point; u => Trivial upper; z => Trivial zero
+
+        Nodes      |    B&B Tree     |            Objective Bounds              |  Dynamic Constraints |       Work      
+Src  Proc. InQueue |  Leaves   Expl. | BestBound       BestSol              Gap |   Cuts   InLp Confl. | LpIters     Time
+
+         0       0         0   0.00%   -241            inf                  inf        0      0      0         0     1.2s
+         0       0         0   0.00%   -118            inf                  inf        0      0      2      2162     1.4s
+         0       0         0   0.00%   -116            inf                  inf     5794     36     74     50365    14.0s
+       101      11        45   4.26%   -116            inf                  inf     5839     36    441     95086    19.0s
+       179       5        85   4.66%   -116            inf                  inf     6950     53    699    134563    24.1s
+       212       6       101   4.68%   -116            inf                  inf     7498     62    819    160821    29.6s
+       331       5       157   5.62%   -116            inf                  inf     9041     45   1218    199638    34.8s
+       501      12       236   9.59%   -116            inf                  inf     8869     54   1936    236074    39.8s
+       656      11       314  16.13%   -116            inf                  inf     9771     53   2935    269838    44.8s
+       756      11       363  24.07%   -116            inf                  inf     8746    101   3482    304437    49.9s
+       850      17       408  26.30%   -116            inf                  inf     9081    111   3853    342816    54.9s
+       955      17       457  30.84%   -116            inf                  inf    10024     80   4222    379541    60.1s
+      1025      12       496  47.19%   -116            inf                  inf     8945    112   4594    419258    65.1s
+      1123      12       547  49.83%   -116            inf                  inf    10174     76   5050    459614    70.3s
+      1151       0       567 100.00%   inf             inf                  inf     7944    133   5182    490034    74.5s
+
+Solving report
+  Status            Infeasible
+  Primal bound      inf
+  Dual bound        inf
+  Gap               inf
+  P-D integral      0
+  Solution status   -
+  Timing            74.45
+  Max sub-MIP depth 2
+  Nodes             1151
+  Repair LPs        0
+  LP iterations     490034
+                    2283 (strong br.)
+                    19032 (separation)
+                    54058 (heuristics)
+{"solver": "SciPy HiGHS", "version": "1.18.1", "status": 2, "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)", "seconds": 74.71685696300119, "build_seconds": 0.2480578830000013, "branch_J": 1, "strip": false, "project": true, "groups": false, "cap": 182, "domain_count": 1945, "domain_sha256": "c81dd334a701d2081a38484316ce473ed3d4f91b9d1aed2af0146a31e6359caf", "matrix_sha256": "1e3615ae3e531337be370707b78d1da8f2ddfef779ca65668d9fd72874e7be13", "script_sha256": "3cd4239dfbd3c690b0d594e983975092454c8e0ffbc0f5274fdcd0d1ea4fa613"}

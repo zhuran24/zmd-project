@@ -1,0 +1,121 @@
+{
+  "body_options": 652,
+  "multiple_edge_rectangles": [
+    [
+      47,
+      68,
+      2,
+      2
+    ],
+    [
+      68,
+      15,
+      2,
+      2
+    ]
+  ],
+  "adjacency_pairs": 1630,
+  "tables": 16,
+  "option_count": 2440,
+  "branches": [
+    {
+      "mask": [
+        0,
+        0
+      ],
+      "P": 10,
+      "min_S": 180
+    },
+    {
+      "mask": [
+        0,
+        0
+      ],
+      "P": 11,
+      "min_S": 190
+    },
+    {
+      "mask": [
+        0,
+        0
+      ],
+      "P": 12,
+      "min_S": 199
+    },
+    {
+      "mask": [
+        0,
+        1
+      ],
+      "P": 10,
+      "excluded_by_corner_loss": 16,
+      "budget": 13
+    },
+    {
+      "mask": [
+        0,
+        1
+      ],
+      "P": 11,
+      "min_S": 189
+    },
+    {
+      "mask": [
+        0,
+        1
+      ],
+      "P": 12,
+      "min_S": 199
+    },
+    {
+      "mask": [
+        1,
+        0
+      ],
+      "P": 10,
+      "excluded_by_corner_loss": 15,
+      "budget": 13
+    },
+    {
+      "mask": [
+        1,
+        0
+      ],
+      "P": 11,
+      "min_S": 189
+    },
+    {
+      "mask": [
+        1,
+        0
+      ],
+      "P": 12,
+      "min_S": 198
+    },
+    {
+      "mask": [
+        1,
+        1
+      ],
+      "P": 10,
+      "excluded_by_corner_loss": 31,
+      "budget": 13
+    },
+    {
+      "mask": [
+        1,
+        1
+      ],
+      "P": 11,
+      "min_S": 191
+    },
+    {
+      "mask": [
+        1,
+        1
+      ],
+      "P": 12,
+      "min_S": 200
+    }
+  ]
+}

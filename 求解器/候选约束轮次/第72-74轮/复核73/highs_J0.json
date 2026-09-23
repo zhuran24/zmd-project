@@ -1,0 +1,28 @@
+{
+  "units": 1945,
+  "kinds": {
+    "s": 132,
+    "m": 132,
+    "l": 136,
+    "c": 108,
+    "p": 1437
+  },
+  "variables": 4513,
+  "constraints": 5107,
+  "project": true,
+  "J": 0,
+  "P": 10,
+  "cap": 184,
+  "fixed": false,
+  "edge_tables_used": false,
+  "score_lower_bound_imposed": false,
+  "script_sha256": "ca9576969abd26a61c7abb70b71a4d39d94a48df71ab1a09c301b5a22371b905",
+  "geometry_script_sha256": "1d2917606944cfb1facd17b021ec3848683ddb5f27cb5c42d825e1542fd62009",
+  "matrix_sha256": "01fc968983809766c2f433e4cd6a6ae38e9716ade35f6aca2f9c53d8ee4eb7f2",
+  "build_seconds": 0.2347132610011613,
+  "engine": "HiGHS",
+  "version": "1.18.1",
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "elapsed": 82.62288294400787
+}

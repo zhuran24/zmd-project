@@ -1,0 +1,5571 @@
+{
+  "wall": {
+    "variables": 550,
+    "inequalities": 1352,
+    "nonzero_multipliers": 38,
+    "upper": "1846/135",
+    "minimum_coefficient": "1",
+    "cap": 13,
+    "thirteen_body_relaxation_witness_checked": true
+  },
+  "strip_count": 395,
+  "right_edge": [
+    7,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    12,
+    12,
+    11,
+    10,
+    9,
+    8,
+    7,
+    7
+  ],
+  "certificates": [
+    {
+      "positions": [
+        [
+          43,
+          1
+        ]
+      ],
+      "variables": 550,
+      "inequalities": 1352,
+      "nonzero_multipliers": 39,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "positions": [
+        [
+          43,
+          2
+        ]
+      ],
+      "variables": 610,
+      "inequalities": 1492,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          43,
+          3
+        ]
+      ],
+      "variables": 670,
+      "inequalities": 1632,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          43,
+          4
+        ]
+      ],
+      "variables": 734,
+      "inequalities": 1786,
+      "nonzero_multipliers": 63,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "positions": [
+        [
+          43,
+          5
+        ]
+      ],
+      "variables": 802,
+      "inequalities": 1944,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          43,
+          6
+        ]
+      ],
+      "variables": 878,
+      "inequalities": 2114,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          43,
+          7
+        ]
+      ],
+      "variables": 955,
+      "inequalities": 2284,
+      "nonzero_multipliers": 76,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "positions": [
+        [
+          43,
+          8
+        ]
+      ],
+      "variables": 1026,
+      "inequalities": 2442,
+      "nonzero_multipliers": 24,
+      "upper": "24",
+      "minimum_coefficient": "1",
+      "cap": 24
+    },
+    {
+      "positions": [
+        [
+          43,
+          9
+        ]
+      ],
+      "variables": 1078,
+      "inequalities": 2562,
+      "nonzero_multipliers": 41,
+      "upper": "24",
+      "minimum_coefficient": "1",
+      "cap": 24
+    },
+    {
+      "positions": [
+        [
+          43,
+          10
+        ]
+      ],
+      "variables": 1116,
+      "inequalities": 2654,
+      "nonzero_multipliers": 23,
+      "upper": "23",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "positions": [
+        [
+          43,
+          11
+        ]
+      ],
+      "variables": 1118,
+      "inequalities": 2669,
+      "nonzero_multipliers": 23,
+      "upper": "23",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "positions": [
+        [
+          43,
+          12
+        ]
+      ],
+      "variables": 1089,
+      "inequalities": 2605,
+      "nonzero_multipliers": 26,
+      "upper": "23",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "positions": [
+        [
+          43,
+          13
+        ]
+      ],
+      "variables": 1061,
+      "inequalities": 2543,
+      "nonzero_multipliers": 22,
+      "upper": "22",
+      "minimum_coefficient": "1",
+      "cap": 22
+    },
+    {
+      "positions": [
+        [
+          43,
+          14
+        ]
+      ],
+      "variables": 1033,
+      "inequalities": 2481,
+      "nonzero_multipliers": 22,
+      "upper": "22",
+      "minimum_coefficient": "1",
+      "cap": 22
+    },
+    {
+      "positions": [
+        [
+          43,
+          15
+        ]
+      ],
+      "variables": 1005,
+      "inequalities": 2419,
+      "nonzero_multipliers": 22,
+      "upper": "22",
+      "minimum_coefficient": "1",
+      "cap": 22
+    },
+    {
+      "positions": [
+        [
+          43,
+          16
+        ]
+      ],
+      "variables": 978,
+      "inequalities": 2359,
+      "nonzero_multipliers": 21,
+      "upper": "21",
+      "minimum_coefficient": "1",
+      "cap": 21
+    },
+    {
+      "positions": [
+        [
+          44,
+          1
+        ]
+      ],
+      "variables": 550,
+      "inequalities": 1352,
+      "nonzero_multipliers": 39,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "positions": [
+        [
+          44,
+          2
+        ]
+      ],
+      "variables": 610,
+      "inequalities": 1492,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          44,
+          3
+        ]
+      ],
+      "variables": 670,
+      "inequalities": 1632,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          44,
+          4
+        ]
+      ],
+      "variables": 734,
+      "inequalities": 1786,
+      "nonzero_multipliers": 63,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "positions": [
+        [
+          44,
+          5
+        ]
+      ],
+      "variables": 802,
+      "inequalities": 1944,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          44,
+          6
+        ]
+      ],
+      "variables": 876,
+      "inequalities": 2109,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          44,
+          7
+        ]
+      ],
+      "variables": 949,
+      "inequalities": 2270,
+      "nonzero_multipliers": 84,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "positions": [
+        [
+          44,
+          8
+        ]
+      ],
+      "variables": 1015,
+      "inequalities": 2417,
+      "nonzero_multipliers": 24,
+      "upper": "24",
+      "minimum_coefficient": "1",
+      "cap": 24
+    },
+    {
+      "positions": [
+        [
+          44,
+          9
+        ]
+      ],
+      "variables": 1061,
+      "inequalities": 2524,
+      "nonzero_multipliers": 28,
+      "upper": "24",
+      "minimum_coefficient": "1",
+      "cap": 24
+    },
+    {
+      "positions": [
+        [
+          44,
+          10
+        ]
+      ],
+      "variables": 1093,
+      "inequalities": 2603,
+      "nonzero_multipliers": 39,
+      "upper": "23",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "positions": [
+        [
+          44,
+          11
+        ]
+      ],
+      "variables": 1089,
+      "inequalities": 2605,
+      "nonzero_multipliers": 22,
+      "upper": "23",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "positions": [
+        [
+          44,
+          12
+        ]
+      ],
+      "variables": 1056,
+      "inequalities": 2532,
+      "nonzero_multipliers": 26,
+      "upper": "23",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "positions": [
+        [
+          44,
+          13
+        ]
+      ],
+      "variables": 1025,
+      "inequalities": 2463,
+      "nonzero_multipliers": 35,
+      "upper": "22",
+      "minimum_coefficient": "1",
+      "cap": 22
+    },
+    {
+      "positions": [
+        [
+          44,
+          14
+        ]
+      ],
+      "variables": 994,
+      "inequalities": 2394,
+      "nonzero_multipliers": 48,
+      "upper": "22",
+      "minimum_coefficient": "1",
+      "cap": 22
+    },
+    {
+      "positions": [
+        [
+          44,
+          15
+        ]
+      ],
+      "variables": 963,
+      "inequalities": 2325,
+      "nonzero_multipliers": 34,
+      "upper": "197/9",
+      "minimum_coefficient": "1",
+      "cap": 21
+    },
+    {
+      "positions": [
+        [
+          44,
+          16
+        ]
+      ],
+      "variables": 934,
+      "inequalities": 2260,
+      "nonzero_multipliers": 28,
+      "upper": "62/3",
+      "minimum_coefficient": "1",
+      "cap": 20
+    },
+    {
+      "positions": [
+        [
+          45,
+          1
+        ]
+      ],
+      "variables": 550,
+      "inequalities": 1352,
+      "nonzero_multipliers": 39,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "positions": [
+        [
+          45,
+          2
+        ]
+      ],
+      "variables": 610,
+      "inequalities": 1492,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          45,
+          3
+        ]
+      ],
+      "variables": 670,
+      "inequalities": 1632,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          45,
+          4
+        ]
+      ],
+      "variables": 734,
+      "inequalities": 1786,
+      "nonzero_multipliers": 63,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "positions": [
+        [
+          45,
+          5
+        ]
+      ],
+      "variables": 802,
+      "inequalities": 1944,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          45,
+          6
+        ]
+      ],
+      "variables": 874,
+      "inequalities": 2104,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          45,
+          7
+        ]
+      ],
+      "variables": 943,
+      "inequalities": 2256,
+      "nonzero_multipliers": 91,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "positions": [
+        [
+          45,
+          8
+        ]
+      ],
+      "variables": 1004,
+      "inequalities": 2392,
+      "nonzero_multipliers": 24,
+      "upper": "24",
+      "minimum_coefficient": "1",
+      "cap": 24
+    },
+    {
+      "positions": [
+        [
+          45,
+          9
+        ]
+      ],
+      "variables": 1044,
+      "inequalities": 2486,
+      "nonzero_multipliers": 29,
+      "upper": "24",
+      "minimum_coefficient": "1",
+      "cap": 24
+    },
+    {
+      "positions": [
+        [
+          45,
+          10
+        ]
+      ],
+      "variables": 1070,
+      "inequalities": 2552,
+      "nonzero_multipliers": 22,
+      "upper": "22",
+      "minimum_coefficient": "1",
+      "cap": 22
+    },
+    {
+      "positions": [
+        [
+          45,
+          11
+        ]
+      ],
+      "variables": 1061,
+      "inequalities": 2543,
+      "nonzero_multipliers": 22,
+      "upper": "22",
+      "minimum_coefficient": "1",
+      "cap": 22
+    },
+    {
+      "positions": [
+        [
+          45,
+          12
+        ]
+      ],
+      "variables": 1025,
+      "inequalities": 2463,
+      "nonzero_multipliers": 25,
+      "upper": "22",
+      "minimum_coefficient": "1",
+      "cap": 22
+    },
+    {
+      "positions": [
+        [
+          45,
+          13
+        ]
+      ],
+      "variables": 992,
+      "inequalities": 2389,
+      "nonzero_multipliers": 20,
+      "upper": "20",
+      "minimum_coefficient": "1",
+      "cap": 20
+    },
+    {
+      "positions": [
+        [
+          45,
+          14
+        ]
+      ],
+      "variables": 959,
+      "inequalities": 2315,
+      "nonzero_multipliers": 20,
+      "upper": "20",
+      "minimum_coefficient": "1",
+      "cap": 20
+    },
+    {
+      "positions": [
+        [
+          45,
+          15
+        ]
+      ],
+      "variables": 926,
+      "inequalities": 2241,
+      "nonzero_multipliers": 33,
+      "upper": "20",
+      "minimum_coefficient": "1",
+      "cap": 20
+    },
+    {
+      "positions": [
+        [
+          45,
+          16
+        ]
+      ],
+      "variables": 896,
+      "inequalities": 2171,
+      "nonzero_multipliers": 18,
+      "upper": "18",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "positions": [
+        [
+          46,
+          1
+        ]
+      ],
+      "variables": 550,
+      "inequalities": 1352,
+      "nonzero_multipliers": 39,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "positions": [
+        [
+          46,
+          2
+        ]
+      ],
+      "variables": 610,
+      "inequalities": 1492,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          46,
+          3
+        ]
+      ],
+      "variables": 670,
+      "inequalities": 1632,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          46,
+          4
+        ]
+      ],
+      "variables": 734,
+      "inequalities": 1786,
+      "nonzero_multipliers": 63,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "positions": [
+        [
+          46,
+          5
+        ]
+      ],
+      "variables": 802,
+      "inequalities": 1944,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          46,
+          6
+        ]
+      ],
+      "variables": 872,
+      "inequalities": 2099,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          46,
+          7
+        ]
+      ],
+      "variables": 937,
+      "inequalities": 2242,
+      "nonzero_multipliers": 83,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "positions": [
+        [
+          46,
+          8
+        ]
+      ],
+      "variables": 993,
+      "inequalities": 2367,
+      "nonzero_multipliers": 24,
+      "upper": "24",
+      "minimum_coefficient": "1",
+      "cap": 24
+    },
+    {
+      "positions": [
+        [
+          46,
+          9
+        ]
+      ],
+      "variables": 1027,
+      "inequalities": 2448,
+      "nonzero_multipliers": 37,
+      "upper": "24",
+      "minimum_coefficient": "1",
+      "cap": 24
+    },
+    {
+      "positions": [
+        [
+          46,
+          10
+        ]
+      ],
+      "variables": 1047,
+      "inequalities": 2501,
+      "nonzero_multipliers": 22,
+      "upper": "22",
+      "minimum_coefficient": "1",
+      "cap": 22
+    },
+    {
+      "positions": [
+        [
+          46,
+          11
+        ]
+      ],
+      "variables": 1033,
+      "inequalities": 2481,
+      "nonzero_multipliers": 22,
+      "upper": "22",
+      "minimum_coefficient": "1",
+      "cap": 22
+    },
+    {
+      "positions": [
+        [
+          46,
+          12
+        ]
+      ],
+      "variables": 994,
+      "inequalities": 2394,
+      "nonzero_multipliers": 37,
+      "upper": "22",
+      "minimum_coefficient": "1",
+      "cap": 22
+    },
+    {
+      "positions": [
+        [
+          46,
+          13
+        ]
+      ],
+      "variables": 959,
+      "inequalities": 2315,
+      "nonzero_multipliers": 20,
+      "upper": "20",
+      "minimum_coefficient": "1",
+      "cap": 20
+    },
+    {
+      "positions": [
+        [
+          46,
+          14
+        ]
+      ],
+      "variables": 926,
+      "inequalities": 2240,
+      "nonzero_multipliers": 20,
+      "upper": "20",
+      "minimum_coefficient": "1",
+      "cap": 20
+    },
+    {
+      "positions": [
+        [
+          46,
+          15
+        ]
+      ],
+      "variables": 893,
+      "inequalities": 2165,
+      "nonzero_multipliers": 22,
+      "upper": "20",
+      "minimum_coefficient": "1",
+      "cap": 20
+    },
+    {
+      "positions": [
+        [
+          46,
+          16
+        ]
+      ],
+      "variables": 863,
+      "inequalities": 2095,
+      "nonzero_multipliers": 18,
+      "upper": "18",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "positions": [
+        [
+          47,
+          1
+        ]
+      ],
+      "variables": 550,
+      "inequalities": 1352,
+      "nonzero_multipliers": 39,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "positions": [
+        [
+          47,
+          2
+        ]
+      ],
+      "variables": 610,
+      "inequalities": 1492,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          47,
+          3
+        ]
+      ],
+      "variables": 670,
+      "inequalities": 1632,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          47,
+          4
+        ]
+      ],
+      "variables": 734,
+      "inequalities": 1786,
+      "nonzero_multipliers": 63,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "positions": [
+        [
+          47,
+          5
+        ]
+      ],
+      "variables": 802,
+      "inequalities": 1944,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          47,
+          6
+        ]
+      ],
+      "variables": 870,
+      "inequalities": 2094,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          47,
+          7
+        ]
+      ],
+      "variables": 931,
+      "inequalities": 2228,
+      "nonzero_multipliers": 85,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "positions": [
+        [
+          47,
+          8
+        ]
+      ],
+      "variables": 982,
+      "inequalities": 2342,
+      "nonzero_multipliers": 24,
+      "upper": "24",
+      "minimum_coefficient": "1",
+      "cap": 24
+    },
+    {
+      "positions": [
+        [
+          47,
+          9
+        ]
+      ],
+      "variables": 1010,
+      "inequalities": 2410,
+      "nonzero_multipliers": 41,
+      "upper": "503/21",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "positions": [
+        [
+          47,
+          10
+        ]
+      ],
+      "variables": 1024,
+      "inequalities": 2450,
+      "nonzero_multipliers": 22,
+      "upper": "22",
+      "minimum_coefficient": "1",
+      "cap": 22
+    },
+    {
+      "positions": [
+        [
+          47,
+          11
+        ]
+      ],
+      "variables": 1005,
+      "inequalities": 2419,
+      "nonzero_multipliers": 22,
+      "upper": "22",
+      "minimum_coefficient": "1",
+      "cap": 22
+    },
+    {
+      "positions": [
+        [
+          47,
+          12
+        ]
+      ],
+      "variables": 963,
+      "inequalities": 2325,
+      "nonzero_multipliers": 34,
+      "upper": "197/9",
+      "minimum_coefficient": "1",
+      "cap": 21
+    },
+    {
+      "positions": [
+        [
+          47,
+          13
+        ]
+      ],
+      "variables": 926,
+      "inequalities": 2241,
+      "nonzero_multipliers": 23,
+      "upper": "20",
+      "minimum_coefficient": "1",
+      "cap": 20
+    },
+    {
+      "positions": [
+        [
+          47,
+          14
+        ]
+      ],
+      "variables": 893,
+      "inequalities": 2165,
+      "nonzero_multipliers": 21,
+      "upper": "20",
+      "minimum_coefficient": "1",
+      "cap": 20
+    },
+    {
+      "positions": [
+        [
+          47,
+          15
+        ]
+      ],
+      "variables": 860,
+      "inequalities": 2089,
+      "nonzero_multipliers": 81,
+      "upper": "928/47",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          47,
+          16
+        ]
+      ],
+      "variables": 830,
+      "inequalities": 2019,
+      "nonzero_multipliers": 50,
+      "upper": "323/18",
+      "minimum_coefficient": "1",
+      "cap": 17
+    },
+    {
+      "positions": [
+        [
+          48,
+          1
+        ]
+      ],
+      "variables": 550,
+      "inequalities": 1352,
+      "nonzero_multipliers": 39,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "positions": [
+        [
+          48,
+          2
+        ]
+      ],
+      "variables": 610,
+      "inequalities": 1492,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          48,
+          3
+        ]
+      ],
+      "variables": 670,
+      "inequalities": 1632,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          48,
+          4
+        ]
+      ],
+      "variables": 734,
+      "inequalities": 1786,
+      "nonzero_multipliers": 63,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "positions": [
+        [
+          48,
+          5
+        ]
+      ],
+      "variables": 802,
+      "inequalities": 1944,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          48,
+          6
+        ]
+      ],
+      "variables": 868,
+      "inequalities": 2089,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          48,
+          7
+        ]
+      ],
+      "variables": 925,
+      "inequalities": 2214,
+      "nonzero_multipliers": 85,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "positions": [
+        [
+          48,
+          8
+        ]
+      ],
+      "variables": 971,
+      "inequalities": 2317,
+      "nonzero_multipliers": 24,
+      "upper": "24",
+      "minimum_coefficient": "1",
+      "cap": 24
+    },
+    {
+      "positions": [
+        [
+          48,
+          9
+        ]
+      ],
+      "variables": 993,
+      "inequalities": 2372,
+      "nonzero_multipliers": 41,
+      "upper": "71/3",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "positions": [
+        [
+          48,
+          10
+        ]
+      ],
+      "variables": 1001,
+      "inequalities": 2399,
+      "nonzero_multipliers": 21,
+      "upper": "21",
+      "minimum_coefficient": "1",
+      "cap": 21
+    },
+    {
+      "positions": [
+        [
+          48,
+          11
+        ]
+      ],
+      "variables": 978,
+      "inequalities": 2359,
+      "nonzero_multipliers": 21,
+      "upper": "21",
+      "minimum_coefficient": "1",
+      "cap": 21
+    },
+    {
+      "positions": [
+        [
+          48,
+          12
+        ]
+      ],
+      "variables": 934,
+      "inequalities": 2260,
+      "nonzero_multipliers": 21,
+      "upper": "62/3",
+      "minimum_coefficient": "1",
+      "cap": 20
+    },
+    {
+      "positions": [
+        [
+          48,
+          13
+        ]
+      ],
+      "variables": 896,
+      "inequalities": 2171,
+      "nonzero_multipliers": 18,
+      "upper": "18",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "positions": [
+        [
+          48,
+          14
+        ]
+      ],
+      "variables": 863,
+      "inequalities": 2095,
+      "nonzero_multipliers": 18,
+      "upper": "18",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "positions": [
+        [
+          48,
+          15
+        ]
+      ],
+      "variables": 830,
+      "inequalities": 2019,
+      "nonzero_multipliers": 55,
+      "upper": "323/18",
+      "minimum_coefficient": "1",
+      "cap": 17
+    },
+    {
+      "positions": [
+        [
+          49,
+          1
+        ]
+      ],
+      "variables": 550,
+      "inequalities": 1352,
+      "nonzero_multipliers": 39,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "positions": [
+        [
+          49,
+          2
+        ]
+      ],
+      "variables": 610,
+      "inequalities": 1492,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          49,
+          3
+        ]
+      ],
+      "variables": 670,
+      "inequalities": 1632,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          49,
+          4
+        ]
+      ],
+      "variables": 734,
+      "inequalities": 1786,
+      "nonzero_multipliers": 63,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "positions": [
+        [
+          49,
+          5
+        ]
+      ],
+      "variables": 802,
+      "inequalities": 1944,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          49,
+          6
+        ]
+      ],
+      "variables": 866,
+      "inequalities": 2084,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          49,
+          7
+        ]
+      ],
+      "variables": 919,
+      "inequalities": 2200,
+      "nonzero_multipliers": 83,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "positions": [
+        [
+          49,
+          8
+        ]
+      ],
+      "variables": 960,
+      "inequalities": 2292,
+      "nonzero_multipliers": 24,
+      "upper": "24",
+      "minimum_coefficient": "1",
+      "cap": 24
+    },
+    {
+      "positions": [
+        [
+          49,
+          9
+        ]
+      ],
+      "variables": 976,
+      "inequalities": 2334,
+      "nonzero_multipliers": 23,
+      "upper": "71/3",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "positions": [
+        [
+          49,
+          10
+        ]
+      ],
+      "variables": 978,
+      "inequalities": 2348,
+      "nonzero_multipliers": 21,
+      "upper": "21",
+      "minimum_coefficient": "1",
+      "cap": 21
+    },
+    {
+      "positions": [
+        [
+          49,
+          11
+        ]
+      ],
+      "variables": 951,
+      "inequalities": 2299,
+      "nonzero_multipliers": 21,
+      "upper": "21",
+      "minimum_coefficient": "1",
+      "cap": 21
+    },
+    {
+      "positions": [
+        [
+          49,
+          12
+        ]
+      ],
+      "variables": 905,
+      "inequalities": 2195,
+      "nonzero_multipliers": 26,
+      "upper": "62/3",
+      "minimum_coefficient": "1",
+      "cap": 20
+    },
+    {
+      "positions": [
+        [
+          49,
+          13
+        ]
+      ],
+      "variables": 866,
+      "inequalities": 2101,
+      "nonzero_multipliers": 18,
+      "upper": "18",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "positions": [
+        [
+          49,
+          14
+        ]
+      ],
+      "variables": 833,
+      "inequalities": 2025,
+      "nonzero_multipliers": 18,
+      "upper": "18",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "positions": [
+        [
+          49,
+          15
+        ]
+      ],
+      "variables": 794,
+      "inequalities": 1937,
+      "nonzero_multipliers": 81,
+      "upper": "24707/1377",
+      "minimum_coefficient": "1",
+      "cap": 17
+    },
+    {
+      "positions": [
+        [
+          50,
+          1
+        ]
+      ],
+      "variables": 550,
+      "inequalities": 1352,
+      "nonzero_multipliers": 39,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "positions": [
+        [
+          50,
+          2
+        ]
+      ],
+      "variables": 610,
+      "inequalities": 1492,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          50,
+          3
+        ]
+      ],
+      "variables": 670,
+      "inequalities": 1632,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          50,
+          4
+        ]
+      ],
+      "variables": 734,
+      "inequalities": 1786,
+      "nonzero_multipliers": 63,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "positions": [
+        [
+          50,
+          5
+        ]
+      ],
+      "variables": 802,
+      "inequalities": 1944,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          50,
+          6
+        ]
+      ],
+      "variables": 864,
+      "inequalities": 2079,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          50,
+          7
+        ]
+      ],
+      "variables": 913,
+      "inequalities": 2186,
+      "nonzero_multipliers": 86,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "positions": [
+        [
+          50,
+          8
+        ]
+      ],
+      "variables": 949,
+      "inequalities": 2267,
+      "nonzero_multipliers": 24,
+      "upper": "24",
+      "minimum_coefficient": "1",
+      "cap": 24
+    },
+    {
+      "positions": [
+        [
+          50,
+          9
+        ]
+      ],
+      "variables": 959,
+      "inequalities": 2296,
+      "nonzero_multipliers": 43,
+      "upper": "71/3",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "positions": [
+        [
+          50,
+          10
+        ]
+      ],
+      "variables": 955,
+      "inequalities": 2297,
+      "nonzero_multipliers": 24,
+      "upper": "21",
+      "minimum_coefficient": "1",
+      "cap": 21
+    },
+    {
+      "positions": [
+        [
+          50,
+          11
+        ]
+      ],
+      "variables": 923,
+      "inequalities": 2237,
+      "nonzero_multipliers": 21,
+      "upper": "21",
+      "minimum_coefficient": "1",
+      "cap": 21
+    },
+    {
+      "positions": [
+        [
+          50,
+          12
+        ]
+      ],
+      "variables": 872,
+      "inequalities": 2122,
+      "nonzero_multipliers": 80,
+      "upper": "3896/189",
+      "minimum_coefficient": "1",
+      "cap": 20
+    },
+    {
+      "positions": [
+        [
+          50,
+          13
+        ]
+      ],
+      "variables": 828,
+      "inequalities": 2017,
+      "nonzero_multipliers": 23,
+      "upper": "18",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "positions": [
+        [
+          50,
+          14
+        ]
+      ],
+      "variables": 789,
+      "inequalities": 1928,
+      "nonzero_multipliers": 19,
+      "upper": "18",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "positions": [
+        [
+          50,
+          15
+        ]
+      ],
+      "variables": 750,
+      "inequalities": 1839,
+      "nonzero_multipliers": 65,
+      "upper": "25664/1443",
+      "minimum_coefficient": "1",
+      "cap": 17
+    },
+    {
+      "positions": [
+        [
+          51,
+          1
+        ]
+      ],
+      "variables": 550,
+      "inequalities": 1352,
+      "nonzero_multipliers": 39,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "positions": [
+        [
+          51,
+          2
+        ]
+      ],
+      "variables": 610,
+      "inequalities": 1492,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          51,
+          3
+        ]
+      ],
+      "variables": 670,
+      "inequalities": 1632,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          51,
+          4
+        ]
+      ],
+      "variables": 734,
+      "inequalities": 1786,
+      "nonzero_multipliers": 63,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "positions": [
+        [
+          51,
+          5
+        ]
+      ],
+      "variables": 802,
+      "inequalities": 1944,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          51,
+          6
+        ]
+      ],
+      "variables": 862,
+      "inequalities": 2074,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          51,
+          7
+        ]
+      ],
+      "variables": 907,
+      "inequalities": 2172,
+      "nonzero_multipliers": 83,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "positions": [
+        [
+          51,
+          8
+        ]
+      ],
+      "variables": 938,
+      "inequalities": 2242,
+      "nonzero_multipliers": 24,
+      "upper": "24",
+      "minimum_coefficient": "1",
+      "cap": 24
+    },
+    {
+      "positions": [
+        [
+          51,
+          9
+        ]
+      ],
+      "variables": 942,
+      "inequalities": 2258,
+      "nonzero_multipliers": 95,
+      "upper": "1100/47",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "positions": [
+        [
+          51,
+          10
+        ]
+      ],
+      "variables": 932,
+      "inequalities": 2246,
+      "nonzero_multipliers": 20,
+      "upper": "20",
+      "minimum_coefficient": "1",
+      "cap": 20
+    },
+    {
+      "positions": [
+        [
+          51,
+          11
+        ]
+      ],
+      "variables": 895,
+      "inequalities": 2175,
+      "nonzero_multipliers": 20,
+      "upper": "20",
+      "minimum_coefficient": "1",
+      "cap": 20
+    },
+    {
+      "positions": [
+        [
+          51,
+          12
+        ]
+      ],
+      "variables": 839,
+      "inequalities": 2049,
+      "nonzero_multipliers": 73,
+      "upper": "2603/134",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          51,
+          13
+        ]
+      ],
+      "variables": 790,
+      "inequalities": 1933,
+      "nonzero_multipliers": 16,
+      "upper": "16",
+      "minimum_coefficient": "1",
+      "cap": 16
+    },
+    {
+      "positions": [
+        [
+          51,
+          14
+        ]
+      ],
+      "variables": 745,
+      "inequalities": 1831,
+      "nonzero_multipliers": 16,
+      "upper": "16",
+      "minimum_coefficient": "1",
+      "cap": 16
+    },
+    {
+      "positions": [
+        [
+          51,
+          15
+        ]
+      ],
+      "variables": 700,
+      "inequalities": 1729,
+      "nonzero_multipliers": 49,
+      "upper": "443/28",
+      "minimum_coefficient": "1",
+      "cap": 15
+    },
+    {
+      "positions": [
+        [
+          52,
+          1
+        ]
+      ],
+      "variables": 550,
+      "inequalities": 1352,
+      "nonzero_multipliers": 39,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "positions": [
+        [
+          52,
+          2
+        ]
+      ],
+      "variables": 610,
+      "inequalities": 1492,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          52,
+          3
+        ]
+      ],
+      "variables": 670,
+      "inequalities": 1632,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          52,
+          4
+        ]
+      ],
+      "variables": 734,
+      "inequalities": 1786,
+      "nonzero_multipliers": 63,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "positions": [
+        [
+          52,
+          5
+        ]
+      ],
+      "variables": 802,
+      "inequalities": 1944,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          52,
+          6
+        ]
+      ],
+      "variables": 860,
+      "inequalities": 2069,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          52,
+          7
+        ]
+      ],
+      "variables": 901,
+      "inequalities": 2158,
+      "nonzero_multipliers": 91,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "positions": [
+        [
+          52,
+          8
+        ]
+      ],
+      "variables": 927,
+      "inequalities": 2217,
+      "nonzero_multipliers": 24,
+      "upper": "24",
+      "minimum_coefficient": "1",
+      "cap": 24
+    },
+    {
+      "positions": [
+        [
+          52,
+          9
+        ]
+      ],
+      "variables": 925,
+      "inequalities": 2220,
+      "nonzero_multipliers": 99,
+      "upper": "1100/47",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "positions": [
+        [
+          52,
+          10
+        ]
+      ],
+      "variables": 909,
+      "inequalities": 2195,
+      "nonzero_multipliers": 20,
+      "upper": "20",
+      "minimum_coefficient": "1",
+      "cap": 20
+    },
+    {
+      "positions": [
+        [
+          52,
+          11
+        ]
+      ],
+      "variables": 867,
+      "inequalities": 2113,
+      "nonzero_multipliers": 20,
+      "upper": "20",
+      "minimum_coefficient": "1",
+      "cap": 20
+    },
+    {
+      "positions": [
+        [
+          52,
+          12
+        ]
+      ],
+      "variables": 806,
+      "inequalities": 1976,
+      "nonzero_multipliers": 76,
+      "upper": "23252/1197",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          52,
+          13
+        ]
+      ],
+      "variables": 751,
+      "inequalities": 1847,
+      "nonzero_multipliers": 16,
+      "upper": "16",
+      "minimum_coefficient": "1",
+      "cap": 16
+    },
+    {
+      "positions": [
+        [
+          52,
+          14
+        ]
+      ],
+      "variables": 700,
+      "inequalities": 1732,
+      "nonzero_multipliers": 16,
+      "upper": "16",
+      "minimum_coefficient": "1",
+      "cap": 16
+    },
+    {
+      "positions": [
+        [
+          52,
+          15
+        ]
+      ],
+      "variables": 649,
+      "inequalities": 1617,
+      "nonzero_multipliers": 51,
+      "upper": "443/28",
+      "minimum_coefficient": "1",
+      "cap": 15
+    },
+    {
+      "positions": [
+        [
+          53,
+          1
+        ]
+      ],
+      "variables": 550,
+      "inequalities": 1352,
+      "nonzero_multipliers": 39,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "positions": [
+        [
+          53,
+          2
+        ]
+      ],
+      "variables": 610,
+      "inequalities": 1492,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          53,
+          3
+        ]
+      ],
+      "variables": 670,
+      "inequalities": 1632,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          53,
+          4
+        ]
+      ],
+      "variables": 734,
+      "inequalities": 1786,
+      "nonzero_multipliers": 63,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "positions": [
+        [
+          53,
+          5
+        ]
+      ],
+      "variables": 802,
+      "inequalities": 1944,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          53,
+          6
+        ]
+      ],
+      "variables": 858,
+      "inequalities": 2064,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          53,
+          7
+        ]
+      ],
+      "variables": 895,
+      "inequalities": 2144,
+      "nonzero_multipliers": 88,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "positions": [
+        [
+          53,
+          8
+        ]
+      ],
+      "variables": 916,
+      "inequalities": 2192,
+      "nonzero_multipliers": 35,
+      "upper": "24",
+      "minimum_coefficient": "1",
+      "cap": 24
+    },
+    {
+      "positions": [
+        [
+          53,
+          9
+        ]
+      ],
+      "variables": 908,
+      "inequalities": 2182,
+      "nonzero_multipliers": 97,
+      "upper": "12841/549",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "positions": [
+        [
+          53,
+          10
+        ]
+      ],
+      "variables": 886,
+      "inequalities": 2144,
+      "nonzero_multipliers": 23,
+      "upper": "20",
+      "minimum_coefficient": "1",
+      "cap": 20
+    },
+    {
+      "positions": [
+        [
+          53,
+          11
+        ]
+      ],
+      "variables": 839,
+      "inequalities": 2048,
+      "nonzero_multipliers": 20,
+      "upper": "20",
+      "minimum_coefficient": "1",
+      "cap": 20
+    },
+    {
+      "positions": [
+        [
+          53,
+          12
+        ]
+      ],
+      "variables": 773,
+      "inequalities": 1900,
+      "nonzero_multipliers": 70,
+      "upper": "2038/105",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          53,
+          13
+        ]
+      ],
+      "variables": 712,
+      "inequalities": 1758,
+      "nonzero_multipliers": 18,
+      "upper": "16",
+      "minimum_coefficient": "1",
+      "cap": 16
+    },
+    {
+      "positions": [
+        [
+          53,
+          14
+        ]
+      ],
+      "variables": 655,
+      "inequalities": 1630,
+      "nonzero_multipliers": 21,
+      "upper": "16",
+      "minimum_coefficient": "1",
+      "cap": 16
+    },
+    {
+      "positions": [
+        [
+          53,
+          15
+        ]
+      ],
+      "variables": 598,
+      "inequalities": 1502,
+      "nonzero_multipliers": 54,
+      "upper": "12176/777",
+      "minimum_coefficient": "1",
+      "cap": 15
+    },
+    {
+      "positions": [
+        [
+          54,
+          1
+        ]
+      ],
+      "variables": 550,
+      "inequalities": 1352,
+      "nonzero_multipliers": 39,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "positions": [
+        [
+          54,
+          2
+        ]
+      ],
+      "variables": 610,
+      "inequalities": 1492,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          54,
+          3
+        ]
+      ],
+      "variables": 670,
+      "inequalities": 1632,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          54,
+          4
+        ]
+      ],
+      "variables": 734,
+      "inequalities": 1786,
+      "nonzero_multipliers": 63,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "positions": [
+        [
+          54,
+          5
+        ]
+      ],
+      "variables": 802,
+      "inequalities": 1944,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          54,
+          6
+        ]
+      ],
+      "variables": 856,
+      "inequalities": 2056,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          54,
+          7
+        ]
+      ],
+      "variables": 889,
+      "inequalities": 2123,
+      "nonzero_multipliers": 85,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "positions": [
+        [
+          54,
+          8
+        ]
+      ],
+      "variables": 905,
+      "inequalities": 2155,
+      "nonzero_multipliers": 24,
+      "upper": "24",
+      "minimum_coefficient": "1",
+      "cap": 24
+    },
+    {
+      "positions": [
+        [
+          54,
+          9
+        ]
+      ],
+      "variables": 891,
+      "inequalities": 2127,
+      "nonzero_multipliers": 90,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "positions": [
+        [
+          54,
+          10
+        ]
+      ],
+      "variables": 863,
+      "inequalities": 2071,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          54,
+          11
+        ]
+      ],
+      "variables": 813,
+      "inequalities": 1967,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          54,
+          12
+        ]
+      ],
+      "variables": 745,
+      "inequalities": 1809,
+      "nonzero_multipliers": 59,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "positions": [
+        [
+          54,
+          13
+        ]
+      ],
+      "variables": 681,
+      "inequalities": 1655,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          54,
+          14
+        ]
+      ],
+      "variables": 621,
+      "inequalities": 1515,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          54,
+          15
+        ]
+      ],
+      "variables": 561,
+      "inequalities": 1375,
+      "nonzero_multipliers": 41,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "positions": [
+        [
+          55,
+          1
+        ]
+      ],
+      "variables": 550,
+      "inequalities": 1352,
+      "nonzero_multipliers": 39,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "positions": [
+        [
+          55,
+          2
+        ]
+      ],
+      "variables": 610,
+      "inequalities": 1492,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          55,
+          3
+        ]
+      ],
+      "variables": 670,
+      "inequalities": 1632,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          55,
+          4
+        ]
+      ],
+      "variables": 734,
+      "inequalities": 1786,
+      "nonzero_multipliers": 63,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "positions": [
+        [
+          55,
+          5
+        ]
+      ],
+      "variables": 802,
+      "inequalities": 1944,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          55,
+          6
+        ]
+      ],
+      "variables": 855,
+      "inequalities": 2054,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          55,
+          7
+        ]
+      ],
+      "variables": 887,
+      "inequalities": 2119,
+      "nonzero_multipliers": 83,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "positions": [
+        [
+          55,
+          8
+        ]
+      ],
+      "variables": 902,
+      "inequalities": 2149,
+      "nonzero_multipliers": 24,
+      "upper": "24",
+      "minimum_coefficient": "1",
+      "cap": 24
+    },
+    {
+      "positions": [
+        [
+          55,
+          9
+        ]
+      ],
+      "variables": 888,
+      "inequalities": 2121,
+      "nonzero_multipliers": 87,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "positions": [
+        [
+          55,
+          10
+        ]
+      ],
+      "variables": 860,
+      "inequalities": 2065,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          55,
+          11
+        ]
+      ],
+      "variables": 810,
+      "inequalities": 1961,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          55,
+          12
+        ]
+      ],
+      "variables": 742,
+      "inequalities": 1803,
+      "nonzero_multipliers": 66,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "positions": [
+        [
+          55,
+          13
+        ]
+      ],
+      "variables": 678,
+      "inequalities": 1649,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          55,
+          14
+        ]
+      ],
+      "variables": 618,
+      "inequalities": 1509,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          55,
+          15
+        ]
+      ],
+      "variables": 558,
+      "inequalities": 1369,
+      "nonzero_multipliers": 43,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "positions": [
+        [
+          56,
+          1
+        ]
+      ],
+      "variables": 550,
+      "inequalities": 1352,
+      "nonzero_multipliers": 39,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "positions": [
+        [
+          56,
+          2
+        ]
+      ],
+      "variables": 610,
+      "inequalities": 1492,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          56,
+          3
+        ]
+      ],
+      "variables": 670,
+      "inequalities": 1632,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          56,
+          4
+        ]
+      ],
+      "variables": 734,
+      "inequalities": 1786,
+      "nonzero_multipliers": 63,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "positions": [
+        [
+          56,
+          5
+        ]
+      ],
+      "variables": 802,
+      "inequalities": 1944,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          56,
+          6
+        ]
+      ],
+      "variables": 854,
+      "inequalities": 2052,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          56,
+          7
+        ]
+      ],
+      "variables": 885,
+      "inequalities": 2115,
+      "nonzero_multipliers": 92,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "positions": [
+        [
+          56,
+          8
+        ]
+      ],
+      "variables": 899,
+      "inequalities": 2143,
+      "nonzero_multipliers": 24,
+      "upper": "24",
+      "minimum_coefficient": "1",
+      "cap": 24
+    },
+    {
+      "positions": [
+        [
+          56,
+          9
+        ]
+      ],
+      "variables": 885,
+      "inequalities": 2115,
+      "nonzero_multipliers": 81,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "positions": [
+        [
+          56,
+          10
+        ]
+      ],
+      "variables": 857,
+      "inequalities": 2059,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          56,
+          11
+        ]
+      ],
+      "variables": 807,
+      "inequalities": 1955,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          56,
+          12
+        ]
+      ],
+      "variables": 739,
+      "inequalities": 1797,
+      "nonzero_multipliers": 64,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "positions": [
+        [
+          56,
+          13
+        ]
+      ],
+      "variables": 675,
+      "inequalities": 1643,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          56,
+          14
+        ]
+      ],
+      "variables": 615,
+      "inequalities": 1503,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          56,
+          15
+        ]
+      ],
+      "variables": 555,
+      "inequalities": 1363,
+      "nonzero_multipliers": 56,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "positions": [
+        [
+          57,
+          1
+        ]
+      ],
+      "variables": 550,
+      "inequalities": 1352,
+      "nonzero_multipliers": 39,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "positions": [
+        [
+          57,
+          2
+        ]
+      ],
+      "variables": 610,
+      "inequalities": 1492,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          57,
+          3
+        ]
+      ],
+      "variables": 670,
+      "inequalities": 1632,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          57,
+          4
+        ]
+      ],
+      "variables": 734,
+      "inequalities": 1786,
+      "nonzero_multipliers": 63,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "positions": [
+        [
+          57,
+          5
+        ]
+      ],
+      "variables": 802,
+      "inequalities": 1944,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          57,
+          6
+        ]
+      ],
+      "variables": 853,
+      "inequalities": 2050,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          57,
+          7
+        ]
+      ],
+      "variables": 883,
+      "inequalities": 2111,
+      "nonzero_multipliers": 91,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "positions": [
+        [
+          57,
+          8
+        ]
+      ],
+      "variables": 897,
+      "inequalities": 2139,
+      "nonzero_multipliers": 24,
+      "upper": "24",
+      "minimum_coefficient": "1",
+      "cap": 24
+    },
+    {
+      "positions": [
+        [
+          57,
+          9
+        ]
+      ],
+      "variables": 883,
+      "inequalities": 2111,
+      "nonzero_multipliers": 87,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "positions": [
+        [
+          57,
+          10
+        ]
+      ],
+      "variables": 855,
+      "inequalities": 2055,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          57,
+          11
+        ]
+      ],
+      "variables": 805,
+      "inequalities": 1951,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          57,
+          12
+        ]
+      ],
+      "variables": 737,
+      "inequalities": 1793,
+      "nonzero_multipliers": 72,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "positions": [
+        [
+          57,
+          13
+        ]
+      ],
+      "variables": 673,
+      "inequalities": 1639,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          57,
+          14
+        ]
+      ],
+      "variables": 613,
+      "inequalities": 1499,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          57,
+          15
+        ]
+      ],
+      "variables": 553,
+      "inequalities": 1359,
+      "nonzero_multipliers": 36,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "positions": [
+        [
+          58,
+          1
+        ]
+      ],
+      "variables": 550,
+      "inequalities": 1352,
+      "nonzero_multipliers": 39,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "positions": [
+        [
+          58,
+          2
+        ]
+      ],
+      "variables": 610,
+      "inequalities": 1492,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          58,
+          3
+        ]
+      ],
+      "variables": 670,
+      "inequalities": 1632,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          58,
+          4
+        ]
+      ],
+      "variables": 734,
+      "inequalities": 1786,
+      "nonzero_multipliers": 63,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "positions": [
+        [
+          58,
+          5
+        ]
+      ],
+      "variables": 802,
+      "inequalities": 1944,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          58,
+          6
+        ]
+      ],
+      "variables": 852,
+      "inequalities": 2048,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          58,
+          7
+        ]
+      ],
+      "variables": 881,
+      "inequalities": 2107,
+      "nonzero_multipliers": 84,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "positions": [
+        [
+          58,
+          8
+        ]
+      ],
+      "variables": 895,
+      "inequalities": 2135,
+      "nonzero_multipliers": 24,
+      "upper": "24",
+      "minimum_coefficient": "1",
+      "cap": 24
+    },
+    {
+      "positions": [
+        [
+          58,
+          9
+        ]
+      ],
+      "variables": 881,
+      "inequalities": 2107,
+      "nonzero_multipliers": 79,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "positions": [
+        [
+          58,
+          10
+        ]
+      ],
+      "variables": 853,
+      "inequalities": 2051,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          58,
+          11
+        ]
+      ],
+      "variables": 803,
+      "inequalities": 1947,
+      "nonzero_multipliers": 39,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          58,
+          12
+        ]
+      ],
+      "variables": 735,
+      "inequalities": 1789,
+      "nonzero_multipliers": 65,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "positions": [
+        [
+          58,
+          13
+        ]
+      ],
+      "variables": 671,
+      "inequalities": 1635,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          58,
+          14
+        ]
+      ],
+      "variables": 611,
+      "inequalities": 1495,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          58,
+          15
+        ]
+      ],
+      "variables": 551,
+      "inequalities": 1355,
+      "nonzero_multipliers": 47,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "positions": [
+        [
+          59,
+          1
+        ]
+      ],
+      "variables": 537,
+      "inequalities": 1316,
+      "nonzero_multipliers": 49,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "positions": [
+        [
+          59,
+          2
+        ]
+      ],
+      "variables": 595,
+      "inequalities": 1451,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          59,
+          3
+        ]
+      ],
+      "variables": 653,
+      "inequalities": 1586,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          59,
+          4
+        ]
+      ],
+      "variables": 715,
+      "inequalities": 1735,
+      "nonzero_multipliers": 66,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "positions": [
+        [
+          59,
+          5
+        ]
+      ],
+      "variables": 781,
+      "inequalities": 1888,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          59,
+          6
+        ]
+      ],
+      "variables": 829,
+      "inequalities": 1986,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          59,
+          7
+        ]
+      ],
+      "variables": 857,
+      "inequalities": 2042,
+      "nonzero_multipliers": 89,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "positions": [
+        [
+          59,
+          8
+        ]
+      ],
+      "variables": 871,
+      "inequalities": 2070,
+      "nonzero_multipliers": 24,
+      "upper": "24",
+      "minimum_coefficient": "1",
+      "cap": 24
+    },
+    {
+      "positions": [
+        [
+          59,
+          9
+        ]
+      ],
+      "variables": 857,
+      "inequalities": 2042,
+      "nonzero_multipliers": 90,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "positions": [
+        [
+          59,
+          10
+        ]
+      ],
+      "variables": 829,
+      "inequalities": 1986,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          59,
+          11
+        ]
+      ],
+      "variables": 781,
+      "inequalities": 1888,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          59,
+          12
+        ]
+      ],
+      "variables": 715,
+      "inequalities": 1735,
+      "nonzero_multipliers": 57,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "positions": [
+        [
+          59,
+          13
+        ]
+      ],
+      "variables": 653,
+      "inequalities": 1586,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          59,
+          14
+        ]
+      ],
+      "variables": 595,
+      "inequalities": 1451,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          59,
+          15
+        ]
+      ],
+      "variables": 537,
+      "inequalities": 1316,
+      "nonzero_multipliers": 48,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "positions": [
+        [
+          60,
+          1
+        ]
+      ],
+      "variables": 511,
+      "inequalities": 1252,
+      "nonzero_multipliers": 53,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "positions": [
+        [
+          60,
+          2
+        ]
+      ],
+      "variables": 565,
+      "inequalities": 1378,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          60,
+          3
+        ]
+      ],
+      "variables": 619,
+      "inequalities": 1504,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          60,
+          4
+        ]
+      ],
+      "variables": 677,
+      "inequalities": 1644,
+      "nonzero_multipliers": 69,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "positions": [
+        [
+          60,
+          5
+        ]
+      ],
+      "variables": 739,
+      "inequalities": 1788,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          60,
+          6
+        ]
+      ],
+      "variables": 785,
+      "inequalities": 1882,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          60,
+          7
+        ]
+      ],
+      "variables": 813,
+      "inequalities": 1938,
+      "nonzero_multipliers": 80,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "positions": [
+        [
+          60,
+          8
+        ]
+      ],
+      "variables": 827,
+      "inequalities": 1966,
+      "nonzero_multipliers": 24,
+      "upper": "24",
+      "minimum_coefficient": "1",
+      "cap": 24
+    },
+    {
+      "positions": [
+        [
+          60,
+          9
+        ]
+      ],
+      "variables": 813,
+      "inequalities": 1938,
+      "nonzero_multipliers": 92,
+      "upper": "21511/927",
+      "minimum_coefficient": "1",
+      "cap": 23
+    },
+    {
+      "positions": [
+        [
+          60,
+          10
+        ]
+      ],
+      "variables": 785,
+      "inequalities": 1882,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          60,
+          11
+        ]
+      ],
+      "variables": 739,
+      "inequalities": 1788,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          60,
+          12
+        ]
+      ],
+      "variables": 677,
+      "inequalities": 1644,
+      "nonzero_multipliers": 64,
+      "upper": "5746/315",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "positions": [
+        [
+          60,
+          13
+        ]
+      ],
+      "variables": 619,
+      "inequalities": 1504,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          60,
+          14
+        ]
+      ],
+      "variables": 565,
+      "inequalities": 1378,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          60,
+          15
+        ]
+      ],
+      "variables": 511,
+      "inequalities": 1252,
+      "nonzero_multipliers": 48,
+      "upper": "1846/135",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "positions": [
+        [
+          61,
+          1
+        ]
+      ],
+      "variables": 478,
+      "inequalities": 1174,
+      "nonzero_multipliers": 49,
+      "upper": "67232/5079",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "positions": [
+        [
+          61,
+          2
+        ]
+      ],
+      "variables": 527,
+      "inequalities": 1289,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          61,
+          3
+        ]
+      ],
+      "variables": 576,
+      "inequalities": 1404,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          61,
+          4
+        ]
+      ],
+      "variables": 629,
+      "inequalities": 1533,
+      "nonzero_multipliers": 65,
+      "upper": "7544/423",
+      "minimum_coefficient": "1",
+      "cap": 17
+    },
+    {
+      "positions": [
+        [
+          61,
+          5
+        ]
+      ],
+      "variables": 686,
+      "inequalities": 1666,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          61,
+          6
+        ]
+      ],
+      "variables": 729,
+      "inequalities": 1754,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          61,
+          7
+        ]
+      ],
+      "variables": 756,
+      "inequalities": 1808,
+      "nonzero_multipliers": 101,
+      "upper": "22291/978",
+      "minimum_coefficient": "1",
+      "cap": 22
+    },
+    {
+      "positions": [
+        [
+          61,
+          8
+        ]
+      ],
+      "variables": 769,
+      "inequalities": 1834,
+      "nonzero_multipliers": 54,
+      "upper": "24",
+      "minimum_coefficient": "1",
+      "cap": 24
+    },
+    {
+      "positions": [
+        [
+          61,
+          9
+        ]
+      ],
+      "variables": 756,
+      "inequalities": 1808,
+      "nonzero_multipliers": 147,
+      "upper": "574681564461390484839080295926010040469980920404135787994/25213699252178687550579699071423212435871949727215808065",
+      "minimum_coefficient": "1",
+      "cap": 22
+    },
+    {
+      "positions": [
+        [
+          61,
+          10
+        ]
+      ],
+      "variables": 729,
+      "inequalities": 1754,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          61,
+          11
+        ]
+      ],
+      "variables": 686,
+      "inequalities": 1666,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          61,
+          12
+        ]
+      ],
+      "variables": 629,
+      "inequalities": 1533,
+      "nonzero_multipliers": 62,
+      "upper": "7544/423",
+      "minimum_coefficient": "1",
+      "cap": 17
+    },
+    {
+      "positions": [
+        [
+          61,
+          13
+        ]
+      ],
+      "variables": 576,
+      "inequalities": 1404,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          61,
+          14
+        ]
+      ],
+      "variables": 527,
+      "inequalities": 1289,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          61,
+          15
+        ]
+      ],
+      "variables": 478,
+      "inequalities": 1174,
+      "nonzero_multipliers": 47,
+      "upper": "67232/5079",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "positions": [
+        [
+          62,
+          1
+        ]
+      ],
+      "variables": 439,
+      "inequalities": 1084,
+      "nonzero_multipliers": 28,
+      "upper": "110/9",
+      "minimum_coefficient": "1",
+      "cap": 12
+    },
+    {
+      "positions": [
+        [
+          62,
+          2
+        ]
+      ],
+      "variables": 482,
+      "inequalities": 1186,
+      "nonzero_multipliers": 26,
+      "upper": "53/4",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "positions": [
+        [
+          62,
+          3
+        ]
+      ],
+      "variables": 525,
+      "inequalities": 1288,
+      "nonzero_multipliers": 17,
+      "upper": "41/3",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "positions": [
+        [
+          62,
+          4
+        ]
+      ],
+      "variables": 572,
+      "inequalities": 1404,
+      "nonzero_multipliers": 55,
+      "upper": "11827/702",
+      "minimum_coefficient": "1",
+      "cap": 16
+    },
+    {
+      "positions": [
+        [
+          62,
+          5
+        ]
+      ],
+      "variables": 623,
+      "inequalities": 1524,
+      "nonzero_multipliers": 25,
+      "upper": "18",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "positions": [
+        [
+          62,
+          6
+        ]
+      ],
+      "variables": 662,
+      "inequalities": 1604,
+      "nonzero_multipliers": 25,
+      "upper": "129/7",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "positions": [
+        [
+          62,
+          7
+        ]
+      ],
+      "variables": 687,
+      "inequalities": 1654,
+      "nonzero_multipliers": 86,
+      "upper": "32441/1522",
+      "minimum_coefficient": "1",
+      "cap": 21
+    },
+    {
+      "positions": [
+        [
+          62,
+          8
+        ]
+      ],
+      "variables": 699,
+      "inequalities": 1678,
+      "nonzero_multipliers": 112,
+      "upper": "3912112/174843",
+      "minimum_coefficient": "1",
+      "cap": 22
+    },
+    {
+      "positions": [
+        [
+          62,
+          9
+        ]
+      ],
+      "variables": 687,
+      "inequalities": 1654,
+      "nonzero_multipliers": 84,
+      "upper": "32441/1522",
+      "minimum_coefficient": "1",
+      "cap": 21
+    },
+    {
+      "positions": [
+        [
+          62,
+          10
+        ]
+      ],
+      "variables": 662,
+      "inequalities": 1604,
+      "nonzero_multipliers": 24,
+      "upper": "129/7",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "positions": [
+        [
+          62,
+          11
+        ]
+      ],
+      "variables": 623,
+      "inequalities": 1524,
+      "nonzero_multipliers": 32,
+      "upper": "18",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "positions": [
+        [
+          62,
+          12
+        ]
+      ],
+      "variables": 572,
+      "inequalities": 1404,
+      "nonzero_multipliers": 57,
+      "upper": "11827/702",
+      "minimum_coefficient": "1",
+      "cap": 16
+    },
+    {
+      "positions": [
+        [
+          62,
+          13
+        ]
+      ],
+      "variables": 525,
+      "inequalities": 1288,
+      "nonzero_multipliers": 12,
+      "upper": "41/3",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "positions": [
+        [
+          62,
+          14
+        ]
+      ],
+      "variables": 482,
+      "inequalities": 1186,
+      "nonzero_multipliers": 19,
+      "upper": "53/4",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "positions": [
+        [
+          62,
+          15
+        ]
+      ],
+      "variables": 439,
+      "inequalities": 1084,
+      "nonzero_multipliers": 33,
+      "upper": "110/9",
+      "minimum_coefficient": "1",
+      "cap": 12
+    },
+    {
+      "positions": [
+        [
+          63,
+          1
+        ]
+      ],
+      "variables": 400,
+      "inequalities": 994,
+      "nonzero_multipliers": 15,
+      "upper": "11",
+      "minimum_coefficient": "1",
+      "cap": 11
+    },
+    {
+      "positions": [
+        [
+          63,
+          2
+        ]
+      ],
+      "variables": 437,
+      "inequalities": 1083,
+      "nonzero_multipliers": 11,
+      "upper": "11",
+      "minimum_coefficient": "1",
+      "cap": 11
+    },
+    {
+      "positions": [
+        [
+          63,
+          3
+        ]
+      ],
+      "variables": 474,
+      "inequalities": 1172,
+      "nonzero_multipliers": 11,
+      "upper": "11",
+      "minimum_coefficient": "1",
+      "cap": 11
+    },
+    {
+      "positions": [
+        [
+          63,
+          4
+        ]
+      ],
+      "variables": 515,
+      "inequalities": 1275,
+      "nonzero_multipliers": 24,
+      "upper": "101/7",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          63,
+          5
+        ]
+      ],
+      "variables": 560,
+      "inequalities": 1382,
+      "nonzero_multipliers": 15,
+      "upper": "15",
+      "minimum_coefficient": "1",
+      "cap": 15
+    },
+    {
+      "positions": [
+        [
+          63,
+          6
+        ]
+      ],
+      "variables": 595,
+      "inequalities": 1454,
+      "nonzero_multipliers": 15,
+      "upper": "15",
+      "minimum_coefficient": "1",
+      "cap": 15
+    },
+    {
+      "positions": [
+        [
+          63,
+          7
+        ]
+      ],
+      "variables": 618,
+      "inequalities": 1500,
+      "nonzero_multipliers": 25,
+      "upper": "129/7",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "positions": [
+        [
+          63,
+          8
+        ]
+      ],
+      "variables": 629,
+      "inequalities": 1522,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          63,
+          9
+        ]
+      ],
+      "variables": 618,
+      "inequalities": 1500,
+      "nonzero_multipliers": 26,
+      "upper": "129/7",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "positions": [
+        [
+          63,
+          10
+        ]
+      ],
+      "variables": 595,
+      "inequalities": 1454,
+      "nonzero_multipliers": 15,
+      "upper": "15",
+      "minimum_coefficient": "1",
+      "cap": 15
+    },
+    {
+      "positions": [
+        [
+          63,
+          11
+        ]
+      ],
+      "variables": 560,
+      "inequalities": 1382,
+      "nonzero_multipliers": 15,
+      "upper": "15",
+      "minimum_coefficient": "1",
+      "cap": 15
+    },
+    {
+      "positions": [
+        [
+          63,
+          12
+        ]
+      ],
+      "variables": 515,
+      "inequalities": 1275,
+      "nonzero_multipliers": 20,
+      "upper": "101/7",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          63,
+          13
+        ]
+      ],
+      "variables": 474,
+      "inequalities": 1172,
+      "nonzero_multipliers": 11,
+      "upper": "11",
+      "minimum_coefficient": "1",
+      "cap": 11
+    },
+    {
+      "positions": [
+        [
+          63,
+          14
+        ]
+      ],
+      "variables": 437,
+      "inequalities": 1083,
+      "nonzero_multipliers": 11,
+      "upper": "11",
+      "minimum_coefficient": "1",
+      "cap": 11
+    },
+    {
+      "positions": [
+        [
+          63,
+          15
+        ]
+      ],
+      "variables": 400,
+      "inequalities": 994,
+      "nonzero_multipliers": 15,
+      "upper": "11",
+      "minimum_coefficient": "1",
+      "cap": 11
+    },
+    {
+      "positions": [
+        [
+          64,
+          1
+        ]
+      ],
+      "variables": 364,
+      "inequalities": 910,
+      "nonzero_multipliers": 32,
+      "upper": "2881/270",
+      "minimum_coefficient": "1",
+      "cap": 10
+    },
+    {
+      "positions": [
+        [
+          64,
+          2
+        ]
+      ],
+      "variables": 397,
+      "inequalities": 990,
+      "nonzero_multipliers": 11,
+      "upper": "11",
+      "minimum_coefficient": "1",
+      "cap": 11
+    },
+    {
+      "positions": [
+        [
+          64,
+          3
+        ]
+      ],
+      "variables": 430,
+      "inequalities": 1070,
+      "nonzero_multipliers": 11,
+      "upper": "11",
+      "minimum_coefficient": "1",
+      "cap": 11
+    },
+    {
+      "positions": [
+        [
+          64,
+          4
+        ]
+      ],
+      "variables": 467,
+      "inequalities": 1164,
+      "nonzero_multipliers": 18,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          64,
+          5
+        ]
+      ],
+      "variables": 508,
+      "inequalities": 1262,
+      "nonzero_multipliers": 15,
+      "upper": "15",
+      "minimum_coefficient": "1",
+      "cap": 15
+    },
+    {
+      "positions": [
+        [
+          64,
+          6
+        ]
+      ],
+      "variables": 539,
+      "inequalities": 1326,
+      "nonzero_multipliers": 15,
+      "upper": "15",
+      "minimum_coefficient": "1",
+      "cap": 15
+    },
+    {
+      "positions": [
+        [
+          64,
+          7
+        ]
+      ],
+      "variables": 560,
+      "inequalities": 1368,
+      "nonzero_multipliers": 30,
+      "upper": "18",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "positions": [
+        [
+          64,
+          8
+        ]
+      ],
+      "variables": 570,
+      "inequalities": 1388,
+      "nonzero_multipliers": 19,
+      "upper": "19",
+      "minimum_coefficient": "1",
+      "cap": 19
+    },
+    {
+      "positions": [
+        [
+          64,
+          9
+        ]
+      ],
+      "variables": 560,
+      "inequalities": 1368,
+      "nonzero_multipliers": 26,
+      "upper": "18",
+      "minimum_coefficient": "1",
+      "cap": 18
+    },
+    {
+      "positions": [
+        [
+          64,
+          10
+        ]
+      ],
+      "variables": 539,
+      "inequalities": 1326,
+      "nonzero_multipliers": 15,
+      "upper": "15",
+      "minimum_coefficient": "1",
+      "cap": 15
+    },
+    {
+      "positions": [
+        [
+          64,
+          11
+        ]
+      ],
+      "variables": 508,
+      "inequalities": 1262,
+      "nonzero_multipliers": 15,
+      "upper": "15",
+      "minimum_coefficient": "1",
+      "cap": 15
+    },
+    {
+      "positions": [
+        [
+          64,
+          12
+        ]
+      ],
+      "variables": 467,
+      "inequalities": 1164,
+      "nonzero_multipliers": 19,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          64,
+          13
+        ]
+      ],
+      "variables": 430,
+      "inequalities": 1070,
+      "nonzero_multipliers": 11,
+      "upper": "11",
+      "minimum_coefficient": "1",
+      "cap": 11
+    },
+    {
+      "positions": [
+        [
+          64,
+          14
+        ]
+      ],
+      "variables": 397,
+      "inequalities": 990,
+      "nonzero_multipliers": 11,
+      "upper": "11",
+      "minimum_coefficient": "1",
+      "cap": 11
+    },
+    {
+      "positions": [
+        [
+          64,
+          15
+        ]
+      ],
+      "variables": 364,
+      "inequalities": 910,
+      "nonzero_multipliers": 33,
+      "upper": "2881/270",
+      "minimum_coefficient": "1",
+      "cap": 10
+    },
+    {
+      "positions": [
+        [
+          65,
+          1
+        ]
+      ],
+      "variables": 331,
+      "inequalities": 830,
+      "nonzero_multipliers": 22,
+      "upper": "311/33",
+      "minimum_coefficient": "1",
+      "cap": 9
+    },
+    {
+      "positions": [
+        [
+          65,
+          2
+        ]
+      ],
+      "variables": 362,
+      "inequalities": 905,
+      "nonzero_multipliers": 24,
+      "upper": "41/4",
+      "minimum_coefficient": "1",
+      "cap": 10
+    },
+    {
+      "positions": [
+        [
+          65,
+          3
+        ]
+      ],
+      "variables": 393,
+      "inequalities": 980,
+      "nonzero_multipliers": 12,
+      "upper": "32/3",
+      "minimum_coefficient": "1",
+      "cap": 10
+    },
+    {
+      "positions": [
+        [
+          65,
+          4
+        ]
+      ],
+      "variables": 428,
+      "inequalities": 1071,
+      "nonzero_multipliers": 35,
+      "upper": "157/12",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "positions": [
+        [
+          65,
+          5
+        ]
+      ],
+      "variables": 467,
+      "inequalities": 1164,
+      "nonzero_multipliers": 25,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          65,
+          6
+        ]
+      ],
+      "variables": 496,
+      "inequalities": 1224,
+      "nonzero_multipliers": 19,
+      "upper": "101/7",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          65,
+          7
+        ]
+      ],
+      "variables": 515,
+      "inequalities": 1262,
+      "nonzero_multipliers": 56,
+      "upper": "179219/10647",
+      "minimum_coefficient": "1",
+      "cap": 16
+    },
+    {
+      "positions": [
+        [
+          65,
+          8
+        ]
+      ],
+      "variables": 524,
+      "inequalities": 1280,
+      "nonzero_multipliers": 82,
+      "upper": "3785/216",
+      "minimum_coefficient": "1",
+      "cap": 17
+    },
+    {
+      "positions": [
+        [
+          65,
+          9
+        ]
+      ],
+      "variables": 515,
+      "inequalities": 1262,
+      "nonzero_multipliers": 60,
+      "upper": "179219/10647",
+      "minimum_coefficient": "1",
+      "cap": 16
+    },
+    {
+      "positions": [
+        [
+          65,
+          10
+        ]
+      ],
+      "variables": 496,
+      "inequalities": 1224,
+      "nonzero_multipliers": 16,
+      "upper": "101/7",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          65,
+          11
+        ]
+      ],
+      "variables": 467,
+      "inequalities": 1164,
+      "nonzero_multipliers": 16,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          65,
+          12
+        ]
+      ],
+      "variables": 428,
+      "inequalities": 1071,
+      "nonzero_multipliers": 33,
+      "upper": "157/12",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "positions": [
+        [
+          65,
+          13
+        ]
+      ],
+      "variables": 393,
+      "inequalities": 980,
+      "nonzero_multipliers": 9,
+      "upper": "32/3",
+      "minimum_coefficient": "1",
+      "cap": 10
+    },
+    {
+      "positions": [
+        [
+          65,
+          14
+        ]
+      ],
+      "variables": 362,
+      "inequalities": 905,
+      "nonzero_multipliers": 13,
+      "upper": "41/4",
+      "minimum_coefficient": "1",
+      "cap": 10
+    },
+    {
+      "positions": [
+        [
+          65,
+          15
+        ]
+      ],
+      "variables": 331,
+      "inequalities": 830,
+      "nonzero_multipliers": 24,
+      "upper": "311/33",
+      "minimum_coefficient": "1",
+      "cap": 9
+    },
+    {
+      "positions": [
+        [
+          66,
+          1
+        ]
+      ],
+      "variables": 300,
+      "inequalities": 755,
+      "nonzero_multipliers": 9,
+      "upper": "8",
+      "minimum_coefficient": "1",
+      "cap": 8
+    },
+    {
+      "positions": [
+        [
+          66,
+          2
+        ]
+      ],
+      "variables": 330,
+      "inequalities": 825,
+      "nonzero_multipliers": 8,
+      "upper": "8",
+      "minimum_coefficient": "1",
+      "cap": 8
+    },
+    {
+      "positions": [
+        [
+          66,
+          3
+        ]
+      ],
+      "variables": 360,
+      "inequalities": 895,
+      "nonzero_multipliers": 8,
+      "upper": "8",
+      "minimum_coefficient": "1",
+      "cap": 8
+    },
+    {
+      "positions": [
+        [
+          66,
+          4
+        ]
+      ],
+      "variables": 393,
+      "inequalities": 980,
+      "nonzero_multipliers": 16,
+      "upper": "32/3",
+      "minimum_coefficient": "1",
+      "cap": 10
+    },
+    {
+      "positions": [
+        [
+          66,
+          5
+        ]
+      ],
+      "variables": 430,
+      "inequalities": 1070,
+      "nonzero_multipliers": 11,
+      "upper": "11",
+      "minimum_coefficient": "1",
+      "cap": 11
+    },
+    {
+      "positions": [
+        [
+          66,
+          6
+        ]
+      ],
+      "variables": 457,
+      "inequalities": 1126,
+      "nonzero_multipliers": 11,
+      "upper": "11",
+      "minimum_coefficient": "1",
+      "cap": 11
+    },
+    {
+      "positions": [
+        [
+          66,
+          7
+        ]
+      ],
+      "variables": 474,
+      "inequalities": 1160,
+      "nonzero_multipliers": 16,
+      "upper": "41/3",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "positions": [
+        [
+          66,
+          8
+        ]
+      ],
+      "variables": 482,
+      "inequalities": 1176,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          66,
+          9
+        ]
+      ],
+      "variables": 474,
+      "inequalities": 1160,
+      "nonzero_multipliers": 18,
+      "upper": "41/3",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "positions": [
+        [
+          66,
+          10
+        ]
+      ],
+      "variables": 457,
+      "inequalities": 1126,
+      "nonzero_multipliers": 11,
+      "upper": "11",
+      "minimum_coefficient": "1",
+      "cap": 11
+    },
+    {
+      "positions": [
+        [
+          66,
+          11
+        ]
+      ],
+      "variables": 430,
+      "inequalities": 1070,
+      "nonzero_multipliers": 11,
+      "upper": "11",
+      "minimum_coefficient": "1",
+      "cap": 11
+    },
+    {
+      "positions": [
+        [
+          66,
+          12
+        ]
+      ],
+      "variables": 393,
+      "inequalities": 980,
+      "nonzero_multipliers": 15,
+      "upper": "32/3",
+      "minimum_coefficient": "1",
+      "cap": 10
+    },
+    {
+      "positions": [
+        [
+          66,
+          13
+        ]
+      ],
+      "variables": 360,
+      "inequalities": 895,
+      "nonzero_multipliers": 8,
+      "upper": "8",
+      "minimum_coefficient": "1",
+      "cap": 8
+    },
+    {
+      "positions": [
+        [
+          66,
+          14
+        ]
+      ],
+      "variables": 330,
+      "inequalities": 825,
+      "nonzero_multipliers": 8,
+      "upper": "8",
+      "minimum_coefficient": "1",
+      "cap": 8
+    },
+    {
+      "positions": [
+        [
+          66,
+          15
+        ]
+      ],
+      "variables": 300,
+      "inequalities": 755,
+      "nonzero_multipliers": 11,
+      "upper": "8",
+      "minimum_coefficient": "1",
+      "cap": 8
+    },
+    {
+      "positions": [
+        [
+          67,
+          1
+        ]
+      ],
+      "variables": 270,
+      "inequalities": 685,
+      "nonzero_multipliers": 25,
+      "upper": "565/72",
+      "minimum_coefficient": "1",
+      "cap": 7
+    },
+    {
+      "positions": [
+        [
+          67,
+          2
+        ]
+      ],
+      "variables": 300,
+      "inequalities": 755,
+      "nonzero_multipliers": 8,
+      "upper": "8",
+      "minimum_coefficient": "1",
+      "cap": 8
+    },
+    {
+      "positions": [
+        [
+          67,
+          3
+        ]
+      ],
+      "variables": 330,
+      "inequalities": 825,
+      "nonzero_multipliers": 8,
+      "upper": "8",
+      "minimum_coefficient": "1",
+      "cap": 8
+    },
+    {
+      "positions": [
+        [
+          67,
+          4
+        ]
+      ],
+      "variables": 362,
+      "inequalities": 905,
+      "nonzero_multipliers": 14,
+      "upper": "41/4",
+      "minimum_coefficient": "1",
+      "cap": 10
+    },
+    {
+      "positions": [
+        [
+          67,
+          5
+        ]
+      ],
+      "variables": 397,
+      "inequalities": 990,
+      "nonzero_multipliers": 11,
+      "upper": "11",
+      "minimum_coefficient": "1",
+      "cap": 11
+    },
+    {
+      "positions": [
+        [
+          67,
+          6
+        ]
+      ],
+      "variables": 422,
+      "inequalities": 1042,
+      "nonzero_multipliers": 11,
+      "upper": "11",
+      "minimum_coefficient": "1",
+      "cap": 11
+    },
+    {
+      "positions": [
+        [
+          67,
+          7
+        ]
+      ],
+      "variables": 437,
+      "inequalities": 1072,
+      "nonzero_multipliers": 25,
+      "upper": "53/4",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "positions": [
+        [
+          67,
+          8
+        ]
+      ],
+      "variables": 444,
+      "inequalities": 1086,
+      "nonzero_multipliers": 14,
+      "upper": "14",
+      "minimum_coefficient": "1",
+      "cap": 14
+    },
+    {
+      "positions": [
+        [
+          67,
+          9
+        ]
+      ],
+      "variables": 437,
+      "inequalities": 1072,
+      "nonzero_multipliers": 32,
+      "upper": "53/4",
+      "minimum_coefficient": "1",
+      "cap": 13
+    },
+    {
+      "positions": [
+        [
+          67,
+          10
+        ]
+      ],
+      "variables": 422,
+      "inequalities": 1042,
+      "nonzero_multipliers": 11,
+      "upper": "11",
+      "minimum_coefficient": "1",
+      "cap": 11
+    },
+    {
+      "positions": [
+        [
+          67,
+          11
+        ]
+      ],
+      "variables": 397,
+      "inequalities": 990,
+      "nonzero_multipliers": 11,
+      "upper": "11",
+      "minimum_coefficient": "1",
+      "cap": 11
+    },
+    {
+      "positions": [
+        [
+          67,
+          12
+        ]
+      ],
+      "variables": 362,
+      "inequalities": 905,
+      "nonzero_multipliers": 15,
+      "upper": "41/4",
+      "minimum_coefficient": "1",
+      "cap": 10
+    },
+    {
+      "positions": [
+        [
+          67,
+          13
+        ]
+      ],
+      "variables": 330,
+      "inequalities": 825,
+      "nonzero_multipliers": 8,
+      "upper": "8",
+      "minimum_coefficient": "1",
+      "cap": 8
+    },
+    {
+      "positions": [
+        [
+          67,
+          14
+        ]
+      ],
+      "variables": 300,
+      "inequalities": 755,
+      "nonzero_multipliers": 8,
+      "upper": "8",
+      "minimum_coefficient": "1",
+      "cap": 8
+    },
+    {
+      "positions": [
+        [
+          67,
+          15
+        ]
+      ],
+      "variables": 270,
+      "inequalities": 685,
+      "nonzero_multipliers": 26,
+      "upper": "565/72",
+      "minimum_coefficient": "1",
+      "cap": 7
+    },
+    {
+      "positions": [
+        [
+          68,
+          1
+        ]
+      ],
+      "variables": 240,
+      "inequalities": 615,
+      "nonzero_multipliers": 17,
+      "upper": "94/13",
+      "minimum_coefficient": "1",
+      "cap": 7
+    },
+    {
+      "positions": [
+        [
+          68,
+          2
+        ]
+      ],
+      "variables": 270,
+      "inequalities": 685,
+      "nonzero_multipliers": 27,
+      "upper": "565/72",
+      "minimum_coefficient": "1",
+      "cap": 7
+    },
+    {
+      "positions": [
+        [
+          68,
+          3
+        ]
+      ],
+      "variables": 300,
+      "inequalities": 755,
+      "nonzero_multipliers": 7,
+      "upper": "8",
+      "minimum_coefficient": "1",
+      "cap": 8
+    },
+    {
+      "positions": [
+        [
+          68,
+          4
+        ]
+      ],
+      "variables": 331,
+      "inequalities": 830,
+      "nonzero_multipliers": 21,
+      "upper": "311/33",
+      "minimum_coefficient": "1",
+      "cap": 9
+    },
+    {
+      "positions": [
+        [
+          68,
+          5
+        ]
+      ],
+      "variables": 364,
+      "inequalities": 910,
+      "nonzero_multipliers": 32,
+      "upper": "2881/270",
+      "minimum_coefficient": "1",
+      "cap": 10
+    },
+    {
+      "positions": [
+        [
+          68,
+          6
+        ]
+      ],
+      "variables": 387,
+      "inequalities": 958,
+      "nonzero_multipliers": 18,
+      "upper": "11",
+      "minimum_coefficient": "1",
+      "cap": 11
+    },
+    {
+      "positions": [
+        [
+          68,
+          7
+        ]
+      ],
+      "variables": 400,
+      "inequalities": 984,
+      "nonzero_multipliers": 30,
+      "upper": "110/9",
+      "minimum_coefficient": "1",
+      "cap": 12
+    },
+    {
+      "positions": [
+        [
+          68,
+          8
+        ]
+      ],
+      "variables": 406,
+      "inequalities": 996,
+      "nonzero_multipliers": 46,
+      "upper": "1914/149",
+      "minimum_coefficient": "1",
+      "cap": 12
+    },
+    {
+      "positions": [
+        [
+          68,
+          9
+        ]
+      ],
+      "variables": 400,
+      "inequalities": 984,
+      "nonzero_multipliers": 25,
+      "upper": "110/9",
+      "minimum_coefficient": "1",
+      "cap": 12
+    },
+    {
+      "positions": [
+        [
+          68,
+          10
+        ]
+      ],
+      "variables": 387,
+      "inequalities": 958,
+      "nonzero_multipliers": 18,
+      "upper": "11",
+      "minimum_coefficient": "1",
+      "cap": 11
+    },
+    {
+      "positions": [
+        [
+          68,
+          11
+        ]
+      ],
+      "variables": 364,
+      "inequalities": 910,
+      "nonzero_multipliers": 38,
+      "upper": "2881/270",
+      "minimum_coefficient": "1",
+      "cap": 10
+    },
+    {
+      "positions": [
+        [
+          68,
+          12
+        ]
+      ],
+      "variables": 331,
+      "inequalities": 830,
+      "nonzero_multipliers": 23,
+      "upper": "311/33",
+      "minimum_coefficient": "1",
+      "cap": 9
+    },
+    {
+      "positions": [
+        [
+          68,
+          13
+        ]
+      ],
+      "variables": 300,
+      "inequalities": 755,
+      "nonzero_multipliers": 8,
+      "upper": "8",
+      "minimum_coefficient": "1",
+      "cap": 8
+    },
+    {
+      "positions": [
+        [
+          68,
+          14
+        ]
+      ],
+      "variables": 270,
+      "inequalities": 685,
+      "nonzero_multipliers": 28,
+      "upper": "565/72",
+      "minimum_coefficient": "1",
+      "cap": 7
+    },
+    {
+      "positions": [
+        [
+          68,
+          15
+        ]
+      ],
+      "variables": 240,
+      "inequalities": 615,
+      "nonzero_multipliers": 19,
+      "upper": "94/13",
+      "minimum_coefficient": "1",
+      "cap": 7
+    }
+  ],
+  "mutation_checks": [
+    {
+      "mutation": "cap12",
+      "rejected": true
+    },
+    {
+      "mutation": "drop_multiplier",
+      "rejected": true
+    }
+  ]
+}

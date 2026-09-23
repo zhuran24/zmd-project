@@ -1,0 +1,64 @@
+BUILT 3970 units (11626, 12130) matrix 937653 nonzeros
+Running HiGHS 1.12.0 (git hash: 4f96ee8f4): Copyright (c) 2025 HiGHS under MIT licence terms
+MIP has 11626 rows; 12130 cols; 937653 nonzeros; 8100 integer variables (8100 binary)
+Coefficient ranges:
+  Matrix  [1e+00, 1e+01]
+  Cost    [1e+00, 9e+00]
+  Bound   [1e+00, 9e+00]
+  RHS     [1e+00, 2e+02]
+Presolving model
+11599 rows, 12123 cols, 937555 nonzeros  0s
+10240 rows, 11887 cols, 934367 nonzeros  7s
+Presolve reductions: rows 10240(-1386); columns 11887(-243); nonzeros 934367(-3286) 
+Objective function is integral with scale 1
+
+Solving MIP model with:
+   10240 rows
+   11887 cols (8067 binary, 0 integer, 3420 implied int., 400 continuous, 0 domain fixed)
+   934367 nonzeros
+
+Src: B => Branching; C => Central rounding; F => Feasibility pump; H => Heuristic;
+     I => Shifting; J => Feasibility jump; L => Sub-MIP; P => Empty MIP; R => Randomized rounding;
+     S => Solve LP; T => Evaluate node; U => Unbounded; X => User solution; Y => HiGHS solution;
+     Z => ZI Round; l => Trivial lower; p => Trivial point; u => Trivial upper; z => Trivial zero
+
+        Nodes      |    B&B Tree     |            Objective Bounds              |  Dynamic Constraints |       Work      
+Src  Proc. InQueue |  Leaves   Expl. | BestBound       BestSol              Gap |   Cuts   InLp Confl. | LpIters     Time
+
+         0       0         0   0.00%   -286            inf                  inf        0      0      0         0     8.4s
+         0       0         0   0.00%   -118.8181818    inf                  inf        0      0      8     15903    18.9s
+         0       0         0   0.00%   -118            inf                  inf     1451     19     33     20962    24.2s
+         0       0         0   0.00%   -118            inf                  inf     2353     37     47     27799    30.7s
+         0       0         0   0.00%   -118            inf                  inf     3264     47    258     31002    42.5s
+         0       0         0   0.00%   -118            inf                  inf     3274     57    262     34361    47.6s
+         0       0         0   0.00%   -118            inf                  inf     3306     69    290     40494    53.2s
+         0       0         0   0.00%   -118            inf                  inf     3306     31    350    109940   114.0s
+
+0.1% inactive integer columns, restarting
+Model after restart has 10221 rows, 11852 cols (8042 bin., 0 int., 3410 impl., 400 cont., 0 dom.fix.), and 930681 nonzeros
+
+         0       0         0   0.00%   -118            inf                  inf       31      0      0    109940   120.7s
+         0       0         0   0.00%   -118            inf                  inf       31     22      4    115442   125.6s
+         0       0         0   0.00%   -117.8064516    inf                  inf      212     31     25    126178   135.7s
+         0       0         0   0.00%   -117.5955882    inf                  inf     1557     50     29    131068   141.8s
+         0       0         0   0.00%   -117.5241791    inf                  inf     2411     60    501    143185   161.6s
+         0       0         0   0.00%   -117.4449925    inf                  inf     2850     67    517    156904   172.8s
+         0       0         0   0.00%   -117.2238067    inf                  inf     3976     76    532    163328   179.3s
+         0       0         0   0.00%   -117.2238067    inf                  inf     4612     80    544    163328   180.1s
+
+Solving report
+  Status            Time limit reached
+  Primal bound      inf
+  Dual bound        -117
+  Gap               inf
+  P-D integral      0
+  Solution status   -
+  Timing            180.05
+  Max sub-MIP depth 2
+  Nodes             0
+  Repair LPs        0
+  LP iterations     163328
+                    0 (strong br.)
+                    74352 (separation)
+                    67571 (heuristics)
+{"solver": "SciPy HiGHS", "version": "1.18.1", "status": 1, "message": "Time limit reached. (HiGHS Status 13: model_status is Time limit reached; primal_status is None)", "seconds": 181.35659908798698, "build_seconds": 1.2235240459995111, "branch_J": null, "strip": false, "project": false, "groups": true, "cap": 187, "domain_count": 3970, "domain_sha256": "1efb89cc4c937592424b4ab347be9233be1bf847ee52bc953dd7c119b6f548a1", "matrix_sha256": "878e6291bd4d5c33e7241386f2184d2ef07021ccc1789e861742e725e48f74a9", "script_sha256": "6492b9b6e75222d6b1e1c0ec2a555483793c300ed9913b37f77abe74836452ac"}

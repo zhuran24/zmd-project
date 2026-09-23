@@ -1,0 +1,8 @@
+{
+  "status": "UNKNOWN",
+  "branch_J": 1,
+  "scope": "global group relaxation; 185 <= S <= 187",
+  "seconds": 243.9022797630023,
+  "lower": 185.0,
+  "stats": "CpSolverResponse summary:\nstatus: UNKNOWN\nobjective: 187\nbest_bound: 185\nintegers: 7687\nbooleans: 7409\nconflicts: 3508\nbranches: 1013449\npropagations: 1512670\ninteger_propagations: 4777929\nrestarts: 2\nlp_iterations: 694876\nwalltime: 240.002\nusertime: 240.002\ndeterministic_time: 554.962\ngap_integral: 0\n"
+}
