@@ -2,9 +2,9 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "industrialplanner",
+      "name": "模拟器",
       "runtimeExecutable": "sh",
-      "runtimeArgs": ["-c", "cd third_party/industrialplanner && npm run dev"],
+      "runtimeArgs": ["-c", "cd 模拟器 && npm run dev -- --port 5173 --strictPort"],
       "port": 5173
     }
   ]
