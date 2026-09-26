@@ -1,0 +1,1 @@
+{"mode": "normal", "seed0": 500000, "runs": 2500, "cycles": 2498, "premise_cycles": 2498, "multi_phase": 2196, "five_tick": 276, "with_Y": 1799, "input_full": 1790, "x_empty_cycles": 0, "line_empty_cycles": 0, "yfirst_empty_cycles": 0, "mojv_cycles": 1534, "xfirst_empty_cycles": 0, "windows": 522108, "window_viol": 0, "violating_seeds": []}

@@ -1,0 +1,1 @@
+{"mode": "lim", "seed0": 900000, "runs": 300, "cycles": 300, "premise_cycles": 300, "multi_phase": 253, "five_tick": 34, "with_Y": 214, "input_full": 153, "x_empty_cycles": 199, "line_empty_cycles": 248, "yfirst_empty_cycles": 143, "mojv_cycles": 0, "xfirst_empty_cycles": 0, "windows": 0, "window_viol": 0, "control_cycles": 300, "control_x_empty": 199, "violating_seeds": []}
