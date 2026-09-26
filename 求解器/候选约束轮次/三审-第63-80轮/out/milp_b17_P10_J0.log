@@ -1,0 +1,1 @@
+{"b": 17, "P": 10, "J": [0, 0], "cap": 187, "status": 2, "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)", "seconds": 2666.7, "n_mach": 534, "n_core": 114, "n_poles": 1265, "n_var": 4792, "n_row": 5519}

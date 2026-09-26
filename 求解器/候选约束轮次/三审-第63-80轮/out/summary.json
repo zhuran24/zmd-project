@@ -8,6 +8,27 @@
     0
    ],
    "cap": 187,
+   "status": 2,
+   "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+   "engine": null,
+   "seconds": 2666.7,
+   "S": null,
+   "X": null,
+   "Y": null,
+   "Jval": null,
+   "n_mach": 534,
+   "n_core": 114,
+   "n_poles": 1265,
+   "file": "milp_b17_P10_J0-0_cap187.json"
+  },
+  {
+   "b": 17,
+   "P": 10,
+   "J": [
+    0,
+    0
+   ],
+   "cap": 187,
    "status": "INFEASIBLE",
    "message": null,
    "engine": "cpsat-linear",
@@ -20,6 +41,27 @@
    "n_core": 114,
    "n_poles": 1265,
    "file": "milp_b17_P10_J0-0_cap187_cpsat.json"
+  },
+  {
+   "b": 17,
+   "P": 11,
+   "J": [
+    0,
+    4
+   ],
+   "cap": 187,
+   "status": 2,
+   "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+   "engine": null,
+   "seconds": 2374.7,
+   "S": null,
+   "X": null,
+   "Y": null,
+   "Jval": null,
+   "n_mach": 534,
+   "n_core": 114,
+   "n_poles": 1482,
+   "file": "milp_b17_P11_J0-4_cap187.json"
   },
   {
    "b": 17,
