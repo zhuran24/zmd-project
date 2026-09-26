@@ -1,0 +1,3 @@
+wall {'columns': 550, 'rows': 1352, 'upper': '1846/135', 'min_coefficient': '1'}
+local 395 passed
+{'wall': {'columns': 550, 'rows': 1352, 'upper': '1846/135', 'min_coefficient': '1'}, 'local_positions': 395, 'poles': 3511, 'centers': 532890, 'excluded': 49, 'full_domain': {'s': 132, 'm': 132, 'l': 136, 'c': 108, 'p': 3462}, 'projected_domain': {'s': 132, 'm': 132, 'l': 136, 'c': 108, 'p': 1437}, 'right_caps': [7, 7, 8, 9, 10, 11, 12, 12, 12, 11, 10, 9, 8, 7, 7], 'seconds': 19.834292462997837}

@@ -1,0 +1,17 @@
+{
+  "engine": "cp",
+  "cap": 186,
+  "inner_pole": true,
+  "units": 1945,
+  "rows": 5634,
+  "variables": 4514,
+  "model_sha256": "b896f941334540cb0e0467b6bb5af3ec00cd7d3eb882a0ac0f6ca9490b9bbd92",
+  "source_hashes": {
+    "inner_pole_model.py": "f9be90f220dd9e2a4ed5e1d28342bb15fddf376bd35208f65c63165493ca7666",
+    "model77.py": "7bb9554c9cd727e6a85c03dab508493defbd31ec68762ae2b3eb867fe9723953",
+    "geometry77.py": "555274684b5cb4428d2b42791cb44bbae35c8207750b96827d95150195e0efc1"
+  },
+  "status": "INFEASIBLE",
+  "stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 2630\nbooleans: 2026\nconflicts: 190\nbranches: 64268\npropagations: 585873\ninteger_propagations: 1143479\nrestarts: 11\nlp_iterations: 6121\nwalltime: 1.33763\nusertime: 1.33763\ndeterministic_time: 1.37004\ngap_integral: 0\n",
+  "seconds": 2.0712264760077232
+}

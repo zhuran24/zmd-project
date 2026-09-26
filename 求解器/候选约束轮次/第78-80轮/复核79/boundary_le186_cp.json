@@ -1,0 +1,18 @@
+{
+  "status": "UNKNOWN",
+  "cap": 186,
+  "exact": false,
+  "domain": {
+    "s": 132,
+    "m": 132,
+    "l": 136,
+    "c": 108,
+    "p": 1437
+  },
+  "full_poles": 3462,
+  "units": 1945,
+  "seconds": 300.96119755400287,
+  "solver_seconds": 300.066288525,
+  "model_sha256": "ccbd636bfac83d5f7964ec51e3c5fca467496d6ef9b47950d1b779f04e6e7450",
+  "stats": "CpSolverResponse summary:\nstatus: UNKNOWN\nobjective: 296\nbest_bound: 171\nintegers: 2098\nbooleans: 1968\nconflicts: 199124\nbranches: 8239056\npropagations: 79125002\ninteger_propagations: 149212271\nrestarts: 916\nlp_iterations: 2240711\nwalltime: 300.066\nusertime: 300.066\ndeterministic_time: 1740.41\ngap_integral: 8414.36\n"
+}

@@ -1,0 +1,3 @@
+/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第78-80轮/推导78B/no_pole_edges78.py:64: RuntimeWarning: Unrecognized options detected: {'threads'}. These will be passed to HiGHS verbatim.
+  r=milp(np.array([-(o[1]-o[0]) for _,o in variables]),integrality=np.ones(len(variables)),
+{'core_branches': [{'core_per_line': (0, 0, 0, 0), 'min_gaps': 24}, {'core_per_line': (0, 0, 0, 1), 'min_gaps': 23}, {'core_per_line': (0, 0, 1, 0), 'min_gaps': 24}, {'core_per_line': (0, 1, 0, 0), 'min_gaps': 24}, {'core_per_line': (1, 0, 0, 0), 'min_gaps': 23}], 'minimum_gap_sum': 23, 'independent_milp_status': 'OPTIMAL', 'independent_milp_minimum': 23, 'shared_machine_or_core_options': 0, 'nonedge_poles_of_cap20_touching_counted_edges': 0}

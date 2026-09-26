@@ -1,0 +1,51 @@
+{
+  "inputs_unchanged": true,
+  "input_sha256": {
+    "《明日方舟：终末地》游戏规则.txt": "6e64e3903a65536c530b363c9f3aef8c1bb2a1c1193e866799125dd047159924",
+    "求解任务.txt": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+    "求解约束.txt": "0c05976f6063f3332db6ee19d7746052ef35148d7c2a12dfa396c7bb8753f30f",
+    "候选约束.txt": "aa078deea9ea03d92c2e83c053927cede377ac73e40df465c120a41508e8f8a8"
+  },
+  "candidate_names_unique": true,
+  "candidate_count": 7,
+  "domains_independently_equal": true,
+  "full_options": 3970,
+  "projected_options": 1945,
+  "ports_losses_edges_equal": true,
+  "linear_model_rebuilt_hash": "b896f941334540cb0e0467b6bb5af3ec00cd7d3eb882a0ac0f6ca9490b9bbd92",
+  "global_statuses_verified": true,
+  "corner_cases": 135,
+  "weight_certificates_verified": true,
+  "links_checked": 21,
+  "missing_links": [],
+  "allowed_output_extensions": true,
+  "largest_file_bytes": 8750125,
+  "total_output_bytes": 19263856,
+  "no_git_operations": true,
+  "no_kernel_cargo_tests": true,
+  "reader_audit": {
+    "self_contained_scope": true,
+    "final_state_only": true,
+    "status_consistent": true,
+    "no_instruction_echo": true,
+    "one_numeric_interpretation": true,
+    "notation_defined": true,
+    "references_exist": true
+  },
+  "source_sha256": {
+    "native_boundary78.py": "2c4e1f5ad306d297764a117af1b63d20dd25f967227600081421da2d4ef8301f",
+    "corner_independent78.py": "2948da6ed09b9051feefd85aec59f11b957f36f745f7ab5c40a3977701b00305",
+    "certificates_independent78.py": "d5d2f387f512c727ba5685da063d3afc6e2fe7d89e7a39150a059f7c4464c188",
+    "corner78.py": "daf63cb475d335d0c772d5bd94700de9a42fa156fc0ec0102b6a37d6bfd3a553",
+    "no_pole_edges78.py": "0bba87013454c07cb6b4a5e2f7a64de4893346cc6f4372e3c00997ba085a485f",
+    "certificates77.py": "691497f2b01f4cc956db45c9a43d0d7da88b170642d344d3ab1ad49026bffab6",
+    "model77.py": "7bb9554c9cd727e6a85c03dab508493defbd31ec68762ae2b3eb867fe9723953",
+    "weighted_account78.py": "89478ba195e0a113e1458465a0d57e03232fbd2079150fb55152d3bc44c103d4",
+    "geometry77.py": "555274684b5cb4428d2b42791cb44bbae35c8207750b96827d95150195e0efc1",
+    "structural78.py": "9176c91fd2f3e0d29873e909126c0bf5b7ec7c08ea363f293e38280ebaf0a98e",
+    "inner_pole_model.py": "f9be90f220dd9e2a4ed5e1d28342bb15fddf376bd35208f65c63165493ca7666",
+    "audit78.py": "3446ecf036d7f65c2db79bc83da196bfd2020e91cf642c5a2c81bdfa794fd48b"
+  },
+  "report_sha256": "8c7493f7e04971bbdc7352383bb25651abc6f97b820569f64e00fbb461e356f2",
+  "seconds": 1.1723224009911064
+}

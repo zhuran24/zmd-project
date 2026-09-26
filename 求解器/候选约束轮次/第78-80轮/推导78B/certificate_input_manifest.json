@@ -1,0 +1,20 @@
+[
+  {
+    "source": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第69-71轮/推导69/wall0_certificate.json",
+    "copy": "wall0_certificate.json",
+    "bytes": 509,
+    "sha256": "ddff62a2ea30c425e5b300b88e020f7c5c0073134d4744831e57717c3e6df2b2"
+  },
+  {
+    "source": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第69-71轮/推导69/supply_strip_certificates.json",
+    "copy": "supply_strip_certificates.json",
+    "bytes": 196771,
+    "sha256": "e8152f1e6d8217ff9fbb0d7919500a2d85a7dca4e5a3e845aa4bf945eff3c569"
+  },
+  {
+    "source": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第66-68轮/推导66/power_certificates.json",
+    "copy": "power_certificates.json",
+    "bytes": 1906808,
+    "sha256": "555d4b3a7a2b5ba3a574c641e946b52df7a9968830fb5867be6feb067e058042"
+  }
+]

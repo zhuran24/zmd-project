@@ -1,0 +1,158 @@
+{
+  "args": {
+    "wall": true,
+    "threshold": 29,
+    "seconds": 30,
+    "workers": 1,
+    "name": "final_wall_b_witness",
+    "fixed": "求解器/候选约束轮次/第78-80轮/推导78A/final_wall_a_opt.json",
+    "engine": "cp"
+  },
+  "objects": 550,
+  "source_sha256": "998b2e8dd7062337b158bfce86c968556eddfdd3f07647f2edef53f5acb18418",
+  "model_sha256": "24699d70cd12c9eee7e7eed92b01cab9919e11c4ffc6eb804d65a51143eb6e14",
+  "uses_boundary_13": false,
+  "status": "OPTIMAL",
+  "objective": 0.0,
+  "bound": 0.0,
+  "stats": "CpSolverResponse summary:\nstatus: OPTIMAL\nobjective: 0\nbest_bound: 0\nintegers: 0\nbooleans: 0\nconflicts: 0\nbranches: 0\npropagations: 0\ninteger_propagations: 0\nrestarts: 0\nlp_iterations: 0\nwalltime: 0.00378708\nusertime: 0.0037871\ndeterministic_time: 0\ngap_integral: 0\nsolution_fingerprint: 0x4cf5f43794bdcf3\n",
+  "chosen": [
+    {
+      "kind": "l",
+      "r": [
+        -5,
+        7,
+        6,
+        4
+      ],
+      "axis": 1
+    },
+    {
+      "kind": "m",
+      "r": [
+        -4,
+        -4,
+        5,
+        5
+      ],
+      "axis": 0
+    },
+    {
+      "kind": "m",
+      "r": [
+        -4,
+        11,
+        5,
+        5
+      ],
+      "axis": 0
+    },
+    {
+      "kind": "s",
+      "r": [
+        -2,
+        1,
+        3,
+        3
+      ],
+      "axis": 0
+    },
+    {
+      "kind": "s",
+      "r": [
+        -2,
+        4,
+        3,
+        3
+      ],
+      "axis": 0
+    },
+    {
+      "kind": "s",
+      "r": [
+        1,
+        -2,
+        3,
+        3
+      ],
+      "axis": 1
+    },
+    {
+      "kind": "s",
+      "r": [
+        1,
+        2,
+        3,
+        3
+      ],
+      "axis": 1
+    },
+    {
+      "kind": "s",
+      "r": [
+        1,
+        6,
+        3,
+        3
+      ],
+      "axis": 1
+    },
+    {
+      "kind": "s",
+      "r": [
+        1,
+        11,
+        3,
+        3
+      ],
+      "axis": 1
+    },
+    {
+      "kind": "s",
+      "r": [
+        4,
+        -2,
+        3,
+        3
+      ],
+      "axis": 1
+    },
+    {
+      "kind": "s",
+      "r": [
+        4,
+        2,
+        3,
+        3
+      ],
+      "axis": 1
+    },
+    {
+      "kind": "s",
+      "r": [
+        4,
+        7,
+        3,
+        3
+      ],
+      "axis": 1
+    },
+    {
+      "kind": "s",
+      "r": [
+        4,
+        11,
+        3,
+        3
+      ],
+      "axis": 1
+    }
+  ],
+  "counts": {
+    "l": 1,
+    "m": 2,
+    "s": 10
+  },
+  "score": 29,
+  "seconds": 0.022342386000673287
+}

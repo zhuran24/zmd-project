@@ -1,0 +1,9 @@
+{
+  "status": "INFEASIBLE",
+  "units": 1945,
+  "cap": 186,
+  "seconds": 3.4779318039945792,
+  "solver_seconds": 2.583428253,
+  "model_sha256": "ab29ecf79acb0eecc365455d31258cd512052c994af94a1e8795866c11163093",
+  "stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 2176\nbooleans: 1970\nconflicts: 313\nbranches: 117874\npropagations: 1048056\ninteger_propagations: 2336810\nrestarts: 22\nlp_iterations: 14647\nwalltime: 2.58343\nusertime: 2.58343\ndeterministic_time: 2.40906\ngap_integral: 0\n"
+}

@@ -1,0 +1,2 @@
+{'dual_upper': '55', 'tight_rows': 45, 'forced_zero': 699, 'constraints': 2675, 'variables': 1240}
+{'status': 'UNKNOWN', 'visited': 23297, 'seconds': 120.00502237200271, 'dual_upper': '55', 'tight_rows': 45, 'forced_zero': 699, 'constraints': 2675, 'variables': 1240}

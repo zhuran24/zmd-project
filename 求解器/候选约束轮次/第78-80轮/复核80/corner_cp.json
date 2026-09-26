@@ -1,0 +1,1086 @@
+{
+ "cases": [
+  {
+   "g": 0,
+   "h": 0,
+   "machine": false,
+   "shaper_w": false,
+   "bound": 89,
+   "options": 132
+  },
+  {
+   "g": 3,
+   "h": 0,
+   "machine": false,
+   "shaper_w": false,
+   "bound": 89,
+   "options": 132
+  },
+  {
+   "g": 3,
+   "h": 0,
+   "machine": true,
+   "shaper_w": false,
+   "bound": 91,
+   "options": 127
+  },
+  {
+   "g": 3,
+   "h": 0,
+   "machine": true,
+   "shaper_w": true,
+   "bound": 91,
+   "options": 127
+  },
+  {
+   "g": 6,
+   "h": 0,
+   "machine": false,
+   "shaper_w": false,
+   "bound": 89,
+   "options": 131
+  },
+  {
+   "g": 6,
+   "h": 0,
+   "machine": true,
+   "shaper_w": false,
+   "bound": 90,
+   "options": 127
+  },
+  {
+   "g": 6,
+   "h": 0,
+   "machine": true,
+   "shaper_w": true,
+   "bound": 91,
+   "options": 127
+  },
+  {
+   "g": 9,
+   "h": 0,
+   "machine": false,
+   "shaper_w": false,
+   "bound": 89,
+   "options": 131
+  },
+  {
+   "g": 9,
+   "h": 0,
+   "machine": true,
+   "shaper_w": false,
+   "bound": 90,
+   "options": 127
+  },
+  {
+   "g": 9,
+   "h": 0,
+   "machine": true,
+   "shaper_w": true,
+   "bound": 91,
+   "options": 127
+  },
+  {
+   "g": 12,
+   "h": 0,
+   "machine": false,
+   "shaper_w": false,
+   "bound": 89,
+   "options": 131
+  },
+  {
+   "g": 12,
+   "h": 0,
+   "machine": true,
+   "shaper_w": false,
+   "bound": 90,
+   "options": 127
+  },
+  {
+   "g": 12,
+   "h": 0,
+   "machine": true,
+   "shaper_w": true,
+   "bound": 91,
+   "options": 127
+  },
+  {
+   "g": 15,
+   "h": 0,
+   "machine": false,
+   "shaper_w": false,
+   "bound": 89,
+   "options": 131
+  },
+  {
+   "g": 15,
+   "h": 0,
+   "machine": true,
+   "shaper_w": false,
+   "bound": 90,
+   "options": 127
+  },
+  {
+   "g": 15,
+   "h": 0,
+   "machine": true,
+   "shaper_w": true,
+   "bound": 91,
+   "options": 127
+  },
+  {
+   "g": 18,
+   "h": 0,
+   "machine": false,
+   "shaper_w": false,
+   "bound": 89,
+   "options": 131
+  },
+  {
+   "g": 18,
+   "h": 0,
+   "machine": true,
+   "shaper_w": false,
+   "bound": 90,
+   "options": 127
+  },
+  {
+   "g": 18,
+   "h": 0,
+   "machine": true,
+   "shaper_w": true,
+   "bound": 91,
+   "options": 127
+  },
+  {
+   "g": 21,
+   "h": 0,
+   "machine": false,
+   "shaper_w": false,
+   "bound": 89,
+   "options": 131
+  },
+  {
+   "g": 21,
+   "h": 0,
+   "machine": true,
+   "shaper_w": false,
+   "bound": 90,
+   "options": 127
+  },
+  {
+   "g": 21,
+   "h": 0,
+   "machine": true,
+   "shaper_w": true,
+   "bound": 91,
+   "options": 127
+  },
+  {
+   "g": 24,
+   "h": 0,
+   "machine": false,
+   "shaper_w": false,
+   "bound": 89,
+   "options": 131
+  },
+  {
+   "g": 24,
+   "h": 0,
+   "machine": true,
+   "shaper_w": false,
+   "bound": 90,
+   "options": 127
+  },
+  {
+   "g": 24,
+   "h": 0,
+   "machine": true,
+   "shaper_w": true,
+   "bound": 91,
+   "options": 127
+  },
+  {
+   "g": 27,
+   "h": 0,
+   "machine": false,
+   "shaper_w": false,
+   "bound": 89,
+   "options": 131
+  },
+  {
+   "g": 27,
+   "h": 0,
+   "machine": true,
+   "shaper_w": false,
+   "bound": 90,
+   "options": 127
+  },
+  {
+   "g": 27,
+   "h": 0,
+   "machine": true,
+   "shaper_w": true,
+   "bound": 91,
+   "options": 127
+  },
+  {
+   "g": 30,
+   "h": 0,
+   "machine": false,
+   "shaper_w": false,
+   "bound": 89,
+   "options": 131
+  },
+  {
+   "g": 30,
+   "h": 0,
+   "machine": true,
+   "shaper_w": false,
+   "bound": 90,
+   "options": 127
+  },
+  {
+   "g": 30,
+   "h": 0,
+   "machine": true,
+   "shaper_w": true,
+   "bound": 91,
+   "options": 127
+  },
+  {
+   "g": 33,
+   "h": 0,
+   "machine": false,
+   "shaper_w": false,
+   "bound": 89,
+   "options": 131
+  },
+  {
+   "g": 33,
+   "h": 0,
+   "machine": true,
+   "shaper_w": false,
+   "bound": 90,
+   "options": 127
+  },
+  {
+   "g": 33,
+   "h": 0,
+   "machine": true,
+   "shaper_w": true,
+   "bound": 91,
+   "options": 127
+  },
+  {
+   "g": 36,
+   "h": 0,
+   "machine": false,
+   "shaper_w": false,
+   "bound": 89,
+   "options": 131
+  },
+  {
+   "g": 36,
+   "h": 0,
+   "machine": true,
+   "shaper_w": false,
+   "bound": 90,
+   "options": 127
+  },
+  {
+   "g": 36,
+   "h": 0,
+   "machine": true,
+   "shaper_w": true,
+   "bound": 91,
+   "options": 127
+  },
+  {
+   "g": 39,
+   "h": 0,
+   "machine": false,
+   "shaper_w": false,
+   "bound": 89,
+   "options": 131
+  },
+  {
+   "g": 39,
+   "h": 0,
+   "machine": true,
+   "shaper_w": false,
+   "bound": 90,
+   "options": 127
+  },
+  {
+   "g": 39,
+   "h": 0,
+   "machine": true,
+   "shaper_w": true,
+   "bound": 91,
+   "options": 127
+  },
+  {
+   "g": 42,
+   "h": 0,
+   "machine": false,
+   "shaper_w": false,
+   "bound": 89,
+   "options": 131
+  },
+  {
+   "g": 42,
+   "h": 0,
+   "machine": true,
+   "shaper_w": false,
+   "bound": 90,
+   "options": 127
+  },
+  {
+   "g": 42,
+   "h": 0,
+   "machine": true,
+   "shaper_w": true,
+   "bound": 91,
+   "options": 127
+  },
+  {
+   "g": 45,
+   "h": 0,
+   "machine": false,
+   "shaper_w": false,
+   "bound": 89,
+   "options": 131
+  },
+  {
+   "g": 45,
+   "h": 0,
+   "machine": true,
+   "shaper_w": false,
+   "bound": 90,
+   "options": 127
+  },
+  {
+   "g": 45,
+   "h": 0,
+   "machine": true,
+   "shaper_w": true,
+   "bound": 91,
+   "options": 127
+  },
+  {
+   "g": 48,
+   "h": 0,
+   "machine": false,
+   "shaper_w": false,
+   "bound": 89,
+   "options": 131
+  },
+  {
+   "g": 48,
+   "h": 0,
+   "machine": true,
+   "shaper_w": false,
+   "bound": 90,
+   "options": 127
+  },
+  {
+   "g": 48,
+   "h": 0,
+   "machine": true,
+   "shaper_w": true,
+   "bound": 91,
+   "options": 127
+  },
+  {
+   "g": 51,
+   "h": 0,
+   "machine": false,
+   "shaper_w": false,
+   "bound": 89,
+   "options": 131
+  },
+  {
+   "g": 51,
+   "h": 0,
+   "machine": true,
+   "shaper_w": false,
+   "bound": 90,
+   "options": 127
+  },
+  {
+   "g": 51,
+   "h": 0,
+   "machine": true,
+   "shaper_w": true,
+   "bound": 91,
+   "options": 127
+  },
+  {
+   "g": 54,
+   "h": 0,
+   "machine": false,
+   "shaper_w": false,
+   "bound": 89,
+   "options": 131
+  },
+  {
+   "g": 54,
+   "h": 0,
+   "machine": true,
+   "shaper_w": false,
+   "bound": 90,
+   "options": 127
+  },
+  {
+   "g": 54,
+   "h": 0,
+   "machine": true,
+   "shaper_w": true,
+   "bound": 91,
+   "options": 127
+  },
+  {
+   "g": 57,
+   "h": 0,
+   "machine": false,
+   "shaper_w": false,
+   "bound": 89,
+   "options": 131
+  },
+  {
+   "g": 57,
+   "h": 0,
+   "machine": true,
+   "shaper_w": false,
+   "bound": 90,
+   "options": 127
+  },
+  {
+   "g": 57,
+   "h": 0,
+   "machine": true,
+   "shaper_w": true,
+   "bound": 91,
+   "options": 127
+  },
+  {
+   "g": 60,
+   "h": 0,
+   "machine": false,
+   "shaper_w": false,
+   "bound": 89,
+   "options": 131
+  },
+  {
+   "g": 60,
+   "h": 0,
+   "machine": true,
+   "shaper_w": false,
+   "bound": 90,
+   "options": 127
+  },
+  {
+   "g": 60,
+   "h": 0,
+   "machine": true,
+   "shaper_w": true,
+   "bound": 91,
+   "options": 127
+  },
+  {
+   "g": 63,
+   "h": 0,
+   "machine": false,
+   "shaper_w": false,
+   "bound": 89,
+   "options": 131
+  },
+  {
+   "g": 63,
+   "h": 0,
+   "machine": true,
+   "shaper_w": false,
+   "bound": 90,
+   "options": 127
+  },
+  {
+   "g": 63,
+   "h": 0,
+   "machine": true,
+   "shaper_w": true,
+   "bound": 91,
+   "options": 127
+  },
+  {
+   "g": 66,
+   "h": 0,
+   "machine": false,
+   "shaper_w": false,
+   "bound": 89,
+   "options": 131
+  },
+  {
+   "g": 66,
+   "h": 0,
+   "machine": true,
+   "shaper_w": false,
+   "bound": 90,
+   "options": 127
+  },
+  {
+   "g": 66,
+   "h": 0,
+   "machine": true,
+   "shaper_w": true,
+   "bound": 91,
+   "options": 127
+  },
+  {
+   "g": 69,
+   "h": 0,
+   "machine": false,
+   "shaper_w": false,
+   "bound": 89,
+   "options": 132
+  },
+  {
+   "g": 0,
+   "h": 3,
+   "machine": false,
+   "shaper_w": false,
+   "bound": 89,
+   "options": 132
+  },
+  {
+   "g": 0,
+   "h": 3,
+   "machine": true,
+   "shaper_w": false,
+   "bound": 91,
+   "options": 127
+  },
+  {
+   "g": 0,
+   "h": 3,
+   "machine": true,
+   "shaper_w": true,
+   "bound": 91,
+   "options": 127
+  },
+  {
+   "g": 0,
+   "h": 6,
+   "machine": false,
+   "shaper_w": false,
+   "bound": 89,
+   "options": 131
+  },
+  {
+   "g": 0,
+   "h": 6,
+   "machine": true,
+   "shaper_w": false,
+   "bound": 90,
+   "options": 127
+  },
+  {
+   "g": 0,
+   "h": 6,
+   "machine": true,
+   "shaper_w": true,
+   "bound": 91,
+   "options": 127
+  },
+  {
+   "g": 0,
+   "h": 9,
+   "machine": false,
+   "shaper_w": false,
+   "bound": 89,
+   "options": 131
+  },
+  {
+   "g": 0,
+   "h": 9,
+   "machine": true,
+   "shaper_w": false,
+   "bound": 90,
+   "options": 127
+  },
+  {
+   "g": 0,
+   "h": 9,
+   "machine": true,
+   "shaper_w": true,
+   "bound": 91,
+   "options": 127
+  },
+  {
+   "g": 0,
+   "h": 12,
+   "machine": false,
+   "shaper_w": false,
+   "bound": 89,
+   "options": 131
+  },
+  {
+   "g": 0,
+   "h": 12,
+   "machine": true,
+   "shaper_w": false,
+   "bound": 90,
+   "options": 127
+  },
+  {
+   "g": 0,
+   "h": 12,
+   "machine": true,
+   "shaper_w": true,
+   "bound": 91,
+   "options": 127
+  },
+  {
+   "g": 0,
+   "h": 15,
+   "machine": false,
+   "shaper_w": false,
+   "bound": 89,
+   "options": 131
+  },
+  {
+   "g": 0,
+   "h": 15,
+   "machine": true,
+   "shaper_w": false,
+   "bound": 90,
+   "options": 127
+  },
+  {
+   "g": 0,
+   "h": 15,
+   "machine": true,
+   "shaper_w": true,
+   "bound": 91,
+   "options": 127
+  },
+  {
+   "g": 0,
+   "h": 18,
+   "machine": false,
+   "shaper_w": false,
+   "bound": 89,
+   "options": 131
+  },
+  {
+   "g": 0,
+   "h": 18,
+   "machine": true,
+   "shaper_w": false,
+   "bound": 90,
+   "options": 127
+  },
+  {
+   "g": 0,
+   "h": 18,
+   "machine": true,
+   "shaper_w": true,
+   "bound": 91,
+   "options": 127
+  },
+  {
+   "g": 0,
+   "h": 21,
+   "machine": false,
+   "shaper_w": false,
+   "bound": 89,
+   "options": 131
+  },
+  {
+   "g": 0,
+   "h": 21,
+   "machine": true,
+   "shaper_w": false,
+   "bound": 90,
+   "options": 127
+  },
+  {
+   "g": 0,
+   "h": 21,
+   "machine": true,
+   "shaper_w": true,
+   "bound": 91,
+   "options": 127
+  },
+  {
+   "g": 0,
+   "h": 24,
+   "machine": false,
+   "shaper_w": false,
+   "bound": 89,
+   "options": 131
+  },
+  {
+   "g": 0,
+   "h": 24,
+   "machine": true,
+   "shaper_w": false,
+   "bound": 90,
+   "options": 127
+  },
+  {
+   "g": 0,
+   "h": 24,
+   "machine": true,
+   "shaper_w": true,
+   "bound": 91,
+   "options": 127
+  },
+  {
+   "g": 0,
+   "h": 27,
+   "machine": false,
+   "shaper_w": false,
+   "bound": 89,
+   "options": 131
+  },
+  {
+   "g": 0,
+   "h": 27,
+   "machine": true,
+   "shaper_w": false,
+   "bound": 90,
+   "options": 127
+  },
+  {
+   "g": 0,
+   "h": 27,
+   "machine": true,
+   "shaper_w": true,
+   "bound": 91,
+   "options": 127
+  },
+  {
+   "g": 0,
+   "h": 30,
+   "machine": false,
+   "shaper_w": false,
+   "bound": 89,
+   "options": 131
+  },
+  {
+   "g": 0,
+   "h": 30,
+   "machine": true,
+   "shaper_w": false,
+   "bound": 90,
+   "options": 127
+  },
+  {
+   "g": 0,
+   "h": 30,
+   "machine": true,
+   "shaper_w": true,
+   "bound": 91,
+   "options": 127
+  },
+  {
+   "g": 0,
+   "h": 33,
+   "machine": false,
+   "shaper_w": false,
+   "bound": 89,
+   "options": 131
+  },
+  {
+   "g": 0,
+   "h": 33,
+   "machine": true,
+   "shaper_w": false,
+   "bound": 90,
+   "options": 127
+  },
+  {
+   "g": 0,
+   "h": 33,
+   "machine": true,
+   "shaper_w": true,
+   "bound": 91,
+   "options": 127
+  },
+  {
+   "g": 0,
+   "h": 36,
+   "machine": false,
+   "shaper_w": false,
+   "bound": 89,
+   "options": 131
+  },
+  {
+   "g": 0,
+   "h": 36,
+   "machine": true,
+   "shaper_w": false,
+   "bound": 90,
+   "options": 127
+  },
+  {
+   "g": 0,
+   "h": 36,
+   "machine": true,
+   "shaper_w": true,
+   "bound": 91,
+   "options": 127
+  },
+  {
+   "g": 0,
+   "h": 39,
+   "machine": false,
+   "shaper_w": false,
+   "bound": 89,
+   "options": 131
+  },
+  {
+   "g": 0,
+   "h": 39,
+   "machine": true,
+   "shaper_w": false,
+   "bound": 90,
+   "options": 127
+  },
+  {
+   "g": 0,
+   "h": 39,
+   "machine": true,
+   "shaper_w": true,
+   "bound": 91,
+   "options": 127
+  },
+  {
+   "g": 0,
+   "h": 42,
+   "machine": false,
+   "shaper_w": false,
+   "bound": 89,
+   "options": 131
+  },
+  {
+   "g": 0,
+   "h": 42,
+   "machine": true,
+   "shaper_w": false,
+   "bound": 90,
+   "options": 127
+  },
+  {
+   "g": 0,
+   "h": 42,
+   "machine": true,
+   "shaper_w": true,
+   "bound": 91,
+   "options": 127
+  },
+  {
+   "g": 0,
+   "h": 45,
+   "machine": false,
+   "shaper_w": false,
+   "bound": 89,
+   "options": 131
+  },
+  {
+   "g": 0,
+   "h": 45,
+   "machine": true,
+   "shaper_w": false,
+   "bound": 90,
+   "options": 127
+  },
+  {
+   "g": 0,
+   "h": 45,
+   "machine": true,
+   "shaper_w": true,
+   "bound": 91,
+   "options": 127
+  },
+  {
+   "g": 0,
+   "h": 48,
+   "machine": false,
+   "shaper_w": false,
+   "bound": 89,
+   "options": 131
+  },
+  {
+   "g": 0,
+   "h": 48,
+   "machine": true,
+   "shaper_w": false,
+   "bound": 90,
+   "options": 127
+  },
+  {
+   "g": 0,
+   "h": 48,
+   "machine": true,
+   "shaper_w": true,
+   "bound": 91,
+   "options": 127
+  },
+  {
+   "g": 0,
+   "h": 51,
+   "machine": false,
+   "shaper_w": false,
+   "bound": 89,
+   "options": 131
+  },
+  {
+   "g": 0,
+   "h": 51,
+   "machine": true,
+   "shaper_w": false,
+   "bound": 90,
+   "options": 127
+  },
+  {
+   "g": 0,
+   "h": 51,
+   "machine": true,
+   "shaper_w": true,
+   "bound": 91,
+   "options": 127
+  },
+  {
+   "g": 0,
+   "h": 54,
+   "machine": false,
+   "shaper_w": false,
+   "bound": 89,
+   "options": 131
+  },
+  {
+   "g": 0,
+   "h": 54,
+   "machine": true,
+   "shaper_w": false,
+   "bound": 90,
+   "options": 127
+  },
+  {
+   "g": 0,
+   "h": 54,
+   "machine": true,
+   "shaper_w": true,
+   "bound": 91,
+   "options": 127
+  },
+  {
+   "g": 0,
+   "h": 57,
+   "machine": false,
+   "shaper_w": false,
+   "bound": 89,
+   "options": 131
+  },
+  {
+   "g": 0,
+   "h": 57,
+   "machine": true,
+   "shaper_w": false,
+   "bound": 90,
+   "options": 127
+  },
+  {
+   "g": 0,
+   "h": 57,
+   "machine": true,
+   "shaper_w": true,
+   "bound": 91,
+   "options": 127
+  },
+  {
+   "g": 0,
+   "h": 60,
+   "machine": false,
+   "shaper_w": false,
+   "bound": 89,
+   "options": 131
+  },
+  {
+   "g": 0,
+   "h": 60,
+   "machine": true,
+   "shaper_w": false,
+   "bound": 90,
+   "options": 127
+  },
+  {
+   "g": 0,
+   "h": 60,
+   "machine": true,
+   "shaper_w": true,
+   "bound": 91,
+   "options": 127
+  },
+  {
+   "g": 0,
+   "h": 63,
+   "machine": false,
+   "shaper_w": false,
+   "bound": 89,
+   "options": 131
+  },
+  {
+   "g": 0,
+   "h": 63,
+   "machine": true,
+   "shaper_w": false,
+   "bound": 90,
+   "options": 127
+  },
+  {
+   "g": 0,
+   "h": 63,
+   "machine": true,
+   "shaper_w": true,
+   "bound": 91,
+   "options": 127
+  },
+  {
+   "g": 0,
+   "h": 66,
+   "machine": false,
+   "shaper_w": false,
+   "bound": 89,
+   "options": 131
+  },
+  {
+   "g": 0,
+   "h": 66,
+   "machine": true,
+   "shaper_w": false,
+   "bound": 90,
+   "options": 127
+  },
+  {
+   "g": 0,
+   "h": 66,
+   "machine": true,
+   "shaper_w": true,
+   "bound": 91,
+   "options": 127
+  },
+  {
+   "g": 0,
+   "h": 69,
+   "machine": false,
+   "shaper_w": false,
+   "bound": 89,
+   "options": 132
+  }
+ ],
+ "max_bound": 91,
+ "case_count": 135
+}

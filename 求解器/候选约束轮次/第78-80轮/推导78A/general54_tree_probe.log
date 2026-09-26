@@ -1,0 +1,5 @@
+{'dual_upper': '55', 'tight_rows': 45, 'forced_zero': 699, 'constraints': 2675, 'variables': 1240}
+probe 0 forced 134 seconds 5.69496972199704
+probe 1 forced 149 seconds 10.514081179004279
+probe 2 forced 157 seconds 15.26228193299903
+{'status': 'UNKNOWN', 'visited': 8404, 'seconds': 60.00101369500044, 'dual_upper': '55', 'tight_rows': 45, 'forced_zero': 699, 'constraints': 2675, 'variables': 1240}

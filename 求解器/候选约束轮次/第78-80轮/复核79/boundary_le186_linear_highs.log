@@ -1,0 +1,49 @@
+Running HiGHS 1.12.0 (git hash: 4f96ee8f4): Copyright (c) 2025 HiGHS under MIT licence terms
+MIP has 5730 rows; 2801 cols; 195949 nonzeros; 2801 integer variables (2401 binary)
+Coefficient ranges:
+  Matrix  [1e+00, 1e+01]
+  Cost    [1e+00, 9e+00]
+  Bound   [1e+00, 9e+00]
+  RHS     [1e+00, 1e+02]
+Presolving model
+5617 rows, 2799 cols, 195821 nonzeros  0s
+5108 rows, 2043 cols, 104561 nonzeros  0s
+3898 rows, 1999 cols, 89252 nonzeros  0s
+2988 rows, 1999 cols, 89077 nonzeros  0s
+2985 rows, 1887 cols, 84358 nonzeros  0s
+Presolve reductions: rows 2985(-2745); columns 1887(-914); nonzeros 84358(-111591) 
+Objective function is integral with scale 1
+
+Solving MIP model with:
+   2985 rows
+   1887 cols (1487 binary, 400 integer, 0 implied int., 0 continuous, 0 domain fixed)
+   84358 nonzeros
+
+Src: B => Branching; C => Central rounding; F => Feasibility pump; H => Heuristic;
+     I => Shifting; J => Feasibility jump; L => Sub-MIP; P => Empty MIP; R => Randomized rounding;
+     S => Solve LP; T => Evaluate node; U => Unbounded; X => User solution; Y => HiGHS solution;
+     Z => ZI Round; l => Trivial lower; p => Trivial point; u => Trivial upper; z => Trivial zero
+
+        Nodes      |    B&B Tree     |            Objective Bounds              |  Dynamic Constraints |       Work      
+Src  Proc. InQueue |  Leaves   Expl. | BestBound       BestSol              Gap |   Cuts   InLp Confl. | LpIters     Time
+
+         0       0         0   0.00%   -260            inf                  inf        0      0      0         0     0.7s
+         0       0         0   0.00%   -113.4463827    inf                  inf        0      0      2      2062     0.8s
+         1       0         1 100.00%   inf             inf                  inf     3158     58     30      3587     1.6s
+
+Solving report
+  Status            Infeasible
+  Primal bound      inf
+  Dual bound        inf
+  Gap               inf
+  P-D integral      0
+  Solution status   -
+  Timing            1.57
+  Max sub-MIP depth 0
+  Nodes             1
+  Repair LPs        0
+  LP iterations     3587
+                    0 (strong br.)
+                    1525 (separation)
+                    0 (heuristics)
+{"engine": "highs", "cap": 186, "exact": false, "units": 1945, "full_poles": 3462, "domain": {"s": 132, "m": 132, "l": 136, "c": 108, "p": 1437}, "variables": 2801, "rows": 5730, "model_sha256": "e6bfdc74c4fcac3333b7f3e59f509341bf713ca6ccbf4edbedc8dba17692ac74", "status": "INFEASIBLE", "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)", "seconds": 1.89143016700109}

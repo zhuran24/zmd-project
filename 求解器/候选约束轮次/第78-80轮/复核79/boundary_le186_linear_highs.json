@@ -1,0 +1,20 @@
+{
+  "engine": "highs",
+  "cap": 186,
+  "exact": false,
+  "units": 1945,
+  "full_poles": 3462,
+  "domain": {
+    "s": 132,
+    "m": 132,
+    "l": 136,
+    "c": 108,
+    "p": 1437
+  },
+  "variables": 2801,
+  "rows": 5730,
+  "model_sha256": "e6bfdc74c4fcac3333b7f3e59f509341bf713ca6ccbf4edbedc8dba17692ac74",
+  "status": "INFEASIBLE",
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "seconds": 1.89143016700109
+}

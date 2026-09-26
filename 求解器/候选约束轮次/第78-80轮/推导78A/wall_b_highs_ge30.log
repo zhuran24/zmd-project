@@ -1,0 +1,49 @@
+built 550 variables 802
+/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第78-80轮/推导78A/single_pole_b.py:93: RuntimeWarning: Unrecognized options detected: {'threads'}. These will be passed to HiGHS verbatim.
+  result=milp(np.zeros(n) if args.threshold is not None else -coeff,integrality=np.ones(n),bounds=Bounds(np.zeros(n),np.ones(n)),constraints=LinearConstraint(mat,-np.inf,np.array(rhs)),options={'disp':True,'time_limit':args.seconds,'threads':args.workers,'mip_rel_gap':0.0})
+Running HiGHS 1.12.0 (git hash: 4f96ee8f4): Copyright (c) 2025 HiGHS under MIT licence terms
+MIP has 1354 rows; 550 cols; 127681 nonzeros; 550 integer variables (550 binary)
+Coefficient ranges:
+  Matrix  [1e+00, 6e+00]
+  Cost    [0e+00, 0e+00]
+  Bound   [1e+00, 1e+00]
+  RHS     [1e+00, 3e+01]
+Presolving model
+1346 rows, 550 cols, 127673 nonzeros  0s
+1157 rows, 550 cols, 121959 nonzeros  1s
+Presolve reductions: rows 1157(-197); columns 550(-0); nonzeros 121959(-5722) 
+Objective function is integral with scale 1
+
+Solving MIP model with:
+   1157 rows
+   550 cols (550 binary, 0 integer, 0 implied int., 0 continuous, 0 domain fixed)
+   121959 nonzeros
+
+Src: B => Branching; C => Central rounding; F => Feasibility pump; H => Heuristic;
+     I => Shifting; J => Feasibility jump; L => Sub-MIP; P => Empty MIP; R => Randomized rounding;
+     S => Solve LP; T => Evaluate node; U => Unbounded; X => User solution; Y => HiGHS solution;
+     Z => ZI Round; l => Trivial lower; p => Trivial point; u => Trivial upper; z => Trivial zero
+
+        Nodes      |    B&B Tree     |            Objective Bounds              |  Dynamic Constraints |       Work      
+Src  Proc. InQueue |  Leaves   Expl. | BestBound       BestSol              Gap |   Cuts   InLp Confl. | LpIters     Time
+
+         0       0         0   0.00%   0               inf                  inf        0      0      0         0     1.4s
+         0       0         0   0.00%   0               inf                  inf        0      0      0       313     1.5s
+         1       0         1 100.00%   inf             inf                  inf      224      3      0       371     1.5s
+
+Solving report
+  Status            Infeasible
+  Primal bound      inf
+  Dual bound        inf
+  Gap               inf
+  P-D integral      0
+  Solution status   -
+  Timing            1.51
+  Max sub-MIP depth 0
+  Nodes             1
+  Repair LPs        0
+  LP iterations     371
+                    0 (strong br.)
+                    58 (separation)
+                    0 (heuristics)
+{'args': {'wall': True, 'threshold': 30, 'seconds': 120, 'workers': 1, 'name': 'wall_b_highs_ge30', 'fixed': None, 'engine': 'highs'}, 'objects': 550, 'source_sha256': '998b2e8dd7062337b158bfce86c968556eddfdd3f07647f2edef53f5acb18418', 'model_sha256': '6e0e08a8e4afeb3bdbd0ec99f02d24efbbb0c14d567b0467cf0388d40f98d4ca', 'uses_boundary_13': False, 'status': 'INFEASIBLE', 'message': 'The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)', 'seconds': 1.669238028000109}

@@ -1,0 +1,18 @@
+{
+  "args": {
+    "wall": false,
+    "a": 2,
+    "wm": 1,
+    "wl": 1,
+    "threshold": 55,
+    "seconds": 120,
+    "workers": 4,
+    "name": "local_ge55"
+  },
+  "status": "INFEASIBLE",
+  "objective": 0.0,
+  "bound": 0.0,
+  "seconds": 28.238785934998305,
+  "model_sha256": "ff37824e22b923d264d025dffe584bb002a494af36f107123f6035178c353fab",
+  "stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 2694\nbooleans: 2608\nconflicts: 639\nbranches: 90865\npropagations: 14504256\ninteger_propagations: 15562529\nrestarts: 5\nlp_iterations: 225517\nwalltime: 27.9162\nusertime: 27.9162\ndeterministic_time: 226.975\ngap_integral: 0\n"
+}

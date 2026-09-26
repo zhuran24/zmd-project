@@ -1,0 +1,1 @@
+{'status': 'PASS', 'report': '/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第78-80轮/推导78A.md', 'upper': 214, 'candidates': ['供电桩分片的制造单位规格计数界', '1113十桩占边分支的规格加权排除'], 'wall_seconds': 2266.05143, 'files': 68}

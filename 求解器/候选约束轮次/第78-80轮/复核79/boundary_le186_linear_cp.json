@@ -1,0 +1,20 @@
+{
+  "engine": "cp",
+  "cap": 186,
+  "exact": false,
+  "units": 1945,
+  "full_poles": 3462,
+  "domain": {
+    "s": 132,
+    "m": 132,
+    "l": 136,
+    "c": 108,
+    "p": 1437
+  },
+  "variables": 2801,
+  "rows": 5730,
+  "model_sha256": "e6bfdc74c4fcac3333b7f3e59f509341bf713ca6ccbf4edbedc8dba17692ac74",
+  "status": "INFEASIBLE",
+  "stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 2026\nbooleans: 1447\nconflicts: 73\nbranches: 47988\npropagations: 352136\ninteger_propagations: 860240\nrestarts: 7\nlp_iterations: 3863\nwalltime: 0.967687\nusertime: 0.967687\ndeterministic_time: 1.62339\ngap_integral: 0\n",
+  "seconds": 1.4750887910049642
+}

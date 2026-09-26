@@ -1,0 +1,10 @@
+{
+  "status": "UNKNOWN",
+  "visited": 8404,
+  "seconds": 60.00101369500044,
+  "dual_upper": "55",
+  "tight_rows": 45,
+  "forced_zero": 699,
+  "constraints": 2675,
+  "variables": 1240
+}

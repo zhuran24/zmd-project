@@ -1,0 +1,419 @@
+{
+  "local": {
+    "domains": [
+      {
+        "wall": false,
+        "options": 1240,
+        "review_encodings_equal": true,
+        "submitted_domain_equal": true
+      },
+      {
+        "wall": true,
+        "options": 550,
+        "review_encodings_equal": true,
+        "submitted_domain_equal": true
+      }
+    ],
+    "witnesses": [
+      {
+        "file": "复核79/general_ge54_cp.json",
+        "machines": 23,
+        "counts": {
+          "s": 15,
+          "l": 8
+        },
+        "weight": 54
+      },
+      {
+        "file": "复核79/wall_opt_cp.json",
+        "machines": 13,
+        "counts": {
+          "s": 10,
+          "l": 3
+        },
+        "weight": 29
+      },
+      {
+        "file": "复核79/wall_opt_milp.json",
+        "machines": 13,
+        "counts": {
+          "s": 10,
+          "l": 3
+        },
+        "weight": 29
+      },
+      {
+        "file": "推导78A/final_general_a_witness.json",
+        "machines": 22,
+        "counts": {
+          "s": 12,
+          "l": 10
+        },
+        "weight": 54
+      },
+      {
+        "file": "推导78A/final_wall_a_opt.json",
+        "machines": 13,
+        "counts": {
+          "s": 10,
+          "m": 2,
+          "l": 1
+        },
+        "weight": 29
+      }
+    ]
+  },
+  "submitted_weight_certificates": [
+    {
+      "machine": "研磨机",
+      "low_regime_count": 0,
+      "minimum": "125/2",
+      "primal_and_dual_exact": true
+    },
+    {
+      "machine": "研磨机",
+      "low_regime_count": 1,
+      "minimum": "123/2",
+      "primal_and_dual_exact": true
+    },
+    {
+      "machine": "塑形机",
+      "low_regime_count": 0,
+      "minimum": "11",
+      "primal_and_dual_exact": true
+    },
+    {
+      "machine": "塑形机",
+      "low_regime_count": 1,
+      "minimum": "10",
+      "primal_and_dual_exact": true
+    },
+    {
+      "machine": "灌装机",
+      "low_regime_count": 0,
+      "minimum": "16",
+      "primal_and_dual_exact": true
+    },
+    {
+      "machine": "灌装机",
+      "low_regime_count": 1,
+      "minimum": "14",
+      "primal_and_dual_exact": true
+    }
+  ],
+  "structural": {
+    "pole_pattern_count": 44,
+    "all_pole_patterns_equal": true,
+    "ordinary_count": 2091
+  },
+  "interface_counts": {
+    "machine_inputs": [
+      68,
+      51,
+      95,
+      11,
+      6,
+      32,
+      16,
+      15,
+      11
+    ],
+    "machine_outputs": [
+      95,
+      51,
+      32,
+      6,
+      6,
+      32,
+      32,
+      3,
+      3
+    ],
+    "input_total": 305,
+    "output_total": 260,
+    "C": 619,
+    "mergers_min": 3
+  },
+  "power_slack": {
+    "ordinary_baseline": 207,
+    "edge_baseline": 13,
+    "total_baseline": 220,
+    "unused": 3,
+    "edge_min": 10,
+    "ordinary_min": 20
+  },
+  "global_domain_compare": {
+    "options": 1945,
+    "all_ports_needs_j_loss_equal": true
+  },
+  "four_forced_holes_body_options": {
+    "(1, 69)": 0,
+    "(69, 1)": 0,
+    "(48, 69)": 0,
+    "(69, 16)": 0
+  },
+  "cut_affine_identity": {
+    "constant": 9,
+    "height": -1,
+    "G": 2,
+    "kappa": 1
+  },
+  "receipts": [
+    {
+      "file": "general_ge55_cp.json",
+      "options": 1240,
+      "status": "INFEASIBLE",
+      "wall_seconds": 4.222780073992908,
+      "solver_seconds": 4.17377515,
+      "model_sha256": "d7b0f51342e745df6b158a55d2d03399ccaf19f008be500f6926eab97f189db7"
+    },
+    {
+      "file": "general_ge55_milp.json",
+      "options": 1240,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "wall_seconds": 17.59784468599537
+    },
+    {
+      "file": "wall_opt_cp.json",
+      "options": 550,
+      "status": "OPTIMAL",
+      "wall_seconds": 0.32629234599880874,
+      "solver_seconds": 0.30123211,
+      "model_sha256": "4a139c42dffee57a6f40b7facc6673d4fdbaa5c247fc16a1e44206e607f736ad",
+      "weight": 29
+    },
+    {
+      "file": "wall_opt_milp.json",
+      "options": 550,
+      "status": 0,
+      "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+      "wall_seconds": 2.6655103170051007,
+      "weight": 29
+    },
+    {
+      "file": "boundary_le186_native_quick.json",
+      "status": "INFEASIBLE",
+      "units": 1945,
+      "seconds": 3.4779318039945792,
+      "solver_seconds": 2.583428253,
+      "model_sha256": "ab29ecf79acb0eecc365455d31258cd512052c994af94a1e8795866c11163093"
+    },
+    {
+      "file": "boundary_le186_linear_cp.json",
+      "units": 1945,
+      "model_sha256": "e6bfdc74c4fcac3333b7f3e59f509341bf713ca6ccbf4edbedc8dba17692ac74",
+      "status": "INFEASIBLE",
+      "seconds": 1.4750887910049642
+    },
+    {
+      "file": "boundary_le186_linear_highs.json",
+      "units": 1945,
+      "model_sha256": "e6bfdc74c4fcac3333b7f3e59f509341bf713ca6ccbf4edbedc8dba17692ac74",
+      "status": "INFEASIBLE",
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+      "seconds": 1.89143016700109
+    }
+  ],
+  "unknown_runs": [
+    {
+      "file": "boundary_eq185_cp.json",
+      "status": "UNKNOWN",
+      "seconds": 120.90558386500925
+    },
+    {
+      "file": "boundary_eq186_cp.json",
+      "status": "UNKNOWN",
+      "seconds": 120.90509380900767
+    },
+    {
+      "file": "boundary_le186_cp.json",
+      "status": "UNKNOWN",
+      "seconds": 300.96119755400287
+    }
+  ],
+  "producer_inputs": [
+    {
+      "group": "推导78A",
+      "three_official_files_same": true
+    },
+    {
+      "group": "推导78B",
+      "three_official_files_same": true
+    }
+  ],
+  "formal_constraint_count": 72,
+  "branch_coverage": [
+    {
+      "position": [
+        49,
+        17
+      ],
+      "P": 10,
+      "J": 1,
+      "S": 185,
+      "group_A": "520>515",
+      "group_B": "S<=186 projection INFEASIBLE in both encodings"
+    },
+    {
+      "position": [
+        49,
+        17
+      ],
+      "P": 10,
+      "J": 1,
+      "S": 186,
+      "group_A": "520>515",
+      "group_B": "S<=186 projection INFEASIBLE in both encodings"
+    },
+    {
+      "position": [
+        49,
+        17
+      ],
+      "P": 10,
+      "J": 1,
+      "S": 187,
+      "group_A": "520>515",
+      "group_B": "delta=0 < W-109 >= 1/2"
+    },
+    {
+      "position": [
+        17,
+        49
+      ],
+      "P": 10,
+      "J": 1,
+      "S": 185,
+      "group_A": "520>515",
+      "group_B": "S<=186 projection INFEASIBLE in both encodings"
+    },
+    {
+      "position": [
+        17,
+        49
+      ],
+      "P": 10,
+      "J": 1,
+      "S": 186,
+      "group_A": "520>515",
+      "group_B": "S<=186 projection INFEASIBLE in both encodings"
+    },
+    {
+      "position": [
+        17,
+        49
+      ],
+      "P": 10,
+      "J": 1,
+      "S": 187,
+      "group_A": "520>515",
+      "group_B": "delta=0 < W-109 >= 1/2"
+    }
+  ],
+  "script_imports": {
+    "local_milp.py": [
+      "os",
+      "argparse",
+      "json",
+      "time",
+      "hashlib",
+      "warnings",
+      "collections",
+      "pathlib",
+      "numpy",
+      "scipy.optimize",
+      "scipy.sparse"
+    ],
+    "evidence_audit.py": [
+      "os",
+      "json",
+      "hashlib",
+      "ast",
+      "pathlib",
+      "fractions",
+      "collections"
+    ],
+    "boundary_linear.py": [
+      "os",
+      "json",
+      "time",
+      "argparse",
+      "hashlib",
+      "warnings",
+      "pathlib",
+      "collections",
+      "numpy",
+      "scipy.optimize",
+      "scipy.sparse",
+      "ortools.sat.python"
+    ],
+    "boundary_quick.py": [
+      "boundary_cp"
+    ],
+    "boundary_cp.py": [
+      "os",
+      "json",
+      "time",
+      "argparse",
+      "hashlib",
+      "pathlib",
+      "collections",
+      "ortools.sat.python"
+    ],
+    "weights.py": [
+      "os",
+      "json",
+      "itertools",
+      "warnings",
+      "pathlib",
+      "fractions",
+      "collections",
+      "numpy",
+      "scipy.optimize"
+    ],
+    "certificates.py": [
+      "os",
+      "json",
+      "time",
+      "math",
+      "hashlib",
+      "fractions",
+      "pathlib",
+      "collections"
+    ],
+    "corner.py": [
+      "os",
+      "json",
+      "time",
+      "warnings",
+      "itertools",
+      "pathlib",
+      "collections",
+      "numpy",
+      "scipy.optimize",
+      "scipy.sparse",
+      "ortools.sat.python"
+    ],
+    "local_cp.py": [
+      "os",
+      "argparse",
+      "json",
+      "time",
+      "hashlib",
+      "pathlib",
+      "collections",
+      "ortools.sat.python"
+    ],
+    "accounts.py": [
+      "os",
+      "json",
+      "re",
+      "itertools",
+      "hashlib",
+      "pathlib",
+      "fractions",
+      "collections"
+    ]
+  }
+}

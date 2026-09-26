@@ -1,0 +1,12 @@
+{
+ "name": "cp_general_ge55",
+ "wall": false,
+ "cap": 23,
+ "threshold": 55,
+ "maximize": false,
+ "n_options": 1240,
+ "status": "INFEASIBLE",
+ "wall_seconds": 45.273679971694946,
+ "objective": null,
+ "bound": null
+}

@@ -1,0 +1,51 @@
+Running HiGHS 1.12.0 (git hash: 4f96ee8f4): Copyright (c) 2025 HiGHS under MIT licence terms
+MIP has 1341 rows; 802 cols; 17818 nonzeros; 550 integer variables (550 binary)
+Coefficient ranges:
+  Matrix  [1e+00, 1e+00]
+  Cost    [2e+00, 3e+00]
+  Bound   [1e+00, 1e+00]
+  RHS     [1e+00, 1e+01]
+Presolving model
+1341 rows, 794 cols, 17802 nonzeros  0s
+1333 rows, 794 cols, 17802 nonzeros  0s
+Presolve reductions: rows 1333(-8); columns 794(-8); nonzeros 17802(-16) 
+Objective function is integral with scale 1
+
+Solving MIP model with:
+   1333 rows
+   794 cols (550 binary, 0 integer, 0 implied int., 244 continuous, 0 domain fixed)
+   17802 nonzeros
+
+Src: B => Branching; C => Central rounding; F => Feasibility pump; H => Heuristic;
+     I => Shifting; J => Feasibility jump; L => Sub-MIP; P => Empty MIP; R => Randomized rounding;
+     S => Solve LP; T => Evaluate node; U => Unbounded; X => User solution; Y => HiGHS solution;
+     Z => ZI Round; l => Trivial lower; p => Trivial point; u => Trivial upper; z => Trivial zero
+
+        Nodes      |    B&B Tree     |            Objective Bounds              |  Dynamic Constraints |       Work      
+Src  Proc. InQueue |  Leaves   Expl. | BestBound       BestSol              Gap |   Cuts   InLp Confl. | LpIters     Time
+
+ J       0       0         0   0.00%   -inf            -3                 Large        0      0      0         0     0.1s
+         0       0         0   0.00%   -30             -3               900.00%        0      0      0       588     0.2s
+ L       0       0         0   0.00%   -29.36363636    -29                1.25%      710     37      0      1037     0.7s
+         1       0         1 100.00%   -29             -29                0.00%      710     37      0      1477     0.7s
+
+Solving report
+  Status            Optimal
+  Primal bound      -29
+  Dual bound        -29
+  Gap               0%
+  P-D integral      5.35452651537
+  Solution status   feasible
+                    -29 (objective)
+                    0 (bound viol.)
+                    0 (int. viol.)
+                    0 (row viol.)
+  Timing            0.72
+  Max sub-MIP depth 3
+  Nodes             1
+  Repair LPs        0
+  LP iterations     1477
+                    0 (strong br.)
+                    449 (separation)
+                    423 (heuristics)
+{"wall": true, "cap": 14, "threshold": null, "maximize": true, "n_options": 550, "n_free_vars": 252, "n_rows": 1341, "status": 0, "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)", "seconds": 0.7261905670166016, "objective": 29.0, "count": 12, "dual_bound": 29.0, "name": "milp_wall_max"}

@@ -1,0 +1,156 @@
+{
+  "args": {
+    "wall": true,
+    "a": 2,
+    "wm": 1,
+    "wl": 1,
+    "threshold": null,
+    "seconds": 120,
+    "workers": 4,
+    "name": "wall_weighted"
+  },
+  "status": "OPTIMAL",
+  "objective": 29.0,
+  "bound": 29.0,
+  "seconds": 0.6982632299914258,
+  "model_sha256": "f9734f428337a711cce93a7afa82d83003771b4c0c768750c946c65e6622c488",
+  "stats": "CpSolverResponse summary:\nstatus: OPTIMAL\nobjective: 29\nbest_bound: 29\nintegers: 994\nbooleans: 1064\nconflicts: 273\nbranches: 13080\npropagations: 1130228\ninteger_propagations: 1102010\nrestarts: 2\nlp_iterations: 0\nwalltime: 0.568713\nusertime: 0.568713\ndeterministic_time: 1.71998\ngap_integral: 1.97048\nsolution_fingerprint: 0x8f6be7abbc45ae6d\n",
+  "chosen": [
+    {
+      "kind": "s",
+      "r": [
+        -2,
+        1,
+        3,
+        3
+      ],
+      "axis": 0
+    },
+    {
+      "kind": "s",
+      "r": [
+        -2,
+        8,
+        3,
+        3
+      ],
+      "axis": 0
+    },
+    {
+      "kind": "s",
+      "r": [
+        1,
+        -2,
+        3,
+        3
+      ],
+      "axis": 1
+    },
+    {
+      "kind": "s",
+      "r": [
+        1,
+        2,
+        3,
+        3
+      ],
+      "axis": 1
+    },
+    {
+      "kind": "s",
+      "r": [
+        1,
+        7,
+        3,
+        3
+      ],
+      "axis": 1
+    },
+    {
+      "kind": "s",
+      "r": [
+        1,
+        11,
+        3,
+        3
+      ],
+      "axis": 1
+    },
+    {
+      "kind": "s",
+      "r": [
+        4,
+        -2,
+        3,
+        3
+      ],
+      "axis": 1
+    },
+    {
+      "kind": "s",
+      "r": [
+        4,
+        2,
+        3,
+        3
+      ],
+      "axis": 1
+    },
+    {
+      "kind": "s",
+      "r": [
+        4,
+        7,
+        3,
+        3
+      ],
+      "axis": 1
+    },
+    {
+      "kind": "s",
+      "r": [
+        4,
+        11,
+        3,
+        3
+      ],
+      "axis": 1
+    },
+    {
+      "kind": "m",
+      "r": [
+        -4,
+        -4,
+        5,
+        5
+      ],
+      "axis": 0
+    },
+    {
+      "kind": "l",
+      "r": [
+        -5,
+        4,
+        6,
+        4
+      ],
+      "axis": 1
+    },
+    {
+      "kind": "l",
+      "r": [
+        -3,
+        11,
+        4,
+        6
+      ],
+      "axis": 0
+    }
+  ],
+  "counts": {
+    "s": 10,
+    "m": 1,
+    "l": 2
+  },
+  "score": 29
+}

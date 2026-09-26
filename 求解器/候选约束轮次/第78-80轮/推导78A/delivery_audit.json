@@ -1,0 +1,433 @@
+{
+  "status": "PASS",
+  "report": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第78-80轮/推导78A.md",
+  "report_sha256": "35297b323a493a6cc86fe96891cbc949e92b7e0ad6a53387928d1817921602d2",
+  "candidate_names": [
+    "供电桩分片的制造单位规格计数界",
+    "1113十桩占边分支的规格加权排除"
+  ],
+  "mathematical_premises": "Only the three current official files plus the branch A=1113,P=10,J=1; no pending candidate is a premise.",
+  "input_hashes_unchanged": {
+    "《明日方舟：终末地》游戏规则.txt": "6e64e3903a65536c530b363c9f3aef8c1bb2a1c1193e866799125dd047159924",
+    "求解任务.txt": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+    "求解约束.txt": "0c05976f6063f3332db6ee19d7746052ef35148d7c2a12dfa396c7bb8753f30f",
+    "候选约束.txt": "aa078deea9ea03d92c2e83c053927cede377ac73e40df465c120a41508e8f8a8"
+  },
+  "evidence": {
+    "final_general_a_ge55.json": {
+      "status": "INFEASIBLE",
+      "source": "local_bound_a.py",
+      "source_sha256": "3df117d4985569f3b1204ff5cc5a5884838ec318d09f7a2aea1020e21fc8d522",
+      "seconds": 27.43162243599363
+    },
+    "local_b_ge55.json": {
+      "status": "INFEASIBLE",
+      "source": "single_pole_b.py",
+      "source_sha256": "998b2e8dd7062337b158bfce86c968556eddfdd3f07647f2edef53f5acb18418",
+      "seconds": 112.8424213870021
+    },
+    "local_b_highs_ge55.json": {
+      "status": "INFEASIBLE",
+      "source": "single_pole_b.py",
+      "source_sha256": "998b2e8dd7062337b158bfce86c968556eddfdd3f07647f2edef53f5acb18418",
+      "seconds": 16.63907784600451
+    },
+    "final_wall_a_opt.json": {
+      "status": "OPTIMAL",
+      "source": "local_bound_a.py",
+      "source_sha256": "3df117d4985569f3b1204ff5cc5a5884838ec318d09f7a2aea1020e21fc8d522",
+      "seconds": 0.6551536040060455
+    },
+    "wall_b_ge30.json": {
+      "status": "INFEASIBLE",
+      "source": "single_pole_b.py",
+      "source_sha256": "998b2e8dd7062337b158bfce86c968556eddfdd3f07647f2edef53f5acb18418",
+      "seconds": 0.1195212390011875
+    },
+    "wall_b_highs_ge30.json": {
+      "status": "INFEASIBLE",
+      "source": "single_pole_b.py",
+      "source_sha256": "998b2e8dd7062337b158bfce86c968556eddfdd3f07647f2edef53f5acb18418",
+      "seconds": 1.669238028000109
+    },
+    "final_general_a_witness.json": {
+      "status": "OPTIMAL",
+      "source": "local_bound_a.py",
+      "source_sha256": "3df117d4985569f3b1204ff5cc5a5884838ec318d09f7a2aea1020e21fc8d522",
+      "seconds": 0.27320092600712087
+    },
+    "final_general_b_witness.json": {
+      "status": "OPTIMAL",
+      "source": "single_pole_b.py",
+      "source_sha256": "998b2e8dd7062337b158bfce86c968556eddfdd3f07647f2edef53f5acb18418",
+      "seconds": 0.047819148006965406
+    },
+    "final_wall_b_witness.json": {
+      "status": "OPTIMAL",
+      "source": "single_pole_b.py",
+      "source_sha256": "998b2e8dd7062337b158bfce86c968556eddfdd3f07647f2edef53f5acb18418",
+      "seconds": 0.022342386000673287
+    }
+  },
+  "independent_enumeration_and_rows": true,
+  "independent_global_upper": 214,
+  "weighted_upper": 515,
+  "weighted_requirement": 520,
+  "proof_evidence_level": "Completed integer solves from two independent encodings; HiGHS cross-check; exact coordinate/model/DP checks. No completed solver-free UNSAT tree or LRAT artifact.",
+  "auxiliary_tree_attempts": [
+    {
+      "status": "UNKNOWN",
+      "visited": 23297,
+      "seconds": 120.00502237200271,
+      "dual_upper": "55",
+      "tight_rows": 45,
+      "forced_zero": 699,
+      "constraints": 2675,
+      "variables": 1240
+    },
+    {
+      "status": "UNKNOWN",
+      "visited": 8404,
+      "seconds": 60.00101369500044,
+      "dual_upper": "55",
+      "tight_rows": 45,
+      "forced_zero": 699,
+      "constraints": 2675,
+      "variables": 1240
+    }
+  ],
+  "resource_record": {
+    "start_utc": "2026-09-26T03:13:36+00:00",
+    "end_utc": "2026-09-26T03:51:22.051430+00:00",
+    "wall_seconds": 2266.05143,
+    "solver_affinity": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "maximum_simultaneous_solver_workers": 9,
+    "standard_library_checks_single_thread": true
+  },
+  "reader_review": {
+    "self_contained": true,
+    "current_status_consistent": true,
+    "no_pending_premise": true,
+    "bound_not_layout": true,
+    "all_coordinate_choices_covered": true,
+    "transpose_covered": true,
+    "formal_upper_unchanged": true,
+    "conditional_1110_relationship_explicit": true,
+    "independent_encodings_not_confused_with_engines": true,
+    "all_report_links_exist": true,
+    "incomplete_tree_attempts_explicit": true,
+    "candidate_names_unique": true
+  },
+  "report_links": [
+    "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第78-80轮/推导78A/fragment_tables.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第78-80轮/推导78A/final_general_model_a.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第78-80轮/推导78A/final_wall_model_a.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第78-80轮/推导78A/local_bound_a.py",
+    "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第78-80轮/推导78A/single_pole_b.py",
+    "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第78-80轮/推导78A/audit_final.py",
+    "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第78-80轮/推导78A/final_general_a_ge55.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第78-80轮/推导78A/final_general_a_ge55.log",
+    "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第78-80轮/推导78A/local_b_ge55.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第78-80轮/推导78A/local_b_ge55.log",
+    "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第78-80轮/推导78A/local_b_highs_ge55.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第78-80轮/推导78A/local_b_highs_ge55.log",
+    "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第78-80轮/推导78A/final_wall_a_opt.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第78-80轮/推导78A/final_wall_a_opt.log",
+    "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第78-80轮/推导78A/wall_b_ge30.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第78-80轮/推导78A/wall_b_ge30.log",
+    "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第78-80轮/推导78A/wall_b_highs_ge30.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第78-80轮/推导78A/wall_b_highs_ge30.log",
+    "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第78-80轮/推导78A/final_independent_audit.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第78-80轮/推导78A/final_general_a_witness.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第78-80轮/推导78A/final_general_b_witness.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第78-80轮/推导78A/final_wall_b_witness.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第78-80轮/推导78A/input_manifest.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第78-80轮/推导78A/delivery_audit.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第78-80轮/推导78A/local_face55_v2_dual.json"
+  ],
+  "artifacts": {
+    "audit_final.py": {
+      "bytes": 7537,
+      "sha256": "437aab21242880d9387df7e32baa2d1b9d7fdd88f0ee30a0969068098157667f"
+    },
+    "capacities.json": {
+      "bytes": 293654,
+      "sha256": "71c4c8183f4a69bfd5772d4abfeaf2779d85085a2fd0d0fccd50efa3d3451e8e"
+    },
+    "capacity_certificates_a.log": {
+      "bytes": 259,
+      "sha256": "5e3af539c7985ffd401d3f1e55230e20113aee350fd87371a1d8c1ed9470df61"
+    },
+    "capacity_certificates_a.py": {
+      "bytes": 4432,
+      "sha256": "f46cb4cb19c9f30f4720a2521858d7414c21b53d61aacf1fc7bd35a5982f38cd"
+    },
+    "certificate_checks_a.json": {
+      "bytes": 55831,
+      "sha256": "aaed5d0912941104303ad438fde491e6deab7df7a2e91360f2bf6a8d09cce5ff"
+    },
+    "delivery_audit.py": {
+      "bytes": 4621,
+      "sha256": "54cdbacc3f81fd424481eb56c2f55b9cb508c9f4688e85fad4a040b526a7f04d"
+    },
+    "domains_b.json": {
+      "bytes": 2956141,
+      "sha256": "1d221405de9bf87ad24ca400483539716a77228567aebd1a28711e09bbec6f52"
+    },
+    "exact_tree.py": {
+      "bytes": 7236,
+      "sha256": "891178a2f83cb92fc8cafc16263a40e7899819a9be0534e23a545b02a07ad4b0"
+    },
+    "export_b_domains.py": {
+      "bytes": 464,
+      "sha256": "a19c098581516ca9ebfd9f46122261bf860c52188a4b499f23e58481d7060dba"
+    },
+    "final_general_a_ge55.json": {
+      "bytes": 637,
+      "sha256": "1eb0206ca362e90820d7936fdcb87ff200515c6cfcbd9bd6dc620947021960fa"
+    },
+    "final_general_a_ge55.log": {
+      "bytes": 22969,
+      "sha256": "2ce48527f8d46888fd6f398e6a841d23a2d66d668f1d4710ffc5561e371ee85b"
+    },
+    "final_general_a_witness.json": {
+      "bytes": 3221,
+      "sha256": "59f1112c9387f62a20d89c40d6c7f2ced215620ae29863aa816b3a6ff56a750b"
+    },
+    "final_general_a_witness.log": {
+      "bytes": 6601,
+      "sha256": "41668f526305d4129ae36d56f324e9aff9bf6ca949887e7bad0a06b25cc262c5"
+    },
+    "final_general_b_witness.json": {
+      "bytes": 3474,
+      "sha256": "915a7783b44f7619b4ce3e66523d66ffab735aecd25b15f75d7210055eeccda9"
+    },
+    "final_general_b_witness.log": {
+      "bytes": 7197,
+      "sha256": "760f079f211e29a4b00417eb83ccb0eb093f541b6c0ec4cda0b0b329cfd93a20"
+    },
+    "final_general_model_a.json": {
+      "bytes": 18579786,
+      "sha256": "2ddca73ef625e9dd8a6a787568cfc889f20abdbae5ffdb6ddb947eaf0740deeb"
+    },
+    "final_independent_audit.json": {
+      "bytes": 1961,
+      "sha256": "e3e14cba474904ee8ae8e1131654c9cca008aa7fe0ad0f35744707722df65b21"
+    },
+    "final_independent_audit.log": {
+      "bytes": 1447,
+      "sha256": "46a0688a0d6901903a077aa8ef6c40b41d7654fdf9d1c67297bc8f8bc747a5c3"
+    },
+    "final_wall_a_opt.json": {
+      "bytes": 2243,
+      "sha256": "1ae54dcce8036f7b3f793d0ea7b62618f7cafa498bfe7accc92d82ad20d1213b"
+    },
+    "final_wall_a_opt.log": {
+      "bytes": 23202,
+      "sha256": "eb322b8d5d080478e8a8c050bfa8776a8866c13f74edb15be4ae4f1a4c1150fd"
+    },
+    "final_wall_b_witness.json": {
+      "bytes": 2460,
+      "sha256": "dfcae19870a83b65d3937f9ab2756b69688c349086a7a6790f75501743214bb0"
+    },
+    "final_wall_b_witness.log": {
+      "bytes": 7019,
+      "sha256": "b5cd6b51a7056af343f465be4cfbc2d24030d0451923ed9885b179590d45953a"
+    },
+    "final_wall_model_a.json": {
+      "bytes": 7149658,
+      "sha256": "8b3bc51eb097c3bf22f8cc94aaf46eb1fcee5e818f2aef0291363899a555054a"
+    },
+    "fragment_a.py": {
+      "bytes": 7111,
+      "sha256": "6469d812463318679cb7fddbef90ad0ae30445e5ec7b02fdf5d8a80157f20a76"
+    },
+    "fragment_tables.json": {
+      "bytes": 124952,
+      "sha256": "fb15bdfbdb4db6f805c068cf2e8b596f4d87a88ca609438f6dfc993f8fce3454"
+    },
+    "general54_tree.log": {
+      "bytes": 268,
+      "sha256": "2a42d4d82cd526272189de15f9e8659d002954410519f79fa4ee838307dc63d9"
+    },
+    "general54_tree_attempt.json": {
+      "bytes": 187,
+      "sha256": "0d9cf3c120ebef1f5a460dd26d3beebc2481c373c08211a30e18763ca8a0b3db"
+    },
+    "general54_tree_probe.log": {
+      "bytes": 401,
+      "sha256": "abd911ff022f45ecca82d4cd05ce3ac62e13811c40e529a5a31d6fa292c55598"
+    },
+    "general54_tree_probe_attempt.json": {
+      "bytes": 185,
+      "sha256": "ff12504d7394ee5a7717e9a389c9c71ec113f3f853bf858920ef8b7ee6dfb32e"
+    },
+    "geometry_a.py": {
+      "bytes": 2249,
+      "sha256": "f02e3ec32fa87f9fe932a3a0889a1ab53a2b6758722a0f2b706a0ea7b09035e5"
+    },
+    "grid_certificates.json": {
+      "bytes": 1906808,
+      "sha256": "555d4b3a7a2b5ba3a574c641e946b52df7a9968830fb5867be6feb067e058042"
+    },
+    "input_manifest.json": {
+      "bytes": 1504,
+      "sha256": "6f23a79113d96e7c17143ee2ad1d1624b29d9134ee7ae2f7c13e3195e77b53de"
+    },
+    "local_b_ge55.json": {
+      "bytes": 818,
+      "sha256": "54f53b682b07b05baca67f12173617d814d556e1d53612a0a1fb0c622e2028c2"
+    },
+    "local_b_ge55.log": {
+      "bytes": 21128,
+      "sha256": "dd79b3bf9ef3da7916a2ac4572204b8c93f8572ae77bb8f7534fcc7d6eaa6c88"
+    },
+    "local_b_highs_ge55.json": {
+      "bytes": 563,
+      "sha256": "68b550698aa27b1a9011486ecf8572afca97ad810bb3e7f140b3e8499f19f3f7"
+    },
+    "local_b_highs_ge55.log": {
+      "bytes": 3872,
+      "sha256": "e2946bfea75b59e744fb72739b718d95c997a8d5102b9e24dbb5d0cf1a94844b"
+    },
+    "local_bound_a.py": {
+      "bytes": 4652,
+      "sha256": "3df117d4985569f3b1204ff5cc5a5884838ec318d09f7a2aea1020e21fc8d522"
+    },
+    "local_face55.log": {
+      "bytes": 1197,
+      "sha256": "1b7e7dccc88de5b91c30d168f3cd02ae23b2065dc175ebe107dea0928da41bdf"
+    },
+    "local_face55_v2.json": {
+      "bytes": 757,
+      "sha256": "a51eb6bf2b5f68c7ed5e1d0239c4022b2c59dfedf396ef6498fa810639c2b413"
+    },
+    "local_face55_v2.log": {
+      "bytes": 20201,
+      "sha256": "fb6fa84194637443a7c95292a5d5f41839da96bd3f68d231a595d222cb36916d"
+    },
+    "local_face55_v2_dual.json": {
+      "bytes": 10618,
+      "sha256": "951841fd335dfaef355a196cca561051aa7940a7fb98a4f3aa18efb35d71748f"
+    },
+    "local_ge54.json": {
+      "bytes": 3319,
+      "sha256": "d0a8e309968611e7aa29579935c9b46df0ddb084225e42dc8eab6f791296fd69"
+    },
+    "local_ge54.log": {
+      "bytes": 22459,
+      "sha256": "1959c28757eae576404f169aa82bffecf8459b8e01cfff22ae7c1f24b7c12846"
+    },
+    "local_ge55.json": {
+      "bytes": 676,
+      "sha256": "986ef196686f43721ef2875743c09956fc64c7d0ac5d6e544108848e8f47737b"
+    },
+    "local_ge55.log": {
+      "bytes": 23044,
+      "sha256": "b0e6c29765fecc9e5b7ebb6375f8f2201055454c514c0930fa56858a544e732c"
+    },
+    "single_pole_b.py": {
+      "bytes": 6410,
+      "sha256": "998b2e8dd7062337b158bfce86c968556eddfdd3f07647f2edef53f5acb18418"
+    },
+    "single_pole_cp.py": {
+      "bytes": 3485,
+      "sha256": "d9230ad4a3dbd4ab110f573634d7557c714f4583b5aff91b8f47c4422606d6ce"
+    },
+    "single_pole_lp.json": {
+      "bytes": 44284,
+      "sha256": "e111f3485858bcbfc99b3bdce44cb65a4013d67acdc81974fe50c72052e538c7"
+    },
+    "single_pole_lp.log": {
+      "bytes": 3799,
+      "sha256": "18eee26db65b6f615317ac3e8bda72f769dbda02d529dc1aad9bf8f9b80dca6c"
+    },
+    "single_pole_lp.py": {
+      "bytes": 2927,
+      "sha256": "71b4e1f29115a8a79b2d31db9770901df6fbf7b0d954664f6fa58905913c5df3"
+    },
+    "single_pole_mixed_lp.json": {
+      "bytes": 80241,
+      "sha256": "8e929d2a885df1517e71ceeee48b42f8b13a37ec4b19f639e6b4c77f0df1d714"
+    },
+    "single_pole_mixed_lp.log": {
+      "bytes": 3782,
+      "sha256": "c39f69cbccb716ca64ca5592ae314fc85d1122580342916b1fad4c7fac8bbbcb"
+    },
+    "strip_certificates.json": {
+      "bytes": 196771,
+      "sha256": "e8152f1e6d8217ff9fbb0d7919500a2d85a7dca4e5a3e845aa4bf945eff3c569"
+    },
+    "two_right_a2.json": {
+      "bytes": 16446,
+      "sha256": "c4554cfa3de3c0dc097f31a8148a905bc35b233a469a6ccf74f992e69e068629"
+    },
+    "two_right_a2.log": {
+      "bytes": 28395,
+      "sha256": "1f7e33d3befa26262aea15ff076a880ab2ca561393277435bf74a31e108557e4"
+    },
+    "two_right_flow_a2.json": {
+      "bytes": 13984,
+      "sha256": "bbd66bee2353264906f5e91d1d1cb89c0f6d34faa70a83e5014637b5ad27385e"
+    },
+    "two_right_flow_a2.log": {
+      "bytes": 30356,
+      "sha256": "8281a8e9875e5c92aa0c1f13069ae57886fc61f93c2a578d2c77bd330ed5fc0e"
+    },
+    "two_top_a2.json": {
+      "bytes": 12875,
+      "sha256": "51f7c17eef1ae68883f19fc986f81029a2e9ab0ce2a34cc859c185ace90c8c32"
+    },
+    "two_top_a2.log": {
+      "bytes": 27927,
+      "sha256": "65f91e0383f963eb33847cee8bc8c8ee109870d9eba36d2e679dcb0d98e37e22"
+    },
+    "two_top_flow_a2.json": {
+      "bytes": 11035,
+      "sha256": "7c361a9d1cc838cb14f0865a6e3b1501b03bcf38095d033d9a7f6780df29f5b9"
+    },
+    "two_top_flow_a2.log": {
+      "bytes": 27286,
+      "sha256": "b14ba7fe90822b57c51230e2a9f3c968705a94329c9d07e3c271f838b4efed4c"
+    },
+    "wall_b_ge30.json": {
+      "bytes": 802,
+      "sha256": "a4c356f9a473fe2cba7f66e9290a23a38e98c246e022d30c4a3d10ad6aae8603"
+    },
+    "wall_b_ge30.log": {
+      "bytes": 16647,
+      "sha256": "911aa82e7e45ddf899ed1da5683536716ecccab5c3cafa22b394ada8248c2893"
+    },
+    "wall_b_highs_ge30.json": {
+      "bytes": 560,
+      "sha256": "05ccab87e491b01eac3ed19f52aa6325a51d81d111bcac28673c152733305a12"
+    },
+    "wall_b_highs_ge30.log": {
+      "bytes": 3044,
+      "sha256": "b9e95cece0bc021e97745bb41d33aae001d5b55edd8d944a49daa9841292df50"
+    },
+    "wall_certificate.json": {
+      "bytes": 509,
+      "sha256": "ddff62a2ea30c425e5b300b88e020f7c5c0073134d4744831e57717c3e6df2b2"
+    },
+    "wall_weighted.json": {
+      "bytes": 2286,
+      "sha256": "507d2d9c7281306a3de4d0703a06f3094de31c2f6bf0194787bfcf30fba37523"
+    },
+    "wall_weighted.log": {
+      "bytes": 23181,
+      "sha256": "4fb1540eb86614b291268513d133db4b895dcd7bf2ef53bb4e32e15b084eac28"
+    }
+  }
+}

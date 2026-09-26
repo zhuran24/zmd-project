@@ -1,0 +1,3 @@
+/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第78-80轮/推导78B/corner_independent78.py:61: RuntimeWarning: Unrecognized options detected: {'threads'}. These will be passed to HiGHS verbatim.
+  r=milp(-np.ones(size),integrality=np.ones(size),bounds=Bounds(np.zeros(size),ub),
+{'max_bound': 91, 'case_count': 135, 'independent_exact_agreement': True, 'seconds': 0.9687196700106142}

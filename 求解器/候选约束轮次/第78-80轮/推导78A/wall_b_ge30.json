@@ -1,0 +1,20 @@
+{
+  "args": {
+    "wall": true,
+    "threshold": 30,
+    "seconds": 120,
+    "workers": 4,
+    "name": "wall_b_ge30",
+    "fixed": null,
+    "engine": "cp"
+  },
+  "objects": 550,
+  "source_sha256": "998b2e8dd7062337b158bfce86c968556eddfdd3f07647f2edef53f5acb18418",
+  "model_sha256": "6e0e08a8e4afeb3bdbd0ec99f02d24efbbb0c14d567b0467cf0388d40f98d4ca",
+  "uses_boundary_13": false,
+  "status": "INFEASIBLE",
+  "objective": 0.0,
+  "bound": 0.0,
+  "stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 666\nbooleans: 666\nconflicts: 0\nbranches: 1332\npropagations: 121941\ninteger_propagations: 123273\nrestarts: 0\nlp_iterations: 173\nwalltime: 0.102103\nusertime: 0.102103\ndeterministic_time: 0.490095\ngap_integral: 0\n",
+  "seconds": 0.1195212390011875
+}

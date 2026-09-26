@@ -1,0 +1,16 @@
+Traceback (most recent call last):
+  File "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第78-80轮/推导78A/single_pole_cp.py", line 55, in <module>
+    if __name__=='__main__':main()
+                            ~~~~^^
+  File "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第78-80轮/推导78A/single_pole_cp.py", line 24, in main
+    res=linprog(-np.array(coeff),A_ub=A,b_ub=b,bounds=(0,1),method='highs',options={'threads':1})
+  File "/usr/lib/python3.14/site-packages/scipy/optimize/_linprog.py", line 649, in linprog
+    lp, solver_options = _parse_linprog(lp, options, meth)
+                         ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/site-packages/scipy/optimize/_linprog_util.py", line 1026, in _parse_linprog
+    lp = _clean_inputs(lp._replace(A_ub=A_ub, A_eq=A_eq))
+  File "/usr/lib/python3.14/site-packages/scipy/optimize/_linprog_util.py", line 339, in _clean_inputs
+    raise ValueError(
+    ...<3 lines>...
+        "in b_ub")
+ValueError: Invalid input for linprog: b_ub must be a 1-D array; b_ub must not have more than one non-singleton dimension and the number of rows in A_ub must equal the number of values in b_ub

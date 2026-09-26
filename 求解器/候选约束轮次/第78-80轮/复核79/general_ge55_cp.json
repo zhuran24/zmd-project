@@ -1,0 +1,11 @@
+{
+  "encoding": "cell_boolean_implication",
+  "wall": false,
+  "threshold": 55,
+  "options": 1240,
+  "status": "INFEASIBLE",
+  "wall_seconds": 4.222780073992908,
+  "solver_seconds": 4.17377515,
+  "model_sha256": "d7b0f51342e745df6b158a55d2d03399ccaf19f008be500f6926eab97f189db7",
+  "response": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 1131\nbooleans: 1555\nconflicts: 9654\nbranches: 219806\npropagations: 6510135\ninteger_propagations: 5123982\nrestarts: 34\nlp_iterations: 107439\nwalltime: 4.17378\nusertime: 4.17378\ndeterministic_time: 31.1736\ngap_integral: 0\n"
+}

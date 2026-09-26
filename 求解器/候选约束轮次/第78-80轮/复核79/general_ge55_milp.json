@@ -1,0 +1,10 @@
+{
+  "encoding": "expanded_integer_linear",
+  "wall": false,
+  "threshold": 55,
+  "options": 1240,
+  "base_rows": 2949,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "wall_seconds": 17.59784468599537
+}

@@ -1,0 +1,16 @@
+{
+  "solver": "CP-SAT",
+  "version": "9.15.6755",
+  "status": "INFEASIBLE",
+  "seconds": 4.132121105998522,
+  "branch_J": 1,
+  "strip": false,
+  "project": true,
+  "groups": false,
+  "cap": 186,
+  "lower": 0.0,
+  "stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 1824\nbooleans: 2453\nconflicts: 11573\nbranches: 396930\npropagations: 5615007\ninteger_propagations: 9110172\nrestarts: 64\nlp_iterations: 0\nwalltime: 3.82229\nusertime: 3.82229\ndeterministic_time: 6.20656\ngap_integral: 0\n",
+  "domain_count": 1945,
+  "domain_sha256": "ab3ea68af12b58f04f8318aa096bea4b73e0741224d77d31b9f5bb93bf9fdd1b",
+  "script_sha256": "2c4e1f5ad306d297764a117af1b63d20dd25f967227600081421da2d4ef8301f"
+}

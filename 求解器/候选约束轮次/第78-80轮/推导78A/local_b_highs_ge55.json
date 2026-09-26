@@ -1,0 +1,18 @@
+{
+  "args": {
+    "wall": false,
+    "threshold": 55,
+    "seconds": 180,
+    "workers": 4,
+    "name": "local_b_highs_ge55",
+    "fixed": null,
+    "engine": "highs"
+  },
+  "objects": 1240,
+  "source_sha256": "998b2e8dd7062337b158bfce86c968556eddfdd3f07647f2edef53f5acb18418",
+  "model_sha256": "4dbe34df57aa98b823d9e45647bd0e377cb6c1eb7d99c97c9f913eb5c3a8d31f",
+  "uses_boundary_13": false,
+  "status": "INFEASIBLE",
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "seconds": 16.63907784600451
+}

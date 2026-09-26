@@ -1,0 +1,20 @@
+/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第78-80轮/推导78A/single_pole_lp.py:42: OptimizeWarning: Unrecognized options detected: {'threads': 1}. These will be passed to HiGHS verbatim.
+  res=linprog(-c,A_ub=A,b_ub=b,bounds=(0,1),method='highs',options={'threads':1})
+{'wall': False, 'weights': [10, 13, 12], 'upper_float': 253.99999999999997, 'upper_exact': '254', 'n': np.float64(22.999999999999996), 'm': np.float64(6.000000000000003), 'l': np.float64(2.9999999999999973)}
+{'wall': False, 'weights': [10, 16, 14], 'upper_float': 278.0, 'upper_exact': '278', 'n': np.float64(22.999999999999996), 'm': np.float64(6.0), 'l': np.float64(3.0)}
+{'wall': False, 'weights': [10, 19, 16], 'upper_float': 307.1111111111111, 'upper_exact': '2764/9', 'n': np.float64(20.444444444444446), 'm': np.float64(11.111111111111109), 'l': np.float64(0.44444444444444514)}
+{'wall': False, 'weights': [10, 22, 18], 'upper_float': 342.4761904761906, 'upper_exact': '7192/21', 'n': np.float64(19.999999999999996), 'm': np.float64(11.619047619047617), 'l': np.float64(0.3809523809523808)}
+{'wall': False, 'weights': [10, 25, 20], 'upper_float': 378.09523809523813, 'upper_exact': '7940/21', 'n': np.float64(20.0), 'm': np.float64(11.61904761904762), 'l': np.float64(0.38095238095238176)}
+{'wall': False, 'weights': [10, 16, 13], 'upper_float': 274.99999999999994, 'upper_exact': '275', 'n': np.float64(23.0), 'm': np.float64(5.999999999999999), 'l': np.float64(2.9999999999999996)}
+{'wall': False, 'weights': [10, 13, 11], 'upper_float': 251.0, 'upper_exact': '251', 'n': np.float64(23.0), 'm': np.float64(6.000000000000006), 'l': np.float64(2.999999999999998)}
+{'wall': False, 'weights': [10, 11, 10], 'upper_float': 236.0, 'upper_exact': '236', 'n': np.float64(22.999999999999996), 'm': np.float64(6.0), 'l': np.float64(0.0)}
+{'wall': False, 'weights': [10, 10, 10], 'upper_float': 230.00000000000003, 'upper_exact': '230', 'n': np.float64(23.000000000000004), 'm': np.float64(0.38933476972798275), 'l': np.float64(2.7272066612801877)}
+{'wall': True, 'weights': [10, 13, 12], 'upper_float': 139.99999999999997, 'upper_exact': '140', 'n': np.float64(12.999999999999996), 'm': np.float64(2.285714285714286), 'l': np.float64(1.5714285714285734)}
+{'wall': True, 'weights': [10, 16, 14], 'upper_float': 150.0, 'upper_exact': '150', 'n': np.float64(12.999999999999995), 'm': np.float64(2.2857142857142874), 'l': np.float64(1.5714285714285716)}
+{'wall': True, 'weights': [10, 19, 16], 'upper_float': 162.99999999999997, 'upper_exact': '163', 'n': np.float64(11.000000000000002), 'm': np.float64(5.666666666666667), 'l': np.float64(0.33333333333333315)}
+{'wall': True, 'weights': [10, 22, 18], 'upper_float': 180.66666666666669, 'upper_exact': '542/3', 'n': np.float64(11.000000000000002), 'm': np.float64(5.666666666666667), 'l': np.float64(0.33333333333333337)}
+{'wall': True, 'weights': [10, 25, 20], 'upper_float': 199.66666666666666, 'upper_exact': '599/3', 'n': np.float64(10.166666666666668), 'm': np.float64(6.0), 'l': np.float64(0.799999999999999)}
+{'wall': True, 'weights': [10, 16, 13], 'upper_float': 148.6, 'upper_exact': '743/5', 'n': np.float64(13.000000000000004), 'm': np.float64(2.8), 'l': np.float64(0.5999999999999992)}
+{'wall': True, 'weights': [10, 13, 11], 'upper_float': 139.3, 'upper_exact': '1393/10', 'n': np.float64(12.999999999999998), 'm': np.float64(3.1000000000000005), 'l': np.float64(0.0)}
+{'wall': True, 'weights': [10, 11, 10], 'upper_float': 133.1, 'upper_exact': '1331/10', 'n': np.float64(12.999999999999998), 'm': np.float64(3.1), 'l': np.float64(0.0)}
+{'wall': True, 'weights': [10, 10, 10], 'upper_float': 129.99999999999997, 'upper_exact': '130', 'n': np.float64(13.000000000000004), 'm': np.float64(1.0), 'l': np.float64(0.8638479441427459)}

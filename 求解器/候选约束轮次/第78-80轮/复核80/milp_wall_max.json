@@ -1,0 +1,114 @@
+{
+ "wall": true,
+ "cap": 14,
+ "threshold": null,
+ "maximize": true,
+ "n_options": 550,
+ "n_free_vars": 252,
+ "n_rows": 1341,
+ "status": 0,
+ "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+ "seconds": 0.7261905670166016,
+ "objective": 29.0,
+ "count": 12,
+ "solution": [
+  {
+   "cat": "S",
+   "w": 3,
+   "h": 3,
+   "axis": "H",
+   "x": -2,
+   "y": 5
+  },
+  {
+   "cat": "S",
+   "w": 3,
+   "h": 3,
+   "axis": "H",
+   "x": -2,
+   "y": 8
+  },
+  {
+   "cat": "S",
+   "w": 3,
+   "h": 3,
+   "axis": "H",
+   "x": 2,
+   "y": 4
+  },
+  {
+   "cat": "S",
+   "w": 3,
+   "h": 3,
+   "axis": "V",
+   "x": 1,
+   "y": 1
+  },
+  {
+   "cat": "S",
+   "w": 3,
+   "h": 3,
+   "axis": "V",
+   "x": 1,
+   "y": 7
+  },
+  {
+   "cat": "S",
+   "w": 3,
+   "h": 3,
+   "axis": "V",
+   "x": 4,
+   "y": 1
+  },
+  {
+   "cat": "S",
+   "w": 3,
+   "h": 3,
+   "axis": "V",
+   "x": 4,
+   "y": 8
+  },
+  {
+   "cat": "M",
+   "w": 5,
+   "h": 5,
+   "axis": "V",
+   "x": -4,
+   "y": 11
+  },
+  {
+   "cat": "L",
+   "w": 6,
+   "h": 4,
+   "axis": "V",
+   "x": -5,
+   "y": 1
+  },
+  {
+   "cat": "L",
+   "w": 4,
+   "h": 6,
+   "axis": "H",
+   "x": -3,
+   "y": -5
+  },
+  {
+   "cat": "L",
+   "w": 4,
+   "h": 6,
+   "axis": "H",
+   "x": 1,
+   "y": 11
+  },
+  {
+   "cat": "L",
+   "w": 4,
+   "h": 6,
+   "axis": "H",
+   "x": 2,
+   "y": -5
+  }
+ ],
+ "dual_bound": 29.0,
+ "name": "milp_wall_max"
+}

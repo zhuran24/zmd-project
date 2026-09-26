@@ -1,0 +1,144 @@
+built 550 variables 802
+
+Starting CP-SAT solver v9.15.6755
+Parameters: random_seed: 7803 max_time_in_seconds: 30 log_search_progress: true linearization_level: 2 num_search_workers: 1
+
+Initial satisfaction model '': (model_fingerprint: 0x23d882f60a75acca)
+#Variables: 802 (0 primary variables)
+  - 802 Booleans in [0,1]
+#kLinear1: 554 (#enforced: 4)
+#kLinear2: 12 (#enforced: 4)
+#kLinear3: 346 (#enforced: 338)
+#kLinearN: 992 (#enforced: 754) (#terms: 16'268)
+
+Starting presolve at 0.00s
+  4.65e-05s  0.00e+00d  [DetectDominanceRelations] 
+  6.41e-04s  0.00e+00d  [PresolveToFixPoint] #num_loops=2 #num_dual_strengthening=1 
+  2.96e-06s  0.00e+00d  [ExtractEncodingFromLinear] 
+  1.98e-06s  0.00e+00d  [DetectDuplicateColumns] 
+  2.00e-06s  0.00e+00d  [DetectDuplicateConstraints] 
+[Symmetry] Graph for symmetry has 802 nodes and 0 arcs.
+[Symmetry] Symmetry computation done. time: 2.268e-05 dtime: 4.812e-05
+  3.77e-06s  0.00e+00d  [DetectDuplicateConstraintsWithDifferentEnforcements] 
+  1.42e-04s  0.00e+00d  [Probe] 
+  2.08e-06s  0.00e+00d  [MaxClique] 
+  2.26e-06s  0.00e+00d  [PresolveToFixPoint] 
+  1.65e-06s  0.00e+00d  [ProcessAtMostOneAndLinear] 
+  1.00e-06s  0.00e+00d  [DetectDuplicateConstraints] 
+  8.57e-07s  0.00e+00d  [DetectDuplicateConstraintsWithDifferentEnforcements] 
+  1.26e-06s  0.00e+00d  [DetectDominatedLinearConstraints] 
+  1.25e-06s  0.00e+00d  [DetectDifferentVariables] 
+  2.00e-06s  0.00e+00d  [ProcessSetPPC] 
+  2.94e-05s  0.00e+00d  [TransformClausesToExactlyOne] 
+  1.12e-06s  0.00e+00d  [DetectEncodedComplexDomains] 
+  1.67e-06s  0.00e+00d  [FindAlmostIdenticalLinearConstraints] 
+  8.69e-07s  0.00e+00d  [FindBigAtMostOneAndLinearOverlap] 
+  1.25e-06s  0.00e+00d  [FindBigVerticalLinearOverlap] 
+  1.58e-06s  0.00e+00d  [FindBigHorizontalLinearOverlap] 
+  1.43e-06s  0.00e+00d  [MergeClauses] 
+  1.99e-06s  0.00e+00d  [PresolveToFixPoint] 
+  1.92e-06s  0.00e+00d  [PresolveToFixPoint] 
+  1.30e-06s  0.00e+00d  [DetectDuplicateColumns] 
+  8.43e-07s  0.00e+00d  [DetectDuplicateConstraints] 
+[Symmetry] Graph for symmetry has 802 nodes and 0 arcs.
+[Symmetry] Symmetry computation done. time: 1.277e-05 dtime: 4.812e-05
+  9.63e-07s  0.00e+00d  [DetectDuplicateConstraintsWithDifferentEnforcements] 
+  9.66e-05s  0.00e+00d  [Probe] 
+  9.40e-07s  0.00e+00d  [MaxClique] 
+  2.02e-06s  0.00e+00d  [PresolveToFixPoint] 
+  1.38e-06s  0.00e+00d  [ProcessAtMostOneAndLinear] 
+  8.99e-07s  0.00e+00d  [DetectDuplicateConstraints] 
+  8.32e-07s  0.00e+00d  [DetectDuplicateConstraintsWithDifferentEnforcements] 
+  1.07e-06s  0.00e+00d  [DetectDominatedLinearConstraints] 
+  1.08e-06s  0.00e+00d  [DetectDifferentVariables] 
+  1.47e-06s  0.00e+00d  [ProcessSetPPC] 
+  2.74e-05s  0.00e+00d  [TransformClausesToExactlyOne] 
+  8.72e-07s  0.00e+00d  [DetectEncodedComplexDomains] 
+  1.28e-06s  0.00e+00d  [FindAlmostIdenticalLinearConstraints] 
+  6.90e-07s  0.00e+00d  [FindBigAtMostOneAndLinearOverlap] 
+  1.21e-06s  0.00e+00d  [FindBigVerticalLinearOverlap] 
+  1.08e-06s  0.00e+00d  [FindBigHorizontalLinearOverlap] 
+  1.17e-06s  0.00e+00d  [MergeClauses] 
+  1.95e-06s  0.00e+00d  [PresolveToFixPoint] 
+  1.24e-06s  0.00e+00d  [MergeNoOverlap] 
+  1.56e-06s  0.00e+00d  [MergeNoOverlap2D] 
+
+Presolve summary:
+  - 0 affine relations were detected.
+  - rule 'bool_or: always true' was applied 18 times.
+  - rule 'enforcement: false literal' was applied 1'064 times.
+  - rule 'enforcement: true literal' was applied 24 times.
+  - rule 'linear1: x in domain' was applied 550 times.
+  - rule 'linear: always true' was applied 16 times.
+  - rule 'linear: empty' was applied 256 times.
+  - rule 'linear: fixed or dup variables' was applied 510 times.
+  - rule 'linear: negative clause' was applied 18 times.
+  - rule 'linear: reduced variable domains' was applied 252 times.
+  - rule 'presolve: 802 unused variables removed.' was applied 1 time.
+  - rule 'presolve: iteration' was applied 2 times.
+
+Presolved satisfaction model '': (model_fingerprint: 0xa5b85c5e198ed849)
+#Variables: 0 (0 primary variables)
+
+[Symmetry] Graph for symmetry has 0 nodes and 0 arcs.
+
+Preloading model.
+The solution hint is complete and is feasible.
+
+Starting search at 0.00s with 1 workers.
+1 full problem subsolver: [main]
+
+[Precedences] num_relations=0 num_clauses=0
+[Probing] deterministic_time: 0 (limit: 1) wall_time: 1.95e-07 (0/0)
+Initial num_bool: 0
+
+Starting subsolver 'main' hint search at 0.00s
+Starting subsolver 'main' search at 0.00s
+#1       0.00s main
+
+Task timing           n [     min,      max]      avg      dev     time         n [     min,      max]      avg      dev    dtime
+      'main':         1 [ 55.62us,  55.62us]  55.62us   0.00ns  55.62us         0 [  0.00ns,   0.00ns]   0.00ns   0.00ns   0.00ns
+
+Search stats    Bools  Conflicts  Branches  Restarts  BacktrackToRoot  Backtrack  BoolPropag  IntegerPropag
+       'main':      0          0         0         0                0          0           0              0
+
+SAT formula    Fixed  Equiv  Total  VarLeft  BinaryClauses  PermanentClauses  TemporaryClauses
+      'main':      0      0      0        0              0                 0                 0
+
+SAT stats    ClassicMinim  LitRemoved  LitRemovedBinary  LitLearned  LitForgotten  Subsumed
+    'main':             0           0                 0           0             0         0
+
+Vivification    Clauses  Decisions  LitTrue  Subsumed  LitRemoved  DecisionReused  Conflicts
+       'main':        0          0        0         0           0               0          0
+
+Clause deletion    at_true  l_and_not(l)  to_binary  sub_conflict  sub_extra  sub_decisions  sub_eager  sub_vivify  sub_probing  sub_inpro  blocked  eliminated  forgotten  promoted  conflicts
+          'main':        0             0          0             0          0              0          0           0            0          0        0           0          0         0          0
+
+Solutions (1)    Num   Rank
+        'main':    1  [0,0]
+
+Solution repositories    Added  Queried  Synchro
+    'alternative_path':      0        0        0
+      'best_solutions':      1        0        1
+   'fj solution hints':      0        0        0
+
+LRAT_status: NA
+CpSolverResponse summary:
+status: OPTIMAL
+objective: NA
+best_bound: NA
+integers: 0
+booleans: 0
+conflicts: 0
+branches: 0
+propagations: 0
+integer_propagations: 0
+restarts: 0
+lp_iterations: 0
+walltime: 0.00378708
+usertime: 0.0037871
+deterministic_time: 0
+gap_integral: 0
+solution_fingerprint: 0x4cf5f43794bdcf3
+
+{'args': {'wall': True, 'threshold': 29, 'seconds': 30, 'workers': 1, 'name': 'final_wall_b_witness', 'fixed': '求解器/候选约束轮次/第78-80轮/推导78A/final_wall_a_opt.json', 'engine': 'cp'}, 'objects': 550, 'source_sha256': '998b2e8dd7062337b158bfce86c968556eddfdd3f07647f2edef53f5acb18418', 'model_sha256': '24699d70cd12c9eee7e7eed92b01cab9919e11c4ffc6eb804d65a51143eb6e14', 'uses_boundary_13': False, 'status': 'OPTIMAL', 'objective': 0.0, 'bound': 0.0, 'counts': {'l': 1, 'm': 2, 's': 10}, 'score': 29, 'seconds': 0.022342386000673287}
