@@ -1,0 +1,1199 @@
+{
+  "geometry": {
+    "bodies": {
+      "core": [
+        [
+          20,
+          20
+        ],
+        [
+          20,
+          21
+        ],
+        [
+          20,
+          22
+        ],
+        [
+          20,
+          23
+        ],
+        [
+          20,
+          24
+        ],
+        [
+          20,
+          25
+        ],
+        [
+          20,
+          26
+        ],
+        [
+          20,
+          27
+        ],
+        [
+          20,
+          28
+        ],
+        [
+          21,
+          20
+        ],
+        [
+          21,
+          21
+        ],
+        [
+          21,
+          22
+        ],
+        [
+          21,
+          23
+        ],
+        [
+          21,
+          24
+        ],
+        [
+          21,
+          25
+        ],
+        [
+          21,
+          26
+        ],
+        [
+          21,
+          27
+        ],
+        [
+          21,
+          28
+        ],
+        [
+          22,
+          20
+        ],
+        [
+          22,
+          21
+        ],
+        [
+          22,
+          22
+        ],
+        [
+          22,
+          23
+        ],
+        [
+          22,
+          24
+        ],
+        [
+          22,
+          25
+        ],
+        [
+          22,
+          26
+        ],
+        [
+          22,
+          27
+        ],
+        [
+          22,
+          28
+        ],
+        [
+          23,
+          20
+        ],
+        [
+          23,
+          21
+        ],
+        [
+          23,
+          22
+        ],
+        [
+          23,
+          23
+        ],
+        [
+          23,
+          24
+        ],
+        [
+          23,
+          25
+        ],
+        [
+          23,
+          26
+        ],
+        [
+          23,
+          27
+        ],
+        [
+          23,
+          28
+        ],
+        [
+          24,
+          20
+        ],
+        [
+          24,
+          21
+        ],
+        [
+          24,
+          22
+        ],
+        [
+          24,
+          23
+        ],
+        [
+          24,
+          24
+        ],
+        [
+          24,
+          25
+        ],
+        [
+          24,
+          26
+        ],
+        [
+          24,
+          27
+        ],
+        [
+          24,
+          28
+        ],
+        [
+          25,
+          20
+        ],
+        [
+          25,
+          21
+        ],
+        [
+          25,
+          22
+        ],
+        [
+          25,
+          23
+        ],
+        [
+          25,
+          24
+        ],
+        [
+          25,
+          25
+        ],
+        [
+          25,
+          26
+        ],
+        [
+          25,
+          27
+        ],
+        [
+          25,
+          28
+        ],
+        [
+          26,
+          20
+        ],
+        [
+          26,
+          21
+        ],
+        [
+          26,
+          22
+        ],
+        [
+          26,
+          23
+        ],
+        [
+          26,
+          24
+        ],
+        [
+          26,
+          25
+        ],
+        [
+          26,
+          26
+        ],
+        [
+          26,
+          27
+        ],
+        [
+          26,
+          28
+        ],
+        [
+          27,
+          20
+        ],
+        [
+          27,
+          21
+        ],
+        [
+          27,
+          22
+        ],
+        [
+          27,
+          23
+        ],
+        [
+          27,
+          24
+        ],
+        [
+          27,
+          25
+        ],
+        [
+          27,
+          26
+        ],
+        [
+          27,
+          27
+        ],
+        [
+          27,
+          28
+        ],
+        [
+          28,
+          20
+        ],
+        [
+          28,
+          21
+        ],
+        [
+          28,
+          22
+        ],
+        [
+          28,
+          23
+        ],
+        [
+          28,
+          24
+        ],
+        [
+          28,
+          25
+        ],
+        [
+          28,
+          26
+        ],
+        [
+          28,
+          27
+        ],
+        [
+          28,
+          28
+        ]
+      ],
+      "ore_outlet": [
+        [
+          0,
+          10
+        ],
+        [
+          0,
+          11
+        ],
+        [
+          0,
+          12
+        ]
+      ],
+      "Y": [
+        [
+          2,
+          10
+        ],
+        [
+          2,
+          11
+        ],
+        [
+          2,
+          12
+        ],
+        [
+          3,
+          10
+        ],
+        [
+          3,
+          11
+        ],
+        [
+          3,
+          12
+        ],
+        [
+          4,
+          10
+        ],
+        [
+          4,
+          11
+        ],
+        [
+          4,
+          12
+        ]
+      ],
+      "X": [
+        [
+          6,
+          10
+        ],
+        [
+          6,
+          11
+        ],
+        [
+          6,
+          12
+        ],
+        [
+          7,
+          10
+        ],
+        [
+          7,
+          11
+        ],
+        [
+          7,
+          12
+        ],
+        [
+          8,
+          10
+        ],
+        [
+          8,
+          11
+        ],
+        [
+          8,
+          12
+        ]
+      ],
+      "power": [
+        [
+          4,
+          15
+        ],
+        [
+          4,
+          16
+        ],
+        [
+          5,
+          15
+        ],
+        [
+          5,
+          16
+        ]
+      ],
+      "ore_belt": [
+        [
+          1,
+          11
+        ]
+      ],
+      "block_belt": [
+        [
+          5,
+          11
+        ]
+      ]
+    },
+    "channels": [
+      [
+        "Y",
+        "block_belt"
+      ],
+      [
+        "ore_belt",
+        "Y"
+      ],
+      [
+        "block_belt",
+        "X"
+      ],
+      [
+        "ore_outlet",
+        "ore_belt"
+      ]
+    ],
+    "occupied_cells": 108,
+    "transport_units": 2,
+    "powered": {
+      "Y": true,
+      "X": true
+    },
+    "outlet_on_allowed_boundary": true
+  },
+  "witness": {
+    "pause_at": "15/2",
+    "stable_state": {
+      "machines": {
+        "Y": {
+          "on": false,
+          "powered": true,
+          "stock": 50,
+          "output": 0,
+          "cache": {
+            "done": false,
+            "remaining": "1/2",
+            "contents": {
+              "蓝铁矿": 1
+            }
+          }
+        },
+        "X": {
+          "on": true,
+          "powered": true,
+          "stock": 0,
+          "output": 6,
+          "cache": null
+        }
+      },
+      "belts": {
+        "ore": {
+          "remaining_dwell": "0"
+        },
+        "block": null
+      },
+      "warehouse": "six specified initial species full; other species empty; ore replenished externally",
+      "connections": "all four fixed; one channel at each connected side"
+    },
+    "checked_times": [
+      "60",
+      "61",
+      "100",
+      "140"
+    ],
+    "stable_state_sha256": "565fb0f0412b4e0cb0f1a40cb53d61759b0fa9474f8e01f36b8e6dcaedb0a3a4",
+    "starts": {
+      "Y": 7,
+      "X": 6
+    },
+    "completes": {
+      "Y": 6,
+      "X": 6
+    },
+    "exported_ore": 58,
+    "last_successful_event": {
+      "time": "57",
+      "action": "warehouse->ore_belt"
+    },
+    "events": [
+      {
+        "time": "0",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "1",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "1",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "1",
+        "action": "Y:start"
+      },
+      {
+        "time": "2",
+        "action": "Y:complete"
+      },
+      {
+        "time": "2",
+        "action": "Y:batch_to_output"
+      },
+      {
+        "time": "2",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "2",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "2",
+        "action": "Y->block_belt"
+      },
+      {
+        "time": "2",
+        "action": "Y:start"
+      },
+      {
+        "time": "3",
+        "action": "Y:complete"
+      },
+      {
+        "time": "3",
+        "action": "Y:batch_to_output"
+      },
+      {
+        "time": "3",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "3",
+        "action": "block_belt->X"
+      },
+      {
+        "time": "3",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "3",
+        "action": "Y->block_belt"
+      },
+      {
+        "time": "3",
+        "action": "Y:start"
+      },
+      {
+        "time": "3",
+        "action": "X:start"
+      },
+      {
+        "time": "4",
+        "action": "Y:complete"
+      },
+      {
+        "time": "4",
+        "action": "Y:batch_to_output"
+      },
+      {
+        "time": "4",
+        "action": "X:complete"
+      },
+      {
+        "time": "4",
+        "action": "X:batch_to_output"
+      },
+      {
+        "time": "4",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "4",
+        "action": "block_belt->X"
+      },
+      {
+        "time": "4",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "4",
+        "action": "Y->block_belt"
+      },
+      {
+        "time": "4",
+        "action": "Y:start"
+      },
+      {
+        "time": "4",
+        "action": "X:start"
+      },
+      {
+        "time": "5",
+        "action": "Y:complete"
+      },
+      {
+        "time": "5",
+        "action": "Y:batch_to_output"
+      },
+      {
+        "time": "5",
+        "action": "X:complete"
+      },
+      {
+        "time": "5",
+        "action": "X:batch_to_output"
+      },
+      {
+        "time": "5",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "5",
+        "action": "block_belt->X"
+      },
+      {
+        "time": "5",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "5",
+        "action": "Y->block_belt"
+      },
+      {
+        "time": "5",
+        "action": "Y:start"
+      },
+      {
+        "time": "5",
+        "action": "X:start"
+      },
+      {
+        "time": "6",
+        "action": "Y:complete"
+      },
+      {
+        "time": "6",
+        "action": "Y:batch_to_output"
+      },
+      {
+        "time": "6",
+        "action": "X:complete"
+      },
+      {
+        "time": "6",
+        "action": "X:batch_to_output"
+      },
+      {
+        "time": "6",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "6",
+        "action": "block_belt->X"
+      },
+      {
+        "time": "6",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "6",
+        "action": "Y->block_belt"
+      },
+      {
+        "time": "6",
+        "action": "Y:start"
+      },
+      {
+        "time": "6",
+        "action": "X:start"
+      },
+      {
+        "time": "7",
+        "action": "Y:complete"
+      },
+      {
+        "time": "7",
+        "action": "Y:batch_to_output"
+      },
+      {
+        "time": "7",
+        "action": "X:complete"
+      },
+      {
+        "time": "7",
+        "action": "X:batch_to_output"
+      },
+      {
+        "time": "7",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "7",
+        "action": "block_belt->X"
+      },
+      {
+        "time": "7",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "7",
+        "action": "Y->block_belt"
+      },
+      {
+        "time": "7",
+        "action": "Y:start"
+      },
+      {
+        "time": "7",
+        "action": "X:start"
+      },
+      {
+        "time": "15/2",
+        "action": "Y:switch_off"
+      },
+      {
+        "time": "8",
+        "action": "X:complete"
+      },
+      {
+        "time": "8",
+        "action": "X:batch_to_output"
+      },
+      {
+        "time": "8",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "8",
+        "action": "block_belt->X"
+      },
+      {
+        "time": "8",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "8",
+        "action": "X:start"
+      },
+      {
+        "time": "9",
+        "action": "X:complete"
+      },
+      {
+        "time": "9",
+        "action": "X:batch_to_output"
+      },
+      {
+        "time": "9",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "9",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "10",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "10",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "11",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "11",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "12",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "12",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "13",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "13",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "14",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "14",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "15",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "15",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "16",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "16",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "17",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "17",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "18",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "18",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "19",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "19",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "20",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "20",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "21",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "21",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "22",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "22",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "23",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "23",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "24",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "24",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "25",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "25",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "26",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "26",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "27",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "27",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "28",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "28",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "29",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "29",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "30",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "30",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "31",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "31",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "32",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "32",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "33",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "33",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "34",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "34",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "35",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "35",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "36",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "36",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "37",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "37",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "38",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "38",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "39",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "39",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "40",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "40",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "41",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "41",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "42",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "42",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "43",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "43",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "44",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "44",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "45",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "45",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "46",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "46",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "47",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "47",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "48",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "48",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "49",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "49",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "50",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "50",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "51",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "51",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "52",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "52",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "53",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "53",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "54",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "54",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "55",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "55",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "56",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "56",
+        "action": "warehouse->ore_belt"
+      },
+      {
+        "time": "57",
+        "action": "ore_belt->Y"
+      },
+      {
+        "time": "57",
+        "action": "warehouse->ore_belt"
+      }
+    ]
+  },
+  "nonprecise_pause_check": {
+    "interval": "(7,8)",
+    "representative_cases": 12,
+    "all_stable_X_empty": true
+  }
+}

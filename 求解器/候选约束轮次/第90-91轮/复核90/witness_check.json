@@ -1,0 +1,16 @@
+{
+  "actions_replayed": 165,
+  "replay_pass": true,
+  "dwell_and_batch_checks_pass": true,
+  "material_balance_pass": true,
+  "permanent_fixed_state_pass": true,
+  "counts": {
+    "ore_export": 58,
+    "Y_start": 7,
+    "Y_complete": 6,
+    "X_start": 6,
+    "X_complete": 6
+  },
+  "periodic_state_after": 58,
+  "stable_period": "any positive real number"
+}

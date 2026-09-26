@@ -1,0 +1,1 @@
+{"runs": 3000, "cycles": 3000, "premise": 0, "premise_multiphase": 0, "premise_x_multiphase": 0, "premise_backpressure": 0, "final_checked": 0, "x5tick_premise": 0, "viol": {}, "x_empty_when_premise_false": 2873, "premise_false": 3000, "examples": []}

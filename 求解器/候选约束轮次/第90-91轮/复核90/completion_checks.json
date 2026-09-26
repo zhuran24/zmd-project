@@ -1,0 +1,33 @@
+{
+  "input_hashes_unchanged": true,
+  "schema_and_exact_names_pass": true,
+  "replacement_text_matches_report": true,
+  "report_links_checked": 12,
+  "reader_pass": "completed; no unresolved findings",
+  "report_sha256": "a69e97de53867c8349a8a981eafbce84c1d35742b244508f6aca6868b5970de3",
+  "python_syntax_pass": true,
+  "scripts_sha256": {
+    "audit_inputs.py": "a15237f7e316c813d48e9c5919561f6003b2ede0ee2a2d78eedbf069069cdf97",
+    "check_witness.py": "6ff2b1bd27c8fb2391a5200f9bfe91592e83650c4015f7284aa1eca449d8a770",
+    "paused_witness.py": "96a6efe0172b60eb83c41992ea1b793907ef3155c7d4e61e42548680b7b9a6dd",
+    "relay_probe.py": "d3e8d7303d0ef6dafb3089535f9c165626edea3bcb34840d9eb3afa7ab2735fb",
+    "write_verdicts.py": "5fa62f752438326ca6971f99d49847b4f6ddd46dce28a6e08372f55d2f3e5cdd"
+  },
+  "report_characters": 8178,
+  "artifacts": [
+    "audit_inputs.py",
+    "check_witness.py",
+    "inputs.json",
+    "paused_witness.json",
+    "paused_witness.py",
+    "relay_missing_input_910000.json",
+    "relay_none_900000.json",
+    "relay_none_901000.json",
+    "relay_probe.py",
+    "relay_too_many_outputs_920000.json",
+    "revised_text.txt",
+    "verdicts.json",
+    "witness_check.json",
+    "write_verdicts.py"
+  ]
+}

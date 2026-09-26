@@ -1,0 +1,388 @@
+{
+  "sha256": {
+    "前提快照/《明日方舟：终末地》游戏规则.txt": "6e64e3903a65536c530b363c9f3aef8c1bb2a1c1193e866799125dd047159924",
+    "前提快照/求解任务.txt": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+    "前提快照/求解约束.txt": "dfea46c61f29be5a86659bce3642009d2558ace073d6dbd79f5dd3c6475226db",
+    "修正版清单.json": "63cb3f8a7b7dd98834530d66e14d19eb52aea895a1959f71ef1a20c65f5fe14d"
+  },
+  "constraints": 77,
+  "candidate_count": 4,
+  "names": [
+    "专线制造单位不空手的传递（第 88 轮修正版，改自第 86 轮修正版，源于第 84 轮修正版）",
+    "专线制造单位不空手的传递（第 88 轮修正版，改自第 86 轮修正版，源于第 85 轮修正版）",
+    "专线制造单位不空手的传递（第 88 轮修正版，改自第 87 轮修正版）",
+    "专线制造单位不空手的传递（第 89 轮修正版，改自第 87 轮修正版）"
+  ],
+  "identical_text_pairs": [
+    [
+      0,
+      1
+    ]
+  ],
+  "recipes": [
+    {
+      "machine": "粉碎机",
+      "inputs": {
+        "源矿": 1
+      },
+      "outputs": {
+        "源石粉末": 1
+      },
+      "duration": 1,
+      "line": 81
+    },
+    {
+      "machine": "粉碎机",
+      "inputs": {
+        "蓝铁块": 1
+      },
+      "outputs": {
+        "蓝铁粉末": 1
+      },
+      "duration": 1,
+      "line": 82
+    },
+    {
+      "machine": "粉碎机",
+      "inputs": {
+        "荞花": 1
+      },
+      "outputs": {
+        "荞花粉末": 2
+      },
+      "duration": 1,
+      "line": 83
+    },
+    {
+      "machine": "粉碎机",
+      "inputs": {
+        "砂叶": 1
+      },
+      "outputs": {
+        "砂叶粉末": 3
+      },
+      "duration": 1,
+      "line": 84
+    },
+    {
+      "machine": "精炼炉",
+      "inputs": {
+        "蓝铁矿": 1
+      },
+      "outputs": {
+        "蓝铁块": 1
+      },
+      "duration": 1,
+      "line": 87
+    },
+    {
+      "machine": "精炼炉",
+      "inputs": {
+        "致密蓝铁粉末": 1
+      },
+      "outputs": {
+        "钢块": 1
+      },
+      "duration": 1,
+      "line": 88
+    },
+    {
+      "machine": "精炼炉",
+      "inputs": {
+        "蓝铁粉末": 1
+      },
+      "outputs": {
+        "蓝铁块": 1
+      },
+      "duration": 1,
+      "line": 89
+    },
+    {
+      "machine": "研磨机",
+      "inputs": {
+        "蓝铁粉末": 2,
+        "砂叶粉末": 1
+      },
+      "outputs": {
+        "致密蓝铁粉末": 1
+      },
+      "duration": 1,
+      "line": 92
+    },
+    {
+      "machine": "研磨机",
+      "inputs": {
+        "源石粉末": 2,
+        "砂叶粉末": 1
+      },
+      "outputs": {
+        "致密源石粉末": 1
+      },
+      "duration": 1,
+      "line": 93
+    },
+    {
+      "machine": "研磨机",
+      "inputs": {
+        "荞花粉末": 2,
+        "砂叶粉末": 1
+      },
+      "outputs": {
+        "细磨荞花粉末": 1
+      },
+      "duration": 1,
+      "line": 94
+    },
+    {
+      "machine": "塑形机",
+      "inputs": {
+        "钢块": 2
+      },
+      "outputs": {
+        "钢质瓶": 1
+      },
+      "duration": 1,
+      "line": 97
+    },
+    {
+      "machine": "配件机",
+      "inputs": {
+        "钢块": 1
+      },
+      "outputs": {
+        "钢制零件": 1
+      },
+      "duration": 1,
+      "line": 100
+    },
+    {
+      "machine": "种植机",
+      "inputs": {
+        "荞花种子": 1
+      },
+      "outputs": {
+        "荞花": 1
+      },
+      "duration": 1,
+      "line": 103
+    },
+    {
+      "machine": "种植机",
+      "inputs": {
+        "砂叶种子": 1
+      },
+      "outputs": {
+        "砂叶": 1
+      },
+      "duration": 1,
+      "line": 104
+    },
+    {
+      "machine": "采种机",
+      "inputs": {
+        "荞花": 1
+      },
+      "outputs": {
+        "荞花种子": 2
+      },
+      "duration": 1,
+      "line": 107
+    },
+    {
+      "machine": "采种机",
+      "inputs": {
+        "砂叶": 1
+      },
+      "outputs": {
+        "砂叶种子": 2
+      },
+      "duration": 1,
+      "line": 108
+    },
+    {
+      "machine": "封装机",
+      "inputs": {
+        "钢制零件": 10,
+        "致密源石粉末": 15
+      },
+      "outputs": {
+        "高容谷地电池": 1
+      },
+      "duration": 5,
+      "line": 111
+    },
+    {
+      "machine": "灌装机",
+      "inputs": {
+        "钢质瓶": 10,
+        "细磨荞花粉末": 10
+      },
+      "outputs": {
+        "精选荞愈胶囊": 1
+      },
+      "duration": 5,
+      "line": 114
+    }
+  ],
+  "durations": [
+    1,
+    5
+  ],
+  "maximum_input_batch": 15,
+  "source_batch_sizes": [
+    1,
+    2,
+    3
+  ],
+  "minimum_input_lines": [
+    {
+      "machine": "粉碎机",
+      "line": 81,
+      "duration": 1,
+      "lines": {
+        "源矿": 1
+      }
+    },
+    {
+      "machine": "粉碎机",
+      "line": 82,
+      "duration": 1,
+      "lines": {
+        "蓝铁块": 1
+      }
+    },
+    {
+      "machine": "粉碎机",
+      "line": 83,
+      "duration": 1,
+      "lines": {
+        "荞花": 1
+      }
+    },
+    {
+      "machine": "粉碎机",
+      "line": 84,
+      "duration": 1,
+      "lines": {
+        "砂叶": 1
+      }
+    },
+    {
+      "machine": "精炼炉",
+      "line": 87,
+      "duration": 1,
+      "lines": {
+        "蓝铁矿": 1
+      }
+    },
+    {
+      "machine": "精炼炉",
+      "line": 88,
+      "duration": 1,
+      "lines": {
+        "致密蓝铁粉末": 1
+      }
+    },
+    {
+      "machine": "精炼炉",
+      "line": 89,
+      "duration": 1,
+      "lines": {
+        "蓝铁粉末": 1
+      }
+    },
+    {
+      "machine": "研磨机",
+      "line": 92,
+      "duration": 1,
+      "lines": {
+        "蓝铁粉末": 2,
+        "砂叶粉末": 1
+      }
+    },
+    {
+      "machine": "研磨机",
+      "line": 93,
+      "duration": 1,
+      "lines": {
+        "源石粉末": 2,
+        "砂叶粉末": 1
+      }
+    },
+    {
+      "machine": "研磨机",
+      "line": 94,
+      "duration": 1,
+      "lines": {
+        "荞花粉末": 2,
+        "砂叶粉末": 1
+      }
+    },
+    {
+      "machine": "塑形机",
+      "line": 97,
+      "duration": 1,
+      "lines": {
+        "钢块": 2
+      }
+    },
+    {
+      "machine": "配件机",
+      "line": 100,
+      "duration": 1,
+      "lines": {
+        "钢块": 1
+      }
+    },
+    {
+      "machine": "种植机",
+      "line": 103,
+      "duration": 1,
+      "lines": {
+        "荞花种子": 1
+      }
+    },
+    {
+      "machine": "种植机",
+      "line": 104,
+      "duration": 1,
+      "lines": {
+        "砂叶种子": 1
+      }
+    },
+    {
+      "machine": "采种机",
+      "line": 107,
+      "duration": 1,
+      "lines": {
+        "荞花": 1
+      }
+    },
+    {
+      "machine": "采种机",
+      "line": 108,
+      "duration": 1,
+      "lines": {
+        "砂叶": 1
+      }
+    },
+    {
+      "machine": "封装机",
+      "line": 111,
+      "duration": 5,
+      "lines": {
+        "钢制零件": 2,
+        "致密源石粉末": 3
+      }
+    },
+    {
+      "machine": "灌装机",
+      "line": 114,
+      "duration": 5,
+      "lines": {
+        "钢质瓶": 2,
+        "细磨荞花粉末": 2
+      }
+    }
+  ]
+}

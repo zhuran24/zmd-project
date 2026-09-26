@@ -1,0 +1,93 @@
+{
+ "W1": {
+  "period_steps": 1,
+  "Q": 2,
+  "t_off_tick": 11.0,
+  "Y_cache_state": 1,
+  "Y_remaining_tick": 0.5,
+  "Y_inventory": {
+   "ore": 50
+  },
+  "Y_output_slot": 0,
+  "Y_channels": 1,
+  "Y_k": 1,
+  "line_Y_to_X": [
+   -1
+  ],
+  "X_inventory": {
+   "block": 0
+  },
+  "X_cache": 0,
+  "X_output_slot": 0,
+  "X_powered": true,
+  "Y_nonempty_every_closure": true,
+  "X_empty_every_closure": true,
+  "delivered_to_core_before_static": 9,
+  "premise_X_single_recipe_legal": true,
+  "premise_X_powered_on": true,
+  "premise_dc_ge_a": true,
+  "premise_source_single_1tick_recipe_product_i": true,
+  "premise_source_never_empty_handed": true,
+  "premise_source_output_slot_only_i": true,
+  "premise_source_all_channels_le_k": true,
+  "premise_source_powered": false
+ },
+ "W2a": {
+  "Q": 10,
+  "period_steps": 10,
+  "cycle_start_step": 600,
+  "phases_line1_last_cell_receipts(1/Q)": [
+   1
+  ],
+  "phases_line2_last_cell_receipts(1/Q)": [
+   5
+  ],
+  "phases_X_batch_starts(1/Q)": [
+   5
+  ],
+  "phases_X_first_out_cell_receipts(1/Q)": [
+   5
+  ],
+  "X_nonempty_every_closure": true,
+  "Y1_nonempty_every_closure": true,
+  "Y2_nonempty_every_closure": true,
+  "X_batches_per_period": 1,
+  "X_input_reached_50": false
+ },
+ "W2b": {
+  "Q": 10,
+  "period_steps": 10,
+  "cycle_start_step": 600,
+  "phases_line1_last_cell_receipts(1/Q)": [
+   1
+  ],
+  "phases_line2_last_cell_receipts(1/Q)": [
+   5
+  ],
+  "phases_X_batch_starts(1/Q)": [
+   5
+  ],
+  "phases_X_first_out_cell_receipts(1/Q)": [
+   3
+  ],
+  "X_nonempty_every_closure": true,
+  "Y1_nonempty_every_closure": true,
+  "Y2_nonempty_every_closure": true,
+  "X_batches_per_period": 1,
+  "X_input_reached_50": false
+ },
+ "W3": {
+  "Y_connected_channels_at_each_closure": [
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "period_steps": 5,
+  "Y_nonempty_every_closure": true,
+  "X_empty_closures_per_period": 1,
+  "G_receipts_per_period": 1,
+  "X_line_first_cell_receipts_per_period": 4
+ }
+}
