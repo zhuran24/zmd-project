@@ -1,0 +1,37 @@
+{
+  "checked_utc": "2026-09-26T11:16:28.797893+00:00",
+  "elapsed_seconds_since_start": 2636.797893,
+  "candidate_count": 18,
+  "verdicts": {
+    "未否证": 12,
+    "修正": 6
+  },
+  "snapshot_hashes_unchanged": true,
+  "relative_report_links_resolve": true,
+  "reader_audit": [
+    "Standalone premises and numbering explicit",
+    "Scope and geometry limits stated",
+    "All six replacement clauses included",
+    "Counts and cross-references consistent",
+    "No unresolved-only verdict",
+    "Truncated probes not counted as passed cycles"
+  ],
+  "report_sha256": "77354ec74f39a6e829d8d517cde8267be4a76edd446b3e7c1f22c54b6ca3706e",
+  "artifact_sha256": {
+    "accounts.json": "9b2dad9adae0367b962f23d37a15114c5d7c18ec7f59667361c5f3ca3b3c1409",
+    "accounts.py": "7215077d20ebbac3b3edc376d94701102388fa860c9f9bd683e7f2d7cb89abad",
+    "audit_delivery.py": "f97a68a5b3f7aafe99aecfe9f1be2cbdd0638e04663f480336440be5bd7d1de3",
+    "build_report.py": "1df37fc548f9faa7e4f538eaf829535a91f27236cb309f1972ec38dcfa2a6932",
+    "cache_witness.json": "4fa2308d23b19a23166cca419e58164ee4854a86c11c21bb8cbcd596c9dfa496",
+    "cache_witness.py": "72f61ba8753a998bf79c112bcd17c0d978e543a39b02c7b62333a84a88e6fec3",
+    "events.py": "12764c22f3042e0c5aa78e40879bd5321e96b4ab46b750b0c735ecbac135d46e",
+    "geometry_witnesses.json": "5221e259320b7b4b24edb461740de5baf4c72e8d38e1cec87a85fefe55b0941e",
+    "geometry_witnesses.py": "0f595c1a4f4d18bd055f2dc77b2560a596c572095ae36dd61191f1f8210be92c",
+    "local_probes.json": "e05e00c6e1062e4560f79583702c4ef49dbf4b55966e468404534f043f7cbdb7",
+    "probes.py": "72a90cf1ba823c948c05fd4f6d84f582d786979d9058496dae222aa5eba31588",
+    "skeleton_probes.json": "c4f2365092d76ae02c07e85032383dfcc275791ce54d40e767b5fa2a920f9548",
+    "state_graph.json": "b20a1abbdd655c2a25b9aa5ea468dc9ffc535eb15a524dcc68f0a0bcf1eeaf60",
+    "state_graph.py": "f98f6da6161f5c989f53dbc83b5dd13c9ae995d67221507c32c3daad0722c730",
+    "verdicts.json": "a87efe732effd074e9174443bcf10b714ecedce2e564ddcd48005cc39504ba1f"
+  }
+}

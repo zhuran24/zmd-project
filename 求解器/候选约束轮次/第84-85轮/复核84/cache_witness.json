@@ -1,0 +1,105 @@
+{
+  "phi0": 211.0,
+  "bound": 210,
+  "minimum_phi": 209.5,
+  "trace": [
+    {
+      "t": 0,
+      "phi": 211.0,
+      "bound": 210,
+      "A_out": 50,
+      "A_starts_after_release": 0,
+      "C_out": 50,
+      "B_seed_taken": 0,
+      "box_powder": 44
+    },
+    {
+      "t": 1,
+      "phi": 210.5,
+      "bound": 210,
+      "A_out": 50,
+      "A_starts_after_release": 0,
+      "C_out": 49,
+      "B_seed_taken": 1,
+      "box_powder": 45
+    },
+    {
+      "t": 2,
+      "phi": 210.5,
+      "bound": 210,
+      "A_out": 50,
+      "A_starts_after_release": 0,
+      "C_out": 49,
+      "B_seed_taken": 1,
+      "box_powder": 46
+    },
+    {
+      "t": 3,
+      "phi": 210.0,
+      "bound": 210,
+      "A_out": 49,
+      "A_starts_after_release": 0,
+      "C_out": 50,
+      "B_seed_taken": 2,
+      "box_powder": 47
+    },
+    {
+      "t": 4,
+      "phi": 210.0,
+      "bound": 210,
+      "A_out": 49,
+      "A_starts_after_release": 0,
+      "C_out": 50,
+      "B_seed_taken": 2,
+      "box_powder": 48
+    },
+    {
+      "t": 5,
+      "phi": 209.5,
+      "bound": 210,
+      "A_out": 49,
+      "A_starts_after_release": 0,
+      "C_out": 49,
+      "B_seed_taken": 3,
+      "box_powder": 49
+    },
+    {
+      "t": 6,
+      "phi": 209.5,
+      "bound": 210,
+      "A_out": 49,
+      "A_starts_after_release": 0,
+      "C_out": 49,
+      "B_seed_taken": 3,
+      "box_powder": 50
+    },
+    {
+      "t": 7,
+      "phi": 209.5,
+      "bound": 210,
+      "A_out": 49,
+      "A_starts_after_release": 0,
+      "C_out": 49,
+      "B_seed_taken": 3,
+      "box_powder": 50
+    },
+    {
+      "t": 8,
+      "phi": 209.5,
+      "bound": 210,
+      "A_out": 49,
+      "A_starts_after_release": 0,
+      "C_out": 49,
+      "B_seed_taken": 3,
+      "box_powder": 50
+    }
+  ],
+  "final_cycle": [
+    7,
+    8
+  ],
+  "cached_old_product": "砂叶",
+  "current_species": "荞花",
+  "box_implementation": "44 powder in slot 1, other five slots full of five different non-powder items, no output, wireless off",
+  "scope": "All newly started plant recipes are buckwheat. Only A has an old completed sandleaf batch retained from debugging."
+}

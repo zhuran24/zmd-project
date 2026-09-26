@@ -1,0 +1,1 @@
+{"worker": 1, "agg": {"cases": 20000, "D02": 0, "STUCK": 719, "STUCK_late": 0, "BAL": 0, "cycles": 20000, "d03_applicable_cycles": 9339, "d03_viol": 0, "idle_cycles_below_S": 5438, "stuck_seen_cases": 10018, "maxbal": 1, "cycles_q_gt1": 14976, "seconds": 77.3}, "violations": []}

@@ -1,0 +1,340 @@
+{
+ "rules_file": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第84-85轮/前提快照/《明日方舟：终末地》游戏规则.txt",
+ "recipes_parsed": {
+  "粉碎机": [
+   [
+    {
+     "源矿": 1
+    },
+    {
+     "源石粉末": 1
+    },
+    1
+   ],
+   [
+    {
+     "蓝铁块": 1
+    },
+    {
+     "蓝铁粉末": 1
+    },
+    1
+   ],
+   [
+    {
+     "荞花": 1
+    },
+    {
+     "荞花粉末": 2
+    },
+    1
+   ],
+   [
+    {
+     "砂叶": 1
+    },
+    {
+     "砂叶粉末": 3
+    },
+    1
+   ]
+  ],
+  "精炼炉": [
+   [
+    {
+     "蓝铁矿": 1
+    },
+    {
+     "蓝铁块": 1
+    },
+    1
+   ],
+   [
+    {
+     "致密蓝铁粉末": 1
+    },
+    {
+     "钢块": 1
+    },
+    1
+   ],
+   [
+    {
+     "蓝铁粉末": 1
+    },
+    {
+     "蓝铁块": 1
+    },
+    1
+   ]
+  ],
+  "研磨机": [
+   [
+    {
+     "蓝铁粉末": 2,
+     "砂叶粉末": 1
+    },
+    {
+     "致密蓝铁粉末": 1
+    },
+    1
+   ],
+   [
+    {
+     "源石粉末": 2,
+     "砂叶粉末": 1
+    },
+    {
+     "致密源石粉末": 1
+    },
+    1
+   ],
+   [
+    {
+     "荞花粉末": 2,
+     "砂叶粉末": 1
+    },
+    {
+     "细磨荞花粉末": 1
+    },
+    1
+   ]
+  ],
+  "塑形机": [
+   [
+    {
+     "钢块": 2
+    },
+    {
+     "钢质瓶": 1
+    },
+    1
+   ]
+  ],
+  "配件机": [
+   [
+    {
+     "钢块": 1
+    },
+    {
+     "钢制零件": 1
+    },
+    1
+   ]
+  ],
+  "种植机": [
+   [
+    {
+     "荞花种子": 1
+    },
+    {
+     "荞花": 1
+    },
+    1
+   ],
+   [
+    {
+     "砂叶种子": 1
+    },
+    {
+     "砂叶": 1
+    },
+    1
+   ]
+  ],
+  "采种机": [
+   [
+    {
+     "荞花": 1
+    },
+    {
+     "荞花种子": 2
+    },
+    1
+   ],
+   [
+    {
+     "砂叶": 1
+    },
+    {
+     "砂叶种子": 2
+    },
+    1
+   ]
+  ],
+  "封装机": [
+   [
+    {
+     "钢制零件": 10,
+     "致密源石粉末": 15
+    },
+    {
+     "高容谷地电池": 1
+    },
+    5
+   ]
+  ],
+  "灌装机": [
+   [
+    {
+     "钢质瓶": 10,
+     "细磨荞花粉末": 10
+    },
+    {
+     "精选荞愈胶囊": 1
+    },
+    5
+   ]
+  ]
+ },
+ "grids_parsed": {
+  "粉碎机": 1,
+  "精炼炉": 1,
+  "配件机": 1,
+  "塑形机": 1,
+  "采种机": 1,
+  "种植机": 1,
+  "研磨机": 2,
+  "封装机": 2,
+  "灌装机": 2
+ },
+ "A": {
+  "粉碎机": {
+   "no_mis_first": 0,
+   "mis_first_allowed": 0,
+   "states": 251,
+   "classify_fail": [],
+   "extra_shape": {}
+  },
+  "精炼炉": {
+   "no_mis_first": 0,
+   "mis_first_allowed": 0,
+   "states": 201,
+   "classify_fail": [],
+   "extra_shape": {}
+  },
+  "配件机": {
+   "no_mis_first": 0,
+   "mis_first_allowed": 0,
+   "states": 101,
+   "classify_fail": [],
+   "extra_shape": {}
+  },
+  "塑形机": {
+   "no_mis_first": 0,
+   "mis_first_allowed": 1,
+   "states": 101,
+   "classify_fail": [],
+   "extra_shape": {
+    "both_occupied": 1
+   },
+   "small_examples": [
+    [
+     [
+      [
+       "钢块",
+       1
+      ]
+     ],
+     [
+      "MIS"
+     ]
+    ]
+   ]
+  },
+  "种植机": {
+   "no_mis_first": 0,
+   "mis_first_allowed": 0,
+   "states": 151,
+   "classify_fail": [],
+   "extra_shape": {}
+  },
+  "采种机": {
+   "no_mis_first": 0,
+   "mis_first_allowed": 0,
+   "states": 151,
+   "classify_fail": [],
+   "extra_shape": {}
+  },
+  "研磨机": {
+   "no_mis_first": 466,
+   "mis_first_allowed": 1078,
+   "states": 25251,
+   "classify_fail": [],
+   "extra_shape": {
+    "both_occupied": 612
+   }
+  },
+  "封装机": {
+   "no_mis_first": 25,
+   "mis_first_allowed": 1072,
+   "states": 7651,
+   "classify_fail": [],
+   "extra_shape": {
+    "both_occupied": 1047
+   }
+  },
+  "灌装机": {
+   "no_mis_first": 20,
+   "mis_first_allowed": 857,
+   "states": 7651,
+   "classify_fail": [],
+   "extra_shape": {
+    "both_occupied": 837
+   }
+  }
+ },
+ "B": {
+  "粉碎机": {
+   "states": 251,
+   "no_mis_first": 0,
+   "mis_first_allowed": 0
+  },
+  "精炼炉": {
+   "states": 201,
+   "no_mis_first": 0,
+   "mis_first_allowed": 0
+  },
+  "配件机": {
+   "states": 101,
+   "no_mis_first": 0,
+   "mis_first_allowed": 0
+  },
+  "塑形机": {
+   "states": 101,
+   "no_mis_first": 0,
+   "mis_first_allowed": 1
+  },
+  "种植机": {
+   "states": 151,
+   "no_mis_first": 0,
+   "mis_first_allowed": 0
+  },
+  "采种机": {
+   "states": 151,
+   "no_mis_first": 0,
+   "mis_first_allowed": 0
+  },
+  "研磨机": {
+   "states": 25251,
+   "no_mis_first": 466,
+   "mis_first_allowed": 1078
+  },
+  "封装机": {
+   "states": 7651,
+   "no_mis_first": 25,
+   "mis_first_allowed": 1072
+  },
+  "灌装机": {
+   "states": 7651,
+   "no_mis_first": 20,
+   "mis_first_allowed": 857
+  }
+ },
+ "grinder_transitions": {
+  "into_two_mains": 300,
+  "into_two_mains_all_one_step_form": true,
+  "into_misfeed": 201,
+  "into_stop_by_batch_start": 0
+ }
+}

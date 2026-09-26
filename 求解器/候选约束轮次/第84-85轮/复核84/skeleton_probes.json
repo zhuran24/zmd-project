@@ -1,0 +1,76 @@
+{
+  "skeleton": [
+    {
+      "route_length": 1,
+      "ore_gate_limit_per_5_ticks": null,
+      "machines": 221,
+      "routes": 317,
+      "cycle": {
+        "start": 2107,
+        "end": 2127,
+        "period": 20,
+        "delta": {
+          "battery": 12,
+          "capsule": 11,
+          "ore_fe": 680,
+          "ore_src": 360
+        },
+        "rates": {
+          "battery": "3/5",
+          "capsule": "11/20",
+          "ore_fe": "34",
+          "ore_src": "18"
+        }
+      },
+      "cap": 8000
+    },
+    {
+      "route_length": 2,
+      "ore_gate_limit_per_5_ticks": null,
+      "machines": 221,
+      "routes": 317,
+      "cycle": {
+        "start": 2126,
+        "end": 2146,
+        "period": 20,
+        "delta": {
+          "battery": 12,
+          "capsule": 11,
+          "ore_fe": 680,
+          "ore_src": 360
+        },
+        "rates": {
+          "battery": "3/5",
+          "capsule": "11/20",
+          "ore_fe": "34",
+          "ore_src": "18"
+        }
+      },
+      "cap": 8000
+    },
+    {
+      "route_length": 1,
+      "ore_gate_limit_per_5_ticks": 1,
+      "machines": 221,
+      "routes": 317,
+      "cycle": {
+        "start": 693,
+        "end": 793,
+        "period": 100,
+        "delta": {
+          "battery": 12,
+          "capsule": 11,
+          "ore_fe": 680,
+          "ore_src": 360
+        },
+        "rates": {
+          "battery": "3/25",
+          "capsule": "11/100",
+          "ore_fe": "34/5",
+          "ore_src": "18/5"
+        }
+      },
+      "cap": 8000
+    }
+  ]
+}
