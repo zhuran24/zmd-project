@@ -1,0 +1,378 @@
+[
+ {
+  "eL": 0,
+  "eB": 0,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "pairs": 3430,
+  "seconds": 9.2
+ },
+ {
+  "eL": 0,
+  "eB": 3,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "pairs": 3429,
+  "seconds": 8.9
+ },
+ {
+  "eL": 0,
+  "eB": 6,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "pairs": 3422,
+  "seconds": 0.16
+ },
+ {
+  "eL": 0,
+  "eB": 9,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "pairs": 3418,
+  "seconds": 0.22
+ },
+ {
+  "eL": 0,
+  "eB": 12,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "pairs": 3416,
+  "seconds": 0.16
+ },
+ {
+  "eL": 0,
+  "eB": 15,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "pairs": 3416,
+  "seconds": 0.16
+ },
+ {
+  "eL": 0,
+  "eB": 18,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "pairs": 3416,
+  "seconds": 0.16
+ },
+ {
+  "eL": 0,
+  "eB": 21,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "pairs": 3416,
+  "seconds": 0.16
+ },
+ {
+  "eL": 0,
+  "eB": 24,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "pairs": 3416,
+  "seconds": 0.16
+ },
+ {
+  "eL": 0,
+  "eB": 27,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "pairs": 3416,
+  "seconds": 0.16
+ },
+ {
+  "eL": 0,
+  "eB": 30,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "pairs": 3416,
+  "seconds": 0.16
+ },
+ {
+  "eL": 0,
+  "eB": 33,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "pairs": 3416,
+  "seconds": 0.16
+ },
+ {
+  "eL": 0,
+  "eB": 36,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "pairs": 3416,
+  "seconds": 0.16
+ },
+ {
+  "eL": 0,
+  "eB": 39,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "pairs": 3416,
+  "seconds": 0.16
+ },
+ {
+  "eL": 0,
+  "eB": 42,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "pairs": 3416,
+  "seconds": 0.16
+ },
+ {
+  "eL": 0,
+  "eB": 45,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "pairs": 3416,
+  "seconds": 0.17
+ },
+ {
+  "eL": 0,
+  "eB": 48,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "pairs": 3416,
+  "seconds": 0.16
+ },
+ {
+  "eL": 0,
+  "eB": 51,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "pairs": 3416,
+  "seconds": 0.16
+ },
+ {
+  "eL": 0,
+  "eB": 54,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "pairs": 3416,
+  "seconds": 0.16
+ },
+ {
+  "eL": 0,
+  "eB": 57,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "pairs": 3416,
+  "seconds": 0.16
+ },
+ {
+  "eL": 0,
+  "eB": 60,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "pairs": 3416,
+  "seconds": 0.17
+ },
+ {
+  "eL": 0,
+  "eB": 63,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "pairs": 3417,
+  "seconds": 0.16
+ },
+ {
+  "eL": 0,
+  "eB": 66,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "pairs": 3421,
+  "seconds": 0.16
+ },
+ {
+  "eL": 0,
+  "eB": 69,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "pairs": 3425,
+  "seconds": 0.15
+ },
+ {
+  "eL": 3,
+  "eB": 0,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "pairs": 3429,
+  "seconds": 8.91
+ },
+ {
+  "eL": 6,
+  "eB": 0,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "pairs": 3422,
+  "seconds": 0.2
+ },
+ {
+  "eL": 9,
+  "eB": 0,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "pairs": 3418,
+  "seconds": 0.19
+ },
+ {
+  "eL": 12,
+  "eB": 0,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "pairs": 3416,
+  "seconds": 0.21
+ },
+ {
+  "eL": 15,
+  "eB": 0,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "pairs": 3416,
+  "seconds": 0.2
+ },
+ {
+  "eL": 18,
+  "eB": 0,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "pairs": 3416,
+  "seconds": 0.2
+ },
+ {
+  "eL": 21,
+  "eB": 0,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "pairs": 3416,
+  "seconds": 0.22
+ },
+ {
+  "eL": 24,
+  "eB": 0,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "pairs": 3416,
+  "seconds": 0.19
+ },
+ {
+  "eL": 27,
+  "eB": 0,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "pairs": 3416,
+  "seconds": 0.2
+ },
+ {
+  "eL": 30,
+  "eB": 0,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "pairs": 3416,
+  "seconds": 0.2
+ },
+ {
+  "eL": 33,
+  "eB": 0,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "pairs": 3416,
+  "seconds": 0.2
+ },
+ {
+  "eL": 36,
+  "eB": 0,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "pairs": 3416,
+  "seconds": 0.2
+ },
+ {
+  "eL": 39,
+  "eB": 0,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "pairs": 3416,
+  "seconds": 0.2
+ },
+ {
+  "eL": 42,
+  "eB": 0,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "pairs": 3416,
+  "seconds": 0.2
+ },
+ {
+  "eL": 45,
+  "eB": 0,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "pairs": 3416,
+  "seconds": 0.19
+ },
+ {
+  "eL": 48,
+  "eB": 0,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "pairs": 3416,
+  "seconds": 0.2
+ },
+ {
+  "eL": 51,
+  "eB": 0,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "pairs": 3416,
+  "seconds": 0.19
+ },
+ {
+  "eL": 54,
+  "eB": 0,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "pairs": 3416,
+  "seconds": 0.2
+ },
+ {
+  "eL": 57,
+  "eB": 0,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "pairs": 3416,
+  "seconds": 0.2
+ },
+ {
+  "eL": 60,
+  "eB": 0,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "pairs": 3416,
+  "seconds": 0.19
+ },
+ {
+  "eL": 63,
+  "eB": 0,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "pairs": 3417,
+  "seconds": 0.18
+ },
+ {
+  "eL": 66,
+  "eB": 0,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "pairs": 3421,
+  "seconds": 0.19
+ },
+ {
+  "eL": 69,
+  "eB": 0,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "pairs": 3425,
+  "seconds": 0.19
+ }
+]

@@ -1,0 +1,78 @@
+{
+ "mode": "wall",
+ "obj": "weight",
+ "cap": 14,
+ "atleast": null,
+ "n_options": 550,
+ "status": "OPTIMAL",
+ "seconds": 0.61,
+ "value": 29,
+ "bound": 29.0,
+ "selection": [
+  {
+   "kind": "S_LR",
+   "x": -2,
+   "y": 1
+  },
+  {
+   "kind": "S_LR",
+   "x": -2,
+   "y": 8
+  },
+  {
+   "kind": "S_BT",
+   "x": 1,
+   "y": -2
+  },
+  {
+   "kind": "S_BT",
+   "x": 1,
+   "y": 3
+  },
+  {
+   "kind": "S_BT",
+   "x": 1,
+   "y": 7
+  },
+  {
+   "kind": "S_BT",
+   "x": 1,
+   "y": 11
+  },
+  {
+   "kind": "S_BT",
+   "x": 4,
+   "y": -2
+  },
+  {
+   "kind": "S_BT",
+   "x": 4,
+   "y": 2
+  },
+  {
+   "kind": "S_BT",
+   "x": 4,
+   "y": 7
+  },
+  {
+   "kind": "S_BT",
+   "x": 4,
+   "y": 11
+  },
+  {
+   "kind": "M_LR",
+   "x": -4,
+   "y": -4
+  },
+  {
+   "kind": "L_BT",
+   "x": -5,
+   "y": 4
+  },
+  {
+   "kind": "L_LR",
+   "x": -3,
+   "y": 11
+  }
+ ]
+}

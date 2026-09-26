@@ -1,0 +1,20 @@
+{
+ "b": 7,
+ "P": 12,
+ "J": [
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  6
+ ],
+ "cap": 187,
+ "status": "INFEASIBLE",
+ "seconds": 1.8,
+ "n_mach": 724,
+ "n_core": 135,
+ "n_poles": 1530,
+ "budget": 59
+}

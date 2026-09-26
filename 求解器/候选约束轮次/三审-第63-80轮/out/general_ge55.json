@@ -1,0 +1,9 @@
+{
+ "mode": "general",
+ "obj": "weight",
+ "cap": 23,
+ "atleast": 55,
+ "n_options": 1240,
+ "status": "INFEASIBLE",
+ "seconds": 88.17
+}

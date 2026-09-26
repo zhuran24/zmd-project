@@ -1,0 +1,1 @@
+{"mode": "wall", "obj": "count", "cap": 14, "atleast": null, "n_options": 550, "n_rows": 1345, "status": 0, "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)", "seconds": 0.61, "value": 13.0000000000001}

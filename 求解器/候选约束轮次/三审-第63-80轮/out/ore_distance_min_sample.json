@@ -1,0 +1,34 @@
+[
+ {
+  "eL": 0,
+  "eB": 0,
+  "status": 0,
+  "min_cost": 12.0,
+  "pairs": 6040,
+  "seconds": 0.6
+ },
+ {
+  "eL": 0,
+  "eB": 3,
+  "status": 0,
+  "min_cost": 8.0,
+  "pairs": 6038,
+  "seconds": 0.3
+ },
+ {
+  "eL": 3,
+  "eB": 0,
+  "status": 0,
+  "min_cost": 8.0,
+  "pairs": 6038,
+  "seconds": 0.3
+ },
+ {
+  "eL": 0,
+  "eB": 69,
+  "status": 0,
+  "min_cost": 15.0,
+  "pairs": 6033,
+  "seconds": 0.4
+ }
+]

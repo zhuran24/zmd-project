@@ -1,0 +1,331 @@
+[
+ {
+  "eL": 0,
+  "eB": 0,
+  "status": "INFEASIBLE",
+  "bodies": 992,
+  "seconds": 0.62
+ },
+ {
+  "eL": 0,
+  "eB": 3,
+  "status": "INFEASIBLE",
+  "bodies": 993,
+  "seconds": 0.63
+ },
+ {
+  "eL": 0,
+  "eB": 6,
+  "status": "INFEASIBLE",
+  "bodies": 993,
+  "seconds": 0.41
+ },
+ {
+  "eL": 0,
+  "eB": 9,
+  "status": "INFEASIBLE",
+  "bodies": 993,
+  "seconds": 0.39
+ },
+ {
+  "eL": 0,
+  "eB": 12,
+  "status": "INFEASIBLE",
+  "bodies": 992,
+  "seconds": 0.39
+ },
+ {
+  "eL": 0,
+  "eB": 15,
+  "status": "INFEASIBLE",
+  "bodies": 992,
+  "seconds": 0.39
+ },
+ {
+  "eL": 0,
+  "eB": 18,
+  "status": "INFEASIBLE",
+  "bodies": 992,
+  "seconds": 0.39
+ },
+ {
+  "eL": 0,
+  "eB": 21,
+  "status": "INFEASIBLE",
+  "bodies": 992,
+  "seconds": 0.39
+ },
+ {
+  "eL": 0,
+  "eB": 24,
+  "status": "INFEASIBLE",
+  "bodies": 992,
+  "seconds": 0.39
+ },
+ {
+  "eL": 0,
+  "eB": 27,
+  "status": "INFEASIBLE",
+  "bodies": 992,
+  "seconds": 0.4
+ },
+ {
+  "eL": 0,
+  "eB": 30,
+  "status": "INFEASIBLE",
+  "bodies": 992,
+  "seconds": 0.39
+ },
+ {
+  "eL": 0,
+  "eB": 33,
+  "status": "INFEASIBLE",
+  "bodies": 992,
+  "seconds": 0.41
+ },
+ {
+  "eL": 0,
+  "eB": 36,
+  "status": "INFEASIBLE",
+  "bodies": 992,
+  "seconds": 0.4
+ },
+ {
+  "eL": 0,
+  "eB": 39,
+  "status": "INFEASIBLE",
+  "bodies": 992,
+  "seconds": 0.39
+ },
+ {
+  "eL": 0,
+  "eB": 42,
+  "status": "INFEASIBLE",
+  "bodies": 992,
+  "seconds": 0.39
+ },
+ {
+  "eL": 0,
+  "eB": 45,
+  "status": "INFEASIBLE",
+  "bodies": 992,
+  "seconds": 0.38
+ },
+ {
+  "eL": 0,
+  "eB": 48,
+  "status": "INFEASIBLE",
+  "bodies": 992,
+  "seconds": 0.39
+ },
+ {
+  "eL": 0,
+  "eB": 51,
+  "status": "INFEASIBLE",
+  "bodies": 992,
+  "seconds": 0.39
+ },
+ {
+  "eL": 0,
+  "eB": 54,
+  "status": "INFEASIBLE",
+  "bodies": 992,
+  "seconds": 0.4
+ },
+ {
+  "eL": 0,
+  "eB": 57,
+  "status": "INFEASIBLE",
+  "bodies": 992,
+  "seconds": 0.39
+ },
+ {
+  "eL": 0,
+  "eB": 60,
+  "status": "INFEASIBLE",
+  "bodies": 992,
+  "seconds": 0.39
+ },
+ {
+  "eL": 0,
+  "eB": 63,
+  "status": "INFEASIBLE",
+  "bodies": 992,
+  "seconds": 0.39
+ },
+ {
+  "eL": 0,
+  "eB": 66,
+  "status": "INFEASIBLE",
+  "bodies": 992,
+  "seconds": 0.39
+ },
+ {
+  "eL": 0,
+  "eB": 69,
+  "status": "INFEASIBLE",
+  "bodies": 992,
+  "seconds": 0.39
+ },
+ {
+  "eL": 3,
+  "eB": 0,
+  "status": "INFEASIBLE",
+  "bodies": 993,
+  "seconds": 0.6
+ },
+ {
+  "eL": 6,
+  "eB": 0,
+  "status": "INFEASIBLE",
+  "bodies": 993,
+  "seconds": 0.4
+ },
+ {
+  "eL": 9,
+  "eB": 0,
+  "status": "INFEASIBLE",
+  "bodies": 993,
+  "seconds": 0.39
+ },
+ {
+  "eL": 12,
+  "eB": 0,
+  "status": "INFEASIBLE",
+  "bodies": 992,
+  "seconds": 0.39
+ },
+ {
+  "eL": 15,
+  "eB": 0,
+  "status": "INFEASIBLE",
+  "bodies": 992,
+  "seconds": 0.39
+ },
+ {
+  "eL": 18,
+  "eB": 0,
+  "status": "INFEASIBLE",
+  "bodies": 992,
+  "seconds": 0.39
+ },
+ {
+  "eL": 21,
+  "eB": 0,
+  "status": "INFEASIBLE",
+  "bodies": 992,
+  "seconds": 0.39
+ },
+ {
+  "eL": 24,
+  "eB": 0,
+  "status": "INFEASIBLE",
+  "bodies": 992,
+  "seconds": 0.39
+ },
+ {
+  "eL": 27,
+  "eB": 0,
+  "status": "INFEASIBLE",
+  "bodies": 992,
+  "seconds": 0.39
+ },
+ {
+  "eL": 30,
+  "eB": 0,
+  "status": "INFEASIBLE",
+  "bodies": 992,
+  "seconds": 0.39
+ },
+ {
+  "eL": 33,
+  "eB": 0,
+  "status": "INFEASIBLE",
+  "bodies": 992,
+  "seconds": 0.39
+ },
+ {
+  "eL": 36,
+  "eB": 0,
+  "status": "INFEASIBLE",
+  "bodies": 992,
+  "seconds": 0.38
+ },
+ {
+  "eL": 39,
+  "eB": 0,
+  "status": "INFEASIBLE",
+  "bodies": 992,
+  "seconds": 0.39
+ },
+ {
+  "eL": 42,
+  "eB": 0,
+  "status": "INFEASIBLE",
+  "bodies": 992,
+  "seconds": 0.39
+ },
+ {
+  "eL": 45,
+  "eB": 0,
+  "status": "INFEASIBLE",
+  "bodies": 992,
+  "seconds": 0.39
+ },
+ {
+  "eL": 48,
+  "eB": 0,
+  "status": "INFEASIBLE",
+  "bodies": 992,
+  "seconds": 0.39
+ },
+ {
+  "eL": 51,
+  "eB": 0,
+  "status": "INFEASIBLE",
+  "bodies": 992,
+  "seconds": 0.39
+ },
+ {
+  "eL": 54,
+  "eB": 0,
+  "status": "INFEASIBLE",
+  "bodies": 992,
+  "seconds": 0.39
+ },
+ {
+  "eL": 57,
+  "eB": 0,
+  "status": "INFEASIBLE",
+  "bodies": 992,
+  "seconds": 0.39
+ },
+ {
+  "eL": 60,
+  "eB": 0,
+  "status": "INFEASIBLE",
+  "bodies": 992,
+  "seconds": 0.39
+ },
+ {
+  "eL": 63,
+  "eB": 0,
+  "status": "INFEASIBLE",
+  "bodies": 992,
+  "seconds": 0.39
+ },
+ {
+  "eL": 66,
+  "eB": 0,
+  "status": "INFEASIBLE",
+  "bodies": 992,
+  "seconds": 0.39
+ },
+ {
+  "eL": 69,
+  "eB": 0,
+  "status": "INFEASIBLE",
+  "bodies": 992,
+  "seconds": 0.39
+ }
+]

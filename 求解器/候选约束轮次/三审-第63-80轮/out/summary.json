@@ -1,0 +1,793 @@
+{
+ "projection_runs": [
+  {
+   "b": 17,
+   "P": 10,
+   "J": [
+    0,
+    0
+   ],
+   "cap": 187,
+   "status": "INFEASIBLE",
+   "message": null,
+   "engine": "cpsat-linear",
+   "seconds": 1212.3,
+   "S": null,
+   "X": null,
+   "Y": null,
+   "Jval": null,
+   "n_mach": 534,
+   "n_core": 114,
+   "n_poles": 1265,
+   "file": "milp_b17_P10_J0-0_cap187_cpsat.json"
+  },
+  {
+   "b": 17,
+   "P": 11,
+   "J": [
+    0,
+    4
+   ],
+   "cap": 187,
+   "status": "INFEASIBLE",
+   "message": null,
+   "engine": "cpsat-linear",
+   "seconds": 139.2,
+   "S": null,
+   "X": null,
+   "Y": null,
+   "Jval": null,
+   "n_mach": 534,
+   "n_core": 114,
+   "n_poles": 1482,
+   "file": "milp_b17_P11_J0-4_cap187_cpsat.json"
+  },
+  {
+   "b": 17,
+   "P": 12,
+   "J": [
+    0,
+    6
+   ],
+   "cap": 187,
+   "status": 2,
+   "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+   "engine": null,
+   "seconds": 2.3,
+   "S": null,
+   "X": null,
+   "Y": null,
+   "Jval": null,
+   "n_mach": 534,
+   "n_core": 114,
+   "n_poles": 1482,
+   "file": "milp_b17_P12_J0-6_cap187.json"
+  },
+  {
+   "b": 6,
+   "P": 10,
+   "J": [
+    0,
+    1
+   ],
+   "cap": 187,
+   "status": 2,
+   "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+   "engine": null,
+   "seconds": 15.0,
+   "S": null,
+   "X": null,
+   "Y": null,
+   "Jval": null,
+   "n_mach": 681,
+   "n_core": 135,
+   "n_poles": 1396,
+   "file": "milp_b6_P10_J0-1_cap187.json"
+  },
+  {
+   "b": 6,
+   "P": 11,
+   "J": [
+    0,
+    4
+   ],
+   "cap": 187,
+   "status": 2,
+   "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+   "engine": null,
+   "seconds": 141.1,
+   "S": null,
+   "X": null,
+   "Y": null,
+   "Jval": null,
+   "n_mach": 681,
+   "n_core": 135,
+   "n_poles": 1530,
+   "file": "milp_b6_P11_J0-4_cap187.json"
+  },
+  {
+   "b": 6,
+   "P": 12,
+   "J": [
+    0,
+    6
+   ],
+   "cap": 187,
+   "status": 2,
+   "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+   "engine": null,
+   "seconds": 4.0,
+   "S": null,
+   "X": null,
+   "Y": null,
+   "Jval": null,
+   "n_mach": 681,
+   "n_core": 135,
+   "n_poles": 1530,
+   "file": "milp_b6_P12_J0-6_cap187.json"
+  },
+  {
+   "b": 7,
+   "P": 10,
+   "J": [
+    0,
+    1
+   ],
+   "cap": 187,
+   "status": 2,
+   "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+   "engine": null,
+   "seconds": 9.1,
+   "S": null,
+   "X": null,
+   "Y": null,
+   "Jval": null,
+   "n_mach": 724,
+   "n_core": 135,
+   "n_poles": 1390,
+   "file": "milp_b7_P10_J0-1_cap187.json"
+  },
+  {
+   "b": 7,
+   "P": 11,
+   "J": [
+    0,
+    4
+   ],
+   "cap": 187,
+   "status": 2,
+   "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+   "engine": null,
+   "seconds": 379.9,
+   "S": null,
+   "X": null,
+   "Y": null,
+   "Jval": null,
+   "n_mach": 724,
+   "n_core": 135,
+   "n_poles": 1530,
+   "file": "milp_b7_P11_J0-4_cap187.json"
+  },
+  {
+   "b": 7,
+   "P": 12,
+   "J": [
+    0,
+    6
+   ],
+   "cap": 187,
+   "status": 2,
+   "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+   "engine": null,
+   "seconds": 4.0,
+   "S": null,
+   "X": null,
+   "Y": null,
+   "Jval": null,
+   "n_mach": 724,
+   "n_core": 135,
+   "n_poles": 1530,
+   "file": "milp_b7_P12_J0-6_cap187.json"
+  },
+  {
+   "b": 9,
+   "P": 10,
+   "J": [
+    0,
+    1
+   ],
+   "cap": 187,
+   "status": 2,
+   "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+   "engine": null,
+   "seconds": 7.3,
+   "S": null,
+   "X": null,
+   "Y": null,
+   "Jval": null,
+   "n_mach": 724,
+   "n_core": 94,
+   "n_poles": 1350,
+   "file": "milp_b9_P10_J0-1_cap187.json"
+  },
+  {
+   "b": 9,
+   "P": 11,
+   "J": [
+    0,
+    4
+   ],
+   "cap": 187,
+   "status": 2,
+   "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+   "engine": null,
+   "seconds": 253.0,
+   "S": null,
+   "X": null,
+   "Y": null,
+   "Jval": null,
+   "n_mach": 724,
+   "n_core": 94,
+   "n_poles": 1530,
+   "file": "milp_b9_P11_J0-4_cap187.json"
+  },
+  {
+   "b": 9,
+   "P": 12,
+   "J": [
+    0,
+    6
+   ],
+   "cap": 187,
+   "status": 2,
+   "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+   "engine": null,
+   "seconds": 3.8,
+   "S": null,
+   "X": null,
+   "Y": null,
+   "Jval": null,
+   "n_mach": 724,
+   "n_core": 94,
+   "n_poles": 1530,
+   "file": "milp_b9_P12_J0-6_cap187.json"
+  },
+  {
+   "b": 17,
+   "P": 10,
+   "J": [
+    0
+   ],
+   "cap": 187,
+   "status": "INFEASIBLE",
+   "message": null,
+   "engine": null,
+   "seconds": 177.82,
+   "S": null,
+   "X": null,
+   "Y": null,
+   "Jval": null,
+   "n_mach": 534,
+   "n_core": 114,
+   "n_poles": 1265,
+   "file": "proj_b17_P10_J0-0_cap187.json"
+  },
+  {
+   "b": 17,
+   "P": 10,
+   "J": [
+    0,
+    1
+   ],
+   "cap": 184,
+   "status": "INFEASIBLE",
+   "message": null,
+   "engine": null,
+   "seconds": 239.54,
+   "S": null,
+   "X": null,
+   "Y": null,
+   "Jval": null,
+   "n_mach": 534,
+   "n_core": 114,
+   "n_poles": 1431,
+   "file": "proj_b17_P10_J0-1_cap184.json"
+  },
+  {
+   "b": 17,
+   "P": 10,
+   "J": [
+    0
+   ],
+   "cap": 187,
+   "status": "INFEASIBLE",
+   "message": null,
+   "engine": null,
+   "seconds": 161.42,
+   "S": null,
+   "X": null,
+   "Y": null,
+   "Jval": null,
+   "n_mach": 534,
+   "n_core": 114,
+   "n_poles": 1266,
+   "file": "proj_b17_P10_J0_cap187_r75caps.json"
+  },
+  {
+   "b": 17,
+   "P": 10,
+   "J": [
+    1
+   ],
+   "cap": 185,
+   "status": "OPTIMAL",
+   "message": null,
+   "engine": null,
+   "seconds": 2.18,
+   "S": 185,
+   "X": 12,
+   "Y": 15,
+   "Jval": 1,
+   "n_mach": 534,
+   "n_core": 114,
+   "n_poles": 1431,
+   "file": "proj_b17_P10_J1_cap185.json"
+  },
+  {
+   "b": 17,
+   "P": 10,
+   "J": [
+    1
+   ],
+   "cap": 187,
+   "status": "OPTIMAL",
+   "message": null,
+   "engine": null,
+   "seconds": 4.23,
+   "S": 187,
+   "X": 14,
+   "Y": 15,
+   "Jval": 1,
+   "n_mach": 534,
+   "n_core": 114,
+   "n_poles": 1431,
+   "file": "proj_b17_P10_J1_cap187.json"
+  },
+  {
+   "b": 17,
+   "P": 11,
+   "J": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "cap": 187,
+   "status": "INFEASIBLE",
+   "message": null,
+   "engine": null,
+   "seconds": 100.6,
+   "S": null,
+   "X": null,
+   "Y": null,
+   "Jval": null,
+   "n_mach": 534,
+   "n_core": 114,
+   "n_poles": 1482,
+   "file": "proj_b17_P11_J0-4_formal.json"
+  },
+  {
+   "b": 17,
+   "P": 12,
+   "J": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "cap": 187,
+   "status": "INFEASIBLE",
+   "message": null,
+   "engine": null,
+   "seconds": 2.03,
+   "S": null,
+   "X": null,
+   "Y": null,
+   "Jval": null,
+   "n_mach": 534,
+   "n_core": 114,
+   "n_poles": 1482,
+   "file": "proj_b17_P12_J0-5_cap187.json"
+  },
+  {
+   "b": 17,
+   "P": 12,
+   "J": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "cap": 187,
+   "status": "INFEASIBLE",
+   "message": null,
+   "engine": null,
+   "seconds": 1.63,
+   "S": null,
+   "X": null,
+   "Y": null,
+   "Jval": null,
+   "n_mach": 534,
+   "n_core": 114,
+   "n_poles": 1482,
+   "file": "proj_b17_P12_J0-6_formal.json"
+  },
+  {
+   "b": 6,
+   "P": 10,
+   "J": [
+    0,
+    1
+   ],
+   "cap": 187,
+   "status": "INFEASIBLE",
+   "message": null,
+   "engine": null,
+   "seconds": 1.18,
+   "S": null,
+   "X": null,
+   "Y": null,
+   "Jval": null,
+   "n_mach": 681,
+   "n_core": 135,
+   "n_poles": 1396,
+   "file": "proj_b6_P10_J0-1_formal.json"
+  },
+  {
+   "b": 6,
+   "P": 11,
+   "J": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "cap": 187,
+   "status": "INFEASIBLE",
+   "message": null,
+   "engine": null,
+   "seconds": 13.16,
+   "S": null,
+   "X": null,
+   "Y": null,
+   "Jval": null,
+   "n_mach": 681,
+   "n_core": 135,
+   "n_poles": 1530,
+   "file": "proj_b6_P11_J0-4_formal.json"
+  },
+  {
+   "b": 6,
+   "P": 12,
+   "J": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "cap": 187,
+   "status": "INFEASIBLE",
+   "message": null,
+   "engine": null,
+   "seconds": 1.24,
+   "S": null,
+   "X": null,
+   "Y": null,
+   "Jval": null,
+   "n_mach": 681,
+   "n_core": 135,
+   "n_poles": 1530,
+   "file": "proj_b6_P12_J0-6_formal.json"
+  },
+  {
+   "b": 7,
+   "P": 10,
+   "J": [
+    0,
+    1
+   ],
+   "cap": 187,
+   "status": "INFEASIBLE",
+   "message": null,
+   "engine": null,
+   "seconds": 0.53,
+   "S": null,
+   "X": null,
+   "Y": null,
+   "Jval": null,
+   "n_mach": 724,
+   "n_core": 135,
+   "n_poles": 1390,
+   "file": "proj_b7_P10_J0-1_formal.json"
+  },
+  {
+   "b": 7,
+   "P": 11,
+   "J": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "cap": 187,
+   "status": "INFEASIBLE",
+   "message": null,
+   "engine": null,
+   "seconds": 38.36,
+   "S": null,
+   "X": null,
+   "Y": null,
+   "Jval": null,
+   "n_mach": 724,
+   "n_core": 135,
+   "n_poles": 1530,
+   "file": "proj_b7_P11_J0-4_formal.json"
+  },
+  {
+   "b": 7,
+   "P": 12,
+   "J": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "cap": 187,
+   "status": "INFEASIBLE",
+   "message": null,
+   "engine": null,
+   "seconds": 1.8,
+   "S": null,
+   "X": null,
+   "Y": null,
+   "Jval": null,
+   "n_mach": 724,
+   "n_core": 135,
+   "n_poles": 1530,
+   "file": "proj_b7_P12_J0-6_formal.json"
+  },
+  {
+   "b": 9,
+   "P": 10,
+   "J": [
+    0,
+    1
+   ],
+   "cap": 187,
+   "status": "INFEASIBLE",
+   "message": null,
+   "engine": null,
+   "seconds": 0.17,
+   "S": null,
+   "X": null,
+   "Y": null,
+   "Jval": null,
+   "n_mach": 724,
+   "n_core": 94,
+   "n_poles": 1350,
+   "file": "proj_b9_P10_J0-1_formal.json"
+  },
+  {
+   "b": 9,
+   "P": 11,
+   "J": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "cap": 187,
+   "status": "INFEASIBLE",
+   "message": null,
+   "engine": null,
+   "seconds": 54.85,
+   "S": null,
+   "X": null,
+   "Y": null,
+   "Jval": null,
+   "n_mach": 724,
+   "n_core": 94,
+   "n_poles": 1530,
+   "file": "proj_b9_P11_J0-4_formal.json"
+  },
+  {
+   "b": 9,
+   "P": 12,
+   "J": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "cap": 187,
+   "status": "INFEASIBLE",
+   "message": null,
+   "engine": null,
+   "seconds": 1.2,
+   "S": null,
+   "X": null,
+   "Y": null,
+   "Jval": null,
+   "n_mach": 724,
+   "n_core": 94,
+   "n_poles": 1530,
+   "file": "proj_b9_P12_J0-6_formal.json"
+  }
+ ],
+ "local_pole": {
+  "wall_weight": {
+   "status": "OPTIMAL",
+   "value": 29,
+   "n_options": 550,
+   "seconds": 0.61
+  },
+  "wall_count": {
+   "status": "OPTIMAL",
+   "value": 13,
+   "n_options": 550,
+   "seconds": 0.12
+  },
+  "general_ge55": {
+   "status": "INFEASIBLE",
+   "value": null,
+   "n_options": 1240,
+   "seconds": 88.17
+  },
+  "general_ge54": {
+   "status": "OPTIMAL",
+   "value": 54,
+   "n_options": 1240,
+   "seconds": 3.47
+  },
+  "highs_wall_count": {
+   "mode": "wall",
+   "obj": "count",
+   "cap": 14,
+   "atleast": null,
+   "n_options": 550,
+   "n_rows": 1345,
+   "status": 0,
+   "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+   "seconds": 0.61,
+   "value": 13.0000000000001
+  },
+  "highs_wall_weight": {
+   "mode": "wall",
+   "obj": "weight",
+   "cap": 14,
+   "atleast": null,
+   "n_options": 550,
+   "n_rows": 1345,
+   "status": 0,
+   "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+   "seconds": 2.38,
+   "value": 29.000000000000053
+  },
+  "highs_general_ge55": {
+   "mode": "general",
+   "obj": "weight",
+   "cap": 23,
+   "atleast": 55.0,
+   "n_options": 1240,
+   "n_rows": 2942,
+   "status": 2,
+   "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+   "seconds": 17.54,
+   "value": null
+  }
+ },
+ "strip_b7": {
+  "combos": 215,
+  "lp_infeasible": 0,
+  "min_scipy": 6.333333333333333,
+  "min_glop": 6.333333333333333,
+  "n_attaining": 6,
+  "disagree": 0
+ },
+ "ore_distance": {
+  "ore_distance_cpsat_b7": {
+   "arrangements": 47,
+   "statuses": [
+    "INFEASIBLE"
+   ]
+  },
+  "ore_distance_highs_b7": {
+   "arrangements": 47,
+   "statuses": [
+    "2"
+   ]
+  },
+  "min_sample": [
+   {
+    "eL": 0,
+    "eB": 0,
+    "status": 0,
+    "min_cost": 12.0,
+    "pairs": 6040,
+    "seconds": 0.6
+   },
+   {
+    "eL": 0,
+    "eB": 3,
+    "status": 0,
+    "min_cost": 8.0,
+    "pairs": 6038,
+    "seconds": 0.3
+   },
+   {
+    "eL": 3,
+    "eB": 0,
+    "status": 0,
+    "min_cost": 8.0,
+    "pairs": 6038,
+    "seconds": 0.3
+   },
+   {
+    "eL": 0,
+    "eB": 69,
+    "status": 0,
+    "min_cost": 15.0,
+    "pairs": 6033,
+    "seconds": 0.4
+   }
+  ]
+ },
+ "grid66": {
+  "9": {
+   "positions": 3490,
+   "centers": 514320,
+   "bad": []
+  },
+  "17": {
+   "positions": 3511,
+   "centers": 532890,
+   "bad": []
+  }
+ },
+ "site_power": {
+  "6": {
+   "positions": 3490,
+   "all_optimal": true
+  },
+  "7": {
+   "positions": 3490,
+   "all_optimal": true
+  },
+  "9": {
+   "positions": 3490,
+   "all_optimal": true
+  },
+  "17": {
+   "positions": 3511,
+   "all_optimal": true
+  }
+ }
+}

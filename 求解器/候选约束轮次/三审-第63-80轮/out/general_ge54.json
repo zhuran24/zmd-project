@@ -1,0 +1,128 @@
+{
+ "mode": "general",
+ "obj": "weight",
+ "cap": 23,
+ "atleast": 54,
+ "n_options": 1240,
+ "status": "OPTIMAL",
+ "seconds": 3.47,
+ "value": 54,
+ "bound": null,
+ "selection": [
+  {
+   "kind": "S_LR",
+   "x": -2,
+   "y": 1
+  },
+  {
+   "kind": "S_LR",
+   "x": -2,
+   "y": 8
+  },
+  {
+   "kind": "S_LR",
+   "x": 2,
+   "y": 1
+  },
+  {
+   "kind": "S_LR",
+   "x": 5,
+   "y": 8
+  },
+  {
+   "kind": "S_LR",
+   "x": 7,
+   "y": 1
+  },
+  {
+   "kind": "S_LR",
+   "x": 7,
+   "y": 4
+  },
+  {
+   "kind": "S_LR",
+   "x": 11,
+   "y": 5
+  },
+  {
+   "kind": "S_LR",
+   "x": 11,
+   "y": 8
+  },
+  {
+   "kind": "S_BT",
+   "x": 1,
+   "y": 4
+  },
+  {
+   "kind": "S_BT",
+   "x": 1,
+   "y": 10
+  },
+  {
+   "kind": "S_BT",
+   "x": 2,
+   "y": 7
+  },
+  {
+   "kind": "S_BT",
+   "x": 4,
+   "y": 11
+  },
+  {
+   "kind": "S_BT",
+   "x": 5,
+   "y": -2
+  },
+  {
+   "kind": "S_BT",
+   "x": 8,
+   "y": -2
+  },
+  {
+   "kind": "S_BT",
+   "x": 8,
+   "y": 7
+  },
+  {
+   "kind": "L_BT",
+   "x": -5,
+   "y": -3
+  },
+  {
+   "kind": "L_BT",
+   "x": -5,
+   "y": 4
+  },
+  {
+   "kind": "L_BT",
+   "x": 11,
+   "y": 1
+  },
+  {
+   "kind": "L_BT",
+   "x": 11,
+   "y": 11
+  },
+  {
+   "kind": "L_LR",
+   "x": -3,
+   "y": 11
+  },
+  {
+   "kind": "L_LR",
+   "x": 1,
+   "y": -5
+  },
+  {
+   "kind": "L_LR",
+   "x": 7,
+   "y": 11
+  },
+  {
+   "kind": "L_LR",
+   "x": 11,
+   "y": -5
+  }
+ ]
+}

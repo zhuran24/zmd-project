@@ -1,0 +1,17 @@
+{
+ "b": 17,
+ "P": 11,
+ "J": [
+  0,
+  4
+ ],
+ "cap": 187,
+ "engine": "cpsat-linear",
+ "status": "INFEASIBLE",
+ "seconds": 139.2,
+ "n_mach": 534,
+ "n_core": 114,
+ "n_poles": 1482,
+ "n_var": 5245,
+ "n_row": 5839
+}

@@ -1,0 +1,1 @@
+{"mode": "general", "obj": "weight", "cap": 23, "atleast": 55.0, "n_options": 1240, "n_rows": 2942, "status": 2, "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)", "seconds": 17.54, "value": null}
