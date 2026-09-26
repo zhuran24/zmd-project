@@ -1,0 +1,74 @@
+{
+ "recipes": {
+  "研磨机": [
+   [
+    "2蓝铁粉末",
+    "1砂叶粉末"
+   ],
+   [
+    "2源石粉末",
+    "1砂叶粉末"
+   ],
+   [
+    "2荞花粉末",
+    "1砂叶粉末"
+   ]
+  ],
+  "封装机": [
+   [
+    "10钢制零件",
+    "15致密源石粉末"
+   ]
+  ],
+  "灌装机": [
+   [
+    "10钢质瓶",
+    "10细磨荞花粉末"
+   ]
+  ]
+ },
+ "per_recipe": [
+  {
+   "machine": "研磨机",
+   "recipe": "2蓝铁粉末+1砂叶粉末",
+   "states": 2601,
+   "deadlocks": 0,
+   "control_deadlocks_if_first_items_one_type": 3,
+   "recipes_using_only_these_two": 1
+  },
+  {
+   "machine": "研磨机",
+   "recipe": "2源石粉末+1砂叶粉末",
+   "states": 2601,
+   "deadlocks": 0,
+   "control_deadlocks_if_first_items_one_type": 3,
+   "recipes_using_only_these_two": 1
+  },
+  {
+   "machine": "研磨机",
+   "recipe": "2荞花粉末+1砂叶粉末",
+   "states": 2601,
+   "deadlocks": 0,
+   "control_deadlocks_if_first_items_one_type": 3,
+   "recipes_using_only_these_two": 1
+  },
+  {
+   "machine": "封装机",
+   "recipe": "10钢制零件+15致密源石粉末",
+   "states": 2601,
+   "deadlocks": 0,
+   "control_deadlocks_if_first_items_one_type": 25,
+   "recipes_using_only_these_two": 1
+  },
+  {
+   "machine": "灌装机",
+   "recipe": "10钢质瓶+10细磨荞花粉末",
+   "states": 2601,
+   "deadlocks": 0,
+   "control_deadlocks_if_first_items_one_type": 20,
+   "recipes_using_only_these_two": 1
+  }
+ ],
+ "total_deadlocks": 0,
+ "control_83_counterexample_is_deadlock": true
+}
