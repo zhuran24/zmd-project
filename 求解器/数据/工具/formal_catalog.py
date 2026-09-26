@@ -37,7 +37,7 @@ def parse_constraints(text):
             rows.append({'name': name, 'text': body, 'section': section,
                          'source_line': str(number),
                          'obligation': '目标须对其每种取值都达成' if section.startswith('不得依赖的量') else None})
-    assert len(rows) == 71 and all(r.get('basis') for r in rows)
+    assert len(rows) == 75 and all(r.get('basis') for r in rows)
     return rows
 
 
@@ -192,4 +192,4 @@ if __name__ == '__main__':
     except (AssertionError, KeyError, ValueError, TypeError) as error:
         print(f'目录回源失败：{error}', file=sys.stderr)
         sys.exit(1)
-    print('三份正式来源指纹与全文、71 条约束上下文、任务与阈值、18 条配方、18 类单位全部字段及数字类别一致。')
+    print('三份正式来源指纹与全文、75 条约束上下文、任务与阈值、18 条配方、18 类单位全部字段及数字类别一致。')

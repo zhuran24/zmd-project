@@ -1,0 +1,889 @@
+{
+  "status": "pass",
+  "catalog_sha256": "f0e18dc1bc89b8c7d28eba92c1e7753a50ba1fb03072e6f55f0582b91707c352",
+  "version": "2026-09-26-r27-constraints-75",
+  "constraints": 75,
+  "input_references": [
+    {
+      "path": "数据/样例/kernel_profile_v1参数赋值.json",
+      "schema": "profile-assignment-v2",
+      "references": [
+        {
+          "field": "profile_source",
+          "matches": true
+        },
+        {
+          "field": "configuration_source",
+          "matches": true
+        },
+        {
+          "field": "axis_source",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "数据/样例/任务7内核/双门窗口恢复.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "数据/样例/任务7内核/同刻双箱争余量.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "数据/样例/任务7内核/成熟旧货重试.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "数据/样例/任务7内核/无线一满一可收.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "数据/样例/任务7内核/无线全拒收.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "数据/样例/任务7内核/无线多格全收.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "数据/样例/任务7内核/无线多格歧义.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "数据/样例/任务7内核/无线空箱.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "数据/样例/任务7内核/无线部分接收.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "数据/样例/任务7内核/生产环带.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "数据/样例/任务7内核/累计审计与窗口周期.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "数据/样例/任务7内核/累计调低保留.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "数据/样例/任务7内核/累计调高资格.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "数据/样例/任务7内核/装载与普通制造.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "数据/样例/任务7内核/身份实际切换.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "数据/样例/任务7内核/身份断边恢复.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "数据/样例/任务7内核/阻尼恢复.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "数据/样例/任务7内核/静止成熟与暂停键.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "数据/样例/传输拒收与暂停核验.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "数据/样例/分流器三路轮询-参数赋值.json",
+      "schema": "profile-assignment-v2",
+      "references": [
+        {
+          "field": "profile_source",
+          "matches": true
+        },
+        {
+          "field": "configuration_source",
+          "matches": true
+        },
+        {
+          "field": "axis_source",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "数据/样例/分流器三路轮询.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "数据/样例/双成品制造砖.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "数据/样例/双成品满仓起动试作.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "数据/样例/密集制造闭环基础.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "数据/样例/密集制造闭环序0核验.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "数据/样例/密集制造闭环序1核验.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "数据/样例/密集制造闭环序2核验.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "数据/样例/密集制造闭环序3核验.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "数据/样例/密集制造闭环序4核验.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "数据/样例/密集制造闭环序5核验.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "数据/样例/密集结点循环种子核验.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "数据/样例/密集结点核验.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "数据/样例/密集结点闭环核验.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "数据/样例/桥接器双通路.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "数据/样例/混做粉碎机两下游.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "数据/样例/生产循环环带.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "数据/样例/研磨混做核验.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "数据/样例/轮询均分序0核验.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "数据/样例/轮询均分序1核验.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "数据/样例/轮询均分序2核验.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "数据/样例/轮询均分序3核验.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "数据/样例/轮询均分序4核验.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "数据/样例/轮询均分序5核验.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "数据/样例/轮询均分核验.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "数据/样例/阻尼切支恢复核验.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "数据/样例/阻尼连续带核验.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "crates/kernel/tests/fixtures/benchmark_1000.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "crates/kernel/tests/fixtures/benchmark_brick.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "crates/kernel/tests/fixtures/benchmark_brick_60.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "crates/kernel/tests/fixtures/benchmark_candidate_b.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "crates/kernel/tests/fixtures/bridge.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "crates/kernel/tests/fixtures/core_inbound.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "crates/kernel/tests/fixtures/priority.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "crates/kernel/tests/fixtures/revision_r2_branch_cut.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "path": "crates/kernel/tests/fixtures/revision_r2_phase_control.json",
+      "schema": "kernel-input-v3",
+      "references": [
+        {
+          "field": "catalog",
+          "matches": true
+        },
+        {
+          "field": "axis_registry",
+          "matches": true
+        }
+      ]
+    }
+  ],
+  "reference_document_count": 56,
+  "candidate_source_count": 16,
+  "mismatches": [],
+  "protected_fingerprints_current": {
+    "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt": true,
+    "/home/zhuran24/zmd-research-fresh/求解任务.txt": true,
+    "/home/zhuran24/zmd-research-fresh/求解约束.txt": true,
+    "/home/zhuran24/zmd-research-fresh/候选约束.txt": true
+  },
+  "old_sha_inventory_counts": {
+    "archived_or_parallel": 32,
+    "this_run_record": 63,
+    "revision_history": 1
+  },
+  "active_changes_since_initial": {
+    "added": [],
+    "deleted": [],
+    "changed": [
+      "求解器/crates/kernel/tests/fixtures/benchmark_1000.json",
+      "求解器/crates/kernel/tests/fixtures/benchmark_brick.json",
+      "求解器/crates/kernel/tests/fixtures/benchmark_brick_60.json",
+      "求解器/crates/kernel/tests/fixtures/benchmark_candidate_b.json",
+      "求解器/crates/kernel/tests/fixtures/bridge.json",
+      "求解器/crates/kernel/tests/fixtures/core_inbound.json",
+      "求解器/crates/kernel/tests/fixtures/priority.json",
+      "求解器/crates/kernel/tests/fixtures/revision_r2_branch_cut.json",
+      "求解器/crates/kernel/tests/fixtures/revision_r2_phase_control.json",
+      "求解器/crates/topology/tests/validation.rs",
+      "求解器/数据/候选B/来源清单.json",
+      "求解器/数据/候选B/校验报告.md",
+      "求解器/数据/候选B/转换说明.md",
+      "求解器/数据/候选B/验证记录.md",
+      "求解器/数据/工具/check_revision.py",
+      "求解器/数据/工具/formal_catalog.py",
+      "求解器/数据/工具/test_formal_catalog.py",
+      "求解器/数据/样例/check_examples.py",
+      "求解器/数据/样例/任务7内核/双门窗口恢复.json",
+      "求解器/数据/样例/任务7内核/同刻双箱争余量.json",
+      "求解器/数据/样例/任务7内核/成熟旧货重试.json",
+      "求解器/数据/样例/任务7内核/无线一满一可收.json",
+      "求解器/数据/样例/任务7内核/无线全拒收.json",
+      "求解器/数据/样例/任务7内核/无线多格全收.json",
+      "求解器/数据/样例/任务7内核/无线多格歧义.json",
+      "求解器/数据/样例/任务7内核/无线空箱.json",
+      "求解器/数据/样例/任务7内核/无线部分接收.json",
+      "求解器/数据/样例/任务7内核/生产环带.json",
+      "求解器/数据/样例/任务7内核/累计审计与窗口周期.json",
+      "求解器/数据/样例/任务7内核/累计调低保留.json",
+      "求解器/数据/样例/任务7内核/累计调高资格.json",
+      "求解器/数据/样例/任务7内核/装载与普通制造.json",
+      "求解器/数据/样例/任务7内核/身份实际切换.json",
+      "求解器/数据/样例/任务7内核/身份断边恢复.json",
+      "求解器/数据/样例/任务7内核/阻尼恢复.json",
+      "求解器/数据/样例/任务7内核/静止成熟与暂停键.json",
+      "求解器/数据/样例/传输拒收与暂停核验.json",
+      "求解器/数据/样例/分流器三路轮询.json",
+      "求解器/数据/样例/双成品制造砖.json",
+      "求解器/数据/样例/双成品满仓起动试作.json",
+      "求解器/数据/样例/密集制造闭环基础.json",
+      "求解器/数据/样例/密集制造闭环序0核验.json",
+      "求解器/数据/样例/密集制造闭环序1核验.json",
+      "求解器/数据/样例/密集制造闭环序2核验.json",
+      "求解器/数据/样例/密集制造闭环序3核验.json",
+      "求解器/数据/样例/密集制造闭环序4核验.json",
+      "求解器/数据/样例/密集制造闭环序5核验.json",
+      "求解器/数据/样例/密集结点循环种子核验.json",
+      "求解器/数据/样例/密集结点核验.json",
+      "求解器/数据/样例/密集结点闭环核验.json",
+      "求解器/数据/样例/桥接器双通路.json",
+      "求解器/数据/样例/混做粉碎机两下游.json",
+      "求解器/数据/样例/生产循环环带.json",
+      "求解器/数据/样例/研磨混做核验.json",
+      "求解器/数据/样例/轮询均分序0核验.json",
+      "求解器/数据/样例/轮询均分序1核验.json",
+      "求解器/数据/样例/轮询均分序2核验.json",
+      "求解器/数据/样例/轮询均分序3核验.json",
+      "求解器/数据/样例/轮询均分序4核验.json",
+      "求解器/数据/样例/轮询均分序5核验.json",
+      "求解器/数据/样例/轮询均分核验.json",
+      "求解器/数据/样例/阻尼切支恢复核验.json",
+      "求解器/数据/样例/阻尼连续带核验.json",
+      "求解器/数据/正式静态目录.json",
+      "求解器/数据/规则覆盖表.md",
+      "求解器/规格/check_revision.py",
+      "求解器/规格/修订记录.md",
+      "求解器/规格/规则覆盖表.md",
+      "求解器/规格/运行语义.md"
+    ]
+  }
+}

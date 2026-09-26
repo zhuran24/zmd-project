@@ -26,7 +26,7 @@ feeds = contract['logical_feeds']
 machines = contract['machines']
 assert contract['schema'] == 'feeding-v2' and 'channels' not in contract
 assert len(catalog['units']) == 18 and len(catalog['recipes']) == 18
-assert len(catalog['constraints']) == 71
+assert len(catalog['constraints']) == 75
 assert len({u['id'] for u in catalog['units']}) == 18
 assert all(set(e['via']) == {'bridge','splitter','merger','gate'} for e in feeds)
 assert all(e['proven_actual_rate'] is None and e['id'].startswith('LF') for e in feeds)

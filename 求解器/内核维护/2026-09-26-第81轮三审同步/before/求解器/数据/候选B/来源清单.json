@@ -1,0 +1,66 @@
+[
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+    "sha256": "6e64e3903a65536c530b363c9f3aef8c1bb2a1c1193e866799125dd047159924"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解任务.txt",
+    "sha256": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解约束.txt",
+    "sha256": "fb073baa70562daf5d44f519a29e4b201d709074d96642add4f930a189bda7b6"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/候选约束.txt",
+    "sha256": "a55b3e5e4914f4960e089a9ab5cb492095cfaa033b8940c051d1e5b5af218596"
+  },
+  {
+    "path": "/home/zhuran24/文档/会议2全套/会议目录/seat-opus-4/design.py",
+    "sha256": "8d0359f6445eba0029cbac01a4fc85fcf1c9aaf655de90519058f91b0520d97f"
+  },
+  {
+    "path": "/home/zhuran24/文档/会议2全套/会议目录/seat-opus-4/channels.csv",
+    "sha256": "a0fb9cf1a94b1b9c76304bdf5b3f8fae1412d2e78533145650458cf8922db9c4"
+  },
+  {
+    "path": "/home/zhuran24/文档/会议2全套/会议目录/seat-opus-4/machines.csv",
+    "sha256": "53e87340d66761c39cceda3c14d33d494654fdfc32a8e0fd8ec5a797fb78f82c"
+  },
+  {
+    "path": "/home/zhuran24/文档/会议2全套/会议目录/seat-opus-4/fanout.json",
+    "sha256": "f2a78c50b61f26e36c524e19e361485e55af9884b3ff12651e73b9c6bfafe55c"
+  },
+  {
+    "path": "/home/zhuran24/文档/会议2全套/会议目录/seat-opus-4/scc.py",
+    "sha256": "efa2589f1e6b4c0ebbe06a83cd741f398c062c269a445122a2ed3f5dc79b2e32"
+  },
+  {
+    "path": "/home/zhuran24/文档/会议2全套/会议目录/纪要.md",
+    "sha256": "ea6449e3329e18457ba5d6d83ee5d5b63d82464bea275a6191aaeff11961d33b"
+  },
+  {
+    "path": "/home/zhuran24/文档/会议2全套/会议目录/seat-opus-1/共识草案-v45-5c9e556a.md",
+    "sha256": "5c9e556a01a36295112c9339554d1bc579a147d89ea3ddb7d39fcd95503aec48"
+  },
+  {
+    "path": "/home/zhuran24/文档/会议2全套/会议目录/seat-opus-3.md",
+    "sha256": "1abfed160df66eb7f5fcbc25962bd7076f127d1e3f236c47375d0c1af4f2e8ba"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/复核-r4-可导出性-证据/任务依据/任务书.md",
+    "sha256": "7d9a2b0701fd6c3fa44a16a62e6e7f5ffc048e191a1763fb337bfb9ffdfac407"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/复核-r4-可导出性-证据/任务依据/任务书2.md",
+    "sha256": "e62e31d5c807a0674d3f8579e246b729ab82b81a9d8bb05ef4a7f4d360b6193e"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/复核-r4-可导出性-证据/任务依据/gptpro_评审摘录.md",
+    "sha256": "acde1383748f230822f0c569b3303d867f4f33add2deaba140aa7d8073e7941a"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+    "sha256": "630ab63d053d99f4d5621e3172d4cd1d6c86be6bfd84d1c8bc45b57819e7c72c"
+  }
+]

@@ -1,0 +1,419 @@
+{
+  "argv": [
+    "rg",
+    "--hidden",
+    "--no-ignore",
+    "-l",
+    "-0",
+    "-F",
+    "-e",
+    "630ab63d053d99f4d5621e3172d4cd1d6c86be6bfd84d1c8bc45b57819e7c72c",
+    "-e",
+    "fb073baa70562daf5d44f519a29e4b201d709074d96642add4f930a189bda7b6",
+    "-g",
+    "!.git/**",
+    "-g",
+    "!**/target/**",
+    "-g",
+    "!**/__pycache__/**",
+    "-g",
+    "!**/.cargo-home/**",
+    "-g",
+    "!scratchpad/**",
+    "-g",
+    "!**/scratchpad/**",
+    "."
+  ],
+  "exit_code": 0,
+  "counts": {
+    "archived_or_parallel": 32,
+    "this_run_record": 63,
+    "revision_history": 1
+  },
+  "files": [
+    {
+      "path": "求解器/候选约束轮次/第84-85轮/复核84/accounts.json",
+      "category": "archived_or_parallel"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-三审同步/audit.json",
+      "category": "archived_or_parallel"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-三审同步/candidate-b-report-active-after.json",
+      "category": "archived_or_parallel"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-三审同步/candidate-b-report-active-before.json",
+      "category": "archived_or_parallel"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-三审同步/cargo-build-active-after.json",
+      "category": "archived_or_parallel"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-三审同步/cargo-build-active-before.json",
+      "category": "archived_or_parallel"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-三审同步/cargo-check-active-after.json",
+      "category": "archived_or_parallel"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-三审同步/cargo-check-active-before.json",
+      "category": "archived_or_parallel"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-三审同步/cargo-clippy-active-after.json",
+      "category": "archived_or_parallel"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-三审同步/cargo-clippy-active-before.json",
+      "category": "archived_or_parallel"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-三审同步/catalog-regressions-active-after.json",
+      "category": "archived_or_parallel"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-三审同步/catalog-regressions-active-before.json",
+      "category": "archived_or_parallel"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-三审同步/catalog-verify-active-after.json",
+      "category": "archived_or_parallel"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-三审同步/catalog-verify-active-before.json",
+      "category": "archived_or_parallel"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-三审同步/formal-sources.json",
+      "category": "archived_or_parallel"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-三审同步/initial-active.json",
+      "category": "archived_or_parallel"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-三审同步/kernel-doc-active-after.json",
+      "category": "archived_or_parallel"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-三审同步/kernel-doc-active-before.json",
+      "category": "archived_or_parallel"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-三审同步/kernel-lib-active-after.json",
+      "category": "archived_or_parallel"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-三审同步/kernel-lib-active-before.json",
+      "category": "archived_or_parallel"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-三审同步/kernel-reference-active-after.json",
+      "category": "archived_or_parallel"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-三审同步/kernel-reference-active-before.json",
+      "category": "archived_or_parallel"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-三审同步/sync-changes.json",
+      "category": "archived_or_parallel"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-三审同步/sync-plan.json",
+      "category": "archived_or_parallel"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-三审同步/topology-doc-active-after.json",
+      "category": "archived_or_parallel"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-三审同步/topology-doc-active-before.json",
+      "category": "archived_or_parallel"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-三审同步/topology-lib-active-after.json",
+      "category": "archived_or_parallel"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-三审同步/topology-lib-active-before.json",
+      "category": "archived_or_parallel"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-三审同步/topology-validation-active-after.json",
+      "category": "archived_or_parallel"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-三审同步/topology-validation-active-before.json",
+      "category": "archived_or_parallel"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-三审同步/只读文件指纹.json",
+      "category": "archived_or_parallel"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-三审同步/记录.md",
+      "category": "archived_or_parallel"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/crates/kernel/tests/fixtures/benchmark_1000.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/crates/kernel/tests/fixtures/benchmark_brick.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/crates/kernel/tests/fixtures/benchmark_brick_60.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/crates/kernel/tests/fixtures/benchmark_candidate_b.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/crates/kernel/tests/fixtures/bridge.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/crates/kernel/tests/fixtures/core_inbound.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/crates/kernel/tests/fixtures/priority.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/crates/kernel/tests/fixtures/revision_r2_branch_cut.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/crates/kernel/tests/fixtures/revision_r2_phase_control.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/候选B/来源清单.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/样例/check_examples.py",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/样例/任务7内核/双门窗口恢复.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/样例/任务7内核/同刻双箱争余量.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/样例/任务7内核/成熟旧货重试.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/样例/任务7内核/无线一满一可收.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/样例/任务7内核/无线全拒收.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/样例/任务7内核/无线多格全收.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/样例/任务7内核/无线多格歧义.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/样例/任务7内核/无线空箱.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/样例/任务7内核/无线部分接收.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/样例/任务7内核/生产环带.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/样例/任务7内核/累计审计与窗口周期.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/样例/任务7内核/累计调低保留.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/样例/任务7内核/累计调高资格.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/样例/任务7内核/装载与普通制造.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/样例/任务7内核/身份实际切换.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/样例/任务7内核/身份断边恢复.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/样例/任务7内核/阻尼恢复.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/样例/任务7内核/静止成熟与暂停键.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/样例/传输拒收与暂停核验.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/样例/分流器三路轮询.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/样例/双成品制造砖.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/样例/双成品满仓起动试作.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/样例/密集制造闭环基础.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/样例/密集制造闭环序0核验.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/样例/密集制造闭环序1核验.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/样例/密集制造闭环序2核验.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/样例/密集制造闭环序3核验.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/样例/密集制造闭环序4核验.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/样例/密集制造闭环序5核验.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/样例/密集结点循环种子核验.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/样例/密集结点核验.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/样例/密集结点闭环核验.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/样例/桥接器双通路.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/样例/混做粉碎机两下游.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/样例/生产循环环带.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/样例/研磨混做核验.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/样例/轮询均分序0核验.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/样例/轮询均分序1核验.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/样例/轮询均分序2核验.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/样例/轮询均分序3核验.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/样例/轮询均分序4核验.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/样例/轮询均分序5核验.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/样例/轮询均分核验.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/样例/阻尼切支恢复核验.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/样例/阻尼连续带核验.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/数据/正式静态目录.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/规格/修订记录.md",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/before/求解器/规格/运行语义.md",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/initial-active.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/sync-changes.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/sync-plan.json",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-26-第81轮三审同步/work.py",
+      "category": "this_run_record"
+    },
+    {
+      "path": "求解器/规格/修订记录.md",
+      "category": "revision_history"
+    }
+  ]
+}
