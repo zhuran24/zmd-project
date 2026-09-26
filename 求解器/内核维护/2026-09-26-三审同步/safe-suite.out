@@ -1,0 +1,89 @@
+{"name": "cargo-check", "argv": ["cargo", "check", "--workspace", "-j", "4"], "cwd": "/home/zhuran24/zmd-research-fresh/求解器", "environment": {"CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target", "CARGO_BUILD_JOBS": "4", "RUST_TEST_THREADS": "1", "PYTHONDONTWRITEBYTECODE": "1"}, "exit_code": 0, "seconds": 0.296, "finished_utc": "2026-09-26T09:28:10.104485+00:00", "active_diff": {"added": [], "deleted": [], "changed": []}}
+    Checking kernel v0.1.0 (/home/zhuran24/zmd-research-fresh/求解器/crates/kernel)
+    Checking topology v0.1.0 (/home/zhuran24/zmd-research-fresh/求解器/crates/topology)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.28s
+{"name": "cargo-clippy", "argv": ["cargo", "clippy", "--workspace", "-j", "4"], "cwd": "/home/zhuran24/zmd-research-fresh/求解器", "environment": {"CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target", "CARGO_BUILD_JOBS": "4", "RUST_TEST_THREADS": "1", "PYTHONDONTWRITEBYTECODE": "1"}, "exit_code": 0, "seconds": 0.428, "finished_utc": "2026-09-26T09:28:11.795617+00:00", "active_diff": {"added": [], "deleted": [], "changed": []}}
+    Checking kernel v0.1.0 (/home/zhuran24/zmd-research-fresh/求解器/crates/kernel)
+    Checking topology v0.1.0 (/home/zhuran24/zmd-research-fresh/求解器/crates/topology)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.40s
+{"name": "kernel-lib", "argv": ["cargo", "test", "-p", "kernel", "--lib", "-j", "4", "--", "--test-threads=1"], "cwd": "/home/zhuran24/zmd-research-fresh/求解器", "environment": {"CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target", "CARGO_BUILD_JOBS": "4", "RUST_TEST_THREADS": "1", "PYTHONDONTWRITEBYTECODE": "1"}, "exit_code": 0, "seconds": 51.472, "finished_utc": "2026-09-26T09:29:04.498938+00:00", "active_diff": {"added": [], "deleted": [], "changed": []}}
+test tests::stopped_engine_cannot_continue ... ok
+test tests::three_examples_static ... ok
+test tests::total_exhaustion_survives_window_expiry ... ok
+test tests::transfer_capacity_and_empty_cooldown ... ok
+test tests::transfer_conservation ... ok
+test tests::transfer_cooldown_pause ... ok
+test tests::transport_wrong_item_rejects ... ok
+test tests::warehouse_80000_and_recipe_conservation ... ok
+test tests::warehouse_competition_atomic_stop ... ok
+test tests::warehouse_identity_monotone ... ok
+test tests::warehouse_invalid_identity_and_order ... ok
+test tests::warehouse_single_unknown_with_assigned_empty ... ok
+test tests::warehouse_unassigned_species_order ... ok
+
+test result: ok. 108 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 50.83s
+
+{"name": "topology-lib", "argv": ["cargo", "test", "-p", "topology", "--lib", "-j", "4", "--", "--test-threads=1"], "cwd": "/home/zhuran24/zmd-research-fresh/求解器", "environment": {"CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target", "CARGO_BUILD_JOBS": "4", "RUST_TEST_THREADS": "1", "PYTHONDONTWRITEBYTECODE": "1"}, "exit_code": 0, "seconds": 0.169, "finished_utc": "2026-09-26T09:29:05.937131+00:00", "active_diff": {"added": [], "deleted": [], "changed": []}}
+   Compiling topology v0.1.0 (/home/zhuran24/zmd-research-fresh/求解器/crates/topology)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.15s
+     Running unittests src/lib.rs (target/debug/deps/topology-958a7a196b95191c)
+
+running 1 test
+test catalog_tests::legacy_machine_constants_equal_catalog ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+{"name": "kernel-reference", "argv": ["cargo", "test", "-p", "kernel", "--test", "reference", "-j", "4", "--", "--test-threads=1"], "cwd": "/home/zhuran24/zmd-research-fresh/求解器", "environment": {"CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target", "CARGO_BUILD_JOBS": "4", "RUST_TEST_THREADS": "1", "PYTHONDONTWRITEBYTECODE": "1"}, "exit_code": 0, "seconds": 0.826, "finished_utc": "2026-09-26T09:29:08.063841+00:00", "active_diff": {"added": [], "deleted": [], "changed": []}}
+   Compiling kernel v0.1.0 (/home/zhuran24/zmd-research-fresh/求解器/crates/kernel)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.12s
+     Running tests/reference.rs (target/debug/deps/reference-1613ad1990138602)
+
+running 3 tests
+test crusher_reference ... ok
+test live_python_differential ... ok
+test splitter_reference ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.69s
+
+{"name": "topology-validation", "argv": ["cargo", "test", "-p", "topology", "--test", "validation", "-j", "4", "--", "--test-threads=1"], "cwd": "/home/zhuran24/zmd-research-fresh/求解器", "environment": {"CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target", "CARGO_BUILD_JOBS": "4", "RUST_TEST_THREADS": "1", "PYTHONDONTWRITEBYTECODE": "1"}, "exit_code": 0, "seconds": 6.844, "finished_utc": "2026-09-26T09:29:16.208043+00:00", "active_diff": {"added": [], "deleted": [], "changed": []}}
+test logical_feed_ids_cannot_be_physical_or_buffer_channels ... ok
+test multi_material_obligations_cannot_disappear ... ok
+test numeric_categories_have_field_semantics ... ok
+test overload_is_exact_and_not_rounded ... ok
+test same_item_multiport_and_mixed_recipe_obligations_are_required ... ok
+test shared_port_rates_are_summed ... ok
+test storage_relay_cannot_double_material_origin_flow ... ok
+test storage_split_counts_both_sides_and_deduplicates_item_rows ... ok
+test unsupported_routing_fails_closed ... ok
+test wrong_target_cannot_redefine_task ... ok
+test wrong_target_recipe_is_rejected ... ok
+test zero_denominator_and_missing_fields_fail_loading ... ok
+test zero_rate_does_not_count_as_live_channel ... ok
+
+test result: ok. 30 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 6.61s
+
+{"name": "kernel-doc", "argv": ["cargo", "test", "-p", "kernel", "--doc", "-j", "4", "--", "--test-threads=1"], "cwd": "/home/zhuran24/zmd-research-fresh/求解器", "environment": {"CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target", "CARGO_BUILD_JOBS": "4", "RUST_TEST_THREADS": "1", "PYTHONDONTWRITEBYTECODE": "1"}, "exit_code": 0, "seconds": 0.159, "finished_utc": "2026-09-26T09:29:17.633046+00:00", "active_diff": {"added": [], "deleted": [], "changed": []}}
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.01s
+   Doc-tests kernel
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+{"name": "topology-doc", "argv": ["cargo", "test", "-p", "topology", "--doc", "-j", "4", "--", "--test-threads=1"], "cwd": "/home/zhuran24/zmd-research-fresh/求解器", "environment": {"CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target", "CARGO_BUILD_JOBS": "4", "RUST_TEST_THREADS": "1", "PYTHONDONTWRITEBYTECODE": "1"}, "exit_code": 0, "seconds": 0.076, "finished_utc": "2026-09-26T09:29:18.985938+00:00", "active_diff": {"added": [], "deleted": [], "changed": []}}
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.01s
+   Doc-tests topology
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+{"name": "catalog-verify", "argv": ["python3", "数据/工具/formal_catalog.py"], "cwd": "/home/zhuran24/zmd-research-fresh/求解器", "environment": {"CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target", "CARGO_BUILD_JOBS": "4", "RUST_TEST_THREADS": "1", "PYTHONDONTWRITEBYTECODE": "1"}, "exit_code": 0, "seconds": 0.043, "finished_utc": "2026-09-26T09:29:20.329884+00:00", "active_diff": {"added": [], "deleted": [], "changed": []}}
+三份正式来源指纹与全文、71 条约束上下文、任务与阈值、18 条配方、18 类单位全部字段及数字类别一致。
+{"name": "catalog-regressions", "argv": ["python3", "数据/工具/test_formal_catalog.py"], "cwd": "/home/zhuran24/zmd-research-fresh/求解器", "environment": {"CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target", "CARGO_BUILD_JOBS": "4", "RUST_TEST_THREADS": "1", "PYTHONDONTWRITEBYTECODE": "1"}, "exit_code": 0, "seconds": 2.093, "finished_utc": "2026-09-26T09:29:23.696228+00:00", "active_diff": {"added": [], "deleted": [], "changed": []}}
+........
+----------------------------------------------------------------------
+Ran 8 tests in 2.049s
+
+OK
+逐叶变异全部拒绝：{"units": 1174, "recipes": 154}

@@ -71,7 +71,7 @@ class FormalCatalogTests(unittest.TestCase):
         self.assertNotIn('种植机', mineral_rule['text'])
         projection = formal_projection(snapshot)
         self.assertNotIn('plant_trigger', projection['static_checks']['constants'])
-        self.assertEqual(len(projection['constraints']), 72)
+        self.assertEqual(len(projection['constraints']), 71)
         self.assertEqual(projection['static_checks'], self.catalog['static_checks'])
         verify(self.catalog)
 

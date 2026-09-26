@@ -159,7 +159,7 @@ fn every_formal_constraint_has_coverage_row() {
     let r = validate(&load(INPUT).unwrap());
     let cat: serde_json::Value =
         serde_json::from_str(include_str!("../../../数据/正式静态目录.json")).unwrap();
-    assert_eq!(cat["constraints"].as_array().unwrap().len(), 72);
+    assert_eq!(cat["constraints"].as_array().unwrap().len(), 71);
     for rule in cat["constraints"].as_array().unwrap() {
         assert!(r
             .checks
