@@ -1,0 +1,1 @@
+{"runs": 4000, "cycles": 3893, "x_empty_runs": 0, "src_first_empty_runs": 0, "src_cache_empty_runs": 0, "x_first_empty_runs": 0, "backpressure_runs": 2740, "mixed_runs": 1665, "by_type": {"研磨机荞花粉末+砂叶粉末": 358, "精炼炉蓝铁矿": 437, "封装机钢制零件+致密源石粉末": 453, "研磨机蓝铁粉末+砂叶粉末": 449, "塑形机钢块": 463, "粉碎机蓝铁块": 428, "研磨机源石粉末+砂叶粉末": 387, "灌装机钢质瓶+细磨荞花粉末": 468, "配件机钢块": 450}, "bad": []}

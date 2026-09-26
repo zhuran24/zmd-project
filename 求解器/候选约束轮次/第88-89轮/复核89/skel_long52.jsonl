@@ -1,0 +1,10 @@
+{"Q": 3, "Tadv": 1008, "min_phi_minus_S_x2": 2, "cycle": [8321, 180], "period_ticks": 60.0, "battery": 36, "capsule": 33, "ore_per_tick": [1.0], "battery_rate": 0.6, "capsule_rate": 0.55, "mixed_phases": true}
+{"Q": 4, "Tadv": 1148, "min_phi_minus_S_x2": 26, "cycle": [18240, 240], "period_ticks": 60.0, "battery": 36, "capsule": 33, "ore_per_tick": [1.0], "battery_rate": 0.6, "capsule_rate": 0.55, "mixed_phases": true}
+{"Q": 1, "Tadv": 438, "min_phi_minus_S_x2": 3, "cycle": [4278, 60], "period_ticks": 60.0, "battery": 36, "capsule": 33, "ore_per_tick": [1.0], "battery_rate": 0.6, "capsule_rate": 0.55, "mixed_phases": false}
+{"Q": 3, "Tadv": 1209, "min_phi_minus_S_x2": 7, "cycle": [13080, 180], "period_ticks": 60.0, "battery": 36, "capsule": 33, "ore_per_tick": [1.0], "battery_rate": 0.6, "capsule_rate": 0.55, "mixed_phases": true}
+{"Q": 3, "Tadv": 1494, "min_phi_minus_S_x2": 2, "cycle": [12555, 180], "period_ticks": 60.0, "battery": 36, "capsule": 33, "ore_per_tick": [1.0], "battery_rate": 0.6, "capsule_rate": 0.55, "mixed_phases": true}
+{"Q": 3, "Tadv": 1338, "min_phi_minus_S_x2": 16, "cycle": [8483, 180], "period_ticks": 60.0, "battery": 36, "capsule": 33, "ore_per_tick": [1.0], "battery_rate": 0.6, "capsule_rate": 0.55, "mixed_phases": true}
+{"Q": 6, "Tadv": 1836, "min_phi_minus_S_x2": 18, "cycle": [29496, 360], "period_ticks": 60.0, "battery": 36, "capsule": 33, "ore_per_tick": [1.0], "battery_rate": 0.6, "capsule_rate": 0.55, "mixed_phases": true}
+{"Q": 1, "Tadv": 462, "min_phi_minus_S_x2": 14, "cycle": [5248, 60], "period_ticks": 60.0, "battery": 36, "capsule": 33, "ore_per_tick": [1.0], "battery_rate": 0.6, "capsule_rate": 0.55, "mixed_phases": false}
+{"Q": 6, "Tadv": 2928, "min_phi_minus_S_x2": 25, "cycle": [25718, 360], "period_ticks": 60.0, "battery": 36, "capsule": 33, "ore_per_tick": [1.0], "battery_rate": 0.6, "capsule_rate": 0.55, "mixed_phases": true}
+{"Q": 4, "Tadv": 1924, "min_phi_minus_S_x2": 24, "cycle": [16191, 240], "period_ticks": 60.0, "battery": 36, "capsule": 33, "ore_per_tick": [1.0], "battery_rate": 0.6, "capsule_rate": 0.55, "mixed_phases": true}

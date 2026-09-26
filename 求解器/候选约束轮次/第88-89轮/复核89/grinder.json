@@ -1,0 +1,28 @@
+{
+ "grinder_states": 30401,
+ "into_yi_transitions": 600,
+ "all_are_one_main_one_empty_other_main": true,
+ "start_into_yi": 0,
+ "pure_two_material": {
+  "研磨蓝铁": {
+   "short_states": 151,
+   "both_first_items_refused": 0
+  },
+  "研磨源石": {
+   "short_states": 151,
+   "both_first_items_refused": 0
+  },
+  "研磨荞花": {
+   "short_states": 151,
+   "both_first_items_refused": 0
+  },
+  "封装": {
+   "short_states": 1125,
+   "both_first_items_refused": 0
+  },
+  "灌装": {
+   "short_states": 920,
+   "both_first_items_refused": 0
+  }
+ }
+}

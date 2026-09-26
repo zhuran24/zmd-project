@@ -1,0 +1,1 @@
+{"runs": 20000, "viol_phi": 0, "cycles": 19670, "eligible": 15423, "eligible_empty": [0, 0, 0], "control": 4247, "control_C_empty": 1822, "n_int": 1103482, "viol_min": 0, "viol_each": 0, "viol_le1": 0, "min_margin2": 0, "frac_Q": 16722, "eligible_mixed": 8121, "control_viol_min": 102377, "bad": []}

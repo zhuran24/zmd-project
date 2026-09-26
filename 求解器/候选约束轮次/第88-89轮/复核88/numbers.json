@@ -1,0 +1,305 @@
+{
+  "premises": {
+    "前提快照/《明日方舟：终末地》游戏规则.txt": "6e64e3903a65536c530b363c9f3aef8c1bb2a1c1193e866799125dd047159924",
+    "前提快照/求解任务.txt": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+    "前提快照/求解约束.txt": "74409eaf42e3c9f1671a017491b1f43ea5268b5aab7989b15a448cd447014ce4",
+    "修正版清单.json": "1eb1f91c9b6c5c887774b613a32c2365254b50dd683b057e08f894873027c3d0"
+  },
+  "recipe_count": 18,
+  "item_count": 19,
+  "recipe_rates": [
+    {
+      "machine": "粉碎机",
+      "inputs": {
+        "源矿": 1
+      },
+      "output": "源石粉末",
+      "k": 1,
+      "d": 1,
+      "rate_at_r0": "18",
+      "coefficient_r": "0"
+    },
+    {
+      "machine": "粉碎机",
+      "inputs": {
+        "蓝铁块": 1
+      },
+      "output": "蓝铁粉末",
+      "k": 1,
+      "d": 1,
+      "rate_at_r0": "34",
+      "coefficient_r": "1"
+    },
+    {
+      "machine": "粉碎机",
+      "inputs": {
+        "荞花": 1
+      },
+      "output": "荞花粉末",
+      "k": 2,
+      "d": 1,
+      "rate_at_r0": "11/2",
+      "coefficient_r": "0"
+    },
+    {
+      "machine": "粉碎机",
+      "inputs": {
+        "砂叶": 1
+      },
+      "output": "砂叶粉末",
+      "k": 3,
+      "d": 1,
+      "rate_at_r0": "21/2",
+      "coefficient_r": "0"
+    },
+    {
+      "machine": "精炼炉",
+      "inputs": {
+        "蓝铁矿": 1
+      },
+      "output": "蓝铁块",
+      "k": 1,
+      "d": 1,
+      "rate_at_r0": "34",
+      "coefficient_r": "0"
+    },
+    {
+      "machine": "精炼炉",
+      "inputs": {
+        "致密蓝铁粉末": 1
+      },
+      "output": "钢块",
+      "k": 1,
+      "d": 1,
+      "rate_at_r0": "17",
+      "coefficient_r": "0"
+    },
+    {
+      "machine": "精炼炉",
+      "inputs": {
+        "蓝铁粉末": 1
+      },
+      "output": "蓝铁块",
+      "k": 1,
+      "d": 1,
+      "rate_at_r0": "0",
+      "coefficient_r": "1"
+    },
+    {
+      "machine": "研磨机",
+      "inputs": {
+        "蓝铁粉末": 2,
+        "砂叶粉末": 1
+      },
+      "output": "致密蓝铁粉末",
+      "k": 1,
+      "d": 1,
+      "rate_at_r0": "17",
+      "coefficient_r": "0"
+    },
+    {
+      "machine": "研磨机",
+      "inputs": {
+        "源石粉末": 2,
+        "砂叶粉末": 1
+      },
+      "output": "致密源石粉末",
+      "k": 1,
+      "d": 1,
+      "rate_at_r0": "9",
+      "coefficient_r": "0"
+    },
+    {
+      "machine": "研磨机",
+      "inputs": {
+        "荞花粉末": 2,
+        "砂叶粉末": 1
+      },
+      "output": "细磨荞花粉末",
+      "k": 1,
+      "d": 1,
+      "rate_at_r0": "11/2",
+      "coefficient_r": "0"
+    },
+    {
+      "machine": "塑形机",
+      "inputs": {
+        "钢块": 2
+      },
+      "output": "钢质瓶",
+      "k": 1,
+      "d": 1,
+      "rate_at_r0": "11/2",
+      "coefficient_r": "0"
+    },
+    {
+      "machine": "配件机",
+      "inputs": {
+        "钢块": 1
+      },
+      "output": "钢制零件",
+      "k": 1,
+      "d": 1,
+      "rate_at_r0": "6",
+      "coefficient_r": "0"
+    },
+    {
+      "machine": "种植机",
+      "inputs": {
+        "荞花种子": 1
+      },
+      "output": "荞花",
+      "k": 1,
+      "d": 1,
+      "rate_at_r0": "11",
+      "coefficient_r": "0"
+    },
+    {
+      "machine": "种植机",
+      "inputs": {
+        "砂叶种子": 1
+      },
+      "output": "砂叶",
+      "k": 1,
+      "d": 1,
+      "rate_at_r0": "21",
+      "coefficient_r": "0"
+    },
+    {
+      "machine": "采种机",
+      "inputs": {
+        "荞花": 1
+      },
+      "output": "荞花种子",
+      "k": 2,
+      "d": 1,
+      "rate_at_r0": "11/2",
+      "coefficient_r": "0"
+    },
+    {
+      "machine": "采种机",
+      "inputs": {
+        "砂叶": 1
+      },
+      "output": "砂叶种子",
+      "k": 2,
+      "d": 1,
+      "rate_at_r0": "21/2",
+      "coefficient_r": "0"
+    },
+    {
+      "machine": "封装机",
+      "inputs": {
+        "钢制零件": 10,
+        "致密源石粉末": 15
+      },
+      "output": "高容谷地电池",
+      "k": 1,
+      "d": 5,
+      "rate_at_r0": "3/5",
+      "coefficient_r": "0"
+    },
+    {
+      "machine": "灌装机",
+      "inputs": {
+        "钢质瓶": 10,
+        "细磨荞花粉末": 10
+      },
+      "output": "精选荞愈胶囊",
+      "k": 1,
+      "d": 5,
+      "rate_at_r0": "11/20",
+      "coefficient_r": "0"
+    }
+  ],
+  "workloads": {
+    "粉碎机": [
+      "68",
+      "1"
+    ],
+    "精炼炉": [
+      "51",
+      "1"
+    ],
+    "研磨机": [
+      "63/2",
+      "0"
+    ],
+    "塑形机": [
+      "11/2",
+      "0"
+    ],
+    "配件机": [
+      "6",
+      "0"
+    ],
+    "种植机": [
+      "32",
+      "0"
+    ],
+    "采种机": [
+      "16",
+      "0"
+    ],
+    "封装机": [
+      "3",
+      "0"
+    ],
+    "灌装机": [
+      "11/4",
+      "0"
+    ]
+  },
+  "lower_counts": [
+    68,
+    51,
+    32,
+    6,
+    6,
+    32,
+    16,
+    3,
+    3
+  ],
+  "lower_total": 217,
+  "lower_area": 3291,
+  "grinder": {
+    "states": 15201,
+    "incoming_double_main": 300,
+    "start_double_main": 0,
+    "example": [
+      {
+        "蓝铁粉末": 1
+      },
+      "源石粉末",
+      {
+        "蓝铁粉末": 1,
+        "源石粉末": 1
+      }
+    ]
+  },
+  "population": {
+    "blocked_excess": "353/2",
+    "retained_excess": "176"
+  },
+  "skeleton": {
+    "counts": {
+      "粉碎机": 69,
+      "精炼炉": 51,
+      "研磨机": 32,
+      "塑形机": 6,
+      "配件机": 6,
+      "种植机": 34,
+      "采种机": 17,
+      "封装机": 3,
+      "灌装机": 3
+    },
+    "machines": 221,
+    "area": 3375,
+    "inputs": 311,
+    "outputs": 265,
+    "paths": 317,
+    "battery": "3/5",
+    "capsule": "11/20"
+  }
+}

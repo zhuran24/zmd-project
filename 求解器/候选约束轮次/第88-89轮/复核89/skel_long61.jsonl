@@ -1,0 +1,15 @@
+{"Q": 4, "Tadv": 1716, "min_phi_minus_S_x2": 24, "cycle": [16397, 240], "period_ticks": 60.0, "battery": 36, "capsule": 33, "ore_per_tick": [1.0], "battery_rate": 0.6, "capsule_rate": 0.55, "mixed_phases": true}
+{"Q": 2, "Tadv": 1138, "min_phi_minus_S_x2": 28, "cycle": [7788, 120], "period_ticks": 60.0, "battery": 36, "capsule": 33, "ore_per_tick": [1.0], "battery_rate": 0.6, "capsule_rate": 0.55, "mixed_phases": true}
+{"Q": 4, "Tadv": 1428, "min_phi_minus_S_x2": 19, "cycle": [21460, 240], "period_ticks": 60.0, "battery": 36, "capsule": 33, "ore_per_tick": [1.0], "battery_rate": 0.6, "capsule_rate": 0.55, "mixed_phases": true}
+{"Q": 2, "Tadv": 592, "min_phi_minus_S_x2": 2, "cycle": [8802, 120], "period_ticks": 60.0, "battery": 36, "capsule": 33, "ore_per_tick": [1.0], "battery_rate": 0.6, "capsule_rate": 0.55, "mixed_phases": true}
+{"Q": 3, "Tadv": 1170, "min_phi_minus_S_x2": 18, "cycle": [15810, 180], "period_ticks": 60.0, "battery": 36, "capsule": 33, "ore_per_tick": [1.0], "battery_rate": 0.6, "capsule_rate": 0.55, "mixed_phases": true}
+{"Q": 1, "Tadv": 356, "min_phi_minus_S_x2": 2, "cycle": [5004, 60], "period_ticks": 60.0, "battery": 36, "capsule": 33, "ore_per_tick": [1.0], "battery_rate": 0.6, "capsule_rate": 0.55, "mixed_phases": false}
+{"Q": 4, "Tadv": 1228, "min_phi_minus_S_x2": 2, "cycle": [21425, 240], "period_ticks": 60.0, "battery": 36, "capsule": 33, "ore_per_tick": [1.0], "battery_rate": 0.6, "capsule_rate": 0.55, "mixed_phases": true}
+{"Q": 3, "Tadv": 1476, "min_phi_minus_S_x2": 8, "cycle": [12612, 180], "period_ticks": 60.0, "battery": 36, "capsule": 33, "ore_per_tick": [1.0], "battery_rate": 0.6, "capsule_rate": 0.55, "mixed_phases": true}
+{"Q": 3, "Tadv": 1029, "min_phi_minus_S_x2": 2, "cycle": [14439, 180], "period_ticks": 60.0, "battery": 36, "capsule": 33, "ore_per_tick": [1.0], "battery_rate": 0.6, "capsule_rate": 0.55, "mixed_phases": true}
+{"Q": 2, "Tadv": 776, "min_phi_minus_S_x2": 2, "cycle": [9765, 120], "period_ticks": 60.0, "battery": 36, "capsule": 33, "ore_per_tick": [1.0], "battery_rate": 0.6, "capsule_rate": 0.55, "mixed_phases": true}
+{"Q": 1, "Tadv": 358, "min_phi_minus_S_x2": 2, "cycle": [2235, 60], "period_ticks": 60.0, "battery": 36, "capsule": 33, "ore_per_tick": [1.0], "battery_rate": 0.6, "capsule_rate": 0.55, "mixed_phases": false}
+{"Q": 4, "Tadv": 1984, "min_phi_minus_S_x2": 6, "cycle": [17276, 240], "period_ticks": 60.0, "battery": 36, "capsule": 33, "ore_per_tick": [1.0], "battery_rate": 0.6, "capsule_rate": 0.55, "mixed_phases": true}
+{"Q": 2, "Tadv": 674, "min_phi_minus_S_x2": 2, "cycle": [9366, 120], "period_ticks": 60.0, "battery": 36, "capsule": 33, "ore_per_tick": [1.0], "battery_rate": 0.6, "capsule_rate": 0.55, "mixed_phases": true}
+{"Q": 3, "Tadv": 738, "min_phi_minus_S_x2": 36, "cycle": [15050, 180], "period_ticks": 60.0, "battery": 36, "capsule": 33, "ore_per_tick": [1.0], "battery_rate": 0.6, "capsule_rate": 0.55, "mixed_phases": true}
+{"Q": 4, "Tadv": 1492, "min_phi_minus_S_x2": 2, "cycle": [21959, 240], "period_ticks": 60.0, "battery": 36, "capsule": 33, "ore_per_tick": [1.0], "battery_rate": 0.6, "capsule_rate": 0.55, "mixed_phases": true}

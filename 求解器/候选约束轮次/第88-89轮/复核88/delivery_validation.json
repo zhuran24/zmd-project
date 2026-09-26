@@ -1,0 +1,14 @@
+{
+  "report_path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第88-89轮/复核88.md",
+  "report_sha256": "8dc4cf476f0ed381eba9c4e4bc4d94c688a3ed23154a7261111b40b12dff3195",
+  "items": 16,
+  "unique_names": 14,
+  "counts": {
+    "未否证": 13,
+    "修正": 3
+  },
+  "premises_unchanged": true,
+  "links_valid": true,
+  "certificates_equal": true,
+  "reader_review": "completed"
+}

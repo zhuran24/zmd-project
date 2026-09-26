@@ -1,0 +1,265 @@
+{
+  "geometry": {
+    "core": [
+      10,
+      10,
+      9,
+      9
+    ],
+    "Y": [
+      20,
+      10,
+      3,
+      3
+    ],
+    "X": [
+      24,
+      10,
+      3,
+      3
+    ],
+    "power": [
+      21,
+      15,
+      2,
+      2
+    ],
+    "paths": [
+      [
+        [
+          19,
+          11
+        ]
+      ],
+      [
+        [
+          23,
+          11
+        ]
+      ],
+      [
+        [
+          27,
+          11
+        ],
+        [
+          27,
+          12
+        ],
+        [
+          27,
+          13
+        ],
+        [
+          27,
+          14
+        ],
+        [
+          27,
+          15
+        ],
+        [
+          27,
+          16
+        ],
+        [
+          27,
+          17
+        ],
+        [
+          27,
+          18
+        ],
+        [
+          27,
+          19
+        ],
+        [
+          27,
+          20
+        ],
+        [
+          26,
+          20
+        ],
+        [
+          25,
+          20
+        ],
+        [
+          24,
+          20
+        ],
+        [
+          23,
+          20
+        ],
+        [
+          22,
+          20
+        ],
+        [
+          21,
+          20
+        ],
+        [
+          20,
+          20
+        ],
+        [
+          19,
+          20
+        ],
+        [
+          18,
+          20
+        ],
+        [
+          17,
+          20
+        ],
+        [
+          16,
+          20
+        ],
+        [
+          15,
+          20
+        ],
+        [
+          14,
+          20
+        ],
+        [
+          14,
+          19
+        ]
+      ]
+    ],
+    "path_lengths": [
+      1,
+      1,
+      24
+    ],
+    "transport_count": 26,
+    "occupied_cells": 129,
+    "channels": 29,
+    "no_unlisted_channels": true,
+    "both_machines_powered": true,
+    "source_switch_after_debug": "off",
+    "source_recipe": "1 蓝铁矿 → 1 蓝铁块，1 tick",
+    "recipient_recipe": "1 蓝铁块 → 1 蓝铁粉末，1 tick"
+  },
+  "q": 10,
+  "shutoff_tick": "21/2",
+  "frozen_remaining_tick": "1/2",
+  "steady_period_tick": 1,
+  "witness_applies_to_indices": [
+    11,
+    12,
+    13
+  ],
+  "samples": [
+    {
+      "tick": 10.5,
+      "Y_stock": 0,
+      "Y_output": 0,
+      "Y_cache_remaining": 0.5,
+      "Y_switch": false,
+      "X_stock": 0,
+      "X_cache": 110,
+      "X_output": 0,
+      "YX_cells": [
+        null
+      ],
+      "warehouse_blue_powder": 0
+    },
+    {
+      "tick": 50.0,
+      "Y_stock": 40,
+      "Y_output": 0,
+      "Y_cache_remaining": 0.5,
+      "Y_switch": false,
+      "X_stock": 0,
+      "X_cache": null,
+      "X_output": 0,
+      "YX_cells": [
+        null
+      ],
+      "warehouse_blue_powder": 9
+    },
+    {
+      "tick": 90.0,
+      "Y_stock": 50,
+      "Y_output": 0,
+      "Y_cache_remaining": 0.5,
+      "Y_switch": false,
+      "X_stock": 0,
+      "X_cache": null,
+      "X_output": 0,
+      "YX_cells": [
+        null
+      ],
+      "warehouse_blue_powder": 9
+    },
+    {
+      "tick": 100.0,
+      "Y_stock": 50,
+      "Y_output": 0,
+      "Y_cache_remaining": 0.5,
+      "Y_switch": false,
+      "X_stock": 0,
+      "X_cache": null,
+      "X_output": 0,
+      "YX_cells": [
+        null
+      ],
+      "warehouse_blue_powder": 9
+    },
+    {
+      "tick": 101.0,
+      "Y_stock": 50,
+      "Y_output": 0,
+      "Y_cache_remaining": 0.5,
+      "Y_switch": false,
+      "X_stock": 0,
+      "X_cache": null,
+      "X_output": 0,
+      "YX_cells": [
+        null
+      ],
+      "warehouse_blue_powder": 9
+    },
+    {
+      "tick": 110.0,
+      "Y_stock": 50,
+      "Y_output": 0,
+      "Y_cache_remaining": 0.5,
+      "Y_switch": false,
+      "X_stock": 0,
+      "X_cache": null,
+      "X_output": 0,
+      "YX_cells": [
+        null
+      ],
+      "warehouse_blue_powder": 9
+    }
+  ],
+  "equal_full_state": "(0, (((50,), 0, ('paused', 5), 0, 0), ((0,), 0, -1, 0, 0)), (((0,), -1), ((-1,), -1), ((-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1), -1)))",
+  "state_sha256": "66452797f9caa1fe1919faaf092e551a0fb79878175dab325afa00be22a2326b",
+  "no_events_in_steady_period": true,
+  "condition_check": {
+    "recipient_on_and_powered": true,
+    "d": 1,
+    "a": 1,
+    "c": 1,
+    "dc_ge_a": true,
+    "correct_inventory_output_and_single_batch": true,
+    "source_cache_nonempty_at_every_real_time": true,
+    "source_only_blue_ore_recipe": true,
+    "total_source_exits": 1,
+    "output_batch_size": 1,
+    "exclusive_unrestricted_correct_line": true,
+    "recipient_cache_nonempty": false
+  }
+}

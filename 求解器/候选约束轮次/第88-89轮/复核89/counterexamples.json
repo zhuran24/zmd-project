@@ -1,0 +1,241 @@
+{
+ "A": {
+  "x_empty": 54,
+  "y_empty": 0,
+  "closures": 54,
+  "y_channels_connected_max": 0,
+  "final": {
+   "Y_out": [
+    "源石粉末",
+    1
+   ],
+   "Y_cache_done": true,
+   "X_grid": [
+    null
+   ],
+   "X_cache": false
+  }
+ },
+ "B": {
+  "x_empty": 2,
+  "closures": 2
+ },
+ "C": {
+  "ticks": 100,
+  "x_empty": 20,
+  "y_empty": 0,
+  "max_connected_channels": 1,
+  "sample": [
+   [
+    150,
+    true,
+    true,
+    1,
+    0
+   ],
+   [
+    151,
+    true,
+    true,
+    1,
+    0
+   ],
+   [
+    152,
+    true,
+    true,
+    1,
+    0
+   ],
+   [
+    153,
+    true,
+    true,
+    1,
+    0
+   ],
+   [
+    154,
+    false,
+    true,
+    1,
+    0
+   ],
+   [
+    155,
+    true,
+    true,
+    1,
+    0
+   ],
+   [
+    156,
+    true,
+    true,
+    1,
+    0
+   ],
+   [
+    157,
+    true,
+    true,
+    1,
+    0
+   ],
+   [
+    158,
+    true,
+    true,
+    1,
+    0
+   ],
+   [
+    159,
+    false,
+    true,
+    1,
+    0
+   ],
+   [
+    160,
+    true,
+    true,
+    1,
+    0
+   ]
+  ]
+ },
+ "D": {
+  "S": 8,
+  "phi0": 26,
+  "threshold": 8.5,
+  "empty_after_t100": {
+   "C": 1,
+   "B": 1,
+   "K": 1,
+   "closures": 1
+  },
+  "C_grid": [
+   [
+    "源矿",
+    1
+   ]
+  ]
+ },
+ "E": {
+  "ticks": 100,
+  "x_empty": 34,
+  "y_empty": 0,
+  "x_sand_received_per_tick": 0.6533333333333333,
+  "sample": [
+   [
+    200,
+    false,
+    true,
+    [
+     "荞花粉末",
+     1
+    ]
+   ],
+   [
+    201,
+    true,
+    true,
+    [
+     "砂叶粉末",
+     2
+    ]
+   ],
+   [
+    202,
+    true,
+    true,
+    [
+     "荞花粉末",
+     2
+    ]
+   ],
+   [
+    203,
+    false,
+    true,
+    [
+     "荞花粉末",
+     1
+    ]
+   ],
+   [
+    204,
+    true,
+    true,
+    [
+     "砂叶粉末",
+     2
+    ]
+   ],
+   [
+    205,
+    true,
+    true,
+    [
+     "荞花粉末",
+     2
+    ]
+   ],
+   [
+    206,
+    false,
+    true,
+    [
+     "荞花粉末",
+     1
+    ]
+   ],
+   [
+    207,
+    true,
+    true,
+    [
+     "砂叶粉末",
+     2
+    ]
+   ],
+   [
+    208,
+    true,
+    true,
+    [
+     "荞花粉末",
+     2
+    ]
+   ],
+   [
+    209,
+    false,
+    true,
+    [
+     "荞花粉末",
+     1
+    ]
+   ],
+   [
+    210,
+    true,
+    true,
+    [
+     "砂叶粉末",
+     2
+    ]
+   ],
+   [
+    211,
+    true,
+    true,
+    [
+     "荞花粉末",
+     2
+    ]
+   ]
+  ]
+ }
+}
