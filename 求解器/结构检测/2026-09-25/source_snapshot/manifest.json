@@ -1,0 +1,92 @@
+[
+  {
+    "source": "《明日方舟：终末地》游戏规则.txt",
+    "snapshot": "source_snapshot/《明日方舟：终末地》游戏规则.txt",
+    "sha256": "6e64e3903a65536c530b363c9f3aef8c1bb2a1c1193e866799125dd047159924"
+  },
+  {
+    "source": "求解器/候选约束轮次/第66-68轮/推导66/power_certificates.json",
+    "snapshot": "source_snapshot/求解器/候选约束轮次/第66-68轮/推导66/power_certificates.json",
+    "sha256": "555d4b3a7a2b5ba3a574c641e946b52df7a9968830fb5867be6feb067e058042"
+  },
+  {
+    "source": "求解器/候选约束轮次/第69-71轮/推导69/new_edge_local_certificate.json",
+    "snapshot": "source_snapshot/求解器/候选约束轮次/第69-71轮/推导69/new_edge_local_certificate.json",
+    "sha256": "1145545163831b7b187bb9b9575a25833a12e85de53cdebd87efee79c7f846e1"
+  },
+  {
+    "source": "求解器/候选约束轮次/第69-71轮/推导69/supply_strip_certificates.json",
+    "snapshot": "source_snapshot/求解器/候选约束轮次/第69-71轮/推导69/supply_strip_certificates.json",
+    "sha256": "e8152f1e6d8217ff9fbb0d7919500a2d85a7dca4e5a3e845aa4bf945eff3c569"
+  },
+  {
+    "source": "求解器/候选约束轮次/第75-77轮/推导75.md",
+    "snapshot": "source_snapshot/求解器/候选约束轮次/第75-77轮/推导75.md",
+    "sha256": "2ab3c5a2de8fbfbe18da4f188a27d0b8b79dc5cd46fc00a9a064a8849a6bcb4f"
+  },
+  {
+    "source": "求解器/候选约束轮次/第75-77轮/推导75/cp72.py",
+    "snapshot": "source_snapshot/求解器/候选约束轮次/第75-77轮/推导75/cp72.py",
+    "sha256": "697ade0b50a59f702ded7689babbe85f1ba26fe8ac62dc9e0dff799f913c475a"
+  },
+  {
+    "source": "求解器/候选约束轮次/第75-77轮/推导75/residual_global_A.json",
+    "snapshot": "source_snapshot/求解器/候选约束轮次/第75-77轮/推导75/residual_global_A.json",
+    "sha256": "7817cb20af53f50e15adbb5f3bbe76fb8f672b825597fe1fd19e3213676fa17a"
+  },
+  {
+    "source": "求解器/候选约束轮次/第75-77轮/推导75/residual_model75.py",
+    "snapshot": "source_snapshot/求解器/候选约束轮次/第75-77轮/推导75/residual_model75.py",
+    "sha256": "9cd21941599882b902c86ee1ff3110a1d174603eb3ce43931da40e38d3ce7867"
+  },
+  {
+    "source": "求解器/几何/1113放松/positions.json",
+    "snapshot": "source_snapshot/求解器/几何/1113放松/positions.json",
+    "sha256": "bc31ee22aa916303eb666ebbaf94035e8cc7308ba869fcaafafe83646ee3deea"
+  },
+  {
+    "source": "求解器/几何/1113放松/报告.md",
+    "snapshot": "source_snapshot/求解器/几何/1113放松/报告.md",
+    "sha256": "e62f9be13b763209a55c5a056a0e43540ca91942cfaa31e45a691d9c29d06a9f"
+  },
+  {
+    "source": "求解器/几何/1113流量层/filter_positions.py",
+    "snapshot": "source_snapshot/求解器/几何/1113流量层/filter_positions.py",
+    "sha256": "9bceabcf7f7a9371d3bf469c3cc09611b29dec566f4861e491212e27a2c22a7e"
+  },
+  {
+    "source": "求解器/几何/1113流量层/flow_model.py",
+    "snapshot": "source_snapshot/求解器/几何/1113流量层/flow_model.py",
+    "sha256": "b38aea2136ea3dd96161bd70009a0a4b5f5d05ce48c96df5f3347f0cbbb28033"
+  },
+  {
+    "source": "求解器/几何/1113流量层/flow_model_global.py",
+    "snapshot": "source_snapshot/求解器/几何/1113流量层/flow_model_global.py",
+    "sha256": "bfbda588646370a37928335560668a3a8d462c476f4538c9f62859c3c680b9f0"
+  },
+  {
+    "source": "求解器/几何/1113流量层/geometry.py",
+    "snapshot": "source_snapshot/求解器/几何/1113流量层/geometry.py",
+    "sha256": "a0f700fd182a653795d9c4b5980818c289ebd0b01cee483c41132963b258ddff"
+  },
+  {
+    "source": "求解器/几何/1113流量层/inputs/positions.json",
+    "snapshot": "source_snapshot/求解器/几何/1113流量层/inputs/positions.json",
+    "sha256": "fd9d7255ca03f96d6c700331abd1fc45a660b3742038281f17108e6c917d550c"
+  },
+  {
+    "source": "求解器/几何/1113流量层/run_campaign.py",
+    "snapshot": "source_snapshot/求解器/几何/1113流量层/run_campaign.py",
+    "sha256": "c4d2cc7d62ca1acceab01384a26d8242c22a75025d0653194442fd864dc59a01"
+  },
+  {
+    "source": "求解器/几何/1113流量层/报告.md",
+    "snapshot": "source_snapshot/求解器/几何/1113流量层/报告.md",
+    "sha256": "ff82bbb218368fc57eb479d18d28e66b34ba1a7b9e362de32590abbf3af70327"
+  },
+  {
+    "source": "求解器/几何/1113流量层/模型说明.md",
+    "snapshot": "source_snapshot/求解器/几何/1113流量层/模型说明.md",
+    "sha256": "b667b10c7d6af8b3ca5acd1c4d02c074a9162397f682a873cbc474cce440cd9d"
+  }
+]

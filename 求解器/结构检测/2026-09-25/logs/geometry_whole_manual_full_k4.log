@@ -1,0 +1,2 @@
+{"event": "partition_start", "dataset": "geometry_whole", "algorithm": "manual", "mode": "full", "k": 4}
+{"dataset": "geometry_whole", "algorithm": "manual", "mode": "full", "k": 4, "seed": 20260925, "epsilon": null, "seconds": 0.005034513000282459, "peak_rss_kib": 133368, "raw_block_sizes": [12292, 8174, 12749, 5650], "rule": "按变量代表点分四象限：x=35、y=35；无坐标变量归西南片。不做数量配平。"}

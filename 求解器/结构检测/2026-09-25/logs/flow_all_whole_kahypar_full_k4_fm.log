@@ -1,0 +1,2 @@
+{"event": "partition_start", "dataset": "flow_all_whole", "algorithm": "kahypar", "mode": "full", "k": 4}
+{"dataset": "flow_all_whole", "algorithm": "kahypar", "mode": "full", "k": 4, "seed": 20260925, "epsilon": 0.03, "seconds": 342.4145306450082, "peak_rss_kib": 1214524, "raw_block_sizes": [83943, 94943, 94953, 94953], "objective": "connectivity_minus_one", "config": "km1_kKaHyPar_fm_4runs.ini", "reported_km1": 76921, "reported_cut": 74675, "partitioned_hyperedges": 752243}

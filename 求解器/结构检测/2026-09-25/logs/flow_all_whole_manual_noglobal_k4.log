@@ -1,0 +1,2 @@
+{"event": "partition_start", "dataset": "flow_all_whole", "algorithm": "manual", "mode": "noglobal", "k": 4}
+{"dataset": "flow_all_whole", "algorithm": "manual", "mode": "noglobal", "k": 4, "seed": 20260925, "epsilon": null, "seconds": 0.044403050997061655, "peak_rss_kib": 649532, "raw_block_sizes": [119429, 76515, 124309, 48539], "rule": "按变量代表点分四象限：x=35、y=35；无坐标变量归西南片。不做数量配平。"}

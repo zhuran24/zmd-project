@@ -1,0 +1,2 @@
+{"event": "partition_start", "dataset": "geometry_whole", "algorithm": "kahypar", "mode": "full", "k": 2}
+{"dataset": "geometry_whole", "algorithm": "kahypar", "mode": "full", "k": 2, "seed": 20260925, "epsilon": 0.03, "seconds": 14.66049920200021, "peak_rss_kib": 292316, "raw_block_sizes": [19433, 19432], "objective": "connectivity_minus_one", "config": "km1_kKaHyPar_eco_sea20.ini", "reported_km1": 8550, "reported_cut": 8550, "partitioned_hyperedges": 101499}

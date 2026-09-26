@@ -1,0 +1,6 @@
+{"event": "partition_start", "dataset": "geometry_whole", "algorithm": "metis", "mode": "full", "k": 2}
+{"dataset": "geometry_whole", "algorithm": "metis", "mode": "full", "k": 2, "seed": 20260925, "epsilon": 0.03, "seconds": 1.5187465880007949, "peak_rss_kib": 7963636, "raw_block_sizes": [18886, 19979], "reported_edge_cut": 3414772, "graph_edges": 88621648}
+{"event": "partition_start", "dataset": "geometry_whole", "algorithm": "metis", "mode": "full", "k": 4}
+{"dataset": "geometry_whole", "algorithm": "metis", "mode": "full", "k": 4, "seed": 20260925, "epsilon": 0.03, "seconds": 2.010393953998573, "peak_rss_kib": 7963636, "raw_block_sizes": [10008, 9432, 9433, 9992], "reported_edge_cut": 16173433, "graph_edges": 88621648}
+{"event": "partition_start", "dataset": "geometry_whole", "algorithm": "metis", "mode": "full", "k": 8}
+{"dataset": "geometry_whole", "algorithm": "metis", "mode": "full", "k": 8, "seed": 20260925, "epsilon": 0.03, "seconds": 2.7414755350037012, "peak_rss_kib": 7965824, "raw_block_sizes": [4716, 5004, 4974, 5003, 4731, 4717, 4716, 5004], "reported_edge_cut": 34278802, "graph_edges": 88621648}

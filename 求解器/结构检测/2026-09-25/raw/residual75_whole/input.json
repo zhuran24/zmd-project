@@ -1,0 +1,25 @@
+{
+  "model": "residual75",
+  "scope": "whole",
+  "window": null,
+  "variables": 12119,
+  "constraints": 42134,
+  "pins": 820076,
+  "global_constraints": 10,
+  "original_variables": 12119,
+  "original_constraints": 42134,
+  "whole_graph_estimates": {
+    "full": {
+      "variables": 12119,
+      "constraints": 42134,
+      "pins": 820076,
+      "clique_pair_occurrences": 69807610
+    },
+    "noglobal": {
+      "variables": 12119,
+      "constraints": 42124,
+      "pins": 812535,
+      "clique_pair_occurrences": 61402651
+    }
+  }
+}

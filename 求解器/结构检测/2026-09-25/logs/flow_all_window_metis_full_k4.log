@@ -1,0 +1,2 @@
+{"event": "partition_start", "dataset": "flow_all_window", "algorithm": "metis", "mode": "full", "k": 4}
+{"dataset": "flow_all_window", "algorithm": "metis", "mode": "full", "k": 4, "seed": 20260925, "epsilon": 0.03, "seconds": 0.166749541007448, "peak_rss_kib": 793384, "raw_block_sizes": [5917, 5678, 5810, 5576], "reported_edge_cut": 271703, "graph_edges": 8405744}

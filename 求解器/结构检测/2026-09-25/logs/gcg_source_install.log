@@ -1,0 +1,101 @@
+Using Python 3.14.7 environment at: 求解器/结构检测/2026-09-25/.venv
+Resolved 3 packages in 2.76s
+Downloading pyscipopt (16.6MiB)
+   Building pygcgopt==0.4.0
+ Downloaded pyscipopt
+error: Failed to build `pygcgopt==0.4.0`
+  cause: The build backend returned an error
+  cause: Call to `setuptools.build_meta.build_wheel` failed (exit status: 1)
+
+         [stdout]
+         Using include path </usr/include/gcg, /home/zhuran24/zmd-research-fresh/求解器/结构检测/2026-09-25/cache/sdists-v9/pypi/pygcgopt/0.4.0/UKZ67FXddHfVdBJI/src/src>.
+         Using SCIP library <scip> at </home/zhuran24/zmd-research-fresh/求解器/结构检测/2026-09-25/cache/sdists-v9/pypi/pygcgopt/0.4.0/UKZ67FXddHfVdBJI/src/lib>.
+         Using GCG library <gcg> at </home/zhuran24/zmd-research-fresh/求解器/结构检测/2026-09-25/cache/sdists-v9/pypi/pygcgopt/0.4.0/UKZ67FXddHfVdBJI/src/lib>.
+         running bdist_wheel
+         running build
+         running build_py
+         creating build/lib.linux-x86_64-cpython-314/pygcgopt
+         copying src/pygcgopt/util.py -> build/lib.linux-x86_64-cpython-314/pygcgopt
+         copying src/pygcgopt/__init__.py -> build/lib.linux-x86_64-cpython-314/pygcgopt
+         copying src/pygcgopt/gcg.pyx -> build/lib.linux-x86_64-cpython-314/pygcgopt
+         copying src/pygcgopt/gcg.pxd -> build/lib.linux-x86_64-cpython-314/pygcgopt
+         copying src/pygcgopt/decomposition.pxi -> build/lib.linux-x86_64-cpython-314/pygcgopt
+         copying src/pygcgopt/score.pxi -> build/lib.linux-x86_64-cpython-314/pygcgopt
+         copying src/pygcgopt/varclassifier.pxi -> build/lib.linux-x86_64-cpython-314/pygcgopt
+         copying src/pygcgopt/consclassifier.pxi -> build/lib.linux-x86_64-cpython-314/pygcgopt
+         copying src/pygcgopt/partition.pxi -> build/lib.linux-x86_64-cpython-314/pygcgopt
+         copying src/pygcgopt/detector.pxi -> build/lib.linux-x86_64-cpython-314/pygcgopt
+         copying src/pygcgopt/detprobdata.pxi -> build/lib.linux-x86_64-cpython-314/pygcgopt
+         copying src/pygcgopt/pricing_solver.pxi -> build/lib.linux-x86_64-cpython-314/pygcgopt
+         running build_ext
+         building 'pygcgopt.gcg' extension
+         /usr/sbin/g++ -fno-strict-overflow -Wsign-compare -DNDEBUG -g -O3 -Wall -march=x86-64-v3 -mtune=generic -O3 -pipe -fno-plt -fexceptions -Wp,-D_FORTIFY_SOURCE=3 -Wformat -Werror=format-security -fstack-clash-protection -fcf-protection -g -ffile-prefix-map=/tmp/pkg/src=/usr/src/debug/python -flto=auto -ffat-lto-objects -march=x86-64-v3 -mtune=generic -O3 -pipe -fno-plt -fexceptions -Wp,-D_FORTIFY_SOURCE=3 -Wformat -Werror=format-security -fstack-clash-protection -fcf-protection -g -ffile-prefix-map=/tmp/pkg/src=/usr/src/debug/python -flto=auto -march=x86-64-v3 -mtune=generic -O3 -pipe -fno-plt -fexceptions -Wp,-D_FORTIFY_SOURCE=3 -Wformat -Werror=format-security -fstack-clash-protection -fcf-protection -g -ffile-prefix-map=/tmp/pkg/src=/usr/src/debug/python -flto=auto -fPIC -I/usr/include/gcg -I/home/zhuran24/zmd-research-fresh/求解器/结构检测/2026-09-25/cache/sdists-v9/pypi/pygcgopt/0.4.0/UKZ67FXddHfVdBJI/src/src -I/home/zhuran24/zmd-research-fresh/求解器/结构检测/2026-09-25/cache/builds-v0/.tmpXzU73c/include -I/usr/include/python3.14 -c src/pygcgopt/gcg.cpp -o build/temp.linux-x86_64-cpython-314/src/pygcgopt/gcg.o -std=c++11
+
+         [stderr]
+         /home/zhuran24/zmd-research-fresh/求解器/结构检测/2026-09-25/cache/builds-v0/.tmpXzU73c/lib/python3.14/site-packages/setuptools/config/_apply_pyprojecttoml.py:82: SetuptoolsWarning: `install_requires` overwritten in `pyproject.toml` (dependencies)
+           corresp(dist, value, root_dir)
+         /home/zhuran24/zmd-research-fresh/求解器/结构检测/2026-09-25/cache/builds-v0/.tmpXzU73c/lib/python3.14/site-packages/setuptools/config/_apply_pyprojecttoml.py:82: SetuptoolsDeprecationWarning: `project.license` as a TOML table is deprecated
+         !!
+
+                 ********************************************************************************
+                 Please use a simple string containing a SPDX expression for `project.license`. You can also use `project.license-files`. (Both options available on setuptools>=77.0.0).
+
+                 By 2027-Feb-18, you need to update your project and remove deprecated calls
+                 or your builds will no longer be supported.
+
+                 See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+                 ********************************************************************************
+
+         !!
+           corresp(dist, value, root_dir)
+         /home/zhuran24/zmd-research-fresh/求解器/结构检测/2026-09-25/cache/builds-v0/.tmpXzU73c/lib/python3.14/site-packages/setuptools/config/_apply_pyprojecttoml.py:61: SetuptoolsDeprecationWarning: License classifiers are deprecated.
+         !!
+
+                 ********************************************************************************
+                 Please consider removing the following classifiers in favor of a SPDX license expression:
+
+                 License :: OSI Approved :: MIT License
+
+                 See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+                 ********************************************************************************
+
+         !!
+           dist._finalize_license_expression()
+         /home/zhuran24/zmd-research-fresh/求解器/结构检测/2026-09-25/cache/builds-v0/.tmpXzU73c/lib/python3.14/site-packages/setuptools/dist.py:765: SetuptoolsDeprecationWarning: License classifiers are deprecated.
+         !!
+
+                 ********************************************************************************
+                 Please consider removing the following classifiers in favor of a SPDX license expression:
+
+                 License :: OSI Approved :: MIT License
+
+                 See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+                 ********************************************************************************
+
+         !!
+           self._finalize_license_expression()
+         /home/zhuran24/zmd-research-fresh/求解器/结构检测/2026-09-25/cache/builds-v0/.tmpXzU73c/lib/python3.14/site-packages/setuptools/_distutils/cmd.py:119: SetuptoolsDeprecationWarning: bdist_wheel.universal is deprecated
+         !!
+
+                 ********************************************************************************
+                 With Python 2.7 end-of-life, support for building universal wheels
+                 (i.e., wheels that support both Python 2 and Python 3)
+                 is being obviated.
+                 Please discontinue using this option, or if you still need it,
+                 file an issue with pypa/setuptools describing your use case.
+
+                 This deprecation is overdue, please update your project and remove deprecated
+                 calls to avoid build errors in the future.
+                 ********************************************************************************
+
+         !!
+           self.finalize_options()
+         warning: build_py: byte-compiling is disabled, skipping.
+
+         src/pygcgopt/gcg.cpp:1292:10: fatal error: scip/type_retcode.h: No such file or directory
+          1292 | #include "scip/type_retcode.h"
+               |          ^~~~~~~~~~~~~~~~~~~~~
+         compilation terminated.
+         error: Command '['/usr/sbin/g++', '-fno-strict-overflow', '-Wsign-compare', '-DNDEBUG', '-g', '-O3', '-Wall', '-march=x86-64-v3', '-mtune=generic', '-O3', '-pipe', '-fno-plt', '-fexceptions', '-Wp,-D_FORTIFY_SOURCE=3', '-Wformat', '-Werror=format-security', '-fstack-clash-protection', '-fcf-protection', '-g', '-ffile-prefix-map=/tmp/pkg/src=/usr/src/debug/python', '-flto=auto', '-ffat-lto-objects', '-march=x86-64-v3', '-mtune=generic', '-O3', '-pipe', '-fno-plt', '-fexceptions', '-Wp,-D_FORTIFY_SOURCE=3', '-Wformat', '-Werror=format-security', '-fstack-clash-protection', '-fcf-protection', '-g', '-ffile-prefix-map=/tmp/pkg/src=/usr/src/debug/python', '-flto=auto', '-march=x86-64-v3', '-mtune=generic', '-O3', '-pipe', '-fno-plt', '-fexceptions', '-Wp,-D_FORTIFY_SOURCE=3', '-Wformat', '-Werror=format-security', '-fstack-clash-protection', '-fcf-protection', '-g', '-ffile-prefix-map=/tmp/pkg/src=/usr/src/debug/python', '-flto=auto', '-fPIC', '-I/usr/include/gcg', '-I/home/zhuran24/zmd-research-fresh/求解器/结构检测/2026-09-25/cache/sdists-v9/pypi/pygcgopt/0.4.0/UKZ67FXddHfVdBJI/src/src', '-I/home/zhuran24/zmd-research-fresh/求解器/结构检测/2026-09-25/cache/builds-v0/.tmpXzU73c/include', '-I/usr/include/python3.14', '-c', 'src/pygcgopt/gcg.cpp', '-o', 'build/temp.linux-x86_64-cpython-314/src/pygcgopt/gcg.o', '-std=c++11']' returned non-zero exit status 1.
+
+hint: This error likely indicates that you need to install a library that provides "scip/type_retcode.h" for `pygcgopt@0.4.0`

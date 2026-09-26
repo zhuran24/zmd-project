@@ -1,0 +1,2 @@
+{"event": "partition_start", "dataset": "flow_ore_whole", "algorithm": "kahypar", "mode": "full", "k": 8}
+{"dataset": "flow_ore_whole", "algorithm": "kahypar", "mode": "full", "k": 8, "seed": 20260925, "epsilon": 0.03, "seconds": 146.40064999400056, "peak_rss_kib": 541224, "raw_block_sizes": [17973, 17982, 17637, 16307, 17601, 17584, 16833, 18015], "objective": "connectivity_minus_one", "config": "km1_kKaHyPar_eco_sea20.ini", "reported_km1": 48826, "reported_cut": 41848, "partitioned_hyperedges": 264182}

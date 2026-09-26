@@ -1,0 +1,27 @@
+{
+  "date": "2026-09-25",
+  "status": "passed",
+  "result_count": 74,
+  "linked_local_files_checked": 2538,
+  "source_snapshots": 18,
+  "reader_review": {
+    "self_contained": true,
+    "final_state_only": true,
+    "header_matches_result_count": true,
+    "no_style_instruction_echo": true,
+    "unique_numeric_conventions": true,
+    "terminology_checked_against_rule_file": true,
+    "all_local_links_exist": true
+  },
+  "started_utc": "2026-09-26T00:11:00+00:00",
+  "finished_utc": "2026-09-26T00:52:37.417141+00:00",
+  "elapsed_wall_minutes": 41.623619016666666,
+  "solver_invocations": 0,
+  "git_commands": 0,
+  "write_scope": "/home/zhuran24/zmd-research-fresh/求解器/结构检测/2026-09-25",
+  "notes": [
+    "只检查语法依赖；未运行预处理或求解。",
+    "窗口结果及保留全局行的条件在每项明细中单列。",
+    "连接变量按确定规则构造，未声明最小或最优。"
+  ]
+}

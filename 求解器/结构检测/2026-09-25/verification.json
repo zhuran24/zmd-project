@@ -1,0 +1,648 @@
+{
+  "status": "passed",
+  "models": [
+    {
+      "model": "flow_all",
+      "variables": 368792,
+      "constraints": 826144,
+      "all_constraint_incidence_equal": true,
+      "enforced_constraints": 354935,
+      "negative_references_checked": 0,
+      "source_files_changed_since_build": [],
+      "model_sha256": "c7fa305f28c0c3050f1220cac570cfc0f6fc34c4b54c17b830eb35f63c756dd5"
+    },
+    {
+      "model": "flow_ore",
+      "variables": 139932,
+      "constraints": 264323,
+      "all_constraint_incidence_equal": true,
+      "enforced_constraints": 111957,
+      "negative_references_checked": 0,
+      "source_files_changed_since_build": [],
+      "model_sha256": "0b1df61890f787c70c50274ef6083071134d6203c74882acb3342fd4fbc79316"
+    },
+    {
+      "model": "geometry",
+      "variables": 38865,
+      "constraints": 101640,
+      "all_constraint_incidence_equal": true,
+      "enforced_constraints": 70857,
+      "negative_references_checked": 0,
+      "source_files_changed_since_build": [],
+      "model_sha256": "4160977576dc10e317d58c37dd9bdbd8b3a6d764c41504fe859ca4df17efd612"
+    },
+    {
+      "model": "residual75",
+      "variables": 12119,
+      "constraints": 42134,
+      "all_constraint_incidence_equal": true,
+      "enforced_constraints": 2672,
+      "negative_references_checked": 584,
+      "source_files_changed_since_build": [],
+      "model_sha256": "819545c14ffed15a8d06c52e4b040e990ddbac61873eb4356a132979ae7a07fe",
+      "existing_build_metadata_match": {
+        "variables": true,
+        "constraints": true,
+        "centers": true,
+        "groups": true
+      }
+    }
+  ],
+  "results": [
+    {
+      "dataset": "flow_all_whole",
+      "result": "kahypar_full_k2.json",
+      "separator_count": 160047,
+      "linking_constraint_count": 341440,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "flow_all_whole",
+      "result": "kahypar_full_k4.json",
+      "separator_count": 225514,
+      "linking_constraint_count": 249589,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "flow_all_whole",
+      "result": "kahypar_full_k8.json",
+      "separator_count": 265549,
+      "linking_constraint_count": 226563,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "flow_all_whole",
+      "result": "kahypar_noglobal_k2.json",
+      "separator_count": 10948,
+      "linking_constraint_count": 71753,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "flow_all_whole",
+      "result": "kahypar_noglobal_k4.json",
+      "separator_count": 25138,
+      "linking_constraint_count": 167286,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "flow_all_whole",
+      "result": "kahypar_noglobal_k8.json",
+      "separator_count": 53487,
+      "linking_constraint_count": 290408,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "flow_all_whole",
+      "result": "manual_full_k4.json",
+      "separator_count": 210338,
+      "linking_constraint_count": 231587,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "flow_all_whole",
+      "result": "manual_noglobal_k4.json",
+      "separator_count": 23860,
+      "linking_constraint_count": 160813,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "flow_all_whole",
+      "result": "metis_noglobal_k2.json",
+      "separator_count": 9900,
+      "linking_constraint_count": 75510,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "flow_all_whole",
+      "result": "metis_noglobal_k4.json",
+      "separator_count": 42146,
+      "linking_constraint_count": 260254,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "flow_all_whole",
+      "result": "metis_noglobal_k8.json",
+      "separator_count": 75804,
+      "linking_constraint_count": 395781,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "flow_all_window",
+      "result": "manual_full_k4.json",
+      "separator_count": 15142,
+      "linking_constraint_count": 13473,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "flow_all_window",
+      "result": "manual_noglobal_k4.json",
+      "separator_count": 5334,
+      "linking_constraint_count": 24472,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "flow_all_window",
+      "result": "metis_full_k2.json",
+      "separator_count": 6442,
+      "linking_constraint_count": 31749,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "flow_all_window",
+      "result": "metis_full_k4.json",
+      "separator_count": 7314,
+      "linking_constraint_count": 35486,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "flow_all_window",
+      "result": "metis_full_k8.json",
+      "separator_count": 10760,
+      "linking_constraint_count": 32202,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "flow_all_window",
+      "result": "metis_noglobal_k2.json",
+      "separator_count": 2927,
+      "linking_constraint_count": 18583,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "flow_all_window",
+      "result": "metis_noglobal_k4.json",
+      "separator_count": 5183,
+      "linking_constraint_count": 28424,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "flow_all_window",
+      "result": "metis_noglobal_k8.json",
+      "separator_count": 6327,
+      "linking_constraint_count": 29472,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "flow_ore_whole",
+      "result": "kahypar_full_k2.json",
+      "separator_count": 47550,
+      "linking_constraint_count": 135587,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "flow_ore_whole",
+      "result": "kahypar_full_k4.json",
+      "separator_count": 72709,
+      "linking_constraint_count": 144458,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "flow_ore_whole",
+      "result": "kahypar_full_k8.json",
+      "separator_count": 85082,
+      "linking_constraint_count": 147648,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "flow_ore_whole",
+      "result": "kahypar_noglobal_k2.json",
+      "separator_count": 4237,
+      "linking_constraint_count": 34612,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "flow_ore_whole",
+      "result": "kahypar_noglobal_k4.json",
+      "separator_count": 11254,
+      "linking_constraint_count": 76885,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "flow_ore_whole",
+      "result": "kahypar_noglobal_k8.json",
+      "separator_count": 27559,
+      "linking_constraint_count": 117616,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "flow_ore_whole",
+      "result": "manual_full_k4.json",
+      "separator_count": 65496,
+      "linking_constraint_count": 152966,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "flow_ore_whole",
+      "result": "manual_noglobal_k4.json",
+      "separator_count": 9219,
+      "linking_constraint_count": 73183,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "flow_ore_whole",
+      "result": "metis_noglobal_k2.json",
+      "separator_count": 4306,
+      "linking_constraint_count": 35276,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "flow_ore_whole",
+      "result": "metis_noglobal_k4.json",
+      "separator_count": 11088,
+      "linking_constraint_count": 78712,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "flow_ore_whole",
+      "result": "metis_noglobal_k8.json",
+      "separator_count": 20869,
+      "linking_constraint_count": 110817,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "flow_ore_window",
+      "result": "manual_full_k4.json",
+      "separator_count": 4714,
+      "linking_constraint_count": 7692,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "flow_ore_window",
+      "result": "manual_noglobal_k4.json",
+      "separator_count": 1972,
+      "linking_constraint_count": 7810,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "flow_ore_window",
+      "result": "metis_full_k2.json",
+      "separator_count": 1665,
+      "linking_constraint_count": 7373,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "flow_ore_window",
+      "result": "metis_full_k4.json",
+      "separator_count": 4665,
+      "linking_constraint_count": 11108,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "flow_ore_window",
+      "result": "metis_full_k8.json",
+      "separator_count": 5307,
+      "linking_constraint_count": 11635,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "flow_ore_window",
+      "result": "metis_noglobal_k2.json",
+      "separator_count": 1491,
+      "linking_constraint_count": 9235,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "flow_ore_window",
+      "result": "metis_noglobal_k4.json",
+      "separator_count": 2523,
+      "linking_constraint_count": 9128,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "flow_ore_window",
+      "result": "metis_noglobal_k8.json",
+      "separator_count": 2825,
+      "linking_constraint_count": 9012,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "geometry_whole",
+      "result": "kahypar_full_k2.json",
+      "separator_count": 16521,
+      "linking_constraint_count": 48350,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "geometry_whole",
+      "result": "kahypar_full_k4.json",
+      "separator_count": 25826,
+      "linking_constraint_count": 56307,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "geometry_whole",
+      "result": "kahypar_full_k8.json",
+      "separator_count": 30671,
+      "linking_constraint_count": 37148,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "geometry_whole",
+      "result": "kahypar_noglobal_k2.json",
+      "separator_count": 3038,
+      "linking_constraint_count": 21515,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "geometry_whole",
+      "result": "kahypar_noglobal_k4.json",
+      "separator_count": 9256,
+      "linking_constraint_count": 43604,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "geometry_whole",
+      "result": "kahypar_noglobal_k8.json",
+      "separator_count": 20322,
+      "linking_constraint_count": 54057,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "geometry_whole",
+      "result": "manual_full_k4.json",
+      "separator_count": 22915,
+      "linking_constraint_count": 69015,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "geometry_whole",
+      "result": "manual_noglobal_k4.json",
+      "separator_count": 6995,
+      "linking_constraint_count": 42049,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "geometry_whole",
+      "result": "metis_full_k2.json",
+      "separator_count": 30114,
+      "linking_constraint_count": 94247,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "geometry_whole",
+      "result": "metis_full_k4.json",
+      "separator_count": 30914,
+      "linking_constraint_count": 72692,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "geometry_whole",
+      "result": "metis_full_k8.json",
+      "separator_count": 32159,
+      "linking_constraint_count": 73897,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "geometry_whole",
+      "result": "metis_noglobal_k2.json",
+      "separator_count": 3117,
+      "linking_constraint_count": 22120,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "geometry_whole",
+      "result": "metis_noglobal_k4.json",
+      "separator_count": 7456,
+      "linking_constraint_count": 43448,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "geometry_whole",
+      "result": "metis_noglobal_k8.json",
+      "separator_count": 15753,
+      "linking_constraint_count": 55775,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "geometry_window",
+      "result": "manual_full_k4.json",
+      "separator_count": 1605,
+      "linking_constraint_count": 2608,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "geometry_window",
+      "result": "manual_noglobal_k4.json",
+      "separator_count": 1454,
+      "linking_constraint_count": 3085,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "geometry_window",
+      "result": "metis_full_k2.json",
+      "separator_count": 1948,
+      "linking_constraint_count": 4795,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "geometry_window",
+      "result": "metis_full_k4.json",
+      "separator_count": 1997,
+      "linking_constraint_count": 3993,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "geometry_window",
+      "result": "metis_full_k8.json",
+      "separator_count": 2039,
+      "linking_constraint_count": 4537,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "geometry_window",
+      "result": "metis_noglobal_k2.json",
+      "separator_count": 891,
+      "linking_constraint_count": 3199,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "geometry_window",
+      "result": "metis_noglobal_k4.json",
+      "separator_count": 1264,
+      "linking_constraint_count": 3231,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "geometry_window",
+      "result": "metis_noglobal_k8.json",
+      "separator_count": 1812,
+      "linking_constraint_count": 2647,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "residual75_whole",
+      "result": "kahypar_full_k2.json",
+      "separator_count": 2956,
+      "linking_constraint_count": 10625,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "residual75_whole",
+      "result": "kahypar_full_k4.json",
+      "separator_count": 4416,
+      "linking_constraint_count": 13571,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "residual75_whole",
+      "result": "kahypar_full_k8.json",
+      "separator_count": 5255,
+      "linking_constraint_count": 16470,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "residual75_whole",
+      "result": "kahypar_noglobal_k2.json",
+      "separator_count": 1110,
+      "linking_constraint_count": 5559,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "residual75_whole",
+      "result": "kahypar_noglobal_k4.json",
+      "separator_count": 2416,
+      "linking_constraint_count": 10642,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "residual75_whole",
+      "result": "kahypar_noglobal_k8.json",
+      "separator_count": 4304,
+      "linking_constraint_count": 17315,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "residual75_whole",
+      "result": "manual_full_k4.json",
+      "separator_count": 4117,
+      "linking_constraint_count": 13322,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "residual75_whole",
+      "result": "manual_noglobal_k4.json",
+      "separator_count": 2279,
+      "linking_constraint_count": 9651,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "residual75_whole",
+      "result": "metis_full_k2.json",
+      "separator_count": 6227,
+      "linking_constraint_count": 29812,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "residual75_whole",
+      "result": "metis_full_k4.json",
+      "separator_count": 7485,
+      "linking_constraint_count": 31838,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "residual75_whole",
+      "result": "metis_full_k8.json",
+      "separator_count": 7821,
+      "linking_constraint_count": 23429,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "residual75_whole",
+      "result": "metis_noglobal_k2.json",
+      "separator_count": 1220,
+      "linking_constraint_count": 6076,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "residual75_whole",
+      "result": "metis_noglobal_k4.json",
+      "separator_count": 2366,
+      "linking_constraint_count": 11556,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    },
+    {
+      "dataset": "residual75_whole",
+      "result": "metis_noglobal_k8.json",
+      "separator_count": 4155,
+      "linking_constraint_count": 18016,
+      "active_crossing_constraints_after_fixing": 0,
+      "passed": true
+    }
+  ],
+  "result_count": 74,
+  "seconds": 26.71367963499506,
+  "checked": "independent direct protobuf references, signed literals, restricted input incidence, every separator and linking-row set; no model solving"
+}

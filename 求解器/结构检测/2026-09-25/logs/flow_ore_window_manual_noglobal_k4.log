@@ -1,0 +1,2 @@
+{"event": "partition_start", "dataset": "flow_ore_window", "algorithm": "manual", "mode": "noglobal", "k": 4}
+{"dataset": "flow_ore_window", "algorithm": "manual", "mode": "noglobal", "k": 4, "seed": 20260925, "epsilon": null, "seconds": 0.0014962760033085942, "peak_rss_kib": 258576, "raw_block_sizes": [2156, 2107, 2107, 2107], "rule": "按变量代表点分四象限：x=23、y=23；无坐标变量归西南片。不做数量配平。"}

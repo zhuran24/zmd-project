@@ -1,0 +1,1724 @@
+[
+  {
+    "id": 0,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 23,
+      "category": "仓库取货口联合边带模式恰选一个",
+      "global_constraint": true
+    },
+    "variables": 47,
+    "families": {
+      "仓库取货口联合边带模式": 47
+    },
+    "xy_bbox": null,
+    "example_variables": [
+      "warehouse_pattern_0",
+      "warehouse_pattern_1",
+      "warehouse_pattern_2",
+      "warehouse_pattern_3",
+      "warehouse_pattern_4"
+    ]
+  },
+  {
+    "id": 39035,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 40,
+      "category": "制造单位按尺寸的总台数",
+      "global_constraint": true
+    },
+    "variables": 6488,
+    "families": {
+      "小制造单位候选摆位": 6488
+    },
+    "xy_bbox": [
+      2.5,
+      2.5,
+      68.5,
+      68.5
+    ],
+    "example_variables": [
+      "small_1_2_1",
+      "small_1_3_1",
+      "small_1_4_1",
+      "small_1_5_1",
+      "small_1_6_1"
+    ]
+  },
+  {
+    "id": 39036,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 40,
+      "category": "制造单位按尺寸的总台数",
+      "global_constraint": true
+    },
+    "variables": 5972,
+    "families": {
+      "中制造单位候选摆位": 5972
+    },
+    "xy_bbox": [
+      3.5,
+      3.5,
+      67.5,
+      67.5
+    ],
+    "example_variables": [
+      "medium_1_2_1",
+      "medium_1_3_1",
+      "medium_1_4_1",
+      "medium_1_5_1",
+      "medium_1_6_1"
+    ]
+  },
+  {
+    "id": 39037,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 40,
+      "category": "制造单位按尺寸的总台数",
+      "global_constraint": true
+    },
+    "variables": 5976,
+    "families": {
+      "大制造单位候选摆位": 5976
+    },
+    "xy_bbox": [
+      4.0,
+      4.0,
+      67.0,
+      67.0
+    ],
+    "example_variables": [
+      "large_1_2_1",
+      "large_1_3_1",
+      "large_1_4_1",
+      "large_1_5_1",
+      "large_1_6_1"
+    ]
+  },
+  {
+    "id": 70814,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 64,
+      "category": "协议核心总数",
+      "global_constraint": true
+    },
+    "variables": 4534,
+    "families": {
+      "协议核心候选摆位": 4534
+    },
+    "xy_bbox": [
+      6.5,
+      6.5,
+      65.5,
+      65.5
+    ],
+    "example_variables": [
+      "core_2_5_1",
+      "core_2_8_1",
+      "core_2_11_1",
+      "core_2_14_1",
+      "core_2_17_1"
+    ]
+  },
+  {
+    "id": 70815,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 74,
+      "category": "供电桩总数定义",
+      "global_constraint": true
+    },
+    "variables": 3512,
+    "families": {
+      "供电桩候选摆位": 3511,
+      "供电桩总数": 1
+    },
+    "xy_bbox": [
+      2.0,
+      2.0,
+      69.0,
+      69.0
+    ],
+    "example_variables": [
+      "pole_1_1_None",
+      "pole_1_2_None",
+      "pole_1_3_None",
+      "pole_1_4_None",
+      "pole_1_5_None"
+    ]
+  },
+  {
+    "id": 70816,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 75,
+      "category": "占边供电桩总数定义",
+      "global_constraint": true
+    },
+    "variables": 196,
+    "families": {
+      "供电桩候选摆位": 195,
+      "占边供电桩数": 1
+    },
+    "xy_bbox": [
+      2.0,
+      2.0,
+      69.0,
+      69.0
+    ],
+    "example_variables": [
+      "pole_1_1_None",
+      "pole_1_2_None",
+      "pole_1_3_None",
+      "pole_1_4_None",
+      "pole_1_5_None"
+    ]
+  },
+  {
+    "id": 70817,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 77,
+      "category": "供电桩总数与占边数预算",
+      "global_constraint": true
+    },
+    "variables": 2,
+    "families": {
+      "供电桩总数": 1,
+      "占边供电桩数": 1
+    },
+    "xy_bbox": null,
+    "example_variables": [
+      "P",
+      "J"
+    ]
+  },
+  {
+    "id": 70818,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 78,
+      "category": "供电亏额总预算",
+      "global_constraint": true
+    },
+    "variables": 560,
+    "families": {
+      "供电桩候选摆位": 559,
+      "供电桩总数": 1
+    },
+    "xy_bbox": [
+      2.0,
+      2.0,
+      69.0,
+      69.0
+    ],
+    "example_variables": [
+      "pole_1_1_None",
+      "pole_1_2_None",
+      "pole_1_3_None",
+      "pole_1_4_None",
+      "pole_1_5_None"
+    ]
+  },
+  {
+    "id": 101590,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 96,
+      "category": "运输格总数下限",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3787
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101591,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 101,
+      "category": "边带缺格条件下的运输格总数",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3786,
+      "仓库取货口联合边带模式": 1
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101592,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 101,
+      "category": "边带缺格条件下的运输格总数",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3786,
+      "仓库取货口联合边带模式": 1
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101593,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 101,
+      "category": "边带缺格条件下的运输格总数",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3786,
+      "仓库取货口联合边带模式": 1
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101594,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 101,
+      "category": "边带缺格条件下的运输格总数",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3786,
+      "仓库取货口联合边带模式": 1
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101595,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 101,
+      "category": "边带缺格条件下的运输格总数",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3786,
+      "仓库取货口联合边带模式": 1
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101596,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 101,
+      "category": "边带缺格条件下的运输格总数",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3786,
+      "仓库取货口联合边带模式": 1
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101597,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 101,
+      "category": "边带缺格条件下的运输格总数",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3786,
+      "仓库取货口联合边带模式": 1
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101598,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 101,
+      "category": "边带缺格条件下的运输格总数",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3786,
+      "仓库取货口联合边带模式": 1
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101599,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 101,
+      "category": "边带缺格条件下的运输格总数",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3786,
+      "仓库取货口联合边带模式": 1
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101600,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 101,
+      "category": "边带缺格条件下的运输格总数",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3786,
+      "仓库取货口联合边带模式": 1
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101601,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 101,
+      "category": "边带缺格条件下的运输格总数",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3786,
+      "仓库取货口联合边带模式": 1
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101602,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 101,
+      "category": "边带缺格条件下的运输格总数",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3786,
+      "仓库取货口联合边带模式": 1
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101603,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 101,
+      "category": "边带缺格条件下的运输格总数",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3786,
+      "仓库取货口联合边带模式": 1
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101604,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 101,
+      "category": "边带缺格条件下的运输格总数",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3786,
+      "仓库取货口联合边带模式": 1
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101605,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 101,
+      "category": "边带缺格条件下的运输格总数",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3786,
+      "仓库取货口联合边带模式": 1
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101606,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 101,
+      "category": "边带缺格条件下的运输格总数",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3786,
+      "仓库取货口联合边带模式": 1
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101607,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 101,
+      "category": "边带缺格条件下的运输格总数",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3786,
+      "仓库取货口联合边带模式": 1
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101608,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 101,
+      "category": "边带缺格条件下的运输格总数",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3786,
+      "仓库取货口联合边带模式": 1
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101609,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 101,
+      "category": "边带缺格条件下的运输格总数",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3786,
+      "仓库取货口联合边带模式": 1
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101610,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 101,
+      "category": "边带缺格条件下的运输格总数",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3786,
+      "仓库取货口联合边带模式": 1
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101611,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 101,
+      "category": "边带缺格条件下的运输格总数",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3786,
+      "仓库取货口联合边带模式": 1
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101612,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 101,
+      "category": "边带缺格条件下的运输格总数",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3786,
+      "仓库取货口联合边带模式": 1
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101613,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 101,
+      "category": "边带缺格条件下的运输格总数",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3786,
+      "仓库取货口联合边带模式": 1
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101614,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 101,
+      "category": "边带缺格条件下的运输格总数",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3786,
+      "仓库取货口联合边带模式": 1
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101615,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 101,
+      "category": "边带缺格条件下的运输格总数",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3786,
+      "仓库取货口联合边带模式": 1
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101616,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 101,
+      "category": "边带缺格条件下的运输格总数",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3786,
+      "仓库取货口联合边带模式": 1
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101617,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 101,
+      "category": "边带缺格条件下的运输格总数",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3786,
+      "仓库取货口联合边带模式": 1
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101618,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 101,
+      "category": "边带缺格条件下的运输格总数",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3786,
+      "仓库取货口联合边带模式": 1
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101619,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 101,
+      "category": "边带缺格条件下的运输格总数",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3786,
+      "仓库取货口联合边带模式": 1
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101620,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 101,
+      "category": "边带缺格条件下的运输格总数",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3786,
+      "仓库取货口联合边带模式": 1
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101621,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 101,
+      "category": "边带缺格条件下的运输格总数",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3786,
+      "仓库取货口联合边带模式": 1
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101622,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 101,
+      "category": "边带缺格条件下的运输格总数",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3786,
+      "仓库取货口联合边带模式": 1
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101623,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 101,
+      "category": "边带缺格条件下的运输格总数",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3786,
+      "仓库取货口联合边带模式": 1
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101624,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 101,
+      "category": "边带缺格条件下的运输格总数",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3786,
+      "仓库取货口联合边带模式": 1
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101625,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 101,
+      "category": "边带缺格条件下的运输格总数",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3786,
+      "仓库取货口联合边带模式": 1
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101626,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 101,
+      "category": "边带缺格条件下的运输格总数",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3786,
+      "仓库取货口联合边带模式": 1
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101627,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 101,
+      "category": "边带缺格条件下的运输格总数",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3786,
+      "仓库取货口联合边带模式": 1
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101628,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 101,
+      "category": "边带缺格条件下的运输格总数",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3786,
+      "仓库取货口联合边带模式": 1
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101629,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 101,
+      "category": "边带缺格条件下的运输格总数",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3786,
+      "仓库取货口联合边带模式": 1
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101630,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 101,
+      "category": "边带缺格条件下的运输格总数",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3786,
+      "仓库取货口联合边带模式": 1
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101631,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 101,
+      "category": "边带缺格条件下的运输格总数",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3786,
+      "仓库取货口联合边带模式": 1
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101632,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 101,
+      "category": "边带缺格条件下的运输格总数",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3786,
+      "仓库取货口联合边带模式": 1
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101633,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 101,
+      "category": "边带缺格条件下的运输格总数",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3786,
+      "仓库取货口联合边带模式": 1
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101634,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 101,
+      "category": "边带缺格条件下的运输格总数",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3786,
+      "仓库取货口联合边带模式": 1
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101635,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 101,
+      "category": "边带缺格条件下的运输格总数",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3786,
+      "仓库取货口联合边带模式": 1
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101636,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 101,
+      "category": "边带缺格条件下的运输格总数",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3786,
+      "仓库取货口联合边带模式": 1
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101637,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 101,
+      "category": "边带缺格条件下的运输格总数",
+      "global_constraint": true
+    },
+    "variables": 3787,
+    "families": {
+      "运输格状态": 3786,
+      "仓库取货口联合边带模式": 1
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 101638,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 111,
+      "category": "面积缺口总账",
+      "global_constraint": true
+    },
+    "variables": 138,
+    "families": {
+      "供电桩总数": 1,
+      "占边供电桩数": 1,
+      "结构占格状态": 136
+    },
+    "xy_bbox": [
+      1.5,
+      1.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "P",
+      "J",
+      "body_48_45",
+      "body_48_58",
+      "body_48_25"
+    ]
+  },
+  {
+    "id": 101639,
+    "source": {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "line": 112,
+      "category": "供电桩总数面积预算",
+      "global_constraint": true
+    },
+    "variables": 1,
+    "families": {
+      "供电桩总数": 1
+    },
+    "xy_bbox": null,
+    "example_variables": [
+      "P"
+    ]
+  },
+  {
+    "id": 105427,
+    "source": {
+      "file": "求解器/几何/1113流量层/flow_model.py",
+      "line": 77,
+      "category": "运输格与桥接器总数下限",
+      "global_constraint": true
+    },
+    "variables": 7574,
+    "families": {
+      "运输格状态": 3787,
+      "桥接器状态": 3787
+    },
+    "xy_bbox": [
+      0.5,
+      0.5,
+      69.5,
+      69.5
+    ],
+    "example_variables": [
+      "t_29_32",
+      "t_48_45",
+      "t_40_41",
+      "t_6_48",
+      "t_41_42"
+    ]
+  },
+  {
+    "id": 111916,
+    "source": {
+      "file": "求解器/几何/1113流量层/flow_model.py",
+      "line": 101,
+      "category": "制造单位按机型的总台数",
+      "global_constraint": true
+    },
+    "variables": 12976,
+    "families": {
+      "粉碎机候选摆位及存货边": 12976
+    },
+    "xy_bbox": [
+      2.5,
+      2.5,
+      68.5,
+      68.5
+    ],
+    "example_variables": [
+      "type_0_crush_0",
+      "type_0_crush_1",
+      "type_1_crush_0",
+      "type_1_crush_1",
+      "type_2_crush_0"
+    ]
+  },
+  {
+    "id": 111917,
+    "source": {
+      "file": "求解器/几何/1113流量层/flow_model.py",
+      "line": 101,
+      "category": "制造单位按机型的总台数",
+      "global_constraint": true
+    },
+    "variables": 12976,
+    "families": {
+      "精炼炉候选摆位及存货边": 12976
+    },
+    "xy_bbox": [
+      2.5,
+      2.5,
+      68.5,
+      68.5
+    ],
+    "example_variables": [
+      "type_0_refine_0",
+      "type_0_refine_1",
+      "type_1_refine_0",
+      "type_1_refine_1",
+      "type_2_refine_0"
+    ]
+  },
+  {
+    "id": 111918,
+    "source": {
+      "file": "求解器/几何/1113流量层/flow_model.py",
+      "line": 101,
+      "category": "制造单位按机型的总台数",
+      "global_constraint": true
+    },
+    "variables": 6488,
+    "families": {
+      "配件机或塑形机候选摆位": 6488
+    },
+    "xy_bbox": [
+      2.5,
+      2.5,
+      68.5,
+      68.5
+    ],
+    "example_variables": [
+      "other_small_0",
+      "other_small_1",
+      "other_small_2",
+      "other_small_3",
+      "other_small_4"
+    ]
+  },
+  {
+    "id": 264321,
+    "source": {
+      "file": "求解器/几何/1113流量层/flow_model.py",
+      "line": 204,
+      "category": "粉碎机矿石总收量",
+      "global_constraint": true
+    },
+    "variables": 12976,
+    "families": {
+      "矿石合计收量：粉碎机": 12976
+    },
+    "xy_bbox": [
+      2.5,
+      2.5,
+      68.5,
+      68.5
+    ],
+    "example_variables": [
+      "ore_recv_42652",
+      "ore_recv_42653",
+      "ore_recv_42657",
+      "ore_recv_42658",
+      "ore_recv_42662"
+    ]
+  },
+  {
+    "id": 264322,
+    "source": {
+      "file": "求解器/几何/1113流量层/flow_model.py",
+      "line": 205,
+      "category": "精炼炉矿石总收量",
+      "global_constraint": true
+    },
+    "variables": 12976,
+    "families": {
+      "矿石合计收量：精炼炉": 12976
+    },
+    "xy_bbox": [
+      2.5,
+      2.5,
+      68.5,
+      68.5
+    ],
+    "example_variables": [
+      "ore_recv_42654",
+      "ore_recv_42655",
+      "ore_recv_42659",
+      "ore_recv_42660",
+      "ore_recv_42664"
+    ]
+  }
+]

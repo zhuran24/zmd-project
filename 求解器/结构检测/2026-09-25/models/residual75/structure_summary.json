@@ -1,0 +1,26 @@
+{
+  "global_constraints": 10,
+  "global_categories": {
+    "仓库取货口两边缺格允许表": 1,
+    "双存货端口例外总数": 1,
+    "供电桩总数": 1,
+    "保留制造单位与协议核心总数上限": 4,
+    "重复供电与供电亏额总预算": 1,
+    "面积缺口总账": 1,
+    "剩余格组与保留制造单位总数": 1
+  },
+  "graph_estimates": {
+    "full": {
+      "variables": 12119,
+      "constraints": 42134,
+      "pins": 820076,
+      "clique_pair_occurrences": 69807610
+    },
+    "noglobal": {
+      "variables": 12119,
+      "constraints": 42124,
+      "pins": 812535,
+      "clique_pair_occurrences": 61402651
+    }
+  }
+}

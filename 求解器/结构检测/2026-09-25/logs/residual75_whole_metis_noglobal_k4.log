@@ -1,0 +1,2 @@
+{"event": "partition_start", "dataset": "residual75_whole", "algorithm": "metis", "mode": "noglobal", "k": 4}
+{"dataset": "residual75_whole", "algorithm": "metis", "mode": "noglobal", "k": 4, "seed": 20260925, "epsilon": 0.03, "seconds": 0.049452340012067, "peak_rss_kib": 239736, "raw_block_sizes": [3120, 2941, 3118, 2940], "reported_edge_cut": 332257, "graph_edges": 1838000}

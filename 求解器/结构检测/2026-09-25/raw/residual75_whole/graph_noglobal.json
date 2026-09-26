@@ -1,0 +1,6 @@
+{
+  "vertices": 12119,
+  "edges": 1838000,
+  "clique_expansion": "boolean B.T @ B, remove diagonal, simple undirected graph",
+  "construction_or_load_seconds": 0.006862034002551809
+}

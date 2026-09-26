@@ -1,0 +1,5 @@
+Using Python 3.14.7 environment at: 求解器/结构检测/2026-09-25/.venv
+error: No solution found when resolving dependencies
+  cause: Because all versions of pygcgopt have no usable wheels and you require pygcgopt, we can conclude that your requirements are unsatisfiable.
+
+hint: Wheels are required for `pygcgopt` because building from source is disabled for all packages (i.e., with `--no-build`)

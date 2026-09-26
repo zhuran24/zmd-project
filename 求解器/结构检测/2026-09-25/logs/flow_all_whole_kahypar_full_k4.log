@@ -1,0 +1,1 @@
+{"event": "partition_start", "dataset": "flow_all_whole", "algorithm": "kahypar", "mode": "full", "k": 4}

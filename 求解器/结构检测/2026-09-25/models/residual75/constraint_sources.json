@@ -1,0 +1,134 @@
+[
+  {
+    "file": "求解器/候选约束轮次/第75-77轮/推导75/cp72.py",
+    "line": 64,
+    "category": "逐格结构占用定义",
+    "global_constraint": false
+  },
+  {
+    "file": "求解器/候选约束轮次/第75-77轮/推导75/cp72.py",
+    "line": 66,
+    "category": "保留单位端口邻格",
+    "global_constraint": false
+  },
+  {
+    "file": "求解器/候选约束轮次/第75-77轮/推导75/cp72.py",
+    "line": 68,
+    "category": "仓库取货口两边缺格允许表",
+    "global_constraint": true
+  },
+  {
+    "file": "求解器/候选约束轮次/第75-77轮/推导75/cp72.py",
+    "line": 71,
+    "category": "仓库取货口缺格选择编码",
+    "global_constraint": false
+  },
+  {
+    "file": "求解器/候选约束轮次/第75-77轮/推导75/cp72.py",
+    "line": 73,
+    "category": "仓库取货口强制邻格",
+    "global_constraint": false
+  },
+  {
+    "file": "求解器/候选约束轮次/第75-77轮/推导75/cp72.py",
+    "line": 78,
+    "category": "大制造单位双存货端口例外支撑",
+    "global_constraint": false
+  },
+  {
+    "file": "求解器/候选约束轮次/第75-77轮/推导75/cp72.py",
+    "line": 81,
+    "category": "大制造单位存货端口数",
+    "global_constraint": false
+  },
+  {
+    "file": "求解器/候选约束轮次/第75-77轮/推导75/cp72.py",
+    "line": 82,
+    "category": "双存货端口例外总数",
+    "global_constraint": true
+  },
+  {
+    "file": "求解器/候选约束轮次/第75-77轮/推导75/cp72.py",
+    "line": 85,
+    "category": "供电桩总数",
+    "global_constraint": true
+  },
+  {
+    "file": "求解器/候选约束轮次/第75-77轮/推导75/cp72.py",
+    "line": 88,
+    "category": "保留制造单位与协议核心总数上限",
+    "global_constraint": true
+  },
+  {
+    "file": "求解器/候选约束轮次/第75-77轮/推导75/cp72.py",
+    "line": 94,
+    "category": "保留制造单位得电覆盖",
+    "global_constraint": false
+  },
+  {
+    "file": "求解器/候选约束轮次/第75-77轮/推导75/cp72.py",
+    "line": 96,
+    "category": "保留制造单位重复供电计数",
+    "global_constraint": false
+  },
+  {
+    "file": "求解器/候选约束轮次/第75-77轮/推导75/cp72.py",
+    "line": 97,
+    "category": "重复供电与供电亏额总预算",
+    "global_constraint": true
+  },
+  {
+    "file": "求解器/候选约束轮次/第75-77轮/推导75/cp72.py",
+    "line": 103,
+    "category": "边段协议核心与供电桩计数",
+    "global_constraint": false
+  },
+  {
+    "file": "求解器/候选约束轮次/第75-77轮/推导75/cp72.py",
+    "line": 104,
+    "category": "边段供电亏额下界",
+    "global_constraint": false
+  },
+  {
+    "file": "求解器/候选约束轮次/第75-77轮/推导75/cp72.py",
+    "line": 105,
+    "category": "边段投影允许表",
+    "global_constraint": false
+  },
+  {
+    "file": "求解器/候选约束轮次/第75-77轮/推导75/cp72.py",
+    "line": 107,
+    "category": "边段实际缺口与投影下界",
+    "global_constraint": false
+  },
+  {
+    "file": "求解器/候选约束轮次/第75-77轮/推导75/cp72.py",
+    "line": 127,
+    "category": "面积缺口总账",
+    "global_constraint": true
+  },
+  {
+    "file": "求解器/候选约束轮次/第75-77轮/推导75/residual_model75.py",
+    "line": 33,
+    "category": "剩余3×3中心得电覆盖",
+    "global_constraint": false
+  },
+  {
+    "file": "求解器/候选约束轮次/第75-77轮/推导75/residual_model75.py",
+    "line": 31,
+    "category": "剩余3×3中心与已有结构互斥",
+    "global_constraint": false
+  },
+  {
+    "file": "求解器/候选约束轮次/第75-77轮/推导75/residual_model75.py",
+    "line": 36,
+    "category": "剩余格组与可用中心对应",
+    "global_constraint": false
+  },
+  {
+    "file": "求解器/候选约束轮次/第75-77轮/推导75/residual_model75.py",
+    "line": 37,
+    "category": "剩余格组与保留制造单位总数",
+    "global_constraint": true
+  }
+]

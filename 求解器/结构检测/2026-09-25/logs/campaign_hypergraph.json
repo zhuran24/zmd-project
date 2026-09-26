@@ -1,0 +1,211 @@
+[
+  {
+    "dataset": "flow_all_whole",
+    "algorithm": "kahypar",
+    "mode": "full",
+    "k": 4,
+    "status": "timeout",
+    "returncode": null,
+    "seconds": 360.0106875460042,
+    "limit_seconds": 360,
+    "log": "logs/flow_all_whole_kahypar_full_k4.log"
+  },
+  {
+    "dataset": "flow_all_whole",
+    "algorithm": "kahypar",
+    "mode": "full",
+    "k": 8,
+    "status": "timeout",
+    "returncode": null,
+    "seconds": 360.0116983719927,
+    "limit_seconds": 360,
+    "log": "logs/flow_all_whole_kahypar_full_k8.log"
+  },
+  {
+    "dataset": "flow_all_whole",
+    "algorithm": "kahypar",
+    "mode": "noglobal",
+    "k": 4,
+    "status": "complete",
+    "returncode": 0,
+    "seconds": 88.90691358799813,
+    "limit_seconds": 360,
+    "log": "logs/flow_all_whole_kahypar_noglobal_k4.log"
+  },
+  {
+    "dataset": "flow_all_whole",
+    "algorithm": "kahypar",
+    "mode": "noglobal",
+    "k": 8,
+    "status": "complete",
+    "returncode": 0,
+    "seconds": 119.70843942499778,
+    "limit_seconds": 360,
+    "log": "logs/flow_all_whole_kahypar_noglobal_k8.log"
+  },
+  {
+    "dataset": "flow_ore_whole",
+    "algorithm": "kahypar",
+    "mode": "full",
+    "k": 2,
+    "status": "complete",
+    "returncode": 0,
+    "seconds": 130.0306421580026,
+    "limit_seconds": 360,
+    "log": "logs/flow_ore_whole_kahypar_full_k2.log"
+  },
+  {
+    "dataset": "flow_ore_whole",
+    "algorithm": "kahypar",
+    "mode": "full",
+    "k": 4,
+    "status": "complete",
+    "returncode": 0,
+    "seconds": 131.83362342999317,
+    "limit_seconds": 360,
+    "log": "logs/flow_ore_whole_kahypar_full_k4.log"
+  },
+  {
+    "dataset": "flow_ore_whole",
+    "algorithm": "kahypar",
+    "mode": "full",
+    "k": 8,
+    "status": "complete",
+    "returncode": 0,
+    "seconds": 146.8623251980025,
+    "limit_seconds": 360,
+    "log": "logs/flow_ore_whole_kahypar_full_k8.log"
+  },
+  {
+    "dataset": "flow_ore_whole",
+    "algorithm": "kahypar",
+    "mode": "noglobal",
+    "k": 2,
+    "status": "complete",
+    "returncode": 0,
+    "seconds": 16.59184213000117,
+    "limit_seconds": 360,
+    "log": "logs/flow_ore_whole_kahypar_noglobal_k2.log"
+  },
+  {
+    "dataset": "flow_ore_whole",
+    "algorithm": "kahypar",
+    "mode": "noglobal",
+    "k": 4,
+    "status": "complete",
+    "returncode": 0,
+    "seconds": 42.837926227002754,
+    "limit_seconds": 360,
+    "log": "logs/flow_ore_whole_kahypar_noglobal_k4.log"
+  },
+  {
+    "dataset": "flow_ore_whole",
+    "algorithm": "kahypar",
+    "mode": "noglobal",
+    "k": 8,
+    "status": "complete",
+    "returncode": 0,
+    "seconds": 59.91604075800569,
+    "limit_seconds": 360,
+    "log": "logs/flow_ore_whole_kahypar_noglobal_k8.log"
+  },
+  {
+    "dataset": "geometry_whole",
+    "algorithm": "kahypar",
+    "mode": "full",
+    "k": 2,
+    "status": "complete",
+    "returncode": 0,
+    "seconds": 15.038079313002527,
+    "limit_seconds": 360,
+    "log": "logs/geometry_whole_kahypar_full_k2.log"
+  },
+  {
+    "dataset": "geometry_whole",
+    "algorithm": "kahypar",
+    "mode": "full",
+    "k": 4,
+    "status": "complete",
+    "returncode": 0,
+    "seconds": 20.197424711004714,
+    "limit_seconds": 360,
+    "log": "logs/geometry_whole_kahypar_full_k4.log"
+  },
+  {
+    "dataset": "geometry_whole",
+    "algorithm": "kahypar",
+    "mode": "full",
+    "k": 8,
+    "status": "complete",
+    "returncode": 0,
+    "seconds": 30.46405153500382,
+    "limit_seconds": 360,
+    "log": "logs/geometry_whole_kahypar_full_k8.log"
+  },
+  {
+    "dataset": "geometry_whole",
+    "algorithm": "kahypar",
+    "mode": "noglobal",
+    "k": 2,
+    "status": "complete",
+    "returncode": 0,
+    "seconds": 7.627233115010313,
+    "limit_seconds": 360,
+    "log": "logs/geometry_whole_kahypar_noglobal_k2.log"
+  },
+  {
+    "dataset": "geometry_whole",
+    "algorithm": "kahypar",
+    "mode": "noglobal",
+    "k": 4,
+    "status": "complete",
+    "returncode": 0,
+    "seconds": 16.09104278200539,
+    "limit_seconds": 360,
+    "log": "logs/geometry_whole_kahypar_noglobal_k4.log"
+  },
+  {
+    "dataset": "geometry_whole",
+    "algorithm": "kahypar",
+    "mode": "noglobal",
+    "k": 8,
+    "status": "complete",
+    "returncode": 0,
+    "seconds": 25.45637024201278,
+    "limit_seconds": 360,
+    "log": "logs/geometry_whole_kahypar_noglobal_k8.log"
+  },
+  {
+    "dataset": "residual75_whole",
+    "algorithm": "kahypar",
+    "mode": "noglobal",
+    "k": 2,
+    "status": "complete",
+    "returncode": 0,
+    "seconds": 2.46800626500044,
+    "limit_seconds": 360,
+    "log": "logs/residual75_whole_kahypar_noglobal_k2.log"
+  },
+  {
+    "dataset": "residual75_whole",
+    "algorithm": "kahypar",
+    "mode": "noglobal",
+    "k": 4,
+    "status": "complete",
+    "returncode": 0,
+    "seconds": 5.121619863988599,
+    "limit_seconds": 360,
+    "log": "logs/residual75_whole_kahypar_noglobal_k4.log"
+  },
+  {
+    "dataset": "residual75_whole",
+    "algorithm": "kahypar",
+    "mode": "noglobal",
+    "k": 8,
+    "status": "complete",
+    "returncode": 0,
+    "seconds": 6.6241630320000695,
+    "limit_seconds": 360,
+    "log": "logs/residual75_whole_kahypar_noglobal_k8.log"
+  }
+]

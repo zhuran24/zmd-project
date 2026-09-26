@@ -1,0 +1,31 @@
+[
+  {
+    "dataset": "flow_all_whole",
+    "algorithm": "kahypar",
+    "mode": "full",
+    "k": 4,
+    "config": "km1_kKaHyPar_eco_sea20.ini",
+    "status": "timeout",
+    "timeout_seconds": 360,
+    "exit_code": 124,
+    "log": "logs/flow_all_whole_kahypar_full_k4_eco.log"
+  },
+  {
+    "dataset": "flow_all_whole",
+    "algorithm": "kahypar",
+    "mode": "full",
+    "k": 4,
+    "config": "km1_kKaHyPar_fm_4runs.ini",
+    "status": "complete",
+    "result": "raw/flow_all_whole/partitions/kahypar_full_k4.json"
+  },
+  {
+    "dataset": "flow_all_whole",
+    "algorithm": "kahypar",
+    "mode": "full",
+    "k": 8,
+    "config": "km1_kKaHyPar_fm_4runs.ini",
+    "status": "complete",
+    "result": "raw/flow_all_whole/partitions/kahypar_full_k8.json"
+  }
+]

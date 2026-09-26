@@ -1,0 +1,30 @@
+{
+  "model": "flow_ore",
+  "scope": "window",
+  "window": [
+    16,
+    16,
+    30,
+    30
+  ],
+  "variables": 8477,
+  "constraints": 27243,
+  "pins": 151950,
+  "global_constraints": 65,
+  "original_variables": 139932,
+  "original_constraints": 264323,
+  "whole_graph_estimates": {
+    "full": {
+      "variables": 139932,
+      "constraints": 264323,
+      "pins": 2121195,
+      "clique_pair_occurrences": 896007522
+    },
+    "noglobal": {
+      "variables": 139932,
+      "constraints": 264258,
+      "pins": 1846027,
+      "clique_pair_occurrences": 92101249
+    }
+  }
+}

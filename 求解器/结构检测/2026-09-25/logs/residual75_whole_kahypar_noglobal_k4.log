@@ -1,0 +1,2 @@
+{"event": "partition_start", "dataset": "residual75_whole", "algorithm": "kahypar", "mode": "noglobal", "k": 4}
+{"dataset": "residual75_whole", "algorithm": "kahypar", "mode": "noglobal", "k": 4, "seed": 20260925, "epsilon": 0.03, "seconds": 4.750776585002313, "peak_rss_kib": 188224, "raw_block_sizes": [2873, 3113, 3114, 3019], "objective": "connectivity_minus_one", "config": "km1_kKaHyPar_eco_sea20.ini", "reported_km1": 3152, "reported_cut": 2808, "partitioned_hyperedges": 42122}

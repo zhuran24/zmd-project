@@ -9,3 +9,13 @@ third_party/
 /求解器/内核维护/*/cargo-test-evidence/
 __pycache__/
 /求解器/几何/*/models/*.pb
+
+# 结构检测：虚拟环境、下载缓存、临时文件，以及由脚本构建的模型与图文件（同 /求解器/几何/*/models/*.pb 的做法）不入库；划分结果、分析与报告入库（2026-09-25）
+/求解器/结构检测/*/.venv/
+/求解器/结构检测/*/cache/
+/求解器/结构检测/*/tmp/
+/求解器/结构检测/*/models/*/model.pb
+/求解器/结构检测/*/models/*/incidence.npz
+/求解器/结构检测/*/raw/*/*.npz
+# 超过 GitHub 单文件 100 MB 上限，入库的是同目录同名 .json.gz，gunzip 得到逐字节相同的原文件
+/求解器/结构检测/2026-09-25/models/flow_all/variables.json

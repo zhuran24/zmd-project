@@ -1,0 +1,122 @@
+[
+  {
+    "file": "求解器/几何/1113放松/solve_relaxation.py",
+    "line": 23,
+    "category": "仓库取货口联合边带模式恰选一个",
+    "global_constraint": true
+  },
+  {
+    "file": "求解器/几何/1113放松/solve_relaxation.py",
+    "line": 27,
+    "category": "仓库取货口邻格支撑",
+    "global_constraint": false
+  },
+  {
+    "file": "求解器/几何/1113放松/solve_relaxation.py",
+    "line": 39,
+    "category": "制造单位两边端口邻格",
+    "global_constraint": false
+  },
+  {
+    "file": "求解器/几何/1113放松/solve_relaxation.py",
+    "line": 40,
+    "category": "制造单位按尺寸的总台数",
+    "global_constraint": true
+  },
+  {
+    "file": "求解器/几何/1113放松/solve_relaxation.py",
+    "line": 61,
+    "category": "协议核心取货端口邻格",
+    "global_constraint": false
+  },
+  {
+    "file": "求解器/几何/1113放松/solve_relaxation.py",
+    "line": 62,
+    "category": "协议核心存货端口邻格",
+    "global_constraint": false
+  },
+  {
+    "file": "求解器/几何/1113放松/solve_relaxation.py",
+    "line": 63,
+    "category": "协议核心与仓库取货口走廊兼容",
+    "global_constraint": false
+  },
+  {
+    "file": "求解器/几何/1113放松/solve_relaxation.py",
+    "line": 64,
+    "category": "协议核心总数",
+    "global_constraint": true
+  },
+  {
+    "file": "求解器/几何/1113放松/solve_relaxation.py",
+    "line": 74,
+    "category": "供电桩总数定义",
+    "global_constraint": true
+  },
+  {
+    "file": "求解器/几何/1113放松/solve_relaxation.py",
+    "line": 75,
+    "category": "占边供电桩总数定义",
+    "global_constraint": true
+  },
+  {
+    "file": "求解器/几何/1113放松/solve_relaxation.py",
+    "line": 76,
+    "category": "供电桩总数与占边数预算",
+    "global_constraint": true
+  },
+  {
+    "file": "求解器/几何/1113放松/solve_relaxation.py",
+    "line": 77,
+    "category": "供电亏额总预算",
+    "global_constraint": true
+  },
+  {
+    "file": "求解器/几何/1113放松/solve_relaxation.py",
+    "line": 84,
+    "category": "供电桩二维前缀和递推",
+    "global_constraint": false
+  },
+  {
+    "file": "求解器/几何/1113放松/solve_relaxation.py",
+    "line": 89,
+    "category": "制造单位得电覆盖",
+    "global_constraint": false
+  },
+  {
+    "file": "求解器/几何/1113放松/solve_relaxation.py",
+    "line": 93,
+    "category": "逐格结构占用定义",
+    "global_constraint": false
+  },
+  {
+    "file": "求解器/几何/1113放松/solve_relaxation.py",
+    "line": 94,
+    "category": "结构、运输格及仓库取货口占用互斥",
+    "global_constraint": false
+  },
+  {
+    "file": "求解器/几何/1113放松/solve_relaxation.py",
+    "line": 95,
+    "category": "运输格总数下限",
+    "global_constraint": true
+  },
+  {
+    "file": "求解器/几何/1113放松/solve_relaxation.py",
+    "line": 100,
+    "category": "边带缺格条件下的运输格总数",
+    "global_constraint": true
+  },
+  {
+    "file": "求解器/几何/1113放松/solve_relaxation.py",
+    "line": 109,
+    "category": "面积缺口总账",
+    "global_constraint": true
+  },
+  {
+    "file": "求解器/几何/1113放松/solve_relaxation.py",
+    "line": 110,
+    "category": "供电桩总数面积预算",
+    "global_constraint": true
+  }
+]

@@ -1,0 +1,25 @@
+{
+  "model": "flow_all",
+  "scope": "whole",
+  "window": null,
+  "variables": 368792,
+  "constraints": 826144,
+  "pins": 5601171,
+  "global_constraints": 82,
+  "original_variables": 368792,
+  "original_constraints": 826144,
+  "whole_graph_estimates": {
+    "full": {
+      "variables": 368792,
+      "constraints": 826144,
+      "pins": 5601171,
+      "clique_pair_occurrences": 2453280448
+    },
+    "noglobal": {
+      "variables": 368792,
+      "constraints": 826062,
+      "pins": 5100097,
+      "clique_pair_occurrences": 117598166
+    }
+  }
+}

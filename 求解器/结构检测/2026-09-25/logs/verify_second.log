@@ -1,0 +1,12 @@
+{"event": "model_incidence_passed", "model": "flow_all"}
+{"event": "model_incidence_passed", "model": "flow_ore"}
+{"event": "model_incidence_passed", "model": "geometry"}
+{"event": "model_incidence_passed", "model": "residual75"}
+{"event": "dataset_passed", "dataset": "flow_all_whole", "results_so_far": 7}
+{"event": "dataset_passed", "dataset": "flow_all_window", "results_so_far": 15}
+{"event": "dataset_passed", "dataset": "flow_ore_whole", "results_so_far": 20}
+{"event": "dataset_passed", "dataset": "flow_ore_window", "results_so_far": 28}
+{"event": "dataset_passed", "dataset": "geometry_whole", "results_so_far": 36}
+{"event": "dataset_passed", "dataset": "geometry_window", "results_so_far": 44}
+{"event": "dataset_passed", "dataset": "residual75_whole", "results_so_far": 55}
+{"status": "passed", "result_count": 55, "seconds": 19.436476931994548, "checked": "independent direct protobuf references, signed literals, restricted input incidence, every separator and linking-row set; no model solving"}

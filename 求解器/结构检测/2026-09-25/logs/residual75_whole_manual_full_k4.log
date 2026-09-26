@@ -1,0 +1,2 @@
+{"event": "partition_start", "dataset": "residual75_whole", "algorithm": "manual", "mode": "full", "k": 4}
+{"dataset": "residual75_whole", "algorithm": "manual", "mode": "full", "k": 4, "seed": 20260925, "epsilon": null, "seconds": 0.0017210060032084584, "peak_rss_kib": 88012, "raw_block_sizes": [3516, 2875, 3873, 1855], "rule": "按变量代表点分四象限：x=35、y=35；无坐标变量归西南片。不做数量配平。"}

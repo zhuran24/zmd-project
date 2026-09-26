@@ -1,0 +1,130 @@
+[
+  {
+    "name": "cut_kKaHyPar-E_sea20.ini",
+    "path": "config/cut_kKaHyPar-E_sea20.ini",
+    "sha": "02224f059d3311491b8436f015460100fadda31c",
+    "size": 2513,
+    "url": "https://api.github.com/repos/kahypar/kahypar/contents/config/cut_kKaHyPar-E_sea20.ini?ref=v1.3.7",
+    "html_url": "https://github.com/kahypar/kahypar/blob/v1.3.7/config/cut_kKaHyPar-E_sea20.ini",
+    "git_url": "https://api.github.com/repos/kahypar/kahypar/git/blobs/02224f059d3311491b8436f015460100fadda31c",
+    "download_url": "https://raw.githubusercontent.com/kahypar/kahypar/v1.3.7/config/cut_kKaHyPar-E_sea20.ini",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kahypar/kahypar/contents/config/cut_kKaHyPar-E_sea20.ini?ref=v1.3.7",
+      "git": "https://api.github.com/repos/kahypar/kahypar/git/blobs/02224f059d3311491b8436f015460100fadda31c",
+      "html": "https://github.com/kahypar/kahypar/blob/v1.3.7/config/cut_kKaHyPar-E_sea20.ini"
+    }
+  },
+  {
+    "name": "cut_kKaHyPar_sea20.ini",
+    "path": "config/cut_kKaHyPar_sea20.ini",
+    "sha": "7c60c81e09bf9dd3ddde4a2a9265a3b925b21038",
+    "size": 2054,
+    "url": "https://api.github.com/repos/kahypar/kahypar/contents/config/cut_kKaHyPar_sea20.ini?ref=v1.3.7",
+    "html_url": "https://github.com/kahypar/kahypar/blob/v1.3.7/config/cut_kKaHyPar_sea20.ini",
+    "git_url": "https://api.github.com/repos/kahypar/kahypar/git/blobs/7c60c81e09bf9dd3ddde4a2a9265a3b925b21038",
+    "download_url": "https://raw.githubusercontent.com/kahypar/kahypar/v1.3.7/config/cut_kKaHyPar_sea20.ini",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kahypar/kahypar/contents/config/cut_kKaHyPar_sea20.ini?ref=v1.3.7",
+      "git": "https://api.github.com/repos/kahypar/kahypar/git/blobs/7c60c81e09bf9dd3ddde4a2a9265a3b925b21038",
+      "html": "https://github.com/kahypar/kahypar/blob/v1.3.7/config/cut_kKaHyPar_sea20.ini"
+    }
+  },
+  {
+    "name": "cut_rKaHyPar_sea20.ini",
+    "path": "config/cut_rKaHyPar_sea20.ini",
+    "sha": "14d10f581df94a0a6325e639bc8048327b5e3200",
+    "size": 1708,
+    "url": "https://api.github.com/repos/kahypar/kahypar/contents/config/cut_rKaHyPar_sea20.ini?ref=v1.3.7",
+    "html_url": "https://github.com/kahypar/kahypar/blob/v1.3.7/config/cut_rKaHyPar_sea20.ini",
+    "git_url": "https://api.github.com/repos/kahypar/kahypar/git/blobs/14d10f581df94a0a6325e639bc8048327b5e3200",
+    "download_url": "https://raw.githubusercontent.com/kahypar/kahypar/v1.3.7/config/cut_rKaHyPar_sea20.ini",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kahypar/kahypar/contents/config/cut_rKaHyPar_sea20.ini?ref=v1.3.7",
+      "git": "https://api.github.com/repos/kahypar/kahypar/git/blobs/14d10f581df94a0a6325e639bc8048327b5e3200",
+      "html": "https://github.com/kahypar/kahypar/blob/v1.3.7/config/cut_rKaHyPar_sea20.ini"
+    }
+  },
+  {
+    "name": "km1_kKaHyPar-E_sea20.ini",
+    "path": "config/km1_kKaHyPar-E_sea20.ini",
+    "sha": "4275192ae8e84cfcb5e24f59d668a29da645aa16",
+    "size": 2517,
+    "url": "https://api.github.com/repos/kahypar/kahypar/contents/config/km1_kKaHyPar-E_sea20.ini?ref=v1.3.7",
+    "html_url": "https://github.com/kahypar/kahypar/blob/v1.3.7/config/km1_kKaHyPar-E_sea20.ini",
+    "git_url": "https://api.github.com/repos/kahypar/kahypar/git/blobs/4275192ae8e84cfcb5e24f59d668a29da645aa16",
+    "download_url": "https://raw.githubusercontent.com/kahypar/kahypar/v1.3.7/config/km1_kKaHyPar-E_sea20.ini",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kahypar/kahypar/contents/config/km1_kKaHyPar-E_sea20.ini?ref=v1.3.7",
+      "git": "https://api.github.com/repos/kahypar/kahypar/git/blobs/4275192ae8e84cfcb5e24f59d668a29da645aa16",
+      "html": "https://github.com/kahypar/kahypar/blob/v1.3.7/config/km1_kKaHyPar-E_sea20.ini"
+    }
+  },
+  {
+    "name": "km1_kKaHyPar_eco_sea20.ini",
+    "path": "config/km1_kKaHyPar_eco_sea20.ini",
+    "sha": "4770bcdd357085376ad899838c54810769734533",
+    "size": 2053,
+    "url": "https://api.github.com/repos/kahypar/kahypar/contents/config/km1_kKaHyPar_eco_sea20.ini?ref=v1.3.7",
+    "html_url": "https://github.com/kahypar/kahypar/blob/v1.3.7/config/km1_kKaHyPar_eco_sea20.ini",
+    "git_url": "https://api.github.com/repos/kahypar/kahypar/git/blobs/4770bcdd357085376ad899838c54810769734533",
+    "download_url": "https://raw.githubusercontent.com/kahypar/kahypar/v1.3.7/config/km1_kKaHyPar_eco_sea20.ini",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kahypar/kahypar/contents/config/km1_kKaHyPar_eco_sea20.ini?ref=v1.3.7",
+      "git": "https://api.github.com/repos/kahypar/kahypar/git/blobs/4770bcdd357085376ad899838c54810769734533",
+      "html": "https://github.com/kahypar/kahypar/blob/v1.3.7/config/km1_kKaHyPar_eco_sea20.ini"
+    }
+  },
+  {
+    "name": "km1_kKaHyPar_sea20.ini",
+    "path": "config/km1_kKaHyPar_sea20.ini",
+    "sha": "8d667373e32255f0d688829db0417cc9cea7b6a6",
+    "size": 2058,
+    "url": "https://api.github.com/repos/kahypar/kahypar/contents/config/km1_kKaHyPar_sea20.ini?ref=v1.3.7",
+    "html_url": "https://github.com/kahypar/kahypar/blob/v1.3.7/config/km1_kKaHyPar_sea20.ini",
+    "git_url": "https://api.github.com/repos/kahypar/kahypar/git/blobs/8d667373e32255f0d688829db0417cc9cea7b6a6",
+    "download_url": "https://raw.githubusercontent.com/kahypar/kahypar/v1.3.7/config/km1_kKaHyPar_sea20.ini",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kahypar/kahypar/contents/config/km1_kKaHyPar_sea20.ini?ref=v1.3.7",
+      "git": "https://api.github.com/repos/kahypar/kahypar/git/blobs/8d667373e32255f0d688829db0417cc9cea7b6a6",
+      "html": "https://github.com/kahypar/kahypar/blob/v1.3.7/config/km1_kKaHyPar_sea20.ini"
+    }
+  },
+  {
+    "name": "km1_rKaHyPar_sea20.ini",
+    "path": "config/km1_rKaHyPar_sea20.ini",
+    "sha": "b2f1245791fc745855c07fe4e50ebcc9038cf32f",
+    "size": 1708,
+    "url": "https://api.github.com/repos/kahypar/kahypar/contents/config/km1_rKaHyPar_sea20.ini?ref=v1.3.7",
+    "html_url": "https://github.com/kahypar/kahypar/blob/v1.3.7/config/km1_rKaHyPar_sea20.ini",
+    "git_url": "https://api.github.com/repos/kahypar/kahypar/git/blobs/b2f1245791fc745855c07fe4e50ebcc9038cf32f",
+    "download_url": "https://raw.githubusercontent.com/kahypar/kahypar/v1.3.7/config/km1_rKaHyPar_sea20.ini",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/kahypar/kahypar/contents/config/km1_rKaHyPar_sea20.ini?ref=v1.3.7",
+      "git": "https://api.github.com/repos/kahypar/kahypar/git/blobs/b2f1245791fc745855c07fe4e50ebcc9038cf32f",
+      "html": "https://github.com/kahypar/kahypar/blob/v1.3.7/config/km1_rKaHyPar_sea20.ini"
+    }
+  },
+  {
+    "name": "old_reference_configs",
+    "path": "config/old_reference_configs",
+    "sha": "788568d681fc6332383f753cc23230ebef5a9535",
+    "size": 0,
+    "url": "https://api.github.com/repos/kahypar/kahypar/contents/config/old_reference_configs?ref=v1.3.7",
+    "html_url": "https://github.com/kahypar/kahypar/tree/v1.3.7/config/old_reference_configs",
+    "git_url": "https://api.github.com/repos/kahypar/kahypar/git/trees/788568d681fc6332383f753cc23230ebef5a9535",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/kahypar/kahypar/contents/config/old_reference_configs?ref=v1.3.7",
+      "git": "https://api.github.com/repos/kahypar/kahypar/git/trees/788568d681fc6332383f753cc23230ebef5a9535",
+      "html": "https://github.com/kahypar/kahypar/tree/v1.3.7/config/old_reference_configs"
+    }
+  }
+]

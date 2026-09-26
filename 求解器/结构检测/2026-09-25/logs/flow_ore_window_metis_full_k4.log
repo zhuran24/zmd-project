@@ -1,0 +1,2 @@
+{"event": "partition_start", "dataset": "flow_ore_window", "algorithm": "metis", "mode": "full", "k": 4}
+{"dataset": "flow_ore_window", "algorithm": "metis", "mode": "full", "k": 4, "seed": 20260925, "epsilon": 0.03, "seconds": 0.03850753199367318, "peak_rss_kib": 251892, "raw_block_sizes": [2181, 2182, 2057, 2057], "reported_edge_cut": 79189, "graph_edges": 2197224}

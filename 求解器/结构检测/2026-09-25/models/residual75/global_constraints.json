@@ -1,0 +1,263 @@
+[
+  {
+    "id": 5186,
+    "source": {
+      "file": "求解器/候选约束轮次/第75-77轮/推导75/cp72.py",
+      "line": 68,
+      "category": "仓库取货口两边缺格允许表",
+      "global_constraint": true
+    },
+    "variables": 2,
+    "families": {
+      "仓库取货口边带缺格": 2
+    },
+    "xy_bbox": null,
+    "example_variables": [
+      "warehouse_gap_0",
+      "warehouse_gap_1"
+    ]
+  },
+  {
+    "id": 6795,
+    "source": {
+      "file": "求解器/候选约束轮次/第75-77轮/推导75/cp72.py",
+      "line": 82,
+      "category": "双存货端口例外总数",
+      "global_constraint": true
+    },
+    "variables": 136,
+    "families": {
+      "大制造单位双存货端口例外": 136
+    },
+    "xy_bbox": [
+      4.0,
+      4.0,
+      67.0,
+      67.0
+    ],
+    "example_variables": [
+      "two_input_exception264",
+      "two_input_exception265",
+      "two_input_exception266",
+      "two_input_exception267",
+      "two_input_exception268"
+    ]
+  },
+  {
+    "id": 6796,
+    "source": {
+      "file": "求解器/候选约束轮次/第75-77轮/推导75/cp72.py",
+      "line": 85,
+      "category": "供电桩总数",
+      "global_constraint": true
+    },
+    "variables": 3462,
+    "families": {
+      "供电桩候选摆位": 3462
+    },
+    "xy_bbox": [
+      2.0,
+      2.0,
+      69.0,
+      69.0
+    ],
+    "example_variables": [
+      "unit508",
+      "unit509",
+      "unit510",
+      "unit511",
+      "unit512"
+    ]
+  },
+  {
+    "id": 6797,
+    "source": {
+      "file": "求解器/候选约束轮次/第75-77轮/推导75/cp72.py",
+      "line": 88,
+      "category": "保留制造单位与协议核心总数上限",
+      "global_constraint": true
+    },
+    "variables": 132,
+    "families": {
+      "小制造单位候选摆位": 132
+    },
+    "xy_bbox": [
+      3.5,
+      3.5,
+      68.5,
+      68.5
+    ],
+    "example_variables": [
+      "unit0",
+      "unit1",
+      "unit2",
+      "unit3",
+      "unit4"
+    ]
+  },
+  {
+    "id": 6798,
+    "source": {
+      "file": "求解器/候选约束轮次/第75-77轮/推导75/cp72.py",
+      "line": 88,
+      "category": "保留制造单位与协议核心总数上限",
+      "global_constraint": true
+    },
+    "variables": 132,
+    "families": {
+      "中制造单位候选摆位": 132
+    },
+    "xy_bbox": [
+      4.5,
+      4.5,
+      67.5,
+      67.5
+    ],
+    "example_variables": [
+      "unit132",
+      "unit133",
+      "unit134",
+      "unit135",
+      "unit136"
+    ]
+  },
+  {
+    "id": 6799,
+    "source": {
+      "file": "求解器/候选约束轮次/第75-77轮/推导75/cp72.py",
+      "line": 88,
+      "category": "保留制造单位与协议核心总数上限",
+      "global_constraint": true
+    },
+    "variables": 136,
+    "families": {
+      "大制造单位候选摆位": 136
+    },
+    "xy_bbox": [
+      4.0,
+      4.0,
+      67.0,
+      67.0
+    ],
+    "example_variables": [
+      "unit264",
+      "unit265",
+      "unit266",
+      "unit267",
+      "unit268"
+    ]
+  },
+  {
+    "id": 6800,
+    "source": {
+      "file": "求解器/候选约束轮次/第75-77轮/推导75/cp72.py",
+      "line": 88,
+      "category": "保留制造单位与协议核心总数上限",
+      "global_constraint": true
+    },
+    "variables": 108,
+    "families": {
+      "协议核心候选摆位": 108
+    },
+    "xy_bbox": [
+      11.5,
+      11.5,
+      65.5,
+      65.5
+    ],
+    "example_variables": [
+      "unit400",
+      "unit401",
+      "unit402",
+      "unit403",
+      "unit404"
+    ]
+  },
+  {
+    "id": 8001,
+    "source": {
+      "file": "求解器/候选约束轮次/第75-77轮/推导75/cp72.py",
+      "line": 97,
+      "category": "重复供电与供电亏额总预算",
+      "global_constraint": true
+    },
+    "variables": 1883,
+    "families": {
+      "供电桩候选摆位": 1483,
+      "重复供电计数": 400
+    },
+    "xy_bbox": [
+      2.0,
+      2.0,
+      69.0,
+      69.0
+    ],
+    "example_variables": [
+      "unit508",
+      "unit509",
+      "unit510",
+      "unit511",
+      "unit512"
+    ]
+  },
+  {
+    "id": 8022,
+    "source": {
+      "file": "求解器/候选约束轮次/第75-77轮/推导75/cp72.py",
+      "line": 127,
+      "category": "面积缺口总账",
+      "global_constraint": true
+    },
+    "variables": 747,
+    "families": {
+      "小制造单位候选摆位": 132,
+      "中制造单位候选摆位": 132,
+      "大制造单位候选摆位": 136,
+      "协议核心候选摆位": 108,
+      "供电桩候选摆位": 238,
+      "面积缺口总账": 1
+    },
+    "xy_bbox": [
+      2.0,
+      2.0,
+      69.0,
+      69.0
+    ],
+    "example_variables": [
+      "unit0",
+      "unit1",
+      "unit2",
+      "unit3",
+      "unit4"
+    ]
+  },
+  {
+    "id": 42133,
+    "source": {
+      "file": "求解器/候选约束轮次/第75-77轮/推导75/residual_model75.py",
+      "line": 37,
+      "category": "剩余格组与保留制造单位总数",
+      "global_constraint": true
+    },
+    "variables": 803,
+    "families": {
+      "小制造单位候选摆位": 132,
+      "中制造单位候选摆位": 132,
+      "大制造单位候选摆位": 136,
+      "剩余可用格组指示": 403
+    },
+    "xy_bbox": [
+      1.5,
+      3.5,
+      68.5,
+      69.5
+    ],
+    "example_variables": [
+      "unit0",
+      "unit1",
+      "unit2",
+      "unit3",
+      "unit4"
+    ]
+  }
+]

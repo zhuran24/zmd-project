@@ -1,0 +1,186 @@
+{
+  "model": "flow_ore",
+  "settings": {
+    "position": {
+      "id": "W21H53_x49y17",
+      "rect": [
+        49,
+        17,
+        21,
+        53
+      ],
+      "patterns": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46
+      ],
+      "branches": [
+        {
+          "P": 10,
+          "X_lower": 11,
+          "Y_lower": 8,
+          "allowed": 29,
+          "keep": true
+        },
+        {
+          "P": 11,
+          "X_lower": 8,
+          "Y_lower": 5,
+          "allowed": 19,
+          "keep": true
+        },
+        {
+          "P": 12,
+          "X_lower": 5,
+          "Y_lower": 2,
+          "allowed": 7,
+          "keep": true
+        }
+      ],
+      "allowed_P": [
+        10,
+        11,
+        12
+      ]
+    },
+    "layer": "ore",
+    "cut_mode": "formal",
+    "boundary_cuts": false,
+    "allowed_P": [
+      10,
+      11,
+      12
+    ],
+    "patterns": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46
+    ]
+  },
+  "variables": 139932,
+  "constraints": 264323,
+  "pins": 2121195,
+  "constraint_types": {
+    "exactly_one": 1,
+    "bool_and": 29366,
+    "bool_or": 36910,
+    "linear": 198046
+  },
+  "max_constraint_variables": 12976,
+  "clique_pair_occurrences": 896007522,
+  "build_seconds": 5.491333899000892,
+  "extract_seconds": 1.8143803869897965,
+  "model_sha256": "0b1df61890f787c70c50274ef6083071134d6203c74882acb3342fd4fbc79316",
+  "validated": true,
+  "solver_called": false,
+  "sources": [
+    {
+      "file": "求解器/几何/1113流量层/filter_positions.py",
+      "sha256": "9bceabcf7f7a9371d3bf469c3cc09611b29dec566f4861e491212e27a2c22a7e"
+    },
+    {
+      "file": "求解器/几何/1113流量层/flow_model.py",
+      "sha256": "b38aea2136ea3dd96161bd70009a0a4b5f5d05ce48c96df5f3347f0cbbb28033"
+    },
+    {
+      "file": "求解器/几何/1113流量层/flow_model_global.py",
+      "sha256": "bfbda588646370a37928335560668a3a8d462c476f4538c9f62859c3c680b9f0"
+    },
+    {
+      "file": "求解器/几何/1113流量层/geometry.py",
+      "sha256": "a0f700fd182a653795d9c4b5980818c289ebd0b01cee483c41132963b258ddff"
+    },
+    {
+      "file": "求解器/几何/1113流量层/inputs/positions.json",
+      "sha256": "fd9d7255ca03f96d6c700331abd1fc45a660b3742038281f17108e6c917d550c"
+    }
+  ]
+}

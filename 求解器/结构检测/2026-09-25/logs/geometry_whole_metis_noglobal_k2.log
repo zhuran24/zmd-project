@@ -1,0 +1,2 @@
+{"event": "partition_start", "dataset": "geometry_whole", "algorithm": "metis", "mode": "noglobal", "k": 2}
+{"dataset": "geometry_whole", "algorithm": "metis", "mode": "noglobal", "k": 2, "seed": 20260925, "epsilon": 0.03, "seconds": 0.20050727800116874, "peak_rss_kib": 893136, "raw_block_sizes": [19144, 19721], "reported_edge_cut": 460920, "graph_edges": 10278027}

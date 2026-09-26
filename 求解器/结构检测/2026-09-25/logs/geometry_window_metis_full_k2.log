@@ -1,0 +1,2 @@
+{"event": "partition_start", "dataset": "geometry_window", "algorithm": "metis", "mode": "full", "k": 2}
+{"dataset": "geometry_window", "algorithm": "metis", "mode": "full", "k": 2, "seed": 20260925, "epsilon": 0.03, "seconds": 0.017217746993992478, "peak_rss_kib": 164824, "raw_block_sizes": [1165, 1236], "reported_edge_cut": 261984, "graph_edges": 786998}

@@ -1,0 +1,25 @@
+{
+  "model": "geometry",
+  "scope": "whole",
+  "window": null,
+  "variables": 38865,
+  "constraints": 101640,
+  "pins": 1407307,
+  "global_constraints": 59,
+  "original_variables": 38865,
+  "original_constraints": 101640,
+  "whole_graph_estimates": {
+    "full": {
+      "variables": 38865,
+      "constraints": 101640,
+      "pins": 1407307,
+      "clique_pair_occurrences": 507985808
+    },
+    "noglobal": {
+      "variables": 38865,
+      "constraints": 101581,
+      "pins": 1198105,
+      "clique_pair_occurrences": 90529514
+    }
+  }
+}

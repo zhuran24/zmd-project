@@ -1,0 +1,30 @@
+{
+  "global_constraints": 59,
+  "global_categories": {
+    "仓库取货口联合边带模式恰选一个": 1,
+    "制造单位按尺寸的总台数": 3,
+    "协议核心总数": 1,
+    "供电桩总数定义": 1,
+    "占边供电桩总数定义": 1,
+    "供电桩总数与占边数预算": 1,
+    "供电亏额总预算": 1,
+    "运输格总数下限": 1,
+    "边带缺格条件下的运输格总数": 47,
+    "面积缺口总账": 1,
+    "供电桩总数面积预算": 1
+  },
+  "graph_estimates": {
+    "full": {
+      "variables": 38865,
+      "constraints": 101640,
+      "pins": 1407307,
+      "clique_pair_occurrences": 507985808
+    },
+    "noglobal": {
+      "variables": 38865,
+      "constraints": 101581,
+      "pins": 1198105,
+      "clique_pair_occurrences": 90529514
+    }
+  }
+}
