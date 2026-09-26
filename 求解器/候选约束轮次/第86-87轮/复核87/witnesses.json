@@ -1,0 +1,89 @@
+{
+ "A_bounds": {
+  "recipes": 18,
+  "items": 19,
+  "machine_load": {
+   "粉碎机": "68",
+   "精炼炉": "51",
+   "研磨机": "63/2",
+   "塑形机": "11/2",
+   "配件机": "6",
+   "种植机": "32",
+   "采种机": "16",
+   "封装机": "3",
+   "灌装机": "11/4"
+  },
+  "min_count": {
+   "粉碎机": 68,
+   "精炼炉": 51,
+   "研磨机": 32,
+   "塑形机": 6,
+   "配件机": 6,
+   "种植机": 32,
+   "采种机": 16,
+   "封装机": 3,
+   "灌装机": 3
+  }
+ },
+ "B_grinder_yi": {
+  "grinder_states": 15201,
+  "transitions_into_yi": 300,
+  "all_are_main_into_empty_beside_other_main": true,
+  "by_start": 0
+ },
+ "C_bing_reading": {
+  "state": "研磨机两格：蓝铁粉末 1、砂叶粉末 50；蓝铁粉末路首格空、砂叶粉末路首件为砂叶粉末",
+  "literal_all_present_heads_unreceivable": true,
+  "strict_every_channel_has_unreceivable_head": false,
+  "iron_powder_arrives_receivable": true,
+  "can_start_after": true
+ },
+ "D_pure_feed": {
+  "states_checked": 2498,
+  "deadlock_found": 0
+ },
+ "E_ding_reading": {
+  "first_literal_ding_tick": 3,
+  "batches_at_that_tick": 3,
+  "pickup_at_t199": 50,
+  "literal_ding_ticks_in_150_199": 50,
+  "batches_in_150_199": 10
+ },
+ "F_quota_line": {
+  "cycle_from": 12,
+  "cycle_to": 17,
+  "period": 5,
+  "Y_idle_ticks_in_cycle": 0,
+  "X_idle_ticks_in_cycle": 4
+ },
+ "G_merger": {
+  "ticks": 25,
+  "M_ready_every_tick": true,
+  "K_sent_total": 0,
+  "K_never_idle": true,
+  "claimed_min_per_tick": "min(1,2)=1"
+ },
+ "H_skeleton": {
+  "counts": {
+   "精炼炉": 51,
+   "粉碎机": 69,
+   "研磨机": 32,
+   "采种机": 17,
+   "种植机": 34,
+   "配件机": 6,
+   "塑形机": 6,
+   "封装机": 3,
+   "灌装机": 3
+  },
+  "total": 221,
+  "sand_channels_max": 33,
+  "sand_channels_used": 32,
+  "sand_need_per_tick": "63/2",
+  "steel_refineries": 17,
+  "bottles_per_tick": "11/2",
+  "capsule_per_tick": "11/20",
+  "battery_per_tick": "3/5",
+  "iron_ore_per_tick": 34,
+  "source_ore_per_tick": 18
+ }
+}

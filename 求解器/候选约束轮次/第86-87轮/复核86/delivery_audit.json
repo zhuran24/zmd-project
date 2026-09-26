@@ -1,0 +1,18 @@
+{
+  "status": "passed",
+  "items": 14,
+  "counts": {
+    "未否证": 5,
+    "已否证": 0,
+    "修正": 9
+  },
+  "checked_relative_links": 19,
+  "snapshots_unchanged": true,
+  "original_texts_exact": true,
+  "report_sha256": "f3aad2d71492e4602a92090151f08e485508e933313ce315197ce01cf6ee64ff",
+  "verdicts_sha256": "e5f5984659d867ca02f73a23fe3ffdedb52521c54f145f6098493d78a2692f41",
+  "elapsed_seconds": 2445.463657,
+  "finished_utc": "2026-09-26T12:04:50.463657+00:00",
+  "last_checked_utc": "2026-09-26T12:04:50.463657+00:00",
+  "note": "Static delivery checks; mathematical proof reviewed separately in the report."
+}

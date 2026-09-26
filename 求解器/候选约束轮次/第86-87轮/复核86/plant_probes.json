@@ -1,0 +1,142 @@
+{
+  "counts": {
+    "cycles": 600,
+    "eligible_cycles": 479,
+    "eligible_cycle_idle": 0,
+    "low_population_cycles_with_idle": 14,
+    "trials": 600,
+    "fractional_trials": 450,
+    "population_bound_violations": 0
+  },
+  "examples": [
+    {
+      "seed": 0,
+      "q": 1,
+      "lengths": [
+        1,
+        2,
+        4,
+        2
+      ],
+      "k": 2,
+      "phi0_2": 104,
+      "min_phi_2": 104,
+      "period_subticks": 7,
+      "cycle_idle": 0,
+      "eligible": true
+    },
+    {
+      "seed": 1,
+      "q": 2,
+      "lengths": [
+        1,
+        1,
+        5,
+        1
+      ],
+      "k": 2,
+      "phi0_2": 14,
+      "min_phi_2": 14,
+      "period_subticks": 16,
+      "cycle_idle": 0,
+      "eligible": true
+    },
+    {
+      "seed": 2,
+      "q": 3,
+      "lengths": [
+        3,
+        5,
+        3,
+        4
+      ],
+      "k": 3,
+      "phi0_2": 20,
+      "min_phi_2": 20,
+      "period_subticks": 27,
+      "cycle_idle": 0,
+      "eligible": false
+    },
+    {
+      "seed": 3,
+      "q": 5,
+      "lengths": [
+        3,
+        5,
+        1,
+        6
+      ],
+      "k": 3,
+      "phi0_2": 171,
+      "min_phi_2": 170,
+      "period_subticks": 50,
+      "cycle_idle": 0,
+      "eligible": true
+    },
+    {
+      "seed": 4,
+      "q": 1,
+      "lengths": [
+        3,
+        4,
+        4,
+        6
+      ],
+      "k": 2,
+      "phi0_2": 25,
+      "min_phi_2": 25,
+      "period_subticks": 7,
+      "cycle_idle": 0,
+      "eligible": true
+    },
+    {
+      "seed": 5,
+      "q": 2,
+      "lengths": [
+        4,
+        5,
+        6,
+        4
+      ],
+      "k": 3,
+      "phi0_2": 27,
+      "min_phi_2": 27,
+      "period_subticks": 16,
+      "cycle_idle": 0,
+      "eligible": true
+    },
+    {
+      "seed": 6,
+      "q": 3,
+      "lengths": [
+        2,
+        2,
+        4,
+        6
+      ],
+      "k": 2,
+      "phi0_2": 255,
+      "min_phi_2": 255,
+      "period_subticks": 54,
+      "cycle_idle": 0,
+      "eligible": true
+    },
+    {
+      "seed": 7,
+      "q": 5,
+      "lengths": [
+        6,
+        5,
+        5,
+        3
+      ],
+      "k": 2,
+      "phi0_2": 29,
+      "min_phi_2": 29,
+      "period_subticks": 100,
+      "cycle_idle": 0,
+      "eligible": true
+    }
+  ],
+  "note": "Capacity 50; finite probes only. Period keys include timers, pointers and sink schedule phase."
+}

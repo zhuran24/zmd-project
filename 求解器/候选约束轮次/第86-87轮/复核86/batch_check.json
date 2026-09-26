@@ -1,0 +1,42 @@
+[
+  {
+    "k": 2,
+    "initial_counts": 51,
+    "visited_states": 726,
+    "edges": 1477,
+    "largest_pair_difference": 1,
+    "multiple_start_violations": 0
+  },
+  {
+    "k": 3,
+    "initial_counts": 51,
+    "visited_states": 561,
+    "edges": 1190,
+    "largest_pair_difference": 1,
+    "multiple_start_violations": 0
+  },
+  {
+    "k": 4,
+    "initial_counts": 51,
+    "visited_states": 529,
+    "edges": 1198,
+    "largest_pair_difference": 1,
+    "multiple_start_violations": 0
+  },
+  {
+    "k": 5,
+    "initial_counts": 51,
+    "visited_states": 586,
+    "edges": 1432,
+    "largest_pair_difference": 1,
+    "multiple_start_violations": 0
+  },
+  {
+    "k": 6,
+    "initial_counts": 51,
+    "visited_states": 760,
+    "edges": 1995,
+    "largest_pair_difference": 1,
+    "multiple_start_violations": 0
+  }
+]

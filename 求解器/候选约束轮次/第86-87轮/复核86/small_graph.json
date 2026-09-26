@@ -1,0 +1,35 @@
+[
+  {
+    "capacity": 3,
+    "q": 1,
+    "states": 3019,
+    "edges": 5735,
+    "population_bound_violations": 0,
+    "high_phi_cyclic_states": 257,
+    "high_phi_cyclic_components": 256,
+    "high_phi_c_idle": 0,
+    "nonempty_forward_S_violations": 0
+  },
+  {
+    "capacity": 3,
+    "q": 2,
+    "states": 34290,
+    "edges": 56192,
+    "population_bound_violations": 0,
+    "high_phi_cyclic_states": 4116,
+    "high_phi_cyclic_components": 2058,
+    "high_phi_c_idle": 0,
+    "nonempty_forward_S_violations": 0
+  },
+  {
+    "capacity": 3,
+    "q": 3,
+    "states": 171289,
+    "edges": 254713,
+    "population_bound_violations": 0,
+    "high_phi_cyclic_states": 23999,
+    "high_phi_cyclic_components": 8000,
+    "high_phi_c_idle": 0,
+    "nonempty_forward_S_violations": 0
+  }
+]

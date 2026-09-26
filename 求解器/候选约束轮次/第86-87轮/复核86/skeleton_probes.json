@@ -1,0 +1,112 @@
+[
+  {
+    "seed": 8601,
+    "q": 1,
+    "quota": null,
+    "start": 2449,
+    "end": 2469,
+    "period_ticks": "20",
+    "rates": {
+      "battery": "3/5",
+      "capsule": "11/20"
+    },
+    "ore_rates": [
+      "1"
+    ],
+    "machines": 221,
+    "paths": 317,
+    "repeated_state_sha256": "4494a705c954ad5570fc2f28a65d4fd9aaedbfba668aacea5cdbabdeca975c33",
+    "cycle_delivery": {
+      "battery": 12,
+      "capsule": 11
+    }
+  },
+  {
+    "seed": 8602,
+    "q": 1,
+    "quota": null,
+    "start": 2453,
+    "end": 2473,
+    "period_ticks": "20",
+    "rates": {
+      "battery": "3/5",
+      "capsule": "11/20"
+    },
+    "ore_rates": [
+      "1"
+    ],
+    "machines": 221,
+    "paths": 317,
+    "repeated_state_sha256": "16d35002fa5cbb3b0fa7d7252f5923b8bc8824b82b01c067e3e7388c3ab28f4d",
+    "cycle_delivery": {
+      "battery": 12,
+      "capsule": 11
+    }
+  },
+  {
+    "seed": 8603,
+    "q": 2,
+    "quota": null,
+    "start": 4811,
+    "end": 4851,
+    "period_ticks": "20",
+    "rates": {
+      "battery": "3/5",
+      "capsule": "11/20"
+    },
+    "ore_rates": [
+      "1"
+    ],
+    "machines": 221,
+    "paths": 317,
+    "repeated_state_sha256": "d91c6277088a0f958858657cce5519d48ce7d9912fe39c7aa7a76ad09a4b94f8",
+    "cycle_delivery": {
+      "battery": 12,
+      "capsule": 11
+    }
+  },
+  {
+    "seed": 8604,
+    "q": 3,
+    "quota": null,
+    "start": 7237,
+    "end": 7297,
+    "period_ticks": "20",
+    "rates": {
+      "battery": "3/5",
+      "capsule": "11/20"
+    },
+    "ore_rates": [
+      "1"
+    ],
+    "machines": 221,
+    "paths": 317,
+    "repeated_state_sha256": "9324650281e19b67766e542f49bbe974bc14e6f215bb825a650dc4df6cf7f585",
+    "cycle_delivery": {
+      "battery": 12,
+      "capsule": 11
+    }
+  },
+  {
+    "seed": 8605,
+    "q": 1,
+    "quota": 1,
+    "start": 804,
+    "end": 904,
+    "period_ticks": "100",
+    "rates": {
+      "battery": "3/25",
+      "capsule": "11/100"
+    },
+    "ore_rates": [
+      "1/5"
+    ],
+    "machines": 221,
+    "paths": 317,
+    "repeated_state_sha256": "1fb44068cd8e02959150570d8fd86188332942e2115e054baadededa91467873",
+    "cycle_delivery": {
+      "battery": 12,
+      "capsule": 11
+    }
+  }
+]

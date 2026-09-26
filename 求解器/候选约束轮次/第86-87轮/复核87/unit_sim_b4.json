@@ -1,0 +1,20 @@
+{
+ "runs": 4000,
+ "E1_viol": 0,
+ "no_cycle": 75,
+ "cycles": 3925,
+ "E2_cycles": 3037,
+ "E2_viol_C": 0,
+ "E2_viol_B": 0,
+ "E2_viol_K": 0,
+ "E2_cycles_mixed_phase": 2015,
+ "ctrl_cycles": 888,
+ "ctrl_C_idle": 555,
+ "E3_intervals": 572015,
+ "E3_min_viol": 0,
+ "E3_each_viol": 0,
+ "E3_rate_viol": 0,
+ "E1_examples": [],
+ "E2_examples": [],
+ "seed": 204
+}
