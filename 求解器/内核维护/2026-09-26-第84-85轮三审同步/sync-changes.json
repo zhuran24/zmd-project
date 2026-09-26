@@ -1,0 +1,407 @@
+{
+  "version": "2026-09-26-r28-constraints-77",
+  "catalog_sha256": "55eabb8e53dc93c16d31e372e1d3ede8fa9e22d17337b14b7c82094ac3dfba49",
+  "constraint_source_sha256": "74409eaf42e3c9f1671a017491b1f43ea5268b5aab7989b15a448cd447014ce4",
+  "input_count": 54,
+  "inputs": [
+    "数据/样例/任务7内核/双门窗口恢复.json",
+    "数据/样例/任务7内核/同刻双箱争余量.json",
+    "数据/样例/任务7内核/成熟旧货重试.json",
+    "数据/样例/任务7内核/无线一满一可收.json",
+    "数据/样例/任务7内核/无线全拒收.json",
+    "数据/样例/任务7内核/无线多格全收.json",
+    "数据/样例/任务7内核/无线多格歧义.json",
+    "数据/样例/任务7内核/无线空箱.json",
+    "数据/样例/任务7内核/无线部分接收.json",
+    "数据/样例/任务7内核/生产环带.json",
+    "数据/样例/任务7内核/累计审计与窗口周期.json",
+    "数据/样例/任务7内核/累计调低保留.json",
+    "数据/样例/任务7内核/累计调高资格.json",
+    "数据/样例/任务7内核/装载与普通制造.json",
+    "数据/样例/任务7内核/身份实际切换.json",
+    "数据/样例/任务7内核/身份断边恢复.json",
+    "数据/样例/任务7内核/阻尼恢复.json",
+    "数据/样例/任务7内核/静止成熟与暂停键.json",
+    "数据/样例/传输拒收与暂停核验.json",
+    "数据/样例/分流器三路轮询.json",
+    "数据/样例/双成品制造砖.json",
+    "数据/样例/双成品满仓起动试作.json",
+    "数据/样例/密集制造闭环基础.json",
+    "数据/样例/密集制造闭环序0核验.json",
+    "数据/样例/密集制造闭环序1核验.json",
+    "数据/样例/密集制造闭环序2核验.json",
+    "数据/样例/密集制造闭环序3核验.json",
+    "数据/样例/密集制造闭环序4核验.json",
+    "数据/样例/密集制造闭环序5核验.json",
+    "数据/样例/密集结点循环种子核验.json",
+    "数据/样例/密集结点核验.json",
+    "数据/样例/密集结点闭环核验.json",
+    "数据/样例/桥接器双通路.json",
+    "数据/样例/混做粉碎机两下游.json",
+    "数据/样例/生产循环环带.json",
+    "数据/样例/研磨混做核验.json",
+    "数据/样例/轮询均分序0核验.json",
+    "数据/样例/轮询均分序1核验.json",
+    "数据/样例/轮询均分序2核验.json",
+    "数据/样例/轮询均分序3核验.json",
+    "数据/样例/轮询均分序4核验.json",
+    "数据/样例/轮询均分序5核验.json",
+    "数据/样例/轮询均分核验.json",
+    "数据/样例/阻尼切支恢复核验.json",
+    "数据/样例/阻尼连续带核验.json",
+    "crates/kernel/tests/fixtures/benchmark_1000.json",
+    "crates/kernel/tests/fixtures/benchmark_brick.json",
+    "crates/kernel/tests/fixtures/benchmark_brick_60.json",
+    "crates/kernel/tests/fixtures/benchmark_candidate_b.json",
+    "crates/kernel/tests/fixtures/bridge.json",
+    "crates/kernel/tests/fixtures/core_inbound.json",
+    "crates/kernel/tests/fixtures/priority.json",
+    "crates/kernel/tests/fixtures/revision_r2_branch_cut.json",
+    "crates/kernel/tests/fixtures/revision_r2_phase_control.json"
+  ],
+  "business_file_count": 67,
+  "files": [
+    {
+      "path": "求解器/数据/工具/formal_catalog.py",
+      "before_sha256": "9ba07c10fe05f143b428e25239b7b8d8e64aa9e6f1a13d3e29b0b3a5bba04da6",
+      "after_sha256": "5175776cf68758cef7b109c4751d4202b4a474c3be496129e48785d3b02b1e58"
+    },
+    {
+      "path": "求解器/数据/工具/test_formal_catalog.py",
+      "before_sha256": "160ca5b8e37caab013baf17a230656b97f6027039f17898f02054090630099fd",
+      "after_sha256": "31b418b12e57b5d14ee1994731e81ec627680d0f6b9d281040c41cdeb8477f4c"
+    },
+    {
+      "path": "求解器/数据/工具/check_revision.py",
+      "before_sha256": "8b37f8187e57cc78eb72f2f1747028dd84315141edb1944665ff43b31145d4a1",
+      "after_sha256": "d158d856c019ca20389297e60ed85ca6f97374ce6c131c4b04f655fbd2c16e7c"
+    },
+    {
+      "path": "求解器/crates/topology/tests/validation.rs",
+      "before_sha256": "9b767dfd40be71cd814db2b6769ce46e062398254e8ed9269d392e05bfdc9f1f",
+      "after_sha256": "f70b0153f34527f2ca8946307dcaf1c372c51eed30dde664d0dda23c48d90070"
+    },
+    {
+      "path": "求解器/规格/check_revision.py",
+      "before_sha256": "b6383d559c4b5fafe9e88c6e7686816336412069cf17075036fcc7d0458f3398",
+      "after_sha256": "f13b46130478cd478e867143a6b81471de109b7a6d8d046fa17ccc1c7bc870ec"
+    },
+    {
+      "path": "求解器/数据/正式静态目录.json",
+      "before_sha256": "f0e18dc1bc89b8c7d28eba92c1e7753a50ba1fb03072e6f55f0582b91707c352",
+      "after_sha256": "55eabb8e53dc93c16d31e372e1d3ede8fa9e22d17337b14b7c82094ac3dfba49"
+    },
+    {
+      "path": "求解器/数据/样例/任务7内核/双门窗口恢复.json",
+      "before_sha256": "85a6c2ea56f3518d7792fd798968307cd8b33f7d1a78a2b0b4b6a9c63a376420",
+      "after_sha256": "1f3c1858ca7091fc35ddd8053887347d4d66c51c95bc4d7982d061faef3f1693"
+    },
+    {
+      "path": "求解器/数据/样例/任务7内核/同刻双箱争余量.json",
+      "before_sha256": "5e11009a8327e11547034f0edb96add9698385871d82fcac9cb2a5a751837012",
+      "after_sha256": "0d86513752850c779d34905eaacb2f39b59a53e4b3526ae1a8f1bfcef7c87ed0"
+    },
+    {
+      "path": "求解器/数据/样例/任务7内核/成熟旧货重试.json",
+      "before_sha256": "d1d13b10f1b55aad686e2a41c66a0608639bc7962c3555bca86e9daeb554fc46",
+      "after_sha256": "efdc3a6a099e556164307ca6ebfa9889277f68687b8b22eef72de52f268b4ca9"
+    },
+    {
+      "path": "求解器/数据/样例/任务7内核/无线一满一可收.json",
+      "before_sha256": "dffc8247c9b80bc2d63d9fe077efe4dc301c5c7e13470e1e403596b2520e547a",
+      "after_sha256": "496ce2b8f55a4bf9811af6a5b0b48c9528d139f19f376594a419b26a63ab18fd"
+    },
+    {
+      "path": "求解器/数据/样例/任务7内核/无线全拒收.json",
+      "before_sha256": "5d00eedcd13d274ee2e08c7ad88725af481395a0856fcae1c5d04e4c4c1e2b3f",
+      "after_sha256": "b8f7516eb61a299fc7a85efea41f9e50bf0e65a8adbee15fffb6f73f8c37708d"
+    },
+    {
+      "path": "求解器/数据/样例/任务7内核/无线多格全收.json",
+      "before_sha256": "7ec5415957b9fa9d0a242ef2cf9138e246324b9063dbe49f1352cfbb498a4207",
+      "after_sha256": "eb92c39b071d513277565918ec879f9a9b736685935136e706508fc0cecf2a52"
+    },
+    {
+      "path": "求解器/数据/样例/任务7内核/无线多格歧义.json",
+      "before_sha256": "8d5dba59e2185c981cd581c8c61b2347266f4860df2080e5c6803b3b230c925a",
+      "after_sha256": "58ae15c4151bdad468c5f8ae074f9d5b35200a630587fef8e4df6c62439741be"
+    },
+    {
+      "path": "求解器/数据/样例/任务7内核/无线空箱.json",
+      "before_sha256": "ec0890eb591b7dc7d1bfdf65b45058e2f3c09834edaf48bda303bb861fb3c1a7",
+      "after_sha256": "fcd3ac75656aab97287e5c0a8ab4cf9705cb7e7941bc2fdb6c7fd791bbffdc55"
+    },
+    {
+      "path": "求解器/数据/样例/任务7内核/无线部分接收.json",
+      "before_sha256": "1a2b23b11baf246fa2d6c63fa831c1e42fb075c00c349a2ea7edfb9ae45a8dcd",
+      "after_sha256": "21e30685359dd7647891a061b14a261143bde2f6c38feaf3c84458a5e5b24b7e"
+    },
+    {
+      "path": "求解器/数据/样例/任务7内核/生产环带.json",
+      "before_sha256": "186412454181c04ef87621ab0f405c60160a6f7ea95066f048da5f436a3acabc",
+      "after_sha256": "368c86f685bfaa9fe75bfefa37ed8f409407348a51f887d5020bfacf5f1c2830"
+    },
+    {
+      "path": "求解器/数据/样例/任务7内核/累计审计与窗口周期.json",
+      "before_sha256": "2f3892bd4b429136903d853c8c52887df401ef640941f95e1ad21a955299f6d9",
+      "after_sha256": "ceca11e9530db573addf869d68cfb8ae87f21167e0185b4bd0c887b217728105"
+    },
+    {
+      "path": "求解器/数据/样例/任务7内核/累计调低保留.json",
+      "before_sha256": "32868573b1a475ddefa588c123b479f7ce826d0e5cea5305d09a53986a92d3d3",
+      "after_sha256": "39fe7b277f8218e4da8bb8f9e4da52a85aa5aa2294b18001f496c39f0c5c8c98"
+    },
+    {
+      "path": "求解器/数据/样例/任务7内核/累计调高资格.json",
+      "before_sha256": "adc8c68c4fc441b2c2459131dd0b92fde754c7ace3f2b45a5a54c35a139ccec3",
+      "after_sha256": "ee9ed78b00a1b58602defe341925eb6f934eaf0eb01c1b5c0131ca344cde2584"
+    },
+    {
+      "path": "求解器/数据/样例/任务7内核/装载与普通制造.json",
+      "before_sha256": "71db06630161d7e3d0f7fe3b8fb03a3ca5d4be9bc286e139d62eed0b74b9cf98",
+      "after_sha256": "82e6d51066704bb29a2536a18ac25d3c6612e86a70f064efd17bcaecedf58c17"
+    },
+    {
+      "path": "求解器/数据/样例/任务7内核/身份实际切换.json",
+      "before_sha256": "ae420b521c6aab50303904ae1c7460de7b40f6b03b77dd0bee4c7a2465541640",
+      "after_sha256": "3c11823ec1c3c90c419c1101ef038b2af82ce0805594fa2cb086a0ac7a51c016"
+    },
+    {
+      "path": "求解器/数据/样例/任务7内核/身份断边恢复.json",
+      "before_sha256": "9fb12937a9228cb4f324ada5f0aaf81480e195036cb9e95e1bfafc60c9c84ec5",
+      "after_sha256": "e15e230fb657377c1906f2130485bf917f37008ca0acee422a32e50063679eec"
+    },
+    {
+      "path": "求解器/数据/样例/任务7内核/阻尼恢复.json",
+      "before_sha256": "845b35bb22e213ea28857e2c9155b629eb8bf9300de2230f2fc58adef254d61f",
+      "after_sha256": "9692b4d30c590b44d1f71907074d2aa69f3f9daecdd2f0a5e9556ab59f00c459"
+    },
+    {
+      "path": "求解器/数据/样例/任务7内核/静止成熟与暂停键.json",
+      "before_sha256": "2e09f7ed5f19159b815c62427dc8074da72d085b6b6551dced14a56ca45024e2",
+      "after_sha256": "2cf4c78bfdbf23469e1794f8f05e75908c6c9c1cf2c64ff30fc4037a15cd842c"
+    },
+    {
+      "path": "求解器/数据/样例/传输拒收与暂停核验.json",
+      "before_sha256": "1792852b13318004645f0f64f1bd2b8b173368f9fcf65db306a3edc1ee4c7fa6",
+      "after_sha256": "b699d9b8a66e5abf78494b2451e6e70c33fed4023e3a460c3abe570155a1932c"
+    },
+    {
+      "path": "求解器/数据/样例/分流器三路轮询.json",
+      "before_sha256": "e5e59611743c940821daee2f3acf1af4b15a6417ad8a48b6b22b203ad6b3d114",
+      "after_sha256": "e71c410c39108eaed20d8c67a7ffe34cfe8961f9482dc30593008054faeddf12"
+    },
+    {
+      "path": "求解器/数据/样例/双成品制造砖.json",
+      "before_sha256": "82e89083149b083248ae0f4d65c758cba5334d07de0c15934e4a721c4c654f51",
+      "after_sha256": "0517cba3530109ea04b0300e8c31cab36f369bf124e58122baeb1e8a2ac78aa0"
+    },
+    {
+      "path": "求解器/数据/样例/双成品满仓起动试作.json",
+      "before_sha256": "ccd1fe8bee6b990b35fe53383afe4f174482db3907805167212824cfe9fa28bd",
+      "after_sha256": "d37ee18f81b227aea279ffbd06ea16c3cb97d76ace5f0593bd5e1185e7716c5b"
+    },
+    {
+      "path": "求解器/数据/样例/密集制造闭环基础.json",
+      "before_sha256": "1cf151140007bf77ed2ff74ecf5a3a8b65aa10a820b9538e282f99f45bdc6572",
+      "after_sha256": "d1241784c2f0d470f1ed1d83ae35528fde4ffc672232f9986f8da1ccd3487c06"
+    },
+    {
+      "path": "求解器/数据/样例/密集制造闭环序0核验.json",
+      "before_sha256": "3dbbeb3910a7fef31b8fea55e116a29ab6afcc0124170c4325e68286abbcda79",
+      "after_sha256": "49853dd3ef18fffd3ed6c0cb0819356c86209ef2ef68853f445c8fe8b81d69cf"
+    },
+    {
+      "path": "求解器/数据/样例/密集制造闭环序1核验.json",
+      "before_sha256": "b90a124b20263d83bdf991c8f5efcc504afbdba55a9174abc249c91419f35aa5",
+      "after_sha256": "28d05aa65a8dd36c8870ad12bddc4e83ac3e6cead8682db22d281c65338a5e3f"
+    },
+    {
+      "path": "求解器/数据/样例/密集制造闭环序2核验.json",
+      "before_sha256": "8e768c921665cd1ce38163d106e1b2a53d664591da2f88caac63b3b474061a4c",
+      "after_sha256": "0913866acbbbbe5ab61c948949f6958ba9157873650ce1f1af742d3859343ada"
+    },
+    {
+      "path": "求解器/数据/样例/密集制造闭环序3核验.json",
+      "before_sha256": "fc8c4de2e8ab5a56ab869c6ec85b20791e6ea86f7fb0994aa14918d134229dc3",
+      "after_sha256": "f2f7cac972c1225ae0d211d2ae8a62be1ace23d1af62486cb270ffa7e3de8f09"
+    },
+    {
+      "path": "求解器/数据/样例/密集制造闭环序4核验.json",
+      "before_sha256": "79a7722aa6937cbfb243e013c52370a7763214d708488c41fefb59e928e5e984",
+      "after_sha256": "6dd31a5971414a8969225d222c6a4533a73061de8d51fb6120a4303f85f7fbdf"
+    },
+    {
+      "path": "求解器/数据/样例/密集制造闭环序5核验.json",
+      "before_sha256": "87667d36ea8232551849a24e4156acccdd88d3067e1cdbfb78def66d3a6012ba",
+      "after_sha256": "48d36a88d31d386a24848e5a8a768fba438aa18e0a8434f104af4c643bd957af"
+    },
+    {
+      "path": "求解器/数据/样例/密集结点循环种子核验.json",
+      "before_sha256": "46476c7b01f4b1967241161e989482b79333135219b11de88405f8d1c7d18569",
+      "after_sha256": "ee423f41b4f2c7982bbe49b8b3078656997ac6784e58e97ace9fba44b01dc0d7"
+    },
+    {
+      "path": "求解器/数据/样例/密集结点核验.json",
+      "before_sha256": "243a2c3d328574f3a4e2c7e35b92be0ab6fae02314aebdd426c46a1ddb828c9a",
+      "after_sha256": "1b6af74fb8ec31692c89f17410abc2fdd6284e8fd1234be16351fdf827004e77"
+    },
+    {
+      "path": "求解器/数据/样例/密集结点闭环核验.json",
+      "before_sha256": "ba61984617646589ad471c93de001496183cdae3620f86c530ff5fc1201f5cef",
+      "after_sha256": "68eec6ee7332061a70c3df0c660cbd298a5d9b0910e69ce4f8184812b33d20ed"
+    },
+    {
+      "path": "求解器/数据/样例/桥接器双通路.json",
+      "before_sha256": "ea5a33a914b43801ab47f3feb2642154682eb570b77145f534565af257081a45",
+      "after_sha256": "54059d49b1104897fbcbed8376f4839addef7b640ca288a9d7ee6e94f608d8a1"
+    },
+    {
+      "path": "求解器/数据/样例/混做粉碎机两下游.json",
+      "before_sha256": "092a64d0a0455fe48dbad7710d593744f949b6e86b23c4ec4bb7572760fbb24b",
+      "after_sha256": "f44a299337ded4302981baabb6e8a60f76e88918c060df58061659a6d2de67ee"
+    },
+    {
+      "path": "求解器/数据/样例/生产循环环带.json",
+      "before_sha256": "6c26da0caff88b7778240006611eefbeb4ab7f96259fc5d070c6554ddbac1d6c",
+      "after_sha256": "9ec5093b7ac691f3c21eaa4b8da9ee91c2b92e2bd3f811e791ee0e05ebc85ef1"
+    },
+    {
+      "path": "求解器/数据/样例/研磨混做核验.json",
+      "before_sha256": "39f3cc9ffd1aacd49645a514301f7f62529c56f211c5a9a6319e927fd5b40d99",
+      "after_sha256": "95f61a16d1e46ef127b74c788e8c8f3fbe31c4a225d6e519654b6a074a53b6ab"
+    },
+    {
+      "path": "求解器/数据/样例/轮询均分序0核验.json",
+      "before_sha256": "3f3ee6d49756451842312c823e2842ab4fc65d577653e7c33954796532f5eae2",
+      "after_sha256": "f1c45ffd224902b6f5ecb1335da892033d852b3b8ef0eeb7dc94acf9cd9ee585"
+    },
+    {
+      "path": "求解器/数据/样例/轮询均分序1核验.json",
+      "before_sha256": "e4957fb33792a8dd6bd05bac8bd4580fb90a6437050e38e6093fdf3bb9cf34b3",
+      "after_sha256": "c5c892d5ad1f8a71b1487e9650f9e1089d4427069e4774c39bdf39d38b74c61c"
+    },
+    {
+      "path": "求解器/数据/样例/轮询均分序2核验.json",
+      "before_sha256": "38085b3967895a0fc11fabd3a4754e85bfeadfe51d2f82114a2432484ac7fa31",
+      "after_sha256": "e55644eaf049746a22a12631e040849f9aae4013ad2ccd234f98e2caf6528ad9"
+    },
+    {
+      "path": "求解器/数据/样例/轮询均分序3核验.json",
+      "before_sha256": "56b7ca0f060ba2986a99fb13ae04ee2e3e2288adf4da9eca3e31a1c14b250857",
+      "after_sha256": "3cdcf64975d19afb518dc351a386f24f1d7600016f030fb8f5fa200b820d8b57"
+    },
+    {
+      "path": "求解器/数据/样例/轮询均分序4核验.json",
+      "before_sha256": "1cf0b831c8e268a916630b562c020e6f04a8141e663857010ee5d39c76584c84",
+      "after_sha256": "8503e5d5d2e175ad147adf6ad4c37ea0d5bf6af84aedf5c89c610dc3000cdbf7"
+    },
+    {
+      "path": "求解器/数据/样例/轮询均分序5核验.json",
+      "before_sha256": "9d7f30453a2f558fceb38d1c0bc840c176d66d5b014d79f330ac2f7564139d55",
+      "after_sha256": "ffcfddfdf8f04a419066202ecddedb76e94bcd2f442912376094126d547fca20"
+    },
+    {
+      "path": "求解器/数据/样例/轮询均分核验.json",
+      "before_sha256": "9faa0712f17c2e7567bffc38f08cb20bb159d428b6ab99d5cc22e2245612cbf6",
+      "after_sha256": "3ca2fdf0cb655a6518eea97e5e26562a7828fbc0cf7e4e1f7859631ba2e2d29f"
+    },
+    {
+      "path": "求解器/数据/样例/阻尼切支恢复核验.json",
+      "before_sha256": "79ab951b4628ee35d07b8a9ba11086541e6a4e3ad8606316c5e289805912b083",
+      "after_sha256": "9a402e1c0bb354caa86459ed5c8e179c73ffd11c8b7eda6a4a32ca567d930abd"
+    },
+    {
+      "path": "求解器/数据/样例/阻尼连续带核验.json",
+      "before_sha256": "f0ab07f1f4114bedf55f71037ff6e000de79655d77fd661814404c96b2cd1434",
+      "after_sha256": "870c7a2be71112e63125d58ecedaddf2dd6650c299b42afdcca6ff4fe29458ae"
+    },
+    {
+      "path": "求解器/crates/kernel/tests/fixtures/benchmark_1000.json",
+      "before_sha256": "a35adb0aec2ba29ebb76bb333b3cb3a9c71ebe7d631e2188dcb7b865b7f82176",
+      "after_sha256": "e0d192a4e15e98b028c596168a2dda80ba2de96f6367eb04ef16f5c4f026565a"
+    },
+    {
+      "path": "求解器/crates/kernel/tests/fixtures/benchmark_brick.json",
+      "before_sha256": "ad0f6ca9978778e2b583c5091abd7a2017af0eab8d074d939ed50afb5d3dbd00",
+      "after_sha256": "59a681161ebdb2ac6b8cf3851200a0b40d67709fd2a3f71f58b40dde1b43acdf"
+    },
+    {
+      "path": "求解器/crates/kernel/tests/fixtures/benchmark_brick_60.json",
+      "before_sha256": "1d18ae34441847cf9454f2b2ba3400492d0720b9297345680f41ab4cde6611be",
+      "after_sha256": "21967ee7e79310d0872f500d734c5dcc20f9eb878b18e253ac4dc97e8e6c9312"
+    },
+    {
+      "path": "求解器/crates/kernel/tests/fixtures/benchmark_candidate_b.json",
+      "before_sha256": "798bc4c9b42b88df1381bd66e7bf0cb89357be9257a546329e4ec3cb7c24971c",
+      "after_sha256": "525bc45fddc278dec389f975d417d3e15fcf61ca38d4c6444f8560d73b8a9aaa"
+    },
+    {
+      "path": "求解器/crates/kernel/tests/fixtures/bridge.json",
+      "before_sha256": "1ddefbd43a25159b019cff96da9f1c4c47218c61a21c878cd91aa9efdba77fd9",
+      "after_sha256": "82ba6db5c09efc906beaec130527cdd42a33c6d7288d507d07233f2ef3b4eabf"
+    },
+    {
+      "path": "求解器/crates/kernel/tests/fixtures/core_inbound.json",
+      "before_sha256": "dcb1c1978863ae3142c95bfa658257410cc92dda15847fa7fe12fa1f43a273e2",
+      "after_sha256": "16be27a820b0b3af90939909b0f373523cfc8c60c0bb1e527b840d2299573440"
+    },
+    {
+      "path": "求解器/crates/kernel/tests/fixtures/priority.json",
+      "before_sha256": "b76423439d5b9925c0248b27ce8ec144de334b4362c3fc687f95228c8f88491c",
+      "after_sha256": "0f6071d254a93a74cd34ffe77441d42a07812adbe3622caabc93a2a1301007c3"
+    },
+    {
+      "path": "求解器/crates/kernel/tests/fixtures/revision_r2_branch_cut.json",
+      "before_sha256": "bdb2c133660507102db14f35aa93c41cc67a85688a29e6d3fd34078b43a25d94",
+      "after_sha256": "13e1d0080a2839ba60c9a3914ef58c966627d101ef0d30cfca57c7b54847c65c"
+    },
+    {
+      "path": "求解器/crates/kernel/tests/fixtures/revision_r2_phase_control.json",
+      "before_sha256": "bede8c473a95b212c508e217bdde008fdbe1f3db3344978387571004e7de0871",
+      "after_sha256": "9956ab4682f328a3608ee5e0fecd0f5111606900b7e696f3a43d3696c7bc0ff2"
+    },
+    {
+      "path": "求解器/数据/候选B/来源清单.json",
+      "before_sha256": "273e86dd7c5a5f24f444734b6c5e976dd576dba6b3aae3c80c6419001ea03be2",
+      "after_sha256": "1818d5b8be274f3fbc5c40122b97f6a7bbfd4c5b5a57de6e9342ee4c04022c3f"
+    },
+    {
+      "path": "求解器/数据/样例/check_examples.py",
+      "before_sha256": "a26db971e81dfb4bce666cc7d11186202af205947ddd7e0ed25fb6f12d07dc2e",
+      "after_sha256": "782e41d52ebabc7951aa53be6d797ee01db4079e395c702601af69663130b5e2"
+    },
+    {
+      "path": "求解器/规格/运行语义.md",
+      "before_sha256": "985ad579af360eaeed0cf32fe33947d2d9cf5ae188c97822f2646801d5a70c7d",
+      "after_sha256": "03da378a0bfc9d6d0247fa5b7bed4df88d61411afa02c4a08304001d258d017b"
+    },
+    {
+      "path": "求解器/规格/规则覆盖表.md",
+      "before_sha256": "2001ae3a1e107fbcedf0ad3a44e725bfa468e3a515f5e9abca4d54bbc21aa74d",
+      "after_sha256": "a1da9daf165d4b2b0a8352195eba2608345a24f3eab5c1c92aba298397030ca8"
+    },
+    {
+      "path": "求解器/数据/规则覆盖表.md",
+      "before_sha256": "9b1d405b7d8c566f610425aae6bde3bf93897feb1d686601a5c3bacdd2c5f0df",
+      "after_sha256": "0167ef4593a54a64cc4b06515177c550ea075340c7bbb81281f23ae456493e01"
+    },
+    {
+      "path": "求解器/数据/候选B/转换说明.md",
+      "before_sha256": "35ddb2bcb7654c01ad6bd27a45fb1e5f4e556155ac558f4d9d2a5e104bf849b4",
+      "after_sha256": "44db63af9c2ede51a9c90ecc731c5719ad95f397ace389fe442e4faeef8db1b3"
+    },
+    {
+      "path": "求解器/规格/修订记录.md",
+      "before_sha256": "d65c6e1d48096481cf840770551b8b9227498ebcc52dece2dc8d17b06f23607f",
+      "after_sha256": "178ac8a31419599551688c122bbde4be3dd4e6921444d85a22292131a03b5c97"
+    }
+  ],
+  "added_constraints": [
+    "存货首件死锁",
+    "成品停收的停批范围"
+  ],
+  "changed_constraints": [
+    "存货误料停机与可用台数"
+  ]
+}

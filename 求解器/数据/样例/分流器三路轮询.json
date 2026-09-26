@@ -3,7 +3,7 @@
   "purpose": "synthetic_execution",
   "catalog": {
     "path": "../正式静态目录.json",
-    "sha256": "f0e18dc1bc89b8c7d28eba92c1e7753a50ba1fb03072e6f55f0582b91707c352"
+    "sha256": "55eabb8e53dc93c16d31e372e1d3ede8fa9e22d17337b14b7c82094ac3dfba49"
   },
   "timeline": {
     "events": [

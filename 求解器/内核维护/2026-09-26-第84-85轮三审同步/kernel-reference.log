@@ -1,0 +1,11 @@
+   Compiling kernel v0.1.0 (/home/zhuran24/zmd-research-fresh/求解器/crates/kernel)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.11s
+     Running tests/reference.rs (target/debug/deps/reference-1613ad1990138602)
+
+running 3 tests
+test crusher_reference ... ok
+test live_python_differential ... ok
+test splitter_reference ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.67s
+
