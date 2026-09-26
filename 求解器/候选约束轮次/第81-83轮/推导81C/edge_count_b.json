@@ -1,0 +1,13 @@
+{
+  "encoding": "B free-neighbor MILP",
+  "edge": true,
+  "unit": true,
+  "threshold": 14,
+  "options": 550,
+  "rows": 1354,
+  "variables": 808,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "seconds": 0.10905830399133265,
+  "threads": 1
+}

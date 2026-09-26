@@ -1,0 +1,10 @@
+粉碎机 1 states 251 dead 50 kinds ['误料'] entries 1 ['误料'] head_dead 0
+精炼炉 1 states 201 dead 50 kinds ['误料'] entries 1 ['误料'] head_dead 0
+研磨机 2 states 25251 dead 17550 kinds ['源石粉末+荞花粉末', '源石粉末+蓝铁粉末', '源石粉末+误料', '砂叶粉末+误料', '荞花粉末+蓝铁粉末', '荞花粉末+误料', '蓝铁粉末+误料', '误料'] entries 501 ['源石粉末', '荞花粉末', '蓝铁粉末', '误料'] head_dead 24178
+塑形机 1 states 101 dead 50 kinds ['误料'] entries 1 ['误料'] head_dead 0
+配件机 1 states 101 dead 50 kinds ['误料'] entries 1 ['误料'] head_dead 0
+种植机 1 states 151 dead 50 kinds ['误料'] entries 1 ['误料'] head_dead 0
+采种机 1 states 151 dead 50 kinds ['误料'] entries 1 ['误料'] head_dead 0
+封装机 2 states 7651 dead 5050 kinds ['致密源石粉末+误料', '误料', '误料+钢制零件'] entries 101 ['误料'] head_dead 25
+灌装机 2 states 7651 dead 5050 kinds ['细磨荞花粉末+误料', '误料', '误料+钢质瓶'] entries 101 ['误料'] head_dead 20
+written

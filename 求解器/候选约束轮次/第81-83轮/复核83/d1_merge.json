@@ -1,0 +1,1 @@
+{"order_ch1_first": {"ticks": 200, "took": {"ch1": 100, "ch2": 200}, "both_ready_every_tick": true}, "order_X_first": {"ticks": 200, "took": {"ch1": 100, "ch2": 200}, "both_ready_every_tick": true}}

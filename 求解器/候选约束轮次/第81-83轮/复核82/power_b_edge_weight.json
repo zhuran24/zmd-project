@@ -1,0 +1,9 @@
+{
+  "edge": true,
+  "count": false,
+  "target": 30,
+  "options": 550,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "seconds": 0.21743296200293116
+}

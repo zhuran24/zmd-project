@@ -1,0 +1,569 @@
+{
+ "summary": {
+  "混做·断供0": {
+   "runs": 10,
+   "locked": 0,
+   "min_last": 215,
+   "max_last": 215,
+   "ticks_last": 215
+  },
+  "混做·断供30": {
+   "runs": 10,
+   "locked": 10,
+   "min_last": 0,
+   "max_last": 0,
+   "ticks_last": 185
+  },
+  "单主料·断供0": {
+   "runs": 10,
+   "locked": 0,
+   "min_last": 100,
+   "max_last": 100,
+   "ticks_last": 215
+  },
+  "单主料·断供30": {
+   "runs": 10,
+   "locked": 0,
+   "min_last": 88,
+   "max_last": 89,
+   "ticks_last": 185
+  }
+ },
+ "runs": [
+  {
+   "locked_at": null,
+   "final_slots": {
+    "砂叶粉末": 17,
+    "源石粉末": 2
+   },
+   "batches_before": 105,
+   "batches_last": 215,
+   "ticks_last": 215,
+   "mixed": true,
+   "starve_len": 0,
+   "order": "make_first",
+   "token0": 0
+  },
+  {
+   "locked_at": null,
+   "final_slots": {
+    "砂叶粉末": 17,
+    "源石粉末": 2
+   },
+   "batches_before": 105,
+   "batches_last": 215,
+   "ticks_last": 215,
+   "mixed": true,
+   "starve_len": 0,
+   "order": "make_first",
+   "token0": 1
+  },
+  {
+   "locked_at": null,
+   "final_slots": {
+    "砂叶粉末": 17,
+    "源石粉末": 2
+   },
+   "batches_before": 105,
+   "batches_last": 215,
+   "ticks_last": 215,
+   "mixed": true,
+   "starve_len": 0,
+   "order": "make_first",
+   "token0": 2
+  },
+  {
+   "locked_at": null,
+   "final_slots": {
+    "砂叶粉末": 17,
+    "源石粉末": 2
+   },
+   "batches_before": 105,
+   "batches_last": 215,
+   "ticks_last": 215,
+   "mixed": true,
+   "starve_len": 0,
+   "order": "make_first",
+   "token0": 3
+  },
+  {
+   "locked_at": null,
+   "final_slots": {
+    "砂叶粉末": 17,
+    "源石粉末": 2
+   },
+   "batches_before": 105,
+   "batches_last": 215,
+   "ticks_last": 215,
+   "mixed": true,
+   "starve_len": 0,
+   "order": "make_first",
+   "token0": 4
+  },
+  {
+   "locked_at": null,
+   "final_slots": {
+    "砂叶粉末": 17
+   },
+   "batches_before": 105,
+   "batches_last": 215,
+   "ticks_last": 215,
+   "mixed": true,
+   "starve_len": 0,
+   "order": "move_first",
+   "token0": 0
+  },
+  {
+   "locked_at": null,
+   "final_slots": {
+    "砂叶粉末": 17
+   },
+   "batches_before": 105,
+   "batches_last": 215,
+   "ticks_last": 215,
+   "mixed": true,
+   "starve_len": 0,
+   "order": "move_first",
+   "token0": 1
+  },
+  {
+   "locked_at": null,
+   "final_slots": {
+    "砂叶粉末": 17
+   },
+   "batches_before": 105,
+   "batches_last": 215,
+   "ticks_last": 215,
+   "mixed": true,
+   "starve_len": 0,
+   "order": "move_first",
+   "token0": 2
+  },
+  {
+   "locked_at": null,
+   "final_slots": {
+    "砂叶粉末": 17
+   },
+   "batches_before": 105,
+   "batches_last": 215,
+   "ticks_last": 215,
+   "mixed": true,
+   "starve_len": 0,
+   "order": "move_first",
+   "token0": 3
+  },
+  {
+   "locked_at": null,
+   "final_slots": {
+    "砂叶粉末": 17
+   },
+   "batches_before": 105,
+   "batches_last": 215,
+   "ticks_last": 215,
+   "mixed": true,
+   "starve_len": 0,
+   "order": "move_first",
+   "token0": 4
+  },
+  {
+   "locked_at": 144,
+   "final_slots": {
+    "蓝铁粉末": 50,
+    "源石粉末": 50
+   },
+   "batches_before": 105,
+   "batches_last": 0,
+   "ticks_last": 185,
+   "mixed": true,
+   "starve_len": 30,
+   "order": "make_first",
+   "token0": 0
+  },
+  {
+   "locked_at": 144,
+   "final_slots": {
+    "蓝铁粉末": 50,
+    "源石粉末": 50
+   },
+   "batches_before": 105,
+   "batches_last": 0,
+   "ticks_last": 185,
+   "mixed": true,
+   "starve_len": 30,
+   "order": "make_first",
+   "token0": 1
+  },
+  {
+   "locked_at": 144,
+   "final_slots": {
+    "蓝铁粉末": 50,
+    "源石粉末": 50
+   },
+   "batches_before": 105,
+   "batches_last": 0,
+   "ticks_last": 185,
+   "mixed": true,
+   "starve_len": 30,
+   "order": "make_first",
+   "token0": 2
+  },
+  {
+   "locked_at": 144,
+   "final_slots": {
+    "蓝铁粉末": 50,
+    "源石粉末": 50
+   },
+   "batches_before": 105,
+   "batches_last": 0,
+   "ticks_last": 185,
+   "mixed": true,
+   "starve_len": 30,
+   "order": "make_first",
+   "token0": 3
+  },
+  {
+   "locked_at": 144,
+   "final_slots": {
+    "蓝铁粉末": 50,
+    "源石粉末": 50
+   },
+   "batches_before": 105,
+   "batches_last": 0,
+   "ticks_last": 185,
+   "mixed": true,
+   "starve_len": 30,
+   "order": "make_first",
+   "token0": 4
+  },
+  {
+   "locked_at": 144,
+   "final_slots": {
+    "蓝铁粉末": 50,
+    "源石粉末": 50
+   },
+   "batches_before": 105,
+   "batches_last": 0,
+   "ticks_last": 185,
+   "mixed": true,
+   "starve_len": 30,
+   "order": "move_first",
+   "token0": 0
+  },
+  {
+   "locked_at": 144,
+   "final_slots": {
+    "蓝铁粉末": 50,
+    "源石粉末": 50
+   },
+   "batches_before": 105,
+   "batches_last": 0,
+   "ticks_last": 185,
+   "mixed": true,
+   "starve_len": 30,
+   "order": "move_first",
+   "token0": 1
+  },
+  {
+   "locked_at": 144,
+   "final_slots": {
+    "蓝铁粉末": 50,
+    "源石粉末": 50
+   },
+   "batches_before": 105,
+   "batches_last": 0,
+   "ticks_last": 185,
+   "mixed": true,
+   "starve_len": 30,
+   "order": "move_first",
+   "token0": 2
+  },
+  {
+   "locked_at": 144,
+   "final_slots": {
+    "蓝铁粉末": 50,
+    "源石粉末": 50
+   },
+   "batches_before": 105,
+   "batches_last": 0,
+   "ticks_last": 185,
+   "mixed": true,
+   "starve_len": 30,
+   "order": "move_first",
+   "token0": 3
+  },
+  {
+   "locked_at": 144,
+   "final_slots": {
+    "蓝铁粉末": 50,
+    "源石粉末": 50
+   },
+   "batches_before": 105,
+   "batches_last": 0,
+   "ticks_last": 185,
+   "mixed": true,
+   "starve_len": 30,
+   "order": "move_first",
+   "token0": 4
+  },
+  {
+   "locked_at": null,
+   "final_slots": {
+    "砂叶粉末": 50
+   },
+   "batches_before": 70,
+   "batches_last": 100,
+   "ticks_last": 215,
+   "mixed": false,
+   "starve_len": 0,
+   "order": "make_first",
+   "token0": 0
+  },
+  {
+   "locked_at": null,
+   "final_slots": {
+    "砂叶粉末": 50
+   },
+   "batches_before": 70,
+   "batches_last": 100,
+   "ticks_last": 215,
+   "mixed": false,
+   "starve_len": 0,
+   "order": "make_first",
+   "token0": 1
+  },
+  {
+   "locked_at": null,
+   "final_slots": {
+    "砂叶粉末": 50
+   },
+   "batches_before": 70,
+   "batches_last": 100,
+   "ticks_last": 215,
+   "mixed": false,
+   "starve_len": 0,
+   "order": "make_first",
+   "token0": 2
+  },
+  {
+   "locked_at": null,
+   "final_slots": {
+    "砂叶粉末": 50
+   },
+   "batches_before": 70,
+   "batches_last": 100,
+   "ticks_last": 215,
+   "mixed": false,
+   "starve_len": 0,
+   "order": "make_first",
+   "token0": 3
+  },
+  {
+   "locked_at": null,
+   "final_slots": {
+    "砂叶粉末": 50
+   },
+   "batches_before": 70,
+   "batches_last": 100,
+   "ticks_last": 215,
+   "mixed": false,
+   "starve_len": 0,
+   "order": "make_first",
+   "token0": 4
+  },
+  {
+   "locked_at": null,
+   "final_slots": {
+    "砂叶粉末": 50
+   },
+   "batches_before": 70,
+   "batches_last": 100,
+   "ticks_last": 215,
+   "mixed": false,
+   "starve_len": 0,
+   "order": "move_first",
+   "token0": 0
+  },
+  {
+   "locked_at": null,
+   "final_slots": {
+    "砂叶粉末": 50
+   },
+   "batches_before": 70,
+   "batches_last": 100,
+   "ticks_last": 215,
+   "mixed": false,
+   "starve_len": 0,
+   "order": "move_first",
+   "token0": 1
+  },
+  {
+   "locked_at": null,
+   "final_slots": {
+    "砂叶粉末": 50
+   },
+   "batches_before": 70,
+   "batches_last": 100,
+   "ticks_last": 215,
+   "mixed": false,
+   "starve_len": 0,
+   "order": "move_first",
+   "token0": 2
+  },
+  {
+   "locked_at": null,
+   "final_slots": {
+    "砂叶粉末": 50
+   },
+   "batches_before": 70,
+   "batches_last": 100,
+   "ticks_last": 215,
+   "mixed": false,
+   "starve_len": 0,
+   "order": "move_first",
+   "token0": 3
+  },
+  {
+   "locked_at": null,
+   "final_slots": {
+    "砂叶粉末": 50
+   },
+   "batches_before": 70,
+   "batches_last": 100,
+   "ticks_last": 215,
+   "mixed": false,
+   "starve_len": 0,
+   "order": "move_first",
+   "token0": 4
+  },
+  {
+   "locked_at": null,
+   "final_slots": {
+    "砂叶粉末": 50
+   },
+   "batches_before": 70,
+   "batches_last": 89,
+   "ticks_last": 185,
+   "mixed": false,
+   "starve_len": 30,
+   "order": "make_first",
+   "token0": 0
+  },
+  {
+   "locked_at": null,
+   "final_slots": {
+    "砂叶粉末": 50
+   },
+   "batches_before": 70,
+   "batches_last": 89,
+   "ticks_last": 185,
+   "mixed": false,
+   "starve_len": 30,
+   "order": "make_first",
+   "token0": 1
+  },
+  {
+   "locked_at": null,
+   "final_slots": {
+    "砂叶粉末": 50
+   },
+   "batches_before": 70,
+   "batches_last": 89,
+   "ticks_last": 185,
+   "mixed": false,
+   "starve_len": 30,
+   "order": "make_first",
+   "token0": 2
+  },
+  {
+   "locked_at": null,
+   "final_slots": {
+    "砂叶粉末": 50
+   },
+   "batches_before": 70,
+   "batches_last": 89,
+   "ticks_last": 185,
+   "mixed": false,
+   "starve_len": 30,
+   "order": "make_first",
+   "token0": 3
+  },
+  {
+   "locked_at": null,
+   "final_slots": {
+    "砂叶粉末": 50
+   },
+   "batches_before": 70,
+   "batches_last": 89,
+   "ticks_last": 185,
+   "mixed": false,
+   "starve_len": 30,
+   "order": "make_first",
+   "token0": 4
+  },
+  {
+   "locked_at": null,
+   "final_slots": {
+    "砂叶粉末": 50
+   },
+   "batches_before": 70,
+   "batches_last": 88,
+   "ticks_last": 185,
+   "mixed": false,
+   "starve_len": 30,
+   "order": "move_first",
+   "token0": 0
+  },
+  {
+   "locked_at": null,
+   "final_slots": {
+    "砂叶粉末": 50
+   },
+   "batches_before": 70,
+   "batches_last": 88,
+   "ticks_last": 185,
+   "mixed": false,
+   "starve_len": 30,
+   "order": "move_first",
+   "token0": 1
+  },
+  {
+   "locked_at": null,
+   "final_slots": {
+    "砂叶粉末": 50
+   },
+   "batches_before": 70,
+   "batches_last": 88,
+   "ticks_last": 185,
+   "mixed": false,
+   "starve_len": 30,
+   "order": "move_first",
+   "token0": 2
+  },
+  {
+   "locked_at": null,
+   "final_slots": {
+    "砂叶粉末": 50
+   },
+   "batches_before": 70,
+   "batches_last": 88,
+   "ticks_last": 185,
+   "mixed": false,
+   "starve_len": 30,
+   "order": "move_first",
+   "token0": 3
+  },
+  {
+   "locked_at": null,
+   "final_slots": {
+    "砂叶粉末": 50
+   },
+   "batches_before": 70,
+   "batches_last": 88,
+   "ticks_last": 185,
+   "mixed": false,
+   "starve_len": 30,
+   "order": "move_first",
+   "token0": 4
+  }
+ ]
+}

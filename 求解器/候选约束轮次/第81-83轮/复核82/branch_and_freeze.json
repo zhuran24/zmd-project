@@ -1,0 +1,290 @@
+{
+  "branch_models": 2176,
+  "independent_count": 2176,
+  "all_graph_zero": true,
+  "all_lp_zero": true,
+  "freeze": {
+    "高容谷地电池": {
+      "recipe_count": 4,
+      "recipes": [
+        "1 源矿 → 1 源石粉末，1 tick",
+        "2 源石粉末 ＋ 1 砂叶粉末 → 1 致密源石粉末，1 tick",
+        "1 钢块 → 1 钢制零件，1 tick",
+        "10 钢制零件 ＋ 15 致密源石粉末 → 1 高容谷地电池，5 tick"
+      ],
+      "finite_production_certificate": [
+        {
+          "recipe": 16,
+          "bounded_item_family": [
+            "高容谷地电池"
+          ],
+          "already_finite_consumers": []
+        },
+        {
+          "recipe": 8,
+          "bounded_item_family": [
+            "致密源石粉末"
+          ],
+          "already_finite_consumers": [
+            16
+          ]
+        },
+        {
+          "recipe": 11,
+          "bounded_item_family": [
+            "钢制零件"
+          ],
+          "already_finite_consumers": [
+            16
+          ]
+        },
+        {
+          "recipe": 0,
+          "bounded_item_family": [
+            "源石粉末"
+          ],
+          "already_finite_consumers": [
+            8
+          ]
+        }
+      ]
+    },
+    "精选荞愈胶囊": {
+      "recipe_count": 6,
+      "recipes": [
+        "1 荞花 → 2 荞花粉末，1 tick",
+        "2 荞花粉末 ＋ 1 砂叶粉末 → 1 细磨荞花粉末，1 tick",
+        "2 钢块 → 1 钢质瓶，1 tick",
+        "1 荞花种子 → 1 荞花，1 tick",
+        "1 荞花 → 2 荞花种子，1 tick",
+        "10 钢质瓶 ＋ 10 细磨荞花粉末 → 1 精选荞愈胶囊，5 tick"
+      ],
+      "finite_production_certificate": [
+        {
+          "recipe": 17,
+          "bounded_item_family": [
+            "精选荞愈胶囊"
+          ],
+          "already_finite_consumers": []
+        },
+        {
+          "recipe": 9,
+          "bounded_item_family": [
+            "细磨荞花粉末"
+          ],
+          "already_finite_consumers": [
+            17
+          ]
+        },
+        {
+          "recipe": 10,
+          "bounded_item_family": [
+            "钢质瓶"
+          ],
+          "already_finite_consumers": [
+            17
+          ]
+        },
+        {
+          "recipe": 2,
+          "bounded_item_family": [
+            "荞花粉末"
+          ],
+          "already_finite_consumers": [
+            9
+          ]
+        },
+        {
+          "recipe": 14,
+          "bounded_item_family": [
+            "荞花",
+            "荞花种子"
+          ],
+          "already_finite_consumers": [
+            2
+          ]
+        },
+        {
+          "recipe": 12,
+          "bounded_item_family": [
+            "荞花"
+          ],
+          "already_finite_consumers": [
+            2,
+            14
+          ]
+        }
+      ]
+    },
+    "高容谷地电池+精选荞愈胶囊": {
+      "recipe_count": 16,
+      "recipes": [
+        "1 源矿 → 1 源石粉末，1 tick",
+        "1 荞花 → 2 荞花粉末，1 tick",
+        "1 砂叶 → 3 砂叶粉末，1 tick",
+        "1 蓝铁矿 → 1 蓝铁块，1 tick",
+        "1 致密蓝铁粉末 → 1 钢块，1 tick",
+        "2 蓝铁粉末 ＋ 1 砂叶粉末 → 1 致密蓝铁粉末，1 tick",
+        "2 源石粉末 ＋ 1 砂叶粉末 → 1 致密源石粉末，1 tick",
+        "2 荞花粉末 ＋ 1 砂叶粉末 → 1 细磨荞花粉末，1 tick",
+        "2 钢块 → 1 钢质瓶，1 tick",
+        "1 钢块 → 1 钢制零件，1 tick",
+        "1 荞花种子 → 1 荞花，1 tick",
+        "1 砂叶种子 → 1 砂叶，1 tick",
+        "1 荞花 → 2 荞花种子，1 tick",
+        "1 砂叶 → 2 砂叶种子，1 tick",
+        "10 钢制零件 ＋ 15 致密源石粉末 → 1 高容谷地电池，5 tick",
+        "10 钢质瓶 ＋ 10 细磨荞花粉末 → 1 精选荞愈胶囊，5 tick"
+      ],
+      "finite_production_certificate": [
+        {
+          "recipe": 16,
+          "bounded_item_family": [
+            "高容谷地电池"
+          ],
+          "already_finite_consumers": []
+        },
+        {
+          "recipe": 17,
+          "bounded_item_family": [
+            "精选荞愈胶囊"
+          ],
+          "already_finite_consumers": []
+        },
+        {
+          "recipe": 8,
+          "bounded_item_family": [
+            "致密源石粉末"
+          ],
+          "already_finite_consumers": [
+            16
+          ]
+        },
+        {
+          "recipe": 9,
+          "bounded_item_family": [
+            "细磨荞花粉末"
+          ],
+          "already_finite_consumers": [
+            17
+          ]
+        },
+        {
+          "recipe": 10,
+          "bounded_item_family": [
+            "钢质瓶"
+          ],
+          "already_finite_consumers": [
+            17
+          ]
+        },
+        {
+          "recipe": 11,
+          "bounded_item_family": [
+            "钢制零件"
+          ],
+          "already_finite_consumers": [
+            16
+          ]
+        },
+        {
+          "recipe": 0,
+          "bounded_item_family": [
+            "源石粉末"
+          ],
+          "already_finite_consumers": [
+            8
+          ]
+        },
+        {
+          "recipe": 2,
+          "bounded_item_family": [
+            "荞花粉末"
+          ],
+          "already_finite_consumers": [
+            9
+          ]
+        },
+        {
+          "recipe": 5,
+          "bounded_item_family": [
+            "钢块"
+          ],
+          "already_finite_consumers": [
+            10,
+            11
+          ]
+        },
+        {
+          "recipe": 7,
+          "bounded_item_family": [
+            "致密蓝铁粉末"
+          ],
+          "already_finite_consumers": [
+            5
+          ]
+        },
+        {
+          "recipe": 3,
+          "bounded_item_family": [
+            "砂叶粉末"
+          ],
+          "already_finite_consumers": [
+            7,
+            8,
+            9
+          ]
+        },
+        {
+          "recipe": 14,
+          "bounded_item_family": [
+            "荞花",
+            "荞花种子"
+          ],
+          "already_finite_consumers": [
+            2
+          ]
+        },
+        {
+          "recipe": 15,
+          "bounded_item_family": [
+            "砂叶",
+            "砂叶种子"
+          ],
+          "already_finite_consumers": [
+            3
+          ]
+        },
+        {
+          "recipe": 12,
+          "bounded_item_family": [
+            "荞花"
+          ],
+          "already_finite_consumers": [
+            2,
+            14
+          ]
+        },
+        {
+          "recipe": 13,
+          "bounded_item_family": [
+            "砂叶"
+          ],
+          "already_finite_consumers": [
+            3,
+            15
+          ]
+        },
+        {
+          "recipe": 4,
+          "bounded_item_family": [
+            "蓝铁矿",
+            "蓝铁块",
+            "蓝铁粉末"
+          ],
+          "reason": "这三类的净减少配方已有限；取蓝铁矿增加总数，故取矿有限；原矿本身只够有限批精炼。"
+        }
+      ]
+    }
+  }
+}

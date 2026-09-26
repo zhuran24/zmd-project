@@ -1,0 +1,103 @@
+{
+  "status": "PASS",
+  "canonical_states_checked": 7803,
+  "box_recovery_states_checked": 156250,
+  "plant_machine_counts": {
+    "采种机": 17,
+    "种植机": 34,
+    "粉碎机": 17
+  },
+  "plant_manufacture_area": 1428,
+  "buffer_graphs": [
+    {
+      "batch": 1,
+      "grid": 1,
+      "states": 5,
+      "edges": 10,
+      "failed_withdrawals": 0,
+      "minimum_output": 49,
+      "analytic_lower": 47,
+      "state_sha256": "e9d25f7750982de05e5d8b75b28d47a3c4d0e92b5e36764a351070cfd86fcfb9"
+    },
+    {
+      "batch": 1,
+      "grid": 2,
+      "states": 13,
+      "edges": 22,
+      "failed_withdrawals": 0,
+      "minimum_output": 48,
+      "analytic_lower": 47,
+      "state_sha256": "e59778daba4c0f29d2c97676e100696eb80381e5968fb3ac2f6b376ae8e07d12"
+    },
+    {
+      "batch": 1,
+      "grid": 3,
+      "states": 25,
+      "edges": 38,
+      "failed_withdrawals": 0,
+      "minimum_output": 48,
+      "analytic_lower": 47,
+      "state_sha256": "1a63d8f1336a7e3d1ef2af13da6536686eb1bc1d85dbaf7285964753080d4bc1"
+    },
+    {
+      "batch": 2,
+      "grid": 1,
+      "states": 11,
+      "edges": 33,
+      "failed_withdrawals": 0,
+      "minimum_output": 48,
+      "analytic_lower": 44,
+      "state_sha256": "d810274b5547b04f1cac1e02d219e02a46d3b6a0c3bbbbac395e7ac46b8ba93d"
+    },
+    {
+      "batch": 2,
+      "grid": 2,
+      "states": 38,
+      "edges": 90,
+      "failed_withdrawals": 0,
+      "minimum_output": 46,
+      "analytic_lower": 44,
+      "state_sha256": "a41e99299cec2c547b3a4c99040fc22a59f2a1691e05613dc14571d6c77ccc55"
+    },
+    {
+      "batch": 2,
+      "grid": 3,
+      "states": 92,
+      "edges": 186,
+      "failed_withdrawals": 0,
+      "minimum_output": 46,
+      "analytic_lower": 44,
+      "state_sha256": "bcbeab0e3a0be5a96e4dc6b172410ed827b0b8de5311a5c8d83f1adad1a42722"
+    },
+    {
+      "batch": 3,
+      "grid": 1,
+      "states": 19,
+      "edges": 76,
+      "failed_withdrawals": 0,
+      "minimum_output": 47,
+      "analytic_lower": 41,
+      "state_sha256": "91d3d1a6fa39a1f33d4e15d02f58faa279df09e319de73be4af8513ebec409ed"
+    },
+    {
+      "batch": 3,
+      "grid": 2,
+      "states": 83,
+      "edges": 252,
+      "failed_withdrawals": 0,
+      "minimum_output": 44,
+      "analytic_lower": 41,
+      "state_sha256": "2b9682fcba0ff7dcf6c7002ba1e12983a4cd5bed70aa0a7f2e1accd07c5fbc40"
+    },
+    {
+      "batch": 3,
+      "grid": 3,
+      "states": 243,
+      "edges": 612,
+      "failed_withdrawals": 0,
+      "minimum_output": 44,
+      "analytic_lower": 41,
+      "state_sha256": "dd852e2f7c918fd2ee020020c09ab03918fe4794ee740a719680716706424cee"
+    }
+  ]
+}

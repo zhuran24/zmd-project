@@ -1,0 +1,27 @@
+{
+ "random_runs": 20000,
+ "random_bad": [],
+ "exhaustive": [
+  {
+   "k": 2,
+   "m": 6,
+   "T": 8,
+   "worst_diff": 1,
+   "final_states": 18
+  },
+  {
+   "k": 3,
+   "m": 7,
+   "T": 6,
+   "worst_diff": 1,
+   "final_states": 42
+  },
+  {
+   "k": 4,
+   "m": 9,
+   "T": 4,
+   "worst_diff": 1,
+   "final_states": 88
+  }
+ ]
+}

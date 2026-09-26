@@ -1,0 +1,12 @@
+{"seed": 82000, "status": "NO_CYCLE_WITHIN_LIMIT", "limit_ticks": 3500}
+{"seed": 82001, "status": "NO_CYCLE_WITHIN_LIMIT", "limit_ticks": 3500}
+{"seed": 82002, "status": "NO_CYCLE_WITHIN_LIMIT", "limit_ticks": 3500}
+{"seed": 82003, "status": "NO_CYCLE_WITHIN_LIMIT", "limit_ticks": 3500}
+{"seed": 82004, "status": "NO_CYCLE_WITHIN_LIMIT", "limit_ticks": 3500}
+{"seed": 82005, "status": "NO_CYCLE_WITHIN_LIMIT", "limit_ticks": 3500}
+{"seed": 82006, "status": "NO_CYCLE_WITHIN_LIMIT", "limit_ticks": 3500}
+{"seed": 82007, "status": "NO_CYCLE_WITHIN_LIMIT", "limit_ticks": 3500}
+{"seed": 82008, "status": "NO_CYCLE_WITHIN_LIMIT", "limit_ticks": 3500}
+{"seed": 82009, "status": "NO_CYCLE_WITHIN_LIMIT", "limit_ticks": 3500}
+{"seed": 82010, "period_ticks": 60.0, "product_counts": [36, 33], "ore_counts": [2040, 1080], "rates": [0.6, 0.55], "ore_rates": [34.0, 18.0], "pass": true}
+{"seed": 82011, "period_ticks": 60.0, "product_counts": [36, 33], "ore_counts": [2040, 1080], "rates": [0.6, 0.55], "ore_rates": [34.0, 18.0], "pass": true}

@@ -1,0 +1,17 @@
+{
+ "封装机(10,15)": {
+  "z_min": -350,
+  "z_max": 600,
+  "ratio_freeze_safe": true
+ },
+ "灌装机(10,10)": {
+  "z_min": -400,
+  "z_max": 400,
+  "ratio_freeze_safe": true
+ },
+ "研磨机(2,1)": {
+  "z_min": -98,
+  "z_max": 48,
+  "ratio_freeze_safe": true
+ }
+}

@@ -1,0 +1,266 @@
+{
+  "time_utc": "2026-09-26T07:57:45.780562+00:00",
+  "report_path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第81-83轮/推导81C.md",
+  "status": "complete; eight necessary conditions awaiting review",
+  "checks": {
+    "formal_entries": 72,
+    "conclusions": 8,
+    "distinct_names": true,
+    "all_fields_in_report": true,
+    "both_power_encodings_infeasible": true,
+    "exact_weight_tables_equal": true,
+    "affine_recipe_balances_equal": true,
+    "band_cases": 47,
+    "boundary_cases": 32,
+    "both_endpoint_orientations_checked": true,
+    "arithmetic_constants": [
+      3291,
+      1390,
+      619,
+      717,
+      809,
+      4751
+    ],
+    "no_timeouts": true,
+    "no_files_over_100MiB": true,
+    "links_valid": true
+  },
+  "reader_review": [
+    "All premises refer to the specified three snapshots; candidate conclusions are rederived when used.",
+    "Physical counts, active counts, throughput, weighted directions and occupied cells are separately defined.",
+    "The boundary table requires J=0 and is not used to exclude the P=13 branch.",
+    "All five single-addition branches are covered, including an idle exceptional machine or inactive box.",
+    "P=13 is left open; scalar survivors are not presented as layouts.",
+    "Stock means are not stated as pointwise stock bounds.",
+    "The cut counts only bodies crossing the stated segment, and assigns boxes kappa=3.",
+    "Solver infeasibility receipts are not described as formal proof-kernel certificates.",
+    "Head status, eight candidate records, cost table, branch table and links agree."
+  ],
+  "source_checks": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第81-83轮/前提快照/《明日方舟：终末地》游戏规则.txt",
+      "role": "formal premise",
+      "frozen_sha256": "6e64e3903a65536c530b363c9f3aef8c1bb2a1c1193e866799125dd047159924",
+      "current_sha256": "6e64e3903a65536c530b363c9f3aef8c1bb2a1c1193e866799125dd047159924"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第81-83轮/前提快照/求解任务.txt",
+      "role": "formal premise",
+      "frozen_sha256": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+      "current_sha256": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第81-83轮/前提快照/求解约束.txt",
+      "role": "formal premise",
+      "frozen_sha256": "0c05976f6063f3332db6ee19d7746052ef35148d7c2a12dfa396c7bb8753f30f",
+      "current_sha256": "0c05976f6063f3332db6ee19d7746052ef35148d7c2a12dfa396c7bb8753f30f"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/候选约束.txt",
+      "role": "background, not a premise",
+      "frozen_sha256": "65c3fa1b4ef736b95ac14777dadc9d58d3b9d26a2ce0b1782a6f8ff2797c1f84",
+      "current_sha256": "65c3fa1b4ef736b95ac14777dadc9d58d3b9d26a2ce0b1782a6f8ff2797c1f84"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/候选简化.txt",
+      "role": "background, not a premise",
+      "frozen_sha256": "149317f6b0504046a67d32d0ce01f0a7094e261b002f85ef8fef66c22d58652a",
+      "current_sha256": "149317f6b0504046a67d32d0ce01f0a7094e261b002f85ef8fef66c22d58652a"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/候选充分条件.txt",
+      "role": "background, not a premise",
+      "frozen_sha256": "d9c4ed055e6bdc8c28639311da8d1ea3bfc72d7e1dddd548a37de8bf8aa274d8",
+      "current_sha256": "d9c4ed055e6bdc8c28639311da8d1ea3bfc72d7e1dddd548a37de8bf8aa274d8"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/讨论整理.txt",
+      "role": "background, not a premise",
+      "frozen_sha256": "011eac06506e4d94e9d88825badeada822e5053e3d035ed20fceda5ab6d1a90d",
+      "current_sha256": "011eac06506e4d94e9d88825badeada822e5053e3d035ed20fceda5ab6d1a90d"
+    }
+  ],
+  "files": [
+    {
+      "path": "accounts_a.json",
+      "bytes": 17408,
+      "sha256": "3f7010814e5ba6b50ed460b9725171e2e7e163c5d3553b6b35e20325879ae4a9"
+    },
+    {
+      "path": "accounts_a.log",
+      "bytes": 7589,
+      "sha256": "425443b42bab3819722043ce289f7a223ab40ddbf1fb410d972612086ff53230"
+    },
+    {
+      "path": "accounts_a.py",
+      "bytes": 8043,
+      "sha256": "8a46fa4555ea2fdd566458c98485c6e6fe099982c42d152a85285db830a9061c"
+    },
+    {
+      "path": "accounts_b.json",
+      "bytes": 7033,
+      "sha256": "e1ea083f8f6a64cab5d42bb7a1bcecd8fada8f8dba6d813fecb23c8504591f44"
+    },
+    {
+      "path": "accounts_b.log",
+      "bytes": 822,
+      "sha256": "2ca176276d18c1bde5f1bcc3c200e58968abb10b3e6631a1f88b835995ce425a"
+    },
+    {
+      "path": "accounts_b.py",
+      "bytes": 6132,
+      "sha256": "16237fbe7992dbd6872865a8761fccf743abed4e0d03adfee5da43b202ad96e7"
+    },
+    {
+      "path": "archive_inputs.py",
+      "bytes": 1016,
+      "sha256": "20620ac91382557a2c7579674a573857b827d9c48510793f896f59d2857618f7"
+    },
+    {
+      "path": "build_report.py",
+      "bytes": 3692,
+      "sha256": "d1f2068871e0eb7c8c19bcbd138e7b9fd6b9f5cec7a79993a7d89b3ceb8a75b7"
+    },
+    {
+      "path": "conclusions.json",
+      "bytes": 14893,
+      "sha256": "8f3f35accdcaa0b2b7dcd8b0325c1c13ca6552da6c3735423d6de7d128ce8182"
+    },
+    {
+      "path": "delivery_audit.py",
+      "bytes": 5425,
+      "sha256": "6c5329e1a2724c367c488edae6c16d19d7e7d4a7e71dc36ef9307acd763647f6"
+    },
+    {
+      "path": "edge_count_a.json",
+      "bytes": 608,
+      "sha256": "4fe484ad923db5d907ae9214a67975b6d33f1baab0feb27f8bf1e0e436f4bd00"
+    },
+    {
+      "path": "edge_count_b.json",
+      "bytes": 322,
+      "sha256": "1ca82b1f130e01da465acc38302177775f06ac10dca7f123706845a9e0f1dc8f"
+    },
+    {
+      "path": "edge_count_domain_a.json",
+      "bytes": 137648,
+      "sha256": "5cb2cbf6e26938acb5127991b2fe6cd2b6c186ab95dfd4c9e11c4058ae46a4e2"
+    },
+    {
+      "path": "edge_count_domain_b.json",
+      "bytes": 137648,
+      "sha256": "dfb1b7b85f6be35c071f79a07eb7100eb38ccfeaa2a12546094b8419a094f300"
+    },
+    {
+      "path": "edge_weight_a.json",
+      "bytes": 609,
+      "sha256": "8bfc0026df443269b784f5417dd87431d4f2b4f3dc7c80faaa7840c170cb1a35"
+    },
+    {
+      "path": "edge_weight_b.json",
+      "bytes": 323,
+      "sha256": "f945486734d9e2d80fd739d5bd426437464f23037e2d6d003601173606cff241"
+    },
+    {
+      "path": "edge_weight_domain_a.json",
+      "bytes": 137648,
+      "sha256": "5cb2cbf6e26938acb5127991b2fe6cd2b6c186ab95dfd4c9e11c4058ae46a4e2"
+    },
+    {
+      "path": "edge_weight_domain_b.json",
+      "bytes": 137648,
+      "sha256": "dfb1b7b85f6be35c071f79a07eb7100eb38ccfeaa2a12546094b8419a094f300"
+    },
+    {
+      "path": "final_numbers.json",
+      "bytes": 4370,
+      "sha256": "c022a678686017aaa004358a5821f70f8ea5ddb3f061b62930c60c44eae935f2"
+    },
+    {
+      "path": "final_numbers.log",
+      "bytes": 4370,
+      "sha256": "c022a678686017aaa004358a5821f70f8ea5ddb3f061b62930c60c44eae935f2"
+    },
+    {
+      "path": "final_numbers.py",
+      "bytes": 2434,
+      "sha256": "87862739f66193003e5e4290c7ea8c84e7075e93a5cefa44c2f29caa2e1bee2a"
+    },
+    {
+      "path": "formal_index.json",
+      "bytes": 27687,
+      "sha256": "aabd20b36bd0497a9a1380b77c7d83515c2ac5685224b5c542c474702c91a15a"
+    },
+    {
+      "path": "general_weight_a.json",
+      "bytes": 622,
+      "sha256": "c3154de7995dec8b70d4611a8bb1c68bf2b6333acfc406ddc0f6e370dedfd411"
+    },
+    {
+      "path": "general_weight_b.json",
+      "bytes": 324,
+      "sha256": "3712b06bcd7e24bd1887d49a93b7dc463b048cd2ec6b064eea7cf400da4c917c"
+    },
+    {
+      "path": "general_weight_domain_a.json",
+      "bytes": 317518,
+      "sha256": "da7f317ab10802af2d7f1f8191fb11c5651a6008a18334ebd9670d8a7608a6a9"
+    },
+    {
+      "path": "general_weight_domain_b.json",
+      "bytes": 317518,
+      "sha256": "d49f33007ef146e2d3e18c39a23827fcfb7f63e09ed5f311ab209708b38ced61"
+    },
+    {
+      "path": "geometry_check.json",
+      "bytes": 11206,
+      "sha256": "c3a2ef0e109ec2eee49dc52234bba75cdb3acd8a095f6a82ea4315ccbef95d58"
+    },
+    {
+      "path": "geometry_check.log",
+      "bytes": 1660,
+      "sha256": "cabc979f643b6103a7a62bd51e4aeedb1e069182475f0acfdb81cd7970e8084e"
+    },
+    {
+      "path": "geometry_check.py",
+      "bytes": 5362,
+      "sha256": "5f572540b91d20d086c1fb89f4a92c4783e671ceef84a50e47821c80bb618eb2"
+    },
+    {
+      "path": "inputs.json",
+      "bytes": 508025,
+      "sha256": "e0052de41564d63e338d92f73ec19bbbf2ac6d400a0207c6829d06a757a95a16"
+    },
+    {
+      "path": "power_a.log",
+      "bytes": 57849,
+      "sha256": "e79b2e960812bdd826f5eaa0f8e164334cabc37653e74505cef218f7e4cb794a"
+    },
+    {
+      "path": "power_a.py",
+      "bytes": 3213,
+      "sha256": "b3acad6be32380f860143b4b57696e509d7eef5cc160d8124801f1a6531fb6c7"
+    },
+    {
+      "path": "power_b.log",
+      "bytes": 7733,
+      "sha256": "17c7fa2acb11caf1b78ea59f975a9cfee018c4a926b42d52c592e6ca28058615"
+    },
+    {
+      "path": "power_b.py",
+      "bytes": 3412,
+      "sha256": "5b6e2e72179bd133540702a0e8f2d1d1896dcabb5240486e54485157d518eaa5"
+    },
+    {
+      "path": "proofs.md",
+      "bytes": 28650,
+      "sha256": "78c99fb01aa9cd74c69915eb7dceeb4724967861924152079a640a3fe036249f"
+    },
+    {
+      "path": "../推导81C.md",
+      "bytes": 45907,
+      "sha256": "4591c1ef207fd1befe182e8156b2cf0bced5cd9e3a3ef816b8ecde0c9d5cad3b"
+    }
+  ],
+  "total_bytes": 1972367
+}

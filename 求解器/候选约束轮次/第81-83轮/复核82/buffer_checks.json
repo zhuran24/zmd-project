@@ -1,0 +1,74 @@
+[
+  {
+    "batch": 1,
+    "time_division": 1,
+    "states": 6,
+    "transitions_including_orders": 18,
+    "minimum_observed": 48,
+    "analytic_bound": 47
+  },
+  {
+    "batch": 1,
+    "time_division": 2,
+    "states": 14,
+    "transitions_including_orders": 34,
+    "minimum_observed": 48,
+    "analytic_bound": 47
+  },
+  {
+    "batch": 1,
+    "time_division": 3,
+    "states": 26,
+    "transitions_including_orders": 54,
+    "minimum_observed": 48,
+    "analytic_bound": 47
+  },
+  {
+    "batch": 2,
+    "time_division": 1,
+    "states": 15,
+    "transitions_including_orders": 165,
+    "minimum_observed": 46,
+    "analytic_bound": 44
+  },
+  {
+    "batch": 2,
+    "time_division": 2,
+    "states": 57,
+    "transitions_including_orders": 375,
+    "minimum_observed": 46,
+    "analytic_bound": 44
+  },
+  {
+    "batch": 2,
+    "time_division": 3,
+    "states": 147,
+    "transitions_including_orders": 681,
+    "minimum_observed": 46,
+    "analytic_bound": 44
+  },
+  {
+    "batch": 3,
+    "time_division": 1,
+    "states": 36,
+    "transitions_including_orders": 1764,
+    "minimum_observed": 44,
+    "analytic_bound": 41
+  },
+  {
+    "batch": 3,
+    "time_division": 2,
+    "states": 220,
+    "transitions_including_orders": 4540,
+    "minimum_observed": 44,
+    "analytic_bound": 41
+  },
+  {
+    "batch": 3,
+    "time_division": 3,
+    "states": 772,
+    "transitions_including_orders": 9028,
+    "minimum_observed": 44,
+    "analytic_bound": 41
+  }
+]

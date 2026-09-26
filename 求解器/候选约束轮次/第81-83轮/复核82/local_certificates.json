@@ -1,0 +1,285 @@
+{
+  "examples": [
+    {
+      "candidate": "纯料通道与单主料研磨机不入停机态",
+      "initial_inventory": {
+        "源石粉末": 1,
+        "砂叶粉末": 50
+      },
+      "head_items": [
+        "蓝铁粉末",
+        "砂叶粉末"
+      ],
+      "cache": null,
+      "effect": "全部首件被拒且无配方可开；旧源石粉末不是研磨机误料",
+      "source": "调试期由源矿粉碎取得源石粉末，放入 1 件；砂叶粉末格填至 50；最终两条纯料带只送蓝铁粉末、砂叶粉末。状态稳定，不需按 tick 操作。"
+    },
+    {
+      "candidate": "存货首件死锁",
+      "machine": "塑形机",
+      "initial_inventory": {
+        "钢块": 1
+      },
+      "head_items": [
+        "源矿"
+      ],
+      "cache": null,
+      "effect": "一存货格被钢块占据但不足 2；唯一传送带的源矿不能进入，永久停机",
+      "source": "钢块在调试期按配方制造后放入 1 件；源矿来自设为源矿的仓库取货口。首件留在运输格，不触犯存货误料的前提。"
+    },
+    {
+      "candidate": "一批k件配k条取货通道的均分",
+      "k": 2,
+      "initial_output": 50,
+      "trace": [
+        {
+          "tick": 0,
+          "first_slots_were_empty": [
+            true,
+            true
+          ],
+          "taken_from_machine": [
+            1,
+            0
+          ],
+          "remaining_initial_output": 49
+        },
+        {
+          "tick": 1,
+          "first_slots_were_empty": [
+            true,
+            true
+          ],
+          "taken_from_machine": [
+            2,
+            0
+          ],
+          "remaining_initial_output": 48
+        },
+        {
+          "tick": 2,
+          "first_slots_were_empty": [
+            true,
+            true
+          ],
+          "taken_from_machine": [
+            3,
+            0
+          ],
+          "remaining_initial_output": 47
+        },
+        {
+          "tick": 3,
+          "first_slots_were_empty": [
+            true,
+            true
+          ],
+          "taken_from_machine": [
+            4,
+            0
+          ],
+          "remaining_initial_output": 46
+        }
+      ],
+      "two_encodings_agree": true,
+      "source": "采种机及关闭传输的来源箱在调试期由荞花/荞花种子备料；来源箱经传送带、分流器到汇流器，直接分流器输入级较早接通。下游为关闭传输的空箱，四 tick 内容量足够。",
+      "geometry": {
+        "采种机": [
+          10,
+          10,
+          5,
+          5,
+          "存左取右"
+        ],
+        "纯料带一": [
+          15,
+          11,
+          1,
+          1,
+          "存左取右"
+        ],
+        "纯料带二": [
+          16,
+          11,
+          1,
+          1,
+          "存左取右"
+        ],
+        "汇流器": [
+          15,
+          13,
+          1,
+          1,
+          "取下"
+        ],
+        "分流器": [
+          15,
+          14,
+          1,
+          1,
+          "存右"
+        ],
+        "来源带": [
+          16,
+          14,
+          1,
+          1,
+          "存右取左"
+        ],
+        "来源箱": [
+          17,
+          13,
+          3,
+          3,
+          "存右取左"
+        ],
+        "合流出带一": [
+          15,
+          12,
+          1,
+          1,
+          "存上取右"
+        ],
+        "合流出带二": [
+          16,
+          12,
+          1,
+          1,
+          "存左取右"
+        ],
+        "接收箱": [
+          17,
+          10,
+          3,
+          3,
+          "存左取右"
+        ],
+        "供电桩": [
+          7,
+          12,
+          2,
+          2
+        ]
+      },
+      "geometry_verification": {
+        "set_nonoverlap": true,
+        "interval_nonoverlap": true,
+        "all_cells_in_base": true,
+        "all_actual_channels": [
+          [
+            "分流器",
+            "汇流器"
+          ],
+          [
+            "合流出带一",
+            "合流出带二"
+          ],
+          [
+            "合流出带二",
+            "接收箱"
+          ],
+          [
+            "来源带",
+            "分流器"
+          ],
+          [
+            "来源箱",
+            "来源带"
+          ],
+          [
+            "汇流器",
+            "合流出带一"
+          ],
+          [
+            "纯料带一",
+            "纯料带二"
+          ],
+          [
+            "纯料带二",
+            "接收箱"
+          ],
+          [
+            "采种机",
+            "汇流器"
+          ],
+          [
+            "采种机",
+            "纯料带一"
+          ]
+        ],
+        "seed_machine_powered": true
+      }
+    },
+    {
+      "candidate": "成品拒收的冻结范围",
+      "state": "玩家刚把一种成品从仓库取空",
+      "single_next_delivery_max": 300,
+      "warehouse_capacity": 80000,
+      "conclusion": "下一次单个入库判定至多增加一箱的 300 件，达不到满仓；只取不添的玩家不能指定此时拒收。冻结定理须从实际可到达的拒收区间起算。"
+    }
+  ],
+  "grinder_first_entry_counts": {
+    "two_main": 300,
+    "wrong": 201
+  },
+  "grinder_total_first_entries": 501,
+  "box_first_slot_inductive_steps": 148,
+  "accepted_box_arrival_bound_per_5_ticks": 18,
+  "two_dedicated_paths_one_bridge": {
+    "units": {
+      "西精炼炉": [
+        27,
+        30,
+        3,
+        3
+      ],
+      "南精炼炉": [
+        28,
+        27,
+        3,
+        3
+      ],
+      "北粉碎机": [
+        30,
+        31,
+        3,
+        3
+      ],
+      "东粉碎机": [
+        31,
+        28,
+        3,
+        3
+      ],
+      "桥接器": [
+        30,
+        30,
+        1,
+        1
+      ]
+    },
+    "material": "蓝铁块",
+    "two_paths": [
+      [
+        "西精炼炉",
+        "桥接器横轴",
+        "东粉碎机"
+      ],
+      [
+        "南精炼炉",
+        "桥接器纵轴",
+        "北粉碎机"
+      ]
+    ],
+    "transport_units": 1,
+    "transport_slots": 2,
+    "nonoverlap": true
+  },
+  "D2_blocked_phi_offset_sum": 176.5,
+  "D2_blocked_phi_offset_formula": 176.5,
+  "sealed_plant_capacity_formula": "102*n_a+101*n_z+T+b+300*B",
+  "potential_telescoping_rates": [
+    "12/20",
+    "11/20"
+  ]
+}

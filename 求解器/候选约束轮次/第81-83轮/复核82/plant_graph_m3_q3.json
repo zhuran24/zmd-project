@@ -1,0 +1,11 @@
+{
+  "q": 3,
+  "capacity": 3,
+  "closed_states": 160620,
+  "edges": 226194,
+  "lower_bound_violations": 0,
+  "lower_bound_examples": [],
+  "high_sccs": 142709,
+  "C_empty_in_high_cycles": 0,
+  "C_examples": []
+}

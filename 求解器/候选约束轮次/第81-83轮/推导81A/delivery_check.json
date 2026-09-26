@@ -1,0 +1,28 @@
+{
+  "status": "PASS",
+  "started_utc": "2026-09-26T07:20:13+00:00",
+  "completed_utc": "2026-09-26T08:01:37.368920+00:00",
+  "wall_seconds": 2484.36892,
+  "checks": {
+    "all_eight_entries_pending": true,
+    "necessary_count": 3,
+    "sufficient_count": 5,
+    "all_report_links_exist": true,
+    "each_clause_matches_json": true,
+    "primary_pass": true,
+    "independent_pass": true,
+    "allowed_file_types": true,
+    "files_under_100mb": true,
+    "snapshots_unchanged": true,
+    "formal_constraint_count": 72
+  },
+  "report_sha256": "435902b14b9e62041883d35339ddd19c577f789a2f2a1f58178c3078537daa38",
+  "reader_review": "完成。结论范围、八条类别与状态、数量口径、文件引用及未证边界一致。",
+  "limits": [
+    "一般堵满起法仍未证成",
+    "无保最优简化",
+    "无全厂布局及全厂状态图证书",
+    "植物条件不证明最终满库存起态可达",
+    "兼用箱恢复条件要求每次可接收箱内全部成品"
+  ]
+}

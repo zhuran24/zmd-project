@@ -1,0 +1,78 @@
+{
+ "summary": [
+  {
+   "m": 1,
+   "n": 1,
+   "graphs": 2,
+   "maxF_highs": 0.0,
+   "maxF_glop": 0.0,
+   "split_control_maxF": 0.5
+  },
+  {
+   "m": 1,
+   "n": 2,
+   "graphs": 3,
+   "maxF_highs": 0.0,
+   "maxF_glop": 0.0,
+   "split_control_maxF": 0.5
+  },
+  {
+   "m": 1,
+   "n": 3,
+   "graphs": 4,
+   "maxF_highs": 0.0,
+   "maxF_glop": 0.0,
+   "split_control_maxF": 0.5
+  },
+  {
+   "m": 2,
+   "n": 1,
+   "graphs": 8,
+   "maxF_highs": 0.0,
+   "maxF_glop": 0.0,
+   "split_control_maxF": 0.5
+  },
+  {
+   "m": 2,
+   "n": 2,
+   "graphs": 36,
+   "maxF_highs": 0.0,
+   "maxF_glop": 0.0,
+   "split_control_maxF": 0.75
+  },
+  {
+   "m": 2,
+   "n": 3,
+   "graphs": 128,
+   "maxF_highs": 0.0,
+   "maxF_glop": 0.0,
+   "split_control_maxF": 0.75
+  },
+  {
+   "m": 3,
+   "n": 1,
+   "graphs": 24,
+   "maxF_highs": 0.0,
+   "maxF_glop": 0.0,
+   "split_control_maxF": 0.5
+  },
+  {
+   "m": 3,
+   "n": 2,
+   "graphs": 243,
+   "maxF_highs": 0.0,
+   "maxF_glop": 0.0,
+   "split_control_maxF": 0.75
+  },
+  {
+   "m": 3,
+   "n": 3,
+   "graphs": 1728,
+   "maxF_highs": 0.0,
+   "maxF_glop": 0.0,
+   "split_control_maxF": 0.875
+  }
+ ],
+ "max_crush_without_branch": 0.0,
+ "conclusion": "无分叉时粉碎流量恒为 0"
+}

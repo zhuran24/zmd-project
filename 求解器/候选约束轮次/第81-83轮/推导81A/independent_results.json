@@ -1,0 +1,82 @@
+{
+  "status": "PASS",
+  "implementation": "不导入主程序；逐批扣料、逐种前缀枚举、闭式状态转移",
+  "finite_source_channels_checked": 9,
+  "canonical_states_checked": 7803,
+  "mixed_bound_records": 36,
+  "fifo_examples_checked": 6,
+  "box_recovery_states_checked": 156250,
+  "buffer_graphs": [
+    {
+      "batch": 1,
+      "grid": 1,
+      "states": 5,
+      "minimum_output": 49
+    },
+    {
+      "batch": 1,
+      "grid": 2,
+      "states": 13,
+      "minimum_output": 48
+    },
+    {
+      "batch": 1,
+      "grid": 3,
+      "states": 25,
+      "minimum_output": 48
+    },
+    {
+      "batch": 2,
+      "grid": 1,
+      "states": 11,
+      "minimum_output": 48
+    },
+    {
+      "batch": 2,
+      "grid": 2,
+      "states": 38,
+      "minimum_output": 46
+    },
+    {
+      "batch": 2,
+      "grid": 3,
+      "states": 92,
+      "minimum_output": 46
+    },
+    {
+      "batch": 3,
+      "grid": 1,
+      "states": 19,
+      "minimum_output": 47
+    },
+    {
+      "batch": 3,
+      "grid": 2,
+      "states": 83,
+      "minimum_output": 44
+    },
+    {
+      "batch": 3,
+      "grid": 3,
+      "states": 243,
+      "minimum_output": 44
+    }
+  ],
+  "grinding_dead_states": 7500,
+  "plant_rows": [
+    {
+      "plant": "荞花",
+      "powder_per20": 220,
+      "crushing_per20": 110
+    },
+    {
+      "plant": "砂叶",
+      "powder_per20": 630,
+      "crushing_per20": 210
+    }
+  ],
+  "inputs_sha256": {
+    "primary_results.json": "3a8fd5e545539a5ffff60e675289a9e6eaf11ac32491db2e1629d410a160823f",
+    "buffer_certificate.json": "21443ddb7f3495909f45cda4929899d3f105e1ef499ea778897306a0d5c63f4f"
+  }
+}

@@ -1,0 +1,189 @@
+{
+  "costs": [
+    {
+      "name": "粉碎机",
+      "extra_area": 9,
+      "extra_active_weight": 2,
+      "old_200_drop": "1/4",
+      "direction_weight": "219/2",
+      "net_direction_area_cost": "36",
+      "T_lower_after_one": 208,
+      "scalar_A_ceiling": 1111,
+      "integer_dimensions_ceiling": 1110,
+      "all_A_ge_1110_excluded": true
+    },
+    {
+      "name": "精炼炉",
+      "extra_area": 9,
+      "extra_active_weight": 2,
+      "old_200_drop": "0",
+      "direction_weight": "219/2",
+      "net_direction_area_cost": "36",
+      "T_lower_after_one": 208,
+      "scalar_A_ceiling": 1111,
+      "integer_dimensions_ceiling": 1110,
+      "all_A_ge_1110_excluded": true
+    },
+    {
+      "name": "研磨机",
+      "extra_area": 24,
+      "extra_active_weight": 3,
+      "old_200_drop": "1/2",
+      "direction_weight": "211/2",
+      "net_direction_area_cost": "92",
+      "T_lower_after_one": 206,
+      "scalar_A_ceiling": 1097,
+      "integer_dimensions_ceiling": 1092,
+      "all_A_ge_1110_excluded": true
+    },
+    {
+      "name": "塑形机",
+      "extra_area": 9,
+      "extra_active_weight": 2,
+      "old_200_drop": "1/4",
+      "direction_weight": "215/2",
+      "net_direction_area_cost": "34",
+      "T_lower_after_one": 207,
+      "scalar_A_ceiling": 1111,
+      "integer_dimensions_ceiling": 1110,
+      "all_A_ge_1110_excluded": true
+    },
+    {
+      "name": "配件机",
+      "extra_area": 9,
+      "extra_active_weight": 2,
+      "old_200_drop": "0",
+      "direction_weight": "219/2",
+      "net_direction_area_cost": "36",
+      "T_lower_after_one": 208,
+      "scalar_A_ceiling": 1111,
+      "integer_dimensions_ceiling": 1110,
+      "all_A_ge_1110_excluded": true
+    },
+    {
+      "name": "种植机",
+      "extra_area": 25,
+      "extra_active_weight": 3,
+      "old_200_drop": "0",
+      "direction_weight": "219/2",
+      "net_direction_area_cost": "100",
+      "T_lower_after_one": 208,
+      "scalar_A_ceiling": 1095,
+      "integer_dimensions_ceiling": 1092,
+      "all_A_ge_1110_excluded": true
+    },
+    {
+      "name": "采种机",
+      "extra_area": 25,
+      "extra_active_weight": 3,
+      "old_200_drop": "0",
+      "direction_weight": "219/2",
+      "net_direction_area_cost": "100",
+      "T_lower_after_one": 208,
+      "scalar_A_ceiling": 1095,
+      "integer_dimensions_ceiling": 1092,
+      "all_A_ge_1110_excluded": true
+    },
+    {
+      "name": "封装机",
+      "extra_area": 24,
+      "extra_active_weight": 3,
+      "old_200_drop": "3/4",
+      "direction_weight": "207/2",
+      "net_direction_area_cost": "90",
+      "T_lower_after_one": 206,
+      "scalar_A_ceiling": 1097,
+      "integer_dimensions_ceiling": 1092,
+      "all_A_ge_1110_excluded": true
+    },
+    {
+      "name": "灌装机",
+      "extra_area": 24,
+      "extra_active_weight": 3,
+      "old_200_drop": "1",
+      "direction_weight": "203/2",
+      "net_direction_area_cost": "88",
+      "T_lower_after_one": 205,
+      "scalar_A_ceiling": 1098,
+      "integer_dimensions_ceiling": 1098,
+      "all_A_ge_1110_excluded": true
+    },
+    {
+      "name": "协议储存箱",
+      "extra_area": 9,
+      "extra_active_weight": null,
+      "old_200_drop": null,
+      "direction_weight": "219/2",
+      "net_direction_area_cost": "36",
+      "T_lower_after_one": 207,
+      "scalar_A_ceiling": 1111,
+      "integer_dimensions_ceiling": 1110,
+      "all_A_ge_1110_excluded": true
+    }
+  ],
+  "remaining_1110_scalar_branches": [
+    {
+      "P": 10,
+      "J": 0,
+      "XY_upper": 39
+    },
+    {
+      "P": 11,
+      "J": 0,
+      "XY_upper": 23
+    },
+    {
+      "P": 11,
+      "J": 1,
+      "XY_upper": 25
+    },
+    {
+      "P": 11,
+      "J": 2,
+      "XY_upper": 27
+    },
+    {
+      "P": 12,
+      "J": 1,
+      "XY_upper": 9
+    },
+    {
+      "P": 12,
+      "J": 2,
+      "XY_upper": 11
+    },
+    {
+      "P": 12,
+      "J": 3,
+      "XY_upper": 13
+    },
+    {
+      "P": 12,
+      "J": 4,
+      "XY_upper": 15
+    },
+    {
+      "P": 12,
+      "J": 5,
+      "XY_upper": 17
+    },
+    {
+      "P": 13,
+      "J": 5,
+      "XY_upper": 1
+    },
+    {
+      "P": 13,
+      "J": 6,
+      "XY_upper": 3
+    },
+    {
+      "P": 13,
+      "J": 7,
+      "XY_upper": 5
+    }
+  ],
+  "power_required_weight": 520,
+  "power_10_one_edge": 515,
+  "scope": "Remaining branches are necessary-condition survivors, not layouts."
+}

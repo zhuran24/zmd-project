@@ -1,0 +1,1 @@
+{"mode": "ordinary", "objective": "weight", "cap": 23, "placements": 1240, "status": 0, "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)", "best": 54.0, "dual_bound": 54.0, "wall": 128.2}

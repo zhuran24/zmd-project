@@ -1,0 +1,8 @@
+{
+  "seed": 82003,
+  "quantum": 2,
+  "trials_attempted": 300,
+  "cycles": 274,
+  "strong_cycles": 258,
+  "failures": []
+}

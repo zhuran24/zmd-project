@@ -1,0 +1,16 @@
+{
+ "agg": {
+  "trials": 20000,
+  "cycles": 19963,
+  "skipped": 37,
+  "nocycle": 0,
+  "phi_below_S": 0,
+  "with_c_idle": 0,
+  "with_b_idle": 0,
+  "with_k_idle": 0,
+  "with_starved": 0,
+  "partial_demand_cycles": 18856,
+  "seconds": 220.9
+ },
+ "bad": []
+}

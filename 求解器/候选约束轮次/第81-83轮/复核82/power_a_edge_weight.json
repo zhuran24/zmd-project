@@ -1,0 +1,10 @@
+{
+  "edge": true,
+  "count": false,
+  "target": 30,
+  "options": 550,
+  "status": "INFEASIBLE",
+  "seconds": 0.2412861099874135,
+  "stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 451\nbooleans: 658\nconflicts: 662\nbranches: 22305\npropagations: 521787\ninteger_propagations: 412578\nrestarts: 4\nlp_iterations: 6656\nwalltime: 0.241233\nusertime: 0.241233\ndeterministic_time: 1.02817\ngap_integral: 0\n",
+  "domain_sha256": "db8c8a7ed43031054a61b1e315b9d9965aa65a8753ad5e21b584ac57b73fbf6e"
+}

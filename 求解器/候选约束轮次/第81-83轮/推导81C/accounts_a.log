@@ -1,0 +1,446 @@
+{
+  "flow": {
+    "粉碎机": "68+1*r",
+    "精炼炉": "51+1*r",
+    "研磨机": "63/2",
+    "塑形机": "11/2",
+    "配件机": "6",
+    "种植机": "32",
+    "采种机": "16",
+    "封装机": "3/5",
+    "灌装机": "11/20"
+  },
+  "weights": {
+    "研磨机": {
+      "32": "123/2",
+      "33": "115/2",
+      "34": "107/2",
+      "35": "99/2",
+      "36": "91/2",
+      "37": "83/2",
+      "38": "75/2",
+      "39": "67/2",
+      "40": "59/2",
+      "41": "51/2",
+      "42": "43/2",
+      "43": "35/2",
+      "44": "27/2",
+      "45": "19/2",
+      "46": "11/2",
+      "47": "3/2",
+      "48": "0"
+    },
+    "塑形机": {
+      "6": "10",
+      "7": "8",
+      "8": "6",
+      "9": "4",
+      "10": "2",
+      "11": "0"
+    },
+    "封装机": {
+      "3": "24",
+      "4": "18",
+      "5": "10",
+      "6": "6",
+      "7": "2",
+      "8": "0"
+    },
+    "灌装机": {
+      "3": "14",
+      "4": "6",
+      "5": "2",
+      "6": "0"
+    }
+  },
+  "scalar_survivors": [
+    {
+      "extras": {},
+      "P": 10,
+      "J": 0,
+      "extra_area": 0,
+      "weight": "219/2",
+      "XY_allowance": 41
+    },
+    {
+      "extras": {},
+      "P": 11,
+      "J": 0,
+      "extra_area": 0,
+      "weight": "219/2",
+      "XY_allowance": 25
+    },
+    {
+      "extras": {},
+      "P": 11,
+      "J": 1,
+      "extra_area": 0,
+      "weight": "219/2",
+      "XY_allowance": 27
+    },
+    {
+      "extras": {},
+      "P": 11,
+      "J": 2,
+      "extra_area": 0,
+      "weight": "219/2",
+      "XY_allowance": 29
+    },
+    {
+      "extras": {},
+      "P": 12,
+      "J": 0,
+      "extra_area": 0,
+      "weight": "219/2",
+      "XY_allowance": 9
+    },
+    {
+      "extras": {},
+      "P": 12,
+      "J": 1,
+      "extra_area": 0,
+      "weight": "219/2",
+      "XY_allowance": 11
+    },
+    {
+      "extras": {},
+      "P": 12,
+      "J": 2,
+      "extra_area": 0,
+      "weight": "219/2",
+      "XY_allowance": 13
+    },
+    {
+      "extras": {},
+      "P": 12,
+      "J": 3,
+      "extra_area": 0,
+      "weight": "219/2",
+      "XY_allowance": 15
+    },
+    {
+      "extras": {},
+      "P": 12,
+      "J": 4,
+      "extra_area": 0,
+      "weight": "219/2",
+      "XY_allowance": 17
+    },
+    {
+      "extras": {},
+      "P": 12,
+      "J": 5,
+      "extra_area": 0,
+      "weight": "219/2",
+      "XY_allowance": 19
+    },
+    {
+      "extras": {},
+      "P": 13,
+      "J": 4,
+      "extra_area": 0,
+      "weight": "219/2",
+      "XY_allowance": 1
+    },
+    {
+      "extras": {},
+      "P": 13,
+      "J": 5,
+      "extra_area": 0,
+      "weight": "219/2",
+      "XY_allowance": 3
+    },
+    {
+      "extras": {},
+      "P": 13,
+      "J": 6,
+      "extra_area": 0,
+      "weight": "219/2",
+      "XY_allowance": 5
+    },
+    {
+      "extras": {},
+      "P": 13,
+      "J": 7,
+      "extra_area": 0,
+      "weight": "219/2",
+      "XY_allowance": 7
+    },
+    {
+      "extras": {
+        "协议储存箱": 1
+      },
+      "P": 10,
+      "J": 0,
+      "extra_area": 9,
+      "weight": "219/2",
+      "XY_allowance": 5
+    },
+    {
+      "extras": {
+        "塑形机": 1
+      },
+      "P": 10,
+      "J": 0,
+      "extra_area": 9,
+      "weight": "215/2",
+      "XY_allowance": 7
+    },
+    {
+      "extras": {
+        "配件机": 1
+      },
+      "P": 10,
+      "J": 0,
+      "extra_area": 9,
+      "weight": "219/2",
+      "XY_allowance": 5
+    },
+    {
+      "extras": {
+        "精炼炉": 1
+      },
+      "P": 10,
+      "J": 0,
+      "extra_area": 9,
+      "weight": "219/2",
+      "XY_allowance": 5
+    },
+    {
+      "extras": {
+        "粉碎机": 1
+      },
+      "P": 10,
+      "J": 0,
+      "extra_area": 9,
+      "weight": "219/2",
+      "XY_allowance": 5
+    }
+  ],
+  "boundary_bounds": [
+    {
+      "shape": [
+        21,
+        53
+      ],
+      "area": 1113,
+      "right": false,
+      "top": false,
+      "exception": 0,
+      "counted_length": 138,
+      "runs": 2,
+      "exception_contacts": 0,
+      "X_lower": 19
+    },
+    {
+      "shape": [
+        21,
+        53
+      ],
+      "area": 1113,
+      "right": false,
+      "top": false,
+      "exception": 1,
+      "counted_length": 138,
+      "runs": 2,
+      "exception_contacts": 2,
+      "X_lower": 17
+    },
+    {
+      "shape": [
+        21,
+        53
+      ],
+      "area": 1113,
+      "right": false,
+      "top": true,
+      "exception": 0,
+      "counted_length": 117,
+      "runs": 3,
+      "exception_contacts": 0,
+      "X_lower": 15
+    },
+    {
+      "shape": [
+        21,
+        53
+      ],
+      "area": 1113,
+      "right": false,
+      "top": true,
+      "exception": 1,
+      "counted_length": 117,
+      "runs": 3,
+      "exception_contacts": 2,
+      "X_lower": 12
+    },
+    {
+      "shape": [
+        21,
+        53
+      ],
+      "area": 1113,
+      "right": true,
+      "top": false,
+      "exception": 0,
+      "counted_length": 85,
+      "runs": 3,
+      "exception_contacts": 0,
+      "X_lower": 10
+    },
+    {
+      "shape": [
+        21,
+        53
+      ],
+      "area": 1113,
+      "right": true,
+      "top": false,
+      "exception": 1,
+      "counted_length": 85,
+      "runs": 3,
+      "exception_contacts": 2,
+      "X_lower": 7
+    },
+    {
+      "shape": [
+        21,
+        53
+      ],
+      "area": 1113,
+      "right": true,
+      "top": true,
+      "exception": 0,
+      "counted_length": 64,
+      "runs": 2,
+      "exception_contacts": 0,
+      "X_lower": 7
+    },
+    {
+      "shape": [
+        21,
+        53
+      ],
+      "area": 1113,
+      "right": true,
+      "top": true,
+      "exception": 1,
+      "counted_length": 64,
+      "runs": 2,
+      "exception_contacts": 1,
+      "X_lower": 6
+    },
+    {
+      "shape": [
+        30,
+        37
+      ],
+      "area": 1110,
+      "right": false,
+      "top": false,
+      "exception": 0,
+      "counted_length": 138,
+      "runs": 2,
+      "exception_contacts": 0,
+      "X_lower": 19
+    },
+    {
+      "shape": [
+        30,
+        37
+      ],
+      "area": 1110,
+      "right": false,
+      "top": false,
+      "exception": 1,
+      "counted_length": 138,
+      "runs": 2,
+      "exception_contacts": 2,
+      "X_lower": 17
+    },
+    {
+      "shape": [
+        30,
+        37
+      ],
+      "area": 1110,
+      "right": false,
+      "top": true,
+      "exception": 0,
+      "counted_length": 108,
+      "runs": 3,
+      "exception_contacts": 0,
+      "X_lower": 14
+    },
+    {
+      "shape": [
+        30,
+        37
+      ],
+      "area": 1110,
+      "right": false,
+      "top": true,
+      "exception": 1,
+      "counted_length": 108,
+      "runs": 3,
+      "exception_contacts": 2,
+      "X_lower": 11
+    },
+    {
+      "shape": [
+        30,
+        37
+      ],
+      "area": 1110,
+      "right": true,
+      "top": false,
+      "exception": 0,
+      "counted_length": 101,
+      "runs": 3,
+      "exception_contacts": 0,
+      "X_lower": 12
+    },
+    {
+      "shape": [
+        30,
+        37
+      ],
+      "area": 1110,
+      "right": true,
+      "top": false,
+      "exception": 1,
+      "counted_length": 101,
+      "runs": 3,
+      "exception_contacts": 2,
+      "X_lower": 10
+    },
+    {
+      "shape": [
+        30,
+        37
+      ],
+      "area": 1110,
+      "right": true,
+      "top": true,
+      "exception": 0,
+      "counted_length": 71,
+      "runs": 2,
+      "exception_contacts": 0,
+      "X_lower": 8
+    },
+    {
+      "shape": [
+        30,
+        37
+      ],
+      "area": 1110,
+      "right": true,
+      "top": true,
+      "exception": 1,
+      "counted_length": 71,
+      "runs": 2,
+      "exception_contacts": 1,
+      "X_lower": 7
+    }
+  ]
+}

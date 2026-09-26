@@ -1,0 +1,11 @@
+{
+ "agg": {
+  "runs": 1500,
+  "nocycle": 0,
+  "with_k_idle": 0,
+  "with_chan_starved": 0,
+  "with_outblocked": 1335,
+  "phi_below_S": 0
+ },
+ "examples": []
+}

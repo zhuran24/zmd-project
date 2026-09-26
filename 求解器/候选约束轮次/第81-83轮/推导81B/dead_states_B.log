@@ -1,0 +1,10 @@
+粉碎机 dead 50 True head 0 True head_not_internal 0 entry 1 1
+精炼炉 dead 50 True head 0 True head_not_internal 0 entry 1 1
+研磨机 dead 17550 True head 24178 True head_not_internal 466 entry 501 501
+塑形机 dead 50 True head 0 True head_not_internal 0 entry 1 1
+配件机 dead 50 True head 0 True head_not_internal 0 entry 1 1
+种植机 dead 50 True head 0 True head_not_internal 0 entry 1 1
+采种机 dead 50 True head 0 True head_not_internal 0 entry 1 1
+封装机 dead 5050 True head 25 True head_not_internal 25 entry 101 101
+灌装机 dead 5050 True head 20 True head_not_internal 20 entry 101 101
+ALL MATCH

@@ -1,0 +1,83 @@
+{
+  "passes": true,
+  "band_cases": 47,
+  "boundary_cases": 32,
+  "mandatory_gaps": [
+    {
+      "shape": [
+        30,
+        37
+      ],
+      "endpoints": [
+        {
+          "point": [
+            39,
+            69
+          ],
+          "active_manufacturing_options": [],
+          "core_options": []
+        },
+        {
+          "point": [
+            69,
+            32
+          ],
+          "active_manufacturing_options": [],
+          "core_options": []
+        }
+      ],
+      "one_3x3_cannot_cover_both": true
+    },
+    {
+      "shape": [
+        37,
+        30
+      ],
+      "endpoints": [
+        {
+          "point": [
+            32,
+            69
+          ],
+          "active_manufacturing_options": [],
+          "core_options": []
+        },
+        {
+          "point": [
+            69,
+            39
+          ],
+          "active_manufacturing_options": [],
+          "core_options": []
+        }
+      ],
+      "one_3x3_cannot_cover_both": true
+    }
+  ],
+  "power": [
+    {
+      "model": "general_weight",
+      "options": 1240,
+      "independent_domains_equal": true,
+      "both_infeasible": true,
+      "seconds_a": 64.76143378499546,
+      "seconds_b": 4.107253871989087
+    },
+    {
+      "model": "edge_weight",
+      "options": 550,
+      "independent_domains_equal": true,
+      "both_infeasible": true,
+      "seconds_a": 0.6780528340023011,
+      "seconds_b": 0.13074041400977876
+    },
+    {
+      "model": "edge_count",
+      "options": 550,
+      "independent_domains_equal": true,
+      "both_infeasible": true,
+      "seconds_a": 0.14360122299694922,
+      "seconds_b": 0.10905830399133265
+    }
+  ]
+}

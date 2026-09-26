@@ -1,0 +1,153 @@
+Running HiGHS 1.12.0 (git hash: 4f96ee8f4): Copyright (c) 2025 HiGHS under MIT licence terms
+MIP has 2950 rows; 1716 cols; 41956 nonzeros; 1240 integer variables (1240 binary)
+Coefficient ranges:
+  Matrix  [1e+00, 3e+00]
+  Cost    [0e+00, 0e+00]
+  Bound   [1e+00, 1e+00]
+  RHS     [1e+00, 6e+01]
+Presolving model
+2942 rows, 1700 cols, 41924 nonzeros  0s
+2926 rows, 1700 cols, 41836 nonzeros  0s
+Presolve reductions: rows 2926(-24); columns 1700(-16); nonzeros 41836(-120) 
+Objective function is integral with scale 1
+
+Solving MIP model with:
+   2926 rows
+   1700 cols (1240 binary, 0 integer, 0 implied int., 460 continuous, 0 domain fixed)
+   41836 nonzeros
+
+Src: B => Branching; C => Central rounding; F => Feasibility pump; H => Heuristic;
+     I => Shifting; J => Feasibility jump; L => Sub-MIP; P => Empty MIP; R => Randomized rounding;
+     S => Solve LP; T => Evaluate node; U => Unbounded; X => User solution; Y => HiGHS solution;
+     Z => ZI Round; l => Trivial lower; p => Trivial point; u => Trivial upper; z => Trivial zero
+
+        Nodes      |    B&B Tree     |            Objective Bounds              |  Dynamic Constraints |       Work      
+Src  Proc. InQueue |  Leaves   Expl. | BestBound       BestSol              Gap |   Cuts   InLp Confl. | LpIters     Time
+
+         0       0         0   0.00%   0               inf                  inf        0      0      0         0     0.2s
+         0       0         0   0.00%   0               inf                  inf        0      0      0      1203     0.3s
+
+67.1% inactive integer columns, restarting
+Model after restart has 1210 rows, 788 cols (408 bin., 0 int., 0 impl., 380 cont., 0 dom.fix.), and 12084 nonzeros
+
+         0       0         0   0.00%   0               inf                  inf       20      0      0     11133     1.6s
+         0       0         0   0.00%   0               inf                  inf       20     14      0     11473     1.6s
+
+5.9% inactive integer columns, restarting
+Model after restart has 1162 rows, 764 cols (384 bin., 0 int., 0 impl., 380 cont., 0 dom.fix.), and 11396 nonzeros
+
+         0       0         0   0.00%   0               inf                  inf       42      0      0     23028     2.8s
+         0       0         0   0.00%   0               inf                  inf       42     27      0     23318     2.8s
+
+Symmetry detection completed in 0.0s
+Found 3 generator(s)
+
+        11       0         6 100.00%   inf             inf                  inf      602     47     16     36598     4.1s
+
+Solving report
+  Status            Infeasible
+  Primal bound      inf
+  Dual bound        inf
+  Gap               inf
+  P-D integral      0
+  Solution status   -
+  Timing            4.10
+  Max sub-MIP depth 3
+  Nodes             11
+  Repair LPs        0
+  LP iterations     36598
+                    0 (strong br.)
+                    3313 (separation)
+                    29714 (heuristics)
+{"encoding": "B free-neighbor MILP", "edge": false, "unit": false, "threshold": 55, "options": 1240, "rows": 2950, "variables": 1716, "status": 2, "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)", "seconds": 4.107253871989087, "threads": 1}
+Running HiGHS 1.12.0 (git hash: 4f96ee8f4): Copyright (c) 2025 HiGHS under MIT licence terms
+MIP has 1354 rows; 808 cols; 18446 nonzeros; 550 integer variables (550 binary)
+Coefficient ranges:
+  Matrix  [1e+00, 3e+00]
+  Cost    [0e+00, 0e+00]
+  Bound   [1e+00, 1e+00]
+  RHS     [1e+00, 3e+01]
+Presolving model
+1346 rows, 794 cols, 18418 nonzeros  0s
+1334 rows, 794 cols, 18352 nonzeros  0s
+Presolve reductions: rows 1334(-20); columns 794(-14); nonzeros 18352(-94) 
+Objective function is integral with scale 1
+
+Solving MIP model with:
+   1334 rows
+   794 cols (550 binary, 0 integer, 0 implied int., 244 continuous, 0 domain fixed)
+   18352 nonzeros
+
+Src: B => Branching; C => Central rounding; F => Feasibility pump; H => Heuristic;
+     I => Shifting; J => Feasibility jump; L => Sub-MIP; P => Empty MIP; R => Randomized rounding;
+     S => Solve LP; T => Evaluate node; U => Unbounded; X => User solution; Y => HiGHS solution;
+     Z => ZI Round; l => Trivial lower; p => Trivial point; u => Trivial upper; z => Trivial zero
+
+        Nodes      |    B&B Tree     |            Objective Bounds              |  Dynamic Constraints |       Work      
+Src  Proc. InQueue |  Leaves   Expl. | BestBound       BestSol              Gap |   Cuts   InLp Confl. | LpIters     Time
+
+         0       0         0   0.00%   0               inf                  inf        0      0      0         0     0.1s
+         0       0         0   0.00%   0               inf                  inf        0      0      0       440     0.1s
+         1       0         1 100.00%   inf             inf                  inf       49      2      0       596     0.1s
+
+Solving report
+  Status            Infeasible
+  Primal bound      inf
+  Dual bound        inf
+  Gap               inf
+  P-D integral      0
+  Solution status   -
+  Timing            0.13
+  Max sub-MIP depth 0
+  Nodes             1
+  Repair LPs        0
+  LP iterations     596
+                    0 (strong br.)
+                    156 (separation)
+                    0 (heuristics)
+{"encoding": "B free-neighbor MILP", "edge": true, "unit": false, "threshold": 30, "options": 550, "rows": 1354, "variables": 808, "status": 2, "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)", "seconds": 0.13074041400977876, "threads": 1}
+Running HiGHS 1.12.0 (git hash: 4f96ee8f4): Copyright (c) 2025 HiGHS under MIT licence terms
+MIP has 1354 rows; 808 cols; 18446 nonzeros; 550 integer variables (550 binary)
+Coefficient ranges:
+  Matrix  [1e+00, 1e+00]
+  Cost    [0e+00, 0e+00]
+  Bound   [1e+00, 1e+00]
+  RHS     [1e+00, 1e+01]
+Presolving model
+1346 rows, 794 cols, 18418 nonzeros  0s
+1333 rows, 794 cols, 17802 nonzeros  0s
+Presolve reductions: rows 1333(-21); columns 794(-14); nonzeros 17802(-644) 
+Objective function is integral with scale 1
+
+Solving MIP model with:
+   1333 rows
+   794 cols (550 binary, 0 integer, 0 implied int., 244 continuous, 0 domain fixed)
+   17802 nonzeros
+
+Src: B => Branching; C => Central rounding; F => Feasibility pump; H => Heuristic;
+     I => Shifting; J => Feasibility jump; L => Sub-MIP; P => Empty MIP; R => Randomized rounding;
+     S => Solve LP; T => Evaluate node; U => Unbounded; X => User solution; Y => HiGHS solution;
+     Z => ZI Round; l => Trivial lower; p => Trivial point; u => Trivial upper; z => Trivial zero
+
+        Nodes      |    B&B Tree     |            Objective Bounds              |  Dynamic Constraints |       Work      
+Src  Proc. InQueue |  Leaves   Expl. | BestBound       BestSol              Gap |   Cuts   InLp Confl. | LpIters     Time
+
+         0       0         0   0.00%   0               inf                  inf        0      0      0         0     0.1s
+         1       0         1 100.00%   inf             inf                  inf        0      0      0       487     0.1s
+
+Solving report
+  Status            Infeasible
+  Primal bound      inf
+  Dual bound        inf
+  Gap               inf
+  P-D integral      0
+  Solution status   -
+  Timing            0.11
+  Max sub-MIP depth 0
+  Nodes             1
+  Repair LPs        0
+  LP iterations     487
+                    0 (strong br.)
+                    0 (separation)
+                    0 (heuristics)
+{"encoding": "B free-neighbor MILP", "edge": true, "unit": true, "threshold": 14, "options": 550, "rows": 1354, "variables": 808, "status": 2, "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)", "seconds": 0.10905830399133265, "threads": 1}

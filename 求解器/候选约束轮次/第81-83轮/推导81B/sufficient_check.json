@@ -1,0 +1,17 @@
+{
+ "研磨机": {
+  "head_dead_checked": 24178,
+  "violations": 0,
+  "sample": []
+ },
+ "封装机": {
+  "head_dead_checked": 25,
+  "violations": 0,
+  "sample": []
+ },
+ "灌装机": {
+  "head_dead_checked": 20,
+  "violations": 0,
+  "sample": []
+ }
+}

@@ -1,0 +1,12 @@
+{
+  "encoding": "A direct integer inequalities",
+  "edge": true,
+  "unit": false,
+  "threshold": 30,
+  "options": 550,
+  "status": "INFEASIBLE",
+  "seconds": 0.6780528340023011,
+  "workers": 3,
+  "model_sha256": "fc0dde645d5985cbf4aa88ec5cbe3f85a82c67feba3b26e27fd6f89e3766cf33",
+  "response": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 975\nbooleans: 961\nconflicts: 41\nbranches: 6743\npropagations: 847149\ninteger_propagations: 872127\nrestarts: 0\nlp_iterations: 3241\nwalltime: 0.677971\nusertime: 0.677971\ndeterministic_time: 2.5481\ngap_integral: 0\n"
+}

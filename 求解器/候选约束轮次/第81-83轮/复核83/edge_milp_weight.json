@@ -1,0 +1,1 @@
+{"mode": "edge", "objective": "weight", "cap": 14, "placements": 550, "status": 0, "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)", "best": 29.0, "dual_bound": 29.0, "wall": 4.7}

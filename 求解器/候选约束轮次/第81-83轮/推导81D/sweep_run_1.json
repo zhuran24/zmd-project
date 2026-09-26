@@ -1,0 +1,256 @@
+{
+ "stats": {
+  "runs": 3000,
+  "viol_runs": 0,
+  "stall_runs": 1650,
+  "full_cycles": 2309,
+  "low_cycles": 691,
+  "low_cycles_phi_ge_S": 0,
+  "low_cycles_phi_lt_S": 691,
+  "outblocked_cycles": 0,
+  "seconds": 122.0
+ },
+ "violations": [],
+ "low_rate_examples": [
+  {
+   "seed": 100003,
+   "m": 50,
+   "L": [
+    6,
+    4,
+    5,
+    3
+   ],
+   "k": 2,
+   "phi0": 2.0,
+   "S": 12,
+   "floor": 1.5,
+   "minphi": 2.0,
+   "nstall": 0,
+   "cycle": {
+    "cycle_len": 12,
+    "k_rate": 0.16666666666666666,
+    "k_outblocked": false,
+    "phi_min": 2.0,
+    "phi_max": 2.0
+   },
+   "viol": []
+  },
+  {
+   "seed": 100004,
+   "m": 50,
+   "L": [
+    4,
+    7,
+    8,
+    5
+   ],
+   "k": 3,
+   "phi0": 3.5,
+   "S": 13,
+   "floor": 3.0,
+   "minphi": 3.5,
+   "nstall": 0,
+   "cycle": {
+    "cycle_len": 13,
+    "k_rate": 0.3076923076923077,
+    "k_outblocked": false,
+    "phi_min": 4.0,
+    "phi_max": 4.0
+   },
+   "viol": []
+  },
+  {
+   "seed": 100006,
+   "m": 12,
+   "L": [
+    6,
+    3,
+    8,
+    3
+   ],
+   "k": 2,
+   "phi0": 5.0,
+   "S": 11,
+   "floor": 4.5,
+   "minphi": 5.0,
+   "nstall": 0,
+   "cycle": {
+    "cycle_len": 11,
+    "k_rate": 0.45454545454545453,
+    "k_outblocked": false,
+    "phi_min": 5.0,
+    "phi_max": 5.0
+   },
+   "viol": []
+  },
+  {
+   "seed": 100012,
+   "m": 50,
+   "L": [
+    1,
+    7,
+    3,
+    1
+   ],
+   "k": 3,
+   "phi0": 6.5,
+   "S": 10,
+   "floor": 6.0,
+   "minphi": 6.5,
+   "nstall": 0,
+   "cycle": {
+    "cycle_len": 10,
+    "k_rate": 0.7,
+    "k_outblocked": false,
+    "phi_min": 7.0,
+    "phi_max": 7.0
+   },
+   "viol": []
+  },
+  {
+   "seed": 100020,
+   "m": 8,
+   "L": [
+    6,
+    6,
+    8,
+    5
+   ],
+   "k": 2,
+   "phi0": 4.5,
+   "S": 14,
+   "floor": 4.0,
+   "minphi": 4.0,
+   "nstall": 0,
+   "cycle": {
+    "cycle_len": 14,
+    "k_rate": 0.2857142857142857,
+    "k_outblocked": false,
+    "phi_min": 4.0,
+    "phi_max": 4.0
+   },
+   "viol": []
+  },
+  {
+   "seed": 100021,
+   "m": 8,
+   "L": [
+    1,
+    8,
+    2,
+    1
+   ],
+   "k": 2,
+   "phi0": 1.0,
+   "S": 11,
+   "floor": 0.5,
+   "minphi": 1.0,
+   "nstall": 0,
+   "cycle": {
+    "cycle_len": 11,
+    "k_rate": 0.09090909090909091,
+    "k_outblocked": false,
+    "phi_min": 1.0,
+    "phi_max": 1.0
+   },
+   "viol": []
+  },
+  {
+   "seed": 100023,
+   "m": 5,
+   "L": [
+    1,
+    5,
+    2,
+    6
+   ],
+   "k": 3,
+   "phi0": 5.0,
+   "S": 8,
+   "floor": 4.5,
+   "minphi": 5.0,
+   "nstall": 0,
+   "cycle": {
+    "cycle_len": 8,
+    "k_rate": 0.875,
+    "k_outblocked": false,
+    "phi_min": 7.0,
+    "phi_max": 7.0
+   },
+   "viol": []
+  },
+  {
+   "seed": 100035,
+   "m": 50,
+   "L": [
+    8,
+    6,
+    7,
+    4
+   ],
+   "k": 2,
+   "phi0": 11.0,
+   "S": 16,
+   "floor": 10.5,
+   "minphi": 11.0,
+   "nstall": 0,
+   "cycle": {
+    "cycle_len": 16,
+    "k_rate": 0.6875,
+    "k_outblocked": false,
+    "phi_min": 11.0,
+    "phi_max": 11.0
+   },
+   "viol": []
+  },
+  {
+   "seed": 100036,
+   "m": 50,
+   "L": [
+    4,
+    4,
+    3,
+    6
+   ],
+   "k": 2,
+   "phi0": 3.0,
+   "S": 10,
+   "floor": 2.5,
+   "minphi": 3.0,
+   "nstall": 0,
+   "cycle": {
+    "cycle_len": 10,
+    "k_rate": 0.3,
+    "k_outblocked": false,
+    "phi_min": 3.0,
+    "phi_max": 3.0
+   },
+   "viol": []
+  },
+  {
+   "seed": 100038,
+   "m": 50,
+   "L": [
+    2,
+    6,
+    8,
+    1
+   ],
+   "k": 2,
+   "phi0": 8.5,
+   "S": 10,
+   "floor": 8.0,
+   "minphi": 8.5,
+   "nstall": 0,
+   "cycle": {
+    "cycle_len": 10,
+    "k_rate": 0.9,
+    "k_outblocked": false,
+    "phi_min": 9.0,
+    "phi_max": 9.0
+   },
+   "viol": []
+  }
+ ]
+}
