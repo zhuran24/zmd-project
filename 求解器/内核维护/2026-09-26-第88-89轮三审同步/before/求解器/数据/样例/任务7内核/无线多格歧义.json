@@ -1,0 +1,2897 @@
+{
+  "catalog": {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+    "sha256": "55eabb8e53dc93c16d31e372e1d3ede8fa9e22d17337b14b7c82094ac3dfba49"
+  },
+  "construction": {
+    "complete_event": "blueprint_complete",
+    "mode": "blueprint_once",
+    "moments": [
+      {
+        "event": "build_0",
+        "placement": {
+          "kind": "协议核心",
+          "occupied_cells": null,
+          "origin": [
+            {
+              "category": "候选",
+              "value": "60"
+            },
+            {
+              "category": "候选",
+              "value": "60"
+            }
+          ],
+          "port_layout": 0,
+          "rotation": "r0"
+        },
+        "unit": "core"
+      },
+      {
+        "event": "build_1",
+        "placement": {
+          "kind": "协议储存箱",
+          "occupied_cells": null,
+          "origin": [
+            {
+              "category": "候选",
+              "value": "10"
+            },
+            {
+              "category": "候选",
+              "value": "10"
+            }
+          ],
+          "port_layout": 0,
+          "rotation": "r0"
+        },
+        "unit": "box"
+      },
+      {
+        "event": "build_2",
+        "placement": {
+          "kind": "供电桩",
+          "occupied_cells": null,
+          "origin": [
+            {
+              "category": "候选",
+              "value": "14"
+            },
+            {
+              "category": "候选",
+              "value": "10"
+            }
+          ],
+          "port_layout": 0,
+          "rotation": "r0"
+        },
+        "unit": "power"
+      }
+    ],
+    "order_domain": "all_rule_consistent_orders",
+    "selected_order": [
+      "core",
+      "box",
+      "power"
+    ]
+  },
+  "contract_binding": null,
+  "debug_operations": [],
+  "environment": {
+    "debug_end_event": "debug_end",
+    "offline": {
+      "event_domain": {
+        "basis": [
+          "本次无离线见证，不排除其它历史"
+        ],
+        "status": "specified",
+        "value": {
+          "events": [],
+          "kind": "selected_history"
+        }
+      },
+      "selected_events": []
+    },
+    "ore_supply": "task_continuous_sufficient",
+    "product_withdrawal": {
+      "policy": {
+        "basis": [
+          "有限轨迹中无成品可拿取"
+        ],
+        "status": "specified",
+        "value": {
+          "admissibility": {
+            "basis": [
+              "未请求任何玩家动作"
+            ],
+            "status": "specified",
+            "value": {
+              "kind": "no_actions"
+            }
+          },
+          "rules": [],
+          "schema": "withdrawal-policy-v1",
+          "selection": {
+            "basis": [
+              "空规则集合"
+            ],
+            "status": "specified",
+            "value": {
+              "kind": "listed_order",
+              "rule_order": []
+            }
+          },
+          "timing_family": {
+            "after": [],
+            "before": [],
+            "interleaving": {
+              "basis": [
+                "无事件"
+              ],
+              "status": "specified",
+              "value": []
+            },
+            "kind": "imprecise",
+            "response": {
+              "basis": [
+                "本有限实验不请求响应界"
+              ],
+              "status": "unresolved",
+              "value": null
+            }
+          }
+        }
+      },
+      "selected_events": []
+    },
+    "zero_intervention_after_debug": true
+  },
+  "initial_state": {
+    "anchor": {
+      "basis": [
+        "本例选核心建成锚点；不是蓝图默认"
+      ],
+      "status": "specified",
+      "value": {
+        "event": "build_0",
+        "side": "after"
+      }
+    },
+    "nonwarehouse": {
+      "basis": [
+        "候选合成状态：空库存来自 empty_on_build；历史推演见黄金轨迹 §2"
+      ],
+      "status": "specified",
+      "value": {
+        "environment": {
+          "online": true,
+          "stage": "zero_intervention",
+          "time": {
+            "kind": "rational",
+            "value": {
+              "category": "候选",
+              "value": "0"
+            }
+          },
+          "withdrawal_memory": {
+            "basis": [
+              "无拿取事件"
+            ],
+            "status": "specified",
+            "value": {
+              "once_fired": [],
+              "pending_rules": []
+            }
+          }
+        },
+        "inventory": [
+          {
+            "contents": [
+              {
+                "entered_at": {
+                  "kind": "rational",
+                  "value": {
+                    "category": "候选",
+                    "value": "-1"
+                  }
+                },
+                "item": "高容谷地电池",
+                "quantity": {
+                  "category": "候选",
+                  "value": "2"
+                }
+              }
+            ],
+            "slot": "box:storage:0"
+          },
+          {
+            "contents": [
+              {
+                "entered_at": {
+                  "kind": "rational",
+                  "value": {
+                    "category": "候选",
+                    "value": "-1"
+                  }
+                },
+                "item": "高容谷地电池",
+                "quantity": {
+                  "category": "候选",
+                  "value": "3"
+                }
+              }
+            ],
+            "slot": "box:storage:1"
+          },
+          {
+            "contents": [],
+            "slot": "box:storage:2"
+          },
+          {
+            "contents": [],
+            "slot": "box:storage:3"
+          },
+          {
+            "contents": [],
+            "slot": "box:storage:4"
+          },
+          {
+            "contents": [],
+            "slot": "box:storage:5"
+          }
+        ],
+        "layout_snapshot": "built_layout",
+        "logistics": {
+          "active_channels": [],
+          "blocked_channels": [],
+          "connection_order": {
+            "basis": [
+              "规则接通；未发生离线"
+            ],
+            "status": "derived",
+            "value": "timeline_connection_history"
+          },
+          "gate_counters": [],
+          "poll_memory": {
+            "basis": [
+              "受限转移§3.2：全空起点"
+            ],
+            "status": "specified",
+            "value": {
+              "schema": "poll-memory-v1",
+              "sides": [
+                {
+                  "current_level": null,
+                  "graded": true,
+                  "levels": [],
+                  "side": "input",
+                  "unit": "core"
+                },
+                {
+                  "current_level": null,
+                  "graded": true,
+                  "levels": [],
+                  "side": "output",
+                  "unit": "core"
+                },
+                {
+                  "current_level": null,
+                  "graded": true,
+                  "levels": [],
+                  "side": "input",
+                  "unit": "box"
+                },
+                {
+                  "current_level": null,
+                  "graded": true,
+                  "levels": [],
+                  "side": "output",
+                  "unit": "box"
+                }
+              ]
+            }
+          }
+        },
+        "progress": [
+          {
+            "candidate_recipes": [],
+            "cooldowns": [
+              {
+                "remaining": {
+                  "kind": "rational",
+                  "value": {
+                    "category": "候选",
+                    "value": "0"
+                  }
+                },
+                "slot": null
+              }
+            ],
+            "locked_recipe": null,
+            "phase": "idle",
+            "recipe": null,
+            "remaining": null,
+            "unit": "box"
+          }
+        ],
+        "semantic_context": {
+          "arbitration": {
+            "level_order": [],
+            "warehouse_empty_slot_order": []
+          },
+          "judgment_context": {
+            "basis": [
+              "新时刻扫描前；无先前判定"
+            ],
+            "status": "specified",
+            "value": {
+              "instant": {
+                "kind": "rational",
+                "value": {
+                  "category": "候选",
+                  "value": "0"
+                }
+              },
+              "next_event": null,
+              "next_template": 0,
+              "order_scope": "global",
+              "ordered_events": [],
+              "phase": "before_boundary",
+              "round": 0
+            }
+          },
+          "parameter_values": [
+            {
+              "axis": "polling.direct_peer",
+              "lifetime": "F",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；polling.direct_peer"
+                ],
+                "status": "specified",
+                "value": "physical_peer"
+              }
+            },
+            {
+              "axis": "connection.port_meeting",
+              "lifetime": "F",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；connection.port_meeting"
+                ],
+                "status": "specified",
+                "value": "shared_edge_opposite"
+              }
+            },
+            {
+              "axis": "initialization.rotation_stage",
+              "lifetime": "F",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；initialization.rotation_stage"
+                ],
+                "status": "specified",
+                "value": "build_and_debug"
+              }
+            },
+            {
+              "axis": "gate.window_recovery",
+              "lifetime": "F",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；gate.window_recovery"
+                ],
+                "status": "specified",
+                "value": "on_expiry_if_other_guards"
+              }
+            },
+            {
+              "axis": "transfer.judgment",
+              "lifetime": "F",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；transfer.judgment"
+                ],
+                "status": "specified",
+                "value": "unit"
+              }
+            },
+            {
+              "axis": "manufacturing.port_slot_relation",
+              "lifetime": "F",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；manufacturing.port_slot_relation"
+                ],
+                "status": "specified",
+                "value": "distributed"
+              }
+            },
+            {
+              "axis": "manufacturing.output_blocked",
+              "lifetime": "F",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；manufacturing.output_blocked"
+                ],
+                "status": "specified",
+                "value": "retain_whole_batch"
+              }
+            },
+            {
+              "axis": "gate.limit_requires_identity",
+              "lifetime": "F",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；gate.limit_requires_identity"
+                ],
+                "status": "specified",
+                "value": true
+              }
+            },
+            {
+              "axis": "warehouse.capacity",
+              "lifetime": "F",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；warehouse.capacity"
+                ],
+                "status": "specified",
+                "value": {
+                  "category": "条文直引",
+                  "value": "80000"
+                }
+              }
+            },
+            {
+              "axis": "warehouse.delivery_count",
+              "lifetime": "F",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；warehouse.delivery_count"
+                ],
+                "status": "specified",
+                "value": "actual_inbound"
+              }
+            },
+            {
+              "axis": "bridge.inventory_scope",
+              "lifetime": "F",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；bridge.inventory_scope"
+                ],
+                "status": "specified",
+                "value": "two_independent_axis_slots"
+              }
+            },
+            {
+              "axis": "bridge.scheduling_scope",
+              "lifetime": "F",
+              "value": {
+                "basis": [
+                  "规则L24、L59、L63；现行内核配置 r25"
+                ],
+                "status": "specified",
+                "value": "per_axis"
+              }
+            },
+            {
+              "axis": "judgment.order_scope",
+              "lifetime": "F",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；judgment.order_scope"
+                ],
+                "status": "specified",
+                "value": "fixed_run_order"
+              }
+            },
+            {
+              "axis": "polling.both_failure",
+              "lifetime": "F",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；polling.both_failure"
+                ],
+                "status": "specified",
+                "value": "advance_authorized"
+              }
+            },
+            {
+              "axis": "transfer.cooldown_scope",
+              "lifetime": "F",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；transfer.cooldown_scope"
+                ],
+                "status": "specified",
+                "value": "box"
+              }
+            },
+            {
+              "axis": "transfer.failure_cooldown",
+              "lifetime": "F",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；transfer.failure_cooldown"
+                ],
+                "status": "specified",
+                "value": "every_attempt"
+              }
+            },
+            {
+              "axis": "transfer.partial_acceptance",
+              "lifetime": "F",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；transfer.partial_acceptance"
+                ],
+                "status": "specified",
+                "value": "max_receivable"
+              }
+            },
+            {
+              "axis": "gate.identity_recovery",
+              "lifetime": "F",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；gate.identity_recovery"
+                ],
+                "status": "specified",
+                "value": "current_conditions"
+              }
+            },
+            {
+              "axis": "gate.total_recovery",
+              "lifetime": "F",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；gate.total_recovery"
+                ],
+                "status": "specified",
+                "value": "current_conditions"
+              }
+            },
+            {
+              "axis": "gate.window_clock",
+              "lifetime": "F",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；gate.window_clock"
+                ],
+                "status": "specified",
+                "value": "wall_clock"
+              }
+            },
+            {
+              "axis": "warehouse.acceptance",
+              "lifetime": "F",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；warehouse.acceptance"
+                ],
+                "status": "specified",
+                "value": "receivable_products"
+              }
+            },
+            {
+              "axis": "warehouse.acceptance_quantifier",
+              "lifetime": "F",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；warehouse.acceptance_quantifier"
+                ],
+                "status": "specified",
+                "value": "all_candidate_and_actual_checks"
+              }
+            },
+            {
+              "axis": "judgment.order",
+              "lifetime": "F",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；judgment.order"
+                ],
+                "status": "specified",
+                "value": {
+                  "instant_overrides": [],
+                  "repeat_embedding": "scan_round_then_template",
+                  "schema": "event-order-v1",
+                  "scope": "global",
+                  "template_order": [
+                    {
+                      "operation": "transfer",
+                      "target": "box"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "axis": "connection.build_order",
+              "lifetime": "F",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；connection.build_order"
+                ],
+                "status": "derived",
+                "value": "construction.selected_order"
+              }
+            },
+            {
+              "axis": "connection.belt_shape",
+              "lifetime": "F",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；connection.belt_shape"
+                ],
+                "status": "specified",
+                "value": {
+                  "kind": "layout_build_history",
+                  "values": []
+                }
+              }
+            },
+            {
+              "axis": "connection.order",
+              "lifetime": "O",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；connection.order"
+                ],
+                "status": "derived",
+                "value": "timeline_connection_history"
+              }
+            },
+            {
+              "axis": "offline.order_domain",
+              "lifetime": "O",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；offline.order_domain"
+                ],
+                "status": "specified",
+                "value": {
+                  "policy": "stop",
+                  "trigger": "请求构造完整离线重排域或离线事件出现"
+                }
+              }
+            },
+            {
+              "axis": "time.domain",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；time.domain"
+                ],
+                "status": "specified",
+                "value": "integer_ticks"
+              }
+            },
+            {
+              "axis": "time.instant_order",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；time.instant_order"
+                ],
+                "status": "specified",
+                "value": "chronological_phases"
+              }
+            },
+            {
+              "axis": "time.retry_schedule",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；time.retry_schedule"
+                ],
+                "status": "specified",
+                "value": "ordered_sweeps"
+              }
+            },
+            {
+              "axis": "time.instant_end",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；time.instant_end"
+                ],
+                "status": "specified",
+                "value": "repeat_scheduler_state"
+              }
+            },
+            {
+              "axis": "time.boundary",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；time.boundary"
+                ],
+                "status": "specified",
+                "value": "elapsed_inclusive"
+              }
+            },
+            {
+              "axis": "time.manufacture_events",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；time.manufacture_events"
+                ],
+                "status": "specified",
+                "value": "completion_before_closure"
+              }
+            },
+            {
+              "axis": "judgment.buffer_event_class",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；judgment.buffer_event_class"
+                ],
+                "status": "specified",
+                "value": "manufacture_subactions"
+              }
+            },
+            {
+              "axis": "polling.initial_cursor",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；polling.initial_cursor"
+                ],
+                "status": "specified",
+                "value": "first_connected"
+              }
+            },
+            {
+              "axis": "polling.split_merge_start",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；polling.split_merge_start"
+                ],
+                "status": "specified",
+                "value": "second_cursor"
+              }
+            },
+            {
+              "axis": "polling.split_merge_scope",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；polling.split_merge_scope"
+                ],
+                "status": "specified",
+                "value": "per_level"
+              }
+            },
+            {
+              "axis": "polling.split_merge_singleton",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；polling.split_merge_singleton"
+                ],
+                "status": "specified",
+                "value": "sole_member"
+              }
+            },
+            {
+              "axis": "polling.ungraded_blocked",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；polling.ungraded_blocked"
+                ],
+                "status": "specified",
+                "value": "empty_turn"
+              }
+            },
+            {
+              "axis": "polling.dual_permission",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；polling.dual_permission"
+                ],
+                "status": "specified",
+                "value": "both"
+              }
+            },
+            {
+              "axis": "polling.memory_scope",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；polling.memory_scope"
+                ],
+                "status": "specified",
+                "value": "per_level"
+              }
+            },
+            {
+              "axis": "polling.resume",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；polling.resume"
+                ],
+                "status": "specified",
+                "value": "retain_position"
+              }
+            },
+            {
+              "axis": "polling.eligibility_stage",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；polling.eligibility_stage"
+                ],
+                "status": "specified",
+                "value": "pre_filter"
+              }
+            },
+            {
+              "axis": "polling.membership_change",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；polling.membership_change"
+                ],
+                "status": "specified",
+                "value": "retain_survivors"
+              }
+            },
+            {
+              "axis": "polling.internal_scope",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；polling.internal_scope"
+                ],
+                "status": "specified",
+                "value": "external_only"
+              }
+            },
+            {
+              "axis": "polling.level_tie",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；polling.level_tie"
+                ],
+                "status": "specified",
+                "value": "fixed_arbitration"
+              }
+            },
+            {
+              "axis": "damping.belt_component_rule",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；damping.belt_component_rule"
+                ],
+                "status": "specified",
+                "value": "path_runs"
+              }
+            },
+            {
+              "axis": "damping.belt_adjacency",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；damping.belt_adjacency"
+                ],
+                "status": "specified",
+                "value": "shared_edge"
+              }
+            },
+            {
+              "axis": "connection.bridge_first_contact",
+              "lifetime": "F",
+              "value": {
+                "basis": [
+                  "规则L24、L59、L63；现行内核配置 r25"
+                ],
+                "status": "specified",
+                "value": "not_applicable"
+              }
+            },
+            {
+              "axis": "transfer.pause",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；transfer.pause"
+                ],
+                "status": "specified",
+                "value": "pause_with_function"
+              }
+            },
+            {
+              "axis": "transfer.resume_event",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；transfer.resume_event"
+                ],
+                "status": "specified",
+                "value": "ready_in_closure"
+              }
+            },
+            {
+              "axis": "manufacturing.input_mixing",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；manufacturing.input_mixing"
+                ],
+                "status": "specified",
+                "value": "single_kind"
+              }
+            },
+            {
+              "axis": "manufacturing.input_capacity_scope",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；manufacturing.input_capacity_scope"
+                ],
+                "status": "specified",
+                "value": "per_slot_total"
+              }
+            },
+            {
+              "axis": "manufacturing.recipe_match_scope",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；manufacturing.recipe_match_scope"
+                ],
+                "status": "specified",
+                "value": "input_union"
+              }
+            },
+            {
+              "axis": "manufacturing.recipe_completeness",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；manufacturing.recipe_completeness"
+                ],
+                "status": "specified",
+                "value": "full_batch"
+              }
+            },
+            {
+              "axis": "manufacturing.recipe_lock_time",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；manufacturing.recipe_lock_time"
+                ],
+                "status": "specified",
+                "value": "on_gate_open"
+              }
+            },
+            {
+              "axis": "manufacturing.empty_slot_identity",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；manufacturing.empty_slot_identity"
+                ],
+                "status": "specified",
+                "value": "release_on_empty"
+              }
+            },
+            {
+              "axis": "manufacturing.input_collection",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；manufacturing.input_collection"
+                ],
+                "status": "specified",
+                "value": "atomic_batch"
+              }
+            },
+            {
+              "axis": "manufacturing.buffer_power_gate",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；manufacturing.buffer_power_gate"
+                ],
+                "status": "specified",
+                "value": "manufacturing_only"
+              }
+            },
+            {
+              "axis": "gate.identity_subject",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；gate.identity_subject"
+                ],
+                "status": "specified",
+                "value": "candidate_item"
+              }
+            },
+            {
+              "axis": "gate.reconnect_record",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；gate.reconnect_record"
+                ],
+                "status": "specified",
+                "value": "original_build_record"
+              }
+            },
+            {
+              "axis": "gate.counter_start",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；gate.counter_start"
+                ],
+                "status": "specified",
+                "value": "since_build"
+              }
+            },
+            {
+              "axis": "initialization.belt_shape_lifecycle",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；initialization.belt_shape_lifecycle"
+                ],
+                "status": "specified",
+                "value": "fixed_between_builds"
+              }
+            },
+            {
+              "axis": "warehouse.empty_slot_identity",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；warehouse.empty_slot_identity"
+                ],
+                "status": "specified",
+                "value": "retain_history"
+              }
+            },
+            {
+              "axis": "bridge.capacity",
+              "lifetime": "F",
+              "value": {
+                "basis": [
+                  "规则L24、L59、L63；现行内核配置 r25"
+                ],
+                "status": "specified",
+                "value": 1
+              }
+            },
+            {
+              "axis": "power.cell_rule",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；power.cell_rule"
+                ],
+                "status": "specified",
+                "value": "positive_area"
+              }
+            },
+            {
+              "axis": "residence.nontransport",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；residence.nontransport"
+                ],
+                "status": "specified",
+                "value": "zero"
+              }
+            },
+            {
+              "axis": "cascade.buffer",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；cascade.buffer"
+                ],
+                "status": "specified",
+                "value": "same_instant"
+              }
+            },
+            {
+              "axis": "damping.branch",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；damping.branch"
+                ],
+                "status": "specified",
+                "value": {
+                  "choices": [],
+                  "evaluations": [],
+                  "fixedness": "by_available_set",
+                  "on_missing": "unresolved",
+                  "schema": "damping-branch-v2"
+                }
+              }
+            },
+            {
+              "axis": "connection.tie",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；connection.tie"
+                ],
+                "status": "specified",
+                "value": {
+                  "channels": [],
+                  "kind": "explicit_order"
+                }
+              }
+            },
+            {
+              "axis": "transfer.phase",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；transfer.phase"
+                ],
+                "status": "specified",
+                "value": {
+                  "kind": "explicit_residuals",
+                  "values": [
+                    {
+                      "remaining": {
+                        "kind": "rational",
+                        "value": {
+                          "category": "候选",
+                          "value": "0"
+                        }
+                      },
+                      "slot": null,
+                      "unit": "box"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "axis": "manufacturing.recipe_selection",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；manufacturing.recipe_selection"
+                ],
+                "status": "specified",
+                "value": {
+                  "kind": "explicit_order",
+                  "recipes": [
+                    "粉碎-源矿",
+                    "粉碎-蓝铁块",
+                    "粉碎-荞花",
+                    "粉碎-砂叶",
+                    "精炼-蓝铁矿",
+                    "精炼-致密蓝铁",
+                    "精炼-蓝铁粉末",
+                    "研磨-致密蓝铁",
+                    "研磨-致密源石",
+                    "研磨-细磨荞花",
+                    "塑形-钢质瓶",
+                    "配件-钢制零件",
+                    "种植-荞花",
+                    "种植-砂叶",
+                    "采种-荞花",
+                    "采种-砂叶",
+                    "封装-电池",
+                    "灌装-胶囊"
+                  ]
+                }
+              }
+            },
+            {
+              "axis": "manufacturing.input_slot_selection",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；manufacturing.input_slot_selection"
+                ],
+                "status": "specified",
+                "value": {
+                  "kind": "explicit_order",
+                  "slots": []
+                }
+              }
+            },
+            {
+              "axis": "initialization.warehouse_anchor",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；initialization.warehouse_anchor"
+                ],
+                "status": "specified",
+                "value": {
+                  "event": "build_0",
+                  "kind": "input_anchor",
+                  "side": "after"
+                }
+              }
+            },
+            {
+              "axis": "initialization.other_inventory",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；initialization.other_inventory"
+                ],
+                "status": "specified",
+                "value": {
+                  "inventory_assumption": "empty_on_build",
+                  "kind": "synthetic_seed",
+                  "path": "initial_state.nonwarehouse"
+                }
+              }
+            },
+            {
+              "axis": "initialization.switches",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；initialization.switches"
+                ],
+                "status": "specified",
+                "value": {
+                  "initial_values": "explicit_at_build",
+                  "kind": "input_settings",
+                  "path": "settings"
+                }
+              }
+            },
+            {
+              "axis": "initialization.build_timing",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；initialization.build_timing"
+                ],
+                "status": "specified",
+                "value": {
+                  "kind": "input_history",
+                  "path": "timeline"
+                }
+              }
+            },
+            {
+              "axis": "initialization.debug_end",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；initialization.debug_end"
+                ],
+                "status": "specified",
+                "value": {
+                  "event": "debug_end",
+                  "kind": "input_witness",
+                  "not_a_timing_strategy": true
+                }
+              }
+            },
+            {
+              "axis": "warehouse.external_supply",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；warehouse.external_supply"
+                ],
+                "status": "specified",
+                "value": {
+                  "kind": "sufficient"
+                }
+              }
+            },
+            {
+              "axis": "damping.no_terminal",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；damping.no_terminal"
+                ],
+                "status": "specified",
+                "value": {
+                  "policy": "stop",
+                  "trigger": "请求求阻尼而所选路径无下一非运输终点"
+                }
+              }
+            },
+            {
+              "axis": "connection.bridge_tie",
+              "lifetime": "F",
+              "value": {
+                "basis": [
+                  "规则L24、L59、L63；现行内核配置 r25"
+                ],
+                "status": "specified",
+                "value": "not_applicable"
+              }
+            },
+            {
+              "axis": "gate.counter_edit",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；gate.counter_edit"
+                ],
+                "status": "specified",
+                "value": {
+                  "policy": "stop",
+                  "trigger": "调试改身份/累计/窗口设定并需确定计数后效"
+                }
+              }
+            },
+            {
+              "axis": "gate.cancel_limit",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；gate.cancel_limit"
+                ],
+                "status": "specified",
+                "value": {
+                  "policy": "stop",
+                  "trigger": "取消已设限额"
+                }
+              }
+            },
+            {
+              "axis": "offline.events",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；offline.events"
+                ],
+                "status": "specified",
+                "value": {
+                  "policy": "stop",
+                  "trigger": "出现任何离线/上线事件"
+                }
+              }
+            },
+            {
+              "axis": "offline.cursor_effect",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；offline.cursor_effect"
+                ],
+                "status": "specified",
+                "value": {
+                  "policy": "stop",
+                  "trigger": "离线需更新轮询状态"
+                }
+              }
+            },
+            {
+              "axis": "offline.inventory_effect",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；offline.inventory_effect"
+                ],
+                "status": "specified",
+                "value": {
+                  "policy": "stop",
+                  "trigger": "离线需更新库存"
+                }
+              }
+            },
+            {
+              "axis": "offline.progress_effect",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；offline.progress_effect"
+                ],
+                "status": "specified",
+                "value": {
+                  "policy": "stop",
+                  "trigger": "离线需更新进度/时钟"
+                }
+              }
+            },
+            {
+              "axis": "offline.direction_effect",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "规则L24、L59、L63；现行内核配置 r25"
+                ],
+                "status": "specified",
+                "value": {
+                  "policy": "stop",
+                  "trigger": "请求离线回放"
+                }
+              }
+            },
+            {
+              "axis": "offline.gate_total_effect",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；offline.gate_total_effect"
+                ],
+                "status": "specified",
+                "value": {
+                  "policy": "stop",
+                  "trigger": "离线需更新累计计数"
+                }
+              }
+            },
+            {
+              "axis": "offline.gate_window_effect",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；offline.gate_window_effect"
+                ],
+                "status": "specified",
+                "value": {
+                  "policy": "stop",
+                  "trigger": "离线需更新窗口计数"
+                }
+              }
+            },
+            {
+              "axis": "offline.gate_window_start_effect",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；offline.gate_window_start_effect"
+                ],
+                "status": "specified",
+                "value": {
+                  "policy": "stop",
+                  "trigger": "离线需更新窗口起点"
+                }
+              }
+            },
+            {
+              "axis": "initialization.debug_actions",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；initialization.debug_actions"
+                ],
+                "status": "specified",
+                "value": {
+                  "policy": "stop",
+                  "trigger": "运行区间内出现玩家单位操作（种子之前的动作只核证据引用）"
+                }
+              }
+            },
+            {
+              "axis": "initialization.rebuild_inventory",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；initialization.rebuild_inventory"
+                ],
+                "status": "specified",
+                "value": {
+                  "policy": "stop",
+                  "trigger": "拆除或重建需确定库存/进度去向"
+                }
+              }
+            },
+            {
+              "axis": "warehouse.withdrawal_policy",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；warehouse.withdrawal_policy"
+                ],
+                "status": "specified",
+                "value": {
+                  "policy": "stop",
+                  "trigger": "需要执行拿取策略或据此认证完整周期"
+                }
+              }
+            },
+            {
+              "axis": "warehouse.withdrawal_timing",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；warehouse.withdrawal_timing"
+                ],
+                "status": "specified",
+                "value": {
+                  "policy": "stop",
+                  "trigger": "运行区间出现玩家拿取事件；策略与实际时距未实现"
+                }
+              }
+            },
+            {
+              "axis": "warehouse.periodic_lift",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；warehouse.periodic_lift"
+                ],
+                "status": "specified",
+                "value": {
+                  "policy": "stop",
+                  "trigger": "请求缺少逐项复原证据的完整基地周期或缺少覆盖证明的全称认证"
+                }
+              }
+            },
+            {
+              "axis": "gate.concurrent_expiry",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；gate.concurrent_expiry"
+                ],
+                "status": "specified",
+                "value": "atomic_batch"
+              }
+            },
+            {
+              "axis": "manufacturing.recipe_quantity_match",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；manufacturing.recipe_quantity_match"
+                ],
+                "status": "specified",
+                "value": "at_least"
+              }
+            },
+            {
+              "axis": "manufacturing.recipe_extra_items",
+              "lifetime": "U",
+              "value": {
+                "basis": [
+                  "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；manufacturing.recipe_extra_items"
+                ],
+                "status": "specified",
+                "value": "allow"
+              }
+            }
+          ],
+          "pending_events": {
+            "basis": [
+              "所有单位初始空，无在制到期事件"
+            ],
+            "status": "specified",
+            "value": []
+          },
+          "tick_context": {
+            "basis": [
+              "供料带此刻建成，尚未执行任何判定"
+            ],
+            "status": "specified",
+            "value": {
+              "internal_passages": [],
+              "movements": [],
+              "port_usage": [],
+              "window_end": {
+                "kind": "rational",
+                "value": {
+                  "category": "候选",
+                  "value": "1"
+                }
+              },
+              "window_start": {
+                "kind": "rational",
+                "value": {
+                  "category": "候选",
+                  "value": "0"
+                }
+              }
+            }
+          }
+        },
+        "settings_anchor": {
+          "event": "blueprint_complete",
+          "side": "after"
+        },
+        "warehouse": {
+          "slots": [
+            {
+              "empty_identity": {
+                "basis": [
+                  "非空格内容已给；空身份不适用"
+                ],
+                "status": "not_applicable",
+                "value": null
+              },
+              "item": "源矿",
+              "quantity": {
+                "category": "条文直引",
+                "value": "80000"
+              },
+              "slot": "warehouse_0"
+            },
+            {
+              "empty_identity": {
+                "basis": [
+                  "非空格内容已给；空身份不适用"
+                ],
+                "status": "not_applicable",
+                "value": null
+              },
+              "item": "砂叶",
+              "quantity": {
+                "category": "条文直引",
+                "value": "80000"
+              },
+              "slot": "warehouse_1"
+            },
+            {
+              "empty_identity": {
+                "basis": [
+                  "非空格内容已给；空身份不适用"
+                ],
+                "status": "not_applicable",
+                "value": null
+              },
+              "item": "砂叶种子",
+              "quantity": {
+                "category": "条文直引",
+                "value": "80000"
+              },
+              "slot": "warehouse_2"
+            },
+            {
+              "empty_identity": {
+                "basis": [
+                  "非空格内容已给；空身份不适用"
+                ],
+                "status": "not_applicable",
+                "value": null
+              },
+              "item": "荞花",
+              "quantity": {
+                "category": "条文直引",
+                "value": "80000"
+              },
+              "slot": "warehouse_3"
+            },
+            {
+              "empty_identity": {
+                "basis": [
+                  "非空格内容已给；空身份不适用"
+                ],
+                "status": "not_applicable",
+                "value": null
+              },
+              "item": "荞花种子",
+              "quantity": {
+                "category": "条文直引",
+                "value": "80000"
+              },
+              "slot": "warehouse_4"
+            },
+            {
+              "empty_identity": {
+                "basis": [
+                  "非空格内容已给；空身份不适用"
+                ],
+                "status": "not_applicable",
+                "value": null
+              },
+              "item": "蓝铁矿",
+              "quantity": {
+                "category": "条文直引",
+                "value": "80000"
+              },
+              "slot": "warehouse_5"
+            },
+            {
+              "empty_identity": {
+                "basis": [
+                  "非空格身份由item承载"
+                ],
+                "status": "not_applicable",
+                "value": null
+              },
+              "item": "高容谷地电池",
+              "quantity": {
+                "category": "候选",
+                "value": "79998"
+              },
+              "slot": "test_高容谷地电池"
+            }
+          ],
+          "unlisted": "empty"
+        }
+      }
+    },
+    "reachability": {
+      "basis": [
+        "任务7工程局部验证"
+      ],
+      "status": "specified",
+      "value": {
+        "document": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/周期键读取审计.md",
+        "kind": "conditional_state",
+        "scope": "局部机制合成种子；任务8没有证明实际调试程序的全部可达后态"
+      }
+    },
+    "warehouse": {
+      "slots": [
+        {
+          "empty_identity": {
+            "basis": [
+              "非空格内容已给；空身份不适用"
+            ],
+            "status": "not_applicable",
+            "value": null
+          },
+          "item": "源矿",
+          "quantity": {
+            "category": "条文直引",
+            "value": "80000"
+          },
+          "slot": "warehouse_0"
+        },
+        {
+          "empty_identity": {
+            "basis": [
+              "非空格内容已给；空身份不适用"
+            ],
+            "status": "not_applicable",
+            "value": null
+          },
+          "item": "砂叶",
+          "quantity": {
+            "category": "条文直引",
+            "value": "80000"
+          },
+          "slot": "warehouse_1"
+        },
+        {
+          "empty_identity": {
+            "basis": [
+              "非空格内容已给；空身份不适用"
+            ],
+            "status": "not_applicable",
+            "value": null
+          },
+          "item": "砂叶种子",
+          "quantity": {
+            "category": "条文直引",
+            "value": "80000"
+          },
+          "slot": "warehouse_2"
+        },
+        {
+          "empty_identity": {
+            "basis": [
+              "非空格内容已给；空身份不适用"
+            ],
+            "status": "not_applicable",
+            "value": null
+          },
+          "item": "荞花",
+          "quantity": {
+            "category": "条文直引",
+            "value": "80000"
+          },
+          "slot": "warehouse_3"
+        },
+        {
+          "empty_identity": {
+            "basis": [
+              "非空格内容已给；空身份不适用"
+            ],
+            "status": "not_applicable",
+            "value": null
+          },
+          "item": "荞花种子",
+          "quantity": {
+            "category": "条文直引",
+            "value": "80000"
+          },
+          "slot": "warehouse_4"
+        },
+        {
+          "empty_identity": {
+            "basis": [
+              "非空格内容已给；空身份不适用"
+            ],
+            "status": "not_applicable",
+            "value": null
+          },
+          "item": "蓝铁矿",
+          "quantity": {
+            "category": "条文直引",
+            "value": "80000"
+          },
+          "slot": "warehouse_5"
+        }
+      ],
+      "unlisted": "empty"
+    }
+  },
+  "layout": {
+    "anchor": {
+      "event": "blueprint_complete",
+      "side": "after"
+    },
+    "base": {
+      "height": {
+        "category": "条文直引",
+        "value": "70"
+      },
+      "width": {
+        "category": "条文直引",
+        "value": "70"
+      }
+    },
+    "buffer_channels": [],
+    "id": "built_layout",
+    "physical_channels": [],
+    "post_debug": {
+      "basis": [
+        "同几何、无调试动作的具体历史"
+      ],
+      "status": "specified",
+      "value": "built_layout"
+    },
+    "snapshots": [],
+    "units": [
+      {
+        "bridge_axes": null,
+        "id": "core",
+        "kind": "协议核心",
+        "occupied_cells": null,
+        "origin": [
+          {
+            "category": "候选",
+            "value": "60"
+          },
+          {
+            "category": "候选",
+            "value": "60"
+          }
+        ],
+        "port_layout": 0,
+        "rotation": "r0"
+      },
+      {
+        "bridge_axes": null,
+        "id": "box",
+        "kind": "协议储存箱",
+        "occupied_cells": null,
+        "origin": [
+          {
+            "category": "候选",
+            "value": "10"
+          },
+          {
+            "category": "候选",
+            "value": "10"
+          }
+        ],
+        "port_layout": 0,
+        "rotation": "r0"
+      },
+      {
+        "bridge_axes": null,
+        "id": "power",
+        "kind": "供电桩",
+        "occupied_cells": null,
+        "origin": [
+          {
+            "category": "候选",
+            "value": "14"
+          },
+          {
+            "category": "候选",
+            "value": "10"
+          }
+        ],
+        "port_layout": 0,
+        "rotation": "r0"
+      }
+    ]
+  },
+  "parameters": {
+    "axis_registry": {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+      "sha256": "261da30db31063ec8292aaa493e2c11d026c0861852ef19550eeb92eb4da7665"
+    },
+    "fixed": {
+      "bridge.inventory_scope": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；bridge.inventory_scope"
+        ],
+        "status": "specified",
+        "value": "two_independent_axis_slots"
+      },
+      "bridge.scheduling_scope": {
+        "basis": [
+          "规则L24、L59、L63；现行内核配置 r25"
+        ],
+        "status": "specified",
+        "value": "per_axis"
+      },
+      "connection.belt_shape": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；connection.belt_shape"
+        ],
+        "status": "specified",
+        "value": {
+          "kind": "layout_build_history",
+          "values": []
+        }
+      },
+      "connection.build_order": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；connection.build_order"
+        ],
+        "status": "derived",
+        "value": "construction.selected_order"
+      },
+      "connection.port_meeting": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；connection.port_meeting"
+        ],
+        "status": "specified",
+        "value": "shared_edge_opposite"
+      },
+      "gate.identity_recovery": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；gate.identity_recovery"
+        ],
+        "status": "specified",
+        "value": "current_conditions"
+      },
+      "gate.limit_requires_identity": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；gate.limit_requires_identity"
+        ],
+        "status": "specified",
+        "value": true
+      },
+      "gate.total_recovery": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；gate.total_recovery"
+        ],
+        "status": "specified",
+        "value": "current_conditions"
+      },
+      "gate.window_clock": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；gate.window_clock"
+        ],
+        "status": "specified",
+        "value": "wall_clock"
+      },
+      "gate.window_recovery": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；gate.window_recovery"
+        ],
+        "status": "specified",
+        "value": "on_expiry_if_other_guards"
+      },
+      "initialization.rotation_stage": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；initialization.rotation_stage"
+        ],
+        "status": "specified",
+        "value": "build_and_debug"
+      },
+      "judgment.order": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；judgment.order"
+        ],
+        "status": "specified",
+        "value": {
+          "instant_overrides": [],
+          "repeat_embedding": "scan_round_then_template",
+          "schema": "event-order-v1",
+          "scope": "global",
+          "template_order": [
+            {
+              "operation": "transfer",
+              "target": "box"
+            }
+          ]
+        }
+      },
+      "judgment.order_scope": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；judgment.order_scope"
+        ],
+        "status": "specified",
+        "value": "fixed_run_order"
+      },
+      "manufacturing.output_blocked": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；manufacturing.output_blocked"
+        ],
+        "status": "specified",
+        "value": "retain_whole_batch"
+      },
+      "manufacturing.port_slot_relation": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；manufacturing.port_slot_relation"
+        ],
+        "status": "specified",
+        "value": "distributed"
+      },
+      "polling.both_failure": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；polling.both_failure"
+        ],
+        "status": "specified",
+        "value": "advance_authorized"
+      },
+      "polling.direct_peer": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；polling.direct_peer"
+        ],
+        "status": "specified",
+        "value": "physical_peer"
+      },
+      "transfer.cooldown_scope": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；transfer.cooldown_scope"
+        ],
+        "status": "specified",
+        "value": "box"
+      },
+      "transfer.failure_cooldown": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；transfer.failure_cooldown"
+        ],
+        "status": "specified",
+        "value": "every_attempt"
+      },
+      "transfer.judgment": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；transfer.judgment"
+        ],
+        "status": "specified",
+        "value": "unit"
+      },
+      "transfer.partial_acceptance": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；transfer.partial_acceptance"
+        ],
+        "status": "specified",
+        "value": "max_receivable"
+      },
+      "warehouse.acceptance": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；warehouse.acceptance"
+        ],
+        "status": "specified",
+        "value": "receivable_products"
+      },
+      "warehouse.acceptance_quantifier": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；warehouse.acceptance_quantifier"
+        ],
+        "status": "specified",
+        "value": "all_candidate_and_actual_checks"
+      },
+      "warehouse.capacity": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；warehouse.capacity"
+        ],
+        "status": "specified",
+        "value": {
+          "category": "条文直引",
+          "value": "80000"
+        }
+      },
+      "warehouse.delivery_count": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；warehouse.delivery_count"
+        ],
+        "status": "specified",
+        "value": "actual_inbound"
+      },
+      "bridge.capacity": {
+        "basis": [
+          "规则L24、L59、L63；现行内核配置 r25"
+        ],
+        "status": "specified",
+        "value": 1
+      },
+      "connection.bridge_first_contact": {
+        "basis": [
+          "规则L24、L59、L63；现行内核配置 r25"
+        ],
+        "status": "specified",
+        "value": "not_applicable"
+      },
+      "connection.bridge_tie": {
+        "basis": [
+          "规则L24、L59、L63；现行内核配置 r25"
+        ],
+        "status": "specified",
+        "value": "not_applicable"
+      }
+    },
+    "fixedness_unproven": {
+      "cascade.buffer": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；cascade.buffer"
+        ],
+        "status": "specified",
+        "value": "same_instant"
+      },
+      "connection.tie": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；connection.tie"
+        ],
+        "status": "specified",
+        "value": {
+          "channels": [],
+          "kind": "explicit_order"
+        }
+      },
+      "damping.belt_adjacency": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；damping.belt_adjacency"
+        ],
+        "status": "specified",
+        "value": "shared_edge"
+      },
+      "damping.belt_component_rule": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；damping.belt_component_rule"
+        ],
+        "status": "specified",
+        "value": "path_runs"
+      },
+      "damping.branch": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；damping.branch"
+        ],
+        "status": "specified",
+        "value": {
+          "choices": [],
+          "evaluations": [],
+          "fixedness": "by_available_set",
+          "on_missing": "unresolved",
+          "schema": "damping-branch-v2"
+        }
+      },
+      "damping.no_terminal": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；damping.no_terminal"
+        ],
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "请求求阻尼而所选路径无下一非运输终点"
+        }
+      },
+      "gate.cancel_limit": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；gate.cancel_limit"
+        ],
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "取消已设限额"
+        }
+      },
+      "gate.concurrent_expiry": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；gate.concurrent_expiry"
+        ],
+        "status": "specified",
+        "value": "atomic_batch"
+      },
+      "gate.counter_edit": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；gate.counter_edit"
+        ],
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "调试改身份/累计/窗口设定并需确定计数后效"
+        }
+      },
+      "gate.counter_start": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；gate.counter_start"
+        ],
+        "status": "specified",
+        "value": "since_build"
+      },
+      "gate.identity_subject": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；gate.identity_subject"
+        ],
+        "status": "specified",
+        "value": "candidate_item"
+      },
+      "gate.reconnect_record": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；gate.reconnect_record"
+        ],
+        "status": "specified",
+        "value": "original_build_record"
+      },
+      "initialization.belt_shape_lifecycle": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；initialization.belt_shape_lifecycle"
+        ],
+        "status": "specified",
+        "value": "fixed_between_builds"
+      },
+      "initialization.build_timing": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；initialization.build_timing"
+        ],
+        "status": "specified",
+        "value": {
+          "kind": "input_history",
+          "path": "timeline"
+        }
+      },
+      "initialization.debug_actions": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；initialization.debug_actions"
+        ],
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "运行区间内出现玩家单位操作（种子之前的动作只核证据引用）"
+        }
+      },
+      "initialization.debug_end": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；initialization.debug_end"
+        ],
+        "status": "specified",
+        "value": {
+          "event": "debug_end",
+          "kind": "input_witness",
+          "not_a_timing_strategy": true
+        }
+      },
+      "initialization.other_inventory": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；initialization.other_inventory"
+        ],
+        "status": "specified",
+        "value": {
+          "inventory_assumption": "empty_on_build",
+          "kind": "synthetic_seed",
+          "path": "initial_state.nonwarehouse"
+        }
+      },
+      "initialization.rebuild_inventory": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；initialization.rebuild_inventory"
+        ],
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "拆除或重建需确定库存/进度去向"
+        }
+      },
+      "initialization.switches": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；initialization.switches"
+        ],
+        "status": "specified",
+        "value": {
+          "initial_values": "explicit_at_build",
+          "kind": "input_settings",
+          "path": "settings"
+        }
+      },
+      "initialization.warehouse_anchor": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；initialization.warehouse_anchor"
+        ],
+        "status": "specified",
+        "value": {
+          "event": "build_0",
+          "kind": "input_anchor",
+          "side": "after"
+        }
+      },
+      "judgment.buffer_event_class": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；judgment.buffer_event_class"
+        ],
+        "status": "specified",
+        "value": "manufacture_subactions"
+      },
+      "manufacturing.buffer_power_gate": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；manufacturing.buffer_power_gate"
+        ],
+        "status": "specified",
+        "value": "manufacturing_only"
+      },
+      "manufacturing.empty_slot_identity": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；manufacturing.empty_slot_identity"
+        ],
+        "status": "specified",
+        "value": "release_on_empty"
+      },
+      "manufacturing.input_capacity_scope": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；manufacturing.input_capacity_scope"
+        ],
+        "status": "specified",
+        "value": "per_slot_total"
+      },
+      "manufacturing.input_collection": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；manufacturing.input_collection"
+        ],
+        "status": "specified",
+        "value": "atomic_batch"
+      },
+      "manufacturing.input_mixing": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；manufacturing.input_mixing"
+        ],
+        "status": "specified",
+        "value": "single_kind"
+      },
+      "manufacturing.input_slot_selection": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；manufacturing.input_slot_selection"
+        ],
+        "status": "specified",
+        "value": {
+          "kind": "explicit_order",
+          "slots": []
+        }
+      },
+      "manufacturing.recipe_completeness": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；manufacturing.recipe_completeness"
+        ],
+        "status": "specified",
+        "value": "full_batch"
+      },
+      "manufacturing.recipe_extra_items": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；manufacturing.recipe_extra_items"
+        ],
+        "status": "specified",
+        "value": "allow"
+      },
+      "manufacturing.recipe_lock_time": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；manufacturing.recipe_lock_time"
+        ],
+        "status": "specified",
+        "value": "on_gate_open"
+      },
+      "manufacturing.recipe_match_scope": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；manufacturing.recipe_match_scope"
+        ],
+        "status": "specified",
+        "value": "input_union"
+      },
+      "manufacturing.recipe_quantity_match": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；manufacturing.recipe_quantity_match"
+        ],
+        "status": "specified",
+        "value": "at_least"
+      },
+      "manufacturing.recipe_selection": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；manufacturing.recipe_selection"
+        ],
+        "status": "specified",
+        "value": {
+          "kind": "explicit_order",
+          "recipes": [
+            "粉碎-源矿",
+            "粉碎-蓝铁块",
+            "粉碎-荞花",
+            "粉碎-砂叶",
+            "精炼-蓝铁矿",
+            "精炼-致密蓝铁",
+            "精炼-蓝铁粉末",
+            "研磨-致密蓝铁",
+            "研磨-致密源石",
+            "研磨-细磨荞花",
+            "塑形-钢质瓶",
+            "配件-钢制零件",
+            "种植-荞花",
+            "种植-砂叶",
+            "采种-荞花",
+            "采种-砂叶",
+            "封装-电池",
+            "灌装-胶囊"
+          ]
+        }
+      },
+      "offline.cursor_effect": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；offline.cursor_effect"
+        ],
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "离线需更新轮询状态"
+        }
+      },
+      "offline.direction_effect": {
+        "basis": [
+          "规则L24、L59、L63；现行内核配置 r25"
+        ],
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "请求离线回放"
+        }
+      },
+      "offline.events": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；offline.events"
+        ],
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "出现任何离线/上线事件"
+        }
+      },
+      "offline.gate_total_effect": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；offline.gate_total_effect"
+        ],
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "离线需更新累计计数"
+        }
+      },
+      "offline.gate_window_effect": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；offline.gate_window_effect"
+        ],
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "离线需更新窗口计数"
+        }
+      },
+      "offline.gate_window_start_effect": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；offline.gate_window_start_effect"
+        ],
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "离线需更新窗口起点"
+        }
+      },
+      "offline.inventory_effect": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；offline.inventory_effect"
+        ],
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "离线需更新库存"
+        }
+      },
+      "offline.progress_effect": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；offline.progress_effect"
+        ],
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "离线需更新进度/时钟"
+        }
+      },
+      "polling.dual_permission": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；polling.dual_permission"
+        ],
+        "status": "specified",
+        "value": "both"
+      },
+      "polling.eligibility_stage": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；polling.eligibility_stage"
+        ],
+        "status": "specified",
+        "value": "pre_filter"
+      },
+      "polling.initial_cursor": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；polling.initial_cursor"
+        ],
+        "status": "specified",
+        "value": "first_connected"
+      },
+      "polling.internal_scope": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；polling.internal_scope"
+        ],
+        "status": "specified",
+        "value": "external_only"
+      },
+      "polling.level_tie": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；polling.level_tie"
+        ],
+        "status": "specified",
+        "value": "fixed_arbitration"
+      },
+      "polling.membership_change": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；polling.membership_change"
+        ],
+        "status": "specified",
+        "value": "retain_survivors"
+      },
+      "polling.memory_scope": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；polling.memory_scope"
+        ],
+        "status": "specified",
+        "value": "per_level"
+      },
+      "polling.resume": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；polling.resume"
+        ],
+        "status": "specified",
+        "value": "retain_position"
+      },
+      "polling.split_merge_scope": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；polling.split_merge_scope"
+        ],
+        "status": "specified",
+        "value": "per_level"
+      },
+      "polling.split_merge_singleton": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；polling.split_merge_singleton"
+        ],
+        "status": "specified",
+        "value": "sole_member"
+      },
+      "polling.split_merge_start": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；polling.split_merge_start"
+        ],
+        "status": "specified",
+        "value": "second_cursor"
+      },
+      "polling.ungraded_blocked": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；polling.ungraded_blocked"
+        ],
+        "status": "specified",
+        "value": "empty_turn"
+      },
+      "power.cell_rule": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；power.cell_rule"
+        ],
+        "status": "specified",
+        "value": "positive_area"
+      },
+      "residence.nontransport": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；residence.nontransport"
+        ],
+        "status": "specified",
+        "value": "zero"
+      },
+      "time.boundary": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；time.boundary"
+        ],
+        "status": "specified",
+        "value": "elapsed_inclusive"
+      },
+      "time.domain": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；time.domain"
+        ],
+        "status": "specified",
+        "value": "integer_ticks"
+      },
+      "time.instant_end": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；time.instant_end"
+        ],
+        "status": "specified",
+        "value": "repeat_scheduler_state"
+      },
+      "time.instant_order": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；time.instant_order"
+        ],
+        "status": "specified",
+        "value": "chronological_phases"
+      },
+      "time.manufacture_events": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；time.manufacture_events"
+        ],
+        "status": "specified",
+        "value": "completion_before_closure"
+      },
+      "time.retry_schedule": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；time.retry_schedule"
+        ],
+        "status": "specified",
+        "value": "ordered_sweeps"
+      },
+      "transfer.pause": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；transfer.pause"
+        ],
+        "status": "specified",
+        "value": "pause_with_function"
+      },
+      "transfer.phase": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；transfer.phase"
+        ],
+        "status": "specified",
+        "value": {
+          "kind": "explicit_residuals",
+          "values": [
+            {
+              "remaining": {
+                "kind": "rational",
+                "value": {
+                  "category": "候选",
+                  "value": "0"
+                }
+              },
+              "slot": null,
+              "unit": "box"
+            }
+          ]
+        }
+      },
+      "transfer.resume_event": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；transfer.resume_event"
+        ],
+        "status": "specified",
+        "value": "ready_in_closure"
+      },
+      "warehouse.empty_slot_identity": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；warehouse.empty_slot_identity"
+        ],
+        "status": "specified",
+        "value": "retain_history"
+      },
+      "warehouse.external_supply": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；warehouse.external_supply"
+        ],
+        "status": "specified",
+        "value": {
+          "kind": "sufficient"
+        }
+      },
+      "warehouse.periodic_lift": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；warehouse.periodic_lift"
+        ],
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "请求缺少逐项复原证据的完整基地周期或缺少覆盖证明的全称认证"
+        }
+      },
+      "warehouse.withdrawal_policy": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；warehouse.withdrawal_policy"
+        ],
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "需要执行拿取策略或据此认证完整周期"
+        }
+      },
+      "warehouse.withdrawal_timing": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；warehouse.withdrawal_timing"
+        ],
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "运行区间出现玩家拿取事件；策略与实际时距未实现"
+        }
+      }
+    },
+    "offline_mutable": {
+      "connection.order": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；connection.order"
+        ],
+        "status": "derived",
+        "value": "timeline_connection_history"
+      },
+      "offline.order_domain": {
+        "basis": [
+          "任务7内核显式迁移；现行配置 task7-merge-2026-09-21；offline.order_domain"
+        ],
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "请求构造完整离线重排域或离线事件出现"
+        }
+      }
+    },
+    "profile_id": "kernel_profile_v1"
+  },
+  "purpose": "synthetic_execution",
+  "scenario": {
+    "assertions": [],
+    "expected_paths": [],
+    "name": "任务7-无线多格歧义",
+    "recipe_intents": []
+  },
+  "schema": "kernel-input-v3",
+  "settings": {
+    "anchor": {
+      "event": "blueprint_complete",
+      "side": "after"
+    },
+    "gates": [],
+    "switches": [
+      {
+        "enabled": true,
+        "function": "transfer",
+        "unit": "box"
+      }
+    ],
+    "warehouse_assignments": [
+      {
+        "port": "core:west:1",
+        "slot": "warehouse_0"
+      },
+      {
+        "port": "core:west:4",
+        "slot": "warehouse_0"
+      },
+      {
+        "port": "core:west:7",
+        "slot": "warehouse_0"
+      },
+      {
+        "port": "core:east:1",
+        "slot": "warehouse_0"
+      },
+      {
+        "port": "core:east:4",
+        "slot": "warehouse_0"
+      },
+      {
+        "port": "core:east:7",
+        "slot": "warehouse_0"
+      }
+    ]
+  },
+  "timeline": {
+    "connection_events": [],
+    "events": [
+      {
+        "id": "build_0",
+        "kind": "build",
+        "time": {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "-3"
+          }
+        }
+      },
+      {
+        "id": "build_1",
+        "kind": "build",
+        "time": {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "-2"
+          }
+        }
+      },
+      {
+        "id": "build_2",
+        "kind": "build",
+        "time": {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "-1"
+          }
+        }
+      },
+      {
+        "id": "blueprint_complete",
+        "kind": "blueprint_complete",
+        "time": {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "0"
+          }
+        }
+      },
+      {
+        "id": "debug_end",
+        "kind": "debug_end",
+        "time": {
+          "kind": "rational",
+          "value": {
+            "category": "候选",
+            "value": "0"
+          }
+        }
+      }
+    ],
+    "relations": [
+      {
+        "after": "build_1",
+        "basis": [
+          "有限合成建造史"
+        ],
+        "before": "build_0",
+        "relation": "strict"
+      },
+      {
+        "after": "build_2",
+        "basis": [
+          "有限合成建造史"
+        ],
+        "before": "build_1",
+        "relation": "strict"
+      },
+      {
+        "after": "blueprint_complete",
+        "basis": [
+          "有限合成建造史"
+        ],
+        "before": "build_2",
+        "relation": "strict"
+      },
+      {
+        "after": "debug_end",
+        "basis": [
+          "有限合成建造史"
+        ],
+        "before": "blueprint_complete",
+        "relation": "occurs_before"
+      }
+    ]
+  }
+}

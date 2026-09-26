@@ -1,0 +1,268 @@
+{
+ "unit": {
+  "normal": {
+   "runs": 18000,
+   "cycles": 17975,
+   "premise_cycles": 17975,
+   "premise_multi_phase": 8734,
+   "premise_empty_hand": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "control_cycles": 0,
+   "control_empty_hand_C": 0,
+   "intervals": 9023310,
+   "viol_min": 0,
+   "viol_each": 0,
+   "viol_first_after_closure": 0,
+   "never_wait_cycles": 7549,
+   "viol_rate": 0,
+   "phi_bound_viol": 0,
+   "no_cycle": 25,
+   "nexit_gt_k_cycles": 6679
+  },
+  "edge": {
+   "runs": 6000,
+   "cycles": 5974,
+   "premise_cycles": 3987,
+   "premise_multi_phase": 1043,
+   "premise_empty_hand": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "control_cycles": 1987,
+   "control_empty_hand_C": 504,
+   "intervals": 1811430,
+   "viol_min": 0,
+   "viol_each": 0,
+   "viol_first_after_closure": 0,
+   "never_wait_cycles": 1662,
+   "viol_rate": 0,
+   "phi_bound_viol": 0,
+   "no_cycle": 26,
+   "nexit_gt_k_cycles": 1474
+  }
+ },
+ "factory": {
+  "runs": 220,
+  "cycles": 220,
+  "no_cycle": 0,
+  "skipped": 0,
+  "all_checks_pass": 220,
+  "Q": [
+   1,
+   2,
+   3,
+   5,
+   7,
+   12
+  ],
+  "periods": [
+   20,
+   60
+  ],
+  "multi_phase": 180,
+  "max_bottle": 9,
+  "max_steel6": 1,
+  "max_transient": 4983,
+  "stops": 1308,
+  "events": 65420,
+  "counts": {
+   "精炼炉": 51,
+   "粉碎机": 69,
+   "研磨机": 32,
+   "采种机": 17,
+   "种植机": 34,
+   "配件机": 6,
+   "塑形机": 6,
+   "封装机": 3,
+   "灌装机": 3
+  }
+ },
+ "factory_control": {
+  "runs": 12,
+  "cycles": 12,
+  "below_target": 12,
+  "empty_hand_detected": 12,
+  "rates": [
+   [
+    "588/1080",
+    "459/1080"
+   ],
+   [
+    "72/120",
+    "57/120"
+   ],
+   [
+    "780/1440",
+    "666/1440"
+   ],
+   [
+    "249/540",
+    "252/540"
+   ],
+   [
+    "144/240",
+    "105/240"
+   ],
+   [
+    "249/540",
+    "279/540"
+   ],
+   [
+    "216/360",
+    "123/360"
+   ],
+   [
+    "654/1440",
+    "729/1440"
+   ],
+   [
+    "144/240",
+    "105/240"
+   ],
+   [
+    "132/300",
+    "141/300"
+   ],
+   [
+    "216/420",
+    "195/420"
+   ],
+   [
+    "780/1440",
+    "666/1440"
+   ]
+  ]
+ },
+ "relay": {
+  "normal": {
+   "runs_with_viol": 0,
+   "runs": 20000,
+   "cycles": 20000,
+   "viol": 0,
+   "d5": 4362,
+   "multi_phase": 6935,
+   "xfirst_checked": 5859,
+   "backpressure": 12081,
+   "types": {
+    "灌装机": 2133,
+    "封装机": 2229,
+    "塑形机": 2267,
+    "研磨机": 2194,
+    "采种机": 2258,
+    "粉碎机": 2222,
+    "配件机": 2215,
+    "精炼炉": 2212,
+    "种植机": 2270
+   }
+  },
+  "few_lines": {
+   "runs_with_viol": 460,
+   "runs": 1000,
+   "cycles": 466,
+   "viol": 4614,
+   "d5": 225,
+   "multi_phase": 207,
+   "xfirst_checked": 82,
+   "backpressure": 285,
+   "types": {
+    "塑形机": 124,
+    "研磨机": 117,
+    "灌装机": 109,
+    "封装机": 116
+   }
+  },
+  "extra_exit": {
+   "runs_with_viol": 885,
+   "runs": 1000,
+   "cycles": 999,
+   "viol": 848584,
+   "d5": 216,
+   "multi_phase": 593,
+   "xfirst_checked": 290,
+   "backpressure": 624,
+   "types": {
+    "研磨机": 126,
+    "配件机": 111,
+    "粉碎机": 102,
+    "封装机": 101,
+    "塑形机": 123,
+    "精炼炉": 109,
+    "种植机": 111,
+    "采种机": 101,
+    "灌装机": 115
+   }
+  }
+ },
+ "shutdown_check": {
+  "机型下限": {
+   "封装机": [
+    "3",
+    3
+   ],
+   "灌装机": [
+    "11/4",
+    3
+   ],
+   "配件机": [
+    "6",
+    6
+   ],
+   "塑形机": [
+    "11/2",
+    6
+   ],
+   "研磨机": [
+    "63/2",
+    32
+   ],
+   "精炼炉": [
+    "51",
+    51
+   ],
+   "粉碎机": [
+    "68",
+    68
+   ],
+   "采种机": [
+    "16",
+    16
+   ],
+   "种植机": [
+    "32",
+    32
+   ]
+  },
+  "研磨机两种主料占格": {
+   "states": 30401,
+   "enter_by_arrival": 600,
+   "enter_by_start": 0,
+   "entry_kinds": {
+    "one_main_one_empty": 600
+   },
+   "double_main_can_start": 0,
+   "double_main_leave_transitions": 0
+  }
+ },
+ "transfer_defects": {
+  "甲": {
+   "ticks": 60,
+   "y_pk": 50,
+   "y_cache_nonempty_ticks": 60,
+   "x_empty_ticks": 60
+  },
+  "乙": {
+   "ticks": 80,
+   "y_connected_channels_after_closure": [
+    1
+   ],
+   "y_empty_ticks": 0,
+   "x_empty_ticks": 16
+  }
+ }
+}

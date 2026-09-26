@@ -1,0 +1,1 @@
+{"seed": 701, "control": "few_lines", "runs_with_viol": 460, "runs": 1000, "cycles": 466, "viol": 4614, "d5": 225, "multi_phase": 207, "xfirst_checked": 82, "backpressure": 285, "types": {"塑形机": 124, "研磨机": 117, "灌装机": 109, "封装机": 116}}

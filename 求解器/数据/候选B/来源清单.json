@@ -9,11 +9,11 @@
   },
   {
     "path": "/home/zhuran24/zmd-research-fresh/求解约束.txt",
-    "sha256": "74409eaf42e3c9f1671a017491b1f43ea5268b5aab7989b15a448cd447014ce4"
+    "sha256": "dfea46c61f29be5a86659bce3642009d2558ace073d6dbd79f5dd3c6475226db"
   },
   {
     "path": "/home/zhuran24/zmd-research-fresh/候选约束.txt",
-    "sha256": "b43f7dc50626cdf83711c35dd2fb7aba3ff481b3dea501ae4a3602f5a3ec052e"
+    "sha256": "2867d09493700ad7057828ea90e4711beea06dfac5181c0393a7a0174a651cec"
   },
   {
     "path": "/home/zhuran24/文档/会议2全套/会议目录/seat-opus-4/design.py",
@@ -61,6 +61,6 @@
   },
   {
     "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
-    "sha256": "55eabb8e53dc93c16d31e372e1d3ede8fa9e22d17337b14b7c82094ac3dfba49"
+    "sha256": "74deafed83876dcf40fffe55d8f01d45edcfd2840e35725c8006da996c877e02"
   }
 ]
