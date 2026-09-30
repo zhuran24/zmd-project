@@ -1,0 +1,32 @@
+{
+  "argv": [
+    "rustfmt",
+    "--edition",
+    "2021",
+    "--config",
+    "skip_children=true",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/catalog.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/config.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/engine.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/graph.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/input.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/interfaces.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/main.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/model.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/polling.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/step.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests_box_gate.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests_config.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests_graph.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests_manufacture.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests_seed.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests_step.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests_support.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests_warehouse.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/value.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/warehouse.rs",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/reference.rs"
+  ],
+  "exit_code": 0
+}

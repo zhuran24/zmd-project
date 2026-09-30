@@ -1,0 +1,23 @@
+{
+  "argv": [
+    "rg",
+    "-n",
+    "max_sweeps|ordered_sweeps|after_closure|before_boundary|damping|level_order|level_tie|tick_context|pending_events|blocked_channels|port_usage|scan_round_then_template",
+    "crates/kernel/src",
+    "-g",
+    "!output.rs",
+    "-g",
+    "!cycle.rs",
+    "-g",
+    "!cycle_io.rs",
+    "-g",
+    "!event_identity.rs",
+    "-g",
+    "!seed.rs"
+  ],
+  "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+  "exit_code": 1,
+  "matches": 0,
+  "stdout": "",
+  "stderr": ""
+}

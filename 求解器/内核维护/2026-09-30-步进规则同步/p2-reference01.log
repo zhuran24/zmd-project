@@ -1,0 +1,38 @@
+   Compiling kernel v0.1.0 (/home/zhuran24/zmd-research-fresh/求解器/crates/kernel)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.31s
+     Running tests/reference.rs (target/debug/deps/reference-1613ad1990138602)
+
+running 11 tests
+test a_pure_chain ... ok
+test b_hysteresis ... FAILED
+test c_material_switch ... ok
+test d_full_boxes ... ok
+test dead_tail ... FAILED
+test e_merger ... ok
+test independent_python_audit_full_delta_and_tamper_rejection ... ok
+test migrated_fixtures_run_declared_steps ... ok
+test mining ... ok
+test side_priority ... ok
+test three_upstreams ... ok
+
+failures:
+
+---- b_hysteresis stdout ----
+
+thread 'b_hysteresis' (585448) panicked at crates/kernel/tests/reference.rs:8:62:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "initial_state.warehouse", reason: "任务初始锚点非每种满仓或重复物种" }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- dead_tail stdout ----
+
+thread 'dead_tail' (585471) panicked at crates/kernel/tests/reference.rs:8:62:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "initial_state.warehouse", reason: "任务初始锚点非每种满仓或重复物种" }
+
+
+failures:
+    b_hysteresis
+    dead_tail
+
+test result: FAILED. 9 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.85s
+
+error: test failed, to rerun pass `-p kernel --test reference`

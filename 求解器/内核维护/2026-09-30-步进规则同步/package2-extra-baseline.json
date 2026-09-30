@@ -1,0 +1,6 @@
+{
+  "path": "求解器/crates/kernel/周期键读取审计.md",
+  "sha256": "00afb8223d32cb2b77015ff4e9797171813eab2c38f5e941eb015d512c437d60",
+  "source": "before/crates/kernel/周期键读取审计.md",
+  "note": "首次包二写入前由 work.write 保存原字节；不改既有开工快照"
+}

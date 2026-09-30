@@ -1,0 +1,73 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.03s
+     Running unittests src/lib.rs (target/debug/deps/kernel-26241e85d1128675)
+
+running 66 tests
+test digest::known_vectors ... ok
+test tests_box_gate::all_slots_can_transfer_and_lowest_receivable_slot_is_used ... ok
+test tests_box_gate::disabled_transfer_cooldown_is_frozen ... ok
+test tests_box_gate::empty_and_rejected_transfers_restart_forty_steps ... ok
+test tests_box_gate::empty_box_receives_and_sends_in_same_step ... ok
+test tests_box_gate::gate_identity_total_and_static_order ... ok
+test tests_box_gate::gate_max_limits_come_from_settings_not_window_steps ... ok
+test tests_box_gate::gate_window_covers_zero_through_thirty_nine_then_reopens ... ok
+test tests_box_gate::missing_or_duplicate_transfer_timing_is_invalid ... ok
+test tests_box_gate::partial_receipt_and_ambiguous_multislot_stop ... ok
+test tests_box_gate::transfer_before_or_after_port_send ... ok
+test tests_config::all_66_axes_and_16_stop_axes_are_enforced ... ok
+test tests_config::catalog_time_quantities_are_steps ... ok
+test tests_cycle::collision_buckets_compare_full_keys_and_replay_budget_never_claims_cycle ... ok
+test tests_cycle::production_samples_find_verify_and_reject_cycle_ledger_tampering ... ok
+test tests_cycle::referenced_record_generation_is_in_memory_and_replays_same_prefix ... ok
+test tests_cycle::relative_transport_and_window_keys_preserve_remaining_work ... ok
+test tests_cycle::step_period_rates_match_tick_targets_exactly ... ok
+test tests_cycle::window_remaining_and_capped_total_are_effective_key_fields ... ok
+test tests_graph::belt_partition_and_layers ... ok
+test tests_graph::branch_explicit_missing_and_invalid ... ok
+test tests_graph::bridge_axes_cycle_and_noncycle_anchors ... ok
+test tests_graph::fixed_component_and_nontransport_orders ... ok
+test tests_graph::no_outgoing_components_do_not_count_as_layer_candidates ... ok
+test tests_manufacture::completed_batch_flushes_on_the_send_that_makes_room ... ok
+test tests_manufacture::completes_at_start_plus_eight_d_and_flushes_immediately ... ok
+test tests_manufacture::disabled_machine_does_not_intake_and_work_freezes ... ok
+test tests_manufacture::material_switch_cycles_are_16_16_and_18_steps_with_formal_recipes ... ok
+test tests_manufacture::output_unique_item_guard_keeps_completed_batch_in_buffer ... ok
+test tests_manufacture::step_boundary_reload_has_identical_successors ... ok
+test tests_output::checkpoint_roundtrip_preserves_fixed_parameters_and_step_successors ... ok
+test tests_output::delta_rejects_conflicts_arrays_and_noops ... ok
+test tests_output::migrated_mechanisms_load_and_execute_declared_steps_or_expected_stop ... ok
+test tests_output::records_full_and_delta_roundtrip_and_tampering_rejected ... ok
+test tests_output::seed_normalization_fills_missing_sides_and_clears_expired_windows ... ok
+test tests_seed::expired_gate_window_and_bad_progress ... ok
+test tests_seed::invalid_recency_and_reserved_runtime_identity_are_rejected ... ok
+test tests_seed::no_op_failed_judgements_do_not_consume_event_ids ... ok
+test tests_seed::offline_stops_before_any_step_effect ... ok
+test tests_seed::old_schema_and_future_build_rejected ... ok
+test tests_seed::ordinary_timestamps_last_unit_and_duplicate_rows_are_rejected ... ok
+test tests_seed::poll_state_missing_extra_and_wrong_members ... ok
+test tests_seed::time_domain_and_transport_timestamp_rejections ... ok
+test tests_step::boundary_item_resides_eight_steps ... ok
+test tests_step::box_minimum_nonempty_slot_does_not_skip_blocked_kind ... ok
+test tests_step::bridge_axes_independent_and_no_immediate_return ... ok
+test tests_step::bridge_two_outlets_pull_transitive_receipt_groups_once ... ok
+test tests_step::full_box_series_adds_one_step_per_box ... ok
+test tests_step::head_departure_settles_whole_ready_chain_in_same_step ... ok
+test tests_step::machine_receives_multiple_upstreams_but_merger_only_one ... ok
+test tests_step::merger_priority_grade_uses_layer_and_connection_rank ... ok
+test tests_step::nontransport_recency_and_receiver_cursor_update_only_on_success ... ok
+test tests_step::pure_chain_starts_every_eight_steps ... ok
+test tests_step::ring_empty_space_propagates_and_full_ring_stays ... ok
+test tests_step::splitter_is_never_pulled_into_receipt_group ... ok
+test tests_step::tail_hysteresis_ratio_and_later_splitter_full_rate ... ok
+test tests_step::three_upstreams_one_winner_even_single_outlet_splitters ... ok
+test tests_step::through_belt_has_side_priority_over_box ... ok
+test tests_warehouse::empty_slot_competition_stops_before_writing ... ok
+test tests_warehouse::explicit_supply_is_applied_once_at_its_step ... ok
+test tests_warehouse::identity_is_retained_and_duplicate_historical_identity_rejected ... ok
+test tests_warehouse::last_explicit_ore_is_refused_and_engine_is_sealed ... ok
+test tests_warehouse::per_species_ledger_conserves_ore_replenishment_and_rejects_tampering ... ok
+test tests_warehouse::production_ore_return_is_rejected_before_warehouse_capacity ... ok
+test tests_warehouse::put_failure_keeps_all_bytes_and_local_capacity ... ok
+test tests_warehouse::unnamed_species_have_stable_order_and_new_labels ... ok
+
+test result: ok. 66 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 9.25s
+

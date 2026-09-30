@@ -1,0 +1,8 @@
+bridges-0 layers {'C|out': 1, 'C|x6': 1} order ['C|out', 'C|x6', 'crusher', 'source', 'core']
+   starts 54 first [48, 56, 64] tail gaps [8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8] mean tail 8.0
+bridges-1 layers {'C|out': 1, 'C|x2': 3, 'C|x3|horizontal': 1, 'C|x3|vertical': 2, 'C|x6': 1} order ['C|out', 'C|x6', 'C|x3|horizontal', 'C|x3|vertical', 'C|x2', 'crusher', 'source', 'core']
+   starts 54 first [48, 56, 64] tail gaps [8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8] mean tail 8.0
+bridges-2 layers {'C|out': 1, 'C|x2': 4, 'C|x3|horizontal': 1, 'C|x3|vertical': 3, 'C|x4|horizontal': 1, 'C|x4|vertical': 2, 'C|x6': 1} order ['C|out', 'C|x6', 'C|x3|horizontal', 'C|x4|horizontal', 'C|x4|vertical', 'C|x3|vertical', 'C|x2', 'crusher', 'source', 'core']
+   starts 48 first [48, 57, 66] tail gaps [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9] mean tail 9.0
+bridges-3 layers {'C|out': 1, 'C|x2': 5, 'C|x3|horizontal': 1, 'C|x3|vertical': 4, 'C|x4|horizontal': 1, 'C|x4|vertical': 3, 'C|x5|horizontal': 1, 'C|x5|vertical': 2, 'C|x6': 1} order ['C|out', 'C|x6', 'C|x3|horizontal', 'C|x4|horizontal', 'C|x5|horizontal', 'C|x5|vertical', 'C|x4|vertical', 'C|x3|vertical', 'C|x2', 'crusher', 'source', 'core']
+   starts 48 first [48, 57, 66] tail gaps [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9] mean tail 9.0

@@ -1,0 +1,1325 @@
+{
+  "catalog": {
+    "path": "../../../正式静态目录.json",
+    "sha256": "73de10b3a4849302eb259dd16c6830d3a37464ea4a6b211dbc6c38a655d30e53"
+  },
+  "construction": {
+    "complete_event": "blueprint_complete",
+    "mode": "blueprint_once",
+    "moments": [
+      {
+        "event": "build_0",
+        "placement": {
+          "kind": "协议核心",
+          "occupied_cells": null,
+          "origin": [
+            {
+              "category": "候选",
+              "value": "60"
+            },
+            {
+              "category": "候选",
+              "value": "60"
+            }
+          ],
+          "port_layout": 0,
+          "rotation": "r0"
+        },
+        "unit": "core"
+      },
+      {
+        "event": "build_1",
+        "placement": {
+          "kind": "协议储存箱",
+          "occupied_cells": null,
+          "origin": [
+            {
+              "category": "候选",
+              "value": "10"
+            },
+            {
+              "category": "候选",
+              "value": "10"
+            }
+          ],
+          "port_layout": 0,
+          "rotation": "r0"
+        },
+        "unit": "box"
+      },
+      {
+        "event": "build_2",
+        "placement": {
+          "kind": "供电桩",
+          "occupied_cells": null,
+          "origin": [
+            {
+              "category": "候选",
+              "value": "14"
+            },
+            {
+              "category": "候选",
+              "value": "10"
+            }
+          ],
+          "port_layout": 0,
+          "rotation": "r0"
+        },
+        "unit": "power"
+      }
+    ],
+    "order_domain": "all_rule_consistent_orders",
+    "selected_order": [
+      "core",
+      "box",
+      "power"
+    ]
+  },
+  "contract_binding": null,
+  "debug_operations": [],
+  "environment": {
+    "debug_end_event": "debug_end",
+    "offline": {
+      "event_domain": {
+        "basis": [
+          "本次无离线见证，不排除其它历史"
+        ],
+        "status": "specified",
+        "value": {
+          "events": [],
+          "kind": "selected_history"
+        }
+      },
+      "selected_events": []
+    },
+    "ore_supply": "task_continuous_sufficient",
+    "product_withdrawal": {
+      "policy": {
+        "basis": [
+          "有限轨迹中无成品可拿取"
+        ],
+        "status": "specified",
+        "value": {
+          "admissibility": {
+            "basis": [
+              "未请求任何玩家动作"
+            ],
+            "status": "specified",
+            "value": {
+              "kind": "no_actions"
+            }
+          },
+          "rules": [],
+          "schema": "withdrawal-policy-v1",
+          "selection": {
+            "basis": [
+              "空规则集合"
+            ],
+            "status": "specified",
+            "value": {
+              "kind": "listed_order",
+              "rule_order": []
+            }
+          },
+          "timing_family": {
+            "after": [],
+            "before": [],
+            "interleaving": {
+              "basis": [
+                "无事件"
+              ],
+              "status": "specified",
+              "value": []
+            },
+            "kind": "imprecise",
+            "response": {
+              "basis": [
+                "本有限实验不请求响应界"
+              ],
+              "status": "unresolved",
+              "value": null
+            }
+          }
+        }
+      },
+      "selected_events": []
+    },
+    "zero_intervention_after_debug": true
+  },
+  "initial_state": {
+    "anchor": {
+      "basis": [
+        "本例选核心建成锚点；不是蓝图默认"
+      ],
+      "status": "specified",
+      "value": {
+        "event": "build_0",
+        "side": "after"
+      }
+    },
+    "nonwarehouse": {
+      "basis": [
+        "候选合成状态：空库存来自 empty_on_build；历史推演见黄金轨迹 §2"
+      ],
+      "status": "specified",
+      "value": {
+        "environment": {
+          "online": true,
+          "stage": "zero_intervention",
+          "time": {
+            "kind": "step",
+            "value": {
+              "value": "0",
+              "category": "候选"
+            }
+          },
+          "withdrawal_memory": {
+            "basis": [
+              "无拿取事件"
+            ],
+            "status": "specified",
+            "value": {
+              "once_fired": [],
+              "pending_rules": []
+            }
+          }
+        },
+        "inventory": [
+          {
+            "contents": [
+              {
+                "item": "高容谷地电池",
+                "quantity": {
+                  "value": "2",
+                  "category": "候选"
+                },
+                "entered_at": null
+              }
+            ],
+            "slot": "box:storage:0"
+          },
+          {
+            "contents": [
+              {
+                "item": "高容谷地电池",
+                "quantity": {
+                  "value": "3",
+                  "category": "候选"
+                },
+                "entered_at": null
+              }
+            ],
+            "slot": "box:storage:1"
+          },
+          {
+            "contents": [],
+            "slot": "box:storage:2"
+          },
+          {
+            "contents": [],
+            "slot": "box:storage:3"
+          },
+          {
+            "contents": [],
+            "slot": "box:storage:4"
+          },
+          {
+            "contents": [],
+            "slot": "box:storage:5"
+          }
+        ],
+        "layout_snapshot": "built_layout",
+        "logistics": {
+          "poll_state": {
+            "schema": "poll-state-v1",
+            "cursors": [],
+            "recency": []
+          },
+          "gate_counters": []
+        },
+        "progress": [
+          {
+            "phase": "idle",
+            "recipe": null,
+            "remaining": null,
+            "unit": "box",
+            "cooldown": {
+              "kind": "step",
+              "value": {
+                "value": "0",
+                "category": "候选"
+              }
+            }
+          }
+        ],
+        "semantic_context": {
+          "warehouse_empty_slot_order": []
+        },
+        "settings_anchor": {
+          "event": "blueprint_complete",
+          "side": "after"
+        },
+        "warehouse": {
+          "slots": [
+            {
+              "empty_identity": {
+                "basis": [
+                  "非空格内容已给；空身份不适用"
+                ],
+                "status": "not_applicable",
+                "value": null
+              },
+              "item": "源矿",
+              "quantity": {
+                "category": "条文直引",
+                "value": "80000"
+              },
+              "slot": "warehouse_0"
+            },
+            {
+              "empty_identity": {
+                "basis": [
+                  "非空格内容已给；空身份不适用"
+                ],
+                "status": "not_applicable",
+                "value": null
+              },
+              "item": "砂叶",
+              "quantity": {
+                "category": "条文直引",
+                "value": "80000"
+              },
+              "slot": "warehouse_1"
+            },
+            {
+              "empty_identity": {
+                "basis": [
+                  "非空格内容已给；空身份不适用"
+                ],
+                "status": "not_applicable",
+                "value": null
+              },
+              "item": "砂叶种子",
+              "quantity": {
+                "category": "条文直引",
+                "value": "80000"
+              },
+              "slot": "warehouse_2"
+            },
+            {
+              "empty_identity": {
+                "basis": [
+                  "非空格内容已给；空身份不适用"
+                ],
+                "status": "not_applicable",
+                "value": null
+              },
+              "item": "荞花",
+              "quantity": {
+                "category": "条文直引",
+                "value": "80000"
+              },
+              "slot": "warehouse_3"
+            },
+            {
+              "empty_identity": {
+                "basis": [
+                  "非空格内容已给；空身份不适用"
+                ],
+                "status": "not_applicable",
+                "value": null
+              },
+              "item": "荞花种子",
+              "quantity": {
+                "category": "条文直引",
+                "value": "80000"
+              },
+              "slot": "warehouse_4"
+            },
+            {
+              "empty_identity": {
+                "basis": [
+                  "非空格内容已给；空身份不适用"
+                ],
+                "status": "not_applicable",
+                "value": null
+              },
+              "item": "蓝铁矿",
+              "quantity": {
+                "category": "条文直引",
+                "value": "80000"
+              },
+              "slot": "warehouse_5"
+            },
+            {
+              "empty_identity": {
+                "basis": [
+                  "合成种子历史身份"
+                ],
+                "status": "specified",
+                "value": "高容谷地电池"
+              },
+              "item": null,
+              "quantity": {
+                "category": "候选",
+                "value": "0"
+              },
+              "slot": "test_高容谷地电池"
+            }
+          ],
+          "unlisted": "empty"
+        }
+      }
+    },
+    "reachability": {
+      "basis": [
+        "任务7工程局部验证"
+      ],
+      "status": "specified",
+      "value": {
+        "document": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/周期键读取审计.md",
+        "kind": "conditional_state",
+        "scope": "局部机制合成种子；任务8没有证明实际调试程序的全部可达后态"
+      }
+    },
+    "warehouse": {
+      "slots": [
+        {
+          "empty_identity": {
+            "basis": [
+              "非空格内容已给；空身份不适用"
+            ],
+            "status": "not_applicable",
+            "value": null
+          },
+          "item": "源矿",
+          "quantity": {
+            "category": "条文直引",
+            "value": "80000"
+          },
+          "slot": "warehouse_0"
+        },
+        {
+          "empty_identity": {
+            "basis": [
+              "非空格内容已给；空身份不适用"
+            ],
+            "status": "not_applicable",
+            "value": null
+          },
+          "item": "砂叶",
+          "quantity": {
+            "category": "条文直引",
+            "value": "80000"
+          },
+          "slot": "warehouse_1"
+        },
+        {
+          "empty_identity": {
+            "basis": [
+              "非空格内容已给；空身份不适用"
+            ],
+            "status": "not_applicable",
+            "value": null
+          },
+          "item": "砂叶种子",
+          "quantity": {
+            "category": "条文直引",
+            "value": "80000"
+          },
+          "slot": "warehouse_2"
+        },
+        {
+          "empty_identity": {
+            "basis": [
+              "非空格内容已给；空身份不适用"
+            ],
+            "status": "not_applicable",
+            "value": null
+          },
+          "item": "荞花",
+          "quantity": {
+            "category": "条文直引",
+            "value": "80000"
+          },
+          "slot": "warehouse_3"
+        },
+        {
+          "empty_identity": {
+            "basis": [
+              "非空格内容已给；空身份不适用"
+            ],
+            "status": "not_applicable",
+            "value": null
+          },
+          "item": "荞花种子",
+          "quantity": {
+            "category": "条文直引",
+            "value": "80000"
+          },
+          "slot": "warehouse_4"
+        },
+        {
+          "empty_identity": {
+            "basis": [
+              "非空格内容已给；空身份不适用"
+            ],
+            "status": "not_applicable",
+            "value": null
+          },
+          "item": "蓝铁矿",
+          "quantity": {
+            "category": "条文直引",
+            "value": "80000"
+          },
+          "slot": "warehouse_5"
+        }
+      ],
+      "unlisted": "empty"
+    }
+  },
+  "layout": {
+    "anchor": {
+      "event": "blueprint_complete",
+      "side": "after"
+    },
+    "base": {
+      "height": {
+        "category": "条文直引",
+        "value": "70"
+      },
+      "width": {
+        "category": "条文直引",
+        "value": "70"
+      }
+    },
+    "buffer_channels": [],
+    "id": "built_layout",
+    "physical_channels": [],
+    "post_debug": {
+      "basis": [
+        "同几何、无调试动作的具体历史"
+      ],
+      "status": "specified",
+      "value": "built_layout"
+    },
+    "snapshots": [],
+    "units": [
+      {
+        "bridge_axes": null,
+        "id": "core",
+        "kind": "协议核心",
+        "occupied_cells": null,
+        "origin": [
+          {
+            "category": "候选",
+            "value": "60"
+          },
+          {
+            "category": "候选",
+            "value": "60"
+          }
+        ],
+        "port_layout": 0,
+        "rotation": "r0"
+      },
+      {
+        "bridge_axes": null,
+        "id": "box",
+        "kind": "协议储存箱",
+        "occupied_cells": null,
+        "origin": [
+          {
+            "category": "候选",
+            "value": "10"
+          },
+          {
+            "category": "候选",
+            "value": "10"
+          }
+        ],
+        "port_layout": 0,
+        "rotation": "r0"
+      },
+      {
+        "bridge_axes": null,
+        "id": "power",
+        "kind": "供电桩",
+        "occupied_cells": null,
+        "origin": [
+          {
+            "category": "候选",
+            "value": "14"
+          },
+          {
+            "category": "候选",
+            "value": "10"
+          }
+        ],
+        "port_layout": 0,
+        "rotation": "r0"
+      }
+    ]
+  },
+  "parameters": {
+    "axis_registry": {
+      "path": "../../../../规格/内核配置-v2.json",
+      "sha256": "680acb480aa28443431e119c98e4cc45ca6abade1670c9a4a1283a77a7d199a2"
+    },
+    "profile_id": "kernel_profile_v2",
+    "fixed": {
+      "polling.direct_peer": {
+        "status": "specified",
+        "value": "physical_peer",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "connection.port_meeting": {
+        "status": "specified",
+        "value": "shared_edge_opposite",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "initialization.rotation_stage": {
+        "status": "specified",
+        "value": "build_and_debug",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "transfer.judgment": {
+        "status": "specified",
+        "value": "unit",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "manufacturing.port_slot_relation": {
+        "status": "specified",
+        "value": "distributed",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "manufacturing.output_blocked": {
+        "status": "specified",
+        "value": "retain_whole_batch",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "gate.limit_requires_identity": {
+        "status": "specified",
+        "value": true,
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "warehouse.capacity": {
+        "status": "specified",
+        "value": {
+          "value": "80000",
+          "category": "条文直引"
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "warehouse.delivery_count": {
+        "status": "specified",
+        "value": "actual_inbound",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "bridge.inventory_scope": {
+        "status": "specified",
+        "value": "two_independent_axis_slots",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "bridge.scheduling_scope": {
+        "status": "specified",
+        "value": "per_axis",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "time.domain": {
+        "status": "specified",
+        "value": "integer_steps",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "polling.split_merge_start": {
+        "status": "specified",
+        "value": "second_connected_first_time",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "transfer.cooldown_scope": {
+        "status": "specified",
+        "value": "box",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "transfer.failure_cooldown": {
+        "status": "specified",
+        "value": "every_attempt",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "transfer.partial_acceptance": {
+        "status": "specified",
+        "value": "max_receivable",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "gate.window_clock": {
+        "status": "specified",
+        "value": "wall_clock",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "warehouse.acceptance": {
+        "status": "specified",
+        "value": "receivable_products",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "warehouse.acceptance_quantifier": {
+        "status": "specified",
+        "value": "all_candidate_and_actual_checks",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "bridge.capacity": {
+        "status": "specified",
+        "value": 1,
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "connection.build_order": {
+        "status": "specified",
+        "value": "construction.selected_order",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "connection.belt_shape": {
+        "status": "specified",
+        "value": {
+          "kind": "layout_build_history",
+          "values": []
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "component.belt_segment": {
+        "status": "specified",
+        "value": "channel_chain",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      }
+    },
+    "offline_mutable": {
+      "connection.order": {
+        "status": "specified",
+        "value": "timeline_connection_history",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "offline.order_domain": {
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "请求构造完整离线重排域或离线事件出现"
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "step.order": {
+        "status": "specified",
+        "value": {
+          "schema": "step-order-v1",
+          "layer_choices": [],
+          "cycle_layers": [],
+          "nontransport_order": [
+            "box",
+            "core"
+          ]
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      }
+    },
+    "fixedness_unproven": {
+      "polling.initial_cursor": {
+        "status": "specified",
+        "value": "first_connected",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "polling.split_merge_singleton": {
+        "status": "specified",
+        "value": "sole_member",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "transfer.pause": {
+        "status": "specified",
+        "value": "pause_with_function",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "manufacturing.input_mixing": {
+        "status": "specified",
+        "value": "single_kind",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "manufacturing.input_capacity_scope": {
+        "status": "specified",
+        "value": "per_slot_total",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "manufacturing.recipe_match_scope": {
+        "status": "specified",
+        "value": "input_union",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "manufacturing.recipe_completeness": {
+        "status": "specified",
+        "value": "full_batch",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "manufacturing.empty_slot_identity": {
+        "status": "specified",
+        "value": "release_on_empty",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "gate.counter_start": {
+        "status": "specified",
+        "value": "since_build",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "initialization.belt_shape_lifecycle": {
+        "status": "specified",
+        "value": "fixed_between_builds",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "warehouse.empty_slot_identity": {
+        "status": "specified",
+        "value": "retain_history",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "power.cell_rule": {
+        "status": "specified",
+        "value": "positive_area",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "connection.tie": {
+        "status": "specified",
+        "value": {
+          "channels": [],
+          "kind": "explicit_order"
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "transfer.phase": {
+        "status": "specified",
+        "value": {
+          "kind": "explicit_residuals",
+          "values": [
+            {
+              "unit": "box",
+              "slot": null,
+              "remaining": {
+                "kind": "step",
+                "value": {
+                  "value": "0",
+                  "category": "候选"
+                }
+              }
+            }
+          ]
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "manufacturing.recipe_selection": {
+        "status": "specified",
+        "value": {
+          "kind": "explicit_order",
+          "recipes": [
+            "粉碎-源矿",
+            "粉碎-蓝铁块",
+            "粉碎-荞花",
+            "粉碎-砂叶",
+            "精炼-蓝铁矿",
+            "精炼-致密蓝铁",
+            "精炼-蓝铁粉末",
+            "研磨-致密蓝铁",
+            "研磨-致密源石",
+            "研磨-细磨荞花",
+            "塑形-钢质瓶",
+            "配件-钢制零件",
+            "种植-荞花",
+            "种植-砂叶",
+            "采种-荞花",
+            "采种-砂叶",
+            "封装-电池",
+            "灌装-胶囊"
+          ]
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "manufacturing.input_slot_selection": {
+        "status": "specified",
+        "value": {
+          "kind": "explicit_order",
+          "slots": []
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "initialization.warehouse_anchor": {
+        "status": "specified",
+        "value": {
+          "event": "build_0",
+          "kind": "input_anchor",
+          "side": "after"
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "initialization.other_inventory": {
+        "status": "specified",
+        "value": {
+          "inventory_assumption": "empty_on_build",
+          "kind": "synthetic_seed",
+          "path": "initial_state.nonwarehouse"
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "initialization.switches": {
+        "status": "specified",
+        "value": {
+          "initial_values": "explicit_at_build",
+          "kind": "input_settings",
+          "path": "settings"
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "initialization.build_timing": {
+        "status": "specified",
+        "value": {
+          "kind": "input_history",
+          "path": "timeline"
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "initialization.debug_end": {
+        "status": "specified",
+        "value": {
+          "event": "debug_end",
+          "kind": "input_witness",
+          "not_a_timing_strategy": true
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "warehouse.external_supply": {
+        "status": "specified",
+        "value": {
+          "kind": "sufficient"
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "gate.counter_edit": {
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "调试改身份/累计/窗口设定并需确定计数后效"
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "gate.cancel_limit": {
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "取消已设限额"
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "offline.events": {
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "出现任何离线/上线事件"
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "offline.cursor_effect": {
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "离线需更新轮询状态"
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "offline.inventory_effect": {
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "离线需更新库存"
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "offline.progress_effect": {
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "离线需更新进度/时钟"
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "offline.direction_effect": {
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "请求离线回放"
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "offline.gate_total_effect": {
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "离线需更新累计计数"
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "offline.gate_window_effect": {
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "离线需更新窗口计数"
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "offline.gate_window_start_effect": {
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "离线需更新窗口起点"
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "initialization.debug_actions": {
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "运行区间内出现玩家单位操作（种子之前的动作只核证据引用）"
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "initialization.rebuild_inventory": {
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "拆除或重建需确定库存/进度去向"
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "warehouse.withdrawal_policy": {
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "需要执行拿取策略或据此认证完整周期"
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "warehouse.withdrawal_timing": {
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "运行区间出现玩家拿取事件；策略与实际时距未实现"
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "warehouse.periodic_lift": {
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "请求缺少逐项复原证据的完整基地周期或缺少覆盖证明的全称认证"
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "manufacturing.recipe_quantity_match": {
+        "status": "specified",
+        "value": "at_least",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "manufacturing.recipe_extra_items": {
+        "status": "specified",
+        "value": "allow",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "transfer.timing": {
+        "status": "specified",
+        "value": {
+          "schema": "transfer-timing-v1",
+          "values": [
+            {
+              "unit": "box",
+              "timing": "before_send"
+            }
+          ]
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      }
+    }
+  },
+  "purpose": "synthetic_execution",
+  "scenario": {
+    "assertions": [
+      "同种多格全部传走"
+    ],
+    "expected_paths": [],
+    "name": "任务7-无线多格全收",
+    "recipe_intents": [],
+    "migration": {
+      "source_schema": "kernel-input-v3",
+      "note": "不继承旧轮询记忆；默认选支和传输次序仅为一个代表值，不宣称全称。",
+      "old_anchor": "before_boundary",
+      "source": "数据/样例/任务7内核/无线多格全收.json",
+      "sha256": "030ad21f31239db944a7f4331fc26800a39cc8d0ff70fa85ef5b0313eaa79b84"
+    },
+    "steps": 80
+  },
+  "schema": "kernel-input-v4",
+  "settings": {
+    "anchor": {
+      "event": "blueprint_complete",
+      "side": "after"
+    },
+    "gates": [],
+    "switches": [
+      {
+        "enabled": true,
+        "function": "transfer",
+        "unit": "box"
+      }
+    ],
+    "warehouse_assignments": [
+      {
+        "port": "core:west:1",
+        "slot": "warehouse_0"
+      },
+      {
+        "port": "core:west:4",
+        "slot": "warehouse_0"
+      },
+      {
+        "port": "core:west:7",
+        "slot": "warehouse_0"
+      },
+      {
+        "port": "core:east:1",
+        "slot": "warehouse_0"
+      },
+      {
+        "port": "core:east:4",
+        "slot": "warehouse_0"
+      },
+      {
+        "port": "core:east:7",
+        "slot": "warehouse_0"
+      }
+    ]
+  },
+  "timeline": {
+    "connection_events": [],
+    "events": [
+      {
+        "id": "build_0",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-24",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_1",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-16",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_2",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-8",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "blueprint_complete",
+        "kind": "blueprint_complete",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "0",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "debug_end",
+        "kind": "debug_end",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "0",
+            "category": "候选"
+          }
+        }
+      }
+    ],
+    "relations": [
+      {
+        "after": "build_1",
+        "basis": [
+          "有限合成建造史"
+        ],
+        "before": "build_0",
+        "relation": "strict"
+      },
+      {
+        "after": "build_2",
+        "basis": [
+          "有限合成建造史"
+        ],
+        "before": "build_1",
+        "relation": "strict"
+      },
+      {
+        "after": "blueprint_complete",
+        "basis": [
+          "有限合成建造史"
+        ],
+        "before": "build_2",
+        "relation": "strict"
+      },
+      {
+        "after": "debug_end",
+        "basis": [
+          "有限合成建造史"
+        ],
+        "before": "blueprint_complete",
+        "relation": "occurs_before"
+      }
+    ]
+  }
+}

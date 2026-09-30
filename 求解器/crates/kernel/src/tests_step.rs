@@ -1,0 +1,370 @@
+use crate::tests_support::*;
+use serde_json::json;
+#[test]
+fn boundary_item_resides_eight_steps() {
+    let mut r = chain();
+    put_seed(&mut r, "b1:transport:0", "源矿", 1, Some(0));
+    let mut e = engine(r);
+    assert!(moves(&advance(&mut e, 8))
+        .iter()
+        .all(|(_, c, _)| !c.contains("b1:north")));
+    let report = e.step().unwrap();
+    assert!(report
+        .events
+        .iter()
+        .flat_map(|e| &e.moves)
+        .any(|m| m.channel.contains("b1:north")));
+}
+#[test]
+fn head_departure_settles_whole_ready_chain_in_same_step() {
+    let mut r = chain();
+    put_seed(&mut r, "b0:transport:0", "源矿", 1, Some(-8));
+    put_seed(&mut r, "b1:transport:0", "源矿", 1, Some(-8));
+    let mut e = engine(r);
+    e.step().unwrap();
+    assert_eq!(count(&e, "b0:transport:0"), 1);
+    assert_eq!(count(&e, "b1:transport:0"), 1);
+    for s in ["b0:transport:0", "b1:transport:0"] {
+        assert_eq!(
+            e.state.inventory[e.inv[s]].contents[0]
+                .entered_at
+                .as_ref()
+                .unwrap()
+                .integer(s)
+                .unwrap(),
+            0
+        );
+    }
+}
+#[test]
+fn pure_chain_starts_every_eight_steps() {
+    let mut e = engine(chain());
+    let reports = advance(&mut e, 64);
+    let starts: Vec<_> = reports
+        .iter()
+        .filter(|r| r.events.iter().any(|e| e.phase == "start"))
+        .map(|r| r.step)
+        .collect();
+    assert_eq!(starts, [16, 24, 32, 40, 48, 56]);
+    assert_eq!(e.completed_batches, 5);
+}
+#[test]
+fn ring_empty_space_propagates_and_full_ring_stays() {
+    let mut r = crate::tests_graph::ring();
+    for u in ["a", "b", "c"] {
+        put_seed(&mut r, &format!("{u}:transport:0"), "源矿", 1, Some(-8));
+    }
+    let mut e = engine(r);
+    e.step().unwrap();
+    assert_eq!(count(&e, "a:transport:0"), 0);
+    assert_eq!(count(&e, "d:transport:0"), 1);
+    let mut r = crate::tests_graph::ring();
+    for u in ["a", "b", "c", "d"] {
+        put_seed(&mut r, &format!("{u}:transport:0"), "源矿", 1, Some(-8));
+    }
+    let mut e = engine(r);
+    let before = e.state.inventory.clone();
+    e.step().unwrap();
+    assert_eq!(e.state.inventory, before);
+}
+#[test]
+fn machine_receives_multiple_upstreams_but_merger_only_one() {
+    let mut r = raw(&[
+        ("m", "研磨机", 10, 10, 0, 0),
+        ("a", "传送带", 10, 9, 0, 0),
+        ("b", "传送带", 11, 9, 0, 0),
+    ]);
+    put_seed(&mut r, "a:transport:0", "源矿", 1, Some(-8));
+    put_seed(&mut r, "b:transport:0", "蓝铁矿", 1, Some(-8));
+    let mut e = engine(r);
+    let report = e.step().unwrap();
+    assert_eq!(count(&e, "m:input:0") + count(&e, "m:input:1"), 2);
+    let judges: Vec<_> = report
+        .events
+        .iter()
+        .filter(|e| e.phase == "judge")
+        .collect();
+    assert_eq!(judges.len(), 1);
+    assert_eq!(judges[0].moves.len(), 2);
+    let mut r = raw(&[
+        ("m", "汇流器", 10, 10, 0, 0),
+        ("a", "传送带", 10, 9, 0, 0),
+        ("b", "传送带", 9, 10, 270, 0),
+    ]);
+    put_seed(&mut r, "a:transport:0", "源矿", 1, Some(-8));
+    put_seed(&mut r, "b:transport:0", "蓝铁矿", 1, Some(-8));
+    let mut e = engine(r);
+    let i = e.graph().index["C|m"];
+    let second = e.graph().components[i].inputs[1].clone();
+    let report = e.step().unwrap();
+    let all = moves(&[report]);
+    assert_eq!(all.len(), 1);
+    assert_eq!(all[0].1, second);
+}
+#[test]
+fn splitter_is_never_pulled_into_receipt_group() {
+    let mut r = raw(&[
+        ("s", "分流器", 9, 10, 0, 0),
+        ("m", "汇流器", 10, 10, 0, 0),
+        ("b", "传送带", 10, 9, 0, 0),
+        ("out", "传送带", 10, 11, 0, 0),
+    ]);
+    put_seed(&mut r, "s:transport:0", "源矿", 1, Some(-8));
+    put_seed(&mut r, "b:transport:0", "蓝铁矿", 1, Some(-8));
+    let mut e = engine(r);
+    let report = e.step().unwrap();
+    for event in report.events {
+        if let Some(d) = event.detail {
+            if let Some(m) = d["members"].as_array() {
+                assert!(!m.contains(&json!("C|s")));
+            }
+        }
+    }
+    assert!(e.judged.iter().all(|j| *j));
+}
+#[test]
+fn box_minimum_nonempty_slot_does_not_skip_blocked_kind() {
+    let mut r = raw(&[
+        ("box", "协议储存箱", 10, 10, 0, 0),
+        ("g", "物品准入口", 11, 13, 0, 0),
+    ]);
+    switch(&mut r, "box", false);
+    r["settings"]["gates"][0]["item"] = json!("蓝铁矿");
+    put_seed(&mut r, "box:storage:0", "源矿", 1, None);
+    put_seed(&mut r, "box:storage:1", "蓝铁矿", 1, None);
+    let mut e = engine(r);
+    assert!(moves(&advance(&mut e, 16)).is_empty());
+    assert_eq!(count(&e, "box:storage:1"), 1);
+}
+#[test]
+fn nontransport_recency_and_receiver_cursor_update_only_on_success() {
+    let mut r = raw(&[
+        ("box", "协议储存箱", 10, 10, 0, 0),
+        ("a", "传送带", 10, 13, 0, 0),
+        ("b", "传送带", 12, 13, 0, 0),
+    ]);
+    switch(&mut r, "box", false);
+    put_seed(&mut r, "box:storage:0", "源矿", 10, None);
+    let mut e = engine(r);
+    let reports = advance(&mut e, 4);
+    let got = moves(&reports);
+    assert_eq!(got.len(), 2);
+    assert!(got[0].1.contains("|a:"));
+    assert!(got[1].1.contains("|b:"));
+    let memory = e.state.logistics.poll_state.clone();
+    e.step().unwrap();
+    assert_eq!(memory, e.state.logistics.poll_state);
+    assert_eq!(
+        e.state.logistics.poll_state.recency[0].order,
+        [got[0].1.clone(), got[1].1.clone()]
+    );
+}
+#[test]
+fn merger_priority_grade_uses_layer_and_connection_rank() {
+    let mut r = raw(&[
+        ("box", "协议储存箱", 10, 10, 0, 0),
+        ("m", "汇流器", 10, 13, 0, 0),
+        ("a", "物品准入口", 12, 13, 0, 0),
+        ("a2", "物品准入口", 12, 14, 0, 0),
+        ("mout", "传送带", 10, 14, 0, 0),
+    ]);
+    switch(&mut r, "box", false);
+    put_seed(&mut r, "box:storage:0", "源矿", 2, None);
+    let mut e = engine(r);
+    let ordering = e.nontransport_order("box");
+    assert!(ordering[0].contains("|m:"));
+    assert_eq!(moves(&advance(&mut e, 1))[0].1, ordering[0]);
+}
+#[test]
+fn bridge_axes_independent_and_no_immediate_return() {
+    let mut r = raw(&[
+        ("a", "桥接器", 10, 10, 0, 0),
+        ("b", "桥接器", 11, 10, 0, 0),
+        ("sink", "传送带", 12, 10, 270, 0),
+        ("up", "传送带", 10, 11, 0, 0),
+    ]);
+    put_seed(&mut r, "a:horizontal:0", "源矿", 1, Some(-8));
+    put_seed(&mut r, "a:vertical:0", "蓝铁矿", 1, Some(-8));
+    let mut e = engine(r);
+    let reports = advance(&mut e, 17);
+    let all = moves(&reports);
+    assert!(all.iter().any(|(_, c, _)| c.contains("a:north:0|up")));
+    assert!(all.iter().any(|(_, c, _)| c.contains("b:east:0|sink")));
+    assert!(!all.iter().any(|(_, c, _)| c.contains("b:west:0|a")));
+}
+#[test]
+fn bridge_two_outlets_pull_transitive_receipt_groups_once() {
+    let mut r = raw(&[
+        ("a", "桥接器", 10, 10, 0, 0),
+        ("b", "桥接器", 11, 10, 0, 0),
+        ("c", "桥接器", 12, 10, 0, 0),
+        ("d", "桥接器", 13, 10, 0, 0),
+    ]);
+    put_seed(&mut r, "b:horizontal:0", "源矿", 1, Some(-8));
+    put_seed(&mut r, "d:horizontal:0", "蓝铁矿", 1, Some(-8));
+    let mut e = engine(r);
+    let report = e.step().unwrap();
+    let groups: Vec<_> = report
+        .events
+        .iter()
+        .filter_map(|e| e.detail.as_ref().and_then(|v| v["members"].as_array()))
+        .collect();
+    assert!(groups
+        .iter()
+        .any(|g| g.contains(&json!("C|b|horizontal")) && g.contains(&json!("C|d|horizontal"))));
+    let all = moves(&[report]);
+    assert_eq!(
+        all.iter().filter(|(_, c, _)| c.contains("PC|b:")).count(),
+        1
+    );
+    assert_eq!(
+        all.iter().filter(|(_, c, _)| c.contains("PC|d:")).count(),
+        1
+    );
+}
+#[test]
+fn tail_hysteresis_ratio_and_later_splitter_full_rate() {
+    for n in 1..=3 {
+        for lag in [true, false] {
+            let mut specs = vec![
+                ("source", "仓库取货口", 10, 0, 0, 0),
+                ("x", "分流器", 11, 1, 0, 0),
+                ("d1", "物品准入口", 12, 1, 270, 0),
+                ("d2", "物品准入口", 13, 1, 270, 0),
+                ("g1", "物品准入口", 11, n + 2, 0, 0),
+                ("g2", "物品准入口", 11, n + 3, 0, 0),
+                ("sink", "协议储存箱", 10, n + 4, 0, 0),
+            ];
+            let names: Vec<_> = (0..n).map(|i| format!("s{i}")).collect();
+            for (i, name) in names.iter().enumerate() {
+                specs.push((name, "传送带", 11, i as i64 + 2, 0, 0));
+            }
+            let mut r = raw(&specs);
+            let mut order = axis(&r, "step.order").clone();
+            order["layer_choices"] = json!([{"component":"C|x","downstream":if lag{"C|d1".to_string()}else{format!("C|s{}",n-1)}}]);
+            set_axis(&mut r, "step.order", order);
+            for name in ["x", "d1", "d2", "g1", "g2"]
+                .into_iter()
+                .chain(names.iter().map(String::as_str))
+            {
+                put_seed(&mut r, &format!("{name}:transport:0"), "源矿", 1, Some(-8));
+            }
+            let mut e = engine(r);
+            let reports = advance(&mut e, 500);
+            let head = format!("PC|s{}:", n - 1);
+            let times: Vec<_> = moves(&reports)
+                .iter()
+                .filter(|(t, c, _)| *t >= 100 && c.starts_with(&head))
+                .map(|(t, _, _)| *t)
+                .collect();
+            let gaps: Vec<_> = times.windows(2).map(|w| w[1] - w[0]).collect();
+            let sample = &gaps[gaps.len() - n as usize * 10..];
+            assert_eq!(
+                sample.iter().sum::<i64>(),
+                10 * (8 * n + i64::from(lag)),
+                "n={n} lag={lag} gaps={sample:?}"
+            );
+        }
+    }
+}
+#[test]
+fn full_box_series_adds_one_step_per_box() {
+    for k in 1..=3 {
+        let box_names: Vec<_> = (0..k).map(|i| format!("box{i}")).collect();
+        let belt_names: Vec<_> = (0..=k).map(|i| format!("b{i}")).collect();
+        let mut specs = vec![("core", "协议核心", 10, 4 * k + 2, 0, 0)];
+        for (i, b) in box_names.iter().enumerate() {
+            specs.push((b, "协议储存箱", 10, 4 * i as i64 + 2, 0, 0));
+        }
+        for (i, b) in belt_names.iter().enumerate() {
+            specs.push((b, "传送带", 11, 4 * i as i64 + 1, 0, 0));
+        }
+        let mut r = raw(&specs);
+        for b in &box_names {
+            for j in 0..6 {
+                put_seed(&mut r, &format!("{b}:storage:{j}"), "源石粉末", 50, None);
+            }
+        }
+        for b in &belt_names {
+            put_seed(&mut r, &format!("{b}:transport:0"), "源石粉末", 1, Some(-8));
+        }
+        let mut e = engine(r);
+        let all = moves(&advance(&mut e, k as usize + 1));
+        let first = all
+            .iter()
+            .find(|(_, c, _)| c.starts_with("PC|b0:"))
+            .unwrap();
+        assert_eq!(first.0, k);
+    }
+}
+#[test]
+fn through_belt_has_side_priority_over_box() {
+    let mut r = raw(&[
+        ("feed", "协议储存箱", 6, 12, 270, 0),
+        ("side", "协议储存箱", 10, 10, 0, 0),
+        ("m", "汇流器", 11, 13, 0, 0),
+        ("a", "传送带", 9, 13, 270, 0),
+        ("b", "传送带", 10, 13, 270, 0),
+        ("out", "传送带", 11, 14, 0, 0),
+        ("sink", "协议储存箱", 10, 15, 0, 0),
+    ]);
+    for u in ["feed", "side"] {
+        for j in 0..6 {
+            put_seed(&mut r, &format!("{u}:storage:{j}"), "源石粉末", 50, None);
+        }
+    }
+    for u in ["a", "b", "m", "out"] {
+        put_seed(&mut r, &format!("{u}:transport:0"), "源石粉末", 1, Some(-8));
+    }
+    let mut e = engine(r);
+    let all = moves(&advance(&mut e, 320));
+    assert_eq!(
+        all.iter()
+            .filter(|(_, c, _)| c.starts_with("PC|side:"))
+            .count(),
+        0
+    );
+    assert_eq!(
+        all.iter()
+            .filter(|(_, c, _)| c.starts_with("PC|b:"))
+            .count(),
+        40
+    );
+}
+#[test]
+fn three_upstreams_one_winner_even_single_outlet_splitters() {
+    let mut r = raw(&[
+        ("feed_l", "协议储存箱", 15, 19, 270, 0),
+        ("feed_r", "协议储存箱", 23, 19, 90, 0),
+        ("feed_b", "协议储存箱", 19, 15, 0, 0),
+        ("left", "分流器", 19, 20, 270, 0),
+        ("right", "分流器", 21, 20, 90, 0),
+        ("m", "汇流器", 20, 20, 0, 0),
+        ("l", "传送带", 18, 20, 270, 0),
+        ("r", "传送带", 22, 20, 90, 0),
+        ("b0", "传送带", 20, 18, 0, 0),
+        ("b1", "传送带", 20, 19, 0, 0),
+        ("out", "传送带", 20, 21, 0, 0),
+        ("sink", "协议储存箱", 19, 22, 0, 0),
+    ]);
+    for u in ["feed_l", "feed_r", "feed_b"] {
+        for j in 0..6 {
+            put_seed(&mut r, &format!("{u}:storage:{j}"), "源石粉末", 50, None);
+        }
+    }
+    for u in ["left", "right", "m", "l", "r", "b0", "b1", "out"] {
+        put_seed(&mut r, &format!("{u}:transport:0"), "源石粉末", 1, Some(-8));
+    }
+    let mut e = engine(r);
+    let all = moves(&advance(&mut e, 320));
+    let arrivals: Vec<_> = all
+        .iter()
+        .filter(|(_, c, _)| c.split('|').nth(2).is_some_and(|p| p.starts_with("m:")))
+        .collect();
+    assert_eq!(arrivals.len(), 40);
+    let winners: std::collections::BTreeSet<_> = arrivals
+        .iter()
+        .map(|(_, c, _)| c.split('|').nth(1).unwrap().split(':').next().unwrap())
+        .collect();
+    assert_eq!(winners.len(), 1);
+}

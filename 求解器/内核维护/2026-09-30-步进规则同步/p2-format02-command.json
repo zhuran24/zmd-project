@@ -1,0 +1,22 @@
+{
+  "argv": [
+    "rustfmt",
+    "--edition",
+    "2021",
+    "--config",
+    "skip_children=true",
+    "crates/kernel/src/cycle.rs",
+    "crates/kernel/src/cycle_io.rs",
+    "crates/kernel/src/interfaces.rs",
+    "crates/kernel/src/lib.rs",
+    "crates/kernel/src/main.rs",
+    "crates/kernel/src/output.rs",
+    "crates/kernel/src/seed.rs",
+    "crates/kernel/src/tests_cycle.rs",
+    "crates/kernel/src/tests_output.rs",
+    "crates/kernel/src/warehouse.rs",
+    "crates/kernel/tests/reference.rs"
+  ],
+  "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+  "exit_code": 0
+}

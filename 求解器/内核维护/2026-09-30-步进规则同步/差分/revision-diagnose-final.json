@@ -1,0 +1,272 @@
+{
+  "schema": "kernel-sim2-differential-conclusion-v1",
+  "date": "2026-09-30",
+  "status": "completed",
+  "summary": "九个必核构型的合法接通史和分流器选支变值逐步一致；补充边界发现两处sim2误判，内核均符合正式规则，无须修内核。",
+  "suite": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-30-步进规则同步/差分/revision-differential-final.json",
+  "suite_sha256": "11ef28400630d3ab4003dc6e5fe9da1e282c994f1ab92e69db9c498ff0a9b9d4",
+  "required_cases": 72,
+  "required_steps": 31200,
+  "compared_cases": 96,
+  "compared_steps": 33484,
+  "coverage": [
+    {
+      "name": "a-纯链",
+      "cases": 6,
+      "steps": 2400,
+      "distinct_judgment_orders": 3,
+      "distinct_layer_choices": [
+        "sole"
+      ],
+      "projection_poll_gate_layers_equal": true
+    },
+    {
+      "name": "b-迟滞",
+      "cases": 12,
+      "steps": 4800,
+      "distinct_judgment_orders": 4,
+      "distinct_layer_choices": [
+        "C|x=C|d1",
+        "C|x=C|s1"
+      ],
+      "projection_poll_gate_layers_equal": true
+    },
+    {
+      "name": "c-换主料",
+      "cases": 6,
+      "steps": 4800,
+      "distinct_judgment_orders": 6,
+      "distinct_layer_choices": [
+        "sole"
+      ],
+      "projection_poll_gate_layers_equal": true
+    },
+    {
+      "name": "d-满箱串联",
+      "cases": 6,
+      "steps": 2400,
+      "distinct_judgment_orders": 6,
+      "distinct_layer_choices": [
+        "sole"
+      ],
+      "projection_poll_gate_layers_equal": true
+    },
+    {
+      "name": "e-汇流",
+      "cases": 6,
+      "steps": 2400,
+      "distinct_judgment_orders": 1,
+      "distinct_layer_choices": [
+        "sole"
+      ],
+      "projection_poll_gate_layers_equal": true
+    },
+    {
+      "name": "三上游",
+      "cases": 6,
+      "steps": 2400,
+      "distinct_judgment_orders": 4,
+      "distinct_layer_choices": [
+        "sole"
+      ],
+      "projection_poll_gate_layers_equal": true
+    },
+    {
+      "name": "侧面优先",
+      "cases": 6,
+      "steps": 2400,
+      "distinct_judgment_orders": 1,
+      "distinct_layer_choices": [
+        "sole"
+      ],
+      "projection_poll_gate_layers_equal": true
+    },
+    {
+      "name": "分矿",
+      "cases": 12,
+      "steps": 4800,
+      "distinct_judgment_orders": 12,
+      "distinct_layer_choices": [
+        "C|x1=C|a1_1",
+        "C|x1=C|t4"
+      ],
+      "projection_poll_gate_layers_equal": true
+    },
+    {
+      "name": "断尾",
+      "cases": 12,
+      "steps": 4800,
+      "distinct_judgment_orders": 5,
+      "distinct_layer_choices": [
+        "C|x=C|d1",
+        "C|x=C|s0"
+      ],
+      "projection_poll_gate_layers_equal": true
+    }
+  ],
+  "findings": [
+    {
+      "name": "edge/completed_blocked_same_item",
+      "summary": "制造单位存货格已有源石粉末，缓存中已完成一批源石粉末，取货格为空；第0步内核留在completed且不出缓存，sim2却入取货格变idle并送出。",
+      "classification": "内核对、sim2错",
+      "conclusion": "内核正确，sim2 Machine.flush 漏核普通物品格的同种单格条件。",
+      "rules": [
+        "游戏规则L13",
+        "游戏规则L18",
+        "游戏规则L36"
+      ],
+      "basis": "规则L13的一种物品只能占单位内一个普通物品格；缓存格是例外，不是允许产物进入第二个普通格。",
+      "realizability": "粉碎在制时玩家可向存货格放入源石粉末；完成后缓存例外允许与存货格同种，但产物不能进入取货格。",
+      "first_difference": {
+        "path": "rows[0].machines.crusher[0]",
+        "kernel": "completed",
+        "sim2": "idle"
+      },
+      "witness": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-30-步进规则同步/差分/revision-diagnose-final-sim2-普通格同种唯一性.json",
+      "witness_sha256": "b028df056b23688f7832ab6a5ef9ad2c5e31d98015ce0e9666c98bab76219863",
+      "diagnostic_fix": {
+        "name": "ordinary_slot_unique",
+        "steps": 48,
+        "all_projection_poll_and_gate_equal": true,
+        "scope": "仅在进程内替换一项方法作归因，不改源码"
+      }
+    },
+    {
+      "name": "mechanism/累计审计与窗口周期",
+      "summary": "传送带链 b→c→down→d→a 首尾由物品准入口相接：a→准入口在第0步成功，准入口→b在第8步内核成功而sim2拒绝，后者把两次接入同一带段C|a当作回到刚离开的单位。",
+      "classification": "内核对、sim2错",
+      "conclusion": "内核正确，sim2 World.transfer/World.move 把元件名当成物理单位名判断回头。",
+      "rules": [
+        "游戏规则L24",
+        "游戏规则L29",
+        "游戏规则L65"
+      ],
+      "basis": "规则L24禁止准入口→a这种回到刚离开的单位，不禁止准入口→b；L29只把连续传送带合成一个判定元件，不能把各带单位合成一个物理单位。",
+      "realizability": "数据/样例/步进/机制/累计审计与窗口周期.json 的合法布局：五格连续传送带与一个准入口构成环，初始a格成熟物品，准入口每40步只收1件；不是纯带环，也不含两出口桥轴。",
+      "first_difference": {
+        "path": "rows[8].moves.length",
+        "kernel": 1,
+        "sim2": 0
+      },
+      "witness": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-30-步进规则同步/差分/revision-diagnose-final-sim2-单位与元件混淆.json",
+      "witness_sha256": "0860b4ad58b073d6210cffaab1a7e396bf227a06064730082b300eb2a1f2dac6",
+      "diagnostic_fix": {
+        "name": "return_uses_physical_unit",
+        "steps": 80,
+        "all_projection_poll_and_gate_equal": true,
+        "scope": "仅在进程内替换一项方法作归因，不改源码"
+      }
+    }
+  ],
+  "history": {
+    "counts": {
+      "crates/kernel/evidence": 572,
+      "crates/kernel/复核": 2094,
+      "数据/复核": 815
+    },
+    "files": 3481,
+    "before_sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+    "after_sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+    "difference": {
+      "added": [],
+      "deleted": [],
+      "changed": []
+    }
+  },
+  "source_changes": {
+    "added": [],
+    "deleted": [],
+    "changed": []
+  },
+  "sources": {
+    "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt": "c8d3a17b8830baba18aea36c4c66f02f8873895188f8821176cc218aa6135f93",
+    "/home/zhuran24/zmd-research-fresh/求解任务.txt": "7bec7a1edf2f46644a6e6a75d588f5ff05202cc32d6b42430677ea39b878309b",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/catalog.rs": "7384a3633844f5ff3f7ed86a64346279b6ec949ae5ba41052e932120568957e6",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/config.rs": "7a67e9c89594d5b33cbbb142716c981c322290964fbabd50dbb93ecbfdc5fc92",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/cycle.rs": "7ebfe8b0b12b5596139dd3041d8afadb1f8209e6818efc28224b0ec356cdf9c8",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/cycle_io.rs": "520fbb9adfd7b11d822cfe48a67092f6bf14a33305a4f5d1a5ecd24973fc8a8d",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/digest.rs": "e8d8d5c8df1f7124ec5739fa158a41b4d7ca662f1b246d3604994cbe81eb1ef0",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/engine.rs": "7cc2cb30c978b3e6ef440bc206e032391fc33c10b93cee800493eea95b04b43f",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/graph.rs": "6cdd61f6e620c8a24ffd9021eb1c91ae37c97b17bf0ac22d2683e86317dae852",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/input.rs": "4c6b214e8f778a733ada8a3e74b5db5a57cfdce02f4548279795f70995e70cae",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/interfaces.rs": "2f2ee720c90eb89615f22a55989a3a1d2ba6864052143549167d6d80d03e1bb0",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/ledger.rs": "f85ecea3240dd1ec0598a026bafe3b863c13220c7bdb7cdb0aa24c1e2577d9e7",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs": "c728e725081f5483dc1498ef38447a4bd52f91aab683e8df0983f8cb444208e8",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/main.rs": "1186dc2c5ed287d7460458d62d075c4968fbabf08a55d980a084cf62a51e73f6",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/model.rs": "e6d7e16f3da573a4bc9467939e5fc1442b1d035aab00cf2623e6f9c4a970b443",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/output.rs": "a11071439a60fbfd0ee0d8380908cff2ff9506057875f0a965eff7c3a5b91d21",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/polling.rs": "12f96110273de6f342c2a60ba091cd38e1fe9040bd7252101e06d62bc169c311",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/seed.rs": "410fc660dd71000ea38a4cb2f7342af8599b78cf142bddae8651ce9905c188ff",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/step.rs": "1d83ba9dda2dbc912b886898991f7309f57dce8f308d3161b6fd76d13ba4a019",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests_box_gate.rs": "1d0d767167637fab3bbf866ec36a3bd704923c36b8f6648a0881faefd5332445",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests_config.rs": "35974263c13a00ff175e956ae3953c6641614ce4141edb2ce8e9419e715fb61e",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests_cycle.rs": "c8c9e098a01509fd134f83333fc681c94bb7faab4f06243695d41e85b4c8f051",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests_graph.rs": "737f5f064679d781031b7b17c639fcf01db90fbc4ec4dcdedbcb99c79f6d8014",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests_manufacture.rs": "31d88981877d5fd3dcaddf843879e7cf53de17d2e4994ff9ba3e9e8068fae9f1",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests_output.rs": "e8022f5c9569a13b61c3f16d5c0d3d4ff76499f2ba2bb123d826a910af6a050c",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests_seed.rs": "894a4a8d9746d7fba82ff80d5d22ad33f0ffa7ed69ff1025a5324ab1df5f0600",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests_step.rs": "9e69986972b847cff1e2bf35b2b2c90f1963ad3f9bdba3bbb47d09837d385b09",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests_support.rs": "44b6265bc23deaee07a3494bfd62a778cdab6396ca4bb2137ed806ffd334e564",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/tests_warehouse.rs": "db7b3a01643b6cfc5953aeb443cd690c8266aa9887fa89bda4637b74e60a2c48",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/value.rs": "d360f51ffe17d2003e9acb1a6923b14171d285ba90e9ce47cae7cd6cd7ff72b9",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/warehouse.rs": "deeb1d77c8dca8121e821792b69ee4d82a8d3a9f06e4cffe90b162ae77ba06c9",
+    "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-30-步进规则同步/差分/diagnose.py": "0a170ce1f94bf5f1aa7752fdd673934ac0436472890a1f5aec7b75f84e391666",
+    "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-30-步进规则同步/差分/run.py": "92cc07c1db3cd608bb8aef855e4863f520d5de0e27944e574da8d0473c152e5c",
+    "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-30-步进规则同步/差分/runner.rs": "739ea224cfb150bde9845c8d0163ede09c70fe31c223d16c392cf68b9cadfdc7",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/工具/check_revision.py": "d158d856c019ca20389297e60ed85ca6f97374ce6c131c4b04f655fbd2c16e7c",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/工具/convert_candidate_b.py": "ba46137954bd404cc3d2f130c2878ec99dc4ff88ed8e356a3cb0e4f6036725e9",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/工具/formal_catalog.py": "27ab37406664829751d5be0faf9b0b80ed18c66dd066513772fc265a4730cc0c",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/工具/formal_units.py": "599772868c2f4af7f4abc44b4f7d9eba700472e35697efe3692b427bc71f188b",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/工具/kernel_file_guard.py": "35a76488174e0a4f09838c1ada070dc5e2deed890263b8d70bdff1def10fa457",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/工具/kernel_regression.py": "0568cf778c7e8d2452b69ff81f8d5a8afb21557391cd2d284de8a566e90f9def",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/工具/migrate_input_v4.py": "579f36f8613b3f7c9ed86f6b6ede045fbbf4c2c774aedab722face60f1ded8a0",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/工具/sim2_adapter.py": "3caaae6dafcb9957938e69dbff96633ae317cfcd91a089537c9cfcef5cf6c4eb",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/工具/step_graph.py": "cb20119d86a01cf8255712aad1d1ead87634c3319ee8d542d91d04e0d3602286",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/工具/step_inputs.py": "953765cfbb8097569512ca9bd4444fb5af3783bf6d59b860ac1d49883587df39",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/工具/step_samples.py": "1461f17b55d36aba9929aa07fb1dc627020bc91460d7488c7cf5a7744d73ad7b",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/工具/test_formal_catalog.py": "1134f9c70b44c57d85b6a082b58369af517113919b25635b87160d7b245dcaa7",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/步进/差分/a-纯链.json": "ef9f3a879e99c3429192768f6ed30342b3f71c3a964a8364d45203b052a11ded",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/步进/差分/b-迟滞.json": "19c6dca6fbff5574ee67b1e9b319448cc46aabdc4a6fa5161ed291bf23d07d58",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/步进/差分/c-换主料.json": "7d095b55b434692cd3e1fdfc93ec77a5da333c1a84a65d95f3b54a43053f9cff",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/步进/差分/d-满箱串联.json": "41fc4701b0dd6ca5931fb64596a1cf2ebb9700034582b7c0828b7a5197a3de77",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/步进/差分/e-汇流.json": "0027bf811213273131d807ea35f8b09fc45d244016123914902aaf773597384e",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/步进/差分/三上游.json": "efdc2eae73b4d4d79fce89a4c6c01870288572f901548e61d3573d079fbb60c1",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/步进/差分/侧面优先.json": "1265633faab93acd98e87768c38c050a06dcb7ea6b362998bc87782a55803cab",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/步进/差分/分矿.json": "ff3dbce8acf58f35b72cb82660d295146c6e208ff06dbcdfa39d31b39b997b49",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/步进/差分/断尾.json": "c3417059c16398e938d3c52eab66738a0ead07e7b28ef75cb0a6a7163016871f",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json": "73de10b3a4849302eb259dd16c6830d3a37464ea4a6b211dbc6c38a655d30e53",
+    "/home/zhuran24/zmd-research-fresh/求解器/规则修订/2026-09-30-迟滞/sim2/b_n2_microphase.json": "83685cd1e38fb1fd8068a4f4bbb6ce0d17123a2c8d99a2fad77d9a470751a71a",
+    "/home/zhuran24/zmd-research-fresh/求解器/规则修订/2026-09-30-迟滞/sim2/b_n2_trace.csv": "6ec3f49f5aedb13858d89aed7a8df0340f72389e7b7a3f81aede89ffd8493cdb",
+    "/home/zhuran24/zmd-research-fresh/求解器/规则修订/2026-09-30-迟滞/sim2/c1_ab.csv": "d369334f47fd99a2ab0a854fcdbac8848d4f8038126df4b10c1c39f196eb6305",
+    "/home/zhuran24/zmd-research-fresh/求解器/规则修订/2026-09-30-迟滞/sim2/c1_ba.csv": "acc0eb3cfa20889337423d04e5f608594a9825ae41f6a12532f148854afcc0b5",
+    "/home/zhuran24/zmd-research-fresh/求解器/规则修订/2026-09-30-迟滞/sim2/c2_ab.csv": "63a43e05a1c9aa7de10a8cb0ee473cea76b6271e7ee19e611272f7070b635feb",
+    "/home/zhuran24/zmd-research-fresh/求解器/规则修订/2026-09-30-迟滞/sim2/c3_absand.csv": "5d728616922bd3013e685b2e3a6804687472189d54ade6efa43722b9d19b570d",
+    "/home/zhuran24/zmd-research-fresh/求解器/规则修订/2026-09-30-迟滞/sim2/c3_asandb.csv": "e0b8e3f431503c969f15d9dc3e582f247fd6cf0b33c27136f7d73927b63442dc",
+    "/home/zhuran24/zmd-research-fresh/求解器/规则修订/2026-09-30-迟滞/sim2/c3_basand.csv": "6ec168f0683e418ec9aa897225e19c356c7b57c60712d0c948b5e96354783b96",
+    "/home/zhuran24/zmd-research-fresh/求解器/规则修订/2026-09-30-迟滞/sim2/c3_bsanda.csv": "c0e492eddcc09beda725610aeba1cc328b4512a5c61dcfb61701071fe9ad80c2",
+    "/home/zhuran24/zmd-research-fresh/求解器/规则修订/2026-09-30-迟滞/sim2/c3_sandab.csv": "0153f41da3a05761dc9f850c9290c501d1fc9264224498601870f296f3995d37",
+    "/home/zhuran24/zmd-research-fresh/求解器/规则修订/2026-09-30-迟滞/sim2/c3_sandba.csv": "576708eee5f63f79296e418c948acb6d4c46150def3fcb3a83b55780e74fb49c",
+    "/home/zhuran24/zmd-research-fresh/求解器/规则修订/2026-09-30-迟滞/sim2/c_cache_batch1.csv": "dda42ff3c158030250ad3ea1549d33dd7d662cbaf753bdc3f4fcd1b5f33a7edc",
+    "/home/zhuran24/zmd-research-fresh/求解器/规则修订/2026-09-30-迟滞/sim2/c_cache_batch2.csv": "548f986633ab10b63da24592d89cb9b6ea35d672842e2bcb41fc771f2fdcfb87",
+    "/home/zhuran24/zmd-research-fresh/求解器/规则修订/2026-09-30-迟滞/sim2/d_boxes3.csv": "c6a8dd463f332fb52c79d38596ff4c7d34dea97a5204a78dbc1d68d706b17a3f",
+    "/home/zhuran24/zmd-research-fresh/求解器/规则修订/2026-09-30-迟滞/sim2/inputs.sha256.json": "f8ff6da20a94097a5549ce560a605df8e2ada4db41b8783a0da860b2c0b2485f",
+    "/home/zhuran24/zmd-research-fresh/求解器/规则修订/2026-09-30-迟滞/sim2/protocol_numbered_slots.csv": "98cf511927a5e43a1784027f8c3e111d8342490370236828fb6a294d7f152b21",
+    "/home/zhuran24/zmd-research-fresh/求解器/规则修订/2026-09-30-迟滞/sim2/protocol_receive_send.csv": "0689f4f20ea4028c62d448f7c671fa567c77964d7f31256485b57fae74e357e9",
+    "/home/zhuran24/zmd-research-fresh/求解器/规则修订/2026-09-30-迟滞/sim2/protocol_wireless_after.csv": "aca6861a71da4777e48cbdf7e4a0cf67cf7e7671ef3ac266a6b50c82c6219025",
+    "/home/zhuran24/zmd-research-fresh/求解器/规则修订/2026-09-30-迟滞/sim2/protocol_wireless_before.csv": "156e948dcf79e69729ab4014d338319b5b8214b0b8a6307f7068cff7f92609a2",
+    "/home/zhuran24/zmd-research-fresh/求解器/规则修订/2026-09-30-迟滞/sim2/results.json": "7bfdc974f22c22436da454cf8540572f6e7c1f93c1156f8b738af1dc2ae76627",
+    "/home/zhuran24/zmd-research-fresh/求解器/规则修订/2026-09-30-迟滞/sim2/rule_snapshot.json": "081d0ed5c56c8876bdb22402ddb0fc5f190901aa978723da197192d6c9f6e6af",
+    "/home/zhuran24/zmd-research-fresh/求解器/规则修订/2026-09-30-迟滞/sim2/run_checks.py": "e61c3499d1a9afb77c6443bde0534bb5cbaa0bd89fc1d6f76bdcc7d9197f12e7",
+    "/home/zhuran24/zmd-research-fresh/求解器/规则修订/2026-09-30-迟滞/sim2/simulator.py": "08a83262a5ca2651a3dc06b4fed83bc3f6e957379e5eec7b63094788f0d0bac8",
+    "/home/zhuran24/zmd-research-fresh/求解器/规则修订/2026-09-30-迟滞/sim2/verification.json": "fcb20cc8d0023fb5522ce7fac93889a96c6d89a92d757bf92e5ccde34e3c7789",
+    "/home/zhuran24/zmd-research-fresh/求解器/规则修订/2026-09-30-迟滞/sim2/verify.py": "8728b5b27d3fc9d393533a74114b5be48d78187a80107beb76cd628453828101",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v2.json": "3607226b9b9603ad3fcad9f1456c98156797ac52b2123bc1e48048a143ec91ef",
+    "/home/zhuran24/zmd-research-fresh/求解约束.txt": "dfea46c61f29be5a86659bce3642009d2558ace073d6dbd79f5dd3c6475226db"
+  },
+  "seconds": 0.782,
+  "limitations": [
+    "结论是列明输入和有限步数的差分，不是对全部布局、接通史和运行时长的证明。",
+    "共同域不含纯传送带环、两出口桥接器轴、协议核心送货、部分接收的跨格残留；单点修正回放仅用于确认首差原因。"
+  ],
+  "safe_reference_log": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-30-步进规则同步/revision-final2-reference.log"
+}

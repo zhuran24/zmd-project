@@ -1,0 +1,787 @@
+{
+  "package": "包二",
+  "status": "complete",
+  "changed_counts": {
+    "added": 39,
+    "deleted": 9,
+    "changed": 12
+  },
+  "command_count": 23,
+  "command_history_comparisons": 46,
+  "history_files": {
+    "crates/kernel/evidence": 572,
+    "crates/kernel/复核": 2094,
+    "数据/复核": 815
+  },
+  "history_bytes": 1018807436,
+  "history_manifest_sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+  "history_changes": {
+    "added": [],
+    "deleted": [],
+    "changed": []
+  },
+  "legacy_samples_and_fixtures_unchanged": 124,
+  "additional_protected_paths": 48,
+  "new_input_refs_verified": {
+    "数据/样例/步进/周期/生产循环环带.json": "3d387e96b176976f15d35bbe61bcc6aacd64218c588fac5065e310dbbb14cc3e",
+    "数据/样例/步进/周期/生产环带.json": "c7da9504f20fe1d700af31bc2ad6115cabe44239ea2e42438a7f4103b74186c2",
+    "数据/样例/步进/差分/a-纯链.json": "51c808427110877101c549b4f48d69eaeca795519f0774f9a1e4a8b48737b7db",
+    "数据/样例/步进/差分/b-迟滞.json": "397c1a63173045df7eab59f1ae4f630d4c17ddef18dd0273f9722d10747b8562",
+    "数据/样例/步进/差分/c-换主料.json": "4dd6b4bd87b72c3fa9568bc719e12c541f42274db707c6b187f832583f8c1687",
+    "数据/样例/步进/差分/d-满箱串联.json": "8161ae112c84067e6f1a1c300ed8d30bd36f907b24a2f89e3e15e8cea2db3fc1",
+    "数据/样例/步进/差分/e-汇流.json": "74d659d6cc733ce7c516772a46acbb22b0f76e3571484096b23a13b9ed1f47e1",
+    "数据/样例/步进/差分/三上游.json": "784cb9f6de6c72c427f115bb990e844178f029be3e910511b8cb32e322368732",
+    "数据/样例/步进/差分/侧面优先.json": "7750b90d99ce6eb81cd5a622bed0d7fb1cdb6768eb43bcc4c6caa7f28929b9d3",
+    "数据/样例/步进/差分/分矿.json": "9a55af18e74723f46930920c2f71d91c5c855a2c0255b17b17457309ebfa63e9",
+    "数据/样例/步进/差分/断尾.json": "e8e92887d43ef9ab23ecd9ae520f62acd659f7b5e338f7a5709701fd800c1c79",
+    "数据/样例/步进/机制/同刻双箱争余量.json": "bb4dca6c4bd7298f2e4eb1d21bf1c87a96e546b64ef788f7dad9e8643add4df4",
+    "数据/样例/步进/机制/成熟旧货重试.json": "27767cc42419bf0e6f7a525be26a523a604fe0b3f1e09bf0455c014e15f8e592",
+    "数据/样例/步进/机制/无线一满一可收.json": "c4e433cc2d7f66f866831385ec84ee6ba94b18f21f38b8ffc49fa22358a990ff",
+    "数据/样例/步进/机制/无线全拒收.json": "d68ecacb8deb469f2d086ed3072c0e6c7ae4a490b8eb21f18cbc5f6fc372767b",
+    "数据/样例/步进/机制/无线多格全收.json": "8ea7763eb22454114e7c36eef02698029cacd03f60d67e963772b9582126a5ef",
+    "数据/样例/步进/机制/无线多格歧义.json": "5e3b49df357b80683062d93d21ece63ad1d80142f60eac5ac12b18a51ddc3dd6",
+    "数据/样例/步进/机制/无线空箱.json": "202814a284a34f22528975fb8e45e02406006e73ba5587b1eed3cb9eef88d875",
+    "数据/样例/步进/机制/无线部分接收.json": "116a80b7c5ff6d8aa4fdad433374a0c5828cc7b1adaeb62d17ef5568d894ff97",
+    "数据/样例/步进/机制/累计审计与窗口周期.json": "387af879725d02e48cea3ecb167f1656c09321bf17c8dbff18e009dcd88cece5",
+    "数据/样例/步进/机制/累计调低保留.json": "6fb00be347989f883d5552dd1385f4c720ee3e65c6c21d072edb0deb6af2c358",
+    "数据/样例/步进/机制/累计调高资格.json": "2d8306c4cacfb821c4d086f41e07062838723e091c00d64a7546de27ecf75aed",
+    "数据/样例/步进/机制/装载与普通制造.json": "f1b4f16b84e1f38a7b72219fe989d06953baa9d7c8b903b1e19c3baef7e7edcb",
+    "数据/样例/步进/机制/身份实际切换.json": "f816dcc7ad401e3a423263f8497686fa64e89ea137102648fe2e5c34e5fa5989",
+    "数据/样例/步进/机制/静止成熟与暂停键.json": "ce8c00fe2828c9567b6bcd08809c6e42698c41b5c630c9fca1925162c8235337",
+    "crates/kernel/tests/fixtures/step/base.json": "93c81bafd26d8225c508a693ed7d3b9ed84cbade45c4c64294cef3bc4e63daf4",
+    "crates/kernel/tests/fixtures/step/benchmark_1000.json": "4a631d1db2b14b97d12cda4c34c9aef0da0cc95af1a0385f4887f218eddf978d",
+    "crates/kernel/tests/fixtures/step/bridge.json": "dcbae476b1fe84cf0c665c3944117b1f94fa78e910a099425fab575be7a54e99",
+    "crates/kernel/tests/fixtures/step/core_inbound.json": "5e839d94da187efae1eee61f4bbf907a6f8e79721938cf91e1bab1c727151475",
+    "crates/kernel/tests/fixtures/step/priority.json": "fd7728e575d1c4efee86e07f97f422f4548ab552797f89ce8ee0dca981fb77b1"
+  },
+  "catalog_sha256": "73de10b3a4849302eb259dd16c6830d3a37464ea4a6b211dbc6c38a655d30e53",
+  "config_sha256": "680acb480aa28443431e119c98e4cc45ca6abade1670c9a4a1283a77a7d199a2",
+  "schema_sha256": "eb3fa3c25d52bbc39df16a13e610fb9d4ea022fdc9f20ed8e2639e747ec439a8",
+  "sim2_sha256": "08a83262a5ca2651a3dc06b4fed83bc3f6e957379e5eec7b63094788f0d0bac8",
+  "rust_tests": {
+    "kernel_lib": 66,
+    "topology_lib": 1,
+    "reference": 13,
+    "topology_validation": 30,
+    "kernel_doc": 0,
+    "topology_doc": 0
+  },
+  "catalog_tests": 9,
+  "differential": {
+    "cases": 9,
+    "steps": 4000,
+    "mismatches": 0,
+    "phenomenon_assertions": "passed"
+  },
+  "final_suite": [
+    {
+      "name": "p2-final-build",
+      "argv": [
+        "cargo",
+        "build",
+        "--workspace",
+        "-j",
+        "4"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 1.097,
+      "finished_utc": "2026-09-30T17:02:18.835821+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    },
+    {
+      "name": "p2-final-check",
+      "argv": [
+        "cargo",
+        "check",
+        "--workspace",
+        "-j",
+        "4"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 0.4,
+      "finished_utc": "2026-09-30T17:02:20.480065+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    },
+    {
+      "name": "p2-final-clippy",
+      "argv": [
+        "cargo",
+        "clippy",
+        "--workspace",
+        "-j",
+        "4"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 0.504,
+      "finished_utc": "2026-09-30T17:02:22.233327+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    },
+    {
+      "name": "p2-final-kernel-lib",
+      "argv": [
+        "cargo",
+        "test",
+        "-p",
+        "kernel",
+        "--lib",
+        "-j",
+        "4",
+        "--",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 9.29,
+      "finished_utc": "2026-09-30T17:02:32.765692+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    },
+    {
+      "name": "p2-final-topology-lib",
+      "argv": [
+        "cargo",
+        "test",
+        "-p",
+        "topology",
+        "--lib",
+        "-j",
+        "4",
+        "--",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 0.022,
+      "finished_utc": "2026-09-30T17:02:34.029932+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    },
+    {
+      "name": "p2-final-reference",
+      "argv": [
+        "cargo",
+        "test",
+        "-p",
+        "kernel",
+        "--test",
+        "reference",
+        "-j",
+        "4",
+        "--",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 5.533,
+      "finished_utc": "2026-09-30T17:02:40.803429+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    },
+    {
+      "name": "p2-final-validation",
+      "argv": [
+        "cargo",
+        "test",
+        "-p",
+        "topology",
+        "--test",
+        "validation",
+        "-j",
+        "4",
+        "--",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 6.57,
+      "finished_utc": "2026-09-30T17:02:48.620678+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    },
+    {
+      "name": "p2-final-kernel-doc",
+      "argv": [
+        "cargo",
+        "test",
+        "-p",
+        "kernel",
+        "--doc",
+        "-j",
+        "4",
+        "--",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 0.139,
+      "finished_utc": "2026-09-30T17:02:50.002708+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    },
+    {
+      "name": "p2-final-topology-doc",
+      "argv": [
+        "cargo",
+        "test",
+        "-p",
+        "topology",
+        "--doc",
+        "-j",
+        "4",
+        "--",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 0.083,
+      "finished_utc": "2026-09-30T17:02:51.327576+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    },
+    {
+      "name": "p2-final-catalog",
+      "argv": [
+        "python3",
+        "数据/工具/formal_catalog.py"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 0.041,
+      "finished_utc": "2026-09-30T17:02:52.623699+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    },
+    {
+      "name": "p2-final-catalog-tests",
+      "argv": [
+        "python3",
+        "数据/工具/test_formal_catalog.py"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 2.183,
+      "finished_utc": "2026-09-30T17:02:56.053099+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    }
+  ],
+  "receipts": [
+    {
+      "command": "p2-check01",
+      "side": "before",
+      "manifest": "p2-check01-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "p2-check01",
+      "side": "after",
+      "manifest": "p2-check01-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "p2-check02",
+      "side": "before",
+      "manifest": "p2-check02-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "p2-check02",
+      "side": "after",
+      "manifest": "p2-check02-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "p2-lib01",
+      "side": "before",
+      "manifest": "p2-lib01-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "p2-lib01",
+      "side": "after",
+      "manifest": "p2-lib01-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "p2-reference01",
+      "side": "before",
+      "manifest": "p2-reference01-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "p2-reference01",
+      "side": "after",
+      "manifest": "p2-reference01-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "p2-lib02",
+      "side": "before",
+      "manifest": "p2-lib02-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "p2-lib02",
+      "side": "after",
+      "manifest": "p2-lib02-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "p2-reference02",
+      "side": "before",
+      "manifest": "p2-reference02-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "p2-reference02",
+      "side": "after",
+      "manifest": "p2-reference02-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "p2-lib03",
+      "side": "before",
+      "manifest": "p2-lib03-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "p2-lib03",
+      "side": "after",
+      "manifest": "p2-lib03-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "p2-reference03",
+      "side": "before",
+      "manifest": "p2-reference03-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "p2-reference03",
+      "side": "after",
+      "manifest": "p2-reference03-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "p2-lib04",
+      "side": "before",
+      "manifest": "p2-lib04-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "p2-lib04",
+      "side": "after",
+      "manifest": "p2-lib04-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "p2-reference04",
+      "side": "before",
+      "manifest": "p2-reference04-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "p2-reference04",
+      "side": "after",
+      "manifest": "p2-reference04-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "p2-clippy01",
+      "side": "before",
+      "manifest": "p2-clippy01-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "p2-clippy01",
+      "side": "after",
+      "manifest": "p2-clippy01-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "p2-lib05",
+      "side": "before",
+      "manifest": "p2-lib05-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "p2-lib05",
+      "side": "after",
+      "manifest": "p2-lib05-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "p2-final-build",
+      "side": "before",
+      "manifest": "p2-final-build-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "p2-final-build",
+      "side": "after",
+      "manifest": "p2-final-build-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "p2-final-check",
+      "side": "before",
+      "manifest": "p2-final-check-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "p2-final-check",
+      "side": "after",
+      "manifest": "p2-final-check-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "p2-final-clippy",
+      "side": "before",
+      "manifest": "p2-final-clippy-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "p2-final-clippy",
+      "side": "after",
+      "manifest": "p2-final-clippy-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "p2-final-kernel-lib",
+      "side": "before",
+      "manifest": "p2-final-kernel-lib-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "p2-final-kernel-lib",
+      "side": "after",
+      "manifest": "p2-final-kernel-lib-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "p2-final-topology-lib",
+      "side": "before",
+      "manifest": "p2-final-topology-lib-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "p2-final-topology-lib",
+      "side": "after",
+      "manifest": "p2-final-topology-lib-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "p2-final-reference",
+      "side": "before",
+      "manifest": "p2-final-reference-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "p2-final-reference",
+      "side": "after",
+      "manifest": "p2-final-reference-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "p2-final-validation",
+      "side": "before",
+      "manifest": "p2-final-validation-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "p2-final-validation",
+      "side": "after",
+      "manifest": "p2-final-validation-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "p2-final-kernel-doc",
+      "side": "before",
+      "manifest": "p2-final-kernel-doc-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "p2-final-kernel-doc",
+      "side": "after",
+      "manifest": "p2-final-kernel-doc-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "p2-final-topology-doc",
+      "side": "before",
+      "manifest": "p2-final-topology-doc-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "p2-final-topology-doc",
+      "side": "after",
+      "manifest": "p2-final-topology-doc-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "p2-final-catalog",
+      "side": "before",
+      "manifest": "p2-final-catalog-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "p2-final-catalog",
+      "side": "after",
+      "manifest": "p2-final-catalog-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "p2-final-catalog-tests",
+      "side": "before",
+      "manifest": "p2-final-catalog-tests-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "p2-final-catalog-tests",
+      "side": "after",
+      "manifest": "p2-final-catalog-tests-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    }
+  ],
+  "all_package2_guard_diffs": [
+    "p2-check01-after-history-diff.json",
+    "p2-check01-before-history-diff.json",
+    "p2-check02-after-history-diff.json",
+    "p2-check02-before-history-diff.json",
+    "p2-clippy01-after-history-diff.json",
+    "p2-clippy01-before-history-diff.json",
+    "p2-docs-install-after-history-diff.json",
+    "p2-docs-install-before-history-diff.json",
+    "p2-final-build-after-history-diff.json",
+    "p2-final-build-before-history-diff.json",
+    "p2-final-catalog-after-history-diff.json",
+    "p2-final-catalog-before-history-diff.json",
+    "p2-final-catalog-tests-after-history-diff.json",
+    "p2-final-catalog-tests-before-history-diff.json",
+    "p2-final-check-after-history-diff.json",
+    "p2-final-check-before-history-diff.json",
+    "p2-final-clippy-after-history-diff.json",
+    "p2-final-clippy-before-history-diff.json",
+    "p2-final-install-after-history-diff.json",
+    "p2-final-install-before-history-diff.json",
+    "p2-final-kernel-doc-after-history-diff.json",
+    "p2-final-kernel-doc-before-history-diff.json",
+    "p2-final-kernel-lib-after-history-diff.json",
+    "p2-final-kernel-lib-before-history-diff.json",
+    "p2-final-reference-after-history-diff.json",
+    "p2-final-reference-before-history-diff.json",
+    "p2-final-topology-doc-after-history-diff.json",
+    "p2-final-topology-doc-before-history-diff.json",
+    "p2-final-topology-lib-after-history-diff.json",
+    "p2-final-topology-lib-before-history-diff.json",
+    "p2-final-validation-after-history-diff.json",
+    "p2-final-validation-before-history-diff.json",
+    "p2-format-after-history-diff.json",
+    "p2-format-before-history-diff.json",
+    "p2-format02-after-history-diff.json",
+    "p2-format02-before-history-diff.json",
+    "p2-generate-after-history-diff.json",
+    "p2-generate-before-history-diff.json",
+    "p2-generate02-after-history-diff.json",
+    "p2-generate02-before-history-diff.json",
+    "p2-generate03-after-history-diff.json",
+    "p2-generate03-before-history-diff.json",
+    "p2-generate04-after-history-diff.json",
+    "p2-generate04-before-history-diff.json",
+    "p2-generate05-after-history-diff.json",
+    "p2-generate05-before-history-diff.json",
+    "p2-install4-after-history-diff.json",
+    "p2-install4-before-history-diff.json",
+    "p2-install5-after-history-diff.json",
+    "p2-install5-before-history-diff.json",
+    "p2-install6-after-history-diff.json",
+    "p2-install6-before-history-diff.json",
+    "p2-lib01-after-history-diff.json",
+    "p2-lib01-before-history-diff.json",
+    "p2-lib02-after-history-diff.json",
+    "p2-lib02-before-history-diff.json",
+    "p2-lib03-after-history-diff.json",
+    "p2-lib03-before-history-diff.json",
+    "p2-lib04-after-history-diff.json",
+    "p2-lib04-before-history-diff.json",
+    "p2-lib05-after-history-diff.json",
+    "p2-lib05-before-history-diff.json",
+    "p2-polish-install1-after-history-diff.json",
+    "p2-polish-install1-before-history-diff.json",
+    "p2-polish-install2-after-history-diff.json",
+    "p2-polish-install2-before-history-diff.json",
+    "p2-reference01-after-history-diff.json",
+    "p2-reference01-before-history-diff.json",
+    "p2-reference02-after-history-diff.json",
+    "p2-reference02-before-history-diff.json",
+    "p2-reference03-after-history-diff.json",
+    "p2-reference03-before-history-diff.json",
+    "p2-reference04-after-history-diff.json",
+    "p2-reference04-before-history-diff.json",
+    "p2-rust-install1-after-history-diff.json",
+    "p2-rust-install1-before-history-diff.json",
+    "p2-start-history-diff.json",
+    "p2-tests-install1-after-history-diff.json",
+    "p2-tests-install1-before-history-diff.json",
+    "p2-tests-install2-after-history-diff.json",
+    "p2-tests-install2-before-history-diff.json",
+    "p2-tools-install1-after-history-diff.json",
+    "p2-tools-install1-before-history-diff.json",
+    "p2-tools-install2-after-history-diff.json",
+    "p2-tools-install2-before-history-diff.json",
+    "p2-tools-install3-after-history-diff.json",
+    "p2-tools-install3-before-history-diff.json"
+  ],
+  "blockers": []
+}

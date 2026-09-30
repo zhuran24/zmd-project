@@ -1,0 +1,8 @@
+[package]
+name = "kernel-review-engineering"
+version = "0.0.0"
+edition = "2021"
+[workspace]
+[dependencies]
+kernel = { path = "../../.." }
+serde_json = "1"

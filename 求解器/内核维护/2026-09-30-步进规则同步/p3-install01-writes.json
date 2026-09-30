@@ -1,0 +1,82 @@
+[
+  {
+    "path": "crates/kernel/README.md",
+    "before": "5b835b9435cc431a47f0ca4f4eaaacb50ec8be68a3ff805871c2b9ad10e0a74c",
+    "after": "d76cff9250bb196a23c2a61c64ce585ad0b38652cb322f14e2138adaec19c58f"
+  },
+  {
+    "path": "crates/kernel/修订记录.md",
+    "before": "b14f3c06e5d1246ef9502439fa2a03d5c6a5e9a353cbc41da55d4ef1f4489c94",
+    "after": "2e47acf2c3e0d11737cf3de53f297cc9d61558ccaf09cb0333be97f73237859a"
+  },
+  {
+    "path": "内核维护/2026-09-30-步进规则同步/guard.py",
+    "before": "5fd29965bdff5ce36a4933a5256116c97caf2241693f9697e542489ecc43edec",
+    "after": "602dec90c3430013d57aefc802885e6e0f82cf2c1665f3b168bbfd10dadb906d"
+  },
+  {
+    "path": "内核维护/2026-09-30-步进规则同步/work.py",
+    "before": "2c7e9da36acf77ff230411d24ea30864e814a81b410d2b98ce02a9505c31f16a",
+    "after": "f12ddff8d63b86c220d381dbeeb2993d0e77d0eb9fca5db3eeca05f1c7c09383"
+  },
+  {
+    "path": "数据/候选B/来源清单.json",
+    "before": "0a6411c92a8b35f952ad5fa1338f4d49c2b883057dc59f7d3b42a6b98bec4077",
+    "after": "85512bb8fdce9fddd1b0a34126c04ec59e61753ef1f8fa506b057888e474930b"
+  },
+  {
+    "path": "数据/规则覆盖表.md",
+    "before": "0167ef4593a54a64cc4b06515177c550ea075340c7bbb81281f23ae456493e01",
+    "after": "b58c1789270fbadf923b780cc65bf7d41e9fc248f3313d9c9b1e5da34cfe1bbf"
+  },
+  {
+    "path": "规格/check_revision.py",
+    "before": "ec108fccc3e8ed7273d865b8979bfffb49eae10200b2aa30e0d1f6b3542afc42",
+    "after": "6b208556e8d46452ca58719756d1194906003fbb89f9decbd6104006ba300cc0"
+  },
+  {
+    "path": "规格/修订记录.md",
+    "before": "d5cc6758ba998d632b3c3676d8ab1f03f0fc364cdf385b44f01023852b9af859",
+    "after": "b3b038998e0aa88b31225041cf99bf9ce5baae02c99301b74d5c396de3f63153"
+  },
+  {
+    "path": "规格/内核输入.md",
+    "before": "7e257cff649960f78a8da0023ac31e926a1e0b972fb68476b4b12d6fdcf90f41",
+    "after": "28fffa5b34745d574ebbd01d25b88f777743beb558f71e5273c27d281d65c77a"
+  },
+  {
+    "path": "规格/内核输出.md",
+    "before": "e287c6e4bb388a814a5fe04d072084e29be494a0caff9b14388c34d67705bb3c",
+    "after": "c6d201518ee9506517fc637a59e483435d11569682ceaed8f868b7fcd23c0a69"
+  },
+  {
+    "path": "规格/受限模型声明.md",
+    "before": "66359c590ad711b950bda55cb1b7e577ef9fb9671e0d87d426908d28bb244349",
+    "after": "ee7d469cb6346373aad32fbff6c8ed7c3841b6ef1b28b50d8029fb444233395a"
+  },
+  {
+    "path": "规格/受限转移定义.md",
+    "before": "3ef482467f5dc545f8fdf4bc0867eddf0a2a25a455850e0b863bfe13e368243e",
+    "after": "fec209b76a5c385d8ec662685f45bdd7f9f24b4edc66d54d599bab5c11f9c01a"
+  },
+  {
+    "path": "规格/规则覆盖表.md",
+    "before": "a1da9daf165d4b2b0a8352195eba2608345a24f3eab5c1c92aba298397030ca8",
+    "after": "f7686ad43d14cccd9e573a77a7ef87873ac2769c00929c17f0efb05115f3e263"
+  },
+  {
+    "path": "规格/运行语义.md",
+    "before": "ae50cb7c95b1c1186618ecbcc4d3575cbdc45068d82293696ccb0085d410ebaa",
+    "after": "be5bb1f23356ce44994ee30186732c688748b3e7ccdb51fc1d44ca2d28ddeb1e"
+  },
+  {
+    "path": "规格/选择点参数轴.md",
+    "before": "261da30db31063ec8292aaa493e2c11d026c0861852ef19550eeb92eb4da7665",
+    "after": "c1ec94726b7a2cf7b6ec7831333f522dd9a3fe4658702af38554c7ac01a91f79"
+  },
+  {
+    "path": "规格/选择点清单.md",
+    "before": "2b904799d006c7ddb68b0815af9c10098d05d1c09f1ed38d83694ea4b0641ff8",
+    "after": "e66de8a728792cdb704539d468d6c0db4e80be8f9e37adf62005a75646b32543"
+  }
+]

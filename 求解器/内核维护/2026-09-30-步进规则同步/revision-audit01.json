@@ -1,0 +1,11 @@
+{
+  "status": "fail",
+  "error": "crates/kernel/tests/fixtures/step/base.json",
+  "traceback": "Traceback (most recent call last):\n  File \"/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-30-步进规则同步/revision-audit.py\", line 144, in audit\n    try:result=checks(label)\n               ~~~~~~^^^^^^^\n  File \"/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-30-步进规则同步/revision-audit.py\", line 136, in checks\n    assert old==new,rel\n           ^^^^^^^^\nAssertionError: crates/kernel/tests/fixtures/step/base.json\n",
+  "seconds": 0.135,
+  "argv": [
+    "python3",
+    "-B",
+    "内核维护/2026-09-30-步进规则同步/revision-audit.py"
+  ]
+}

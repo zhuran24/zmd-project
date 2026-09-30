@@ -1,0 +1,242 @@
+[
+  {
+    "path": "求解器/crates/kernel/src/graph.rs",
+    "change": "added",
+    "before": null,
+    "after": "04d5411e2fcb438ac47e50431a0752ded85f4e2dbb2c59de39c04ae9c307b4c4"
+  },
+  {
+    "path": "求解器/crates/kernel/src/step.rs",
+    "change": "added",
+    "before": null,
+    "after": "1d83ba9dda2dbc912b886898991f7309f57dce8f308d3161b6fd76d13ba4a019"
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests_box_gate.rs",
+    "change": "added",
+    "before": null,
+    "after": "1d0d767167637fab3bbf866ec36a3bd704923c36b8f6648a0881faefd5332445"
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests_config.rs",
+    "change": "added",
+    "before": null,
+    "after": "35974263c13a00ff175e956ae3953c6641614ce4141edb2ce8e9419e715fb61e"
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests_graph.rs",
+    "change": "added",
+    "before": null,
+    "after": "c973ce15d29867aec0f19684c7a1b51c29675d3210326c9e55e52e1826d6473f"
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests_manufacture.rs",
+    "change": "added",
+    "before": null,
+    "after": "31d88981877d5fd3dcaddf843879e7cf53de17d2e4994ff9ba3e9e8068fae9f1"
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests_seed.rs",
+    "change": "added",
+    "before": null,
+    "after": "894a4a8d9746d7fba82ff80d5d22ad33f0ffa7ed69ff1025a5324ab1df5f0600"
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests_step.rs",
+    "change": "added",
+    "before": null,
+    "after": "9e69986972b847cff1e2bf35b2b2c90f1963ad3f9bdba3bbb47d09837d385b09"
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests_support.rs",
+    "change": "added",
+    "before": null,
+    "after": "44b6265bc23deaee07a3494bfd62a778cdab6396ca4bb2137ed806ffd334e564"
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests_warehouse.rs",
+    "change": "added",
+    "before": null,
+    "after": "db7b3a01643b6cfc5953aeb443cd690c8266aa9887fa89bda4637b74e60a2c48"
+  },
+  {
+    "path": "求解器/crates/kernel/tests/fixtures/step/base.json",
+    "change": "added",
+    "before": null,
+    "after": "93c81bafd26d8225c508a693ed7d3b9ed84cbade45c4c64294cef3bc4e63daf4"
+  },
+  {
+    "path": "求解器/数据/工具/step_inputs.py",
+    "change": "added",
+    "before": null,
+    "after": "93b0c3b3616825a75857fdfd98e54ae9acd31658b604bd7394d3a94865c7a72d"
+  },
+  {
+    "path": "求解器/规格/内核配置-v2.json",
+    "change": "added",
+    "before": null,
+    "after": "680acb480aa28443431e119c98e4cc45ca6abade1670c9a4a1283a77a7d199a2"
+  },
+  {
+    "path": "求解器/crates/kernel/src/cache.rs",
+    "change": "deleted",
+    "before": "07492543966219f3e7cbcdc0aceef96475d812cca0b10743c196f4f6de85b2ab",
+    "after": null
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests.rs",
+    "change": "deleted",
+    "before": "111ca609ae9486d2e324b13d52d645e22c74bab63f57d3c6cca18611039752ee",
+    "after": null
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests_bridge.rs",
+    "change": "deleted",
+    "before": "095f5988a0360668112d65dba1181407b41d0f7ed46c45c8c9b7aa5b8632c2b8",
+    "after": null
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests_revision.rs",
+    "change": "deleted",
+    "before": "fdbec222b970566f88a7d711e44f6e46fbd7dc0062ba5bbf584159ca0217c0c1",
+    "after": null
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests_revision_r2.rs",
+    "change": "deleted",
+    "before": "e42da5328e9946f8e745cdbf361b06e006fcb28e54656488e8f53346697f4377",
+    "after": null
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests_revision_r3.rs",
+    "change": "deleted",
+    "before": "d67ebdbb093af916766fc35930b0bf31d2bfcf162de97d84f122ed5f0609d049",
+    "after": null
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests_revision_r4.rs",
+    "change": "deleted",
+    "before": "ac9fad84090f652a7e36240ea500a5aa1a4aa26f35640e133927a82645b341ed",
+    "after": null
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests_revision_r5.rs",
+    "change": "deleted",
+    "before": "0b3d61ac0291913fe0d24bd5160a266b0ddc393eeeeddabfbb9c09c87293297b",
+    "after": null
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests_round5.rs",
+    "change": "deleted",
+    "before": "f3982a6c2c82290952d0f00bb0e882bbb4e661a805acffb4b24eda53bdeb0847",
+    "after": null
+  },
+  {
+    "path": "求解器/crates/kernel/src/tests_round6.rs",
+    "change": "deleted",
+    "before": "66ce1f93167843132c2d31f3aed736409c61d4781828bf917689b94ee2547d7a",
+    "after": null
+  },
+  {
+    "path": "求解器/crates/kernel/src/transition.rs",
+    "change": "deleted",
+    "before": "fe21d21cb3fb83277486216ce0325891259d89353a7b3cb5bdd23a9f02f4cab5",
+    "after": null
+  },
+  {
+    "path": "求解器/crates/kernel/src/catalog.rs",
+    "change": "changed",
+    "before": "a38df132d8db440d5fb4d6eb33392e539f0549e436dbca210da8c9eb1edb983c",
+    "after": "7384a3633844f5ff3f7ed86a64346279b6ec949ae5ba41052e932120568957e6"
+  },
+  {
+    "path": "求解器/crates/kernel/src/config.rs",
+    "change": "changed",
+    "before": "69676c866f8030ea877e662fdb85f600618f23edd99e4262699997adf9786f5a",
+    "after": "7a67e9c89594d5b33cbbb142716c981c322290964fbabd50dbb93ecbfdc5fc92"
+  },
+  {
+    "path": "求解器/crates/kernel/src/engine.rs",
+    "change": "changed",
+    "before": "5f77eab8562c5af23c61dbb447f8e50320386bd267ea7cc9f00ca667a92b09b3",
+    "after": "7cc2cb30c978b3e6ef440bc206e032391fc33c10b93cee800493eea95b04b43f"
+  },
+  {
+    "path": "求解器/crates/kernel/src/input.rs",
+    "change": "changed",
+    "before": "63fe621104d86461562e99ba216f12fa1f69737fdb2efd57c1d8a57a8b700502",
+    "after": "a8b8f747fccf9feef511cb9b672750b98d2f8294d3a9d9696d204490961f99d8"
+  },
+  {
+    "path": "求解器/crates/kernel/src/interfaces.rs",
+    "change": "changed",
+    "before": "3ee13ba29adc7ae58abf29e09f938900895f12908fa5b428b261b9909da9d919",
+    "after": "8417dfccf9cbe96d8d6c04b13c0b418986d52fa8ffcfbc317404e58490765935"
+  },
+  {
+    "path": "求解器/crates/kernel/src/lib.rs",
+    "change": "changed",
+    "before": "5d63008aa0f7b9c8a1da93dc96b13496398cc3fbad93c3775d709d77340b4c6a",
+    "after": "fe9fd872ee3bbe41d1b92fb60a6f2dbdbb135f7cade077836c1f8f2718df9194"
+  },
+  {
+    "path": "求解器/crates/kernel/src/main.rs",
+    "change": "changed",
+    "before": "b38a6cf3afd455a7b440f4e86bb3c27e5684ff872d4c0a2bfa8b84368f9f651d",
+    "after": "3215504e6b8bfb4caf4bea2538a69b65fbc99bda4aec6be73946914e1d8625d2"
+  },
+  {
+    "path": "求解器/crates/kernel/src/model.rs",
+    "change": "changed",
+    "before": "edeb17c43654ca3aa5bf5f3a83907585b4ecddf9241658a2e426d2560f3bfaef",
+    "after": "e6d7e16f3da573a4bc9467939e5fc1442b1d035aab00cf2623e6f9c4a970b443"
+  },
+  {
+    "path": "求解器/crates/kernel/src/polling.rs",
+    "change": "changed",
+    "before": "ff518fdb807c02a332c48acc565e0cc7b6b43d1fb98fb22374a0002ac8dd7635",
+    "after": "12f96110273de6f342c2a60ba091cd38e1fe9040bd7252101e06d62bc169c311"
+  },
+  {
+    "path": "求解器/crates/kernel/src/value.rs",
+    "change": "changed",
+    "before": "0cd34a9c7877861580caa0711e643575cbb9ce631a445919c69f093c2392d32b",
+    "after": "d360f51ffe17d2003e9acb1a6923b14171d285ba90e9ce47cae7cd6cd7ff72b9"
+  },
+  {
+    "path": "求解器/crates/kernel/src/warehouse.rs",
+    "change": "changed",
+    "before": "6d50eb1678921d2f3621149d60766463e6c4ce4fd57e0978ae1af7253557d5f5",
+    "after": "3145761862c9e84bd1c550be18a4ff50f0b8dd01dc626787b41893905e4f52a4"
+  },
+  {
+    "path": "求解器/crates/kernel/tests/reference.rs",
+    "change": "changed",
+    "before": "4674f801a969ce18d87442387bc64ecf6d4fa52ed32944fc7cba7788306c4044",
+    "after": "363f4657abaf8fbe52e0cfb089ee5c90cc199e9586b2ac07bcdd4fdebef3c058"
+  },
+  {
+    "path": "求解器/数据/工具/formal_catalog.py",
+    "change": "changed",
+    "before": "5175776cf68758cef7b109c4751d4202b4a474c3be496129e48785d3b02b1e58",
+    "after": "27ab37406664829751d5be0faf9b0b80ed18c66dd066513772fc265a4730cc0c"
+  },
+  {
+    "path": "求解器/数据/工具/formal_units.py",
+    "change": "changed",
+    "before": "6e925330256e03691ca43cda0db5bbc6d274a1b5a2f4904083b8bac7a1336f47",
+    "after": "599772868c2f4af7f4abc44b4f7d9eba700472e35697efe3692b427bc71f188b"
+  },
+  {
+    "path": "求解器/数据/工具/test_formal_catalog.py",
+    "change": "changed",
+    "before": "31b418b12e57b5d14ee1994731e81ec627680d0f6b9d281040c41cdeb8477f4c",
+    "after": "1134f9c70b44c57d85b6a082b58369af517113919b25635b87160d7b245dcaa7"
+  },
+  {
+    "path": "求解器/数据/正式静态目录.json",
+    "change": "changed",
+    "before": "74deafed83876dcf40fffe55d8f01d45edcfd2840e35725c8006da996c877e02",
+    "after": "73de10b3a4849302eb259dd16c6830d3a37464ea4a6b211dbc6c38a655d30e53"
+  }
+]

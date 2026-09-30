@@ -1,0 +1,14 @@
+    Checking kernel v0.1.0 (/home/zhuran24/zmd-research-fresh/求解器/crates/kernel)
+error[E0599]: no method named `current` found for struct `config::Parameters` in the current scope
+   --> crates/kernel/src/cycle.rs:734:36
+    |
+734 |     let current = input.parameters.current();
+    |                                    ^^^^^^^ method not found in `config::Parameters`
+    |
+   ::: crates/kernel/src/config.rs:253:1
+    |
+253 | pub struct Parameters {
+    | --------------------- method `current` not found for this struct
+
+For more information about this error, try `rustc --explain E0599`.
+error: could not compile `kernel` (lib) due to 1 previous error

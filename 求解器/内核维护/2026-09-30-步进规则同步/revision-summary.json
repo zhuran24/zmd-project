@@ -1,0 +1,1653 @@
+{
+  "status": "completed",
+  "report_path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-30-步进规则同步/修订处置.md",
+  "blockers": [],
+  "config_sha256": "3607226b9b9603ad3fcad9f1456c98156797ac52b2123bc1e48048a143ec91ef",
+  "catalog_sha256": "73de10b3a4849302eb259dd16c6830d3a37464ea4a6b211dbc6c38a655d30e53",
+  "audit": "revision-audit03.json",
+  "commands": [
+    {
+      "name": "revision-lib01",
+      "argv": [
+        "cargo",
+        "test",
+        "-p",
+        "kernel",
+        "--lib",
+        "-j",
+        "4",
+        "--",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 101,
+      "seconds": 0.34,
+      "finished_utc": "2026-09-30T18:12:49.483981+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    },
+    {
+      "name": "revision-lib02",
+      "argv": [
+        "cargo",
+        "test",
+        "-p",
+        "kernel",
+        "--lib",
+        "-j",
+        "4",
+        "--",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 11.503,
+      "finished_utc": "2026-09-30T18:13:44.573096+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    },
+    {
+      "name": "revision-reference01",
+      "argv": [
+        "cargo",
+        "test",
+        "-p",
+        "kernel",
+        "--test",
+        "reference",
+        "-j",
+        "4",
+        "--",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 7.174,
+      "finished_utc": "2026-09-30T18:14:30.375251+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    },
+    {
+      "name": "revision-final-build",
+      "argv": [
+        "cargo",
+        "build",
+        "--workspace",
+        "-j",
+        "4"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 0.021,
+      "finished_utc": "2026-09-30T18:15:27.629225+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    },
+    {
+      "name": "revision-final-check",
+      "argv": [
+        "cargo",
+        "check",
+        "--workspace",
+        "-j",
+        "4"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 0.324,
+      "finished_utc": "2026-09-30T18:15:29.195301+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    },
+    {
+      "name": "revision-final-clippy",
+      "argv": [
+        "cargo",
+        "clippy",
+        "--workspace",
+        "-j",
+        "4"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 0.433,
+      "finished_utc": "2026-09-30T18:15:30.902688+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    },
+    {
+      "name": "revision-final-kernel-lib",
+      "argv": [
+        "cargo",
+        "test",
+        "-p",
+        "kernel",
+        "--lib",
+        "-j",
+        "4",
+        "--",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 10.358,
+      "finished_utc": "2026-09-30T18:15:42.538360+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    },
+    {
+      "name": "revision-final-topology-lib",
+      "argv": [
+        "cargo",
+        "test",
+        "-p",
+        "topology",
+        "--lib",
+        "-j",
+        "4",
+        "--",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 0.021,
+      "finished_utc": "2026-09-30T18:15:43.798242+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    },
+    {
+      "name": "revision-final-reference",
+      "argv": [
+        "cargo",
+        "test",
+        "-p",
+        "kernel",
+        "--test",
+        "reference",
+        "-j",
+        "4",
+        "--",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 5.462,
+      "finished_utc": "2026-09-30T18:15:50.530942+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    },
+    {
+      "name": "revision-final-validation",
+      "argv": [
+        "cargo",
+        "test",
+        "-p",
+        "topology",
+        "--test",
+        "validation",
+        "-j",
+        "4",
+        "--",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 6.553,
+      "finished_utc": "2026-09-30T18:15:58.354122+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    },
+    {
+      "name": "revision-final-kernel-doc",
+      "argv": [
+        "cargo",
+        "test",
+        "-p",
+        "kernel",
+        "--doc",
+        "-j",
+        "4",
+        "--",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 0.128,
+      "finished_utc": "2026-09-30T18:15:59.722264+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    },
+    {
+      "name": "revision-final-topology-doc",
+      "argv": [
+        "cargo",
+        "test",
+        "-p",
+        "topology",
+        "--doc",
+        "-j",
+        "4",
+        "--",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 0.075,
+      "finished_utc": "2026-09-30T18:16:01.035190+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    },
+    {
+      "name": "revision-final-catalog",
+      "argv": [
+        "python3",
+        "数据/工具/formal_catalog.py"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 0.049,
+      "finished_utc": "2026-09-30T18:16:02.361304+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    },
+    {
+      "name": "revision-final-catalog-tests",
+      "argv": [
+        "python3",
+        "数据/工具/test_formal_catalog.py"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 2.18,
+      "finished_utc": "2026-09-30T18:16:05.816013+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    },
+    {
+      "name": "revision-final2-build",
+      "argv": [
+        "cargo",
+        "build",
+        "--workspace",
+        "-j",
+        "4"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 0.018,
+      "finished_utc": "2026-09-30T18:17:45.683357+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    },
+    {
+      "name": "revision-final2-check",
+      "argv": [
+        "cargo",
+        "check",
+        "--workspace",
+        "-j",
+        "4"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 0.018,
+      "finished_utc": "2026-09-30T18:17:46.983489+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    },
+    {
+      "name": "revision-final2-clippy",
+      "argv": [
+        "cargo",
+        "clippy",
+        "--workspace",
+        "-j",
+        "4"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 0.058,
+      "finished_utc": "2026-09-30T18:17:48.314777+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    },
+    {
+      "name": "revision-final2-kernel-lib",
+      "argv": [
+        "cargo",
+        "test",
+        "-p",
+        "kernel",
+        "--lib",
+        "-j",
+        "4",
+        "--",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 9.649,
+      "finished_utc": "2026-09-30T18:17:59.202951+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    },
+    {
+      "name": "revision-final2-topology-lib",
+      "argv": [
+        "cargo",
+        "test",
+        "-p",
+        "topology",
+        "--lib",
+        "-j",
+        "4",
+        "--",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 0.021,
+      "finished_utc": "2026-09-30T18:18:00.463067+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    },
+    {
+      "name": "revision-final2-reference",
+      "argv": [
+        "cargo",
+        "test",
+        "-p",
+        "kernel",
+        "--test",
+        "reference",
+        "-j",
+        "4",
+        "--",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 5.457,
+      "finished_utc": "2026-09-30T18:18:07.168475+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    },
+    {
+      "name": "revision-final2-validation",
+      "argv": [
+        "cargo",
+        "test",
+        "-p",
+        "topology",
+        "--test",
+        "validation",
+        "-j",
+        "4",
+        "--",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 6.707,
+      "finished_utc": "2026-09-30T18:18:15.147845+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    },
+    {
+      "name": "revision-final2-kernel-doc",
+      "argv": [
+        "cargo",
+        "test",
+        "-p",
+        "kernel",
+        "--doc",
+        "-j",
+        "4",
+        "--",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 0.13,
+      "finished_utc": "2026-09-30T18:18:16.549218+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    },
+    {
+      "name": "revision-final2-topology-doc",
+      "argv": [
+        "cargo",
+        "test",
+        "-p",
+        "topology",
+        "--doc",
+        "-j",
+        "4",
+        "--",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 0.075,
+      "finished_utc": "2026-09-30T18:18:17.864271+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    },
+    {
+      "name": "revision-final2-catalog",
+      "argv": [
+        "python3",
+        "数据/工具/formal_catalog.py"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 0.041,
+      "finished_utc": "2026-09-30T18:18:19.141611+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    },
+    {
+      "name": "revision-final2-catalog-tests",
+      "argv": [
+        "python3",
+        "数据/工具/test_formal_catalog.py"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 2.292,
+      "finished_utc": "2026-09-30T18:18:22.673519+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    }
+  ],
+  "final_safe_suite": [
+    "revision-final2-build",
+    "revision-final2-check",
+    "revision-final2-clippy",
+    "revision-final2-kernel-lib",
+    "revision-final2-topology-lib",
+    "revision-final2-reference",
+    "revision-final2-validation",
+    "revision-final2-kernel-doc",
+    "revision-final2-topology-doc",
+    "revision-final2-catalog",
+    "revision-final2-catalog-tests"
+  ],
+  "test_before_after_snapshots": 58,
+  "differential": {
+    "suite": "差分/revision-differential-final.json",
+    "diagnosis": "差分/revision-diagnose-final.json",
+    "cases": 96,
+    "steps": 33484,
+    "known_sim2_mismatches": 2,
+    "errors": []
+  },
+  "changed_files": [
+    {
+      "path": "求解器/crates/kernel/src/graph.rs",
+      "before_sha256": "04d5411e2fcb438ac47e50431a0752ded85f4e2dbb2c59de39c04ae9c307b4c4",
+      "after_sha256": "6cdd61f6e620c8a24ffd9021eb1c91ae37c97b17bf0ac22d2683e86317dae852"
+    },
+    {
+      "path": "求解器/crates/kernel/src/input.rs",
+      "before_sha256": "a8b8f747fccf9feef511cb9b672750b98d2f8294d3a9d9696d204490961f99d8",
+      "after_sha256": "4c6b214e8f778a733ada8a3e74b5db5a57cfdce02f4548279795f70995e70cae"
+    },
+    {
+      "path": "求解器/crates/kernel/src/output.rs",
+      "before_sha256": "89d27bf58679299bfb6e7b15504ece7ca570572cdb358b86afd8bb8d463484db",
+      "after_sha256": "a11071439a60fbfd0ee0d8380908cff2ff9506057875f0a965eff7c3a5b91d21"
+    },
+    {
+      "path": "求解器/crates/kernel/src/tests_graph.rs",
+      "before_sha256": "c973ce15d29867aec0f19684c7a1b51c29675d3210326c9e55e52e1826d6473f",
+      "after_sha256": "737f5f064679d781031b7b17c639fcf01db90fbc4ec4dcdedbcb99c79f6d8014"
+    },
+    {
+      "path": "求解器/crates/kernel/src/tests_output.rs",
+      "before_sha256": "53441cbbf2613048be4fcc3add69b4c85f14a8002ba2cddd34ba284664ad2c80",
+      "after_sha256": "e8022f5c9569a13b61c3f16d5c0d3d4ff76499f2ba2bb123d826a910af6a050c"
+    },
+    {
+      "path": "求解器/crates/kernel/tests/fixtures/step/base.json",
+      "before_sha256": "93c81bafd26d8225c508a693ed7d3b9ed84cbade45c4c64294cef3bc4e63daf4",
+      "after_sha256": "33d047530146ec8127e0c5fd5e8d67be88ed519d35a5f606e7606fda8b269053"
+    },
+    {
+      "path": "求解器/crates/kernel/tests/fixtures/step/benchmark_1000.json",
+      "before_sha256": "4a631d1db2b14b97d12cda4c34c9aef0da0cc95af1a0385f4887f218eddf978d",
+      "after_sha256": "55e442846982706923a80f1aa2446ebb490174bc2574b88746ae7026167b6e87"
+    },
+    {
+      "path": "求解器/crates/kernel/tests/fixtures/step/bridge.json",
+      "before_sha256": "dcbae476b1fe84cf0c665c3944117b1f94fa78e910a099425fab575be7a54e99",
+      "after_sha256": "dfdc9b7f2c7edf2a40c16abc4bdac4b81f50d0d1b9d00a2fb7dae1dc5316fdf1"
+    },
+    {
+      "path": "求解器/crates/kernel/tests/fixtures/step/core_inbound.json",
+      "before_sha256": "5e839d94da187efae1eee61f4bbf907a6f8e79721938cf91e1bab1c727151475",
+      "after_sha256": "7df268f0e9db43632ac94bfa7eb1ddaa7c3b5e846650e2e5fdd093837d1011a4"
+    },
+    {
+      "path": "求解器/crates/kernel/tests/fixtures/step/priority.json",
+      "before_sha256": "fd7728e575d1c4efee86e07f97f422f4548ab552797f89ce8ee0dca981fb77b1",
+      "after_sha256": "5db51837df719c460d487a49fab4a051aa43bb353c8c12bb16ea071b2e8f9fcc"
+    },
+    {
+      "path": "求解器/crates/kernel/tests/reference.rs",
+      "before_sha256": "f05a69eee2d2d1be8a73cbff23f2bf1d54ed99ffe7f896d1ea42c1f2e5704d50",
+      "after_sha256": "6603ae2e16ea3569314a3811e0934a68f428f1d767b67afe7a6197c286829133"
+    },
+    {
+      "path": "求解器/crates/kernel/修订记录.md",
+      "before_sha256": "2e47acf2c3e0d11737cf3de53f297cc9d61558ccaf09cb0333be97f73237859a",
+      "after_sha256": "e70fbc260251e9d533e5a76d1beb98a81b265374b921eef04c51d02da36f8327"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-30-步进规则同步/差分/diagnose.py",
+      "before_sha256": "5812749e81f38a8e5cb343e8a5d4127cb633b116c32ddebf0fc3ec55a0238f0b",
+      "after_sha256": "0a170ce1f94bf5f1aa7752fdd673934ac0436472890a1f5aec7b75f84e391666"
+    },
+    {
+      "path": "求解器/内核维护/2026-09-30-步进规则同步/设计.md",
+      "before_sha256": "e33b5c870ab9d3c37797fbfe4f0e0989ede1f17ae5f5bc82407c18e47cabe6b8",
+      "after_sha256": "37196c7e0b36bc322da5c130704ee730e1ffb6ff9c9654df46c74f553a0d0968"
+    },
+    {
+      "path": "求解器/数据/工具/step_graph.py",
+      "before_sha256": "93b26629983fcbdc34b76a181c4988c94a6fcb539cf9d0f485f886c72b8f44ac",
+      "after_sha256": "cb20119d86a01cf8255712aad1d1ead87634c3319ee8d542d91d04e0d3602286"
+    },
+    {
+      "path": "求解器/数据/工具/step_inputs.py",
+      "before_sha256": "93b0c3b3616825a75857fdfd98e54ae9acd31658b604bd7394d3a94865c7a72d",
+      "after_sha256": "953765cfbb8097569512ca9bd4444fb5af3783bf6d59b860ac1d49883587df39"
+    },
+    {
+      "path": "求解器/数据/样例/历史说明.md",
+      "before_sha256": "2789f3169dd352486abb3683f804598ab27a1f95239d652c8c9684c282abc792",
+      "after_sha256": "3e14641ade652b3e97456eaadc532f8629543271c7cd052942f0dcd080040ecd"
+    },
+    {
+      "path": "求解器/数据/样例/步进/周期/生产循环环带.json",
+      "before_sha256": "3d387e96b176976f15d35bbe61bcc6aacd64218c588fac5065e310dbbb14cc3e",
+      "after_sha256": "4976887423d29271234318f4863d27f1c729fe3ee0cca7df5012702cf05bf2ee"
+    },
+    {
+      "path": "求解器/数据/样例/步进/周期/生产环带.json",
+      "before_sha256": "c7da9504f20fe1d700af31bc2ad6115cabe44239ea2e42438a7f4103b74186c2",
+      "after_sha256": "47b5db8879ba5632e35f3c966d3fe0036a1186a129af393a6a4b03d6a287f9c2"
+    },
+    {
+      "path": "求解器/数据/样例/步进/差分/a-纯链.json",
+      "before_sha256": "51c808427110877101c549b4f48d69eaeca795519f0774f9a1e4a8b48737b7db",
+      "after_sha256": "ef9f3a879e99c3429192768f6ed30342b3f71c3a964a8364d45203b052a11ded"
+    },
+    {
+      "path": "求解器/数据/样例/步进/差分/b-迟滞.json",
+      "before_sha256": "397c1a63173045df7eab59f1ae4f630d4c17ddef18dd0273f9722d10747b8562",
+      "after_sha256": "19c6dca6fbff5574ee67b1e9b319448cc46aabdc4a6fa5161ed291bf23d07d58"
+    },
+    {
+      "path": "求解器/数据/样例/步进/差分/c-换主料.json",
+      "before_sha256": "4dd6b4bd87b72c3fa9568bc719e12c541f42274db707c6b187f832583f8c1687",
+      "after_sha256": "7d095b55b434692cd3e1fdfc93ec77a5da333c1a84a65d95f3b54a43053f9cff"
+    },
+    {
+      "path": "求解器/数据/样例/步进/差分/d-满箱串联.json",
+      "before_sha256": "8161ae112c84067e6f1a1c300ed8d30bd36f907b24a2f89e3e15e8cea2db3fc1",
+      "after_sha256": "41fc4701b0dd6ca5931fb64596a1cf2ebb9700034582b7c0828b7a5197a3de77"
+    },
+    {
+      "path": "求解器/数据/样例/步进/差分/e-汇流.json",
+      "before_sha256": "74d659d6cc733ce7c516772a46acbb22b0f76e3571484096b23a13b9ed1f47e1",
+      "after_sha256": "0027bf811213273131d807ea35f8b09fc45d244016123914902aaf773597384e"
+    },
+    {
+      "path": "求解器/数据/样例/步进/差分/三上游.json",
+      "before_sha256": "784cb9f6de6c72c427f115bb990e844178f029be3e910511b8cb32e322368732",
+      "after_sha256": "efdc2eae73b4d4d79fce89a4c6c01870288572f901548e61d3573d079fbb60c1"
+    },
+    {
+      "path": "求解器/数据/样例/步进/差分/侧面优先.json",
+      "before_sha256": "7750b90d99ce6eb81cd5a622bed0d7fb1cdb6768eb43bcc4c6caa7f28929b9d3",
+      "after_sha256": "1265633faab93acd98e87768c38c050a06dcb7ea6b362998bc87782a55803cab"
+    },
+    {
+      "path": "求解器/数据/样例/步进/差分/分矿.json",
+      "before_sha256": "9a55af18e74723f46930920c2f71d91c5c855a2c0255b17b17457309ebfa63e9",
+      "after_sha256": "ff3dbce8acf58f35b72cb82660d295146c6e208ff06dbcdfa39d31b39b997b49"
+    },
+    {
+      "path": "求解器/数据/样例/步进/差分/断尾.json",
+      "before_sha256": "e8e92887d43ef9ab23ecd9ae520f62acd659f7b5e338f7a5709701fd800c1c79",
+      "after_sha256": "c3417059c16398e938d3c52eab66738a0ead07e7b28ef75cb0a6a7163016871f"
+    },
+    {
+      "path": "求解器/数据/样例/步进/机制/同刻双箱争余量.json",
+      "before_sha256": "bb4dca6c4bd7298f2e4eb1d21bf1c87a96e546b64ef788f7dad9e8643add4df4",
+      "after_sha256": "25163bcc4907071b66d818e1ae87aebd1348bb949f2f11dc41bb2fafb9e24e1e"
+    },
+    {
+      "path": "求解器/数据/样例/步进/机制/成熟旧货重试.json",
+      "before_sha256": "27767cc42419bf0e6f7a525be26a523a604fe0b3f1e09bf0455c014e15f8e592",
+      "after_sha256": "75656123d8cfa28a21dbd8d71567e1ef038884a903f63e56f9bc3ef9ebf8d08b"
+    },
+    {
+      "path": "求解器/数据/样例/步进/机制/无线一满一可收.json",
+      "before_sha256": "c4e433cc2d7f66f866831385ec84ee6ba94b18f21f38b8ffc49fa22358a990ff",
+      "after_sha256": "501cfc848c17378ee8204424109ccdec15610d36fb9f8859dd658963c7f92c67"
+    },
+    {
+      "path": "求解器/数据/样例/步进/机制/无线全拒收.json",
+      "before_sha256": "d68ecacb8deb469f2d086ed3072c0e6c7ae4a490b8eb21f18cbc5f6fc372767b",
+      "after_sha256": "89840ce42dba72f94ace5a5fe54b47c6e7decb257720bc8f185697fe434b5448"
+    },
+    {
+      "path": "求解器/数据/样例/步进/机制/无线多格全收.json",
+      "before_sha256": "8ea7763eb22454114e7c36eef02698029cacd03f60d67e963772b9582126a5ef",
+      "after_sha256": "c31175284488c0347cc2764f67e6fc17aa395cae37b9b35eb6857244a2bd7574"
+    },
+    {
+      "path": "求解器/数据/样例/步进/机制/无线多格歧义.json",
+      "before_sha256": "5e3b49df357b80683062d93d21ece63ad1d80142f60eac5ac12b18a51ddc3dd6",
+      "after_sha256": "a2185716473fef6bada06565b725f8efe3112922a6ea2689b64740d27bd4e9e0"
+    },
+    {
+      "path": "求解器/数据/样例/步进/机制/无线空箱.json",
+      "before_sha256": "202814a284a34f22528975fb8e45e02406006e73ba5587b1eed3cb9eef88d875",
+      "after_sha256": "d4198ecf290059cff47f475e93a7ba5e13f98bcb1b5ce4d9e6bcb7fd12ab362e"
+    },
+    {
+      "path": "求解器/数据/样例/步进/机制/无线部分接收.json",
+      "before_sha256": "116a80b7c5ff6d8aa4fdad433374a0c5828cc7b1adaeb62d17ef5568d894ff97",
+      "after_sha256": "be5c9f3bea13a69535e751a152fd4c8c2a0288e51237ffc33871f485eec0570b"
+    },
+    {
+      "path": "求解器/数据/样例/步进/机制/累计审计与窗口周期.json",
+      "before_sha256": "387af879725d02e48cea3ecb167f1656c09321bf17c8dbff18e009dcd88cece5",
+      "after_sha256": "84d15fdca717824118d7a4cb3038989edfc1e770eaa67f9963aa2c3bb0e463d5"
+    },
+    {
+      "path": "求解器/数据/样例/步进/机制/累计调低保留.json",
+      "before_sha256": "6fb00be347989f883d5552dd1385f4c720ee3e65c6c21d072edb0deb6af2c358",
+      "after_sha256": "b2c1f7901f6acb9e2f6f63694742d04549d3bc762a16a7a5dcf3164646e1c896"
+    },
+    {
+      "path": "求解器/数据/样例/步进/机制/累计调高资格.json",
+      "before_sha256": "2d8306c4cacfb821c4d086f41e07062838723e091c00d64a7546de27ecf75aed",
+      "after_sha256": "06982c8550c6bc191b7a7cbaf7b61cf8b3327f328e260b1dcf1b09a9512b23e7"
+    },
+    {
+      "path": "求解器/数据/样例/步进/机制/装载与普通制造.json",
+      "before_sha256": "f1b4f16b84e1f38a7b72219fe989d06953baa9d7c8b903b1e19c3baef7e7edcb",
+      "after_sha256": "633efc7fe60a213cba140acd12ce0b09774e41e795d8e1e843579dd67a05eabd"
+    },
+    {
+      "path": "求解器/数据/样例/步进/机制/身份实际切换.json",
+      "before_sha256": "f816dcc7ad401e3a423263f8497686fa64e89ea137102648fe2e5c34e5fa5989",
+      "after_sha256": "a4b925d82814c2099f52a48c68b6986c7a332b6103f5f6a35a4c4448b5d7464c"
+    },
+    {
+      "path": "求解器/数据/样例/步进/机制/静止成熟与暂停键.json",
+      "before_sha256": "ce8c00fe2828c9567b6bcd08809c6e42698c41b5c630c9fca1925162c8235337",
+      "after_sha256": "412892fbd0298b3d2f3b2427091085451bbece72518fe2c05bf5b448e64a26fc"
+    },
+    {
+      "path": "求解器/规格/修订记录.md",
+      "before_sha256": "b3b038998e0aa88b31225041cf99bf9ce5baae02c99301b74d5c396de3f63153",
+      "after_sha256": "f55deda93ac2ba2c28257a64fee72211161e1555bea99083d5d70059ef1f7e90"
+    },
+    {
+      "path": "求解器/规格/内核输入.md",
+      "before_sha256": "12a337b42aa7ce795fd57160e90006a3931e5a7b99c722bb401fcb172d84f963",
+      "after_sha256": "e4779efdb833740ca85ce111afdd4fec87c1a1615e7d33979638c2b335e16908"
+    },
+    {
+      "path": "求解器/规格/内核输出.md",
+      "before_sha256": "c6d201518ee9506517fc637a59e483435d11569682ceaed8f868b7fcd23c0a69",
+      "after_sha256": "fab07ca8a4457dbd8822e785d319c7e64696dc95ad8417a89934116053b96ed6"
+    },
+    {
+      "path": "求解器/规格/内核配置-v2.json",
+      "before_sha256": "680acb480aa28443431e119c98e4cc45ca6abade1670c9a4a1283a77a7d199a2",
+      "after_sha256": "3607226b9b9603ad3fcad9f1456c98156797ac52b2123bc1e48048a143ec91ef"
+    },
+    {
+      "path": "求解器/规格/受限模型声明.md",
+      "before_sha256": "e6f94a58e7322013a848c9be251d3d393f8c69d80971bbe56038ff42a5f7b662",
+      "after_sha256": "82f043a46aa5ad62bc848e024d30d0c892fe4146318a001396e274dab0bec20c"
+    },
+    {
+      "path": "求解器/规格/运行语义.md",
+      "before_sha256": "42cfd12fbe1730fb99248710773ecc63375f1cb150715fa0a1c3235fc53f8f87",
+      "after_sha256": "15eb58452e48ef0dc09966d8c78814cb94d7f8fa40d787d31b005b67b57af7fb"
+    },
+    {
+      "path": "求解器/规格/选择点参数轴.md",
+      "before_sha256": "f06caa83ad8e65fd1907b395ba2f05a4777eb3bd7b5ec4de947947d8c335f192",
+      "after_sha256": "eb0b93fbcc52617cef6babeac94be058fa7e9b1722c72b2657042f2927f75da7"
+    }
+  ],
+  "changed_file_count": 49,
+  "samples_other_than_config_sha_unchanged": true,
+  "old_witnesses_unchanged": true,
+  "original_record_sections_unchanged": true,
+  "reader_review": {
+    "date": "2026-09-30",
+    "status": "passed",
+    "scope": [
+      "修订处置.md",
+      "记录.md 修订节",
+      "设计相关小节",
+      "现行规格及轴表"
+    ],
+    "corrections": [
+      "设计5.1链接锚点按真实标题更正",
+      "缓存闸方向与L18核等",
+      "覆盖判据按专用事件明确保守回退",
+      "失败记录与最终验收按时点分开"
+    ],
+    "links_checked": 86,
+    "links": [
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/修订处置.md",
+        "target": "审查.md"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/修订处置.md",
+        "target": "差分.md"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/修订处置.md",
+        "target": "../../crates/kernel/src/input.rs"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/修订处置.md",
+        "target": "../../数据/工具/step_graph.py"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/修订处置.md",
+        "target": "../../规格/内核输入.md#51-接通序与层数输入"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/修订处置.md",
+        "target": "../../规格/内核配置-v2.json"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/修订处置.md",
+        "target": "../../规格/受限模型声明.md"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/修订处置.md",
+        "target": "../../规格/选择点参数轴.md"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/修订处置.md",
+        "target": "../../crates/kernel/src/output.rs"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/修订处置.md",
+        "target": "../../规格/内核输出.md#3-内容核验与轴覆盖"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/修订处置.md",
+        "target": "设计.md#51-运行记录-kernel-output-v5"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/修订处置.md",
+        "target": "../../crates/kernel/src/tests_output.rs"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/修订处置.md",
+        "target": "../../crates/kernel/src/graph.rs"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/修订处置.md",
+        "target": "../../数据/工具/step_graph.py"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/修订处置.md",
+        "target": "../../数据/工具/step_inputs.py"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/修订处置.md",
+        "target": "../../数据/样例/历史说明.md"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/修订处置.md",
+        "target": "设计.md#110-制造"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/修订处置.md",
+        "target": "差分/revision-differential-final.json"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/修订处置.md",
+        "target": "差分/revision-diagnose-final.json"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/修订处置.md",
+        "target": "差分/revision-diagnose-final-sim2-普通格同种唯一性.json"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/修订处置.md",
+        "target": "差分/revision-diagnose-final-sim2-单位与元件混淆.json"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/修订处置.md",
+        "target": "revision-safe-suite.sh"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/修订处置.md",
+        "target": "记录.md#修订"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/设计.md",
+        "target": "任务书.md"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/设计.md",
+        "target": "../../规格/内核输出.md"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/记录.md",
+        "target": "修订处置.md"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/记录.md",
+        "target": "revision-samples-final.json"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/记录.md",
+        "target": "revision-final2-build.log"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/记录.md",
+        "target": "revision-final2-check.log"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/记录.md",
+        "target": "revision-final2-clippy.log"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/记录.md",
+        "target": "revision-final2-kernel-lib.log"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/记录.md",
+        "target": "revision-final2-topology-lib.log"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/记录.md",
+        "target": "revision-final2-reference.log"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/记录.md",
+        "target": "revision-final2-validation.log"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/记录.md",
+        "target": "revision-final2-kernel-doc.log"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/记录.md",
+        "target": "revision-final2-topology-doc.log"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/记录.md",
+        "target": "revision-final2-catalog.log"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/记录.md",
+        "target": "revision-final2-catalog-tests.log"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/记录.md",
+        "target": "revision-differential-final.log"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/记录.md",
+        "target": "revision-diagnose-final.log"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/记录.md",
+        "target": "差分/revision-differential-final.json"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/记录.md",
+        "target": "差分/revision-diagnose-final.json"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/记录.md",
+        "target": "revision-lib01.log"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/记录.md",
+        "target": "revision-lib02.log"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/记录.md",
+        "target": "revision-reference01.log"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/记录.md",
+        "target": "revision-audit01.json"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/记录.md",
+        "target": "revision-audit02.json"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/记录.md",
+        "target": "revision-start-history.json"
+      },
+      {
+        "from": "内核维护/2026-09-30-步进规则同步/记录.md",
+        "target": "revision-summary.json"
+      },
+      {
+        "from": "规格/运行语义.md",
+        "target": "运行语义.md"
+      },
+      {
+        "from": "规格/运行语义.md",
+        "target": "受限转移定义.md"
+      },
+      {
+        "from": "规格/运行语义.md",
+        "target": "受限模型声明.md"
+      },
+      {
+        "from": "规格/运行语义.md",
+        "target": "选择点清单.md"
+      },
+      {
+        "from": "规格/运行语义.md",
+        "target": "选择点参数轴.md"
+      },
+      {
+        "from": "规格/运行语义.md",
+        "target": "内核输入.md"
+      },
+      {
+        "from": "规格/运行语义.md",
+        "target": "内核输出.md"
+      },
+      {
+        "from": "规格/运行语义.md",
+        "target": "内核输出.schema.json"
+      },
+      {
+        "from": "规格/运行语义.md",
+        "target": "内核配置-v2.json"
+      },
+      {
+        "from": "规格/运行语义.md",
+        "target": "规则覆盖表.md"
+      },
+      {
+        "from": "规格/运行语义.md",
+        "target": "修订记录.md"
+      },
+      {
+        "from": "规格/运行语义.md",
+        "target": "../crates/kernel/README.md"
+      },
+      {
+        "from": "规格/运行语义.md",
+        "target": "../数据/样例/步进/README.md"
+      },
+      {
+        "from": "规格/运行语义.md",
+        "target": "内核输入.md"
+      },
+      {
+        "from": "规格/运行语义.md",
+        "target": "../数据/正式静态目录.json"
+      },
+      {
+        "from": "规格/运行语义.md",
+        "target": "内核配置-v2.json"
+      },
+      {
+        "from": "规格/运行语义.md",
+        "target": "选择点参数轴.md"
+      },
+      {
+        "from": "规格/运行语义.md",
+        "target": "内核输入.md"
+      },
+      {
+        "from": "规格/运行语义.md",
+        "target": "../内核维护/2026-09-30-步进规则同步/差分.md"
+      },
+      {
+        "from": "规格/运行语义.md",
+        "target": "受限转移定义.md"
+      },
+      {
+        "from": "规格/内核输入.md",
+        "target": "受限模型声明.md"
+      },
+      {
+        "from": "规格/内核输入.md",
+        "target": "运行语义.md"
+      },
+      {
+        "from": "规格/内核输入.md",
+        "target": "../crates/kernel/tests/fixtures/step/base.json"
+      },
+      {
+        "from": "规格/内核输入.md",
+        "target": "../数据/样例/步进/README.md"
+      },
+      {
+        "from": "规格/内核输入.md",
+        "target": "../数据/样例/历史说明.md"
+      },
+      {
+        "from": "规格/内核输出.md",
+        "target": "内核输出.schema.json"
+      },
+      {
+        "from": "规格/内核输出.md",
+        "target": "受限转移定义.md"
+      },
+      {
+        "from": "规格/内核输出.md",
+        "target": "../crates/kernel/tests/历史说明.md"
+      },
+      {
+        "from": "规格/内核输出.md",
+        "target": "../内核维护/2026-09-30-步进规则同步/任务书.md"
+      },
+      {
+        "from": "规格/受限模型声明.md",
+        "target": "运行语义.md"
+      },
+      {
+        "from": "规格/受限模型声明.md",
+        "target": "受限转移定义.md"
+      },
+      {
+        "from": "规格/受限模型声明.md",
+        "target": "内核配置-v2.json"
+      },
+      {
+        "from": "规格/选择点参数轴.md",
+        "target": "内核配置-v2.json"
+      },
+      {
+        "from": "规格/选择点参数轴.md",
+        "target": "选择点清单.md"
+      },
+      {
+        "from": "规格/选择点参数轴.md",
+        "target": "受限模型声明.md"
+      },
+      {
+        "from": "规格/选择点参数轴.md",
+        "target": "受限转移定义.md"
+      },
+      {
+        "from": "规格/选择点参数轴.md",
+        "target": "内核输入.md"
+      }
+    ]
+  },
+  "history": {
+    "counts": {
+      "crates/kernel/evidence": 572,
+      "crates/kernel/复核": 2094,
+      "数据/复核": 815
+    },
+    "files": 3481,
+    "bytes": 1018807436,
+    "baseline_sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+    "all_snapshots_equal": true,
+    "snapshots": [
+      {
+        "path": "revision-audit01-after-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-audit01-before-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-audit02-after-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-audit02-before-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-audit03-after-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-audit03-before-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-base-correction-after-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-base-correction-before-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-code-after-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-code-before-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-diagnose-after-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-diagnose-before-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-diagnose-final-after-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-diagnose-final-before-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-differential-after-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-differential-before-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-differential-final-after-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-differential-final-before-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-docs-after-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-docs-before-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-final-build-after-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-final-build-before-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-final-catalog-after-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-final-catalog-before-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-final-catalog-tests-after-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-final-catalog-tests-before-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-final-check-after-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-final-check-before-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-final-clippy-after-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-final-clippy-before-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-final-kernel-doc-after-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-final-kernel-doc-before-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-final-kernel-lib-after-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-final-kernel-lib-before-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-final-reference-after-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-final-reference-before-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-final-topology-doc-after-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-final-topology-doc-before-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-final-topology-lib-after-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-final-topology-lib-before-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-final-validation-after-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-final-validation-before-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-final2-build-after-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-final2-build-before-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-final2-catalog-after-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-final2-catalog-before-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-final2-catalog-tests-after-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-final2-catalog-tests-before-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-final2-check-after-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-final2-check-before-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-final2-clippy-after-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-final2-clippy-before-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-final2-kernel-doc-after-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-final2-kernel-doc-before-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-final2-kernel-lib-after-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-final2-kernel-lib-before-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-final2-reference-after-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-final2-reference-before-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-final2-topology-doc-after-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-final2-topology-doc-before-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-final2-topology-lib-after-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-final2-topology-lib-before-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-final2-validation-after-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-final2-validation-before-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-lib01-after-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-lib01-before-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-lib02-after-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-lib02-before-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-metadata-final-after-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-metadata-final-before-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-reference01-after-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-reference01-before-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-report-after-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-report-before-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-seal-after-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-seal-before-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      },
+      {
+        "path": "revision-start-history.json",
+        "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e"
+      }
+    ]
+  },
+  "artifacts": {
+    "修订处置.md": "69a11c000ec0e1fb26f2337775d98ede49e9d36a2bddf4d14b27b13d947c931f",
+    "记录.md": "5ae931cf3af4109e2ef2e4e11c5d520be7494fb1159bbf350c3f7159f05fa8c6",
+    "revision-changes.patch": "169a091bc9197d9f405ac00788bccc27c359b64d3292eb17bcb3bfb8f643d705",
+    "revision-audit03.json": "2203d99c1641223b5b896666da17db8936bb050bfcaa02fe7249a36ac481105b",
+    "差分/revision-differential-final.json": "11ef28400630d3ab4003dc6e5fe9da1e282c994f1ab92e69db9c498ff0a9b9d4",
+    "差分/revision-diagnose-final.json": "a21dcfd748a94b738c3629632baf6e1ea4030c2cbb5638dae38ac389ec3bda07"
+  }
+}

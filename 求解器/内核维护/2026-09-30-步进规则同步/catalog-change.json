@@ -1,0 +1,25 @@
+{
+  "old_sha256": "74deafed83876dcf40fffe55d8f01d45edcfd2840e35725c8006da996c877e02",
+  "new_sha256": "73de10b3a4849302eb259dd16c6830d3a37464ea4a6b211dbc6c38a655d30e53",
+  "unchanged": [
+    "77 constraints",
+    "18 recipes",
+    "32 constants",
+    "19 material flows",
+    "unit dimensions/ports/inventory"
+  ],
+  "sources": [
+    {
+      "path": "《明日方舟：终末地》游戏规则.txt",
+      "sha256": "c8d3a17b8830baba18aea36c4c66f02f8873895188f8821176cc218aa6135f93"
+    },
+    {
+      "path": "求解任务.txt",
+      "sha256": "7bec7a1edf2f46644a6e6a75d588f5ff05202cc32d6b42430677ea39b878309b"
+    },
+    {
+      "path": "求解约束.txt",
+      "sha256": "dfea46c61f29be5a86659bce3642009d2558ace073d6dbd79f5dd3c6475226db"
+    }
+  ]
+}

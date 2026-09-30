@@ -1,0 +1,435 @@
+{
+  "package": "包一",
+  "status": "complete",
+  "command_count": 18,
+  "command_history_comparisons": 36,
+  "history_files": {
+    "crates/kernel/evidence": 572,
+    "crates/kernel/复核": 2094,
+    "数据/复核": 815
+  },
+  "history_bytes": 1018807436,
+  "history_manifest_sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+  "history_changes": {
+    "added": [],
+    "deleted": [],
+    "changed": []
+  },
+  "changed_counts": {
+    "added": 13,
+    "deleted": 11,
+    "changed": 16
+  },
+  "unchanged_history_inputs_and_detached_modules": 135,
+  "catalog_sha256": "73de10b3a4849302eb259dd16c6830d3a37464ea4a6b211dbc6c38a655d30e53",
+  "config_sha256": "680acb480aa28443431e119c98e4cc45ca6abade1670c9a4a1283a77a7d199a2",
+  "fixture_sha256": "93c81bafd26d8225c508a693ed7d3b9ed84cbade45c4c64294cef3bc4e63daf4",
+  "final_suite": [
+    {
+      "name": "final-build",
+      "argv": [
+        "cargo",
+        "build",
+        "--workspace",
+        "-j",
+        "4"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "final-check",
+      "argv": [
+        "cargo",
+        "check",
+        "--workspace",
+        "-j",
+        "4"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "final-clippy",
+      "argv": [
+        "cargo",
+        "clippy",
+        "--workspace",
+        "-j",
+        "4"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "final-kernel-lib",
+      "argv": [
+        "cargo",
+        "test",
+        "-p",
+        "kernel",
+        "--lib",
+        "-j",
+        "4",
+        "--",
+        "--test-threads=1"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "final-topology-lib",
+      "argv": [
+        "cargo",
+        "test",
+        "-p",
+        "topology",
+        "--lib",
+        "-j",
+        "4",
+        "--",
+        "--test-threads=1"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "final-reference",
+      "argv": [
+        "cargo",
+        "test",
+        "-p",
+        "kernel",
+        "--test",
+        "reference",
+        "-j",
+        "4",
+        "--",
+        "--test-threads=1"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "final-validation",
+      "argv": [
+        "cargo",
+        "test",
+        "-p",
+        "topology",
+        "--test",
+        "validation",
+        "-j",
+        "4",
+        "--",
+        "--test-threads=1"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "final-kernel-doc",
+      "argv": [
+        "cargo",
+        "test",
+        "-p",
+        "kernel",
+        "--doc",
+        "-j",
+        "4",
+        "--",
+        "--test-threads=1"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "final-topology-doc",
+      "argv": [
+        "cargo",
+        "test",
+        "-p",
+        "topology",
+        "--doc",
+        "-j",
+        "4",
+        "--",
+        "--test-threads=1"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "final-catalog",
+      "argv": [
+        "python3",
+        "数据/工具/formal_catalog.py"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "final-catalog-tests",
+      "argv": [
+        "python3",
+        "数据/工具/test_formal_catalog.py"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "rust_tests": {
+    "kernel_lib": 54,
+    "topology_lib": 1,
+    "reference": 1,
+    "topology_validation": 30,
+    "kernel_doc": 0,
+    "topology_doc": 0
+  },
+  "catalog_tests": 9,
+  "unit_leaf_mutations": 1173,
+  "recipe_leaf_mutations": 154,
+  "receipts": [
+    {
+      "command": "check-01",
+      "side": "before",
+      "manifest": "check-01-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "check-01",
+      "side": "after",
+      "manifest": "check-01-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "reference-01",
+      "side": "before",
+      "manifest": "reference-01-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "reference-01",
+      "side": "after",
+      "manifest": "reference-01-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "lib-01",
+      "side": "before",
+      "manifest": "lib-01-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "lib-01",
+      "side": "after",
+      "manifest": "lib-01-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "lib-02",
+      "side": "before",
+      "manifest": "lib-02-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "lib-02",
+      "side": "after",
+      "manifest": "lib-02-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "lib-03",
+      "side": "before",
+      "manifest": "lib-03-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "lib-03",
+      "side": "after",
+      "manifest": "lib-03-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "lib-04",
+      "side": "before",
+      "manifest": "lib-04-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "lib-04",
+      "side": "after",
+      "manifest": "lib-04-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "clippy-01",
+      "side": "before",
+      "manifest": "clippy-01-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "clippy-01",
+      "side": "after",
+      "manifest": "clippy-01-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "final-build",
+      "side": "before",
+      "manifest": "final-build-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "final-build",
+      "side": "after",
+      "manifest": "final-build-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "final-check",
+      "side": "before",
+      "manifest": "final-check-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "final-check",
+      "side": "after",
+      "manifest": "final-check-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "final-clippy",
+      "side": "before",
+      "manifest": "final-clippy-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "final-clippy",
+      "side": "after",
+      "manifest": "final-clippy-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "final-kernel-lib",
+      "side": "before",
+      "manifest": "final-kernel-lib-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "final-kernel-lib",
+      "side": "after",
+      "manifest": "final-kernel-lib-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "final-topology-lib",
+      "side": "before",
+      "manifest": "final-topology-lib-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "final-topology-lib",
+      "side": "after",
+      "manifest": "final-topology-lib-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "final-reference",
+      "side": "before",
+      "manifest": "final-reference-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "final-reference",
+      "side": "after",
+      "manifest": "final-reference-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "final-validation",
+      "side": "before",
+      "manifest": "final-validation-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "final-validation",
+      "side": "after",
+      "manifest": "final-validation-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "final-kernel-doc",
+      "side": "before",
+      "manifest": "final-kernel-doc-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "final-kernel-doc",
+      "side": "after",
+      "manifest": "final-kernel-doc-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "final-topology-doc",
+      "side": "before",
+      "manifest": "final-topology-doc-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "final-topology-doc",
+      "side": "after",
+      "manifest": "final-topology-doc-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "final-catalog",
+      "side": "before",
+      "manifest": "final-catalog-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "final-catalog",
+      "side": "after",
+      "manifest": "final-catalog-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "final-catalog-tests",
+      "side": "before",
+      "manifest": "final-catalog-tests-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    },
+    {
+      "command": "final-catalog-tests",
+      "side": "after",
+      "manifest": "final-catalog-tests-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "unchanged": true
+    }
+  ]
+}

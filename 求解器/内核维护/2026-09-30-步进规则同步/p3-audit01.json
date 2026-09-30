@@ -1,0 +1,11 @@
+{
+  "status": "fail",
+  "error": "",
+  "traceback": "Traceback (most recent call last):\n  File \"/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-30-步进规则同步/package3-audit.py\", line 130, in audit\n    try:result=checks(label)\n               ~~~~~~^^^^^^^\n  File \"/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-30-步进规则同步/package3-audit.py\", line 116, in checks\n    assert '## 失败（0 项）' in rt or re.search(r'^## .*失败.*0 项',rt,re.M) or ('## 能检但未通过（0 项' in rt)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+  "seconds": 0.031,
+  "argv": [
+    "bash",
+    "内核维护/2026-09-30-步进规则同步/run.sh",
+    "audit"
+  ]
+}

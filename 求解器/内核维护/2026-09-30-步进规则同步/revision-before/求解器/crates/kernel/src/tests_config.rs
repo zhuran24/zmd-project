@@ -1,0 +1,31 @@
+use crate::{config::*, tests_support::*, value::*};
+use serde_json::json;
+#[test]
+fn all_66_axes_and_16_stop_axes_are_enforced() {
+    let c = config();
+    assert_eq!(c.axes.len(), 66);
+    let stops: Vec<_> = c
+        .axes
+        .iter()
+        .filter(|(_, r)| r.disposition == Disposition::Stop)
+        .map(|(a, _)| *a)
+        .collect();
+    assert_eq!(stops.len(), 16);
+    let original = raw(&[]);
+    for a in stops {
+        let mut r = original.clone();
+        set_axis(&mut r, a.name(), json!("not_stop"));
+        let p: Parameters = decode(r["parameters"].clone(), "p").unwrap();
+        assert_eq!(c.validate(&p).unwrap_err().axis, a.name());
+        assert_eq!(c.request(a, "test").unwrap_err().axis, a.name());
+    }
+}
+#[test]
+fn catalog_time_quantities_are_steps() {
+    let i = parse(raw(&[])).unwrap();
+    assert_eq!(i.catalog.steps_per_tick, 8);
+    assert_eq!(i.catalog.residence_steps, 8);
+    assert_eq!(i.catalog.kinds["物品准入口"].window, 40);
+    assert_eq!(i.catalog.kinds["协议储存箱"].cooldown, 40);
+    assert_eq!(i.catalog.recipes["粉碎-源矿"].duration, 8);
+}

@@ -1,0 +1,185 @@
+{
+  "status": "pass",
+  "catalog_sha256": "73de10b3a4849302eb259dd16c6830d3a37464ea4a6b211dbc6c38a655d30e53",
+  "config_sha256": "680acb480aa28443431e119c98e4cc45ca6abade1670c9a4a1283a77a7d199a2",
+  "inputs": [
+    {
+      "path": "数据/样例/步进/周期/生产循环环带.json",
+      "sha256": "3d387e96b176976f15d35bbe61bcc6aacd64218c588fac5065e310dbbb14cc3e"
+    },
+    {
+      "path": "数据/样例/步进/周期/生产环带.json",
+      "sha256": "c7da9504f20fe1d700af31bc2ad6115cabe44239ea2e42438a7f4103b74186c2"
+    },
+    {
+      "path": "数据/样例/步进/差分/a-纯链.json",
+      "sha256": "51c808427110877101c549b4f48d69eaeca795519f0774f9a1e4a8b48737b7db"
+    },
+    {
+      "path": "数据/样例/步进/差分/b-迟滞.json",
+      "sha256": "397c1a63173045df7eab59f1ae4f630d4c17ddef18dd0273f9722d10747b8562"
+    },
+    {
+      "path": "数据/样例/步进/差分/c-换主料.json",
+      "sha256": "4dd6b4bd87b72c3fa9568bc719e12c541f42274db707c6b187f832583f8c1687"
+    },
+    {
+      "path": "数据/样例/步进/差分/d-满箱串联.json",
+      "sha256": "8161ae112c84067e6f1a1c300ed8d30bd36f907b24a2f89e3e15e8cea2db3fc1"
+    },
+    {
+      "path": "数据/样例/步进/差分/e-汇流.json",
+      "sha256": "74d659d6cc733ce7c516772a46acbb22b0f76e3571484096b23a13b9ed1f47e1"
+    },
+    {
+      "path": "数据/样例/步进/差分/三上游.json",
+      "sha256": "784cb9f6de6c72c427f115bb990e844178f029be3e910511b8cb32e322368732"
+    },
+    {
+      "path": "数据/样例/步进/差分/侧面优先.json",
+      "sha256": "7750b90d99ce6eb81cd5a622bed0d7fb1cdb6768eb43bcc4c6caa7f28929b9d3"
+    },
+    {
+      "path": "数据/样例/步进/差分/分矿.json",
+      "sha256": "9a55af18e74723f46930920c2f71d91c5c855a2c0255b17b17457309ebfa63e9"
+    },
+    {
+      "path": "数据/样例/步进/差分/断尾.json",
+      "sha256": "e8e92887d43ef9ab23ecd9ae520f62acd659f7b5e338f7a5709701fd800c1c79"
+    },
+    {
+      "path": "数据/样例/步进/机制/同刻双箱争余量.json",
+      "sha256": "bb4dca6c4bd7298f2e4eb1d21bf1c87a96e546b64ef788f7dad9e8643add4df4"
+    },
+    {
+      "path": "数据/样例/步进/机制/成熟旧货重试.json",
+      "sha256": "27767cc42419bf0e6f7a525be26a523a604fe0b3f1e09bf0455c014e15f8e592"
+    },
+    {
+      "path": "数据/样例/步进/机制/无线一满一可收.json",
+      "sha256": "c4e433cc2d7f66f866831385ec84ee6ba94b18f21f38b8ffc49fa22358a990ff"
+    },
+    {
+      "path": "数据/样例/步进/机制/无线全拒收.json",
+      "sha256": "d68ecacb8deb469f2d086ed3072c0e6c7ae4a490b8eb21f18cbc5f6fc372767b"
+    },
+    {
+      "path": "数据/样例/步进/机制/无线多格全收.json",
+      "sha256": "8ea7763eb22454114e7c36eef02698029cacd03f60d67e963772b9582126a5ef"
+    },
+    {
+      "path": "数据/样例/步进/机制/无线多格歧义.json",
+      "sha256": "5e3b49df357b80683062d93d21ece63ad1d80142f60eac5ac12b18a51ddc3dd6"
+    },
+    {
+      "path": "数据/样例/步进/机制/无线空箱.json",
+      "sha256": "202814a284a34f22528975fb8e45e02406006e73ba5587b1eed3cb9eef88d875"
+    },
+    {
+      "path": "数据/样例/步进/机制/无线部分接收.json",
+      "sha256": "116a80b7c5ff6d8aa4fdad433374a0c5828cc7b1adaeb62d17ef5568d894ff97"
+    },
+    {
+      "path": "数据/样例/步进/机制/累计审计与窗口周期.json",
+      "sha256": "387af879725d02e48cea3ecb167f1656c09321bf17c8dbff18e009dcd88cece5"
+    },
+    {
+      "path": "数据/样例/步进/机制/累计调低保留.json",
+      "sha256": "6fb00be347989f883d5552dd1385f4c720ee3e65c6c21d072edb0deb6af2c358"
+    },
+    {
+      "path": "数据/样例/步进/机制/累计调高资格.json",
+      "sha256": "2d8306c4cacfb821c4d086f41e07062838723e091c00d64a7546de27ecf75aed"
+    },
+    {
+      "path": "数据/样例/步进/机制/装载与普通制造.json",
+      "sha256": "f1b4f16b84e1f38a7b72219fe989d06953baa9d7c8b903b1e19c3baef7e7edcb"
+    },
+    {
+      "path": "数据/样例/步进/机制/身份实际切换.json",
+      "sha256": "f816dcc7ad401e3a423263f8497686fa64e89ea137102648fe2e5c34e5fa5989"
+    },
+    {
+      "path": "数据/样例/步进/机制/静止成熟与暂停键.json",
+      "sha256": "ce8c00fe2828c9567b6bcd08809c6e42698c41b5c630c9fca1925162c8235337"
+    },
+    {
+      "path": "crates/kernel/tests/fixtures/step/base.json",
+      "sha256": "93c81bafd26d8225c508a693ed7d3b9ed84cbade45c4c64294cef3bc4e63daf4"
+    },
+    {
+      "path": "crates/kernel/tests/fixtures/step/benchmark_1000.json",
+      "sha256": "4a631d1db2b14b97d12cda4c34c9aef0da0cc95af1a0385f4887f218eddf978d"
+    },
+    {
+      "path": "crates/kernel/tests/fixtures/step/bridge.json",
+      "sha256": "dcbae476b1fe84cf0c665c3944117b1f94fa78e910a099425fab575be7a54e99"
+    },
+    {
+      "path": "crates/kernel/tests/fixtures/step/core_inbound.json",
+      "sha256": "5e839d94da187efae1eee61f4bbf907a6f8e79721938cf91e1bab1c727151475"
+    },
+    {
+      "path": "crates/kernel/tests/fixtures/step/priority.json",
+      "sha256": "fd7728e575d1c4efee86e07f97f422f4548ab552797f89ce8ee0dca981fb77b1"
+    }
+  ],
+  "candidate_sources": 16,
+  "candidate_headings": [
+    "能检且通过（4924 项，算术推论）",
+    "能检且不通过（0 项，算术推论）",
+    "不能静态检（80 项，算术推论）"
+  ],
+  "rule_lines": 115,
+  "task_lines": 15,
+  "constraints": 77,
+  "constraint_rows_unchanged": true,
+  "recipes": 18,
+  "axes": 66,
+  "axis_dispositions": {
+    "已定": 21,
+    "本版选值": 14,
+    "由输入全称量化": 15,
+    "超出覆盖即停": 16
+  },
+  "local_links_checked": 66,
+  "readonly_fingerprints": 4,
+  "active_diff": {
+    "added": [],
+    "deleted": [],
+    "changed": [
+      "求解器/crates/kernel/README.md",
+      "求解器/crates/kernel/修订记录.md",
+      "求解器/数据/候选B/来源清单.json",
+      "求解器/数据/候选B/校验报告.md",
+      "求解器/数据/候选B/验证记录.md",
+      "求解器/数据/规则覆盖表.md",
+      "求解器/规格/check_revision.py",
+      "求解器/规格/修订记录.md",
+      "求解器/规格/内核输入.md",
+      "求解器/规格/内核输出.md",
+      "求解器/规格/受限模型声明.md",
+      "求解器/规格/受限转移定义.md",
+      "求解器/规格/规则覆盖表.md",
+      "求解器/规格/运行语义.md",
+      "求解器/规格/选择点参数轴.md",
+      "求解器/规格/选择点清单.md"
+    ]
+  },
+  "old_sha_counts": {
+    "protected_history": 13,
+    "indexed_history": 57,
+    "archived_or_parallel": 2714,
+    "this_run_record": 15,
+    "revision_history": 1,
+    "historical_spec": 22
+  },
+  "active_old_sha_residuals": 0,
+  "old_sha_inventory": "p3-audit03-old-sha-inventory.json",
+  "seconds": 0.299,
+  "argv": [
+    "bash",
+    "内核维护/2026-09-30-步进规则同步/run.sh",
+    "audit"
+  ]
+}

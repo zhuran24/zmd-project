@@ -1,0 +1,32 @@
+   Compiling kernel v0.1.0 (/home/zhuran24/zmd-research-fresh/求解器/crates/kernel)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.58s
+     Running tests/reference.rs (target/debug/deps/reference-1613ad1990138602)
+
+running 11 tests
+test a_pure_chain ... ok
+test b_hysteresis ... ok
+test c_material_switch ... ok
+test d_full_boxes ... ok
+test dead_tail ... ok
+test e_merger ... ok
+test independent_python_audit_full_delta_and_tamper_rejection ... ok
+test migrated_fixtures_run_declared_steps ... ok
+test mining ... FAILED
+test side_priority ... ok
+test three_upstreams ... ok
+
+failures:
+
+---- mining stdout ----
+
+thread 'mining' (588848) panicked at crates/kernel/tests/reference.rs:33:132:
+f1: []
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    mining
+
+test result: FAILED. 10 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.19s
+
+error: test failed, to rerun pass `-p kernel --test reference`

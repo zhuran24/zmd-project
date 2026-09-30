@@ -1,0 +1,38 @@
+{
+  "sources": {
+    "《明日方舟：终末地》游戏规则.txt": "c8d3a17b8830baba18aea36c4c66f02f8873895188f8821176cc218aa6135f93",
+    "求解任务.txt": "7bec7a1edf2f46644a6e6a75d588f5ff05202cc32d6b42430677ea39b878309b",
+    "求解约束.txt": "dfea46c61f29be5a86659bce3642009d2558ace073d6dbd79f5dd3c6475226db"
+  },
+  "inputs": {
+    "数据/样例/步进/差分/a-纯链.json": "51c808427110877101c549b4f48d69eaeca795519f0774f9a1e4a8b48737b7db",
+    "数据/样例/步进/差分/b-迟滞.json": "397c1a63173045df7eab59f1ae4f630d4c17ddef18dd0273f9722d10747b8562",
+    "数据/样例/步进/差分/断尾.json": "e8e92887d43ef9ab23ecd9ae520f62acd659f7b5e338f7a5709701fd800c1c79",
+    "数据/样例/步进/差分/c-换主料.json": "4dd6b4bd87b72c3fa9568bc719e12c541f42274db707c6b187f832583f8c1687",
+    "数据/样例/步进/差分/d-满箱串联.json": "8161ae112c84067e6f1a1c300ed8d30bd36f907b24a2f89e3e15e8cea2db3fc1",
+    "数据/样例/步进/差分/e-汇流.json": "74d659d6cc733ce7c516772a46acbb22b0f76e3571484096b23a13b9ed1f47e1",
+    "数据/样例/步进/差分/分矿.json": "9a55af18e74723f46930920c2f71d91c5c855a2c0255b17b17457309ebfa63e9",
+    "数据/样例/步进/差分/侧面优先.json": "7750b90d99ce6eb81cd5a622bed0d7fb1cdb6768eb43bcc4c6caa7f28929b9d3",
+    "数据/样例/步进/差分/三上游.json": "784cb9f6de6c72c427f115bb990e844178f029be3e910511b8cb32e322368732",
+    "数据/样例/步进/机制/无线空箱.json": "202814a284a34f22528975fb8e45e02406006e73ba5587b1eed3cb9eef88d875",
+    "数据/样例/步进/机制/无线全拒收.json": "d68ecacb8deb469f2d086ed3072c0e6c7ae4a490b8eb21f18cbc5f6fc372767b",
+    "数据/样例/步进/机制/无线部分接收.json": "116a80b7c5ff6d8aa4fdad433374a0c5828cc7b1adaeb62d17ef5568d894ff97",
+    "数据/样例/步进/机制/无线多格全收.json": "8ea7763eb22454114e7c36eef02698029cacd03f60d67e963772b9582126a5ef",
+    "数据/样例/步进/机制/无线多格歧义.json": "5e3b49df357b80683062d93d21ece63ad1d80142f60eac5ac12b18a51ddc3dd6",
+    "数据/样例/步进/机制/无线一满一可收.json": "c4e433cc2d7f66f866831385ec84ee6ba94b18f21f38b8ffc49fa22358a990ff",
+    "数据/样例/步进/机制/同刻双箱争余量.json": "bb4dca6c4bd7298f2e4eb1d21bf1c87a96e546b64ef788f7dad9e8643add4df4",
+    "数据/样例/步进/机制/累计审计与窗口周期.json": "387af879725d02e48cea3ecb167f1656c09321bf17c8dbff18e009dcd88cece5",
+    "数据/样例/步进/机制/累计调低保留.json": "6fb00be347989f883d5552dd1385f4c720ee3e65c6c21d072edb0deb6af2c358",
+    "数据/样例/步进/机制/累计调高资格.json": "2d8306c4cacfb821c4d086f41e07062838723e091c00d64a7546de27ecf75aed",
+    "数据/样例/步进/机制/身份实际切换.json": "f816dcc7ad401e3a423263f8497686fa64e89ea137102648fe2e5c34e5fa5989",
+    "数据/样例/步进/机制/装载与普通制造.json": "f1b4f16b84e1f38a7b72219fe989d06953baa9d7c8b903b1e19c3baef7e7edcb",
+    "数据/样例/步进/机制/静止成熟与暂停键.json": "ce8c00fe2828c9567b6bcd08809c6e42698c41b5c630c9fca1925162c8235337",
+    "数据/样例/步进/机制/成熟旧货重试.json": "27767cc42419bf0e6f7a525be26a523a604fe0b3f1e09bf0455c014e15f8e592",
+    "数据/样例/步进/周期/生产环带.json": "c7da9504f20fe1d700af31bc2ad6115cabe44239ea2e42438a7f4103b74186c2",
+    "数据/样例/步进/周期/生产循环环带.json": "3d387e96b176976f15d35bbe61bcc6aacd64218c588fac5065e310dbbb14cc3e",
+    "crates/kernel/tests/fixtures/step/bridge.json": "dcbae476b1fe84cf0c665c3944117b1f94fa78e910a099425fab575be7a54e99",
+    "crates/kernel/tests/fixtures/step/core_inbound.json": "5e839d94da187efae1eee61f4bbf907a6f8e79721938cf91e1bab1c727151475",
+    "crates/kernel/tests/fixtures/step/priority.json": "fd7728e575d1c4efee86e07f97f422f4548ab552797f89ce8ee0dca981fb77b1",
+    "crates/kernel/tests/fixtures/step/benchmark_1000.json": "4a631d1db2b14b97d12cda4c34c9aef0da0cc95af1a0385f4887f218eddf978d"
+  }
+}

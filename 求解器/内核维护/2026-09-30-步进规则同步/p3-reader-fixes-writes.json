@@ -1,0 +1,17 @@
+[
+  {
+    "path": "规格/内核输入.md",
+    "before": "28fffa5b34745d574ebbd01d25b88f777743beb558f71e5273c27d281d65c77a",
+    "after": "12a337b42aa7ce795fd57160e90006a3931e5a7b99c722bb401fcb172d84f963"
+  },
+  {
+    "path": "规格/受限模型声明.md",
+    "before": "ee7d469cb6346373aad32fbff6c8ed7c3841b6ef1b28b50d8029fb444233395a",
+    "after": "0f153f1cd38e3470eec25d63b9c8bb9c2373e46ef7c8cf3c3aa3f4b5a296ce93"
+  },
+  {
+    "path": "规格/运行语义.md",
+    "before": "be5bb1f23356ce44994ee30186732c688748b3e7ccdb51fc1d44ca2d28ddeb1e",
+    "after": "213207063f52d0a3169d3f4c828b72d6bada4cc82c7271bb68a318bb7ca89b2a"
+  }
+]

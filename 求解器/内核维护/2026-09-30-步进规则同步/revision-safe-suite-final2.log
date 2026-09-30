@@ -1,0 +1,91 @@
+{"name": "revision-final2-build", "argv": ["cargo", "build", "--workspace", "-j", "4"], "cwd": "/home/zhuran24/zmd-research-fresh/求解器", "environment": {"CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target", "CARGO_BUILD_JOBS": "4", "RUST_TEST_THREADS": "1", "PYTHONDONTWRITEBYTECODE": "1"}, "exit_code": 0, "seconds": 0.018, "finished_utc": "2026-09-30T18:17:45.683357+00:00", "active_diff": {"added": [], "deleted": [], "changed": []}}
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.01s
+{"name": "revision-final2-check", "argv": ["cargo", "check", "--workspace", "-j", "4"], "cwd": "/home/zhuran24/zmd-research-fresh/求解器", "environment": {"CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target", "CARGO_BUILD_JOBS": "4", "RUST_TEST_THREADS": "1", "PYTHONDONTWRITEBYTECODE": "1"}, "exit_code": 0, "seconds": 0.018, "finished_utc": "2026-09-30T18:17:46.983489+00:00", "active_diff": {"added": [], "deleted": [], "changed": []}}
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.01s
+{"name": "revision-final2-clippy", "argv": ["cargo", "clippy", "--workspace", "-j", "4"], "cwd": "/home/zhuran24/zmd-research-fresh/求解器", "environment": {"CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target", "CARGO_BUILD_JOBS": "4", "RUST_TEST_THREADS": "1", "PYTHONDONTWRITEBYTECODE": "1"}, "exit_code": 0, "seconds": 0.058, "finished_utc": "2026-09-30T18:17:48.314777+00:00", "active_diff": {"added": [], "deleted": [], "changed": []}}
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.03s
+{"name": "revision-final2-kernel-lib", "argv": ["cargo", "test", "-p", "kernel", "--lib", "-j", "4", "--", "--test-threads=1"], "cwd": "/home/zhuran24/zmd-research-fresh/求解器", "environment": {"CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target", "CARGO_BUILD_JOBS": "4", "RUST_TEST_THREADS": "1", "PYTHONDONTWRITEBYTECODE": "1"}, "exit_code": 0, "seconds": 9.649, "finished_utc": "2026-09-30T18:17:59.202951+00:00", "active_diff": {"added": [], "deleted": [], "changed": []}}
+test tests_step::ring_empty_space_propagates_and_full_ring_stays ... ok
+test tests_step::splitter_is_never_pulled_into_receipt_group ... ok
+test tests_step::tail_hysteresis_ratio_and_later_splitter_full_rate ... ok
+test tests_step::three_upstreams_one_winner_even_single_outlet_splitters ... ok
+test tests_step::through_belt_has_side_priority_over_box ... ok
+test tests_warehouse::empty_slot_competition_stops_before_writing ... ok
+test tests_warehouse::explicit_supply_is_applied_once_at_its_step ... ok
+test tests_warehouse::identity_is_retained_and_duplicate_historical_identity_rejected ... ok
+test tests_warehouse::last_explicit_ore_is_refused_and_engine_is_sealed ... ok
+test tests_warehouse::per_species_ledger_conserves_ore_replenishment_and_rejects_tampering ... ok
+test tests_warehouse::production_ore_return_is_rejected_before_warehouse_capacity ... ok
+test tests_warehouse::put_failure_keeps_all_bytes_and_local_capacity ... ok
+test tests_warehouse::unnamed_species_have_stable_order_and_new_labels ... ok
+
+test result: ok. 73 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 9.61s
+
+{"name": "revision-final2-topology-lib", "argv": ["cargo", "test", "-p", "topology", "--lib", "-j", "4", "--", "--test-threads=1"], "cwd": "/home/zhuran24/zmd-research-fresh/求解器", "environment": {"CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target", "CARGO_BUILD_JOBS": "4", "RUST_TEST_THREADS": "1", "PYTHONDONTWRITEBYTECODE": "1"}, "exit_code": 0, "seconds": 0.021, "finished_utc": "2026-09-30T18:18:00.463067+00:00", "active_diff": {"added": [], "deleted": [], "changed": []}}
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.01s
+     Running unittests src/lib.rs (target/debug/deps/topology-958a7a196b95191c)
+
+running 1 test
+test catalog_tests::legacy_machine_constants_equal_catalog ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+{"name": "revision-final2-reference", "argv": ["cargo", "test", "-p", "kernel", "--test", "reference", "-j", "4", "--", "--test-threads=1"], "cwd": "/home/zhuran24/zmd-research-fresh/求解器", "environment": {"CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target", "CARGO_BUILD_JOBS": "4", "RUST_TEST_THREADS": "1", "PYTHONDONTWRITEBYTECODE": "1"}, "exit_code": 0, "seconds": 5.457, "finished_utc": "2026-09-30T18:18:07.168475+00:00", "active_diff": {"added": [], "deleted": [], "changed": []}}
+test b_hysteresis ... ok
+test c_material_switch ... ok
+test cycle_schema_and_production_representative_python_audit ... ok
+test d_full_boxes ... ok
+test dead_tail ... ok
+test e_merger ... ok
+test generated_inputs_and_migration_boundary_contract ... ok
+test independent_python_audit_full_delta_and_tamper_rejection ... ok
+test migrated_fixtures_run_declared_steps ... ok
+test mining ... ok
+test python_graph_rejects_impossible_ties_and_component_collisions ... ok
+test side_priority ... ok
+test three_upstreams ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 5.44s
+
+{"name": "revision-final2-validation", "argv": ["cargo", "test", "-p", "topology", "--test", "validation", "-j", "4", "--", "--test-threads=1"], "cwd": "/home/zhuran24/zmd-research-fresh/求解器", "environment": {"CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target", "CARGO_BUILD_JOBS": "4", "RUST_TEST_THREADS": "1", "PYTHONDONTWRITEBYTECODE": "1"}, "exit_code": 0, "seconds": 6.707, "finished_utc": "2026-09-30T18:18:15.147845+00:00", "active_diff": {"added": [], "deleted": [], "changed": []}}
+test logical_feed_ids_cannot_be_physical_or_buffer_channels ... ok
+test multi_material_obligations_cannot_disappear ... ok
+test numeric_categories_have_field_semantics ... ok
+test overload_is_exact_and_not_rounded ... ok
+test same_item_multiport_and_mixed_recipe_obligations_are_required ... ok
+test shared_port_rates_are_summed ... ok
+test storage_relay_cannot_double_material_origin_flow ... ok
+test storage_split_counts_both_sides_and_deduplicates_item_rows ... ok
+test unsupported_routing_fails_closed ... ok
+test wrong_target_cannot_redefine_task ... ok
+test wrong_target_recipe_is_rejected ... ok
+test zero_denominator_and_missing_fields_fail_loading ... ok
+test zero_rate_does_not_count_as_live_channel ... ok
+
+test result: ok. 30 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 6.69s
+
+{"name": "revision-final2-kernel-doc", "argv": ["cargo", "test", "-p", "kernel", "--doc", "-j", "4", "--", "--test-threads=1"], "cwd": "/home/zhuran24/zmd-research-fresh/求解器", "environment": {"CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target", "CARGO_BUILD_JOBS": "4", "RUST_TEST_THREADS": "1", "PYTHONDONTWRITEBYTECODE": "1"}, "exit_code": 0, "seconds": 0.13, "finished_utc": "2026-09-30T18:18:16.549218+00:00", "active_diff": {"added": [], "deleted": [], "changed": []}}
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.01s
+   Doc-tests kernel
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+{"name": "revision-final2-topology-doc", "argv": ["cargo", "test", "-p", "topology", "--doc", "-j", "4", "--", "--test-threads=1"], "cwd": "/home/zhuran24/zmd-research-fresh/求解器", "environment": {"CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target", "CARGO_BUILD_JOBS": "4", "RUST_TEST_THREADS": "1", "PYTHONDONTWRITEBYTECODE": "1"}, "exit_code": 0, "seconds": 0.075, "finished_utc": "2026-09-30T18:18:17.864271+00:00", "active_diff": {"added": [], "deleted": [], "changed": []}}
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.01s
+   Doc-tests topology
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+{"name": "revision-final2-catalog", "argv": ["python3", "数据/工具/formal_catalog.py"], "cwd": "/home/zhuran24/zmd-research-fresh/求解器", "environment": {"CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target", "CARGO_BUILD_JOBS": "4", "RUST_TEST_THREADS": "1", "PYTHONDONTWRITEBYTECODE": "1"}, "exit_code": 0, "seconds": 0.041, "finished_utc": "2026-09-30T18:18:19.141611+00:00", "active_diff": {"added": [], "deleted": [], "changed": []}}
+三份正式来源指纹与全文、77 条约束上下文、任务与阈值、18 条配方、18 类单位全部字段及数字类别一致。
+{"name": "revision-final2-catalog-tests", "argv": ["python3", "数据/工具/test_formal_catalog.py"], "cwd": "/home/zhuran24/zmd-research-fresh/求解器", "environment": {"CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target", "CARGO_BUILD_JOBS": "4", "RUST_TEST_THREADS": "1", "PYTHONDONTWRITEBYTECODE": "1"}, "exit_code": 0, "seconds": 2.292, "finished_utc": "2026-09-30T18:18:22.673519+00:00", "active_diff": {"added": [], "deleted": [], "changed": []}}
+.........
+----------------------------------------------------------------------
+Ran 9 tests in 2.243s
+
+OK
+逐叶变异全部拒绝：{"units": 1173, "recipes": 154}

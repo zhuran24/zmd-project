@@ -1,0 +1,21 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.01s
+     Running tests/reference.rs (target/debug/deps/reference-1613ad1990138602)
+
+running 14 tests
+test a_pure_chain ... ok
+test b_hysteresis ... ok
+test c_material_switch ... ok
+test cycle_schema_and_production_representative_python_audit ... ok
+test d_full_boxes ... ok
+test dead_tail ... ok
+test e_merger ... ok
+test generated_inputs_and_migration_boundary_contract ... ok
+test independent_python_audit_full_delta_and_tamper_rejection ... ok
+test migrated_fixtures_run_declared_steps ... ok
+test mining ... ok
+test python_graph_rejects_impossible_ties_and_component_collisions ... ok
+test side_priority ... ok
+test three_upstreams ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 5.44s
+

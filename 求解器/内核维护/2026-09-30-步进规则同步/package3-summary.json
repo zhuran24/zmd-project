@@ -1,0 +1,614 @@
+{
+  "package": 3,
+  "status": "complete",
+  "commands": [
+    {
+      "name": "p3-final-build",
+      "argv": [
+        "cargo",
+        "build",
+        "--workspace",
+        "-j",
+        "4"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 0.019,
+      "finished_utc": "2026-09-30T17:26:05.414883+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    },
+    {
+      "name": "p3-candidate-report",
+      "argv": [
+        "/home/zhuran24/zmd-research-fresh/求解器/target/debug/topology",
+        "数据/候选B/contract.json"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 0.058,
+      "finished_utc": "2026-09-30T17:26:06.729811+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    },
+    {
+      "name": "p3-final-check",
+      "argv": [
+        "cargo",
+        "check",
+        "--workspace",
+        "-j",
+        "4"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 0.018,
+      "finished_utc": "2026-09-30T17:30:20.643056+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    },
+    {
+      "name": "p3-final-clippy",
+      "argv": [
+        "cargo",
+        "clippy",
+        "--workspace",
+        "-j",
+        "4"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 0.056,
+      "finished_utc": "2026-09-30T17:30:21.947336+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    },
+    {
+      "name": "p3-final-kernel-lib",
+      "argv": [
+        "cargo",
+        "test",
+        "-p",
+        "kernel",
+        "--lib",
+        "-j",
+        "4",
+        "--",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 9.156,
+      "finished_utc": "2026-09-30T17:30:32.346149+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    },
+    {
+      "name": "p3-final-topology-lib",
+      "argv": [
+        "cargo",
+        "test",
+        "-p",
+        "topology",
+        "--lib",
+        "-j",
+        "4",
+        "--",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 0.022,
+      "finished_utc": "2026-09-30T17:30:33.640164+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    },
+    {
+      "name": "p3-final-reference",
+      "argv": [
+        "cargo",
+        "test",
+        "-p",
+        "kernel",
+        "--test",
+        "reference",
+        "-j",
+        "4",
+        "--",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 5.425,
+      "finished_utc": "2026-09-30T17:30:40.337591+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    },
+    {
+      "name": "p3-final-validation",
+      "argv": [
+        "cargo",
+        "test",
+        "-p",
+        "topology",
+        "--test",
+        "validation",
+        "-j",
+        "4",
+        "--",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 6.574,
+      "finished_utc": "2026-09-30T17:30:48.153633+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    },
+    {
+      "name": "p3-final-kernel-doc",
+      "argv": [
+        "cargo",
+        "test",
+        "-p",
+        "kernel",
+        "--doc",
+        "-j",
+        "4",
+        "--",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 0.134,
+      "finished_utc": "2026-09-30T17:30:49.529314+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    },
+    {
+      "name": "p3-final-topology-doc",
+      "argv": [
+        "cargo",
+        "test",
+        "-p",
+        "topology",
+        "--doc",
+        "-j",
+        "4",
+        "--",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 0.075,
+      "finished_utc": "2026-09-30T17:30:50.844904+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    },
+    {
+      "name": "p3-final-catalog",
+      "argv": [
+        "python3",
+        "数据/工具/formal_catalog.py"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 0.042,
+      "finished_utc": "2026-09-30T17:30:52.126814+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    },
+    {
+      "name": "p3-final-catalog-tests",
+      "argv": [
+        "python3",
+        "数据/工具/test_formal_catalog.py"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 0,
+      "seconds": 2.162,
+      "finished_utc": "2026-09-30T17:30:55.529795+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    },
+    {
+      "name": "p3-legacy-check",
+      "argv": [
+        "python3",
+        "规格/check_revision.py"
+      ],
+      "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+      "environment": {
+        "CARGO_TARGET_DIR": "/home/zhuran24/zmd-research-fresh/求解器/target",
+        "CARGO_BUILD_JOBS": "4",
+        "RUST_TEST_THREADS": "1",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "exit_code": 1,
+      "seconds": 0.036,
+      "finished_utc": "2026-09-30T17:31:39.644318+00:00",
+      "active_diff": {
+        "added": [],
+        "deleted": [],
+        "changed": []
+      }
+    }
+  ],
+  "command_count": 13,
+  "command_history_comparisons": 26,
+  "receipts": [
+    {
+      "command": "p3-final-build",
+      "edge": "before",
+      "path": "p3-final-build-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "equal_initial": true
+    },
+    {
+      "command": "p3-final-build",
+      "edge": "after",
+      "path": "p3-final-build-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "equal_initial": true
+    },
+    {
+      "command": "p3-candidate-report",
+      "edge": "before",
+      "path": "p3-candidate-report-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "equal_initial": true
+    },
+    {
+      "command": "p3-candidate-report",
+      "edge": "after",
+      "path": "p3-candidate-report-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "equal_initial": true
+    },
+    {
+      "command": "p3-final-check",
+      "edge": "before",
+      "path": "p3-final-check-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "equal_initial": true
+    },
+    {
+      "command": "p3-final-check",
+      "edge": "after",
+      "path": "p3-final-check-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "equal_initial": true
+    },
+    {
+      "command": "p3-final-clippy",
+      "edge": "before",
+      "path": "p3-final-clippy-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "equal_initial": true
+    },
+    {
+      "command": "p3-final-clippy",
+      "edge": "after",
+      "path": "p3-final-clippy-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "equal_initial": true
+    },
+    {
+      "command": "p3-final-kernel-lib",
+      "edge": "before",
+      "path": "p3-final-kernel-lib-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "equal_initial": true
+    },
+    {
+      "command": "p3-final-kernel-lib",
+      "edge": "after",
+      "path": "p3-final-kernel-lib-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "equal_initial": true
+    },
+    {
+      "command": "p3-final-topology-lib",
+      "edge": "before",
+      "path": "p3-final-topology-lib-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "equal_initial": true
+    },
+    {
+      "command": "p3-final-topology-lib",
+      "edge": "after",
+      "path": "p3-final-topology-lib-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "equal_initial": true
+    },
+    {
+      "command": "p3-final-reference",
+      "edge": "before",
+      "path": "p3-final-reference-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "equal_initial": true
+    },
+    {
+      "command": "p3-final-reference",
+      "edge": "after",
+      "path": "p3-final-reference-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "equal_initial": true
+    },
+    {
+      "command": "p3-final-validation",
+      "edge": "before",
+      "path": "p3-final-validation-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "equal_initial": true
+    },
+    {
+      "command": "p3-final-validation",
+      "edge": "after",
+      "path": "p3-final-validation-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "equal_initial": true
+    },
+    {
+      "command": "p3-final-kernel-doc",
+      "edge": "before",
+      "path": "p3-final-kernel-doc-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "equal_initial": true
+    },
+    {
+      "command": "p3-final-kernel-doc",
+      "edge": "after",
+      "path": "p3-final-kernel-doc-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "equal_initial": true
+    },
+    {
+      "command": "p3-final-topology-doc",
+      "edge": "before",
+      "path": "p3-final-topology-doc-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "equal_initial": true
+    },
+    {
+      "command": "p3-final-topology-doc",
+      "edge": "after",
+      "path": "p3-final-topology-doc-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "equal_initial": true
+    },
+    {
+      "command": "p3-final-catalog",
+      "edge": "before",
+      "path": "p3-final-catalog-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "equal_initial": true
+    },
+    {
+      "command": "p3-final-catalog",
+      "edge": "after",
+      "path": "p3-final-catalog-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "equal_initial": true
+    },
+    {
+      "command": "p3-final-catalog-tests",
+      "edge": "before",
+      "path": "p3-final-catalog-tests-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "equal_initial": true
+    },
+    {
+      "command": "p3-final-catalog-tests",
+      "edge": "after",
+      "path": "p3-final-catalog-tests-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "equal_initial": true
+    },
+    {
+      "command": "p3-legacy-check",
+      "edge": "before",
+      "path": "p3-legacy-check-before-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "equal_initial": true
+    },
+    {
+      "command": "p3-legacy-check",
+      "edge": "after",
+      "path": "p3-legacy-check-after-history.json",
+      "sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+      "equal_initial": true
+    }
+  ],
+  "audit_attempts": [
+    {
+      "path": "p3-audit01.json",
+      "status": "fail",
+      "sha256": "ac87c2e0114715d65f0295333e75b988303dd154e22adfba6e0e01e7656a9018"
+    },
+    {
+      "path": "p3-audit02.json",
+      "status": "pass",
+      "sha256": "0370f86757caa8d5188e15780b61b4af3b471fad7327e3fe8005e488bc0f74f5"
+    },
+    {
+      "path": "p3-audit03.json",
+      "status": "pass",
+      "sha256": "855697963abd394e53fc3eadce3b2a78ff65f24c234389a3d239b0d80b7bc72c"
+    }
+  ],
+  "audit_history_comparisons": 6,
+  "all_package3_guard_comparisons": 43,
+  "all_package3_guard_diff_paths": [
+    "p3-audit01-after-history-diff.json",
+    "p3-audit01-before-history-diff.json",
+    "p3-audit02-after-history-diff.json",
+    "p3-audit02-before-history-diff.json",
+    "p3-audit03-after-history-diff.json",
+    "p3-audit03-before-history-diff.json",
+    "p3-baseline-history-diff.json",
+    "p3-candidate-report-after-history-diff.json",
+    "p3-candidate-report-before-history-diff.json",
+    "p3-final-build-after-history-diff.json",
+    "p3-final-build-before-history-diff.json",
+    "p3-final-catalog-after-history-diff.json",
+    "p3-final-catalog-before-history-diff.json",
+    "p3-final-catalog-tests-after-history-diff.json",
+    "p3-final-catalog-tests-before-history-diff.json",
+    "p3-final-check-after-history-diff.json",
+    "p3-final-check-before-history-diff.json",
+    "p3-final-clippy-after-history-diff.json",
+    "p3-final-clippy-before-history-diff.json",
+    "p3-final-kernel-doc-after-history-diff.json",
+    "p3-final-kernel-doc-before-history-diff.json",
+    "p3-final-kernel-lib-after-history-diff.json",
+    "p3-final-kernel-lib-before-history-diff.json",
+    "p3-final-notes-write-after-history-diff.json",
+    "p3-final-notes-write-before-history-diff.json",
+    "p3-final-reference-after-history-diff.json",
+    "p3-final-reference-before-history-diff.json",
+    "p3-final-topology-doc-after-history-diff.json",
+    "p3-final-topology-doc-before-history-diff.json",
+    "p3-final-topology-lib-after-history-diff.json",
+    "p3-final-topology-lib-before-history-diff.json",
+    "p3-final-validation-after-history-diff.json",
+    "p3-final-validation-before-history-diff.json",
+    "p3-install01-write-after-history-diff.json",
+    "p3-install01-write-before-history-diff.json",
+    "p3-install02-write-after-history-diff.json",
+    "p3-install02-write-before-history-diff.json",
+    "p3-legacy-check-after-history-diff.json",
+    "p3-legacy-check-before-history-diff.json",
+    "p3-reader-fixes-write-after-history-diff.json",
+    "p3-reader-fixes-write-before-history-diff.json",
+    "p3-record-after-history-diff.json",
+    "p3-record-before-history-diff.json"
+  ],
+  "history_counts": {
+    "crates/kernel/evidence": 572,
+    "crates/kernel/复核": 2094,
+    "数据/复核": 815
+  },
+  "history_bytes": 1018807436,
+  "history_manifest_sha256": "f6f6772a547e5a4bf4396e777f4823bf00e7dea81d7c3a416a9475f75a9d377e",
+  "changed_business_files": 16,
+  "changed_paths": "package3-changed-paths.json",
+  "final_audit": "p3-audit03.json",
+  "source_hashes": {
+    "《明日方舟：终末地》游戏规则.txt": "c8d3a17b8830baba18aea36c4c66f02f8873895188f8821176cc218aa6135f93",
+    "求解任务.txt": "7bec7a1edf2f46644a6e6a75d588f5ff05202cc32d6b42430677ea39b878309b",
+    "求解约束.txt": "dfea46c61f29be5a86659bce3642009d2558ace073d6dbd79f5dd3c6475226db",
+    "候选约束.txt": "4cea9f0837982858d7620e0f3f6eec1f09f0d57e93b37c08eb9fd7c484513dd9"
+  },
+  "catalog_sha256": "73de10b3a4849302eb259dd16c6830d3a37464ea4a6b211dbc6c38a655d30e53",
+  "config_sha256": "680acb480aa28443431e119c98e4cc45ca6abade1670c9a4a1283a77a7d199a2",
+  "blockers": []
+}

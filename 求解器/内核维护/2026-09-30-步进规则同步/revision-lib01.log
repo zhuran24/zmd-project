@@ -1,0 +1,20 @@
+   Compiling kernel v0.1.0 (/home/zhuran24/zmd-research-fresh/求解器/crates/kernel)
+error[E0425]: cannot find type `Value` in this scope
+   --> crates/kernel/src/tests_output.rs:126:52
+    |
+126 | fn coverage_of(mut e: Engine, steps: usize) -> Vec<Value> {
+    |                                                    ^^^^^ not found in this scope
+    |
+help: you might be missing a type parameter
+    |
+126 | fn coverage_of<Value>(mut e: Engine, steps: usize) -> Vec<Value> {
+    |               +++++++
+
+error[E0425]: cannot find type `Value` in this scope
+   --> crates/kernel/src/tests_output.rs:134:19
+    |
+134 | fn status(rows: &[Value], axis: &str) -> String {
+    |                   ^^^^^ not found in this scope
+
+For more information about this error, try `rustc --explain E0425`.
+error: could not compile `kernel` (lib test) due to 2 previous errors

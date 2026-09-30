@@ -1,0 +1,172 @@
+use crate::{model::*, tests_support::*, value::*, Engine};
+use serde_json::{json, Value};
+use std::collections::BTreeMap;
+fn empty(e: &mut Engine, id: &str) {
+    let i = e.state.warehouse.slots.len();
+    e.state.warehouse.slots.push(WarehouseSlot {
+        slot: id.into(),
+        item: None,
+        quantity: Quantity::calc(0),
+        empty_identity: Decision::specified(Value::Null, "测试空格"),
+    });
+    e.warehouse.insert(id.into(), i);
+    e.state
+        .semantic_context
+        .warehouse_empty_slot_order
+        .push(id.into());
+}
+#[test]
+fn identity_is_retained_and_duplicate_historical_identity_rejected() {
+    let mut e = engine(raw(&[]));
+    e.remove("warehouse_2", "荞花", 80000).unwrap();
+    assert_eq!(e.warehouse_targets().unwrap()["荞花"], "warehouse_2");
+    assert!(e.deposit(BTreeMap::from([("荞花".into(), 1)])).unwrap());
+    assert_eq!(
+        e.state.warehouse.slots[e.warehouse["warehouse_2"]]
+            .item
+            .as_deref(),
+        Some("荞花")
+    );
+    empty(&mut e, "spare");
+    let i = e.warehouse["spare"];
+    e.state.warehouse.slots[i].empty_identity = Decision::specified(json!("荞花"), "历史身份");
+    e.state.semantic_context.warehouse_empty_slot_order.clear();
+    assert!(e.warehouse_targets().is_err());
+}
+#[test]
+fn empty_slot_competition_stops_before_writing() {
+    let mut e = engine(raw(&[]));
+    empty(&mut e, "spare");
+    let port = e.input.assignments.keys().next().unwrap().clone();
+    e.input.assignments.insert(port, "spare".into());
+    let before = e.state.warehouse.clone();
+    let error = e
+        .deposit(BTreeMap::from([
+            ("源石粉末".into(), 1),
+            ("蓝铁块".into(), 1),
+        ]))
+        .unwrap_err();
+    assert_eq!(error.axis, "warehouse.empty_slot_identity");
+    assert_eq!(e.state.warehouse, before);
+}
+#[test]
+fn unnamed_species_have_stable_order_and_new_labels() {
+    let mut e = engine(raw(&[]));
+    empty(&mut e, "first");
+    empty(&mut e, "second");
+    e.deposit(BTreeMap::from([("甲".into(), 1), ("乙".into(), 2)]))
+        .unwrap();
+    assert_eq!(
+        e.state.warehouse.slots[e.warehouse["first"]]
+            .item
+            .as_deref(),
+        Some("乙")
+    );
+    assert_eq!(
+        e.state.warehouse.slots[e.warehouse["second"]]
+            .item
+            .as_deref(),
+        Some("甲")
+    );
+    assert!(e.empty_slots().is_empty());
+    e.deposit(BTreeMap::from([("丙".into(), 1)])).unwrap();
+    assert!(e
+        .state
+        .warehouse
+        .slots
+        .iter()
+        .any(|r| r.slot.starts_with("W_new_") && r.item.as_deref() == Some("丙")));
+}
+#[test]
+fn put_failure_keeps_all_bytes_and_local_capacity() {
+    let mut e = engine(chain());
+    e.put("m:input:0", "源矿", 50).unwrap();
+    let before = e.state.inventory.clone();
+    assert!(e.put("m:input:0", "源矿", 1).is_err());
+    assert_eq!(e.state.inventory, before);
+    assert!(e.put("m:input:0", "蓝铁矿", 1).is_err());
+    assert_eq!(e.state.inventory, before);
+    assert_eq!(e.inventory_totals().unwrap()["源矿"], 80050);
+}
+#[test]
+fn per_species_ledger_conserves_ore_replenishment_and_rejects_tampering() {
+    let mut e = engine(chain());
+    let before = json!(e.state);
+    let report = e.step().unwrap();
+    assert_eq!(report.ledger["port_outbound"].as_array().unwrap().len(), 1);
+    assert_eq!(
+        report.ledger["external_supply"].as_array().unwrap().len(),
+        1
+    );
+    let mut row = json!({"state":e.state,"warehouse_ledger":report.ledger});
+    crate::ledger::verify_tick(&before, &row).unwrap();
+    row["warehouse_ledger"]["external_supply"][0]["quantity"] = q(2);
+    assert!(crate::ledger::verify_tick(&before, &row).is_err());
+}
+#[test]
+fn last_explicit_ore_is_refused_and_engine_is_sealed() {
+    let mut r = chain();
+    state(&mut r)["warehouse"]["slots"][0]["quantity"] = q(1);
+    set_axis(
+        &mut r,
+        "warehouse.external_supply",
+        json!({"kind":"explicit_ore_history","events":[],"through":tv(100)}),
+    );
+    let mut e = engine(r);
+    let error = e.step().unwrap_err();
+    assert_eq!(error.axis, "warehouse.external_supply");
+    assert_eq!(error.status, "invalid_input");
+    assert_eq!(e.step().unwrap_err(), error);
+    assert_eq!(
+        e.state.warehouse.slots[e.warehouse["warehouse_0"]]
+            .quantity
+            .integer("ore")
+            .unwrap(),
+        1
+    );
+}
+#[test]
+fn production_ore_return_is_rejected_before_warehouse_capacity() {
+    let mut r = raw(&[
+        ("core", "协议核心", 10, 10, 0, 0),
+        ("b", "传送带", 11, 9, 0, 0),
+    ]);
+    put_seed(&mut r, "b:transport:0", "源矿", 1, Some(-8));
+    let input = parse(r).unwrap();
+    let mut e = Engine::new_production(input).unwrap();
+    let stop = e.step().unwrap_err();
+    assert_eq!(stop.axis, "cycle.domain.D2");
+}
+#[test]
+fn explicit_supply_is_applied_once_at_its_step() {
+    let mut r = chain();
+    state(&mut r)["warehouse"]["slots"][0]["quantity"] = q(10);
+    r["timeline"]["events"]
+        .as_array_mut()
+        .unwrap()
+        .push(json!({"id":"supply1","kind":"runtime","time":tv(1)}));
+    set_axis(
+        &mut r,
+        "warehouse.external_supply",
+        json!({"kind":"explicit_ore_history","events":[{"event":"supply1","time":tv(1),"item":"源矿","quantity":q(3)}],"through":tv(20)}),
+    );
+    let mut e = engine(r);
+    let reports = advance(&mut e, 10);
+    assert_eq!(e.supplied["源矿"], 3);
+    assert_eq!(
+        reports
+            .iter()
+            .flat_map(|r| &r.events)
+            .filter(|e| e.phase == "supply")
+            .count(),
+        1
+    );
+    assert_eq!(reports[1].events[0].event, "E|1|0");
+    assert_eq!(
+        e.state.warehouse.slots[e.warehouse["warehouse_0"]]
+            .quantity
+            .integer("ore")
+            .unwrap(),
+        11
+    );
+}

@@ -1,0 +1,6588 @@
+{
+  "schema": "kernel-input-v4",
+  "purpose": "synthetic_execution",
+  "catalog": {
+    "path": "../../../正式静态目录.json",
+    "sha256": "73de10b3a4849302eb259dd16c6830d3a37464ea4a6b211dbc6c38a655d30e53"
+  },
+  "timeline": {
+    "events": [
+      {
+        "id": "build_0",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-53",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_1",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-52",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_2",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-51",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_3",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-50",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_4",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-49",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_5",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-48",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_6",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-47",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_7",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-46",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_8",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-45",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_9",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-44",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_10",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-43",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_11",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-42",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_12",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-41",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_13",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-40",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_14",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-39",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_15",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-38",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_16",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-37",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_17",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-36",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_18",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-35",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_19",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-34",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_20",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-33",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_21",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-32",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_22",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-31",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_23",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-30",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_24",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-29",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_25",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-28",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_26",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-27",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_27",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-26",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_28",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-25",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_29",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-24",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_30",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-23",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_31",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-22",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_32",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-21",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_33",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-20",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_34",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-19",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_35",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-18",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_36",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-17",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_37",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-16",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_38",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-15",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_39",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-14",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_40",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-13",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_41",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-12",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_42",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-11",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_43",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-10",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_44",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-9",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_45",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-8",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_46",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-7",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_47",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-6",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_48",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-5",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_49",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-4",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_50",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-3",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "build_51",
+        "kind": "build",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-2",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "complete",
+        "kind": "blueprint_complete",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "0",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "debug_end",
+        "kind": "debug_end",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "0",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_0",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-48",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_1",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-38",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_2",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-37",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_3",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-36",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_4",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-35",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_5",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-34",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_6",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-34",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_7",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-47",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_8",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-46",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_9",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-45",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_10",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-44",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_11",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-43",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_12",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-42",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_13",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-41",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_14",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-40",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_15",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-39",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_16",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-32",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_17",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-22",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_18",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-21",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_19",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-20",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_20",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-19",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_21",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-18",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_22",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-18",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_23",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-31",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_24",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-30",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_25",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-29",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_26",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-28",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_27",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-27",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_28",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-26",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_29",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-25",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_30",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-24",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_31",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-23",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_32",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-50",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_33",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-50",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_34",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-16",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_35",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-6",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_36",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-5",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_37",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-4",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_38",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-3",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_39",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-2",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_40",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-2",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_41",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-15",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_42",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-14",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_43",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-13",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_44",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-12",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_45",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-11",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_46",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-10",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_47",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-9",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_48",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-8",
+            "category": "候选"
+          }
+        }
+      },
+      {
+        "id": "connection_49",
+        "kind": "connection_open",
+        "time": {
+          "kind": "step",
+          "value": {
+            "value": "-7",
+            "category": "候选"
+          }
+        }
+      }
+    ],
+    "relations": [],
+    "connection_events": [
+      {
+        "event": "connection_0",
+        "channel": "PC|a0:north:0|a1:south:0",
+        "action": "open",
+        "cause": "build_5",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_4",
+            "target_build": "build_5",
+            "later_build": "build_5"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_1",
+        "channel": "PC|a10:north:0|a11:south:0",
+        "action": "open",
+        "cause": "build_15",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_14",
+            "target_build": "build_15",
+            "later_build": "build_15"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_2",
+        "channel": "PC|a11:north:0|a12:south:0",
+        "action": "open",
+        "cause": "build_16",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_15",
+            "target_build": "build_16",
+            "later_build": "build_16"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_3",
+        "channel": "PC|a12:north:0|a13:south:0",
+        "action": "open",
+        "cause": "build_17",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_16",
+            "target_build": "build_17",
+            "later_build": "build_17"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_4",
+        "channel": "PC|a13:north:0|a14:south:0",
+        "action": "open",
+        "cause": "build_18",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_17",
+            "target_build": "build_18",
+            "later_build": "build_18"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_5",
+        "channel": "PC|a14:north:0|a15:south:0",
+        "action": "open",
+        "cause": "build_19",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_18",
+            "target_build": "build_19",
+            "later_build": "build_19"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_6",
+        "channel": "PC|a15:north:0|m:south:0",
+        "action": "open",
+        "cause": "build_19",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_19",
+            "target_build": "build_0",
+            "later_build": "build_19"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_7",
+        "channel": "PC|a1:north:0|a2:south:0",
+        "action": "open",
+        "cause": "build_6",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_5",
+            "target_build": "build_6",
+            "later_build": "build_6"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_8",
+        "channel": "PC|a2:north:0|a3:south:0",
+        "action": "open",
+        "cause": "build_7",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_6",
+            "target_build": "build_7",
+            "later_build": "build_7"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_9",
+        "channel": "PC|a3:north:0|a4:south:0",
+        "action": "open",
+        "cause": "build_8",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_7",
+            "target_build": "build_8",
+            "later_build": "build_8"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_10",
+        "channel": "PC|a4:north:0|a5:south:0",
+        "action": "open",
+        "cause": "build_9",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_8",
+            "target_build": "build_9",
+            "later_build": "build_9"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_11",
+        "channel": "PC|a5:north:0|a6:south:0",
+        "action": "open",
+        "cause": "build_10",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_9",
+            "target_build": "build_10",
+            "later_build": "build_10"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_12",
+        "channel": "PC|a6:north:0|a7:south:0",
+        "action": "open",
+        "cause": "build_11",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_10",
+            "target_build": "build_11",
+            "later_build": "build_11"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_13",
+        "channel": "PC|a7:north:0|a8:south:0",
+        "action": "open",
+        "cause": "build_12",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_11",
+            "target_build": "build_12",
+            "later_build": "build_12"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_14",
+        "channel": "PC|a8:north:0|a9:south:0",
+        "action": "open",
+        "cause": "build_13",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_12",
+            "target_build": "build_13",
+            "later_build": "build_13"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_15",
+        "channel": "PC|a9:north:0|a10:south:0",
+        "action": "open",
+        "cause": "build_14",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_13",
+            "target_build": "build_14",
+            "later_build": "build_14"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_16",
+        "channel": "PC|b0:north:0|b1:south:0",
+        "action": "open",
+        "cause": "build_21",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_20",
+            "target_build": "build_21",
+            "later_build": "build_21"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_17",
+        "channel": "PC|b10:north:0|b11:south:0",
+        "action": "open",
+        "cause": "build_31",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_30",
+            "target_build": "build_31",
+            "later_build": "build_31"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_18",
+        "channel": "PC|b11:north:0|b12:south:0",
+        "action": "open",
+        "cause": "build_32",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_31",
+            "target_build": "build_32",
+            "later_build": "build_32"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_19",
+        "channel": "PC|b12:north:0|b13:south:0",
+        "action": "open",
+        "cause": "build_33",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_32",
+            "target_build": "build_33",
+            "later_build": "build_33"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_20",
+        "channel": "PC|b13:north:0|b14:south:0",
+        "action": "open",
+        "cause": "build_34",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_33",
+            "target_build": "build_34",
+            "later_build": "build_34"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_21",
+        "channel": "PC|b14:north:0|b15:south:0",
+        "action": "open",
+        "cause": "build_35",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_34",
+            "target_build": "build_35",
+            "later_build": "build_35"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_22",
+        "channel": "PC|b15:north:0|m:south:2",
+        "action": "open",
+        "cause": "build_35",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_35",
+            "target_build": "build_0",
+            "later_build": "build_35"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_23",
+        "channel": "PC|b1:north:0|b2:south:0",
+        "action": "open",
+        "cause": "build_22",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_21",
+            "target_build": "build_22",
+            "later_build": "build_22"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_24",
+        "channel": "PC|b2:north:0|b3:south:0",
+        "action": "open",
+        "cause": "build_23",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_22",
+            "target_build": "build_23",
+            "later_build": "build_23"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_25",
+        "channel": "PC|b3:north:0|b4:south:0",
+        "action": "open",
+        "cause": "build_24",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_23",
+            "target_build": "build_24",
+            "later_build": "build_24"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_26",
+        "channel": "PC|b4:north:0|b5:south:0",
+        "action": "open",
+        "cause": "build_25",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_24",
+            "target_build": "build_25",
+            "later_build": "build_25"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_27",
+        "channel": "PC|b5:north:0|b6:south:0",
+        "action": "open",
+        "cause": "build_26",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_25",
+            "target_build": "build_26",
+            "later_build": "build_26"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_28",
+        "channel": "PC|b6:north:0|b7:south:0",
+        "action": "open",
+        "cause": "build_27",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_26",
+            "target_build": "build_27",
+            "later_build": "build_27"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_29",
+        "channel": "PC|b7:north:0|b8:south:0",
+        "action": "open",
+        "cause": "build_28",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_27",
+            "target_build": "build_28",
+            "later_build": "build_28"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_30",
+        "channel": "PC|b8:north:0|b9:south:0",
+        "action": "open",
+        "cause": "build_29",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_28",
+            "target_build": "build_29",
+            "later_build": "build_29"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_31",
+        "channel": "PC|b9:north:0|b10:south:0",
+        "action": "open",
+        "cause": "build_30",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_29",
+            "target_build": "build_30",
+            "later_build": "build_30"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_32",
+        "channel": "PC|m:north:1|out:south:0",
+        "action": "open",
+        "cause": "build_3",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_0",
+            "target_build": "build_3",
+            "later_build": "build_3"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_33",
+        "channel": "PC|out:north:0|core:south:1",
+        "action": "open",
+        "cause": "build_3",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_3",
+            "target_build": "build_2",
+            "later_build": "build_3"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_34",
+        "channel": "PC|sand0:north:0|sand1:south:0",
+        "action": "open",
+        "cause": "build_37",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_36",
+            "target_build": "build_37",
+            "later_build": "build_37"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_35",
+        "channel": "PC|sand10:north:0|sand11:south:0",
+        "action": "open",
+        "cause": "build_47",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_46",
+            "target_build": "build_47",
+            "later_build": "build_47"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_36",
+        "channel": "PC|sand11:north:0|sand12:south:0",
+        "action": "open",
+        "cause": "build_48",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_47",
+            "target_build": "build_48",
+            "later_build": "build_48"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_37",
+        "channel": "PC|sand12:north:0|sand13:south:0",
+        "action": "open",
+        "cause": "build_49",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_48",
+            "target_build": "build_49",
+            "later_build": "build_49"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_38",
+        "channel": "PC|sand13:north:0|sand14:south:0",
+        "action": "open",
+        "cause": "build_50",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_49",
+            "target_build": "build_50",
+            "later_build": "build_50"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_39",
+        "channel": "PC|sand14:north:0|sand15:south:0",
+        "action": "open",
+        "cause": "build_51",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_50",
+            "target_build": "build_51",
+            "later_build": "build_51"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_40",
+        "channel": "PC|sand15:north:0|m:south:5",
+        "action": "open",
+        "cause": "build_51",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_51",
+            "target_build": "build_0",
+            "later_build": "build_51"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_41",
+        "channel": "PC|sand1:north:0|sand2:south:0",
+        "action": "open",
+        "cause": "build_38",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_37",
+            "target_build": "build_38",
+            "later_build": "build_38"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_42",
+        "channel": "PC|sand2:north:0|sand3:south:0",
+        "action": "open",
+        "cause": "build_39",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_38",
+            "target_build": "build_39",
+            "later_build": "build_39"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_43",
+        "channel": "PC|sand3:north:0|sand4:south:0",
+        "action": "open",
+        "cause": "build_40",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_39",
+            "target_build": "build_40",
+            "later_build": "build_40"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_44",
+        "channel": "PC|sand4:north:0|sand5:south:0",
+        "action": "open",
+        "cause": "build_41",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_40",
+            "target_build": "build_41",
+            "later_build": "build_41"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_45",
+        "channel": "PC|sand5:north:0|sand6:south:0",
+        "action": "open",
+        "cause": "build_42",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_41",
+            "target_build": "build_42",
+            "later_build": "build_42"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_46",
+        "channel": "PC|sand6:north:0|sand7:south:0",
+        "action": "open",
+        "cause": "build_43",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_42",
+            "target_build": "build_43",
+            "later_build": "build_43"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_47",
+        "channel": "PC|sand7:north:0|sand8:south:0",
+        "action": "open",
+        "cause": "build_44",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_43",
+            "target_build": "build_44",
+            "later_build": "build_44"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_48",
+        "channel": "PC|sand8:north:0|sand9:south:0",
+        "action": "open",
+        "cause": "build_45",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_44",
+            "target_build": "build_45",
+            "later_build": "build_45"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      },
+      {
+        "event": "connection_49",
+        "channel": "PC|sand9:north:0|sand10:south:0",
+        "action": "open",
+        "cause": "build_46",
+        "geometry_snapshot": "built_layout",
+        "construction_basis": {
+          "status": "specified",
+          "value": {
+            "source_build": "build_45",
+            "target_build": "build_46",
+            "later_build": "build_46"
+          },
+          "basis": [
+            "步进规则同步：显式有限构型，未声明全称或可达性"
+          ]
+        }
+      }
+    ]
+  },
+  "layout": {
+    "base": {
+      "width": {
+        "value": "70",
+        "category": "候选"
+      },
+      "height": {
+        "value": "70",
+        "category": "候选"
+      }
+    },
+    "id": "built_layout",
+    "anchor": {
+      "event": "complete",
+      "side": "after"
+    },
+    "units": [
+      {
+        "id": "m",
+        "kind": "研磨机",
+        "origin": [
+          {
+            "value": "10",
+            "category": "候选"
+          },
+          {
+            "value": "30",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "power",
+        "kind": "供电桩",
+        "origin": [
+          {
+            "value": "16",
+            "category": "候选"
+          },
+          {
+            "value": "30",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "out",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "11",
+            "category": "候选"
+          },
+          {
+            "value": "34",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "core",
+        "kind": "协议核心",
+        "origin": [
+          {
+            "value": "10",
+            "category": "候选"
+          },
+          {
+            "value": "35",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "a0",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "10",
+            "category": "候选"
+          },
+          {
+            "value": "14",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "a1",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "10",
+            "category": "候选"
+          },
+          {
+            "value": "15",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "a2",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "10",
+            "category": "候选"
+          },
+          {
+            "value": "16",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "a3",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "10",
+            "category": "候选"
+          },
+          {
+            "value": "17",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "a4",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "10",
+            "category": "候选"
+          },
+          {
+            "value": "18",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "a5",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "10",
+            "category": "候选"
+          },
+          {
+            "value": "19",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "a6",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "10",
+            "category": "候选"
+          },
+          {
+            "value": "20",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "a7",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "10",
+            "category": "候选"
+          },
+          {
+            "value": "21",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "a8",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "10",
+            "category": "候选"
+          },
+          {
+            "value": "22",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "a9",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "10",
+            "category": "候选"
+          },
+          {
+            "value": "23",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "a10",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "10",
+            "category": "候选"
+          },
+          {
+            "value": "24",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "a11",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "10",
+            "category": "候选"
+          },
+          {
+            "value": "25",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "a12",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "10",
+            "category": "候选"
+          },
+          {
+            "value": "26",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "a13",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "10",
+            "category": "候选"
+          },
+          {
+            "value": "27",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "a14",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "10",
+            "category": "候选"
+          },
+          {
+            "value": "28",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "a15",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "10",
+            "category": "候选"
+          },
+          {
+            "value": "29",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "b0",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "12",
+            "category": "候选"
+          },
+          {
+            "value": "14",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "b1",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "12",
+            "category": "候选"
+          },
+          {
+            "value": "15",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "b2",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "12",
+            "category": "候选"
+          },
+          {
+            "value": "16",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "b3",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "12",
+            "category": "候选"
+          },
+          {
+            "value": "17",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "b4",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "12",
+            "category": "候选"
+          },
+          {
+            "value": "18",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "b5",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "12",
+            "category": "候选"
+          },
+          {
+            "value": "19",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "b6",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "12",
+            "category": "候选"
+          },
+          {
+            "value": "20",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "b7",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "12",
+            "category": "候选"
+          },
+          {
+            "value": "21",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "b8",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "12",
+            "category": "候选"
+          },
+          {
+            "value": "22",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "b9",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "12",
+            "category": "候选"
+          },
+          {
+            "value": "23",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "b10",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "12",
+            "category": "候选"
+          },
+          {
+            "value": "24",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "b11",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "12",
+            "category": "候选"
+          },
+          {
+            "value": "25",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "b12",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "12",
+            "category": "候选"
+          },
+          {
+            "value": "26",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "b13",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "12",
+            "category": "候选"
+          },
+          {
+            "value": "27",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "b14",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "12",
+            "category": "候选"
+          },
+          {
+            "value": "28",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "b15",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "12",
+            "category": "候选"
+          },
+          {
+            "value": "29",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "sand0",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "15",
+            "category": "候选"
+          },
+          {
+            "value": "14",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "sand1",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "15",
+            "category": "候选"
+          },
+          {
+            "value": "15",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "sand2",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "15",
+            "category": "候选"
+          },
+          {
+            "value": "16",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "sand3",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "15",
+            "category": "候选"
+          },
+          {
+            "value": "17",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "sand4",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "15",
+            "category": "候选"
+          },
+          {
+            "value": "18",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "sand5",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "15",
+            "category": "候选"
+          },
+          {
+            "value": "19",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "sand6",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "15",
+            "category": "候选"
+          },
+          {
+            "value": "20",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "sand7",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "15",
+            "category": "候选"
+          },
+          {
+            "value": "21",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "sand8",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "15",
+            "category": "候选"
+          },
+          {
+            "value": "22",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "sand9",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "15",
+            "category": "候选"
+          },
+          {
+            "value": "23",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "sand10",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "15",
+            "category": "候选"
+          },
+          {
+            "value": "24",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "sand11",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "15",
+            "category": "候选"
+          },
+          {
+            "value": "25",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "sand12",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "15",
+            "category": "候选"
+          },
+          {
+            "value": "26",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "sand13",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "15",
+            "category": "候选"
+          },
+          {
+            "value": "27",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "sand14",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "15",
+            "category": "候选"
+          },
+          {
+            "value": "28",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      },
+      {
+        "id": "sand15",
+        "kind": "传送带",
+        "origin": [
+          {
+            "value": "15",
+            "category": "候选"
+          },
+          {
+            "value": "29",
+            "category": "候选"
+          }
+        ],
+        "rotation": "r0",
+        "port_layout": 0,
+        "bridge_axes": null,
+        "occupied_cells": null
+      }
+    ],
+    "physical_channels": [
+      {
+        "id": "PC|a0:north:0|a1:south:0",
+        "source_port": "a0:north:0",
+        "target_port": "a1:south:0"
+      },
+      {
+        "id": "PC|a10:north:0|a11:south:0",
+        "source_port": "a10:north:0",
+        "target_port": "a11:south:0"
+      },
+      {
+        "id": "PC|a11:north:0|a12:south:0",
+        "source_port": "a11:north:0",
+        "target_port": "a12:south:0"
+      },
+      {
+        "id": "PC|a12:north:0|a13:south:0",
+        "source_port": "a12:north:0",
+        "target_port": "a13:south:0"
+      },
+      {
+        "id": "PC|a13:north:0|a14:south:0",
+        "source_port": "a13:north:0",
+        "target_port": "a14:south:0"
+      },
+      {
+        "id": "PC|a14:north:0|a15:south:0",
+        "source_port": "a14:north:0",
+        "target_port": "a15:south:0"
+      },
+      {
+        "id": "PC|a15:north:0|m:south:0",
+        "source_port": "a15:north:0",
+        "target_port": "m:south:0"
+      },
+      {
+        "id": "PC|a1:north:0|a2:south:0",
+        "source_port": "a1:north:0",
+        "target_port": "a2:south:0"
+      },
+      {
+        "id": "PC|a2:north:0|a3:south:0",
+        "source_port": "a2:north:0",
+        "target_port": "a3:south:0"
+      },
+      {
+        "id": "PC|a3:north:0|a4:south:0",
+        "source_port": "a3:north:0",
+        "target_port": "a4:south:0"
+      },
+      {
+        "id": "PC|a4:north:0|a5:south:0",
+        "source_port": "a4:north:0",
+        "target_port": "a5:south:0"
+      },
+      {
+        "id": "PC|a5:north:0|a6:south:0",
+        "source_port": "a5:north:0",
+        "target_port": "a6:south:0"
+      },
+      {
+        "id": "PC|a6:north:0|a7:south:0",
+        "source_port": "a6:north:0",
+        "target_port": "a7:south:0"
+      },
+      {
+        "id": "PC|a7:north:0|a8:south:0",
+        "source_port": "a7:north:0",
+        "target_port": "a8:south:0"
+      },
+      {
+        "id": "PC|a8:north:0|a9:south:0",
+        "source_port": "a8:north:0",
+        "target_port": "a9:south:0"
+      },
+      {
+        "id": "PC|a9:north:0|a10:south:0",
+        "source_port": "a9:north:0",
+        "target_port": "a10:south:0"
+      },
+      {
+        "id": "PC|b0:north:0|b1:south:0",
+        "source_port": "b0:north:0",
+        "target_port": "b1:south:0"
+      },
+      {
+        "id": "PC|b10:north:0|b11:south:0",
+        "source_port": "b10:north:0",
+        "target_port": "b11:south:0"
+      },
+      {
+        "id": "PC|b11:north:0|b12:south:0",
+        "source_port": "b11:north:0",
+        "target_port": "b12:south:0"
+      },
+      {
+        "id": "PC|b12:north:0|b13:south:0",
+        "source_port": "b12:north:0",
+        "target_port": "b13:south:0"
+      },
+      {
+        "id": "PC|b13:north:0|b14:south:0",
+        "source_port": "b13:north:0",
+        "target_port": "b14:south:0"
+      },
+      {
+        "id": "PC|b14:north:0|b15:south:0",
+        "source_port": "b14:north:0",
+        "target_port": "b15:south:0"
+      },
+      {
+        "id": "PC|b15:north:0|m:south:2",
+        "source_port": "b15:north:0",
+        "target_port": "m:south:2"
+      },
+      {
+        "id": "PC|b1:north:0|b2:south:0",
+        "source_port": "b1:north:0",
+        "target_port": "b2:south:0"
+      },
+      {
+        "id": "PC|b2:north:0|b3:south:0",
+        "source_port": "b2:north:0",
+        "target_port": "b3:south:0"
+      },
+      {
+        "id": "PC|b3:north:0|b4:south:0",
+        "source_port": "b3:north:0",
+        "target_port": "b4:south:0"
+      },
+      {
+        "id": "PC|b4:north:0|b5:south:0",
+        "source_port": "b4:north:0",
+        "target_port": "b5:south:0"
+      },
+      {
+        "id": "PC|b5:north:0|b6:south:0",
+        "source_port": "b5:north:0",
+        "target_port": "b6:south:0"
+      },
+      {
+        "id": "PC|b6:north:0|b7:south:0",
+        "source_port": "b6:north:0",
+        "target_port": "b7:south:0"
+      },
+      {
+        "id": "PC|b7:north:0|b8:south:0",
+        "source_port": "b7:north:0",
+        "target_port": "b8:south:0"
+      },
+      {
+        "id": "PC|b8:north:0|b9:south:0",
+        "source_port": "b8:north:0",
+        "target_port": "b9:south:0"
+      },
+      {
+        "id": "PC|b9:north:0|b10:south:0",
+        "source_port": "b9:north:0",
+        "target_port": "b10:south:0"
+      },
+      {
+        "id": "PC|m:north:1|out:south:0",
+        "source_port": "m:north:1",
+        "target_port": "out:south:0"
+      },
+      {
+        "id": "PC|out:north:0|core:south:1",
+        "source_port": "out:north:0",
+        "target_port": "core:south:1"
+      },
+      {
+        "id": "PC|sand0:north:0|sand1:south:0",
+        "source_port": "sand0:north:0",
+        "target_port": "sand1:south:0"
+      },
+      {
+        "id": "PC|sand10:north:0|sand11:south:0",
+        "source_port": "sand10:north:0",
+        "target_port": "sand11:south:0"
+      },
+      {
+        "id": "PC|sand11:north:0|sand12:south:0",
+        "source_port": "sand11:north:0",
+        "target_port": "sand12:south:0"
+      },
+      {
+        "id": "PC|sand12:north:0|sand13:south:0",
+        "source_port": "sand12:north:0",
+        "target_port": "sand13:south:0"
+      },
+      {
+        "id": "PC|sand13:north:0|sand14:south:0",
+        "source_port": "sand13:north:0",
+        "target_port": "sand14:south:0"
+      },
+      {
+        "id": "PC|sand14:north:0|sand15:south:0",
+        "source_port": "sand14:north:0",
+        "target_port": "sand15:south:0"
+      },
+      {
+        "id": "PC|sand15:north:0|m:south:5",
+        "source_port": "sand15:north:0",
+        "target_port": "m:south:5"
+      },
+      {
+        "id": "PC|sand1:north:0|sand2:south:0",
+        "source_port": "sand1:north:0",
+        "target_port": "sand2:south:0"
+      },
+      {
+        "id": "PC|sand2:north:0|sand3:south:0",
+        "source_port": "sand2:north:0",
+        "target_port": "sand3:south:0"
+      },
+      {
+        "id": "PC|sand3:north:0|sand4:south:0",
+        "source_port": "sand3:north:0",
+        "target_port": "sand4:south:0"
+      },
+      {
+        "id": "PC|sand4:north:0|sand5:south:0",
+        "source_port": "sand4:north:0",
+        "target_port": "sand5:south:0"
+      },
+      {
+        "id": "PC|sand5:north:0|sand6:south:0",
+        "source_port": "sand5:north:0",
+        "target_port": "sand6:south:0"
+      },
+      {
+        "id": "PC|sand6:north:0|sand7:south:0",
+        "source_port": "sand6:north:0",
+        "target_port": "sand7:south:0"
+      },
+      {
+        "id": "PC|sand7:north:0|sand8:south:0",
+        "source_port": "sand7:north:0",
+        "target_port": "sand8:south:0"
+      },
+      {
+        "id": "PC|sand8:north:0|sand9:south:0",
+        "source_port": "sand8:north:0",
+        "target_port": "sand9:south:0"
+      },
+      {
+        "id": "PC|sand9:north:0|sand10:south:0",
+        "source_port": "sand9:north:0",
+        "target_port": "sand10:south:0"
+      }
+    ],
+    "buffer_channels": [
+      {
+        "id": "BC|m:input:0|m:buffer:0",
+        "source_slot": "m:input:0",
+        "target_slot": "m:buffer:0"
+      },
+      {
+        "id": "BC|m:input:1|m:buffer:0",
+        "source_slot": "m:input:1",
+        "target_slot": "m:buffer:0"
+      },
+      {
+        "id": "BC|m:buffer:0|m:output:0",
+        "source_slot": "m:buffer:0",
+        "target_slot": "m:output:0"
+      }
+    ],
+    "snapshots": [],
+    "post_debug": {
+      "status": "specified",
+      "value": "built_layout",
+      "basis": [
+        "步进规则同步：显式有限构型，未声明全称或可达性"
+      ]
+    }
+  },
+  "construction": {
+    "mode": "blueprint_once",
+    "order_domain": "all_rule_consistent_orders",
+    "selected_order": [
+      "m",
+      "power",
+      "core",
+      "out",
+      "a0",
+      "a1",
+      "a2",
+      "a3",
+      "a4",
+      "a5",
+      "a6",
+      "a7",
+      "a8",
+      "a9",
+      "a10",
+      "a11",
+      "a12",
+      "a13",
+      "a14",
+      "a15",
+      "b0",
+      "b1",
+      "b2",
+      "b3",
+      "b4",
+      "b5",
+      "b6",
+      "b7",
+      "b8",
+      "b9",
+      "b10",
+      "b11",
+      "b12",
+      "b13",
+      "b14",
+      "b15",
+      "sand0",
+      "sand1",
+      "sand2",
+      "sand3",
+      "sand4",
+      "sand5",
+      "sand6",
+      "sand7",
+      "sand8",
+      "sand9",
+      "sand10",
+      "sand11",
+      "sand12",
+      "sand13",
+      "sand14",
+      "sand15"
+    ],
+    "moments": [
+      {
+        "event": "build_0",
+        "unit": "m",
+        "placement": {
+          "kind": "研磨机",
+          "origin": [
+            {
+              "value": "10",
+              "category": "候选"
+            },
+            {
+              "value": "30",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_1",
+        "unit": "power",
+        "placement": {
+          "kind": "供电桩",
+          "origin": [
+            {
+              "value": "16",
+              "category": "候选"
+            },
+            {
+              "value": "30",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_2",
+        "unit": "core",
+        "placement": {
+          "kind": "协议核心",
+          "origin": [
+            {
+              "value": "10",
+              "category": "候选"
+            },
+            {
+              "value": "35",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_3",
+        "unit": "out",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "11",
+              "category": "候选"
+            },
+            {
+              "value": "34",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_4",
+        "unit": "a0",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "10",
+              "category": "候选"
+            },
+            {
+              "value": "14",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_5",
+        "unit": "a1",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "10",
+              "category": "候选"
+            },
+            {
+              "value": "15",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_6",
+        "unit": "a2",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "10",
+              "category": "候选"
+            },
+            {
+              "value": "16",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_7",
+        "unit": "a3",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "10",
+              "category": "候选"
+            },
+            {
+              "value": "17",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_8",
+        "unit": "a4",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "10",
+              "category": "候选"
+            },
+            {
+              "value": "18",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_9",
+        "unit": "a5",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "10",
+              "category": "候选"
+            },
+            {
+              "value": "19",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_10",
+        "unit": "a6",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "10",
+              "category": "候选"
+            },
+            {
+              "value": "20",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_11",
+        "unit": "a7",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "10",
+              "category": "候选"
+            },
+            {
+              "value": "21",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_12",
+        "unit": "a8",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "10",
+              "category": "候选"
+            },
+            {
+              "value": "22",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_13",
+        "unit": "a9",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "10",
+              "category": "候选"
+            },
+            {
+              "value": "23",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_14",
+        "unit": "a10",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "10",
+              "category": "候选"
+            },
+            {
+              "value": "24",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_15",
+        "unit": "a11",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "10",
+              "category": "候选"
+            },
+            {
+              "value": "25",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_16",
+        "unit": "a12",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "10",
+              "category": "候选"
+            },
+            {
+              "value": "26",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_17",
+        "unit": "a13",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "10",
+              "category": "候选"
+            },
+            {
+              "value": "27",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_18",
+        "unit": "a14",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "10",
+              "category": "候选"
+            },
+            {
+              "value": "28",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_19",
+        "unit": "a15",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "10",
+              "category": "候选"
+            },
+            {
+              "value": "29",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_20",
+        "unit": "b0",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "12",
+              "category": "候选"
+            },
+            {
+              "value": "14",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_21",
+        "unit": "b1",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "12",
+              "category": "候选"
+            },
+            {
+              "value": "15",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_22",
+        "unit": "b2",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "12",
+              "category": "候选"
+            },
+            {
+              "value": "16",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_23",
+        "unit": "b3",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "12",
+              "category": "候选"
+            },
+            {
+              "value": "17",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_24",
+        "unit": "b4",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "12",
+              "category": "候选"
+            },
+            {
+              "value": "18",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_25",
+        "unit": "b5",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "12",
+              "category": "候选"
+            },
+            {
+              "value": "19",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_26",
+        "unit": "b6",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "12",
+              "category": "候选"
+            },
+            {
+              "value": "20",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_27",
+        "unit": "b7",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "12",
+              "category": "候选"
+            },
+            {
+              "value": "21",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_28",
+        "unit": "b8",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "12",
+              "category": "候选"
+            },
+            {
+              "value": "22",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_29",
+        "unit": "b9",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "12",
+              "category": "候选"
+            },
+            {
+              "value": "23",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_30",
+        "unit": "b10",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "12",
+              "category": "候选"
+            },
+            {
+              "value": "24",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_31",
+        "unit": "b11",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "12",
+              "category": "候选"
+            },
+            {
+              "value": "25",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_32",
+        "unit": "b12",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "12",
+              "category": "候选"
+            },
+            {
+              "value": "26",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_33",
+        "unit": "b13",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "12",
+              "category": "候选"
+            },
+            {
+              "value": "27",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_34",
+        "unit": "b14",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "12",
+              "category": "候选"
+            },
+            {
+              "value": "28",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_35",
+        "unit": "b15",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "12",
+              "category": "候选"
+            },
+            {
+              "value": "29",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_36",
+        "unit": "sand0",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "15",
+              "category": "候选"
+            },
+            {
+              "value": "14",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_37",
+        "unit": "sand1",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "15",
+              "category": "候选"
+            },
+            {
+              "value": "15",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_38",
+        "unit": "sand2",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "15",
+              "category": "候选"
+            },
+            {
+              "value": "16",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_39",
+        "unit": "sand3",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "15",
+              "category": "候选"
+            },
+            {
+              "value": "17",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_40",
+        "unit": "sand4",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "15",
+              "category": "候选"
+            },
+            {
+              "value": "18",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_41",
+        "unit": "sand5",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "15",
+              "category": "候选"
+            },
+            {
+              "value": "19",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_42",
+        "unit": "sand6",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "15",
+              "category": "候选"
+            },
+            {
+              "value": "20",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_43",
+        "unit": "sand7",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "15",
+              "category": "候选"
+            },
+            {
+              "value": "21",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_44",
+        "unit": "sand8",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "15",
+              "category": "候选"
+            },
+            {
+              "value": "22",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_45",
+        "unit": "sand9",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "15",
+              "category": "候选"
+            },
+            {
+              "value": "23",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_46",
+        "unit": "sand10",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "15",
+              "category": "候选"
+            },
+            {
+              "value": "24",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_47",
+        "unit": "sand11",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "15",
+              "category": "候选"
+            },
+            {
+              "value": "25",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_48",
+        "unit": "sand12",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "15",
+              "category": "候选"
+            },
+            {
+              "value": "26",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_49",
+        "unit": "sand13",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "15",
+              "category": "候选"
+            },
+            {
+              "value": "27",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_50",
+        "unit": "sand14",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "15",
+              "category": "候选"
+            },
+            {
+              "value": "28",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      },
+      {
+        "event": "build_51",
+        "unit": "sand15",
+        "placement": {
+          "kind": "传送带",
+          "origin": [
+            {
+              "value": "15",
+              "category": "候选"
+            },
+            {
+              "value": "29",
+              "category": "候选"
+            }
+          ],
+          "rotation": "r0",
+          "port_layout": 0,
+          "occupied_cells": null
+        }
+      }
+    ],
+    "complete_event": "complete"
+  },
+  "settings": {
+    "anchor": {
+      "event": "complete",
+      "side": "after"
+    },
+    "switches": [
+      {
+        "unit": "m",
+        "function": "manufacture",
+        "enabled": true
+      }
+    ],
+    "gates": [],
+    "warehouse_assignments": [
+      {
+        "port": "core:west:1",
+        "slot": "warehouse_0"
+      },
+      {
+        "port": "core:west:4",
+        "slot": "warehouse_0"
+      },
+      {
+        "port": "core:west:7",
+        "slot": "warehouse_0"
+      },
+      {
+        "port": "core:east:1",
+        "slot": "warehouse_0"
+      },
+      {
+        "port": "core:east:4",
+        "slot": "warehouse_0"
+      },
+      {
+        "port": "core:east:7",
+        "slot": "warehouse_0"
+      }
+    ]
+  },
+  "parameters": {
+    "axis_registry": {
+      "path": "../../../../规格/内核配置-v2.json",
+      "sha256": "680acb480aa28443431e119c98e4cc45ca6abade1670c9a4a1283a77a7d199a2"
+    },
+    "profile_id": "kernel_profile_v2",
+    "fixed": {
+      "polling.direct_peer": {
+        "status": "specified",
+        "value": "physical_peer",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "connection.port_meeting": {
+        "status": "specified",
+        "value": "shared_edge_opposite",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "initialization.rotation_stage": {
+        "status": "specified",
+        "value": "build_and_debug",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "transfer.judgment": {
+        "status": "specified",
+        "value": "unit",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "manufacturing.port_slot_relation": {
+        "status": "specified",
+        "value": "distributed",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "manufacturing.output_blocked": {
+        "status": "specified",
+        "value": "retain_whole_batch",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "gate.limit_requires_identity": {
+        "status": "specified",
+        "value": true,
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "warehouse.capacity": {
+        "status": "specified",
+        "value": {
+          "value": "80000",
+          "category": "条文直引"
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "warehouse.delivery_count": {
+        "status": "specified",
+        "value": "actual_inbound",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "bridge.inventory_scope": {
+        "status": "specified",
+        "value": "two_independent_axis_slots",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "bridge.scheduling_scope": {
+        "status": "specified",
+        "value": "per_axis",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "time.domain": {
+        "status": "specified",
+        "value": "integer_steps",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "polling.split_merge_start": {
+        "status": "specified",
+        "value": "second_connected_first_time",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "transfer.cooldown_scope": {
+        "status": "specified",
+        "value": "box",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "transfer.failure_cooldown": {
+        "status": "specified",
+        "value": "every_attempt",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "transfer.partial_acceptance": {
+        "status": "specified",
+        "value": "max_receivable",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "gate.window_clock": {
+        "status": "specified",
+        "value": "wall_clock",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "warehouse.acceptance": {
+        "status": "specified",
+        "value": "receivable_products",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "warehouse.acceptance_quantifier": {
+        "status": "specified",
+        "value": "all_candidate_and_actual_checks",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "bridge.capacity": {
+        "status": "specified",
+        "value": 1,
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "connection.build_order": {
+        "status": "specified",
+        "value": "construction.selected_order",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "connection.belt_shape": {
+        "status": "specified",
+        "value": {
+          "kind": "layout_build_history",
+          "values": [
+            {
+              "unit": "out",
+              "build_event": "build_3",
+              "shape": "straight"
+            },
+            {
+              "unit": "a0",
+              "build_event": "build_4",
+              "shape": "straight"
+            },
+            {
+              "unit": "a1",
+              "build_event": "build_5",
+              "shape": "straight"
+            },
+            {
+              "unit": "a2",
+              "build_event": "build_6",
+              "shape": "straight"
+            },
+            {
+              "unit": "a3",
+              "build_event": "build_7",
+              "shape": "straight"
+            },
+            {
+              "unit": "a4",
+              "build_event": "build_8",
+              "shape": "straight"
+            },
+            {
+              "unit": "a5",
+              "build_event": "build_9",
+              "shape": "straight"
+            },
+            {
+              "unit": "a6",
+              "build_event": "build_10",
+              "shape": "straight"
+            },
+            {
+              "unit": "a7",
+              "build_event": "build_11",
+              "shape": "straight"
+            },
+            {
+              "unit": "a8",
+              "build_event": "build_12",
+              "shape": "straight"
+            },
+            {
+              "unit": "a9",
+              "build_event": "build_13",
+              "shape": "straight"
+            },
+            {
+              "unit": "a10",
+              "build_event": "build_14",
+              "shape": "straight"
+            },
+            {
+              "unit": "a11",
+              "build_event": "build_15",
+              "shape": "straight"
+            },
+            {
+              "unit": "a12",
+              "build_event": "build_16",
+              "shape": "straight"
+            },
+            {
+              "unit": "a13",
+              "build_event": "build_17",
+              "shape": "straight"
+            },
+            {
+              "unit": "a14",
+              "build_event": "build_18",
+              "shape": "straight"
+            },
+            {
+              "unit": "a15",
+              "build_event": "build_19",
+              "shape": "straight"
+            },
+            {
+              "unit": "b0",
+              "build_event": "build_20",
+              "shape": "straight"
+            },
+            {
+              "unit": "b1",
+              "build_event": "build_21",
+              "shape": "straight"
+            },
+            {
+              "unit": "b2",
+              "build_event": "build_22",
+              "shape": "straight"
+            },
+            {
+              "unit": "b3",
+              "build_event": "build_23",
+              "shape": "straight"
+            },
+            {
+              "unit": "b4",
+              "build_event": "build_24",
+              "shape": "straight"
+            },
+            {
+              "unit": "b5",
+              "build_event": "build_25",
+              "shape": "straight"
+            },
+            {
+              "unit": "b6",
+              "build_event": "build_26",
+              "shape": "straight"
+            },
+            {
+              "unit": "b7",
+              "build_event": "build_27",
+              "shape": "straight"
+            },
+            {
+              "unit": "b8",
+              "build_event": "build_28",
+              "shape": "straight"
+            },
+            {
+              "unit": "b9",
+              "build_event": "build_29",
+              "shape": "straight"
+            },
+            {
+              "unit": "b10",
+              "build_event": "build_30",
+              "shape": "straight"
+            },
+            {
+              "unit": "b11",
+              "build_event": "build_31",
+              "shape": "straight"
+            },
+            {
+              "unit": "b12",
+              "build_event": "build_32",
+              "shape": "straight"
+            },
+            {
+              "unit": "b13",
+              "build_event": "build_33",
+              "shape": "straight"
+            },
+            {
+              "unit": "b14",
+              "build_event": "build_34",
+              "shape": "straight"
+            },
+            {
+              "unit": "b15",
+              "build_event": "build_35",
+              "shape": "straight"
+            },
+            {
+              "unit": "sand0",
+              "build_event": "build_36",
+              "shape": "straight"
+            },
+            {
+              "unit": "sand1",
+              "build_event": "build_37",
+              "shape": "straight"
+            },
+            {
+              "unit": "sand2",
+              "build_event": "build_38",
+              "shape": "straight"
+            },
+            {
+              "unit": "sand3",
+              "build_event": "build_39",
+              "shape": "straight"
+            },
+            {
+              "unit": "sand4",
+              "build_event": "build_40",
+              "shape": "straight"
+            },
+            {
+              "unit": "sand5",
+              "build_event": "build_41",
+              "shape": "straight"
+            },
+            {
+              "unit": "sand6",
+              "build_event": "build_42",
+              "shape": "straight"
+            },
+            {
+              "unit": "sand7",
+              "build_event": "build_43",
+              "shape": "straight"
+            },
+            {
+              "unit": "sand8",
+              "build_event": "build_44",
+              "shape": "straight"
+            },
+            {
+              "unit": "sand9",
+              "build_event": "build_45",
+              "shape": "straight"
+            },
+            {
+              "unit": "sand10",
+              "build_event": "build_46",
+              "shape": "straight"
+            },
+            {
+              "unit": "sand11",
+              "build_event": "build_47",
+              "shape": "straight"
+            },
+            {
+              "unit": "sand12",
+              "build_event": "build_48",
+              "shape": "straight"
+            },
+            {
+              "unit": "sand13",
+              "build_event": "build_49",
+              "shape": "straight"
+            },
+            {
+              "unit": "sand14",
+              "build_event": "build_50",
+              "shape": "straight"
+            },
+            {
+              "unit": "sand15",
+              "build_event": "build_51",
+              "shape": "straight"
+            }
+          ]
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "component.belt_segment": {
+        "status": "specified",
+        "value": "channel_chain",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      }
+    },
+    "offline_mutable": {
+      "connection.order": {
+        "status": "specified",
+        "value": "timeline_connection_history",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "offline.order_domain": {
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "请求构造完整离线重排域或离线事件出现"
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "step.order": {
+        "status": "specified",
+        "value": {
+          "schema": "step-order-v1",
+          "layer_choices": [],
+          "cycle_layers": [],
+          "nontransport_order": [
+            "m",
+            "core"
+          ]
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      }
+    },
+    "fixedness_unproven": {
+      "polling.initial_cursor": {
+        "status": "specified",
+        "value": "first_connected",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "polling.split_merge_singleton": {
+        "status": "specified",
+        "value": "sole_member",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "transfer.pause": {
+        "status": "specified",
+        "value": "pause_with_function",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "manufacturing.input_mixing": {
+        "status": "specified",
+        "value": "single_kind",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "manufacturing.input_capacity_scope": {
+        "status": "specified",
+        "value": "per_slot_total",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "manufacturing.recipe_match_scope": {
+        "status": "specified",
+        "value": "input_union",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "manufacturing.recipe_completeness": {
+        "status": "specified",
+        "value": "full_batch",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "manufacturing.empty_slot_identity": {
+        "status": "specified",
+        "value": "release_on_empty",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "gate.counter_start": {
+        "status": "specified",
+        "value": "since_build",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "initialization.belt_shape_lifecycle": {
+        "status": "specified",
+        "value": "fixed_between_builds",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "warehouse.empty_slot_identity": {
+        "status": "specified",
+        "value": "retain_history",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "power.cell_rule": {
+        "status": "specified",
+        "value": "positive_area",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "connection.tie": {
+        "status": "specified",
+        "value": {
+          "kind": "explicit_order",
+          "channels": [
+            "PC|a0:north:0|a1:south:0",
+            "PC|a10:north:0|a11:south:0",
+            "PC|a11:north:0|a12:south:0",
+            "PC|a12:north:0|a13:south:0",
+            "PC|a13:north:0|a14:south:0",
+            "PC|a14:north:0|a15:south:0",
+            "PC|a15:north:0|m:south:0",
+            "PC|a1:north:0|a2:south:0",
+            "PC|a2:north:0|a3:south:0",
+            "PC|a3:north:0|a4:south:0",
+            "PC|a4:north:0|a5:south:0",
+            "PC|a5:north:0|a6:south:0",
+            "PC|a6:north:0|a7:south:0",
+            "PC|a7:north:0|a8:south:0",
+            "PC|a8:north:0|a9:south:0",
+            "PC|a9:north:0|a10:south:0",
+            "PC|b0:north:0|b1:south:0",
+            "PC|b10:north:0|b11:south:0",
+            "PC|b11:north:0|b12:south:0",
+            "PC|b12:north:0|b13:south:0",
+            "PC|b13:north:0|b14:south:0",
+            "PC|b14:north:0|b15:south:0",
+            "PC|b15:north:0|m:south:2",
+            "PC|b1:north:0|b2:south:0",
+            "PC|b2:north:0|b3:south:0",
+            "PC|b3:north:0|b4:south:0",
+            "PC|b4:north:0|b5:south:0",
+            "PC|b5:north:0|b6:south:0",
+            "PC|b6:north:0|b7:south:0",
+            "PC|b7:north:0|b8:south:0",
+            "PC|b8:north:0|b9:south:0",
+            "PC|b9:north:0|b10:south:0",
+            "PC|m:north:1|out:south:0",
+            "PC|out:north:0|core:south:1",
+            "PC|sand0:north:0|sand1:south:0",
+            "PC|sand10:north:0|sand11:south:0",
+            "PC|sand11:north:0|sand12:south:0",
+            "PC|sand12:north:0|sand13:south:0",
+            "PC|sand13:north:0|sand14:south:0",
+            "PC|sand14:north:0|sand15:south:0",
+            "PC|sand15:north:0|m:south:5",
+            "PC|sand1:north:0|sand2:south:0",
+            "PC|sand2:north:0|sand3:south:0",
+            "PC|sand3:north:0|sand4:south:0",
+            "PC|sand4:north:0|sand5:south:0",
+            "PC|sand5:north:0|sand6:south:0",
+            "PC|sand6:north:0|sand7:south:0",
+            "PC|sand7:north:0|sand8:south:0",
+            "PC|sand8:north:0|sand9:south:0",
+            "PC|sand9:north:0|sand10:south:0"
+          ]
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "transfer.phase": {
+        "status": "specified",
+        "value": {
+          "kind": "explicit_residuals",
+          "values": []
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "manufacturing.recipe_selection": {
+        "status": "specified",
+        "value": {
+          "kind": "explicit_order",
+          "recipes": [
+            "塑形-钢质瓶",
+            "封装-电池",
+            "灌装-胶囊",
+            "研磨-细磨荞花",
+            "研磨-致密源石",
+            "研磨-致密蓝铁",
+            "种植-砂叶",
+            "种植-荞花",
+            "粉碎-源矿",
+            "粉碎-砂叶",
+            "粉碎-荞花",
+            "粉碎-蓝铁块",
+            "精炼-致密蓝铁",
+            "精炼-蓝铁矿",
+            "精炼-蓝铁粉末",
+            "配件-钢制零件",
+            "采种-砂叶",
+            "采种-荞花"
+          ]
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "manufacturing.input_slot_selection": {
+        "status": "specified",
+        "value": {
+          "kind": "explicit_order",
+          "slots": [
+            "m:input:0",
+            "m:input:1"
+          ]
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "initialization.warehouse_anchor": {
+        "status": "specified",
+        "value": {
+          "kind": "input_anchor",
+          "event": "complete",
+          "side": "after"
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "initialization.other_inventory": {
+        "status": "specified",
+        "value": {
+          "kind": "synthetic_seed",
+          "path": "initial_state.nonwarehouse"
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "initialization.switches": {
+        "status": "specified",
+        "value": {
+          "kind": "input_settings",
+          "path": "settings"
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "initialization.build_timing": {
+        "status": "specified",
+        "value": {
+          "kind": "input_history",
+          "path": "timeline"
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "initialization.debug_end": {
+        "status": "specified",
+        "value": {
+          "kind": "input_witness",
+          "event": "debug_end",
+          "not_a_timing_strategy": true
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "warehouse.external_supply": {
+        "status": "specified",
+        "value": {
+          "kind": "sufficient"
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "gate.counter_edit": {
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "调试改身份/累计/窗口设定并需确定计数后效"
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "gate.cancel_limit": {
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "取消已设限额"
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "offline.events": {
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "出现任何离线/上线事件"
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "offline.cursor_effect": {
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "离线需更新轮询状态"
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "offline.inventory_effect": {
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "离线需更新库存"
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "offline.progress_effect": {
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "离线需更新进度/时钟"
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "offline.direction_effect": {
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "请求离线回放"
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "offline.gate_total_effect": {
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "离线需更新累计计数"
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "offline.gate_window_effect": {
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "离线需更新窗口计数"
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "offline.gate_window_start_effect": {
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "离线需更新窗口起点"
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "initialization.debug_actions": {
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "运行区间内出现玩家单位操作（种子之前的动作只核证据引用）"
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "initialization.rebuild_inventory": {
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "拆除或重建需确定库存/进度去向"
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "warehouse.withdrawal_policy": {
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "需要执行拿取策略或据此认证完整周期"
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "warehouse.withdrawal_timing": {
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "运行区间出现玩家拿取事件；策略与实际时距未实现"
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "warehouse.periodic_lift": {
+        "status": "specified",
+        "value": {
+          "policy": "stop",
+          "trigger": "请求缺少逐项复原证据的完整基地周期或缺少覆盖证明的全称认证"
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "manufacturing.recipe_quantity_match": {
+        "status": "specified",
+        "value": "at_least",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "manufacturing.recipe_extra_items": {
+        "status": "specified",
+        "value": "allow",
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "transfer.timing": {
+        "status": "specified",
+        "value": {
+          "schema": "transfer-timing-v1",
+          "values": []
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      }
+    }
+  },
+  "initial_state": {
+    "anchor": {
+      "status": "specified",
+      "value": {
+        "event": "complete",
+        "side": "after"
+      },
+      "basis": [
+        "步进规则同步：显式有限构型，未声明全称或可达性"
+      ]
+    },
+    "warehouse": {
+      "slots": [
+        {
+          "slot": "warehouse_0",
+          "item": "源矿",
+          "quantity": {
+            "value": "80000",
+            "category": "候选"
+          },
+          "empty_identity": {
+            "status": "not_applicable",
+            "value": null,
+            "basis": [
+              "非空物种由 item 承载"
+            ]
+          }
+        },
+        {
+          "slot": "warehouse_1",
+          "item": "蓝铁矿",
+          "quantity": {
+            "value": "80000",
+            "category": "候选"
+          },
+          "empty_identity": {
+            "status": "not_applicable",
+            "value": null,
+            "basis": [
+              "非空物种由 item 承载"
+            ]
+          }
+        },
+        {
+          "slot": "warehouse_2",
+          "item": "荞花",
+          "quantity": {
+            "value": "80000",
+            "category": "候选"
+          },
+          "empty_identity": {
+            "status": "not_applicable",
+            "value": null,
+            "basis": [
+              "非空物种由 item 承载"
+            ]
+          }
+        },
+        {
+          "slot": "warehouse_3",
+          "item": "砂叶",
+          "quantity": {
+            "value": "80000",
+            "category": "候选"
+          },
+          "empty_identity": {
+            "status": "not_applicable",
+            "value": null,
+            "basis": [
+              "非空物种由 item 承载"
+            ]
+          }
+        },
+        {
+          "slot": "warehouse_4",
+          "item": "荞花种子",
+          "quantity": {
+            "value": "80000",
+            "category": "候选"
+          },
+          "empty_identity": {
+            "status": "not_applicable",
+            "value": null,
+            "basis": [
+              "非空物种由 item 承载"
+            ]
+          }
+        },
+        {
+          "slot": "warehouse_5",
+          "item": "砂叶种子",
+          "quantity": {
+            "value": "80000",
+            "category": "候选"
+          },
+          "empty_identity": {
+            "status": "not_applicable",
+            "value": null,
+            "basis": [
+              "非空物种由 item 承载"
+            ]
+          }
+        }
+      ],
+      "unlisted": "empty"
+    },
+    "nonwarehouse": {
+      "status": "specified",
+      "value": {
+        "layout_snapshot": "built_layout",
+        "settings_anchor": {
+          "event": "complete",
+          "side": "after"
+        },
+        "warehouse": {
+          "slots": [
+            {
+              "slot": "warehouse_0",
+              "item": "源矿",
+              "quantity": {
+                "value": "80000",
+                "category": "候选"
+              },
+              "empty_identity": {
+                "status": "not_applicable",
+                "value": null,
+                "basis": [
+                  "非空物种由 item 承载"
+                ]
+              }
+            },
+            {
+              "slot": "warehouse_1",
+              "item": "蓝铁矿",
+              "quantity": {
+                "value": "80000",
+                "category": "候选"
+              },
+              "empty_identity": {
+                "status": "not_applicable",
+                "value": null,
+                "basis": [
+                  "非空物种由 item 承载"
+                ]
+              }
+            },
+            {
+              "slot": "warehouse_2",
+              "item": "荞花",
+              "quantity": {
+                "value": "80000",
+                "category": "候选"
+              },
+              "empty_identity": {
+                "status": "not_applicable",
+                "value": null,
+                "basis": [
+                  "非空物种由 item 承载"
+                ]
+              }
+            },
+            {
+              "slot": "warehouse_3",
+              "item": "砂叶",
+              "quantity": {
+                "value": "80000",
+                "category": "候选"
+              },
+              "empty_identity": {
+                "status": "not_applicable",
+                "value": null,
+                "basis": [
+                  "非空物种由 item 承载"
+                ]
+              }
+            },
+            {
+              "slot": "warehouse_4",
+              "item": "荞花种子",
+              "quantity": {
+                "value": "80000",
+                "category": "候选"
+              },
+              "empty_identity": {
+                "status": "not_applicable",
+                "value": null,
+                "basis": [
+                  "非空物种由 item 承载"
+                ]
+              }
+            },
+            {
+              "slot": "warehouse_5",
+              "item": "砂叶种子",
+              "quantity": {
+                "value": "80000",
+                "category": "候选"
+              },
+              "empty_identity": {
+                "status": "not_applicable",
+                "value": null,
+                "basis": [
+                  "非空物种由 item 承载"
+                ]
+              }
+            }
+          ],
+          "unlisted": "empty"
+        },
+        "inventory": [
+          {
+            "slot": "a0:transport:0",
+            "contents": [
+              {
+                "item": "源石粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "slot": "a10:transport:0",
+            "contents": [
+              {
+                "item": "源石粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "slot": "a11:transport:0",
+            "contents": [
+              {
+                "item": "源石粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "slot": "a12:transport:0",
+            "contents": [
+              {
+                "item": "源石粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "slot": "a13:transport:0",
+            "contents": [
+              {
+                "item": "源石粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "slot": "a14:transport:0",
+            "contents": [
+              {
+                "item": "源石粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "slot": "a15:transport:0",
+            "contents": [
+              {
+                "item": "源石粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "slot": "a1:transport:0",
+            "contents": [
+              {
+                "item": "源石粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "slot": "a2:transport:0",
+            "contents": [
+              {
+                "item": "源石粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "slot": "a3:transport:0",
+            "contents": [
+              {
+                "item": "源石粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "slot": "a4:transport:0",
+            "contents": [
+              {
+                "item": "源石粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "slot": "a5:transport:0",
+            "contents": [
+              {
+                "item": "源石粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "slot": "a6:transport:0",
+            "contents": [
+              {
+                "item": "源石粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "slot": "a7:transport:0",
+            "contents": [
+              {
+                "item": "源石粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "slot": "a8:transport:0",
+            "contents": [
+              {
+                "item": "源石粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "slot": "a9:transport:0",
+            "contents": [
+              {
+                "item": "源石粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "slot": "b0:transport:0",
+            "contents": [
+              {
+                "item": "蓝铁粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "slot": "b10:transport:0",
+            "contents": [
+              {
+                "item": "蓝铁粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "slot": "b11:transport:0",
+            "contents": [
+              {
+                "item": "蓝铁粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "slot": "b12:transport:0",
+            "contents": [
+              {
+                "item": "蓝铁粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "slot": "b13:transport:0",
+            "contents": [
+              {
+                "item": "蓝铁粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "slot": "b14:transport:0",
+            "contents": [
+              {
+                "item": "蓝铁粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "slot": "b15:transport:0",
+            "contents": [
+              {
+                "item": "蓝铁粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "slot": "b1:transport:0",
+            "contents": [
+              {
+                "item": "蓝铁粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "slot": "b2:transport:0",
+            "contents": [
+              {
+                "item": "蓝铁粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "slot": "b3:transport:0",
+            "contents": [
+              {
+                "item": "蓝铁粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "slot": "b4:transport:0",
+            "contents": [
+              {
+                "item": "蓝铁粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "slot": "b5:transport:0",
+            "contents": [
+              {
+                "item": "蓝铁粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "slot": "b6:transport:0",
+            "contents": [
+              {
+                "item": "蓝铁粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "slot": "b7:transport:0",
+            "contents": [
+              {
+                "item": "蓝铁粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "slot": "b8:transport:0",
+            "contents": [
+              {
+                "item": "蓝铁粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "slot": "b9:transport:0",
+            "contents": [
+              {
+                "item": "蓝铁粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "slot": "m:buffer:0",
+            "contents": []
+          },
+          {
+            "slot": "m:input:0",
+            "contents": []
+          },
+          {
+            "slot": "m:input:1",
+            "contents": [
+              {
+                "item": "砂叶粉末",
+                "quantity": {
+                  "value": "50",
+                  "category": "候选"
+                },
+                "entered_at": null
+              }
+            ]
+          },
+          {
+            "slot": "m:output:0",
+            "contents": []
+          },
+          {
+            "slot": "out:transport:0",
+            "contents": []
+          },
+          {
+            "slot": "sand0:transport:0",
+            "contents": [
+              {
+                "item": "砂叶粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "slot": "sand10:transport:0",
+            "contents": [
+              {
+                "item": "砂叶粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "slot": "sand11:transport:0",
+            "contents": [
+              {
+                "item": "砂叶粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "slot": "sand12:transport:0",
+            "contents": [
+              {
+                "item": "砂叶粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "slot": "sand13:transport:0",
+            "contents": [
+              {
+                "item": "砂叶粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "slot": "sand14:transport:0",
+            "contents": [
+              {
+                "item": "砂叶粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "slot": "sand15:transport:0",
+            "contents": [
+              {
+                "item": "砂叶粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "slot": "sand1:transport:0",
+            "contents": [
+              {
+                "item": "砂叶粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "slot": "sand2:transport:0",
+            "contents": [
+              {
+                "item": "砂叶粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "slot": "sand3:transport:0",
+            "contents": [
+              {
+                "item": "砂叶粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "slot": "sand4:transport:0",
+            "contents": [
+              {
+                "item": "砂叶粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "slot": "sand5:transport:0",
+            "contents": [
+              {
+                "item": "砂叶粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "slot": "sand6:transport:0",
+            "contents": [
+              {
+                "item": "砂叶粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "slot": "sand7:transport:0",
+            "contents": [
+              {
+                "item": "砂叶粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "slot": "sand8:transport:0",
+            "contents": [
+              {
+                "item": "砂叶粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "slot": "sand9:transport:0",
+            "contents": [
+              {
+                "item": "砂叶粉末",
+                "quantity": {
+                  "value": "1",
+                  "category": "候选"
+                },
+                "entered_at": {
+                  "kind": "step",
+                  "value": {
+                    "value": "-7",
+                    "category": "候选"
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "progress": [
+          {
+            "unit": "m",
+            "phase": "idle",
+            "recipe": null,
+            "remaining": null,
+            "cooldown": null
+          }
+        ],
+        "logistics": {
+          "poll_state": {
+            "schema": "poll-state-v1",
+            "cursors": [
+              {
+                "side": "m:input",
+                "last_success": null
+              }
+            ],
+            "recency": []
+          },
+          "gate_counters": []
+        },
+        "environment": {
+          "time": {
+            "kind": "step",
+            "value": {
+              "value": "0",
+              "category": "候选"
+            }
+          },
+          "stage": "zero_intervention",
+          "online": true,
+          "withdrawal_memory": {
+            "status": "specified",
+            "value": {
+              "once_fired": [],
+              "pending_rules": []
+            },
+            "basis": [
+              "步进规则同步：显式有限构型，未声明全称或可达性"
+            ]
+          }
+        },
+        "semantic_context": {
+          "warehouse_empty_slot_order": []
+        }
+      },
+      "basis": [
+        "步进规则同步：显式有限构型，未声明全称或可达性"
+      ]
+    },
+    "reachability": {
+      "status": "specified",
+      "value": {
+        "kind": "conditional_history",
+        "scope": "条件种子，不是起动证明"
+      },
+      "basis": [
+        "步进规则同步：显式有限构型，未声明全称或可达性"
+      ]
+    }
+  },
+  "debug_operations": [],
+  "environment": {
+    "ore_supply": "task_continuous_sufficient",
+    "offline": {
+      "event_domain": {
+        "status": "specified",
+        "value": {
+          "kind": "selected_history",
+          "events": []
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "selected_events": []
+    },
+    "product_withdrawal": {
+      "policy": {
+        "status": "specified",
+        "value": {
+          "schema": "withdrawal-policy-v1",
+          "rules": [],
+          "admissibility": {
+            "status": "specified",
+            "value": {
+              "kind": "no_actions"
+            },
+            "basis": [
+              "步进规则同步：显式有限构型，未声明全称或可达性"
+            ]
+          }
+        },
+        "basis": [
+          "步进规则同步：显式有限构型，未声明全称或可达性"
+        ]
+      },
+      "selected_events": []
+    },
+    "debug_end_event": "debug_end",
+    "zero_intervention_after_debug": true
+  },
+  "contract_binding": null,
+  "scenario": {
+    "name": "c-换主料",
+    "differential": {
+      "steps": 800,
+      "note": "固定显式接通史、选支与非运输次序；sim2 eager 投影逐步比较"
+    },
+    "assertions": [
+      "研磨机蓝铁粉末/源石粉末交替；同主料两次开工相隔 18 步（对照 a 的 8 步）"
+    ]
+  }
+}

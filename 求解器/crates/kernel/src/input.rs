@@ -1,5 +1,5 @@
 //! 内核输入§1–§7、受限转移§1：装载支持域、真实排序接口及静态历史检查。
-use crate::{catalog::*, config::*, model::*, value::*};
+use crate::{catalog::*, config::*, value::*};
 use serde_json::Value;
 use std::{
     collections::{BTreeMap, BTreeSet},
@@ -13,14 +13,14 @@ pub struct Input {
     pub geometry: Geometry,
     pub parameters: Parameters,
     pub connection_times: BTreeMap<String, i64>,
-    pub templates: Vec<Template>,
+    pub graph: crate::graph::StepGraph,
+    pub transfer_timing: BTreeMap<String, String>,
     pub assignments: BTreeMap<String, String>,
     pub switches: BTreeMap<(String, String), bool>,
     pub gate_settings: BTreeMap<String, Value>,
     pub recipe_order: Vec<String>,
     pub slot_order: Vec<String>,
     pub tie_order: Vec<String>,
-    pub branches: BTreeMap<(String, Vec<String>), String>,
     pub source_paths: Vec<(String, PathBuf)>,
 }
 /// 内核输入§5：显式顺序的集合须恰等且无重复。
@@ -36,7 +36,7 @@ pub fn permutation(
     Ok(())
 }
 /// 内核输入§3.1：全局事件身份、已解时距及先后图无环。
-fn timeline(data: &Value, structural: bool) -> Result<BTreeMap<String, Value>> {
+fn timeline(data: &Value) -> Result<BTreeMap<String, Value>> {
     fields(
         &data["timeline"],
         "events relations connection_events",
@@ -70,10 +70,10 @@ fn timeline(data: &Value, structural: bool) -> Result<BTreeMap<String, Value>> {
         if id.is_empty() || events.contains_key(&id) {
             return Err(Stop::invalid(&id, "重复或空事件 id"));
         }
-        if row["kind"] != "runtime" && ["I|", "J|", "C|", "W|"].iter().any(|p| id.starts_with(p)) {
+        if id.starts_with("E|") {
             return Err(Stop::invalid(&id, "历史占用运行事件保留前缀"));
         }
-        if !structural && !row["time"].is_null() {
+        if !row["time"].is_null() {
             instant(&row["time"], &id)?;
         }
         events.insert(id, row);
@@ -181,71 +181,6 @@ fn timeline(data: &Value, structural: bool) -> Result<BTreeMap<String, Value>> {
             );
         }
     }
-    if !structural {
-        // 转移§2.1：完成模板序、外部数组序、窗口批维护、闭包也是同一历史图的顺序来源。
-        let mut phases = BTreeMap::<i64, BTreeMap<(u8, usize), BTreeSet<String>>>::new();
-        let mut register = |id: &Value, phase: u8, rank: usize| -> Result<()> {
-            if let Some(event) = id.as_str().and_then(|id| events.get(id)) {
-                let time = instant(&event["time"], "timeline.runtime.time")?;
-                phases
-                    .entry(time)
-                    .or_default()
-                    .entry((phase, rank))
-                    .or_default()
-                    .insert(id.as_str().unwrap().to_string());
-            }
-            Ok(())
-        };
-        let context = &data["initial_state"]["nonwarehouse"]["value"]["semantic_context"];
-        let templates = &data["parameters"]["fixed"]["judgment.order"]["value"]["template_order"];
-        if let Some(rows) = context["pending_events"]["value"].as_array() {
-            for row in rows {
-                match row["operation"].as_str() {
-                    Some("manufacture_complete") => {
-                        let rank = templates
-                            .as_array()
-                            .and_then(|rows| {
-                                rows.iter().position(|t| {
-                                    t["operation"] == "manufacture" && t["target"] == row["target"]
-                                })
-                            })
-                            .ok_or_else(|| {
-                                Stop::invalid("pending_events.target", "完成缺对应制造模板")
-                            })?;
-                        register(&row["event"], 0, rank)?;
-                    }
-                    Some("gate_window_expiry") => register(&row["event"], 2, 0)?,
-                    _ => (),
-                }
-            }
-        }
-        if let Some(rows) = supply["events"].as_array() {
-            for (index, row) in rows.iter().enumerate() {
-                register(&row["event"], 1, index)?;
-            }
-        }
-        for key in ["movements", "internal_passages"] {
-            if let Some(rows) = context["tick_context"]["value"][key].as_array() {
-                for row in rows {
-                    register(&row["event"], 3, 0)?;
-                }
-            }
-        }
-        for groups in phases.values() {
-            let groups: Vec<_> = groups.values().collect();
-            for pair in groups.windows(2) {
-                for a in pair[0] {
-                    for b in pair[1] {
-                        precedes(
-                            &Value::String(a.clone()),
-                            &Value::String(b.clone()),
-                            "受限转移§2.1固定阶段",
-                        );
-                    }
-                }
-            }
-        }
-    }
     for r in &relations {
         fields(r, "before after relation basis", "relation")?;
         let a = r["before"].as_str().unwrap_or("");
@@ -260,7 +195,7 @@ fn timeline(data: &Value, structural: bool) -> Result<BTreeMap<String, Value>> {
         if !["strict", "same_time", "occurs_before"].contains(&relation) {
             return Err(Stop::invalid("relation", "未知先后关系"));
         }
-        if ea["time"]["kind"] == "rational" && eb["time"]["kind"] == "rational" {
+        if ea["time"]["kind"] == "step" && eb["time"]["kind"] == "step" {
             let x = instant(&ea["time"], a)?;
             let y = instant(&eb["time"], b)?;
             if !(match relation {
@@ -298,30 +233,21 @@ fn timeline(data: &Value, structural: bool) -> Result<BTreeMap<String, Value>> {
     Ok(events)
 }
 impl Input {
-    /// 内核输入§1–§6：结构例只作静态检查，执行例还需完整参数和 StateSeed。
-    pub fn load(path: &Path, config: &Config, structural: bool) -> Result<Self> {
-        Self::parse(read_json(path)?, path, config, structural)
+    /// 内核输入§1–§6：v4 输入严格装载，要求完整参数、状态与步进先后。
+    pub fn load(path: &Path, config: &Config) -> Result<Self> {
+        Self::parse(read_json(path)?, path, config)
     }
     /// 第五轮K5：内存输入使用显式基目录解析引用，不读取虚拟输入文件。
-    pub fn parse_with_base(
-        raw: Value,
-        base_dir: &Path,
-        config: &Config,
-        structural: bool,
-    ) -> Result<Self> {
-        Self::parse(raw, &base_dir.join("memory-input.json"), config, structural)
+    pub fn parse_with_base(raw: Value, base_dir: &Path, config: &Config) -> Result<Self> {
+        Self::parse(raw, &base_dir.join("memory-input.json"), config)
     }
     /// 内核输入§1–§6：与文件入口共享验证，可用于排列回归和受控试验。
-    pub fn parse(raw: Value, path: &Path, config: &Config, structural: bool) -> Result<Self> {
+    pub fn parse(raw: Value, path: &Path, config: &Config) -> Result<Self> {
         fields(&raw,"schema purpose catalog timeline layout construction settings parameters initial_state debug_operations environment contract_binding scenario","input")?;
-        if !["kernel-input-v2", "kernel-input-v3"].contains(&raw["schema"].as_str().unwrap_or("")) {
-            return Err(Stop::invalid("schema", "不支持输入版本"));
-        }
-        if !structural && raw["schema"] != "kernel-input-v3" {
-            return Err(Stop::unsupported(
-                "initialization.other_inventory",
+        if raw["schema"] != "kernel-input-v4" {
+            return Err(Stop::invalid(
                 "schema",
-                "v2 只作静态输入",
+                "历史输入版本，见 数据/样例/历史说明.md",
             ));
         }
         validate_tree(&raw, "input")?;
@@ -360,8 +286,13 @@ impl Input {
             source_paths.push(("formal_source".into(), p));
         }
         let parameters: Parameters = decode(raw["parameters"].clone(), "parameters")?;
-        config.validate(&parameters, structural)?;
+        config.validate(&parameters)?;
         let axispath = reference(base, &parameters.axis_registry)?;
+        if std::fs::read(&axispath).map_err(|e| Stop::invalid("axis_registry", e.to_string()))?
+            != include_bytes!("../../../规格/内核配置-v2.json")
+        {
+            return Err(Stop::invalid("axis_registry", "配置字节不同于编译时配置"));
+        }
         source_paths.push(("axis_registry".into(), axispath));
         if parameters.value(Axis::ConnectionPortMeeting)? != "shared_edge_opposite" {
             return Err(Stop::unsupported(
@@ -401,7 +332,7 @@ impl Input {
             s["base"] = raw["layout"]["base"].clone();
             Geometry::build(&s, &catalog)?;
         }
-        let events = timeline(&raw, structural)?;
+        let events = timeline(&raw)?;
         fields(
             &raw["construction"],
             "mode order_domain selected_order moments complete_event",
@@ -420,9 +351,6 @@ impl Input {
                 &raw["initial_state"]["anchor"]["value"],
             ),
         ] {
-            if structural && anchor.is_null() {
-                continue;
-            }
             fields(anchor, "event side", location)?;
             if !events.contains_key(anchor["event"].as_str().unwrap_or(""))
                 || !["before", "after"].contains(&anchor["side"].as_str().unwrap_or(""))
@@ -492,7 +420,7 @@ impl Input {
             geometry.units.keys().cloned(),
             "construction.moments",
         )?;
-        if !structural {
+        {
             for pair in selected.windows(2) {
                 let a = instant(&events[&builds[&pair[0]]]["time"], &pair[0])?;
                 let b = instant(&events[&builds[&pair[1]]]["time"], &pair[1])?;
@@ -505,6 +433,7 @@ impl Input {
             }
         }
         let mut connection_times = BTreeMap::new();
+        let mut connection_build_ranks = BTreeMap::new();
         for c in raw["timeline"]["connection_events"]
             .as_array()
             .ok_or_else(|| Stop::invalid("connection_events", "须为数组"))?
@@ -543,16 +472,12 @@ impl Input {
             {
                 return Err(Stop::invalid(cid, "接通记录不来自两端较晚建成"));
             }
-            let t = if structural {
-                rank[later] as i64
-            } else {
-                let time = instant(&e["time"], eid)?;
-                if time != instant(&events[&builds[later]]["time"], later)? {
-                    return Err(Stop::invalid(cid, "接通时刻不等于较晚建成时刻"));
-                }
-                time
-            };
+            let t = instant(&e["time"], eid)?;
+            if t != instant(&events[&builds[later]]["time"], later)? {
+                return Err(Stop::invalid(cid, "接通时刻不等于较晚建成时刻"));
+            }
             connection_times.insert(cid.to_string(), t);
+            connection_build_ranks.insert(cid.to_string(), rank[later]);
         }
         permutation(
             &connection_times.keys().cloned().collect::<Vec<_>>(),
@@ -666,8 +591,30 @@ impl Input {
                 return Err(Stop::invalid(uid, "准入口设置重复或单位不符"));
             }
             for (f, limit) in [
-                ("total_limit", 5000),
-                ("window_limit", catalog.kinds["物品准入口"].window),
+                (
+                    "total_limit",
+                    num(
+                        &catalog.raw["units"]
+                            .as_array()
+                            .unwrap()
+                            .iter()
+                            .find(|r| r["id"] == "物品准入口")
+                            .unwrap()["settings"]["total_limit"]["max"],
+                        "total_limit.max",
+                    )?,
+                ),
+                (
+                    "window_limit",
+                    num(
+                        &catalog.raw["units"]
+                            .as_array()
+                            .unwrap()
+                            .iter()
+                            .find(|r| r["id"] == "物品准入口")
+                            .unwrap()["settings"]["window_limit"]["max"],
+                        "window_limit.max",
+                    )?,
+                ),
             ] {
                 if !g[f].is_null() {
                     let n = num(&g[f], f)?;
@@ -693,69 +640,50 @@ impl Input {
             geometry,
             parameters,
             connection_times,
-            templates: vec![],
+            graph: crate::graph::StepGraph::default(),
+            transfer_timing: BTreeMap::new(),
             assignments,
             switches,
             gate_settings,
             recipe_order: vec![],
             slot_order: vec![],
             tie_order: vec![],
-            branches: BTreeMap::new(),
             source_paths,
         };
-        if !structural {
-            result.validate_runtime_interfaces()?;
-            result.check_input_axes()?;
-        }
-        Ok(result)
-    }
-    /// 内核输入§5.2–§5.4：接口对象形状及全序必须完整；新事件不改变模板全序。
-    fn validate_runtime_interfaces(&mut self) -> Result<()> {
-        let order = self.parameters.value(Axis::JudgmentOrder)?;
-        if order["schema"] != "event-order-v1"
-            || order["scope"] != "global"
-            || order["repeat_embedding"] != "scan_round_then_template"
-        {
-            return Err(Stop::unsupported(
-                "judgment.order",
-                "parameters.judgment.order",
-                "仅实现 global/v1 固定模板重复嵌入",
-            ));
-        }
-        fields(
-            order,
-            "schema scope template_order repeat_embedding instant_overrides",
-            "judgment.order",
-        )?;
-        if order["instant_overrides"] != serde_json::json!([]) {
-            return Err(Stop::invalid("judgment.order", "global 不接时刻覆盖"));
-        }
-        self.templates = decode(order["template_order"].clone(), "template_order")?;
-        let mut expected: BTreeSet<Template> = self
-            .geometry
-            .channels
-            .keys()
-            .map(|c| Template {
-                operation: "move".into(),
-                target: c.clone(),
-            })
-            .collect();
-        for (uid, u) in &self.geometry.units {
-            for f in &self.catalog.kinds[&u.kind].functions {
-                expected.insert(Template {
-                    operation: f.clone(),
-                    target: uid.clone(),
-                });
+        result.validate_runtime_interfaces()?;
+        // 一步内仍逐个建成；只有同一次建成引起的通道才真正并列。
+        let mut previous_build = BTreeMap::new();
+        for ch in &result.tie_order {
+            let build = connection_build_ranks[ch];
+            if previous_build
+                .insert(result.connection_times[ch], build)
+                .is_some_and(|previous| previous > build)
+            {
+                return Err(Stop::new(
+                    "invalid_input",
+                    "connection.tie",
+                    ch,
+                    "同一步内不同建成引起的通道次序须与 construction.selected_order 一致",
+                ));
             }
         }
-        if self.templates.iter().cloned().collect::<BTreeSet<_>>() != expected
-            || self.templates.len() != expected.len()
-        {
-            return Err(Stop::invalid(
-                "judgment.order.template_order",
-                "模板须恰覆盖几何 PC、制造和传输",
-            ));
-        }
+        result.check_input_axes()?;
+        result.transfer_timing = result.parameters.value(Axis::TransferTiming)?["values"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|r| {
+                (
+                    r["unit"].as_str().unwrap().to_string(),
+                    r["timing"].as_str().unwrap().to_string(),
+                )
+            })
+            .collect();
+        result.graph = crate::graph::StepGraph::build(&result)?;
+        Ok(result)
+    }
+    /// 内核输入§5.2–§5.4：接口对象形状与全序必须完整。
+    fn validate_runtime_interfaces(&mut self) -> Result<()> {
         let read_order = |axis: Axis, key: &str| -> Result<Vec<String>> {
             let v = self.parameters.value(axis)?;
             fields(v, &format!("kind {key}"), axis.name())?;
@@ -791,7 +719,6 @@ impl Input {
                 .cloned(),
             "manufacturing.input_slot_selection",
         )?;
-        self.validate_branches()?;
         for (a, want) in [
             (Axis::ConnectionBuildOrder, "construction.selected_order"),
             (Axis::ConnectionOrder, "timeline_connection_history"),
@@ -800,152 +727,6 @@ impl Input {
                 return Err(Stop::unsupported(a.name(), a.name(), "历史接口未实现"));
             }
         }
-        Ok(())
-    }
-    /// 转移§3.1、输入§5.3：从可能多级的非运输取货侧沿完整几何图求可查询分流器。
-    fn damping_forks(&self) -> BTreeSet<String> {
-        let mut pending = Vec::new();
-        for (uid, unit) in &self.geometry.units {
-            if self.catalog.kinds[&unit.kind].family == "transport" {
-                continue;
-            }
-            let outgoing: Vec<_> = self
-                .geometry
-                .channels
-                .iter()
-                .filter(|(_, c)| self.geometry.ports[&c.source_port].unit == *uid)
-                .collect();
-            let levels: BTreeSet<_> = outgoing
-                .iter()
-                .map(|(id, c)| {
-                    let peer = &self.geometry.ports[&c.target_port].unit;
-                    if self.geometry.units[peer].kind == "汇流器" {
-                        id.as_str()
-                    } else {
-                        "other"
-                    }
-                })
-                .collect();
-            if levels.len() >= 2 {
-                pending.extend(outgoing.into_iter().map(|(id, _)| id.clone()));
-            }
-        }
-        let mut seen = BTreeSet::new();
-        let mut forks = BTreeSet::new();
-        while let Some(cid) = pending.pop() {
-            if !seen.insert(cid.clone()) {
-                continue;
-            }
-            let target = &self.geometry.ports[&self.geometry.channels[&cid].target_port];
-            let unit = &self.geometry.units[&target.unit];
-            if self.catalog.kinds[&unit.kind].family != "transport" {
-                continue;
-            }
-            if unit.kind == "分流器" {
-                forks.insert(target.unit.clone());
-            }
-            // 完整几何包含当前阻断边，恢复后仍须有表；桥只沿到达轴，非运输终点不再外延。
-            pending.extend(
-                self.geometry
-                    .channels
-                    .iter()
-                    .filter(|(_, c)| {
-                        let source = &self.geometry.ports[&c.source_port];
-                        source.unit == target.unit
-                            && (unit.kind != "桥接器"
-                                || (source.axis == target.axis
-                                    && c.source_port != self.geometry.channels[&cid].target_port))
-                    })
-                    .map(|(id, _)| id.clone()),
-            );
-        }
-        forks
-    }
-    /// 内核输入§5.3：可查询分流器须有全部非空子集；其余已填行仍逐项校验。
-    fn validate_branches(&mut self) -> Result<()> {
-        let branch = self.parameters.value(Axis::DampingBranch)?;
-        fields(
-            branch,
-            "schema fixedness choices evaluations on_missing",
-            "damping.branch",
-        )?;
-        if branch["schema"] != "damping-branch-v2"
-            || branch["fixedness"] != "by_available_set"
-            || branch["evaluations"] != serde_json::json!([])
-            || branch["on_missing"] != "unresolved"
-        {
-            return Err(Stop::unsupported(
-                "damping.branch",
-                "parameters",
-                "须显式迁移为局部可用集表v2",
-            ));
-        }
-        let required_forks = self.damping_forks();
-        let mut allowed = BTreeSet::new();
-        let mut required = BTreeSet::new();
-        for (uid, u) in &self.geometry.units {
-            if u.kind != "分流器" {
-                continue;
-            }
-            let outgoing: Vec<_> = self
-                .geometry
-                .channels
-                .iter()
-                .filter(|(_, c)| self.geometry.ports[&c.source_port].unit == *uid)
-                .map(|(id, _)| id.clone())
-                .collect();
-            for mask in 1..(1usize << outgoing.len()) {
-                let key = (
-                    uid.clone(),
-                    outgoing
-                        .iter()
-                        .enumerate()
-                        .filter(|(i, _)| mask & (1 << i) != 0)
-                        .map(|(_, id)| id.clone())
-                        .collect::<Vec<_>>(),
-                );
-                if required_forks.contains(uid) {
-                    required.insert(key.clone());
-                }
-                allowed.insert(key);
-            }
-        }
-        for row in branch["choices"]
-            .as_array()
-            .ok_or_else(|| Stop::invalid("damping.branch.choices", "须为数组"))?
-        {
-            fields(
-                row,
-                "fork_unit available_channels outgoing_channel",
-                "damping.branch.choice",
-            )?;
-            let uid = row["fork_unit"].as_str().unwrap_or("").to_string();
-            let channels: Vec<String> =
-                decode(row["available_channels"].clone(), "available_channels")?;
-            let selected = row["outgoing_channel"].as_str().unwrap_or("").to_string();
-            let key = (uid, channels);
-            if !allowed.contains(&key)
-                || !key.1.contains(&selected)
-                || self.branches.insert(key, selected).is_some()
-            {
-                return Err(Stop::invalid(
-                    "damping.branch",
-                    "非规范集合、重复键或所选支不在集合",
-                ));
-            }
-        }
-        if !required.is_subset(&self.branches.keys().cloned().collect::<BTreeSet<_>>()) {
-            return Err(Stop::new(
-                "unresolved",
-                "damping.branch",
-                "choices",
-                "未列全可能被阻尼查询触达的分流器的非空出支子集",
-            ));
-        }
-        Ok(())
-    }
-    /// 转移§3.4：图变化仅改查询集合，完整表已在装载时核验。
-    pub(crate) fn validate_branch_paths(&self, _active: &BTreeSet<String>) -> Result<()> {
         Ok(())
     }
 }
