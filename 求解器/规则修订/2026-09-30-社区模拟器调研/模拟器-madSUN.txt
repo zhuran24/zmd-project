@@ -1,0 +1,454 @@
+madSUN 的两代终末地工业模拟器调研
+
+日期：2026-09-30
+状态：已完成公开源码、版本记录与社区文档的静态核对；没有执行外部代码，测试通过/失败数采用作者提交记录，不是本次运行结果。
+
+结论
+
+这两个项目是同一位作者 madSUN 的物流机制研究原型，不是两个覆盖完整游戏的成熟模拟器。第一代主要用“五阶段请求—裁决—批准—递送—提交”处理传送带、分流器和汇流器；第二代默认分支改为“栅格布局＋端口自动连接＋图排序＋两遍拉取请求”，增加了协议储存箱和网页画布。
+
+第二代还存在一个不能漏看的 feat/4-stage-tick 分支：作者因环的手性、亚步迟滞和已有失败测试，再次尝试放弃图遍历调度，改为四个 subtick 一次 API tick 的分阶段引擎。该分支不是已经解决问题的新成品：作者最后一次提交报告 48 项失败、24 项通过；源码中完整快照提交、预填箱激活、下游距离重算也未按设计全部落地。
+
+不完美的原因有三层，不能只说“游戏太复杂”：
+1. 社区对真实游戏的底层顺序、特殊工厂和无末端环仍有未解释的机制；
+2. 一张最终布局没有完整保存连接形成、重接和蓝图重建的历史状态，而这些在社区模型中会影响计算顺序；
+3. 两代代码本身还未完成，且请求方向、排序、物品位置与箱子时序采用了自己的模型。第二代连普通汇流轮询都保留了已知失败，生产、水管、准入口和供电也没有可用实现。
+
+因此，“没有完美模拟器”在这两仓库中是可具体定位的研究与实现缺口，不是已经证明游戏原则上不可模拟。
+
+一、版本范围与证据读法
+
+以下四个快照分别称 A、AD、B、BT。必须区分默认分支与未合并开发分支，否则会漏掉第一代的箱子实现和第二代最新的换框架尝试。
+
+A：第一代默认 main，012368ac479767e9bf8e3860848c2d13b64c6626
+https://github.com/hongshan-academy/endfield-AIC-sim/tree/012368ac479767e9bf8e3860848c2d13b64c6626
+
+AD：第一代 dev，f8d70cbe9c06ef7674afa03f1cafecc3a0d9b1d6
+https://github.com/hongshan-academy/endfield-AIC-sim/tree/f8d70cbe9c06ef7674afa03f1cafecc3a0d9b1d6
+
+B：第二代默认 main，29276c2d34b44f7778410c5f795727c3bf2ef89d
+https://github.com/madSUNitist/endfield-AIC-simulation-v2/tree/29276c2d34b44f7778410c5f795727c3bf2ef89d
+
+BT：第二代 feat/4-stage-tick，5c0b9da1fbbd4e0f46bca341926614c687a11bef
+https://github.com/madSUNitist/endfield-AIC-simulation-v2/tree/5c0b9da1fbbd4e0f46bca341926614c687a11bef
+
+引用“B simulation/graph.py L262–276”表示上述 B 快照中的该文件、该行段。将 tree 换为 blob 并追加文件路径即可打开，文末列出关键文件的直接链接。
+
+证据区分：
+• 【源码】直接读到的实现、配置或测试断言。
+• 【作者记录】README、设计文档、提交说明和仓库实验记录的说法；不等于本次复现实验。
+• 【社区模型】备份社区文章提出的机制；文章自己强调并非游戏源码，部分仍是猜想。
+• 【推导】从已读代码或社区模型推出的判断；不冒充游戏实测，也不把设计意图当成功实现。
+
+社区对照基准：
+P＝/home/zhuran24/zmd-research-fresh/参考资料/天师府学院及赤石科学院成果公开文档/页面/完美的终末地工业模拟代码.md
+Q＝/home/zhuran24/zmd-research-fresh/参考资料/天师府学院及赤石科学院成果公开文档/页面/终末地物流bug分析导论.md
+R＝/home/zhuran24/zmd-research-fresh/参考资料/天师府学院及赤石科学院成果公开文档/页面/README-madSUN.md
+
+二、它们分别是什么
+
+2.1 第一代 hongshan-academy/endfield-AIC-sim
+
+作者：社区把它列为 madSUN 的代码（P L10–18）；GitHub contributors 为 madSUNitist，提交署名 Richard SUN。组织名 hongshan-academy 是仓库归属，不是另一位模拟器作者。
+
+形式与目标用户：【源码】Python 库和手写网络的研究脚本。使用者实例化 Source、Sink、Conveyor、Splitter、Converger，再显式调用 connect_to，最后用 Controller.step 或 run_simulation 推进（A README.md L62–86）。目标用户判断为会写 Python、想研究分流与堵塞的玩家，而非直接导入完整游戏蓝图的普通布局用户。仓库有 visualization/，但 grid.link 是 pass，render.py 为空，不能把目录名当成完成的网页工具（A visualization/grid.py L5–10；完整目录树）。
+
+语言：Python，项目要求 Python >=3.13（A pyproject.toml L1–14）。依赖声明包括 pytest、matplotlib、networkx 等，但主循环并没有因此变成 NetworkX 驱动的仿真。
+
+公开程度：公开 GitHub 源码。仓库 API 的 license=null，目录中没有 LICENSE；可称公开代码，不能据此推定已有明确的开源许可证授权。
+
+更新时间：创建于 2026-03-07；main 最后一笔提交为 2026-03-16 15:30:40 UTC；dev 最后一笔为 2026-04-09 15:20:03 UTC。仓库 pushed_at 为 04-09，updated_at 为 09-08；updated_at 不等于代码更新日。
+
+规模：按固定提交的完整 tree 统计，main 有 27 个 .py 文件，共 43,314 字节；simulation/ 为 13 个 .py、27,387 字节。dev 有 36 个 .py、57,467 字节；simulation/ 为 18 个 .py、31,937 字节。计数含空 __init__.py，不含 uv.lock，也不是 GitHub 仓库历史体积。
+
+2.2 第二代 madSUNitist/endfield-AIC-simulation-v2
+
+作者：同为 madSUNitist／Richard SUN（P L14；contributors 与提交记录）。
+
+形式与目标用户：【源码与文档】Python 仿真库＋JSON/JSONC 实验配置＋命令行工具＋本地网页画布。后端 FastAPI，前端 TypeScript/Canvas 2D，可以摆放、单步、播放、重置、编辑库存、保存/加载本工具的布局（B README.md L309–325；frontend/README.md L67–100、L127–141）。源码启动点为 127.0.0.1:3000（B frontend/server.py L721–723），README 写 8000 已与源码不同。没有仓库 homepage，也未发现作者提供的公共部署网址；这里确认的是网页工具源码，不是访问后验证过的在线服务。
+
+【推导】目标仍主要是社区机制实验者，不过栅格摆放与画布把门槛从手写 Python 降为使用本地网页和配置文件。它的 save/load-blueprint 是本工具的布局数据，不等于已经证明能还原游戏蓝图的建造历史。
+
+语言：仿真 Python >=3.13，网页 TypeScript；依赖含 FastAPI、uvicorn、json5、pytest、pdoc、graphviz（B pyproject.toml L1–16）。
+
+公开程度：公开 GitHub 源码，但同样 license=null、未见 LICENSE。
+
+更新时间：创建于 2026-05-04。main 最后一笔为 2026-06-21 05:52:03 UTC；BT 分支为同日 12:45:54 UTC。仓库 updated_at 为 09-20，但最新代码提交仍是 06-21。不能用 09-20 证明它已采用 09-20 社区导论的全部模型。
+
+规模：main 有 74 个 .py、164,076 字节，其中 simulation/ 60 个 .py、90,264 字节；另有 6 个 .ts、100,601 字节。BT 有 76 个 .py、176,447 字节，其中 simulation/ 61 个 .py、101,034 字节；前端未变。未计入生成的 docs/ HTML、锁文件和 JSONC 测试数据。
+
+【源码】真正注册到 Factory 的类别只有 8 种：取货口、存货口、协议储存箱、传送带、分流器、汇流器、物流桥、物品准入口；最后两种仍是占位类，因此完成主要收发逻辑的是 6 种，不是整个工业系统（B simulation/mappings.py L86–116、L119–128）。生产目录虽然有 16 个单位文件，但不是 16 个完成实现；README 写“14”也不是当前目录的准确计数。
+
+三、第一代怎样仿真
+
+3.1 时间和单位顺序
+
+【源码】Controller.step 按调用者给的组件列表，分别遍历五遍：phase_1_tick、phase_2_tick、phase_3_tick、phase_4_tick、phase_5_tick（A simulation/controller.py L9–26；AD L10–27）。
+
+五阶段分别为：
+1. 向下游递送请求，有条件时提前递送；
+2. 汇流器等需要裁决的单位选择请求者；
+3. 下游批准能接收的请求；
+4. 上游把物品交给获准的下游；
+5. 内部物品前移、接纳临时输入、清空本步标志。
+
+这与 R L16–50 的可读时序图相符。源码没有秒值、1/4 秒步长、亚格运动或事件日历；不能因名字叫 tick 就认定它使用社区的 1/4 秒。主循环不是事件驱动，每一步遍历所有给定组件。
+
+【源码】没有从末端向上游建立 BFS 层级、没有末端序、没有“先形成下游连接先算”的时间戳。connect_to 只把邻接单位追加到列表（A simulation/components/base.py L49–52；AD simulation/base.py L45–49）。主循环顺序就是传入列表顺序，加上递归请求的访问顺序。
+
+3.2 物品位置、堵塞和环
+
+【源码】传送带是 Optional[Item] 数组，capacity 指槽位数。数组 0 是出口，末尾是入口；提交阶段逐槽前移，再放入临时输入（A simulation/components/base.py L35–37、L162–172）。Item 只有名称和 id，不含 1/8 格相位坐标（A simulation/item.py L5–9）。
+
+【源码】可接收判断会递归询问下游：本身有空位则接受；本身满则尝试下游；递归遇到环返回 False。结果按上游缓存（A simulation/components/base.py L195–243）。这是“预判下游能腾空”的模型，不是社区的每元件在自己的固定时刻单次推送、失败等下一步。
+
+【推导】对于全部槽位已满、没有出口的纯物流环，递归找不到空位，传送被拒绝，环不转。仓库确有满环停住的断言（A tests/simulation/components/test_converger.py L84–101）。这能证明该基础现象进入了测试设计；不是证明所有带箱子的环及其手性都正确。
+
+3.3 分流、汇流与优先级
+
+【源码】Splitter 的 rr 初始为 0，选择前先加 1；三条连接在通常情况下形成连接序号 2→3→1，不能走时继续尝试。它在请求阶段和实际发送阶段各有一次相应遍历（A simulation/components/splitter.py L14–17、L48–60、L69–75）。
+
+【源码】Converger 在第二阶段对上游做同样的“先加 1 再选”，从递送请求中选一个可接受的上游（A simulation/components/converger.py L14–34）；有额外轮询指针与缓存判断，不是仅凭物品先到即接受。
+
+【作者记录】提前递送的剪枝仍未复现直连分流—汇流优先级，阻尼还未测试、作者怀疑不能实现（A README.md L49–60；PR #2）。【源码】测试确实写有一个期望最终全为 B 的优先级断言（A tests/simulation/components/test_converger.py L285–311），但 AD 将该测试整段注释；AD 新增 test_priority.py 只打印轨迹，无结果断言（AD tests/simulation/test_priority.py L41–53）。不能把“有 priority 测试文件”解释为“优先级已经通过”。
+
+3.4 协议储存箱与工厂
+
+默认 A 的 simulation/units/storage_box.py 是空文件；units/base.py 只是未接入完整生产规则的雏形。因此只看默认分支会得到“尚无箱子”的结论。
+
+AD 已有 StorageBox，继承 Unit、用 6 个库存槽（AD simulation/units/storage_box.py L3–7），每槽默认 50（AD simulation/item/item_stack.py L1、L13）。但它不是按社区完整时序实现的协议储存箱：
+
+• 【源码】输入临时存于各上游对应的 _input；在第五阶段才进入库存。本步输出读取原有库存，不会在该输出阶段直接发送本步新收的物品（AD simulation/base.py L241–251；simulation/units/unit.py L66–96）。
+• 【源码】输入、输出 rr 都从 0 开始，选择前先加 1；输出代码是 231 式，而不是独立实现箱子 123。第一阶段继承 Base 的提前输出也没有使用这套输出轮询（AD simulation/units/unit.py L25–27、L45–58、L66–73；simulation/base.py L117–126）。
+• 【源码】库存 pop 按槽从前往后找，ItemStack 只保留种类和计数；不是按物品到达历史建立先进后出栈（AD simulation/item/inventory.py L50–60；item_stack.py L13–31）。
+• 【源码】第二阶段允许把“当前余量＋下游本步能接受的数量”算作可接收能力（AD simulation/units/unit.py L38–58）。【推导】这允许先预计本步输出会腾位，再在同一步收货，不是社区满箱空位必须晚一个最小步才能反传的规则。
+
+AD 没有实现配方、生产倒计时、结束生产和开始生产阶段。Source 是物品序列发生器，Sink 是收集器，不应把它们当成研磨机、反应池等工厂的实现。
+
+3.5 准入口、水管、供电
+
+【源码范围】两分支都没有可用的限流器、水管和供电系统，也没有物流桥双通道的实现。研究内容集中在抽象固体物流收发。声明了 Inventory 或 Unit 类，不等于已实现全游戏物料与工厂规则。
+
+四、第二代默认分支怎样仿真
+
+4.1 布局装配和建造顺序代理
+
+【源码】Factory 把 JSON components 列表转成有序 Placement 列表；Graph 按这一顺序实例化组件，以相邻栅格和双方相对端口自动连边（B simulation/factory.py L43–98；simulation/graph.py L64–127）。
+
+建边时只连接已经 processed 的邻居，记录当时自己已有的 downstreams 为 _owner_downstreams。后来其他组件连进来的下游，Splitter 称为 foreign。这能让 JSON 放置顺序影响结果，但它是作者的顺序代理，不是社区完整的连接事件历史。
+
+【源码】端口按 metadata 列表枚举，而不是通用地“先连接全部上游，再按逆时针连接下游”（B simulation/mappings.py L73–83；assets/unit_metadata.json L33–63）。更没有独立维护“首次形成下游连接的时刻”、末端组加入/合并/删除的顺序。
+
+【源码】网页修改/加载布局会重新 Factory(config)，也会重建图和状态（B frontend/server.py L509–516、L648–655）。因此保存最终组件列表，不等于保存实际游戏里一切重接、移除和蓝图连接历史。
+
+4.2 排序不是社区的末端序 BFS
+
+【源码】Graph 先做逆向 Kahn 式排序：取 out_degree=0 的节点，按 placement index 排列，删去其上游的相应出度；没有可用末端时，用 DFS 找环，在排序用的 cut_edges 中记“编号最大节点→编号最小节点”的切边（B simulation/graph.py L152–260）。这只作用于排序，邻接列表的物流边并未真的删掉。
+
+还不能停在这一步读 README。代码随后从上游向下游计算：
+  topo_index = 没有已计层上游时为 0；否则为 1 + 上游层号的最大值。
+最终按 (-topo_index, placement index) 排序（B simulation/graph.py L262–276）。
+
+【推导】在无环图中，这个 topo_index 是沿上游递推的深度，不是 README/注释所说的“到下游末端的距离”。例如同一分流器的两个下游，若没有其他汇入，源端深度可以相同，即使两支后续通向末端的路径很不同；拿这个字段分组并不能仅凭下游短长给出社区的阻尼优先级。
+
+【社区模型】Q L108–120 要求末端按连接形成顺序分组，多个组依次作为 BFS 种子，后一次不覆盖前一次赋层；分流器作为末端还不与同厂入口合组。B 不存在这一数据结构，不能把“Kahn BFS 分层”四个字当成与导论同一算法。同层排序也用 JSON placement index，而非 Q L184 的“先有下游连接”。
+
+4.3 一步的两遍计算与时间粒度
+
+【源码】Graph.tick 第一遍按 order 从下游到上游；第二遍按 reversed(order) 从上游到下游（B simulation/graph.py L139–150）。每个单位的第一遍内部顺序是 fulfill_requests→self_update→request_upstream；第二遍默认无操作，协议储存箱用来做同 tick 转送（B simulation/units/base.py L153–169）。
+
+这是下游向上游发 pull request、上游履行请求的框架。物品实际仍由上游传给下游，但调度与选择由拉取请求参与决定，不能因物品方向是向下就说它实现了社区“每元件只在自己的时刻算推送”。
+
+【源码】Conveyor.length 直接取 path 展开的格数，每格一个槽，每次 self_update 最多前移一个槽（B simulation/factory.py L59–72；belt/conveyor.py L27–38、L79–95）。所以它没有社区 1/8 格固体位移的细粒度位置。前端默认 tickInterval=2000，并每次请求 tick(1)；默认演示是每两秒走一个 API tick（B frontend/static/ts/main.ts L12–14、L76–79、L424–439）。引擎本身没有秒参数；动画插值和播放倍速不是额外的物理更新步骤。
+
+【推导】若按游戏传送带 2 秒/格对齐，B 的一步对应 2 秒的格级进展，不能当成社区 1/4 秒的一步。它没有事件队列，也不是为每次物流事件跳时的事件驱动模拟。
+
+4.4 轮询与优先级的实际实现
+
+• 公共 pull 队列：【源码】add_pull 把请求插到队首，后发的请求优先（B simulation/units/base.py L125–133）。这是请求队列的后进先出，不是协议箱库存物品的先进后出。
+
+• Splitter：【源码】单物品 buffer；先服务 foreign 下游，再按 topo_index 升序分组；组内 rr 先加 1 再选，即 231。优先级还受到哪些下游已发请求的影响（B belt/splitter.py L35–80；units/base.py L98–123）。
+
+• 汇流器 Converger：【源码】若有可供货的多输出上游（out_degree>1），向所有可供货上游广播请求；否则选择 upstreams 列表第一个有货者。这里没有更新输入轮询指针，持续有货的第一条单输出上游会反复被选（B belt/converger.py L42–66）。out_degree 区分的也不是严格的“分流器／非分流器”类型，协议箱也可能多输出，只有一条连接的分流器也可能 out_degree=1。
+
+  【推导】给它两个持续有货、单输出的上游，在缓冲被下游清空后再次申请，代码每次都选列表第一条，因此普通公平轮询并未实现。B tests/units/logistics_units/belt/test_converger.jsonc L44–65 保留了 RR Cycling 的期望断言；作者提交明确承认 converger RR 仍在失败测试之中。
+
+• 普通工厂入口/出口：【源码】没有生产单位可运行，没有“等全部直接下游已算才出货”的通用工厂出口对象，也没有按最久未输出排序的工厂轮询实现。
+
+重要文档偏差：【作者记录】B README.md L14 和历史提交宣称 Splitter 覆写 _build_distance_groups，把汇流器提升到最高组。【源码】当前 Splitter 没有这个覆写，只有 Base 按 topo_index 分桶。BT 的 design/4-stage-tick.md L294–296 也明确指出该文档声明过时。不能据此给“汇流器永远最高优先级”打完成标记。
+
+4.5 协议储存箱、仓库和库存
+
+【源码】ProtocolStash 是一个单物品 buffer 加 6×50 Inventory，具有独立库存；仓库取存货口共享 Factory 的全局 Inventory（B factory.py L36–41、L83–94；depot_access/protocol_stash.py L32–44）。
+
+• 第一遍输出：先 buffer、后库存；按 topo_index 分组优先，同组先选当前 rr，再递增，即输出 123 式。一次可向多个请求者发送（protocol_stash.py L54–117）。
+• 第一遍输入：只要不是 buffer 有物且库存已满，就向所有有货的上游申请，不做完整输入轮询（L119–125）。
+• 接收：先填 buffer，再向 Inventory push（L127–142）。
+• 第二遍：将 buffer 中物品立即尝试送出；无请求时也可尝试直接给可接收的下游，失败才放库存或留 buffer（L144–178）。
+
+【推导】这具有绕过库存的零等待通路，也会让 buffer 比旧库存优先取出，不能据此认定社区“协议箱先入后出＋单空同时动双环”已完整复现。Inventory.pop 是第一匹配槽，不是按到达历史出栈；ItemStack 只计数，pop 还重新生成物品 id（B items/inventory.py L35–71；items/itemstack.py L29–37）。
+
+【源码与推导】库存 300 已满但 buffer 为空时，仍可接收一个物品；第一遍输出腾位后，本步后来的上游也可接收成功。这不是 Q L336 的严格“满箱空位晚一个最小步传播”。外加 buffer 的设计也不能自动等同游戏的实际库存容量。
+
+DepotLoader 根据下游请求从全局库存取指定物料；DepotUnloader 接收后直接 push 到库存（B depot_loader.py L31–52；depot_unloader.py L25–51）。它们不是带供电、关闭状态、特殊工厂轮询和完整核心规则的仓库模型。
+
+4.6 准入口、水管、生产、物流桥和供电
+
+【源码】ItemControlPort、BeltBridge 的收发方法直接 raise NotImplementedError，不是“已经完成但关闭”（B belt/item_control_port.py L10–20；belt/belt_bridge.py L10–20）。README 写“rejects all items”不准确。
+
+【作者记录＋源码范围】所有 pipe、power、production、fluid-tank 类仍为占位。已核读 Pipe、PipeSplitter、PipeConverger、PipeControlPort、FluidTank、RefiningUnit、ReactorCrucible、ThermalBank 的收发方法，均抛 NotImplementedError。Factory 的映射也没有注册水管、生产和供电类型（B simulation/mappings.py L86–128）。因此：
+• 物品准入口限流、过滤与计数未实现；
+• 管道单液体约束、液体速度及其迟滞未实现；
+• 实际配方生产、工厂缓冲区和特殊反应池输出未实现；
+• 供电覆盖、耗电、发电与断电行为未实现；
+• 物流桥的两条独立轴向通道未实现。
+
+五、为什么换框架：两次不同的变化
+
+5.1 第一代到第二代默认分支
+
+【源码】实际变化是：
+  手动连接＋递归请求和可接收缓存＋五个全局阶段
+  → 栅格自动连边＋预建图顺序＋下游 pull 队列＋两遍循环＋箱子第二遍零等待转送。
+
+增加的不仅是界面：结构和时序都换了。第二代的类型、库存、坐标、端口与 Factory 也重写了。
+
+【作者记录】第二代早期 README 的 Design Ideas 说：以前只有满足输出条件的元件发起请求，新方案想让 BFS 请求穿过整条链、包含空段；预计算带阻尼权重的拓扑顺序、DFS 遇堵回退；还计划有限状态机缓存、统一组件池、减少序列化和非阻塞通信。出处是历史提交 7e50587bd72e58689343e4c26e7d1928fde7ae53 的 README.md L51–67。
+
+【推导】结合第一代作者承认剪枝仍不能复现优先级，可判断换框架是在尝试解决请求传播与优先级表达，并支持布局装配、可视化和优化。但没有找到作者明确逐项宣布“第一代失败的唯一原因就是某一算法”的说明，不能补写这种动机。
+
+【源码】早期 README 的“状态缓存、阻尼权重、DFS 回退、异步通信”不是当前 B 主循环的已完成功能。B 实际是同步图遍历和直接调用；不要把早期设计目标混成现状。
+
+5.2 第二代 main 到 BT 四阶段分支
+
+这一轮有明确的作者解释。
+
+【作者记录】BT design/4-stage-tick.md L28–45 提出三个理由：
+1. 旧图遍历把 fulfill 与 request 捆在同一遍，正确性依赖访问顺序；亚步迟滞和环手性现象不能靠原来的整步表达；
+2. 想用每 subtick 的快照—提交解除同遍对邻居 live state 的依赖；
+3. 作者认为环上的排序切边会破坏手性，决定删除拓扑调度，而不是继续修补它。
+
+注意作者设计文档写的切边方向与实际 main 代码并非完全一致；准确的源码事实是排序用 cut_edges 记最大编号→最小编号，且没有删除物理邻接边。作者的“破坏手性”是架构判断，不是本次验证的游戏定理。
+
+【作者记录】设计时间模型：旧 tick＝8 subtick；新 API tick＝4 subtick＝半个旧 tick；一个单位的 P1/P2 状态每 subtick 交替，传送带每两个新 tick 移一格（BT design/4-stage-tick.md L9–24）。设计把“4n 卡 0.5”的亚步漂移当作换模型的动机，不是已证明的游戏底层实现。
+
+【源码】Engine.tick 的确循环 4 次 _subtick_advance；每次先执行所有处于 P1 的活动单位，再执行 P2 的活动单位，组内按组件 id 排序。请求增删进入 Outbox，最后提交；活动状态沿下游传播（BT simulation/engine.py L75–78、L98–146；units/base.py L187–208）。带子的 _shift_counter 每 4 次 P1 才调用一次 self_update，即每 8 subtick 移一个完整格（BT belt/conveyor.py L136–146）。它仍是离散定步，不是事件跳时。
+
+【推导】以 B 默认两秒一格的演示口径映射，新 API tick 可解释成一秒，subtick 可解释成 1/4 秒；但源码没有秒常量。即使如此，它仍以整格槽位存物，新增的是单位阶段与收发时机，而非 1/8 格物品坐标。
+
+5.3 BT 实现与设计的实际距离
+
+这几处可以直接定位，不能把“已写新 Engine”当成新框架已验收：
+
+(1) 没有完整的跨元件快照—提交。
+【源码】Outbox 只有 pull_adds 与 pull_removes；fulfill_requests 和 ProtocolStash.phase2 仍直接调用 target._accept_item，更改邻居的 live buffer/slots。can_pull 也读实时状态（BT engine.py L33–53；belt/conveyor.py L68–81；protocol_stash.py L147–175、L183–193）。
+【推导】所以设计文档 L95–119 的“每个读取都走冻结快照、每个写入都走 outbox、同 subtick 内执行顺序无关”尚未实现。请求提交了，物品与缓冲状态没有统一延迟到提交。
+
+(2) 声称替代旧排序的 BFS 没有清空旧层号。
+【源码】Factory 先建立 Graph，Graph 仍调用 _build_order 并为所有节点赋非负 topo_index（BT graph.py L129–137、L262–276）。Factory 随后做 _bfs_distance_to_sink，但只给 DepotUnloader 设 0，只在上游 topo_index==-1 时扩展（BT factory.py L46–51、L58–70）。
+【推导】由于此前所有节点已非负，这个 BFS 不会向上游重新赋距；除直接重置的存货口外，仍留下旧排序的层号。因此“改为下游多源 BFS 距离”没有按设计成立，而且它也没有实现社区的有序末端分组。
+
+(3) 预填箱没有作为初始活动源。
+【作者记录】设计要求预填 ProtocolStash 和 DepotLoader 都 seed（BT design/4-stage-tick.md L65–66）。
+【源码】Factory 实际只 seed DepotLoader（BT factory.py L53–56）。
+【推导】一个仅有预填协议储存箱、传送带和分汇流的环形配置，没有 DepotLoader 时，Engine 的 active 集合为空；每个 subtick 没有单位被执行，也没有单位传播激活，环始终停住，哪怕箱子有物料而带子空。B test_priority_with_stash.jsonc L14–26 就存在这种“预填箱起动而无取货口”的配置。因此这一分支不能作为该类环的可靠复现器。
+
+【作者记录】main 在提交 2789df2206a340b80a69ed0ee5bed507f8a1c7ba 中注明，20 个 converger RR 和 stash 放置优先级用例故意以失败状态提交，作为随后换架构的动机。BT 最后提交 5c0b9da… 记录 48 failed、24 passed；设计文档中的“52 通过＋20 失败”是换前目标，不是换后结果。
+
+这些失败是作者报告的测试结果。上面三点是本次静态读码独立得到的缺口；不能把 48 项失败全部归因于其中某一处，也不能把通过 24 项当成游戏规则覆盖率。
+
+六、对照“完美代码”四档的 13 项特性
+
+判定范围：A 与 B 为默认分支；AD、BT 的补充单独注明。“实现了”只在明确的子范围内使用；“部分实现”列出实际有的部分和仍缺的部分，不把 TODO 或目标测试当成完成。
+
+简单档（P L30–36）
+
+1. 分流器、汇流器和大部分工厂的 231 轮询
+第一代：部分实现。分流、汇流有选择前递增的 rr；生产工厂没有实现。AD 的箱子采用相近的递增轮询，而非完善工厂规则。依据：A splitter.py L48–75、converger.py L19–34；AD units/unit.py L45–73。
+第二代：部分实现。Splitter 同组 231 有代码；Converger 当前是首次可用上游／广播逻辑，不是完整轮询；生产工厂缺失。依据：B belt/splitter.py L58–72、converger.py L42–66。BT 保留这套选择逻辑，没有补成通用 231。
+
+2. 满环不动
+第一代：实现了纯物流满环。递归检查环且找不到空位时拒绝转移，有满环停住的测试断言。依据：A components/base.py L213–234；test_converger.py L84–101。
+第二代：实现了纯传送带／单槽元件全满无出口时不移动的基础机制：输入满则不申请，输出被满下游拒绝则恢复。依据：B conveyor.py L64–95、splitter.py L75–94、converger.py L32–50。带储存箱、单空环、手性等不能由此推定正确；BT 还存在“应该流通的预填箱环也完全不启动”的问题（五.3）。
+
+3. 协议箱 123 轮询
+第一代：没实现。A 箱子为空文件；AD 已有箱子，但输出先加 1 再选，且提前输出绕开输出 rr，不能视为 123。依据：AD units/unit.py L66–73、base.py L117–126。
+第二代：部分实现。箱子同组输出为 123 式，跨组存在拓扑优先；输入对上游广播，不是完整双向轮询。依据：B protocol_stash.py L79–111、L119–125；test_protocol_stash.jsonc L93–120。BT 仍用该箱子逻辑。
+
+标准档（P L38–46）
+
+4. 优先输出：阻尼理论描述的工厂优先输出
+第一代：没实现。作者明说优先级未复现，阻尼未测试。依据：A README.md L51–60；PR #2。
+第二代：部分实现。ProtocolStash 有 topo_index 分组优先和阻塞后落到其他组的选择，但字段并非社区层级，通用工厂出口又没有实现。依据：B base.py L113–123、protocol_stash.py L79–111、graph.py L262–276。BT 是更换距离与时序的尝试，并没有完成可信的下游距离重算。
+
+5. 优先汇入：分流器无其他路、汇流器不在环上的直连优先
+第一代：没实现。相应优先级测试被作者标为失败；AD 还注释了原断言。依据：A README.md L59；AD test_converger.py L285–311。
+第二代：部分实现。放置顺序、请求队列、单输出与多输出分类能制造某些优先结果；但是这不是社区的分流器/非分流器触发机制，普通 RR 已有失败。依据：B graph.py L82–127、base.py L125–133、converger.py L42–66；作者 2789df2 提交。BT 未补齐。
+
+6. 先进后出：协议箱先入后出与单空同时动双环
+第一代：没实现。AD 收到的物品第五阶段才进库存，不能用本步新收物参与前面的输出；库存也非到达栈。依据：AD units/unit.py L66–96、item/inventory.py L50–60。
+第二代：部分实现。具有 buffer 优先于库存、第二遍零等待转送的路径，但没有一般到达栈，亦未证明单空双环现象；相关箱环时序测试仍在失败范围。依据：B protocol_stash.py L69–117、L144–178；items/inventory.py L55–71；作者 2789df2 提交。BT 对无取货口的预填箱环不能启动，更不能认定这一项完成。
+
+7. 侧面优先：工厂/取货口紧贴汇流器时，其他输入的优先级
+第一代：没实现。没有对应工厂与取货口侧面优先规则。
+第二代：没实现完整机制。普通生产工厂缺失；仓库取货口按 pull 取库存，汇流器没有特殊侧面输入逻辑。依据：B depot_loader.py L35–52、converger.py L42–66、mappings.py L86–128。BT 只是重排调度，没有新增此规则。
+
+进阶档（P L48–56）
+
+8. 优先输出进阶：单带线异常与工厂入口分流器现象
+第一代：没实现。连标准优先输出尚未完成。
+第二代：部分实现。部分协议箱、分流器的拓扑与放置优先效果进入代码和测试，但不是通用工厂入口/出口机制，不能覆盖列举的异常。依据：B splitter.py L35–73、protocol_stash.py L79–111；README.md L10–16。BT 仍无生产工厂及入口规则。
+
+9. 优先汇入进阶：含其他下游、环与放置变化的直连优先
+第一代：没实现。只有请求/轮询的通用逻辑，没有社区的层级与末端序。
+第二代：部分实现。24 种放置排列进入测试，作者仍报告部分偏差；Converger 的分类、图排序与社区不同。依据：B expr_results/expr_1.txt L1–25；tests/units/logistics_units/belt/test_priority_splitter-conveyor-converger.jsonc L12–32 等；README.md L13–16；作者 2789df2 提交。BT 没有成功复现的新增证据。
+
+10. 迟滞输出：4n 卡 1s，不含汇入联动
+第一代：没实现。整槽、整步五阶段，未见亚格相位和固定单次推送迟滞的实现。
+第二代 main：没实现。作者明确写无法复现，且实际只按整格推进。依据：B README.md L15、conveyor.py L79–89。
+BT：看不出已经实现该现象。的确新增 subtick 与阶段错位，设计以迟滞为动机，但物品仍按整槽移动，无本次或作者提供的成功迟滞对照结果，且作者报告大量失败。依据：BT design/4-stage-tick.md L21–23、L403–420；engine.py L75–78；作者 5c0b9da 提交。
+
+11. 独特水管：同一管不能同时有多种液体
+两代：没实现。第一代无水管；第二代水管类是抛异常的占位，未注册到 Factory。依据：B pipe/pipe.py L9–19；mappings.py L86–128。BT 没有修改这些占位类。
+
+困难档（P L58–62）
+
+12. 优先完全：反应池等特殊工厂例外
+两代：没实现。没有相应可运行的特殊工厂收发与生产规则。依据：B production_units/reactor_crucible.py L9–19、mappings.py L86–128；A/AD 的可用单位范围。BT 设计也明说 stubs 保留（design/4-stage-tick.md L346–349）。
+
+13. 迟滞输出进阶：与优先汇入联动、管道 2n 卡 1 格
+两代 main：没实现。固体迟滞未完成，水管亦不存在。
+BT：没实现完整项目。新增亚步引擎不能代替物料/水管与优先级联动规则；未见成功验证。依据：BT design/4-stage-tick.md L346–349、L403–420；作者 5c0b9da 提交。
+
+额外注意：B README L15 对“4n 卡 1”的解释写成“四条输入线只有一条稳定输出”，不是 P/Q 对“每通行 4n 个物品累计卡顿”的定义。本次只能采用它的“尚不能复现”声明，不能把这段文字当成针对社区迟滞定义的合格实验记录。
+
+七、对照导论的底层计算逻辑
+
+7.1 1/4 秒步长、固体 1/8 格位移
+社区：Q L28–30、L264–266。
+第一代：没有落实，只有抽象 tick 和整数槽。
+第二代 main：没有落实，格级 tick；前端默认两秒一格。
+BT：有更小 subtick 调度，可按演示尺度解释成 1/4 秒，但没有细粒度物品位置，也没有社区模型等价性证明。
+
+7.2 从下游赋层、末端序、同层先连接下游先算
+社区：Q L32–34、L108–120、L184–186。
+第一代：没有，调用者列表和递归访问顺序替代。
+第二代 main：换了做法，Kahn/DFS 切边＋源端深度＋placement index；无有序末端组和连接形成时刻。
+BT：设计拟用所有 DepotUnloader 的同时多源 BFS，不是社区的按末端组逐次 BFS；实际还被旧层号阻止扩展。单位执行也改为 P1/P2＋id，而非社区层序。
+
+7.3 元件计算输出论断
+社区：Q L26、L66–70。尤其非分流器尝试推入汇流器时，会使其他非分流上游参与，由汇流器指针决定接受谁；分流器用自身输出指针。
+第一代：部分外形相似——上游发送请求与物品、分流器自行选下游；但汇流是全局裁决阶段，没有社区的分类触发与计算时刻。
+第二代 main/BT：换了做法。由汇流器/下游先发 pull，再由供货者履行；用 out_degree 与广播/固定第一者判断，不是非分流上游触发同类轮询。物品向下转移这一点相同，不足以认定论断已实现。
+
+7.4 工厂计算输出论断
+社区：Q L84–88。普通工厂要记录直接下游非汇流器，等它们都算过再输出；汇流器会触发提前输出，取货口、反应池等另有例外。
+第一代：没有这一记录/等待条件；AD 库存输出使用请求和全局阶段。
+第二代 main/BT：没有这一通用协议。ProtocolStash 的分组优先与第二遍转送是另一个设计；Factory 名字指整个仿真装配器，不代表每座生产工厂的逻辑已经实现。
+
+7.5 使动—转移—移动
+社区：Q L44–48，当前元件先使下游内部移动，再转移自身物品，最后移动自身内部。
+第一代：没有。内部移动集中在第五阶段，提前发送不等于调用下游的内部移动。
+第二代 main：没有该操作协议。当前单位先输出，再移动自己，再申请上游；依赖下游在较早遍历时已更新，未在自己输出时强制使动下游。
+BT：也没有新增使动接口；它增加了错位的 P1/P2 调度，仍直接接受物品。因而不能只看到多个阶段就说与“使动—转移—移动”相同。
+
+7.6 工厂每步“物流收发→结束生产→开始生产”
+社区：Q L276–332。
+两代：没有生产规则，所以没有对应三段执行，也不能复现换配方晚一步和反应池反应/输出之间的竞争。BT 没有新增生产。把物流单位的 P1/P2 当成工厂生产阶段，是概念混淆。
+
+7.7 满箱阻塞传播卡一步
+社区：Q L334–338。
+第一代 AD：预判下游能接受的物品数，可在同一步批准满箱输入，未保留社区的最小步隔离。
+第二代 main：满库存外仍有 buffer；腾位与接收可发生在同一第一遍，又有第二遍转送，没有严格的一最小步传播规则。
+BT：pull 请求提交会产生额外等待，但等待取决于单位 P1/P2 相位和 live 接收顺序；这是另一模型的延时，不是已实现/验证的“每满箱固定卡一个游戏最小步”。
+
+7.8 元件轮询与工厂轮询
+社区：Q L358–361；元件按连接序、不能收发则跳过；工厂输出按最久未输出者、失败方向下次仍先轮到。
+第一代：分流、汇流有连接序 rr；AD 箱子也用同类 rr。没有通用工厂的最久未输出顺序。
+第二代：Splitter 有组内 231，Stash 有组内 123，但输入轮询不完整；未见“最久未输出”记录与工厂失败保序。LIFO 请求队列不是这两种轮询之一。BT 复用这些选择方法，不自动修正此项。
+
+八、不完美究竟是哪类原因
+
+8.1 真实机制还没完全摸清
+
+【社区模型】Q L375–381 明确说并非取得游戏源码的成果，尚未完成“没有下游工厂的环带”的末端/顺序与反应池、存取货口的特殊规律；Q L270 也保留特殊工厂输入随机/输出特别的描述。两代的最后提交均在该导论标记的 09-20 更新之前。
+
+【作者记录】B README L13–16 留有环手性、直连优先、迟滞和排列偏差未解决；BT 设计 L403–420 仍询问 P1/P2 如何对应真实游戏、带子何时前移、手性是否需要显式规则。这是作者工作模型未验真的证据，不是已经发现了游戏不存在确定规则。
+
+8.2 最终布局之外的历史与状态
+
+【社区模型】Q L116–120、L184、L365–371 让末端组顺序、首次连下游、放置/保存/蓝图重建顺序参与结果。相同可见连接图在不同历史下可能得到不同顺序。
+
+【源码】第一代只保留人工 connect_to 的邻接列表；第二代把 JSON 数组顺序用作放置序，附加 owner/foreign 分类，但没有完整末端组历史。网页又通过重建 Factory 重置图和状态。
+
+【推导】仅输入“这些单位现在在哪里、接到哪里”，而不输入游戏实际隐含的排序、连接/蓝图历史和当前物品相位，不能保证重建同一次游戏运行。可以额外保存这些状态或指定构造历史；问题是现有工具没有完整做到，不是这种状态永远无法表示。
+
+8.3 作者自己的模型与实现缺口
+
+第一代的整步五阶段、递归预判和剪枝，第二代的拉取队列、拓扑分组、箱子额外 buffer，都确实存在于源码；它们与社区提出的具体单元时序不同。即使把尚缺单位补齐，也还要核实这些模型能否产生社区现象。
+
+默认 B 的普通汇流选择不轮询、topo_index 不是文档所说的下游距离；BT 的距离重算与预填箱激活也有明确静态缺口。它们属于代码和架构完成度问题，不能全部甩给“游戏规则隐藏”。
+
+此外，水管、生产、供电、准入口、物流桥都还是未实现，而不是碰到了某个无法克服的游戏机制。看见单位文件、枚举和 pdoc 页面，不等于看见可工作的单位。
+
+8.4 为速度/简单主动取舍，能确认到什么程度
+
+【作者记录】第一代明确增加提前递送剪枝；第二代早期 Design Ideas 提出有限状态机缓存、组件池和通信优化；BT 设计提出活动门控、闲置停放和稳态缓存（BT design/4-stage-tick.md L166–188）。这些是优化意图。
+
+【源码】第一代确有本步缓存与提前发送；第二代 main 主循环仍全图两遍，BT 的活动集合只做了传播，未见完成的停放/稳态缓存。
+
+没有发现作者宣称“明知某游戏规则，为了更快/更简单而故意不模拟它”的清晰说明。因而，整格抽象与占位单位可以客观说是当前范围有限、实现未完成；不能擅自把所有偏差解释为已经权衡过的速度精度取舍。BT 的作者动机反而明确说旧架构不仅有性能问题，更有正确性问题。
+
+九、用途判断
+
+第一代适合阅读请求/批准框架及分汇流、满环的基础测试；AD 的箱子可以作为后续实验线索，但不能视为游戏箱子语义的参照实现。
+
+第二代更适合展示、编辑和观察固体物流原型，现成的 JSONC 排列和箱环测试对研究很有价值。它的正确用途是“把待验的机制变成配置和断言”，而不是“输出就是游戏会发生的事”。BT 是一次有明确动机但尚未完成的新调度尝试，也不能直接替代真机或已核验语义。
+
+对完整工业布局验收而言，两代都不能作为全规则判定器；对社区所说的“没有完美模拟器”，这两个样本提供了具体而足够的解释，但本报告没有调查其余作者，不把这两个仓库的状态泛化成整个社区永远做不到。
+
+十、关键出处索引
+
+社区原文与本地备份：
+P 原文：https://docs.qq.com/aio/DTmluZ1diWlpQZldw?p=y1xZXtulUCeVfPPJumEMg3
+P 本地：/home/zhuran24/zmd-research-fresh/参考资料/天师府学院及赤石科学院成果公开文档/页面/完美的终末地工业模拟代码.md
+Q 原文：https://docs.qq.com/aio/DTmluZ1diWlpQZldw?p=oWvEDex0yuejzwpcwzyxUP
+Q 本地：/home/zhuran24/zmd-research-fresh/参考资料/天师府学院及赤石科学院成果公开文档/页面/终末地物流bug分析导论.md
+R 原文：https://docs.qq.com/aio/DTmluZ1diWlpQZldw?p=cRL5oXezEI87KqsXuOEng7
+R 本地：/home/zhuran24/zmd-research-fresh/参考资料/天师府学院及赤石科学院成果公开文档/页面/README-madSUN.md
+
+第一代：
+项目元信息：https://api.github.com/repos/hongshan-academy/endfield-AIC-sim
+分支列表：https://api.github.com/repos/hongshan-academy/endfield-AIC-sim/branches
+main 完整树：https://api.github.com/repos/hongshan-academy/endfield-AIC-sim/git/trees/012368ac479767e9bf8e3860848c2d13b64c6626?recursive=1
+dev 完整树：https://api.github.com/repos/hongshan-academy/endfield-AIC-sim/git/trees/f8d70cbe9c06ef7674afa03f1cafecc3a0d9b1d6?recursive=1
+README：https://github.com/hongshan-academy/endfield-AIC-sim/blob/012368ac479767e9bf8e3860848c2d13b64c6626/README.md#L49-L60
+五阶段：https://github.com/hongshan-academy/endfield-AIC-sim/blob/012368ac479767e9bf8e3860848c2d13b64c6626/simulation/controller.py#L12-L26
+递归与移动：https://github.com/hongshan-academy/endfield-AIC-sim/blob/012368ac479767e9bf8e3860848c2d13b64c6626/simulation/components/base.py
+分流：https://github.com/hongshan-academy/endfield-AIC-sim/blob/012368ac479767e9bf8e3860848c2d13b64c6626/simulation/components/splitter.py
+汇流：https://github.com/hongshan-academy/endfield-AIC-sim/blob/012368ac479767e9bf8e3860848c2d13b64c6626/simulation/components/converger.py
+剪枝仍失败的作者说明：https://github.com/hongshan-academy/endfield-AIC-sim/pull/2
+AD 箱子通用逻辑：https://github.com/hongshan-academy/endfield-AIC-sim/blob/f8d70cbe9c06ef7674afa03f1cafecc3a0d9b1d6/simulation/units/unit.py
+AD 箱子：https://github.com/hongshan-academy/endfield-AIC-sim/blob/f8d70cbe9c06ef7674afa03f1cafecc3a0d9b1d6/simulation/units/storage_box.py
+
+第二代：
+项目元信息：https://api.github.com/repos/madSUNitist/endfield-AIC-simulation-v2
+分支列表：https://api.github.com/repos/madSUNitist/endfield-AIC-simulation-v2/branches
+main 完整树：https://api.github.com/repos/madSUNitist/endfield-AIC-simulation-v2/git/trees/29276c2d34b44f7778410c5f795727c3bf2ef89d?recursive=1
+BT 完整树：https://api.github.com/repos/madSUNitist/endfield-AIC-simulation-v2/git/trees/5c0b9da1fbbd4e0f46bca341926614c687a11bef?recursive=1
+README TODO：https://github.com/madSUNitist/endfield-AIC-simulation-v2/blob/29276c2d34b44f7778410c5f795727c3bf2ef89d/README.md#L8-L16
+早期新框架想法：https://github.com/madSUNitist/endfield-AIC-simulation-v2/blob/7e50587bd72e58689343e4c26e7d1928fde7ae53/README.md#L51-L67
+默认图排序：https://github.com/madSUNitist/endfield-AIC-simulation-v2/blob/29276c2d34b44f7778410c5f795727c3bf2ef89d/simulation/graph.py#L152-L276
+公共请求与分组：https://github.com/madSUNitist/endfield-AIC-simulation-v2/blob/29276c2d34b44f7778410c5f795727c3bf2ef89d/simulation/units/base.py
+传送带：https://github.com/madSUNitist/endfield-AIC-simulation-v2/blob/29276c2d34b44f7778410c5f795727c3bf2ef89d/simulation/units/logistics_units/belt/conveyor.py
+分流：https://github.com/madSUNitist/endfield-AIC-simulation-v2/blob/29276c2d34b44f7778410c5f795727c3bf2ef89d/simulation/units/logistics_units/belt/splitter.py
+汇流：https://github.com/madSUNitist/endfield-AIC-simulation-v2/blob/29276c2d34b44f7778410c5f795727c3bf2ef89d/simulation/units/logistics_units/belt/converger.py#L42-L66
+协议箱：https://github.com/madSUNitist/endfield-AIC-simulation-v2/blob/29276c2d34b44f7778410c5f795727c3bf2ef89d/simulation/units/depot_access/protocol_stash.py
+实际可装配类别：https://github.com/madSUNitist/endfield-AIC-simulation-v2/blob/29276c2d34b44f7778410c5f795727c3bf2ef89d/simulation/mappings.py#L86-L128
+main 20 项故意失败的作者记录：https://github.com/madSUNitist/endfield-AIC-simulation-v2/commit/2789df2206a340b80a69ed0ee5bed507f8a1c7ba
+四阶段设计与动机：https://github.com/madSUNitist/endfield-AIC-simulation-v2/blob/5c0b9da1fbbd4e0f46bca341926614c687a11bef/design/4-stage-tick.md
+四阶段实际引擎：https://github.com/madSUNitist/endfield-AIC-simulation-v2/blob/5c0b9da1fbbd4e0f46bca341926614c687a11bef/simulation/engine.py
+四阶段装配、距离与激活：https://github.com/madSUNitist/endfield-AIC-simulation-v2/blob/5c0b9da1fbbd4e0f46bca341926614c687a11bef/simulation/factory.py#L33-L70
+四阶段 48 失败／24 通过的作者记录：https://github.com/madSUNitist/endfield-AIC-simulation-v2/commit/5c0b9da1fbbd4e0f46bca341926614c687a11bef
+
+静态范围限制：未运行安装、网页服务或测试；未验证游戏真机结果。仓库中断言的存在只证明测试目标存在，README 复现成功标记与提交测试计数也只按作者记录引用。本报告的“不符合导论”是对该社区模型的对照，不能反过来把尚未完全验证的社区模型宣布为游戏源码事实。
