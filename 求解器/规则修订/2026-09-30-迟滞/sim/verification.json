@@ -1,0 +1,7 @@
+{
+  "phase_comparison_cases": 24,
+  "phase_comparison_steps": 160,
+  "invariant_steps": 2400,
+  "original_inputs_unchanged": true,
+  "status": "PASS"
+}
