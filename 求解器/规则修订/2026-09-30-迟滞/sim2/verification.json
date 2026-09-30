@@ -1,0 +1,30 @@
+{
+  "rule_snapshot": "ba3d767",
+  "phase_comparison_cases": 528,
+  "phase_comparison_steps": 84480,
+  "rule_unit_tests": [
+    "dead tail layer rule",
+    "unknown cycle is explicit parameter",
+    "empty first group member recruits ready peer",
+    "grouped failed judgement never retries",
+    "splitter initial second channel",
+    "NT one item; oldest outlet first",
+    "bridge independent axis judgements",
+    "powered manufacturing elapsed steps",
+    "ordinary outlet group maximum and connection tie"
+  ],
+  "invariant_steps": 3600,
+  "motion_equivalence": {
+    "cases": 688,
+    "compared_steps": 72000,
+    "status": "PASS"
+  },
+  "order_quotient_checks": {
+    "cases": 120,
+    "steps_per_case": 160,
+    "status": "PASS"
+  },
+  "protected_input_count": 179,
+  "input_hashes_unchanged": true,
+  "status": "PASS"
+}
