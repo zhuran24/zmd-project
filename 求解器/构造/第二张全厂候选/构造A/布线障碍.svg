@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1560" height="1120" viewBox="0 0 1560 1120">
+<rect width="1560" height="1120" fill="#f5f7fb"/>
+<style>text{font-family:"Noto Sans CJK SC","Noto Sans CJK JP","WenQuanYi Micro Hei",sans-serif;fill:#172338}.small{font-size:18px}.body{font-size:22px}.heading{font-size:28px;font-weight:700}</style>
+<text x="44" y="62" font-size="36" font-weight="700">S2 固定接法的平面障碍</text>
+<text x="44" y="103" font-size="23" style="fill:#556174">没有生成 70×70 合法布局。下图是不可布线证书，不是候选布局。</text>
+<rect x="32" y="136" width="700" height="632" rx="14" fill="#ffffff"/>
+<rect x="754" y="136" width="774" height="632" rx="14" fill="#ffffff"/>
+<text x="58" y="181" font-size="24" font-weight="700">压缩中间机器与传送带后的六个分支点</text>
+<line x1="193" y1="290" x2="585" y2="290" stroke="#d68014" stroke-width="3.4" stroke-dasharray="10 7"/>
+<line x1="193" y1="290" x2="585" y2="467" stroke="#d68014" stroke-width="3.4" stroke-dasharray="10 7"/>
+<line x1="193" y1="290" x2="585" y2="644" stroke="#d68014" stroke-width="3.4" stroke-dasharray="10 7"/>
+<line x1="193" y1="467" x2="585" y2="290" stroke="#128575" stroke-width="3.4"/>
+<line x1="193" y1="467" x2="585" y2="467" stroke="#128575" stroke-width="3.4"/>
+<line x1="193" y1="467" x2="585" y2="644" stroke="#128575" stroke-width="3.4"/>
+<line x1="193" y1="644" x2="585" y2="290" stroke="#396cc6" stroke-width="3.4"/>
+<line x1="193" y1="644" x2="585" y2="467" stroke="#396cc6" stroke-width="3.4"/>
+<line x1="193" y1="644" x2="585" y2="644" stroke="#396cc6" stroke-width="3.4"/>
+<circle cx="193" cy="290" r="34" fill="#d68014"/>
+<text x="193" y="300" font-size="27" style="fill:#ffffff" font-weight="700" text-anchor="middle">X</text>
+<text x="193" y="357" font-size="20" text-anchor="middle">基地外部辅助点</text>
+<circle cx="193" cy="467" r="34" fill="#128575"/>
+<text x="193" y="477" font-size="27" style="fill:#ffffff" font-weight="700" text-anchor="middle">S3</text>
+<text x="193" y="534" font-size="20" text-anchor="middle">砂叶粉碎机</text>
+<circle cx="193" cy="644" r="34" fill="#396cc6"/>
+<text x="193" y="654" font-size="27" style="fill:#ffffff" font-weight="700" text-anchor="middle">E2</text>
+<text x="193" y="711" font-size="20" text-anchor="middle">封装机</text>
+<circle cx="585" cy="290" r="34" fill="#273c56"/>
+<text x="585" y="300" font-size="27" style="fill:#ffffff" font-weight="700" text-anchor="middle">B3</text>
+<text x="585" y="357" font-size="20" text-anchor="middle">蓝铁粉末研磨机</text>
+<circle cx="585" cy="467" r="34" fill="#273c56"/>
+<text x="585" y="477" font-size="27" style="fill:#ffffff" font-weight="700" text-anchor="middle">B4</text>
+<text x="585" y="534" font-size="20" text-anchor="middle">蓝铁粉末研磨机</text>
+<circle cx="585" cy="644" r="34" fill="#273c56"/>
+<text x="585" y="654" font-size="27" style="fill:#ffffff" font-weight="700" text-anchor="middle">O4</text>
+<text x="585" y="711" font-size="20" text-anchor="middle">源石粉末研磨机</text>
+<text x="58" y="748" font-size="21" font-weight="700">每个左侧点都连接三个右侧点：K₃,₃。</text>
+<text x="780" y="181" font-size="24" font-weight="700">九条路径；内部机器和运输格不能共用</text>
+<rect x="772" y="197" width="736" height="54" rx="5" fill="#f3f6fa"/>
+<text x="787" y="222" font-size="18" style="fill:#d68014" font-weight="700">X → B3</text>
+<text x="787" y="246" font-size="17">X — 仓库取货口5（蓝铁矿）— 精炼炉5 — 粉碎机5 — B3</text>
+<text x="787" y="279" font-size="18" style="fill:#d68014" font-weight="700">X → B4</text>
+<text x="787" y="303" font-size="17">X — 仓库取货口7（蓝铁矿）— 精炼炉7 — 粉碎机7 — B4</text>
+<rect x="772" y="311" width="736" height="54" rx="5" fill="#f3f6fa"/>
+<text x="787" y="336" font-size="18" style="fill:#d68014" font-weight="700">X → O4</text>
+<text x="787" y="360" font-size="17">X — 仓库取货口7（源矿）— 源矿粉碎机7 — O4</text>
+<text x="787" y="393" font-size="18" style="fill:#128575" font-weight="700">S3 → B3</text>
+<text x="787" y="417" font-size="17">S3 — B3</text>
+<rect x="772" y="425" width="736" height="54" rx="5" fill="#f3f6fa"/>
+<text x="787" y="450" font-size="18" style="fill:#128575" font-weight="700">S3 → B4</text>
+<text x="787" y="474" font-size="17">S3 — B4</text>
+<text x="787" y="507" font-size="18" style="fill:#128575" font-weight="700">S3 → O4</text>
+<text x="787" y="531" font-size="17">S3 — O4</text>
+<rect x="772" y="539" width="736" height="54" rx="5" fill="#f3f6fa"/>
+<text x="787" y="564" font-size="18" style="fill:#396cc6" font-weight="700">E2 → B3</text>
+<text x="787" y="588" font-size="17">E2 — P3 配件机 — R3 精炼炉 — B3</text>
+<text x="787" y="621" font-size="18" style="fill:#396cc6" font-weight="700">E2 → B4</text>
+<text x="787" y="645" font-size="17">E2 — P4 配件机 — R4 精炼炉 — B4</text>
+<rect x="772" y="653" width="736" height="54" rx="5" fill="#f3f6fa"/>
+<text x="787" y="678" font-size="18" style="fill:#396cc6" font-weight="700">E2 → O4</text>
+<text x="787" y="702" font-size="17">E2 — O4</text>
+<text x="780" y="753" font-size="17" style="fill:#556174">路径按无向邻接核验；成品支路可逆向列写。</text>
+<rect x="32" y="791" width="1496" height="164" rx="14" fill="#e8eef6"/>
+<text x="56" y="831" font-size="25" font-weight="700">为什么纯带摆放必然矛盾</text>
+<text x="56" y="869" font-size="22">1. 仓库取货口都在基地外边界，可在基地外加入辅助点 X 与三条不相交的弧。</text>
+<text x="56" y="904" font-size="22">2. 机器矩形互不重叠，纯带进路互不共格；压缩它们之后仍应是平面图。</text>
+<text x="56" y="939" font-size="22">3. K₃,₃ 有 6 点、9 边；简单二分平面图必须 E ≤ 2V − 4，此处 9 &gt; 8。</text>
+<rect x="32" y="977" width="1496" height="110" rx="14" fill="#fbe9e8"/>
+<text x="56" y="1017" font-size="27" style="fill:#9c252c" font-weight="700">结论：不要求空矩形也摆不下这条固定接法。</text>
+<text x="56" y="1056" font-size="21" style="fill:#6c3036">证书只用 14 台机器、3 个边界取货口和 18 条真实进路；不涉及协议核心、供电或 737 格面积账。</text>
+</svg>

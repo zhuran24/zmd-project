@@ -1,0 +1,42 @@
+
+Starting CP-SAT solver v9.15.6755
+Parameters: random_seed: 98100 max_time_in_seconds: 60 log_search_progress: true num_search_workers: 6 log_to_stdout: false
+
+Initial satisfaction model '': (model_fingerprint: 0x4194da2729a50d33)
+#Variables: 7 (6 primary variables)
+  - 6 Booleans in [0,1]
+  - 1 in [1,9]
+#kLinear1: 1
+#kTable: 1
+
+Starting presolve at 0.00s
+INFEASIBLE: 'table: positive table without tuples'
+Unsat after presolving constraint #0 (warning, dump might be inconsistent): table { exprs { } }
+  2.56e-05s  0.00e+00d  [PresolveToFixPoint] 
+
+Presolve summary:
+  - 0 affine relations were detected.
+  - rule 'linear1: x in domain' was applied 1 time.
+  - rule 'linear: fixed or dup variables' was applied 1 time.
+  - rule 'presolve: iteration' was applied 1 time.
+  - rule 'table: all tuples invalid' was applied 1 time.
+  - rule 'table: remove expressions' was applied 1 time.
+  - rule 'table: remove tuples' was applied 1 time.
+Problem closed by presolve.
+CpSolverResponse summary:
+status: INFEASIBLE
+objective: NA
+best_bound: NA
+integers: 0
+booleans: 0
+conflicts: 0
+branches: 0
+propagations: 0
+integer_propagations: 0
+restarts: 0
+lp_iterations: 0
+walltime: 0.000321574
+usertime: 0.000321592
+deterministic_time: 0
+gap_integral: 0
+

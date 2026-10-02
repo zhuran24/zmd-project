@@ -1,0 +1,122 @@
+{
+  "status": "PROVED_INFEASIBLE_FOR_FIXED_S2",
+  "static_pass": false,
+  "certificates": [
+    "S3-E2",
+    "S5-E3"
+  ],
+  "certificate_pass": true,
+  "exact_rotation_histogram": {
+    "3": 40,
+    "1": 24
+  },
+  "planar_required_faces": 5,
+  "networkx": {
+    "library": "networkx",
+    "version": "3.7",
+    "full_graph_without_boundary_apex_planar": true,
+    "full_graph_with_boundary_apex_planar": false,
+    "selected_subdivision_planar": false,
+    "grid_with_boundary_apex": {
+      "vertices": 4901,
+      "edges": 9936,
+      "planar": true
+    }
+  },
+  "edge_deletion_controls": [
+    {
+      "omitted_edge": [
+        "基地外部",
+        "铁研磨2"
+      ],
+      "rotation_count": 16,
+      "has_planar_rotation": true
+    },
+    {
+      "omitted_edge": [
+        "基地外部",
+        "铁研磨3"
+      ],
+      "rotation_count": 16,
+      "has_planar_rotation": true
+    },
+    {
+      "omitted_edge": [
+        "基地外部",
+        "源研磨3"
+      ],
+      "rotation_count": 16,
+      "has_planar_rotation": true
+    },
+    {
+      "omitted_edge": [
+        "砂叶粉碎2",
+        "铁研磨2"
+      ],
+      "rotation_count": 16,
+      "has_planar_rotation": true
+    },
+    {
+      "omitted_edge": [
+        "砂叶粉碎2",
+        "铁研磨3"
+      ],
+      "rotation_count": 16,
+      "has_planar_rotation": true
+    },
+    {
+      "omitted_edge": [
+        "砂叶粉碎2",
+        "源研磨3"
+      ],
+      "rotation_count": 16,
+      "has_planar_rotation": true
+    },
+    {
+      "omitted_edge": [
+        "封装1",
+        "铁研磨2"
+      ],
+      "rotation_count": 16,
+      "has_planar_rotation": true
+    },
+    {
+      "omitted_edge": [
+        "封装1",
+        "铁研磨3"
+      ],
+      "rotation_count": 16,
+      "has_planar_rotation": true
+    },
+    {
+      "omitted_edge": [
+        "封装1",
+        "源研磨3"
+      ],
+      "rotation_count": 16,
+      "has_planar_rotation": true
+    }
+  ],
+  "tamper_controls": [
+    {
+      "case": "删除一条真实进路",
+      "rejected": true
+    },
+    {
+      "case": "伪造内部共用点",
+      "rejected": true
+    },
+    {
+      "case": "把外部接到内陆机器",
+      "rejected": true
+    }
+  ],
+  "scope": "第98轮S2完整接法 + 所有仓库取货口在基地边界 + 纯带进路互不共格",
+  "not_claimed": [
+    "任意接法不可行",
+    "动态充分条件的蕴含为假",
+    "全局最优值",
+    "已实现空矩形"
+  ],
+  "layout_exists": false
+}

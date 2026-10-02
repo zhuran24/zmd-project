@@ -1,0 +1,262 @@
+{
+  "all_pass": true,
+  "checks": {
+    "all_inputs_unchanged": true,
+    "legacy_entry_and_catalog_unchanged": true,
+    "all_links_exist": true,
+    "fixed_s2_certificate_verified": true,
+    "cp_sat_infeasible": true,
+    "replay_expected": true,
+    "no_layout_claim": true,
+    "static_false": true,
+    "all_coordinate_checks_not_run": true,
+    "within_wall_limit": true,
+    "svg_and_png_present": true
+  },
+  "input_stability": [
+    {
+      "source": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第98-100轮/前提快照/《明日方舟：终末地》游戏规则.txt",
+      "expected": "c8d3a17b8830baba18aea36c4c66f02f8873895188f8821176cc218aa6135f93",
+      "source_unchanged": true,
+      "snapshot_unchanged": true
+    },
+    {
+      "source": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第98-100轮/前提快照/求解任务.txt",
+      "expected": "7bec7a1edf2f46644a6e6a75d588f5ff05202cc32d6b42430677ea39b878309b",
+      "source_unchanged": true,
+      "snapshot_unchanged": true
+    },
+    {
+      "source": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第98-100轮/前提快照/求解约束.txt",
+      "expected": "dfea46c61f29be5a86659bce3642009d2558ace073d6dbd79f5dd3c6475226db",
+      "source_unchanged": true,
+      "snapshot_unchanged": true
+    },
+    {
+      "source": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第98-100轮/推导98S2.md",
+      "expected": "5d5d146fb200b34b8b1a7045c6584eac3349e48899cf8c71a7eec7d47f3685af",
+      "source_unchanged": true,
+      "snapshot_unchanged": true
+    },
+    {
+      "source": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第98-100轮/推导98S2/graph_98040.json",
+      "expected": "657b7756629e603f8da603c8510f207277baa58e681e464b52e808a6de6bb14b",
+      "source_unchanged": true,
+      "snapshot_unchanged": true
+    },
+    {
+      "source": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第98-100轮/推导98S2/factory_check.py",
+      "expected": "b3cca5a6d0bdaf8b1a44dda02778ef7f8afd5aab7abf4aedd009a673fa1ea55f",
+      "source_unchanged": true,
+      "snapshot_unchanged": true
+    },
+    {
+      "source": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/格式.md",
+      "expected": "c1da2787a0b8f86201f9e207c897be3b8ddf4e49dca3284d03f34bc334019987",
+      "source_unchanged": true,
+      "snapshot_unchanged": true
+    }
+  ],
+  "legacy_stability": [
+    {
+      "checker": "A",
+      "entry_unchanged": true,
+      "catalog_unchanged": true
+    },
+    {
+      "checker": "B",
+      "entry_unchanged": true,
+      "catalog_unchanged": true
+    }
+  ],
+  "syntax_parsed": [
+    "代码/build_s2.py",
+    "代码/check_components.py",
+    "代码/check_topology.py",
+    "代码/cp_sat_presolve.py",
+    "代码/draw_obstruction.py",
+    "代码/legacy_status.py",
+    "代码/replay.py",
+    "代码/static_check.py",
+    "代码/validate_delivery.py"
+  ],
+  "links": [
+    {
+      "document": "/home/zhuran24/zmd-research-fresh/求解器/构造/第二张全厂候选/构造A.md",
+      "link": "构造A/逻辑接法.json",
+      "exists": true
+    },
+    {
+      "document": "/home/zhuran24/zmd-research-fresh/求解器/构造/第二张全厂候选/构造A.md",
+      "link": "构造A/证据/接法逐条对照.json",
+      "exists": true
+    },
+    {
+      "document": "/home/zhuran24/zmd-research-fresh/求解器/构造/第二张全厂候选/构造A.md",
+      "link": "构造A/整数模型.md",
+      "exists": true
+    },
+    {
+      "document": "/home/zhuran24/zmd-research-fresh/求解器/构造/第二张全厂候选/构造A.md",
+      "link": "构造A/证据/CP-SAT-不要求空矩形.json",
+      "exists": true
+    },
+    {
+      "document": "/home/zhuran24/zmd-research-fresh/求解器/构造/第二张全厂候选/构造A.md",
+      "link": "构造A/证据/不可平面证书-S3-E2.json",
+      "exists": true
+    },
+    {
+      "document": "/home/zhuran24/zmd-research-fresh/求解器/构造/第二张全厂候选/构造A.md",
+      "link": "构造A/证据/不可平面证书-S5-E3.json",
+      "exists": true
+    },
+    {
+      "document": "/home/zhuran24/zmd-research-fresh/求解器/构造/第二张全厂候选/构造A.md",
+      "link": "构造A/代码/static_check.py",
+      "exists": true
+    },
+    {
+      "document": "/home/zhuran24/zmd-research-fresh/求解器/构造/第二张全厂候选/构造A.md",
+      "link": "构造A/证据/静态检查结果.json",
+      "exists": true
+    },
+    {
+      "document": "/home/zhuran24/zmd-research-fresh/求解器/构造/第二张全厂候选/构造A.md",
+      "link": "构造A/检查器A/复查状态.json",
+      "exists": true
+    },
+    {
+      "document": "/home/zhuran24/zmd-research-fresh/求解器/构造/第二张全厂候选/构造A.md",
+      "link": "构造A/检查器B/复查状态.json",
+      "exists": true
+    },
+    {
+      "document": "/home/zhuran24/zmd-research-fresh/求解器/构造/第二张全厂候选/构造A.md",
+      "link": "构造A/布线障碍.svg",
+      "exists": true
+    },
+    {
+      "document": "/home/zhuran24/zmd-research-fresh/求解器/构造/第二张全厂候选/构造A.md",
+      "link": "构造A/布线障碍.png",
+      "exists": true
+    },
+    {
+      "document": "/home/zhuran24/zmd-research-fresh/求解器/构造/第二张全厂候选/构造A.md",
+      "link": "构造A/依据快照/规则.txt",
+      "exists": true
+    },
+    {
+      "document": "/home/zhuran24/zmd-research-fresh/求解器/构造/第二张全厂候选/构造A.md",
+      "link": "构造A/依据快照/任务.txt",
+      "exists": true
+    },
+    {
+      "document": "/home/zhuran24/zmd-research-fresh/求解器/构造/第二张全厂候选/构造A.md",
+      "link": "构造A/依据快照/约束.txt",
+      "exists": true
+    },
+    {
+      "document": "/home/zhuran24/zmd-research-fresh/求解器/构造/第二张全厂候选/构造A.md",
+      "link": "构造A/依据快照/推导98S2.md",
+      "exists": true
+    },
+    {
+      "document": "/home/zhuran24/zmd-research-fresh/求解器/构造/第二张全厂候选/构造A.md",
+      "link": "构造A/证据/输入指纹.json",
+      "exists": true
+    },
+    {
+      "document": "/home/zhuran24/zmd-research-fresh/求解器/构造/第二张全厂候选/构造A.md",
+      "link": "构造A/证据/不可平面证书-S3-E2.json",
+      "exists": true
+    },
+    {
+      "document": "/home/zhuran24/zmd-research-fresh/求解器/构造/第二张全厂候选/构造A.md",
+      "link": "构造A/证据/拓扑复核结果.json",
+      "exists": true
+    },
+    {
+      "document": "/home/zhuran24/zmd-research-fresh/求解器/构造/第二张全厂候选/构造A.md",
+      "link": "构造A/代码/build_s2.py",
+      "exists": true
+    },
+    {
+      "document": "/home/zhuran24/zmd-research-fresh/求解器/构造/第二张全厂候选/构造A.md",
+      "link": "构造A/代码/check_topology.py",
+      "exists": true
+    },
+    {
+      "document": "/home/zhuran24/zmd-research-fresh/求解器/构造/第二张全厂候选/构造A.md",
+      "link": "构造A/证据/全部64种旋转系统.json",
+      "exists": true
+    },
+    {
+      "document": "/home/zhuran24/zmd-research-fresh/求解器/构造/第二张全厂候选/构造A.md",
+      "link": "构造A/代码/cp_sat_presolve.py",
+      "exists": true
+    },
+    {
+      "document": "/home/zhuran24/zmd-research-fresh/求解器/构造/第二张全厂候选/构造A.md",
+      "link": "构造A/证据/CP-SAT-撤去平面条件对照.json",
+      "exists": true
+    },
+    {
+      "document": "/home/zhuran24/zmd-research-fresh/求解器/构造/第二张全厂候选/构造A.md",
+      "link": "构造A/整数模型.md",
+      "exists": true
+    },
+    {
+      "document": "/home/zhuran24/zmd-research-fresh/求解器/构造/第二张全厂候选/构造A.md",
+      "link": "构造A/证据/静态程序组件对照.json",
+      "exists": true
+    },
+    {
+      "document": "/home/zhuran24/zmd-research-fresh/求解器/构造/第二张全厂候选/构造A.md",
+      "link": "构造A/证据/静态检查结果.json",
+      "exists": true
+    },
+    {
+      "document": "/home/zhuran24/zmd-research-fresh/求解器/构造/第二张全厂候选/构造A.md",
+      "link": "构造A/证据/旧检查器复查.json",
+      "exists": true
+    },
+    {
+      "document": "/home/zhuran24/zmd-research-fresh/求解器/构造/第二张全厂候选/构造A.md",
+      "link": "构造A/证据/复跑结果.json",
+      "exists": true
+    },
+    {
+      "document": "/home/zhuran24/zmd-research-fresh/求解器/构造/第二张全厂候选/构造A.md",
+      "link": "构造A/证据/交付核验.json",
+      "exists": true
+    },
+    {
+      "document": "/home/zhuran24/zmd-research-fresh/求解器/构造/第二张全厂候选/构造A.md",
+      "link": "构造A/证据/读者自审.json",
+      "exists": true
+    },
+    {
+      "document": "/home/zhuran24/zmd-research-fresh/求解器/构造/第二张全厂候选/构造A.md",
+      "link": "构造A/证据/文件清单.json",
+      "exists": true
+    },
+    {
+      "document": "/home/zhuran24/zmd-research-fresh/求解器/构造/第二张全厂候选/构造A/整数模型.md",
+      "link": "逻辑接法.json",
+      "exists": true
+    },
+    {
+      "document": "/home/zhuran24/zmd-research-fresh/求解器/构造/第二张全厂候选/构造A/整数模型.md",
+      "link": "代码/cp_sat_presolve.py",
+      "exists": true
+    },
+    {
+      "document": "/home/zhuran24/zmd-research-fresh/求解器/构造/第二张全厂候选/构造A/整数模型.md",
+      "link": "证据/不可平面证书-S3-E2.json",
+      "exists": true
+    }
+  ],
+  "report_sha256": "d35120b93252164691eebdc97aae51ac7fb110a382c2f6f672bf029ba0d384ac",
+  "scope": "交付完整性通过，不是布局静态通过。"
+}

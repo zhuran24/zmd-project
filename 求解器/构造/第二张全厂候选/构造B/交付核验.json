@@ -1,0 +1,83 @@
+{
+  "date_utc": "2026-10-02T13:02:09.001371+00:00",
+  "delivery_evidence_pass": true,
+  "layout_static_pass": false,
+  "report_sha256": "b6b873758c3f9f6e28e15a08ec919bedf3905985f03cbe31212c79aa5c37fe6a",
+  "links": [
+    {
+      "target": "构造B/S2接法.json",
+      "exists": true
+    },
+    {
+      "target": "构造B/布线障碍.svg",
+      "exists": true
+    },
+    {
+      "target": "构造B/布线障碍.png",
+      "exists": true
+    },
+    {
+      "target": "../../候选约束轮次/第98-100轮/推导98S2.md",
+      "exists": true
+    },
+    {
+      "target": "构造B/不可平面布线证书.json",
+      "exists": true
+    },
+    {
+      "target": "构造B/接法与平面性.py",
+      "exists": true
+    },
+    {
+      "target": "构造B/静态检查.py",
+      "exists": true
+    },
+    {
+      "target": "构造B/静态检查结果.json",
+      "exists": true
+    },
+    {
+      "target": "构造B/平面性复核.json",
+      "exists": true
+    },
+    {
+      "target": "构造B/旧检查器复查结果.json",
+      "exists": true
+    },
+    {
+      "target": "构造B/证书反向检验.py",
+      "exists": true
+    },
+    {
+      "target": "构造B/证书反向检验结果.json",
+      "exists": true
+    },
+    {
+      "target": "构造B/输入指纹.json",
+      "exists": true
+    },
+    {
+      "target": "构造B/",
+      "exists": true
+    }
+  ],
+  "current_checker_and_contract_hashes_match": true,
+  "source_fingerprints_match_supported_versions": true,
+  "proof_verified_twice": true,
+  "reader_audit": "读者自审.md",
+  "visual_review": "布线障碍.svg已渲染为PNG并目视检查，可读且无遮挡",
+  "run_scope": {
+    "started_utc": "2026-10-02T12:39:28+00:00",
+    "max_simultaneous_worker_processes": 2,
+    "solver_worker_threads": 0,
+    "compute_budget_cores": 6,
+    "timed_out": false
+  },
+  "not_done": [
+    "坐标布局",
+    "坐标几何逐项检查",
+    "旧检查器A/B适配与运行",
+    "满库存调试",
+    "动态运行认证"
+  ]
+}

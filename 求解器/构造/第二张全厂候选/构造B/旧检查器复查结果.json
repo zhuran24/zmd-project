@@ -1,0 +1,20 @@
+{
+  "results": [
+    {
+      "checker": "A",
+      "source": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/check_full.py",
+      "sha256": "d139be0b68bb529dca5575e6d4f1845d904c3ed8151b3b6aadfbf5ea2614e1fe",
+      "status": "NOT_RUN_NO_LAYOUT",
+      "adapted": false,
+      "reason": "没有full-factory-static-v1坐标候选。S2接法.json为逻辑接法，不能充当旧几何检查器的输入；未运行或声称通过。"
+    },
+    {
+      "checker": "B",
+      "source": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器B/check.py",
+      "sha256": "ed3b6e8bd40ae838e037accefab64a3d6e7615bdd40113815e1ac42fc647a20d",
+      "status": "NOT_RUN_NO_LAYOUT",
+      "adapted": false,
+      "reason": "没有full-factory-static-v1坐标候选。S2接法.json为逻辑接法，不能充当旧几何检查器的输入；未运行或声称通过。"
+    }
+  ]
+}

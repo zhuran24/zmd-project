@@ -1,0 +1,92 @@
+[
+  {
+    "path": "构造B.md",
+    "sha256": "b6b873758c3f9f6e28e15a08ec919bedf3905985f03cbe31212c79aa5c37fe6a",
+    "bytes": 9151
+  },
+  {
+    "path": "构造B/S2接法.json",
+    "sha256": "625bf7c6795327077a55a3450947ba59be1311b62e5c8eb0226e5af5d69ae50e",
+    "bytes": 84346
+  },
+  {
+    "path": "构造B/不可平面布线证书.json",
+    "sha256": "64b91c291f54b5d96500b71716b52dee33d79c65e4f7bb20024170bc160cfb51",
+    "bytes": 5615
+  },
+  {
+    "path": "构造B/交付核验.json",
+    "sha256": "a555d64665122d6a7221230ec2560550411dd0671df4c147decf39da789d3e19",
+    "bytes": 2009
+  },
+  {
+    "path": "构造B/布线障碍.png",
+    "sha256": "33e08496e1d3c3441ebd7479cd2bf4792cd337271cdd94d314f24f438e499a92",
+    "bytes": 186433
+  },
+  {
+    "path": "构造B/布线障碍.svg",
+    "sha256": "ae42a8d7ff798e7c3bb5cccd6aea3d06b024f9f76b13de047ab3510a4aaf4d62",
+    "bytes": 3691
+  },
+  {
+    "path": "构造B/平面性复核.json",
+    "sha256": "97356a02f0f42685fb9d0a898c58d039b31ad2cf1dac575872b0a11097505465",
+    "bytes": 1155
+  },
+  {
+    "path": "构造B/接法与平面性.py",
+    "sha256": "c02e3aff7c31aa458245c1aee3fb0ae04b6283c808ee43d5c7fb995b63d6c6f9",
+    "bytes": 9896
+  },
+  {
+    "path": "构造B/旧检查器复查结果.json",
+    "sha256": "75f2615ec9606667d162104e88ec2d21e16f9053ebdb0db8e5bfed3c8e2bfdf8",
+    "bytes": 935
+  },
+  {
+    "path": "构造B/绘制障碍.py",
+    "sha256": "41e0901993f1fd1e545b1d67856b363aad32d406ccae29a0cb82edc86209cc89",
+    "bytes": 3293
+  },
+  {
+    "path": "构造B/证书反向检验.py",
+    "sha256": "722f8e29f87d2387d6e8354f91b07d8df4ec11e7ffa3c7b95bdfb910695b0b90",
+    "bytes": 3026
+  },
+  {
+    "path": "构造B/证书反向检验结果.json",
+    "sha256": "956f50c1ec9e6f709431aad51a7345fed051541d1d94d1e067e799180a034acd",
+    "bytes": 1693
+  },
+  {
+    "path": "构造B/读者自审.md",
+    "sha256": "1eb02ded2ba06a2dd30f2e597d6a32688133368dc69c950e1bbf64c1e5e80a67",
+    "bytes": 1943
+  },
+  {
+    "path": "构造B/输入指纹.json",
+    "sha256": "316369650d629d8c7d4ba53148cabb9e3e6356ff6349a277232a8f2242d130d1",
+    "bytes": 879
+  },
+  {
+    "path": "构造B/返回.json",
+    "sha256": "5908d1cb4635ea0a2e49334de6610244fa922b0f7fe481fc486c575a38f792c7",
+    "bytes": 396
+  },
+  {
+    "path": "构造B/进度.md",
+    "sha256": "2abc457ad2e6c66ffae4aaa1fbc1b359adaac59be577345051e2ccd11d30d441",
+    "bytes": 462
+  },
+  {
+    "path": "构造B/静态检查.py",
+    "sha256": "786d6660cb90987e9dccee9a93334b8dcc8e4aadd91152c8d7c064876a334d47",
+    "bytes": 16391
+  },
+  {
+    "path": "构造B/静态检查结果.json",
+    "sha256": "1bda30380f90d0ded12df4629d04e9f8ddd6e7cdb885f28351b3505be73c1166",
+    "bytes": 7784
+  }
+]

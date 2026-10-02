@@ -1,0 +1,48 @@
+{
+  "all_pass": true,
+  "meaning": "正证书有效；断边、重复路径、错误边界前件均被拒绝。",
+  "cases": [
+    {
+      "id": "封装机2_砂叶粉碎机3",
+      "original_pass": true,
+      "real_edges_tested": 18,
+      "every_deleted_real_edge_rejected": true,
+      "repeated_path_rejected": true,
+      "interior_core_as_exterior_neighbor_rejected": true,
+      "networkx_single_edge_deletions": 21,
+      "every_single_edge_deleted_graph_planar": true
+    },
+    {
+      "id": "封装机3_砂叶粉碎机5",
+      "original_pass": true,
+      "real_edges_tested": 18,
+      "every_deleted_real_edge_rejected": true,
+      "repeated_path_rejected": true,
+      "interior_core_as_exterior_neighbor_rejected": true,
+      "networkx_single_edge_deletions": 21,
+      "every_single_edge_deleted_graph_planar": true
+    },
+    {
+      "id": "灌装机1_砂叶粉碎机7",
+      "original_pass": true,
+      "real_edges_tested": 20,
+      "every_deleted_real_edge_rejected": true,
+      "repeated_path_rejected": true,
+      "interior_core_as_exterior_neighbor_rejected": true,
+      "networkx_single_edge_deletions": 23,
+      "every_single_edge_deleted_graph_planar": true
+    },
+    {
+      "id": "灌装机2_砂叶粉碎机9",
+      "original_pass": true,
+      "real_edges_tested": 20,
+      "every_deleted_real_edge_rejected": true,
+      "repeated_path_rejected": true,
+      "interior_core_as_exterior_neighbor_rejected": true,
+      "networkx_single_edge_deletions": 23,
+      "every_single_edge_deleted_graph_planar": true
+    }
+  ],
+  "independent_checker_sha256": "786d6660cb90987e9dccee9a93334b8dcc8e4aadd91152c8d7c064876a334d47",
+  "networkx_version": "3.7"
+}

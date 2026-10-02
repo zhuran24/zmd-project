@@ -1,0 +1,11 @@
+{
+  "report_path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第二张全厂候选/构造B.md",
+  "layout_path": "",
+  "static_pass": false,
+  "empty_rect": "",
+  "summary": "S2固定接法有四处不可平面布线障碍，证书已复核。",
+  "blockers": [
+    "边界取矿与纯带不共格要求下含K3,3结构",
+    "无坐标候选，几何及旧检查器A/B未执行"
+  ]
+}

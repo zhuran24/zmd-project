@@ -1,0 +1,23 @@
+{
+  "checker": "A",
+  "status": "NOT_RUN_NO_LAYOUT",
+  "static_pass": false,
+  "original_path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/check_full.py",
+  "original_entry_sha256": "d139be0b68bb529dca5575e6d4f1845d904c3ed8151b3b6aadfbf5ea2614e1fe",
+  "original_catalog_sha256": "a1fd6b583f8469b3b1ddcbcc524037e6dfd4e61f60b7ad600b2f96e867e88f9e",
+  "original_supported_fingerprints": {
+    "rules": "52df4c12ce90975b861a6a663bd37873e03c9549658d200dc7e95fabc4bc29f3",
+    "task": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+    "constraints": "a67c18dec5f6ae59c41e8620d270007f20c2d3e5b202521d0cca12f616bca3df"
+  },
+  "snapshot_fingerprints": {
+    "rules": "c8d3a17b8830baba18aea36c4c66f02f8873895188f8821176cc218aa6135f93",
+    "task": "7bec7a1edf2f46644a6e6a75d588f5ff05202cc32d6b42430677ea39b878309b",
+    "constraints": "dfea46c61f29be5a86659bce3642009d2558ace073d6dbd79f5dd3c6475226db"
+  },
+  "fingerprints_match": false,
+  "adapter_created": false,
+  "original_modified": false,
+  "reason": "没有完整坐标候选可交给固定布局检查器。拓扑必要条件已经排除S2接法；未将逻辑图伪装成full-factory-static-v1布局。",
+  "scope": "不是旧检查器A/B的通过或拒绝结果；未调用其候选检查入口。"
+}

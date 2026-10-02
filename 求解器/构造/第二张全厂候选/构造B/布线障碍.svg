@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1420" height="1010" viewBox="0 0 1420 1010">
+<style>text {font-family:"Noto Sans CJK SC","Source Han Sans CN","Microsoft YaHei",sans-serif;fill:#17212e} .title{font-size:28px;font-weight:700}.subtitle{font-size:17px;fill:#46566a}.body{font-size:18px}.small{font-size:16px}.node{stroke:#334e68;stroke-width:2;fill:#fff}.line{fill:none;stroke-width:3}.panel{fill:#fff;stroke:#cbd5e1;stroke-width:1.4}</style>
+<rect width="1420" height="1010" fill="#f0f4f8"/>
+<text x="45" y="50" class="title">S2 接法的边界布线障碍</text>
+<text x="45" y="80" class="subtitle">第一台灌装机组 · 拓扑示意，非 70×70 布局；线条相交处表示纯传送带无法实现的交叉</text>
+<rect x="30" y="108" width="1360" height="555" rx="12" class="panel"/>
+
+<path d="M 425 195 L 1090 195" class="line" stroke="#2563eb" opacity=".67"/>
+<path d="M 425 195 L 1090 365" class="line" stroke="#2563eb" opacity=".67"/>
+<path d="M 425 195 L 1090 535" class="line" stroke="#2563eb" opacity=".67"/>
+<path d="M 425 365 L 1090 195" class="line" stroke="#c2410c" opacity=".67"/>
+<path d="M 425 365 L 1090 365" class="line" stroke="#c2410c" opacity=".67"/>
+<path d="M 425 365 L 1090 535" class="line" stroke="#c2410c" opacity=".67"/>
+<path d="M 425 535 L 1090 195" class="line" stroke="#6d28d9" opacity=".67"/>
+<path d="M 425 535 L 1090 365" class="line" stroke="#6d28d9" opacity=".67"/>
+<path d="M 425 535 L 1090 535" class="line" stroke="#6d28d9" opacity=".67"/>
+<rect x="60" y="157" width="365" height="76" rx="10" class="node"/>
+<text x="78" y="190" class="body">EXT：基地外侧辅助点</text>
+<text x="78" y="217" class="small">只在证明中连接贴边取货口</text>
+<rect x="60" y="327" width="365" height="76" rx="10" class="node"/>
+<text x="78" y="360" class="body">S7：砂叶粉碎机</text>
+<text x="78" y="387" class="small">同一台机器的三条取货进路</text>
+<rect x="60" y="497" width="365" height="76" rx="10" class="node"/>
+<text x="78" y="530" class="body">H1：塑形机</text>
+<text x="78" y="557" class="small">经第一台灌装机连到 H2</text>
+<rect x="1090" y="157" width="270" height="76" rx="10" class="node"/>
+<text x="1110" y="190" class="body">B7：研磨机</text>
+<text x="1110" y="217" class="small">蓝铁粉末＋砂叶粉末</text>
+<rect x="1090" y="327" width="270" height="76" rx="10" class="node"/>
+<text x="1110" y="360" class="body">B8：研磨机</text>
+<text x="1110" y="387" class="small">蓝铁粉末＋砂叶粉末</text>
+<rect x="1090" y="497" width="270" height="76" rx="10" class="node"/>
+<text x="1110" y="530" class="body">B9：研磨机</text>
+<text x="1110" y="557" class="small">蓝铁粉末＋砂叶粉末</text>
+<text x="470" y="617" class="body">九条线代表内部互不相交的九条路径；缩短路径后是 K₃,₃。</text>
+<rect x="30" y="685" width="1360" height="295" rx="12" class="panel"/>
+<text x="55" y="723" class="body">被缩短的路径（忽略方向，只检验能否不交叉地摆放）：</text>
+<text x="55" y="762" class="small">EXT → 第13／15／17个蓝铁矿仓库取货口 → 对应精炼炉 → 蓝铁块粉碎机 → B7／B8／B9</text>
+<text x="55" y="799" class="small">S7 → B7；S7 → B8；S7 → B9</text>
+<text x="55" y="836" class="small">H1 — R7 — B7；H1 — R8 — B8；H1 — F1 — H2 — R9 — B9</text>
+<text x="55" y="885" class="body">平面简单二部图：m ≤ 2n − 4。这里 n = 6、m = 9，而 2n − 4 = 8，矛盾。</text>
+<text x="55" y="930" class="subtitle">同类证书另见 S3／E2、S5／E3、S9／H3。任何机器朝向、带长和供电桩摆放都不能消除这个必要条件。</text>
+</svg>

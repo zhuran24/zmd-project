@@ -1,0 +1,37 @@
+[
+  {
+    "source": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第98-100轮/前提快照/《明日方舟：终末地》游戏规则.txt",
+    "copy": "依据快照/规则.txt",
+    "sha256": "c8d3a17b8830baba18aea36c4c66f02f8873895188f8821176cc218aa6135f93"
+  },
+  {
+    "source": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第98-100轮/前提快照/求解任务.txt",
+    "copy": "依据快照/任务.txt",
+    "sha256": "7bec7a1edf2f46644a6e6a75d588f5ff05202cc32d6b42430677ea39b878309b"
+  },
+  {
+    "source": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第98-100轮/前提快照/求解约束.txt",
+    "copy": "依据快照/约束.txt",
+    "sha256": "dfea46c61f29be5a86659bce3642009d2558ace073d6dbd79f5dd3c6475226db"
+  },
+  {
+    "source": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第98-100轮/推导98S2.md",
+    "copy": "依据快照/推导98S2.md",
+    "sha256": "5d5d146fb200b34b8b1a7045c6584eac3349e48899cf8c71a7eec7d47f3685af"
+  },
+  {
+    "source": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第98-100轮/推导98S2/graph_98040.json",
+    "copy": "依据快照/既有逻辑图.json",
+    "sha256": "657b7756629e603f8da603c8510f207277baa58e681e464b52e808a6de6bb14b"
+  },
+  {
+    "source": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第98-100轮/推导98S2/factory_check.py",
+    "copy": "依据快照/既有逻辑图生成器.py",
+    "sha256": "b3cca5a6d0bdaf8b1a44dda02778ef7f8afd5aab7abf4aedd009a673fa1ea55f"
+  },
+  {
+    "source": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/格式.md",
+    "copy": "依据快照/全厂静态格式.md",
+    "sha256": "c1da2787a0b8f86201f9e207c897be3b8ddf4e49dca3284d03f34bc334019987"
+  }
+]

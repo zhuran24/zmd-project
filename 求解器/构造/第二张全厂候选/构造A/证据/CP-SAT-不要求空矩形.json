@@ -1,0 +1,20 @@
+{
+  "model": "固定S2逐格整数模型的平面性必要子问题",
+  "require_planar": true,
+  "status": "INFEASIBLE",
+  "workers": 6,
+  "wall_seconds": 0.000507545999425929,
+  "max_seconds": 60,
+  "ortools_version": "9.15.6755",
+  "model_sha256": "fd29705570d1320a4254fbfa75e3b561f7db09e7eebde28e378c3a4950942a0e",
+  "rotation_table_sha256": "75c4a758b9281c61c2e842ba93187e1e1b1857cc229bf6fc1cbbcf65dbcf5dd0",
+  "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 0\nbooleans: 0\nconflicts: 0\nbranches: 0\npropagations: 0\ninteger_propagations: 0\nrestarts: 0\nlp_iterations: 0\nwalltime: 0.000321574\nusertime: 0.000321592\ndeterministic_time: 0\ngap_integral: 0\n",
+  "exhaustive_rotation_rows": 64,
+  "required_planar_faces": 5,
+  "permitted_face_counts": [
+    1,
+    3
+  ],
+  "grid_model_expanded": false,
+  "reason": "必要子问题已不可行，未生成坐标或路格变量；不是70×70全模型已运行的声称。"
+}

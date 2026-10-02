@@ -1,0 +1,99 @@
+{
+  "candidate_sha256": null,
+  "checks": [
+    {
+      "id": "schema",
+      "name": "格式和依据指纹",
+      "status": "NOT_RUN_NO_LAYOUT",
+      "reason": "固定S2接法已被平面性必要条件排除，没有坐标布局"
+    },
+    {
+      "id": "in_bounds",
+      "name": "全部单位在70×70内",
+      "status": "NOT_RUN_NO_LAYOUT",
+      "reason": "固定S2接法已被平面性必要条件排除，没有坐标布局"
+    },
+    {
+      "id": "no_overlap",
+      "name": "全部实体占格互不重叠",
+      "status": "NOT_RUN_NO_LAYOUT",
+      "reason": "固定S2接法已被平面性必要条件排除，没有坐标布局"
+    },
+    {
+      "id": "machines",
+      "name": "230台机器的种类、尺寸、旋转、配方与制造开关",
+      "status": "NOT_RUN_NO_LAYOUT",
+      "reason": "固定S2接法已被平面性必要条件排除，没有坐标布局"
+    },
+    {
+      "id": "core_outlets",
+      "name": "唯一协议核心、六口源矿、46个左下边界仓库取货口",
+      "status": "NOT_RUN_NO_LAYOUT",
+      "reason": "固定S2接法已被平面性必要条件排除，没有坐标布局"
+    },
+    {
+      "id": "transport",
+      "name": "只有合法纯有向传送带，没有被禁止的单位",
+      "status": "NOT_RUN_NO_LAYOUT",
+      "reason": "固定S2接法已被平面性必要条件排除，没有坐标布局"
+    },
+    {
+      "id": "automatic_channels",
+      "name": "全端口独立重建，与声明逐端点完全相等，无额外自动通道",
+      "status": "NOT_RUN_NO_LAYOUT",
+      "reason": "固定S2接法已被平面性必要条件排除，没有坐标布局"
+    },
+    {
+      "id": "pure_paths",
+      "name": "全部进路至少一格，简单有向、不共用运输格、无游离格或纯运输环",
+      "status": "NOT_RUN_NO_LAYOUT",
+      "reason": "固定S2接法已被平面性必要条件排除，没有坐标布局"
+    },
+    {
+      "id": "s2_connections",
+      "name": "逐台逐路对应S2全部325条接法和各路物品",
+      "status": "NOT_RUN_NO_LAYOUT",
+      "reason": "固定S2接法已被平面性必要条件排除，没有坐标布局"
+    },
+    {
+      "id": "power",
+      "name": "每台制造单位与至少一个供电桩的12×12覆盖相交",
+      "status": "NOT_RUN_NO_LAYOUT",
+      "reason": "固定S2接法已被平面性必要条件排除，没有坐标布局"
+    },
+    {
+      "id": "equal_length",
+      "name": "H6→F4与Q6→F4运输格数相等",
+      "status": "NOT_RUN_NO_LAYOUT",
+      "reason": "固定S2接法已被平面性必要条件排除，没有坐标布局"
+    },
+    {
+      "id": "empty_rectangle",
+      "name": "无单位占用，短边至少6，面积和短边按全图最大值核验",
+      "status": "NOT_RUN_NO_LAYOUT",
+      "reason": "固定S2接法已被平面性必要条件排除，没有坐标布局"
+    },
+    {
+      "id": "material_balance",
+      "name": "按实际分解进路核对精确平均流、配方批率、全部矿口与成品目标",
+      "status": "NOT_RUN_NO_LAYOUT",
+      "reason": "固定S2接法已被平面性必要条件排除，没有坐标布局"
+    },
+    {
+      "id": "logical_feed_claims",
+      "name": "可选logical_feeds的路径、物品、速率与端点声明",
+      "status": "NOT_RUN_NO_LAYOUT",
+      "reason": "固定S2接法已被平面性必要条件排除，没有坐标布局"
+    }
+  ],
+  "coordinate_checks_pass": false,
+  "checker": "construction-A-static-1",
+  "checker_sha256": "93c2a5a0dc27571cdcfebb35bfb3e9a401912cdf62e03cc21a9fc63d42fd333b",
+  "topology_precondition": "FAIL",
+  "topology_evidence": "拓扑复核结果.json",
+  "static_pass": false,
+  "layout_path": "",
+  "runtime_certified": false,
+  "L_updated": false,
+  "scope": "坐标层执行状态与拓扑不可行证书分列；没有布局时不认证任何逐格条件"
+}

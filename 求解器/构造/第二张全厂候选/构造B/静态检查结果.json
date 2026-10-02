@@ -1,0 +1,252 @@
+{
+  "checker": "s2-boundary-certificate-standard-library-v1",
+  "checker_sha256": "786d6660cb90987e9dccee9a93334b8dcc8e4aadd91152c8d7c064876a334d47",
+  "contract_sha256": "625bf7c6795327077a55a3450947ba59be1311b62e5c8eb0226e5af5d69ae50e",
+  "input_fingerprints": [
+    {
+      "path": "求解器/候选约束轮次/第98-100轮/前提快照/《明日方舟：终末地》游戏规则.txt",
+      "supported": "c8d3a17b8830baba18aea36c4c66f02f8873895188f8821176cc218aa6135f93",
+      "declared": "c8d3a17b8830baba18aea36c4c66f02f8873895188f8821176cc218aa6135f93",
+      "actual": "c8d3a17b8830baba18aea36c4c66f02f8873895188f8821176cc218aa6135f93",
+      "matches": true
+    },
+    {
+      "path": "求解器/候选约束轮次/第98-100轮/前提快照/求解任务.txt",
+      "supported": "7bec7a1edf2f46644a6e6a75d588f5ff05202cc32d6b42430677ea39b878309b",
+      "declared": "7bec7a1edf2f46644a6e6a75d588f5ff05202cc32d6b42430677ea39b878309b",
+      "actual": "7bec7a1edf2f46644a6e6a75d588f5ff05202cc32d6b42430677ea39b878309b",
+      "matches": true
+    },
+    {
+      "path": "求解器/候选约束轮次/第98-100轮/前提快照/求解约束.txt",
+      "supported": "dfea46c61f29be5a86659bce3642009d2558ace073d6dbd79f5dd3c6475226db",
+      "declared": "dfea46c61f29be5a86659bce3642009d2558ace073d6dbd79f5dd3c6475226db",
+      "actual": "dfea46c61f29be5a86659bce3642009d2558ace073d6dbd79f5dd3c6475226db",
+      "matches": true
+    },
+    {
+      "path": "求解器/候选约束轮次/第98-100轮/推导98S2.md",
+      "supported": "5d5d146fb200b34b8b1a7045c6584eac3349e48899cf8c71a7eec7d47f3685af",
+      "declared": "5d5d146fb200b34b8b1a7045c6584eac3349e48899cf8c71a7eec7d47f3685af",
+      "actual": "5d5d146fb200b34b8b1a7045c6584eac3349e48899cf8c71a7eec7d47f3685af",
+      "matches": true
+    },
+    {
+      "path": "求解器/构造/第一张全厂候选/格式.md",
+      "supported": "c1da2787a0b8f86201f9e207c897be3b8ddf4e49dca3284d03f34bc334019987",
+      "declared": "c1da2787a0b8f86201f9e207c897be3b8ddf4e49dca3284d03f34bc334019987",
+      "actual": "c1da2787a0b8f86201f9e207c897be3b8ddf4e49dca3284d03f34bc334019987",
+      "matches": true
+    }
+  ],
+  "input_inventory_matches": true,
+  "contract": {
+    "status": "PASS",
+    "errors": [],
+    "machine_count": 230,
+    "feed_count": 325,
+    "average_flow": "逐机精确有理数守恒；不表示路径已摆放或运行已认证"
+  },
+  "boundary_planarity": {
+    "status": "FAIL",
+    "evidence": "不可平面布线证书.json",
+    "reason": "S2所需边界增广图含四个K3,3细分子图。"
+  },
+  "certificate_verification": {
+    "status": "PASS",
+    "errors": [],
+    "witnesses": [
+      {
+        "id": "封装机2_砂叶粉碎机3",
+        "status": "PASS",
+        "errors": [],
+        "vertices": 18,
+        "edges": 21,
+        "suppressed_vertices": 6,
+        "suppressed_edges": 9,
+        "bipartite_planar_edge_limit": 8,
+        "contradiction": "平面简单二部图应满足m≤2n−4；缩去二度点后9>2×6−4=8。",
+        "degree_three_vertices": [
+          "EXT",
+          "S3",
+          "E2",
+          "B3",
+          "B4",
+          "O4"
+        ],
+        "interior_vertices": [
+          "KB5",
+          "KB7",
+          "OB5",
+          "OB7",
+          "OO7",
+          "P3",
+          "P4",
+          "R3",
+          "R4",
+          "T5",
+          "T7",
+          "U7"
+        ]
+      },
+      {
+        "id": "封装机3_砂叶粉碎机5",
+        "status": "PASS",
+        "errors": [],
+        "vertices": 18,
+        "edges": 21,
+        "suppressed_vertices": 6,
+        "suppressed_edges": 9,
+        "bipartite_planar_edge_limit": 8,
+        "contradiction": "平面简单二部图应满足m≤2n−4；缩去二度点后9>2×6−4=8。",
+        "degree_three_vertices": [
+          "EXT",
+          "S5",
+          "E3",
+          "B5",
+          "B6",
+          "O7"
+        ],
+        "interior_vertices": [
+          "KB11",
+          "KB9",
+          "OB11",
+          "OB9",
+          "OO13",
+          "P5",
+          "P6",
+          "R5",
+          "R6",
+          "T11",
+          "T9",
+          "U13"
+        ]
+      },
+      {
+        "id": "灌装机1_砂叶粉碎机7",
+        "status": "PASS",
+        "errors": [],
+        "vertices": 20,
+        "edges": 23,
+        "suppressed_vertices": 6,
+        "suppressed_edges": 9,
+        "bipartite_planar_edge_limit": 8,
+        "contradiction": "平面简单二部图应满足m≤2n−4；缩去二度点后9>2×6−4=8。",
+        "degree_three_vertices": [
+          "EXT",
+          "S7",
+          "H1",
+          "B7",
+          "B8",
+          "B9"
+        ],
+        "interior_vertices": [
+          "F1",
+          "H2",
+          "KB13",
+          "KB15",
+          "KB17",
+          "OB13",
+          "OB15",
+          "OB17",
+          "R7",
+          "R8",
+          "R9",
+          "T13",
+          "T15",
+          "T17"
+        ]
+      },
+      {
+        "id": "灌装机2_砂叶粉碎机9",
+        "status": "PASS",
+        "errors": [],
+        "vertices": 20,
+        "edges": 23,
+        "suppressed_vertices": 6,
+        "suppressed_edges": 9,
+        "bipartite_planar_edge_limit": 8,
+        "contradiction": "平面简单二部图应满足m≤2n−4；缩去二度点后9>2×6−4=8。",
+        "degree_three_vertices": [
+          "EXT",
+          "S9",
+          "H3",
+          "B11",
+          "B12",
+          "B13"
+        ],
+        "interior_vertices": [
+          "F2",
+          "H4",
+          "KB21",
+          "KB23",
+          "KB25",
+          "OB21",
+          "OB23",
+          "OB25",
+          "R11",
+          "R12",
+          "R13",
+          "T21",
+          "T23",
+          "T25"
+        ]
+      }
+    ],
+    "meaning": "通过表示不可平面布线证书有效，不是布局通过。"
+  },
+  "geometric_checks": [
+    {
+      "check": "占格不重叠",
+      "status": "NOT_RUN_NO_LAYOUT",
+      "reason": "平面性必要条件失败，未产生坐标候选。"
+    },
+    {
+      "check": "全部单位在70×70内",
+      "status": "NOT_RUN_NO_LAYOUT",
+      "reason": "平面性必要条件失败，未产生坐标候选。"
+    },
+    {
+      "check": "端口与实际自动通道（无多余通道）",
+      "status": "NOT_RUN_NO_LAYOUT",
+      "reason": "平面性必要条件失败，未产生坐标候选。"
+    },
+    {
+      "check": "每条进路纯有向传送带、至少一格且运输格互不共用",
+      "status": "NOT_RUN_NO_LAYOUT",
+      "reason": "平面性必要条件失败，未产生坐标候选。"
+    },
+    {
+      "check": "各机器配方与实体端口",
+      "status": "NOT_RUN_NO_LAYOUT",
+      "reason": "平面性必要条件失败，未产生坐标候选。"
+    },
+    {
+      "check": "供电桩覆盖",
+      "status": "NOT_RUN_NO_LAYOUT",
+      "reason": "平面性必要条件失败，未产生坐标候选。"
+    },
+    {
+      "check": "协议核心和仓库存取货口位置",
+      "status": "NOT_RUN_NO_LAYOUT",
+      "reason": "平面性必要条件失败，未产生坐标候选。"
+    },
+    {
+      "check": "H6→F4与Q6→F4运输格数相同",
+      "status": "NOT_RUN_NO_LAYOUT",
+      "reason": "平面性必要条件失败，未产生坐标候选。"
+    },
+    {
+      "check": "最大空矩形面积、同面积短边优先及短边至少6格",
+      "status": "NOT_RUN_NO_LAYOUT",
+      "reason": "平面性必要条件失败，未产生坐标候选。"
+    }
+  ],
+  "status": "S2_GEOMETRY_IMPOSSIBLE",
+  "static_pass": false,
+  "layout_path": "",
+  "empty_rect": "",
+  "runtime_certified": false,
+  "L_updated": false,
+  "scope": "仅第98轮S2第2节的固定接法、纯带和边界取货口要求；不排除修改接法或允许运输交叉后的布局。"
+}

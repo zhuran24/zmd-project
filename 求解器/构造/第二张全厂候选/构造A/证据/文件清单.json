@@ -1,0 +1,220 @@
+{
+  "files": [
+    {
+      "path": "构造A.md",
+      "sha256": "d35120b93252164691eebdc97aae51ac7fb110a382c2f6f672bf029ba0d384ac",
+      "bytes": 11380
+    },
+    {
+      "path": "构造A/代码/build_s2.py",
+      "sha256": "0000d749103e4db1fe681a492ed582b4853580e40e56656657b0b2604ae38b8f",
+      "bytes": 10197
+    },
+    {
+      "path": "构造A/代码/check_components.py",
+      "sha256": "c37cbfa8bd281da9a3eaecc0cc0ba24d87a4da9b2aa376bfa12812028db7544c",
+      "bytes": 2637
+    },
+    {
+      "path": "构造A/代码/check_topology.py",
+      "sha256": "e15c489786e19c7a649550ae2d302e41b621e9e974588896f84a31e16c4222d8",
+      "bytes": 9430
+    },
+    {
+      "path": "构造A/代码/cp_sat_presolve.py",
+      "sha256": "1b6f7be1d11446b2f6118aa6b0e5af7e8feab3d903e0633b964d61691dcaff67",
+      "bytes": 3495
+    },
+    {
+      "path": "构造A/代码/draw_obstruction.py",
+      "sha256": "16e43e619a62509710460fc4cc9aa71729de33afe7ed46bbf9e84b22d40426a9",
+      "bytes": 4380
+    },
+    {
+      "path": "构造A/代码/legacy_status.py",
+      "sha256": "7af06209b68fdff7376e00616aa79ed7a8239dc9ade64a2ef56f2fdd3a66d829",
+      "bytes": 2149
+    },
+    {
+      "path": "构造A/代码/replay.py",
+      "sha256": "fc788013221ec0de9f18db29dcf3ff65fcd9ab8b3db9a366d8563a14e03caed5",
+      "bytes": 2090
+    },
+    {
+      "path": "构造A/代码/static_check.py",
+      "sha256": "93c2a5a0dc27571cdcfebb35bfb3e9a401912cdf62e03cc21a9fc63d42fd333b",
+      "bytes": 17513
+    },
+    {
+      "path": "构造A/代码/validate_delivery.py",
+      "sha256": "eca7984162fb8b8c184482ec4556c839235d7535a30800f852f1683ea5a3af29",
+      "bytes": 6407
+    },
+    {
+      "path": "构造A/依据快照/任务.txt",
+      "sha256": "7bec7a1edf2f46644a6e6a75d588f5ff05202cc32d6b42430677ea39b878309b",
+      "bytes": 1350
+    },
+    {
+      "path": "构造A/依据快照/全厂静态格式.md",
+      "sha256": "c1da2787a0b8f86201f9e207c897be3b8ddf4e49dca3284d03f34bc334019987",
+      "bytes": 39677
+    },
+    {
+      "path": "构造A/依据快照/推导98S2.md",
+      "sha256": "5d5d146fb200b34b8b1a7045c6584eac3349e48899cf8c71a7eec7d47f3685af",
+      "bytes": 38983
+    },
+    {
+      "path": "构造A/依据快照/既有逻辑图.json",
+      "sha256": "657b7756629e603f8da603c8510f207277baa58e681e464b52e808a6de6bb14b",
+      "bytes": 43745
+    },
+    {
+      "path": "构造A/依据快照/既有逻辑图生成器.py",
+      "sha256": "b3cca5a6d0bdaf8b1a44dda02778ef7f8afd5aab7abf4aedd009a673fa1ea55f",
+      "bytes": 17026
+    },
+    {
+      "path": "构造A/依据快照/约束.txt",
+      "sha256": "dfea46c61f29be5a86659bce3642009d2558ace073d6dbd79f5dd3c6475226db",
+      "bytes": 48292
+    },
+    {
+      "path": "构造A/依据快照/规则.txt",
+      "sha256": "c8d3a17b8830baba18aea36c4c66f02f8873895188f8821176cc218aa6135f93",
+      "bytes": 7538
+    },
+    {
+      "path": "构造A/布线障碍.png",
+      "sha256": "eaee2c534bb9c09a4e12e09549867e3e892f622c5db03da4089bc2749d03641b",
+      "bytes": 272695
+    },
+    {
+      "path": "构造A/布线障碍.svg",
+      "sha256": "9652c8d25441b3570f2031f918d4f9b790f87a5fe06ca6f5ccf43e4391b282a7",
+      "bytes": 6357
+    },
+    {
+      "path": "构造A/整数模型.md",
+      "sha256": "ac0b4be644d1d765d29c3f615d5305dc87db4f4b496c3360e02a08aa85e93188",
+      "bytes": 5546
+    },
+    {
+      "path": "构造A/检查器A/复查状态.json",
+      "sha256": "c34842b676414b838c57969db097dd43d6040fd18f8f9a5abaea8839159e870f",
+      "bytes": 1316
+    },
+    {
+      "path": "构造A/检查器B/复查状态.json",
+      "sha256": "7e931d7f67450b6986ea592b716da857a81fbf928465761819c44f67708d5705",
+      "bytes": 1311
+    },
+    {
+      "path": "构造A/结果.json",
+      "sha256": "08611c99a7c273455d6203705e882be28d2ffa14ebdfc587c5b1b129430a9090",
+      "bytes": 373
+    },
+    {
+      "path": "构造A/证据/CP-SAT-不要求空矩形.json",
+      "sha256": "ef632c10da95d9b130b911171fa721463aa755caaa7b59f32673c7a13ac1f974",
+      "bytes": 993
+    },
+    {
+      "path": "构造A/证据/CP-SAT-不要求空矩形.log",
+      "sha256": "eff47b56a9ce0870187ec6e7e1e1f38561aa29acfdd6f3b97d2fc9f14079296c",
+      "bytes": 1242
+    },
+    {
+      "path": "构造A/证据/CP-SAT-不要求空矩形.pbtxt",
+      "sha256": "fd29705570d1320a4254fbfa75e3b561f7db09e7eebde28e378c3a4950942a0e",
+      "bytes": 2073
+    },
+    {
+      "path": "构造A/证据/CP-SAT-撤去平面条件对照.json",
+      "sha256": "b9651fc6faafd1af02b5ba0d113c65174a905009ac72e8e39ae60ca7b1b2bd16",
+      "bytes": 1151
+    },
+    {
+      "path": "构造A/证据/CP-SAT-撤去平面条件对照.log",
+      "sha256": "ab01fb1543afa2566f997efe0a6f8df044b7f10737f69ed01d980fcc724a8bfa",
+      "bytes": 12724
+    },
+    {
+      "path": "构造A/证据/CP-SAT-撤去平面条件对照.pbtxt",
+      "sha256": "5f790369fe22905afdfadf0e4121d3057c52cef3ddce0f1ae930e5a537c91597",
+      "bytes": 2055
+    },
+    {
+      "path": "构造A/证据/不可平面证书-S3-E2.json",
+      "sha256": "1fb13f793fe5b3c3e532fadbffe15db20d8a336ef19c134f1008fbc64f6d3df2",
+      "bytes": 3961
+    },
+    {
+      "path": "构造A/证据/不可平面证书-S5-E3.json",
+      "sha256": "0021d88b9c38d411eae992cac9198d5f7174b98911c281a76d0d61568001883d",
+      "bytes": 3980
+    },
+    {
+      "path": "构造A/证据/交付核验.json",
+      "sha256": "22bcf57d8a66042b5c1e05379df966f343dfc97c98d05cda4b8e11bc24640475",
+      "bytes": 9868
+    },
+    {
+      "path": "构造A/证据/全部64种旋转系统.json",
+      "sha256": "75c4a758b9281c61c2e842ba93187e1e1b1857cc229bf6fc1cbbcf65dbcf5dd0",
+      "bytes": 101842
+    },
+    {
+      "path": "构造A/证据/复跑结果.json",
+      "sha256": "d22b79e928925fbd1f4bf9156fa7f9decc945857f718214ff19726a3af0ca87c",
+      "bytes": 2932
+    },
+    {
+      "path": "构造A/证据/执行记录.json",
+      "sha256": "7c8c6bdeba4018a3c33deadbe3feb212a7c2b1a3245f46a0d6dd8eac589419d5",
+      "bytes": 483
+    },
+    {
+      "path": "构造A/证据/拓扑复核结果.json",
+      "sha256": "1c58ff564c5ebc970a32f32214ba71dbfa0f2e3e4d8b04de260664b4dbc6b530",
+      "bytes": 2495
+    },
+    {
+      "path": "构造A/证据/接法逐条对照.json",
+      "sha256": "32537bfa373227178328e718ea1e095fcab5e7779f2aef83acbb4abeb628ef09",
+      "bytes": 526
+    },
+    {
+      "path": "构造A/证据/旧检查器复查.json",
+      "sha256": "41daeac9efa4b1df3f46b10d31e91122db9129bf35d414fc37f0a5e078649318",
+      "bytes": 2724
+    },
+    {
+      "path": "构造A/证据/读者自审.json",
+      "sha256": "9e87ad6996101e0fa77252e083a20bf48a67e8bfbf81e7f11abaa937562fbfb0",
+      "bytes": 1309
+    },
+    {
+      "path": "构造A/证据/输入指纹.json",
+      "sha256": "4154dc10d8bc54e80bc51e7eeac4a5892198329c562a65e1af1f1ee07e38ada4",
+      "bytes": 1795
+    },
+    {
+      "path": "构造A/证据/静态检查结果.json",
+      "sha256": "4fc1ad67385118356c5ee1f556dc39863c0aac4c8d3cf1992ce8f5e00e3e8cc5",
+      "bytes": 3865
+    },
+    {
+      "path": "构造A/证据/静态程序组件对照.json",
+      "sha256": "a2237bbee964718230172db06a5d8ef54dba4a55bc9781102b16844f16d05018",
+      "bytes": 791
+    },
+    {
+      "path": "构造A/逻辑接法.json",
+      "sha256": "2d160ae218d3ced0a807b15a8bdebe688bbbea324e9543896a9bca326c53f4e3",
+      "bytes": 119696
+    }
+  ],
+  "excluded_self": "本文件不包含自己的哈希，避免循环"
+}

@@ -1,0 +1,46 @@
+{
+  "checker": "networkx-planarity",
+  "version": "3.7",
+  "contract_sha256": "625bf7c6795327077a55a3450947ba59be1311b62e5c8eb0226e5af5d69ae50e",
+  "machine_count": 230,
+  "feed_count": 325,
+  "boundary_outlet_count": 46,
+  "internal_graph_planar": true,
+  "graph_with_exterior_planar": false,
+  "graph_vertices": 278,
+  "graph_edges": 347,
+  "witnesses": [
+    {
+      "id": "封装机2_砂叶粉碎机3",
+      "vertices": 18,
+      "edges": 21,
+      "planar": false,
+      "subgraph_of_augmented": true
+    },
+    {
+      "id": "封装机3_砂叶粉碎机5",
+      "vertices": 18,
+      "edges": 21,
+      "planar": false,
+      "subgraph_of_augmented": true
+    },
+    {
+      "id": "灌装机1_砂叶粉碎机7",
+      "vertices": 20,
+      "edges": 23,
+      "planar": false,
+      "subgraph_of_augmented": true
+    },
+    {
+      "id": "灌装机2_砂叶粉碎机9",
+      "vertices": 20,
+      "edges": 23,
+      "planar": false,
+      "subgraph_of_augmented": true
+    }
+  ],
+  "all_four_nonplanar": true,
+  "static_pass": false,
+  "layout_exists": false,
+  "conclusion": "S2纯带接法违反边界平面性必要条件，无几何候选。"
+}

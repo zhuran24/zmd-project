@@ -1,0 +1,20 @@
+{
+  "start_utc": "2026-10-02T12:39:21+00:00",
+  "finish_utc": "2026-10-02T13:11:57.314475+00:00",
+  "wall_seconds": 1956.314475,
+  "wall_limit_seconds": 14400,
+  "cp_sat_workers": 6,
+  "replay_cpu_affinity": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "solver_timed_out": false,
+  "background_solver_remaining": false,
+  "write_scope": "/home/zhuran24/zmd-research-fresh/求解器/构造/第二张全厂候选",
+  "git_commands_run": false,
+  "kernel_cargo_tests_run": false
+}

@@ -1,0 +1,10 @@
+{
+  "report_path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第二张全厂候选/构造A.md",
+  "layout_path": "",
+  "static_pass": false,
+  "empty_rect": "",
+  "summary": "已证明固定S2接法在边界取货、纯带不共格条件下不可行。",
+  "blockers": [
+    "S3—B3/B4/O4—E2与边界取货口构成K3,3细分，无法无交叉布线。"
+  ]
+}

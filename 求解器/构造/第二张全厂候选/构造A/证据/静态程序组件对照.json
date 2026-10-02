@@ -1,0 +1,35 @@
+{
+  "all_pass": true,
+  "checks": [
+    {
+      "test": "非运输单位相邻不形成通道",
+      "pass_test": true
+    },
+    {
+      "test": "转弯传送带的两条自动通道",
+      "pass_test": true
+    },
+    {
+      "test": "独立重建发现漏报的自动通道",
+      "pass_test": true
+    },
+    {
+      "test": "取货对取货不形成通道",
+      "pass_test": true
+    },
+    {
+      "test": "80张小图最大空矩形与四边界穷举对照",
+      "pass_test": true,
+      "cases": 80
+    },
+    {
+      "test": "空70×70图最大矩形",
+      "pass_test": true
+    },
+    {
+      "test": "满70×70图无合格矩形",
+      "pass_test": true
+    }
+  ],
+  "scope": "仅几何组件对照；未运行任何完整S2坐标候选，未完成逐格布局验证"
+}

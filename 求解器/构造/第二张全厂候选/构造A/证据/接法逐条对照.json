@@ -1,0 +1,22 @@
+{
+  "machine_count": 230,
+  "machine_counts": {
+    "精炼炉": 51,
+    "粉碎机": 71,
+    "研磨机": 32,
+    "采种机": 19,
+    "种植机": 38,
+    "配件机": 6,
+    "塑形机": 6,
+    "封装机": 3,
+    "灌装机": 4
+  },
+  "route_count": 325,
+  "warehouse_outlet_count": 46,
+  "machine_area": 3567,
+  "full_multiset_matches_existing_graph": true,
+  "missing": [],
+  "extra": [],
+  "exact_material_balance_errors": [],
+  "scope": "独立转写第2节并逐条比对现有325路；没有坐标，不是布局"
+}
