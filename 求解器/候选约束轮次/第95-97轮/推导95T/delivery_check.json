@@ -1,0 +1,101 @@
+{
+  "status": "PASS",
+  "report": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95T.md",
+  "candidate_count": 3,
+  "audit_count": 35,
+  "counts": {
+    "结论不变但证明要补": 7,
+    "不受影响": 25,
+    "结论变化": 3
+  },
+  "report_sha256": "c520da40f67c67ca4e1d83587ad34dba5d7f4cabbc4cb1880e32d3746a83c3e7",
+  "report_lines": 331,
+  "local_link_count": 26,
+  "section_references_valid": true,
+  "input_drift": [],
+  "independent_numeric_checks_passed": true,
+  "review_scope": "Migration classification preserves pending M/G/S corrections; gate diagnostic is not labeled a rule-certified counterexample.",
+  "additional_materials_read": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第92-94轮/复核94F.md",
+      "sha256": "feaf809ab036e2995f9238f847365a22d47e9d8cfed589da4e90d3ea5b633f54"
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "audit.json",
+      "bytes": 19614,
+      "sha256": "128414ba0c5600dbef0d5c98ede5841b485b40acae40b96d41db6237b9fe7dcc"
+    },
+    {
+      "name": "build_report.log",
+      "bytes": 222,
+      "sha256": "c4ddf0a47f96037d4f251ed37f87e7f9018287e47533c957306e088a08b9efb4"
+    },
+    {
+      "name": "build_report.py",
+      "bytes": 14527,
+      "sha256": "f0ca15e08beadcbc39ddee6c676cc62627f5635cb4fdf2ec0e9c31ada06cae11"
+    },
+    {
+      "name": "candidates.json",
+      "bytes": 6227,
+      "sha256": "14cc58ce715ab1945f9ef612995a2bc4b32ea05831ffc31dc983a388b3b6012f"
+    },
+    {
+      "name": "checks.json",
+      "bytes": 18141,
+      "sha256": "b9f7033ddc30bf771a5f83062939c00c59c8852203533d36b521c3785f3ef2c3"
+    },
+    {
+      "name": "checks.log",
+      "bytes": 1611,
+      "sha256": "4017967aa1687a527deadd556cdc796c6a9840eedf14a738c3f31e92d53514b5"
+    },
+    {
+      "name": "checks.py",
+      "bytes": 13343,
+      "sha256": "bf974077971f2b3238cb01898c0597b8fc8074c67763de68253494c30afc6623"
+    },
+    {
+      "name": "density_trace_S.json",
+      "bytes": 80239,
+      "sha256": "a5175ea3905fbf5daa06f534d8dd745c600b466c66bac1d3e9bd30c48e04a6bb"
+    },
+    {
+      "name": "density_trace_U.json",
+      "bytes": 58361,
+      "sha256": "90d84dbf65851cf307ceb5885125842f5135466c37cc7b9ee44367453ed692fc"
+    },
+    {
+      "name": "plant_check.log",
+      "bytes": 779,
+      "sha256": "22bb5cd2815209edd12ee4fbf6345111f8801858cda2d36eb0df6e642886dfc7"
+    },
+    {
+      "name": "plant_check.py",
+      "bytes": 14197,
+      "sha256": "d68bf1290c6ede3180d4715c5cc6673b7a21de4799602fbdeb35efb155019413"
+    },
+    {
+      "name": "plant_results.json",
+      "bytes": 26249,
+      "sha256": "cee25c9f75f527965e142ad0d59d9efd10b2b2774d4cb7eb2e187bcb86fd4ff1"
+    },
+    {
+      "name": "reply.json",
+      "bytes": 6737,
+      "sha256": "ab7ffdb99a6a4c761350fab3ca950e93c14b66f6ff90c77997a28d879863ebab"
+    },
+    {
+      "name": "report_body.md",
+      "bytes": 35710,
+      "sha256": "770d21d7346b76e0d8b02b49f421a127d3393e7ff30bd1783c63ffff9f8311be"
+    },
+    {
+      "name": "validate_delivery.py",
+      "bytes": 4940,
+      "sha256": "03c14cf49a8a5d99128b530d9fe41a167941560ee86335e5ff1471472fef9f7b"
+    }
+  ]
+}

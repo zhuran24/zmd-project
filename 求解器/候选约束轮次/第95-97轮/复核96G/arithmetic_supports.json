@@ -1,0 +1,254 @@
+{
+  "flows": {
+    "counts": {
+      "crush": 68,
+      "refine": 51,
+      "grind": 32,
+      "shape": 6,
+      "fit": 6,
+      "plant": 32,
+      "seed": 16,
+      "pack": 3,
+      "fill": 3
+    },
+    "machines": 217,
+    "machines_by_size": {
+      "small": 131,
+      "medium": 48,
+      "large": 38
+    },
+    "power_weight": 520,
+    "manufacturing_area": 3291,
+    "input_channels": 305,
+    "input_by_machine": {
+      "crush": 68,
+      "refine": 51,
+      "grind": 95,
+      "shape": 11,
+      "fit": 6,
+      "plant": 32,
+      "seed": 16,
+      "pack": 15,
+      "fill": 11
+    },
+    "output_channels_raw": 256,
+    "output_channels": 260,
+    "output_by_machine": {
+      "crush": 95,
+      "refine": 51,
+      "grind": 32,
+      "shape": 6,
+      "fit": 6,
+      "plant": 32,
+      "seed": 32,
+      "pack": 3,
+      "fill": 3
+    },
+    "ore": {
+      "ore_s": "18",
+      "ore_b": "34"
+    },
+    "interfaces": 619
+  },
+  "recipe_rates": {
+    "crush_source": "18",
+    "crush_blue": "34",
+    "crush_buck": "11/2",
+    "crush_sand": "21/2",
+    "refine_blue": "34",
+    "refine_steel": "17",
+    "recycle": "0",
+    "grind_blue": "17",
+    "grind_source": "9",
+    "grind_buck": "11/2",
+    "shape": "11/2",
+    "fit": "6",
+    "plant_buck": "11",
+    "plant_sand": "21",
+    "seed_buck": "11/2",
+    "seed_sand": "21/2",
+    "pack": "3/5",
+    "fill": "11/20"
+  },
+  "rates_at_r1": {
+    "crush_source": "18",
+    "crush_blue": "35",
+    "crush_buck": "11/2",
+    "crush_sand": "21/2",
+    "refine_blue": "34",
+    "refine_steel": "17",
+    "recycle": "1",
+    "grind_blue": "17",
+    "grind_source": "9",
+    "grind_buck": "11/2",
+    "shape": "11/2",
+    "fit": "6",
+    "plant_buck": "11",
+    "plant_sand": "21",
+    "seed_buck": "11/2",
+    "seed_sand": "21/2",
+    "pack": "3/5",
+    "fill": "11/20"
+  },
+  "weight_tables_twice": {
+    "grind": {
+      "32": 123,
+      "33": 115,
+      "34": 107,
+      "35": 99,
+      "36": 91,
+      "37": 83,
+      "38": 75,
+      "39": 67,
+      "40": 59,
+      "41": 51,
+      "42": 43,
+      "43": 35,
+      "44": 27,
+      "45": 19,
+      "46": 11,
+      "47": 3,
+      "48": 0
+    },
+    "shape": {
+      "6": 20,
+      "7": 16,
+      "8": 12,
+      "9": 8,
+      "10": 4,
+      "11": 0
+    },
+    "pack": {
+      "3": 48,
+      "4": 36,
+      "5": 20,
+      "6": 12,
+      "7": 4,
+      "8": 0
+    },
+    "fill": {
+      "3": 28,
+      "4": 12,
+      "5": 4,
+      "6": 0
+    }
+  },
+  "weights": {
+    "grind": "123/2",
+    "shape": "10",
+    "pack": "24",
+    "fill": "14"
+  },
+  "omega": "219/2",
+  "base_area": 1390,
+  "ordinary_direction": "1653/2",
+  "weighted_direction": "1843/2",
+  "generic_inner_constant": 809,
+  "generic_area_constant": 4751,
+  "extra_delta": {
+    "crush": "36",
+    "refine": "36",
+    "grind": "92",
+    "shape": "34",
+    "fit": "36",
+    "plant": "100",
+    "seed": "100",
+    "pack": "88",
+    "fill": "88",
+    "box": "36"
+  },
+  "power_minimum": 160,
+  "power_minimum_at_least_11": 172,
+  "first_extra": "287/2",
+  "two_extra_minimum": "355/2",
+  "integer_area_constant": 4638,
+  "corner_area_upper": 4604,
+  "no_box_transport_direction": "1659/2",
+  "area_extra": "8895/8",
+  "power_j_max": {
+    "10": 0,
+    "11": 2,
+    "12": 5,
+    "13": 7,
+    "14": 9
+  },
+  "factor_pairs": {
+    "1107": [
+      [
+        27,
+        41
+      ],
+      [
+        41,
+        27
+      ]
+    ],
+    "1108": [],
+    "1109": [],
+    "1110": [
+      [
+        30,
+        37
+      ],
+      [
+        37,
+        30
+      ]
+    ],
+    "1111": [],
+    "1112": []
+  },
+  "edge_bounds": [
+    {
+      "L": 71,
+      "k": 2,
+      "t": 1,
+      "without_extra": 8,
+      "one_extra": 7
+    },
+    {
+      "L": 101,
+      "k": 3,
+      "t": 2,
+      "without_extra": 12,
+      "one_extra": 10
+    },
+    {
+      "L": 138,
+      "k": 2,
+      "t": 2,
+      "without_extra": 19,
+      "one_extra": 17
+    }
+  ],
+  "rounding": [
+    {
+      "chi": 0,
+      "xy_parity": 0,
+      "strong": 922,
+      "candidate": 922,
+      "original": 922
+    },
+    {
+      "chi": 0,
+      "xy_parity": 1,
+      "strong": 924,
+      "candidate": 922,
+      "original": 922
+    },
+    {
+      "chi": 1,
+      "xy_parity": 0,
+      "strong": 920,
+      "candidate": 920,
+      "original": 922
+    },
+    {
+      "chi": 1,
+      "xy_parity": 1,
+      "strong": 922,
+      "candidate": 922,
+      "original": 922
+    }
+  ]
+}

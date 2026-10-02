@@ -1,0 +1,6 @@
+{
+  "report_path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S.md",
+  "candidates": [],
+  "summary": "共享发送在各末端不拒收时满速已证；19个整厂实例双编码闭合达标。原充分条件仍缺下游反复拒收的联立证明。",
+  "status": "未证成完整充分条件"
+}

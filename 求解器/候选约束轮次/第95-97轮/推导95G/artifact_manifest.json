@@ -1,0 +1,98 @@
+{
+  "arithmetic_a.json": {
+    "bytes": 48661,
+    "sha256": "9ccb9584924ee822cebb066bc02657b64c0216170c2daebe2cf5584511d4dc93"
+  },
+  "arithmetic_a.log": {
+    "bytes": 1528,
+    "sha256": "5e0ea05e373d71f54248fee3f2ccb2e7806bfd9219d0444386330b5ab1df2635"
+  },
+  "arithmetic_a.py": {
+    "bytes": 5585,
+    "sha256": "858d81a298c339798265d9d74e3b7806c980a057299064d6888caf4f5cfea5f9"
+  },
+  "arithmetic_b.json": {
+    "bytes": 48661,
+    "sha256": "9ccb9584924ee822cebb066bc02657b64c0216170c2daebe2cf5584511d4dc93"
+  },
+  "arithmetic_b.log": {
+    "bytes": 1528,
+    "sha256": "5e0ea05e373d71f54248fee3f2ccb2e7806bfd9219d0444386330b5ab1df2635"
+  },
+  "arithmetic_b.py": {
+    "bytes": 7321,
+    "sha256": "7225f361fbb6a8a047c5047698e2d231435b430866b2b3b5394044a4606f80c6"
+  },
+  "candidates.json": {
+    "bytes": 3507,
+    "sha256": "5d1c84d1b311adf3a60184e9e33b40bca60c4b4ed44bb7fd6e897f59af1d0cae"
+  },
+  "delivery_check.py": {
+    "bytes": 2613,
+    "sha256": "2261dec8d141cb73e16308c52722d56fccd260a75f28c9daabe48c1eec835980"
+  },
+  "delivery_validation.json": {
+    "bytes": 372,
+    "sha256": "6d597db80982e4af66780e5290f60989f26f65a08c42ccdb7bb3bf8d7612fffd"
+  },
+  "geometry_a.json": {
+    "bytes": 1813467,
+    "sha256": "2797236de261c28a425a84b765e7a12b722e11b340a06d8549099dc1e0a8144e"
+  },
+  "geometry_a.log": {
+    "bytes": 3532,
+    "sha256": "2d32d2467af087d2d4257e19e758a1f8845a3101c79150909b80a91330c2e2fb"
+  },
+  "geometry_a.py": {
+    "bytes": 6024,
+    "sha256": "261c07e0f8d61245d47935a4910d3331e45ca11df670ca4461f716e68be2768c"
+  },
+  "geometry_a_base.json": {
+    "bytes": 374991,
+    "sha256": "f49e2bcc11c3f1fa866eb154b27d339b07bc0b7a0c44b7c64c582824ff372feb"
+  },
+  "geometry_a_base.log": {
+    "bytes": 148,
+    "sha256": "98cfb28b4977dd4503d42ecfdb7ee7271cb022c34e42acc3f34a0e6db77322eb"
+  },
+  "geometry_b.json": {
+    "bytes": 1968748,
+    "sha256": "8b1eb51ddc32f5ad5f4549d207f515b27e23ef91185a8af7c565f4a566219a0c"
+  },
+  "geometry_b.log": {
+    "bytes": 3419,
+    "sha256": "dd4a346ac7217d6a166e04487f75a1cb7cecf271b6c3d082197efae2ab617192"
+  },
+  "geometry_b.py": {
+    "bytes": 6087,
+    "sha256": "c637b3b04e420fa65988985b84f911a50c440e5dc83911e2954c59725193e28c"
+  },
+  "geometry_b_base.json": {
+    "bytes": 530274,
+    "sha256": "bba12cd9af47e01591d67ebfed1b45d0e2b3f2565e186f280e07326cc4745a29"
+  },
+  "geometry_b_base.log": {
+    "bytes": 70,
+    "sha256": "1a89cb246f3f6444456312aba7e307c6fafce857a999b29fd260a3c38a9188bd"
+  },
+  "input_manifest.json": {
+    "bytes": 2203,
+    "sha256": "5d5f9e47243c5dd1678abb98a70650b6f02845d5394b47341767a8db86b129d6"
+  },
+  "verification.json": {
+    "bytes": 4434,
+    "sha256": "e6fa1efebdc09ac9331ca7ecbdccd2ceed8887f65b8e5024eb986d6c6af58d86"
+  },
+  "verification.log": {
+    "bytes": 2188,
+    "sha256": "3984335b374c6a4532715586eaf919313859b6cca40ef68f1cea0eb83738a849"
+  },
+  "verify.py": {
+    "bytes": 3174,
+    "sha256": "95c0cd49912395bf5757591f8cfcc37cf76266ed8c470e7dc238a8779b29915a"
+  },
+  "../推导95G.md": {
+    "bytes": 28020,
+    "sha256": "74001fb57c7068b3387c1ed179615c78e4cc3e14b4083ef1f41d904b303bb931"
+  }
+}

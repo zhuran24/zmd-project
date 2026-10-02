@@ -1,0 +1,31 @@
+{
+  "gate": {
+    "semantics": "Missing-service diagnostic; finite input pause without deleting/moving cargo. No undocumented gate mechanism is asserted.",
+    "lengths": {
+      "CA": 7,
+      "AC": 37,
+      "CB": 17,
+      "BK": 6,
+      "KO0": 5,
+      "KO1": 5
+    },
+    "initial_phi": 221.0,
+    "D_lower_bound": 194,
+    "gate_pause": [
+      4096,
+      8096
+    ],
+    "gate_passes_in_previous_160_steps": 20,
+    "first_lower_bound_failure": 4523,
+    "first_cache_empty": 5012,
+    "first_B_or_K_input_below_49": 7770,
+    "full_states_compared": 9000
+  },
+  "pure_belt": {
+    "cases": 48,
+    "steps_each": 1600,
+    "full_states_compared": 76800,
+    "minimum_phi_margin": 26.0,
+    "scope": "finite local checks; universal claims rely on the report proofs"
+  }
+}

@@ -1,0 +1,124 @@
+{
+  "summary": {
+    "patterns": 47,
+    "body_candidates": 44,
+    "max_body_band_cells": 3,
+    "max_post_band_cells": 2,
+    "corridor_max": {
+      "2": 9,
+      "3": 15
+    },
+    "corridor_top_max": {
+      "2": 0,
+      "3": 8
+    },
+    "near_band_max_area": 1005,
+    "independent_routes_agree": true
+  },
+  "consequences": {
+    "at_1110": [
+      [
+        10,
+        0,
+        39
+      ],
+      [
+        11,
+        0,
+        23
+      ],
+      [
+        11,
+        1,
+        25
+      ],
+      [
+        11,
+        2,
+        27
+      ],
+      [
+        12,
+        0,
+        7
+      ],
+      [
+        12,
+        1,
+        9
+      ],
+      [
+        12,
+        2,
+        11
+      ],
+      [
+        12,
+        3,
+        13
+      ],
+      [
+        12,
+        4,
+        15
+      ],
+      [
+        12,
+        5,
+        17
+      ],
+      [
+        13,
+        5,
+        1
+      ],
+      [
+        13,
+        6,
+        3
+      ],
+      [
+        13,
+        7,
+        5
+      ]
+    ],
+    "single_extra_remaining": [
+      [
+        10,
+        0,
+        "粉碎机",
+        5
+      ],
+      [
+        10,
+        0,
+        "精炼炉",
+        5
+      ],
+      [
+        10,
+        0,
+        "配件机",
+        5
+      ],
+      [
+        10,
+        0,
+        "协议储存箱",
+        5
+      ],
+      [
+        10,
+        0,
+        "塑形机",
+        7
+      ]
+    ],
+    "transport_bounds": {
+      "general_four_fixed": 207,
+      "no_box_four_fixed": 208,
+      "no_box_q_transport": 209
+    }
+  }
+}

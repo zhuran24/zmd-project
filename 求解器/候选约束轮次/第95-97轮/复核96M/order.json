@@ -1,0 +1,99 @@
+{
+  "initial_states": 24576,
+  "permutations_each": 12,
+  "compared_transitions": 294912,
+  "order_differences": 0,
+  "encoding_differences": 0,
+  "triangle_formation": [
+    {
+      "units": [
+        0,
+        1,
+        2
+      ],
+      "edge_times": [
+        1,
+        2,
+        2
+      ]
+    },
+    {
+      "units": [
+        0,
+        2,
+        1
+      ],
+      "edge_times": [
+        2,
+        1,
+        2
+      ]
+    },
+    {
+      "units": [
+        1,
+        0,
+        2
+      ],
+      "edge_times": [
+        1,
+        2,
+        2
+      ]
+    },
+    {
+      "units": [
+        1,
+        2,
+        0
+      ],
+      "edge_times": [
+        2,
+        2,
+        1
+      ]
+    },
+    {
+      "units": [
+        2,
+        0,
+        1
+      ],
+      "edge_times": [
+        2,
+        1,
+        2
+      ]
+    },
+    {
+      "units": [
+        2,
+        1,
+        0
+      ],
+      "edge_times": [
+        2,
+        2,
+        1
+      ]
+    }
+  ],
+  "strict_three_edge_orders": 0,
+  "negative_shared_machine_sources": [
+    [
+      "west",
+      {
+        "west": 1,
+        "north": 0
+      }
+    ],
+    [
+      "north",
+      {
+        "north": 1,
+        "west": 0
+      }
+    ]
+  ],
+  "scope": "Local functional DAG motif and contract states, not an enumeration of all layouts."
+}

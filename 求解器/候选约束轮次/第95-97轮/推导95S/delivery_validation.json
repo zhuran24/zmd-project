@@ -1,0 +1,77 @@
+{
+  "status": "passed",
+  "inputs_unchanged": [
+    {
+      "path": "求解器/候选约束轮次/第95-97轮/前提快照/求解充分条件.txt",
+      "unchanged": true
+    },
+    {
+      "path": "求解器/候选约束轮次/第95-97轮/前提快照/求解约束.txt",
+      "unchanged": true
+    },
+    {
+      "path": "求解器/候选约束轮次/第95-97轮/前提快照/《明日方舟：终末地》游戏规则.txt",
+      "unchanged": true
+    },
+    {
+      "path": "求解器/候选约束轮次/第95-97轮/前提快照/求解任务.txt",
+      "unchanged": true
+    },
+    {
+      "path": "求解器/候选约束轮次/第95-97轮/前提快照/不补的设定.txt",
+      "unchanged": true
+    },
+    {
+      "path": "求解器/候选约束轮次/第95-97轮/临时规则.md",
+      "unchanged": true
+    },
+    {
+      "path": "求解器/候选约束轮次/第92-94轮/推导92D.md",
+      "unchanged": true
+    },
+    {
+      "path": "求解器/候选约束轮次/第92-94轮/推导92F.md",
+      "unchanged": true
+    },
+    {
+      "path": "求解器/候选约束轮次/第92-94轮/复核93D.md",
+      "unchanged": true
+    },
+    {
+      "path": "求解器/候选约束轮次/第92-94轮/复核94D.md",
+      "unchanged": true
+    },
+    {
+      "path": "求解器/候选约束轮次/第92-94轮/复核93F.md",
+      "unchanged": true
+    },
+    {
+      "path": "求解器/候选约束轮次/第92-94轮/复核94F.md",
+      "unchanged": true
+    },
+    {
+      "path": "求解器/候选约束轮次/第92-94轮/推导92D/factory_check.py",
+      "unchanged": true
+    },
+    {
+      "path": "求解器/候选约束轮次/第92-94轮/推导92D/symbolic_dense_s09.md",
+      "unchanged": true
+    },
+    {
+      "path": "求解器/候选约束轮次/第92-94轮/推导92D/plant_proof.md",
+      "unchanged": true
+    },
+    {
+      "path": "求解器/候选约束轮次/第92-94轮/推导92C.md",
+      "unchanged": true
+    }
+  ],
+  "report_links_checked": 25,
+  "whole_factory_cycles": 19,
+  "raw_state_closure_both_encodings": true,
+  "candidates": 0,
+  "total_artifact_bytes": 629400,
+  "maximum_artifact_bytes": 37000,
+  "python_syntax": "passed",
+  "json_parse": "passed"
+}

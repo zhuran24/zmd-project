@@ -1,0 +1,126 @@
+{
+  "time_utc": "2026-10-02T08:02:21.341336+00:00",
+  "report_sha256": "4f8d960b0d6db885ef16601f0d926f987d1eacc518496e0e03cc6b9f1929f01d",
+  "candidate_count": 10,
+  "kind_counts": {
+    "必要条件": 7,
+    "充分条件": 2,
+    "简化": 1
+  },
+  "input_files_unchanged": true,
+  "input_file_count": 22,
+  "scope_valid_branches": 15697,
+  "scope_fixed_conflicts": 1042,
+  "scope_rows_equal": true,
+  "corner_branches": 135,
+  "arithmetic_fields_equal": [
+    "recipe_rates_r0",
+    "machine_counts",
+    "manufacturing_area",
+    "total_item_output",
+    "machine_input_ports",
+    "machine_output_ports_active_products",
+    "interfaces",
+    "single_costs_doubled",
+    "weight_tables",
+    "pj_1110"
+  ],
+  "outer_boundary_two_encodings": [
+    {
+      "length": 71,
+      "segments": 2,
+      "extra_segments": 1,
+      "min_X": 7
+    },
+    {
+      "length": 101,
+      "segments": 3,
+      "extra_segments": 2,
+      "min_X": 10
+    },
+    {
+      "length": 138,
+      "segments": 2,
+      "extra_segments": 2,
+      "min_X": 17
+    },
+    {
+      "length": 71,
+      "segments": 2,
+      "extra_segments": 0,
+      "min_X": 8
+    },
+    {
+      "length": 101,
+      "segments": 3,
+      "extra_segments": 0,
+      "min_X": 12
+    },
+    {
+      "length": 138,
+      "segments": 2,
+      "extra_segments": 0,
+      "min_X": 19
+    }
+  ],
+  "extra_area_upper": "8895/8",
+  "allowed_PJ_at_1110": [
+    [
+      10,
+      0
+    ],
+    [
+      11,
+      0
+    ],
+    [
+      11,
+      1
+    ],
+    [
+      11,
+      2
+    ],
+    [
+      12,
+      0
+    ],
+    [
+      12,
+      1
+    ],
+    [
+      12,
+      2
+    ],
+    [
+      12,
+      3
+    ],
+    [
+      12,
+      4
+    ],
+    [
+      12,
+      5
+    ],
+    [
+      13,
+      5
+    ],
+    [
+      13,
+      6
+    ],
+    [
+      13,
+      7
+    ]
+  ],
+  "all_local_links_exist": true,
+  "core_checks_pass": true,
+  "startup_checks_pass": true,
+  "schema_checks_pass": true,
+  "all_checks_pass": true
+}

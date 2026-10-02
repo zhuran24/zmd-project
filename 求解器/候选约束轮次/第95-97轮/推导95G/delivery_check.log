@@ -1,0 +1,1 @@
+{"status": "PASS", "report_path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95G.md", "candidate_names": ["内带缺口", "面积预算"], "local_links_checked": 28, "reader_review": "Completed: scope, original X, integer rounding, full-range quantifiers, U dependency and unresolved corner branch checked.", "files_hashed": 24}

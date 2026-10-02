@@ -1,0 +1,292 @@
+[
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S.md",
+    "bytes": 31242,
+    "sha256": "c41eec39cb3e01937621d8548fcd29bf633ae1a0ca67dd16da1ea6c77f112eba"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/audit_numbers.log",
+    "bytes": 92,
+    "sha256": "e465c94119756dfcf4711630042817bc1f10b98d32f3de4889f9d93389146a76"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/audit_numbers.py",
+    "bytes": 6707,
+    "sha256": "04fdf07e446ea4b024aa91fdcb61b928a5b0b8b64afbd4f095d5bdd28400399b"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/candidates.json",
+    "bytes": 3,
+    "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/cycle_9500.json",
+    "bytes": 21861,
+    "sha256": "7f7115b0385f451de3c3dc8dd32895edb1497b4aec791f77729f4355db66f5a0"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/cycle_9510.json",
+    "bytes": 28004,
+    "sha256": "3abd304cbe0adebebbea209a9022bb7eee9f092092ab84a90e3b29fa40681bdb"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/cycle_9511.json",
+    "bytes": 27135,
+    "sha256": "7972e426a2e29e3fc4bd4ea23b750c54d190a3098199bdb11fe58ad2929679a7"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/cycle_9512.json",
+    "bytes": 27587,
+    "sha256": "6842ead161d1bf8650693451cd84cbaf88dcdd2845b604edb3c24cdc52c24664"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/cycle_9513.json",
+    "bytes": 27484,
+    "sha256": "37b0920001eb02428161abf305133524905d9a7785f077819792d19337ba8058"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/cycle_9514.json",
+    "bytes": 27369,
+    "sha256": "d13f53ab16cd7715b479b492c71f72184985b983886181f314256fdcc41aeda1"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/cycle_9515.json",
+    "bytes": 27310,
+    "sha256": "07c041fe6b6d817a2171e5f77c32d21117d9519f8a2d3f3697c34f5183e1137a"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/cycle_9516.json",
+    "bytes": 27731,
+    "sha256": "3bc707db93b4423776a47c09d281a1b12ffc73c9e843ac18aeb17588893c8187"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/cycle_9517.json",
+    "bytes": 27935,
+    "sha256": "34ce5e7b6c2e17c8141bd520b1dcb8fcb9ec90f6e1f75e406a726636e3dcfb4e"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/cycle_9530.json",
+    "bytes": 21644,
+    "sha256": "76dd0bc81b01275c25bd179d06f595a2da9425fa61a848e477bb14059525fd96"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/cycle_9531.json",
+    "bytes": 21731,
+    "sha256": "7e5da4fe972b4293b2a5544c2aae7c02551ecf9749853ba03b7b65042dd86912"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/cycle_9532.json",
+    "bytes": 21532,
+    "sha256": "31d8eef98577ede6e7c14d66b812f4dc1ea5e6f56a02ab4c1b2ea48dea108a6b"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/cycle_9533.json",
+    "bytes": 21704,
+    "sha256": "952ee832197570c3eee0ffcedec72bd7b0ba1acc505d498c8109968d629ad193"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/cycle_9534.json",
+    "bytes": 21664,
+    "sha256": "6e06134778735f13a25a828dfe9a6950f8f9b869ec93c15a5486430f9d5445ce"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/cycle_9535.json",
+    "bytes": 21714,
+    "sha256": "91d47a885ef2ffce8f00f9095750818171af90bafb8666164f9bc7fbd4934e9b"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/cycle_9536.json",
+    "bytes": 21710,
+    "sha256": "c12442d0b6b65e15a82fb27f73e5da8a962d2912801036073cfb6196c3e229c6"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/cycle_9537.json",
+    "bytes": 21753,
+    "sha256": "4d5cb1550c8cf4016574d76c3afe31eb6a4142e953df480d9e16fa62a4fac738"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/cycle_9550.json",
+    "bytes": 23006,
+    "sha256": "d570f81357c30cf7aab1ec5670114e577ef4a9c169002bf213d9ecc14917dc47"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/cycle_9551.json",
+    "bytes": 23159,
+    "sha256": "ae0864bac88f1ec5c5268c397fd7a1b6407358e1914f8e78aa0b5b3724d39d20"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/cycle_verification_0.json",
+    "bytes": 1609,
+    "sha256": "110ab3e633b15c82e61af311305ec99b2cbb2265802b836d4dd05c028feea131"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/cycle_verification_0.log",
+    "bytes": 1389,
+    "sha256": "aa681f7c8d09579cfc5310b27c2a6f91ba075d40004b6d5b153fc508fb295537"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/cycle_verification_1.json",
+    "bytes": 1380,
+    "sha256": "751178e99748b9eb55e4d551fdf031dc9e32e982ccd1440be3e00b8e149b6bc3"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/cycle_verification_1.log",
+    "bytes": 1191,
+    "sha256": "a09b4da310043f5455329f811722849e7a9d2d4e236ec5b065665a55541a1a02"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/cycle_verification_2.json",
+    "bytes": 1379,
+    "sha256": "53bfb75a56eb02baa0887dc8ad072c15bc063ead86ce3290a054d92d305f70bc"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/cycle_verification_2.log",
+    "bytes": 1190,
+    "sha256": "f7dce5b118d34510b05ab63edee1b7cc90c76644aeabe3121c438ceff36ecd82"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/delivery_validation.json",
+    "bytes": 2200,
+    "sha256": "2c093c5b76fb48a70f6bb16de384a8f2a66a375a88463c9e552c9f758b543234"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/factory_core_mixed.json",
+    "bytes": 2857,
+    "sha256": "9201c1fd4d820c4e20716c18ad954e60ad51cbe42b8a059df47b2458e1299634"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/factory_core_mixed.log",
+    "bytes": 1564,
+    "sha256": "10e48107a3b913b8eb142d20c48d1af0ba077f044efd2c1000917fb861209dae"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/factory_dense_cross.json",
+    "bytes": 1401,
+    "sha256": "5412a153538ae6686e8f0ca52febe9f77e5e862bd89c2711eedf3b37331114f7"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/factory_dense_cross.log",
+    "bytes": 757,
+    "sha256": "5f98d8ee30fcf62444514c9ce0c9ce3863d3e3304c3e9d6d724209fc7cb35892"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/factory_low.json",
+    "bytes": 3973,
+    "sha256": "b5ed5673cbcf02b71febd90e7b3ec337a6346eb31df8a2208918959300318878"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/factory_low.log",
+    "bytes": 2478,
+    "sha256": "4099c5c0e93a96068bcdc958ed3542514b31b9569012489658b6f86e4d60d266"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/factory_low_extended_9530.json",
+    "bytes": 1384,
+    "sha256": "8ab6f36f67c476b71d8586aee62abaa20ad3b680a7d2d364ed1b48132cd97453"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/factory_low_extended_9530.log",
+    "bytes": 740,
+    "sha256": "df393d42a4e2fde19bbeaf678cf36197fe0f6f17cc7dd250f47d5be2fc8f4d78"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/factory_low_extended_9533_9535.json",
+    "bytes": 4148,
+    "sha256": "02c80efc30a33b9c8d25a22fce5aa7339323a610a4b15614f7ccc0d5ad003c9b"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/factory_low_extended_9533_9535.log",
+    "bytes": 2222,
+    "sha256": "3ea5137cb6812cd17559f34e9763969e6badeb324513d77af3b5b753175dba58"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/factory_low_extended_9536.json",
+    "bytes": 1385,
+    "sha256": "b4efa09a5d7dae4e28d5e6dc68120a12062556b207f64c83cc5be31e386e918a"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/factory_low_extended_9536.log",
+    "bytes": 741,
+    "sha256": "fefe57d19670510e3e557e366820aae13b1db0d9adfc53495e805abf3f150adf"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/factory_low_extended_9537.json",
+    "bytes": 1383,
+    "sha256": "a1555548241e2eb97a4cc712b70c077a2f9be6bf498e6182015cc4dba401699c"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/factory_low_extended_9537.log",
+    "bytes": 739,
+    "sha256": "6c6f19c2fdd26fd6e8127e3b95dd953fa85cd00dad00eaf77ce3dbff0a357584"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/factory_probe.py",
+    "bytes": 16071,
+    "sha256": "ec3c92146b87e987635489990e32388766ce2191f90e0356d7d95a1ea5d79fd6"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/factory_random_long.json",
+    "bytes": 11211,
+    "sha256": "a723099bc8c0d2ebb6ff77b3d482f11ba6c5cbe549f3372e5e01003363c1a2de"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/factory_random_long.log",
+    "bytes": 6080,
+    "sha256": "bcb0e9f939f0768e2101f7ef46f5f58aecd4de8e0e1450d4e7ee39bb36bcc463"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/factory_summary.json",
+    "bytes": 32003,
+    "sha256": "9b981ba733e2a99e237e7a5ba5972baf64cfff4971d64c8a1da57ffc11c361aa"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/inputs.json",
+    "bytes": 3356,
+    "sha256": "99b76110e49e4dd27016651aaebe90431648a6c7f64bcec662f31b4504af7c92"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/numbers.json",
+    "bytes": 764,
+    "sha256": "91dfb4d0f9041f699005c0c926d278ef80dd77efff096725d35790bb66e35b09"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/reader_audit.md",
+    "bytes": 1752,
+    "sha256": "3816e39ec572622b195d711606cebd0af15e016fa20366989c163f242c6e56a6"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/reply.json",
+    "bytes": 340,
+    "sha256": "e586312158eac98a1b624bc759e02f7c2158c2f323dbc59183a7630d24e0c979"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/shared_send_check.log",
+    "bytes": 804,
+    "sha256": "0e77656775643d8e5f62eead2aa48cfe82479bd4af16f4684bd78782b42254d7"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/shared_send_check.py",
+    "bytes": 8636,
+    "sha256": "30076c25f66458f742c7e09f7ae003856bb6f8cdf994edf74427141239618a7e"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/shared_send_results.json",
+    "bytes": 37000,
+    "sha256": "bd59225896500b9300d8186ab1eef8a79668c194bf1284b71b5d03d2e4e1fc40"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/validate_delivery.log",
+    "bytes": 252,
+    "sha256": "1b1cf9ac8a60bebffb9dc8badedd8ff5551ffb93087515abb94ac25a97e1dd1e"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/validate_delivery.py",
+    "bytes": 3687,
+    "sha256": "72ef09fe7e347aac1043af551962d2c25c53c9ba2c26fc475d0edcfb1f30484d"
+  },
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/推导95S/verify_cycles.py",
+    "bytes": 2751,
+    "sha256": "1e613a84dec97ab59dc9929544e58fb974b829fd40c4fcb88bae9e9ff2a9dd34"
+  }
+]

@@ -1,0 +1,2147 @@
+{
+  "status": "passed",
+  "positive_cases": 7530,
+  "positive_groups": [
+    {
+      "outlets": 1,
+      "cases": 10,
+      "method": "all one-cell states and initial orders"
+    },
+    {
+      "outlets": 2,
+      "cases": 200,
+      "method": "all one-cell states and initial orders"
+    },
+    {
+      "outlets": 3,
+      "cases": 6000,
+      "method": "all one-cell states and initial orders"
+    },
+    {
+      "outlets": 6,
+      "cases": 720,
+      "method": "all orders of six simultaneously vacated heads"
+    },
+    {
+      "outlets": "1..6",
+      "cases": 600,
+      "method": "seeded arbitrary occupancy, ages and path lengths 1..16"
+    }
+  ],
+  "compared_steps": 623408,
+  "history_resets": 38450,
+  "last_non8_interval_end": 10,
+  "negative_controls": [
+    {
+      "outlets": 2,
+      "service_period_steps": 9,
+      "target_rate": "8/9",
+      "measured_deliveries": 60,
+      "window": [
+        196,
+        736
+      ],
+      "first_target_sends": [
+        0,
+        9,
+        18,
+        27,
+        36,
+        45,
+        54,
+        63,
+        72,
+        81,
+        90,
+        99
+      ],
+      "trace": [
+        {
+          "step": 0,
+          "accepts": [
+            true,
+            false
+          ],
+          "served": 0,
+          "head_ages": [
+            1,
+            1
+          ]
+        },
+        {
+          "step": 1,
+          "accepts": [
+            true,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "accepts": [
+            true,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            3,
+            3
+          ]
+        },
+        {
+          "step": 3,
+          "accepts": [
+            true,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            4,
+            4
+          ]
+        },
+        {
+          "step": 4,
+          "accepts": [
+            true,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            5,
+            5
+          ]
+        },
+        {
+          "step": 5,
+          "accepts": [
+            true,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            6,
+            6
+          ]
+        },
+        {
+          "step": 6,
+          "accepts": [
+            true,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            7,
+            7
+          ]
+        },
+        {
+          "step": 7,
+          "accepts": [
+            true,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            8,
+            8
+          ]
+        },
+        {
+          "step": 8,
+          "accepts": [
+            true,
+            true
+          ],
+          "served": 1,
+          "head_ages": [
+            null,
+            1
+          ]
+        },
+        {
+          "step": 9,
+          "accepts": [
+            true,
+            false
+          ],
+          "served": 0,
+          "head_ages": [
+            1,
+            2
+          ]
+        },
+        {
+          "step": 10,
+          "accepts": [
+            true,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            2,
+            3
+          ]
+        },
+        {
+          "step": 11,
+          "accepts": [
+            true,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            3,
+            4
+          ]
+        },
+        {
+          "step": 12,
+          "accepts": [
+            true,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            4,
+            5
+          ]
+        },
+        {
+          "step": 13,
+          "accepts": [
+            true,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            5,
+            6
+          ]
+        },
+        {
+          "step": 14,
+          "accepts": [
+            true,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            6,
+            7
+          ]
+        },
+        {
+          "step": 15,
+          "accepts": [
+            true,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            7,
+            8
+          ]
+        },
+        {
+          "step": 16,
+          "accepts": [
+            true,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            8,
+            8
+          ]
+        },
+        {
+          "step": 17,
+          "accepts": [
+            true,
+            true
+          ],
+          "served": 1,
+          "head_ages": [
+            null,
+            1
+          ]
+        },
+        {
+          "step": 18,
+          "accepts": [
+            true,
+            false
+          ],
+          "served": 0,
+          "head_ages": [
+            1,
+            2
+          ]
+        },
+        {
+          "step": 19,
+          "accepts": [
+            true,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            2,
+            3
+          ]
+        },
+        {
+          "step": 20,
+          "accepts": [
+            true,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            3,
+            4
+          ]
+        },
+        {
+          "step": 21,
+          "accepts": [
+            true,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            4,
+            5
+          ]
+        },
+        {
+          "step": 22,
+          "accepts": [
+            true,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            5,
+            6
+          ]
+        },
+        {
+          "step": 23,
+          "accepts": [
+            true,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            6,
+            7
+          ]
+        },
+        {
+          "step": 24,
+          "accepts": [
+            true,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            7,
+            8
+          ]
+        },
+        {
+          "step": 25,
+          "accepts": [
+            true,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            8,
+            8
+          ]
+        },
+        {
+          "step": 26,
+          "accepts": [
+            true,
+            true
+          ],
+          "served": 1,
+          "head_ages": [
+            null,
+            1
+          ]
+        },
+        {
+          "step": 27,
+          "accepts": [
+            true,
+            false
+          ],
+          "served": 0,
+          "head_ages": [
+            1,
+            2
+          ]
+        },
+        {
+          "step": 28,
+          "accepts": [
+            true,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            2,
+            3
+          ]
+        },
+        {
+          "step": 29,
+          "accepts": [
+            true,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            3,
+            4
+          ]
+        },
+        {
+          "step": 30,
+          "accepts": [
+            true,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            4,
+            5
+          ]
+        },
+        {
+          "step": 31,
+          "accepts": [
+            true,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            5,
+            6
+          ]
+        },
+        {
+          "step": 32,
+          "accepts": [
+            true,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            6,
+            7
+          ]
+        },
+        {
+          "step": 33,
+          "accepts": [
+            true,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            7,
+            8
+          ]
+        },
+        {
+          "step": 34,
+          "accepts": [
+            true,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            8,
+            8
+          ]
+        },
+        {
+          "step": 35,
+          "accepts": [
+            true,
+            true
+          ],
+          "served": 1,
+          "head_ages": [
+            null,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "outlets": 3,
+      "service_period_steps": 10,
+      "target_rate": "4/5",
+      "measured_deliveries": 60,
+      "window": [
+        216,
+        816
+      ],
+      "first_target_sends": [
+        0,
+        10,
+        20,
+        30,
+        40,
+        50,
+        60,
+        70,
+        80,
+        90,
+        100,
+        110
+      ],
+      "trace": [
+        {
+          "step": 0,
+          "accepts": [
+            true,
+            false,
+            false
+          ],
+          "served": 0,
+          "head_ages": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "step": 1,
+          "accepts": [
+            true,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "accepts": [
+            true,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            3,
+            3,
+            3
+          ]
+        },
+        {
+          "step": 3,
+          "accepts": [
+            true,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            4,
+            4,
+            4
+          ]
+        },
+        {
+          "step": 4,
+          "accepts": [
+            true,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            5,
+            5,
+            5
+          ]
+        },
+        {
+          "step": 5,
+          "accepts": [
+            true,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            6,
+            6,
+            6
+          ]
+        },
+        {
+          "step": 6,
+          "accepts": [
+            true,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            7,
+            7,
+            7
+          ]
+        },
+        {
+          "step": 7,
+          "accepts": [
+            true,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            8,
+            8,
+            8
+          ]
+        },
+        {
+          "step": 8,
+          "accepts": [
+            true,
+            true,
+            true
+          ],
+          "served": 1,
+          "head_ages": [
+            null,
+            1,
+            null
+          ]
+        },
+        {
+          "step": 9,
+          "accepts": [
+            true,
+            false,
+            false
+          ],
+          "served": 2,
+          "head_ages": [
+            null,
+            2,
+            1
+          ]
+        },
+        {
+          "step": 10,
+          "accepts": [
+            true,
+            false,
+            false
+          ],
+          "served": 0,
+          "head_ages": [
+            1,
+            3,
+            2
+          ]
+        },
+        {
+          "step": 11,
+          "accepts": [
+            true,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            2,
+            4,
+            3
+          ]
+        },
+        {
+          "step": 12,
+          "accepts": [
+            true,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            3,
+            5,
+            4
+          ]
+        },
+        {
+          "step": 13,
+          "accepts": [
+            true,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            4,
+            6,
+            5
+          ]
+        },
+        {
+          "step": 14,
+          "accepts": [
+            true,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            5,
+            7,
+            6
+          ]
+        },
+        {
+          "step": 15,
+          "accepts": [
+            true,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            6,
+            8,
+            7
+          ]
+        },
+        {
+          "step": 16,
+          "accepts": [
+            true,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            7,
+            8,
+            8
+          ]
+        },
+        {
+          "step": 17,
+          "accepts": [
+            true,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            8,
+            8,
+            8
+          ]
+        },
+        {
+          "step": 18,
+          "accepts": [
+            true,
+            true,
+            true
+          ],
+          "served": 1,
+          "head_ages": [
+            null,
+            1,
+            null
+          ]
+        },
+        {
+          "step": 19,
+          "accepts": [
+            true,
+            false,
+            false
+          ],
+          "served": 2,
+          "head_ages": [
+            null,
+            2,
+            1
+          ]
+        },
+        {
+          "step": 20,
+          "accepts": [
+            true,
+            false,
+            false
+          ],
+          "served": 0,
+          "head_ages": [
+            1,
+            3,
+            2
+          ]
+        },
+        {
+          "step": 21,
+          "accepts": [
+            true,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            2,
+            4,
+            3
+          ]
+        },
+        {
+          "step": 22,
+          "accepts": [
+            true,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            3,
+            5,
+            4
+          ]
+        },
+        {
+          "step": 23,
+          "accepts": [
+            true,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            4,
+            6,
+            5
+          ]
+        },
+        {
+          "step": 24,
+          "accepts": [
+            true,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            5,
+            7,
+            6
+          ]
+        },
+        {
+          "step": 25,
+          "accepts": [
+            true,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            6,
+            8,
+            7
+          ]
+        },
+        {
+          "step": 26,
+          "accepts": [
+            true,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            7,
+            8,
+            8
+          ]
+        },
+        {
+          "step": 27,
+          "accepts": [
+            true,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            8,
+            8,
+            8
+          ]
+        },
+        {
+          "step": 28,
+          "accepts": [
+            true,
+            true,
+            true
+          ],
+          "served": 1,
+          "head_ages": [
+            null,
+            1,
+            null
+          ]
+        },
+        {
+          "step": 29,
+          "accepts": [
+            true,
+            false,
+            false
+          ],
+          "served": 2,
+          "head_ages": [
+            null,
+            2,
+            1
+          ]
+        },
+        {
+          "step": 30,
+          "accepts": [
+            true,
+            false,
+            false
+          ],
+          "served": 0,
+          "head_ages": [
+            1,
+            3,
+            2
+          ]
+        },
+        {
+          "step": 31,
+          "accepts": [
+            true,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            2,
+            4,
+            3
+          ]
+        },
+        {
+          "step": 32,
+          "accepts": [
+            true,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            3,
+            5,
+            4
+          ]
+        },
+        {
+          "step": 33,
+          "accepts": [
+            true,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            4,
+            6,
+            5
+          ]
+        },
+        {
+          "step": 34,
+          "accepts": [
+            true,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            5,
+            7,
+            6
+          ]
+        },
+        {
+          "step": 35,
+          "accepts": [
+            true,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            6,
+            8,
+            7
+          ]
+        },
+        {
+          "step": 36,
+          "accepts": [
+            true,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            7,
+            8,
+            8
+          ]
+        },
+        {
+          "step": 37,
+          "accepts": [
+            true,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            8,
+            8,
+            8
+          ]
+        },
+        {
+          "step": 38,
+          "accepts": [
+            true,
+            true,
+            true
+          ],
+          "served": 1,
+          "head_ages": [
+            null,
+            1,
+            null
+          ]
+        },
+        {
+          "step": 39,
+          "accepts": [
+            true,
+            false,
+            false
+          ],
+          "served": 2,
+          "head_ages": [
+            null,
+            2,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "outlets": 6,
+      "service_period_steps": 13,
+      "target_rate": "8/13",
+      "measured_deliveries": 60,
+      "window": [
+        276,
+        1056
+      ],
+      "first_target_sends": [
+        0,
+        13,
+        26,
+        39,
+        52,
+        65,
+        78,
+        91,
+        104,
+        117,
+        130,
+        143
+      ],
+      "trace": [
+        {
+          "step": 0,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": 0,
+          "head_ages": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "step": 1,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            3,
+            3,
+            3,
+            3,
+            3,
+            3
+          ]
+        },
+        {
+          "step": 3,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ]
+        },
+        {
+          "step": 4,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            5,
+            5,
+            5,
+            5,
+            5,
+            5
+          ]
+        },
+        {
+          "step": 5,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            6,
+            6,
+            6,
+            6,
+            6,
+            6
+          ]
+        },
+        {
+          "step": 6,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            7,
+            7,
+            7,
+            7,
+            7,
+            7
+          ]
+        },
+        {
+          "step": 7,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            8,
+            8,
+            8,
+            8,
+            8,
+            8
+          ]
+        },
+        {
+          "step": 8,
+          "accepts": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ],
+          "served": 1,
+          "head_ages": [
+            null,
+            1,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "step": 9,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": 2,
+          "head_ages": [
+            null,
+            2,
+            1,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "step": 10,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": 3,
+          "head_ages": [
+            null,
+            3,
+            2,
+            1,
+            null,
+            null
+          ]
+        },
+        {
+          "step": 11,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": 4,
+          "head_ages": [
+            null,
+            4,
+            3,
+            2,
+            1,
+            null
+          ]
+        },
+        {
+          "step": 12,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": 5,
+          "head_ages": [
+            null,
+            5,
+            4,
+            3,
+            2,
+            1
+          ]
+        },
+        {
+          "step": 13,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": 0,
+          "head_ages": [
+            1,
+            6,
+            5,
+            4,
+            3,
+            2
+          ]
+        },
+        {
+          "step": 14,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            2,
+            7,
+            6,
+            5,
+            4,
+            3
+          ]
+        },
+        {
+          "step": 15,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            3,
+            8,
+            7,
+            6,
+            5,
+            4
+          ]
+        },
+        {
+          "step": 16,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            4,
+            8,
+            8,
+            7,
+            6,
+            5
+          ]
+        },
+        {
+          "step": 17,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            5,
+            8,
+            8,
+            8,
+            7,
+            6
+          ]
+        },
+        {
+          "step": 18,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            6,
+            8,
+            8,
+            8,
+            8,
+            7
+          ]
+        },
+        {
+          "step": 19,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            7,
+            8,
+            8,
+            8,
+            8,
+            8
+          ]
+        },
+        {
+          "step": 20,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            8,
+            8,
+            8,
+            8,
+            8,
+            8
+          ]
+        },
+        {
+          "step": 21,
+          "accepts": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ],
+          "served": 1,
+          "head_ages": [
+            null,
+            1,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "step": 22,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": 2,
+          "head_ages": [
+            null,
+            2,
+            1,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "step": 23,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": 3,
+          "head_ages": [
+            null,
+            3,
+            2,
+            1,
+            null,
+            null
+          ]
+        },
+        {
+          "step": 24,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": 4,
+          "head_ages": [
+            null,
+            4,
+            3,
+            2,
+            1,
+            null
+          ]
+        },
+        {
+          "step": 25,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": 5,
+          "head_ages": [
+            null,
+            5,
+            4,
+            3,
+            2,
+            1
+          ]
+        },
+        {
+          "step": 26,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": 0,
+          "head_ages": [
+            1,
+            6,
+            5,
+            4,
+            3,
+            2
+          ]
+        },
+        {
+          "step": 27,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            2,
+            7,
+            6,
+            5,
+            4,
+            3
+          ]
+        },
+        {
+          "step": 28,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            3,
+            8,
+            7,
+            6,
+            5,
+            4
+          ]
+        },
+        {
+          "step": 29,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            4,
+            8,
+            8,
+            7,
+            6,
+            5
+          ]
+        },
+        {
+          "step": 30,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            5,
+            8,
+            8,
+            8,
+            7,
+            6
+          ]
+        },
+        {
+          "step": 31,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            6,
+            8,
+            8,
+            8,
+            8,
+            7
+          ]
+        },
+        {
+          "step": 32,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            7,
+            8,
+            8,
+            8,
+            8,
+            8
+          ]
+        },
+        {
+          "step": 33,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            8,
+            8,
+            8,
+            8,
+            8,
+            8
+          ]
+        },
+        {
+          "step": 34,
+          "accepts": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ],
+          "served": 1,
+          "head_ages": [
+            null,
+            1,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "step": 35,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": 2,
+          "head_ages": [
+            null,
+            2,
+            1,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "step": 36,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": 3,
+          "head_ages": [
+            null,
+            3,
+            2,
+            1,
+            null,
+            null
+          ]
+        },
+        {
+          "step": 37,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": 4,
+          "head_ages": [
+            null,
+            4,
+            3,
+            2,
+            1,
+            null
+          ]
+        },
+        {
+          "step": 38,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": 5,
+          "head_ages": [
+            null,
+            5,
+            4,
+            3,
+            2,
+            1
+          ]
+        },
+        {
+          "step": 39,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": 0,
+          "head_ages": [
+            1,
+            6,
+            5,
+            4,
+            3,
+            2
+          ]
+        },
+        {
+          "step": 40,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            2,
+            7,
+            6,
+            5,
+            4,
+            3
+          ]
+        },
+        {
+          "step": 41,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            3,
+            8,
+            7,
+            6,
+            5,
+            4
+          ]
+        },
+        {
+          "step": 42,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            4,
+            8,
+            8,
+            7,
+            6,
+            5
+          ]
+        },
+        {
+          "step": 43,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            5,
+            8,
+            8,
+            8,
+            7,
+            6
+          ]
+        },
+        {
+          "step": 44,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            6,
+            8,
+            8,
+            8,
+            8,
+            7
+          ]
+        },
+        {
+          "step": 45,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            7,
+            8,
+            8,
+            8,
+            8,
+            8
+          ]
+        },
+        {
+          "step": 46,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": null,
+          "head_ages": [
+            8,
+            8,
+            8,
+            8,
+            8,
+            8
+          ]
+        },
+        {
+          "step": 47,
+          "accepts": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ],
+          "served": 1,
+          "head_ages": [
+            null,
+            1,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "step": 48,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": 2,
+          "head_ages": [
+            null,
+            2,
+            1,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "step": 49,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": 3,
+          "head_ages": [
+            null,
+            3,
+            2,
+            1,
+            null,
+            null
+          ]
+        },
+        {
+          "step": 50,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": 4,
+          "head_ages": [
+            null,
+            4,
+            3,
+            2,
+            1,
+            null
+          ]
+        },
+        {
+          "step": 51,
+          "accepts": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "served": 5,
+          "head_ages": [
+            null,
+            5,
+            4,
+            3,
+            2,
+            1
+          ]
+        }
+      ]
+    }
+  ],
+  "boundary": "External acceptance calendars test a service lemma; none is a factory counterexample."
+}

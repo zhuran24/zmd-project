@@ -1,0 +1,6 @@
+{"seed": 9510, "steps": 5160, "certificate": "cycle_9510.json", "sha256": "3abd304cbe0adebebbea209a9022bb7eee9f092092ab84a90e3b29fa40681bdb", "equal_raw_states_a": true, "equal_raw_states_b": true}
+{"seed": 9513, "steps": 3688, "certificate": "cycle_9513.json", "sha256": "37b0920001eb02428161abf305133524905d9a7785f077819792d19337ba8058", "equal_raw_states_a": true, "equal_raw_states_b": true}
+{"seed": 9516, "steps": 4848, "certificate": "cycle_9516.json", "sha256": "3bc707db93b4423776a47c09d281a1b12ffc73c9e843ac18aeb17588893c8187", "equal_raw_states_a": true, "equal_raw_states_b": true}
+{"seed": 9531, "steps": 28928, "certificate": "cycle_9531.json", "sha256": "7e5da4fe972b4293b2a5544c2aae7c02551ecf9749853ba03b7b65042dd86912", "equal_raw_states_a": true, "equal_raw_states_b": true}
+{"seed": 9534, "steps": 53560, "certificate": "cycle_9534.json", "sha256": "6e06134778735f13a25a828dfe9a6950f8f9b869ec93c15a5486430f9d5445ce", "equal_raw_states_a": true, "equal_raw_states_b": true}
+{"seed": 9537, "steps": 53560, "certificate": "cycle_9537.json", "sha256": "4d5cb1550c8cf4016574d76c3afe31eb6a4142e953df480d9e16fa62a4fac738", "equal_raw_states_a": true, "equal_raw_states_b": true}

@@ -1,0 +1,64 @@
+[
+  {
+    "source": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第92-94轮/复核93B/corner_a.py",
+    "copied_to": "corner_a.py",
+    "sha256": "5ad1992c19d602a2eaf5aa09e053d6cdd59cb5d7cee2a811b34bb8acda9d1dc8",
+    "use": "只读检查后复制重跑；A按格互斥，B按矩形区间冲突；非本席新写编码"
+  },
+  {
+    "source": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第92-94轮/复核93B/corner_b.py",
+    "copied_to": "corner_b.py",
+    "sha256": "90a37dba7cbcf3fb9038fddde75e0d60f0dde7dcd8d9fc507a919d21d99e0923",
+    "use": "只读检查后复制重跑；A按格互斥，B按矩形区间冲突；非本席新写编码"
+  },
+  {
+    "source": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第92-94轮/复核93B/scope_probe.py",
+    "copied_to": "scope_probe.py",
+    "sha256": "bff76b4a7eb3eb85170f7cabfce71f27ba809ec7127ca8a9c5a51335251993a5",
+    "use": "只读检查后复制重跑；A按格互斥，B按矩形区间冲突；非本席新写编码"
+  },
+  {
+    "source": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第92-94轮/复核93B/arithmetic_a.py",
+    "copied_to": "arithmetic_a.py",
+    "sha256": "9087132aec76912830fabf94a29b6fdb988ead20293f587d9e6891679e9f5955",
+    "use": "只读检查后复制重跑；A有理数消元和支持集合，B整数倒推和流量向量；非本席新写编码"
+  },
+  {
+    "source": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第92-94轮/复核93B/arithmetic_b.py",
+    "copied_to": "arithmetic_b.py",
+    "sha256": "ec9d804de737731f39f5bfa5c5984eca1cd8140faa98a3b21c659309e982c11a",
+    "use": "只读检查后复制重跑；A有理数消元和支持集合，B整数倒推和流量向量；非本席新写编码"
+  },
+  {
+    "source": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第92-94轮/复核93F/plant_a.py",
+    "copied_to": "plant_a.py",
+    "source_sha256": "ccefa7731f21ae8332886e8e24e45f72e1bf93c2131a3bd7f9b4adefcb8f2dca",
+    "output_sha256": "091c38c3940a8a286bd76b2599d3aee07e7ad03ac1570b8a1c8231d136e8a2bd",
+    "change": "增加实际可送者触发；本构型无回送候选",
+    "use": "复用两套独立植物单元引擎，仅本目录副本按临时规则改动"
+  },
+  {
+    "source": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第92-94轮/复核93F/plant_b.py",
+    "copied_to": "plant_b.py",
+    "source_sha256": "53bf10ffeba7c0fbddba3c5fc3e09efb84564ffe7e01c4e440bb7e732fd02f77",
+    "output_sha256": "1a044d772c9e25f146f815187b03a9641ea600b325f5e17e8df61cbf24c4540a",
+    "change": "增加成熟来货触发；本构型无回送候选",
+    "use": "复用两套独立植物单元引擎，仅本目录副本按临时规则改动"
+  },
+  {
+    "source": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第92-94轮/复核93F/verify_plant.py",
+    "copied_to": "verify_plant.py",
+    "source_sha256": "b0f4dbd7c7e23dc09bd487a99e0520e14c2db1fd1d3b71cd1d25b23d84a36d9e",
+    "output_sha256": "b0f4dbd7c7e23dc09bd487a99e0520e14c2db1fd1d3b71cd1d25b23d84a36d9e",
+    "change": "无",
+    "use": "复用两套独立植物单元引擎，仅本目录副本按临时规则改动"
+  },
+  {
+    "source": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第92-94轮/复核93F/repaired_startup.py",
+    "copied_to": "repaired_startup.py",
+    "source_sha256": "ffab81f2f60f1ed08b087e06e5e8032bd3186a45d24eaa710649e4e3b35a9e26",
+    "output_sha256": "ffab81f2f60f1ed08b087e06e5e8032bd3186a45d24eaa710649e4e3b35a9e26",
+    "change": "无",
+    "use": "复用两套独立植物单元引擎，仅本目录副本按临时规则改动"
+  }
+]

@@ -1,0 +1,66 @@
+{
+  "report_path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/复核96M.md",
+  "status": "完成：10条未否证",
+  "verdicts": [
+    {
+      "name": "分叉分支",
+      "verdict": "未否证",
+      "reason": "重建与数层量词符合临时规则。",
+      "revised_text": ""
+    },
+    {
+      "name": "取货分级",
+      "verdict": "未否证",
+      "reason": "单位重建可反转等层级序。",
+      "revised_text": ""
+    },
+    {
+      "name": "来源定序",
+      "verdict": "未否证",
+      "reason": "限定集合后实际周期收支成立。",
+      "revised_text": ""
+    },
+    {
+      "name": "面积预算",
+      "verdict": "未否证",
+      "reason": "面积常数和增配排除独立复算成立。",
+      "revised_text": ""
+    },
+    {
+      "name": "内带缺口",
+      "verdict": "未否证",
+      "reason": "近边方向重计有同分支补偿。",
+      "revised_text": ""
+    },
+    {
+      "name": "专用进路下缓存格不空的传递",
+      "verdict": "未否证",
+      "reason": "纯带、正确物品及单出口前提足够。",
+      "revised_text": ""
+    },
+    {
+      "name": "分流先判的首段带容量",
+      "verdict": "未否证",
+      "reason": "完整元件占格步数上下界成立。",
+      "revised_text": ""
+    },
+    {
+      "name": "研磨单路换主料步数余量",
+      "verdict": "未否证",
+      "reason": "九步间隔及周期余量计数成立。",
+      "revised_text": ""
+    },
+    {
+      "name": "无分流网络的判定先后无关",
+      "verdict": "未否证",
+      "reason": "所列结构子类内动作可交换。",
+      "revised_text": ""
+    },
+    {
+      "name": "全厂专用进路接法的调试办法",
+      "verdict": "未否证",
+      "reason": "关机准备可执行，终点Φ正确。",
+      "revised_text": ""
+    }
+  ]
+}

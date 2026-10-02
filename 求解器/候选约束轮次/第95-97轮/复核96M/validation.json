@@ -1,0 +1,120 @@
+{
+  "arithmetic_keys_matched": [
+    "machine_area",
+    "total_machines",
+    "input_ports",
+    "output_ports",
+    "interfaces",
+    "single_cost_twice",
+    "weights",
+    "omega",
+    "fixed1110_pj",
+    "factors",
+    "outer",
+    "grade",
+    "startup_loss",
+    "startup_need",
+    "switch",
+    "increment_area_bound"
+  ],
+  "geometry": {
+    "corner": {
+      "checked_rows": 135,
+      "fixed_conflicts": 0,
+      "max": 91,
+      "matches_submission_except_safe_strengthening": true,
+      "differences": [],
+      "optimal": 135,
+      "infeasible": 0
+    },
+    "scope": {
+      "checked_rows": 15697,
+      "fixed_conflicts": 1042,
+      "max": 91,
+      "matches_submission_except_safe_strengthening": true,
+      "differences": [
+        {
+          "key": [
+            3,
+            0,
+            2,
+            5,
+            6
+          ],
+          "audit": [
+            null,
+            2
+          ],
+          "submission": [
+            88,
+            2
+          ],
+          "reason": "Upper shaper second inlet lies in the empty rectangle; lower edge has no steel approach."
+        }
+      ],
+      "optimal": 15696,
+      "infeasible": 1
+    }
+  },
+  "capacity_rows_matched": 24,
+  "startup_submitted_numbers_matched": true,
+  "startup_independent_cases": 20,
+  "switch": [
+    {
+      "channels": 1,
+      "earliest": 9
+    },
+    {
+      "channels": 2,
+      "earliest": 8
+    }
+  ],
+  "propagation": {
+    "count": 160,
+    "compared_steps": 288000,
+    "scope": "Fixed source contracts, pure belt paths, changing receiver order and repeated downstream pauses; not a whole factory."
+  },
+  "order": {
+    "initial_states": 24576,
+    "permutations_each": 12,
+    "compared_transitions": 294912,
+    "order_differences": 0,
+    "encoding_differences": 0,
+    "strict_three_edge_orders": 0,
+    "scope": "Local functional DAG motif and contract states, not an enumeration of all layouts."
+  },
+  "local_geometry": {
+    "source": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第92-94轮/复核93F/local_geometry.json",
+    "lengths": {
+      "CA": 7,
+      "CB": 13,
+      "AC": 31,
+      "BK": 5,
+      "K0": 5,
+      "K1": 5
+    },
+    "occupied_cells": 267,
+    "channels": 72,
+    "unintended_channels": 0,
+    "coverage": {
+      "C": [
+        "供电桩1"
+      ],
+      "A": [
+        "供电桩1",
+        "供电桩2"
+      ],
+      "B": [
+        "供电桩2"
+      ],
+      "K": [
+        "供电桩2",
+        "供电桩3"
+      ],
+      "G": [
+        "供电桩3"
+      ]
+    },
+    "scope": "Local geometry only"
+  }
+}

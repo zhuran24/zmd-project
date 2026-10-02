@@ -1,0 +1,29 @@
+{
+  "status": "PASS",
+  "base_cases": 135,
+  "near_total": 16739,
+  "near_compatible": 15697,
+  "near_invalid": 1042,
+  "witnesses_checked": 31934,
+  "arithmetic_fields_compared": 22,
+  "original_geometries_compared": [
+    "geometry_a.json",
+    "geometry_b.json"
+  ],
+  "near_histogram": {
+    "88": 1912,
+    "89": 6127,
+    "87": 53,
+    "90": 5051,
+    "91": 2554
+  },
+  "base_histogram": {
+    "89": 47,
+    "91": 46,
+    "90": 42
+  },
+  "cpu_workers_per_solver": 1,
+  "python": "3.14.7",
+  "seconds": 17.2724979850027,
+  "scope": "Exact finite necessary relaxations; no factory or reachability witness."
+}

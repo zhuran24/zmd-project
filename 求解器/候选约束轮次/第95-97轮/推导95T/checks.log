@@ -1,0 +1,109 @@
+{
+  "arithmetic": {
+    "machines": [
+      68,
+      51,
+      32,
+      6,
+      6,
+      32,
+      16,
+      3,
+      3
+    ],
+    "rates": [
+      "68",
+      "51",
+      "63/2",
+      "11/2",
+      "6",
+      "32",
+      "16",
+      "3/5",
+      "11/20"
+    ],
+    "batch_counts_20_ticks": [
+      1360,
+      1020,
+      630,
+      110,
+      120,
+      640,
+      320,
+      12,
+      11
+    ],
+    "mixture_ports": [
+      3,
+      2,
+      2,
+      2
+    ],
+    "stock": [
+      64,
+      22,
+      42
+    ],
+    "plant_inventory": [
+      47,
+      44,
+      41
+    ],
+    "D_bound": 150,
+    "D_maximum": 177,
+    "C_bound": "176",
+    "seed_machine_all_single": 18,
+    "grinder_switch_limit": 4,
+    "grinder_every_batch_count": 4,
+    "full_phases": 20160,
+    "box_closed_window": 18,
+    "first_50_starts_last": 392,
+    "first_empty_lower_bound": 400
+  },
+  "density": [
+    {
+      "first": "U",
+      "repeat_step_ends": [
+        144,
+        184
+      ],
+      "period_steps": 40,
+      "counts": [
+        0,
+        1,
+        1
+      ],
+      "rates": [
+        "0",
+        "1/5",
+        "1/5"
+      ],
+      "warehouse": 79966,
+      "minimum_warehouse": 79966,
+      "states_compared": 185
+    },
+    {
+      "first": "S",
+      "repeat_step_ends": [
+        128,
+        208
+      ],
+      "period_steps": 80,
+      "counts": [
+        1,
+        1,
+        2
+      ],
+      "rates": [
+        "1/10",
+        "1/10",
+        "1/5"
+      ],
+      "warehouse": 79966,
+      "minimum_warehouse": 79966,
+      "states_compared": 209
+    }
+  ],
+  "candidates": 35,
+  "status": "PASS"
+}

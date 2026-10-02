@@ -1,0 +1,1 @@
+{"rebuild_cases": 4, "capacity_cases": 24, "switch_receipts": [{"channels": 1, "earliest_next_batch": 9}, {"channels": 2, "earliest_next_batch": 8}], "startup_threshold": 97, "all_checks_pass": true}

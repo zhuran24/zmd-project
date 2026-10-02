@@ -1,0 +1,4327 @@
+{
+  "cases": [
+    {
+      "recipe": "crusher",
+      "case": 0,
+      "lengths": [
+        6
+      ],
+      "production_sizes": [
+        3
+      ],
+      "phases": [
+        5
+      ],
+      "initial_stock": [
+        15
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "crusher",
+      "case": 1,
+      "lengths": [
+        8,
+        2
+      ],
+      "production_sizes": [
+        1,
+        1
+      ],
+      "phases": [
+        5,
+        1
+      ],
+      "initial_stock": [
+        22
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "crusher",
+      "case": 2,
+      "lengths": [
+        5
+      ],
+      "production_sizes": [
+        2
+      ],
+      "phases": [
+        6
+      ],
+      "initial_stock": [
+        48
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "crusher",
+      "case": 3,
+      "lengths": [
+        8,
+        7
+      ],
+      "production_sizes": [
+        2,
+        2
+      ],
+      "phases": [
+        0,
+        3
+      ],
+      "initial_stock": [
+        7
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "crusher",
+      "case": 4,
+      "lengths": [
+        4
+      ],
+      "production_sizes": [
+        1
+      ],
+      "phases": [
+        7
+      ],
+      "initial_stock": [
+        39
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "crusher",
+      "case": 5,
+      "lengths": [
+        5,
+        6
+      ],
+      "production_sizes": [
+        2,
+        1
+      ],
+      "phases": [
+        7,
+        4
+      ],
+      "initial_stock": [
+        26
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "crusher",
+      "case": 6,
+      "lengths": [
+        7
+      ],
+      "production_sizes": [
+        1
+      ],
+      "phases": [
+        4
+      ],
+      "initial_stock": [
+        50
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "crusher",
+      "case": 7,
+      "lengths": [
+        8,
+        3
+      ],
+      "production_sizes": [
+        2,
+        2
+      ],
+      "phases": [
+        6,
+        0
+      ],
+      "initial_stock": [
+        35
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "crusher",
+      "case": 8,
+      "lengths": [
+        6
+      ],
+      "production_sizes": [
+        3
+      ],
+      "phases": [
+        0
+      ],
+      "initial_stock": [
+        42
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "crusher",
+      "case": 9,
+      "lengths": [
+        3,
+        1
+      ],
+      "production_sizes": [
+        3,
+        2
+      ],
+      "phases": [
+        3,
+        7
+      ],
+      "initial_stock": [
+        3
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "crusher",
+      "case": 10,
+      "lengths": [
+        3
+      ],
+      "production_sizes": [
+        1
+      ],
+      "phases": [
+        7
+      ],
+      "initial_stock": [
+        16
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "crusher",
+      "case": 11,
+      "lengths": [
+        7,
+        7
+      ],
+      "production_sizes": [
+        2,
+        1
+      ],
+      "phases": [
+        6,
+        1
+      ],
+      "initial_stock": [
+        35
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "crusher",
+      "case": 12,
+      "lengths": [
+        4
+      ],
+      "production_sizes": [
+        3
+      ],
+      "phases": [
+        4
+      ],
+      "initial_stock": [
+        39
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "crusher",
+      "case": 13,
+      "lengths": [
+        7,
+        7
+      ],
+      "production_sizes": [
+        1,
+        3
+      ],
+      "phases": [
+        3,
+        4
+      ],
+      "initial_stock": [
+        30
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "crusher",
+      "case": 14,
+      "lengths": [
+        3
+      ],
+      "production_sizes": [
+        2
+      ],
+      "phases": [
+        0
+      ],
+      "initial_stock": [
+        44
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "crusher",
+      "case": 15,
+      "lengths": [
+        5,
+        3
+      ],
+      "production_sizes": [
+        2,
+        1
+      ],
+      "phases": [
+        0,
+        2
+      ],
+      "initial_stock": [
+        36
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "crusher",
+      "case": 16,
+      "lengths": [
+        5
+      ],
+      "production_sizes": [
+        2
+      ],
+      "phases": [
+        2
+      ],
+      "initial_stock": [
+        25
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "crusher",
+      "case": 17,
+      "lengths": [
+        8,
+        6
+      ],
+      "production_sizes": [
+        1,
+        3
+      ],
+      "phases": [
+        7,
+        2
+      ],
+      "initial_stock": [
+        47
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "crusher",
+      "case": 18,
+      "lengths": [
+        3
+      ],
+      "production_sizes": [
+        3
+      ],
+      "phases": [
+        6
+      ],
+      "initial_stock": [
+        38
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "crusher",
+      "case": 19,
+      "lengths": [
+        3,
+        7
+      ],
+      "production_sizes": [
+        3,
+        2
+      ],
+      "phases": [
+        0,
+        3
+      ],
+      "initial_stock": [
+        36
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "crusher",
+      "case": 20,
+      "lengths": [
+        6
+      ],
+      "production_sizes": [
+        2
+      ],
+      "phases": [
+        1
+      ],
+      "initial_stock": [
+        9
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "crusher",
+      "case": 21,
+      "lengths": [
+        2,
+        6
+      ],
+      "production_sizes": [
+        2,
+        3
+      ],
+      "phases": [
+        0,
+        7
+      ],
+      "initial_stock": [
+        19
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "crusher",
+      "case": 22,
+      "lengths": [
+        2
+      ],
+      "production_sizes": [
+        2
+      ],
+      "phases": [
+        6
+      ],
+      "initial_stock": [
+        21
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "crusher",
+      "case": 23,
+      "lengths": [
+        3,
+        8
+      ],
+      "production_sizes": [
+        3,
+        2
+      ],
+      "phases": [
+        0,
+        6
+      ],
+      "initial_stock": [
+        23
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "crusher",
+      "case": 24,
+      "lengths": [
+        6
+      ],
+      "production_sizes": [
+        3
+      ],
+      "phases": [
+        1
+      ],
+      "initial_stock": [
+        0
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "crusher",
+      "case": 25,
+      "lengths": [
+        8,
+        3
+      ],
+      "production_sizes": [
+        2,
+        3
+      ],
+      "phases": [
+        3,
+        6
+      ],
+      "initial_stock": [
+        5
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "crusher",
+      "case": 26,
+      "lengths": [
+        5
+      ],
+      "production_sizes": [
+        3
+      ],
+      "phases": [
+        7
+      ],
+      "initial_stock": [
+        13
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "crusher",
+      "case": 27,
+      "lengths": [
+        5,
+        4
+      ],
+      "production_sizes": [
+        3,
+        1
+      ],
+      "phases": [
+        0,
+        6
+      ],
+      "initial_stock": [
+        45
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "crusher",
+      "case": 28,
+      "lengths": [
+        8
+      ],
+      "production_sizes": [
+        3
+      ],
+      "phases": [
+        2
+      ],
+      "initial_stock": [
+        5
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "crusher",
+      "case": 29,
+      "lengths": [
+        1,
+        3
+      ],
+      "production_sizes": [
+        3,
+        1
+      ],
+      "phases": [
+        1,
+        5
+      ],
+      "initial_stock": [
+        13
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "crusher",
+      "case": 30,
+      "lengths": [
+        5
+      ],
+      "production_sizes": [
+        2
+      ],
+      "phases": [
+        1
+      ],
+      "initial_stock": [
+        26
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "crusher",
+      "case": 31,
+      "lengths": [
+        8,
+        3
+      ],
+      "production_sizes": [
+        3,
+        2
+      ],
+      "phases": [
+        0,
+        6
+      ],
+      "initial_stock": [
+        8
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "grinder",
+      "case": 0,
+      "lengths": [
+        6,
+        6,
+        4
+      ],
+      "production_sizes": [
+        3,
+        3,
+        1
+      ],
+      "phases": [
+        6,
+        1,
+        4
+      ],
+      "initial_stock": [
+        5,
+        6
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "grinder",
+      "case": 1,
+      "lengths": [
+        8,
+        2,
+        3,
+        3,
+        6
+      ],
+      "production_sizes": [
+        3,
+        1,
+        2,
+        3,
+        1
+      ],
+      "phases": [
+        5,
+        1,
+        4,
+        5,
+        4
+      ],
+      "initial_stock": [
+        45,
+        23
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "grinder",
+      "case": 2,
+      "lengths": [
+        5,
+        8,
+        7
+      ],
+      "production_sizes": [
+        3,
+        3,
+        2
+      ],
+      "phases": [
+        2,
+        5,
+        5
+      ],
+      "initial_stock": [
+        13,
+        43
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "grinder",
+      "case": 3,
+      "lengths": [
+        8,
+        7,
+        5,
+        5,
+        1
+      ],
+      "production_sizes": [
+        1,
+        1,
+        2,
+        2,
+        2
+      ],
+      "phases": [
+        5,
+        3,
+        0,
+        1,
+        5
+      ],
+      "initial_stock": [
+        34,
+        7
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "grinder",
+      "case": 4,
+      "lengths": [
+        4,
+        1,
+        8
+      ],
+      "production_sizes": [
+        3,
+        3,
+        1
+      ],
+      "phases": [
+        0,
+        3,
+        0
+      ],
+      "initial_stock": [
+        26,
+        33
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "grinder",
+      "case": 5,
+      "lengths": [
+        5,
+        6,
+        6,
+        2,
+        8
+      ],
+      "production_sizes": [
+        2,
+        2,
+        1,
+        2,
+        1
+      ],
+      "phases": [
+        0,
+        7,
+        1,
+        3,
+        4
+      ],
+      "initial_stock": [
+        43,
+        9
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "grinder",
+      "case": 6,
+      "lengths": [
+        7,
+        3,
+        5
+      ],
+      "production_sizes": [
+        2,
+        1,
+        2
+      ],
+      "phases": [
+        1,
+        0,
+        0
+      ],
+      "initial_stock": [
+        34,
+        39
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "grinder",
+      "case": 7,
+      "lengths": [
+        8,
+        3,
+        7,
+        6,
+        7
+      ],
+      "production_sizes": [
+        1,
+        3,
+        1,
+        2,
+        1
+      ],
+      "phases": [
+        5,
+        7,
+        2,
+        6,
+        1
+      ],
+      "initial_stock": [
+        39,
+        32
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "grinder",
+      "case": 8,
+      "lengths": [
+        6,
+        1,
+        5
+      ],
+      "production_sizes": [
+        2,
+        1,
+        2
+      ],
+      "phases": [
+        4,
+        3,
+        5
+      ],
+      "initial_stock": [
+        43,
+        10
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "grinder",
+      "case": 9,
+      "lengths": [
+        3,
+        1,
+        8,
+        4,
+        8
+      ],
+      "production_sizes": [
+        1,
+        3,
+        1,
+        2,
+        1
+      ],
+      "phases": [
+        0,
+        7,
+        2,
+        2,
+        4
+      ],
+      "initial_stock": [
+        0,
+        24
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "grinder",
+      "case": 10,
+      "lengths": [
+        3,
+        1,
+        8
+      ],
+      "production_sizes": [
+        2,
+        2,
+        3
+      ],
+      "phases": [
+        3,
+        6,
+        7
+      ],
+      "initial_stock": [
+        46,
+        37
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "grinder",
+      "case": 11,
+      "lengths": [
+        7,
+        7,
+        6,
+        3,
+        7
+      ],
+      "production_sizes": [
+        1,
+        3,
+        2,
+        1,
+        2
+      ],
+      "phases": [
+        5,
+        1,
+        0,
+        5,
+        3
+      ],
+      "initial_stock": [
+        23,
+        35
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "grinder",
+      "case": 12,
+      "lengths": [
+        4,
+        5,
+        4
+      ],
+      "production_sizes": [
+        1,
+        2,
+        1
+      ],
+      "phases": [
+        1,
+        7,
+        7
+      ],
+      "initial_stock": [
+        3,
+        25
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "grinder",
+      "case": 13,
+      "lengths": [
+        7,
+        7,
+        1,
+        4,
+        5
+      ],
+      "production_sizes": [
+        2,
+        1,
+        3,
+        3,
+        3
+      ],
+      "phases": [
+        5,
+        7,
+        0,
+        6,
+        6
+      ],
+      "initial_stock": [
+        18,
+        34
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "grinder",
+      "case": 14,
+      "lengths": [
+        3,
+        5,
+        1
+      ],
+      "production_sizes": [
+        3,
+        2,
+        2
+      ],
+      "phases": [
+        5,
+        1,
+        2
+      ],
+      "initial_stock": [
+        19,
+        41
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "grinder",
+      "case": 15,
+      "lengths": [
+        5,
+        3,
+        8,
+        3,
+        1
+      ],
+      "production_sizes": [
+        1,
+        3,
+        2,
+        1,
+        3
+      ],
+      "phases": [
+        5,
+        3,
+        1,
+        1,
+        7
+      ],
+      "initial_stock": [
+        18,
+        50
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "grinder",
+      "case": 16,
+      "lengths": [
+        5,
+        6,
+        3
+      ],
+      "production_sizes": [
+        2,
+        3,
+        1
+      ],
+      "phases": [
+        0,
+        2,
+        2
+      ],
+      "initial_stock": [
+        40,
+        21
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "grinder",
+      "case": 17,
+      "lengths": [
+        8,
+        6,
+        4,
+        8,
+        3
+      ],
+      "production_sizes": [
+        3,
+        1,
+        1,
+        3,
+        2
+      ],
+      "phases": [
+        5,
+        6,
+        3,
+        0,
+        0
+      ],
+      "initial_stock": [
+        41,
+        6
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "grinder",
+      "case": 18,
+      "lengths": [
+        3,
+        7,
+        2
+      ],
+      "production_sizes": [
+        3,
+        3,
+        3
+      ],
+      "phases": [
+        5,
+        3,
+        4
+      ],
+      "initial_stock": [
+        3,
+        17
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "grinder",
+      "case": 19,
+      "lengths": [
+        3,
+        7,
+        6,
+        1,
+        4
+      ],
+      "production_sizes": [
+        3,
+        3,
+        1,
+        3,
+        1
+      ],
+      "phases": [
+        1,
+        6,
+        5,
+        7,
+        5
+      ],
+      "initial_stock": [
+        24,
+        31
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "grinder",
+      "case": 20,
+      "lengths": [
+        6,
+        6,
+        2
+      ],
+      "production_sizes": [
+        1,
+        1,
+        1
+      ],
+      "phases": [
+        6,
+        3,
+        3
+      ],
+      "initial_stock": [
+        12,
+        29
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "grinder",
+      "case": 21,
+      "lengths": [
+        2,
+        6,
+        5,
+        1,
+        8
+      ],
+      "production_sizes": [
+        2,
+        3,
+        3,
+        2,
+        1
+      ],
+      "phases": [
+        1,
+        4,
+        1,
+        6,
+        0
+      ],
+      "initial_stock": [
+        18,
+        3
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "grinder",
+      "case": 22,
+      "lengths": [
+        2,
+        6,
+        7
+      ],
+      "production_sizes": [
+        2,
+        1,
+        1
+      ],
+      "phases": [
+        6,
+        1,
+        4
+      ],
+      "initial_stock": [
+        31,
+        40
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "grinder",
+      "case": 23,
+      "lengths": [
+        3,
+        8,
+        7,
+        1,
+        7
+      ],
+      "production_sizes": [
+        2,
+        2,
+        2,
+        3,
+        3
+      ],
+      "phases": [
+        1,
+        2,
+        7,
+        7,
+        0
+      ],
+      "initial_stock": [
+        17,
+        36
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "grinder",
+      "case": 24,
+      "lengths": [
+        6,
+        2,
+        1
+      ],
+      "production_sizes": [
+        1,
+        3,
+        3
+      ],
+      "phases": [
+        0,
+        2,
+        4
+      ],
+      "initial_stock": [
+        39,
+        30
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "grinder",
+      "case": 25,
+      "lengths": [
+        8,
+        3,
+        7,
+        4,
+        7
+      ],
+      "production_sizes": [
+        1,
+        2,
+        1,
+        1,
+        1
+      ],
+      "phases": [
+        2,
+        6,
+        2,
+        7,
+        4
+      ],
+      "initial_stock": [
+        40,
+        38
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "grinder",
+      "case": 26,
+      "lengths": [
+        5,
+        8,
+        4
+      ],
+      "production_sizes": [
+        3,
+        3,
+        2
+      ],
+      "phases": [
+        5,
+        1,
+        7
+      ],
+      "initial_stock": [
+        30,
+        23
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "grinder",
+      "case": 27,
+      "lengths": [
+        5,
+        4,
+        3,
+        1,
+        7
+      ],
+      "production_sizes": [
+        3,
+        3,
+        1,
+        1,
+        1
+      ],
+      "phases": [
+        1,
+        4,
+        4,
+        5,
+        0
+      ],
+      "initial_stock": [
+        18,
+        43
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "grinder",
+      "case": 28,
+      "lengths": [
+        8,
+        3,
+        2
+      ],
+      "production_sizes": [
+        1,
+        1,
+        1
+      ],
+      "phases": [
+        1,
+        3,
+        3
+      ],
+      "initial_stock": [
+        0,
+        12
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "grinder",
+      "case": 29,
+      "lengths": [
+        1,
+        3,
+        1,
+        2,
+        6
+      ],
+      "production_sizes": [
+        1,
+        3,
+        1,
+        1,
+        2
+      ],
+      "phases": [
+        3,
+        4,
+        3,
+        6,
+        3
+      ],
+      "initial_stock": [
+        30,
+        45
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "grinder",
+      "case": 30,
+      "lengths": [
+        5,
+        7,
+        2
+      ],
+      "production_sizes": [
+        2,
+        3,
+        1
+      ],
+      "phases": [
+        5,
+        0,
+        0
+      ],
+      "initial_stock": [
+        17,
+        27
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "grinder",
+      "case": 31,
+      "lengths": [
+        8,
+        3,
+        7,
+        1,
+        7
+      ],
+      "production_sizes": [
+        1,
+        3,
+        3,
+        1,
+        3
+      ],
+      "phases": [
+        1,
+        1,
+        1,
+        2,
+        7
+      ],
+      "initial_stock": [
+        18,
+        15
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "shaper",
+      "case": 0,
+      "lengths": [
+        6,
+        6
+      ],
+      "production_sizes": [
+        1,
+        3
+      ],
+      "phases": [
+        1,
+        6
+      ],
+      "initial_stock": [
+        5
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "shaper",
+      "case": 1,
+      "lengths": [
+        8,
+        2,
+        3
+      ],
+      "production_sizes": [
+        1,
+        2,
+        3
+      ],
+      "phases": [
+        1,
+        5,
+        2
+      ],
+      "initial_stock": [
+        43
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "shaper",
+      "case": 2,
+      "lengths": [
+        5,
+        8
+      ],
+      "production_sizes": [
+        3,
+        3
+      ],
+      "phases": [
+        6,
+        5
+      ],
+      "initial_stock": [
+        10
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "shaper",
+      "case": 3,
+      "lengths": [
+        8,
+        7,
+        5
+      ],
+      "production_sizes": [
+        2,
+        3,
+        1
+      ],
+      "phases": [
+        3,
+        1,
+        7
+      ],
+      "initial_stock": [
+        31
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "shaper",
+      "case": 4,
+      "lengths": [
+        4,
+        1
+      ],
+      "production_sizes": [
+        3,
+        3
+      ],
+      "phases": [
+        7,
+        0
+      ],
+      "initial_stock": [
+        42
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "shaper",
+      "case": 5,
+      "lengths": [
+        5,
+        6,
+        6
+      ],
+      "production_sizes": [
+        1,
+        3,
+        2
+      ],
+      "phases": [
+        4,
+        6,
+        3
+      ],
+      "initial_stock": [
+        26
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "shaper",
+      "case": 6,
+      "lengths": [
+        7,
+        3
+      ],
+      "production_sizes": [
+        2,
+        2
+      ],
+      "phases": [
+        2,
+        6
+      ],
+      "initial_stock": [
+        40
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "shaper",
+      "case": 7,
+      "lengths": [
+        8,
+        3,
+        7
+      ],
+      "production_sizes": [
+        2,
+        2,
+        1
+      ],
+      "phases": [
+        2,
+        5,
+        0
+      ],
+      "initial_stock": [
+        42
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "shaper",
+      "case": 8,
+      "lengths": [
+        6,
+        1
+      ],
+      "production_sizes": [
+        3,
+        2
+      ],
+      "phases": [
+        6,
+        3
+      ],
+      "initial_stock": [
+        30
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "shaper",
+      "case": 9,
+      "lengths": [
+        3,
+        1,
+        8
+      ],
+      "production_sizes": [
+        3,
+        1,
+        3
+      ],
+      "phases": [
+        7,
+        0,
+        2
+      ],
+      "initial_stock": [
+        25
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "shaper",
+      "case": 10,
+      "lengths": [
+        3,
+        1
+      ],
+      "production_sizes": [
+        2,
+        2
+      ],
+      "phases": [
+        4,
+        3
+      ],
+      "initial_stock": [
+        38
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "shaper",
+      "case": 11,
+      "lengths": [
+        7,
+        7,
+        6
+      ],
+      "production_sizes": [
+        1,
+        2,
+        1
+      ],
+      "phases": [
+        4,
+        1,
+        7
+      ],
+      "initial_stock": [
+        21
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "shaper",
+      "case": 12,
+      "lengths": [
+        4,
+        5
+      ],
+      "production_sizes": [
+        3,
+        3
+      ],
+      "phases": [
+        3,
+        1
+      ],
+      "initial_stock": [
+        31
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "shaper",
+      "case": 13,
+      "lengths": [
+        7,
+        7,
+        1
+      ],
+      "production_sizes": [
+        3,
+        1,
+        2
+      ],
+      "phases": [
+        7,
+        3,
+        5
+      ],
+      "initial_stock": [
+        39
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "shaper",
+      "case": 14,
+      "lengths": [
+        3,
+        5
+      ],
+      "production_sizes": [
+        1,
+        3
+      ],
+      "phases": [
+        7,
+        5
+      ],
+      "initial_stock": [
+        21
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "shaper",
+      "case": 15,
+      "lengths": [
+        5,
+        3,
+        8
+      ],
+      "production_sizes": [
+        1,
+        1,
+        1
+      ],
+      "phases": [
+        4,
+        2,
+        5
+      ],
+      "initial_stock": [
+        40
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "shaper",
+      "case": 16,
+      "lengths": [
+        5,
+        6
+      ],
+      "production_sizes": [
+        1,
+        2
+      ],
+      "phases": [
+        0,
+        0
+      ],
+      "initial_stock": [
+        47
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "shaper",
+      "case": 17,
+      "lengths": [
+        8,
+        6,
+        4
+      ],
+      "production_sizes": [
+        3,
+        2,
+        3
+      ],
+      "phases": [
+        2,
+        3,
+        3
+      ],
+      "initial_stock": [
+        38
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "shaper",
+      "case": 18,
+      "lengths": [
+        3,
+        7
+      ],
+      "production_sizes": [
+        3,
+        1
+      ],
+      "phases": [
+        5,
+        3
+      ],
+      "initial_stock": [
+        44
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "shaper",
+      "case": 19,
+      "lengths": [
+        3,
+        7,
+        6
+      ],
+      "production_sizes": [
+        1,
+        3,
+        1
+      ],
+      "phases": [
+        1,
+        3,
+        1
+      ],
+      "initial_stock": [
+        26
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "shaper",
+      "case": 20,
+      "lengths": [
+        6,
+        6
+      ],
+      "production_sizes": [
+        3,
+        1
+      ],
+      "phases": [
+        2,
+        3
+      ],
+      "initial_stock": [
+        6
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "shaper",
+      "case": 21,
+      "lengths": [
+        2,
+        6,
+        5
+      ],
+      "production_sizes": [
+        3,
+        1,
+        2
+      ],
+      "phases": [
+        4,
+        5,
+        2
+      ],
+      "initial_stock": [
+        7
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "shaper",
+      "case": 22,
+      "lengths": [
+        2,
+        6
+      ],
+      "production_sizes": [
+        2,
+        2
+      ],
+      "phases": [
+        1,
+        2
+      ],
+      "initial_stock": [
+        39
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "shaper",
+      "case": 23,
+      "lengths": [
+        3,
+        8,
+        7
+      ],
+      "production_sizes": [
+        1,
+        3,
+        2
+      ],
+      "phases": [
+        5,
+        5,
+        6
+      ],
+      "initial_stock": [
+        42
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "shaper",
+      "case": 24,
+      "lengths": [
+        6,
+        2
+      ],
+      "production_sizes": [
+        1,
+        1
+      ],
+      "phases": [
+        0,
+        2
+      ],
+      "initial_stock": [
+        17
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "shaper",
+      "case": 25,
+      "lengths": [
+        8,
+        3,
+        7
+      ],
+      "production_sizes": [
+        3,
+        1,
+        3
+      ],
+      "phases": [
+        6,
+        1,
+        5
+      ],
+      "initial_stock": [
+        8
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "shaper",
+      "case": 26,
+      "lengths": [
+        5,
+        8
+      ],
+      "production_sizes": [
+        1,
+        3
+      ],
+      "phases": [
+        6,
+        5
+      ],
+      "initial_stock": [
+        44
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "shaper",
+      "case": 27,
+      "lengths": [
+        5,
+        4,
+        3
+      ],
+      "production_sizes": [
+        1,
+        2,
+        3
+      ],
+      "phases": [
+        1,
+        0,
+        2
+      ],
+      "initial_stock": [
+        42
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "shaper",
+      "case": 28,
+      "lengths": [
+        8,
+        3
+      ],
+      "production_sizes": [
+        1,
+        1
+      ],
+      "phases": [
+        1,
+        0
+      ],
+      "initial_stock": [
+        4
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "shaper",
+      "case": 29,
+      "lengths": [
+        1,
+        3,
+        1
+      ],
+      "production_sizes": [
+        1,
+        2,
+        1
+      ],
+      "phases": [
+        0,
+        2,
+        7
+      ],
+      "initial_stock": [
+        15
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "shaper",
+      "case": 30,
+      "lengths": [
+        5,
+        7
+      ],
+      "production_sizes": [
+        3,
+        1
+      ],
+      "phases": [
+        6,
+        2
+      ],
+      "initial_stock": [
+        22
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "shaper",
+      "case": 31,
+      "lengths": [
+        8,
+        3,
+        7
+      ],
+      "production_sizes": [
+        1,
+        2,
+        1
+      ],
+      "phases": [
+        3,
+        1,
+        1
+      ],
+      "initial_stock": [
+        41
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 0
+    },
+    {
+      "recipe": "packer",
+      "case": 0,
+      "lengths": [
+        4,
+        7,
+        4,
+        7,
+        7
+      ],
+      "production_sizes": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "phases": [
+        6,
+        7,
+        2,
+        0,
+        2
+      ],
+      "initial_stock": [
+        48,
+        32
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 582
+    },
+    {
+      "recipe": "packer",
+      "case": 1,
+      "lengths": [
+        8,
+        5,
+        3,
+        4,
+        2,
+        4,
+        5
+      ],
+      "production_sizes": [
+        3,
+        2,
+        1,
+        2,
+        2,
+        2,
+        2
+      ],
+      "phases": [
+        2,
+        6,
+        7,
+        3,
+        0,
+        2,
+        4
+      ],
+      "initial_stock": [
+        28,
+        10
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 547
+    },
+    {
+      "recipe": "packer",
+      "case": 2,
+      "lengths": [
+        7,
+        2,
+        6,
+        1,
+        4
+      ],
+      "production_sizes": [
+        1,
+        2,
+        1,
+        1,
+        1
+      ],
+      "phases": [
+        1,
+        5,
+        4,
+        1,
+        3
+      ],
+      "initial_stock": [
+        25,
+        12
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 547
+    },
+    {
+      "recipe": "packer",
+      "case": 3,
+      "lengths": [
+        7,
+        5,
+        3,
+        5,
+        7,
+        1,
+        5
+      ],
+      "production_sizes": [
+        3,
+        1,
+        2,
+        1,
+        1,
+        3,
+        3
+      ],
+      "phases": [
+        3,
+        2,
+        2,
+        3,
+        3,
+        3,
+        0
+      ],
+      "initial_stock": [
+        49,
+        17
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 523
+    },
+    {
+      "recipe": "packer",
+      "case": 4,
+      "lengths": [
+        8,
+        6,
+        8,
+        5,
+        5
+      ],
+      "production_sizes": [
+        3,
+        1,
+        2,
+        2,
+        2
+      ],
+      "phases": [
+        5,
+        6,
+        5,
+        2,
+        5
+      ],
+      "initial_stock": [
+        16,
+        10
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 537
+    },
+    {
+      "recipe": "packer",
+      "case": 5,
+      "lengths": [
+        3,
+        8,
+        7,
+        8,
+        6,
+        6,
+        4
+      ],
+      "production_sizes": [
+        3,
+        2,
+        2,
+        2,
+        2,
+        3,
+        3
+      ],
+      "phases": [
+        3,
+        1,
+        0,
+        1,
+        4,
+        3,
+        0
+      ],
+      "initial_stock": [
+        44,
+        32
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 582
+    },
+    {
+      "recipe": "packer",
+      "case": 6,
+      "lengths": [
+        6,
+        4,
+        1,
+        3,
+        8
+      ],
+      "production_sizes": [
+        3,
+        3,
+        1,
+        3,
+        3
+      ],
+      "phases": [
+        1,
+        7,
+        2,
+        0,
+        1
+      ],
+      "initial_stock": [
+        6,
+        49
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 575
+    },
+    {
+      "recipe": "packer",
+      "case": 7,
+      "lengths": [
+        6,
+        4,
+        1,
+        3,
+        5,
+        7,
+        3
+      ],
+      "production_sizes": [
+        2,
+        2,
+        3,
+        2,
+        3,
+        3,
+        2
+      ],
+      "phases": [
+        0,
+        2,
+        2,
+        7,
+        4,
+        6,
+        4
+      ],
+      "initial_stock": [
+        34,
+        10
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 498
+    },
+    {
+      "recipe": "packer",
+      "case": 8,
+      "lengths": [
+        5,
+        4,
+        4,
+        4,
+        5
+      ],
+      "production_sizes": [
+        1,
+        3,
+        2,
+        3,
+        2
+      ],
+      "phases": [
+        4,
+        0,
+        5,
+        0,
+        6
+      ],
+      "initial_stock": [
+        37,
+        41
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 582
+    },
+    {
+      "recipe": "packer",
+      "case": 9,
+      "lengths": [
+        2,
+        5,
+        8,
+        7,
+        5,
+        2,
+        7
+      ],
+      "production_sizes": [
+        2,
+        3,
+        1,
+        2,
+        3,
+        2,
+        1
+      ],
+      "phases": [
+        1,
+        0,
+        2,
+        5,
+        6,
+        4,
+        3
+      ],
+      "initial_stock": [
+        30,
+        26
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 498
+    },
+    {
+      "recipe": "packer",
+      "case": 10,
+      "lengths": [
+        2,
+        1,
+        8,
+        2,
+        7
+      ],
+      "production_sizes": [
+        3,
+        1,
+        1,
+        1,
+        1
+      ],
+      "phases": [
+        4,
+        2,
+        1,
+        5,
+        7
+      ],
+      "initial_stock": [
+        43,
+        16
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 589
+    },
+    {
+      "recipe": "packer",
+      "case": 11,
+      "lengths": [
+        5,
+        6,
+        5,
+        5,
+        4,
+        5,
+        6
+      ],
+      "production_sizes": [
+        2,
+        2,
+        1,
+        2,
+        2,
+        1,
+        2
+      ],
+      "phases": [
+        4,
+        1,
+        3,
+        3,
+        3,
+        0,
+        3
+      ],
+      "initial_stock": [
+        4,
+        26
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 509
+    },
+    {
+      "recipe": "packer",
+      "case": 12,
+      "lengths": [
+        2,
+        4,
+        7,
+        5,
+        2
+      ],
+      "production_sizes": [
+        2,
+        3,
+        1,
+        1,
+        2
+      ],
+      "phases": [
+        3,
+        3,
+        6,
+        2,
+        6
+      ],
+      "initial_stock": [
+        26,
+        5
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 544
+    },
+    {
+      "recipe": "packer",
+      "case": 13,
+      "lengths": [
+        1,
+        6,
+        4,
+        5,
+        1,
+        1,
+        2
+      ],
+      "production_sizes": [
+        2,
+        1,
+        1,
+        3,
+        3,
+        1,
+        3
+      ],
+      "phases": [
+        0,
+        5,
+        7,
+        6,
+        1,
+        4,
+        3
+      ],
+      "initial_stock": [
+        42,
+        42
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 582
+    },
+    {
+      "recipe": "packer",
+      "case": 14,
+      "lengths": [
+        8,
+        2,
+        2,
+        6,
+        2
+      ],
+      "production_sizes": [
+        1,
+        1,
+        2,
+        3,
+        2
+      ],
+      "phases": [
+        7,
+        0,
+        4,
+        1,
+        7
+      ],
+      "initial_stock": [
+        15,
+        13
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 519
+    },
+    {
+      "recipe": "packer",
+      "case": 15,
+      "lengths": [
+        5,
+        3,
+        4,
+        8,
+        6,
+        5,
+        5
+      ],
+      "production_sizes": [
+        1,
+        1,
+        1,
+        3,
+        3,
+        3,
+        1
+      ],
+      "phases": [
+        6,
+        4,
+        6,
+        7,
+        0,
+        3,
+        0
+      ],
+      "initial_stock": [
+        18,
+        16
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 526
+    },
+    {
+      "recipe": "packer",
+      "case": 16,
+      "lengths": [
+        4,
+        6,
+        8,
+        8,
+        2
+      ],
+      "production_sizes": [
+        1,
+        3,
+        2,
+        2,
+        2
+      ],
+      "phases": [
+        0,
+        1,
+        7,
+        5,
+        4
+      ],
+      "initial_stock": [
+        10,
+        28
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 533
+    },
+    {
+      "recipe": "packer",
+      "case": 17,
+      "lengths": [
+        5,
+        2,
+        3,
+        7,
+        7,
+        4,
+        1
+      ],
+      "production_sizes": [
+        1,
+        1,
+        1,
+        3,
+        1,
+        3,
+        3
+      ],
+      "phases": [
+        4,
+        7,
+        0,
+        4,
+        3,
+        5,
+        7
+      ],
+      "initial_stock": [
+        34,
+        39
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 582
+    },
+    {
+      "recipe": "packer",
+      "case": 18,
+      "lengths": [
+        8,
+        7,
+        3,
+        1,
+        1
+      ],
+      "production_sizes": [
+        2,
+        1,
+        1,
+        2,
+        3
+      ],
+      "phases": [
+        0,
+        3,
+        5,
+        7,
+        2
+      ],
+      "initial_stock": [
+        44,
+        42
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 582
+    },
+    {
+      "recipe": "packer",
+      "case": 19,
+      "lengths": [
+        5,
+        8,
+        2,
+        3,
+        6,
+        6,
+        4
+      ],
+      "production_sizes": [
+        1,
+        3,
+        3,
+        2,
+        1,
+        1,
+        3
+      ],
+      "phases": [
+        4,
+        6,
+        4,
+        1,
+        0,
+        4,
+        1
+      ],
+      "initial_stock": [
+        35,
+        50
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 582
+    },
+    {
+      "recipe": "packer",
+      "case": 20,
+      "lengths": [
+        7,
+        3,
+        8,
+        2,
+        1
+      ],
+      "production_sizes": [
+        1,
+        3,
+        3,
+        1,
+        2
+      ],
+      "phases": [
+        0,
+        7,
+        4,
+        3,
+        3
+      ],
+      "initial_stock": [
+        47,
+        26
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 582
+    },
+    {
+      "recipe": "packer",
+      "case": 21,
+      "lengths": [
+        5,
+        4,
+        8,
+        3,
+        3,
+        2,
+        7
+      ],
+      "production_sizes": [
+        3,
+        3,
+        1,
+        2,
+        2,
+        1,
+        1
+      ],
+      "phases": [
+        7,
+        1,
+        4,
+        3,
+        1,
+        6,
+        7
+      ],
+      "initial_stock": [
+        27,
+        3
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 547
+    },
+    {
+      "recipe": "packer",
+      "case": 22,
+      "lengths": [
+        7,
+        3,
+        5,
+        4,
+        8
+      ],
+      "production_sizes": [
+        1,
+        2,
+        2,
+        1,
+        2
+      ],
+      "phases": [
+        1,
+        6,
+        5,
+        2,
+        6
+      ],
+      "initial_stock": [
+        34,
+        9
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 537
+    },
+    {
+      "recipe": "packer",
+      "case": 23,
+      "lengths": [
+        3,
+        5,
+        1,
+        5,
+        3,
+        6,
+        8
+      ],
+      "production_sizes": [
+        3,
+        1,
+        2,
+        1,
+        2,
+        2,
+        3
+      ],
+      "phases": [
+        7,
+        2,
+        1,
+        3,
+        2,
+        2,
+        6
+      ],
+      "initial_stock": [
+        6,
+        50
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 519
+    },
+    {
+      "recipe": "packer",
+      "case": 24,
+      "lengths": [
+        1,
+        1,
+        4,
+        5,
+        8
+      ],
+      "production_sizes": [
+        2,
+        1,
+        1,
+        1,
+        1
+      ],
+      "phases": [
+        1,
+        5,
+        5,
+        1,
+        6
+      ],
+      "initial_stock": [
+        29,
+        15
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 505
+    },
+    {
+      "recipe": "packer",
+      "case": 25,
+      "lengths": [
+        6,
+        3,
+        7,
+        7,
+        8,
+        1,
+        4
+      ],
+      "production_sizes": [
+        3,
+        2,
+        3,
+        3,
+        1,
+        3,
+        1
+      ],
+      "phases": [
+        7,
+        6,
+        4,
+        6,
+        3,
+        0,
+        0
+      ],
+      "initial_stock": [
+        16,
+        40
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 568
+    },
+    {
+      "recipe": "packer",
+      "case": 26,
+      "lengths": [
+        8,
+        1,
+        8,
+        8,
+        4
+      ],
+      "production_sizes": [
+        3,
+        2,
+        2,
+        3,
+        2
+      ],
+      "phases": [
+        3,
+        7,
+        2,
+        5,
+        1
+      ],
+      "initial_stock": [
+        34,
+        15
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 540
+    },
+    {
+      "recipe": "packer",
+      "case": 27,
+      "lengths": [
+        4,
+        6,
+        8,
+        8,
+        4,
+        5,
+        7
+      ],
+      "production_sizes": [
+        1,
+        2,
+        3,
+        2,
+        1,
+        2,
+        3
+      ],
+      "phases": [
+        3,
+        0,
+        5,
+        5,
+        3,
+        3,
+        7
+      ],
+      "initial_stock": [
+        17,
+        8
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 523
+    },
+    {
+      "recipe": "packer",
+      "case": 28,
+      "lengths": [
+        3,
+        4,
+        4,
+        2,
+        3
+      ],
+      "production_sizes": [
+        2,
+        3,
+        1,
+        2,
+        1
+      ],
+      "phases": [
+        3,
+        4,
+        4,
+        1,
+        7
+      ],
+      "initial_stock": [
+        26,
+        47
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 582
+    },
+    {
+      "recipe": "packer",
+      "case": 29,
+      "lengths": [
+        5,
+        3,
+        5,
+        3,
+        7,
+        8,
+        3
+      ],
+      "production_sizes": [
+        3,
+        1,
+        1,
+        2,
+        3,
+        1,
+        1
+      ],
+      "phases": [
+        0,
+        1,
+        0,
+        6,
+        7,
+        4,
+        2
+      ],
+      "initial_stock": [
+        15,
+        14
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 540
+    },
+    {
+      "recipe": "packer",
+      "case": 30,
+      "lengths": [
+        3,
+        7,
+        1,
+        7,
+        2
+      ],
+      "production_sizes": [
+        1,
+        2,
+        3,
+        3,
+        2
+      ],
+      "phases": [
+        0,
+        3,
+        4,
+        0,
+        1
+      ],
+      "initial_stock": [
+        41,
+        15
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 558
+    },
+    {
+      "recipe": "packer",
+      "case": 31,
+      "lengths": [
+        4,
+        8,
+        3,
+        5,
+        3,
+        7,
+        6
+      ],
+      "production_sizes": [
+        2,
+        2,
+        3,
+        2,
+        1,
+        1,
+        3
+      ],
+      "phases": [
+        3,
+        4,
+        5,
+        4,
+        6,
+        0,
+        0
+      ],
+      "initial_stock": [
+        2,
+        36
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 523
+    },
+    {
+      "recipe": "filler",
+      "case": 0,
+      "lengths": [
+        4,
+        7,
+        4,
+        7
+      ],
+      "production_sizes": [
+        2,
+        1,
+        1,
+        1
+      ],
+      "phases": [
+        0,
+        0,
+        6,
+        7
+      ],
+      "initial_stock": [
+        11,
+        2
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 568
+    },
+    {
+      "recipe": "filler",
+      "case": 1,
+      "lengths": [
+        8,
+        5,
+        3,
+        4,
+        2,
+        4
+      ],
+      "production_sizes": [
+        3,
+        3,
+        3,
+        3,
+        2,
+        3
+      ],
+      "phases": [
+        4,
+        2,
+        4,
+        6,
+        5,
+        7
+      ],
+      "initial_stock": [
+        32,
+        35
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 582
+    },
+    {
+      "recipe": "filler",
+      "case": 2,
+      "lengths": [
+        7,
+        2,
+        6,
+        1
+      ],
+      "production_sizes": [
+        1,
+        1,
+        2,
+        1
+      ],
+      "phases": [
+        1,
+        2,
+        1,
+        5
+      ],
+      "initial_stock": [
+        18,
+        36
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 589
+    },
+    {
+      "recipe": "filler",
+      "case": 3,
+      "lengths": [
+        7,
+        5,
+        3,
+        5,
+        7,
+        1
+      ],
+      "production_sizes": [
+        2,
+        3,
+        1,
+        2,
+        1,
+        1
+      ],
+      "phases": [
+        3,
+        2,
+        2,
+        3,
+        3,
+        3
+      ],
+      "initial_stock": [
+        50,
+        33
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 582
+    },
+    {
+      "recipe": "filler",
+      "case": 4,
+      "lengths": [
+        8,
+        6,
+        8,
+        5
+      ],
+      "production_sizes": [
+        3,
+        2,
+        3,
+        1
+      ],
+      "phases": [
+        6,
+        4,
+        6,
+        5
+      ],
+      "initial_stock": [
+        26,
+        23
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 582
+    },
+    {
+      "recipe": "filler",
+      "case": 5,
+      "lengths": [
+        3,
+        8,
+        7,
+        8,
+        6,
+        6
+      ],
+      "production_sizes": [
+        1,
+        3,
+        2,
+        2,
+        2,
+        2
+      ],
+      "phases": [
+        3,
+        1,
+        0,
+        1,
+        4,
+        3
+      ],
+      "initial_stock": [
+        2,
+        44
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 565
+    },
+    {
+      "recipe": "filler",
+      "case": 6,
+      "lengths": [
+        6,
+        4,
+        1,
+        3
+      ],
+      "production_sizes": [
+        2,
+        3,
+        3,
+        1
+      ],
+      "phases": [
+        1,
+        7,
+        2,
+        0
+      ],
+      "initial_stock": [
+        4,
+        6
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 551
+    },
+    {
+      "recipe": "filler",
+      "case": 7,
+      "lengths": [
+        6,
+        4,
+        1,
+        3,
+        5,
+        7
+      ],
+      "production_sizes": [
+        1,
+        2,
+        2,
+        3,
+        2,
+        3
+      ],
+      "phases": [
+        5,
+        0,
+        2,
+        2,
+        7,
+        4
+      ],
+      "initial_stock": [
+        27,
+        35
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 582
+    },
+    {
+      "recipe": "filler",
+      "case": 8,
+      "lengths": [
+        5,
+        4,
+        4,
+        4
+      ],
+      "production_sizes": [
+        2,
+        1,
+        3,
+        2
+      ],
+      "phases": [
+        4,
+        4,
+        0,
+        5
+      ],
+      "initial_stock": [
+        0,
+        24
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 554
+    },
+    {
+      "recipe": "filler",
+      "case": 9,
+      "lengths": [
+        2,
+        5,
+        8,
+        7,
+        5,
+        2
+      ],
+      "production_sizes": [
+        3,
+        3,
+        2,
+        2,
+        3,
+        1
+      ],
+      "phases": [
+        7,
+        4,
+        3,
+        1,
+        0,
+        2
+      ],
+      "initial_stock": [
+        47,
+        22
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 582
+    },
+    {
+      "recipe": "filler",
+      "case": 10,
+      "lengths": [
+        2,
+        1,
+        8,
+        2
+      ],
+      "production_sizes": [
+        3,
+        3,
+        3,
+        2
+      ],
+      "phases": [
+        3,
+        2,
+        0,
+        1
+      ],
+      "initial_stock": [
+        16,
+        8
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 589
+    },
+    {
+      "recipe": "filler",
+      "case": 11,
+      "lengths": [
+        5,
+        6,
+        5,
+        5,
+        4,
+        5
+      ],
+      "production_sizes": [
+        3,
+        2,
+        2,
+        2,
+        1,
+        2
+      ],
+      "phases": [
+        6,
+        1,
+        5,
+        4,
+        1,
+        3
+      ],
+      "initial_stock": [
+        12,
+        35
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 544
+    },
+    {
+      "recipe": "filler",
+      "case": 12,
+      "lengths": [
+        2,
+        4,
+        7,
+        5
+      ],
+      "production_sizes": [
+        3,
+        1,
+        2,
+        3
+      ],
+      "phases": [
+        0,
+        3,
+        4,
+        3
+      ],
+      "initial_stock": [
+        32,
+        33
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 582
+    },
+    {
+      "recipe": "filler",
+      "case": 13,
+      "lengths": [
+        1,
+        6,
+        4,
+        5,
+        1,
+        1
+      ],
+      "production_sizes": [
+        1,
+        2,
+        1,
+        1,
+        3,
+        3
+      ],
+      "phases": [
+        0,
+        0,
+        5,
+        7,
+        6,
+        1
+      ],
+      "initial_stock": [
+        18,
+        12
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 582
+    },
+    {
+      "recipe": "filler",
+      "case": 14,
+      "lengths": [
+        8,
+        2,
+        2,
+        6
+      ],
+      "production_sizes": [
+        3,
+        1,
+        1,
+        1
+      ],
+      "phases": [
+        4,
+        6,
+        7,
+        0
+      ],
+      "initial_stock": [
+        19,
+        6
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 519
+    },
+    {
+      "recipe": "filler",
+      "case": 15,
+      "lengths": [
+        5,
+        3,
+        4,
+        8,
+        6,
+        5
+      ],
+      "production_sizes": [
+        2,
+        1,
+        1,
+        1,
+        3,
+        3
+      ],
+      "phases": [
+        0,
+        6,
+        4,
+        6,
+        7,
+        0
+      ],
+      "initial_stock": [
+        14,
+        1
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 526
+    },
+    {
+      "recipe": "filler",
+      "case": 16,
+      "lengths": [
+        4,
+        6,
+        8,
+        8
+      ],
+      "production_sizes": [
+        1,
+        1,
+        3,
+        2
+      ],
+      "phases": [
+        5,
+        7,
+        0,
+        1
+      ],
+      "initial_stock": [
+        37,
+        30
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 582
+    },
+    {
+      "recipe": "filler",
+      "case": 17,
+      "lengths": [
+        5,
+        2,
+        3,
+        7,
+        7,
+        4
+      ],
+      "production_sizes": [
+        3,
+        3,
+        1,
+        1,
+        1,
+        1
+      ],
+      "phases": [
+        0,
+        4,
+        7,
+        0,
+        4,
+        3
+      ],
+      "initial_stock": [
+        35,
+        37
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 582
+    },
+    {
+      "recipe": "filler",
+      "case": 18,
+      "lengths": [
+        8,
+        7,
+        3,
+        1
+      ],
+      "production_sizes": [
+        1,
+        2,
+        1,
+        1
+      ],
+      "phases": [
+        7,
+        0,
+        3,
+        5
+      ],
+      "initial_stock": [
+        44,
+        40
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 582
+    },
+    {
+      "recipe": "filler",
+      "case": 19,
+      "lengths": [
+        5,
+        8,
+        2,
+        3,
+        6,
+        6
+      ],
+      "production_sizes": [
+        3,
+        1,
+        1,
+        3,
+        3,
+        2
+      ],
+      "phases": [
+        3,
+        1,
+        4,
+        6,
+        4,
+        1
+      ],
+      "initial_stock": [
+        46,
+        3
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 509
+    },
+    {
+      "recipe": "filler",
+      "case": 20,
+      "lengths": [
+        7,
+        3,
+        8,
+        2
+      ],
+      "production_sizes": [
+        3,
+        3,
+        1,
+        1
+      ],
+      "phases": [
+        1,
+        4,
+        0,
+        7
+      ],
+      "initial_stock": [
+        16,
+        48
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 554
+    },
+    {
+      "recipe": "filler",
+      "case": 21,
+      "lengths": [
+        5,
+        4,
+        8,
+        3,
+        3,
+        2
+      ],
+      "production_sizes": [
+        2,
+        3,
+        3,
+        1,
+        2,
+        2
+      ],
+      "phases": [
+        3,
+        3,
+        7,
+        1,
+        4,
+        3
+      ],
+      "initial_stock": [
+        4,
+        49
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 523
+    },
+    {
+      "recipe": "filler",
+      "case": 22,
+      "lengths": [
+        7,
+        3,
+        5,
+        4
+      ],
+      "production_sizes": [
+        2,
+        1,
+        2,
+        2
+      ],
+      "phases": [
+        1,
+        4,
+        1,
+        6
+      ],
+      "initial_stock": [
+        22,
+        45
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 582
+    },
+    {
+      "recipe": "filler",
+      "case": 23,
+      "lengths": [
+        3,
+        5,
+        1,
+        5,
+        3,
+        6
+      ],
+      "production_sizes": [
+        2,
+        3,
+        1,
+        2,
+        1,
+        2
+      ],
+      "phases": [
+        7,
+        7,
+        2,
+        1,
+        3,
+        2
+      ],
+      "initial_stock": [
+        10,
+        25
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 540
+    },
+    {
+      "recipe": "filler",
+      "case": 24,
+      "lengths": [
+        1,
+        1,
+        4,
+        5
+      ],
+      "production_sizes": [
+        3,
+        3,
+        2,
+        2
+      ],
+      "phases": [
+        1,
+        3,
+        1,
+        3
+      ],
+      "initial_stock": [
+        7,
+        42
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 509
+    },
+    {
+      "recipe": "filler",
+      "case": 25,
+      "lengths": [
+        6,
+        3,
+        7,
+        7,
+        8,
+        1
+      ],
+      "production_sizes": [
+        3,
+        1,
+        3,
+        2,
+        3,
+        3
+      ],
+      "phases": [
+        2,
+        3,
+        7,
+        6,
+        4,
+        6
+      ],
+      "initial_stock": [
+        49,
+        15
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 512
+    },
+    {
+      "recipe": "filler",
+      "case": 26,
+      "lengths": [
+        8,
+        1,
+        8,
+        8
+      ],
+      "production_sizes": [
+        1,
+        3,
+        2,
+        2
+      ],
+      "phases": [
+        6,
+        3,
+        7,
+        2
+      ],
+      "initial_stock": [
+        44,
+        20
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 551
+    },
+    {
+      "recipe": "filler",
+      "case": 27,
+      "lengths": [
+        4,
+        6,
+        8,
+        8,
+        4,
+        5
+      ],
+      "production_sizes": [
+        2,
+        1,
+        2,
+        3,
+        2,
+        1
+      ],
+      "phases": [
+        6,
+        3,
+        0,
+        5,
+        5,
+        3
+      ],
+      "initial_stock": [
+        15,
+        30
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 523
+    },
+    {
+      "recipe": "filler",
+      "case": 28,
+      "lengths": [
+        3,
+        4,
+        4,
+        2
+      ],
+      "production_sizes": [
+        1,
+        2,
+        3,
+        1
+      ],
+      "phases": [
+        5,
+        1,
+        3,
+        4
+      ],
+      "initial_stock": [
+        16,
+        4
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 498
+    },
+    {
+      "recipe": "filler",
+      "case": 29,
+      "lengths": [
+        5,
+        3,
+        5,
+        3,
+        7,
+        8
+      ],
+      "production_sizes": [
+        1,
+        3,
+        1,
+        1,
+        2,
+        3
+      ],
+      "phases": [
+        0,
+        1,
+        0,
+        1,
+        0,
+        6
+      ],
+      "initial_stock": [
+        38,
+        38
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 582
+    },
+    {
+      "recipe": "filler",
+      "case": 30,
+      "lengths": [
+        3,
+        7,
+        1,
+        7
+      ],
+      "production_sizes": [
+        1,
+        1,
+        2,
+        3
+      ],
+      "phases": [
+        4,
+        0,
+        3,
+        4
+      ],
+      "initial_stock": [
+        1,
+        4
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 526
+    },
+    {
+      "recipe": "filler",
+      "case": 31,
+      "lengths": [
+        4,
+        8,
+        3,
+        5,
+        3,
+        7
+      ],
+      "production_sizes": [
+        3,
+        2,
+        2,
+        2,
+        3,
+        2
+      ],
+      "phases": [
+        0,
+        2,
+        3,
+        4,
+        5,
+        4
+      ],
+      "initial_stock": [
+        34,
+        26
+      ],
+      "empty_cache_after600": 0,
+      "empty_output_head_after600": 582
+    }
+  ],
+  "count": 160,
+  "compared_steps": 288000,
+  "scope": "Fixed source contracts, pure belt paths, changing receiver order and repeated downstream pauses; not a whole factory."
+}

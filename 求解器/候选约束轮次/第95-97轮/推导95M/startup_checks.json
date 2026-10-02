@@ -1,0 +1,181 @@
+{
+  "rule": "临时规则1实际可送者触发；路径均为纯带",
+  "unrepaired": {
+    "manufacturing_order": [
+      "C",
+      "A",
+      "B",
+      "K"
+    ],
+    "build_order_rule": "先制造单位，后按CA,CB,AC,BK,K0,K1建各路首格，再建中间格，最后同序建各路末格",
+    "first_C_nonempty_after_steps": 2465,
+    "first_C_full_after_steps": 3249,
+    "cannot_add_50": true,
+    "stationary_inventory": {
+      "step": 6000,
+      "phi2": 429,
+      "stock": {
+        "A": 50,
+        "B": 50,
+        "C": 50,
+        "K": 50
+      },
+      "output": {
+        "A": 50,
+        "B": 50,
+        "C": 49,
+        "K": 50
+      },
+      "batch": {
+        "A": [
+          "ready",
+          1
+        ],
+        "B": [
+          "ready",
+          1
+        ],
+        "C": [
+          "ready",
+          2
+        ],
+        "K": [
+          "ready",
+          2
+        ]
+      },
+      "enabled": {
+        "A": true,
+        "B": true,
+        "C": true,
+        "K": true
+      },
+      "route_counts": {
+        "CA": 7,
+        "CB": 13,
+        "AC": 31,
+        "BK": 5,
+        "K0": 5,
+        "K1": 5
+      },
+      "sink": 50,
+      "sent": {
+        "CA": 554,
+        "CB": 225,
+        "AC": 496,
+        "BK": 111,
+        "K0": 30,
+        "K1": 30
+      },
+      "arrivals": {
+        "CA": 547,
+        "CB": 212,
+        "AC": 465,
+        "BK": 106,
+        "K0": 25,
+        "K1": 25
+      }
+    },
+    "state_checks": 6080
+  },
+  "repaired": [
+    {
+      "seed": 9500,
+      "L": 38,
+      "wait_steps": 127,
+      "operations": 3,
+      "debug_end_phi2": 200,
+      "required_phi2": 81
+    },
+    {
+      "seed": 9501,
+      "L": 38,
+      "wait_steps": 206,
+      "operations": 3,
+      "debug_end_phi2": 200,
+      "required_phi2": 81
+    },
+    {
+      "seed": 9502,
+      "L": 38,
+      "wait_steps": 79,
+      "operations": 3,
+      "debug_end_phi2": 200,
+      "required_phi2": 81
+    },
+    {
+      "seed": 9503,
+      "L": 38,
+      "wait_steps": 219,
+      "operations": 3,
+      "debug_end_phi2": 200,
+      "required_phi2": 81
+    },
+    {
+      "seed": 9504,
+      "L": 97,
+      "wait_steps": 257,
+      "operations": 3,
+      "debug_end_phi2": 200,
+      "required_phi2": 199
+    },
+    {
+      "seed": 9505,
+      "L": 97,
+      "wait_steps": 134,
+      "operations": 3,
+      "debug_end_phi2": 200,
+      "required_phi2": 199
+    },
+    {
+      "seed": 9506,
+      "L": 97,
+      "wait_steps": 191,
+      "operations": 3,
+      "debug_end_phi2": 200,
+      "required_phi2": 199
+    },
+    {
+      "seed": 9507,
+      "L": 97,
+      "wait_steps": 231,
+      "operations": 3,
+      "debug_end_phi2": 200,
+      "required_phi2": 199
+    },
+    {
+      "seed": 9508,
+      "L": 100,
+      "wait_steps": 6024,
+      "operations": 103,
+      "debug_end_phi2": 400,
+      "required_phi2": 205
+    },
+    {
+      "seed": 9509,
+      "L": 100,
+      "wait_steps": 6791,
+      "operations": 103,
+      "debug_end_phi2": 400,
+      "required_phi2": 205
+    },
+    {
+      "seed": 9510,
+      "L": 100,
+      "wait_steps": 7049,
+      "operations": 103,
+      "debug_end_phi2": 400,
+      "required_phi2": 205
+    },
+    {
+      "seed": 9511,
+      "L": 100,
+      "wait_steps": 6583,
+      "operations": 103,
+      "debug_end_phi2": 400,
+      "required_phi2": 205
+    }
+  ],
+  "all_checks_pass": true,
+  "limit": "局部构型与关闭期间实施核对，不证明整厂速率"
+}

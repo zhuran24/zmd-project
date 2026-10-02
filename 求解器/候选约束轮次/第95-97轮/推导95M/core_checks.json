@@ -1,0 +1,305 @@
+{
+  "rebuild": [
+    {
+      "high_channels": 1,
+      "low_channels": 1,
+      "signs": [
+        -1,
+        0,
+        1
+      ],
+      "low_first_witness": [
+        "M",
+        "L0",
+        "H0"
+      ]
+    },
+    {
+      "high_channels": 2,
+      "low_channels": 1,
+      "signs": [
+        -1,
+        0,
+        1
+      ],
+      "low_first_witness": [
+        "M",
+        "L0",
+        "H0",
+        "H1"
+      ]
+    },
+    {
+      "high_channels": 1,
+      "low_channels": 3,
+      "signs": [
+        -1,
+        0,
+        1
+      ],
+      "low_first_witness": [
+        "M",
+        "L0",
+        "H0",
+        "L1",
+        "L2"
+      ]
+    },
+    {
+      "high_channels": 3,
+      "low_channels": 2,
+      "signs": [
+        -1,
+        0,
+        1
+      ],
+      "low_first_witness": [
+        "M",
+        "L0",
+        "H0",
+        "H1",
+        "H2",
+        "L1"
+      ]
+    }
+  ],
+  "capacity": [
+    {
+      "n": 1,
+      "accept_mod": 1,
+      "period_steps": 9,
+      "out": 1,
+      "occupied_cell_steps": 8,
+      "rate": "8/9"
+    },
+    {
+      "n": 1,
+      "accept_mod": 3,
+      "period_steps": 9,
+      "out": 1,
+      "occupied_cell_steps": 8,
+      "rate": "8/9"
+    },
+    {
+      "n": 1,
+      "accept_mod": 11,
+      "period_steps": 55,
+      "out": 6,
+      "occupied_cell_steps": 49,
+      "rate": "48/55"
+    },
+    {
+      "n": 2,
+      "accept_mod": 1,
+      "period_steps": 17,
+      "out": 2,
+      "occupied_cell_steps": 32,
+      "rate": "16/17"
+    },
+    {
+      "n": 2,
+      "accept_mod": 3,
+      "period_steps": 9,
+      "out": 1,
+      "occupied_cell_steps": 17,
+      "rate": "8/9"
+    },
+    {
+      "n": 2,
+      "accept_mod": 11,
+      "period_steps": 77,
+      "out": 9,
+      "occupied_cell_steps": 145,
+      "rate": "72/77"
+    },
+    {
+      "n": 3,
+      "accept_mod": 1,
+      "period_steps": 25,
+      "out": 3,
+      "occupied_cell_steps": 72,
+      "rate": "24/25"
+    },
+    {
+      "n": 3,
+      "accept_mod": 3,
+      "period_steps": 9,
+      "out": 1,
+      "occupied_cell_steps": 26,
+      "rate": "8/9"
+    },
+    {
+      "n": 3,
+      "accept_mod": 11,
+      "period_steps": 176,
+      "out": 21,
+      "occupied_cell_steps": 507,
+      "rate": "21/22"
+    },
+    {
+      "n": 4,
+      "accept_mod": 1,
+      "period_steps": 33,
+      "out": 4,
+      "occupied_cell_steps": 128,
+      "rate": "32/33"
+    },
+    {
+      "n": 4,
+      "accept_mod": 3,
+      "period_steps": 9,
+      "out": 1,
+      "occupied_cell_steps": 35,
+      "rate": "8/9"
+    },
+    {
+      "n": 4,
+      "accept_mod": 11,
+      "period_steps": 33,
+      "out": 4,
+      "occupied_cell_steps": 128,
+      "rate": "32/33"
+    },
+    {
+      "n": 6,
+      "accept_mod": 1,
+      "period_steps": 49,
+      "out": 6,
+      "occupied_cell_steps": 288,
+      "rate": "48/49"
+    },
+    {
+      "n": 6,
+      "accept_mod": 3,
+      "period_steps": 9,
+      "out": 1,
+      "occupied_cell_steps": 53,
+      "rate": "8/9"
+    },
+    {
+      "n": 6,
+      "accept_mod": 11,
+      "period_steps": 33,
+      "out": 4,
+      "occupied_cell_steps": 194,
+      "rate": "32/33"
+    },
+    {
+      "n": 16,
+      "accept_mod": 1,
+      "period_steps": 129,
+      "out": 16,
+      "occupied_cell_steps": 2048,
+      "rate": "128/129"
+    },
+    {
+      "n": 16,
+      "accept_mod": 3,
+      "period_steps": 9,
+      "out": 1,
+      "occupied_cell_steps": 143,
+      "rate": "8/9"
+    },
+    {
+      "n": 16,
+      "accept_mod": 11,
+      "period_steps": 33,
+      "out": 4,
+      "occupied_cell_steps": 524,
+      "rate": "32/33"
+    },
+    {
+      "n": 32,
+      "accept_mod": 1,
+      "period_steps": 257,
+      "out": 32,
+      "occupied_cell_steps": 8192,
+      "rate": "256/257"
+    },
+    {
+      "n": 32,
+      "accept_mod": 3,
+      "period_steps": 9,
+      "out": 1,
+      "occupied_cell_steps": 287,
+      "rate": "8/9"
+    },
+    {
+      "n": 32,
+      "accept_mod": 11,
+      "period_steps": 33,
+      "out": 4,
+      "occupied_cell_steps": 1052,
+      "rate": "32/33"
+    },
+    {
+      "n": 64,
+      "accept_mod": 1,
+      "period_steps": 513,
+      "out": 64,
+      "occupied_cell_steps": 32768,
+      "rate": "512/513"
+    },
+    {
+      "n": 64,
+      "accept_mod": 3,
+      "period_steps": 9,
+      "out": 1,
+      "occupied_cell_steps": 575,
+      "rate": "8/9"
+    },
+    {
+      "n": 64,
+      "accept_mod": 11,
+      "period_steps": 33,
+      "out": 4,
+      "occupied_cell_steps": 2108,
+      "rate": "32/33"
+    }
+  ],
+  "switch_receipts": [
+    {
+      "channels": 1,
+      "earliest_next_batch": 9
+    },
+    {
+      "channels": 2,
+      "earliest_next_batch": 8
+    }
+  ],
+  "grinder_limits": [
+    {
+      "N": 32,
+      "a_upper": 4,
+      "W_per_tick_upper": "4"
+    },
+    {
+      "N": 33,
+      "a_upper": 13,
+      "W_per_tick_upper": "12"
+    },
+    {
+      "N": 34,
+      "a_upper": 22,
+      "W_per_tick_upper": "20"
+    }
+  ],
+  "startup": {
+    "threshold": 97,
+    "seed_and_plant_demand": {
+      "荞花": 300,
+      "荞花种子": 300,
+      "砂叶": 550,
+      "砂叶种子": 550
+    },
+    "pre_setting_withdrawal_upper": 15031,
+    "remaining_lower": 64969,
+    "all_long_routes_demand_upper": 10350,
+    "phi_at_end": {
+      "L_le_97": "100",
+      "L_gt_97": "100+L"
+    }
+  },
+  "all_checks_pass": true,
+  "simulation_role": "局部边界容量及实施核对，不是全厂证书"
+}

@@ -1,0 +1,1 @@
+{"status": "passed", "report_links_checked": 25, "whole_factory_cycles": 19, "raw_state_closure_both_encodings": true, "candidates": 0, "total_artifact_bytes": 629400, "maximum_artifact_bytes": 37000, "python_syntax": "passed", "json_parse": "passed"}

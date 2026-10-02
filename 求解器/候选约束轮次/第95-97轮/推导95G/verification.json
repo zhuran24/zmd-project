@@ -1,0 +1,297 @@
+{
+  "status": "PASS",
+  "baseline_cases": 135,
+  "total_near_branches": 16739,
+  "near_cases": 15697,
+  "impossible_fixed_body_cases": 1042,
+  "near_d_counts": {
+    "2": 15657,
+    "1": 40
+  },
+  "baseline_N_plus_w_histogram": {
+    "89": 47,
+    "91": 46,
+    "90": 42
+  },
+  "near_N_plus_w_plus_d_histogram": {
+    "88": 1912,
+    "89": 6127,
+    "87": 53,
+    "90": 5051,
+    "91": 2554
+  },
+  "geometries": [
+    "cell CP-SAT",
+    "exact interval scheduling"
+  ],
+  "arithmetic_routes": [
+    "support costs and dictionary DP",
+    "flow vectors and array convolution"
+  ],
+  "arithmetic": {
+    "machine_count": 217,
+    "manufacturing_area": 3291,
+    "input_interfaces": 305,
+    "output_interfaces": 260,
+    "interfaces": 619,
+    "weights_twice": {
+      "研磨机": 123,
+      "塑形机": 20,
+      "封装机": 48,
+      "灌装机": 28
+    },
+    "weight_twice": 219,
+    "weight_tables_twice": {
+      "研磨机": [
+        [
+          32,
+          123
+        ],
+        [
+          33,
+          115
+        ],
+        [
+          34,
+          107
+        ],
+        [
+          35,
+          99
+        ],
+        [
+          36,
+          91
+        ],
+        [
+          37,
+          83
+        ],
+        [
+          38,
+          75
+        ],
+        [
+          39,
+          67
+        ],
+        [
+          40,
+          59
+        ],
+        [
+          41,
+          51
+        ],
+        [
+          42,
+          43
+        ],
+        [
+          43,
+          35
+        ],
+        [
+          44,
+          27
+        ],
+        [
+          45,
+          19
+        ],
+        [
+          46,
+          11
+        ],
+        [
+          47,
+          3
+        ],
+        [
+          48,
+          0
+        ]
+      ],
+      "塑形机": [
+        [
+          6,
+          20
+        ],
+        [
+          7,
+          16
+        ],
+        [
+          8,
+          12
+        ],
+        [
+          9,
+          8
+        ],
+        [
+          10,
+          4
+        ],
+        [
+          11,
+          0
+        ]
+      ],
+      "封装机": [
+        [
+          3,
+          48
+        ],
+        [
+          4,
+          36
+        ],
+        [
+          5,
+          20
+        ],
+        [
+          6,
+          12
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          8,
+          0
+        ]
+      ],
+      "灌装机": [
+        [
+          3,
+          28
+        ],
+        [
+          4,
+          12
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          6,
+          0
+        ]
+      ]
+    },
+    "net_area_steps": {
+      "研磨机": {
+        "first": "92",
+        "minimum": "92"
+      },
+      "塑形机": {
+        "first": "34",
+        "minimum": "34"
+      },
+      "封装机": {
+        "first": "90",
+        "minimum": "88"
+      },
+      "灌装机": {
+        "first": "88",
+        "minimum": "88"
+      }
+    },
+    "direction_lower_twice": 1843,
+    "area_residual": 1390,
+    "transport_lower_twice": 1659,
+    "old_area_constant": 4639,
+    "integer_corrected_constant": 4638,
+    "minimum_idle_corner_excess_area": 9,
+    "corner_area_upper_with_one_small_idle": 4604,
+    "minimum_power_cost": 160,
+    "at_1110_pj": {
+      "10": [
+        0
+      ],
+      "11": [
+        0,
+        1,
+        2
+      ],
+      "12": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "13": [
+        5,
+        6,
+        7
+      ]
+    },
+    "at_1110_remaining_4E_omega": [
+      151,
+      139
+    ],
+    "extra_area_limit_fraction": "8895/8",
+    "outer_bounds": [
+      [
+        "two",
+        71,
+        2,
+        1,
+        8,
+        7
+      ],
+      [
+        "one",
+        101,
+        3,
+        2,
+        12,
+        10
+      ],
+      [
+        "none",
+        138,
+        2,
+        2,
+        19,
+        17
+      ]
+    ],
+    "legal_dimensions": {
+      "1107": [
+        [
+          27,
+          41
+        ]
+      ],
+      "1108": [],
+      "1109": [],
+      "1110": [
+        [
+          30,
+          37
+        ]
+      ],
+      "1111": [],
+      "1112": [],
+      "1113": [
+        [
+          21,
+          53
+        ]
+      ]
+    },
+    "integer_implications_checked": 822
+  },
+  "seconds": {
+    "geometry_a": 59.999988187999406,
+    "geometry_b": 9.172994659998949
+  },
+  "evidence_scope": "necessary local bounds, no playable layout or counterexample"
+}

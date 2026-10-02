@@ -1,0 +1,15 @@
+{
+  "finished_utc": "2026-10-02T08:51:34.530195+00:00",
+  "report_bytes": 43344,
+  "report_lines": 310,
+  "checked_local_links": 33,
+  "python_files_parse_checked": 13,
+  "frozen_inputs_unchanged": 24,
+  "candidate_count": 10,
+  "verdict_counts": {
+    "未否证": 10,
+    "修正": 0,
+    "已否证": 0
+  },
+  "scope": "Ten candidate texts; local counterexample certificates and numeric audits; no global feasible layout."
+}

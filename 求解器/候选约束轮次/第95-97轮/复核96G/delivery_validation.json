@@ -1,0 +1,61 @@
+{
+  "status": "PASS",
+  "finished_utc": "2026-10-02T08:28:32.628894+00:00",
+  "report_path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/复核96G.md",
+  "report_sha256": "6ac287edce19016f4b7288c5189ce6e46832a55a52838eb8f0887d78cd91b0db",
+  "report_lines": 299,
+  "resolved_links": 31,
+  "input_fingerprints_unchanged": true,
+  "independent_arithmetic_agrees": true,
+  "reader_review": {
+    "self_contained": true,
+    "scope_and_status_consistent": true,
+    "no_unproved_claim_that_original_inequality_is_false": true,
+    "remaining_corner_case_explicit": true,
+    "no_factory_claim_from_relaxed_witness": true,
+    "local_power_certificates_not_claimed_rerun": true,
+    "numeric_and_reference_pass": true
+  },
+  "maximum_concurrent_compute_processes": 2,
+  "solver_workers": 1,
+  "artifact_sha256": {
+    "arithmetic_supports.json": "3df46d105aa9dc7d5dd9dcf46c9576ddd14f801e3a7cb5cf5cf3b42fb689a07b",
+    "arithmetic_supports.log": "3df46d105aa9dc7d5dd9dcf46c9576ddd14f801e3a7cb5cf5cf3b42fb689a07b",
+    "arithmetic_supports.py": "7f26d8d6681dfea423d3abf2c3cc1a82caf6c45dd7b57e6f9e87454465ab907b",
+    "arithmetic_vectors.json": "86566abeaac9984ac51c686dc5db51c340cdfaf1a69a03bf07880f1300c444c3",
+    "arithmetic_vectors.log": "86566abeaac9984ac51c686dc5db51c340cdfaf1a69a03bf07880f1300c444c3",
+    "arithmetic_vectors.py": "3e7bf841308ca270f87925854ba49fa8fdf3e412b014792d36b7daf099763be7",
+    "delivery_check.py": "ee260cdc1dbadf36a40e9a5a5495dff21eaf477392dc1dee6e08cce8e29fdcd3",
+    "domain_checks.json": "350c4ea16d22cf6fc2d50c010e086a39b1d5dd304b4bcdf39bc5b2e829bd670c",
+    "domain_checks.log": "ef49eeb9574650151f5ac755c51761a269ee33be2a9150729010ed453710e4c3",
+    "domain_checks.py": "dbf316c49982d050f8e1e648ecbd19699dbb1ee35e33d972c731156ec9fd2ea9",
+    "geometry_cells.json": "a429c0d2f2e4aea9425dbc4310e60eb18c6c341bbcadce33f545bc0bab3f45da",
+    "geometry_cells.log": "68cc413309b2e2790336c49220af2fcfc9ea84802725cd6f0832e01529b65c6d",
+    "geometry_cells.py": "c070e3c69745cb7dd0512df76e8906b45f7cddf208abac49600cb3ec75292f9a",
+    "geometry_intervals.json": "b9d717b62d0ef1fb598973031a6da9bf07f907c62977d4c72696b795aee151a7",
+    "geometry_intervals.log": "7ae4c95b6a043589161892725cc30094bd3800a20ca19ffc5ac9af414735c060",
+    "geometry_intervals.py": "e5411ae496fc4dcb5e7c1d00fd138acaf53615f7580409a2d7cdc2793798483f",
+    "input_manifest.json": "da14e8bcb49f68704895e8ea0cfb7d393d165e89fa03dd0bc0da681a20779b1f",
+    "verification.json": "bebb979908bf05975f303729176801da3bab262b42f21a1c0f77f7f9f9d1f7a5",
+    "verification.log": "bebb979908bf05975f303729176801da3bab262b42f21a1c0f77f7f9f9d1f7a5",
+    "verify_artifacts.py": "f413b2681b9e83b626aa115e66b30fc954e7c1d63f2062a2a45e4db1ec407ae0"
+  },
+  "final_response": {
+    "status": "完成",
+    "report_path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第95-97轮/复核96G.md",
+    "verdicts": [
+      {
+        "name": "内带缺口",
+        "verdict": "未否证",
+        "reason": "近边补偿和角格取整通过；减1是否必需未证。",
+        "revised_text": ""
+      },
+      {
+        "name": "面积预算",
+        "verdict": "未否证",
+        "reason": "原X、Y面积式及其余结论均复核通过。",
+        "revised_text": ""
+      }
+    ]
+  }
+}
