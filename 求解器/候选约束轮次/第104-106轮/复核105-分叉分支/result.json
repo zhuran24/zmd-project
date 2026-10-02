@@ -1,0 +1,12 @@
+{
+  "status": "完成",
+  "report_path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第104-106轮/复核105-分叉分支.md",
+  "verdicts": [
+    {
+      "name": "分叉分支",
+      "verdict": "未否证",
+      "reason": "允许的建造、同刻排法与数层选择均须覆盖；离线两种历史读法纳入可达性，删去点名无损。",
+      "revised_text": ""
+    }
+  ]
+}

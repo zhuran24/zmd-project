@@ -1,0 +1,133 @@
+{
+ "G1_triangle": {
+  "channels": [
+   "MX",
+   "MY",
+   "YX"
+  ],
+  "channel_permutations": 6,
+  "realizable": 6,
+  "unrealizable": 0,
+  "strict_realizable": 0,
+  "orders": [
+   "MX<MY<YX",
+   "MX<YX<MY",
+   "MY<MX<YX",
+   "MY<YX<MX",
+   "YX<MX<MY",
+   "YX<MY<MX"
+  ]
+ },
+ "G2_ring": {
+  "channels": [
+   "b1b2",
+   "b2b3",
+   "b3b4",
+   "b4b1"
+  ],
+  "channel_permutations": 24,
+  "realizable": 16,
+  "unrealizable": 8,
+  "strict_realizable": 0,
+  "orders": [
+   "b1b2<b2b3<b3b4<b4b1",
+   "b1b2<b2b3<b4b1<b3b4",
+   "b1b2<b4b1<b2b3<b3b4",
+   "b1b2<b4b1<b3b4<b2b3",
+   "b2b3<b1b2<b3b4<b4b1",
+   "b2b3<b1b2<b4b1<b3b4",
+   "b2b3<b3b4<b1b2<b4b1",
+   "b2b3<b3b4<b4b1<b1b2",
+   "b3b4<b2b3<b1b2<b4b1",
+   "b3b4<b2b3<b4b1<b1b2",
+   "b3b4<b4b1<b1b2<b2b3",
+   "b3b4<b4b1<b2b3<b1b2",
+   "b4b1<b1b2<b2b3<b3b4",
+   "b4b1<b1b2<b3b4<b2b3",
+   "b4b1<b3b4<b1b2<b2b3",
+   "b4b1<b3b4<b2b3<b1b2"
+  ]
+ },
+ "G5_bridges": {
+  "channels": [
+   "wX",
+   "XY",
+   "Ye",
+   "YX"
+  ],
+  "channel_permutations": 24,
+  "realizable": 20,
+  "unrealizable": 4,
+  "strict_realizable": 0,
+  "orders": [
+   "XY<YX<Ye<wX",
+   "XY<YX<wX<Ye",
+   "XY<Ye<YX<wX",
+   "XY<wX<YX<Ye",
+   "YX<XY<Ye<wX",
+   "YX<XY<wX<Ye",
+   "YX<Ye<XY<wX",
+   "YX<wX<XY<Ye",
+   "Ye<XY<YX<wX",
+   "Ye<XY<wX<YX",
+   "Ye<YX<XY<wX",
+   "Ye<YX<wX<XY",
+   "Ye<wX<XY<YX",
+   "Ye<wX<YX<XY",
+   "wX<XY<YX<Ye",
+   "wX<XY<Ye<YX",
+   "wX<YX<XY<Ye",
+   "wX<YX<Ye<XY",
+   "wX<Ye<XY<YX",
+   "wX<Ye<YX<XY"
+  ]
+ },
+ "G6_split3": {
+  "projected_on": [
+   "Sbw",
+   "Sbn",
+   "Sbe"
+  ],
+  "projected_orders": [
+   "Sbe<Sbn<Sbw",
+   "Sbe<Sbw<Sbn",
+   "Sbn<Sbe<Sbw",
+   "Sbn<Sbw<Sbe",
+   "Sbw<Sbe<Sbn",
+   "Sbw<Sbn<Sbe"
+  ]
+ },
+ "compare_with_enc1": {
+  "G1_triangle": {
+   "same_set": true,
+   "enc1": 6,
+   "enc2": 6,
+   "unrealizable_enc1": 0,
+   "unrealizable_enc2": 0,
+   "strict_enc1": 0,
+   "strict_enc2": 0
+  },
+  "G2_ring": {
+   "same_set": true,
+   "enc1": 16,
+   "enc2": 16,
+   "unrealizable_enc1": 8,
+   "unrealizable_enc2": 8,
+   "strict_enc1": 0,
+   "strict_enc2": 0
+  },
+  "G5_bridges": {
+   "same_set": true,
+   "enc1": 20,
+   "enc2": 20,
+   "unrealizable_enc1": 4,
+   "unrealizable_enc2": 4,
+   "strict_enc1": 0,
+   "strict_enc2": 0
+  },
+  "G6_split3": {
+   "same_set": true,
+   "n": 6
+  }
+ }
+}

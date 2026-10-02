@@ -1,0 +1,79 @@
+{
+  "verdict": "未否证",
+  "block_rows": [
+    {
+      "k": 2,
+      "release_profiles": 8,
+      "admissible_orders": 9,
+      "maximum_last_offset": 7,
+      "encoding_mismatches": 0
+    },
+    {
+      "k": 3,
+      "release_profiles": 29,
+      "admissible_orders": 43,
+      "maximum_last_offset": 7,
+      "encoding_mismatches": 0
+    },
+    {
+      "k": 4,
+      "release_profiles": 64,
+      "admissible_orders": 177,
+      "maximum_last_offset": 7,
+      "encoding_mismatches": 0
+    },
+    {
+      "k": 5,
+      "release_profiles": 99,
+      "admissible_orders": 889,
+      "maximum_last_offset": 7,
+      "encoding_mismatches": 0
+    },
+    {
+      "k": 6,
+      "release_profiles": 120,
+      "admissible_orders": 6063,
+      "maximum_last_offset": 7,
+      "encoding_mismatches": 0
+    },
+    {
+      "k": 7,
+      "release_profiles": 127,
+      "admissible_orders": 52609,
+      "maximum_last_offset": 7,
+      "encoding_mismatches": 0
+    },
+    {
+      "k": 8,
+      "release_profiles": 128,
+      "admissible_orders": 545835,
+      "maximum_last_offset": 7,
+      "encoding_mismatches": 0
+    }
+  ],
+  "block_profiles_k2_to_6": 320,
+  "block_orders_k2_to_6": 7181,
+  "base_graph_states_k2_to_6": 95546,
+  "base_graph_edges_k2_to_6": 132735,
+  "random_runs": 3000,
+  "random_steps_compared": 576000,
+  "random_modes": {
+    "retained": {
+      "runs": 1000,
+      "max_interval_difference": 1
+    },
+    "mixed_clearing": {
+      "runs": 1000,
+      "max_interval_difference": 2
+    },
+    "merger_priorities": {
+      "runs": 1000,
+      "max_interval_difference": 2
+    }
+  },
+  "witness_words": [
+    "ABBA",
+    "ABAB",
+    "ABAAB"
+  ]
+}

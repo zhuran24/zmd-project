@@ -1,0 +1,14 @@
+{
+ "high_level=X1": {
+  "X1_received": 399,
+  "X2_received": 0,
+  "core_from_b1": 397,
+  "core_from_b2": 0
+ },
+ "high_level=X2": {
+  "X1_received": 0,
+  "X2_received": 399,
+  "core_from_b1": 0,
+  "core_from_b2": 397
+ }
+}

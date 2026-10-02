@@ -1,0 +1,50 @@
+{
+ "k2-cap50-batch2": {
+  "states": 3007,
+  "sccs_with_cycle": 13,
+  "unequal_components": 0,
+  "witness": null,
+  "sec": 0.0
+ },
+ "k3-cap50-batch3": {
+  "states": 9534,
+  "sccs_with_cycle": 61,
+  "unequal_components": 0,
+  "witness": null,
+  "sec": 0.0
+ },
+ "k4-cap16-batch4": {
+  "states": 12157,
+  "sccs_with_cycle": 289,
+  "unequal_components": 0,
+  "witness": null,
+  "sec": 0.0
+ },
+ "k5-cap10-batch5": {
+  "states": 36296,
+  "sccs_with_cycle": 1441,
+  "unequal_components": 0,
+  "witness": null,
+  "sec": 0.1
+ },
+ "k2-cap20-batch1": {
+  "states": 1237,
+  "sccs_with_cycle": 1,
+  "unequal_components": 1,
+  "witness": {
+   "route": 1,
+   "state": "((1, 0), 0)"
+  },
+  "sec": 0.0
+ },
+ "k3-cap12-batch1": {
+  "states": 4546,
+  "sccs_with_cycle": 1,
+  "unequal_components": 2,
+  "witness": {
+   "route": 1,
+   "state": "((1, 0, 0), 0)"
+  },
+  "sec": 0.0
+ }
+}

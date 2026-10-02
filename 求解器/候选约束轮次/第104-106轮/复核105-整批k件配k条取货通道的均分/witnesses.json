@@ -1,0 +1,2242 @@
+{
+  "cases": [
+    {
+      "name": "clear_records",
+      "word": "ABBA",
+      "successes": [
+        {
+          "step": 0,
+          "route": "A"
+        },
+        {
+          "step": 1,
+          "route": "B"
+        },
+        {
+          "step": 16,
+          "route": "B"
+        },
+        {
+          "step": 17,
+          "route": "A"
+        }
+      ],
+      "interval_half_open": [
+        1,
+        17
+      ],
+      "interval_route_counts_A_B": [
+        0,
+        2
+      ],
+      "maximum_interval_difference": 2,
+      "production_batches": {
+        "16": 2
+      },
+      "manufacture_starts": [
+        8
+      ],
+      "geometry": [
+        {
+          "name": "协议核心",
+          "kind": "core",
+          "x": 35,
+          "y": 35,
+          "w": 9,
+          "h": 9
+        },
+        {
+          "name": "供电桩",
+          "kind": "power",
+          "x": 10,
+          "y": 7,
+          "w": 2,
+          "h": 2
+        },
+        {
+          "name": "供料箱",
+          "kind": "box",
+          "x": 6,
+          "y": 10,
+          "w": 3,
+          "h": 3
+        },
+        {
+          "name": "粉碎机",
+          "kind": "machine",
+          "x": 10,
+          "y": 10,
+          "w": 3,
+          "h": 3
+        },
+        {
+          "name": "收货箱A",
+          "kind": "box",
+          "x": 14,
+          "y": 9,
+          "w": 3,
+          "h": 3
+        },
+        {
+          "name": "收货箱B",
+          "kind": "box",
+          "x": 14,
+          "y": 12,
+          "w": 3,
+          "h": 3
+        },
+        {
+          "name": "原料带",
+          "kind": "belt",
+          "x": 9,
+          "y": 11,
+          "w": 1,
+          "h": 1
+        },
+        {
+          "name": "首格A",
+          "kind": "belt",
+          "x": 13,
+          "y": 10,
+          "w": 1,
+          "h": 1
+        },
+        {
+          "name": "首格B",
+          "kind": "belt",
+          "x": 13,
+          "y": 12,
+          "w": 1,
+          "h": 1
+        }
+      ],
+      "connections": [
+        [
+          "供料箱",
+          "原料带"
+        ],
+        [
+          "原料带",
+          "粉碎机"
+        ],
+        [
+          "粉碎机",
+          "首格A"
+        ],
+        [
+          "粉碎机",
+          "首格B"
+        ],
+        [
+          "首格A",
+          "收货箱A"
+        ],
+        [
+          "首格B",
+          "收货箱B"
+        ]
+      ],
+      "occupied_cells": 124,
+      "original_build_order": [
+        "协议核心",
+        "供电桩",
+        "供料箱",
+        "粉碎机",
+        "收货箱A",
+        "收货箱B",
+        "首格A",
+        "原料带",
+        "首格B"
+      ],
+      "offline_build_order": [
+        "协议核心",
+        "供电桩",
+        "供料箱",
+        "粉碎机",
+        "收货箱A",
+        "收货箱B",
+        "原料带",
+        "首格B",
+        "首格A"
+      ],
+      "initial_source_connection_ranks": [
+        6,
+        8
+      ],
+      "offline_source_connection_ranks": [
+        8,
+        7
+      ],
+      "source_head_layers": [
+        1,
+        1
+      ],
+      "all_boxes_transfer_switch": "off",
+      "final_sink_counts": [
+        2,
+        2
+      ],
+      "encoding_mismatches": 0,
+      "trace": [
+        {
+          "step": 0,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 2,
+          "head_departures": [],
+          "success": "A",
+          "stock_after_judgment": 1,
+          "sink_counts": [
+            0,
+            0
+          ]
+        },
+        {
+          "step": 1,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 1,
+          "head_departures": [],
+          "success": "B",
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            0,
+            0
+          ]
+        },
+        {
+          "step": 2,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            0,
+            0
+          ]
+        },
+        {
+          "step": 3,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            0,
+            0
+          ]
+        },
+        {
+          "step": 4,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            0,
+            0
+          ]
+        },
+        {
+          "step": 5,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            0,
+            0
+          ]
+        },
+        {
+          "step": 6,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            0,
+            0
+          ]
+        },
+        {
+          "step": 7,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            0,
+            0
+          ]
+        },
+        {
+          "step": 8,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [
+            "A"
+          ],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            1,
+            0
+          ]
+        },
+        {
+          "step": 9,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [
+            "B"
+          ],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            1,
+            1
+          ]
+        },
+        {
+          "step": 10,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            1,
+            1
+          ]
+        },
+        {
+          "step": 11,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            1,
+            1
+          ]
+        },
+        {
+          "step": 12,
+          "offline": true,
+          "clear": true,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            1,
+            1
+          ]
+        },
+        {
+          "step": 13,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            1,
+            1
+          ]
+        },
+        {
+          "step": 14,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            1,
+            1
+          ]
+        },
+        {
+          "step": 15,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            1,
+            1
+          ]
+        },
+        {
+          "step": 16,
+          "offline": false,
+          "clear": false,
+          "new_batch": 2,
+          "stock_before_judgment": 2,
+          "head_departures": [],
+          "success": "B",
+          "stock_after_judgment": 1,
+          "sink_counts": [
+            1,
+            1
+          ]
+        },
+        {
+          "step": 17,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 1,
+          "head_departures": [],
+          "success": "A",
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            1,
+            1
+          ]
+        },
+        {
+          "step": 18,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            1,
+            1
+          ]
+        },
+        {
+          "step": 19,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            1,
+            1
+          ]
+        },
+        {
+          "step": 20,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            1,
+            1
+          ]
+        },
+        {
+          "step": 21,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            1,
+            1
+          ]
+        },
+        {
+          "step": 22,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            1,
+            1
+          ]
+        },
+        {
+          "step": 23,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            1,
+            1
+          ]
+        },
+        {
+          "step": 24,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [
+            "B"
+          ],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            1,
+            2
+          ]
+        },
+        {
+          "step": 25,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [
+            "A"
+          ],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 26,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 27,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 28,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 29,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 30,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 31,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 32,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 33,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 34,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 35,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 36,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 37,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 38,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 39,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            2,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "retain_records",
+      "word": "ABAB",
+      "successes": [
+        {
+          "step": 0,
+          "route": "A"
+        },
+        {
+          "step": 1,
+          "route": "B"
+        },
+        {
+          "step": 16,
+          "route": "A"
+        },
+        {
+          "step": 17,
+          "route": "B"
+        }
+      ],
+      "interval_half_open": [
+        1,
+        17
+      ],
+      "interval_route_counts_A_B": [
+        1,
+        1
+      ],
+      "maximum_interval_difference": 1,
+      "production_batches": {
+        "16": 2
+      },
+      "manufacture_starts": [
+        8
+      ],
+      "geometry": [
+        {
+          "name": "协议核心",
+          "kind": "core",
+          "x": 35,
+          "y": 35,
+          "w": 9,
+          "h": 9
+        },
+        {
+          "name": "供电桩",
+          "kind": "power",
+          "x": 10,
+          "y": 7,
+          "w": 2,
+          "h": 2
+        },
+        {
+          "name": "供料箱",
+          "kind": "box",
+          "x": 6,
+          "y": 10,
+          "w": 3,
+          "h": 3
+        },
+        {
+          "name": "粉碎机",
+          "kind": "machine",
+          "x": 10,
+          "y": 10,
+          "w": 3,
+          "h": 3
+        },
+        {
+          "name": "收货箱A",
+          "kind": "box",
+          "x": 14,
+          "y": 9,
+          "w": 3,
+          "h": 3
+        },
+        {
+          "name": "收货箱B",
+          "kind": "box",
+          "x": 14,
+          "y": 12,
+          "w": 3,
+          "h": 3
+        },
+        {
+          "name": "原料带",
+          "kind": "belt",
+          "x": 9,
+          "y": 11,
+          "w": 1,
+          "h": 1
+        },
+        {
+          "name": "首格A",
+          "kind": "belt",
+          "x": 13,
+          "y": 10,
+          "w": 1,
+          "h": 1
+        },
+        {
+          "name": "首格B",
+          "kind": "belt",
+          "x": 13,
+          "y": 12,
+          "w": 1,
+          "h": 1
+        }
+      ],
+      "connections": [
+        [
+          "供料箱",
+          "原料带"
+        ],
+        [
+          "原料带",
+          "粉碎机"
+        ],
+        [
+          "粉碎机",
+          "首格A"
+        ],
+        [
+          "粉碎机",
+          "首格B"
+        ],
+        [
+          "首格A",
+          "收货箱A"
+        ],
+        [
+          "首格B",
+          "收货箱B"
+        ]
+      ],
+      "occupied_cells": 124,
+      "original_build_order": [
+        "协议核心",
+        "供电桩",
+        "供料箱",
+        "粉碎机",
+        "收货箱A",
+        "收货箱B",
+        "首格A",
+        "原料带",
+        "首格B"
+      ],
+      "offline_build_order": [
+        "协议核心",
+        "供电桩",
+        "供料箱",
+        "粉碎机",
+        "收货箱A",
+        "收货箱B",
+        "原料带",
+        "首格B",
+        "首格A"
+      ],
+      "initial_source_connection_ranks": [
+        6,
+        8
+      ],
+      "offline_source_connection_ranks": [
+        8,
+        7
+      ],
+      "source_head_layers": [
+        1,
+        1
+      ],
+      "all_boxes_transfer_switch": "off",
+      "final_sink_counts": [
+        2,
+        2
+      ],
+      "encoding_mismatches": 0,
+      "trace": [
+        {
+          "step": 0,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 2,
+          "head_departures": [],
+          "success": "A",
+          "stock_after_judgment": 1,
+          "sink_counts": [
+            0,
+            0
+          ]
+        },
+        {
+          "step": 1,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 1,
+          "head_departures": [],
+          "success": "B",
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            0,
+            0
+          ]
+        },
+        {
+          "step": 2,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            0,
+            0
+          ]
+        },
+        {
+          "step": 3,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            0,
+            0
+          ]
+        },
+        {
+          "step": 4,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            0,
+            0
+          ]
+        },
+        {
+          "step": 5,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            0,
+            0
+          ]
+        },
+        {
+          "step": 6,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            0,
+            0
+          ]
+        },
+        {
+          "step": 7,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            0,
+            0
+          ]
+        },
+        {
+          "step": 8,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [
+            "A"
+          ],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            1,
+            0
+          ]
+        },
+        {
+          "step": 9,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [
+            "B"
+          ],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            1,
+            1
+          ]
+        },
+        {
+          "step": 10,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            1,
+            1
+          ]
+        },
+        {
+          "step": 11,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            1,
+            1
+          ]
+        },
+        {
+          "step": 12,
+          "offline": true,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            1,
+            1
+          ]
+        },
+        {
+          "step": 13,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            1,
+            1
+          ]
+        },
+        {
+          "step": 14,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            1,
+            1
+          ]
+        },
+        {
+          "step": 15,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            1,
+            1
+          ]
+        },
+        {
+          "step": 16,
+          "offline": false,
+          "clear": false,
+          "new_batch": 2,
+          "stock_before_judgment": 2,
+          "head_departures": [],
+          "success": "A",
+          "stock_after_judgment": 1,
+          "sink_counts": [
+            1,
+            1
+          ]
+        },
+        {
+          "step": 17,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 1,
+          "head_departures": [],
+          "success": "B",
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            1,
+            1
+          ]
+        },
+        {
+          "step": 18,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            1,
+            1
+          ]
+        },
+        {
+          "step": 19,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            1,
+            1
+          ]
+        },
+        {
+          "step": 20,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            1,
+            1
+          ]
+        },
+        {
+          "step": 21,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            1,
+            1
+          ]
+        },
+        {
+          "step": 22,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            1,
+            1
+          ]
+        },
+        {
+          "step": 23,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            1,
+            1
+          ]
+        },
+        {
+          "step": 24,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [
+            "A"
+          ],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            2,
+            1
+          ]
+        },
+        {
+          "step": 25,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [
+            "B"
+          ],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 26,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 27,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 28,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 29,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 30,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 31,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 32,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 33,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 34,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 35,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 36,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 37,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 38,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 39,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            2,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "name": "merger_without_other_inputs",
+      "word": "ABAAB",
+      "successes": [
+        {
+          "step": 0,
+          "route": "A"
+        },
+        {
+          "step": 3,
+          "route": "B"
+        },
+        {
+          "step": 8,
+          "route": "A"
+        },
+        {
+          "step": 16,
+          "route": "A"
+        },
+        {
+          "step": 17,
+          "route": "B"
+        }
+      ],
+      "interval_half_open": [
+        8,
+        17
+      ],
+      "interval_route_counts_A_B": [
+        2,
+        0
+      ],
+      "maximum_interval_difference": 2,
+      "production_batches": {
+        "3": 2,
+        "16": 2
+      },
+      "manufacture_starts": [
+        8
+      ],
+      "geometry": [
+        {
+          "name": "协议核心",
+          "kind": "core",
+          "x": 35,
+          "y": 35,
+          "w": 9,
+          "h": 9
+        },
+        {
+          "name": "供电桩",
+          "kind": "power",
+          "x": 10,
+          "y": 7,
+          "w": 2,
+          "h": 2
+        },
+        {
+          "name": "供料箱",
+          "kind": "box",
+          "x": 6,
+          "y": 10,
+          "w": 3,
+          "h": 3
+        },
+        {
+          "name": "粉碎机",
+          "kind": "machine",
+          "x": 10,
+          "y": 10,
+          "w": 3,
+          "h": 3
+        },
+        {
+          "name": "收货箱A",
+          "kind": "box",
+          "x": 14,
+          "y": 9,
+          "w": 3,
+          "h": 3
+        },
+        {
+          "name": "收货箱B",
+          "kind": "box",
+          "x": 14,
+          "y": 12,
+          "w": 3,
+          "h": 3
+        },
+        {
+          "name": "原料带",
+          "kind": "belt",
+          "x": 9,
+          "y": 11,
+          "w": 1,
+          "h": 1
+        },
+        {
+          "name": "首格A",
+          "kind": "merger",
+          "x": 13,
+          "y": 10,
+          "w": 1,
+          "h": 1
+        },
+        {
+          "name": "首格B",
+          "kind": "belt",
+          "x": 13,
+          "y": 12,
+          "w": 1,
+          "h": 1
+        }
+      ],
+      "connections": [
+        [
+          "供料箱",
+          "原料带"
+        ],
+        [
+          "原料带",
+          "粉碎机"
+        ],
+        [
+          "粉碎机",
+          "首格A"
+        ],
+        [
+          "粉碎机",
+          "首格B"
+        ],
+        [
+          "首格A",
+          "收货箱A"
+        ],
+        [
+          "首格B",
+          "收货箱B"
+        ]
+      ],
+      "occupied_cells": 124,
+      "original_build_order": [
+        "协议核心",
+        "供电桩",
+        "供料箱",
+        "粉碎机",
+        "收货箱A",
+        "收货箱B",
+        "首格A",
+        "原料带",
+        "首格B"
+      ],
+      "offline_build_order": null,
+      "initial_source_connection_ranks": [
+        6,
+        8
+      ],
+      "offline_source_connection_ranks": null,
+      "source_head_layers": [
+        1,
+        1
+      ],
+      "all_boxes_transfer_switch": "off",
+      "final_sink_counts": [
+        3,
+        2
+      ],
+      "encoding_mismatches": 0,
+      "trace": [
+        {
+          "step": 0,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 1,
+          "head_departures": [],
+          "success": "A",
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            0,
+            0
+          ]
+        },
+        {
+          "step": 1,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            0,
+            0
+          ]
+        },
+        {
+          "step": 2,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            0,
+            0
+          ]
+        },
+        {
+          "step": 3,
+          "offline": false,
+          "clear": false,
+          "new_batch": 2,
+          "stock_before_judgment": 2,
+          "head_departures": [],
+          "success": "B",
+          "stock_after_judgment": 1,
+          "sink_counts": [
+            0,
+            0
+          ]
+        },
+        {
+          "step": 4,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 1,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 1,
+          "sink_counts": [
+            0,
+            0
+          ]
+        },
+        {
+          "step": 5,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 1,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 1,
+          "sink_counts": [
+            0,
+            0
+          ]
+        },
+        {
+          "step": 6,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 1,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 1,
+          "sink_counts": [
+            0,
+            0
+          ]
+        },
+        {
+          "step": 7,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 1,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 1,
+          "sink_counts": [
+            0,
+            0
+          ]
+        },
+        {
+          "step": 8,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 1,
+          "head_departures": [
+            "A"
+          ],
+          "success": "A",
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            1,
+            0
+          ]
+        },
+        {
+          "step": 9,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            1,
+            0
+          ]
+        },
+        {
+          "step": 10,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            1,
+            0
+          ]
+        },
+        {
+          "step": 11,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [
+            "B"
+          ],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            1,
+            1
+          ]
+        },
+        {
+          "step": 12,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            1,
+            1
+          ]
+        },
+        {
+          "step": 13,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            1,
+            1
+          ]
+        },
+        {
+          "step": 14,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            1,
+            1
+          ]
+        },
+        {
+          "step": 15,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            1,
+            1
+          ]
+        },
+        {
+          "step": 16,
+          "offline": false,
+          "clear": false,
+          "new_batch": 2,
+          "stock_before_judgment": 2,
+          "head_departures": [
+            "A"
+          ],
+          "success": "A",
+          "stock_after_judgment": 1,
+          "sink_counts": [
+            2,
+            1
+          ]
+        },
+        {
+          "step": 17,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 1,
+          "head_departures": [],
+          "success": "B",
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            2,
+            1
+          ]
+        },
+        {
+          "step": 18,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            2,
+            1
+          ]
+        },
+        {
+          "step": 19,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            2,
+            1
+          ]
+        },
+        {
+          "step": 20,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            2,
+            1
+          ]
+        },
+        {
+          "step": 21,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            2,
+            1
+          ]
+        },
+        {
+          "step": 22,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            2,
+            1
+          ]
+        },
+        {
+          "step": 23,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            2,
+            1
+          ]
+        },
+        {
+          "step": 24,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [
+            "A"
+          ],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            3,
+            1
+          ]
+        },
+        {
+          "step": 25,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [
+            "B"
+          ],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 26,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 27,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 28,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 29,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 30,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 31,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 32,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 33,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 34,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 35,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 36,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 37,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 38,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 39,
+          "offline": false,
+          "clear": false,
+          "new_batch": 0,
+          "stock_before_judgment": 0,
+          "head_departures": [],
+          "success": null,
+          "stock_after_judgment": 0,
+          "sink_counts": [
+            3,
+            2
+          ]
+        }
+      ]
+    }
+  ]
+}

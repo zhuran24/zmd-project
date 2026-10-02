@@ -1,0 +1,37 @@
+{
+ "2": {
+  "patterns": 8,
+  "mismatch": 0,
+  "max_last_offset": 7,
+  "not_one_each": 0,
+  "idle_allowed_worst": 999
+ },
+ "3": {
+  "patterns": 29,
+  "mismatch": 0,
+  "max_last_offset": 7,
+  "not_one_each": 0,
+  "idle_allowed_worst": 999
+ },
+ "4": {
+  "patterns": 64,
+  "mismatch": 0,
+  "max_last_offset": 7,
+  "not_one_each": 0,
+  "idle_allowed_worst": 999
+ },
+ "5": {
+  "patterns": 99,
+  "mismatch": 0,
+  "max_last_offset": 7,
+  "not_one_each": 0,
+  "idle_allowed_worst": null
+ },
+ "6": {
+  "patterns": 120,
+  "mismatch": 0,
+  "max_last_offset": 7,
+  "not_one_each": 0,
+  "idle_allowed_worst": null
+ }
+}

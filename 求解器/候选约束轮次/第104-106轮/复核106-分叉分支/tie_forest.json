@@ -1,0 +1,48 @@
+{
+ "random_graphs": 4000,
+ "dp_vs_uf_agree": 4000,
+ "forest": 1878,
+ "with_cycle": 2122,
+ "perm_checked": 2862,
+ "perm_agree": 2862,
+ "disagreements": [],
+ "geometric": {
+  "G1_triangle": {
+   "units": 3,
+   "channels": 3,
+   "tie_free_order_exists_dp": false,
+   "tie_free_order_exists_uf": false
+  },
+  "G2_ring": {
+   "units": 4,
+   "channels": 4,
+   "tie_free_order_exists_dp": false,
+   "tie_free_order_exists_uf": false
+  },
+  "G5_bridges": {
+   "units": 4,
+   "channels": 4,
+   "tie_free_order_exists_dp": false,
+   "tie_free_order_exists_uf": false
+  },
+  "G6_split3": {
+   "units": 10,
+   "channels": 11,
+   "tie_free_order_exists_dp": false,
+   "tie_free_order_exists_uf": false
+  },
+  "G3_seedloop": {
+   "units": 16,
+   "channels": 16,
+   "tie_free_order_exists_dp": false,
+   "tie_free_order_exists_uf": false
+  },
+  "G3_seedloop_minus_r6": {
+   "units": 15,
+   "channels": 14,
+   "tie_free_order_exists_dp": true,
+   "tie_free_order_exists_uf": true
+  }
+ },
+ "AB<DC<CA<BD_realizable": false
+}

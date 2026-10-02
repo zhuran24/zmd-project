@@ -1,0 +1,31 @@
+{
+ "G1_triangle": {
+  "one_by_one": 6,
+  "with_simultaneous_builds": 6,
+  "extra": []
+ },
+ "G2_ring": {
+  "one_by_one": 16,
+  "with_simultaneous_builds": 24,
+  "extra": [
+   "b1b2<b3b4<b2b3<b4b1",
+   "b1b2<b3b4<b4b1<b2b3",
+   "b2b3<b4b1<b1b2<b3b4",
+   "b2b3<b4b1<b3b4<b1b2",
+   "b3b4<b1b2<b2b3<b4b1",
+   "b3b4<b1b2<b4b1<b2b3",
+   "b4b1<b2b3<b1b2<b3b4",
+   "b4b1<b2b3<b3b4<b1b2"
+  ]
+ },
+ "G5_bridges": {
+  "one_by_one": 20,
+  "with_simultaneous_builds": 24,
+  "extra": [
+   "XY<Ye<wX<YX",
+   "XY<wX<Ye<YX",
+   "YX<Ye<wX<XY",
+   "YX<wX<Ye<XY"
+  ]
+ }
+}

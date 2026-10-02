@@ -1,0 +1,146 @@
+{
+  "all_checks_passed": true,
+  "simple_graph_cases": 923,
+  "additional_multigraph_cases": 2,
+  "all_exact_order_set_digests_equal": true,
+  "all_strict_build_counts_equal": true,
+  "named_order_counts": {
+    "triangle": 6,
+    "square": 16,
+    "s3x": 168,
+    "parallel_pair": 2,
+    "tree_star": 6,
+    "parallel_path": 16
+  },
+  "square_impossible_order": [
+    0,
+    3,
+    1,
+    2
+  ],
+  "square_impossible_order_names": [
+    "AB",
+    "CD",
+    "DA",
+    "BC"
+  ],
+  "square_unrealizable_order_count": 8,
+  "local_counts": {
+    "cyclic_cases": 192,
+    "take_side_histories": 34,
+    "take_side_cases": 3264,
+    "cooldown_cases": 82
+  },
+  "mineral_arithmetic": {
+    "order": [
+      "源矿",
+      "蓝铁矿"
+    ],
+    "battery": [
+      "30",
+      "20"
+    ],
+    "capsule": [
+      "0",
+      "40"
+    ],
+    "required_rates": [
+      "18",
+      "34"
+    ],
+    "required_total": "52",
+    "warehouse_output_port_bound": 52
+  },
+  "layer_cases": {
+    "fork_short_long": {
+      "raw_choices": 2,
+      "fully_determined_choices": 2,
+      "vectors": [
+        [
+          2,
+          1,
+          2,
+          1
+        ],
+        [
+          3,
+          1,
+          2,
+          1
+        ]
+      ],
+      "fully_determined_vector_count": 2
+    },
+    "square_one_exit": {
+      "raw_choices": 2,
+      "fully_determined_choices": 1,
+      "vectors": [
+        [
+          5,
+          4,
+          3,
+          2,
+          1
+        ]
+      ],
+      "fully_determined_vector_count": 1
+    },
+    "square_two_exits": {
+      "raw_choices": 4,
+      "fully_determined_choices": 3,
+      "vectors": [
+        [
+          2,
+          3,
+          2,
+          3,
+          1
+        ],
+        [
+          2,
+          5,
+          4,
+          3,
+          1
+        ],
+        [
+          4,
+          3,
+          2,
+          5,
+          1
+        ]
+      ],
+      "fully_determined_vector_count": 3
+    },
+    "closed_square": {
+      "raw_choices": 1,
+      "fully_determined_choices": 0,
+      "vectors": [],
+      "fully_determined_vector_count": 0
+    }
+  },
+  "polling_examples": {
+    "splitter_after_last_B": {
+      "keep": 2,
+      "clear": 1
+    },
+    "take_side_after_A9_C7": {
+      "keep": 1,
+      "clear": 0
+    },
+    "same_start_success_sequence": {
+      "0,1,2": [
+        1,
+        2,
+        0
+      ],
+      "2,1,0": [
+        1,
+        0,
+        2
+      ]
+    }
+  },
+  "limits": "Local rule and combinatorial checks only; no full-layout or delivery certificate."
+}

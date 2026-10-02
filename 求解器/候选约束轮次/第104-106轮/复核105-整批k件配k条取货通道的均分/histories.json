@@ -1,0 +1,156 @@
+{
+  "seed": 10520261002,
+  "rows": [
+    {
+      "mode": "retained",
+      "k": 2,
+      "runs": 200,
+      "steps_per_run": 192,
+      "max_interval_difference": 1,
+      "max_no_offline_segment_difference": 1,
+      "successful_items": 9585,
+      "state_mismatches": 0
+    },
+    {
+      "mode": "retained",
+      "k": 3,
+      "runs": 200,
+      "steps_per_run": 192,
+      "max_interval_difference": 1,
+      "max_no_offline_segment_difference": 1,
+      "successful_items": 14357,
+      "state_mismatches": 0
+    },
+    {
+      "mode": "retained",
+      "k": 4,
+      "runs": 200,
+      "steps_per_run": 192,
+      "max_interval_difference": 1,
+      "max_no_offline_segment_difference": 1,
+      "successful_items": 19144,
+      "state_mismatches": 0
+    },
+    {
+      "mode": "retained",
+      "k": 5,
+      "runs": 200,
+      "steps_per_run": 192,
+      "max_interval_difference": 1,
+      "max_no_offline_segment_difference": 1,
+      "successful_items": 23872,
+      "state_mismatches": 0
+    },
+    {
+      "mode": "retained",
+      "k": 6,
+      "runs": 200,
+      "steps_per_run": 192,
+      "max_interval_difference": 1,
+      "max_no_offline_segment_difference": 1,
+      "successful_items": 28649,
+      "state_mismatches": 0
+    },
+    {
+      "mode": "mixed_clearing",
+      "k": 2,
+      "runs": 200,
+      "steps_per_run": 192,
+      "max_interval_difference": 2,
+      "max_no_offline_segment_difference": 1,
+      "successful_items": 9584,
+      "state_mismatches": 0
+    },
+    {
+      "mode": "mixed_clearing",
+      "k": 3,
+      "runs": 200,
+      "steps_per_run": 192,
+      "max_interval_difference": 2,
+      "max_no_offline_segment_difference": 1,
+      "successful_items": 14358,
+      "state_mismatches": 0
+    },
+    {
+      "mode": "mixed_clearing",
+      "k": 4,
+      "runs": 200,
+      "steps_per_run": 192,
+      "max_interval_difference": 2,
+      "max_no_offline_segment_difference": 1,
+      "successful_items": 19155,
+      "state_mismatches": 0
+    },
+    {
+      "mode": "mixed_clearing",
+      "k": 5,
+      "runs": 200,
+      "steps_per_run": 192,
+      "max_interval_difference": 2,
+      "max_no_offline_segment_difference": 1,
+      "successful_items": 23848,
+      "state_mismatches": 0
+    },
+    {
+      "mode": "mixed_clearing",
+      "k": 6,
+      "runs": 200,
+      "steps_per_run": 192,
+      "max_interval_difference": 2,
+      "max_no_offline_segment_difference": 1,
+      "successful_items": 28582,
+      "state_mismatches": 0
+    },
+    {
+      "mode": "merger_priorities",
+      "k": 2,
+      "runs": 200,
+      "steps_per_run": 192,
+      "max_interval_difference": 2,
+      "max_no_offline_segment_difference": null,
+      "successful_items": 9592,
+      "state_mismatches": 0
+    },
+    {
+      "mode": "merger_priorities",
+      "k": 3,
+      "runs": 200,
+      "steps_per_run": 192,
+      "max_interval_difference": 2,
+      "max_no_offline_segment_difference": null,
+      "successful_items": 14369,
+      "state_mismatches": 0
+    },
+    {
+      "mode": "merger_priorities",
+      "k": 4,
+      "runs": 200,
+      "steps_per_run": 192,
+      "max_interval_difference": 2,
+      "max_no_offline_segment_difference": null,
+      "successful_items": 19144,
+      "state_mismatches": 0
+    },
+    {
+      "mode": "merger_priorities",
+      "k": 5,
+      "runs": 200,
+      "steps_per_run": 192,
+      "max_interval_difference": 2,
+      "max_no_offline_segment_difference": null,
+      "successful_items": 23929,
+      "state_mismatches": 0
+    },
+    {
+      "mode": "merger_priorities",
+      "k": 6,
+      "runs": 200,
+      "steps_per_run": 192,
+      "max_interval_difference": 2,
+      "max_no_offline_segment_difference": null,
+      "successful_items": 28655,
+      "state_mismatches": 0
+    }
+  ],
+  "note": "Random trials supplement, and do not replace, the all-layout proof and finite graph enumeration."
+}

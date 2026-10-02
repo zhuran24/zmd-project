@@ -1,0 +1,215 @@
+{
+ "W1": {
+  "none": {
+   "mode": "none",
+   "word": [
+    1,
+    2,
+    3,
+    1,
+    2,
+    3
+   ],
+   "times": [
+    0,
+    1,
+    2,
+    40,
+    41,
+    42
+   ],
+   "interval_2_41": [
+    1,
+    0,
+    1
+   ],
+   "premise_bad": 0
+  },
+  "retain": {
+   "mode": "retain",
+   "word": [
+    1,
+    2,
+    3,
+    1,
+    2,
+    3
+   ],
+   "times": [
+    0,
+    1,
+    2,
+    40,
+    41,
+    42
+   ],
+   "interval_2_41": [
+    1,
+    0,
+    1
+   ],
+   "premise_bad": 0
+  },
+  "clear": {
+   "mode": "clear",
+   "word": [
+    1,
+    2,
+    3,
+    3,
+    2,
+    1
+   ],
+   "times": [
+    0,
+    1,
+    2,
+    40,
+    41,
+    42
+   ],
+   "interval_2_41": [
+    0,
+    0,
+    2
+   ],
+   "premise_bad": 0
+  }
+ },
+ "W2": {
+  "word": [
+   "汇",
+   "带",
+   "汇",
+   "汇",
+   "带"
+  ],
+  "times": [
+   0,
+   3,
+   8,
+   16,
+   17
+  ],
+  "layers": {
+   "J0": 1,
+   "E1": 1,
+   "F": 1
+  },
+  "max_diff_no_offline": 2,
+  "premise_bad": 0
+ },
+ "control": {
+  "premise_bad": 96
+ },
+ "random": {
+  "k2-belts-retain": {
+   "runs": 150,
+   "premise_bad_runs": 0,
+   "max_g": 1,
+   "max_s": 1,
+   "srot_fail": 0,
+   "grot_fail": 0,
+   "items": 7629
+  },
+  "k2-belts-clear": {
+   "runs": 150,
+   "premise_bad_runs": 0,
+   "max_g": 2,
+   "max_s": 1,
+   "srot_fail": 0,
+   "grot_fail": 89,
+   "items": 6969
+  },
+  "k2-belts-partial": {
+   "runs": 150,
+   "premise_bad_runs": 0,
+   "max_g": 2,
+   "max_s": 1,
+   "srot_fail": 0,
+   "grot_fail": 94,
+   "items": 7404
+  },
+  "k2-merge-retain": {
+   "runs": 150,
+   "premise_bad_runs": 0,
+   "max_g": 2,
+   "max_s": 2,
+   "srot_fail": 53,
+   "grot_fail": 92,
+   "items": 8368
+  },
+  "k2-merge-clear": {
+   "runs": 150,
+   "premise_bad_runs": 0,
+   "max_g": 2,
+   "max_s": 2,
+   "srot_fail": 33,
+   "grot_fail": 86,
+   "items": 7338
+  },
+  "k2-merge-partial": {
+   "runs": 150,
+   "premise_bad_runs": 0,
+   "max_g": 2,
+   "max_s": 2,
+   "srot_fail": 39,
+   "grot_fail": 94,
+   "items": 8031
+  },
+  "k3-belts-retain": {
+   "runs": 150,
+   "premise_bad_runs": 0,
+   "max_g": 1,
+   "max_s": 1,
+   "srot_fail": 0,
+   "grot_fail": 0,
+   "items": 11763
+  },
+  "k3-belts-clear": {
+   "runs": 150,
+   "premise_bad_runs": 0,
+   "max_g": 2,
+   "max_s": 1,
+   "srot_fail": 0,
+   "grot_fail": 87,
+   "items": 12634
+  },
+  "k3-belts-partial": {
+   "runs": 150,
+   "premise_bad_runs": 0,
+   "max_g": 2,
+   "max_s": 1,
+   "srot_fail": 0,
+   "grot_fail": 90,
+   "items": 11864
+  },
+  "k3-merge-retain": {
+   "runs": 150,
+   "premise_bad_runs": 0,
+   "max_g": 2,
+   "max_s": 2,
+   "srot_fail": 46,
+   "grot_fail": 93,
+   "items": 11580
+  },
+  "k3-merge-clear": {
+   "runs": 150,
+   "premise_bad_runs": 0,
+   "max_g": 2,
+   "max_s": 2,
+   "srot_fail": 45,
+   "grot_fail": 124,
+   "items": 10947
+  },
+  "k3-merge-partial": {
+   "runs": 150,
+   "premise_bad_runs": 0,
+   "max_g": 2,
+   "max_s": 2,
+   "srot_fail": 50,
+   "grot_fail": 121,
+   "items": 11810
+  }
+ }
+}

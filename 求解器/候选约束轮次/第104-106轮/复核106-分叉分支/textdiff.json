@@ -1,0 +1,11 @@
+{
+ "candidate_equals_100R_quote": true,
+ "v97_with_replacement_equals_v100": true,
+ "opcodes": [
+  [
+   "delete",
+   "先后；凡判定先后、轮询起点或取货级的接通时刻要用到这些",
+   ""
+  ]
+ ]
+}

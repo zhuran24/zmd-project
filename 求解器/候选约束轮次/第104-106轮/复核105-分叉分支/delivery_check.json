@@ -1,0 +1,26 @@
+{
+  "completed_utc": "2026-10-02T13:04:16.586148+00:00",
+  "premise_and_history_files_unchanged": 9,
+  "all_report_links_exist": true,
+  "link_count": 16,
+  "all_evidence_json_parse": true,
+  "parsed_evidence_files": [
+    "comparison.json",
+    "inputs.json",
+    "orders_forward.json",
+    "orders_reverse.json",
+    "rule_checks_a.json",
+    "rule_checks_b.json",
+    "version_diff.json"
+  ],
+  "candidate_quote_matches_input": true,
+  "report_sha256": "c3b89fadb2367e9d9068f1941ed3b4b20cd04f534f93b494d0be3c1cfcd007b0",
+  "result_path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第104-106轮/复核105-分叉分支/result.json",
+  "reader_review": {
+    "standalone_verdict_and_premises": true,
+    "version_comparison_separate_from_current_claim": true,
+    "computed_counts_consistent_with_comparison": true,
+    "local_examples_not_claimed_as_delivery_certificates": true,
+    "unresolved_layer_semantics_explicit": true
+  }
+}

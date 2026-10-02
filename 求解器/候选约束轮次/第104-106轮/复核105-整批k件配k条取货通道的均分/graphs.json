@@ -1,0 +1,155 @@
+{
+  "rows": [
+    {
+      "k": 2,
+      "single_item_negative_control": false,
+      "base_states_a": 114,
+      "base_states_b": 114,
+      "base_edges": 131,
+      "base_graph_sha256": "8d1421f0605d080dbc0b9e09bfa78dae908cedf0bc3482a90d98fecae6379e65",
+      "transition_mismatches": 0,
+      "prefix_extrema_a": {
+        "maximum": 2,
+        "states": 185,
+        "complete": true
+      },
+      "interval_relaxation_b_positive": {
+        "maximum": 2,
+        "complete": true,
+        "relaxations": 65
+      },
+      "interval_relaxation_b_negative": {
+        "maximum": 2,
+        "complete": true,
+        "relaxations": 65
+      },
+      "seconds": 0.001
+    },
+    {
+      "k": 3,
+      "single_item_negative_control": false,
+      "base_states_a": 558,
+      "base_states_b": 558,
+      "base_edges": 679,
+      "base_graph_sha256": "b965c64e66920a1f1c57fb57d0e12e84b7daac721ecc8e52b1a8798edc8b9d18",
+      "transition_mismatches": 0,
+      "prefix_extrema_a": {
+        "maximum": 2,
+        "states": 865,
+        "complete": true
+      },
+      "interval_relaxation_b_positive": {
+        "maximum": 2,
+        "complete": true,
+        "relaxations": 339
+      },
+      "interval_relaxation_b_negative": {
+        "maximum": 2,
+        "complete": true,
+        "relaxations": 339
+      },
+      "seconds": 0.003
+    },
+    {
+      "k": 4,
+      "single_item_negative_control": false,
+      "base_states_a": 2756,
+      "base_states_b": 2756,
+      "base_edges": 3525,
+      "base_graph_sha256": "f038ef264700efc4ecc3c12e773c390d977e296fdea8824a09b9d92da515b4b7",
+      "transition_mismatches": 0,
+      "prefix_extrema_a": {
+        "maximum": 2,
+        "states": 4229,
+        "complete": true
+      },
+      "interval_relaxation_b_positive": {
+        "maximum": 2,
+        "complete": true,
+        "relaxations": 1710
+      },
+      "interval_relaxation_b_negative": {
+        "maximum": 2,
+        "complete": true,
+        "relaxations": 1710
+      },
+      "seconds": 0.013
+    },
+    {
+      "k": 5,
+      "single_item_negative_control": false,
+      "base_states_a": 14460,
+      "base_states_b": 14460,
+      "base_edges": 19361,
+      "base_graph_sha256": "d2cb79b2877babce109683c106ada97c1d665259c32f6b5a7f13bb9290dd4d79",
+      "transition_mismatches": 0,
+      "prefix_extrema_a": {
+        "maximum": 2,
+        "states": 22307,
+        "complete": true
+      },
+      "interval_relaxation_b_positive": {
+        "maximum": 2,
+        "complete": true,
+        "relaxations": 9008
+      },
+      "interval_relaxation_b_negative": {
+        "maximum": 2,
+        "complete": true,
+        "relaxations": 9008
+      },
+      "seconds": 0.079
+    },
+    {
+      "k": 6,
+      "single_item_negative_control": false,
+      "base_states_a": 77658,
+      "base_states_b": 77658,
+      "base_edges": 109039,
+      "base_graph_sha256": "df9bd0096b942eaff017d022252987398f23a15c97e9cd6092a9a6d71c967ded",
+      "transition_mismatches": 0,
+      "prefix_extrema_a": {
+        "maximum": 2,
+        "states": 122621,
+        "complete": true
+      },
+      "interval_relaxation_b_positive": {
+        "maximum": 2,
+        "complete": true,
+        "relaxations": 47852
+      },
+      "interval_relaxation_b_negative": {
+        "maximum": 2,
+        "complete": true,
+        "relaxations": 47852
+      },
+      "seconds": 0.491
+    }
+  ],
+  "negative_control": {
+    "k": 2,
+    "single_item_negative_control": true,
+    "base_states_a": 114,
+    "base_states_b": 114,
+    "base_edges": 146,
+    "base_graph_sha256": "c7271087bf58324f2b5e0c06bdc1d7a3e4f28c38a7c6e556ab09433a084531db",
+    "transition_mismatches": 0,
+    "prefix_extrema_a": {
+      "maximum": 3,
+      "states": 505,
+      "complete": false,
+      "stopped_at_counterexample": true
+    },
+    "interval_relaxation_b_positive": {
+      "maximum": 3,
+      "complete": false,
+      "relaxations": 137
+    },
+    "interval_relaxation_b_negative": {
+      "maximum": 3,
+      "complete": false,
+      "relaxations": 137
+    },
+    "seconds": 0.001
+  }
+}
