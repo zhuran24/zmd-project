@@ -1,0 +1,8 @@
+{
+ "runs": 4000,
+ "steps": 300,
+ "nviol": 0,
+ "viol": [],
+ "min_slack": 0.0,
+ "hits_176": 1118
+}

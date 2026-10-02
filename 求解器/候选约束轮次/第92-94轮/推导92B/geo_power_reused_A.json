@@ -1,0 +1,43 @@
+{
+  "current_domain_exact_equal_to_old_A": true,
+  "options": 1240,
+  "current_A_CP_240_seconds": "UNKNOWN",
+  "current_B_HiGHS": {
+    "case": "general",
+    "objective": "weight",
+    "threshold": 55,
+    "encoding": "B free-neighbor MILP",
+    "prior_count_cap": 23,
+    "domain": 1240,
+    "status": 2,
+    "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+    "seconds": 66.72765108900057
+  },
+  "reused_A_result": {
+    "encoding": "A direct integer inequalities",
+    "edge": false,
+    "unit": false,
+    "threshold": 55,
+    "options": 1240,
+    "status": "INFEASIBLE",
+    "seconds": 64.76143378499546,
+    "workers": 3,
+    "model_sha256": "e20605af926e6ffe9d4a5907339e9f9125e13d2ceffc21ed04312860dbe52533",
+    "response": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 2651\nbooleans: 2598\nconflicts: 1970\nbranches: 191345\npropagations: 32819676\ninteger_propagations: 33755080\nrestarts: 13\nlp_iterations: 595584\nwalltime: 64.7611\nusertime: 64.7611\ndeterministic_time: 390.597\ngap_integral: 0\n"
+  },
+  "source_files": [
+    {
+      "path": "求解器/候选约束轮次/第81-83轮/推导81C/power_a.py",
+      "sha256": "b3acad6be32380f860143b4b57696e509d7eef5cc160d8124801f1a6531fb6c7"
+    },
+    {
+      "path": "求解器/候选约束轮次/第81-83轮/推导81C/general_weight_domain_a.json",
+      "sha256": "da7f317ab10802af2d7f1f8191fb11c5651a6008a18334ebd9670d8a7608a6a9"
+    },
+    {
+      "path": "求解器/候选约束轮次/第81-83轮/推导81C/general_weight_a.json",
+      "sha256": "c3154de7995dec8b70d4611a8bb1c68bf2b6333acfc406ddc0f6e370dedfd411"
+    }
+  ],
+  "model_review": "Both A models impose per-cell disjointness, selected-machine side must leave >=1 free neighbor, machine count <=23, weighted sum >=55; current domain agrees exactly including bodies and side-neighbor sets."
+}

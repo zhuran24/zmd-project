@@ -1,0 +1,13 @@
+{
+  "seed": 1,
+  "cases": 300,
+  "stats": {
+    "0": 100,
+    "pass": 300,
+    "1": 100,
+    "cycle": 100,
+    "2": 100
+  },
+  "minimum_phi2_loss": -1,
+  "counterexamples": []
+}

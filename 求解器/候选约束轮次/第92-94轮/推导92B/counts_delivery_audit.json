@@ -1,0 +1,295 @@
+{
+  "status": "PASS",
+  "entry_count": 17,
+  "candidate_count": 0,
+  "classification": "all confirmed",
+  "source_ranges_exist": true,
+  "sources": [
+    {
+      "entry": "N35",
+      "path": "求解器/候选约束轮次/三审-第84-85轮/三审报告.md",
+      "lines": [
+        74,
+        88
+      ]
+    },
+    {
+      "entry": "N36",
+      "path": "求解器/候选约束轮次/第66-68轮/推导66/候选约束.txt.md",
+      "lines": [
+        180,
+        184
+      ]
+    },
+    {
+      "entry": "N36",
+      "path": "候选约束.txt",
+      "lines": [
+        212,
+        216
+      ]
+    },
+    {
+      "entry": "N37",
+      "path": "求解器/候选约束轮次/第66-68轮/推导66/候选约束.txt.md",
+      "lines": [
+        373,
+        376
+      ]
+    },
+    {
+      "entry": "N37",
+      "path": "求解器/候选约束轮次/三审-第81轮/三审报告.md",
+      "lines": [
+        86,
+        86
+      ]
+    },
+    {
+      "entry": "N38",
+      "path": "求解器/候选约束轮次/第57-59轮/G3-推导.md",
+      "lines": [
+        43,
+        51
+      ]
+    },
+    {
+      "entry": "N38",
+      "path": "求解器/候选约束轮次/第57-59轮/G3-复核58.md",
+      "lines": [
+        101,
+        119
+      ]
+    },
+    {
+      "entry": "N39",
+      "path": "求解器/候选约束轮次/第81-83轮/推导81A.md",
+      "lines": [
+        87,
+        97
+      ]
+    },
+    {
+      "entry": "N39",
+      "path": "求解器/候选约束轮次/三审-第81轮/三审报告.md",
+      "lines": [
+        59,
+        59
+      ]
+    },
+    {
+      "entry": "N40",
+      "path": "求解器/候选约束轮次/第57-59轮/G3-推导.md",
+      "lines": [
+        53,
+        61
+      ]
+    },
+    {
+      "entry": "N40",
+      "path": "求解器/候选约束轮次/第57-59轮/G3-复核58.md",
+      "lines": [
+        120,
+        142
+      ]
+    },
+    {
+      "entry": "N40",
+      "path": "求解器/候选约束轮次/三审-第81轮/三审报告.md",
+      "lines": [
+        61,
+        61
+      ]
+    },
+    {
+      "entry": "N42",
+      "path": "求解器/候选约束轮次/第57-59轮/G3-推导.md",
+      "lines": [
+        33,
+        41
+      ]
+    },
+    {
+      "entry": "N42",
+      "path": "求解器/候选约束轮次/第57-59轮/G3-复核58.md",
+      "lines": [
+        71,
+        99
+      ]
+    },
+    {
+      "entry": "N44",
+      "path": "求解器/候选约束轮次/第57-59轮/G3-推导.md",
+      "lines": [
+        63,
+        71
+      ]
+    },
+    {
+      "entry": "N44",
+      "path": "候选约束.txt",
+      "lines": [
+        984,
+        989
+      ]
+    },
+    {
+      "entry": "N45",
+      "path": "求解器/候选约束轮次/第57-59轮/G4-推导.md",
+      "lines": [
+        29,
+        86
+      ]
+    },
+    {
+      "entry": "N45",
+      "path": "候选约束.txt",
+      "lines": [
+        991,
+        996
+      ]
+    },
+    {
+      "entry": "N46",
+      "path": "求解器/候选约束轮次/第66-68轮/推导66/候选约束.txt.md",
+      "lines": [
+        453,
+        459
+      ]
+    },
+    {
+      "entry": "N46",
+      "path": "候选约束.txt",
+      "lines": [
+        485,
+        491
+      ]
+    },
+    {
+      "entry": "N47",
+      "path": "求解器/候选约束轮次/第66-68轮/推导66/候选约束.txt.md",
+      "lines": [
+        461,
+        467
+      ]
+    },
+    {
+      "entry": "N47",
+      "path": "候选约束.txt",
+      "lines": [
+        493,
+        499
+      ]
+    },
+    {
+      "entry": "N50",
+      "path": "求解器/候选约束轮次/第57-59轮/G1-推导.md",
+      "lines": [
+        61,
+        99
+      ]
+    },
+    {
+      "entry": "N52",
+      "path": "求解器/候选约束轮次/第66-68轮/推导66/候选约束.txt.md",
+      "lines": [
+        644,
+        653
+      ]
+    },
+    {
+      "entry": "N52",
+      "path": "候选约束.txt",
+      "lines": [
+        676,
+        685
+      ]
+    },
+    {
+      "entry": "N53",
+      "path": "求解器/候选约束轮次/第66-68轮/推导66/候选约束.txt.md",
+      "lines": [
+        655,
+        664
+      ]
+    },
+    {
+      "entry": "N53",
+      "path": "候选约束.txt",
+      "lines": [
+        687,
+        696
+      ]
+    },
+    {
+      "entry": "N54",
+      "path": "求解器/候选约束轮次/第66-68轮/推导66/候选约束.txt.md",
+      "lines": [
+        666,
+        674
+      ]
+    },
+    {
+      "entry": "N54",
+      "path": "求解器/候选约束轮次/第63-65轮/A-运输格总量-推导.md",
+      "lines": [
+        80,
+        139
+      ]
+    },
+    {
+      "entry": "N54",
+      "path": "求解器/候选约束轮次/三审-第81轮/三审报告.md",
+      "lines": [
+        63,
+        63
+      ]
+    },
+    {
+      "entry": "N55",
+      "path": "求解器/候选约束轮次/第57-59轮/G2-推导.md",
+      "lines": [
+        86,
+        101
+      ]
+    },
+    {
+      "entry": "N55",
+      "path": "求解器/候选约束轮次/第81-83轮/推导81A.md",
+      "lines": [
+        27,
+        37
+      ]
+    },
+    {
+      "entry": "N56",
+      "path": "求解器/候选约束轮次/第57-59轮/G2-推导.md",
+      "lines": [
+        103,
+        120
+      ]
+    },
+    {
+      "entry": "N56",
+      "path": "求解器/候选约束轮次/第57-59轮/G2-复核58.md",
+      "lines": [
+        98,
+        113
+      ]
+    },
+    {
+      "entry": "N56",
+      "path": "候选约束.txt",
+      "lines": [
+        948,
+        953
+      ]
+    }
+  ],
+  "independent_arithmetic": "PASS",
+  "independent_freeze": "PASS",
+  "static_ore_certificate_review": "read-only independent certificate audit; not a fresh solve",
+  "report_sha256": "d4525cccbd8f8b348833d661b1f7acfe3a5635a54c3f07383b4f56e28b8da0ee",
+  "reader_review": "Completed: standalone scope, premise boundary, source locations, every entry full text, proof, verdict, old certificate vs fresh computation distinguished.",
+  "N35_finite_state_review": "Timers normalized; ordering ranks and last-unit finite; external periodic phase finite; arbitrary finite-batch subset chosen per continuation, not uniformly across all continuations."
+}

@@ -1,0 +1,32 @@
+{
+ "exact_k2": {
+  "k": 2,
+  "cap": 6,
+  "states": 1500,
+  "edges": 1792,
+  "head_violations": 0,
+  "example": []
+ },
+ "exact_k3": {
+  "k": 3,
+  "cap": 9,
+  "states": 8646,
+  "edges": 13794,
+  "head_violations": 0,
+  "example": []
+ },
+ "window_k2_allinit": {
+  "k": 2,
+  "cap": 6,
+  "states": 191170,
+  "sccs": 181291,
+  "nonzero_cycle_sccs": 0,
+  "example": [],
+  "path_imbalance_max_min": {
+   "1": [
+    3,
+    -3
+   ]
+  }
+ }
+}

@@ -1,0 +1,29 @@
+{
+ "0.02": {
+  "mode": "near",
+  "runs": 3000,
+  "steps": 300,
+  "nviol": 0,
+  "viol": [],
+  "min_slack": 0.0,
+  "hits_176": 891
+ },
+ "0.2": {
+  "mode": "near",
+  "runs": 3000,
+  "steps": 300,
+  "nviol": 0,
+  "viol": [],
+  "min_slack": 0.0,
+  "hits_176": 891
+ },
+ "0.6": {
+  "mode": "near",
+  "runs": 3000,
+  "steps": 300,
+  "nviol": 0,
+  "viol": [],
+  "min_slack": 0.0,
+  "hits_176": 891
+ }
+}

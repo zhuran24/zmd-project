@@ -1,0 +1,5 @@
+recompute_a.py
+{"status": "PASS", "belt_cases": 240, "segment_pairs": 384, "seed_sequences": 4092, "simple_cycles": 6}
+
+recompute_b.py
+{"status": "PASS", "belt_cases": 240, "belt_steps_compared": 24824, "segment_pairs": 384, "seed_phase_cases": 57232}

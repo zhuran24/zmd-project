@@ -1,0 +1,102 @@
+{
+  "cases": [
+    {
+      "seed": 9300,
+      "L": 38,
+      "wait_steps": 187,
+      "operations": 3,
+      "debug_end_phi2": 200,
+      "required_phi2": 81
+    },
+    {
+      "seed": 9301,
+      "L": 38,
+      "wait_steps": 270,
+      "operations": 3,
+      "debug_end_phi2": 200,
+      "required_phi2": 81
+    },
+    {
+      "seed": 9302,
+      "L": 38,
+      "wait_steps": 210,
+      "operations": 3,
+      "debug_end_phi2": 200,
+      "required_phi2": 81
+    },
+    {
+      "seed": 9303,
+      "L": 38,
+      "wait_steps": 258,
+      "operations": 3,
+      "debug_end_phi2": 200,
+      "required_phi2": 81
+    },
+    {
+      "seed": 9304,
+      "L": 97,
+      "wait_steps": 266,
+      "operations": 3,
+      "debug_end_phi2": 200,
+      "required_phi2": 199
+    },
+    {
+      "seed": 9305,
+      "L": 97,
+      "wait_steps": 188,
+      "operations": 3,
+      "debug_end_phi2": 200,
+      "required_phi2": 199
+    },
+    {
+      "seed": 9306,
+      "L": 97,
+      "wait_steps": 245,
+      "operations": 3,
+      "debug_end_phi2": 200,
+      "required_phi2": 199
+    },
+    {
+      "seed": 9307,
+      "L": 97,
+      "wait_steps": 134,
+      "operations": 3,
+      "debug_end_phi2": 200,
+      "required_phi2": 199
+    },
+    {
+      "seed": 9308,
+      "L": 100,
+      "wait_steps": 6255,
+      "operations": 103,
+      "debug_end_phi2": 400,
+      "required_phi2": 205
+    },
+    {
+      "seed": 9309,
+      "L": 100,
+      "wait_steps": 7323,
+      "operations": 103,
+      "debug_end_phi2": 400,
+      "required_phi2": 205
+    },
+    {
+      "seed": 9310,
+      "L": 100,
+      "wait_steps": 7161,
+      "operations": 103,
+      "debug_end_phi2": 400,
+      "required_phi2": 205
+    },
+    {
+      "seed": 9311,
+      "L": 100,
+      "wait_steps": 6689,
+      "operations": 103,
+      "debug_end_phi2": 400,
+      "required_phi2": 205
+    }
+  ],
+  "differences": 0,
+  "note": "数量界由关机期间无制造、满存货格不收货证明；有限模拟仅核对实施。"
+}

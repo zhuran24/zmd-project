@@ -1,0 +1,53 @@
+{
+ "trigger": "sender",
+ "seeds": [
+  1500,
+  2000
+ ],
+ "steps": 400,
+ "orders_per_net": 8,
+ "feature_count": {
+  "dead_multi=1,shared_bridge=1": 161,
+  "dead_multi=0,shared_bridge=1": 88,
+  "dead_multi=1,shared_bridge=0": 132,
+  "dead_multi=0,shared_bridge=0": 119
+ },
+ "results": {
+  "eager/axis": {
+   "nets": 500,
+   "diff": 0,
+   "diff_by_feat": {},
+   "examples": []
+  },
+  "judge/axis": {
+   "nets": 500,
+   "diff": 114,
+   "diff_by_feat": {
+    "dead_multi=1,shared_bridge=1": 68,
+    "dead_multi=1,shared_bridge=0": 46
+   },
+   "examples": [
+    {
+     "seed": 1500,
+     "first_diff_step": 6
+    },
+    {
+     "seed": 1501,
+     "first_diff_step": 15
+    },
+    {
+     "seed": 1508,
+     "first_diff_step": 16
+    },
+    {
+     "seed": 1515,
+     "first_diff_step": 7
+    },
+    {
+     "seed": 1517,
+     "first_diff_step": 5
+    }
+   ]
+  }
+ }
+}

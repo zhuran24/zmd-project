@@ -1,0 +1,27 @@
+{
+ "s08_near": {
+  "mode": "near",
+  "runs": 4000,
+  "steps": 300,
+  "nviol": 0,
+  "viol": [],
+  "min_slack": 0.0,
+  "hits_176": 1477
+ },
+ "s08_wide": {
+  "mode": "wide",
+  "runs": 4000,
+  "steps": 400,
+  "nviol": 0,
+  "viol": [],
+  "min_slack": 0.0,
+  "hits_176": 0
+ },
+ "s09_min": {
+  "runs": 300,
+  "steps": 12000,
+  "full_rate_runs": 300,
+  "not_full": [],
+  "any_empty_cache": []
+ }
+}

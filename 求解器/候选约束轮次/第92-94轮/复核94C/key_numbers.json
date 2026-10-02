@@ -1,0 +1,67 @@
+{
+ "S01_new_products_per_cooldown": {
+  "formula": 15,
+  "enum": 15
+ },
+ "S03_table": {
+  "研磨机": {
+   "Z0": -50,
+   "L": -99,
+   "U": 50,
+   "C": 49,
+   "C_enum": 49,
+   "dev": 24,
+   "dev_enum_max": 24,
+   "ok": true
+  },
+  "封装机": {
+   "Z0": 250,
+   "L": -365,
+   "U": 610,
+   "C": 360,
+   "C_enum": 360,
+   "dev": 300,
+   "dev_enum_max": 300,
+   "ok": true
+  },
+  "灌装机": {
+   "Z0": 0,
+   "L": -410,
+   "U": 410,
+   "C": 410,
+   "C_enum": 410,
+   "dev": 120,
+   "dev_enum_max": 120,
+   "ok": true
+  }
+ },
+ "S07_steps": {
+  "formula": 400,
+  "last_start": 392
+ },
+ "S07_output_floor": {
+  "1": {
+   "formula_bound": 47,
+   "abstract_min": 48,
+   "states": 216,
+   "bound_holds": true
+  },
+  "2": {
+   "formula_bound": 44,
+   "abstract_min": 46,
+   "states": 2970,
+   "bound_holds": true
+  },
+  "3": {
+   "formula_bound": 41,
+   "abstract_min": 44,
+   "states": 34992,
+   "bound_holds": true
+  }
+ },
+ "S08_const": {
+  "max_phi_minus_L": "177",
+  "saturated_u": "353/2",
+  "bound": "176"
+ }
+}

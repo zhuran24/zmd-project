@@ -1,0 +1,720 @@
+{
+  "receiving_time_is_indirectly_order_dependent": [
+    {
+      "C_first_channel": "CA",
+      "A_first_seed_receipt_step_index": 64,
+      "minimum_phi2": 200,
+      "states": [
+        {
+          "step": 9,
+          "phi2": 201,
+          "stock": {
+            "A": 48,
+            "B": 0,
+            "C": 48,
+            "K": 0
+          },
+          "output": {
+            "A": 0,
+            "B": 0,
+            "C": 1,
+            "K": 0
+          },
+          "batch": {
+            "A": [
+              "running",
+              16
+            ],
+            "B": null,
+            "C": [
+              "running",
+              16
+            ],
+            "K": null
+          },
+          "enabled": {
+            "A": true,
+            "B": true,
+            "C": true,
+            "K": true
+          },
+          "route_counts": {
+            "CA": 1,
+            "CB": 0,
+            "AC": 1,
+            "BK": 0,
+            "K0": 0,
+            "K1": 0
+          },
+          "sink": 0,
+          "sent": {
+            "CA": 1,
+            "CB": 0,
+            "AC": 1,
+            "BK": 0,
+            "K0": 0,
+            "K1": 0
+          },
+          "arrivals": {
+            "CA": 0,
+            "CB": 0,
+            "AC": 0,
+            "BK": 0,
+            "K0": 0,
+            "K1": 0
+          }
+        },
+        {
+          "step": 10,
+          "phi2": 200,
+          "stock": {
+            "A": 48,
+            "B": 0,
+            "C": 48,
+            "K": 0
+          },
+          "output": {
+            "A": 0,
+            "B": 0,
+            "C": 0,
+            "K": 0
+          },
+          "batch": {
+            "A": [
+              "running",
+              16
+            ],
+            "B": null,
+            "C": [
+              "running",
+              16
+            ],
+            "K": null
+          },
+          "enabled": {
+            "A": true,
+            "B": true,
+            "C": true,
+            "K": true
+          },
+          "route_counts": {
+            "CA": 1,
+            "CB": 1,
+            "AC": 1,
+            "BK": 0,
+            "K0": 0,
+            "K1": 0
+          },
+          "sink": 0,
+          "sent": {
+            "CA": 1,
+            "CB": 1,
+            "AC": 1,
+            "BK": 0,
+            "K0": 0,
+            "K1": 0
+          },
+          "arrivals": {
+            "CA": 0,
+            "CB": 0,
+            "AC": 0,
+            "BK": 0,
+            "K0": 0,
+            "K1": 0
+          }
+        },
+        {
+          "step": 64,
+          "phi2": 200,
+          "stock": {
+            "A": 42,
+            "B": 0,
+            "C": 42,
+            "K": 0
+          },
+          "output": {
+            "A": 0,
+            "B": 0,
+            "C": 0,
+            "K": 0
+          },
+          "batch": {
+            "A": [
+              "running",
+              64
+            ],
+            "B": null,
+            "C": [
+              "running",
+              64
+            ],
+            "K": null
+          },
+          "enabled": {
+            "A": true,
+            "B": true,
+            "C": true,
+            "K": true
+          },
+          "route_counts": {
+            "CA": 7,
+            "CB": 7,
+            "AC": 7,
+            "BK": 0,
+            "K0": 0,
+            "K1": 0
+          },
+          "sink": 0,
+          "sent": {
+            "CA": 7,
+            "CB": 7,
+            "AC": 7,
+            "BK": 0,
+            "K0": 0,
+            "K1": 0
+          },
+          "arrivals": {
+            "CA": 0,
+            "CB": 0,
+            "AC": 0,
+            "BK": 0,
+            "K0": 0,
+            "K1": 0
+          }
+        },
+        {
+          "step": 65,
+          "phi2": 201,
+          "stock": {
+            "A": 42,
+            "B": 0,
+            "C": 41,
+            "K": 0
+          },
+          "output": {
+            "A": 0,
+            "B": 0,
+            "C": 1,
+            "K": 0
+          },
+          "batch": {
+            "A": [
+              "running",
+              72
+            ],
+            "B": null,
+            "C": [
+              "running",
+              72
+            ],
+            "K": null
+          },
+          "enabled": {
+            "A": true,
+            "B": true,
+            "C": true,
+            "K": true
+          },
+          "route_counts": {
+            "CA": 7,
+            "CB": 7,
+            "AC": 8,
+            "BK": 0,
+            "K0": 0,
+            "K1": 0
+          },
+          "sink": 0,
+          "sent": {
+            "CA": 8,
+            "CB": 7,
+            "AC": 8,
+            "BK": 0,
+            "K0": 0,
+            "K1": 0
+          },
+          "arrivals": {
+            "CA": 1,
+            "CB": 0,
+            "AC": 0,
+            "BK": 0,
+            "K0": 0,
+            "K1": 0
+          }
+        },
+        {
+          "step": 66,
+          "phi2": 200,
+          "stock": {
+            "A": 42,
+            "B": 0,
+            "C": 41,
+            "K": 0
+          },
+          "output": {
+            "A": 0,
+            "B": 0,
+            "C": 0,
+            "K": 0
+          },
+          "batch": {
+            "A": [
+              "running",
+              72
+            ],
+            "B": null,
+            "C": [
+              "running",
+              72
+            ],
+            "K": null
+          },
+          "enabled": {
+            "A": true,
+            "B": true,
+            "C": true,
+            "K": true
+          },
+          "route_counts": {
+            "CA": 7,
+            "CB": 8,
+            "AC": 8,
+            "BK": 0,
+            "K0": 0,
+            "K1": 0
+          },
+          "sink": 0,
+          "sent": {
+            "CA": 8,
+            "CB": 8,
+            "AC": 8,
+            "BK": 0,
+            "K0": 0,
+            "K1": 0
+          },
+          "arrivals": {
+            "CA": 1,
+            "CB": 0,
+            "AC": 0,
+            "BK": 0,
+            "K0": 0,
+            "K1": 0
+          }
+        }
+      ]
+    },
+    {
+      "C_first_channel": "CB",
+      "A_first_seed_receipt_step_index": 65,
+      "minimum_phi2": 199,
+      "states": [
+        {
+          "step": 9,
+          "phi2": 199,
+          "stock": {
+            "A": 48,
+            "B": 0,
+            "C": 48,
+            "K": 0
+          },
+          "output": {
+            "A": 0,
+            "B": 0,
+            "C": 1,
+            "K": 0
+          },
+          "batch": {
+            "A": [
+              "running",
+              16
+            ],
+            "B": null,
+            "C": [
+              "running",
+              16
+            ],
+            "K": null
+          },
+          "enabled": {
+            "A": true,
+            "B": true,
+            "C": true,
+            "K": true
+          },
+          "route_counts": {
+            "CA": 0,
+            "CB": 1,
+            "AC": 1,
+            "BK": 0,
+            "K0": 0,
+            "K1": 0
+          },
+          "sink": 0,
+          "sent": {
+            "CA": 0,
+            "CB": 1,
+            "AC": 1,
+            "BK": 0,
+            "K0": 0,
+            "K1": 0
+          },
+          "arrivals": {
+            "CA": 0,
+            "CB": 0,
+            "AC": 0,
+            "BK": 0,
+            "K0": 0,
+            "K1": 0
+          }
+        },
+        {
+          "step": 10,
+          "phi2": 200,
+          "stock": {
+            "A": 48,
+            "B": 0,
+            "C": 48,
+            "K": 0
+          },
+          "output": {
+            "A": 0,
+            "B": 0,
+            "C": 0,
+            "K": 0
+          },
+          "batch": {
+            "A": [
+              "running",
+              16
+            ],
+            "B": null,
+            "C": [
+              "running",
+              16
+            ],
+            "K": null
+          },
+          "enabled": {
+            "A": true,
+            "B": true,
+            "C": true,
+            "K": true
+          },
+          "route_counts": {
+            "CA": 1,
+            "CB": 1,
+            "AC": 1,
+            "BK": 0,
+            "K0": 0,
+            "K1": 0
+          },
+          "sink": 0,
+          "sent": {
+            "CA": 1,
+            "CB": 1,
+            "AC": 1,
+            "BK": 0,
+            "K0": 0,
+            "K1": 0
+          },
+          "arrivals": {
+            "CA": 0,
+            "CB": 0,
+            "AC": 0,
+            "BK": 0,
+            "K0": 0,
+            "K1": 0
+          }
+        },
+        {
+          "step": 64,
+          "phi2": 200,
+          "stock": {
+            "A": 42,
+            "B": 0,
+            "C": 42,
+            "K": 0
+          },
+          "output": {
+            "A": 0,
+            "B": 0,
+            "C": 0,
+            "K": 0
+          },
+          "batch": {
+            "A": [
+              "running",
+              64
+            ],
+            "B": null,
+            "C": [
+              "running",
+              64
+            ],
+            "K": null
+          },
+          "enabled": {
+            "A": true,
+            "B": true,
+            "C": true,
+            "K": true
+          },
+          "route_counts": {
+            "CA": 7,
+            "CB": 7,
+            "AC": 7,
+            "BK": 0,
+            "K0": 0,
+            "K1": 0
+          },
+          "sink": 0,
+          "sent": {
+            "CA": 7,
+            "CB": 7,
+            "AC": 7,
+            "BK": 0,
+            "K0": 0,
+            "K1": 0
+          },
+          "arrivals": {
+            "CA": 0,
+            "CB": 0,
+            "AC": 0,
+            "BK": 0,
+            "K0": 0,
+            "K1": 0
+          }
+        },
+        {
+          "step": 65,
+          "phi2": 199,
+          "stock": {
+            "A": 41,
+            "B": 0,
+            "C": 41,
+            "K": 0
+          },
+          "output": {
+            "A": 0,
+            "B": 0,
+            "C": 1,
+            "K": 0
+          },
+          "batch": {
+            "A": [
+              "running",
+              72
+            ],
+            "B": null,
+            "C": [
+              "running",
+              72
+            ],
+            "K": null
+          },
+          "enabled": {
+            "A": true,
+            "B": true,
+            "C": true,
+            "K": true
+          },
+          "route_counts": {
+            "CA": 7,
+            "CB": 8,
+            "AC": 8,
+            "BK": 0,
+            "K0": 0,
+            "K1": 0
+          },
+          "sink": 0,
+          "sent": {
+            "CA": 7,
+            "CB": 8,
+            "AC": 8,
+            "BK": 0,
+            "K0": 0,
+            "K1": 0
+          },
+          "arrivals": {
+            "CA": 0,
+            "CB": 0,
+            "AC": 0,
+            "BK": 0,
+            "K0": 0,
+            "K1": 0
+          }
+        },
+        {
+          "step": 66,
+          "phi2": 200,
+          "stock": {
+            "A": 42,
+            "B": 0,
+            "C": 41,
+            "K": 0
+          },
+          "output": {
+            "A": 0,
+            "B": 0,
+            "C": 0,
+            "K": 0
+          },
+          "batch": {
+            "A": [
+              "running",
+              72
+            ],
+            "B": null,
+            "C": [
+              "running",
+              72
+            ],
+            "K": null
+          },
+          "enabled": {
+            "A": true,
+            "B": true,
+            "C": true,
+            "K": true
+          },
+          "route_counts": {
+            "CA": 7,
+            "CB": 8,
+            "AC": 8,
+            "BK": 0,
+            "K0": 0,
+            "K1": 0
+          },
+          "sink": 0,
+          "sent": {
+            "CA": 8,
+            "CB": 8,
+            "AC": 8,
+            "BK": 0,
+            "K0": 0,
+            "K1": 0
+          },
+          "arrivals": {
+            "CA": 1,
+            "CB": 0,
+            "AC": 0,
+            "BK": 0,
+            "K0": 0,
+            "K1": 0
+          }
+        }
+      ]
+    }
+  ],
+  "input_switch": {
+    "arrival_steps": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "next_start_A": [
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8
+    ],
+    "next_start_B": [
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8
+    ],
+    "condition": "上一批已整批进入取货物品格，下一种原料确实在所列步的判定阶段收下"
+  },
+  "negative_control": {
+    "legal_replacement_rectangles": {
+      "左粉碎机": [
+        7,
+        8,
+        3,
+        3
+      ],
+      "上粉碎机": [
+        10,
+        11,
+        3,
+        3
+      ],
+      "研磨机": [
+        13,
+        8,
+        4,
+        6
+      ],
+      "供电桩": [
+        8,
+        14,
+        2,
+        2
+      ],
+      "协议核心": [
+        40,
+        40,
+        9,
+        9
+      ]
+    },
+    "merger": [
+      10,
+      10
+    ],
+    "belt_cells": [
+      [
+        11,
+        10
+      ],
+      [
+        12,
+        10
+      ]
+    ],
+    "cases": [
+      {
+        "order": [
+          0,
+          1
+        ],
+        "sent_by_crusher": [
+          1,
+          0
+        ],
+        "merger_item_previous_unit": 0
+      },
+      {
+        "order": [
+          1,
+          0
+        ],
+        "sent_by_crusher": [
+          0,
+          1
+        ],
+        "merger_item_previous_unit": 1
+      }
+    ],
+    "author_two_withdrawal_ports_overlap": [
+      [
+        0,
+        0
+      ]
+    ],
+    "scope": "两个粉碎机的合法局部反面对照；只反对删除唯一非运输来路这一前提"
+  }
+}

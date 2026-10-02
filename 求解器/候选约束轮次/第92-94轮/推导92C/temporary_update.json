@@ -1,0 +1,17 @@
+{
+  "temporary_rules_sha256": "39c0aed1f711f8ed01625da8b51b30569fc52ecfa5f8140629fa398d32dab396",
+  "scope": "temporary_rules",
+  "candidate_count": 6,
+  "supplement_count": 10,
+  "changed_ranges": [
+    "S06",
+    "S08",
+    "S10"
+  ],
+  "reinforced_without_effect_change": [
+    "S07",
+    "S09"
+  ],
+  "polling_history": "Unspecified in file; final claims do not assume persistence across reconstruction.",
+  "snapshot_versions_retained": true
+}

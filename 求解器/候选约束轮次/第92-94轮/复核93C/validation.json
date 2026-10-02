@@ -1,0 +1,23 @@
+{
+  "report_exists": true,
+  "local_links_checked": 17,
+  "local_links_missing": [],
+  "actual_candidate_count": 6,
+  "requested_count_in_task_footer": 7,
+  "candidate_names_match": true,
+  "snapshot_hashes_unchanged": true,
+  "full_run_seconds": 78.077,
+  "reader_review": {
+    "status": "passed",
+    "checks": [
+      "Current verdicts separated from original stronger claims.",
+      "All six supplied names have a definite verdict and proof.",
+      "Counterexample origins and usable-machine constraints are addressed.",
+      "External boundaries and non-embedded graphs are explicitly limited.",
+      "Bridge readings and offline ordering are treated separately.",
+      "No unproved full-rate or layout certificate is claimed.",
+      "Counts denote parameter choices; commuting cases are identified.",
+      "Cross references and output paths exist."
+    ]
+  }
+}

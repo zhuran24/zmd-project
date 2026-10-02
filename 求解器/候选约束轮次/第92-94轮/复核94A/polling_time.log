@@ -1,0 +1,1 @@
+python3 polling_check.py 4 > polling_check.log 2>&1  50.97s user 1.83s system 99% cpu 52.961 total

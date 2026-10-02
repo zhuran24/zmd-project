@@ -1,0 +1,1354 @@
+{
+  "loop": {
+    "cases": 1024,
+    "all_step_states_identical": true,
+    "cache_empty_steps": 0,
+    "cycle_periods_steps": [
+      8
+    ],
+    "maximum_cycle_entry_step": 32,
+    "cycle_paths_full_after_every_step": true,
+    "example": [
+      {
+        "step": 0,
+        "machines": [
+          [
+            48,
+            0,
+            8,
+            0
+          ],
+          [
+            49,
+            0,
+            3,
+            0
+          ]
+        ],
+        "path_ages": [
+          [
+            0,
+            null
+          ],
+          [
+            null,
+            null,
+            null
+          ]
+        ]
+      },
+      {
+        "step": 1,
+        "machines": [
+          [
+            48,
+            0,
+            7,
+            0
+          ],
+          [
+            49,
+            0,
+            2,
+            0
+          ]
+        ],
+        "path_ages": [
+          [
+            1,
+            null
+          ],
+          [
+            null,
+            null,
+            null
+          ]
+        ]
+      },
+      {
+        "step": 2,
+        "machines": [
+          [
+            48,
+            0,
+            6,
+            0
+          ],
+          [
+            49,
+            0,
+            1,
+            0
+          ]
+        ],
+        "path_ages": [
+          [
+            2,
+            null
+          ],
+          [
+            null,
+            null,
+            null
+          ]
+        ]
+      },
+      {
+        "step": 3,
+        "machines": [
+          [
+            48,
+            0,
+            5,
+            0
+          ],
+          [
+            48,
+            0,
+            8,
+            0
+          ]
+        ],
+        "path_ages": [
+          [
+            3,
+            null
+          ],
+          [
+            0,
+            null,
+            null
+          ]
+        ]
+      },
+      {
+        "step": 4,
+        "machines": [
+          [
+            48,
+            0,
+            4,
+            0
+          ],
+          [
+            48,
+            0,
+            7,
+            0
+          ]
+        ],
+        "path_ages": [
+          [
+            4,
+            null
+          ],
+          [
+            1,
+            null,
+            null
+          ]
+        ]
+      },
+      {
+        "step": 5,
+        "machines": [
+          [
+            48,
+            0,
+            3,
+            0
+          ],
+          [
+            48,
+            0,
+            6,
+            0
+          ]
+        ],
+        "path_ages": [
+          [
+            5,
+            null
+          ],
+          [
+            2,
+            null,
+            null
+          ]
+        ]
+      },
+      {
+        "step": 6,
+        "machines": [
+          [
+            48,
+            0,
+            2,
+            0
+          ],
+          [
+            48,
+            0,
+            5,
+            0
+          ]
+        ],
+        "path_ages": [
+          [
+            6,
+            null
+          ],
+          [
+            3,
+            null,
+            null
+          ]
+        ]
+      },
+      {
+        "step": 7,
+        "machines": [
+          [
+            48,
+            0,
+            1,
+            0
+          ],
+          [
+            48,
+            0,
+            4,
+            0
+          ]
+        ],
+        "path_ages": [
+          [
+            7,
+            null
+          ],
+          [
+            4,
+            null,
+            null
+          ]
+        ]
+      },
+      {
+        "step": 8,
+        "machines": [
+          [
+            47,
+            0,
+            8,
+            0
+          ],
+          [
+            48,
+            0,
+            3,
+            0
+          ]
+        ],
+        "path_ages": [
+          [
+            0,
+            0
+          ],
+          [
+            5,
+            null,
+            null
+          ]
+        ]
+      },
+      {
+        "step": 9,
+        "machines": [
+          [
+            47,
+            0,
+            7,
+            0
+          ],
+          [
+            48,
+            0,
+            2,
+            0
+          ]
+        ],
+        "path_ages": [
+          [
+            1,
+            1
+          ],
+          [
+            6,
+            null,
+            null
+          ]
+        ]
+      },
+      {
+        "step": 10,
+        "machines": [
+          [
+            47,
+            0,
+            6,
+            0
+          ],
+          [
+            48,
+            0,
+            1,
+            0
+          ]
+        ],
+        "path_ages": [
+          [
+            2,
+            2
+          ],
+          [
+            7,
+            null,
+            null
+          ]
+        ]
+      },
+      {
+        "step": 11,
+        "machines": [
+          [
+            47,
+            0,
+            5,
+            0
+          ],
+          [
+            47,
+            0,
+            8,
+            0
+          ]
+        ],
+        "path_ages": [
+          [
+            3,
+            3
+          ],
+          [
+            0,
+            0,
+            null
+          ]
+        ]
+      },
+      {
+        "step": 12,
+        "machines": [
+          [
+            47,
+            0,
+            4,
+            0
+          ],
+          [
+            47,
+            0,
+            7,
+            0
+          ]
+        ],
+        "path_ages": [
+          [
+            4,
+            4
+          ],
+          [
+            1,
+            1,
+            null
+          ]
+        ]
+      },
+      {
+        "step": 13,
+        "machines": [
+          [
+            47,
+            0,
+            3,
+            0
+          ],
+          [
+            47,
+            0,
+            6,
+            0
+          ]
+        ],
+        "path_ages": [
+          [
+            5,
+            5
+          ],
+          [
+            2,
+            2,
+            null
+          ]
+        ]
+      },
+      {
+        "step": 14,
+        "machines": [
+          [
+            47,
+            0,
+            2,
+            0
+          ],
+          [
+            47,
+            0,
+            5,
+            0
+          ]
+        ],
+        "path_ages": [
+          [
+            6,
+            6
+          ],
+          [
+            3,
+            3,
+            null
+          ]
+        ]
+      },
+      {
+        "step": 15,
+        "machines": [
+          [
+            47,
+            0,
+            1,
+            0
+          ],
+          [
+            47,
+            0,
+            4,
+            0
+          ]
+        ],
+        "path_ages": [
+          [
+            7,
+            7
+          ],
+          [
+            4,
+            4,
+            null
+          ]
+        ]
+      },
+      {
+        "step": 16,
+        "machines": [
+          [
+            46,
+            0,
+            8,
+            0
+          ],
+          [
+            48,
+            0,
+            3,
+            0
+          ]
+        ],
+        "path_ages": [
+          [
+            0,
+            0
+          ],
+          [
+            5,
+            5,
+            null
+          ]
+        ]
+      },
+      {
+        "step": 17,
+        "machines": [
+          [
+            46,
+            0,
+            7,
+            0
+          ],
+          [
+            48,
+            0,
+            2,
+            0
+          ]
+        ],
+        "path_ages": [
+          [
+            1,
+            1
+          ],
+          [
+            6,
+            6,
+            null
+          ]
+        ]
+      },
+      {
+        "step": 18,
+        "machines": [
+          [
+            46,
+            0,
+            6,
+            0
+          ],
+          [
+            48,
+            0,
+            1,
+            0
+          ]
+        ],
+        "path_ages": [
+          [
+            2,
+            2
+          ],
+          [
+            7,
+            7,
+            null
+          ]
+        ]
+      },
+      {
+        "step": 19,
+        "machines": [
+          [
+            46,
+            0,
+            5,
+            0
+          ],
+          [
+            47,
+            0,
+            8,
+            0
+          ]
+        ],
+        "path_ages": [
+          [
+            3,
+            3
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ]
+      },
+      {
+        "step": 20,
+        "machines": [
+          [
+            46,
+            0,
+            4,
+            0
+          ],
+          [
+            47,
+            0,
+            7,
+            0
+          ]
+        ],
+        "path_ages": [
+          [
+            4,
+            4
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ]
+      },
+      {
+        "step": 21,
+        "machines": [
+          [
+            46,
+            0,
+            3,
+            0
+          ],
+          [
+            47,
+            0,
+            6,
+            0
+          ]
+        ],
+        "path_ages": [
+          [
+            5,
+            5
+          ],
+          [
+            2,
+            2,
+            2
+          ]
+        ]
+      },
+      {
+        "step": 22,
+        "machines": [
+          [
+            46,
+            0,
+            2,
+            0
+          ],
+          [
+            47,
+            0,
+            5,
+            0
+          ]
+        ],
+        "path_ages": [
+          [
+            6,
+            6
+          ],
+          [
+            3,
+            3,
+            3
+          ]
+        ]
+      },
+      {
+        "step": 23,
+        "machines": [
+          [
+            46,
+            0,
+            1,
+            0
+          ],
+          [
+            47,
+            0,
+            4,
+            0
+          ]
+        ],
+        "path_ages": [
+          [
+            7,
+            7
+          ],
+          [
+            4,
+            4,
+            4
+          ]
+        ]
+      },
+      {
+        "step": 24,
+        "machines": [
+          [
+            45,
+            0,
+            8,
+            0
+          ],
+          [
+            48,
+            0,
+            3,
+            0
+          ]
+        ],
+        "path_ages": [
+          [
+            0,
+            0
+          ],
+          [
+            5,
+            5,
+            5
+          ]
+        ]
+      },
+      {
+        "step": 25,
+        "machines": [
+          [
+            45,
+            0,
+            7,
+            0
+          ],
+          [
+            48,
+            0,
+            2,
+            0
+          ]
+        ],
+        "path_ages": [
+          [
+            1,
+            1
+          ],
+          [
+            6,
+            6,
+            6
+          ]
+        ]
+      },
+      {
+        "step": 26,
+        "machines": [
+          [
+            45,
+            0,
+            6,
+            0
+          ],
+          [
+            48,
+            0,
+            1,
+            0
+          ]
+        ],
+        "path_ages": [
+          [
+            2,
+            2
+          ],
+          [
+            7,
+            7,
+            7
+          ]
+        ]
+      }
+    ]
+  },
+  "single_out_batch_checks": [
+    {
+      "batch": 1,
+      "receiver_min_gap_steps": 1,
+      "first_cell_full_all_200_step_ends": true,
+      "deliveries": 25,
+      "first_deliveries": [
+        0,
+        8,
+        16,
+        24,
+        32,
+        40,
+        48,
+        56
+      ]
+    },
+    {
+      "batch": 1,
+      "receiver_min_gap_steps": 8,
+      "first_cell_full_all_200_step_ends": true,
+      "deliveries": 25,
+      "first_deliveries": [
+        0,
+        8,
+        16,
+        24,
+        32,
+        40,
+        48,
+        56
+      ]
+    },
+    {
+      "batch": 1,
+      "receiver_min_gap_steps": 9,
+      "first_cell_full_all_200_step_ends": true,
+      "deliveries": 23,
+      "first_deliveries": [
+        0,
+        8,
+        17,
+        26,
+        35,
+        44,
+        53,
+        62
+      ]
+    },
+    {
+      "batch": 1,
+      "receiver_min_gap_steps": 16,
+      "first_cell_full_all_200_step_ends": true,
+      "deliveries": 13,
+      "first_deliveries": [
+        0,
+        8,
+        24,
+        40,
+        56,
+        72,
+        88,
+        104
+      ]
+    },
+    {
+      "batch": 1,
+      "receiver_min_gap_steps": 40,
+      "first_cell_full_all_200_step_ends": true,
+      "deliveries": 6,
+      "first_deliveries": [
+        0,
+        8,
+        48,
+        88,
+        128,
+        168
+      ]
+    },
+    {
+      "batch": 2,
+      "receiver_min_gap_steps": 1,
+      "first_cell_full_all_200_step_ends": true,
+      "deliveries": 25,
+      "first_deliveries": [
+        0,
+        8,
+        16,
+        24,
+        32,
+        40,
+        48,
+        56
+      ]
+    },
+    {
+      "batch": 2,
+      "receiver_min_gap_steps": 8,
+      "first_cell_full_all_200_step_ends": true,
+      "deliveries": 25,
+      "first_deliveries": [
+        0,
+        8,
+        16,
+        24,
+        32,
+        40,
+        48,
+        56
+      ]
+    },
+    {
+      "batch": 2,
+      "receiver_min_gap_steps": 9,
+      "first_cell_full_all_200_step_ends": true,
+      "deliveries": 23,
+      "first_deliveries": [
+        0,
+        8,
+        17,
+        26,
+        35,
+        44,
+        53,
+        62
+      ]
+    },
+    {
+      "batch": 2,
+      "receiver_min_gap_steps": 16,
+      "first_cell_full_all_200_step_ends": true,
+      "deliveries": 13,
+      "first_deliveries": [
+        0,
+        8,
+        24,
+        40,
+        56,
+        72,
+        88,
+        104
+      ]
+    },
+    {
+      "batch": 2,
+      "receiver_min_gap_steps": 40,
+      "first_cell_full_all_200_step_ends": true,
+      "deliveries": 6,
+      "first_deliveries": [
+        0,
+        8,
+        48,
+        88,
+        128,
+        168
+      ]
+    },
+    {
+      "batch": 3,
+      "receiver_min_gap_steps": 1,
+      "first_cell_full_all_200_step_ends": true,
+      "deliveries": 25,
+      "first_deliveries": [
+        0,
+        8,
+        16,
+        24,
+        32,
+        40,
+        48,
+        56
+      ]
+    },
+    {
+      "batch": 3,
+      "receiver_min_gap_steps": 8,
+      "first_cell_full_all_200_step_ends": true,
+      "deliveries": 25,
+      "first_deliveries": [
+        0,
+        8,
+        16,
+        24,
+        32,
+        40,
+        48,
+        56
+      ]
+    },
+    {
+      "batch": 3,
+      "receiver_min_gap_steps": 9,
+      "first_cell_full_all_200_step_ends": true,
+      "deliveries": 23,
+      "first_deliveries": [
+        0,
+        8,
+        17,
+        26,
+        35,
+        44,
+        53,
+        62
+      ]
+    },
+    {
+      "batch": 3,
+      "receiver_min_gap_steps": 16,
+      "first_cell_full_all_200_step_ends": true,
+      "deliveries": 13,
+      "first_deliveries": [
+        0,
+        8,
+        24,
+        40,
+        56,
+        72,
+        88,
+        104
+      ]
+    },
+    {
+      "batch": 3,
+      "receiver_min_gap_steps": 40,
+      "first_cell_full_all_200_step_ends": true,
+      "deliveries": 6,
+      "first_deliveries": [
+        0,
+        8,
+        48,
+        88,
+        128,
+        168
+      ]
+    }
+  ],
+  "multiple_outlets_local_check": {
+    "scope": "local reachable transition, not full cyclic-layout witness",
+    "two_encodings_agree": true,
+    "refill_steps": [
+      0,
+      1,
+      2
+    ],
+    "trace": [
+      {
+        "step": 0,
+        "first_cells_full": [
+          true,
+          false,
+          false
+        ],
+        "output": 49,
+        "cache_complete": 3,
+        "running": null
+      },
+      {
+        "step": 1,
+        "first_cells_full": [
+          true,
+          true,
+          false
+        ],
+        "output": 48,
+        "cache_complete": 3,
+        "running": null
+      },
+      {
+        "step": 2,
+        "first_cells_full": [
+          true,
+          true,
+          true
+        ],
+        "output": 50,
+        "cache_complete": 0,
+        "running": 8
+      }
+    ]
+  },
+  "wrong_slot_fixed_point": {
+    "two_encodings_agree": true,
+    "stable_from_step": 8,
+    "period_steps": 1,
+    "Y_cache_nonempty_all_step_ends": true,
+    "X_cache_empty_all_step_ends": true,
+    "sim2_local_patch": "enforce rule 13 input/output kind uniqueness in flush",
+    "trace": [
+      {
+        "step": 0,
+        "Y_input": [],
+        "Y_remaining": 8,
+        "Y_output": 0,
+        "Y_completed_cache": [],
+        "X_running": false,
+        "X_cache": 0
+      },
+      {
+        "step": 1,
+        "Y_input": [
+          "powder"
+        ],
+        "Y_remaining": 7,
+        "Y_output": 0,
+        "Y_completed_cache": [],
+        "X_running": false,
+        "X_cache": 0
+      },
+      {
+        "step": 2,
+        "Y_input": [
+          "powder"
+        ],
+        "Y_remaining": 6,
+        "Y_output": 0,
+        "Y_completed_cache": [],
+        "X_running": false,
+        "X_cache": 0
+      },
+      {
+        "step": 3,
+        "Y_input": [
+          "powder"
+        ],
+        "Y_remaining": 5,
+        "Y_output": 0,
+        "Y_completed_cache": [],
+        "X_running": false,
+        "X_cache": 0
+      },
+      {
+        "step": 4,
+        "Y_input": [
+          "powder"
+        ],
+        "Y_remaining": 4,
+        "Y_output": 0,
+        "Y_completed_cache": [],
+        "X_running": false,
+        "X_cache": 0
+      },
+      {
+        "step": 5,
+        "Y_input": [
+          "powder"
+        ],
+        "Y_remaining": 3,
+        "Y_output": 0,
+        "Y_completed_cache": [],
+        "X_running": false,
+        "X_cache": 0
+      },
+      {
+        "step": 6,
+        "Y_input": [
+          "powder"
+        ],
+        "Y_remaining": 2,
+        "Y_output": 0,
+        "Y_completed_cache": [],
+        "X_running": false,
+        "X_cache": 0
+      },
+      {
+        "step": 7,
+        "Y_input": [
+          "powder"
+        ],
+        "Y_remaining": 1,
+        "Y_output": 0,
+        "Y_completed_cache": [],
+        "X_running": false,
+        "X_cache": 0
+      },
+      {
+        "step": 8,
+        "Y_input": [
+          "powder"
+        ],
+        "Y_remaining": null,
+        "Y_output": 0,
+        "Y_completed_cache": [
+          "powder"
+        ],
+        "X_running": false,
+        "X_cache": 0
+      },
+      {
+        "step": 9,
+        "Y_input": [
+          "powder"
+        ],
+        "Y_remaining": null,
+        "Y_output": 0,
+        "Y_completed_cache": [
+          "powder"
+        ],
+        "X_running": false,
+        "X_cache": 0
+      },
+      {
+        "step": 10,
+        "Y_input": [
+          "powder"
+        ],
+        "Y_remaining": null,
+        "Y_output": 0,
+        "Y_completed_cache": [
+          "powder"
+        ],
+        "X_running": false,
+        "X_cache": 0
+      },
+      {
+        "step": 11,
+        "Y_input": [
+          "powder"
+        ],
+        "Y_remaining": null,
+        "Y_output": 0,
+        "Y_completed_cache": [
+          "powder"
+        ],
+        "X_running": false,
+        "X_cache": 0
+      },
+      {
+        "step": 12,
+        "Y_input": [
+          "powder"
+        ],
+        "Y_remaining": null,
+        "Y_output": 0,
+        "Y_completed_cache": [
+          "powder"
+        ],
+        "X_running": false,
+        "X_cache": 0
+      },
+      {
+        "step": 13,
+        "Y_input": [
+          "powder"
+        ],
+        "Y_remaining": null,
+        "Y_output": 0,
+        "Y_completed_cache": [
+          "powder"
+        ],
+        "X_running": false,
+        "X_cache": 0
+      },
+      {
+        "step": 14,
+        "Y_input": [
+          "powder"
+        ],
+        "Y_remaining": null,
+        "Y_output": 0,
+        "Y_completed_cache": [
+          "powder"
+        ],
+        "X_running": false,
+        "X_cache": 0
+      },
+      {
+        "step": 15,
+        "Y_input": [
+          "powder"
+        ],
+        "Y_remaining": null,
+        "Y_output": 0,
+        "Y_completed_cache": [
+          "powder"
+        ],
+        "X_running": false,
+        "X_cache": 0
+      },
+      {
+        "step": 16,
+        "Y_input": [
+          "powder"
+        ],
+        "Y_remaining": null,
+        "Y_output": 0,
+        "Y_completed_cache": [
+          "powder"
+        ],
+        "X_running": false,
+        "X_cache": 0
+      },
+      {
+        "step": 17,
+        "Y_input": [
+          "powder"
+        ],
+        "Y_remaining": null,
+        "Y_output": 0,
+        "Y_completed_cache": [
+          "powder"
+        ],
+        "X_running": false,
+        "X_cache": 0
+      },
+      {
+        "step": 18,
+        "Y_input": [
+          "powder"
+        ],
+        "Y_remaining": null,
+        "Y_output": 0,
+        "Y_completed_cache": [
+          "powder"
+        ],
+        "X_running": false,
+        "X_cache": 0
+      },
+      {
+        "step": 19,
+        "Y_input": [
+          "powder"
+        ],
+        "Y_remaining": null,
+        "Y_output": 0,
+        "Y_completed_cache": [
+          "powder"
+        ],
+        "X_running": false,
+        "X_cache": 0
+      },
+      {
+        "step": 20,
+        "Y_input": [
+          "powder"
+        ],
+        "Y_remaining": null,
+        "Y_output": 0,
+        "Y_completed_cache": [
+          "powder"
+        ],
+        "X_running": false,
+        "X_cache": 0
+      },
+      {
+        "step": 21,
+        "Y_input": [
+          "powder"
+        ],
+        "Y_remaining": null,
+        "Y_output": 0,
+        "Y_completed_cache": [
+          "powder"
+        ],
+        "X_running": false,
+        "X_cache": 0
+      },
+      {
+        "step": 22,
+        "Y_input": [
+          "powder"
+        ],
+        "Y_remaining": null,
+        "Y_output": 0,
+        "Y_completed_cache": [
+          "powder"
+        ],
+        "X_running": false,
+        "X_cache": 0
+      },
+      {
+        "step": 23,
+        "Y_input": [
+          "powder"
+        ],
+        "Y_remaining": null,
+        "Y_output": 0,
+        "Y_completed_cache": [
+          "powder"
+        ],
+        "X_running": false,
+        "X_cache": 0
+      }
+    ]
+  }
+}

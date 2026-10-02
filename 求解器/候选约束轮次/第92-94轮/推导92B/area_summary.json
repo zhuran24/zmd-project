@@ -1,0 +1,20 @@
+{
+  "confirmed": [
+    "N66",
+    "N68",
+    "N74",
+    "N75",
+    "N77"
+  ],
+  "safe_revisions": [
+    "N67",
+    "N76"
+  ],
+  "falsified": [],
+  "scope_gap_from_step_change": false,
+  "known_full_layout_counterexample": false,
+  "reader_review": "passed",
+  "single_core_script_exit": 0,
+  "report_path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第92-94轮/推导92B/area_audit.md",
+  "numeric_check_path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第92-94轮/推导92B/area_verify.json"
+}

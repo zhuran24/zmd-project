@@ -1,0 +1,15 @@
+{
+  "maximum_phi_offset": "177",
+  "empty_cache_phi_offset": "126",
+  "strict_high_threshold": "253/2",
+  "BB_conservative_offset": "150",
+  "BB_normal_step_offset": "176",
+  "battery_rate": "3/5",
+  "capsule_rate": "11/20",
+  "one_8_over_9_source_battery_bound": "161/270",
+  "one_zero_source_battery_bound": "17/30",
+  "machines": 221,
+  "routes": 317,
+  "tick_to_steps": 8,
+  "two_encodings_equal": true
+}

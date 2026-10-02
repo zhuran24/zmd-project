@@ -1,0 +1,51 @@
+[
+  {
+    "step": 0,
+    "grinder_seeds": 0,
+    "box_seeds": 50,
+    "belt_due": 8,
+    "second_input_slot": 0
+  },
+  {
+    "step": 8,
+    "grinder_seeds": 1,
+    "box_seeds": 49,
+    "belt_due": 16,
+    "second_input_slot": 0
+  },
+  {
+    "step": 392,
+    "grinder_seeds": 49,
+    "box_seeds": 1,
+    "belt_due": 400,
+    "second_input_slot": 0
+  },
+  {
+    "step": 400,
+    "grinder_seeds": 50,
+    "box_seeds": 0,
+    "belt_due": 408,
+    "second_input_slot": 0
+  },
+  {
+    "step": 407,
+    "grinder_seeds": 50,
+    "box_seeds": 0,
+    "belt_due": 408,
+    "second_input_slot": 0
+  },
+  {
+    "step": 408,
+    "grinder_seeds": 50,
+    "box_seeds": 0,
+    "belt_due": 408,
+    "second_input_slot": 0
+  },
+  {
+    "step": 424,
+    "grinder_seeds": 50,
+    "box_seeds": 0,
+    "belt_due": 408,
+    "second_input_slot": 0
+  }
+]

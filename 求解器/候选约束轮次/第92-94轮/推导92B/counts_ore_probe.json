@@ -1,0 +1,6 @@
+{
+  "status": "stopped_before_first_case_result",
+  "fresh_solve_complete": false,
+  "used_as_evidence": false,
+  "reason": "Complete fresh rerun was unnecessary for temporal-rule audit; existing independent static models and 47+47 final results were inspected and verified."
+}

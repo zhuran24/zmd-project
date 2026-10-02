@@ -1,0 +1,7 @@
+k 1 cases 640 bad 0
+k 2 cases 3472 bad 0
+k 3 cases 14960 bad 0
+k 4 cases 57760 bad 0
+k 5 cases 207760 bad 0
+k 6 cases 705376 bad 0
+{"N_groups": 4, "exhaustive_cases_per_k": {"1": 640, "2": 3472, "3": 14960, "4": 57760, "5": 207760, "6": 705376}, "random_cases": 60000, "bad": 0, "bad_examples": [], "trace_sha256": "f888914e29cd1ca97b9900f0243811aa84fb754d7b564322995a58acfb329c05"}

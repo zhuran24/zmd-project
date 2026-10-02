@@ -1,0 +1,2610 @@
+{
+  "history": [
+    {
+      "step": 0,
+      "phi": 154.5,
+      "machines": {
+        "C": {
+          "in": 50,
+          "out": 1,
+          "remain": 7,
+          "cache": 0
+        },
+        "A": {
+          "in": 50,
+          "out": 50,
+          "remain": 7,
+          "cache": 0
+        },
+        "B": {
+          "in": 0,
+          "out": 0,
+          "remain": null,
+          "cache": 0
+        },
+        "K": {
+          "in": 0,
+          "out": 0,
+          "remain": null,
+          "cache": 0
+        }
+      },
+      "routes": {
+        "CA": [
+          8
+        ],
+        "AC": [
+          8
+        ],
+        "CB": [
+          0
+        ],
+        "BK": [
+          null
+        ]
+      }
+    },
+    {
+      "step": 1,
+      "phi": 154.5,
+      "machines": {
+        "C": {
+          "in": 50,
+          "out": 1,
+          "remain": 6,
+          "cache": 0
+        },
+        "A": {
+          "in": 50,
+          "out": 50,
+          "remain": 6,
+          "cache": 0
+        },
+        "B": {
+          "in": 0,
+          "out": 0,
+          "remain": null,
+          "cache": 0
+        },
+        "K": {
+          "in": 0,
+          "out": 0,
+          "remain": null,
+          "cache": 0
+        }
+      },
+      "routes": {
+        "CA": [
+          8
+        ],
+        "AC": [
+          8
+        ],
+        "CB": [
+          1
+        ],
+        "BK": [
+          null
+        ]
+      }
+    },
+    {
+      "step": 2,
+      "phi": 154.5,
+      "machines": {
+        "C": {
+          "in": 50,
+          "out": 1,
+          "remain": 5,
+          "cache": 0
+        },
+        "A": {
+          "in": 50,
+          "out": 50,
+          "remain": 5,
+          "cache": 0
+        },
+        "B": {
+          "in": 0,
+          "out": 0,
+          "remain": null,
+          "cache": 0
+        },
+        "K": {
+          "in": 0,
+          "out": 0,
+          "remain": null,
+          "cache": 0
+        }
+      },
+      "routes": {
+        "CA": [
+          8
+        ],
+        "AC": [
+          8
+        ],
+        "CB": [
+          2
+        ],
+        "BK": [
+          null
+        ]
+      }
+    },
+    {
+      "step": 3,
+      "phi": 154.5,
+      "machines": {
+        "C": {
+          "in": 50,
+          "out": 1,
+          "remain": 4,
+          "cache": 0
+        },
+        "A": {
+          "in": 50,
+          "out": 50,
+          "remain": 4,
+          "cache": 0
+        },
+        "B": {
+          "in": 0,
+          "out": 0,
+          "remain": null,
+          "cache": 0
+        },
+        "K": {
+          "in": 0,
+          "out": 0,
+          "remain": null,
+          "cache": 0
+        }
+      },
+      "routes": {
+        "CA": [
+          8
+        ],
+        "AC": [
+          8
+        ],
+        "CB": [
+          3
+        ],
+        "BK": [
+          null
+        ]
+      }
+    },
+    {
+      "step": 4,
+      "phi": 154.5,
+      "machines": {
+        "C": {
+          "in": 50,
+          "out": 1,
+          "remain": 3,
+          "cache": 0
+        },
+        "A": {
+          "in": 50,
+          "out": 50,
+          "remain": 3,
+          "cache": 0
+        },
+        "B": {
+          "in": 0,
+          "out": 0,
+          "remain": null,
+          "cache": 0
+        },
+        "K": {
+          "in": 0,
+          "out": 0,
+          "remain": null,
+          "cache": 0
+        }
+      },
+      "routes": {
+        "CA": [
+          8
+        ],
+        "AC": [
+          8
+        ],
+        "CB": [
+          4
+        ],
+        "BK": [
+          null
+        ]
+      }
+    },
+    {
+      "step": 5,
+      "phi": 154.5,
+      "machines": {
+        "C": {
+          "in": 50,
+          "out": 1,
+          "remain": 2,
+          "cache": 0
+        },
+        "A": {
+          "in": 50,
+          "out": 50,
+          "remain": 2,
+          "cache": 0
+        },
+        "B": {
+          "in": 0,
+          "out": 0,
+          "remain": null,
+          "cache": 0
+        },
+        "K": {
+          "in": 0,
+          "out": 0,
+          "remain": null,
+          "cache": 0
+        }
+      },
+      "routes": {
+        "CA": [
+          8
+        ],
+        "AC": [
+          8
+        ],
+        "CB": [
+          5
+        ],
+        "BK": [
+          null
+        ]
+      }
+    },
+    {
+      "step": 6,
+      "phi": 154.5,
+      "machines": {
+        "C": {
+          "in": 50,
+          "out": 1,
+          "remain": 1,
+          "cache": 0
+        },
+        "A": {
+          "in": 50,
+          "out": 50,
+          "remain": 1,
+          "cache": 0
+        },
+        "B": {
+          "in": 0,
+          "out": 0,
+          "remain": null,
+          "cache": 0
+        },
+        "K": {
+          "in": 0,
+          "out": 0,
+          "remain": null,
+          "cache": 0
+        }
+      },
+      "routes": {
+        "CA": [
+          8
+        ],
+        "AC": [
+          8
+        ],
+        "CB": [
+          6
+        ],
+        "BK": [
+          null
+        ]
+      }
+    },
+    {
+      "step": 7,
+      "phi": 154.5,
+      "machines": {
+        "C": {
+          "in": 49,
+          "out": 3,
+          "remain": 8,
+          "cache": 0
+        },
+        "A": {
+          "in": 50,
+          "out": 50,
+          "remain": null,
+          "cache": 1
+        },
+        "B": {
+          "in": 0,
+          "out": 0,
+          "remain": null,
+          "cache": 0
+        },
+        "K": {
+          "in": 0,
+          "out": 0,
+          "remain": null,
+          "cache": 0
+        }
+      },
+      "routes": {
+        "CA": [
+          8
+        ],
+        "AC": [
+          8
+        ],
+        "CB": [
+          7
+        ],
+        "BK": [
+          null
+        ]
+      }
+    },
+    {
+      "step": 8,
+      "phi": 154.0,
+      "machines": {
+        "C": {
+          "in": 50,
+          "out": 2,
+          "remain": 7,
+          "cache": 0
+        },
+        "A": {
+          "in": 49,
+          "out": 50,
+          "remain": 8,
+          "cache": 0
+        },
+        "B": {
+          "in": 0,
+          "out": 0,
+          "remain": 8,
+          "cache": 0
+        },
+        "K": {
+          "in": 0,
+          "out": 0,
+          "remain": null,
+          "cache": 0
+        }
+      },
+      "routes": {
+        "CA": [
+          8
+        ],
+        "AC": [
+          0
+        ],
+        "CB": [
+          0
+        ],
+        "BK": [
+          null
+        ]
+      }
+    },
+    {
+      "step": 9,
+      "phi": 154.5,
+      "machines": {
+        "C": {
+          "in": 50,
+          "out": 1,
+          "remain": 6,
+          "cache": 0
+        },
+        "A": {
+          "in": 50,
+          "out": 50,
+          "remain": 7,
+          "cache": 0
+        },
+        "B": {
+          "in": 0,
+          "out": 0,
+          "remain": 7,
+          "cache": 0
+        },
+        "K": {
+          "in": 0,
+          "out": 0,
+          "remain": null,
+          "cache": 0
+        }
+      },
+      "routes": {
+        "CA": [
+          0
+        ],
+        "AC": [
+          1
+        ],
+        "CB": [
+          1
+        ],
+        "BK": [
+          null
+        ]
+      }
+    },
+    {
+      "step": 10,
+      "phi": 154.5,
+      "machines": {
+        "C": {
+          "in": 50,
+          "out": 1,
+          "remain": 5,
+          "cache": 0
+        },
+        "A": {
+          "in": 50,
+          "out": 50,
+          "remain": 6,
+          "cache": 0
+        },
+        "B": {
+          "in": 0,
+          "out": 0,
+          "remain": 6,
+          "cache": 0
+        },
+        "K": {
+          "in": 0,
+          "out": 0,
+          "remain": null,
+          "cache": 0
+        }
+      },
+      "routes": {
+        "CA": [
+          1
+        ],
+        "AC": [
+          2
+        ],
+        "CB": [
+          2
+        ],
+        "BK": [
+          null
+        ]
+      }
+    },
+    {
+      "step": 11,
+      "phi": 154.5,
+      "machines": {
+        "C": {
+          "in": 50,
+          "out": 1,
+          "remain": 4,
+          "cache": 0
+        },
+        "A": {
+          "in": 50,
+          "out": 50,
+          "remain": 5,
+          "cache": 0
+        },
+        "B": {
+          "in": 0,
+          "out": 0,
+          "remain": 5,
+          "cache": 0
+        },
+        "K": {
+          "in": 0,
+          "out": 0,
+          "remain": null,
+          "cache": 0
+        }
+      },
+      "routes": {
+        "CA": [
+          2
+        ],
+        "AC": [
+          3
+        ],
+        "CB": [
+          3
+        ],
+        "BK": [
+          null
+        ]
+      }
+    },
+    {
+      "step": 12,
+      "phi": 154.5,
+      "machines": {
+        "C": {
+          "in": 50,
+          "out": 1,
+          "remain": 3,
+          "cache": 0
+        },
+        "A": {
+          "in": 50,
+          "out": 50,
+          "remain": 4,
+          "cache": 0
+        },
+        "B": {
+          "in": 0,
+          "out": 0,
+          "remain": 4,
+          "cache": 0
+        },
+        "K": {
+          "in": 0,
+          "out": 0,
+          "remain": null,
+          "cache": 0
+        }
+      },
+      "routes": {
+        "CA": [
+          3
+        ],
+        "AC": [
+          4
+        ],
+        "CB": [
+          4
+        ],
+        "BK": [
+          null
+        ]
+      }
+    },
+    {
+      "step": 13,
+      "phi": 154.5,
+      "machines": {
+        "C": {
+          "in": 50,
+          "out": 1,
+          "remain": 2,
+          "cache": 0
+        },
+        "A": {
+          "in": 50,
+          "out": 50,
+          "remain": 3,
+          "cache": 0
+        },
+        "B": {
+          "in": 0,
+          "out": 0,
+          "remain": 3,
+          "cache": 0
+        },
+        "K": {
+          "in": 0,
+          "out": 0,
+          "remain": null,
+          "cache": 0
+        }
+      },
+      "routes": {
+        "CA": [
+          4
+        ],
+        "AC": [
+          5
+        ],
+        "CB": [
+          5
+        ],
+        "BK": [
+          null
+        ]
+      }
+    },
+    {
+      "step": 14,
+      "phi": 154.5,
+      "machines": {
+        "C": {
+          "in": 50,
+          "out": 1,
+          "remain": 1,
+          "cache": 0
+        },
+        "A": {
+          "in": 50,
+          "out": 50,
+          "remain": 2,
+          "cache": 0
+        },
+        "B": {
+          "in": 0,
+          "out": 0,
+          "remain": 2,
+          "cache": 0
+        },
+        "K": {
+          "in": 0,
+          "out": 0,
+          "remain": null,
+          "cache": 0
+        }
+      },
+      "routes": {
+        "CA": [
+          5
+        ],
+        "AC": [
+          6
+        ],
+        "CB": [
+          6
+        ],
+        "BK": [
+          null
+        ]
+      }
+    },
+    {
+      "step": 15,
+      "phi": 154.5,
+      "machines": {
+        "C": {
+          "in": 49,
+          "out": 3,
+          "remain": 8,
+          "cache": 0
+        },
+        "A": {
+          "in": 50,
+          "out": 50,
+          "remain": 1,
+          "cache": 0
+        },
+        "B": {
+          "in": 0,
+          "out": 0,
+          "remain": 1,
+          "cache": 0
+        },
+        "K": {
+          "in": 0,
+          "out": 0,
+          "remain": null,
+          "cache": 0
+        }
+      },
+      "routes": {
+        "CA": [
+          6
+        ],
+        "AC": [
+          7
+        ],
+        "CB": [
+          7
+        ],
+        "BK": [
+          null
+        ]
+      }
+    },
+    {
+      "step": 16,
+      "phi": 154.0,
+      "machines": {
+        "C": {
+          "in": 50,
+          "out": 2,
+          "remain": 7,
+          "cache": 0
+        },
+        "A": {
+          "in": 49,
+          "out": 50,
+          "remain": 8,
+          "cache": 0
+        },
+        "B": {
+          "in": 0,
+          "out": 0,
+          "remain": 8,
+          "cache": 0
+        },
+        "K": {
+          "in": 0,
+          "out": 0,
+          "remain": null,
+          "cache": 0
+        }
+      },
+      "routes": {
+        "CA": [
+          7
+        ],
+        "AC": [
+          0
+        ],
+        "CB": [
+          0
+        ],
+        "BK": [
+          0
+        ]
+      }
+    },
+    {
+      "step": 17,
+      "phi": 154.5,
+      "machines": {
+        "C": {
+          "in": 50,
+          "out": 1,
+          "remain": 6,
+          "cache": 0
+        },
+        "A": {
+          "in": 50,
+          "out": 50,
+          "remain": 7,
+          "cache": 0
+        },
+        "B": {
+          "in": 0,
+          "out": 0,
+          "remain": 7,
+          "cache": 0
+        },
+        "K": {
+          "in": 0,
+          "out": 0,
+          "remain": null,
+          "cache": 0
+        }
+      },
+      "routes": {
+        "CA": [
+          0
+        ],
+        "AC": [
+          1
+        ],
+        "CB": [
+          1
+        ],
+        "BK": [
+          1
+        ]
+      }
+    },
+    {
+      "step": 18,
+      "phi": 154.5,
+      "machines": {
+        "C": {
+          "in": 50,
+          "out": 1,
+          "remain": 5,
+          "cache": 0
+        },
+        "A": {
+          "in": 50,
+          "out": 50,
+          "remain": 6,
+          "cache": 0
+        },
+        "B": {
+          "in": 0,
+          "out": 0,
+          "remain": 6,
+          "cache": 0
+        },
+        "K": {
+          "in": 0,
+          "out": 0,
+          "remain": null,
+          "cache": 0
+        }
+      },
+      "routes": {
+        "CA": [
+          1
+        ],
+        "AC": [
+          2
+        ],
+        "CB": [
+          2
+        ],
+        "BK": [
+          2
+        ]
+      }
+    },
+    {
+      "step": 19,
+      "phi": 154.5,
+      "machines": {
+        "C": {
+          "in": 50,
+          "out": 1,
+          "remain": 4,
+          "cache": 0
+        },
+        "A": {
+          "in": 50,
+          "out": 50,
+          "remain": 5,
+          "cache": 0
+        },
+        "B": {
+          "in": 0,
+          "out": 0,
+          "remain": 5,
+          "cache": 0
+        },
+        "K": {
+          "in": 0,
+          "out": 0,
+          "remain": null,
+          "cache": 0
+        }
+      },
+      "routes": {
+        "CA": [
+          2
+        ],
+        "AC": [
+          3
+        ],
+        "CB": [
+          3
+        ],
+        "BK": [
+          3
+        ]
+      }
+    }
+  ],
+  "events": [
+    {
+      "t": 0,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 0,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 0,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 0,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 0,
+      "unit": "O1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "O1"
+    },
+    {
+      "t": 0,
+      "unit": "O2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "O1"
+    },
+    {
+      "t": 0,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 0,
+      "unit": "CB",
+      "event": "receive",
+      "kind": "seed"
+    },
+    {
+      "t": 0,
+      "unit": "C",
+      "event": "send",
+      "kind": "seed",
+      "destination": "CB"
+    },
+    {
+      "t": 0,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 0,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 0,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 0,
+      "unit": "sink",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 1,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 1,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 1,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 1,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 1,
+      "unit": "O1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "O1"
+    },
+    {
+      "t": 1,
+      "unit": "O2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "O1"
+    },
+    {
+      "t": 1,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 1,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 1,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 1,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 1,
+      "unit": "sink",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 2,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 2,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 2,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 2,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 2,
+      "unit": "O1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "O1"
+    },
+    {
+      "t": 2,
+      "unit": "O2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "O1"
+    },
+    {
+      "t": 2,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 2,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 2,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 2,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 2,
+      "unit": "sink",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 3,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 3,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 3,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 3,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 3,
+      "unit": "O1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "O1"
+    },
+    {
+      "t": 3,
+      "unit": "O2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "O1"
+    },
+    {
+      "t": 3,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 3,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 3,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 3,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 3,
+      "unit": "sink",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 4,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 4,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 4,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 4,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 4,
+      "unit": "O1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "O1"
+    },
+    {
+      "t": 4,
+      "unit": "O2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "O1"
+    },
+    {
+      "t": 4,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 4,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 4,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 4,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 4,
+      "unit": "sink",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 5,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 5,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 5,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 5,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 5,
+      "unit": "O1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "O1"
+    },
+    {
+      "t": 5,
+      "unit": "O2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "O1"
+    },
+    {
+      "t": 5,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 5,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 5,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 5,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 5,
+      "unit": "sink",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 6,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 6,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 6,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 6,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 6,
+      "unit": "O1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "O1"
+    },
+    {
+      "t": 6,
+      "unit": "O2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "O1"
+    },
+    {
+      "t": 6,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 6,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 6,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 6,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 6,
+      "unit": "sink",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 7,
+      "unit": "C",
+      "event": "finish",
+      "kind": "seed"
+    },
+    {
+      "t": 7,
+      "unit": "C",
+      "event": "cache_to_output",
+      "kind": "seed",
+      "quantity": 2
+    },
+    {
+      "t": 7,
+      "unit": "A",
+      "event": "finish",
+      "kind": "plant"
+    },
+    {
+      "t": 7,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 7,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 7,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 7,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 7,
+      "unit": "O1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "O1"
+    },
+    {
+      "t": 7,
+      "unit": "O2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "O1"
+    },
+    {
+      "t": 7,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 7,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 7,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 7,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 7,
+      "unit": "sink",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 7,
+      "unit": "C",
+      "event": "start",
+      "kind": "seed"
+    },
+    {
+      "t": 8,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 8,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 8,
+      "unit": "C",
+      "event": "receive",
+      "kind": "plant"
+    },
+    {
+      "t": 8,
+      "unit": "AC",
+      "event": "send",
+      "kind": "plant",
+      "destination": "C"
+    },
+    {
+      "t": 8,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 8,
+      "unit": "B",
+      "event": "receive",
+      "kind": "seed"
+    },
+    {
+      "t": 8,
+      "unit": "CB",
+      "event": "send",
+      "kind": "seed",
+      "destination": "B"
+    },
+    {
+      "t": 8,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 8,
+      "unit": "O1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "O1"
+    },
+    {
+      "t": 8,
+      "unit": "O2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "O1"
+    },
+    {
+      "t": 8,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 8,
+      "unit": "CB",
+      "event": "receive",
+      "kind": "seed"
+    },
+    {
+      "t": 8,
+      "unit": "C",
+      "event": "send",
+      "kind": "seed",
+      "destination": "CB"
+    },
+    {
+      "t": 8,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 8,
+      "unit": "A",
+      "event": "cache_to_output",
+      "kind": "plant",
+      "quantity": 1
+    },
+    {
+      "t": 8,
+      "unit": "AC",
+      "event": "receive",
+      "kind": "plant"
+    },
+    {
+      "t": 8,
+      "unit": "A",
+      "event": "send",
+      "kind": "plant",
+      "destination": "AC"
+    },
+    {
+      "t": 8,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 8,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 8,
+      "unit": "sink",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 8,
+      "unit": "A",
+      "event": "start",
+      "kind": "plant"
+    },
+    {
+      "t": 8,
+      "unit": "B",
+      "event": "start",
+      "kind": "plant"
+    },
+    {
+      "t": 9,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 9,
+      "unit": "A",
+      "event": "receive",
+      "kind": "seed"
+    },
+    {
+      "t": 9,
+      "unit": "CA",
+      "event": "send",
+      "kind": "seed",
+      "destination": "A"
+    },
+    {
+      "t": 9,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 9,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 9,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 9,
+      "unit": "O1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "O1"
+    },
+    {
+      "t": 9,
+      "unit": "O2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "O1"
+    },
+    {
+      "t": 9,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 9,
+      "unit": "CA",
+      "event": "receive",
+      "kind": "seed"
+    },
+    {
+      "t": 9,
+      "unit": "C",
+      "event": "send",
+      "kind": "seed",
+      "destination": "CA"
+    },
+    {
+      "t": 9,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 9,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 9,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 9,
+      "unit": "sink",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 10,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 10,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 10,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 10,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 10,
+      "unit": "O1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "O1"
+    },
+    {
+      "t": 10,
+      "unit": "O2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "O1"
+    },
+    {
+      "t": 10,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 10,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 10,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 10,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 10,
+      "unit": "sink",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 11,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 11,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 11,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 11,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 11,
+      "unit": "O1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "O1"
+    },
+    {
+      "t": 11,
+      "unit": "O2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "O1"
+    },
+    {
+      "t": 11,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 11,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 11,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 11,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 11,
+      "unit": "sink",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 12,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 12,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 12,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 12,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 12,
+      "unit": "O1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "O1"
+    },
+    {
+      "t": 12,
+      "unit": "O2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "O1"
+    },
+    {
+      "t": 12,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 12,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 12,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 12,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 12,
+      "unit": "sink",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 13,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 13,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 13,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 13,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 13,
+      "unit": "O1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "O1"
+    },
+    {
+      "t": 13,
+      "unit": "O2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "O1"
+    },
+    {
+      "t": 13,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 13,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 13,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 13,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 13,
+      "unit": "sink",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 14,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 14,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 14,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 14,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 14,
+      "unit": "O1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "O1"
+    },
+    {
+      "t": 14,
+      "unit": "O2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "O1"
+    },
+    {
+      "t": 14,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 14,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 14,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 14,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 14,
+      "unit": "sink",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 15,
+      "unit": "C",
+      "event": "finish",
+      "kind": "seed"
+    },
+    {
+      "t": 15,
+      "unit": "C",
+      "event": "cache_to_output",
+      "kind": "seed",
+      "quantity": 2
+    },
+    {
+      "t": 15,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 15,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 15,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 15,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 15,
+      "unit": "O1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "O1"
+    },
+    {
+      "t": 15,
+      "unit": "O2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "O1"
+    },
+    {
+      "t": 15,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 15,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 15,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 15,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 15,
+      "unit": "sink",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 15,
+      "unit": "C",
+      "event": "start",
+      "kind": "seed"
+    },
+    {
+      "t": 16,
+      "unit": "A",
+      "event": "finish",
+      "kind": "plant"
+    },
+    {
+      "t": 16,
+      "unit": "B",
+      "event": "finish",
+      "kind": "plant"
+    },
+    {
+      "t": 16,
+      "unit": "B",
+      "event": "cache_to_output",
+      "kind": "plant",
+      "quantity": 1
+    },
+    {
+      "t": 16,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 16,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 16,
+      "unit": "C",
+      "event": "receive",
+      "kind": "plant"
+    },
+    {
+      "t": 16,
+      "unit": "AC",
+      "event": "send",
+      "kind": "plant",
+      "destination": "C"
+    },
+    {
+      "t": 16,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 16,
+      "unit": "B",
+      "event": "receive",
+      "kind": "seed"
+    },
+    {
+      "t": 16,
+      "unit": "CB",
+      "event": "send",
+      "kind": "seed",
+      "destination": "B"
+    },
+    {
+      "t": 16,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 16,
+      "unit": "O1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "O1"
+    },
+    {
+      "t": 16,
+      "unit": "O2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "O1"
+    },
+    {
+      "t": 16,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 16,
+      "unit": "CB",
+      "event": "receive",
+      "kind": "seed"
+    },
+    {
+      "t": 16,
+      "unit": "C",
+      "event": "send",
+      "kind": "seed",
+      "destination": "CB"
+    },
+    {
+      "t": 16,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 16,
+      "unit": "A",
+      "event": "cache_to_output",
+      "kind": "plant",
+      "quantity": 1
+    },
+    {
+      "t": 16,
+      "unit": "AC",
+      "event": "receive",
+      "kind": "plant"
+    },
+    {
+      "t": 16,
+      "unit": "A",
+      "event": "send",
+      "kind": "plant",
+      "destination": "AC"
+    },
+    {
+      "t": 16,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 16,
+      "unit": "BK",
+      "event": "receive",
+      "kind": "plant"
+    },
+    {
+      "t": 16,
+      "unit": "B",
+      "event": "send",
+      "kind": "plant",
+      "destination": "BK"
+    },
+    {
+      "t": 16,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 16,
+      "unit": "sink",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 16,
+      "unit": "A",
+      "event": "start",
+      "kind": "plant"
+    },
+    {
+      "t": 16,
+      "unit": "B",
+      "event": "start",
+      "kind": "plant"
+    },
+    {
+      "t": 17,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 17,
+      "unit": "A",
+      "event": "receive",
+      "kind": "seed"
+    },
+    {
+      "t": 17,
+      "unit": "CA",
+      "event": "send",
+      "kind": "seed",
+      "destination": "A"
+    },
+    {
+      "t": 17,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 17,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 17,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 17,
+      "unit": "O1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "O1"
+    },
+    {
+      "t": 17,
+      "unit": "O2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "O1"
+    },
+    {
+      "t": 17,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 17,
+      "unit": "CA",
+      "event": "receive",
+      "kind": "seed"
+    },
+    {
+      "t": 17,
+      "unit": "C",
+      "event": "send",
+      "kind": "seed",
+      "destination": "CA"
+    },
+    {
+      "t": 17,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 17,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 17,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 17,
+      "unit": "sink",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 18,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 18,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 18,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 18,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 18,
+      "unit": "O1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "O1"
+    },
+    {
+      "t": 18,
+      "unit": "O2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "O1"
+    },
+    {
+      "t": 18,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 18,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 18,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 18,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 18,
+      "unit": "sink",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 19,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 19,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 19,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 19,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 19,
+      "unit": "O1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "O1"
+    },
+    {
+      "t": 19,
+      "unit": "O2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "O1"
+    },
+    {
+      "t": 19,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 19,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 19,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 19,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 19,
+      "unit": "sink",
+      "event": "judge",
+      "layer": null
+    }
+  ],
+  "phi_bound": 154.0
+}

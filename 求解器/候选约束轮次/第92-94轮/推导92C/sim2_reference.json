@@ -1,0 +1,10 @@
+{
+  "sim2_source": "/home/zhuran24/zmd-research-fresh/求解器/规则修订/2026-09-30-迟滞/sim2/simulator.py",
+  "sim2_sha256": "08a83262a5ca2651a3dc06b4fed83bc3f6e957379e5eec7b63094788f0d0bac8",
+  "archived_copy": "sim2_reference.py",
+  "known_errors": [
+    "Machine.flush does not check rule 13 input/output same-kind uniqueness",
+    "World.transfer tracks previous component rather than previous unit"
+  ],
+  "scope": "Implementation reference, not an additional premise."
+}

@@ -1,0 +1,32 @@
+[
+  {
+    "edge": false,
+    "kind": "count",
+    "target": 24,
+    "options": 1240,
+    "status": "UNKNOWN",
+    "seconds": 180.0040525080003,
+    "branches": 75922,
+    "conflicts": 22734
+  },
+  {
+    "edge": true,
+    "kind": "count",
+    "target": 14,
+    "options": 550,
+    "status": "INFEASIBLE",
+    "seconds": 0.8770972970014554,
+    "branches": 2555,
+    "conflicts": 108
+  },
+  {
+    "edge": true,
+    "kind": "weight",
+    "target": 30,
+    "options": 550,
+    "status": "UNKNOWN",
+    "seconds": 180.00057890099924,
+    "branches": 3356940,
+    "conflicts": 1686594
+  }
+]

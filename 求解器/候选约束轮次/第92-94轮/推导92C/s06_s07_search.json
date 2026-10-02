@@ -1,0 +1,781 @@
+{
+  "trial": 363,
+  "k": 3,
+  "first_bin": 0,
+  "last_bin": 5,
+  "counts": [
+    4,
+    6,
+    5
+  ],
+  "rows": [
+    {
+      "t": 0,
+      "q": 2,
+      "ready": [
+        true,
+        true,
+        true
+      ],
+      "sent": 0,
+      "flushed": 0,
+      "release": [
+        8,
+        null,
+        null
+      ]
+    },
+    {
+      "t": 1,
+      "q": 1,
+      "ready": [
+        false,
+        true,
+        true
+      ],
+      "sent": 1,
+      "flushed": 0,
+      "release": [
+        8,
+        10,
+        null
+      ]
+    },
+    {
+      "t": 2,
+      "q": 0,
+      "ready": [
+        false,
+        false,
+        true
+      ],
+      "sent": 2,
+      "flushed": 0,
+      "release": [
+        8,
+        10,
+        11
+      ]
+    },
+    {
+      "t": 3,
+      "q": 0,
+      "ready": [
+        false,
+        false,
+        false
+      ],
+      "sent": null,
+      "flushed": 0,
+      "release": [
+        8,
+        10,
+        11
+      ]
+    },
+    {
+      "t": 4,
+      "q": 0,
+      "ready": [
+        false,
+        false,
+        false
+      ],
+      "sent": null,
+      "flushed": 0,
+      "release": [
+        8,
+        10,
+        11
+      ]
+    },
+    {
+      "t": 5,
+      "q": 0,
+      "ready": [
+        false,
+        false,
+        false
+      ],
+      "sent": null,
+      "flushed": 0,
+      "release": [
+        8,
+        10,
+        11
+      ]
+    },
+    {
+      "t": 6,
+      "q": 3,
+      "ready": [
+        false,
+        false,
+        false
+      ],
+      "sent": null,
+      "flushed": 3,
+      "release": [
+        8,
+        10,
+        11
+      ]
+    },
+    {
+      "t": 7,
+      "q": 3,
+      "ready": [
+        false,
+        false,
+        false
+      ],
+      "sent": null,
+      "flushed": 0,
+      "release": [
+        8,
+        10,
+        11
+      ]
+    },
+    {
+      "t": 8,
+      "q": 2,
+      "ready": [
+        true,
+        false,
+        false
+      ],
+      "sent": 0,
+      "flushed": 0,
+      "release": [
+        23,
+        10,
+        11
+      ]
+    },
+    {
+      "t": 9,
+      "q": 2,
+      "ready": [
+        false,
+        false,
+        false
+      ],
+      "sent": null,
+      "flushed": 0,
+      "release": [
+        23,
+        10,
+        11
+      ]
+    },
+    {
+      "t": 10,
+      "q": 1,
+      "ready": [
+        false,
+        true,
+        false
+      ],
+      "sent": 1,
+      "flushed": 0,
+      "release": [
+        23,
+        18,
+        11
+      ]
+    },
+    {
+      "t": 11,
+      "q": 0,
+      "ready": [
+        false,
+        false,
+        true
+      ],
+      "sent": 2,
+      "flushed": 0,
+      "release": [
+        23,
+        18,
+        19
+      ]
+    },
+    {
+      "t": 12,
+      "q": 0,
+      "ready": [
+        false,
+        false,
+        false
+      ],
+      "sent": null,
+      "flushed": 0,
+      "release": [
+        23,
+        18,
+        19
+      ]
+    },
+    {
+      "t": 13,
+      "q": 0,
+      "ready": [
+        false,
+        false,
+        false
+      ],
+      "sent": null,
+      "flushed": 0,
+      "release": [
+        23,
+        18,
+        19
+      ]
+    },
+    {
+      "t": 14,
+      "q": 3,
+      "ready": [
+        false,
+        false,
+        false
+      ],
+      "sent": null,
+      "flushed": 3,
+      "release": [
+        23,
+        18,
+        19
+      ]
+    },
+    {
+      "t": 15,
+      "q": 3,
+      "ready": [
+        false,
+        false,
+        false
+      ],
+      "sent": null,
+      "flushed": 0,
+      "release": [
+        23,
+        18,
+        19
+      ]
+    },
+    {
+      "t": 16,
+      "q": 3,
+      "ready": [
+        false,
+        false,
+        false
+      ],
+      "sent": null,
+      "flushed": 0,
+      "release": [
+        23,
+        18,
+        19
+      ]
+    },
+    {
+      "t": 17,
+      "q": 3,
+      "ready": [
+        false,
+        false,
+        false
+      ],
+      "sent": null,
+      "flushed": 0,
+      "release": [
+        23,
+        18,
+        19
+      ]
+    },
+    {
+      "t": 18,
+      "q": 2,
+      "ready": [
+        false,
+        true,
+        false
+      ],
+      "sent": 1,
+      "flushed": 0,
+      "release": [
+        23,
+        26,
+        19
+      ]
+    },
+    {
+      "t": 19,
+      "q": 1,
+      "ready": [
+        false,
+        false,
+        true
+      ],
+      "sent": 2,
+      "flushed": 0,
+      "release": [
+        23,
+        26,
+        27
+      ]
+    },
+    {
+      "t": 20,
+      "q": 1,
+      "ready": [
+        false,
+        false,
+        false
+      ],
+      "sent": null,
+      "flushed": 0,
+      "release": [
+        23,
+        26,
+        27
+      ]
+    },
+    {
+      "t": 21,
+      "q": 1,
+      "ready": [
+        false,
+        false,
+        false
+      ],
+      "sent": null,
+      "flushed": 0,
+      "release": [
+        23,
+        26,
+        27
+      ]
+    },
+    {
+      "t": 22,
+      "q": 1,
+      "ready": [
+        false,
+        false,
+        false
+      ],
+      "sent": null,
+      "flushed": 0,
+      "release": [
+        23,
+        26,
+        27
+      ]
+    },
+    {
+      "t": 23,
+      "q": 0,
+      "ready": [
+        true,
+        false,
+        false
+      ],
+      "sent": 0,
+      "flushed": 0,
+      "release": [
+        31,
+        26,
+        27
+      ]
+    },
+    {
+      "t": 24,
+      "q": 0,
+      "ready": [
+        false,
+        false,
+        false
+      ],
+      "sent": null,
+      "flushed": 0,
+      "release": [
+        31,
+        26,
+        27
+      ]
+    },
+    {
+      "t": 25,
+      "q": 0,
+      "ready": [
+        false,
+        false,
+        false
+      ],
+      "sent": null,
+      "flushed": 0,
+      "release": [
+        31,
+        26,
+        27
+      ]
+    },
+    {
+      "t": 26,
+      "q": 0,
+      "ready": [
+        false,
+        true,
+        false
+      ],
+      "sent": null,
+      "flushed": 0,
+      "release": [
+        31,
+        null,
+        27
+      ]
+    },
+    {
+      "t": 27,
+      "q": 0,
+      "ready": [
+        false,
+        true,
+        true
+      ],
+      "sent": null,
+      "flushed": 0,
+      "release": [
+        31,
+        null,
+        null
+      ]
+    },
+    {
+      "t": 28,
+      "q": 0,
+      "ready": [
+        false,
+        true,
+        true
+      ],
+      "sent": null,
+      "flushed": 0,
+      "release": [
+        31,
+        null,
+        null
+      ]
+    },
+    {
+      "t": 29,
+      "q": 0,
+      "ready": [
+        false,
+        true,
+        true
+      ],
+      "sent": null,
+      "flushed": 0,
+      "release": [
+        31,
+        null,
+        null
+      ]
+    },
+    {
+      "t": 30,
+      "q": 2,
+      "ready": [
+        false,
+        true,
+        true
+      ],
+      "sent": 1,
+      "flushed": 3,
+      "release": [
+        31,
+        38,
+        null
+      ]
+    },
+    {
+      "t": 31,
+      "q": 1,
+      "ready": [
+        true,
+        false,
+        true
+      ],
+      "sent": 2,
+      "flushed": 0,
+      "release": [
+        null,
+        38,
+        39
+      ]
+    },
+    {
+      "t": 32,
+      "q": 0,
+      "ready": [
+        true,
+        false,
+        false
+      ],
+      "sent": 0,
+      "flushed": 0,
+      "release": [
+        47,
+        38,
+        39
+      ]
+    },
+    {
+      "t": 33,
+      "q": 0,
+      "ready": [
+        false,
+        false,
+        false
+      ],
+      "sent": null,
+      "flushed": 0,
+      "release": [
+        47,
+        38,
+        39
+      ]
+    },
+    {
+      "t": 34,
+      "q": 0,
+      "ready": [
+        false,
+        false,
+        false
+      ],
+      "sent": null,
+      "flushed": 0,
+      "release": [
+        47,
+        38,
+        39
+      ]
+    },
+    {
+      "t": 35,
+      "q": 0,
+      "ready": [
+        false,
+        false,
+        false
+      ],
+      "sent": null,
+      "flushed": 0,
+      "release": [
+        47,
+        38,
+        39
+      ]
+    },
+    {
+      "t": 36,
+      "q": 0,
+      "ready": [
+        false,
+        false,
+        false
+      ],
+      "sent": null,
+      "flushed": 0,
+      "release": [
+        47,
+        38,
+        39
+      ]
+    },
+    {
+      "t": 37,
+      "q": 0,
+      "ready": [
+        false,
+        false,
+        false
+      ],
+      "sent": null,
+      "flushed": 0,
+      "release": [
+        47,
+        38,
+        39
+      ]
+    },
+    {
+      "t": 38,
+      "q": 2,
+      "ready": [
+        false,
+        true,
+        false
+      ],
+      "sent": 1,
+      "flushed": 3,
+      "release": [
+        47,
+        46,
+        39
+      ]
+    },
+    {
+      "t": 39,
+      "q": 1,
+      "ready": [
+        false,
+        false,
+        true
+      ],
+      "sent": 2,
+      "flushed": 0,
+      "release": [
+        47,
+        46,
+        47
+      ]
+    },
+    {
+      "t": 40,
+      "q": 1,
+      "ready": [
+        false,
+        false,
+        false
+      ],
+      "sent": null,
+      "flushed": 0,
+      "release": [
+        47,
+        46,
+        47
+      ]
+    },
+    {
+      "t": 41,
+      "q": 1,
+      "ready": [
+        false,
+        false,
+        false
+      ],
+      "sent": null,
+      "flushed": 0,
+      "release": [
+        47,
+        46,
+        47
+      ]
+    },
+    {
+      "t": 42,
+      "q": 1,
+      "ready": [
+        false,
+        false,
+        false
+      ],
+      "sent": null,
+      "flushed": 0,
+      "release": [
+        47,
+        46,
+        47
+      ]
+    },
+    {
+      "t": 43,
+      "q": 1,
+      "ready": [
+        false,
+        false,
+        false
+      ],
+      "sent": null,
+      "flushed": 0,
+      "release": [
+        47,
+        46,
+        47
+      ]
+    },
+    {
+      "t": 44,
+      "q": 1,
+      "ready": [
+        false,
+        false,
+        false
+      ],
+      "sent": null,
+      "flushed": 0,
+      "release": [
+        47,
+        46,
+        47
+      ]
+    },
+    {
+      "t": 45,
+      "q": 1,
+      "ready": [
+        false,
+        false,
+        false
+      ],
+      "sent": null,
+      "flushed": 0,
+      "release": [
+        47,
+        46,
+        47
+      ]
+    },
+    {
+      "t": 46,
+      "q": 0,
+      "ready": [
+        false,
+        true,
+        false
+      ],
+      "sent": 1,
+      "flushed": 0,
+      "release": [
+        47,
+        54,
+        47
+      ]
+    },
+    {
+      "t": 47,
+      "q": 0,
+      "ready": [
+        true,
+        false,
+        true
+      ],
+      "sent": null,
+      "flushed": 0,
+      "release": [
+        null,
+        54,
+        null
+      ]
+    }
+  ]
+}

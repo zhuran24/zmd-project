@@ -1,0 +1,12 @@
+[
+  {
+    "source": "求解器/候选约束轮次/第78-80轮/推导78B/corner78.py",
+    "target": "geo_corner_a.py",
+    "source_sha256": "daf63cb475d335d0c772d5bd94700de9a42fa156fc0ec0102b6a37d6bfd3a553"
+  },
+  {
+    "source": "求解器/候选约束轮次/第78-80轮/推导78B/corner_independent78.py",
+    "target": "geo_corner_b.py",
+    "source_sha256": "2948da6ed09b9051feefd85aec59f11b957f36f745f7ab5c40a3977701b00305"
+  }
+]

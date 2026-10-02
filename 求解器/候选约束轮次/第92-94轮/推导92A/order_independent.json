@@ -1,0 +1,56 @@
+[
+  {
+    "first": "旁入",
+    "cycle_steps": [
+      145,
+      185
+    ],
+    "period_steps": 40,
+    "split_counts": {
+      "汇流": 0,
+      "另一支": 1
+    },
+    "other_input_count": 1,
+    "merger_output_count": 1,
+    "split_rates": {
+      "汇流": "0",
+      "另一支": "1/5"
+    },
+    "core_stock_min": 79966,
+    "cycle_events": [
+      {
+        "step": 39,
+        "to": "另一支"
+      }
+    ]
+  },
+  {
+    "first": "分流",
+    "cycle_steps": [
+      129,
+      209
+    ],
+    "period_steps": 80,
+    "split_counts": {
+      "汇流": 1,
+      "另一支": 1
+    },
+    "other_input_count": 2,
+    "merger_output_count": 3,
+    "split_rates": {
+      "汇流": "1/10",
+      "另一支": "1/10"
+    },
+    "core_stock_min": 79966,
+    "cycle_events": [
+      {
+        "step": 15,
+        "to": "另一支"
+      },
+      {
+        "step": 55,
+        "to": "汇流"
+      }
+    ]
+  }
+]

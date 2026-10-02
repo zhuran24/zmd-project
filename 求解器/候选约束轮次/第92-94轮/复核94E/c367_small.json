@@ -1,0 +1,148 @@
+{
+ "phase_mc": [
+  {
+   "c": 1,
+   "states": 10,
+   "edges": 15,
+   "max_rate_per_tick": 1,
+   "certificate_ok": true,
+   "tight_cycle_states": 8,
+   "all_full_distinct_ages": true
+  },
+  {
+   "c": 2,
+   "states": 100,
+   "edges": 216,
+   "max_rate_per_tick": 2,
+   "certificate_ok": true,
+   "tight_cycle_states": 56,
+   "all_full_distinct_ages": true
+  },
+  {
+   "c": 3,
+   "states": 1000,
+   "edges": 3024,
+   "max_rate_per_tick": 3,
+   "certificate_ok": true,
+   "tight_cycle_states": 336,
+   "all_full_distinct_ages": true
+  }
+ ],
+ "phase_enum": [
+  {
+   "c": 1,
+   "P": 8,
+   "full_rate_schedules": 8,
+   "violating": 0
+  },
+  {
+   "c": 1,
+   "P": 16,
+   "full_rate_schedules": 8,
+   "violating": 0
+  },
+  {
+   "c": 2,
+   "P": 8,
+   "full_rate_schedules": 56,
+   "violating": 0
+  },
+  {
+   "c": 2,
+   "P": 16,
+   "full_rate_schedules": 56,
+   "violating": 0
+  },
+  {
+   "c": 3,
+   "P": 8,
+   "full_rate_schedules": 336,
+   "violating": 0
+  },
+  {
+   "c": 3,
+   "P": 16,
+   "full_rate_schedules": 336,
+   "violating": 0
+  },
+  {
+   "c": 4,
+   "P": 8,
+   "full_rate_schedules": 1680,
+   "violating": 0
+  },
+  {
+   "c": 6,
+   "P": 8,
+   "full_rate_schedules": 20160,
+   "violating": 0
+  },
+  {
+   "c": 1,
+   "P": 24,
+   "full_rate_schedules": 8,
+   "violating": 0
+  },
+  {
+   "c": 2,
+   "P": 24,
+   "full_rate_schedules": 56,
+   "violating": 0
+  }
+ ],
+ "grinder_one_channel": {
+  "p2_channels": 1,
+  "min_gap_steps": 9,
+  "by_start": {
+   "P1剩0_砂叶剩0": 9,
+   "P1剩0_砂叶剩1": 9,
+   "P1剩0_砂叶剩2": 9,
+   "P1剩0_砂叶剩3": 9,
+   "P1剩1_砂叶剩0": null,
+   "P1剩1_砂叶剩1": null,
+   "P1剩1_砂叶剩2": null,
+   "P1剩1_砂叶剩3": null,
+   "P1剩2_砂叶剩0": null,
+   "P1剩2_砂叶剩1": null,
+   "P1剩2_砂叶剩2": null,
+   "P1剩2_砂叶剩3": null,
+   "P1剩3_砂叶剩0": null,
+   "P1剩3_砂叶剩1": null,
+   "P1剩3_砂叶剩2": null,
+   "P1剩3_砂叶剩3": null
+  }
+ },
+ "grinder_two_channels": {
+  "p2_channels": 2,
+  "min_gap_steps": 8,
+  "by_start": {
+   "P1剩0_砂叶剩0": 8,
+   "P1剩0_砂叶剩1": 8,
+   "P1剩0_砂叶剩2": 8,
+   "P1剩0_砂叶剩3": 8,
+   "P1剩1_砂叶剩0": null,
+   "P1剩1_砂叶剩1": null,
+   "P1剩1_砂叶剩2": null,
+   "P1剩1_砂叶剩3": null,
+   "P1剩2_砂叶剩0": null,
+   "P1剩2_砂叶剩1": null,
+   "P1剩2_砂叶剩2": null,
+   "P1剩2_砂叶剩3": null,
+   "P1剩3_砂叶剩0": null,
+   "P1剩3_砂叶剩1": null,
+   "P1剩3_砂叶剩2": null,
+   "P1剩3_砂叶剩3": null
+  }
+ },
+ "box_mc": {
+  "states": 10,
+  "edges": 15,
+  "certificate_no_positive_cycle": true
+ },
+ "box_enum": {
+  "runs": 200,
+  "steps": 400,
+  "items": 6639,
+  "violations": 0
+ }
+}

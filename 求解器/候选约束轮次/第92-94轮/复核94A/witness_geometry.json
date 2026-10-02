@@ -1,0 +1,10 @@
+{
+ "problems": [],
+ "belt_lengths": {
+  "甲": 16,
+  "乙": 16
+ },
+ "extra_channels": [],
+ "missing_channels": [],
+ "channel_count": 44
+}

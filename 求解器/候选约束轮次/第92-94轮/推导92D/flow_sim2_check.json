@@ -1,0 +1,28 @@
+[
+  {
+    "mixed": false,
+    "steps": 3000,
+    "all_machine_inventories_and_transport_timestamps_equal": true,
+    "warehouse": {
+      "battery": 375,
+      "capsule": 368
+    },
+    "sim2_warehouse": {
+      "battery": 375,
+      "capsule": 368
+    }
+  },
+  {
+    "mixed": true,
+    "steps": 3000,
+    "all_machine_inventories_and_transport_timestamps_equal": true,
+    "warehouse": {
+      "battery": 375,
+      "capsule": 368
+    },
+    "sim2_warehouse": {
+      "battery": 375,
+      "capsule": 368
+    }
+  }
+]

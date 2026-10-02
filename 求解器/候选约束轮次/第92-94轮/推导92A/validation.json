@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "premises_unchanged": true,
+  "formal_entries_reviewed": 15,
+  "literal_match_lines": 19,
+  "candidates": 15,
+  "candidate_texts_in_report": true,
+  "polling_paired_cases_each": 1851008,
+  "polling_paired_trace_sha256": "dea8ab27e5fde87d7f0f6f609b621b59299e7ded63767ad8f4dcff625f18eab6",
+  "formula_instances": 360,
+  "formula_equalities": 38430,
+  "clearing_paired_results_equal": true,
+  "dense_node_paired_results_equal": true,
+  "dense_node_geometry_valid": true,
+  "report_sha256": "acdbbe3b1b1d5d233a8b1ed44dc91d46c151820ba2116e9b7c074edb8dc873a5",
+  "artifact_extension_and_size_checks": true,
+  "linked_targets_exist": true,
+  "scope": "artifact consistency and local proof checks; not a qualified layout certificate"
+}

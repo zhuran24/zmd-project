@@ -1,0 +1,96 @@
+{
+  "exemplar": {
+    "k": 2,
+    "initial": [
+      0,
+      1
+    ],
+    "batch_mask": 7,
+    "successes": [
+      1,
+      0,
+      1,
+      0,
+      1,
+      0
+    ]
+  },
+  "old_clause_traces": [
+    {
+      "order": [
+        0,
+        1
+      ],
+      "machine_order": 0,
+      "dispatches": [
+        [
+          7,
+          "K",
+          0
+        ],
+        [
+          8,
+          "K",
+          1
+        ]
+      ]
+    },
+    {
+      "order": [
+        0,
+        1
+      ],
+      "machine_order": 1,
+      "dispatches": [
+        [
+          7,
+          "K",
+          0
+        ],
+        [
+          8,
+          "K",
+          1
+        ]
+      ]
+    },
+    {
+      "order": [
+        1,
+        0
+      ],
+      "machine_order": 0,
+      "dispatches": [
+        [
+          7,
+          "K",
+          1
+        ],
+        [
+          8,
+          "K",
+          0
+        ]
+      ]
+    },
+    {
+      "order": [
+        1,
+        0
+      ],
+      "machine_order": 1,
+      "dispatches": [
+        [
+          7,
+          "K",
+          1
+        ],
+        [
+          8,
+          "K",
+          0
+        ]
+      ]
+    }
+  ]
+}

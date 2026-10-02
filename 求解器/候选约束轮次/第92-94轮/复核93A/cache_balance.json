@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "collection": "全部采种机的制造缓存格，仅用于说明为何须排除缓存格",
+  "input_per_20_ticks": 320,
+  "output_per_20_ticks": 640,
+  "q_items_per_tick": "16",
+  "b_items_per_tick": "0",
+  "Q_items_per_tick": "32",
+  "unaccounted_creation_items_per_tick": "16",
+  "q_plus_b_minus_Q": "-16",
+  "two_encodings_agree": true,
+  "time_counting": "20 tick数量均由完整循环的平均率折算，不要求任意20 tick子窗口相同",
+  "scope": "若将来源定序泛称的物品格集合解释为可包含缓存格，守恒式必须加配方转化项。此记录不是完整布局反例。"
+}

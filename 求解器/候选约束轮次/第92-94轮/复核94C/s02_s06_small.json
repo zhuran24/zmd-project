@@ -1,0 +1,166 @@
+{
+ "s02": [
+  {
+   "a": 2,
+   "b": 1,
+   "maxlen": 9,
+   "crit_and_ok": 64168,
+   "crit_violated_and_stuck": 1240,
+   "crit_but_stuck": 0
+  },
+  {
+   "a": 1,
+   "b": 2,
+   "maxlen": 9,
+   "crit_and_ok": 64168,
+   "crit_violated_and_stuck": 1240,
+   "crit_but_stuck": 0
+  },
+  {
+   "a": 3,
+   "b": 2,
+   "maxlen": 8,
+   "crit_and_ok": 31969,
+   "crit_violated_and_stuck": 671,
+   "crit_but_stuck": 0
+  }
+ ],
+ "s06_old": [
+  {
+   "ranks": [
+    0,
+    0,
+    0
+   ],
+   "first_tick": [
+    1,
+    0
+   ],
+   "sends": [
+    [
+     7,
+     "a.0"
+    ]
+   ]
+  },
+  {
+   "ranks": [
+    0,
+    0,
+    1
+   ],
+   "first_tick": [
+    1,
+    0
+   ],
+   "sends": [
+    [
+     7,
+     "a.0"
+    ]
+   ]
+  },
+  {
+   "ranks": [
+    0,
+    1,
+    0
+   ],
+   "first_tick": [
+    1,
+    0
+   ],
+   "sends": [
+    [
+     7,
+     "a.0"
+    ]
+   ]
+  },
+  {
+   "ranks": [
+    0,
+    1,
+    1
+   ],
+   "first_tick": [
+    1,
+    0
+   ],
+   "sends": [
+    [
+     7,
+     "a.0"
+    ]
+   ]
+  },
+  {
+   "ranks": [
+    1,
+    0,
+    0
+   ],
+   "first_tick": [
+    0,
+    1
+   ],
+   "sends": [
+    [
+     7,
+     "b.0"
+    ]
+   ]
+  },
+  {
+   "ranks": [
+    1,
+    0,
+    1
+   ],
+   "first_tick": [
+    0,
+    1
+   ],
+   "sends": [
+    [
+     7,
+     "b.0"
+    ]
+   ]
+  },
+  {
+   "ranks": [
+    1,
+    1,
+    0
+   ],
+   "first_tick": [
+    0,
+    1
+   ],
+   "sends": [
+    [
+     7,
+     "b.0"
+    ]
+   ]
+  },
+  {
+   "ranks": [
+    1,
+    1,
+    1
+   ],
+   "first_tick": [
+    0,
+    1
+   ],
+   "sends": [
+    [
+     7,
+     "b.0"
+    ]
+   ]
+  }
+ ]
+}

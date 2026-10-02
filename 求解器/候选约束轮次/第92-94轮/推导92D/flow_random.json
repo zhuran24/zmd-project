@@ -1,0 +1,242 @@
+[
+  {
+    "seed": 0,
+    "warmup_steps": 8000,
+    "window_steps": 1600,
+    "delivery": {
+      "battery": 120,
+      "capsule": 110
+    },
+    "mineral_min": 200,
+    "mineral_max": 200,
+    "pass_observed": true
+  },
+  {
+    "seed": 1,
+    "warmup_steps": 8000,
+    "window_steps": 1600,
+    "delivery": {
+      "battery": 120,
+      "capsule": 110
+    },
+    "mineral_min": 200,
+    "mineral_max": 200,
+    "pass_observed": true
+  },
+  {
+    "seed": 2,
+    "warmup_steps": 8000,
+    "window_steps": 1600,
+    "delivery": {
+      "battery": 120,
+      "capsule": 110
+    },
+    "mineral_min": 200,
+    "mineral_max": 200,
+    "pass_observed": true
+  },
+  {
+    "seed": 3,
+    "warmup_steps": 8000,
+    "window_steps": 1600,
+    "delivery": {
+      "battery": 120,
+      "capsule": 110
+    },
+    "mineral_min": 200,
+    "mineral_max": 200,
+    "pass_observed": true
+  },
+  {
+    "seed": 4,
+    "warmup_steps": 8000,
+    "window_steps": 1600,
+    "delivery": {
+      "battery": 120,
+      "capsule": 110
+    },
+    "mineral_min": 200,
+    "mineral_max": 200,
+    "pass_observed": true
+  },
+  {
+    "seed": 5,
+    "warmup_steps": 8000,
+    "window_steps": 1600,
+    "delivery": {
+      "battery": 120,
+      "capsule": 110
+    },
+    "mineral_min": 200,
+    "mineral_max": 200,
+    "pass_observed": true
+  },
+  {
+    "seed": 6,
+    "warmup_steps": 8000,
+    "window_steps": 1600,
+    "delivery": {
+      "battery": 120,
+      "capsule": 110
+    },
+    "mineral_min": 200,
+    "mineral_max": 200,
+    "pass_observed": true
+  },
+  {
+    "seed": 7,
+    "warmup_steps": 8000,
+    "window_steps": 1600,
+    "delivery": {
+      "battery": 120,
+      "capsule": 110
+    },
+    "mineral_min": 200,
+    "mineral_max": 200,
+    "pass_observed": true
+  },
+  {
+    "seed": 8,
+    "warmup_steps": 8000,
+    "window_steps": 1600,
+    "delivery": {
+      "battery": 120,
+      "capsule": 110
+    },
+    "mineral_min": 200,
+    "mineral_max": 200,
+    "pass_observed": true
+  },
+  {
+    "seed": 9,
+    "warmup_steps": 8000,
+    "window_steps": 1600,
+    "delivery": {
+      "battery": 120,
+      "capsule": 110
+    },
+    "mineral_min": 200,
+    "mineral_max": 200,
+    "pass_observed": true
+  },
+  {
+    "seed": 10,
+    "warmup_steps": 8000,
+    "window_steps": 1600,
+    "delivery": {
+      "battery": 120,
+      "capsule": 110
+    },
+    "mineral_min": 200,
+    "mineral_max": 200,
+    "pass_observed": true
+  },
+  {
+    "seed": 11,
+    "warmup_steps": 8000,
+    "window_steps": 1600,
+    "delivery": {
+      "battery": 120,
+      "capsule": 110
+    },
+    "mineral_min": 200,
+    "mineral_max": 200,
+    "pass_observed": true
+  },
+  {
+    "seed": 12,
+    "warmup_steps": 8000,
+    "window_steps": 1600,
+    "delivery": {
+      "battery": 120,
+      "capsule": 110
+    },
+    "mineral_min": 200,
+    "mineral_max": 200,
+    "pass_observed": true
+  },
+  {
+    "seed": 13,
+    "warmup_steps": 8000,
+    "window_steps": 1600,
+    "delivery": {
+      "battery": 120,
+      "capsule": 110
+    },
+    "mineral_min": 200,
+    "mineral_max": 200,
+    "pass_observed": true
+  },
+  {
+    "seed": 14,
+    "warmup_steps": 8000,
+    "window_steps": 1600,
+    "delivery": {
+      "battery": 120,
+      "capsule": 110
+    },
+    "mineral_min": 200,
+    "mineral_max": 200,
+    "pass_observed": true
+  },
+  {
+    "seed": 15,
+    "warmup_steps": 8000,
+    "window_steps": 1600,
+    "delivery": {
+      "battery": 120,
+      "capsule": 110
+    },
+    "mineral_min": 200,
+    "mineral_max": 200,
+    "pass_observed": true
+  },
+  {
+    "seed": 16,
+    "warmup_steps": 8000,
+    "window_steps": 1600,
+    "delivery": {
+      "battery": 120,
+      "capsule": 110
+    },
+    "mineral_min": 200,
+    "mineral_max": 200,
+    "pass_observed": true
+  },
+  {
+    "seed": 17,
+    "warmup_steps": 8000,
+    "window_steps": 1600,
+    "delivery": {
+      "battery": 120,
+      "capsule": 110
+    },
+    "mineral_min": 200,
+    "mineral_max": 200,
+    "pass_observed": true
+  },
+  {
+    "seed": 18,
+    "warmup_steps": 8000,
+    "window_steps": 1600,
+    "delivery": {
+      "battery": 120,
+      "capsule": 110
+    },
+    "mineral_min": 200,
+    "mineral_max": 200,
+    "pass_observed": true
+  },
+  {
+    "seed": 19,
+    "warmup_steps": 8000,
+    "window_steps": 1600,
+    "delivery": {
+      "battery": 120,
+      "capsule": 110
+    },
+    "mineral_min": 200,
+    "mineral_max": 200,
+    "pass_observed": true
+  }
+]

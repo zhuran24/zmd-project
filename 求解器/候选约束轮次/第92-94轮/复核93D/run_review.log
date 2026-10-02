@@ -1,0 +1,4 @@
+dense {'cases': 280, 'paired_steps': 504000, 'min_B_input': 49, 'min_K_input': 49, 'min_B_output': 49, 'min_K_output_by_k': {'2': 48, '3': 48}, 'max_outlet_wait_by_n': {'1': 0, '2': 1, '3': 2}, 'failure': None, 'complete_snapshot_hash': '6986ec6f590e61fea10171150a43af6355a7fc8e11ec4548d86c91e3516c3bab', 'scope': 'All conditions tested on an age/state superset; this is not a completeness certificate or a layout.'}
+arbitrary {'cases': 500, 'paired_steps': 800000, 'BB_events': 33, 'lowest_BB_excess_phi2': 352, 'candidate_violations': 0, 'original_176_violations_after_normalization': 0, 'min_2phi_loss': -2}
+nine_cycle {'period_steps': 9, 'phi2_range': [9, 10], 'empty_counts': [1, 1, 0, 0], 'batches_per_period': [1, 1, 1, 1], 'status': 'external 9-step removal is an abstract service, not a demonstrated legal layout'}
+seconds 29.321551553999598

@@ -1,0 +1,104 @@
+{
+  "formula_instances": 360,
+  "scalar_equalities_checked": 38430,
+  "range": {
+    "L": [
+      1,
+      60
+    ],
+    "k": [
+      1,
+      6
+    ]
+  },
+  "violations": 0,
+  "counterexample": {
+    "connection_order": "ABC",
+    "initial_success_age_order": "ACB",
+    "initial_all_first_cells_empty": true,
+    "group_sizes": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "adjacent_group_sum": 2,
+    "k": 3,
+    "two_independent_implementations_agree": true,
+    "trace": [
+      {
+        "step": 0,
+        "channel": "A"
+      },
+      {
+        "step": 8,
+        "channel": "C"
+      },
+      {
+        "step": 16,
+        "channel": "B"
+      },
+      {
+        "step": 24,
+        "channel": "A"
+      },
+      {
+        "step": 32,
+        "channel": "C"
+      },
+      {
+        "step": 40,
+        "channel": "B"
+      },
+      {
+        "step": 48,
+        "channel": "A"
+      },
+      {
+        "step": 56,
+        "channel": "C"
+      },
+      {
+        "step": 64,
+        "channel": "B"
+      },
+      {
+        "step": 72,
+        "channel": "A"
+      },
+      {
+        "step": 80,
+        "channel": "C"
+      },
+      {
+        "step": 88,
+        "channel": "B"
+      },
+      {
+        "step": 96,
+        "channel": "A"
+      },
+      {
+        "step": 104,
+        "channel": "C"
+      },
+      {
+        "step": 112,
+        "channel": "B"
+      }
+    ],
+    "success_word": "ACBACBACBACBACB",
+    "qualification": "local temporal counterexample to connection-order wording, not a certified successful base layout"
+  }
+}

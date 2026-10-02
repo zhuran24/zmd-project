@@ -1,0 +1,64 @@
+{
+  "receipt": {
+    "cases": 14036,
+    "orders": 87116,
+    "all_fit_cases": 1358,
+    "differences": 0
+  },
+  "layers": {
+    "dags": 4969,
+    "including_dead_end_examples": 1536,
+    "differences": 0,
+    "scope": "抽象元件有向无环图；不声称这些图是可摆放的布局"
+  },
+  "arithmetic": {
+    "recipe_rates": [
+      "18",
+      "34",
+      "11/2",
+      "21/2",
+      "34",
+      "17",
+      "0",
+      "17",
+      "9",
+      "11/2",
+      "11/2",
+      "6",
+      "11",
+      "21",
+      "11/2",
+      "21/2",
+      "3/5",
+      "11/20"
+    ],
+    "blue_ore": "34",
+    "source_ore": "18",
+    "total_ore": "52",
+    "minimum_machine_counts": {
+      "粉碎机": 68,
+      "精炼炉": 51,
+      "研磨机": 32,
+      "塑形机": 6,
+      "配件机": 6,
+      "种植机": 32,
+      "采种机": 16,
+      "封装机": 3,
+      "灌装机": 3
+    },
+    "minimum_machines": 217,
+    "minimum_area": 3291,
+    "dedicated_machines": 221,
+    "dedicated_area": 3375,
+    "remaining_machines": 144,
+    "threshold_97_both_encodings": 97,
+    "seeds_or_plants_for_sand_units": 550,
+    "seeds_or_plants_for_buckwheat_units": 300,
+    "max_initial_plant_or_seed_withdrawal_before_correction": 15031,
+    "warehouse_stock_at_least": 64969,
+    "max_per_kind_startup_requirement_with_long_routes": 10350,
+    "counterexample_steps": 3249,
+    "counterexample_ticks": "3249/8",
+    "caveat": "流量代数不是现行步进规则下的达标证明；97代数不证明存量引理"
+  }
+}

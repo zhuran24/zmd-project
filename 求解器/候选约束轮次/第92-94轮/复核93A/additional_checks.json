@@ -1,0 +1,99 @@
+{
+  "status": "PASS",
+  "mineral_conservation_equalities": 36,
+  "mineral_weights": {
+    "蓝铁矿": {
+      "蓝铁矿": 1,
+      "蓝铁块": 1,
+      "蓝铁粉末": 1,
+      "致密蓝铁粉末": 2,
+      "钢块": 2,
+      "钢制零件": 2,
+      "钢质瓶": 4,
+      "高容谷地电池": 20,
+      "精选荞愈胶囊": 40
+    },
+    "源矿": {
+      "源矿": 1,
+      "源石粉末": 1,
+      "致密源石粉末": 2,
+      "高容谷地电池": 30
+    }
+  },
+  "all_nine_mistaken_input_slot_checks": true,
+  "grinder_two_main_materials_deadlock": true,
+  "subset_channel_cases": 40000,
+  "selected_successes_checked": 181911,
+  "subset_trace_sha256": "c48f258c938e123da409562648cc2748003aafb06a16cbab7085b1140b2b0ff2",
+  "subset_violations": 0,
+  "old_LRU_order_counterexample": {
+    "connection_order": [
+      "A",
+      "B",
+      "C"
+    ],
+    "initial_success_order": [
+      "A",
+      "C",
+      "B"
+    ],
+    "next_15_channels": [
+      "A",
+      "C",
+      "B",
+      "A",
+      "C",
+      "B",
+      "A",
+      "C",
+      "B",
+      "A",
+      "C",
+      "B",
+      "A",
+      "C",
+      "B"
+    ],
+    "two_encodings_agree": true
+  },
+  "old_term_matched_lines": [
+    6,
+    7,
+    10,
+    11,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    49,
+    78,
+    79,
+    92,
+    93,
+    96,
+    107,
+    109,
+    113
+  ],
+  "old_term_line_count": 19,
+  "actual_candidate_count": 15,
+  "actual_candidate_names": [
+    "分叉分支",
+    "传输相位",
+    "判定先后",
+    "取货分级",
+    "密集结点",
+    "来源定序",
+    "存货误料停机与可用台数",
+    "传输按仓库余量判定",
+    "混做清空",
+    "回路存量",
+    "传输箱不满",
+    "轮询均分",
+    "混料轮询分料",
+    "满速箱头限存",
+    "传输与送货先后"
+  ]
+}

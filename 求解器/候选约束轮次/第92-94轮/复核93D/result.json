@@ -1,0 +1,18 @@
+{
+  "report_path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第92-94轮/复核93D.md",
+  "status": "已完成",
+  "verdicts": [
+    {
+      "name": "采种单元的回路存量下界",
+      "verdict": "未否证",
+      "reason": "150界成立；另补证正常步末的176界。",
+      "revised_text": ""
+    },
+    {
+      "name": "采种单元不断料",
+      "verdict": "未否证",
+      "reason": "满库存递推及最迟n−1步补货界成立。",
+      "revised_text": ""
+    }
+  ]
+}

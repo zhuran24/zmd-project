@@ -1,0 +1,29 @@
+{
+  "status": "PASS",
+  "scope": {
+    "formal": 77,
+    "excluded": 14,
+    "reviewed": 63,
+    "confirmed": 60,
+    "wording": 1,
+    "safe_revisions": 2,
+    "falsified": 0
+  },
+  "snapshot_unchanged": true,
+  "all_required_candidate_fields": true,
+  "all_63_entry_formats": true,
+  "all_links_exist": true,
+  "file_count": 79,
+  "total_bytes": 1555352,
+  "report_sha256": "467d08e712f1e5755a52514eb29ce171f02ca1cff81b70b2a2d9232a69df5f47",
+  "fresh_vs_reused_solver_evidence": "explicitly separated",
+  "unknown_used_as_infeasible": false,
+  "reader_review": [
+    "checked final scope and all per-entry results",
+    "checked conservative revisions do not claim full-layout counterexamples",
+    "checked both bridge interpretations and all connection orders",
+    "checked snapshot and candidate names",
+    "checked N35 continuation quantifiers separately",
+    "checked source paths, output paths and numeric units"
+  ]
+}

@@ -1,0 +1,5220 @@
+{
+  "rows": [
+    {
+      "t": 0,
+      "machines": {
+        "C": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 50,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "A": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "B": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "K": {
+          "inputs": {
+            "plant": 49
+          },
+          "output": 50,
+          "remaining": 8,
+          "ready": false,
+          "active": true,
+          "starts": 1,
+          "sent": [
+            "KG0"
+          ]
+        },
+        "G": {
+          "inputs": {
+            "blue_powder": 50,
+            "sand_powder": 50
+          },
+          "output": 0,
+          "remaining": 7,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        }
+      },
+      "belts": {
+        "CA": -8,
+        "CB": -8,
+        "AC": -8,
+        "BK": -8,
+        "KG0": 0,
+        "KG1": -8,
+        "KG2": -8
+      }
+    },
+    {
+      "t": 1,
+      "machines": {
+        "C": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 50,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "A": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "B": {
+          "inputs": {
+            "seed": 49
+          },
+          "output": 50,
+          "remaining": 8,
+          "ready": false,
+          "active": true,
+          "starts": 1,
+          "sent": [
+            "BK"
+          ]
+        },
+        "K": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 50,
+          "remaining": 7,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "G": {
+          "inputs": {
+            "blue_powder": 50,
+            "sand_powder": 50
+          },
+          "output": 0,
+          "remaining": 6,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        }
+      },
+      "belts": {
+        "CA": -8,
+        "CB": -8,
+        "AC": -8,
+        "BK": 1,
+        "KG0": 0,
+        "KG1": -8,
+        "KG2": -8
+      }
+    },
+    {
+      "t": 2,
+      "machines": {
+        "C": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 49,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": [
+            "CB"
+          ]
+        },
+        "A": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "B": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": 7,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "K": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 50,
+          "remaining": 6,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "G": {
+          "inputs": {
+            "blue_powder": 50,
+            "sand_powder": 50
+          },
+          "output": 0,
+          "remaining": 5,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        }
+      },
+      "belts": {
+        "CA": -8,
+        "CB": 2,
+        "AC": -8,
+        "BK": 1,
+        "KG0": 0,
+        "KG1": -8,
+        "KG2": -8
+      }
+    },
+    {
+      "t": 3,
+      "machines": {
+        "C": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 49,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "A": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "B": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": 6,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "K": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 50,
+          "remaining": 5,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "G": {
+          "inputs": {
+            "blue_powder": 50,
+            "sand_powder": 50
+          },
+          "output": 0,
+          "remaining": 4,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        }
+      },
+      "belts": {
+        "CA": -8,
+        "CB": 2,
+        "AC": -8,
+        "BK": 1,
+        "KG0": 0,
+        "KG1": -8,
+        "KG2": -8
+      }
+    },
+    {
+      "t": 4,
+      "machines": {
+        "C": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 49,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "A": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "B": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": 5,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "K": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 50,
+          "remaining": 4,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "G": {
+          "inputs": {
+            "blue_powder": 50,
+            "sand_powder": 50
+          },
+          "output": 0,
+          "remaining": 3,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        }
+      },
+      "belts": {
+        "CA": -8,
+        "CB": 2,
+        "AC": -8,
+        "BK": 1,
+        "KG0": 0,
+        "KG1": -8,
+        "KG2": -8
+      }
+    },
+    {
+      "t": 5,
+      "machines": {
+        "C": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 49,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "A": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "B": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": 4,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "K": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 50,
+          "remaining": 3,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "G": {
+          "inputs": {
+            "blue_powder": 50,
+            "sand_powder": 50
+          },
+          "output": 0,
+          "remaining": 2,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        }
+      },
+      "belts": {
+        "CA": -8,
+        "CB": 2,
+        "AC": -8,
+        "BK": 1,
+        "KG0": 0,
+        "KG1": -8,
+        "KG2": -8
+      }
+    },
+    {
+      "t": 6,
+      "machines": {
+        "C": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 49,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "A": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "B": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": 3,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "K": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 50,
+          "remaining": 2,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "G": {
+          "inputs": {
+            "blue_powder": 50,
+            "sand_powder": 50
+          },
+          "output": 0,
+          "remaining": 1,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        }
+      },
+      "belts": {
+        "CA": -8,
+        "CB": 2,
+        "AC": -8,
+        "BK": 1,
+        "KG0": 0,
+        "KG1": -8,
+        "KG2": -8
+      }
+    },
+    {
+      "t": 7,
+      "machines": {
+        "C": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 49,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "A": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "B": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": 2,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "K": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 50,
+          "remaining": 1,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "G": {
+          "inputs": {
+            "blue_powder": 48,
+            "sand_powder": 49
+          },
+          "output": 1,
+          "remaining": 8,
+          "ready": false,
+          "active": true,
+          "starts": 1,
+          "sent": []
+        }
+      },
+      "belts": {
+        "CA": -8,
+        "CB": 2,
+        "AC": -8,
+        "BK": 1,
+        "KG0": 0,
+        "KG1": -8,
+        "KG2": -8
+      }
+    },
+    {
+      "t": 8,
+      "machines": {
+        "C": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 49,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "A": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "B": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": 1,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "K": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 49,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": [
+            "KG1"
+          ]
+        },
+        "G": {
+          "inputs": {
+            "blue_powder": 48,
+            "sand_powder": 50
+          },
+          "output": 1,
+          "remaining": 7,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        }
+      },
+      "belts": {
+        "CA": -8,
+        "CB": 2,
+        "AC": -8,
+        "BK": 1,
+        "KG0": 0,
+        "KG1": 8,
+        "KG2": -8
+      }
+    },
+    {
+      "t": 9,
+      "machines": {
+        "C": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 49,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "A": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "B": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "K": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 49,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "G": {
+          "inputs": {
+            "blue_powder": 48,
+            "sand_powder": 50
+          },
+          "output": 1,
+          "remaining": 6,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        }
+      },
+      "belts": {
+        "CA": -8,
+        "CB": 2,
+        "AC": -8,
+        "BK": 1,
+        "KG0": 0,
+        "KG1": 8,
+        "KG2": -8
+      }
+    },
+    {
+      "t": 10,
+      "machines": {
+        "C": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 49,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "A": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "B": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "K": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 49,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "G": {
+          "inputs": {
+            "blue_powder": 48,
+            "sand_powder": 50
+          },
+          "output": 1,
+          "remaining": 5,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        }
+      },
+      "belts": {
+        "CA": -8,
+        "CB": 2,
+        "AC": -8,
+        "BK": 1,
+        "KG0": 0,
+        "KG1": 8,
+        "KG2": -8
+      }
+    },
+    {
+      "t": 11,
+      "machines": {
+        "C": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 49,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "A": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "B": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "K": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 49,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "G": {
+          "inputs": {
+            "blue_powder": 48,
+            "sand_powder": 50
+          },
+          "output": 1,
+          "remaining": 4,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        }
+      },
+      "belts": {
+        "CA": -8,
+        "CB": 2,
+        "AC": -8,
+        "BK": 1,
+        "KG0": 0,
+        "KG1": 8,
+        "KG2": -8
+      }
+    },
+    {
+      "t": 12,
+      "machines": {
+        "C": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 49,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "A": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "B": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "K": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 49,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "G": {
+          "inputs": {
+            "blue_powder": 48,
+            "sand_powder": 50
+          },
+          "output": 1,
+          "remaining": 3,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        }
+      },
+      "belts": {
+        "CA": -8,
+        "CB": 2,
+        "AC": -8,
+        "BK": 1,
+        "KG0": 0,
+        "KG1": 8,
+        "KG2": -8
+      }
+    },
+    {
+      "t": 13,
+      "machines": {
+        "C": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 49,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "A": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "B": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "K": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 49,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "G": {
+          "inputs": {
+            "blue_powder": 48,
+            "sand_powder": 50
+          },
+          "output": 1,
+          "remaining": 2,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        }
+      },
+      "belts": {
+        "CA": -8,
+        "CB": 2,
+        "AC": -8,
+        "BK": 1,
+        "KG0": 0,
+        "KG1": 8,
+        "KG2": -8
+      }
+    },
+    {
+      "t": 14,
+      "machines": {
+        "C": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 49,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "A": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "B": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "K": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 49,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "G": {
+          "inputs": {
+            "blue_powder": 48,
+            "sand_powder": 50
+          },
+          "output": 1,
+          "remaining": 1,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        }
+      },
+      "belts": {
+        "CA": -8,
+        "CB": 2,
+        "AC": -8,
+        "BK": 1,
+        "KG0": 0,
+        "KG1": 8,
+        "KG2": -8
+      }
+    },
+    {
+      "t": 15,
+      "machines": {
+        "C": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 49,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "A": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "B": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "K": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 49,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "G": {
+          "inputs": {
+            "blue_powder": 46,
+            "sand_powder": 49
+          },
+          "output": 2,
+          "remaining": 8,
+          "ready": false,
+          "active": true,
+          "starts": 1,
+          "sent": []
+        }
+      },
+      "belts": {
+        "CA": -8,
+        "CB": 2,
+        "AC": -8,
+        "BK": 1,
+        "KG0": 0,
+        "KG1": 8,
+        "KG2": -8
+      }
+    },
+    {
+      "t": 16,
+      "machines": {
+        "C": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 49,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "A": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "B": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "K": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 48,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": [
+            "KG2"
+          ]
+        },
+        "G": {
+          "inputs": {
+            "blue_powder": 46,
+            "sand_powder": 50
+          },
+          "output": 2,
+          "remaining": 7,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        }
+      },
+      "belts": {
+        "CA": -8,
+        "CB": 2,
+        "AC": -8,
+        "BK": 1,
+        "KG0": 0,
+        "KG1": 8,
+        "KG2": 16
+      }
+    },
+    {
+      "t": 17,
+      "machines": {
+        "C": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 49,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "A": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "B": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "K": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 48,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "G": {
+          "inputs": {
+            "blue_powder": 46,
+            "sand_powder": 50
+          },
+          "output": 2,
+          "remaining": 6,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        }
+      },
+      "belts": {
+        "CA": -8,
+        "CB": 2,
+        "AC": -8,
+        "BK": 1,
+        "KG0": 0,
+        "KG1": 8,
+        "KG2": 16
+      }
+    },
+    {
+      "t": 18,
+      "machines": {
+        "C": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 49,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "A": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "B": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "K": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 48,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "G": {
+          "inputs": {
+            "blue_powder": 46,
+            "sand_powder": 50
+          },
+          "output": 2,
+          "remaining": 5,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        }
+      },
+      "belts": {
+        "CA": -8,
+        "CB": 2,
+        "AC": -8,
+        "BK": 1,
+        "KG0": 0,
+        "KG1": 8,
+        "KG2": 16
+      }
+    },
+    {
+      "t": 19,
+      "machines": {
+        "C": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 49,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "A": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "B": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "K": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 48,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "G": {
+          "inputs": {
+            "blue_powder": 46,
+            "sand_powder": 50
+          },
+          "output": 2,
+          "remaining": 4,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        }
+      },
+      "belts": {
+        "CA": -8,
+        "CB": 2,
+        "AC": -8,
+        "BK": 1,
+        "KG0": 0,
+        "KG1": 8,
+        "KG2": 16
+      }
+    },
+    {
+      "t": 20,
+      "machines": {
+        "C": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 49,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "A": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "B": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "K": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 48,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "G": {
+          "inputs": {
+            "blue_powder": 46,
+            "sand_powder": 50
+          },
+          "output": 2,
+          "remaining": 3,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        }
+      },
+      "belts": {
+        "CA": -8,
+        "CB": 2,
+        "AC": -8,
+        "BK": 1,
+        "KG0": 0,
+        "KG1": 8,
+        "KG2": 16
+      }
+    },
+    {
+      "t": 21,
+      "machines": {
+        "C": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 49,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "A": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "B": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "K": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 48,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "G": {
+          "inputs": {
+            "blue_powder": 46,
+            "sand_powder": 50
+          },
+          "output": 2,
+          "remaining": 2,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        }
+      },
+      "belts": {
+        "CA": -8,
+        "CB": 2,
+        "AC": -8,
+        "BK": 1,
+        "KG0": 0,
+        "KG1": 8,
+        "KG2": 16
+      }
+    },
+    {
+      "t": 22,
+      "machines": {
+        "C": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 49,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "A": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "B": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "K": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 48,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "G": {
+          "inputs": {
+            "blue_powder": 46,
+            "sand_powder": 50
+          },
+          "output": 2,
+          "remaining": 1,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        }
+      },
+      "belts": {
+        "CA": -8,
+        "CB": 2,
+        "AC": -8,
+        "BK": 1,
+        "KG0": 0,
+        "KG1": 8,
+        "KG2": 16
+      }
+    },
+    {
+      "t": 23,
+      "machines": {
+        "C": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 49,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "A": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "B": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "K": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 48,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "G": {
+          "inputs": {
+            "blue_powder": 44,
+            "sand_powder": 49
+          },
+          "output": 3,
+          "remaining": 8,
+          "ready": false,
+          "active": true,
+          "starts": 1,
+          "sent": []
+        }
+      },
+      "belts": {
+        "CA": -8,
+        "CB": 2,
+        "AC": -8,
+        "BK": 1,
+        "KG0": 0,
+        "KG1": 8,
+        "KG2": 16
+      }
+    },
+    {
+      "t": 24,
+      "machines": {
+        "C": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 49,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "A": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "B": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "K": {
+          "inputs": {
+            "plant": 49
+          },
+          "output": 50,
+          "remaining": 8,
+          "ready": false,
+          "active": true,
+          "starts": 1,
+          "sent": [
+            "KG0"
+          ]
+        },
+        "G": {
+          "inputs": {
+            "blue_powder": 44,
+            "sand_powder": 50
+          },
+          "output": 3,
+          "remaining": 7,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        }
+      },
+      "belts": {
+        "CA": -8,
+        "CB": 2,
+        "AC": -8,
+        "BK": 1,
+        "KG0": 24,
+        "KG1": 8,
+        "KG2": 16
+      }
+    },
+    {
+      "t": 25,
+      "machines": {
+        "C": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 49,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "A": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "B": {
+          "inputs": {
+            "seed": 49
+          },
+          "output": 50,
+          "remaining": 8,
+          "ready": false,
+          "active": true,
+          "starts": 1,
+          "sent": [
+            "BK"
+          ]
+        },
+        "K": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 50,
+          "remaining": 7,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "G": {
+          "inputs": {
+            "blue_powder": 44,
+            "sand_powder": 50
+          },
+          "output": 3,
+          "remaining": 6,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        }
+      },
+      "belts": {
+        "CA": -8,
+        "CB": 2,
+        "AC": -8,
+        "BK": 25,
+        "KG0": 24,
+        "KG1": 8,
+        "KG2": 16
+      }
+    },
+    {
+      "t": 26,
+      "machines": {
+        "C": {
+          "inputs": {
+            "plant": 49
+          },
+          "output": 50,
+          "remaining": 8,
+          "ready": false,
+          "active": true,
+          "starts": 1,
+          "sent": [
+            "CB"
+          ]
+        },
+        "A": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": null,
+          "ready": true,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        },
+        "B": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": 7,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "K": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 50,
+          "remaining": 6,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "G": {
+          "inputs": {
+            "blue_powder": 44,
+            "sand_powder": 50
+          },
+          "output": 3,
+          "remaining": 5,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        }
+      },
+      "belts": {
+        "CA": -8,
+        "CB": 26,
+        "AC": -8,
+        "BK": 25,
+        "KG0": 24,
+        "KG1": 8,
+        "KG2": 16
+      }
+    },
+    {
+      "t": 27,
+      "machines": {
+        "C": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 50,
+          "remaining": 7,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "A": {
+          "inputs": {
+            "seed": 49
+          },
+          "output": 50,
+          "remaining": 8,
+          "ready": false,
+          "active": true,
+          "starts": 1,
+          "sent": [
+            "AC"
+          ]
+        },
+        "B": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": 6,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "K": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 50,
+          "remaining": 5,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "G": {
+          "inputs": {
+            "blue_powder": 44,
+            "sand_powder": 50
+          },
+          "output": 3,
+          "remaining": 4,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        }
+      },
+      "belts": {
+        "CA": -8,
+        "CB": 26,
+        "AC": 27,
+        "BK": 25,
+        "KG0": 24,
+        "KG1": 8,
+        "KG2": 16
+      }
+    },
+    {
+      "t": 28,
+      "machines": {
+        "C": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 49,
+          "remaining": 6,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": [
+            "CA"
+          ]
+        },
+        "A": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": 7,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "B": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": 5,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "K": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 50,
+          "remaining": 4,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "G": {
+          "inputs": {
+            "blue_powder": 44,
+            "sand_powder": 50
+          },
+          "output": 3,
+          "remaining": 3,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        }
+      },
+      "belts": {
+        "CA": 28,
+        "CB": 26,
+        "AC": 27,
+        "BK": 25,
+        "KG0": 24,
+        "KG1": 8,
+        "KG2": 16
+      }
+    },
+    {
+      "t": 29,
+      "machines": {
+        "C": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 49,
+          "remaining": 5,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "A": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": 6,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "B": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": 4,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "K": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 50,
+          "remaining": 3,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "G": {
+          "inputs": {
+            "blue_powder": 44,
+            "sand_powder": 50
+          },
+          "output": 3,
+          "remaining": 2,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        }
+      },
+      "belts": {
+        "CA": 28,
+        "CB": 26,
+        "AC": 27,
+        "BK": 25,
+        "KG0": 24,
+        "KG1": 8,
+        "KG2": 16
+      }
+    },
+    {
+      "t": 30,
+      "machines": {
+        "C": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 49,
+          "remaining": 4,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "A": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": 5,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "B": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": 3,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "K": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 50,
+          "remaining": 2,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "G": {
+          "inputs": {
+            "blue_powder": 44,
+            "sand_powder": 50
+          },
+          "output": 3,
+          "remaining": 1,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        }
+      },
+      "belts": {
+        "CA": 28,
+        "CB": 26,
+        "AC": 27,
+        "BK": 25,
+        "KG0": 24,
+        "KG1": 8,
+        "KG2": 16
+      }
+    },
+    {
+      "t": 31,
+      "machines": {
+        "C": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 49,
+          "remaining": 3,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "A": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": 4,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "B": {
+          "inputs": {
+            "seed": 50
+          },
+          "output": 50,
+          "remaining": 2,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "K": {
+          "inputs": {
+            "plant": 50
+          },
+          "output": 50,
+          "remaining": 1,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "G": {
+          "inputs": {
+            "blue_powder": 42,
+            "sand_powder": 49
+          },
+          "output": 4,
+          "remaining": 8,
+          "ready": false,
+          "active": true,
+          "starts": 1,
+          "sent": []
+        }
+      },
+      "belts": {
+        "CA": 28,
+        "CB": 26,
+        "AC": 27,
+        "BK": 25,
+        "KG0": 24,
+        "KG1": 8,
+        "KG2": 16
+      }
+    }
+  ],
+  "events": [
+    {
+      "t": 0,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 0,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 0,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 0,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 0,
+      "unit": "KG0",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 0,
+      "unit": "G",
+      "event": "receive",
+      "kind": "sand_powder"
+    },
+    {
+      "t": 0,
+      "unit": "KG0",
+      "event": "send",
+      "kind": "sand_powder",
+      "destination": "G"
+    },
+    {
+      "t": 0,
+      "unit": "KG1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 0,
+      "unit": "KG2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 0,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 0,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 0,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 0,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 0,
+      "unit": "K",
+      "event": "cache_to_output",
+      "kind": "sand_powder",
+      "quantity": 3
+    },
+    {
+      "t": 0,
+      "unit": "KG0",
+      "event": "receive",
+      "kind": "sand_powder"
+    },
+    {
+      "t": 0,
+      "unit": "K",
+      "event": "send",
+      "kind": "sand_powder",
+      "destination": "KG0"
+    },
+    {
+      "t": 0,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 0,
+      "unit": "K",
+      "event": "start",
+      "kind": "K"
+    },
+    {
+      "t": 1,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 1,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 1,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 1,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 1,
+      "unit": "K",
+      "event": "receive",
+      "kind": "plant"
+    },
+    {
+      "t": 1,
+      "unit": "BK",
+      "event": "send",
+      "kind": "plant",
+      "destination": "K"
+    },
+    {
+      "t": 1,
+      "unit": "KG1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 1,
+      "unit": "KG2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 1,
+      "unit": "KG0",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 1,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 1,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 1,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 1,
+      "unit": "B",
+      "event": "cache_to_output",
+      "kind": "plant",
+      "quantity": 1
+    },
+    {
+      "t": 1,
+      "unit": "BK",
+      "event": "receive",
+      "kind": "plant"
+    },
+    {
+      "t": 1,
+      "unit": "B",
+      "event": "send",
+      "kind": "plant",
+      "destination": "BK"
+    },
+    {
+      "t": 1,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 1,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 1,
+      "unit": "B",
+      "event": "start",
+      "kind": "B"
+    },
+    {
+      "t": 2,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 2,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 2,
+      "unit": "B",
+      "event": "receive",
+      "kind": "seed"
+    },
+    {
+      "t": 2,
+      "unit": "CB",
+      "event": "send",
+      "kind": "seed",
+      "destination": "B"
+    },
+    {
+      "t": 2,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 2,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 2,
+      "unit": "KG1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 2,
+      "unit": "KG2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 2,
+      "unit": "KG0",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 2,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 2,
+      "unit": "CB",
+      "event": "receive",
+      "kind": "seed"
+    },
+    {
+      "t": 2,
+      "unit": "C",
+      "event": "send",
+      "kind": "seed",
+      "destination": "CB"
+    },
+    {
+      "t": 2,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 2,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 2,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 2,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 3,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 3,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 3,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 3,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 3,
+      "unit": "KG1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 3,
+      "unit": "KG2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 3,
+      "unit": "KG0",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 3,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 3,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 3,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 3,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 3,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 4,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 4,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 4,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 4,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 4,
+      "unit": "KG1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 4,
+      "unit": "KG2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 4,
+      "unit": "KG0",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 4,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 4,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 4,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 4,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 4,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 5,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 5,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 5,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 5,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 5,
+      "unit": "KG1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 5,
+      "unit": "KG2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 5,
+      "unit": "KG0",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 5,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 5,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 5,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 5,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 5,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 6,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 6,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 6,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 6,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 6,
+      "unit": "KG1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 6,
+      "unit": "KG2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 6,
+      "unit": "KG0",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 6,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 6,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 6,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 6,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 6,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 7,
+      "unit": "G",
+      "event": "finish",
+      "kind": "G"
+    },
+    {
+      "t": 7,
+      "unit": "G",
+      "event": "cache_to_output",
+      "kind": "dense_blue",
+      "quantity": 1
+    },
+    {
+      "t": 7,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 7,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 7,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 7,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 7,
+      "unit": "KG1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 7,
+      "unit": "KG2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 7,
+      "unit": "KG0",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 7,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 7,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 7,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 7,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 7,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 7,
+      "unit": "G",
+      "event": "start",
+      "kind": "G"
+    },
+    {
+      "t": 8,
+      "unit": "K",
+      "event": "finish",
+      "kind": "K"
+    },
+    {
+      "t": 8,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 8,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 8,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 8,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 8,
+      "unit": "KG1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 8,
+      "unit": "G",
+      "event": "receive",
+      "kind": "sand_powder"
+    },
+    {
+      "t": 8,
+      "unit": "KG1",
+      "event": "send",
+      "kind": "sand_powder",
+      "destination": "G"
+    },
+    {
+      "t": 8,
+      "unit": "KG2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 8,
+      "unit": "KG0",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 8,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 8,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 8,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 8,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 8,
+      "unit": "KG1",
+      "event": "receive",
+      "kind": "sand_powder"
+    },
+    {
+      "t": 8,
+      "unit": "K",
+      "event": "send",
+      "kind": "sand_powder",
+      "destination": "KG1"
+    },
+    {
+      "t": 8,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 9,
+      "unit": "B",
+      "event": "finish",
+      "kind": "B"
+    },
+    {
+      "t": 9,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 9,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 9,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 9,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 9,
+      "unit": "KG2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 9,
+      "unit": "KG0",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 9,
+      "unit": "KG1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 9,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 9,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 9,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 9,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 9,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 10,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 10,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 10,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 10,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 10,
+      "unit": "KG2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 10,
+      "unit": "KG0",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 10,
+      "unit": "KG1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 10,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 10,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 10,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 10,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 10,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 11,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 11,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 11,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 11,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 11,
+      "unit": "KG2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 11,
+      "unit": "KG0",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 11,
+      "unit": "KG1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 11,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 11,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 11,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 11,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 11,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 12,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 12,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 12,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 12,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 12,
+      "unit": "KG2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 12,
+      "unit": "KG0",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 12,
+      "unit": "KG1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 12,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 12,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 12,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 12,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 12,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 13,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 13,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 13,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 13,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 13,
+      "unit": "KG2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 13,
+      "unit": "KG0",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 13,
+      "unit": "KG1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 13,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 13,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 13,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 13,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 13,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 14,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 14,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 14,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 14,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 14,
+      "unit": "KG2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 14,
+      "unit": "KG0",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 14,
+      "unit": "KG1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 14,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 14,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 14,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 14,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 14,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 15,
+      "unit": "G",
+      "event": "finish",
+      "kind": "G"
+    },
+    {
+      "t": 15,
+      "unit": "G",
+      "event": "cache_to_output",
+      "kind": "dense_blue",
+      "quantity": 1
+    },
+    {
+      "t": 15,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 15,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 15,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 15,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 15,
+      "unit": "KG2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 15,
+      "unit": "KG0",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 15,
+      "unit": "KG1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 15,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 15,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 15,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 15,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 15,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 15,
+      "unit": "G",
+      "event": "start",
+      "kind": "G"
+    },
+    {
+      "t": 16,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 16,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 16,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 16,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 16,
+      "unit": "KG2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 16,
+      "unit": "G",
+      "event": "receive",
+      "kind": "sand_powder"
+    },
+    {
+      "t": 16,
+      "unit": "KG2",
+      "event": "send",
+      "kind": "sand_powder",
+      "destination": "G"
+    },
+    {
+      "t": 16,
+      "unit": "KG0",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 16,
+      "unit": "KG1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 16,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 16,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 16,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 16,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 16,
+      "unit": "KG2",
+      "event": "receive",
+      "kind": "sand_powder"
+    },
+    {
+      "t": 16,
+      "unit": "K",
+      "event": "send",
+      "kind": "sand_powder",
+      "destination": "KG2"
+    },
+    {
+      "t": 16,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 17,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 17,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 17,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 17,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 17,
+      "unit": "KG0",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 17,
+      "unit": "KG1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 17,
+      "unit": "KG2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 17,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 17,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 17,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 17,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 17,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 18,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 18,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 18,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 18,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 18,
+      "unit": "KG0",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 18,
+      "unit": "KG1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 18,
+      "unit": "KG2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 18,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 18,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 18,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 18,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 18,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 19,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 19,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 19,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 19,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 19,
+      "unit": "KG0",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 19,
+      "unit": "KG1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 19,
+      "unit": "KG2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 19,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 19,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 19,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 19,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 19,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 20,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 20,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 20,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 20,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 20,
+      "unit": "KG0",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 20,
+      "unit": "KG1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 20,
+      "unit": "KG2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 20,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 20,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 20,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 20,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 20,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 21,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 21,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 21,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 21,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 21,
+      "unit": "KG0",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 21,
+      "unit": "KG1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 21,
+      "unit": "KG2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 21,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 21,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 21,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 21,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 21,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 22,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 22,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 22,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 22,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 22,
+      "unit": "KG0",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 22,
+      "unit": "KG1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 22,
+      "unit": "KG2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 22,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 22,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 22,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 22,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 22,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 23,
+      "unit": "G",
+      "event": "finish",
+      "kind": "G"
+    },
+    {
+      "t": 23,
+      "unit": "G",
+      "event": "cache_to_output",
+      "kind": "dense_blue",
+      "quantity": 1
+    },
+    {
+      "t": 23,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 23,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 23,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 23,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 23,
+      "unit": "KG0",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 23,
+      "unit": "KG1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 23,
+      "unit": "KG2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 23,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 23,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 23,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 23,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 23,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 23,
+      "unit": "G",
+      "event": "start",
+      "kind": "G"
+    },
+    {
+      "t": 24,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 24,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 24,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 24,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 24,
+      "unit": "KG0",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 24,
+      "unit": "G",
+      "event": "receive",
+      "kind": "sand_powder"
+    },
+    {
+      "t": 24,
+      "unit": "KG0",
+      "event": "send",
+      "kind": "sand_powder",
+      "destination": "G"
+    },
+    {
+      "t": 24,
+      "unit": "KG1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 24,
+      "unit": "KG2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 24,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 24,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 24,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 24,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 24,
+      "unit": "K",
+      "event": "cache_to_output",
+      "kind": "sand_powder",
+      "quantity": 3
+    },
+    {
+      "t": 24,
+      "unit": "KG0",
+      "event": "receive",
+      "kind": "sand_powder"
+    },
+    {
+      "t": 24,
+      "unit": "K",
+      "event": "send",
+      "kind": "sand_powder",
+      "destination": "KG0"
+    },
+    {
+      "t": 24,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 24,
+      "unit": "K",
+      "event": "start",
+      "kind": "K"
+    },
+    {
+      "t": 25,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 25,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 25,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 25,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 25,
+      "unit": "K",
+      "event": "receive",
+      "kind": "plant"
+    },
+    {
+      "t": 25,
+      "unit": "BK",
+      "event": "send",
+      "kind": "plant",
+      "destination": "K"
+    },
+    {
+      "t": 25,
+      "unit": "KG1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 25,
+      "unit": "KG2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 25,
+      "unit": "KG0",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 25,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 25,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 25,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 25,
+      "unit": "B",
+      "event": "cache_to_output",
+      "kind": "plant",
+      "quantity": 1
+    },
+    {
+      "t": 25,
+      "unit": "BK",
+      "event": "receive",
+      "kind": "plant"
+    },
+    {
+      "t": 25,
+      "unit": "B",
+      "event": "send",
+      "kind": "plant",
+      "destination": "BK"
+    },
+    {
+      "t": 25,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 25,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 25,
+      "unit": "B",
+      "event": "start",
+      "kind": "B"
+    },
+    {
+      "t": 26,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 26,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 26,
+      "unit": "B",
+      "event": "receive",
+      "kind": "seed"
+    },
+    {
+      "t": 26,
+      "unit": "CB",
+      "event": "send",
+      "kind": "seed",
+      "destination": "B"
+    },
+    {
+      "t": 26,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 26,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 26,
+      "unit": "KG1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 26,
+      "unit": "KG2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 26,
+      "unit": "KG0",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 26,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 26,
+      "unit": "C",
+      "event": "cache_to_output",
+      "kind": "seed",
+      "quantity": 2
+    },
+    {
+      "t": 26,
+      "unit": "CB",
+      "event": "receive",
+      "kind": "seed"
+    },
+    {
+      "t": 26,
+      "unit": "C",
+      "event": "send",
+      "kind": "seed",
+      "destination": "CB"
+    },
+    {
+      "t": 26,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 26,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 26,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 26,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 26,
+      "unit": "C",
+      "event": "start",
+      "kind": "C"
+    },
+    {
+      "t": 27,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 27,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 27,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 27,
+      "unit": "C",
+      "event": "receive",
+      "kind": "plant"
+    },
+    {
+      "t": 27,
+      "unit": "AC",
+      "event": "send",
+      "kind": "plant",
+      "destination": "C"
+    },
+    {
+      "t": 27,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 27,
+      "unit": "KG1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 27,
+      "unit": "KG2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 27,
+      "unit": "KG0",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 27,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 27,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 27,
+      "unit": "A",
+      "event": "cache_to_output",
+      "kind": "plant",
+      "quantity": 1
+    },
+    {
+      "t": 27,
+      "unit": "AC",
+      "event": "receive",
+      "kind": "plant"
+    },
+    {
+      "t": 27,
+      "unit": "A",
+      "event": "send",
+      "kind": "plant",
+      "destination": "AC"
+    },
+    {
+      "t": 27,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 27,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 27,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 27,
+      "unit": "A",
+      "event": "start",
+      "kind": "A"
+    },
+    {
+      "t": 28,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 28,
+      "unit": "A",
+      "event": "receive",
+      "kind": "seed"
+    },
+    {
+      "t": 28,
+      "unit": "CA",
+      "event": "send",
+      "kind": "seed",
+      "destination": "A"
+    },
+    {
+      "t": 28,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 28,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 28,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 28,
+      "unit": "KG1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 28,
+      "unit": "KG2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 28,
+      "unit": "KG0",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 28,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 28,
+      "unit": "CA",
+      "event": "receive",
+      "kind": "seed"
+    },
+    {
+      "t": 28,
+      "unit": "C",
+      "event": "send",
+      "kind": "seed",
+      "destination": "CA"
+    },
+    {
+      "t": 28,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 28,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 28,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 28,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 29,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 29,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 29,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 29,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 29,
+      "unit": "KG1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 29,
+      "unit": "KG2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 29,
+      "unit": "KG0",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 29,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 29,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 29,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 29,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 29,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 30,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 30,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 30,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 30,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 30,
+      "unit": "KG1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 30,
+      "unit": "KG2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 30,
+      "unit": "KG0",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 30,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 30,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 30,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 30,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 30,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 31,
+      "unit": "G",
+      "event": "finish",
+      "kind": "G"
+    },
+    {
+      "t": 31,
+      "unit": "G",
+      "event": "cache_to_output",
+      "kind": "dense_blue",
+      "quantity": 1
+    },
+    {
+      "t": 31,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 31,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 31,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 31,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 31,
+      "unit": "KG1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 31,
+      "unit": "KG2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 31,
+      "unit": "KG0",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KG0"
+    },
+    {
+      "t": 31,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 31,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 31,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 31,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 31,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 31,
+      "unit": "G",
+      "event": "start",
+      "kind": "G"
+    }
+  ]
+}

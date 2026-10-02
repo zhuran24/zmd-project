@@ -1,0 +1,15 @@
+{
+  "model": "direct step / absolute releases / sorted success ages",
+  "cases_by_k": {
+    "1": 512,
+    "2": 3968,
+    "3": 21760,
+    "4": 97280,
+    "5": 379904,
+    "6": 1347584
+  },
+  "cases_total": 1851008,
+  "canonical_sha256": "dea8ab27e5fde87d7f0f6f609b621b59299e7ded63767ad8f4dcff625f18eab6",
+  "violations": 0,
+  "scope": "all four-group words, k=1..6, all per-channel release phases and all group delays 0/1 step; rotor natural order and LRU reversed order"
+}

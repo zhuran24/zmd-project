@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "local_links_checked": 22,
+  "scripts_syntax_checked": 11,
+  "verdict_schema_checked": true,
+  "snapshots_unchanged": true,
+  "reader_review": {
+    "header_matches_verdicts": true,
+    "all_candidate_replacement_clauses_present": true,
+    "local_relaxations_distinguished_from_factories": true,
+    "CP_SAT_UNKNOWN_not_used_as_infeasibility": true,
+    "unresolved_old_inner_corner_case_explicit": true,
+    "global_1110_bound_not_claimed_recertified": true
+  }
+}

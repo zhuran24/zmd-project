@@ -1,0 +1,15 @@
+{
+ "N_groups": 4,
+ "exhaustive_cases_per_k": {
+  "1": 640,
+  "2": 3472,
+  "3": 14960,
+  "4": 57760,
+  "5": 207760,
+  "6": 705376
+ },
+ "random_cases": 60000,
+ "bad": 0,
+ "bad_examples": [],
+ "trace_sha256": "f888914e29cd1ca97b9900f0243811aa84fb754d7b564322995a58acfb329c05"
+}

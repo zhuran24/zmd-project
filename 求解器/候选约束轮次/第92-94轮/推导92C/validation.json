@@ -1,0 +1,28 @@
+{
+  "status": "pass",
+  "candidate_count": 6,
+  "confirmed_count": 4,
+  "report_bytes": 100908,
+  "links_checked": 20,
+  "json_files_parsed": 27,
+  "snapshot_hashes_unchanged": true,
+  "result_summaries_consistent": true,
+  "all_candidate_texts_in_report": true,
+  "independent_review": [
+    "S01-S05 arithmetic and proof",
+    "S07 inventory bound",
+    "S08 saturation proof"
+  ],
+  "unresolved": [
+    "S07 indefinite guarantee",
+    "S08 original bridge/gate scope",
+    "S09 original no-gap/full-rate scope",
+    "S10 original multi-outlet/bridge scope"
+  ],
+  "authoritative_scope": "temporary_rules",
+  "temporary_sections_checked": 10,
+  "temporary_rules_hash_unchanged": true,
+  "temporary_candidates_match": true,
+  "history_reset_assumed": false,
+  "temporary_results_consistent": true
+}

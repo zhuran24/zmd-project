@@ -1,0 +1,107 @@
+[
+ {
+  "T": 64,
+  "period": 192,
+  "counts_period": [
+   18,
+   24,
+   18
+  ],
+  "counts_next_period": [
+   18,
+   24,
+   18
+  ],
+  "violations": 0,
+  "first_viol": [],
+  "reported": [
+   18,
+   24,
+   18
+  ]
+ },
+ {
+  "T": 8,
+  "period": 144,
+  "counts_period": [
+   15,
+   18,
+   15
+  ],
+  "counts_next_period": [
+   15,
+   18,
+   15
+  ],
+  "violations": 0,
+  "first_viol": [],
+  "reported": [
+   15,
+   18,
+   15
+  ]
+ },
+ {
+  "T": 16,
+  "period": 240,
+  "counts_period": [
+   24,
+   24,
+   30
+  ],
+  "counts_next_period": [
+   24,
+   24,
+   30
+  ],
+  "violations": 0,
+  "first_viol": [],
+  "reported": [
+   24,
+   24,
+   30
+  ]
+ },
+ {
+  "T": 56,
+  "period": 112,
+  "counts_period": [
+   13,
+   11,
+   12
+  ],
+  "counts_next_period": [
+   13,
+   11,
+   12
+  ],
+  "violations": 0,
+  "first_viol": [],
+  "reported": [
+   13,
+   11,
+   12
+  ]
+ },
+ {
+  "T": 24,
+  "period": 240,
+  "counts_period": [
+   27,
+   27,
+   30
+  ],
+  "counts_next_period": [
+   27,
+   27,
+   30
+  ],
+  "violations": 0,
+  "first_viol": [],
+  "reported": [
+   27,
+   27,
+   30
+  ]
+ }
+]

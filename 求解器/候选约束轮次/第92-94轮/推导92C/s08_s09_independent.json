@@ -1,0 +1,7 @@
+{
+  "independent_cases": 160,
+  "stepwise_equal_states": 25600,
+  "S08_violations": 0,
+  "saturation_constant_counted": 176.0,
+  "saturation_constant_symbolic": 176.0
+}

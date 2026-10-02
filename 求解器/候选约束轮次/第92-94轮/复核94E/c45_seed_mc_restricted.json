@@ -1,0 +1,12 @@
+{
+ "restricted": {
+  "states": 191900,
+  "edges": 452304,
+  "claimed_max_batches_per_tick": "8/9",
+  "certificate_ok": true,
+  "bf_iterations": 440,
+  "policy_rate": "8/9",
+  "policy_cycle_steps": 18,
+  "tight": true
+ }
+}

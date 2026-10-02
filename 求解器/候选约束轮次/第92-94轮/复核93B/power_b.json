@@ -1,0 +1,38 @@
+[
+  {
+    "edge": false,
+    "kind": "count",
+    "target": 24,
+    "options": 1240,
+    "status": "INFEASIBLE",
+    "seconds": 2.7177718359998835,
+    "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)"
+  },
+  {
+    "edge": false,
+    "kind": "weight",
+    "target": 55,
+    "options": 1240,
+    "status": "INFEASIBLE",
+    "seconds": 4.433349494998765,
+    "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)"
+  },
+  {
+    "edge": true,
+    "kind": "count",
+    "target": 14,
+    "options": 550,
+    "status": "INFEASIBLE",
+    "seconds": 0.10592738000013924,
+    "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)"
+  },
+  {
+    "edge": true,
+    "kind": "weight",
+    "target": 30,
+    "options": 550,
+    "status": "INFEASIBLE",
+    "seconds": 0.13490495899895905,
+    "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)"
+  }
+]

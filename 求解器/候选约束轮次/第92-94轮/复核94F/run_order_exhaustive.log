@@ -1,0 +1,1 @@
+{"eager/axis": {"nets": 120, "orders": 49488, "diff_nets": 0, "diff_by_feat": {}}, "judge/axis": {"nets": 120, "orders": 49488, "diff_nets": 1, "diff_by_feat": {"dead_multi=1,bridge_two_axes_fed=0": 1}}, "eager/unit": {"nets": 120, "orders": 49488, "diff_nets": 2, "diff_by_feat": {"dead_multi=0,bridge_two_axes_fed=1": 2}}}

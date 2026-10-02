@@ -1,0 +1,649 @@
+{
+  "scope": "One transport cell relaxation and outlet phase arithmetic; not a layout certificate.",
+  "snapshots": {
+    "《明日方舟：终末地》游戏规则.txt": {
+      "sha256": "c8d3a17b8830baba18aea36c4c66f02f8873895188f8821176cc218aa6135f93",
+      "lines": 115
+    },
+    "求解任务.txt": {
+      "sha256": "7bec7a1edf2f46644a6e6a75d588f5ff05202cc32d6b42430677ea39b878309b",
+      "lines": 15
+    },
+    "求解约束.txt": {
+      "sha256": "dfea46c61f29be5a86659bce3642009d2558ace073d6dbd79f5dd3c6475226db",
+      "lines": 168
+    },
+    "求解充分条件.txt": {
+      "sha256": "aa633c7c927227ba4635f97bfb8948e9c3ba84ff1e489dd053b72db82e9ac435",
+      "lines": 24
+    },
+    "不补的设定.txt": {
+      "sha256": "7a0c7d6e495f4f6b5ed6caba24584261925479e06fcad9428760f8a687f2abba",
+      "lines": 29
+    }
+  },
+  "cell_graph": {
+    "-1": [
+      [
+        -1,
+        0
+      ],
+      [
+        0,
+        1
+      ]
+    ],
+    "0": [
+      [
+        1,
+        0
+      ]
+    ],
+    "1": [
+      [
+        2,
+        0
+      ]
+    ],
+    "2": [
+      [
+        3,
+        0
+      ]
+    ],
+    "3": [
+      [
+        4,
+        0
+      ]
+    ],
+    "4": [
+      [
+        5,
+        0
+      ]
+    ],
+    "5": [
+      [
+        6,
+        0
+      ]
+    ],
+    "6": [
+      [
+        7,
+        0
+      ]
+    ],
+    "7": [
+      [
+        -1,
+        0
+      ],
+      [
+        0,
+        1
+      ],
+      [
+        8,
+        0
+      ]
+    ],
+    "8": [
+      [
+        -1,
+        0
+      ],
+      [
+        0,
+        1
+      ],
+      [
+        8,
+        0
+      ]
+    ]
+  },
+  "elementary_cycles": [
+    {
+      "states": [
+        -1
+      ],
+      "reception_rewards": [
+        0
+      ],
+      "rate_per_step": "0"
+    },
+    {
+      "states": [
+        -1,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "reception_rewards": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "rate_per_step": "1/9"
+    },
+    {
+      "states": [
+        -1,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "reception_rewards": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "rate_per_step": "1/10"
+    },
+    {
+      "states": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "reception_rewards": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "rate_per_step": "1/8"
+    },
+    {
+      "states": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "reception_rewards": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "rate_per_step": "1/9"
+    },
+    {
+      "states": [
+        8
+      ],
+      "reception_rewards": [
+        0
+      ],
+      "rate_per_step": "0"
+    }
+  ],
+  "max_rate_per_step": "1/8",
+  "unique_max_cycle": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "timestamp_encoding": [
+    {
+      "period_steps": 8,
+      "receipts": 1,
+      "schedules": [
+        {
+          "times": [
+            0
+          ],
+          "gaps": [
+            8
+          ]
+        },
+        {
+          "times": [
+            1
+          ],
+          "gaps": [
+            8
+          ]
+        },
+        {
+          "times": [
+            2
+          ],
+          "gaps": [
+            8
+          ]
+        },
+        {
+          "times": [
+            3
+          ],
+          "gaps": [
+            8
+          ]
+        },
+        {
+          "times": [
+            4
+          ],
+          "gaps": [
+            8
+          ]
+        },
+        {
+          "times": [
+            5
+          ],
+          "gaps": [
+            8
+          ]
+        },
+        {
+          "times": [
+            6
+          ],
+          "gaps": [
+            8
+          ]
+        },
+        {
+          "times": [
+            7
+          ],
+          "gaps": [
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "period_steps": 16,
+      "receipts": 2,
+      "schedules": [
+        {
+          "times": [
+            0,
+            8
+          ],
+          "gaps": [
+            8,
+            8
+          ]
+        },
+        {
+          "times": [
+            1,
+            9
+          ],
+          "gaps": [
+            8,
+            8
+          ]
+        },
+        {
+          "times": [
+            2,
+            10
+          ],
+          "gaps": [
+            8,
+            8
+          ]
+        },
+        {
+          "times": [
+            3,
+            11
+          ],
+          "gaps": [
+            8,
+            8
+          ]
+        },
+        {
+          "times": [
+            4,
+            12
+          ],
+          "gaps": [
+            8,
+            8
+          ]
+        },
+        {
+          "times": [
+            5,
+            13
+          ],
+          "gaps": [
+            8,
+            8
+          ]
+        },
+        {
+          "times": [
+            6,
+            14
+          ],
+          "gaps": [
+            8,
+            8
+          ]
+        },
+        {
+          "times": [
+            7,
+            15
+          ],
+          "gaps": [
+            8,
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "period_steps": 24,
+      "receipts": 3,
+      "schedules": [
+        {
+          "times": [
+            0,
+            8,
+            16
+          ],
+          "gaps": [
+            8,
+            8,
+            8
+          ]
+        },
+        {
+          "times": [
+            1,
+            9,
+            17
+          ],
+          "gaps": [
+            8,
+            8,
+            8
+          ]
+        },
+        {
+          "times": [
+            2,
+            10,
+            18
+          ],
+          "gaps": [
+            8,
+            8,
+            8
+          ]
+        },
+        {
+          "times": [
+            3,
+            11,
+            19
+          ],
+          "gaps": [
+            8,
+            8,
+            8
+          ]
+        },
+        {
+          "times": [
+            4,
+            12,
+            20
+          ],
+          "gaps": [
+            8,
+            8,
+            8
+          ]
+        },
+        {
+          "times": [
+            5,
+            13,
+            21
+          ],
+          "gaps": [
+            8,
+            8,
+            8
+          ]
+        },
+        {
+          "times": [
+            6,
+            14,
+            22
+          ],
+          "gaps": [
+            8,
+            8,
+            8
+          ]
+        },
+        {
+          "times": [
+            7,
+            15,
+            23
+          ],
+          "gaps": [
+            8,
+            8,
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "period_steps": 32,
+      "receipts": 4,
+      "schedules": [
+        {
+          "times": [
+            0,
+            8,
+            16,
+            24
+          ],
+          "gaps": [
+            8,
+            8,
+            8,
+            8
+          ]
+        },
+        {
+          "times": [
+            1,
+            9,
+            17,
+            25
+          ],
+          "gaps": [
+            8,
+            8,
+            8,
+            8
+          ]
+        },
+        {
+          "times": [
+            2,
+            10,
+            18,
+            26
+          ],
+          "gaps": [
+            8,
+            8,
+            8,
+            8
+          ]
+        },
+        {
+          "times": [
+            3,
+            11,
+            19,
+            27
+          ],
+          "gaps": [
+            8,
+            8,
+            8,
+            8
+          ]
+        },
+        {
+          "times": [
+            4,
+            12,
+            20,
+            28
+          ],
+          "gaps": [
+            8,
+            8,
+            8,
+            8
+          ]
+        },
+        {
+          "times": [
+            5,
+            13,
+            21,
+            29
+          ],
+          "gaps": [
+            8,
+            8,
+            8,
+            8
+          ]
+        },
+        {
+          "times": [
+            6,
+            14,
+            22,
+            30
+          ],
+          "gaps": [
+            8,
+            8,
+            8,
+            8
+          ]
+        },
+        {
+          "times": [
+            7,
+            15,
+            23,
+            31
+          ],
+          "gaps": [
+            8,
+            8,
+            8,
+            8
+          ]
+        }
+      ]
+    }
+  ],
+  "phase_counts_two_encodings": [
+    {
+      "outlets": 1,
+      "encoding_a": 8,
+      "encoding_b": 8
+    },
+    {
+      "outlets": 2,
+      "encoding_a": 56,
+      "encoding_b": 56
+    },
+    {
+      "outlets": 3,
+      "encoding_a": 336,
+      "encoding_b": 336
+    },
+    {
+      "outlets": 4,
+      "encoding_a": 1680,
+      "encoding_b": 1680
+    },
+    {
+      "outlets": 5,
+      "encoding_a": 6720,
+      "encoding_b": 6720
+    },
+    {
+      "outlets": 6,
+      "encoding_a": 20160,
+      "encoding_b": 20160
+    }
+  ],
+  "pass": true
+}

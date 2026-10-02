@@ -1,0 +1,132 @@
+{
+  "generated_utc": "2026-10-02T06:46:57.946576+00:00",
+  "checks": {
+    "independent_results_equal": true,
+    "geometry_checked": true,
+    "report_links_resolve": 14,
+    "schema_and_revised_text_match": true,
+    "python_syntax_checked": 8,
+    "author_simulator_imports": 0,
+    "snapshot_rule_lines": 115,
+    "snapshot_necessary_conditions": 77,
+    "snapshot_sufficient_conditions": 11
+  },
+  "premise_snapshot": {
+    "求解器/候选约束轮次/第92-94轮/前提快照/《明日方舟：终末地》游戏规则.txt": {
+      "bytes": 7538,
+      "sha256": "c8d3a17b8830baba18aea36c4c66f02f8873895188f8821176cc218aa6135f93"
+    },
+    "求解器/候选约束轮次/第92-94轮/前提快照/求解任务.txt": {
+      "bytes": 1350,
+      "sha256": "7bec7a1edf2f46644a6e6a75d588f5ff05202cc32d6b42430677ea39b878309b"
+    },
+    "求解器/候选约束轮次/第92-94轮/前提快照/求解约束.txt": {
+      "bytes": 48292,
+      "sha256": "dfea46c61f29be5a86659bce3642009d2558ace073d6dbd79f5dd3c6475226db"
+    },
+    "求解器/候选约束轮次/第92-94轮/前提快照/求解充分条件.txt": {
+      "bytes": 17489,
+      "sha256": "aa633c7c927227ba4635f97bfb8948e9c3ba84ff1e489dd053b72db82e9ac435"
+    },
+    "求解器/候选约束轮次/第92-94轮/前提快照/不补的设定.txt": {
+      "bytes": 4161,
+      "sha256": "7a0c7d6e495f4f6b5ed6caba24584261925479e06fcad9428760f8a687f2abba"
+    }
+  },
+  "reviewed_materials": {
+    "求解器/候选约束轮次/第92-94轮/推导92F.md": {
+      "bytes": 25373,
+      "sha256": "8723275f85bf7e33d3aa563c3b8c8c552fc45fa17c7c4657316226740022220a"
+    },
+    "求解器/候选约束轮次/第92-94轮/推导92F/s11_sim.py": {
+      "bytes": 16090,
+      "sha256": "36e2c147d9e49fe40516f96c4215123040ae5ddd9b19f906aa33547d33e60526"
+    },
+    "求解器/候选约束轮次/第92-94轮/推导92F/stepsim.py": {
+      "bytes": 15958,
+      "sha256": "65ff634229c8d58f74058ee1ada387cb5da33336624873b833f529963631e665"
+    },
+    "求解器/候选约束轮次/第92-94轮/推导92F/netgen.py": {
+      "bytes": 6038,
+      "sha256": "6dbf0b911f5cf184379f3d43e42425fa30ffd1790ef86986429cb0410e948590"
+    },
+    "求解器/规则修订/2026-09-30-迟滞/sim2/simulator.py": {
+      "bytes": 22640,
+      "sha256": "08a83262a5ca2651a3dc06b4fed83bc3f6e957379e5eec7b63094788f0d0bac8"
+    },
+    "求解器/规则修订/2026-09-30-迟滞/核对-模拟2.md": {
+      "bytes": 5825,
+      "sha256": "fbbb3525b52017e18cf11d1f58f626ea93dabf75253e237586d471e28fe059db"
+    }
+  },
+  "outputs_except_manifest_itself": {
+    "求解器/候选约束轮次/第92-94轮/复核93F.md": {
+      "bytes": 26231,
+      "sha256": "076ce769f67815449248c73c6a50b6ecb266a0488e164e890a3c24d45e038b7c"
+    },
+    "求解器/候选约束轮次/第92-94轮/复核93F/audit_bundle.py": {
+      "bytes": 5678,
+      "sha256": "577949a3e442bc7d60d966b1e3df4823a910cfabd31f14373a3be26c59199c6e"
+    },
+    "求解器/候选约束轮次/第92-94轮/复核93F/lemmas_and_counts.json": {
+      "bytes": 1509,
+      "sha256": "7330aee3cd4177967669fb6b0ebf0a81c085f55fe80e4c94fe537437827494e5"
+    },
+    "求解器/候选约束轮次/第92-94轮/复核93F/lemmas_and_counts.py": {
+      "bytes": 10088,
+      "sha256": "33950301d580bbdd9de658d5c4259cc680de378865c064207c48ebed4ad997f0"
+    },
+    "求解器/候选约束轮次/第92-94轮/复核93F/local_geometry.json": {
+      "bytes": 6208,
+      "sha256": "80317af20a5214fd84f68661aa7d97d3a2220f274dff4578655ff432eb2e653a"
+    },
+    "求解器/候选约束轮次/第92-94轮/复核93F/local_geometry.py": {
+      "bytes": 6029,
+      "sha256": "ebafa9c203370dafc943b521037805ce097f5851b54acd0074df637902905923"
+    },
+    "求解器/候选约束轮次/第92-94轮/复核93F/plant_a.json": {
+      "bytes": 7130,
+      "sha256": "518bd276e6c2305dc8eb8f7a1d57630a3441557581319364650899dc2a991b37"
+    },
+    "求解器/候选约束轮次/第92-94轮/复核93F/plant_a.py": {
+      "bytes": 7911,
+      "sha256": "ccefa7731f21ae8332886e8e24e45f72e1bf93c2131a3bd7f9b4adefcb8f2dca"
+    },
+    "求解器/候选约束轮次/第92-94轮/复核93F/plant_b.json": {
+      "bytes": 7130,
+      "sha256": "7fb7f75d1e30323fbbd368935441c32893429834f14268dc1697a6886de07778"
+    },
+    "求解器/候选约束轮次/第92-94轮/复核93F/plant_b.py": {
+      "bytes": 5569,
+      "sha256": "53bf10ffeba7c0fbddba3c5fc3e09efb84564ffe7e01c4e440bb7e732fd02f77"
+    },
+    "求解器/候选约束轮次/第92-94轮/复核93F/repaired_startup.json": {
+      "bytes": 1986,
+      "sha256": "31150a34e954b053ae4366a4848352929eec87e465010a3bd18fde8e7f746bf0"
+    },
+    "求解器/候选约束轮次/第92-94轮/复核93F/repaired_startup.py": {
+      "bytes": 2346,
+      "sha256": "ffab81f2f60f1ed08b087e06e5e8032bd3186a45d24eaa710649e4e3b35a9e26"
+    },
+    "求解器/候选约束轮次/第92-94轮/复核93F/side_claims.json": {
+      "bytes": 13543,
+      "sha256": "4cd4d525ba4bc467de728e29b02c3d4181ba5171e328c3beea7f5c62a0f1031e"
+    },
+    "求解器/候选约束轮次/第92-94轮/复核93F/side_claims.py": {
+      "bytes": 4905,
+      "sha256": "32661bb30366e80ad611f53baa749c3cebd01e848c63db2a13ddf25754f55d9d"
+    },
+    "求解器/候选约束轮次/第92-94轮/复核93F/verdicts.json": {
+      "bytes": 1869,
+      "sha256": "ccbd70e8f6a8b5077edbaca65fd292893e38c3e1207339114017721ea382af6f"
+    },
+    "求解器/候选约束轮次/第92-94轮/复核93F/verify_plant.json": {
+      "bytes": 25239,
+      "sha256": "b4dd2dbced307226a6ce3fabb49fa6665ffe2f096d3088ffe27b13020b281884"
+    },
+    "求解器/候选约束轮次/第92-94轮/复核93F/verify_plant.py": {
+      "bytes": 3424,
+      "sha256": "b0f4dbd7c7e23dc09bd487a99e0520e14c2db1fd1d3b71cd1d25b23d84a36d9e"
+    }
+  }
+}

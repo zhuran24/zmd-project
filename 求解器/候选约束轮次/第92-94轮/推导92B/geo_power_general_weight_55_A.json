@@ -1,0 +1,9 @@
+{
+  "case": "general",
+  "objective": "weight",
+  "threshold": 55,
+  "encoding": "A",
+  "domain": 1240,
+  "status": "UNKNOWN",
+  "seconds": 240.04959411600066
+}

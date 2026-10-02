@@ -1,0 +1,33 @@
+{
+ "seeds": [
+  2000,
+  2300
+ ],
+ "steps": 400,
+ "results": {
+  "eager/axis": {
+   "runs": 600,
+   "mismatch": 0,
+   "examples": [],
+   "sink_items": 25234
+  },
+  "judge/axis": {
+   "runs": 600,
+   "mismatch": 0,
+   "examples": [],
+   "sink_items": 25234
+  },
+  "eager/unit": {
+   "runs": 600,
+   "mismatch": 0,
+   "examples": [],
+   "sink_items": 25210
+  },
+  "judge/unit": {
+   "runs": 600,
+   "mismatch": 0,
+   "examples": [],
+   "sink_items": 25210
+  }
+ }
+}

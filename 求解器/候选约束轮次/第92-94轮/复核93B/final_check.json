@@ -1,0 +1,207 @@
+{
+  "completed_power_encodings": [
+    "power_b.py",
+    "power_c.py"
+  ],
+  "power_domain_options": {
+    "ordinary": 1240,
+    "edge": 550
+  },
+  "power_CP_SAT_attempt": [
+    {
+      "edge": false,
+      "kind": "count",
+      "target": 24,
+      "options": 1240,
+      "status": "UNKNOWN",
+      "seconds": 180.0040525080003,
+      "branches": 75922,
+      "conflicts": 22734
+    },
+    {
+      "edge": true,
+      "kind": "count",
+      "target": 14,
+      "options": 550,
+      "status": "INFEASIBLE",
+      "seconds": 0.8770972970014554,
+      "branches": 2555,
+      "conflicts": 108
+    },
+    {
+      "edge": true,
+      "kind": "weight",
+      "target": 30,
+      "options": 550,
+      "status": "UNKNOWN",
+      "seconds": 180.00057890099924,
+      "branches": 3356940,
+      "conflicts": 1686594
+    }
+  ],
+  "scope_cases_by_height": {
+    "6": 7907,
+    "7": 5158,
+    "8": 2575,
+    "9": 57
+  },
+  "scope_total_completed": 15697,
+  "scope_incompatible_fixed_machine": 1042,
+  "extra_machine_global_area_fraction": "8895/8",
+  "extra_1110_cases": [
+    {
+      "kind": "粉碎机",
+      "increment": 36,
+      "remaining_X0_Y0": [
+        [
+          10,
+          0,
+          "11/2"
+        ]
+      ]
+    },
+    {
+      "kind": "精炼炉",
+      "increment": 36,
+      "remaining_X0_Y0": [
+        [
+          10,
+          0,
+          "11/2"
+        ]
+      ]
+    },
+    {
+      "kind": "配件机",
+      "increment": 36,
+      "remaining_X0_Y0": [
+        [
+          10,
+          0,
+          "11/2"
+        ]
+      ]
+    },
+    {
+      "kind": "协议储存箱",
+      "increment": 36,
+      "remaining_X0_Y0": [
+        [
+          10,
+          0,
+          "11/2"
+        ]
+      ]
+    },
+    {
+      "kind": "塑形机",
+      "increment": 34,
+      "remaining_X0_Y0": [
+        [
+          10,
+          0,
+          "15/2"
+        ]
+      ]
+    },
+    {
+      "kind": "研磨机",
+      "increment": 92,
+      "remaining_X0_Y0": []
+    },
+    {
+      "kind": "封装机",
+      "increment": 88,
+      "remaining_X0_Y0": []
+    },
+    {
+      "kind": "灌装机",
+      "increment": 88,
+      "remaining_X0_Y0": []
+    },
+    {
+      "kind": "种植机",
+      "increment": 100,
+      "remaining_X0_Y0": []
+    },
+    {
+      "kind": "采种机",
+      "increment": 100,
+      "remaining_X0_Y0": []
+    }
+  ],
+  "no_extra_1110_scalar": [
+    [
+      10,
+      0,
+      39
+    ],
+    [
+      11,
+      0,
+      23
+    ],
+    [
+      11,
+      1,
+      25
+    ],
+    [
+      11,
+      2,
+      27
+    ],
+    [
+      12,
+      0,
+      7
+    ],
+    [
+      12,
+      1,
+      9
+    ],
+    [
+      12,
+      2,
+      11
+    ],
+    [
+      12,
+      3,
+      13
+    ],
+    [
+      12,
+      4,
+      15
+    ],
+    [
+      12,
+      5,
+      17
+    ],
+    [
+      13,
+      5,
+      1
+    ],
+    [
+      13,
+      6,
+      3
+    ],
+    [
+      13,
+      7,
+      5
+    ]
+  ],
+  "snapshot_hashes_unchanged": {
+    "《明日方舟：终末地》游戏规则.txt": true,
+    "不补的设定.txt": true,
+    "求解任务.txt": true,
+    "求解充分条件.txt": true,
+    "求解约束.txt": true
+  }
+}

@@ -1,0 +1,16 @@
+[
+ {
+  "p_channels": 1,
+  "steady_gaps": [
+   9
+  ],
+  "rate_per_tick": "8/9"
+ },
+ {
+  "p_channels": 2,
+  "steady_gaps": [
+   8
+  ],
+  "rate_per_tick": "1"
+ }
+]

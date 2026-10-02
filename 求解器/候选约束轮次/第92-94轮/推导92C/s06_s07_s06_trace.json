@@ -1,0 +1,1180 @@
+{
+  "rows": [
+    {
+      "t": 0,
+      "machines": {
+        "K": {
+          "inputs": {
+            "flower": 49
+          },
+          "output": 0,
+          "remaining": 7,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "G": {
+          "inputs": {
+            "flower_powder": 0,
+            "sand_powder": 50
+          },
+          "output": 0,
+          "remaining": null,
+          "ready": false,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        }
+      },
+      "belts": {
+        "KA": null,
+        "KB": null
+      }
+    },
+    {
+      "t": 1,
+      "machines": {
+        "K": {
+          "inputs": {
+            "flower": 49
+          },
+          "output": 0,
+          "remaining": 6,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "G": {
+          "inputs": {
+            "flower_powder": 0,
+            "sand_powder": 50
+          },
+          "output": 0,
+          "remaining": null,
+          "ready": false,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        }
+      },
+      "belts": {
+        "KA": null,
+        "KB": null
+      }
+    },
+    {
+      "t": 2,
+      "machines": {
+        "K": {
+          "inputs": {
+            "flower": 49
+          },
+          "output": 0,
+          "remaining": 5,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "G": {
+          "inputs": {
+            "flower_powder": 0,
+            "sand_powder": 50
+          },
+          "output": 0,
+          "remaining": null,
+          "ready": false,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        }
+      },
+      "belts": {
+        "KA": null,
+        "KB": null
+      }
+    },
+    {
+      "t": 3,
+      "machines": {
+        "K": {
+          "inputs": {
+            "flower": 49
+          },
+          "output": 0,
+          "remaining": 4,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "G": {
+          "inputs": {
+            "flower_powder": 0,
+            "sand_powder": 50
+          },
+          "output": 0,
+          "remaining": null,
+          "ready": false,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        }
+      },
+      "belts": {
+        "KA": null,
+        "KB": null
+      }
+    },
+    {
+      "t": 4,
+      "machines": {
+        "K": {
+          "inputs": {
+            "flower": 49
+          },
+          "output": 0,
+          "remaining": 3,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "G": {
+          "inputs": {
+            "flower_powder": 0,
+            "sand_powder": 50
+          },
+          "output": 0,
+          "remaining": null,
+          "ready": false,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        }
+      },
+      "belts": {
+        "KA": null,
+        "KB": null
+      }
+    },
+    {
+      "t": 5,
+      "machines": {
+        "K": {
+          "inputs": {
+            "flower": 49
+          },
+          "output": 0,
+          "remaining": 2,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "G": {
+          "inputs": {
+            "flower_powder": 0,
+            "sand_powder": 50
+          },
+          "output": 0,
+          "remaining": null,
+          "ready": false,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        }
+      },
+      "belts": {
+        "KA": null,
+        "KB": null
+      }
+    },
+    {
+      "t": 6,
+      "machines": {
+        "K": {
+          "inputs": {
+            "flower": 49
+          },
+          "output": 0,
+          "remaining": 1,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "G": {
+          "inputs": {
+            "flower_powder": 0,
+            "sand_powder": 50
+          },
+          "output": 0,
+          "remaining": null,
+          "ready": false,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        }
+      },
+      "belts": {
+        "KA": null,
+        "KB": null
+      }
+    },
+    {
+      "t": 7,
+      "machines": {
+        "K": {
+          "inputs": {
+            "flower": 48
+          },
+          "output": 1,
+          "remaining": 8,
+          "ready": false,
+          "active": true,
+          "starts": 1,
+          "sent": [
+            "KA"
+          ]
+        },
+        "G": {
+          "inputs": {
+            "flower_powder": 0,
+            "sand_powder": 50
+          },
+          "output": 0,
+          "remaining": null,
+          "ready": false,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        }
+      },
+      "belts": {
+        "KA": 7,
+        "KB": null
+      }
+    },
+    {
+      "t": 8,
+      "machines": {
+        "K": {
+          "inputs": {
+            "flower": 48
+          },
+          "output": 0,
+          "remaining": 7,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": [
+            "KB"
+          ]
+        },
+        "G": {
+          "inputs": {
+            "flower_powder": 0,
+            "sand_powder": 50
+          },
+          "output": 0,
+          "remaining": null,
+          "ready": false,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        }
+      },
+      "belts": {
+        "KA": 7,
+        "KB": 8
+      }
+    },
+    {
+      "t": 9,
+      "machines": {
+        "K": {
+          "inputs": {
+            "flower": 48
+          },
+          "output": 0,
+          "remaining": 6,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "G": {
+          "inputs": {
+            "flower_powder": 0,
+            "sand_powder": 50
+          },
+          "output": 0,
+          "remaining": null,
+          "ready": false,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        }
+      },
+      "belts": {
+        "KA": 7,
+        "KB": 8
+      }
+    },
+    {
+      "t": 10,
+      "machines": {
+        "K": {
+          "inputs": {
+            "flower": 48
+          },
+          "output": 0,
+          "remaining": 5,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "G": {
+          "inputs": {
+            "flower_powder": 0,
+            "sand_powder": 50
+          },
+          "output": 0,
+          "remaining": null,
+          "ready": false,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        }
+      },
+      "belts": {
+        "KA": 7,
+        "KB": 8
+      }
+    },
+    {
+      "t": 11,
+      "machines": {
+        "K": {
+          "inputs": {
+            "flower": 48
+          },
+          "output": 0,
+          "remaining": 4,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "G": {
+          "inputs": {
+            "flower_powder": 0,
+            "sand_powder": 50
+          },
+          "output": 0,
+          "remaining": null,
+          "ready": false,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        }
+      },
+      "belts": {
+        "KA": 7,
+        "KB": 8
+      }
+    },
+    {
+      "t": 12,
+      "machines": {
+        "K": {
+          "inputs": {
+            "flower": 48
+          },
+          "output": 0,
+          "remaining": 3,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "G": {
+          "inputs": {
+            "flower_powder": 0,
+            "sand_powder": 50
+          },
+          "output": 0,
+          "remaining": null,
+          "ready": false,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        }
+      },
+      "belts": {
+        "KA": 7,
+        "KB": 8
+      }
+    },
+    {
+      "t": 13,
+      "machines": {
+        "K": {
+          "inputs": {
+            "flower": 48
+          },
+          "output": 0,
+          "remaining": 2,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "G": {
+          "inputs": {
+            "flower_powder": 0,
+            "sand_powder": 50
+          },
+          "output": 0,
+          "remaining": null,
+          "ready": false,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        }
+      },
+      "belts": {
+        "KA": 7,
+        "KB": 8
+      }
+    },
+    {
+      "t": 14,
+      "machines": {
+        "K": {
+          "inputs": {
+            "flower": 48
+          },
+          "output": 0,
+          "remaining": 1,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "G": {
+          "inputs": {
+            "flower_powder": 0,
+            "sand_powder": 50
+          },
+          "output": 0,
+          "remaining": null,
+          "ready": false,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        }
+      },
+      "belts": {
+        "KA": 7,
+        "KB": 8
+      }
+    },
+    {
+      "t": 15,
+      "machines": {
+        "K": {
+          "inputs": {
+            "flower": 47
+          },
+          "output": 1,
+          "remaining": 8,
+          "ready": false,
+          "active": true,
+          "starts": 1,
+          "sent": [
+            "KA"
+          ]
+        },
+        "G": {
+          "inputs": {
+            "flower_powder": 1,
+            "sand_powder": 50
+          },
+          "output": 0,
+          "remaining": null,
+          "ready": false,
+          "active": false,
+          "starts": 0,
+          "sent": []
+        }
+      },
+      "belts": {
+        "KA": 15,
+        "KB": 8
+      }
+    },
+    {
+      "t": 16,
+      "machines": {
+        "K": {
+          "inputs": {
+            "flower": 47
+          },
+          "output": 0,
+          "remaining": 7,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": [
+            "KB"
+          ]
+        },
+        "G": {
+          "inputs": {
+            "flower_powder": 0,
+            "sand_powder": 49
+          },
+          "output": 0,
+          "remaining": 8,
+          "ready": false,
+          "active": true,
+          "starts": 1,
+          "sent": []
+        }
+      },
+      "belts": {
+        "KA": 15,
+        "KB": 16
+      }
+    },
+    {
+      "t": 17,
+      "machines": {
+        "K": {
+          "inputs": {
+            "flower": 47
+          },
+          "output": 0,
+          "remaining": 6,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        },
+        "G": {
+          "inputs": {
+            "flower_powder": 0,
+            "sand_powder": 49
+          },
+          "output": 0,
+          "remaining": 7,
+          "ready": false,
+          "active": true,
+          "starts": 0,
+          "sent": []
+        }
+      },
+      "belts": {
+        "KA": 15,
+        "KB": 16
+      }
+    }
+  ],
+  "events": [
+    {
+      "t": 0,
+      "unit": "KA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KA"
+    },
+    {
+      "t": 0,
+      "unit": "KB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KA"
+    },
+    {
+      "t": 0,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 0,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 1,
+      "unit": "KA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KA"
+    },
+    {
+      "t": 1,
+      "unit": "KB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KA"
+    },
+    {
+      "t": 1,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 1,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 2,
+      "unit": "KA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KA"
+    },
+    {
+      "t": 2,
+      "unit": "KB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KA"
+    },
+    {
+      "t": 2,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 2,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 3,
+      "unit": "KA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KA"
+    },
+    {
+      "t": 3,
+      "unit": "KB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KA"
+    },
+    {
+      "t": 3,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 3,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 4,
+      "unit": "KA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KA"
+    },
+    {
+      "t": 4,
+      "unit": "KB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KA"
+    },
+    {
+      "t": 4,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 4,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 5,
+      "unit": "KA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KA"
+    },
+    {
+      "t": 5,
+      "unit": "KB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KA"
+    },
+    {
+      "t": 5,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 5,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 6,
+      "unit": "KA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KA"
+    },
+    {
+      "t": 6,
+      "unit": "KB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KA"
+    },
+    {
+      "t": 6,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 6,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 7,
+      "unit": "K",
+      "event": "finish",
+      "kind": "K"
+    },
+    {
+      "t": 7,
+      "unit": "K",
+      "event": "cache_to_output",
+      "kind": "flower_powder",
+      "quantity": 2
+    },
+    {
+      "t": 7,
+      "unit": "KA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KA"
+    },
+    {
+      "t": 7,
+      "unit": "KB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KA"
+    },
+    {
+      "t": 7,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 7,
+      "unit": "KA",
+      "event": "receive",
+      "kind": "flower_powder"
+    },
+    {
+      "t": 7,
+      "unit": "K",
+      "event": "send",
+      "kind": "flower_powder",
+      "destination": "KA"
+    },
+    {
+      "t": 7,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 7,
+      "unit": "K",
+      "event": "start",
+      "kind": "K"
+    },
+    {
+      "t": 8,
+      "unit": "KA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KA"
+    },
+    {
+      "t": 8,
+      "unit": "KB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KA"
+    },
+    {
+      "t": 8,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 8,
+      "unit": "KB",
+      "event": "receive",
+      "kind": "flower_powder"
+    },
+    {
+      "t": 8,
+      "unit": "K",
+      "event": "send",
+      "kind": "flower_powder",
+      "destination": "KB"
+    },
+    {
+      "t": 8,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 9,
+      "unit": "KA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KA"
+    },
+    {
+      "t": 9,
+      "unit": "KB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KA"
+    },
+    {
+      "t": 9,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 9,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 10,
+      "unit": "KA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KA"
+    },
+    {
+      "t": 10,
+      "unit": "KB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KA"
+    },
+    {
+      "t": 10,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 10,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 11,
+      "unit": "KA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KA"
+    },
+    {
+      "t": 11,
+      "unit": "KB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KA"
+    },
+    {
+      "t": 11,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 11,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 12,
+      "unit": "KA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KA"
+    },
+    {
+      "t": 12,
+      "unit": "KB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KA"
+    },
+    {
+      "t": 12,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 12,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 13,
+      "unit": "KA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KA"
+    },
+    {
+      "t": 13,
+      "unit": "KB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KA"
+    },
+    {
+      "t": 13,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 13,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 14,
+      "unit": "KA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KA"
+    },
+    {
+      "t": 14,
+      "unit": "KB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KA"
+    },
+    {
+      "t": 14,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 14,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 15,
+      "unit": "K",
+      "event": "finish",
+      "kind": "K"
+    },
+    {
+      "t": 15,
+      "unit": "K",
+      "event": "cache_to_output",
+      "kind": "flower_powder",
+      "quantity": 2
+    },
+    {
+      "t": 15,
+      "unit": "KA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KA"
+    },
+    {
+      "t": 15,
+      "unit": "G",
+      "event": "receive",
+      "kind": "flower_powder"
+    },
+    {
+      "t": 15,
+      "unit": "KA",
+      "event": "send",
+      "kind": "flower_powder",
+      "destination": "G"
+    },
+    {
+      "t": 15,
+      "unit": "KB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KA"
+    },
+    {
+      "t": 15,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 15,
+      "unit": "KA",
+      "event": "receive",
+      "kind": "flower_powder"
+    },
+    {
+      "t": 15,
+      "unit": "K",
+      "event": "send",
+      "kind": "flower_powder",
+      "destination": "KA"
+    },
+    {
+      "t": 15,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 15,
+      "unit": "K",
+      "event": "start",
+      "kind": "K"
+    },
+    {
+      "t": 16,
+      "unit": "KB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KA"
+    },
+    {
+      "t": 16,
+      "unit": "G",
+      "event": "receive",
+      "kind": "flower_powder"
+    },
+    {
+      "t": 16,
+      "unit": "KB",
+      "event": "send",
+      "kind": "flower_powder",
+      "destination": "G"
+    },
+    {
+      "t": 16,
+      "unit": "KA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KA"
+    },
+    {
+      "t": 16,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 16,
+      "unit": "KB",
+      "event": "receive",
+      "kind": "flower_powder"
+    },
+    {
+      "t": 16,
+      "unit": "K",
+      "event": "send",
+      "kind": "flower_powder",
+      "destination": "KB"
+    },
+    {
+      "t": 16,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 16,
+      "unit": "G",
+      "event": "start",
+      "kind": "G"
+    },
+    {
+      "t": 17,
+      "unit": "KA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KA"
+    },
+    {
+      "t": 17,
+      "unit": "KB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "KA"
+    },
+    {
+      "t": 17,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 17,
+      "unit": "G",
+      "event": "judge",
+      "layer": null
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+ "counterexample": {
+  "static": true,
+  "Y_cache_nonempty": true,
+  "X_cache_empty": true,
+  "first": "(0, ('done', '蓝铁粉末', 1), None, None, [])"
+ },
+ "reach": {
+  "before_on": "([['蓝铁块', 0]], None, [None])",
+  "log": [
+   "(5, [], ('run', 8, '蓝铁粉末', 1), None, None)",
+   "(6, [['蓝铁粉末', 1]], ('run', 7, '蓝铁粉末', 1), None, None)",
+   "(7, [['蓝铁粉末', 1]], ('run', 6, '蓝铁粉末', 1), None, None)",
+   "(8, [['蓝铁粉末', 1]], ('run', 5, '蓝铁粉末', 1), None, None)",
+   "(9, [['蓝铁粉末', 1]], ('run', 4, '蓝铁粉末', 1), None, None)",
+   "(10, [['蓝铁粉末', 1]], ('run', 3, '蓝铁粉末', 1), None, None)",
+   "(11, [['蓝铁粉末', 1]], ('run', 2, '蓝铁粉末', 1), None, None)",
+   "(12, [['蓝铁粉末', 1]], ('run', 1, '蓝铁粉末', 1), None, None)",
+   "(13, [['蓝铁粉末', 1]], ('done', '蓝铁粉末', 1), None, None)",
+   "(14, [['蓝铁粉末', 1]], ('done', '蓝铁粉末', 1), None, None)",
+   "(15, [['蓝铁粉末', 1]], ('done', '蓝铁粉末', 1), None, None)",
+   "(16, [['蓝铁粉末', 1]], ('done', '蓝铁粉末', 1), None, None)"
+  ],
+  "final": "(34, [['蓝铁粉末', 1]], ('done', '蓝铁粉末', 1), None, None)"
+ },
+ "random": {
+  "runs": 600,
+  "skipped_Y_premise": 0,
+  "X_empty_after_warm": 0,
+  "examples": [],
+  "single_out_d1": 246,
+  "refill_viol": 0,
+  "last_empty_step": [],
+  "by_kind": {
+   "refiner": 212,
+   "packer": 186,
+   "grinder": 202
+  }
+ },
+ "random2": {
+  "runs": 300,
+  "skipped_Y_premise": 0,
+  "X_empty_after_warm": 0,
+  "examples": [],
+  "single_out_d1": 120,
+  "refill_viol": 0,
+  "last_empty_step": [],
+  "by_kind": {
+   "refiner": 96,
+   "grinder": 107,
+   "packer": 97
+  }
+ }
+}

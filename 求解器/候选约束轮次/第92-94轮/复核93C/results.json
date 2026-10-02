@@ -1,0 +1,212 @@
+{
+  "arithmetic": {
+    "S02": [
+      {
+        "a": 2,
+        "b": 1,
+        "states": 22801,
+        "mismatches": 0
+      },
+      {
+        "a": 10,
+        "b": 15,
+        "states": 22801,
+        "mismatches": 0
+      },
+      {
+        "a": 10,
+        "b": 10,
+        "states": 22801,
+        "mismatches": 0
+      }
+    ],
+    "S02_old": {
+      "delivered": 50,
+      "first_permanent_rejection_step": 408,
+      "two_encodings_agree": true
+    },
+    "S03": [
+      {
+        "a": 2,
+        "b": 1,
+        "g": 1,
+        "m": 6,
+        "Z0": -50,
+        "L": -99,
+        "U": 50,
+        "C": 49,
+        "arbitrary_start_bound": 24,
+        "segment_words": 3
+      },
+      {
+        "a": 10,
+        "b": 15,
+        "g": 5,
+        "m": 5,
+        "Z0": 250,
+        "L": -365,
+        "U": 610,
+        "C": 360,
+        "arbitrary_start_bound": 300,
+        "segment_words": 10
+      },
+      {
+        "a": 10,
+        "b": 10,
+        "g": 10,
+        "m": 6,
+        "Z0": 0,
+        "L": -410,
+        "U": 410,
+        "C": 410,
+        "arbitrary_start_bound": 120,
+        "segment_words": 2
+      }
+    ],
+    "S01": {
+      "phases": 512,
+      "max_arrivals": 15,
+      "dp_max": 15
+    },
+    "S05": {
+      "states": 2601,
+      "both_refused": [
+        [
+          50,
+          50
+        ]
+      ]
+    },
+    "S08": {
+      "saturation_before_second_B": "176.5",
+      "barrier": 176,
+      "independent_minimum": 176,
+      "constraints_solutions": 2
+    },
+    "counts": {
+      "old_S06": 4,
+      "old_S07": 720,
+      "rotation_original": 24,
+      "s10_original": 1024
+    },
+    "wall_seconds": 0.028
+  },
+  "rotation": {
+    "scenarios": 32768,
+    "total_dispatches": 417848,
+    "horizon": 12,
+    "two_encodings_agree": true,
+    "interval_violations": 0,
+    "old_clause_cases": 4,
+    "wall_seconds": 1.233
+  },
+  "fifty_ticks": {
+    "local_scenarios": 360,
+    "old_claim_order_cases": 720,
+    "last_start": 392,
+    "first_possible_empty": 400,
+    "observed_output_minimum": {
+      "1": 48,
+      "2": 46,
+      "3": 44
+    },
+    "proved_output_minimum": {
+      "1": 47,
+      "2": 44,
+      "3": 41
+    },
+    "max_refill_judgements": {
+      "1": 1,
+      "2": 2,
+      "3": 3
+    },
+    "wall_seconds": 1.411
+  },
+  "loops": {
+    "random_cases": 1200,
+    "random_steps": 2000,
+    "target_cases": 2000,
+    "target_steps": 60,
+    "compared_step_states": 2520000,
+    "minimum_doubled_bound_slack": 0,
+    "double_B_events": 22,
+    "violations": 0,
+    "independent_phi_weights_agree": true,
+    "sparse_cycles": [
+      {
+        "k": 2,
+        "mode": "belt",
+        "period_steps": 32,
+        "starts": {
+          "C": 1,
+          "A": 1,
+          "B": 1,
+          "K": 1
+        },
+        "rate": "1/4",
+        "powder_per_period": 2,
+        "entry_step": 34
+      },
+      {
+        "k": 2,
+        "mode": "gates",
+        "period_steps": 32,
+        "starts": {
+          "C": 1,
+          "A": 1,
+          "B": 1,
+          "K": 1
+        },
+        "rate": "1/4",
+        "powder_per_period": 2,
+        "entry_step": 34
+      },
+      {
+        "k": 3,
+        "mode": "belt",
+        "period_steps": 32,
+        "starts": {
+          "C": 1,
+          "A": 1,
+          "B": 1,
+          "K": 1
+        },
+        "rate": "1/4",
+        "powder_per_period": 3,
+        "entry_step": 35
+      },
+      {
+        "k": 3,
+        "mode": "gates",
+        "period_steps": 32,
+        "starts": {
+          "C": 1,
+          "A": 1,
+          "B": 1,
+          "K": 1
+        },
+        "rate": "1/4",
+        "powder_per_period": 3,
+        "entry_step": 35
+      }
+    ],
+    "wall_seconds": 72.938
+  },
+  "transfer": {
+    "cases": 1024,
+    "periods": {
+      "8": 1024
+    },
+    "latest_cycle_entry": 31,
+    "empty_cache_steps": 0,
+    "minimum_input": 44,
+    "old_S10_stationary_from": 8,
+    "wall_seconds": 2.466
+  },
+  "run": {
+    "mode": "full",
+    "wall_seconds": 78.077,
+    "parallel_processes": 1,
+    "imports_from_derivation": 0
+  }
+}

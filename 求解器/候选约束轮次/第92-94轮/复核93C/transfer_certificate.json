@@ -1,0 +1,179 @@
+{
+  "two_recipe_loop": {
+    "cases": 1024,
+    "periods": {
+      "8": 1024
+    },
+    "latest_cycle_entry": 31
+  },
+  "old_S10_trace": [
+    {
+      "step": 0,
+      "stock": null,
+      "cache": "在制",
+      "out": null,
+      "X_cache": null
+    },
+    {
+      "step": 1,
+      "stock": "蓝铁粉末",
+      "cache": "在制",
+      "out": null,
+      "X_cache": null
+    },
+    {
+      "step": 2,
+      "stock": "蓝铁粉末",
+      "cache": "在制",
+      "out": null,
+      "X_cache": null
+    },
+    {
+      "step": 3,
+      "stock": "蓝铁粉末",
+      "cache": "在制",
+      "out": null,
+      "X_cache": null
+    },
+    {
+      "step": 4,
+      "stock": "蓝铁粉末",
+      "cache": "在制",
+      "out": null,
+      "X_cache": null
+    },
+    {
+      "step": 5,
+      "stock": "蓝铁粉末",
+      "cache": "在制",
+      "out": null,
+      "X_cache": null
+    },
+    {
+      "step": 6,
+      "stock": "蓝铁粉末",
+      "cache": "在制",
+      "out": null,
+      "X_cache": null
+    },
+    {
+      "step": 7,
+      "stock": "蓝铁粉末",
+      "cache": "在制",
+      "out": null,
+      "X_cache": null
+    },
+    {
+      "step": 8,
+      "stock": "蓝铁粉末",
+      "cache": "蓝铁粉末",
+      "out": null,
+      "X_cache": null
+    },
+    {
+      "step": 9,
+      "stock": "蓝铁粉末",
+      "cache": "蓝铁粉末",
+      "out": null,
+      "X_cache": null
+    },
+    {
+      "step": 10,
+      "stock": "蓝铁粉末",
+      "cache": "蓝铁粉末",
+      "out": null,
+      "X_cache": null
+    },
+    {
+      "step": 11,
+      "stock": "蓝铁粉末",
+      "cache": "蓝铁粉末",
+      "out": null,
+      "X_cache": null
+    },
+    {
+      "step": 12,
+      "stock": "蓝铁粉末",
+      "cache": "蓝铁粉末",
+      "out": null,
+      "X_cache": null
+    },
+    {
+      "step": 13,
+      "stock": "蓝铁粉末",
+      "cache": "蓝铁粉末",
+      "out": null,
+      "X_cache": null
+    },
+    {
+      "step": 14,
+      "stock": "蓝铁粉末",
+      "cache": "蓝铁粉末",
+      "out": null,
+      "X_cache": null
+    },
+    {
+      "step": 15,
+      "stock": "蓝铁粉末",
+      "cache": "蓝铁粉末",
+      "out": null,
+      "X_cache": null
+    },
+    {
+      "step": 16,
+      "stock": "蓝铁粉末",
+      "cache": "蓝铁粉末",
+      "out": null,
+      "X_cache": null
+    },
+    {
+      "step": 17,
+      "stock": "蓝铁粉末",
+      "cache": "蓝铁粉末",
+      "out": null,
+      "X_cache": null
+    },
+    {
+      "step": 18,
+      "stock": "蓝铁粉末",
+      "cache": "蓝铁粉末",
+      "out": null,
+      "X_cache": null
+    },
+    {
+      "step": 19,
+      "stock": "蓝铁粉末",
+      "cache": "蓝铁粉末",
+      "out": null,
+      "X_cache": null
+    },
+    {
+      "step": 20,
+      "stock": "蓝铁粉末",
+      "cache": "蓝铁粉末",
+      "out": null,
+      "X_cache": null
+    },
+    {
+      "step": 21,
+      "stock": "蓝铁粉末",
+      "cache": "蓝铁粉末",
+      "out": null,
+      "X_cache": null
+    },
+    {
+      "step": 22,
+      "stock": "蓝铁粉末",
+      "cache": "蓝铁粉末",
+      "out": null,
+      "X_cache": null
+    },
+    {
+      "step": 23,
+      "stock": "蓝铁粉末",
+      "cache": "蓝铁粉末",
+      "out": null,
+      "X_cache": null
+    }
+  ]
+}

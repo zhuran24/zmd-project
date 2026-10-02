@@ -1,0 +1,9 @@
+{
+ "states": 575700,
+ "edges": 1628208,
+ "max_rate_le_1_certificate": true,
+ "bf_iterations": 7,
+ "tight_scc_edges": 81809,
+ "consecutive_sand_in_full_rate_cycles": 0,
+ "consecutive_sand_possible_in_some_cycle": true
+}

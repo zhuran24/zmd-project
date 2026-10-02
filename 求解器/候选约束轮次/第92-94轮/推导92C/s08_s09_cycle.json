@@ -1,0 +1,670 @@
+{
+  "cycle": {
+    "start_state_step": 10,
+    "end_state_step": 18,
+    "period_steps": 8
+  },
+  "phi_at_first_completed_step": 177.0,
+  "initial_state": {
+    "step": 0,
+    "phi": 177.0,
+    "machines": {
+      "C": {
+        "in": 49,
+        "out": 50,
+        "remain": 8,
+        "cache": 0
+      },
+      "A": {
+        "in": 49,
+        "out": 50,
+        "remain": 8,
+        "cache": 0
+      },
+      "B": {
+        "in": 49,
+        "out": 50,
+        "remain": 8,
+        "cache": 0
+      },
+      "K": {
+        "in": 49,
+        "out": 50,
+        "remain": 8,
+        "cache": 0
+      }
+    },
+    "routes": {
+      "CA": [
+        8
+      ],
+      "AC": [
+        8
+      ],
+      "CB": [
+        8
+      ],
+      "BK": [
+        8
+      ]
+    }
+  },
+  "counterexamples": [],
+  "finite_step_1_events": [
+    {
+      "t": 1,
+      "unit": "CA",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CA"
+    },
+    {
+      "t": 1,
+      "unit": "A",
+      "event": "receive",
+      "kind": "seed"
+    },
+    {
+      "t": 1,
+      "unit": "CA",
+      "event": "send",
+      "kind": "seed",
+      "destination": "A"
+    },
+    {
+      "t": 1,
+      "unit": "AC",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "AC"
+    },
+    {
+      "t": 1,
+      "unit": "C",
+      "event": "receive",
+      "kind": "plant"
+    },
+    {
+      "t": 1,
+      "unit": "AC",
+      "event": "send",
+      "kind": "plant",
+      "destination": "C"
+    },
+    {
+      "t": 1,
+      "unit": "CB",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "CB"
+    },
+    {
+      "t": 1,
+      "unit": "B",
+      "event": "receive",
+      "kind": "seed"
+    },
+    {
+      "t": 1,
+      "unit": "CB",
+      "event": "send",
+      "kind": "seed",
+      "destination": "B"
+    },
+    {
+      "t": 1,
+      "unit": "BK",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "BK"
+    },
+    {
+      "t": 1,
+      "unit": "K",
+      "event": "receive",
+      "kind": "plant"
+    },
+    {
+      "t": 1,
+      "unit": "BK",
+      "event": "send",
+      "kind": "plant",
+      "destination": "K"
+    },
+    {
+      "t": 1,
+      "unit": "O1",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "O1"
+    },
+    {
+      "t": 1,
+      "unit": "R",
+      "event": "receive",
+      "kind": "powder"
+    },
+    {
+      "t": 1,
+      "unit": "O1",
+      "event": "send",
+      "kind": "powder",
+      "destination": "R"
+    },
+    {
+      "t": 1,
+      "unit": "O2",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "O1"
+    },
+    {
+      "t": 1,
+      "unit": "R",
+      "event": "receive",
+      "kind": "powder"
+    },
+    {
+      "t": 1,
+      "unit": "O2",
+      "event": "send",
+      "kind": "powder",
+      "destination": "R"
+    },
+    {
+      "t": 1,
+      "unit": "Sbelt",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "O1"
+    },
+    {
+      "t": 1,
+      "unit": "R",
+      "event": "receive",
+      "kind": "sand"
+    },
+    {
+      "t": 1,
+      "unit": "Sbelt",
+      "event": "send",
+      "kind": "sand",
+      "destination": "R"
+    },
+    {
+      "t": 1,
+      "unit": "Rbelt",
+      "event": "judge",
+      "layer": 1,
+      "trigger": "Rbelt"
+    },
+    {
+      "t": 1,
+      "unit": "C",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 1,
+      "unit": "CA",
+      "event": "receive",
+      "kind": "seed"
+    },
+    {
+      "t": 1,
+      "unit": "C",
+      "event": "send",
+      "kind": "seed",
+      "destination": "CA"
+    },
+    {
+      "t": 1,
+      "unit": "A",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 1,
+      "unit": "AC",
+      "event": "receive",
+      "kind": "plant"
+    },
+    {
+      "t": 1,
+      "unit": "A",
+      "event": "send",
+      "kind": "plant",
+      "destination": "AC"
+    },
+    {
+      "t": 1,
+      "unit": "B",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 1,
+      "unit": "BK",
+      "event": "receive",
+      "kind": "plant"
+    },
+    {
+      "t": 1,
+      "unit": "B",
+      "event": "send",
+      "kind": "plant",
+      "destination": "BK"
+    },
+    {
+      "t": 1,
+      "unit": "K",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 1,
+      "unit": "O1",
+      "event": "receive",
+      "kind": "powder"
+    },
+    {
+      "t": 1,
+      "unit": "K",
+      "event": "send",
+      "kind": "powder",
+      "destination": "O1"
+    },
+    {
+      "t": 1,
+      "unit": "R",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 1,
+      "unit": "S",
+      "event": "judge",
+      "layer": null
+    },
+    {
+      "t": 1,
+      "unit": "Sbelt",
+      "event": "receive",
+      "kind": "sand"
+    },
+    {
+      "t": 1,
+      "unit": "S",
+      "event": "send",
+      "kind": "sand",
+      "destination": "Sbelt"
+    },
+    {
+      "t": 1,
+      "unit": "sink",
+      "event": "judge",
+      "layer": null
+    }
+  ],
+  "machine_finishes_in_period": {
+    "C": 1,
+    "A": 1,
+    "B": 1,
+    "K": 1,
+    "R": 1
+  },
+  "states_in_period": [
+    {
+      "step": 11,
+      "phi": 177.0,
+      "machines": {
+        "C": {
+          "in": 50,
+          "out": 48,
+          "remain": 5,
+          "cache": 0
+        },
+        "A": {
+          "in": 50,
+          "out": 49,
+          "remain": 5,
+          "cache": 0
+        },
+        "B": {
+          "in": 50,
+          "out": 49,
+          "remain": 5,
+          "cache": 0
+        },
+        "K": {
+          "in": 50,
+          "out": 48,
+          "remain": 5,
+          "cache": 0
+        }
+      },
+      "routes": {
+        "CA": [
+          2
+        ],
+        "AC": [
+          2
+        ],
+        "CB": [
+          1
+        ],
+        "BK": [
+          2
+        ]
+      }
+    },
+    {
+      "step": 12,
+      "phi": 177.0,
+      "machines": {
+        "C": {
+          "in": 50,
+          "out": 48,
+          "remain": 4,
+          "cache": 0
+        },
+        "A": {
+          "in": 50,
+          "out": 49,
+          "remain": 4,
+          "cache": 0
+        },
+        "B": {
+          "in": 50,
+          "out": 49,
+          "remain": 4,
+          "cache": 0
+        },
+        "K": {
+          "in": 50,
+          "out": 48,
+          "remain": 4,
+          "cache": 0
+        }
+      },
+      "routes": {
+        "CA": [
+          3
+        ],
+        "AC": [
+          3
+        ],
+        "CB": [
+          2
+        ],
+        "BK": [
+          3
+        ]
+      }
+    },
+    {
+      "step": 13,
+      "phi": 177.0,
+      "machines": {
+        "C": {
+          "in": 50,
+          "out": 48,
+          "remain": 3,
+          "cache": 0
+        },
+        "A": {
+          "in": 50,
+          "out": 49,
+          "remain": 3,
+          "cache": 0
+        },
+        "B": {
+          "in": 50,
+          "out": 49,
+          "remain": 3,
+          "cache": 0
+        },
+        "K": {
+          "in": 50,
+          "out": 48,
+          "remain": 3,
+          "cache": 0
+        }
+      },
+      "routes": {
+        "CA": [
+          4
+        ],
+        "AC": [
+          4
+        ],
+        "CB": [
+          3
+        ],
+        "BK": [
+          4
+        ]
+      }
+    },
+    {
+      "step": 14,
+      "phi": 177.0,
+      "machines": {
+        "C": {
+          "in": 50,
+          "out": 48,
+          "remain": 2,
+          "cache": 0
+        },
+        "A": {
+          "in": 50,
+          "out": 49,
+          "remain": 2,
+          "cache": 0
+        },
+        "B": {
+          "in": 50,
+          "out": 49,
+          "remain": 2,
+          "cache": 0
+        },
+        "K": {
+          "in": 50,
+          "out": 48,
+          "remain": 2,
+          "cache": 0
+        }
+      },
+      "routes": {
+        "CA": [
+          5
+        ],
+        "AC": [
+          5
+        ],
+        "CB": [
+          4
+        ],
+        "BK": [
+          5
+        ]
+      }
+    },
+    {
+      "step": 15,
+      "phi": 177.0,
+      "machines": {
+        "C": {
+          "in": 50,
+          "out": 48,
+          "remain": 1,
+          "cache": 0
+        },
+        "A": {
+          "in": 50,
+          "out": 49,
+          "remain": 1,
+          "cache": 0
+        },
+        "B": {
+          "in": 50,
+          "out": 49,
+          "remain": 1,
+          "cache": 0
+        },
+        "K": {
+          "in": 50,
+          "out": 48,
+          "remain": 1,
+          "cache": 0
+        }
+      },
+      "routes": {
+        "CA": [
+          6
+        ],
+        "AC": [
+          6
+        ],
+        "CB": [
+          5
+        ],
+        "BK": [
+          6
+        ]
+      }
+    },
+    {
+      "step": 16,
+      "phi": 177.0,
+      "machines": {
+        "C": {
+          "in": 49,
+          "out": 50,
+          "remain": 8,
+          "cache": 0
+        },
+        "A": {
+          "in": 49,
+          "out": 50,
+          "remain": 8,
+          "cache": 0
+        },
+        "B": {
+          "in": 49,
+          "out": 50,
+          "remain": 8,
+          "cache": 0
+        },
+        "K": {
+          "in": 49,
+          "out": 50,
+          "remain": 8,
+          "cache": 0
+        }
+      },
+      "routes": {
+        "CA": [
+          7
+        ],
+        "AC": [
+          7
+        ],
+        "CB": [
+          6
+        ],
+        "BK": [
+          7
+        ]
+      }
+    },
+    {
+      "step": 17,
+      "phi": 177.5,
+      "machines": {
+        "C": {
+          "in": 50,
+          "out": 49,
+          "remain": 7,
+          "cache": 0
+        },
+        "A": {
+          "in": 50,
+          "out": 49,
+          "remain": 7,
+          "cache": 0
+        },
+        "B": {
+          "in": 49,
+          "out": 49,
+          "remain": 7,
+          "cache": 0
+        },
+        "K": {
+          "in": 50,
+          "out": 49,
+          "remain": 7,
+          "cache": 0
+        }
+      },
+      "routes": {
+        "CA": [
+          0
+        ],
+        "AC": [
+          0
+        ],
+        "CB": [
+          7
+        ],
+        "BK": [
+          0
+        ]
+      }
+    },
+    {
+      "step": 18,
+      "phi": 177.0,
+      "machines": {
+        "C": {
+          "in": 50,
+          "out": 48,
+          "remain": 6,
+          "cache": 0
+        },
+        "A": {
+          "in": 50,
+          "out": 49,
+          "remain": 6,
+          "cache": 0
+        },
+        "B": {
+          "in": 50,
+          "out": 49,
+          "remain": 6,
+          "cache": 0
+        },
+        "K": {
+          "in": 50,
+          "out": 48,
+          "remain": 6,
+          "cache": 0
+        }
+      },
+      "routes": {
+        "CA": [
+          1
+        ],
+        "AC": [
+          1
+        ],
+        "CB": [
+          0
+        ],
+        "BK": [
+          1
+        ]
+      }
+    }
+  ]
+}

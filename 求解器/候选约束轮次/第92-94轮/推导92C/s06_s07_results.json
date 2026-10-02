@@ -1,0 +1,88 @@
+{
+  "cases": {
+    "s06": {
+      "steps_compared": 18,
+      "identical": true,
+      "first_tick_counts": [
+        1,
+        0
+      ]
+    },
+    "s07": {
+      "steps_compared": 32,
+      "identical": true,
+      "K_input_steps0_1": [
+        49,
+        50
+      ],
+      "K_cache_ready_flush_step0": true
+    }
+  },
+  "finite50": {
+    "first_empty_step": 400,
+    "independent_final_finish": 400,
+    "selected_rows": [
+      {
+        "t": 0,
+        "input": 49,
+        "output": 48,
+        "cache_nonempty": true
+      },
+      {
+        "t": 391,
+        "input": 1,
+        "output": 48,
+        "cache_nonempty": true
+      },
+      {
+        "t": 392,
+        "input": 0,
+        "output": 48,
+        "cache_nonempty": true
+      },
+      {
+        "t": 399,
+        "input": 0,
+        "output": 48,
+        "cache_nonempty": true
+      },
+      {
+        "t": 400,
+        "input": 0,
+        "output": 48,
+        "cache_nonempty": false
+      }
+    ]
+  },
+  "corrected_s06": {
+    "scenarios": 24,
+    "independent_count": 24,
+    "timestamp_vs_queue_identical": true,
+    "all_contiguous_success_substrings_balanced": true
+  },
+  "finite400_plant_unit": {
+    "steps_compared": 400,
+    "identical": true,
+    "all_four_caches_nonempty": true,
+    "output_lower_bounds": {
+      "C": 44,
+      "A": 47,
+      "B": 47,
+      "K": 41
+    },
+    "minimum_observed_output": {
+      "C": 49,
+      "A": 50,
+      "B": 50,
+      "K": 48
+    }
+  },
+  "order_sweep": {
+    "s06": 4,
+    "s07": 720,
+    "independent_counts": [
+      4,
+      720
+    ]
+  }
+}

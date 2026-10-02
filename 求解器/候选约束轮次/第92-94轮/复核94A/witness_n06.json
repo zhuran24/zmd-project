@@ -1,0 +1,88 @@
+{
+ "U先": {
+  "encoding1": {
+   "first_repeat_start": 145,
+   "period_steps": 40,
+   "counts_per_period": {
+    "P->J1": 0,
+    "P->J2": 1,
+    "U->J1": 1
+   },
+   "rates_per_tick": {
+    "P->J1": "0/5",
+    "P->J2": "1/5",
+    "U->J1": "1/5"
+   },
+   "min_stock": 79966
+  },
+  "encoding2": {
+   "window_steps": 4000,
+   "counts": {
+    "P->J1": 0,
+    "P->J2": 100,
+    "U->J1": 100
+   },
+   "rates_per_tick": {
+    "P->J1": "0/4000",
+    "P->J2": "800/4000",
+    "U->J1": "800/4000"
+   },
+   "layers": {
+    "R1": 1,
+    "J1": 2,
+    "P": 3,
+    "gA": 4,
+    "A": 5,
+    "U": 3,
+    "gB": 4,
+    "B": 5,
+    "R2": 1,
+    "J2": 2
+   }
+  },
+  "rates_agree": true
+ },
+ "P先": {
+  "encoding1": {
+   "first_repeat_start": 129,
+   "period_steps": 80,
+   "counts_per_period": {
+    "P->J1": 1,
+    "P->J2": 1,
+    "U->J1": 2
+   },
+   "rates_per_tick": {
+    "P->J1": "1/10",
+    "P->J2": "1/10",
+    "U->J1": "2/10"
+   },
+   "min_stock": 79966
+  },
+  "encoding2": {
+   "window_steps": 4000,
+   "counts": {
+    "P->J1": 50,
+    "P->J2": 50,
+    "U->J1": 100
+   },
+   "rates_per_tick": {
+    "P->J1": "400/4000",
+    "P->J2": "400/4000",
+    "U->J1": "800/4000"
+   },
+   "layers": {
+    "R1": 1,
+    "J1": 2,
+    "P": 3,
+    "gA": 4,
+    "A": 5,
+    "U": 3,
+    "gB": 4,
+    "B": 5,
+    "R2": 1,
+    "J2": 2
+   }
+  },
+  "rates_agree": true
+ }
+}

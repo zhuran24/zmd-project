@@ -1,0 +1,8284 @@
+{
+  "stalled_source_line_battery_bound": {
+    "encoding_A_rate": "17/30",
+    "encoding_B_30_tick_minerals": 510,
+    "encoding_B_dense_powder": 255,
+    "encoding_B_batteries": 17,
+    "encoding_B_rate": "17/30",
+    "target_rate": "3/5"
+  },
+  "encodings": "A channel/item/group model; B independent age-array recurrence",
+  "steps_per_tick": 8,
+  "cases": [
+    {
+      "case": "adjacent_bridge_pair",
+      "reading": "current",
+      "closed_until_step": 0,
+      "same_all_12000_steps": true,
+      "statistics": {
+        "count_after_warmup": 1222,
+        "gaps": {
+          "9": 1221
+        },
+        "rate_per_tick": "8/9"
+      },
+      "first_deliveries": [
+        0,
+        8,
+        16,
+        25,
+        34,
+        43,
+        52,
+        61,
+        70,
+        79,
+        88,
+        97,
+        106,
+        115,
+        124,
+        133
+      ],
+      "trace_A": [
+        {
+          "step": 0,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "send",
+              "D",
+              "sink"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "send",
+              "Q",
+              "D"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "send",
+              "P",
+              "Q"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": null,
+            "Q": 0,
+            "D": 0
+          }
+        },
+        {
+          "step": 1,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "send",
+              "U",
+              "P"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "send",
+              "source",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 1,
+            "P": 1,
+            "Q": 0,
+            "D": 0
+          }
+        },
+        {
+          "step": 2,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": 1,
+            "P": 1,
+            "Q": 0,
+            "D": 0
+          }
+        },
+        {
+          "step": 3,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": 1,
+            "P": 1,
+            "Q": 0,
+            "D": 0
+          }
+        },
+        {
+          "step": 4,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": 1,
+            "P": 1,
+            "Q": 0,
+            "D": 0
+          }
+        },
+        {
+          "step": 5,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": 1,
+            "P": 1,
+            "Q": 0,
+            "D": 0
+          }
+        },
+        {
+          "step": 6,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": 1,
+            "P": 1,
+            "Q": 0,
+            "D": 0
+          }
+        },
+        {
+          "step": 7,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": 1,
+            "P": 1,
+            "Q": 0,
+            "D": 0
+          }
+        },
+        {
+          "step": 8,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "send",
+              "D",
+              "sink"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "send",
+              "Q",
+              "D"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": 1,
+            "P": 1,
+            "Q": null,
+            "D": 8
+          }
+        },
+        {
+          "step": 9,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "send",
+              "P",
+              "Q"
+            ]
+          ],
+          "entry_steps": {
+            "U": 1,
+            "P": null,
+            "Q": 9,
+            "D": 8
+          }
+        },
+        {
+          "step": 10,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "send",
+              "U",
+              "P"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "send",
+              "source",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 10,
+            "P": 10,
+            "Q": 9,
+            "D": 8
+          }
+        },
+        {
+          "step": 11,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": 10,
+            "P": 10,
+            "Q": 9,
+            "D": 8
+          }
+        },
+        {
+          "step": 12,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": 10,
+            "P": 10,
+            "Q": 9,
+            "D": 8
+          }
+        },
+        {
+          "step": 13,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": 10,
+            "P": 10,
+            "Q": 9,
+            "D": 8
+          }
+        },
+        {
+          "step": 14,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": 10,
+            "P": 10,
+            "Q": 9,
+            "D": 8
+          }
+        },
+        {
+          "step": 15,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": 10,
+            "P": 10,
+            "Q": 9,
+            "D": 8
+          }
+        },
+        {
+          "step": 16,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "send",
+              "D",
+              "sink"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": 10,
+            "P": 10,
+            "Q": 9,
+            "D": null
+          }
+        },
+        {
+          "step": 17,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "send",
+              "Q",
+              "D"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": 10,
+            "P": 10,
+            "Q": null,
+            "D": 17
+          }
+        },
+        {
+          "step": 18,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "send",
+              "P",
+              "Q"
+            ]
+          ],
+          "entry_steps": {
+            "U": 10,
+            "P": null,
+            "Q": 18,
+            "D": 17
+          }
+        },
+        {
+          "step": 19,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "send",
+              "U",
+              "P"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "send",
+              "source",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 19,
+            "P": 19,
+            "Q": 18,
+            "D": 17
+          }
+        },
+        {
+          "step": 20,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": 19,
+            "P": 19,
+            "Q": 18,
+            "D": 17
+          }
+        },
+        {
+          "step": 21,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": 19,
+            "P": 19,
+            "Q": 18,
+            "D": 17
+          }
+        },
+        {
+          "step": 22,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": 19,
+            "P": 19,
+            "Q": 18,
+            "D": 17
+          }
+        },
+        {
+          "step": 23,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": 19,
+            "P": 19,
+            "Q": 18,
+            "D": 17
+          }
+        },
+        {
+          "step": 24,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": 19,
+            "P": 19,
+            "Q": 18,
+            "D": 17
+          }
+        },
+        {
+          "step": 25,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "send",
+              "D",
+              "sink"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": 19,
+            "P": 19,
+            "Q": 18,
+            "D": null
+          }
+        },
+        {
+          "step": 26,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "send",
+              "Q",
+              "D"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": 19,
+            "P": 19,
+            "Q": null,
+            "D": 26
+          }
+        },
+        {
+          "step": 27,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "send",
+              "P",
+              "Q"
+            ]
+          ],
+          "entry_steps": {
+            "U": 19,
+            "P": null,
+            "Q": 27,
+            "D": 26
+          }
+        }
+      ],
+      "trace_B": [
+        {
+          "step": 0,
+          "moves": [
+            [
+              3,
+              "sink"
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              1,
+              2
+            ]
+          ],
+          "entry_steps": [
+            -8,
+            null,
+            0,
+            0
+          ]
+        },
+        {
+          "step": 1,
+          "moves": [
+            [
+              0,
+              1
+            ],
+            [
+              "source",
+              0
+            ]
+          ],
+          "entry_steps": [
+            1,
+            1,
+            0,
+            0
+          ]
+        },
+        {
+          "step": 2,
+          "moves": [],
+          "entry_steps": [
+            1,
+            1,
+            0,
+            0
+          ]
+        },
+        {
+          "step": 3,
+          "moves": [],
+          "entry_steps": [
+            1,
+            1,
+            0,
+            0
+          ]
+        },
+        {
+          "step": 4,
+          "moves": [],
+          "entry_steps": [
+            1,
+            1,
+            0,
+            0
+          ]
+        },
+        {
+          "step": 5,
+          "moves": [],
+          "entry_steps": [
+            1,
+            1,
+            0,
+            0
+          ]
+        },
+        {
+          "step": 6,
+          "moves": [],
+          "entry_steps": [
+            1,
+            1,
+            0,
+            0
+          ]
+        },
+        {
+          "step": 7,
+          "moves": [],
+          "entry_steps": [
+            1,
+            1,
+            0,
+            0
+          ]
+        },
+        {
+          "step": 8,
+          "moves": [
+            [
+              3,
+              "sink"
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "entry_steps": [
+            1,
+            1,
+            null,
+            8
+          ]
+        },
+        {
+          "step": 9,
+          "moves": [
+            [
+              1,
+              2
+            ]
+          ],
+          "entry_steps": [
+            1,
+            null,
+            9,
+            8
+          ]
+        },
+        {
+          "step": 10,
+          "moves": [
+            [
+              0,
+              1
+            ],
+            [
+              "source",
+              0
+            ]
+          ],
+          "entry_steps": [
+            10,
+            10,
+            9,
+            8
+          ]
+        },
+        {
+          "step": 11,
+          "moves": [],
+          "entry_steps": [
+            10,
+            10,
+            9,
+            8
+          ]
+        },
+        {
+          "step": 12,
+          "moves": [],
+          "entry_steps": [
+            10,
+            10,
+            9,
+            8
+          ]
+        },
+        {
+          "step": 13,
+          "moves": [],
+          "entry_steps": [
+            10,
+            10,
+            9,
+            8
+          ]
+        },
+        {
+          "step": 14,
+          "moves": [],
+          "entry_steps": [
+            10,
+            10,
+            9,
+            8
+          ]
+        },
+        {
+          "step": 15,
+          "moves": [],
+          "entry_steps": [
+            10,
+            10,
+            9,
+            8
+          ]
+        },
+        {
+          "step": 16,
+          "moves": [
+            [
+              3,
+              "sink"
+            ]
+          ],
+          "entry_steps": [
+            10,
+            10,
+            9,
+            null
+          ]
+        },
+        {
+          "step": 17,
+          "moves": [
+            [
+              2,
+              3
+            ]
+          ],
+          "entry_steps": [
+            10,
+            10,
+            null,
+            17
+          ]
+        },
+        {
+          "step": 18,
+          "moves": [
+            [
+              1,
+              2
+            ]
+          ],
+          "entry_steps": [
+            10,
+            null,
+            18,
+            17
+          ]
+        },
+        {
+          "step": 19,
+          "moves": [
+            [
+              0,
+              1
+            ],
+            [
+              "source",
+              0
+            ]
+          ],
+          "entry_steps": [
+            19,
+            19,
+            18,
+            17
+          ]
+        },
+        {
+          "step": 20,
+          "moves": [],
+          "entry_steps": [
+            19,
+            19,
+            18,
+            17
+          ]
+        },
+        {
+          "step": 21,
+          "moves": [],
+          "entry_steps": [
+            19,
+            19,
+            18,
+            17
+          ]
+        },
+        {
+          "step": 22,
+          "moves": [],
+          "entry_steps": [
+            19,
+            19,
+            18,
+            17
+          ]
+        },
+        {
+          "step": 23,
+          "moves": [],
+          "entry_steps": [
+            19,
+            19,
+            18,
+            17
+          ]
+        },
+        {
+          "step": 24,
+          "moves": [],
+          "entry_steps": [
+            19,
+            19,
+            18,
+            17
+          ]
+        },
+        {
+          "step": 25,
+          "moves": [
+            [
+              3,
+              "sink"
+            ]
+          ],
+          "entry_steps": [
+            19,
+            19,
+            18,
+            null
+          ]
+        },
+        {
+          "step": 26,
+          "moves": [
+            [
+              2,
+              3
+            ]
+          ],
+          "entry_steps": [
+            19,
+            19,
+            null,
+            26
+          ]
+        },
+        {
+          "step": 27,
+          "moves": [
+            [
+              1,
+              2
+            ]
+          ],
+          "entry_steps": [
+            19,
+            null,
+            27,
+            26
+          ]
+        }
+      ],
+      "layer_note": "current supplies D<Q<P<U as one undefined-layer possibility; proposed order counts simple paths"
+    },
+    {
+      "case": "adjacent_bridge_pair",
+      "reading": "current",
+      "closed_until_step": 17,
+      "same_all_12000_steps": true,
+      "statistics": {
+        "count_after_warmup": 1222,
+        "gaps": {
+          "9": 1221
+        },
+        "rate_per_tick": "8/9"
+      },
+      "first_deliveries": [
+        17,
+        25,
+        33,
+        42,
+        51,
+        60,
+        69,
+        78,
+        87,
+        96,
+        105,
+        114,
+        123,
+        132,
+        141,
+        150
+      ],
+      "trace_A": [
+        {
+          "step": 0,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 1,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 2,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 3,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 4,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 5,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 6,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 7,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 8,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 9,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 10,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 11,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 12,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 13,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 14,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 15,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 16,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 17,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "send",
+              "D",
+              "sink"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "send",
+              "Q",
+              "D"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "send",
+              "P",
+              "Q"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": null,
+            "Q": 17,
+            "D": 17
+          }
+        },
+        {
+          "step": 18,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "send",
+              "U",
+              "P"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "send",
+              "source",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 18,
+            "P": 18,
+            "Q": 17,
+            "D": 17
+          }
+        },
+        {
+          "step": 19,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": 18,
+            "P": 18,
+            "Q": 17,
+            "D": 17
+          }
+        },
+        {
+          "step": 20,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": 18,
+            "P": 18,
+            "Q": 17,
+            "D": 17
+          }
+        },
+        {
+          "step": 21,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": 18,
+            "P": 18,
+            "Q": 17,
+            "D": 17
+          }
+        },
+        {
+          "step": 22,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": 18,
+            "P": 18,
+            "Q": 17,
+            "D": 17
+          }
+        },
+        {
+          "step": 23,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": 18,
+            "P": 18,
+            "Q": 17,
+            "D": 17
+          }
+        },
+        {
+          "step": 24,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": 18,
+            "P": 18,
+            "Q": 17,
+            "D": 17
+          }
+        },
+        {
+          "step": 25,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "send",
+              "D",
+              "sink"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "send",
+              "Q",
+              "D"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": 18,
+            "P": 18,
+            "Q": null,
+            "D": 25
+          }
+        },
+        {
+          "step": 26,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "send",
+              "P",
+              "Q"
+            ]
+          ],
+          "entry_steps": {
+            "U": 18,
+            "P": null,
+            "Q": 26,
+            "D": 25
+          }
+        },
+        {
+          "step": 27,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "send",
+              "U",
+              "P"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "send",
+              "source",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 27,
+            "P": 27,
+            "Q": 26,
+            "D": 25
+          }
+        }
+      ],
+      "trace_B": [
+        {
+          "step": 0,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 1,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 2,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 3,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 4,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 5,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 6,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 7,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 8,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 9,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 10,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 11,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 12,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 13,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 14,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 15,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 16,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 17,
+          "moves": [
+            [
+              3,
+              "sink"
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              1,
+              2
+            ]
+          ],
+          "entry_steps": [
+            -8,
+            null,
+            17,
+            17
+          ]
+        },
+        {
+          "step": 18,
+          "moves": [
+            [
+              0,
+              1
+            ],
+            [
+              "source",
+              0
+            ]
+          ],
+          "entry_steps": [
+            18,
+            18,
+            17,
+            17
+          ]
+        },
+        {
+          "step": 19,
+          "moves": [],
+          "entry_steps": [
+            18,
+            18,
+            17,
+            17
+          ]
+        },
+        {
+          "step": 20,
+          "moves": [],
+          "entry_steps": [
+            18,
+            18,
+            17,
+            17
+          ]
+        },
+        {
+          "step": 21,
+          "moves": [],
+          "entry_steps": [
+            18,
+            18,
+            17,
+            17
+          ]
+        },
+        {
+          "step": 22,
+          "moves": [],
+          "entry_steps": [
+            18,
+            18,
+            17,
+            17
+          ]
+        },
+        {
+          "step": 23,
+          "moves": [],
+          "entry_steps": [
+            18,
+            18,
+            17,
+            17
+          ]
+        },
+        {
+          "step": 24,
+          "moves": [],
+          "entry_steps": [
+            18,
+            18,
+            17,
+            17
+          ]
+        },
+        {
+          "step": 25,
+          "moves": [
+            [
+              3,
+              "sink"
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "entry_steps": [
+            18,
+            18,
+            null,
+            25
+          ]
+        },
+        {
+          "step": 26,
+          "moves": [
+            [
+              1,
+              2
+            ]
+          ],
+          "entry_steps": [
+            18,
+            null,
+            26,
+            25
+          ]
+        },
+        {
+          "step": 27,
+          "moves": [
+            [
+              0,
+              1
+            ],
+            [
+              "source",
+              0
+            ]
+          ],
+          "entry_steps": [
+            27,
+            27,
+            26,
+            25
+          ]
+        }
+      ],
+      "layer_note": "current supplies D<Q<P<U as one undefined-layer possibility; proposed order counts simple paths"
+    },
+    {
+      "case": "adjacent_bridge_pair",
+      "reading": "current",
+      "closed_until_step": 53,
+      "same_all_12000_steps": true,
+      "statistics": {
+        "count_after_warmup": 1222,
+        "gaps": {
+          "9": 1221
+        },
+        "rate_per_tick": "8/9"
+      },
+      "first_deliveries": [
+        53,
+        61,
+        69,
+        78,
+        87,
+        96,
+        105,
+        114,
+        123,
+        132,
+        141,
+        150,
+        159,
+        168,
+        177,
+        186
+      ],
+      "trace_A": [
+        {
+          "step": 0,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 1,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 2,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 3,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 4,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 5,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 6,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 7,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 8,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 9,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 10,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 11,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 12,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 13,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 14,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 15,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 16,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 17,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 18,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 19,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 20,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 21,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 22,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 23,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 24,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 25,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 26,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 27,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        }
+      ],
+      "trace_B": [
+        {
+          "step": 0,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 1,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 2,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 3,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 4,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 5,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 6,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 7,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 8,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 9,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 10,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 11,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 12,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 13,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 14,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 15,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 16,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 17,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 18,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 19,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 20,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 21,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 22,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 23,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 24,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 25,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 26,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 27,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        }
+      ],
+      "layer_note": "current supplies D<Q<P<U as one undefined-layer possibility; proposed order counts simple paths"
+    },
+    {
+      "case": "adjacent_bridge_pair",
+      "reading": "proposed",
+      "closed_until_step": 0,
+      "same_all_12000_steps": true,
+      "statistics": {
+        "count_after_warmup": 1375,
+        "gaps": {
+          "8": 1374
+        },
+        "rate_per_tick": "1"
+      },
+      "first_deliveries": [
+        0,
+        8,
+        16,
+        24,
+        32,
+        40,
+        48,
+        56,
+        64,
+        72,
+        80,
+        88,
+        96,
+        104,
+        112,
+        120
+      ],
+      "trace_A": [
+        {
+          "step": 0,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "send",
+              "D",
+              "sink"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "send",
+              "Q",
+              "D"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "send",
+              "P",
+              "Q"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "send",
+              "U",
+              "P"
+            ],
+            [
+              "send",
+              "source",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 0,
+            "P": 0,
+            "Q": 0,
+            "D": 0
+          }
+        },
+        {
+          "step": 1,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 0,
+            "P": 0,
+            "Q": 0,
+            "D": 0
+          }
+        },
+        {
+          "step": 2,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 0,
+            "P": 0,
+            "Q": 0,
+            "D": 0
+          }
+        },
+        {
+          "step": 3,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 0,
+            "P": 0,
+            "Q": 0,
+            "D": 0
+          }
+        },
+        {
+          "step": 4,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 0,
+            "P": 0,
+            "Q": 0,
+            "D": 0
+          }
+        },
+        {
+          "step": 5,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 0,
+            "P": 0,
+            "Q": 0,
+            "D": 0
+          }
+        },
+        {
+          "step": 6,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 0,
+            "P": 0,
+            "Q": 0,
+            "D": 0
+          }
+        },
+        {
+          "step": 7,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 0,
+            "P": 0,
+            "Q": 0,
+            "D": 0
+          }
+        },
+        {
+          "step": 8,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "send",
+              "D",
+              "sink"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "send",
+              "Q",
+              "D"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "send",
+              "P",
+              "Q"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "send",
+              "U",
+              "P"
+            ],
+            [
+              "send",
+              "source",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 8,
+            "P": 8,
+            "Q": 8,
+            "D": 8
+          }
+        },
+        {
+          "step": 9,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 8,
+            "P": 8,
+            "Q": 8,
+            "D": 8
+          }
+        },
+        {
+          "step": 10,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 8,
+            "P": 8,
+            "Q": 8,
+            "D": 8
+          }
+        },
+        {
+          "step": 11,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 8,
+            "P": 8,
+            "Q": 8,
+            "D": 8
+          }
+        },
+        {
+          "step": 12,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 8,
+            "P": 8,
+            "Q": 8,
+            "D": 8
+          }
+        },
+        {
+          "step": 13,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 8,
+            "P": 8,
+            "Q": 8,
+            "D": 8
+          }
+        },
+        {
+          "step": 14,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 8,
+            "P": 8,
+            "Q": 8,
+            "D": 8
+          }
+        },
+        {
+          "step": 15,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 8,
+            "P": 8,
+            "Q": 8,
+            "D": 8
+          }
+        },
+        {
+          "step": 16,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "send",
+              "D",
+              "sink"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "send",
+              "Q",
+              "D"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "send",
+              "P",
+              "Q"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "send",
+              "U",
+              "P"
+            ],
+            [
+              "send",
+              "source",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 16,
+            "P": 16,
+            "Q": 16,
+            "D": 16
+          }
+        },
+        {
+          "step": 17,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 16,
+            "P": 16,
+            "Q": 16,
+            "D": 16
+          }
+        },
+        {
+          "step": 18,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 16,
+            "P": 16,
+            "Q": 16,
+            "D": 16
+          }
+        },
+        {
+          "step": 19,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 16,
+            "P": 16,
+            "Q": 16,
+            "D": 16
+          }
+        },
+        {
+          "step": 20,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 16,
+            "P": 16,
+            "Q": 16,
+            "D": 16
+          }
+        },
+        {
+          "step": 21,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 16,
+            "P": 16,
+            "Q": 16,
+            "D": 16
+          }
+        },
+        {
+          "step": 22,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 16,
+            "P": 16,
+            "Q": 16,
+            "D": 16
+          }
+        },
+        {
+          "step": 23,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 16,
+            "P": 16,
+            "Q": 16,
+            "D": 16
+          }
+        },
+        {
+          "step": 24,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "send",
+              "D",
+              "sink"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "send",
+              "Q",
+              "D"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "send",
+              "P",
+              "Q"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "send",
+              "U",
+              "P"
+            ],
+            [
+              "send",
+              "source",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 24,
+            "P": 24,
+            "Q": 24,
+            "D": 24
+          }
+        },
+        {
+          "step": 25,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 24,
+            "P": 24,
+            "Q": 24,
+            "D": 24
+          }
+        },
+        {
+          "step": 26,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 24,
+            "P": 24,
+            "Q": 24,
+            "D": 24
+          }
+        },
+        {
+          "step": 27,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 24,
+            "P": 24,
+            "Q": 24,
+            "D": 24
+          }
+        }
+      ],
+      "trace_B": [
+        {
+          "step": 0,
+          "moves": [
+            [
+              3,
+              "sink"
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              "source",
+              0
+            ]
+          ],
+          "entry_steps": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "step": 1,
+          "moves": [],
+          "entry_steps": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "step": 2,
+          "moves": [],
+          "entry_steps": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "step": 3,
+          "moves": [],
+          "entry_steps": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "step": 4,
+          "moves": [],
+          "entry_steps": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "step": 5,
+          "moves": [],
+          "entry_steps": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "step": 6,
+          "moves": [],
+          "entry_steps": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "step": 7,
+          "moves": [],
+          "entry_steps": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "step": 8,
+          "moves": [
+            [
+              3,
+              "sink"
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              "source",
+              0
+            ]
+          ],
+          "entry_steps": [
+            8,
+            8,
+            8,
+            8
+          ]
+        },
+        {
+          "step": 9,
+          "moves": [],
+          "entry_steps": [
+            8,
+            8,
+            8,
+            8
+          ]
+        },
+        {
+          "step": 10,
+          "moves": [],
+          "entry_steps": [
+            8,
+            8,
+            8,
+            8
+          ]
+        },
+        {
+          "step": 11,
+          "moves": [],
+          "entry_steps": [
+            8,
+            8,
+            8,
+            8
+          ]
+        },
+        {
+          "step": 12,
+          "moves": [],
+          "entry_steps": [
+            8,
+            8,
+            8,
+            8
+          ]
+        },
+        {
+          "step": 13,
+          "moves": [],
+          "entry_steps": [
+            8,
+            8,
+            8,
+            8
+          ]
+        },
+        {
+          "step": 14,
+          "moves": [],
+          "entry_steps": [
+            8,
+            8,
+            8,
+            8
+          ]
+        },
+        {
+          "step": 15,
+          "moves": [],
+          "entry_steps": [
+            8,
+            8,
+            8,
+            8
+          ]
+        },
+        {
+          "step": 16,
+          "moves": [
+            [
+              3,
+              "sink"
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              "source",
+              0
+            ]
+          ],
+          "entry_steps": [
+            16,
+            16,
+            16,
+            16
+          ]
+        },
+        {
+          "step": 17,
+          "moves": [],
+          "entry_steps": [
+            16,
+            16,
+            16,
+            16
+          ]
+        },
+        {
+          "step": 18,
+          "moves": [],
+          "entry_steps": [
+            16,
+            16,
+            16,
+            16
+          ]
+        },
+        {
+          "step": 19,
+          "moves": [],
+          "entry_steps": [
+            16,
+            16,
+            16,
+            16
+          ]
+        },
+        {
+          "step": 20,
+          "moves": [],
+          "entry_steps": [
+            16,
+            16,
+            16,
+            16
+          ]
+        },
+        {
+          "step": 21,
+          "moves": [],
+          "entry_steps": [
+            16,
+            16,
+            16,
+            16
+          ]
+        },
+        {
+          "step": 22,
+          "moves": [],
+          "entry_steps": [
+            16,
+            16,
+            16,
+            16
+          ]
+        },
+        {
+          "step": 23,
+          "moves": [],
+          "entry_steps": [
+            16,
+            16,
+            16,
+            16
+          ]
+        },
+        {
+          "step": 24,
+          "moves": [
+            [
+              3,
+              "sink"
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              "source",
+              0
+            ]
+          ],
+          "entry_steps": [
+            24,
+            24,
+            24,
+            24
+          ]
+        },
+        {
+          "step": 25,
+          "moves": [],
+          "entry_steps": [
+            24,
+            24,
+            24,
+            24
+          ]
+        },
+        {
+          "step": 26,
+          "moves": [],
+          "entry_steps": [
+            24,
+            24,
+            24,
+            24
+          ]
+        },
+        {
+          "step": 27,
+          "moves": [],
+          "entry_steps": [
+            24,
+            24,
+            24,
+            24
+          ]
+        }
+      ],
+      "layer_note": "current supplies D<Q<P<U as one undefined-layer possibility; proposed order counts simple paths"
+    },
+    {
+      "case": "adjacent_bridge_pair",
+      "reading": "proposed",
+      "closed_until_step": 17,
+      "same_all_12000_steps": true,
+      "statistics": {
+        "count_after_warmup": 1375,
+        "gaps": {
+          "8": 1374
+        },
+        "rate_per_tick": "1"
+      },
+      "first_deliveries": [
+        17,
+        25,
+        33,
+        41,
+        49,
+        57,
+        65,
+        73,
+        81,
+        89,
+        97,
+        105,
+        113,
+        121,
+        129,
+        137
+      ],
+      "trace_A": [
+        {
+          "step": 0,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 1,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 2,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 3,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 4,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 5,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 6,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 7,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 8,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 9,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 10,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 11,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 12,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 13,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 14,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 15,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 16,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 17,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "send",
+              "D",
+              "sink"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "send",
+              "Q",
+              "D"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "send",
+              "P",
+              "Q"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "send",
+              "U",
+              "P"
+            ],
+            [
+              "send",
+              "source",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 17,
+            "P": 17,
+            "Q": 17,
+            "D": 17
+          }
+        },
+        {
+          "step": 18,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 17,
+            "P": 17,
+            "Q": 17,
+            "D": 17
+          }
+        },
+        {
+          "step": 19,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 17,
+            "P": 17,
+            "Q": 17,
+            "D": 17
+          }
+        },
+        {
+          "step": 20,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 17,
+            "P": 17,
+            "Q": 17,
+            "D": 17
+          }
+        },
+        {
+          "step": 21,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 17,
+            "P": 17,
+            "Q": 17,
+            "D": 17
+          }
+        },
+        {
+          "step": 22,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 17,
+            "P": 17,
+            "Q": 17,
+            "D": 17
+          }
+        },
+        {
+          "step": 23,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 17,
+            "P": 17,
+            "Q": 17,
+            "D": 17
+          }
+        },
+        {
+          "step": 24,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 17,
+            "P": 17,
+            "Q": 17,
+            "D": 17
+          }
+        },
+        {
+          "step": 25,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "send",
+              "D",
+              "sink"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "send",
+              "Q",
+              "D"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "send",
+              "P",
+              "Q"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "send",
+              "U",
+              "P"
+            ],
+            [
+              "send",
+              "source",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 25,
+            "P": 25,
+            "Q": 25,
+            "D": 25
+          }
+        },
+        {
+          "step": 26,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 25,
+            "P": 25,
+            "Q": 25,
+            "D": 25
+          }
+        },
+        {
+          "step": 27,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 25,
+            "P": 25,
+            "Q": 25,
+            "D": 25
+          }
+        }
+      ],
+      "trace_B": [
+        {
+          "step": 0,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 1,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 2,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 3,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 4,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 5,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 6,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 7,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 8,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 9,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 10,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 11,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 12,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 13,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 14,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 15,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 16,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 17,
+          "moves": [
+            [
+              3,
+              "sink"
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              "source",
+              0
+            ]
+          ],
+          "entry_steps": [
+            17,
+            17,
+            17,
+            17
+          ]
+        },
+        {
+          "step": 18,
+          "moves": [],
+          "entry_steps": [
+            17,
+            17,
+            17,
+            17
+          ]
+        },
+        {
+          "step": 19,
+          "moves": [],
+          "entry_steps": [
+            17,
+            17,
+            17,
+            17
+          ]
+        },
+        {
+          "step": 20,
+          "moves": [],
+          "entry_steps": [
+            17,
+            17,
+            17,
+            17
+          ]
+        },
+        {
+          "step": 21,
+          "moves": [],
+          "entry_steps": [
+            17,
+            17,
+            17,
+            17
+          ]
+        },
+        {
+          "step": 22,
+          "moves": [],
+          "entry_steps": [
+            17,
+            17,
+            17,
+            17
+          ]
+        },
+        {
+          "step": 23,
+          "moves": [],
+          "entry_steps": [
+            17,
+            17,
+            17,
+            17
+          ]
+        },
+        {
+          "step": 24,
+          "moves": [],
+          "entry_steps": [
+            17,
+            17,
+            17,
+            17
+          ]
+        },
+        {
+          "step": 25,
+          "moves": [
+            [
+              3,
+              "sink"
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              "source",
+              0
+            ]
+          ],
+          "entry_steps": [
+            25,
+            25,
+            25,
+            25
+          ]
+        },
+        {
+          "step": 26,
+          "moves": [],
+          "entry_steps": [
+            25,
+            25,
+            25,
+            25
+          ]
+        },
+        {
+          "step": 27,
+          "moves": [],
+          "entry_steps": [
+            25,
+            25,
+            25,
+            25
+          ]
+        }
+      ],
+      "layer_note": "current supplies D<Q<P<U as one undefined-layer possibility; proposed order counts simple paths"
+    },
+    {
+      "case": "adjacent_bridge_pair",
+      "reading": "proposed",
+      "closed_until_step": 53,
+      "same_all_12000_steps": true,
+      "statistics": {
+        "count_after_warmup": 1375,
+        "gaps": {
+          "8": 1374
+        },
+        "rate_per_tick": "1"
+      },
+      "first_deliveries": [
+        53,
+        61,
+        69,
+        77,
+        85,
+        93,
+        101,
+        109,
+        117,
+        125,
+        133,
+        141,
+        149,
+        157,
+        165,
+        173
+      ],
+      "trace_A": [
+        {
+          "step": 0,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 1,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 2,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 3,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 4,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 5,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 6,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 7,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 8,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 9,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 10,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 11,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 12,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 13,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 14,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 15,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 16,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 17,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 18,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 19,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 20,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 21,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 22,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 23,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 24,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 25,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 26,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        },
+        {
+          "step": 27,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "Q"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": -8,
+            "P": -8,
+            "Q": -8,
+            "D": -8
+          }
+        }
+      ],
+      "trace_B": [
+        {
+          "step": 0,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 1,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 2,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 3,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 4,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 5,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 6,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 7,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 8,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 9,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 10,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 11,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 12,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 13,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 14,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 15,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 16,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 17,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 18,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 19,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 20,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 21,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 22,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 23,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 24,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 25,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 26,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        },
+        {
+          "step": 27,
+          "moves": [],
+          "entry_steps": [
+            -8,
+            -8,
+            -8,
+            -8
+          ]
+        }
+      ],
+      "layer_note": "current supplies D<Q<P<U as one undefined-layer possibility; proposed order counts simple paths"
+    },
+    {
+      "case": "bridge_pair_separated_by_belt",
+      "reading": "current",
+      "closed_until_step": 0,
+      "same_all_12000_steps": true,
+      "statistics": {
+        "count_after_warmup": 1375,
+        "gaps": {
+          "8": 1374
+        },
+        "rate_per_tick": "1"
+      },
+      "first_deliveries": [
+        0,
+        8,
+        16,
+        24,
+        32,
+        40,
+        48,
+        56,
+        64,
+        72,
+        80,
+        88,
+        96,
+        104,
+        112,
+        120
+      ]
+    },
+    {
+      "case": "bridge_pair_separated_by_belt",
+      "reading": "current",
+      "closed_until_step": 53,
+      "same_all_12000_steps": true,
+      "statistics": {
+        "count_after_warmup": 1375,
+        "gaps": {
+          "8": 1374
+        },
+        "rate_per_tick": "1"
+      },
+      "first_deliveries": [
+        53,
+        61,
+        69,
+        77,
+        85,
+        93,
+        101,
+        109,
+        117,
+        125,
+        133,
+        141,
+        149,
+        157,
+        165,
+        173
+      ]
+    },
+    {
+      "case": "bridge_pair_separated_by_belt",
+      "reading": "proposed",
+      "closed_until_step": 0,
+      "same_all_12000_steps": true,
+      "statistics": {
+        "count_after_warmup": 1375,
+        "gaps": {
+          "8": 1374
+        },
+        "rate_per_tick": "1"
+      },
+      "first_deliveries": [
+        0,
+        8,
+        16,
+        24,
+        32,
+        40,
+        48,
+        56,
+        64,
+        72,
+        80,
+        88,
+        96,
+        104,
+        112,
+        120
+      ]
+    },
+    {
+      "case": "bridge_pair_separated_by_belt",
+      "reading": "proposed",
+      "closed_until_step": 53,
+      "same_all_12000_steps": true,
+      "statistics": {
+        "count_after_warmup": 1375,
+        "gaps": {
+          "8": 1374
+        },
+        "rate_per_tick": "1"
+      },
+      "first_deliveries": [
+        53,
+        61,
+        69,
+        77,
+        85,
+        93,
+        101,
+        109,
+        117,
+        125,
+        133,
+        141,
+        149,
+        157,
+        165,
+        173
+      ]
+    },
+    {
+      "case": "cross_axis_wording_diagnostic",
+      "reading": "unit_group_early_input",
+      "statistics": {
+        "count_after_warmup": 1222,
+        "gaps": {
+          "9": 1221
+        },
+        "rate_per_tick": "8/9"
+      },
+      "status": "conditional schedule only; not a contradiction of independent axes"
+    },
+    {
+      "case": "cross_axis_wording_diagnostic",
+      "reading": "axis_independent",
+      "statistics": {
+        "count_after_warmup": 1375,
+        "gaps": {
+          "8": 1374
+        },
+        "rate_per_tick": "1"
+      },
+      "status": "conditional schedule only; not a contradiction of independent axes"
+    },
+    {
+      "case": "debug_rotation_provenance_trap_no_adjacent_bridges",
+      "reading": "current_and_proposed_with_persistent_previous_unit",
+      "same_all_12000_steps": true,
+      "statistics": {
+        "count_after_warmup": 0,
+        "gaps": {},
+        "rate_per_tick": null
+      },
+      "debug_trace_A": [
+        {
+          "step": 0,
+          "events": [
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "G"
+            ],
+            [
+              "send",
+              "source",
+              "G"
+            ]
+          ],
+          "entry_steps": {
+            "G": 0,
+            "P": null
+          }
+        },
+        {
+          "step": 1,
+          "events": [
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "G"
+            ]
+          ],
+          "entry_steps": {
+            "G": 0,
+            "P": null
+          }
+        },
+        {
+          "step": 2,
+          "events": [
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "G"
+            ]
+          ],
+          "entry_steps": {
+            "G": 0,
+            "P": null
+          }
+        },
+        {
+          "step": 3,
+          "events": [
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "G"
+            ]
+          ],
+          "entry_steps": {
+            "G": 0,
+            "P": null
+          }
+        },
+        {
+          "step": 4,
+          "events": [
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "G"
+            ]
+          ],
+          "entry_steps": {
+            "G": 0,
+            "P": null
+          }
+        },
+        {
+          "step": 5,
+          "events": [
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "G"
+            ]
+          ],
+          "entry_steps": {
+            "G": 0,
+            "P": null
+          }
+        },
+        {
+          "step": 6,
+          "events": [
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "G"
+            ]
+          ],
+          "entry_steps": {
+            "G": 0,
+            "P": null
+          }
+        },
+        {
+          "step": 7,
+          "events": [
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "G"
+            ]
+          ],
+          "entry_steps": {
+            "G": 0,
+            "P": null
+          }
+        },
+        {
+          "step": 8,
+          "events": [
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "G"
+            ],
+            [
+              "send",
+              "G",
+              "P"
+            ],
+            [
+              "send",
+              "source",
+              "G"
+            ]
+          ],
+          "entry_steps": {
+            "G": 8,
+            "P": 8
+          }
+        },
+        {
+          "step": 9,
+          "events": [
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "G"
+            ]
+          ],
+          "entry_steps": {
+            "G": 8,
+            "P": 8
+          }
+        },
+        {
+          "step": 10,
+          "events": [
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "G"
+            ]
+          ],
+          "entry_steps": {
+            "G": 8,
+            "P": 8
+          }
+        },
+        {
+          "step": 11,
+          "events": [
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "G"
+            ]
+          ],
+          "entry_steps": {
+            "G": 8,
+            "P": 8
+          }
+        },
+        {
+          "step": 12,
+          "events": [
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "G"
+            ]
+          ],
+          "entry_steps": {
+            "G": 8,
+            "P": 8
+          }
+        },
+        {
+          "step": 13,
+          "events": [
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "G"
+            ]
+          ],
+          "entry_steps": {
+            "G": 8,
+            "P": 8
+          }
+        },
+        {
+          "step": 14,
+          "events": [
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "G"
+            ]
+          ],
+          "entry_steps": {
+            "G": 8,
+            "P": 8
+          }
+        },
+        {
+          "step": 15,
+          "events": [
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "G"
+            ]
+          ],
+          "entry_steps": {
+            "G": 8,
+            "P": 8
+          }
+        },
+        {
+          "step": 16,
+          "events": [
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "G"
+            ]
+          ],
+          "entry_steps": {
+            "G": 8,
+            "P": 8
+          }
+        },
+        {
+          "step": 17,
+          "events": [
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "G"
+            ]
+          ],
+          "entry_steps": {
+            "G": 8,
+            "P": 8
+          }
+        },
+        {
+          "step": 18,
+          "events": [
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "G"
+            ]
+          ],
+          "entry_steps": {
+            "G": 8,
+            "P": 8
+          }
+        },
+        {
+          "step": 19,
+          "events": [
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "G"
+            ]
+          ],
+          "entry_steps": {
+            "G": 8,
+            "P": 8
+          }
+        }
+      ],
+      "final_trace_A": [
+        {
+          "step": 0,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "G"
+            ],
+            [
+              "send",
+              "G",
+              "D"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ],
+            [
+              "send",
+              "source",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 0,
+            "P": -12,
+            "G": null,
+            "D": 0
+          }
+        },
+        {
+          "step": 1,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "G"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 0,
+            "P": -12,
+            "G": null,
+            "D": 0
+          }
+        },
+        {
+          "step": 2,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "G"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 0,
+            "P": -12,
+            "G": null,
+            "D": 0
+          }
+        },
+        {
+          "step": 3,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "G"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 0,
+            "P": -12,
+            "G": null,
+            "D": 0
+          }
+        },
+        {
+          "step": 4,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "G"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 0,
+            "P": -12,
+            "G": null,
+            "D": 0
+          }
+        },
+        {
+          "step": 5,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "G"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 0,
+            "P": -12,
+            "G": null,
+            "D": 0
+          }
+        },
+        {
+          "step": 6,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "G"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 0,
+            "P": -12,
+            "G": null,
+            "D": 0
+          }
+        },
+        {
+          "step": 7,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "G"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 0,
+            "P": -12,
+            "G": null,
+            "D": 0
+          }
+        },
+        {
+          "step": 8,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "send",
+              "D",
+              "sink"
+            ],
+            [
+              "judge",
+              "G"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 0,
+            "P": -12,
+            "G": null,
+            "D": null
+          }
+        },
+        {
+          "step": 9,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "G"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 0,
+            "P": -12,
+            "G": null,
+            "D": null
+          }
+        },
+        {
+          "step": 10,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "G"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 0,
+            "P": -12,
+            "G": null,
+            "D": null
+          }
+        },
+        {
+          "step": 11,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "G"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 0,
+            "P": -12,
+            "G": null,
+            "D": null
+          }
+        },
+        {
+          "step": 12,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "G"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 0,
+            "P": -12,
+            "G": null,
+            "D": null
+          }
+        },
+        {
+          "step": 13,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "G"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 0,
+            "P": -12,
+            "G": null,
+            "D": null
+          }
+        },
+        {
+          "step": 14,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "G"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 0,
+            "P": -12,
+            "G": null,
+            "D": null
+          }
+        },
+        {
+          "step": 15,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "G"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 0,
+            "P": -12,
+            "G": null,
+            "D": null
+          }
+        },
+        {
+          "step": 16,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "G"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 0,
+            "P": -12,
+            "G": null,
+            "D": null
+          }
+        },
+        {
+          "step": 17,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "G"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 0,
+            "P": -12,
+            "G": null,
+            "D": null
+          }
+        },
+        {
+          "step": 18,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "G"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 0,
+            "P": -12,
+            "G": null,
+            "D": null
+          }
+        },
+        {
+          "step": 19,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "G"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 0,
+            "P": -12,
+            "G": null,
+            "D": null
+          }
+        },
+        {
+          "step": 20,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "G"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 0,
+            "P": -12,
+            "G": null,
+            "D": null
+          }
+        },
+        {
+          "step": 21,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "G"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 0,
+            "P": -12,
+            "G": null,
+            "D": null
+          }
+        },
+        {
+          "step": 22,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "G"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 0,
+            "P": -12,
+            "G": null,
+            "D": null
+          }
+        },
+        {
+          "step": 23,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "G"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 0,
+            "P": -12,
+            "G": null,
+            "D": null
+          }
+        },
+        {
+          "step": 24,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "G"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 0,
+            "P": -12,
+            "G": null,
+            "D": null
+          }
+        },
+        {
+          "step": 25,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "G"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 0,
+            "P": -12,
+            "G": null,
+            "D": null
+          }
+        },
+        {
+          "step": 26,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "G"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 0,
+            "P": -12,
+            "G": null,
+            "D": null
+          }
+        },
+        {
+          "step": 27,
+          "events": [
+            [
+              "judge",
+              "D"
+            ],
+            [
+              "judge",
+              "G"
+            ],
+            [
+              "judge",
+              "P"
+            ],
+            [
+              "judge",
+              "U"
+            ]
+          ],
+          "entry_steps": {
+            "U": 0,
+            "P": -12,
+            "G": null,
+            "D": null
+          }
+        }
+      ],
+      "final_deliveries": [
+        8
+      ],
+      "assumption": "rotation preserves the physical unit and previous-unit identity; no snapshot rule resets it",
+      "conclusion": "P never sends; the final directed chain is blocked forever"
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "status": "PASS",
+  "started_utc": "2026-10-02T05:59:19.362175+00:00",
+  "finished_utc": "2026-10-02T05:59:20.016269+00:00",
+  "execution": [
+    {
+      "script": "recompute_a.py",
+      "seconds": 0.2553029249993415,
+      "exit_code": 0
+    },
+    {
+      "script": "recompute_b.py",
+      "seconds": 0.321897120000358,
+      "exit_code": 0
+    }
+  ],
+  "process_parallelism": 1,
+  "candidate_count": 7,
+  "verdict_counts": {
+    "未否证": 7,
+    "已否证": 0,
+    "修正": 0
+  },
+  "checked_links": [
+    "前提快照/《明日方舟：终末地》游戏规则.txt",
+    "前提快照/求解任务.txt",
+    "前提快照/求解约束.txt",
+    "前提快照/求解充分条件.txt",
+    "前提快照/不补的设定.txt",
+    "推导92E.md",
+    "复核93E/results_a.json",
+    "复核93E/recompute_a.py",
+    "复核93E/recompute_b.py",
+    "复核93E/results_a.json",
+    "复核93E/results_b.json",
+    "复核93E/verdicts.json"
+  ],
+  "artifacts": {
+    "复核93E.md": {
+      "sha256": "ce2319ec7df7b76c6808091c6459d0dfd6026d2e73dbd691e7acb998f142d9ae",
+      "bytes": 27639
+    },
+    "推导92E.md": {
+      "sha256": "f60e7bb2bea550cc2921f6f971e6b74af20e7aca8c21cd62e25d869263b6ec51",
+      "bytes": 40215
+    },
+    "复核93E/check_delivery.py": {
+      "sha256": "d3babb76d83938c51925b4ff29036acf0f7b978976e5f7d1db0d1d3358397534",
+      "bytes": 3740
+    },
+    "复核93E/recompute_a.py": {
+      "sha256": "c864287a0bd251fbdcc00ca3c43f7d8b094eaca7dd89eb3186e4c886ea493de2",
+      "bytes": 17626
+    },
+    "复核93E/recompute_b.py": {
+      "sha256": "80335b0a483474a18772c4eb7e13e20fa4bc603da68ed026af59d30b40a12ed7",
+      "bytes": 15191
+    },
+    "复核93E/results_a.json": {
+      "sha256": "5231d528adf17c0ea33ed92bf5e5a37926f96c9237135838d569036ac922fa61",
+      "bytes": 16436764
+    },
+    "复核93E/results_b.json": {
+      "sha256": "6dc8be9b68994ef86a5c32c7adf9c9e8ec8e9ffdbc0de78fd9c620f2cc32b1ca",
+      "bytes": 6076
+    },
+    "复核93E/verdicts.json": {
+      "sha256": "e6c64db18d85dc64d2d3dc22edc93ee9f00444f37538ec68cd7e84ab0a72ed23",
+      "bytes": 1733
+    }
+  },
+  "reader_audit": {
+    "scope_and_status_consistent": true,
+    "conditional_counts_preserved": true,
+    "numeric_encodings_agree": true,
+    "local_witness_distinguished_from_layout": true
+  },
+  "known_limit": "未提供完整达标布局；相邻桥接器只核条件性次序；旧S06只否证逐刻子句"
+}

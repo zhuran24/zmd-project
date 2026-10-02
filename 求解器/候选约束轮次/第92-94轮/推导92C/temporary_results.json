@@ -1,0 +1,546 @@
+{
+  "temporary_rules_sha256": "39c0aed1f711f8ed01625da8b51b30569fc52ecfa5f8140629fa398d32dab396",
+  "S06_S07": {
+    "order_cases": [
+      4,
+      720
+    ],
+    "two_encodings_agree": true,
+    "S06_first_tick_total": 1,
+    "S07_input_steps_0_1": [
+      49,
+      50
+    ],
+    "finite_plant_steps_compared": 400,
+    "scope": "Order sweeps are a superset of orders induced by construction; universal checks remain valid."
+  },
+  "S08": {
+    "cases": 160,
+    "complete_states_compared": 25600,
+    "two_encodings_agree": true,
+    "scope": "No intervening offline reset; changed rule 31 is exercised."
+  },
+  "S10": {
+    "pure_belt_cases": 256,
+    "periods": [
+      8
+    ],
+    "two_encodings_agree": true,
+    "original_counterexample": {
+      "two_encodings_agree": true,
+      "stable_from_step": 8,
+      "period_steps": 1,
+      "Y_cache_nonempty_all_step_ends": true,
+      "X_cache_empty_all_step_ends": true,
+      "sim2_local_patch": "enforce rule 13 input/output kind uniqueness in flush",
+      "trace": [
+        {
+          "step": 0,
+          "Y_input": [],
+          "Y_remaining": 8,
+          "Y_output": 0,
+          "Y_completed_cache": [],
+          "X_running": false,
+          "X_cache": 0
+        },
+        {
+          "step": 1,
+          "Y_input": [
+            "powder"
+          ],
+          "Y_remaining": 7,
+          "Y_output": 0,
+          "Y_completed_cache": [],
+          "X_running": false,
+          "X_cache": 0
+        },
+        {
+          "step": 2,
+          "Y_input": [
+            "powder"
+          ],
+          "Y_remaining": 6,
+          "Y_output": 0,
+          "Y_completed_cache": [],
+          "X_running": false,
+          "X_cache": 0
+        },
+        {
+          "step": 3,
+          "Y_input": [
+            "powder"
+          ],
+          "Y_remaining": 5,
+          "Y_output": 0,
+          "Y_completed_cache": [],
+          "X_running": false,
+          "X_cache": 0
+        },
+        {
+          "step": 4,
+          "Y_input": [
+            "powder"
+          ],
+          "Y_remaining": 4,
+          "Y_output": 0,
+          "Y_completed_cache": [],
+          "X_running": false,
+          "X_cache": 0
+        },
+        {
+          "step": 5,
+          "Y_input": [
+            "powder"
+          ],
+          "Y_remaining": 3,
+          "Y_output": 0,
+          "Y_completed_cache": [],
+          "X_running": false,
+          "X_cache": 0
+        },
+        {
+          "step": 6,
+          "Y_input": [
+            "powder"
+          ],
+          "Y_remaining": 2,
+          "Y_output": 0,
+          "Y_completed_cache": [],
+          "X_running": false,
+          "X_cache": 0
+        },
+        {
+          "step": 7,
+          "Y_input": [
+            "powder"
+          ],
+          "Y_remaining": 1,
+          "Y_output": 0,
+          "Y_completed_cache": [],
+          "X_running": false,
+          "X_cache": 0
+        },
+        {
+          "step": 8,
+          "Y_input": [
+            "powder"
+          ],
+          "Y_remaining": null,
+          "Y_output": 0,
+          "Y_completed_cache": [
+            "powder"
+          ],
+          "X_running": false,
+          "X_cache": 0
+        },
+        {
+          "step": 9,
+          "Y_input": [
+            "powder"
+          ],
+          "Y_remaining": null,
+          "Y_output": 0,
+          "Y_completed_cache": [
+            "powder"
+          ],
+          "X_running": false,
+          "X_cache": 0
+        },
+        {
+          "step": 10,
+          "Y_input": [
+            "powder"
+          ],
+          "Y_remaining": null,
+          "Y_output": 0,
+          "Y_completed_cache": [
+            "powder"
+          ],
+          "X_running": false,
+          "X_cache": 0
+        },
+        {
+          "step": 11,
+          "Y_input": [
+            "powder"
+          ],
+          "Y_remaining": null,
+          "Y_output": 0,
+          "Y_completed_cache": [
+            "powder"
+          ],
+          "X_running": false,
+          "X_cache": 0
+        },
+        {
+          "step": 12,
+          "Y_input": [
+            "powder"
+          ],
+          "Y_remaining": null,
+          "Y_output": 0,
+          "Y_completed_cache": [
+            "powder"
+          ],
+          "X_running": false,
+          "X_cache": 0
+        },
+        {
+          "step": 13,
+          "Y_input": [
+            "powder"
+          ],
+          "Y_remaining": null,
+          "Y_output": 0,
+          "Y_completed_cache": [
+            "powder"
+          ],
+          "X_running": false,
+          "X_cache": 0
+        },
+        {
+          "step": 14,
+          "Y_input": [
+            "powder"
+          ],
+          "Y_remaining": null,
+          "Y_output": 0,
+          "Y_completed_cache": [
+            "powder"
+          ],
+          "X_running": false,
+          "X_cache": 0
+        },
+        {
+          "step": 15,
+          "Y_input": [
+            "powder"
+          ],
+          "Y_remaining": null,
+          "Y_output": 0,
+          "Y_completed_cache": [
+            "powder"
+          ],
+          "X_running": false,
+          "X_cache": 0
+        },
+        {
+          "step": 16,
+          "Y_input": [
+            "powder"
+          ],
+          "Y_remaining": null,
+          "Y_output": 0,
+          "Y_completed_cache": [
+            "powder"
+          ],
+          "X_running": false,
+          "X_cache": 0
+        },
+        {
+          "step": 17,
+          "Y_input": [
+            "powder"
+          ],
+          "Y_remaining": null,
+          "Y_output": 0,
+          "Y_completed_cache": [
+            "powder"
+          ],
+          "X_running": false,
+          "X_cache": 0
+        },
+        {
+          "step": 18,
+          "Y_input": [
+            "powder"
+          ],
+          "Y_remaining": null,
+          "Y_output": 0,
+          "Y_completed_cache": [
+            "powder"
+          ],
+          "X_running": false,
+          "X_cache": 0
+        },
+        {
+          "step": 19,
+          "Y_input": [
+            "powder"
+          ],
+          "Y_remaining": null,
+          "Y_output": 0,
+          "Y_completed_cache": [
+            "powder"
+          ],
+          "X_running": false,
+          "X_cache": 0
+        },
+        {
+          "step": 20,
+          "Y_input": [
+            "powder"
+          ],
+          "Y_remaining": null,
+          "Y_output": 0,
+          "Y_completed_cache": [
+            "powder"
+          ],
+          "X_running": false,
+          "X_cache": 0
+        },
+        {
+          "step": 21,
+          "Y_input": [
+            "powder"
+          ],
+          "Y_remaining": null,
+          "Y_output": 0,
+          "Y_completed_cache": [
+            "powder"
+          ],
+          "X_running": false,
+          "X_cache": 0
+        },
+        {
+          "step": 22,
+          "Y_input": [
+            "powder"
+          ],
+          "Y_remaining": null,
+          "Y_output": 0,
+          "Y_completed_cache": [
+            "powder"
+          ],
+          "X_running": false,
+          "X_cache": 0
+        },
+        {
+          "step": 23,
+          "Y_input": [
+            "powder"
+          ],
+          "Y_remaining": null,
+          "Y_output": 0,
+          "Y_completed_cache": [
+            "powder"
+          ],
+          "X_running": false,
+          "X_cache": 0
+        }
+      ]
+    }
+  },
+  "rebuild_robust_properties": {
+    "conditional_reset_mode": true,
+    "not_asserting_reset_is_required_by_temporary_rule_4": true,
+    "plant_cases": 80,
+    "cases_with_initial_phi_at_least_one": 80,
+    "complete_states_compared": 12800,
+    "construction_derived_rebuilds": 6318,
+    "two_encodings_agree": true,
+    "positive_inventory_violations": 0,
+    "S07_refill_independent_of_history": {
+      "1": {
+        "priority_sequences": 1,
+        "maximum_judgements": 1,
+        "independent_pigeonhole_bound": 1
+      },
+      "2": {
+        "priority_sequences": 4,
+        "maximum_judgements": 2,
+        "independent_pigeonhole_bound": 2
+      },
+      "3": {
+        "priority_sequences": 216,
+        "maximum_judgements": 3,
+        "independent_pigeonhole_bound": 3
+      }
+    },
+    "critical_half_unit_startup": [
+      {
+        "step": 0,
+        "phi": 1.0,
+        "C_output": 0,
+        "CA_head_full": false,
+        "CB_head_full": false
+      },
+      {
+        "step": 1,
+        "phi": 1.0,
+        "C_output": 0,
+        "CA_head_full": false,
+        "CB_head_full": false
+      },
+      {
+        "step": 2,
+        "phi": 1.0,
+        "C_output": 0,
+        "CA_head_full": false,
+        "CB_head_full": false
+      },
+      {
+        "step": 3,
+        "phi": 1.0,
+        "C_output": 0,
+        "CA_head_full": false,
+        "CB_head_full": false
+      },
+      {
+        "step": 4,
+        "phi": 1.0,
+        "C_output": 0,
+        "CA_head_full": false,
+        "CB_head_full": false
+      },
+      {
+        "step": 5,
+        "phi": 1.0,
+        "C_output": 0,
+        "CA_head_full": false,
+        "CB_head_full": false
+      },
+      {
+        "step": 6,
+        "phi": 1.0,
+        "C_output": 0,
+        "CA_head_full": false,
+        "CB_head_full": false
+      },
+      {
+        "step": 7,
+        "phi": 1.0,
+        "C_output": 0,
+        "CA_head_full": false,
+        "CB_head_full": false
+      },
+      {
+        "step": 8,
+        "phi": 0.5,
+        "C_output": 1,
+        "CA_head_full": false,
+        "CB_head_full": true
+      },
+      {
+        "step": 9,
+        "phi": 1.0,
+        "C_output": 0,
+        "CA_head_full": true,
+        "CB_head_full": true
+      },
+      {
+        "step": 10,
+        "phi": 1.0,
+        "C_output": 0,
+        "CA_head_full": true,
+        "CB_head_full": true
+      }
+    ],
+    "critical_phi_at_steps_8_9": [
+      0.5,
+      1.0
+    ]
+  },
+  "history_reset_diagnostic": {
+    "conditional_on_reset": true,
+    "not_a_claim_that_the_temporary_text_requires_reset": true,
+    "successful_outlets": [
+      0,
+      0,
+      1
+    ],
+    "rows": [
+      {
+        "step": 0,
+        "sent": 0,
+        "output": 0,
+        "last_success": [
+          0,
+          -1
+        ]
+      },
+      {
+        "step": 1,
+        "sent": null,
+        "output": 0,
+        "last_success": [
+          0,
+          -1
+        ]
+      },
+      {
+        "step": 2,
+        "sent": null,
+        "output": 0,
+        "last_success": [
+          0,
+          -1
+        ]
+      },
+      {
+        "step": 3,
+        "sent": null,
+        "output": 0,
+        "last_success": [
+          0,
+          -1
+        ]
+      },
+      {
+        "step": 4,
+        "sent": null,
+        "output": 0,
+        "last_success": [
+          0,
+          -1
+        ]
+      },
+      {
+        "step": 5,
+        "sent": null,
+        "output": 0,
+        "last_success": [
+          0,
+          -1
+        ]
+      },
+      {
+        "step": 6,
+        "sent": null,
+        "output": 0,
+        "last_success": [
+          0,
+          -1
+        ]
+      },
+      {
+        "step": 7,
+        "sent": null,
+        "output": 0,
+        "last_success": [
+          0,
+          -1
+        ]
+      },
+      {
+        "step": 8,
+        "sent": 0,
+        "output": 1,
+        "last_success": [
+          8,
+          -1
+        ]
+      },
+      {
+        "step": 9,
+        "sent": 1,
+        "output": 0,
+        "last_success": [
+          8,
+          9
+        ]
+      }
+    ]
+  },
+  "admission_gate_loss": "No positive lower bound is simulated or assumed; final S10 excludes gates."
+}

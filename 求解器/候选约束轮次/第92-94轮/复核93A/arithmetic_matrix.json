@@ -1,0 +1,355 @@
+{
+  "status": "PASS",
+  "encoding": "parsed stoichiometric matrix and rational Gaussian elimination",
+  "recipe_count": 18,
+  "species_count": 19,
+  "recipes": [
+    {
+      "factory": "粉碎机",
+      "inputs": {
+        "源矿": 1
+      },
+      "outputs": {
+        "源石粉末": 1
+      },
+      "duration": 1,
+      "line": "1 源矿 → 1 源石粉末，1 tick",
+      "rate": "18",
+      "recycle_slope": "0"
+    },
+    {
+      "factory": "粉碎机",
+      "inputs": {
+        "蓝铁块": 1
+      },
+      "outputs": {
+        "蓝铁粉末": 1
+      },
+      "duration": 1,
+      "line": "1 蓝铁块 → 1 蓝铁粉末，1 tick",
+      "rate": "34",
+      "recycle_slope": "1"
+    },
+    {
+      "factory": "粉碎机",
+      "inputs": {
+        "荞花": 1
+      },
+      "outputs": {
+        "荞花粉末": 2
+      },
+      "duration": 1,
+      "line": "1 荞花 → 2 荞花粉末，1 tick",
+      "rate": "11/2",
+      "recycle_slope": "0"
+    },
+    {
+      "factory": "粉碎机",
+      "inputs": {
+        "砂叶": 1
+      },
+      "outputs": {
+        "砂叶粉末": 3
+      },
+      "duration": 1,
+      "line": "1 砂叶 → 3 砂叶粉末，1 tick",
+      "rate": "21/2",
+      "recycle_slope": "0"
+    },
+    {
+      "factory": "精炼炉",
+      "inputs": {
+        "蓝铁矿": 1
+      },
+      "outputs": {
+        "蓝铁块": 1
+      },
+      "duration": 1,
+      "line": "1 蓝铁矿 → 1 蓝铁块，1 tick",
+      "rate": "34",
+      "recycle_slope": "0"
+    },
+    {
+      "factory": "精炼炉",
+      "inputs": {
+        "致密蓝铁粉末": 1
+      },
+      "outputs": {
+        "钢块": 1
+      },
+      "duration": 1,
+      "line": "1 致密蓝铁粉末 → 1 钢块，1 tick",
+      "rate": "17",
+      "recycle_slope": "0"
+    },
+    {
+      "factory": "精炼炉",
+      "inputs": {
+        "蓝铁粉末": 1
+      },
+      "outputs": {
+        "蓝铁块": 1
+      },
+      "duration": 1,
+      "line": "1 蓝铁粉末 → 1 蓝铁块，1 tick",
+      "rate": "0",
+      "recycle_slope": "1"
+    },
+    {
+      "factory": "研磨机",
+      "inputs": {
+        "蓝铁粉末": 2,
+        "砂叶粉末": 1
+      },
+      "outputs": {
+        "致密蓝铁粉末": 1
+      },
+      "duration": 1,
+      "line": "2 蓝铁粉末 ＋ 1 砂叶粉末 → 1 致密蓝铁粉末，1 tick",
+      "rate": "17",
+      "recycle_slope": "0"
+    },
+    {
+      "factory": "研磨机",
+      "inputs": {
+        "源石粉末": 2,
+        "砂叶粉末": 1
+      },
+      "outputs": {
+        "致密源石粉末": 1
+      },
+      "duration": 1,
+      "line": "2 源石粉末 ＋ 1 砂叶粉末 → 1 致密源石粉末，1 tick",
+      "rate": "9",
+      "recycle_slope": "0"
+    },
+    {
+      "factory": "研磨机",
+      "inputs": {
+        "荞花粉末": 2,
+        "砂叶粉末": 1
+      },
+      "outputs": {
+        "细磨荞花粉末": 1
+      },
+      "duration": 1,
+      "line": "2 荞花粉末 ＋ 1 砂叶粉末 → 1 细磨荞花粉末，1 tick",
+      "rate": "11/2",
+      "recycle_slope": "0"
+    },
+    {
+      "factory": "塑形机",
+      "inputs": {
+        "钢块": 2
+      },
+      "outputs": {
+        "钢质瓶": 1
+      },
+      "duration": 1,
+      "line": "2 钢块 → 1 钢质瓶，1 tick",
+      "rate": "11/2",
+      "recycle_slope": "0"
+    },
+    {
+      "factory": "配件机",
+      "inputs": {
+        "钢块": 1
+      },
+      "outputs": {
+        "钢制零件": 1
+      },
+      "duration": 1,
+      "line": "1 钢块 → 1 钢制零件，1 tick",
+      "rate": "6",
+      "recycle_slope": "0"
+    },
+    {
+      "factory": "种植机",
+      "inputs": {
+        "荞花种子": 1
+      },
+      "outputs": {
+        "荞花": 1
+      },
+      "duration": 1,
+      "line": "1 荞花种子 → 1 荞花，1 tick",
+      "rate": "11",
+      "recycle_slope": "0"
+    },
+    {
+      "factory": "种植机",
+      "inputs": {
+        "砂叶种子": 1
+      },
+      "outputs": {
+        "砂叶": 1
+      },
+      "duration": 1,
+      "line": "1 砂叶种子 → 1 砂叶，1 tick",
+      "rate": "21",
+      "recycle_slope": "0"
+    },
+    {
+      "factory": "采种机",
+      "inputs": {
+        "荞花": 1
+      },
+      "outputs": {
+        "荞花种子": 2
+      },
+      "duration": 1,
+      "line": "1 荞花 → 2 荞花种子，1 tick",
+      "rate": "11/2",
+      "recycle_slope": "0"
+    },
+    {
+      "factory": "采种机",
+      "inputs": {
+        "砂叶": 1
+      },
+      "outputs": {
+        "砂叶种子": 2
+      },
+      "duration": 1,
+      "line": "1 砂叶 → 2 砂叶种子，1 tick",
+      "rate": "21/2",
+      "recycle_slope": "0"
+    },
+    {
+      "factory": "封装机",
+      "inputs": {
+        "钢制零件": 10,
+        "致密源石粉末": 15
+      },
+      "outputs": {
+        "高容谷地电池": 1
+      },
+      "duration": 5,
+      "line": "10 钢制零件 ＋ 15 致密源石粉末 → 1 高容谷地电池，5 tick",
+      "rate": "3/5",
+      "recycle_slope": "0"
+    },
+    {
+      "factory": "灌装机",
+      "inputs": {
+        "钢质瓶": 10,
+        "细磨荞花粉末": 10
+      },
+      "outputs": {
+        "精选荞愈胶囊": 1
+      },
+      "duration": 5,
+      "line": "10 钢质瓶 ＋ 10 细磨荞花粉末 → 1 精选荞愈胶囊，5 tick",
+      "rate": "11/20",
+      "recycle_slope": "0"
+    }
+  ],
+  "recipe_rates": {
+    "粉碎机": "68",
+    "精炼炉": "51",
+    "研磨机": "63/2",
+    "塑形机": "11/2",
+    "配件机": "6",
+    "种植机": "32",
+    "采种机": "16",
+    "封装机": "3/5",
+    "灌装机": "11/20"
+  },
+  "recycle_slopes": {
+    "粉碎机": "1",
+    "精炼炉": "1",
+    "研磨机": "0",
+    "塑形机": "0",
+    "配件机": "0",
+    "种植机": "0",
+    "采种机": "0",
+    "封装机": "0",
+    "灌装机": "0"
+  },
+  "machine_minimum": {
+    "粉碎机": 68,
+    "精炼炉": 51,
+    "研磨机": 32,
+    "塑形机": 6,
+    "配件机": 6,
+    "种植机": 32,
+    "采种机": 16,
+    "封装机": 3,
+    "灌装机": 3
+  },
+  "machine_count": 217,
+  "machine_area": 3291,
+  "material_flow": {
+    "源石粉末": "18",
+    "源矿": "18",
+    "砂叶": "21",
+    "砂叶种子": "21",
+    "砂叶粉末": "63/2",
+    "精选荞愈胶囊": "11/20",
+    "细磨荞花粉末": "11/2",
+    "致密源石粉末": "9",
+    "致密蓝铁粉末": "17",
+    "荞花": "11",
+    "荞花种子": "11",
+    "荞花粉末": "11",
+    "蓝铁块": "34",
+    "蓝铁矿": "34",
+    "蓝铁粉末": "34",
+    "钢制零件": "6",
+    "钢块": "17",
+    "钢质瓶": "11/2",
+    "高容谷地电池": "3/5"
+  },
+  "total_flow": "6113/20",
+  "ore_total": "52",
+  "mixed_channel_bounds": [
+    3,
+    2,
+    2,
+    2
+  ],
+  "two_tick_window_per_machine": 2,
+  "plant_stock_total_bound": 64,
+  "mean_stock_bounds": {
+    "荞花种子": 22,
+    "荞花": 22,
+    "砂叶种子": 42,
+    "砂叶": 42
+  },
+  "wireless_period_steps": 40,
+  "wireless_phase_count": 40,
+  "closed_5_tick_one_port_events": 6,
+  "box_conservative_bound": 18,
+  "next_8_steps_one_port_events": 1,
+  "four_group_word_counts": [
+    8,
+    31,
+    85,
+    190,
+    371,
+    658
+  ],
+  "reported_polling_family_count": 1851008,
+  "snapshots": {
+    "《明日方舟：终末地》游戏规则.txt": {
+      "sha256": "c8d3a17b8830baba18aea36c4c66f02f8873895188f8821176cc218aa6135f93",
+      "lines": 115
+    },
+    "不补的设定.txt": {
+      "sha256": "7a0c7d6e495f4f6b5ed6caba24584261925479e06fcad9428760f8a687f2abba",
+      "lines": 29
+    },
+    "求解任务.txt": {
+      "sha256": "7bec7a1edf2f46644a6e6a75d588f5ff05202cc32d6b42430677ea39b878309b",
+      "lines": 15
+    },
+    "求解充分条件.txt": {
+      "sha256": "aa633c7c927227ba4635f97bfb8948e9c3ba84ff1e489dd053b72db82e9ac435",
+      "lines": 24
+    },
+    "求解约束.txt": {
+      "sha256": "dfea46c61f29be5a86659bce3642009d2558ace073d6dbd79f5dd3c6475226db",
+      "lines": 168
+    }
+  }
+}

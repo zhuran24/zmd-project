@@ -1,0 +1,11 @@
+{
+  "case": "general",
+  "objective": "weight",
+  "threshold": 55,
+  "encoding": "B free-neighbor MILP",
+  "prior_count_cap": 23,
+  "domain": 1240,
+  "status": 2,
+  "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+  "seconds": 66.72765108900057
+}

@@ -1,0 +1,20 @@
+{
+ "unrestricted": {
+  "states": 191900,
+  "edges": 542736,
+  "claimed_max_batches_per_tick": "1",
+  "certificate_ok": true,
+  "bf_iterations": 7,
+  "policy_rate": "1",
+  "policy_cycle_steps": 16,
+  "tight": true,
+  "balance": {
+   "tight_edges": 290240,
+   "scc_edges": 45080,
+   "kind0_coboundary": true,
+   "kind0_nonzero_imb_edges": 5684,
+   "kind1_coboundary": true,
+   "kind1_nonzero_imb_edges": 5684
+  }
+ }
+}

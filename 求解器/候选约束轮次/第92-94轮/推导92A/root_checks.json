@@ -1,0 +1,33 @@
+{
+  "status": "PASS",
+  "scope": "clock and residence arithmetic only",
+  "transfer_period_steps_two_encodings": [
+    40,
+    40
+  ],
+  "phase_count_two_encodings": [
+    40,
+    40
+  ],
+  "single_port_next_8_steps_max_two_encodings": [
+    1,
+    1
+  ],
+  "N56_head_stock_contradiction": [
+    {
+      "accepting_ports": 0,
+      "max_removable_in_next_8_steps": 0,
+      "blocking_head_stock": 1
+    },
+    {
+      "accepting_ports": 1,
+      "max_removable_in_next_8_steps": 1,
+      "blocking_head_stock": 2
+    },
+    {
+      "accepting_ports": 2,
+      "max_removable_in_next_8_steps": 2,
+      "blocking_head_stock": 3
+    }
+  ]
+}

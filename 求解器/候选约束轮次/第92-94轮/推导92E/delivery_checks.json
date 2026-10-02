@@ -1,0 +1,27 @@
+{
+  "status": "PASS",
+  "candidate_count": 7,
+  "names_unique_and_new": true,
+  "schema_fields_valid": true,
+  "snapshot_fingerprints_unchanged": true,
+  "checked_report_links": [
+    "推导92E/full_rate_checks.json",
+    "推导92E/check_full_rate.py",
+    "推导92E/full_rate_checks.json",
+    "推导92E/splitter/check_capacity.py",
+    "推导92E/splitter/capacity_checks.json",
+    "推导92E/throughput/check.py",
+    "推导92E/throughput/check.json",
+    "推导92E/box/check_local.py",
+    "推导92E/box/local_results.json",
+    "推导92E/box/审阅.md",
+    "推导92E/throughput/independent_review.md",
+    "推导92E/splitter/交叉审阅.md",
+    "推导92E/result.json",
+    "推导92E/delivery_checks.json"
+  ],
+  "all_artifact_extensions_allowed": true,
+  "all_artifacts_under_100MiB": true,
+  "report_bytes": 40215,
+  "scope": "Artifact consistency checks; mathematical proofs reviewed separately."
+}

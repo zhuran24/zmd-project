@@ -1,0 +1,19 @@
+{
+  "status": "reader_self_review_passed",
+  "snapshot_hashes_unchanged": true,
+  "candidate_schema": true,
+  "broken_links": 0,
+  "candidates": 2,
+  "full_factory_proof": "not_established",
+  "dense_cases": 200,
+  "dense_step_pairs": 400000,
+  "report_sha256": "438f2541e36d5e980a8c4f449b5d1814dd96264219650a365bf4dd9394085ffe",
+  "reviewed": [
+    "scope and S11 incomplete status",
+    "complete S08/S09 clauses and proofs",
+    "bridge readings and previous-unit caveat",
+    "counterexample reachability and geometry boundaries",
+    "numbers and source hashes",
+    "links and standalone readability"
+  ]
+}

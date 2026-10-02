@@ -1,0 +1,236 @@
+{
+ "counterexample": [
+  [
+   {
+    "t": 0,
+    "K_in": 49,
+    "K_out": 50,
+    "K_cache": [
+     "run",
+     8,
+     "powder",
+     3
+    ]
+   },
+   {
+    "t": 1,
+    "K_in": 50,
+    "K_out": 50,
+    "K_cache": [
+     "run",
+     7,
+     "powder",
+     3
+    ]
+   },
+   {
+    "t": 2,
+    "K_in": 50,
+    "K_out": 50,
+    "K_cache": [
+     "run",
+     6,
+     "powder",
+     3
+    ]
+   }
+  ],
+  [
+   {
+    "t": 0,
+    "K_in": 49,
+    "K_out": 50,
+    "K_cache": [
+     "run",
+     8,
+     "powder",
+     3
+    ]
+   },
+   {
+    "t": 1,
+    "K_in": 50,
+    "K_out": 50,
+    "K_cache": [
+     "run",
+     7,
+     "powder",
+     3
+    ]
+   },
+   {
+    "t": 2,
+    "K_in": 50,
+    "K_out": 50,
+    "K_cache": [
+     "run",
+     6,
+     "powder",
+     3
+    ]
+   }
+  ],
+  [
+   {
+    "t": 0,
+    "K_in": 49,
+    "K_out": 50,
+    "K_cache": [
+     "run",
+     8,
+     "powder",
+     3
+    ]
+   },
+   {
+    "t": 1,
+    "K_in": 50,
+    "K_out": 50,
+    "K_cache": [
+     "run",
+     7,
+     "powder",
+     3
+    ]
+   },
+   {
+    "t": 2,
+    "K_in": 50,
+    "K_out": 50,
+    "K_cache": [
+     "run",
+     6,
+     "powder",
+     3
+    ]
+   }
+  ],
+  [
+   {
+    "t": 0,
+    "K_in": 49,
+    "K_out": 50,
+    "K_cache": [
+     "run",
+     8,
+     "powder",
+     3
+    ]
+   },
+   {
+    "t": 1,
+    "K_in": 50,
+    "K_out": 50,
+    "K_cache": [
+     "run",
+     7,
+     "powder",
+     3
+    ]
+   },
+   {
+    "t": 2,
+    "K_in": 50,
+    "K_out": 50,
+    "K_cache": [
+     "run",
+     6,
+     "powder",
+     3
+    ]
+   }
+  ],
+  [
+   {
+    "t": 0,
+    "K_in": 49,
+    "K_out": 50,
+    "K_cache": [
+     "run",
+     8,
+     "powder",
+     3
+    ]
+   },
+   {
+    "t": 1,
+    "K_in": 50,
+    "K_out": 50,
+    "K_cache": [
+     "run",
+     7,
+     "powder",
+     3
+    ]
+   },
+   {
+    "t": 2,
+    "K_in": 50,
+    "K_out": 50,
+    "K_cache": [
+     "run",
+     6,
+     "powder",
+     3
+    ]
+   }
+  ],
+  [
+   {
+    "t": 0,
+    "K_in": 49,
+    "K_out": 50,
+    "K_cache": [
+     "run",
+     8,
+     "powder",
+     3
+    ]
+   },
+   {
+    "t": 1,
+    "K_in": 50,
+    "K_out": 50,
+    "K_cache": [
+     "run",
+     7,
+     "powder",
+     3
+    ]
+   },
+   {
+    "t": 2,
+    "K_in": 50,
+    "K_out": 50,
+    "K_cache": [
+     "run",
+     6,
+     "powder",
+     3
+    ]
+   }
+  ]
+ ],
+ "random400": {
+  "viol": [],
+  "nviol": 0,
+  "runs": 3000,
+  "min_out": {
+   "1": 48,
+   "2": 46,
+   "3": 44
+  },
+  "max_refill": 0
+ },
+ "refill400": {
+  "runs": 2000,
+  "worst_judgements": {
+   "K": 3,
+   "B": 1,
+   "A": 1,
+   "C": 2
+  },
+  "bad": [],
+  "nbad": 0
+ }
+}

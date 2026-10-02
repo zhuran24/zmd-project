@@ -1,0 +1,9 @@
+{
+  "case": "side3",
+  "objective": "count",
+  "threshold": 18,
+  "encoding": "A",
+  "domain": 756,
+  "status": "INFEASIBLE",
+  "seconds": 0.17430584599969734
+}

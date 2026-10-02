@@ -1,0 +1,43 @@
+{
+  "status": "完成所列6条",
+  "error": "原文要求7条，但实际仅列6条候选。",
+  "report_path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第92-94轮/复核93C.md",
+  "verdicts": [
+    {
+      "name": "单条混料进路逐件判据",
+      "verdict": "未否证",
+      "reason": "前缀归纳成立，来料种类限制必要。",
+      "revised_text": ""
+    },
+    {
+      "name": "整批k件配k条取货通道的均分",
+      "verdict": "未否证",
+      "reason": "同级及恰8步清出保证成功序轮转。",
+      "revised_text": ""
+    },
+    {
+      "name": "植物专机一一配对满库存不断料",
+      "verdict": "未否证",
+      "reason": "第0—399步的库存、缓存与回填界成立。",
+      "revised_text": ""
+    },
+    {
+      "name": "采种单元的回路存量下界",
+      "verdict": "未否证",
+      "reason": "重证176；无限额有向准入口范围也可恢复。",
+      "revised_text": ""
+    },
+    {
+      "name": "采种单元不断料",
+      "verdict": "未否证",
+      "reason": "正存量和粉末有限清出保证无限次开批。",
+      "revised_text": ""
+    },
+    {
+      "name": "专用进路下缓存格不空的传递",
+      "verdict": "未否证",
+      "reason": "单出口回填沿路传递，周期性排除空缓存。",
+      "revised_text": ""
+    }
+  ]
+}

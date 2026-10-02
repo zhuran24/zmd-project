@@ -1,0 +1,207 @@
+[
+  {
+    "name": "assemble_report.py",
+    "bytes": 13269,
+    "sha256": "5b414012e1f7b264936f57c54d2104eb78e5e3b374f634e0fd657f6afd65a4de"
+  },
+  {
+    "name": "audit_inventory.py",
+    "bytes": 2089,
+    "sha256": "bc16a4f6a09ef409999bfec8af5c2e14350b4b5602380e24c7f2e6d8a0907697"
+  },
+  {
+    "name": "candidates.json",
+    "bytes": 16477,
+    "sha256": "67fcd7c14f357d3adbd110f0fd21350b98214d2314c8baac672518ec288195a9"
+  },
+  {
+    "name": "clearing_build_report.py",
+    "bytes": 19425,
+    "sha256": "6bd84efd24a4e5d2a88d311366a456d67ce80613578e824cf27cdb384bb37765"
+  },
+  {
+    "name": "clearing_candidates.json",
+    "bytes": 5745,
+    "sha256": "108618a54f2734e21b9c707a7ab2202b8fc36de090e2af86c586a734dfac8dff"
+  },
+  {
+    "name": "clearing_check_fraction.json",
+    "bytes": 464,
+    "sha256": "cb028ed44cfac716b5b2cc05d763a9e177185c114613009da1e9b59daa797b89"
+  },
+  {
+    "name": "clearing_check_fraction.py",
+    "bytes": 1373,
+    "sha256": "762a0925c01d244f996d1cb4b7c9799fee088529ce18a5924a3d736d82294845"
+  },
+  {
+    "name": "clearing_check_integer.json",
+    "bytes": 688,
+    "sha256": "e4de0bba95564dfb2631fe4efd0132e3d858d72bf9c2dbc562d8f38c6fa71694"
+  },
+  {
+    "name": "clearing_check_integer.py",
+    "bytes": 1726,
+    "sha256": "bf605adde49a77c928198d77e300a1da137f4c00e399112080ccf9d88f615e37"
+  },
+  {
+    "name": "clearing_final_review.md",
+    "bytes": 5209,
+    "sha256": "2b1d400f902d04bb6db838ddab37bf5e77e1b544dd1bcb6a3780615f124a8372"
+  },
+  {
+    "name": "clearing_review.md",
+    "bytes": 735,
+    "sha256": "1762643ca45f094221fbe99789f00266c61d6b3ad789b68f326900cea6079065"
+  },
+  {
+    "name": "clearing_stock.md",
+    "bytes": 20466,
+    "sha256": "aef34fbd4796fd0384f202bef235cfc006022fbefaf2fa3ebd6f983186914900"
+  },
+  {
+    "name": "construction_order.md",
+    "bytes": 17657,
+    "sha256": "16eb571fc40251eb0846016e8202a048e7b233009ce6bc8ce7cd5722530de9c1"
+  },
+  {
+    "name": "final_payload.json",
+    "bytes": 17114,
+    "sha256": "985e8df53bc117cf93f3386fac73bbfd9b24b7e48f5018661904a9b348fe3c27"
+  },
+  {
+    "name": "inventory.json",
+    "bytes": 16927,
+    "sha256": "c85026e46ce8d0cbfc271247f8992db407637d501cb07b0439fe57e7d304050c"
+  },
+  {
+    "name": "order_candidates.json",
+    "bytes": 3529,
+    "sha256": "43f5ebd9ada7f864c0fc9d298d0a7b8546642fd62b780ebd63e858793aa9e6fe"
+  },
+  {
+    "name": "order_geometry.json",
+    "bytes": 8111,
+    "sha256": "1505fc2c5ab049ee0b609742c8f917742f743a51a64cbfa24a20ec3e34c51258"
+  },
+  {
+    "name": "order_geometry.py",
+    "bytes": 3526,
+    "sha256": "ef787ceff5077eed7a428a4827c65e72b6ea4598baec898f9284d4d2d91e705d"
+  },
+  {
+    "name": "order_independent.json",
+    "bytes": 917,
+    "sha256": "5408562041ff0c3e7baf1af92e85cc7ee15c853d18ecc7713491f6bdaf553f4c"
+  },
+  {
+    "name": "order_independent.py",
+    "bytes": 3649,
+    "sha256": "b763f67f1ef4524d0a3ce11b5d0164ee694937c30f6bd8f6848fd8eab3cdff0b"
+  },
+  {
+    "name": "order_polling_review.md",
+    "bytes": 2616,
+    "sha256": "cc69dbd103e824975c420c70786a5b25195993db354b5a80e3fb4b28c7c80dbf"
+  },
+  {
+    "name": "order_reference.json",
+    "bytes": 2951,
+    "sha256": "883df1557ca677c1c237e7a20fda75185db8007a71704e5e5cfc6634bb0da18c"
+  },
+  {
+    "name": "order_reference.log",
+    "bytes": 2951,
+    "sha256": "883df1557ca677c1c237e7a20fda75185db8007a71704e5e5cfc6634bb0da18c"
+  },
+  {
+    "name": "order_reference.py",
+    "bytes": 3995,
+    "sha256": "a1e28e0447b94ad4c8fc386d641a8412b6cf1282f05f02e8b3960313dc2370f9"
+  },
+  {
+    "name": "order_verification.log",
+    "bytes": 1077,
+    "sha256": "fd38d34de1115b30c323f8ad28e84dc57d9463a7c2ddc601d55a36c4bebf5a54"
+  },
+  {
+    "name": "polling_audit.md",
+    "bytes": 15909,
+    "sha256": "daa7a8612fd1d4f65a17d5ac714f7df78141ff7bfb2efe2a1c886923c6f8ace6"
+  },
+  {
+    "name": "polling_candidates.json",
+    "bytes": 3021,
+    "sha256": "c1d463df6cdb5e7b8b1d8d30af7e78f352c600917987773844752a350873f285"
+  },
+  {
+    "name": "polling_formula_verify.json",
+    "bytes": 1652,
+    "sha256": "467556e981734b69b9e2121342beb0061a1194db843f96774fa1678c0783e554"
+  },
+  {
+    "name": "polling_formula_verify.py",
+    "bytes": 3174,
+    "sha256": "12dbe16e1bb297e14c71eafa284dbde34ceca87ab9108075daa0a1cdc698a7ab"
+  },
+  {
+    "name": "polling_verify_a.json",
+    "bytes": 473,
+    "sha256": "4f83f70a48f12a3255e3a2547729af6a08682d590dbf794a3f2efb7a6f1d14ed"
+  },
+  {
+    "name": "polling_verify_a.py",
+    "bytes": 2632,
+    "sha256": "1414067338f9d1a18c4dfb2106a595f33f6567f86b0459b6e38d8670e5bfcd75"
+  },
+  {
+    "name": "polling_verify_b.json",
+    "bytes": 323,
+    "sha256": "e2b86322588ee3c05d83f7b31c9c8b0a1bcb3da7742fd6aa688f59232b1312f8"
+  },
+  {
+    "name": "polling_verify_b.py",
+    "bytes": 2742,
+    "sha256": "64ce621b1ef5f75454840f89cd8b984195a2a8df83ec8d49389ee6fc4611d423"
+  },
+  {
+    "name": "root_candidates.json",
+    "bytes": 4191,
+    "sha256": "26365a630cae913ca302ce911b8ea4ce85690baa0b3fa83a01213493f725e7fb"
+  },
+  {
+    "name": "root_checks.json",
+    "bytes": 639,
+    "sha256": "0ce5cbc4c4725a2342af9bc290cc2b7cf24bae46c2db5d09bfce4a9ee0e27025"
+  },
+  {
+    "name": "root_checks.py",
+    "bytes": 1825,
+    "sha256": "e5af7241787b5e66fe65e651082989e35522d4b45e96a0d607345cc90f87bd01"
+  },
+  {
+    "name": "root_notes.md",
+    "bytes": 8711,
+    "sha256": "be1f43a1621c91e0719e7b266c9ddd43177cd78bba7b8217fe84e91470773074"
+  },
+  {
+    "name": "root_review.md",
+    "bytes": 2061,
+    "sha256": "6fdcf1734727127ffdb4745bda3e6e9f84f4edbd5cd398e45da455a7021b9690"
+  },
+  {
+    "name": "validate_artifacts.py",
+    "bytes": 4151,
+    "sha256": "64cf45614e15def7bc4c7db76b9fa6325e6c29527fb8332f3ca2877dac3da5e3"
+  },
+  {
+    "name": "validation.json",
+    "bytes": 752,
+    "sha256": "f4c7ae76a8904e3ec3600bd7f0088b96497131ba75f3756c9f9ea66ab45c82a0"
+  },
+  {
+    "name": "../推导92A.md",
+    "bytes": 73499,
+    "sha256": "acdbbe3b1b1d5d233a8b1ed44dc91d46c151820ba2116e9b7c074edb8dc873a5"
+  }
+]

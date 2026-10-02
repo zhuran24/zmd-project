@@ -1,0 +1,86 @@
+{
+  "status": "PASS",
+  "scope": "arithmetic and local discrete output schedules; not a layout simulator",
+  "packing_independent_cases": 240,
+  "packing_max_q": 40,
+  "recipe_rates": {
+    "steel": "17",
+    "grinder": "63/2",
+    "seeder": "16"
+  },
+  "integer_20_tick_counts": {
+    "steel": 340,
+    "grinder": 630,
+    "seeder": 320
+  },
+  "restricted_all_seeders_minimum": 18,
+  "restricted_alternating_grinders_among_32_maximum": 4,
+  "one_channel_grinder_switches_per_tick_at_32_maximum": "4",
+  "local_AABB_first_events": [
+    [
+      0,
+      "A"
+    ],
+    [
+      8,
+      "A"
+    ],
+    [
+      9,
+      "B"
+    ],
+    [
+      17,
+      "B"
+    ],
+    [
+      18,
+      "A"
+    ],
+    [
+      26,
+      "A"
+    ],
+    [
+      27,
+      "B"
+    ],
+    [
+      35,
+      "B"
+    ],
+    [
+      36,
+      "A"
+    ],
+    [
+      44,
+      "A"
+    ],
+    [
+      45,
+      "B"
+    ],
+    [
+      53,
+      "B"
+    ],
+    [
+      54,
+      "A"
+    ],
+    [
+      62,
+      "A"
+    ],
+    [
+      63,
+      "B"
+    ],
+    [
+      71,
+      "B"
+    ]
+  ],
+  "two_channel_species_balance_cases": 4092
+}

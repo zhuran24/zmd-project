@@ -1,0 +1,9 @@
+{
+  "cases": 500,
+  "paired_steps": 800000,
+  "BB_events": 33,
+  "lowest_BB_excess_phi2": 352,
+  "candidate_violations": 0,
+  "original_176_violations_after_normalization": 0,
+  "min_2phi_loss": -2
+}

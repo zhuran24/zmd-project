@@ -1,0 +1,1 @@
+{"nets": 250, "a_orders": 2000, "a_mismatch": [], "b_nets": 125, "b_orders": 1000, "b_mismatch": [], "ab_compared": 125, "ab_mismatch": [], "a_steps": 800000, "b_steps": 400000, "activity": {"moves": 40104, "groups_multi_ready": 205042, "groups_contended": 2812, "nt_sends": 19164, "nt_skipped_full": 579289, "starts": 2480}}

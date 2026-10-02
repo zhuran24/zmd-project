@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "validated_at_utc": "2026-10-02T06:22:00.673502+00:00",
+  "python_version": "3.14.7",
+  "candidate_count_in_supplied_list": 15,
+  "candidate_count_worded_in_task": 16,
+  "coverage": "15 supplied candidates plus the noncandidate 接通先后; additional supporting premises sampled",
+  "verdict_counts": {
+    "未否证": 14,
+    "修正": 1
+  },
+  "snapshot_hashes_match_initial_read": true,
+  "independent_arithmetic_agreement": true,
+  "independent_dense_trajectory_agreement": true,
+  "dense_geometry_and_blueprint_checks": true,
+  "polling_two_encoding_case_agreements": 1851008,
+  "polling_subset_cases": 40000,
+  "polling_formula_equalities": 38430,
+  "reader_pass_completed": true,
+  "report_and_payload_full_revision_identical": true,
+  "local_links_checked": 18,
+  "no_full_layout_certificate_claimed": true
+}

@@ -1,0 +1,16 @@
+{
+  "report": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第92-94轮/复核93D.md",
+  "report_lines": 251,
+  "links_checked": 19,
+  "necessary_entries": 77,
+  "sufficient_entries": 11,
+  "paired_state_steps": 1304000,
+  "syntax_json_links_and_claims": "pass",
+  "reader_pass": [
+    "Definitions and conditions included",
+    "Two readings separated",
+    "Original 176 retained with explicit start boundary",
+    "Abstract cycle not presented as a legal layout",
+    "Finite probes separated from universal proofs"
+  ]
+}

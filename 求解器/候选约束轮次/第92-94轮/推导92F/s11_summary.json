@@ -1,0 +1,200 @@
+{
+ "核心6端口为一个单位": {
+  "E1": {
+   "runs": 90,
+   "full_rate": 90,
+   "BAT": [
+    120
+   ],
+   "CAP": [
+    110
+   ],
+   "ore": [
+    200,
+    200
+   ],
+   "phi_margin_min": 96.0,
+   "phi_margin_end_debug_min": 95.5,
+   "wrong_items_end": 0,
+   "seeds": [
+    1,
+    90
+   ]
+  },
+  "E2": {
+   "runs": 90,
+   "full_rate": 90,
+   "BAT": [
+    120
+   ],
+   "CAP": [
+    110
+   ],
+   "ore": [
+    200,
+    200
+   ],
+   "phi_margin_min": 95.5,
+   "phi_margin_end_debug_min": 95.5,
+   "wrong_items_end": 0,
+   "seeds": [
+    1,
+    90
+   ],
+   "sweeps": [
+    1,
+    9
+   ],
+   "removed": [
+    93,
+    282
+   ]
+  },
+  "E3": {
+   "runs": 90,
+   "full_rate": 90,
+   "BAT": [
+    120
+   ],
+   "CAP": [
+    110
+   ],
+   "ore": [
+    200,
+    200
+   ],
+   "phi_margin_min": 96.0,
+   "phi_margin_end_debug_min": 95.5,
+   "wrong_items_end": 0,
+   "seeds": [
+    1,
+    90
+   ],
+   "stop_ticks": [
+    108.125,
+    495.625
+   ]
+  },
+  "E4": {
+   "runs": 90,
+   "full_rate": 90,
+   "BAT": [
+    120
+   ],
+   "CAP": [
+    110
+   ],
+   "ore": [
+    200,
+    200
+   ],
+   "phi_margin_min": 96.0,
+   "phi_margin_end_debug_min": 95.5,
+   "wrong_items_end": 0,
+   "seeds": [
+    1,
+    90
+   ],
+   "offline_events": 511
+  }
+ },
+ "52个各算一个取货口": {
+  "E1": {
+   "runs": 38,
+   "full_rate": 38,
+   "BAT": [
+    120
+   ],
+   "CAP": [
+    110
+   ],
+   "ore": [
+    200,
+    200
+   ],
+   "phi_margin_min": 96.0,
+   "phi_margin_end_debug_min": 95.5,
+   "wrong_items_end": 0,
+   "seeds": [
+    1,
+    73
+   ]
+  },
+  "E2": {
+   "runs": 37,
+   "full_rate": 37,
+   "BAT": [
+    120
+   ],
+   "CAP": [
+    110
+   ],
+   "ore": [
+    200,
+    200
+   ],
+   "phi_margin_min": 95.5,
+   "phi_margin_end_debug_min": 95.5,
+   "wrong_items_end": 0,
+   "seeds": [
+    1,
+    72
+   ],
+   "sweeps": [
+    1,
+    6
+   ],
+   "removed": [
+    110,
+    287
+   ]
+  },
+  "E3": {
+   "runs": 36,
+   "full_rate": 36,
+   "BAT": [
+    120
+   ],
+   "CAP": [
+    110
+   ],
+   "ore": [
+    200,
+    200
+   ],
+   "phi_margin_min": 96.0,
+   "phi_margin_end_debug_min": 95.5,
+   "wrong_items_end": 0,
+   "seeds": [
+    1,
+    72
+   ],
+   "stop_ticks": [
+    108.125,
+    490.5
+   ]
+  },
+  "E4": {
+   "runs": 36,
+   "full_rate": 36,
+   "BAT": [
+    120
+   ],
+   "CAP": [
+    110
+   ],
+   "ore": [
+    200,
+    200
+   ],
+   "phi_margin_min": 96.0,
+   "phi_margin_end_debug_min": 95.5,
+   "wrong_items_end": 0,
+   "seeds": [
+    1,
+    72
+   ],
+   "offline_events": 213
+  }
+ }
+}

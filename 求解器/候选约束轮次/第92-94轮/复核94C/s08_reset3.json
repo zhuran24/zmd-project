@@ -1,0 +1,34 @@
+{
+ "0.01_near": {
+  "nviol": 0,
+  "viol": [],
+  "min_slack": 0.0,
+  "reset": 9040,
+  "both_empty": 1029,
+  "changed": 1
+ },
+ "0.01_wide": {
+  "nviol": 0,
+  "viol": [],
+  "min_slack": 0.0,
+  "reset": 8790,
+  "both_empty": 2975,
+  "changed": 5
+ },
+ "0.05_near": {
+  "nviol": 0,
+  "viol": [],
+  "min_slack": 0.0,
+  "reset": 44833,
+  "both_empty": 1029,
+  "changed": 3
+ },
+ "0.05_wide": {
+  "nviol": 0,
+  "viol": [],
+  "min_slack": 0.0,
+  "reset": 44962,
+  "both_empty": 2978,
+  "changed": 28
+ }
+}

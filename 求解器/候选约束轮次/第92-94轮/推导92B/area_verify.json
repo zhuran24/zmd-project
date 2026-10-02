@@ -1,0 +1,783 @@
+{
+  "weights": {
+    "研磨机": {
+      "fleet": {
+        "32": "123/2",
+        "33": "115/2",
+        "34": "107/2",
+        "35": "99/2",
+        "36": "91/2",
+        "37": "83/2",
+        "38": "75/2",
+        "39": "67/2",
+        "40": "59/2",
+        "41": "51/2",
+        "42": "43/2",
+        "43": "35/2",
+        "44": "27/2",
+        "45": "19/2",
+        "46": "11/2",
+        "47": "3/2",
+        "48": "0"
+      },
+      "minimum_increment": "92"
+    },
+    "塑形机": {
+      "fleet": {
+        "6": "10",
+        "7": "8",
+        "8": "6",
+        "9": "4",
+        "10": "2",
+        "11": "0"
+      },
+      "minimum_increment": "34"
+    },
+    "封装机": {
+      "fleet": {
+        "3": "24",
+        "4": "18",
+        "5": "10",
+        "6": "6",
+        "7": "2",
+        "8": "0"
+      },
+      "minimum_increment": "88"
+    },
+    "灌装机": {
+      "fleet": {
+        "3": "14",
+        "4": "6",
+        "5": "2",
+        "6": "0"
+      },
+      "minimum_increment": "88"
+    },
+    "omega_min": "219/2"
+  },
+  "dimensions": {
+    "1044": {
+      "maximum": 1044,
+      "shapes": [
+        [
+          18,
+          58
+        ],
+        [
+          29,
+          36
+        ]
+      ]
+    },
+    "1090": {
+      "maximum": 1089,
+      "shapes": [
+        [
+          33,
+          33
+        ]
+      ]
+    },
+    "1107": {
+      "maximum": 1107,
+      "shapes": [
+        [
+          27,
+          41
+        ]
+      ]
+    },
+    "1110": {
+      "maximum": 1110,
+      "shapes": [
+        [
+          30,
+          37
+        ]
+      ]
+    },
+    "1113": {
+      "maximum": 1113,
+      "shapes": [
+        [
+          21,
+          53
+        ]
+      ]
+    },
+    "1142": {
+      "maximum": 1140,
+      "shapes": [
+        [
+          19,
+          60
+        ],
+        [
+          20,
+          57
+        ],
+        [
+          30,
+          38
+        ]
+      ]
+    }
+  },
+  "scalar": {
+    "minimum_machine_area": 3291,
+    "base_fixed_area": 3510,
+    "fourway_constant": 664,
+    "no_box_inner_constant": 921,
+    "general_inner_constant": 809,
+    "general_area_rhs": 4751,
+    "extra_grind_seed_area": 34,
+    "extra_grind_seed_4A_14P": 4503,
+    "A1110": [
+      {
+        "P": 10,
+        "J_max": 0,
+        "4E+Omega_max": 151
+      },
+      {
+        "P": 11,
+        "J_max": 2,
+        "4E+Omega_max": 139
+      },
+      {
+        "P": 12,
+        "J_max": 5,
+        "4E+Omega_max": 129
+      },
+      {
+        "P": 13,
+        "J_max": 7,
+        "4E+Omega_max": 117
+      },
+      {
+        "P": 14,
+        "J_max": 9,
+        "4E+Omega_max": 105
+      },
+      {
+        "P": 15,
+        "J_max": 11,
+        "4E+Omega_max": 93
+      },
+      {
+        "P": 16,
+        "J_max": 13,
+        "4E+Omega_max": 81
+      },
+      {
+        "P": 17,
+        "J_max": 15,
+        "4E+Omega_max": 69
+      },
+      {
+        "P": 18,
+        "J_max": 18,
+        "4E+Omega_max": 59
+      }
+    ]
+  },
+  "band": {
+    "arrangements": 47,
+    "max_body_union": 3,
+    "max_pole": 2,
+    "all": [
+      {
+        "gap_left": 0,
+        "gap_bottom": 0,
+        "nonore": 91,
+        "body_union": 0,
+        "pole": 2
+      },
+      {
+        "gap_left": 0,
+        "gap_bottom": 3,
+        "nonore": 91,
+        "body_union": 3,
+        "pole": 2
+      },
+      {
+        "gap_left": 0,
+        "gap_bottom": 6,
+        "nonore": 91,
+        "body_union": 3,
+        "pole": 2
+      },
+      {
+        "gap_left": 0,
+        "gap_bottom": 9,
+        "nonore": 91,
+        "body_union": 3,
+        "pole": 2
+      },
+      {
+        "gap_left": 0,
+        "gap_bottom": 12,
+        "nonore": 91,
+        "body_union": 3,
+        "pole": 2
+      },
+      {
+        "gap_left": 0,
+        "gap_bottom": 15,
+        "nonore": 91,
+        "body_union": 3,
+        "pole": 2
+      },
+      {
+        "gap_left": 0,
+        "gap_bottom": 18,
+        "nonore": 91,
+        "body_union": 3,
+        "pole": 2
+      },
+      {
+        "gap_left": 0,
+        "gap_bottom": 21,
+        "nonore": 91,
+        "body_union": 3,
+        "pole": 2
+      },
+      {
+        "gap_left": 0,
+        "gap_bottom": 24,
+        "nonore": 91,
+        "body_union": 3,
+        "pole": 2
+      },
+      {
+        "gap_left": 0,
+        "gap_bottom": 27,
+        "nonore": 91,
+        "body_union": 3,
+        "pole": 2
+      },
+      {
+        "gap_left": 0,
+        "gap_bottom": 30,
+        "nonore": 91,
+        "body_union": 3,
+        "pole": 2
+      },
+      {
+        "gap_left": 0,
+        "gap_bottom": 33,
+        "nonore": 91,
+        "body_union": 3,
+        "pole": 2
+      },
+      {
+        "gap_left": 0,
+        "gap_bottom": 36,
+        "nonore": 91,
+        "body_union": 3,
+        "pole": 2
+      },
+      {
+        "gap_left": 0,
+        "gap_bottom": 39,
+        "nonore": 91,
+        "body_union": 3,
+        "pole": 2
+      },
+      {
+        "gap_left": 0,
+        "gap_bottom": 42,
+        "nonore": 91,
+        "body_union": 3,
+        "pole": 2
+      },
+      {
+        "gap_left": 0,
+        "gap_bottom": 45,
+        "nonore": 91,
+        "body_union": 3,
+        "pole": 2
+      },
+      {
+        "gap_left": 0,
+        "gap_bottom": 48,
+        "nonore": 91,
+        "body_union": 3,
+        "pole": 2
+      },
+      {
+        "gap_left": 0,
+        "gap_bottom": 51,
+        "nonore": 91,
+        "body_union": 3,
+        "pole": 2
+      },
+      {
+        "gap_left": 0,
+        "gap_bottom": 54,
+        "nonore": 91,
+        "body_union": 3,
+        "pole": 2
+      },
+      {
+        "gap_left": 0,
+        "gap_bottom": 57,
+        "nonore": 91,
+        "body_union": 3,
+        "pole": 2
+      },
+      {
+        "gap_left": 0,
+        "gap_bottom": 60,
+        "nonore": 91,
+        "body_union": 3,
+        "pole": 2
+      },
+      {
+        "gap_left": 0,
+        "gap_bottom": 63,
+        "nonore": 91,
+        "body_union": 3,
+        "pole": 2
+      },
+      {
+        "gap_left": 0,
+        "gap_bottom": 66,
+        "nonore": 91,
+        "body_union": 3,
+        "pole": 2
+      },
+      {
+        "gap_left": 0,
+        "gap_bottom": 69,
+        "nonore": 91,
+        "body_union": 0,
+        "pole": 2
+      },
+      {
+        "gap_left": 3,
+        "gap_bottom": 0,
+        "nonore": 91,
+        "body_union": 3,
+        "pole": 2
+      },
+      {
+        "gap_left": 6,
+        "gap_bottom": 0,
+        "nonore": 91,
+        "body_union": 3,
+        "pole": 2
+      },
+      {
+        "gap_left": 9,
+        "gap_bottom": 0,
+        "nonore": 91,
+        "body_union": 3,
+        "pole": 2
+      },
+      {
+        "gap_left": 12,
+        "gap_bottom": 0,
+        "nonore": 91,
+        "body_union": 3,
+        "pole": 2
+      },
+      {
+        "gap_left": 15,
+        "gap_bottom": 0,
+        "nonore": 91,
+        "body_union": 3,
+        "pole": 2
+      },
+      {
+        "gap_left": 18,
+        "gap_bottom": 0,
+        "nonore": 91,
+        "body_union": 3,
+        "pole": 2
+      },
+      {
+        "gap_left": 21,
+        "gap_bottom": 0,
+        "nonore": 91,
+        "body_union": 3,
+        "pole": 2
+      },
+      {
+        "gap_left": 24,
+        "gap_bottom": 0,
+        "nonore": 91,
+        "body_union": 3,
+        "pole": 2
+      },
+      {
+        "gap_left": 27,
+        "gap_bottom": 0,
+        "nonore": 91,
+        "body_union": 3,
+        "pole": 2
+      },
+      {
+        "gap_left": 30,
+        "gap_bottom": 0,
+        "nonore": 91,
+        "body_union": 3,
+        "pole": 2
+      },
+      {
+        "gap_left": 33,
+        "gap_bottom": 0,
+        "nonore": 91,
+        "body_union": 3,
+        "pole": 2
+      },
+      {
+        "gap_left": 36,
+        "gap_bottom": 0,
+        "nonore": 91,
+        "body_union": 3,
+        "pole": 2
+      },
+      {
+        "gap_left": 39,
+        "gap_bottom": 0,
+        "nonore": 91,
+        "body_union": 3,
+        "pole": 2
+      },
+      {
+        "gap_left": 42,
+        "gap_bottom": 0,
+        "nonore": 91,
+        "body_union": 3,
+        "pole": 2
+      },
+      {
+        "gap_left": 45,
+        "gap_bottom": 0,
+        "nonore": 91,
+        "body_union": 3,
+        "pole": 2
+      },
+      {
+        "gap_left": 48,
+        "gap_bottom": 0,
+        "nonore": 91,
+        "body_union": 3,
+        "pole": 2
+      },
+      {
+        "gap_left": 51,
+        "gap_bottom": 0,
+        "nonore": 91,
+        "body_union": 3,
+        "pole": 2
+      },
+      {
+        "gap_left": 54,
+        "gap_bottom": 0,
+        "nonore": 91,
+        "body_union": 3,
+        "pole": 2
+      },
+      {
+        "gap_left": 57,
+        "gap_bottom": 0,
+        "nonore": 91,
+        "body_union": 3,
+        "pole": 2
+      },
+      {
+        "gap_left": 60,
+        "gap_bottom": 0,
+        "nonore": 91,
+        "body_union": 3,
+        "pole": 2
+      },
+      {
+        "gap_left": 63,
+        "gap_bottom": 0,
+        "nonore": 91,
+        "body_union": 3,
+        "pole": 2
+      },
+      {
+        "gap_left": 66,
+        "gap_bottom": 0,
+        "nonore": 91,
+        "body_union": 3,
+        "pole": 2
+      },
+      {
+        "gap_left": 69,
+        "gap_bottom": 0,
+        "nonore": 91,
+        "body_union": 0,
+        "pole": 2
+      }
+    ]
+  },
+  "archived_infeasibility": {
+    "proj_b17_P11_J0-4_formal.json": {
+      "b": 17,
+      "P": 11,
+      "J": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "cap": 187,
+      "status": "INFEASIBLE",
+      "seconds": 100.6,
+      "n_mach": 534,
+      "n_core": 114,
+      "n_poles": 1482,
+      "budget": 36
+    },
+    "proj_b17_P12_J0-6_formal.json": {
+      "b": 17,
+      "P": 12,
+      "J": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "cap": 187,
+      "status": "INFEASIBLE",
+      "seconds": 1.63,
+      "n_mach": 534,
+      "n_core": 114,
+      "n_poles": 1482,
+      "budget": 59
+    },
+    "proj_b6_P10_J0-1_formal.json": {
+      "b": 6,
+      "P": 10,
+      "J": [
+        0,
+        1
+      ],
+      "cap": 187,
+      "status": "INFEASIBLE",
+      "seconds": 1.18,
+      "n_mach": 681,
+      "n_core": 135,
+      "n_poles": 1396,
+      "budget": 13
+    },
+    "proj_b6_P11_J0-4_formal.json": {
+      "b": 6,
+      "P": 11,
+      "J": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "cap": 187,
+      "status": "INFEASIBLE",
+      "seconds": 13.16,
+      "n_mach": 681,
+      "n_core": 135,
+      "n_poles": 1530,
+      "budget": 36
+    },
+    "proj_b6_P12_J0-6_formal.json": {
+      "b": 6,
+      "P": 12,
+      "J": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "cap": 187,
+      "status": "INFEASIBLE",
+      "seconds": 1.24,
+      "n_mach": 681,
+      "n_core": 135,
+      "n_poles": 1530,
+      "budget": 59
+    },
+    "proj_b7_P10_J0-1_formal.json": {
+      "b": 7,
+      "P": 10,
+      "J": [
+        0,
+        1
+      ],
+      "cap": 187,
+      "status": "INFEASIBLE",
+      "seconds": 0.53,
+      "n_mach": 724,
+      "n_core": 135,
+      "n_poles": 1390,
+      "budget": 13
+    },
+    "proj_b7_P11_J0-4_formal.json": {
+      "b": 7,
+      "P": 11,
+      "J": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "cap": 187,
+      "status": "INFEASIBLE",
+      "seconds": 38.36,
+      "n_mach": 724,
+      "n_core": 135,
+      "n_poles": 1530,
+      "budget": 36
+    },
+    "proj_b7_P12_J0-6_formal.json": {
+      "b": 7,
+      "P": 12,
+      "J": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "cap": 187,
+      "status": "INFEASIBLE",
+      "seconds": 1.8,
+      "n_mach": 724,
+      "n_core": 135,
+      "n_poles": 1530,
+      "budget": 59
+    },
+    "proj_b9_P10_J0-1_formal.json": {
+      "b": 9,
+      "P": 10,
+      "J": [
+        0,
+        1
+      ],
+      "cap": 187,
+      "status": "INFEASIBLE",
+      "seconds": 0.17,
+      "n_mach": 724,
+      "n_core": 94,
+      "n_poles": 1350,
+      "budget": 13
+    },
+    "proj_b9_P11_J0-4_formal.json": {
+      "b": 9,
+      "P": 11,
+      "J": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "cap": 187,
+      "status": "INFEASIBLE",
+      "seconds": 54.85,
+      "n_mach": 724,
+      "n_core": 94,
+      "n_poles": 1530,
+      "budget": 36
+    },
+    "proj_b9_P12_J0-6_formal.json": {
+      "b": 9,
+      "P": 12,
+      "J": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "cap": 187,
+      "status": "INFEASIBLE",
+      "seconds": 1.2,
+      "n_mach": 724,
+      "n_core": 94,
+      "n_poles": 1530,
+      "budget": 59
+    },
+    "proj_b17_P10_J0-0_cap187.json": {
+      "b": 17,
+      "P": 10,
+      "J": [
+        0
+      ],
+      "cap": 187,
+      "status": "INFEASIBLE",
+      "seconds": 177.82,
+      "n_mach": 534,
+      "n_core": 114,
+      "n_poles": 1265,
+      "budget": 13
+    },
+    "milp_b17_P10_J0-0_cap187_cpsat.json": {
+      "b": 17,
+      "P": 10,
+      "J": [
+        0,
+        0
+      ],
+      "cap": 187,
+      "engine": "cpsat-linear",
+      "status": "INFEASIBLE",
+      "seconds": 1212.3,
+      "n_mach": 534,
+      "n_core": 114,
+      "n_poles": 1265,
+      "n_var": 4792,
+      "n_row": 5519
+    },
+    "milp_b17_P11_J0-4_cap187_cpsat.json": {
+      "b": 17,
+      "P": 11,
+      "J": [
+        0,
+        4
+      ],
+      "cap": 187,
+      "engine": "cpsat-linear",
+      "status": "INFEASIBLE",
+      "seconds": 139.2,
+      "n_mach": 534,
+      "n_core": 114,
+      "n_poles": 1482,
+      "n_var": 5245,
+      "n_row": 5839
+    }
+  },
+  "corner_scope_gap": {
+    "unit": "粉碎机",
+    "body": [
+      67,
+      67,
+      3,
+      3
+    ],
+    "switch": "关闭",
+    "corner": [
+      69,
+      69
+    ],
+    "old_X_corner_charge": 2,
+    "direction_account_transport_or_empty_charge": 0,
+    "not_full_layout_counterexample": true
+  }
+}

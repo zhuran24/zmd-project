@@ -1,0 +1,62 @@
+{
+  "snapshot_hashes": {
+    "《明日方舟：终末地》游戏规则.txt": "c8d3a17b8830baba18aea36c4c66f02f8873895188f8821176cc218aa6135f93",
+    "不补的设定.txt": "7a0c7d6e495f4f6b5ed6caba24584261925479e06fcad9428760f8a687f2abba",
+    "求解任务.txt": "7bec7a1edf2f46644a6e6a75d588f5ff05202cc32d6b42430677ea39b878309b",
+    "求解充分条件.txt": "aa633c7c927227ba4635f97bfb8948e9c3ba84ff1e489dd053b72db82e9ac435",
+    "求解约束.txt": "dfea46c61f29be5a86659bce3642009d2558ace073d6dbd79f5dd3c6475226db"
+  },
+  "S02": {
+    "steps_compared": 425,
+    "received": 50,
+    "last_receive_step": 400,
+    "permanently_blocked_from_step": 408,
+    "independent_encodings_equal": true,
+    "scope": "Literal missing-alphabet premise only; not a whole-factory layout."
+  },
+  "arithmetic": {
+    "S03": [
+      {
+        "machine": "研磨机",
+        "a": 2,
+        "b": 1,
+        "g": 1,
+        "m": 6,
+        "Z0": -50,
+        "L": -99,
+        "U": 50,
+        "C": 49,
+        "arbitrary_origin_bound": 24,
+        "passes": true
+      },
+      {
+        "machine": "封装机",
+        "a": 10,
+        "b": 15,
+        "g": 5,
+        "m": 5,
+        "Z0": 250,
+        "L": -365,
+        "U": 610,
+        "C": 360,
+        "arbitrary_origin_bound": 300,
+        "passes": true
+      },
+      {
+        "machine": "灌装机",
+        "a": 10,
+        "b": 10,
+        "g": 10,
+        "m": 6,
+        "Z0": 0,
+        "L": -410,
+        "U": 410,
+        "C": 410,
+        "arbitrary_origin_bound": 120,
+        "passes": true
+      }
+    ],
+    "S01_max_arrivals_between_transmissions": 15,
+    "two_independent_encodings_equal": true
+  }
+}

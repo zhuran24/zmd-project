@@ -1,0 +1,9 @@
+{
+  "case": "general",
+  "objective": "count",
+  "threshold": 24,
+  "encoding": "A",
+  "domain": 1240,
+  "status": "INFEASIBLE",
+  "seconds": 0.8626847790001193
+}

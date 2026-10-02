@@ -1,0 +1,159 @@
+{
+  "bridge_group_cases": [
+    {
+      "order": [
+        2,
+        0,
+        1
+      ],
+      "reading": "current",
+      "A_to_B_first": [
+        0,
+        9,
+        18,
+        27,
+        36,
+        45,
+        54,
+        63,
+        72,
+        81,
+        90,
+        99
+      ],
+      "steady_gap": 9,
+      "exact_rate": "8/9",
+      "independent_encodings_equal": true
+    },
+    {
+      "order": [
+        0,
+        2,
+        1
+      ],
+      "reading": "current",
+      "A_to_B_first": [
+        0,
+        9,
+        18,
+        27,
+        36,
+        45,
+        54,
+        63,
+        72,
+        81,
+        90,
+        99
+      ],
+      "steady_gap": 9,
+      "exact_rate": "8/9",
+      "independent_encodings_equal": true
+    },
+    {
+      "order": [
+        1,
+        2,
+        0
+      ],
+      "reading": "current",
+      "A_to_B_first": [
+        1,
+        10,
+        19,
+        28,
+        37,
+        46,
+        55,
+        64,
+        73,
+        82,
+        91,
+        100
+      ],
+      "steady_gap": 9,
+      "exact_rate": "8/9",
+      "independent_encodings_equal": true
+    },
+    {
+      "order": [
+        1,
+        0,
+        2
+      ],
+      "reading": "current",
+      "A_to_B_first": [
+        1,
+        10,
+        19,
+        28,
+        37,
+        46,
+        55,
+        64,
+        73,
+        82,
+        91,
+        100
+      ],
+      "steady_gap": 9,
+      "exact_rate": "8/9",
+      "independent_encodings_equal": true
+    },
+    {
+      "order": [
+        2,
+        1,
+        0
+      ],
+      "reading": "amended",
+      "A_to_B_first": [
+        0,
+        8,
+        16,
+        24,
+        32,
+        40,
+        48,
+        56,
+        64,
+        72,
+        80,
+        88
+      ],
+      "steady_gap": 8,
+      "exact_rate": "1",
+      "independent_encodings_equal": true
+    }
+  ],
+  "full_box": {
+    "receipts_first": [
+      1,
+      9,
+      17,
+      25,
+      33,
+      41,
+      49,
+      57,
+      65,
+      73
+    ],
+    "shipments_first": [
+      0,
+      8,
+      16,
+      24,
+      32,
+      40,
+      48,
+      56,
+      64,
+      72
+    ],
+    "exact_rate": "1",
+    "one_step_phase_difference": true,
+    "independent_encodings_equal": true
+  },
+  "scope": "Local order certificates; no complete layout or reachability claim."
+}

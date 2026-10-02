@@ -1,0 +1,18 @@
+{
+  "复核93C.md": "0a563b3e4abe8dc8d5c332002f4bce4d74146a9e76d83f6e71e183a4ba5c7d0e",
+  "复核93C/coverage.py": "0aaf92d61ec75b0ed5b1fdf8986912143ce702deabd1ad1acd47b846b1d54ac2",
+  "复核93C/coverage_results.json": "92e8b8d0c7026813c2529918e4d75c02bd01101c96070ef6df58a6156b65cedc",
+  "复核93C/engines.py": "9dec96b86bf999f6e83c1d88261ed4d6eb14813a9d6196a3d70d9557e01ffba9",
+  "复核93C/fifty_tick_certificate.json": "a7f42248309b844a5d27607fb98568c8148a6742adb369208fe6c8987e496479",
+  "复核93C/finalize.py": "f94240d70a8dd20557a2596b97b554c0b9e71eb728260217429f66a9eee14085",
+  "复核93C/input_manifest.json": "25a0c6528b0c9abf0d5681b97601507b233a4411bc90d2b6097e0aad4ed490c9",
+  "复核93C/loop_certificate.json": "8ef446e042db41fea7731ea8ae3a96b692bd89f43f3b62d30a104c173f681493",
+  "复核93C/reply.json": "f52c4736a9b8088473066be9444c43615466db78a9a1cf65409ce64d159e4797",
+  "复核93C/results.json": "ec6148320d7558ba9810fbe56fb61794a2b55a575c8ddfb5042890eb7c4ab6a3",
+  "复核93C/rotation_certificate.json": "a698448fbd5797da7b1df41a03d2b9739ac999026bd1844e7133ad7f0fa611db",
+  "复核93C/supplementary_inputs.json": "4e8b014649345d0c35da87c2fef911fad5ae7697f7197ad273b7d65f82767511",
+  "复核93C/transfer_certificate.json": "424d067c8b09389af0b56e009d4b37a8038d6db0b8f7cf4163d428cfb939b66c",
+  "复核93C/validation.json": "bbf43b3d0cd39af9e5239ccd022625e890e8f229897b8d2ab88cf4c7e380451c",
+  "复核93C/verify.py": "1ba9c179fb590aed7dffceb42d028ea800a903f8b09ffda40a0f6f1608d0a05a",
+  "复核93C/wrong_material_certificate.json": "a92c6828a21951215dac169ecd69c2d2e5971ff760baa6d122992f929fd3a9da"
+}

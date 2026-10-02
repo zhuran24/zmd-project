@@ -1,0 +1,9 @@
+{
+  "case": "edge",
+  "objective": "count",
+  "threshold": 14,
+  "encoding": "B",
+  "domain": 550,
+  "status": "INFEASIBLE",
+  "seconds": 1.3437379440001678
+}

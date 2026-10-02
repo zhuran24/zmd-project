@@ -1,0 +1,7233 @@
+{
+"summary": {
+"lit_AC": {
+"runs": 120,
+"disagree": 0,
+"second_cell_nonempty": 0,
+"phi_below_need": 4,
+"phi_below_99_5": 0,
+"worst_phi_minus_need": -17.0,
+"min_phi_drop_from_place": -0.5
+},
+"lit_CA": {
+"runs": 120,
+"disagree": 0,
+"second_cell_nonempty": 0,
+"phi_below_need": 4,
+"phi_below_99_5": 0,
+"worst_phi_minus_need": -17.0,
+"min_phi_drop_from_place": -0.5
+},
+"fixed": {
+"runs": 120,
+"disagree": 0,
+"second_cell_nonempty": 0,
+"phi_below_need": 4,
+"phi_below_99_5": 0,
+"worst_phi_minus_need": -17.0,
+"min_phi_drop_from_place": -0.5
+}
+},
+"rows": [
+{
+"seed": 1,
+"L1": 9,
+"L2": 88,
+"LB": 3,
+"LK": 1,
+"g1": 24,
+"delta": 9,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 1,
+"L1": 9,
+"L2": 88,
+"LB": 3,
+"LK": 1,
+"g1": 24,
+"delta": 9,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 99.5,
+"phi_min": 99.5,
+"phi_min_step": 7
+},
+{
+"seed": 1,
+"L1": 9,
+"L2": 88,
+"LB": 3,
+"LK": 1,
+"g1": 24,
+"delta": 9,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 2,
+"L1": 56,
+"L2": 41,
+"LB": 1,
+"LK": 1,
+"g1": 23,
+"delta": 80,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 2,
+"L1": 56,
+"L2": 41,
+"LB": 1,
+"LK": 1,
+"g1": 23,
+"delta": 80,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 0
+},
+{
+"seed": 2,
+"L1": 56,
+"L2": 41,
+"LB": 1,
+"LK": 1,
+"g1": 23,
+"delta": 80,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 3,
+"L1": 16,
+"L2": 81,
+"LB": 3,
+"LK": 5,
+"g1": 4,
+"delta": 2,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 3,
+"L1": 16,
+"L2": 81,
+"LB": 3,
+"LK": 5,
+"g1": 4,
+"delta": 2,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 3,
+"L1": 16,
+"L2": 81,
+"LB": 3,
+"LK": 5,
+"g1": 4,
+"delta": 2,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 4,
+"L1": 16,
+"L2": 81,
+"LB": 6,
+"LK": 4,
+"g1": 17,
+"delta": 8,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 4,
+"L1": 16,
+"L2": 81,
+"LB": 6,
+"LK": 4,
+"g1": 17,
+"delta": 8,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 0
+},
+{
+"seed": 4,
+"L1": 16,
+"L2": 81,
+"LB": 6,
+"LK": 4,
+"g1": 17,
+"delta": 8,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 5,
+"L1": 40,
+"L2": 17,
+"LB": 6,
+"LK": 6,
+"g1": 11,
+"delta": 8,
+"mode": "lit_AC",
+"agree": true,
+"need": 59.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 5,
+"L1": 40,
+"L2": 17,
+"LB": 6,
+"LK": 6,
+"g1": 11,
+"delta": 8,
+"mode": "lit_CA",
+"agree": true,
+"need": 59.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 1
+},
+{
+"seed": 5,
+"L1": 40,
+"L2": 17,
+"LB": 6,
+"LK": 6,
+"g1": 11,
+"delta": 8,
+"mode": "fixed",
+"agree": true,
+"need": 59.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 6,
+"L1": 51,
+"L2": 46,
+"LB": 4,
+"LK": 3,
+"g1": 39,
+"delta": 3,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 6,
+"L1": 51,
+"L2": 46,
+"LB": 4,
+"LK": 3,
+"g1": 39,
+"delta": 3,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 5
+},
+{
+"seed": 6,
+"L1": 51,
+"L2": 46,
+"LB": 4,
+"LK": 3,
+"g1": 39,
+"delta": 3,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 7,
+"L1": 21,
+"L2": 10,
+"LB": 6,
+"LK": 1,
+"g1": 14,
+"delta": 2,
+"mode": "lit_AC",
+"agree": true,
+"need": 33.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 7,
+"L1": 21,
+"L2": 10,
+"LB": 6,
+"LK": 1,
+"g1": 14,
+"delta": 2,
+"mode": "lit_CA",
+"agree": true,
+"need": 33.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 6
+},
+{
+"seed": 7,
+"L1": 21,
+"L2": 10,
+"LB": 6,
+"LK": 1,
+"g1": 14,
+"delta": 2,
+"mode": "fixed",
+"agree": true,
+"need": 33.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 8,
+"L1": 15,
+"L2": 24,
+"LB": 2,
+"LK": 2,
+"g1": 1,
+"delta": 23,
+"mode": "lit_AC",
+"agree": true,
+"need": 41.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 8,
+"L1": 15,
+"L2": 24,
+"LB": 2,
+"LK": 2,
+"g1": 1,
+"delta": 23,
+"mode": "lit_CA",
+"agree": true,
+"need": 41.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 8,
+"L1": 15,
+"L2": 24,
+"LB": 2,
+"LK": 2,
+"g1": 1,
+"delta": 23,
+"mode": "fixed",
+"agree": true,
+"need": 41.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 9,
+"L1": 30,
+"L2": 40,
+"LB": 3,
+"LK": 2,
+"g1": 7,
+"delta": 1085,
+"mode": "lit_AC",
+"agree": true,
+"need": 72.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 4
+},
+{
+"seed": 9,
+"L1": 30,
+"L2": 40,
+"LB": 3,
+"LK": 2,
+"g1": 7,
+"delta": 1085,
+"mode": "lit_CA",
+"agree": true,
+"need": 72.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 77
+},
+{
+"seed": 9,
+"L1": 30,
+"L2": 40,
+"LB": 3,
+"LK": 2,
+"g1": 7,
+"delta": 1085,
+"mode": "fixed",
+"agree": true,
+"need": 72.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 10,
+"L1": 37,
+"L2": 3,
+"LB": 4,
+"LK": 5,
+"g1": 18,
+"delta": 23,
+"mode": "lit_AC",
+"agree": true,
+"need": 42.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 10,
+"L1": 37,
+"L2": 3,
+"LB": 4,
+"LK": 5,
+"g1": 18,
+"delta": 23,
+"mode": "lit_CA",
+"agree": true,
+"need": 42.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 10,
+"L1": 37,
+"L2": 3,
+"LB": 4,
+"LK": 5,
+"g1": 18,
+"delta": 23,
+"mode": "fixed",
+"agree": true,
+"need": 42.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 11,
+"L1": 29,
+"L2": 56,
+"LB": 4,
+"LK": 5,
+"g1": 33,
+"delta": 2,
+"mode": "lit_AC",
+"agree": true,
+"need": 87.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 11,
+"L1": 29,
+"L2": 56,
+"LB": 4,
+"LK": 5,
+"g1": 33,
+"delta": 2,
+"mode": "lit_CA",
+"agree": true,
+"need": 87.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 6
+},
+{
+"seed": 11,
+"L1": 29,
+"L2": 56,
+"LB": 4,
+"LK": 5,
+"g1": 33,
+"delta": 2,
+"mode": "fixed",
+"agree": true,
+"need": 87.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 12,
+"L1": 31,
+"L2": 18,
+"LB": 2,
+"LK": 4,
+"g1": 4,
+"delta": 80,
+"mode": "lit_AC",
+"agree": true,
+"need": 51.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 12,
+"L1": 31,
+"L2": 18,
+"LB": 2,
+"LK": 4,
+"g1": 4,
+"delta": 80,
+"mode": "lit_CA",
+"agree": true,
+"need": 51.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 0
+},
+{
+"seed": 12,
+"L1": 31,
+"L2": 18,
+"LB": 2,
+"LK": 4,
+"g1": 4,
+"delta": 80,
+"mode": "fixed",
+"agree": true,
+"need": 51.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 13,
+"L1": 17,
+"L2": 80,
+"LB": 6,
+"LK": 2,
+"g1": 8,
+"delta": 160,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 13,
+"L1": 17,
+"L2": 80,
+"LB": 6,
+"LK": 2,
+"g1": 8,
+"delta": 160,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 0
+},
+{
+"seed": 13,
+"L1": 17,
+"L2": 80,
+"LB": 6,
+"LK": 2,
+"g1": 8,
+"delta": 160,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 14,
+"L1": 7,
+"L2": 90,
+"LB": 3,
+"LK": 6,
+"g1": 10,
+"delta": 3,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 14,
+"L1": 7,
+"L2": 90,
+"LB": 3,
+"LK": 6,
+"g1": 10,
+"delta": 3,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 5
+},
+{
+"seed": 14,
+"L1": 7,
+"L2": 90,
+"LB": 3,
+"LK": 6,
+"g1": 10,
+"delta": 3,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 15,
+"L1": 14,
+"L2": 83,
+"LB": 2,
+"LK": 2,
+"g1": 19,
+"delta": 5953,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 15,
+"L1": 14,
+"L2": 83,
+"LB": 2,
+"LK": 2,
+"g1": 19,
+"delta": 5953,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 15,
+"L1": 14,
+"L2": 83,
+"LB": 2,
+"LK": 2,
+"g1": 19,
+"delta": 5953,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 16,
+"L1": 24,
+"L2": 31,
+"LB": 3,
+"LK": 4,
+"g1": 38,
+"delta": 1,
+"mode": "lit_AC",
+"agree": true,
+"need": 57.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 16,
+"L1": 24,
+"L2": 31,
+"LB": 3,
+"LK": 4,
+"g1": 38,
+"delta": 1,
+"mode": "lit_CA",
+"agree": true,
+"need": 57.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 16,
+"L1": 24,
+"L2": 31,
+"LB": 3,
+"LK": 4,
+"g1": 38,
+"delta": 1,
+"mode": "fixed",
+"agree": true,
+"need": 57.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 17,
+"L1": 34,
+"L2": 27,
+"LB": 3,
+"LK": 3,
+"g1": 8,
+"delta": 7,
+"mode": "lit_AC",
+"agree": true,
+"need": 63.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 17,
+"L1": 34,
+"L2": 27,
+"LB": 3,
+"LK": 3,
+"g1": 8,
+"delta": 7,
+"mode": "lit_CA",
+"agree": true,
+"need": 63.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 1
+},
+{
+"seed": 17,
+"L1": 34,
+"L2": 27,
+"LB": 3,
+"LK": 3,
+"g1": 8,
+"delta": 7,
+"mode": "fixed",
+"agree": true,
+"need": 63.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 18,
+"L1": 12,
+"L2": 8,
+"LB": 3,
+"LK": 2,
+"g1": 36,
+"delta": 9,
+"mode": "lit_AC",
+"agree": true,
+"need": 22.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 18,
+"L1": 12,
+"L2": 8,
+"LB": 3,
+"LK": 2,
+"g1": 36,
+"delta": 9,
+"mode": "lit_CA",
+"agree": true,
+"need": 22.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 99.5,
+"phi_min": 99.5,
+"phi_min_step": 7
+},
+{
+"seed": 18,
+"L1": 12,
+"L2": 8,
+"LB": 3,
+"LK": 2,
+"g1": 36,
+"delta": 9,
+"mode": "fixed",
+"agree": true,
+"need": 22.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 19,
+"L1": 44,
+"L2": 53,
+"LB": 5,
+"LK": 2,
+"g1": 34,
+"delta": 400,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 19,
+"L1": 44,
+"L2": 53,
+"LB": 5,
+"LK": 2,
+"g1": 34,
+"delta": 400,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 0
+},
+{
+"seed": 19,
+"L1": 44,
+"L2": 53,
+"LB": 5,
+"LK": 2,
+"g1": 34,
+"delta": 400,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 20,
+"L1": 58,
+"L2": 39,
+"LB": 3,
+"LK": 6,
+"g1": 40,
+"delta": 4000,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 20,
+"L1": 58,
+"L2": 39,
+"LB": 3,
+"LK": 6,
+"g1": 40,
+"delta": 4000,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 5
+},
+{
+"seed": 20,
+"L1": 58,
+"L2": 39,
+"LB": 3,
+"LK": 6,
+"g1": 40,
+"delta": 4000,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 21,
+"L1": 11,
+"L2": 27,
+"LB": 6,
+"LK": 3,
+"g1": 39,
+"delta": 2,
+"mode": "lit_AC",
+"agree": true,
+"need": 40.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 21,
+"L1": 11,
+"L2": 27,
+"LB": 6,
+"LK": 3,
+"g1": 39,
+"delta": 2,
+"mode": "lit_CA",
+"agree": true,
+"need": 40.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 21,
+"L1": 11,
+"L2": 27,
+"LB": 6,
+"LK": 3,
+"g1": 39,
+"delta": 2,
+"mode": "fixed",
+"agree": true,
+"need": 40.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 22,
+"L1": 59,
+"L2": 38,
+"LB": 1,
+"LK": 5,
+"g1": 19,
+"delta": 9,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 22,
+"L1": 59,
+"L2": 38,
+"LB": 1,
+"LK": 5,
+"g1": 19,
+"delta": 9,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 99.5,
+"phi_min": 99.5,
+"phi_min_step": 7
+},
+{
+"seed": 22,
+"L1": 59,
+"L2": 38,
+"LB": 1,
+"LK": 5,
+"g1": 19,
+"delta": 9,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 23,
+"L1": 60,
+"L2": 50,
+"LB": 1,
+"LK": 1,
+"g1": 22,
+"delta": 9,
+"mode": "lit_AC",
+"agree": true,
+"need": 112.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 23,
+"L1": 60,
+"L2": 50,
+"LB": 1,
+"LK": 1,
+"g1": 22,
+"delta": 9,
+"mode": "lit_CA",
+"agree": true,
+"need": 112.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.5,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 23,
+"L1": 60,
+"L2": 50,
+"LB": 1,
+"LK": 1,
+"g1": 22,
+"delta": 9,
+"mode": "fixed",
+"agree": true,
+"need": 112.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 24,
+"L1": 46,
+"L2": 51,
+"LB": 2,
+"LK": 2,
+"g1": 31,
+"delta": 23,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 24,
+"L1": 46,
+"L2": 51,
+"LB": 2,
+"LK": 2,
+"g1": 31,
+"delta": 23,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 1
+},
+{
+"seed": 24,
+"L1": 46,
+"L2": 51,
+"LB": 2,
+"LK": 2,
+"g1": 31,
+"delta": 23,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 25,
+"L1": 25,
+"L2": 72,
+"LB": 2,
+"LK": 3,
+"g1": 33,
+"delta": 5,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 25,
+"L1": 25,
+"L2": 72,
+"LB": 2,
+"LK": 3,
+"g1": 33,
+"delta": 5,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 25,
+"L1": 25,
+"L2": 72,
+"LB": 2,
+"LK": 3,
+"g1": 33,
+"delta": 5,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 26,
+"L1": 48,
+"L2": 49,
+"LB": 6,
+"LK": 2,
+"g1": 9,
+"delta": 9,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 26,
+"L1": 48,
+"L2": 49,
+"LB": 6,
+"LK": 2,
+"g1": 9,
+"delta": 9,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.5,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 26,
+"L1": 48,
+"L2": 49,
+"LB": 6,
+"LK": 2,
+"g1": 9,
+"delta": 9,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 27,
+"L1": 42,
+"L2": 31,
+"LB": 3,
+"LK": 2,
+"g1": 26,
+"delta": 2400,
+"mode": "lit_AC",
+"agree": true,
+"need": 75.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 1
+},
+{
+"seed": 27,
+"L1": 42,
+"L2": 31,
+"LB": 3,
+"LK": 2,
+"g1": 26,
+"delta": 2400,
+"mode": "lit_CA",
+"agree": true,
+"need": 75.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 27,
+"L1": 42,
+"L2": 31,
+"LB": 3,
+"LK": 2,
+"g1": 26,
+"delta": 2400,
+"mode": "fixed",
+"agree": true,
+"need": 75.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 28,
+"L1": 8,
+"L2": 89,
+"LB": 5,
+"LK": 5,
+"g1": 8,
+"delta": 1445,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 28,
+"L1": 8,
+"L2": 89,
+"LB": 5,
+"LK": 5,
+"g1": 8,
+"delta": 1445,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 149
+},
+{
+"seed": 28,
+"L1": 8,
+"L2": 89,
+"LB": 5,
+"LK": 5,
+"g1": 8,
+"delta": 1445,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 29,
+"L1": 36,
+"L2": 5,
+"LB": 5,
+"LK": 5,
+"g1": 28,
+"delta": 16,
+"mode": "lit_AC",
+"agree": true,
+"need": 43.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 29,
+"L1": 36,
+"L2": 5,
+"LB": 5,
+"LK": 5,
+"g1": 28,
+"delta": 16,
+"mode": "lit_CA",
+"agree": true,
+"need": 43.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 0
+},
+{
+"seed": 29,
+"L1": 36,
+"L2": 5,
+"LB": 5,
+"LK": 5,
+"g1": 28,
+"delta": 16,
+"mode": "fixed",
+"agree": true,
+"need": 43.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 30,
+"L1": 35,
+"L2": 52,
+"LB": 5,
+"LK": 1,
+"g1": 34,
+"delta": 400,
+"mode": "lit_AC",
+"agree": true,
+"need": 89.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 30,
+"L1": 35,
+"L2": 52,
+"LB": 5,
+"LK": 1,
+"g1": 34,
+"delta": 400,
+"mode": "lit_CA",
+"agree": true,
+"need": 89.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 30,
+"L1": 35,
+"L2": 52,
+"LB": 5,
+"LK": 1,
+"g1": 34,
+"delta": 400,
+"mode": "fixed",
+"agree": true,
+"need": 89.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 31,
+"L1": 1,
+"L2": 96,
+"LB": 4,
+"LK": 2,
+"g1": 25,
+"delta": 9,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 31,
+"L1": 1,
+"L2": 96,
+"LB": 4,
+"LK": 2,
+"g1": 25,
+"delta": 9,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 99.5,
+"phi_min": 99.5,
+"phi_min_step": 7
+},
+{
+"seed": 31,
+"L1": 1,
+"L2": 96,
+"LB": 4,
+"LK": 2,
+"g1": 25,
+"delta": 9,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 32,
+"L1": 5,
+"L2": 92,
+"LB": 2,
+"LK": 3,
+"g1": 31,
+"delta": 9,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 32,
+"L1": 5,
+"L2": 92,
+"LB": 2,
+"LK": 3,
+"g1": 31,
+"delta": 9,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 99.5,
+"phi_min": 99.5,
+"phi_min_step": 7
+},
+{
+"seed": 32,
+"L1": 5,
+"L2": 92,
+"LB": 2,
+"LK": 3,
+"g1": 31,
+"delta": 9,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 33,
+"L1": 37,
+"L2": 60,
+"LB": 3,
+"LK": 4,
+"g1": 17,
+"delta": 16,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 33,
+"L1": 37,
+"L2": 60,
+"LB": 3,
+"LK": 4,
+"g1": 17,
+"delta": 16,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 0
+},
+{
+"seed": 33,
+"L1": 37,
+"L2": 60,
+"LB": 3,
+"LK": 4,
+"g1": 17,
+"delta": 16,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 34,
+"L1": 34,
+"L2": 63,
+"LB": 2,
+"LK": 1,
+"g1": 35,
+"delta": 2,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 34,
+"L1": 34,
+"L2": 63,
+"LB": 2,
+"LK": 1,
+"g1": 35,
+"delta": 2,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 34,
+"L1": 34,
+"L2": 63,
+"LB": 2,
+"LK": 1,
+"g1": 35,
+"delta": 2,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 35,
+"L1": 36,
+"L2": 61,
+"LB": 6,
+"LK": 3,
+"g1": 21,
+"delta": 4000,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 1
+},
+{
+"seed": 35,
+"L1": 36,
+"L2": 61,
+"LB": 6,
+"LK": 3,
+"g1": 21,
+"delta": 4000,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 1
+},
+{
+"seed": 35,
+"L1": 36,
+"L2": 61,
+"LB": 6,
+"LK": 3,
+"g1": 21,
+"delta": 4000,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 36,
+"L1": 22,
+"L2": 75,
+"LB": 3,
+"LK": 1,
+"g1": 7,
+"delta": 4000,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 1
+},
+{
+"seed": 36,
+"L1": 22,
+"L2": 75,
+"LB": 3,
+"LK": 1,
+"g1": 7,
+"delta": 4000,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 1
+},
+{
+"seed": 36,
+"L1": 22,
+"L2": 75,
+"LB": 3,
+"LK": 1,
+"g1": 7,
+"delta": 4000,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 37,
+"L1": 44,
+"L2": 53,
+"LB": 5,
+"LK": 6,
+"g1": 26,
+"delta": 40,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 37,
+"L1": 44,
+"L2": 53,
+"LB": 5,
+"LK": 6,
+"g1": 26,
+"delta": 40,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 0
+},
+{
+"seed": 37,
+"L1": 44,
+"L2": 53,
+"LB": 5,
+"LK": 6,
+"g1": 26,
+"delta": 40,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 38,
+"L1": 41,
+"L2": 27,
+"LB": 6,
+"LK": 1,
+"g1": 33,
+"delta": 7,
+"mode": "lit_AC",
+"agree": true,
+"need": 70.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 38,
+"L1": 41,
+"L2": 27,
+"LB": 6,
+"LK": 1,
+"g1": 33,
+"delta": 7,
+"mode": "lit_CA",
+"agree": true,
+"need": 70.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 1
+},
+{
+"seed": 38,
+"L1": 41,
+"L2": 27,
+"LB": 6,
+"LK": 1,
+"g1": 33,
+"delta": 7,
+"mode": "fixed",
+"agree": true,
+"need": 70.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 39,
+"L1": 14,
+"L2": 17,
+"LB": 1,
+"LK": 2,
+"g1": 32,
+"delta": 40,
+"mode": "lit_AC",
+"agree": true,
+"need": 33.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 39,
+"L1": 14,
+"L2": 17,
+"LB": 1,
+"LK": 2,
+"g1": 32,
+"delta": 40,
+"mode": "lit_CA",
+"agree": true,
+"need": 33.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 0
+},
+{
+"seed": 39,
+"L1": 14,
+"L2": 17,
+"LB": 1,
+"LK": 2,
+"g1": 32,
+"delta": 40,
+"mode": "fixed",
+"agree": true,
+"need": 33.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 40,
+"L1": 30,
+"L2": 67,
+"LB": 2,
+"LK": 3,
+"g1": 20,
+"delta": 1187,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 40,
+"L1": 30,
+"L2": 67,
+"LB": 2,
+"LK": 3,
+"g1": 20,
+"delta": 1187,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 6
+},
+{
+"seed": 40,
+"L1": 30,
+"L2": 67,
+"LB": 2,
+"LK": 3,
+"g1": 20,
+"delta": 1187,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 41,
+"L1": 25,
+"L2": 72,
+"LB": 2,
+"LK": 4,
+"g1": 27,
+"delta": 9,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 41,
+"L1": 25,
+"L2": 72,
+"LB": 2,
+"LK": 4,
+"g1": 27,
+"delta": 9,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.5,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 41,
+"L1": 25,
+"L2": 72,
+"LB": 2,
+"LK": 4,
+"g1": 27,
+"delta": 9,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 42,
+"L1": 41,
+"L2": 56,
+"LB": 6,
+"LK": 3,
+"g1": 34,
+"delta": 16,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 42,
+"L1": 41,
+"L2": 56,
+"LB": 6,
+"LK": 3,
+"g1": 34,
+"delta": 16,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 0
+},
+{
+"seed": 42,
+"L1": 41,
+"L2": 56,
+"LB": 6,
+"LK": 3,
+"g1": 34,
+"delta": 16,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 43,
+"L1": 3,
+"L2": 94,
+"LB": 4,
+"LK": 3,
+"g1": 32,
+"delta": 7,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 43,
+"L1": 3,
+"L2": 94,
+"LB": 4,
+"LK": 3,
+"g1": 32,
+"delta": 7,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 43,
+"L1": 3,
+"L2": 94,
+"LB": 4,
+"LK": 3,
+"g1": 32,
+"delta": 7,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 44,
+"L1": 27,
+"L2": 70,
+"LB": 2,
+"LK": 4,
+"g1": 18,
+"delta": 8,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 44,
+"L1": 27,
+"L2": 70,
+"LB": 2,
+"LK": 4,
+"g1": 18,
+"delta": 8,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 1
+},
+{
+"seed": 44,
+"L1": 27,
+"L2": 70,
+"LB": 2,
+"LK": 4,
+"g1": 18,
+"delta": 8,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 45,
+"L1": 18,
+"L2": 27,
+"LB": 3,
+"LK": 1,
+"g1": 9,
+"delta": 2,
+"mode": "lit_AC",
+"agree": true,
+"need": 47.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 45,
+"L1": 18,
+"L2": 27,
+"LB": 3,
+"LK": 1,
+"g1": 9,
+"delta": 2,
+"mode": "lit_CA",
+"agree": true,
+"need": 47.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 6
+},
+{
+"seed": 45,
+"L1": 18,
+"L2": 27,
+"LB": 3,
+"LK": 1,
+"g1": 9,
+"delta": 2,
+"mode": "fixed",
+"agree": true,
+"need": 47.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 46,
+"L1": 57,
+"L2": 5,
+"LB": 1,
+"LK": 5,
+"g1": 25,
+"delta": 4000,
+"mode": "lit_AC",
+"agree": true,
+"need": 64.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 99.5,
+"phi_min": 99.5,
+"phi_min_step": 7
+},
+{
+"seed": 46,
+"L1": 57,
+"L2": 5,
+"LB": 1,
+"LK": 5,
+"g1": 25,
+"delta": 4000,
+"mode": "lit_CA",
+"agree": true,
+"need": 64.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 56
+},
+{
+"seed": 46,
+"L1": 57,
+"L2": 5,
+"LB": 1,
+"LK": 5,
+"g1": 25,
+"delta": 4000,
+"mode": "fixed",
+"agree": true,
+"need": 64.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 47,
+"L1": 23,
+"L2": 5,
+"LB": 5,
+"LK": 4,
+"g1": 28,
+"delta": 2,
+"mode": "lit_AC",
+"agree": true,
+"need": 30.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 47,
+"L1": 23,
+"L2": 5,
+"LB": 5,
+"LK": 4,
+"g1": 28,
+"delta": 2,
+"mode": "lit_CA",
+"agree": true,
+"need": 30.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 6
+},
+{
+"seed": 47,
+"L1": 23,
+"L2": 5,
+"LB": 5,
+"LK": 4,
+"g1": 28,
+"delta": 2,
+"mode": "fixed",
+"agree": true,
+"need": 30.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 48,
+"L1": 36,
+"L2": 61,
+"LB": 5,
+"LK": 6,
+"g1": 8,
+"delta": 8,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 48,
+"L1": 36,
+"L2": 61,
+"LB": 5,
+"LK": 6,
+"g1": 8,
+"delta": 8,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 0
+},
+{
+"seed": 48,
+"L1": 36,
+"L2": 61,
+"LB": 5,
+"LK": 6,
+"g1": 8,
+"delta": 8,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 49,
+"L1": 5,
+"L2": 23,
+"LB": 1,
+"LK": 3,
+"g1": 20,
+"delta": 23,
+"mode": "lit_AC",
+"agree": true,
+"need": 30.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 49,
+"L1": 5,
+"L2": 23,
+"LB": 1,
+"LK": 3,
+"g1": 20,
+"delta": 23,
+"mode": "lit_CA",
+"agree": true,
+"need": 30.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 1
+},
+{
+"seed": 49,
+"L1": 5,
+"L2": 23,
+"LB": 1,
+"LK": 3,
+"g1": 20,
+"delta": 23,
+"mode": "fixed",
+"agree": true,
+"need": 30.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 50,
+"L1": 32,
+"L2": 55,
+"LB": 3,
+"LK": 6,
+"g1": 40,
+"delta": 3,
+"mode": "lit_AC",
+"agree": true,
+"need": 89.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 50,
+"L1": 32,
+"L2": 55,
+"LB": 3,
+"LK": 6,
+"g1": 40,
+"delta": 3,
+"mode": "lit_CA",
+"agree": true,
+"need": 89.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 5
+},
+{
+"seed": 50,
+"L1": 32,
+"L2": 55,
+"LB": 3,
+"LK": 6,
+"g1": 40,
+"delta": 3,
+"mode": "fixed",
+"agree": true,
+"need": 89.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 51,
+"L1": 16,
+"L2": 81,
+"LB": 2,
+"LK": 2,
+"g1": 2,
+"delta": 8,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 51,
+"L1": 16,
+"L2": 81,
+"LB": 2,
+"LK": 2,
+"g1": 2,
+"delta": 8,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 0
+},
+{
+"seed": 51,
+"L1": 16,
+"L2": 81,
+"LB": 2,
+"LK": 2,
+"g1": 2,
+"delta": 8,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 52,
+"L1": 18,
+"L2": 4,
+"LB": 3,
+"LK": 4,
+"g1": 30,
+"delta": 23,
+"mode": "lit_AC",
+"agree": true,
+"need": 24.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 52,
+"L1": 18,
+"L2": 4,
+"LB": 3,
+"LK": 4,
+"g1": 30,
+"delta": 23,
+"mode": "lit_CA",
+"agree": true,
+"need": 24.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 52,
+"L1": 18,
+"L2": 4,
+"LB": 3,
+"LK": 4,
+"g1": 30,
+"delta": 23,
+"mode": "fixed",
+"agree": true,
+"need": 24.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 53,
+"L1": 40,
+"L2": 57,
+"LB": 4,
+"LK": 5,
+"g1": 8,
+"delta": 160,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 53,
+"L1": 40,
+"L2": 57,
+"LB": 4,
+"LK": 5,
+"g1": 8,
+"delta": 160,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 0
+},
+{
+"seed": 53,
+"L1": 40,
+"L2": 57,
+"LB": 4,
+"LK": 5,
+"g1": 8,
+"delta": 160,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 54,
+"L1": 59,
+"L2": 9,
+"LB": 5,
+"LK": 3,
+"g1": 26,
+"delta": 7,
+"mode": "lit_AC",
+"agree": true,
+"need": 70.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 54,
+"L1": 59,
+"L2": 9,
+"LB": 5,
+"LK": 3,
+"g1": 26,
+"delta": 7,
+"mode": "lit_CA",
+"agree": true,
+"need": 70.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 54,
+"L1": 59,
+"L2": 9,
+"LB": 5,
+"LK": 3,
+"g1": 26,
+"delta": 7,
+"mode": "fixed",
+"agree": true,
+"need": 70.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 55,
+"L1": 6,
+"L2": 91,
+"LB": 6,
+"LK": 3,
+"g1": 32,
+"delta": 1,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 55,
+"L1": 6,
+"L2": 91,
+"LB": 6,
+"LK": 3,
+"g1": 32,
+"delta": 1,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 55,
+"L1": 6,
+"L2": 91,
+"LB": 6,
+"LK": 3,
+"g1": 32,
+"delta": 1,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 56,
+"L1": 55,
+"L2": 42,
+"LB": 4,
+"LK": 6,
+"g1": 24,
+"delta": 1,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 56,
+"L1": 55,
+"L2": 42,
+"LB": 4,
+"LK": 6,
+"g1": 24,
+"delta": 1,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 7
+},
+{
+"seed": 56,
+"L1": 55,
+"L2": 42,
+"LB": 4,
+"LK": 6,
+"g1": 24,
+"delta": 1,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 57,
+"L1": 3,
+"L2": 94,
+"LB": 2,
+"LK": 5,
+"g1": 39,
+"delta": 7,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 57,
+"L1": 3,
+"L2": 94,
+"LB": 2,
+"LK": 5,
+"g1": 39,
+"delta": 7,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 57,
+"L1": 3,
+"L2": 94,
+"LB": 2,
+"LK": 5,
+"g1": 39,
+"delta": 7,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 58,
+"L1": 38,
+"L2": 59,
+"LB": 6,
+"LK": 6,
+"g1": 23,
+"delta": 5,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 58,
+"L1": 38,
+"L2": 59,
+"LB": 6,
+"LK": 6,
+"g1": 23,
+"delta": 5,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 3
+},
+{
+"seed": 58,
+"L1": 38,
+"L2": 59,
+"LB": 6,
+"LK": 6,
+"g1": 23,
+"delta": 5,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 59,
+"L1": 15,
+"L2": 6,
+"LB": 1,
+"LK": 2,
+"g1": 2,
+"delta": 3,
+"mode": "lit_AC",
+"agree": true,
+"need": 23.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 59,
+"L1": 15,
+"L2": 6,
+"LB": 1,
+"LK": 2,
+"g1": 2,
+"delta": 3,
+"mode": "lit_CA",
+"agree": true,
+"need": 23.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 59,
+"L1": 15,
+"L2": 6,
+"LB": 1,
+"LK": 2,
+"g1": 2,
+"delta": 3,
+"mode": "fixed",
+"agree": true,
+"need": 23.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 60,
+"L1": 20,
+"L2": 77,
+"LB": 3,
+"LK": 2,
+"g1": 38,
+"delta": 5,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 60,
+"L1": 20,
+"L2": 77,
+"LB": 3,
+"LK": 2,
+"g1": 38,
+"delta": 5,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 3
+},
+{
+"seed": 60,
+"L1": 20,
+"L2": 77,
+"LB": 3,
+"LK": 2,
+"g1": 38,
+"delta": 5,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 61,
+"L1": 32,
+"L2": 65,
+"LB": 3,
+"LK": 3,
+"g1": 18,
+"delta": 80,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 61,
+"L1": 32,
+"L2": 65,
+"LB": 3,
+"LK": 3,
+"g1": 18,
+"delta": 80,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 1
+},
+{
+"seed": 61,
+"L1": 32,
+"L2": 65,
+"LB": 3,
+"LK": 3,
+"g1": 18,
+"delta": 80,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 62,
+"L1": 60,
+"L2": 37,
+"LB": 1,
+"LK": 2,
+"g1": 5,
+"delta": 2400,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 62,
+"L1": 60,
+"L2": 37,
+"LB": 1,
+"LK": 2,
+"g1": 5,
+"delta": 2400,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 1
+},
+{
+"seed": 62,
+"L1": 60,
+"L2": 37,
+"LB": 1,
+"LK": 2,
+"g1": 5,
+"delta": 2400,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 63,
+"L1": 29,
+"L2": 29,
+"LB": 3,
+"LK": 4,
+"g1": 14,
+"delta": 1200,
+"mode": "lit_AC",
+"agree": true,
+"need": 60.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 63,
+"L1": 29,
+"L2": 29,
+"LB": 3,
+"LK": 4,
+"g1": 14,
+"delta": 1200,
+"mode": "lit_CA",
+"agree": true,
+"need": 60.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 63,
+"L1": 29,
+"L2": 29,
+"LB": 3,
+"LK": 4,
+"g1": 14,
+"delta": 1200,
+"mode": "fixed",
+"agree": true,
+"need": 60.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 64,
+"L1": 31,
+"L2": 8,
+"LB": 5,
+"LK": 6,
+"g1": 4,
+"delta": 5,
+"mode": "lit_AC",
+"agree": true,
+"need": 41.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 64,
+"L1": 31,
+"L2": 8,
+"LB": 5,
+"LK": 6,
+"g1": 4,
+"delta": 5,
+"mode": "lit_CA",
+"agree": true,
+"need": 41.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 3
+},
+{
+"seed": 64,
+"L1": 31,
+"L2": 8,
+"LB": 5,
+"LK": 6,
+"g1": 4,
+"delta": 5,
+"mode": "fixed",
+"agree": true,
+"need": 41.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 65,
+"L1": 27,
+"L2": 19,
+"LB": 5,
+"LK": 2,
+"g1": 8,
+"delta": 160,
+"mode": "lit_AC",
+"agree": true,
+"need": 48.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 65,
+"L1": 27,
+"L2": 19,
+"LB": 5,
+"LK": 2,
+"g1": 8,
+"delta": 160,
+"mode": "lit_CA",
+"agree": true,
+"need": 48.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 0
+},
+{
+"seed": 65,
+"L1": 27,
+"L2": 19,
+"LB": 5,
+"LK": 2,
+"g1": 8,
+"delta": 160,
+"mode": "fixed",
+"agree": true,
+"need": 48.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 66,
+"L1": 5,
+"L2": 20,
+"LB": 2,
+"LK": 4,
+"g1": 24,
+"delta": 160,
+"mode": "lit_AC",
+"agree": true,
+"need": 27.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 66,
+"L1": 5,
+"L2": 20,
+"LB": 2,
+"LK": 4,
+"g1": 24,
+"delta": 160,
+"mode": "lit_CA",
+"agree": true,
+"need": 27.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 66,
+"L1": 5,
+"L2": 20,
+"LB": 2,
+"LK": 4,
+"g1": 24,
+"delta": 160,
+"mode": "fixed",
+"agree": true,
+"need": 27.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 67,
+"L1": 5,
+"L2": 8,
+"LB": 4,
+"LK": 4,
+"g1": 31,
+"delta": 16,
+"mode": "lit_AC",
+"agree": true,
+"need": 15.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 67,
+"L1": 5,
+"L2": 8,
+"LB": 4,
+"LK": 4,
+"g1": 31,
+"delta": 16,
+"mode": "lit_CA",
+"agree": true,
+"need": 15.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 1
+},
+{
+"seed": 67,
+"L1": 5,
+"L2": 8,
+"LB": 4,
+"LK": 4,
+"g1": 31,
+"delta": 16,
+"mode": "fixed",
+"agree": true,
+"need": 15.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 68,
+"L1": 48,
+"L2": 49,
+"LB": 5,
+"LK": 5,
+"g1": 12,
+"delta": 1,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 68,
+"L1": 48,
+"L2": 49,
+"LB": 5,
+"LK": 5,
+"g1": 12,
+"delta": 1,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 7
+},
+{
+"seed": 68,
+"L1": 48,
+"L2": 49,
+"LB": 5,
+"LK": 5,
+"g1": 12,
+"delta": 1,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 69,
+"L1": 44,
+"L2": 53,
+"LB": 2,
+"LK": 1,
+"g1": 13,
+"delta": 5683,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 69,
+"L1": 44,
+"L2": 53,
+"LB": 2,
+"LK": 1,
+"g1": 13,
+"delta": 5683,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 4
+},
+{
+"seed": 69,
+"L1": 44,
+"L2": 53,
+"LB": 2,
+"LK": 1,
+"g1": 13,
+"delta": 5683,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 70,
+"L1": 59,
+"L2": 8,
+"LB": 6,
+"LK": 4,
+"g1": 5,
+"delta": 4000,
+"mode": "lit_AC",
+"agree": true,
+"need": 69.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 99.5,
+"phi_min": 99.5,
+"phi_min_step": 7
+},
+{
+"seed": 70,
+"L1": 59,
+"L2": 8,
+"LB": 6,
+"LK": 4,
+"g1": 5,
+"delta": 4000,
+"mode": "lit_CA",
+"agree": true,
+"need": 69.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 99.5,
+"phi_min": 99.5,
+"phi_min_step": 7
+},
+{
+"seed": 70,
+"L1": 59,
+"L2": 8,
+"LB": 6,
+"LK": 4,
+"g1": 5,
+"delta": 4000,
+"mode": "fixed",
+"agree": true,
+"need": 69.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 71,
+"L1": 21,
+"L2": 76,
+"LB": 3,
+"LK": 2,
+"g1": 24,
+"delta": 9,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 71,
+"L1": 21,
+"L2": 76,
+"LB": 3,
+"LK": 2,
+"g1": 24,
+"delta": 9,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 99.5,
+"phi_min": 99.5,
+"phi_min_step": 7
+},
+{
+"seed": 71,
+"L1": 21,
+"L2": 76,
+"LB": 3,
+"LK": 2,
+"g1": 24,
+"delta": 9,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 72,
+"L1": 5,
+"L2": 92,
+"LB": 3,
+"LK": 6,
+"g1": 18,
+"delta": 747,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 72,
+"L1": 5,
+"L2": 92,
+"LB": 3,
+"LK": 6,
+"g1": 18,
+"delta": 747,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 72,
+"L1": 5,
+"L2": 92,
+"LB": 3,
+"LK": 6,
+"g1": 18,
+"delta": 747,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 73,
+"L1": 18,
+"L2": 8,
+"LB": 5,
+"LK": 2,
+"g1": 16,
+"delta": 9,
+"mode": "lit_AC",
+"agree": true,
+"need": 28.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 73,
+"L1": 18,
+"L2": 8,
+"LB": 5,
+"LK": 2,
+"g1": 16,
+"delta": 9,
+"mode": "lit_CA",
+"agree": true,
+"need": 28.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 99.5,
+"phi_min": 99.5,
+"phi_min_step": 7
+},
+{
+"seed": 73,
+"L1": 18,
+"L2": 8,
+"LB": 5,
+"LK": 2,
+"g1": 16,
+"delta": 9,
+"mode": "fixed",
+"agree": true,
+"need": 28.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 74,
+"L1": 56,
+"L2": 41,
+"LB": 3,
+"LK": 1,
+"g1": 15,
+"delta": 23,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 74,
+"L1": 56,
+"L2": 41,
+"LB": 3,
+"LK": 1,
+"g1": 15,
+"delta": 23,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 74,
+"L1": 56,
+"L2": 41,
+"LB": 3,
+"LK": 1,
+"g1": 15,
+"delta": 23,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 75,
+"L1": 29,
+"L2": 38,
+"LB": 4,
+"LK": 1,
+"g1": 1,
+"delta": 2400,
+"mode": "lit_AC",
+"agree": true,
+"need": 69.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 75,
+"L1": 29,
+"L2": 38,
+"LB": 4,
+"LK": 1,
+"g1": 1,
+"delta": 2400,
+"mode": "lit_CA",
+"agree": true,
+"need": 69.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 1
+},
+{
+"seed": 75,
+"L1": 29,
+"L2": 38,
+"LB": 4,
+"LK": 1,
+"g1": 1,
+"delta": 2400,
+"mode": "fixed",
+"agree": true,
+"need": 69.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 76,
+"L1": 24,
+"L2": 30,
+"LB": 2,
+"LK": 3,
+"g1": 21,
+"delta": 2400,
+"mode": "lit_AC",
+"agree": true,
+"need": 56.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 4
+},
+{
+"seed": 76,
+"L1": 24,
+"L2": 30,
+"LB": 2,
+"LK": 3,
+"g1": 21,
+"delta": 2400,
+"mode": "lit_CA",
+"agree": true,
+"need": 56.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 5
+},
+{
+"seed": 76,
+"L1": 24,
+"L2": 30,
+"LB": 2,
+"LK": 3,
+"g1": 21,
+"delta": 2400,
+"mode": "fixed",
+"agree": true,
+"need": 56.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 77,
+"L1": 52,
+"L2": 17,
+"LB": 2,
+"LK": 2,
+"g1": 11,
+"delta": 80,
+"mode": "lit_AC",
+"agree": true,
+"need": 71.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 77,
+"L1": 52,
+"L2": 17,
+"LB": 2,
+"LK": 2,
+"g1": 11,
+"delta": 80,
+"mode": "lit_CA",
+"agree": true,
+"need": 71.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 1
+},
+{
+"seed": 77,
+"L1": 52,
+"L2": 17,
+"LB": 2,
+"LK": 2,
+"g1": 11,
+"delta": 80,
+"mode": "fixed",
+"agree": true,
+"need": 71.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 78,
+"L1": 53,
+"L2": 44,
+"LB": 3,
+"LK": 6,
+"g1": 11,
+"delta": 160,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 78,
+"L1": 53,
+"L2": 44,
+"LB": 3,
+"LK": 6,
+"g1": 11,
+"delta": 160,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 1
+},
+{
+"seed": 78,
+"L1": 53,
+"L2": 44,
+"LB": 3,
+"LK": 6,
+"g1": 11,
+"delta": 160,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 79,
+"L1": 10,
+"L2": 29,
+"LB": 5,
+"LK": 2,
+"g1": 16,
+"delta": 2,
+"mode": "lit_AC",
+"agree": true,
+"need": 41.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 79,
+"L1": 10,
+"L2": 29,
+"LB": 5,
+"LK": 2,
+"g1": 16,
+"delta": 2,
+"mode": "lit_CA",
+"agree": true,
+"need": 41.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 79,
+"L1": 10,
+"L2": 29,
+"LB": 5,
+"LK": 2,
+"g1": 16,
+"delta": 2,
+"mode": "fixed",
+"agree": true,
+"need": 41.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 80,
+"L1": 18,
+"L2": 26,
+"LB": 3,
+"LK": 3,
+"g1": 37,
+"delta": 9,
+"mode": "lit_AC",
+"agree": true,
+"need": 46.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 80,
+"L1": 18,
+"L2": 26,
+"LB": 3,
+"LK": 3,
+"g1": 37,
+"delta": 9,
+"mode": "lit_CA",
+"agree": true,
+"need": 46.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.5,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 80,
+"L1": 18,
+"L2": 26,
+"LB": 3,
+"LK": 3,
+"g1": 37,
+"delta": 9,
+"mode": "fixed",
+"agree": true,
+"need": 46.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 81,
+"L1": 33,
+"L2": 54,
+"LB": 3,
+"LK": 5,
+"g1": 21,
+"delta": 400,
+"mode": "lit_AC",
+"agree": true,
+"need": 89.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 81,
+"L1": 33,
+"L2": 54,
+"LB": 3,
+"LK": 5,
+"g1": 21,
+"delta": 400,
+"mode": "lit_CA",
+"agree": true,
+"need": 89.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 81,
+"L1": 33,
+"L2": 54,
+"LB": 3,
+"LK": 5,
+"g1": 21,
+"delta": 400,
+"mode": "fixed",
+"agree": true,
+"need": 89.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 82,
+"L1": 10,
+"L2": 50,
+"LB": 5,
+"LK": 3,
+"g1": 11,
+"delta": 16,
+"mode": "lit_AC",
+"agree": true,
+"need": 62.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 82,
+"L1": 10,
+"L2": 50,
+"LB": 5,
+"LK": 3,
+"g1": 11,
+"delta": 16,
+"mode": "lit_CA",
+"agree": true,
+"need": 62.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 0
+},
+{
+"seed": 82,
+"L1": 10,
+"L2": 50,
+"LB": 5,
+"LK": 3,
+"g1": 11,
+"delta": 16,
+"mode": "fixed",
+"agree": true,
+"need": 62.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 83,
+"L1": 32,
+"L2": 55,
+"LB": 1,
+"LK": 2,
+"g1": 1,
+"delta": 2400,
+"mode": "lit_AC",
+"agree": true,
+"need": 89.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 83,
+"L1": 32,
+"L2": 55,
+"LB": 1,
+"LK": 2,
+"g1": 1,
+"delta": 2400,
+"mode": "lit_CA",
+"agree": true,
+"need": 89.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 83,
+"L1": 32,
+"L2": 55,
+"LB": 1,
+"LK": 2,
+"g1": 1,
+"delta": 2400,
+"mode": "fixed",
+"agree": true,
+"need": 89.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 84,
+"L1": 47,
+"L2": 50,
+"LB": 4,
+"LK": 1,
+"g1": 2,
+"delta": 2,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 84,
+"L1": 47,
+"L2": 50,
+"LB": 4,
+"LK": 1,
+"g1": 2,
+"delta": 2,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 6
+},
+{
+"seed": 84,
+"L1": 47,
+"L2": 50,
+"LB": 4,
+"LK": 1,
+"g1": 2,
+"delta": 2,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 85,
+"L1": 13,
+"L2": 84,
+"LB": 3,
+"LK": 2,
+"g1": 39,
+"delta": 2400,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 2
+},
+{
+"seed": 85,
+"L1": 13,
+"L2": 84,
+"LB": 3,
+"LK": 2,
+"g1": 39,
+"delta": 2400,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 3
+},
+{
+"seed": 85,
+"L1": 13,
+"L2": 84,
+"LB": 3,
+"LK": 2,
+"g1": 39,
+"delta": 2400,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 86,
+"L1": 51,
+"L2": 46,
+"LB": 5,
+"LK": 3,
+"g1": 5,
+"delta": 400,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 1
+},
+{
+"seed": 86,
+"L1": 51,
+"L2": 46,
+"LB": 5,
+"LK": 3,
+"g1": 5,
+"delta": 400,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 1
+},
+{
+"seed": 86,
+"L1": 51,
+"L2": 46,
+"LB": 5,
+"LK": 3,
+"g1": 5,
+"delta": 400,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 87,
+"L1": 10,
+"L2": 87,
+"LB": 5,
+"LK": 1,
+"g1": 19,
+"delta": 23,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 87,
+"L1": 10,
+"L2": 87,
+"LB": 5,
+"LK": 1,
+"g1": 19,
+"delta": 23,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 87,
+"L1": 10,
+"L2": 87,
+"LB": 5,
+"LK": 1,
+"g1": 19,
+"delta": 23,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 88,
+"L1": 26,
+"L2": 13,
+"LB": 2,
+"LK": 6,
+"g1": 7,
+"delta": 80,
+"mode": "lit_AC",
+"agree": true,
+"need": 41.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 88,
+"L1": 26,
+"L2": 13,
+"LB": 2,
+"LK": 6,
+"g1": 7,
+"delta": 80,
+"mode": "lit_CA",
+"agree": true,
+"need": 41.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 0
+},
+{
+"seed": 88,
+"L1": 26,
+"L2": 13,
+"LB": 2,
+"LK": 6,
+"g1": 7,
+"delta": 80,
+"mode": "fixed",
+"agree": true,
+"need": 41.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 89,
+"L1": 6,
+"L2": 50,
+"LB": 2,
+"LK": 3,
+"g1": 4,
+"delta": 4000,
+"mode": "lit_AC",
+"agree": true,
+"need": 58.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 1
+},
+{
+"seed": 89,
+"L1": 6,
+"L2": 50,
+"LB": 2,
+"LK": 3,
+"g1": 4,
+"delta": 4000,
+"mode": "lit_CA",
+"agree": true,
+"need": 58.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 89,
+"L1": 6,
+"L2": 50,
+"LB": 2,
+"LK": 3,
+"g1": 4,
+"delta": 4000,
+"mode": "fixed",
+"agree": true,
+"need": 58.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 90,
+"L1": 14,
+"L2": 83,
+"LB": 4,
+"LK": 6,
+"g1": 8,
+"delta": 4472,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 90,
+"L1": 14,
+"L2": 83,
+"LB": 4,
+"LK": 6,
+"g1": 8,
+"delta": 4472,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 294
+},
+{
+"seed": 90,
+"L1": 14,
+"L2": 83,
+"LB": 4,
+"LK": 6,
+"g1": 8,
+"delta": 4472,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 91,
+"L1": 6,
+"L2": 91,
+"LB": 6,
+"LK": 6,
+"g1": 24,
+"delta": 160,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 91,
+"L1": 6,
+"L2": 91,
+"LB": 6,
+"LK": 6,
+"g1": 24,
+"delta": 160,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 0
+},
+{
+"seed": 91,
+"L1": 6,
+"L2": 91,
+"LB": 6,
+"LK": 6,
+"g1": 24,
+"delta": 160,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 92,
+"L1": 27,
+"L2": 34,
+"LB": 6,
+"LK": 1,
+"g1": 9,
+"delta": 3,
+"mode": "lit_AC",
+"agree": true,
+"need": 63.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 92,
+"L1": 27,
+"L2": 34,
+"LB": 6,
+"LK": 1,
+"g1": 9,
+"delta": 3,
+"mode": "lit_CA",
+"agree": true,
+"need": 63.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 92,
+"L1": 27,
+"L2": 34,
+"LB": 6,
+"LK": 1,
+"g1": 9,
+"delta": 3,
+"mode": "fixed",
+"agree": true,
+"need": 63.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 93,
+"L1": 59,
+"L2": 55,
+"LB": 5,
+"LK": 6,
+"g1": 10,
+"delta": 40,
+"mode": "lit_AC",
+"agree": true,
+"need": 116.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 93,
+"L1": 59,
+"L2": 55,
+"LB": 5,
+"LK": 6,
+"g1": 10,
+"delta": 40,
+"mode": "lit_CA",
+"agree": true,
+"need": 116.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 0
+},
+{
+"seed": 93,
+"L1": 59,
+"L2": 55,
+"LB": 5,
+"LK": 6,
+"g1": 10,
+"delta": 40,
+"mode": "fixed",
+"agree": true,
+"need": 116.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 94,
+"L1": 35,
+"L2": 62,
+"LB": 3,
+"LK": 3,
+"g1": 16,
+"delta": 3,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 94,
+"L1": 35,
+"L2": 62,
+"LB": 3,
+"LK": 3,
+"g1": 16,
+"delta": 3,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 94,
+"L1": 35,
+"L2": 62,
+"LB": 3,
+"LK": 3,
+"g1": 16,
+"delta": 3,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 95,
+"L1": 49,
+"L2": 48,
+"LB": 4,
+"LK": 1,
+"g1": 23,
+"delta": 8,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 95,
+"L1": 49,
+"L2": 48,
+"LB": 4,
+"LK": 1,
+"g1": 23,
+"delta": 8,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 0
+},
+{
+"seed": 95,
+"L1": 49,
+"L2": 48,
+"LB": 4,
+"LK": 1,
+"g1": 23,
+"delta": 8,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 96,
+"L1": 24,
+"L2": 21,
+"LB": 2,
+"LK": 1,
+"g1": 33,
+"delta": 80,
+"mode": "lit_AC",
+"agree": true,
+"need": 47.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 96,
+"L1": 24,
+"L2": 21,
+"LB": 2,
+"LK": 1,
+"g1": 33,
+"delta": 80,
+"mode": "lit_CA",
+"agree": true,
+"need": 47.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 1
+},
+{
+"seed": 96,
+"L1": 24,
+"L2": 21,
+"LB": 2,
+"LK": 1,
+"g1": 33,
+"delta": 80,
+"mode": "fixed",
+"agree": true,
+"need": 47.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 97,
+"L1": 13,
+"L2": 28,
+"LB": 1,
+"LK": 5,
+"g1": 15,
+"delta": 7,
+"mode": "lit_AC",
+"agree": true,
+"need": 43.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 97,
+"L1": 13,
+"L2": 28,
+"LB": 1,
+"LK": 5,
+"g1": 15,
+"delta": 7,
+"mode": "lit_CA",
+"agree": true,
+"need": 43.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 1
+},
+{
+"seed": 97,
+"L1": 13,
+"L2": 28,
+"LB": 1,
+"LK": 5,
+"g1": 15,
+"delta": 7,
+"mode": "fixed",
+"agree": true,
+"need": 43.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 98,
+"L1": 23,
+"L2": 74,
+"LB": 3,
+"LK": 4,
+"g1": 12,
+"delta": 8,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 98,
+"L1": 23,
+"L2": 74,
+"LB": 3,
+"LK": 4,
+"g1": 12,
+"delta": 8,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 1
+},
+{
+"seed": 98,
+"L1": 23,
+"L2": 74,
+"LB": 3,
+"LK": 4,
+"g1": 12,
+"delta": 8,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 99,
+"L1": 26,
+"L2": 71,
+"LB": 5,
+"LK": 2,
+"g1": 13,
+"delta": 2400,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 1
+},
+{
+"seed": 99,
+"L1": 26,
+"L2": 71,
+"LB": 5,
+"LK": 2,
+"g1": 13,
+"delta": 2400,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 1
+},
+{
+"seed": 99,
+"L1": 26,
+"L2": 71,
+"LB": 5,
+"LK": 2,
+"g1": 13,
+"delta": 2400,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 100,
+"L1": 10,
+"L2": 30,
+"LB": 2,
+"LK": 6,
+"g1": 23,
+"delta": 1200,
+"mode": "lit_AC",
+"agree": true,
+"need": 42.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 1
+},
+{
+"seed": 100,
+"L1": 10,
+"L2": 30,
+"LB": 2,
+"LK": 6,
+"g1": 23,
+"delta": 1200,
+"mode": "lit_CA",
+"agree": true,
+"need": 42.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 100,
+"L1": 10,
+"L2": 30,
+"LB": 2,
+"LK": 6,
+"g1": 23,
+"delta": 1200,
+"mode": "fixed",
+"agree": true,
+"need": 42.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 101,
+"L1": 38,
+"L2": 59,
+"LB": 5,
+"LK": 3,
+"g1": 12,
+"delta": 80,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 101,
+"L1": 38,
+"L2": 59,
+"LB": 5,
+"LK": 3,
+"g1": 12,
+"delta": 80,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 1
+},
+{
+"seed": 101,
+"L1": 38,
+"L2": 59,
+"LB": 5,
+"LK": 3,
+"g1": 12,
+"delta": 80,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 102,
+"L1": 10,
+"L2": 44,
+"LB": 2,
+"LK": 5,
+"g1": 38,
+"delta": 2400,
+"mode": "lit_AC",
+"agree": true,
+"need": 56.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 4
+},
+{
+"seed": 102,
+"L1": 10,
+"L2": 44,
+"LB": 2,
+"LK": 5,
+"g1": 38,
+"delta": 2400,
+"mode": "lit_CA",
+"agree": true,
+"need": 56.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 5
+},
+{
+"seed": 102,
+"L1": 10,
+"L2": 44,
+"LB": 2,
+"LK": 5,
+"g1": 38,
+"delta": 2400,
+"mode": "fixed",
+"agree": true,
+"need": 56.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 103,
+"L1": 46,
+"L2": 51,
+"LB": 6,
+"LK": 1,
+"g1": 37,
+"delta": 1200,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 103,
+"L1": 46,
+"L2": 51,
+"LB": 6,
+"LK": 1,
+"g1": 37,
+"delta": 1200,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 394
+},
+{
+"seed": 103,
+"L1": 46,
+"L2": 51,
+"LB": 6,
+"LK": 1,
+"g1": 37,
+"delta": 1200,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 104,
+"L1": 2,
+"L2": 95,
+"LB": 6,
+"LK": 2,
+"g1": 39,
+"delta": 40,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 104,
+"L1": 2,
+"L2": 95,
+"LB": 6,
+"LK": 2,
+"g1": 39,
+"delta": 40,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 104,
+"L1": 2,
+"L2": 95,
+"LB": 6,
+"LK": 2,
+"g1": 39,
+"delta": 40,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 105,
+"L1": 57,
+"L2": 38,
+"LB": 5,
+"LK": 1,
+"g1": 14,
+"delta": 8,
+"mode": "lit_AC",
+"agree": true,
+"need": 97.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 105,
+"L1": 57,
+"L2": 38,
+"LB": 5,
+"LK": 1,
+"g1": 14,
+"delta": 8,
+"mode": "lit_CA",
+"agree": true,
+"need": 97.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 1
+},
+{
+"seed": 105,
+"L1": 57,
+"L2": 38,
+"LB": 5,
+"LK": 1,
+"g1": 14,
+"delta": 8,
+"mode": "fixed",
+"agree": true,
+"need": 97.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 106,
+"L1": 46,
+"L2": 58,
+"LB": 1,
+"LK": 5,
+"g1": 23,
+"delta": 160,
+"mode": "lit_AC",
+"agree": true,
+"need": 106.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 106,
+"L1": 46,
+"L2": 58,
+"LB": 1,
+"LK": 5,
+"g1": 23,
+"delta": 160,
+"mode": "lit_CA",
+"agree": true,
+"need": 106.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 0
+},
+{
+"seed": 106,
+"L1": 46,
+"L2": 58,
+"LB": 1,
+"LK": 5,
+"g1": 23,
+"delta": 160,
+"mode": "fixed",
+"agree": true,
+"need": 106.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 107,
+"L1": 16,
+"L2": 40,
+"LB": 4,
+"LK": 3,
+"g1": 4,
+"delta": 3,
+"mode": "lit_AC",
+"agree": true,
+"need": 58.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 107,
+"L1": 16,
+"L2": 40,
+"LB": 4,
+"LK": 3,
+"g1": 4,
+"delta": 3,
+"mode": "lit_CA",
+"agree": true,
+"need": 58.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 107,
+"L1": 16,
+"L2": 40,
+"LB": 4,
+"LK": 3,
+"g1": 4,
+"delta": 3,
+"mode": "fixed",
+"agree": true,
+"need": 58.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 108,
+"L1": 9,
+"L2": 88,
+"LB": 6,
+"LK": 4,
+"g1": 36,
+"delta": 2,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 108,
+"L1": 9,
+"L2": 88,
+"LB": 6,
+"LK": 4,
+"g1": 36,
+"delta": 2,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 6
+},
+{
+"seed": 108,
+"L1": 9,
+"L2": 88,
+"LB": 6,
+"LK": 4,
+"g1": 36,
+"delta": 2,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 109,
+"L1": 18,
+"L2": 15,
+"LB": 4,
+"LK": 5,
+"g1": 4,
+"delta": 8,
+"mode": "lit_AC",
+"agree": true,
+"need": 35.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 109,
+"L1": 18,
+"L2": 15,
+"LB": 4,
+"LK": 5,
+"g1": 4,
+"delta": 8,
+"mode": "lit_CA",
+"agree": true,
+"need": 35.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 1
+},
+{
+"seed": 109,
+"L1": 18,
+"L2": 15,
+"LB": 4,
+"LK": 5,
+"g1": 4,
+"delta": 8,
+"mode": "fixed",
+"agree": true,
+"need": 35.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 110,
+"L1": 60,
+"L2": 37,
+"LB": 4,
+"LK": 4,
+"g1": 23,
+"delta": 5,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 110,
+"L1": 60,
+"L2": 37,
+"LB": 4,
+"LK": 4,
+"g1": 23,
+"delta": 5,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 3
+},
+{
+"seed": 110,
+"L1": 60,
+"L2": 37,
+"LB": 4,
+"LK": 4,
+"g1": 23,
+"delta": 5,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 111,
+"L1": 53,
+"L2": 14,
+"LB": 4,
+"LK": 2,
+"g1": 26,
+"delta": 1200,
+"mode": "lit_AC",
+"agree": true,
+"need": 69.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 111,
+"L1": 53,
+"L2": 14,
+"LB": 4,
+"LK": 2,
+"g1": 26,
+"delta": 1200,
+"mode": "lit_CA",
+"agree": true,
+"need": 69.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 2
+},
+{
+"seed": 111,
+"L1": 53,
+"L2": 14,
+"LB": 4,
+"LK": 2,
+"g1": 26,
+"delta": 1200,
+"mode": "fixed",
+"agree": true,
+"need": 69.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 112,
+"L1": 31,
+"L2": 54,
+"LB": 6,
+"LK": 4,
+"g1": 33,
+"delta": 1200,
+"mode": "lit_AC",
+"agree": true,
+"need": 87.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 1
+},
+{
+"seed": 112,
+"L1": 31,
+"L2": 54,
+"LB": 6,
+"LK": 4,
+"g1": 33,
+"delta": 1200,
+"mode": "lit_CA",
+"agree": true,
+"need": 87.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 112,
+"L1": 31,
+"L2": 54,
+"LB": 6,
+"LK": 4,
+"g1": 33,
+"delta": 1200,
+"mode": "fixed",
+"agree": true,
+"need": 87.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 113,
+"L1": 2,
+"L2": 42,
+"LB": 1,
+"LK": 4,
+"g1": 33,
+"delta": 8,
+"mode": "lit_AC",
+"agree": true,
+"need": 46.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 113,
+"L1": 2,
+"L2": 42,
+"LB": 1,
+"LK": 4,
+"g1": 33,
+"delta": 8,
+"mode": "lit_CA",
+"agree": true,
+"need": 46.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 0
+},
+{
+"seed": 113,
+"L1": 2,
+"L2": 42,
+"LB": 1,
+"LK": 4,
+"g1": 33,
+"delta": 8,
+"mode": "fixed",
+"agree": true,
+"need": 46.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 114,
+"L1": 16,
+"L2": 81,
+"LB": 3,
+"LK": 6,
+"g1": 38,
+"delta": 40,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 114,
+"L1": 16,
+"L2": 81,
+"LB": 3,
+"LK": 6,
+"g1": 38,
+"delta": 40,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 1
+},
+{
+"seed": 114,
+"L1": 16,
+"L2": 81,
+"LB": 3,
+"LK": 6,
+"g1": 38,
+"delta": 40,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 100.0,
+"phi_min_step": 0
+},
+{
+"seed": 115,
+"L1": 58,
+"L2": 39,
+"LB": 1,
+"LK": 5,
+"g1": 10,
+"delta": 7,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 115,
+"L1": 58,
+"L2": 39,
+"LB": 1,
+"LK": 5,
+"g1": 10,
+"delta": 7,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 1
+},
+{
+"seed": 115,
+"L1": 58,
+"L2": 39,
+"LB": 1,
+"LK": 5,
+"g1": 10,
+"delta": 7,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 116,
+"L1": 53,
+"L2": 48,
+"LB": 1,
+"LK": 6,
+"g1": 25,
+"delta": 8,
+"mode": "lit_AC",
+"agree": true,
+"need": 103.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 116,
+"L1": 53,
+"L2": 48,
+"LB": 1,
+"LK": 6,
+"g1": 25,
+"delta": 8,
+"mode": "lit_CA",
+"agree": true,
+"need": 103.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 0
+},
+{
+"seed": 116,
+"L1": 53,
+"L2": 48,
+"LB": 1,
+"LK": 6,
+"g1": 25,
+"delta": 8,
+"mode": "fixed",
+"agree": true,
+"need": 103.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 117,
+"L1": 16,
+"L2": 81,
+"LB": 2,
+"LK": 4,
+"g1": 26,
+"delta": 8,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 117,
+"L1": 16,
+"L2": 81,
+"LB": 2,
+"LK": 4,
+"g1": 26,
+"delta": 8,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 0
+},
+{
+"seed": 117,
+"L1": 16,
+"L2": 81,
+"LB": 2,
+"LK": 4,
+"g1": 26,
+"delta": 8,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 118,
+"L1": 46,
+"L2": 51,
+"LB": 3,
+"LK": 1,
+"g1": 39,
+"delta": 160,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 118,
+"L1": 46,
+"L2": 51,
+"LB": 3,
+"LK": 1,
+"g1": 39,
+"delta": 160,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 0
+},
+{
+"seed": 118,
+"L1": 46,
+"L2": 51,
+"LB": 3,
+"LK": 1,
+"g1": 39,
+"delta": 160,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 119,
+"L1": 60,
+"L2": 37,
+"LB": 6,
+"LK": 5,
+"g1": 13,
+"delta": 2400,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 119,
+"L1": 60,
+"L2": 37,
+"LB": 6,
+"LK": 5,
+"g1": 13,
+"delta": 2400,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 3
+},
+{
+"seed": 119,
+"L1": 60,
+"L2": 37,
+"LB": 6,
+"LK": 5,
+"g1": 13,
+"delta": 2400,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 120,
+"L1": 33,
+"L2": 64,
+"LB": 6,
+"LK": 6,
+"g1": 27,
+"delta": 9,
+"mode": "lit_AC",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+},
+{
+"seed": 120,
+"L1": 33,
+"L2": 64,
+"LB": 6,
+"LK": 6,
+"g1": 27,
+"delta": 9,
+"mode": "lit_CA",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 99.5,
+"phi_min": 99.5,
+"phi_min_step": 7
+},
+{
+"seed": 120,
+"L1": 33,
+"L2": 64,
+"LB": 6,
+"LK": 6,
+"g1": 27,
+"delta": 9,
+"mode": "fixed",
+"agree": true,
+"need": 99.5,
+"pre_second": 0,
+"put": [
+50,
+50
+],
+"phi_after_place": 100.0,
+"phi_min": 99.5,
+"phi_min_step": 8
+}
+]
+}

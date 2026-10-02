@@ -1,0 +1,33 @@
+{
+  "seed": 920,
+  "maxlen": 1,
+  "initial": "thin",
+  "steps": 18000,
+  "all_step_states_equal": true,
+  "warehouse_interruptions": [
+    [
+      1000,
+      6000
+    ],
+    [
+      7500,
+      14000
+    ]
+  ],
+  "reorders": [
+    899,
+    1200,
+    5900,
+    7501,
+    13500,
+    15999
+  ],
+  "warehouse": {
+    "高容谷地电池": 783,
+    "精选荞愈胶囊": 765
+  },
+  "sim2_warehouse": {
+    "高容谷地电池": 783,
+    "精选荞愈胶囊": 765
+  }
+}

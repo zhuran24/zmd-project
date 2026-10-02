@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "cases": 1851008,
+  "independent_encodings": 2,
+  "trace_agreements": 1851008,
+  "violations": 0,
+  "successes_checked": 13258624,
+  "fnv1a64_trace": "40080e2e26c45a83",
+  "cases_by_k": [512, 3968, 21760, 97280, 379904, 1347584]
+}
