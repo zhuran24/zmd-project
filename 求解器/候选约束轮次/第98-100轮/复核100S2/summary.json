@@ -21,7 +21,7 @@
   "events": 810
  },
  "run_long": {
-  "cases": 17,
+  "cases": 20,
   "all_pass": true,
   "belt_cells": [
    4764,
@@ -58,10 +58,35 @@
  "lemma_bfs": {
   "cases": 125,
   "all_ok": true,
-  "controls_all_fail": false,
+  "controls": [
+   [
+    [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    5,
+    false
+   ],
+   [
+    [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    -1,
+    false
+   ]
+  ],
   "max_states": 8005687,
   "total_states": 21224875,
-  "secs": 218.8
+  "secs": 213.3
  },
  "lemma_controls": [
   [

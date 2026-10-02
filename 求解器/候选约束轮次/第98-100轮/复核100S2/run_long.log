@@ -16,3 +16,5 @@
 {"seed": 4015, "history": "keep", "maxlen": 30, "period": 480, "cycle_start": 27072, "nviol": 0, "secs": 9.7, "bat_per_tick_x100": 60.0, "cap_per_tick_x100": 55.0, "ore_per_tick": [1.0], "multi_out_rej": 0, "total_belt_cells": 4943}
 {"seed": 4016, "history": "mix", "maxlen": 30, "period": 480, "cycle_start": 26162, "nviol": 0, "secs": 9.4, "bat_per_tick_x100": 60.0, "cap_per_tick_x100": 55.0, "ore_per_tick": [1.0], "multi_out_rej": 0, "total_belt_cells": 4936}
 {"seed": 4017, "history": "clear", "maxlen": 30, "period": 480, "cycle_start": 23432, "nviol": 0, "secs": 8.6, "bat_per_tick_x100": 60.0, "cap_per_tick_x100": 55.0, "ore_per_tick": [1.0], "multi_out_rej": 0, "total_belt_cells": 4946}
+{"seed": 4018, "history": "keep", "maxlen": 30, "period": 480, "cycle_start": 25469, "nviol": 0, "secs": 9.3, "bat_per_tick_x100": 60.0, "cap_per_tick_x100": 55.0, "ore_per_tick": [1.0], "multi_out_rej": 0, "total_belt_cells": 5082}
+{"seed": 4019, "history": "mix", "maxlen": 30, "period": 480, "cycle_start": 25050, "nviol": 0, "secs": 9.1, "bat_per_tick_x100": 60.0, "cap_per_tick_x100": 55.0, "ore_per_tick": [1.0], "multi_out_rej": 0, "total_belt_cells": 5042}

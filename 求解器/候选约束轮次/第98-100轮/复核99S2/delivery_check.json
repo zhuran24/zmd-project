@@ -1,0 +1,15 @@
+{
+  "status": "pass",
+  "checked_at_utc": "2026-10-02T12:36:37.005244+00:00",
+  "report_sha256": "16c5afc29ed9d34cee10f2dbdfa01381454090bed519de3ac25cf0731b580b8d",
+  "report_links_checked": 21,
+  "input_files_unchanged": 20,
+  "verdict_count": 1,
+  "report_reader_audit": "reader_audit.md",
+  "other_review_reports_read": false,
+  "max_parallel_single_thread_processes": 3,
+  "write_scope": [
+    "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第98-100轮/复核99S2.md",
+    "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第98-100轮/复核99S2"
+  ]
+}

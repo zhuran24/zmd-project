@@ -1,0 +1,52 @@
+{
+  "status": "pass",
+  "small_numbers": {
+    "fast_refill_deadline": 33,
+    "shared_deadlines": {
+      "core": 6,
+      "sand": 5
+    },
+    "consumer_stock_bound": 16,
+    "slow_processor_stock_bound": 4,
+    "batches_per_480": {
+      "E_each": 12,
+      "F1_F2_each": 12,
+      "F3": 6,
+      "F4": 3
+    },
+    "extra_vs_221": 192,
+    "E": 276,
+    "pure_extra_budget_vs_221": 204,
+    "grouped_sand_minimum": 13
+  },
+  "weight_gains_by_product": {
+    "蓝铁块": 1,
+    "蓝铁粉末": 1,
+    "源石粉末": 1,
+    "致密蓝铁粉末": 1,
+    "钢块": 1,
+    "致密源石粉末": 1,
+    "钢制零件": 1,
+    "钢质瓶": 1,
+    "细磨荞花粉末": 1,
+    "砂叶种子": 1,
+    "砂叶": 1,
+    "砂叶粉末": 9,
+    "荞花种子": 1,
+    "荞花": 1,
+    "荞花粉末": 5
+  },
+  "factory_cases": 4,
+  "factory_steps": 42240,
+  "startup_cases": 2,
+  "startup_steps": 10030,
+  "certificate_steps": 2880,
+  "all_factory_encoding_steps": 55150,
+  "local_cases": 96,
+  "local_steps": 189278,
+  "local_exhaustive_transitions": 1885838,
+  "original_reported_steps_sum": 62984,
+  "graph_planar_necessary_test": true,
+  "input_hash_count": 20,
+  "report_path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第98-100轮/复核99S2.md"
+}
