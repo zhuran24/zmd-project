@@ -1,0 +1,17 @@
+{
+  "C21": {
+    "cases": 64,
+    "compared_steps": 25600,
+    "min_C_A_B_K_output": [
+      46,
+      48,
+      48,
+      44
+    ],
+    "violations": 0
+  },
+  "E29_E31": {
+    "phase_pairs": 56,
+    "even_batch_species_cases": 28560
+  }
+}

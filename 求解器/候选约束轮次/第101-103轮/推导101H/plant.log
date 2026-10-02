@@ -1,0 +1,14 @@
+{
+  "cases": 400,
+  "paired_step_states": 408000,
+  "general_cases": 240,
+  "full_cases": 160,
+  "maximum_K_wait_steps": 2,
+  "counterexample_min_phi2": {
+    "retain": 203,
+    "clear": 202,
+    "geometric_retain": 172,
+    "geometric_clear": 171
+  },
+  "scope": "Forward-chain interface models, with arbitrary downstream service; not full-factory certification."
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第98-100轮/临时规则.md",
+    "initial_sha256": "39c0aed1f711f8ed01625da8b51b30569fc52ecfa5f8140629fa398d32dab396",
+    "current_sha256": "45ec52e1411604caefad5e22c35ce67e678602e75190188718f086bea6728490",
+    "changed_during_task": true,
+    "added_rule": "离线保留刚离开的单位；轮询历史和箱传输冷却分别覆盖保留与清空。",
+    "impact": "本条件无箱、无逆向路线，补货引理不依赖轮询历史；新增保留历史实例。"
+  }
+]

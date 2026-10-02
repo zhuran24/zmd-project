@@ -1,0 +1,26 @@
+{
+ "fraction": {
+  "phi_max_minus_L": "177",
+  "H150": "150",
+  "phi_b1_176": "353/2",
+  "H176": "176",
+  "box_15": "15",
+  "box_18_old": "18",
+  "Kout_min": "{2: 48, 3: 47}",
+  "steps_per_tick": "8",
+  "cooldown_steps": "40",
+  "composition_ok": "True"
+ },
+ "agree": {
+  "phi_max_minus_L": true,
+  "H150": true,
+  "phi_b1_176": true,
+  "H176": true,
+  "box_15": true,
+  "box_18_old": true,
+  "Kout_min": true,
+  "steps_per_tick": true,
+  "cooldown_steps": true,
+  "composition_ok": true
+ }
+}

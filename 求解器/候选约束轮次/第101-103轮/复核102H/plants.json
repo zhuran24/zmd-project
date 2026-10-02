@@ -1,0 +1,1669 @@
+{
+  "general": {
+    "cases": 360,
+    "compared_steps": 432000,
+    "violations": 0,
+    "lowest_sampled_BB_offset2": null
+  },
+  "full": {
+    "cases": 200,
+    "compared_steps": 320000,
+    "violations": 0,
+    "min_Braw_Kraw_Bout_Kout": [
+      49,
+      49,
+      50,
+      47
+    ],
+    "max_K_wait_steps": 2
+  },
+  "old_bound_witness": {
+    "initial": {
+      "machines": [
+        [
+          0,
+          2,
+          null
+        ],
+        [
+          50,
+          49,
+          8
+        ],
+        [
+          0,
+          0,
+          null
+        ],
+        [
+          0,
+          0,
+          null
+        ]
+      ],
+      "roads": [
+        [
+          8,
+          8,
+          8,
+          8,
+          8
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      ]
+    },
+    "runs": {
+      "retain": {
+        "initial_phi2": 212,
+        "events": [
+          [
+            1,
+            "B"
+          ],
+          [
+            9,
+            "A"
+          ]
+        ],
+        "trace": [
+          {
+            "step": 1,
+            "phi2": 211,
+            "machines": [
+              [
+                0,
+                1,
+                null
+              ],
+              [
+                50,
+                48,
+                7
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": [
+              "B"
+            ]
+          },
+          {
+            "step": 2,
+            "phi2": 211,
+            "machines": [
+              [
+                0,
+                1,
+                null
+              ],
+              [
+                50,
+                48,
+                6
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": []
+          },
+          {
+            "step": 3,
+            "phi2": 211,
+            "machines": [
+              [
+                0,
+                1,
+                null
+              ],
+              [
+                50,
+                48,
+                5
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": []
+          },
+          {
+            "step": 4,
+            "phi2": 211,
+            "machines": [
+              [
+                0,
+                1,
+                null
+              ],
+              [
+                50,
+                48,
+                4
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": []
+          },
+          {
+            "step": 5,
+            "phi2": 211,
+            "machines": [
+              [
+                0,
+                1,
+                null
+              ],
+              [
+                50,
+                48,
+                3
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": []
+          },
+          {
+            "step": 6,
+            "phi2": 211,
+            "machines": [
+              [
+                0,
+                1,
+                null
+              ],
+              [
+                50,
+                48,
+                2
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": []
+          },
+          {
+            "step": 7,
+            "phi2": 211,
+            "machines": [
+              [
+                0,
+                1,
+                null
+              ],
+              [
+                50,
+                48,
+                1
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": []
+          },
+          {
+            "step": 8,
+            "phi2": 211,
+            "machines": [
+              [
+                0,
+                1,
+                null
+              ],
+              [
+                49,
+                49,
+                8
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": []
+          },
+          {
+            "step": 9,
+            "phi2": 212,
+            "machines": [
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                50,
+                48,
+                7
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": [
+              "A"
+            ]
+          },
+          {
+            "step": 10,
+            "phi2": 212,
+            "machines": [
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                50,
+                48,
+                6
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": []
+          },
+          {
+            "step": 11,
+            "phi2": 212,
+            "machines": [
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                50,
+                48,
+                5
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": []
+          },
+          {
+            "step": 12,
+            "phi2": 212,
+            "machines": [
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                50,
+                48,
+                4
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": []
+          },
+          {
+            "step": 13,
+            "phi2": 212,
+            "machines": [
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                50,
+                48,
+                3
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": []
+          },
+          {
+            "step": 14,
+            "phi2": 212,
+            "machines": [
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                50,
+                48,
+                2
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": []
+          },
+          {
+            "step": 15,
+            "phi2": 212,
+            "machines": [
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                50,
+                48,
+                1
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": []
+          },
+          {
+            "step": 16,
+            "phi2": 212,
+            "machines": [
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                49,
+                49,
+                8
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": []
+          },
+          {
+            "step": 17,
+            "phi2": 212,
+            "machines": [
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                50,
+                48,
+                7
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": []
+          },
+          {
+            "step": 18,
+            "phi2": 212,
+            "machines": [
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                50,
+                48,
+                6
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": []
+          },
+          {
+            "step": 19,
+            "phi2": 212,
+            "machines": [
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                50,
+                48,
+                5
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": []
+          },
+          {
+            "step": 20,
+            "phi2": 212,
+            "machines": [
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                50,
+                48,
+                4
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": []
+          },
+          {
+            "step": 21,
+            "phi2": 212,
+            "machines": [
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                50,
+                48,
+                3
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": []
+          },
+          {
+            "step": 22,
+            "phi2": 212,
+            "machines": [
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                50,
+                48,
+                2
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": []
+          },
+          {
+            "step": 23,
+            "phi2": 212,
+            "machines": [
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                50,
+                48,
+                1
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": []
+          },
+          {
+            "step": 24,
+            "phi2": 212,
+            "machines": [
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                49,
+                49,
+                8
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": []
+          }
+        ]
+      },
+      "clear": {
+        "initial_phi2": 212,
+        "events": [
+          [
+            1,
+            "B"
+          ],
+          [
+            9,
+            "B"
+          ]
+        ],
+        "trace": [
+          {
+            "step": 1,
+            "phi2": 211,
+            "machines": [
+              [
+                0,
+                1,
+                null
+              ],
+              [
+                50,
+                48,
+                7
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": [
+              "B"
+            ]
+          },
+          {
+            "step": 2,
+            "phi2": 211,
+            "machines": [
+              [
+                0,
+                1,
+                null
+              ],
+              [
+                50,
+                48,
+                6
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": []
+          },
+          {
+            "step": 3,
+            "phi2": 211,
+            "machines": [
+              [
+                0,
+                1,
+                null
+              ],
+              [
+                50,
+                48,
+                5
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": []
+          },
+          {
+            "step": 4,
+            "phi2": 211,
+            "machines": [
+              [
+                0,
+                1,
+                null
+              ],
+              [
+                50,
+                48,
+                4
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": []
+          },
+          {
+            "step": 5,
+            "phi2": 211,
+            "machines": [
+              [
+                0,
+                1,
+                null
+              ],
+              [
+                50,
+                48,
+                3
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": []
+          },
+          {
+            "step": 6,
+            "phi2": 211,
+            "machines": [
+              [
+                0,
+                1,
+                null
+              ],
+              [
+                50,
+                48,
+                2
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": []
+          },
+          {
+            "step": 7,
+            "phi2": 211,
+            "machines": [
+              [
+                0,
+                1,
+                null
+              ],
+              [
+                50,
+                48,
+                1
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": []
+          },
+          {
+            "step": 8,
+            "phi2": 211,
+            "machines": [
+              [
+                0,
+                1,
+                null
+              ],
+              [
+                49,
+                49,
+                8
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": []
+          },
+          {
+            "step": 9,
+            "phi2": 210,
+            "machines": [
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                50,
+                48,
+                7
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": [
+              "B"
+            ]
+          },
+          {
+            "step": 10,
+            "phi2": 210,
+            "machines": [
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                50,
+                48,
+                6
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": []
+          },
+          {
+            "step": 11,
+            "phi2": 210,
+            "machines": [
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                50,
+                48,
+                5
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": []
+          },
+          {
+            "step": 12,
+            "phi2": 210,
+            "machines": [
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                50,
+                48,
+                4
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": []
+          },
+          {
+            "step": 13,
+            "phi2": 210,
+            "machines": [
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                50,
+                48,
+                3
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": []
+          },
+          {
+            "step": 14,
+            "phi2": 210,
+            "machines": [
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                50,
+                48,
+                2
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": []
+          },
+          {
+            "step": 15,
+            "phi2": 210,
+            "machines": [
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                50,
+                48,
+                1
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": []
+          },
+          {
+            "step": 16,
+            "phi2": 210,
+            "machines": [
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                49,
+                49,
+                8
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": []
+          },
+          {
+            "step": 17,
+            "phi2": 210,
+            "machines": [
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                50,
+                48,
+                7
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": []
+          },
+          {
+            "step": 18,
+            "phi2": 210,
+            "machines": [
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                50,
+                48,
+                6
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": []
+          },
+          {
+            "step": 19,
+            "phi2": 210,
+            "machines": [
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                50,
+                48,
+                5
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": []
+          },
+          {
+            "step": 20,
+            "phi2": 210,
+            "machines": [
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                50,
+                48,
+                4
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": []
+          },
+          {
+            "step": 21,
+            "phi2": 210,
+            "machines": [
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                50,
+                48,
+                3
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": []
+          },
+          {
+            "step": 22,
+            "phi2": 210,
+            "machines": [
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                50,
+                48,
+                2
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": []
+          },
+          {
+            "step": 23,
+            "phi2": 210,
+            "machines": [
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                50,
+                48,
+                1
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": []
+          },
+          {
+            "step": 24,
+            "phi2": 210,
+            "machines": [
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                49,
+                49,
+                8
+              ],
+              [
+                0,
+                0,
+                null
+              ],
+              [
+                0,
+                0,
+                null
+              ]
+            ],
+            "C_success": []
+          }
+        ]
+      }
+    },
+    "violation_at_step": 9,
+    "old_bound2": 211,
+    "new_bound2": 210
+  },
+  "low_inventory_cycles": [
+    {
+      "lengths": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "k": 2,
+      "clear": false,
+      "period": 33,
+      "starts": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "powder": 2
+    },
+    {
+      "lengths": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "k": 2,
+      "clear": true,
+      "period": 33,
+      "starts": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "powder": 2
+    },
+    {
+      "lengths": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "k": 3,
+      "clear": false,
+      "period": 33,
+      "starts": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "powder": 3
+    },
+    {
+      "lengths": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "k": 3,
+      "clear": true,
+      "period": 33,
+      "starts": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "powder": 3
+    },
+    {
+      "lengths": [
+        5,
+        35,
+        11,
+        5
+      ],
+      "k": 2,
+      "clear": false,
+      "period": 337,
+      "starts": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "powder": 2
+    },
+    {
+      "lengths": [
+        5,
+        35,
+        11,
+        5
+      ],
+      "k": 2,
+      "clear": true,
+      "period": 337,
+      "starts": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "powder": 2
+    },
+    {
+      "lengths": [
+        5,
+        35,
+        11,
+        5
+      ],
+      "k": 3,
+      "clear": false,
+      "period": 337,
+      "starts": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "powder": 3
+    },
+    {
+      "lengths": [
+        5,
+        35,
+        11,
+        5
+      ],
+      "k": 3,
+      "clear": true,
+      "period": 337,
+      "starts": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "powder": 3
+    },
+    {
+      "lengths": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "k": 2,
+      "clear": false,
+      "period": 57,
+      "starts": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "powder": 2
+    },
+    {
+      "lengths": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "k": 2,
+      "clear": true,
+      "period": 57,
+      "starts": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "powder": 2
+    },
+    {
+      "lengths": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "k": 3,
+      "clear": false,
+      "period": 57,
+      "starts": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "powder": 3
+    },
+    {
+      "lengths": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "k": 3,
+      "clear": true,
+      "period": 57,
+      "starts": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "powder": 3
+    }
+  ]
+}

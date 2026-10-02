@@ -1,0 +1,50 @@
+{
+  "cases": 4,
+  "paired_step_states": 1600,
+  "runs": [
+    {
+      "poll": "retain",
+      "cooldown": "retain",
+      "paired_step_states": 400,
+      "maximum_box_contents": 15,
+      "warehouse": [
+        89,
+        44
+      ],
+      "sha256": "3a307619ee12bef19d31f620d71bafffeb49791c9d1ab28c7a2ba66400fb0516"
+    },
+    {
+      "poll": "retain",
+      "cooldown": "clear",
+      "paired_step_states": 400,
+      "maximum_box_contents": 8,
+      "warehouse": [
+        96,
+        47
+      ],
+      "sha256": "143b2fd71e77b546217587f4fa10ca52fd541208ef1526f61ffe77fee6b1d701"
+    },
+    {
+      "poll": "clear",
+      "cooldown": "retain",
+      "paired_step_states": 400,
+      "maximum_box_contents": 15,
+      "warehouse": [
+        89,
+        44
+      ],
+      "sha256": "55c793fd7b6f372a085bb7f6bda8fb6e02a28f04e02895eb46b18c1625f24d12"
+    },
+    {
+      "poll": "clear",
+      "cooldown": "clear",
+      "paired_step_states": 400,
+      "maximum_box_contents": 8,
+      "warehouse": [
+        96,
+        47
+      ],
+      "sha256": "c4d258be2c440778048c37813cdb14de000ef6c42e681e23e711cb9ebe8fbcd1"
+    }
+  ]
+}

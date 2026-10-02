@@ -1,0 +1,10 @@
+{
+ "stats": {
+  "cases": 3000,
+  "rounds": 68332,
+  "same": 3000,
+  "bound_ok": 3000,
+  "bad": 0
+ },
+ "examples": []
+}

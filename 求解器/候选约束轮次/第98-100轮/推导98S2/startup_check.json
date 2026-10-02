@@ -1,0 +1,226 @@
+{
+  "cases": [
+    {
+      "seed": 98400,
+      "maxlen": 1,
+      "rounds": 3,
+      "ready_step": 3867,
+      "cross_checked_steps": 6267,
+      "manual_items": {
+        "蓝铁矿": 1601,
+        "蓝铁块": 3434,
+        "源矿": 669,
+        "蓝铁粉末": 2584,
+        "砂叶粉末": 2298,
+        "源石粉末": 1368,
+        "荞花粉末": 611,
+        "砂叶": 2628,
+        "砂叶种子": 1987,
+        "荞花": 1212,
+        "荞花种子": 918,
+        "致密蓝铁粉末": 1717,
+        "钢块": 1467,
+        "钢制零件": 456,
+        "致密源石粉末": 609,
+        "钢质瓶": 506,
+        "细磨荞花粉末": 506
+      },
+      "cache_write_operations": 0,
+      "within_proved_feedstock_budget": true,
+      "offline_count": 23,
+      "operation_log": [
+        {
+          "t": 0,
+          "action": "switch",
+          "enabled_machines": 0
+        },
+        {
+          "t": 1257,
+          "action": "switch",
+          "enabled_machines": 223
+        },
+        {
+          "t": 1310,
+          "action": "switch",
+          "enabled_machines": 0
+        },
+        {
+          "t": 1310,
+          "action": "switch",
+          "enabled_machines": 0
+        },
+        {
+          "t": 2567,
+          "action": "switch",
+          "enabled_machines": 223
+        },
+        {
+          "t": 2591,
+          "action": "switch",
+          "enabled_machines": 0
+        },
+        {
+          "t": 2591,
+          "action": "switch",
+          "enabled_machines": 0
+        },
+        {
+          "t": 3867,
+          "action": "switch",
+          "enabled_machines": 230
+        }
+      ],
+      "prepared_state_pass": true,
+      "fast_service_after_start_pass": true
+    },
+    {
+      "seed": 98401,
+      "maxlen": 4,
+      "rounds": 3,
+      "ready_step": 5172,
+      "cross_checked_steps": 7572,
+      "manual_items": {
+        "蓝铁矿": 1638,
+        "蓝铁块": 3524,
+        "源矿": 638,
+        "蓝铁粉末": 2663,
+        "砂叶粉末": 2352,
+        "源石粉末": 1396,
+        "荞花粉末": 625,
+        "砂叶": 2681,
+        "砂叶种子": 2041,
+        "荞花": 1240,
+        "荞花种子": 941,
+        "致密蓝铁粉末": 1756,
+        "钢块": 1500,
+        "钢制零件": 465,
+        "致密源石粉末": 619,
+        "钢质瓶": 518,
+        "细磨荞花粉末": 518
+      },
+      "cache_write_operations": 0,
+      "within_proved_feedstock_budget": true,
+      "offline_count": 39,
+      "operation_log": [
+        {
+          "t": 0,
+          "action": "switch",
+          "enabled_machines": 0
+        },
+        {
+          "t": 1723,
+          "action": "switch",
+          "enabled_machines": 223
+        },
+        {
+          "t": 1739,
+          "action": "switch",
+          "enabled_machines": 0
+        },
+        {
+          "t": 1739,
+          "action": "switch",
+          "enabled_machines": 0
+        },
+        {
+          "t": 3353,
+          "action": "switch",
+          "enabled_machines": 223
+        },
+        {
+          "t": 3378,
+          "action": "switch",
+          "enabled_machines": 0
+        },
+        {
+          "t": 3378,
+          "action": "switch",
+          "enabled_machines": 0
+        },
+        {
+          "t": 5172,
+          "action": "switch",
+          "enabled_machines": 230
+        }
+      ],
+      "prepared_state_pass": true,
+      "fast_service_after_start_pass": true
+    },
+    {
+      "seed": 98402,
+      "maxlen": 12,
+      "rounds": 3,
+      "ready_step": 9064,
+      "cross_checked_steps": 11464,
+      "manual_items": {
+        "蓝铁矿": 1692,
+        "蓝铁块": 3628,
+        "源矿": 729,
+        "蓝铁粉末": 2786,
+        "砂叶粉末": 2487,
+        "源石粉末": 1491,
+        "荞花粉末": 677,
+        "砂叶": 2773,
+        "砂叶种子": 2149,
+        "荞花": 1283,
+        "荞花种子": 990,
+        "致密蓝铁粉末": 1821,
+        "钢块": 1549,
+        "钢制零件": 498,
+        "致密源石粉末": 651,
+        "钢质瓶": 539,
+        "细磨荞花粉末": 543
+      },
+      "cache_write_operations": 0,
+      "within_proved_feedstock_budget": true,
+      "offline_count": 43,
+      "operation_log": [
+        {
+          "t": 0,
+          "action": "switch",
+          "enabled_machines": 0
+        },
+        {
+          "t": 3011,
+          "action": "switch",
+          "enabled_machines": 223
+        },
+        {
+          "t": 3029,
+          "action": "switch",
+          "enabled_machines": 0
+        },
+        {
+          "t": 3029,
+          "action": "switch",
+          "enabled_machines": 0
+        },
+        {
+          "t": 6016,
+          "action": "switch",
+          "enabled_machines": 223
+        },
+        {
+          "t": 6063,
+          "action": "switch",
+          "enabled_machines": 0
+        },
+        {
+          "t": 6063,
+          "action": "switch",
+          "enabled_machines": 0
+        },
+        {
+          "t": 9064,
+          "action": "switch",
+          "enabled_machines": 230
+        }
+      ],
+      "prepared_state_pass": true,
+      "fast_service_after_start_pass": true
+    }
+  ],
+  "all_pass": true,
+  "independent_step_engines_equal": true,
+  "total_steps": 25303
+}

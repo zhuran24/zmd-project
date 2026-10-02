@@ -1,0 +1,124 @@
+{
+ "cases": 30000,
+ "breaks": 354,
+ "witness": {
+  "cfg": {
+   "k": 2,
+   "n": 0,
+   "L": [
+    7,
+    31,
+    8,
+    4
+   ],
+   "Bmode": "adv"
+  },
+  "prep_state": {
+   "belts": {
+    "CA": [
+     -11,
+     null,
+     -2,
+     0,
+     null,
+     0,
+     -9
+    ],
+    "AC": [
+     -6,
+     -5,
+     -7,
+     -7,
+     -4,
+     -10,
+     null,
+     -5,
+     -4,
+     null,
+     null,
+     null,
+     -10,
+     -10,
+     -4,
+     null,
+     -4,
+     null,
+     null,
+     null,
+     -3,
+     -7,
+     0,
+     -11,
+     -5,
+     null,
+     -1,
+     null,
+     -4,
+     -10,
+     -5
+    ],
+    "CB": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     -5
+    ]
+   },
+   "m": {
+    "C": {
+     "inp": 0,
+     "out": 0,
+     "cache": "done"
+    },
+    "A": {
+     "inp": 2,
+     "out": 2,
+     "cache": 2
+    }
+   },
+   "connC": [
+    0,
+    1
+   ],
+   "lastC": [
+    null,
+    null
+   ],
+   "connK": [],
+   "lastK": []
+  },
+  "s": "第 1 步末",
+  "phi_s": "65/2",
+  "offline_before_step": 3,
+  "old_bound": "32",
+  "clear_sends": [
+   [
+    2,
+    1
+   ],
+   [
+    11,
+    1
+   ]
+  ],
+  "clear_phi_end": "63/2",
+  "clear_dual_ok": true,
+  "keep_sends": [
+   [
+    2,
+    1
+   ],
+   [
+    11,
+    0
+   ]
+  ],
+  "keep_phi_min": "32",
+  "keep_dual_ok": true,
+  "cum_bound_m1": "63/2"
+ }
+}

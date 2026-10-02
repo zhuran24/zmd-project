@@ -1,0 +1,23 @@
+{"round": 0, "stop": 2144, "gap": 399, "low": {}, "g16_iron_max": 50, "g16_batches": 49}
+{"round": 100, "stop": 2591, "gap": 533, "low": {"铁研磨16": 47}, "g16_iron_max": 50, "g16_batches": 66}
+{"round": 200, "stop": 2419, "gap": 553, "low": {"铁研磨16": 45}, "g16_iron_max": 50, "g16_batches": 69}
+{"round": 300, "stop": 2456, "gap": 343, "low": {"铁研磨16": 41}, "g16_iron_max": 50, "g16_batches": 43}
+{"round": 400, "stop": 2173, "gap": 528, "low": {"铁研磨16": 39}, "g16_iron_max": 50, "g16_batches": 66}
+{"round": 500, "stop": 2438, "gap": 450, "low": {"铁研磨16": 36}, "g16_iron_max": 50, "g16_batches": 56}
+{"round": 600, "stop": 2179, "gap": 353, "low": {"铁研磨16": 33}, "g16_iron_max": 50, "g16_batches": 44}
+{"round": 700, "stop": 2269, "gap": 425, "low": {"铁研磨16": 30}, "g16_iron_max": 50, "g16_batches": 53}
+{"round": 800, "stop": 2314, "gap": 367, "low": {"铁研磨16": 27}, "g16_iron_max": 50, "g16_batches": 46}
+{"round": 900, "stop": 2169, "gap": 508, "low": {"铁研磨16": 23}, "g16_iron_max": 50, "g16_batches": 63}
+{"round": 1000, "stop": 2560, "gap": 430, "low": {"铁研磨16": 20}, "g16_iron_max": 50, "g16_batches": 53}
+{"round": 1100, "stop": 2539, "gap": 312, "low": {"铁研磨16": 17}, "g16_iron_max": 50, "g16_batches": 39}
+{"round": 1200, "stop": 2324, "gap": 425, "low": {"铁研磨16": 14}, "g16_iron_max": 50, "g16_batches": 53}
+{"round": 1300, "stop": 2391, "gap": 377, "low": {"铁研磨16": 11}, "g16_iron_max": 50, "g16_batches": 48}
+{"round": 1400, "stop": 2022, "gap": 376, "low": {"铁研磨16": 8}, "g16_iron_max": 50, "g16_batches": 47}
+{"round": 1500, "stop": 2157, "gap": 531, "low": {"铁研磨16": 6}, "g16_iron_max": 50, "g16_batches": 66}
+{"round": 1600, "stop": 2181, "gap": 360, "low": {"铁研磨16": 3}, "g16_iron_max": 50, "g16_batches": 45}
+{"round": 1700, "stop": 2074, "gap": 557, "low": {"铁研磨14": 48, "铁研磨16": 1}, "g16_iron_max": 50, "g16_batches": 70}
+{"round": 1709, "stop": 2633, "gap": 326, "low": {"铁研磨16": 0}, "g16_iron_max": 50, "g16_batches": 41}
+{"round": 1800, "stop": 2240, "gap": 333, "low": {"铁研磨16": 0}, "g16_iron_max": 50, "g16_batches": 42}
+{"round": 1900, "stop": 2509, "gap": 381, "low": {"铁研磨16": 0}, "g16_iron_max": 50, "g16_batches": 47}
+{"round": 2000, "stop": 2398, "gap": 485, "low": {"铁研磨16": 0}, "g16_iron_max": 50, "g16_batches": 61}
+{"zero_round": 1709, "rounds": 2010, "final_cycle": {"start": 5575544, "end": 5576024, "period": 480, "delivery": {"高容谷地电池": 36, "精选荞愈胶囊": 33}, "ore_min": 60, "ore_max": 60, "ok": true}}

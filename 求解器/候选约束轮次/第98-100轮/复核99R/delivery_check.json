@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "report_sha256": "e0b9d1c014bb184df1c3cc1796b0f222fcca23a57d31997b8cd690cd34fc0542",
+  "verdict_sha256": "f640be52849bac4a5da6f0be0919211c6dcdf9afdb086fe6bae6899b4bcc8ea2",
+  "comparison_sha256": "b4043b36a01d7cb48568250f1d382aec74e440895b64984e989437b1eb329fd5",
+  "local_links_checked": 15,
+  "input_and_evidence_hashes_current": true,
+  "report_verdict_matches_json": true
+}

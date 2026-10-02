@@ -1,0 +1,51 @@
+{
+  "release": {
+    "patterns": 321,
+    "schedule_states": 4234,
+    "latest_offset": 7,
+    "by_k": {
+      "1": 1,
+      "2": 8,
+      "3": 29,
+      "4": 64,
+      "5": 99,
+      "6": 120
+    }
+  },
+  "modular": {
+    "binary_words_and_channel_counts": 12276,
+    "max_word_length": 10
+  },
+  "window": {
+    "three_port_phases": 512,
+    "single_port_40_steps": 5,
+    "three_port_40_steps": 15
+  },
+  "cumulative": {
+    "cumulative_cases": 99324,
+    "H_preparation": 150,
+    "H_normal": 176,
+    "max_phi_offset": 177,
+    "powder_minima": [
+      48,
+      47
+    ],
+    "startup_threshold": 97,
+    "old_startup_stock_upper": 15031,
+    "remaining": 64969,
+    "startup_supply_need": 10350
+  },
+  "finite_stock": {
+    "max_starts_in_400_steps": 50,
+    "C21_min_output": [
+      47,
+      44,
+      41
+    ],
+    "K_max_wait_steps": [
+      0,
+      1,
+      2
+    ]
+  }
+}

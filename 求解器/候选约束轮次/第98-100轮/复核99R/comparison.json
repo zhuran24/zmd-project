@@ -1,0 +1,530 @@
+{
+  "cases": {
+    "square": {
+      "batch_size_histogram": {
+        "1,1,2": 16,
+        "2,2": 8
+      },
+      "directed_channels": [
+        [
+          "A",
+          "B"
+        ],
+        [
+          "B",
+          "D"
+        ],
+        [
+          "C",
+          "A"
+        ],
+        [
+          "D",
+          "C"
+        ]
+      ],
+      "edges": [
+        "AB",
+        "AC",
+        "BD",
+        "CD"
+      ],
+      "missing": [
+        [
+          "AB",
+          "CD",
+          "AC",
+          "BD"
+        ],
+        [
+          "AB",
+          "CD",
+          "BD",
+          "AC"
+        ],
+        [
+          "AC",
+          "BD",
+          "AB",
+          "CD"
+        ],
+        [
+          "AC",
+          "BD",
+          "CD",
+          "AB"
+        ],
+        [
+          "BD",
+          "AC",
+          "AB",
+          "CD"
+        ],
+        [
+          "BD",
+          "AC",
+          "CD",
+          "AB"
+        ],
+        [
+          "CD",
+          "AB",
+          "AC",
+          "BD"
+        ],
+        [
+          "CD",
+          "AB",
+          "BD",
+          "AC"
+        ]
+      ],
+      "missing_count": 8,
+      "order_refinement_pairs": 64,
+      "refinement_count": 16,
+      "unit_order_count": 24,
+      "unit_orders_with_ties": 24,
+      "vertices": [
+        "A",
+        "B",
+        "C",
+        "D"
+      ]
+    },
+    "star": {
+      "batch_size_histogram": {
+        "1,1,1": 12,
+        "2,1": 6,
+        "3": 6
+      },
+      "directed_channels": [
+        [
+          "A",
+          "B"
+        ],
+        [
+          "A",
+          "C"
+        ],
+        [
+          "A",
+          "D"
+        ]
+      ],
+      "edges": [
+        "AB",
+        "AC",
+        "AD"
+      ],
+      "missing": [],
+      "missing_count": 0,
+      "order_refinement_pairs": 60,
+      "refinement_count": 6,
+      "unit_order_count": 24,
+      "unit_orders_with_ties": 12,
+      "vertices": [
+        "A",
+        "B",
+        "C",
+        "D"
+      ]
+    },
+    "triangle": {
+      "batch_size_histogram": {
+        "1,2": 6
+      },
+      "directed_channels": [
+        [
+          "A",
+          "B"
+        ],
+        [
+          "A",
+          "C"
+        ],
+        [
+          "B",
+          "C"
+        ]
+      ],
+      "edges": [
+        "AB",
+        "AC",
+        "BC"
+      ],
+      "missing": [],
+      "missing_count": 0,
+      "order_refinement_pairs": 12,
+      "refinement_count": 6,
+      "unit_order_count": 6,
+      "unit_orders_with_ties": 6,
+      "vertices": [
+        "A",
+        "B",
+        "C"
+      ]
+    }
+  },
+  "fed_star_channels": [
+    [
+      "A",
+      "B"
+    ],
+    [
+      "A",
+      "C"
+    ],
+    [
+      "A",
+      "D"
+    ],
+    [
+      "F1",
+      "F2"
+    ],
+    [
+      "F2",
+      "F3"
+    ],
+    [
+      "F3",
+      "F4"
+    ],
+    [
+      "F4",
+      "F5"
+    ],
+    [
+      "F5",
+      "F6"
+    ],
+    [
+      "F6",
+      "F7"
+    ],
+    [
+      "F7",
+      "F8"
+    ],
+    [
+      "F8",
+      "F9"
+    ],
+    [
+      "F9",
+      "A"
+    ],
+    [
+      "W",
+      "F1"
+    ]
+  ],
+  "first_send_histogram": {
+    "AB": 2,
+    "AC": 2,
+    "AD": 2
+  },
+  "graph_family_count": 75,
+  "layers": {
+    "acyclic_choice_count": 15,
+    "cyclic_choice_count": 1,
+    "raw_choice_count": 16,
+    "vectors": [
+      [
+        2,
+        2,
+        2,
+        2,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        2,
+        2,
+        2,
+        3,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        2,
+        2,
+        3,
+        2,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        2,
+        2,
+        3,
+        4,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        2,
+        3,
+        2,
+        2,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        2,
+        3,
+        3,
+        2,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        2,
+        4,
+        2,
+        3,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        2,
+        5,
+        3,
+        4,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        3,
+        2,
+        2,
+        2,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        3,
+        2,
+        2,
+        3,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        3,
+        2,
+        4,
+        2,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        3,
+        2,
+        4,
+        5,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        4,
+        3,
+        2,
+        2,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        4,
+        3,
+        5,
+        2,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        5,
+        4,
+        2,
+        3,
+        1,
+        1,
+        1,
+        1
+      ]
+    ],
+    "vertices": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "PA",
+      "PB",
+      "PC",
+      "PD"
+    ]
+  },
+  "manifest": [
+    {
+      "bytes": 7538,
+      "lines": 115,
+      "path": "求解器/候选约束轮次/第98-100轮/前提快照/《明日方舟：终末地》游戏规则.txt",
+      "sha256": "c8d3a17b8830baba18aea36c4c66f02f8873895188f8821176cc218aa6135f93"
+    },
+    {
+      "bytes": 1350,
+      "lines": 15,
+      "path": "求解器/候选约束轮次/第98-100轮/前提快照/求解任务.txt",
+      "sha256": "7bec7a1edf2f46644a6e6a75d588f5ff05202cc32d6b42430677ea39b878309b"
+    },
+    {
+      "bytes": 48292,
+      "lines": 168,
+      "path": "求解器/候选约束轮次/第98-100轮/前提快照/求解约束.txt",
+      "sha256": "dfea46c61f29be5a86659bce3642009d2558ace073d6dbd79f5dd3c6475226db"
+    },
+    {
+      "bytes": 17489,
+      "lines": 24,
+      "path": "求解器/候选约束轮次/第98-100轮/前提快照/求解充分条件.txt",
+      "sha256": "aa633c7c927227ba4635f97bfb8948e9c3ba84ff1e489dd053b72db82e9ac435"
+    },
+    {
+      "bytes": 4161,
+      "lines": 29,
+      "path": "求解器/候选约束轮次/第98-100轮/前提快照/不补的设定.txt",
+      "sha256": "7a0c7d6e495f4f6b5ed6caba24584261925479e06fcad9428760f8a687f2abba"
+    },
+    {
+      "bytes": 1579,
+      "lines": 13,
+      "path": "求解器/候选约束轮次/第98-100轮/临时规则.md",
+      "sha256": "39c0aed1f711f8ed01625da8b51b30569fc52ecfa5f8140629fa398d32dab396"
+    },
+    {
+      "bytes": 66081,
+      "lines": 522,
+      "path": "求解器/候选约束轮次/第95-97轮/推导95M.md",
+      "sha256": "4f8d960b0d6db885ef16601f0d926f987d1eacc518496e0e03cc6b9f1929f01d"
+    },
+    {
+      "bytes": 24850,
+      "lines": 247,
+      "path": "求解器/候选约束轮次/第95-97轮/复核97M.md",
+      "sha256": "5a58ae4b9139a1e4d05e196046b4578d96c622280c573d825d21efae23dfb9fc"
+    },
+    {
+      "bytes": 9109,
+      "lines": 208,
+      "path": "求解器/候选约束轮次/第98-100轮/复核99R/check_a.py",
+      "sha256": "60f628b01ca47d7c14b3e6725bb15cba9a0db5f0b73336b32ad3f53728b32087"
+    },
+    {
+      "bytes": 7770,
+      "lines": 168,
+      "path": "求解器/候选约束轮次/第98-100轮/复核99R/check_b.py",
+      "sha256": "6bdff4fc699217d3ae7cc33835e654249d706500fa67ae30f6905dd8c43503e2"
+    },
+    {
+      "bytes": 4098,
+      "lines": 69,
+      "path": "求解器/候选约束轮次/第98-100轮/复核99R/compare.py",
+      "sha256": "bee7c7b4d657323e96b916a3e7d851f20df3196f80275c5a59be4875403a8f86"
+    },
+    {
+      "bytes": 165372,
+      "lines": 10721,
+      "path": "求解器/候选约束轮次/第98-100轮/复核99R/result_a.json",
+      "sha256": "a72847cb6df751aa1939de1d958091a9b016e0170d63d5b0b87b2f229dafe898"
+    },
+    {
+      "bytes": 131760,
+      "lines": 8842,
+      "path": "求解器/候选约束轮次/第98-100轮/复核99R/result_b.json",
+      "sha256": "18f924b8ad0ea0f603aa6873b9e391504448f287b2c970144bdfe400adb86521"
+    }
+  ],
+  "pure_ring_sum_gap": 4,
+  "scope": "接通时刻和并列顺序的有限复算；非全厂交付率、非完整状态图、非游戏实现证书。",
+  "star_same_actual_time": {
+    "batches": [
+      [
+        "AB",
+        "AC",
+        "AD"
+      ]
+    ],
+    "refinements": [
+      [
+        "AB",
+        "AC",
+        "AD"
+      ],
+      [
+        "AB",
+        "AD",
+        "AC"
+      ],
+      [
+        "AC",
+        "AB",
+        "AD"
+      ],
+      [
+        "AC",
+        "AD",
+        "AB"
+      ],
+      [
+        "AD",
+        "AB",
+        "AC"
+      ],
+      [
+        "AD",
+        "AC",
+        "AB"
+      ]
+    ],
+    "times": {
+      "AB": 4,
+      "AC": 4,
+      "AD": 4
+    },
+    "unit_order": [
+      "B",
+      "C",
+      "D",
+      "A"
+    ]
+  },
+  "status": "PASS"
+}

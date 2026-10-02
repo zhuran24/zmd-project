@@ -1,0 +1,50 @@
+{
+ "prep150_none": {
+  "cases": 1500,
+  "hbranch_cases": 1500,
+  "violations": 0,
+  "min_phi_minus_LH": "39/2"
+ },
+ "prep150_keep": {
+  "cases": 1500,
+  "hbranch_cases": 1500,
+  "violations": 0,
+  "min_phi_minus_LH": "0"
+ },
+ "prep150_clear": {
+  "cases": 1500,
+  "hbranch_cases": 1500,
+  "violations": 0,
+  "min_phi_minus_LH": "0"
+ },
+ "prep150_mixed": {
+  "cases": 1500,
+  "hbranch_cases": 1500,
+  "violations": 0,
+  "min_phi_minus_LH": "0"
+ },
+ "normal176_none": {
+  "cases": 1500,
+  "hbranch_cases": 17,
+  "violations": 0,
+  "min_phi_minus_LH": "0"
+ },
+ "normal176_keep": {
+  "cases": 1500,
+  "hbranch_cases": 14,
+  "violations": 0,
+  "min_phi_minus_LH": "0"
+ },
+ "normal176_clear": {
+  "cases": 1500,
+  "hbranch_cases": 9,
+  "violations": 0,
+  "min_phi_minus_LH": "0"
+ },
+ "normal176_mixed": {
+  "cases": 1500,
+  "hbranch_cases": 14,
+  "violations": 0,
+  "min_phi_minus_LH": "0"
+ }
+}

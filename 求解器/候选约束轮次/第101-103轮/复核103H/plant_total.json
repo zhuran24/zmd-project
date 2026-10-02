@@ -1,0 +1,85 @@
+{
+ "mixed_prep": {
+  "cases": 2944,
+  "viol_seg": 0,
+  "viol_keep_cross": 0,
+  "viol_cum": 0,
+  "viol_half": 0,
+  "old_bound_break_cases": 27,
+  "enc_mismatch": 0,
+  "dual": 698
+ },
+ "mixed_normal": {
+  "cases": 3083,
+  "viol_seg": 0,
+  "viol_keep_cross": 0,
+  "viol_cum": 0,
+  "viol_half": 0,
+  "old_bound_break_cases": 31,
+  "enc_mismatch": 0,
+  "dual": 773
+ },
+ "keep_normal": {
+  "cases": 2998,
+  "viol_seg": 0,
+  "viol_keep_cross": 0,
+  "viol_cum": 0,
+  "viol_half": 0,
+  "old_bound_break_cases": 0,
+  "enc_mismatch": 0,
+  "dual": 726
+ },
+ "keep_prep": {
+  "cases": 3019,
+  "viol_seg": 0,
+  "viol_keep_cross": 0,
+  "viol_cum": 0,
+  "viol_half": 0,
+  "old_bound_break_cases": 0,
+  "enc_mismatch": 0,
+  "dual": 765
+ },
+ "clear_prep": {
+  "cases": 2968,
+  "viol_seg": 0,
+  "viol_keep_cross": 0,
+  "viol_cum": 0,
+  "viol_half": 0,
+  "old_bound_break_cases": 29,
+  "enc_mismatch": 0,
+  "dual": 751
+ },
+ "clear_normal": {
+  "cases": 2988,
+  "viol_seg": 0,
+  "viol_keep_cross": 0,
+  "viol_cum": 0,
+  "viol_half": 0,
+  "old_bound_break_cases": 27,
+  "enc_mismatch": 0,
+  "dual": 787
+ },
+ "H07_full": {
+  "cases": 9000,
+  "viol_cache": 0,
+  "viol_inv": 0,
+  "viol_head": 0,
+  "viol_wait": 0,
+  "max_wait_by_n": {
+   "3": 2,
+   "2": 1,
+   "1": 0,
+   "0": 0
+  },
+  "min_Kout_by_k": {
+   "3": 47,
+   "2": 48
+  },
+  "min_inp": 49
+ },
+ "H07_live": {
+  "cases": 4500,
+  "not_live": 0,
+  "minphi": 1.5
+ }
+}

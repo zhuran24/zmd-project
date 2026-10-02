@@ -1,0 +1,82 @@
+[
+ {
+  "start": 2464,
+  "end": 2944,
+  "period": 480,
+  "delivery": {
+   "精选荞愈胶囊": 33,
+   "高容谷地电池": 36
+  },
+  "ore_min": 60,
+  "ore_max": 60,
+  "ok": true,
+  "compared_steps": 2799,
+  "seed": 1000,
+  "kind": "loop",
+  "family": "L34"
+ },
+ {
+  "start": 2560,
+  "end": 3040,
+  "period": 480,
+  "delivery": {
+   "精选荞愈胶囊": 33,
+   "高容谷地电池": 36
+  },
+  "ore_min": 60,
+  "ore_max": 60,
+  "ok": true,
+  "compared_steps": 2724,
+  "seed": 1001,
+  "kind": "loop",
+  "family": "L34"
+ },
+ {
+  "start": 2688,
+  "end": 3168,
+  "period": 480,
+  "delivery": {
+   "高容谷地电池": 36,
+   "精选荞愈胶囊": 33
+  },
+  "ore_min": 60,
+  "ore_max": 60,
+  "ok": true,
+  "compared_steps": 3069,
+  "seed": 1002,
+  "kind": "loop",
+  "family": "L34"
+ },
+ {
+  "start": 2448,
+  "end": 2928,
+  "period": 480,
+  "delivery": {
+   "高容谷地电池": 36,
+   "精选荞愈胶囊": 33
+  },
+  "ore_min": 60,
+  "ore_max": 60,
+  "ok": true,
+  "compared_steps": 2913,
+  "seed": 1003,
+  "kind": "loop",
+  "family": "L34"
+ },
+ {
+  "start": 2424,
+  "end": 2904,
+  "period": 480,
+  "delivery": {
+   "高容谷地电池": 36,
+   "精选荞愈胶囊": 33
+  },
+  "ore_min": 60,
+  "ore_max": 60,
+  "ok": true,
+  "compared_steps": 2789,
+  "seed": 1004,
+  "kind": "loop",
+  "family": "L34"
+ }
+]

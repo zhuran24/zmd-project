@@ -1,0 +1,478 @@
+{
+ "groups": {
+  "disturb_chase.json": {
+   "cases": 2,
+   "full_rate_cycles": 2,
+   "deficit_cycles": 0,
+   "no_cycle": 0,
+   "periods": [
+    480
+   ],
+   "latest_cycle_start": 3,
+   "note": "disturb files: cycle start counted from the end of the last round"
+  },
+  "disturb_drain_11.json": {
+   "cases": 1,
+   "full_rate_cycles": 1,
+   "deficit_cycles": 0,
+   "no_cycle": 0,
+   "periods": [
+    480
+   ],
+   "latest_cycle_start": 7,
+   "note": "disturb files: cycle start counted from the end of the last round"
+  },
+  "disturb_drain_21.json": {
+   "cases": 1,
+   "full_rate_cycles": 1,
+   "deficit_cycles": 0,
+   "no_cycle": 0,
+   "periods": [
+    480
+   ],
+   "latest_cycle_start": 65,
+   "note": "disturb files: cycle start counted from the end of the last round"
+  },
+  "disturb_random.json": {
+   "cases": 2,
+   "full_rate_cycles": 2,
+   "deficit_cycles": 0,
+   "no_cycle": 0,
+   "periods": [
+    480
+   ],
+   "latest_cycle_start": 6,
+   "note": "disturb files: cycle start counted from the end of the last round"
+  },
+  "disturb_trace_11.json": {
+   "cases": 1,
+   "full_rate_cycles": 1,
+   "deficit_cycles": 0,
+   "no_cycle": 0,
+   "periods": [
+    480
+   ],
+   "latest_cycle_start": 5,
+   "note": "disturb files: cycle start counted from the end of the last round"
+  },
+  "drain_zero_11.json": {
+   "cases": 1,
+   "full_rate_cycles": 1,
+   "deficit_cycles": 0,
+   "no_cycle": 0,
+   "periods": [
+    480
+   ],
+   "latest_cycle_start": 8,
+   "note": "disturb files: cycle start counted from the end of the last round"
+  },
+  "forced_L16.json": {
+   "cases": 120,
+   "full_rate_cycles": 120,
+   "deficit_cycles": 0,
+   "no_cycle": 0,
+   "periods": [
+    480
+   ],
+   "latest_cycle_start": 16880,
+   "note": "disturb files: cycle start counted from the end of the last round"
+  },
+  "forced_L222.json": {
+   "cases": 120,
+   "full_rate_cycles": 120,
+   "deficit_cycles": 0,
+   "no_cycle": 0,
+   "periods": [
+    480
+   ],
+   "latest_cycle_start": 18232,
+   "note": "disturb files: cycle start counted from the end of the last round"
+  },
+  "forced_L34.json": {
+   "cases": 120,
+   "full_rate_cycles": 120,
+   "deficit_cycles": 0,
+   "no_cycle": 0,
+   "periods": [
+    480
+   ],
+   "latest_cycle_start": 16880,
+   "note": "disturb files: cycle start counted from the end of the last round"
+  },
+  "forced_L3T.json": {
+   "cases": 120,
+   "full_rate_cycles": 120,
+   "deficit_cycles": 0,
+   "no_cycle": 0,
+   "periods": [
+    480
+   ],
+   "latest_cycle_start": 16848,
+   "note": "disturb files: cycle start counted from the end of the last round"
+  },
+  "forced_RND_4000.json": {
+   "cases": 70,
+   "full_rate_cycles": 70,
+   "deficit_cycles": 0,
+   "no_cycle": 0,
+   "periods": [
+    480
+   ],
+   "latest_cycle_start": 17416,
+   "note": "disturb files: cycle start counted from the end of the last round"
+  },
+  "forced_RND_4070.json": {
+   "cases": 70,
+   "full_rate_cycles": 70,
+   "deficit_cycles": 0,
+   "no_cycle": 0,
+   "periods": [
+    480
+   ],
+   "latest_cycle_start": 18256,
+   "note": "disturb files: cycle start counted from the end of the last round"
+  },
+  "forced_RND_4140.json": {
+   "cases": 70,
+   "full_rate_cycles": 70,
+   "deficit_cycles": 0,
+   "no_cycle": 0,
+   "periods": [
+    480
+   ],
+   "latest_cycle_start": 16896,
+   "note": "disturb files: cycle start counted from the end of the last round"
+  },
+  "keep_disturb_chase.json": {
+   "cases": 2,
+   "full_rate_cycles": 2,
+   "deficit_cycles": 0,
+   "no_cycle": 0,
+   "periods": [
+    480
+   ],
+   "latest_cycle_start": 6,
+   "note": "disturb files: cycle start counted from the end of the last round"
+  },
+  "keep_disturb_random.json": {
+   "cases": 2,
+   "full_rate_cycles": 2,
+   "deficit_cycles": 0,
+   "no_cycle": 0,
+   "periods": [
+    480
+   ],
+   "latest_cycle_start": 5,
+   "note": "disturb files: cycle start counted from the end of the last round"
+  },
+  "keep_s_chase_core.json": {
+   "cases": 40,
+   "full_rate_cycles": 40,
+   "deficit_cycles": 0,
+   "no_cycle": 0,
+   "periods": [
+    480
+   ],
+   "latest_cycle_start": 4864,
+   "note": "disturb files: cycle start counted from the end of the last round"
+  },
+  "keep_s_random_core.json": {
+   "cases": 40,
+   "full_rate_cycles": 40,
+   "deficit_cycles": 0,
+   "no_cycle": 0,
+   "periods": [
+    480
+   ],
+   "latest_cycle_start": 4736,
+   "note": "disturb files: cycle start counted from the end of the last round"
+  },
+  "loopL_L16.json": {
+   "cases": 200,
+   "full_rate_cycles": 200,
+   "deficit_cycles": 0,
+   "no_cycle": 0,
+   "periods": [
+    480
+   ],
+   "latest_cycle_start": 2864,
+   "note": "disturb files: cycle start counted from the end of the last round"
+  },
+  "loopL_L222.json": {
+   "cases": 200,
+   "full_rate_cycles": 200,
+   "deficit_cycles": 0,
+   "no_cycle": 0,
+   "periods": [
+    480
+   ],
+   "latest_cycle_start": 2952,
+   "note": "disturb files: cycle start counted from the end of the last round"
+  },
+  "loopL_L34.json": {
+   "cases": 200,
+   "full_rate_cycles": 200,
+   "deficit_cycles": 0,
+   "no_cycle": 0,
+   "periods": [
+    480
+   ],
+   "latest_cycle_start": 2944,
+   "note": "disturb files: cycle start counted from the end of the last round"
+  },
+  "loopL_L3T.json": {
+   "cases": 200,
+   "full_rate_cycles": 200,
+   "deficit_cycles": 0,
+   "no_cycle": 0,
+   "periods": [
+    480
+   ],
+   "latest_cycle_start": 3000,
+   "note": "disturb files: cycle start counted from the end of the last round"
+  },
+  "loop_L16.json": {
+   "cases": 600,
+   "full_rate_cycles": 600,
+   "deficit_cycles": 0,
+   "no_cycle": 0,
+   "periods": [
+    160,
+    480
+   ],
+   "latest_cycle_start": 2760,
+   "note": "disturb files: cycle start counted from the end of the last round"
+  },
+  "loop_L222.json": {
+   "cases": 600,
+   "full_rate_cycles": 600,
+   "deficit_cycles": 0,
+   "no_cycle": 0,
+   "periods": [
+    480
+   ],
+   "latest_cycle_start": 2880,
+   "note": "disturb files: cycle start counted from the end of the last round"
+  },
+  "loop_L34.json": {
+   "cases": 600,
+   "full_rate_cycles": 600,
+   "deficit_cycles": 0,
+   "no_cycle": 0,
+   "periods": [
+    160,
+    480
+   ],
+   "latest_cycle_start": 2744,
+   "note": "disturb files: cycle start counted from the end of the last round"
+  },
+  "loop_L3T.json": {
+   "cases": 600,
+   "full_rate_cycles": 600,
+   "deficit_cycles": 0,
+   "no_cycle": 0,
+   "periods": [
+    480
+   ],
+   "latest_cycle_start": 2952,
+   "note": "disturb files: cycle start counted from the end of the last round"
+  },
+  "phase_chase2_13.json": {
+   "cases": 1536,
+   "full_rate_cycles": 1536,
+   "deficit_cycles": 0,
+   "no_cycle": 0,
+   "periods": [
+    480
+   ],
+   "latest_cycle_start": 4152,
+   "note": "disturb files: cycle start counted from the end of the last round"
+  },
+  "phase_chase_11.json": {
+   "cases": 1536,
+   "full_rate_cycles": 1536,
+   "deficit_cycles": 0,
+   "no_cycle": 0,
+   "periods": [
+    480
+   ],
+   "latest_cycle_start": 4288,
+   "note": "disturb files: cycle start counted from the end of the last round"
+  },
+  "phase_chase_12.json": {
+   "cases": 1536,
+   "full_rate_cycles": 1536,
+   "deficit_cycles": 0,
+   "no_cycle": 0,
+   "periods": [
+    480
+   ],
+   "latest_cycle_start": 4248,
+   "note": "disturb files: cycle start counted from the end of the last round"
+  },
+  "phase_pack_14.json": {
+   "cases": 1536,
+   "full_rate_cycles": 1536,
+   "deficit_cycles": 0,
+   "no_cycle": 0,
+   "periods": [
+    480
+   ],
+   "latest_cycle_start": 4072,
+   "note": "disturb files: cycle start counted from the end of the last round"
+  },
+  "s_chase2_core.json": {
+   "cases": 40,
+   "full_rate_cycles": 40,
+   "deficit_cycles": 0,
+   "no_cycle": 0,
+   "periods": [
+    480
+   ],
+   "latest_cycle_start": 4696,
+   "note": "disturb files: cycle start counted from the end of the last round"
+  },
+  "s_chase2_starve_core_nd.json": {
+   "cases": 60,
+   "full_rate_cycles": 60,
+   "deficit_cycles": 0,
+   "no_cycle": 0,
+   "periods": [
+    480
+   ],
+   "latest_cycle_start": 2776,
+   "note": "disturb files: cycle start counted from the end of the last round"
+  },
+  "s_chase_random.json": {
+   "cases": 40,
+   "full_rate_cycles": 40,
+   "deficit_cycles": 0,
+   "no_cycle": 0,
+   "periods": [
+    480
+   ],
+   "latest_cycle_start": 4704,
+   "note": "disturb files: cycle start counted from the end of the last round"
+  },
+  "s_chase_starve_nd.json": {
+   "cases": 60,
+   "full_rate_cycles": 60,
+   "deficit_cycles": 0,
+   "no_cycle": 0,
+   "periods": [
+    480
+   ],
+   "latest_cycle_start": 2680,
+   "note": "disturb files: cycle start counted from the end of the last round"
+  },
+  "s_random_core.json": {
+   "cases": 40,
+   "full_rate_cycles": 40,
+   "deficit_cycles": 0,
+   "no_cycle": 0,
+   "periods": [
+    480
+   ],
+   "latest_cycle_start": 4688,
+   "note": "disturb files: cycle start counted from the end of the last round"
+  },
+  "s_random_starve_core_nd.json": {
+   "cases": 60,
+   "full_rate_cycles": 60,
+   "deficit_cycles": 0,
+   "no_cycle": 0,
+   "periods": [
+    480
+   ],
+   "latest_cycle_start": 2680,
+   "note": "disturb files: cycle start counted from the end of the last round"
+  },
+  "s_same_core.json": {
+   "cases": 40,
+   "full_rate_cycles": 40,
+   "deficit_cycles": 0,
+   "no_cycle": 0,
+   "periods": [
+    480
+   ],
+   "latest_cycle_start": 4272,
+   "note": "disturb files: cycle start counted from the end of the last round"
+  }
+ },
+ "total": {
+  "cases": 10466,
+  "full_rate_cycles": 10466,
+  "deficit_cycles": 0,
+  "no_cycle": 0
+ },
+ "crosscheck": {
+  "cross_forced_L16.json": {
+   "cases": 3,
+   "agree_full_rate": 3,
+   "compared_steps": 1880
+  },
+  "cross_forced_L222.json": {
+   "cases": 3,
+   "agree_full_rate": 3,
+   "compared_steps": 7096
+  },
+  "cross_forced_L34.json": {
+   "cases": 3,
+   "agree_full_rate": 3,
+   "compared_steps": 1768
+  },
+  "cross_forced_L3T.json": {
+   "cases": 3,
+   "agree_full_rate": 3,
+   "compared_steps": 4480
+  },
+  "cross_loop2_L16.json": {
+   "cases": 25,
+   "agree_full_rate": 25,
+   "compared_steps": 69556
+  },
+  "cross_loop2_L222.json": {
+   "cases": 25,
+   "agree_full_rate": 25,
+   "compared_steps": 71010
+  },
+  "cross_loop2_L34.json": {
+   "cases": 25,
+   "agree_full_rate": 25,
+   "compared_steps": 69412
+  },
+  "cross_loop2_L3T.json": {
+   "cases": 25,
+   "agree_full_rate": 25,
+   "compared_steps": 71539
+  },
+  "cross_loop_L16.json": {
+   "cases": 5,
+   "agree_full_rate": 5,
+   "compared_steps": 14310
+  },
+  "cross_loop_L222.json": {
+   "cases": 5,
+   "agree_full_rate": 5,
+   "compared_steps": 14085
+  },
+  "cross_loop_L34.json": {
+   "cases": 5,
+   "agree_full_rate": 5,
+   "compared_steps": 14294
+  },
+  "cross_loop_L3T.json": {
+   "cases": 5,
+   "agree_full_rate": 5,
+   "compared_steps": 14157
+  },
+  "drain_cross.json": {
+   "rounds": 110,
+   "compared_steps": 427716,
+   "low_gf16_engineB_first_last": [
+    49,
+    45
+   ]
+  }
+ }
+}

@@ -1,0 +1,12 @@
+{"start": 12160, "end": 12640, "period": 480, "delivery": {"精选荞愈胶囊": 33, "高容谷地电池": 36}, "ore_min": 60, "ore_max": 60, "ok": true, "compared_steps": 640, "seed": 2000, "kind": "forced", "family": "L16"}
+{"start": 12056, "end": 12536, "period": 480, "delivery": {"精选荞愈胶囊": 33, "高容谷地电池": 36}, "ore_min": 60, "ore_max": 60, "ok": true, "compared_steps": 536, "seed": 2001, "kind": "forced", "family": "L16"}
+{"start": 12224, "end": 12704, "period": 480, "delivery": {"高容谷地电池": 36, "精选荞愈胶囊": 33}, "ore_min": 60, "ore_max": 60, "ok": true, "compared_steps": 704, "seed": 2002, "kind": "forced", "family": "L16"}
+{"start": 12136, "end": 12616, "period": 480, "delivery": {"精选荞愈胶囊": 33, "高容谷地电池": 36}, "ore_min": 60, "ore_max": 60, "ok": true, "compared_steps": 616, "seed": 2000, "kind": "forced", "family": "L34"}
+{"start": 12032, "end": 12512, "period": 480, "delivery": {"精选荞愈胶囊": 33, "高容谷地电池": 36}, "ore_min": 60, "ore_max": 60, "ok": true, "compared_steps": 512, "seed": 2001, "kind": "forced", "family": "L34"}
+{"start": 12160, "end": 12640, "period": 480, "delivery": {"高容谷地电池": 36, "精选荞愈胶囊": 33}, "ore_min": 60, "ore_max": 60, "ok": true, "compared_steps": 640, "seed": 2002, "kind": "forced", "family": "L34"}
+{"start": 12760, "end": 13240, "period": 480, "delivery": {"精选荞愈胶囊": 33, "高容谷地电池": 36}, "ore_min": 60, "ore_max": 60, "ok": true, "compared_steps": 1240, "seed": 2000, "kind": "forced", "family": "L222"}
+{"start": 12096, "end": 12576, "period": 480, "delivery": {"精选荞愈胶囊": 33, "高容谷地电池": 36}, "ore_min": 60, "ore_max": 60, "ok": true, "compared_steps": 576, "seed": 2001, "kind": "forced", "family": "L222"}
+{"start": 16800, "end": 17280, "period": 480, "delivery": {"高容谷地电池": 36, "精选荞愈胶囊": 33}, "ore_min": 60, "ore_max": 60, "ok": true, "compared_steps": 5280, "seed": 2002, "kind": "forced", "family": "L222"}
+{"start": 13496, "end": 13976, "period": 480, "delivery": {"精选荞愈胶囊": 33, "高容谷地电池": 36}, "ore_min": 60, "ore_max": 60, "ok": true, "compared_steps": 1976, "seed": 2000, "kind": "forced", "family": "L3T"}
+{"start": 12032, "end": 12512, "period": 480, "delivery": {"精选荞愈胶囊": 33, "高容谷地电池": 36}, "ore_min": 60, "ore_max": 60, "ok": true, "compared_steps": 512, "seed": 2001, "kind": "forced", "family": "L3T"}
+{"start": 13512, "end": 13992, "period": 480, "delivery": {"高容谷地电池": 36, "精选荞愈胶囊": 33}, "ore_min": 60, "ore_max": 60, "ok": true, "compared_steps": 1992, "seed": 2002, "kind": "forced", "family": "L3T"}

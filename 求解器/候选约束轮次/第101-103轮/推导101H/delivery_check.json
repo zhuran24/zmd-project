@@ -1,0 +1,26 @@
+{
+  "status": "pass",
+  "report_path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第101-103轮/推导101H.md",
+  "full_candidates": 8,
+  "audited_versions": 50,
+  "premise_lines": 115,
+  "premise_counts": {
+    "求解约束.txt": 77,
+    "求解充分条件.txt": 11
+  },
+  "unchanged_input_hashes": 14,
+  "report_links_checked": 49,
+  "scripts_syntax_checked": 9,
+  "report_sha256": "62e875371010c8964ec726068815aa7fb7e763c13c1ce42e6bcc504d70d33639",
+  "maximum_artifact_bytes": 11570572,
+  "required_name_kind_and_status_consistent": true,
+  "reply_schema_valid": true,
+  "main_paired_step_states": {
+    "polling": 624000,
+    "plant": 408000,
+    "bridge": 244800,
+    "cooldown": 163840,
+    "combined": 1600
+  },
+  "reader_review": "reader_review.md"
+}

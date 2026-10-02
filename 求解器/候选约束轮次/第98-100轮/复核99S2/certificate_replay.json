@@ -1,0 +1,59 @@
+[
+  {
+    "certificate": "推导98S2/cycle_98040.json",
+    "sha256": "6cffb17f5fd88f43eda40ae99717aa3dc8ac4981084d9da76d7d2322fb790e7f",
+    "period": 480,
+    "dual_decode_initial_equal": true,
+    "dual_transition_steps": 960,
+    "material_state_closure_first_period": true,
+    "direct_tuple_closure_second_period": true,
+    "receiving_pointer_changed_after_new_rebuild": true,
+    "delivery_per_period": {
+      "精选荞愈胶囊": 33,
+      "高容谷地电池": 36
+    },
+    "ore_each": 60,
+    "route_refusals_match": true,
+    "total_refusals_per_period": 6000,
+    "clock_decode": "Transport ages in the JSON are next-step ages; subtract one at our between-step boundary. B countdown is one less than A countdown.",
+    "limitation": "Stored final channel connection orders are absent; replay uses a new legal physical-unit rebuild order, keeping the stored service history."
+  },
+  {
+    "certificate": "推导98S2/cycle_98041.json",
+    "sha256": "a3385638345147973cf02967ddb3ae72aa12a85baf030ec0baffaae29cf7108a",
+    "period": 480,
+    "dual_decode_initial_equal": true,
+    "dual_transition_steps": 960,
+    "material_state_closure_first_period": true,
+    "direct_tuple_closure_second_period": true,
+    "receiving_pointer_changed_after_new_rebuild": false,
+    "delivery_per_period": {
+      "精选荞愈胶囊": 33,
+      "高容谷地电池": 36
+    },
+    "ore_each": 60,
+    "route_refusals_match": true,
+    "total_refusals_per_period": 6000,
+    "clock_decode": "Transport ages in the JSON are next-step ages; subtract one at our between-step boundary. B countdown is one less than A countdown.",
+    "limitation": "Stored final channel connection orders are absent; replay uses a new legal physical-unit rebuild order, keeping the stored service history."
+  },
+  {
+    "certificate": "推导98S2/cycle_98042.json",
+    "sha256": "eaa6984685a3525b85708c5476bbd1b2506ea7fd5c779e488431e2ea60038180",
+    "period": 480,
+    "dual_decode_initial_equal": true,
+    "dual_transition_steps": 960,
+    "material_state_closure_first_period": true,
+    "direct_tuple_closure_second_period": true,
+    "receiving_pointer_changed_after_new_rebuild": true,
+    "delivery_per_period": {
+      "高容谷地电池": 36,
+      "精选荞愈胶囊": 33
+    },
+    "ore_each": 60,
+    "route_refusals_match": true,
+    "total_refusals_per_period": 6000,
+    "clock_decode": "Transport ages in the JSON are next-step ages; subtract one at our between-step boundary. B countdown is one less than A countdown.",
+    "limitation": "Stored final channel connection orders are absent; replay uses a new legal physical-unit rebuild order, keeping the stored service history."
+  }
+]

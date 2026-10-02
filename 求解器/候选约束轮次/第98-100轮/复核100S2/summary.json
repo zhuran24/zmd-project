@@ -1,0 +1,225 @@
+{
+ "run_a": {
+  "cases": 60,
+  "all_pass": true,
+  "periods": [
+   480
+  ],
+  "max_cycle_start": 32706,
+  "histories": [
+   "clear",
+   "keep",
+   "mix"
+  ],
+  "maxlens": [
+   1,
+   2,
+   4,
+   8,
+   16
+  ],
+  "events": 810
+ },
+ "run_long": {
+  "cases": 17,
+  "all_pass": true,
+  "belt_cells": [
+   4764,
+   5414
+  ]
+ },
+ "run_freq": {
+  "cases": 12,
+  "all_exact": true,
+  "offlines": 17578
+ },
+ "age_reset_sensitivity": {
+  "cases": 15,
+  "rates_ok": 15,
+  "cases_with_invariant_violation": 13,
+  "min_stock_seen": [
+   "47",
+   "48"
+  ]
+ },
+ "xcheck_sim2": {
+  "cases": 30,
+  "steps": 120000,
+  "mismatches": 0
+ },
+ "startup": {
+  "cases": 40,
+  "all_ok": true,
+  "loops": [
+   1,
+   2
+  ]
+ },
+ "lemma_bfs": {
+  "cases": 125,
+  "all_ok": true,
+  "controls_all_fail": false,
+  "max_states": 8005687,
+  "total_states": 21224875,
+  "secs": 218.8
+ },
+ "lemma_controls": [
+  [
+   "六口期限提前一步：应报期限违例",
+   false
+  ],
+  [
+   "三口2,2,0期限提前一步：此例不紧，可不报",
+   true
+  ],
+  [
+   "六口、相邻轮只隔5步（违反前提）：应报补货前消费",
+   false
+  ],
+  [
+   "六口、相邻轮至少隔8步：不应报补货前消费",
+   true
+  ]
+ ],
+ "lemma_event": {
+  "cases": 3000,
+  "rounds": 68332,
+  "same": 3000,
+  "bound_ok": 3000,
+  "bad": 0
+ },
+ "arith": {
+  "agree_inventory": true,
+  "agree_total": true,
+  "spare_match_report": true,
+  "rate_upper_battery": "3/5",
+  "rate_upper_capsule": "11/20",
+  "bodies": 3567,
+  "A_pure_belt": 737,
+  "direction_budget_best": {
+   "A": "6743/8",
+   "P": 11,
+   "J": 1
+  },
+  "best_rect_under_direction_budget": 841
+ },
+ "offsets": {
+  "period": 480,
+  "P1_gaps": [
+   8
+  ],
+  "offsets_vs_P1": {
+   "P1": [
+    0
+   ],
+   "P2": [
+    0
+   ],
+   "O1": [
+    0
+   ],
+   "O2": [
+    0
+   ],
+   "O3": [
+    0
+   ],
+   "R1": [
+    1
+   ],
+   "R2": [
+    1
+   ],
+   "B1": [
+    2
+   ],
+   "B2": [
+    2
+   ],
+   "铁碎1": [
+    3
+   ],
+   "铁碎2": [
+    3
+   ],
+   "炼1": [
+    4
+   ],
+   "源碎1": [
+    1
+   ],
+   "源碎2": [
+    1
+   ],
+   "源碎6": [
+    1
+   ]
+  },
+  "core_send_offsets_vs_P1": [
+   2,
+   3,
+   4,
+   5,
+   6,
+   7
+  ],
+  "K_send_offsets_vs_P1": {
+   "砂1K": [
+    1,
+    3,
+    4
+   ]
+  },
+  "F1_group_note": "H1、Q1 应与本组 F1 拉取同列；以 H1 为基准另算",
+  "offsets_vs_H1": {
+   "H2": [
+    0
+   ],
+   "Q1": [
+    0
+   ],
+   "Q2": [
+    0
+   ],
+   "R7": [
+    1
+   ],
+   "B7": [
+    2
+   ],
+   "B10": [
+    2
+   ]
+  },
+  "offsets_vs_H5": {
+   "Q5": [
+    0
+   ],
+   "R15": [
+    1
+   ],
+   "B15": [
+    2
+   ]
+  },
+  "offsets_vs_H6": {
+   "Q6": [
+    0
+   ],
+   "R17": [
+    0,
+    8
+   ],
+   "B17": [
+    1,
+    9
+   ]
+  },
+  "H6_start_gaps": [
+   16
+  ],
+  "H5_start_gaps": [
+   8
+  ]
+ }
+}

@@ -1,0 +1,18 @@
+{
+  "topologies": 510,
+  "cases": 1020,
+  "paired_step_states": 244800,
+  "prevented_returns": 139077,
+  "two_axis_judgments": 2,
+  "K_head_cross_axis_triggered": [
+    "U"
+  ],
+  "expanded_witness": {
+    "paired_step_states": 48,
+    "physical_output_road_lengths": [
+      10,
+      10
+    ],
+    "terminal_roads_have_no_sink": true
+  }
+}

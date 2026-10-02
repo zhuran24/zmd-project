@@ -1,0 +1,88 @@
+{
+ "single_clear_search": {
+  "cases": 20000,
+  "breaks": 232
+ },
+ "witness": {
+  "cfg": {
+   "k": 2,
+   "n": 0,
+   "L": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "Bmode": "adv"
+  },
+  "start": {
+   "belts": {
+    "CA": [
+     null
+    ],
+    "AC": [
+     null
+    ],
+    "CB": [
+     null
+    ]
+   },
+   "m": {
+    "C": {
+     "inp": 47,
+     "out": 1,
+     "cache": null
+    },
+    "A": {
+     "inp": 6,
+     "out": 1,
+     "cache": 8
+    }
+   },
+   "connC": [
+    1,
+    0
+   ],
+   "lastC": [
+    -22.0,
+    -22.1
+   ],
+   "connK": [],
+   "lastK": []
+  },
+  "offline_before_step": 6,
+  "L": 2,
+  "phi_s": "111/2",
+  "old_bound": "55",
+  "clear_sends": [
+   [
+    1,
+    1
+   ],
+   [
+    9,
+    1
+   ]
+  ],
+  "clear_phi_end": "109/2",
+  "clear_dual_ok": true,
+  "keep_sends": [
+   [
+    1,
+    1
+   ],
+   [
+    9,
+    0
+   ]
+  ],
+  "keep_phi_min": "55",
+  "keep_dual_ok": true,
+  "cum_bound_m1": "109/2"
+ },
+ "greedy_clear_stress": {
+  "cases": 1500,
+  "viol_cum": 0,
+  "viol_half": 0
+ }
+}

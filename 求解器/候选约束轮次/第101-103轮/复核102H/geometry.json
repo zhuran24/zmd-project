@@ -1,0 +1,1944 @@
+{
+  "rectangles": {
+    "C": [
+      10,
+      10,
+      5,
+      5
+    ],
+    "A": [
+      20,
+      10,
+      5,
+      5
+    ],
+    "B": [
+      20,
+      2,
+      5,
+      5
+    ],
+    "K": [
+      30,
+      3,
+      3,
+      3
+    ],
+    "core": [
+      0,
+      30,
+      9,
+      9
+    ],
+    "pole0": [
+      15,
+      15,
+      2,
+      2
+    ],
+    "pole1": [
+      25,
+      7,
+      2,
+      2
+    ]
+  },
+  "paths": {
+    "CA": [
+      [
+        15,
+        12
+      ],
+      [
+        16,
+        12
+      ],
+      [
+        17,
+        12
+      ],
+      [
+        18,
+        12
+      ],
+      [
+        19,
+        12
+      ]
+    ],
+    "AC": [
+      [
+        25,
+        12
+      ],
+      [
+        26,
+        12
+      ],
+      [
+        27,
+        12
+      ],
+      [
+        27,
+        13
+      ],
+      [
+        27,
+        14
+      ],
+      [
+        27,
+        15
+      ],
+      [
+        27,
+        16
+      ],
+      [
+        27,
+        17
+      ],
+      [
+        27,
+        18
+      ],
+      [
+        26,
+        18
+      ],
+      [
+        25,
+        18
+      ],
+      [
+        24,
+        18
+      ],
+      [
+        23,
+        18
+      ],
+      [
+        22,
+        18
+      ],
+      [
+        21,
+        18
+      ],
+      [
+        20,
+        18
+      ],
+      [
+        19,
+        18
+      ],
+      [
+        18,
+        18
+      ],
+      [
+        17,
+        18
+      ],
+      [
+        16,
+        18
+      ],
+      [
+        15,
+        18
+      ],
+      [
+        14,
+        18
+      ],
+      [
+        13,
+        18
+      ],
+      [
+        12,
+        18
+      ],
+      [
+        11,
+        18
+      ],
+      [
+        10,
+        18
+      ],
+      [
+        9,
+        18
+      ],
+      [
+        8,
+        18
+      ],
+      [
+        8,
+        17
+      ],
+      [
+        8,
+        16
+      ],
+      [
+        8,
+        15
+      ],
+      [
+        8,
+        14
+      ],
+      [
+        8,
+        13
+      ],
+      [
+        8,
+        12
+      ],
+      [
+        9,
+        12
+      ]
+    ],
+    "CB": [
+      [
+        15,
+        10
+      ],
+      [
+        16,
+        10
+      ],
+      [
+        17,
+        10
+      ],
+      [
+        17,
+        9
+      ],
+      [
+        17,
+        8
+      ],
+      [
+        17,
+        7
+      ],
+      [
+        17,
+        6
+      ],
+      [
+        17,
+        5
+      ],
+      [
+        17,
+        4
+      ],
+      [
+        18,
+        4
+      ],
+      [
+        19,
+        4
+      ]
+    ],
+    "BK": [
+      [
+        25,
+        4
+      ],
+      [
+        26,
+        4
+      ],
+      [
+        27,
+        4
+      ],
+      [
+        28,
+        4
+      ],
+      [
+        29,
+        4
+      ]
+    ],
+    "K0": [
+      [
+        33,
+        3
+      ],
+      [
+        34,
+        3
+      ],
+      [
+        35,
+        3
+      ],
+      [
+        36,
+        3
+      ],
+      [
+        37,
+        3
+      ],
+      [
+        38,
+        3
+      ],
+      [
+        39,
+        3
+      ],
+      [
+        40,
+        3
+      ],
+      [
+        41,
+        3
+      ],
+      [
+        42,
+        3
+      ]
+    ],
+    "K1": [
+      [
+        33,
+        5
+      ],
+      [
+        34,
+        5
+      ],
+      [
+        35,
+        5
+      ],
+      [
+        36,
+        5
+      ],
+      [
+        37,
+        5
+      ],
+      [
+        38,
+        5
+      ],
+      [
+        39,
+        5
+      ],
+      [
+        40,
+        5
+      ],
+      [
+        41,
+        5
+      ],
+      [
+        42,
+        5
+      ]
+    ]
+  },
+  "belts": {
+    "CA.0": {
+      "position": [
+        15,
+        12
+      ],
+      "input_neighbor": [
+        14,
+        12
+      ],
+      "output_neighbor": [
+        16,
+        12
+      ]
+    },
+    "CA.1": {
+      "position": [
+        16,
+        12
+      ],
+      "input_neighbor": [
+        15,
+        12
+      ],
+      "output_neighbor": [
+        17,
+        12
+      ]
+    },
+    "CA.2": {
+      "position": [
+        17,
+        12
+      ],
+      "input_neighbor": [
+        16,
+        12
+      ],
+      "output_neighbor": [
+        18,
+        12
+      ]
+    },
+    "CA.3": {
+      "position": [
+        18,
+        12
+      ],
+      "input_neighbor": [
+        17,
+        12
+      ],
+      "output_neighbor": [
+        19,
+        12
+      ]
+    },
+    "CA.4": {
+      "position": [
+        19,
+        12
+      ],
+      "input_neighbor": [
+        18,
+        12
+      ],
+      "output_neighbor": [
+        20,
+        12
+      ]
+    },
+    "AC.0": {
+      "position": [
+        25,
+        12
+      ],
+      "input_neighbor": [
+        24,
+        12
+      ],
+      "output_neighbor": [
+        26,
+        12
+      ]
+    },
+    "AC.1": {
+      "position": [
+        26,
+        12
+      ],
+      "input_neighbor": [
+        25,
+        12
+      ],
+      "output_neighbor": [
+        27,
+        12
+      ]
+    },
+    "AC.2": {
+      "position": [
+        27,
+        12
+      ],
+      "input_neighbor": [
+        26,
+        12
+      ],
+      "output_neighbor": [
+        27,
+        13
+      ]
+    },
+    "AC.3": {
+      "position": [
+        27,
+        13
+      ],
+      "input_neighbor": [
+        27,
+        12
+      ],
+      "output_neighbor": [
+        27,
+        14
+      ]
+    },
+    "AC.4": {
+      "position": [
+        27,
+        14
+      ],
+      "input_neighbor": [
+        27,
+        13
+      ],
+      "output_neighbor": [
+        27,
+        15
+      ]
+    },
+    "AC.5": {
+      "position": [
+        27,
+        15
+      ],
+      "input_neighbor": [
+        27,
+        14
+      ],
+      "output_neighbor": [
+        27,
+        16
+      ]
+    },
+    "AC.6": {
+      "position": [
+        27,
+        16
+      ],
+      "input_neighbor": [
+        27,
+        15
+      ],
+      "output_neighbor": [
+        27,
+        17
+      ]
+    },
+    "AC.7": {
+      "position": [
+        27,
+        17
+      ],
+      "input_neighbor": [
+        27,
+        16
+      ],
+      "output_neighbor": [
+        27,
+        18
+      ]
+    },
+    "AC.8": {
+      "position": [
+        27,
+        18
+      ],
+      "input_neighbor": [
+        27,
+        17
+      ],
+      "output_neighbor": [
+        26,
+        18
+      ]
+    },
+    "AC.9": {
+      "position": [
+        26,
+        18
+      ],
+      "input_neighbor": [
+        27,
+        18
+      ],
+      "output_neighbor": [
+        25,
+        18
+      ]
+    },
+    "AC.10": {
+      "position": [
+        25,
+        18
+      ],
+      "input_neighbor": [
+        26,
+        18
+      ],
+      "output_neighbor": [
+        24,
+        18
+      ]
+    },
+    "AC.11": {
+      "position": [
+        24,
+        18
+      ],
+      "input_neighbor": [
+        25,
+        18
+      ],
+      "output_neighbor": [
+        23,
+        18
+      ]
+    },
+    "AC.12": {
+      "position": [
+        23,
+        18
+      ],
+      "input_neighbor": [
+        24,
+        18
+      ],
+      "output_neighbor": [
+        22,
+        18
+      ]
+    },
+    "AC.13": {
+      "position": [
+        22,
+        18
+      ],
+      "input_neighbor": [
+        23,
+        18
+      ],
+      "output_neighbor": [
+        21,
+        18
+      ]
+    },
+    "AC.14": {
+      "position": [
+        21,
+        18
+      ],
+      "input_neighbor": [
+        22,
+        18
+      ],
+      "output_neighbor": [
+        20,
+        18
+      ]
+    },
+    "AC.15": {
+      "position": [
+        20,
+        18
+      ],
+      "input_neighbor": [
+        21,
+        18
+      ],
+      "output_neighbor": [
+        19,
+        18
+      ]
+    },
+    "AC.16": {
+      "position": [
+        19,
+        18
+      ],
+      "input_neighbor": [
+        20,
+        18
+      ],
+      "output_neighbor": [
+        18,
+        18
+      ]
+    },
+    "AC.17": {
+      "position": [
+        18,
+        18
+      ],
+      "input_neighbor": [
+        19,
+        18
+      ],
+      "output_neighbor": [
+        17,
+        18
+      ]
+    },
+    "AC.18": {
+      "position": [
+        17,
+        18
+      ],
+      "input_neighbor": [
+        18,
+        18
+      ],
+      "output_neighbor": [
+        16,
+        18
+      ]
+    },
+    "AC.19": {
+      "position": [
+        16,
+        18
+      ],
+      "input_neighbor": [
+        17,
+        18
+      ],
+      "output_neighbor": [
+        15,
+        18
+      ]
+    },
+    "AC.20": {
+      "position": [
+        15,
+        18
+      ],
+      "input_neighbor": [
+        16,
+        18
+      ],
+      "output_neighbor": [
+        14,
+        18
+      ]
+    },
+    "AC.21": {
+      "position": [
+        14,
+        18
+      ],
+      "input_neighbor": [
+        15,
+        18
+      ],
+      "output_neighbor": [
+        13,
+        18
+      ]
+    },
+    "AC.22": {
+      "position": [
+        13,
+        18
+      ],
+      "input_neighbor": [
+        14,
+        18
+      ],
+      "output_neighbor": [
+        12,
+        18
+      ]
+    },
+    "AC.23": {
+      "position": [
+        12,
+        18
+      ],
+      "input_neighbor": [
+        13,
+        18
+      ],
+      "output_neighbor": [
+        11,
+        18
+      ]
+    },
+    "AC.24": {
+      "position": [
+        11,
+        18
+      ],
+      "input_neighbor": [
+        12,
+        18
+      ],
+      "output_neighbor": [
+        10,
+        18
+      ]
+    },
+    "AC.25": {
+      "position": [
+        10,
+        18
+      ],
+      "input_neighbor": [
+        11,
+        18
+      ],
+      "output_neighbor": [
+        9,
+        18
+      ]
+    },
+    "AC.26": {
+      "position": [
+        9,
+        18
+      ],
+      "input_neighbor": [
+        10,
+        18
+      ],
+      "output_neighbor": [
+        8,
+        18
+      ]
+    },
+    "AC.27": {
+      "position": [
+        8,
+        18
+      ],
+      "input_neighbor": [
+        9,
+        18
+      ],
+      "output_neighbor": [
+        8,
+        17
+      ]
+    },
+    "AC.28": {
+      "position": [
+        8,
+        17
+      ],
+      "input_neighbor": [
+        8,
+        18
+      ],
+      "output_neighbor": [
+        8,
+        16
+      ]
+    },
+    "AC.29": {
+      "position": [
+        8,
+        16
+      ],
+      "input_neighbor": [
+        8,
+        17
+      ],
+      "output_neighbor": [
+        8,
+        15
+      ]
+    },
+    "AC.30": {
+      "position": [
+        8,
+        15
+      ],
+      "input_neighbor": [
+        8,
+        16
+      ],
+      "output_neighbor": [
+        8,
+        14
+      ]
+    },
+    "AC.31": {
+      "position": [
+        8,
+        14
+      ],
+      "input_neighbor": [
+        8,
+        15
+      ],
+      "output_neighbor": [
+        8,
+        13
+      ]
+    },
+    "AC.32": {
+      "position": [
+        8,
+        13
+      ],
+      "input_neighbor": [
+        8,
+        14
+      ],
+      "output_neighbor": [
+        8,
+        12
+      ]
+    },
+    "AC.33": {
+      "position": [
+        8,
+        12
+      ],
+      "input_neighbor": [
+        8,
+        13
+      ],
+      "output_neighbor": [
+        9,
+        12
+      ]
+    },
+    "AC.34": {
+      "position": [
+        9,
+        12
+      ],
+      "input_neighbor": [
+        8,
+        12
+      ],
+      "output_neighbor": [
+        10,
+        12
+      ]
+    },
+    "CB.0": {
+      "position": [
+        15,
+        10
+      ],
+      "input_neighbor": [
+        14,
+        10
+      ],
+      "output_neighbor": [
+        16,
+        10
+      ]
+    },
+    "CB.1": {
+      "position": [
+        16,
+        10
+      ],
+      "input_neighbor": [
+        15,
+        10
+      ],
+      "output_neighbor": [
+        17,
+        10
+      ]
+    },
+    "CB.2": {
+      "position": [
+        17,
+        10
+      ],
+      "input_neighbor": [
+        16,
+        10
+      ],
+      "output_neighbor": [
+        17,
+        9
+      ]
+    },
+    "CB.3": {
+      "position": [
+        17,
+        9
+      ],
+      "input_neighbor": [
+        17,
+        10
+      ],
+      "output_neighbor": [
+        17,
+        8
+      ]
+    },
+    "CB.4": {
+      "position": [
+        17,
+        8
+      ],
+      "input_neighbor": [
+        17,
+        9
+      ],
+      "output_neighbor": [
+        17,
+        7
+      ]
+    },
+    "CB.5": {
+      "position": [
+        17,
+        7
+      ],
+      "input_neighbor": [
+        17,
+        8
+      ],
+      "output_neighbor": [
+        17,
+        6
+      ]
+    },
+    "CB.6": {
+      "position": [
+        17,
+        6
+      ],
+      "input_neighbor": [
+        17,
+        7
+      ],
+      "output_neighbor": [
+        17,
+        5
+      ]
+    },
+    "CB.7": {
+      "position": [
+        17,
+        5
+      ],
+      "input_neighbor": [
+        17,
+        6
+      ],
+      "output_neighbor": [
+        17,
+        4
+      ]
+    },
+    "CB.8": {
+      "position": [
+        17,
+        4
+      ],
+      "input_neighbor": [
+        17,
+        5
+      ],
+      "output_neighbor": [
+        18,
+        4
+      ]
+    },
+    "CB.9": {
+      "position": [
+        18,
+        4
+      ],
+      "input_neighbor": [
+        17,
+        4
+      ],
+      "output_neighbor": [
+        19,
+        4
+      ]
+    },
+    "CB.10": {
+      "position": [
+        19,
+        4
+      ],
+      "input_neighbor": [
+        18,
+        4
+      ],
+      "output_neighbor": [
+        20,
+        4
+      ]
+    },
+    "BK.0": {
+      "position": [
+        25,
+        4
+      ],
+      "input_neighbor": [
+        24,
+        4
+      ],
+      "output_neighbor": [
+        26,
+        4
+      ]
+    },
+    "BK.1": {
+      "position": [
+        26,
+        4
+      ],
+      "input_neighbor": [
+        25,
+        4
+      ],
+      "output_neighbor": [
+        27,
+        4
+      ]
+    },
+    "BK.2": {
+      "position": [
+        27,
+        4
+      ],
+      "input_neighbor": [
+        26,
+        4
+      ],
+      "output_neighbor": [
+        28,
+        4
+      ]
+    },
+    "BK.3": {
+      "position": [
+        28,
+        4
+      ],
+      "input_neighbor": [
+        27,
+        4
+      ],
+      "output_neighbor": [
+        29,
+        4
+      ]
+    },
+    "BK.4": {
+      "position": [
+        29,
+        4
+      ],
+      "input_neighbor": [
+        28,
+        4
+      ],
+      "output_neighbor": [
+        30,
+        4
+      ]
+    },
+    "K0.0": {
+      "position": [
+        33,
+        3
+      ],
+      "input_neighbor": [
+        32,
+        3
+      ],
+      "output_neighbor": [
+        34,
+        3
+      ]
+    },
+    "K0.1": {
+      "position": [
+        34,
+        3
+      ],
+      "input_neighbor": [
+        33,
+        3
+      ],
+      "output_neighbor": [
+        35,
+        3
+      ]
+    },
+    "K0.2": {
+      "position": [
+        35,
+        3
+      ],
+      "input_neighbor": [
+        34,
+        3
+      ],
+      "output_neighbor": [
+        36,
+        3
+      ]
+    },
+    "K0.3": {
+      "position": [
+        36,
+        3
+      ],
+      "input_neighbor": [
+        35,
+        3
+      ],
+      "output_neighbor": [
+        37,
+        3
+      ]
+    },
+    "K0.4": {
+      "position": [
+        37,
+        3
+      ],
+      "input_neighbor": [
+        36,
+        3
+      ],
+      "output_neighbor": [
+        38,
+        3
+      ]
+    },
+    "K0.5": {
+      "position": [
+        38,
+        3
+      ],
+      "input_neighbor": [
+        37,
+        3
+      ],
+      "output_neighbor": [
+        39,
+        3
+      ]
+    },
+    "K0.6": {
+      "position": [
+        39,
+        3
+      ],
+      "input_neighbor": [
+        38,
+        3
+      ],
+      "output_neighbor": [
+        40,
+        3
+      ]
+    },
+    "K0.7": {
+      "position": [
+        40,
+        3
+      ],
+      "input_neighbor": [
+        39,
+        3
+      ],
+      "output_neighbor": [
+        41,
+        3
+      ]
+    },
+    "K0.8": {
+      "position": [
+        41,
+        3
+      ],
+      "input_neighbor": [
+        40,
+        3
+      ],
+      "output_neighbor": [
+        42,
+        3
+      ]
+    },
+    "K0.9": {
+      "position": [
+        42,
+        3
+      ],
+      "input_neighbor": [
+        41,
+        3
+      ],
+      "output_neighbor": [
+        43,
+        3
+      ]
+    },
+    "K1.0": {
+      "position": [
+        33,
+        5
+      ],
+      "input_neighbor": [
+        32,
+        5
+      ],
+      "output_neighbor": [
+        34,
+        5
+      ]
+    },
+    "K1.1": {
+      "position": [
+        34,
+        5
+      ],
+      "input_neighbor": [
+        33,
+        5
+      ],
+      "output_neighbor": [
+        35,
+        5
+      ]
+    },
+    "K1.2": {
+      "position": [
+        35,
+        5
+      ],
+      "input_neighbor": [
+        34,
+        5
+      ],
+      "output_neighbor": [
+        36,
+        5
+      ]
+    },
+    "K1.3": {
+      "position": [
+        36,
+        5
+      ],
+      "input_neighbor": [
+        35,
+        5
+      ],
+      "output_neighbor": [
+        37,
+        5
+      ]
+    },
+    "K1.4": {
+      "position": [
+        37,
+        5
+      ],
+      "input_neighbor": [
+        36,
+        5
+      ],
+      "output_neighbor": [
+        38,
+        5
+      ]
+    },
+    "K1.5": {
+      "position": [
+        38,
+        5
+      ],
+      "input_neighbor": [
+        37,
+        5
+      ],
+      "output_neighbor": [
+        39,
+        5
+      ]
+    },
+    "K1.6": {
+      "position": [
+        39,
+        5
+      ],
+      "input_neighbor": [
+        38,
+        5
+      ],
+      "output_neighbor": [
+        40,
+        5
+      ]
+    },
+    "K1.7": {
+      "position": [
+        40,
+        5
+      ],
+      "input_neighbor": [
+        39,
+        5
+      ],
+      "output_neighbor": [
+        41,
+        5
+      ]
+    },
+    "K1.8": {
+      "position": [
+        41,
+        5
+      ],
+      "input_neighbor": [
+        40,
+        5
+      ],
+      "output_neighbor": [
+        42,
+        5
+      ]
+    },
+    "K1.9": {
+      "position": [
+        42,
+        5
+      ],
+      "input_neighbor": [
+        41,
+        5
+      ],
+      "output_neighbor": [
+        43,
+        5
+      ]
+    }
+  },
+  "coverage": {
+    "C": [
+      "pole0"
+    ],
+    "A": [
+      "pole0",
+      "pole1"
+    ],
+    "B": [
+      "pole1"
+    ],
+    "K": [
+      "pole1"
+    ]
+  },
+  "length": {
+    "CA": 5,
+    "AC": 35,
+    "CB": 11,
+    "BK": 5,
+    "K0": 10,
+    "K1": 10
+  },
+  "occupied_cells": 249,
+  "exact_channels": [
+    [
+      "A",
+      "AC.0"
+    ],
+    [
+      "AC.0",
+      "AC.1"
+    ],
+    [
+      "AC.1",
+      "AC.2"
+    ],
+    [
+      "AC.10",
+      "AC.11"
+    ],
+    [
+      "AC.11",
+      "AC.12"
+    ],
+    [
+      "AC.12",
+      "AC.13"
+    ],
+    [
+      "AC.13",
+      "AC.14"
+    ],
+    [
+      "AC.14",
+      "AC.15"
+    ],
+    [
+      "AC.15",
+      "AC.16"
+    ],
+    [
+      "AC.16",
+      "AC.17"
+    ],
+    [
+      "AC.17",
+      "AC.18"
+    ],
+    [
+      "AC.18",
+      "AC.19"
+    ],
+    [
+      "AC.19",
+      "AC.20"
+    ],
+    [
+      "AC.2",
+      "AC.3"
+    ],
+    [
+      "AC.20",
+      "AC.21"
+    ],
+    [
+      "AC.21",
+      "AC.22"
+    ],
+    [
+      "AC.22",
+      "AC.23"
+    ],
+    [
+      "AC.23",
+      "AC.24"
+    ],
+    [
+      "AC.24",
+      "AC.25"
+    ],
+    [
+      "AC.25",
+      "AC.26"
+    ],
+    [
+      "AC.26",
+      "AC.27"
+    ],
+    [
+      "AC.27",
+      "AC.28"
+    ],
+    [
+      "AC.28",
+      "AC.29"
+    ],
+    [
+      "AC.29",
+      "AC.30"
+    ],
+    [
+      "AC.3",
+      "AC.4"
+    ],
+    [
+      "AC.30",
+      "AC.31"
+    ],
+    [
+      "AC.31",
+      "AC.32"
+    ],
+    [
+      "AC.32",
+      "AC.33"
+    ],
+    [
+      "AC.33",
+      "AC.34"
+    ],
+    [
+      "AC.34",
+      "C"
+    ],
+    [
+      "AC.4",
+      "AC.5"
+    ],
+    [
+      "AC.5",
+      "AC.6"
+    ],
+    [
+      "AC.6",
+      "AC.7"
+    ],
+    [
+      "AC.7",
+      "AC.8"
+    ],
+    [
+      "AC.8",
+      "AC.9"
+    ],
+    [
+      "AC.9",
+      "AC.10"
+    ],
+    [
+      "B",
+      "BK.0"
+    ],
+    [
+      "BK.0",
+      "BK.1"
+    ],
+    [
+      "BK.1",
+      "BK.2"
+    ],
+    [
+      "BK.2",
+      "BK.3"
+    ],
+    [
+      "BK.3",
+      "BK.4"
+    ],
+    [
+      "BK.4",
+      "K"
+    ],
+    [
+      "C",
+      "CA.0"
+    ],
+    [
+      "C",
+      "CB.0"
+    ],
+    [
+      "CA.0",
+      "CA.1"
+    ],
+    [
+      "CA.1",
+      "CA.2"
+    ],
+    [
+      "CA.2",
+      "CA.3"
+    ],
+    [
+      "CA.3",
+      "CA.4"
+    ],
+    [
+      "CA.4",
+      "A"
+    ],
+    [
+      "CB.0",
+      "CB.1"
+    ],
+    [
+      "CB.1",
+      "CB.2"
+    ],
+    [
+      "CB.10",
+      "B"
+    ],
+    [
+      "CB.2",
+      "CB.3"
+    ],
+    [
+      "CB.3",
+      "CB.4"
+    ],
+    [
+      "CB.4",
+      "CB.5"
+    ],
+    [
+      "CB.5",
+      "CB.6"
+    ],
+    [
+      "CB.6",
+      "CB.7"
+    ],
+    [
+      "CB.7",
+      "CB.8"
+    ],
+    [
+      "CB.8",
+      "CB.9"
+    ],
+    [
+      "CB.9",
+      "CB.10"
+    ],
+    [
+      "K",
+      "K0.0"
+    ],
+    [
+      "K",
+      "K1.0"
+    ],
+    [
+      "K0.0",
+      "K0.1"
+    ],
+    [
+      "K0.1",
+      "K0.2"
+    ],
+    [
+      "K0.2",
+      "K0.3"
+    ],
+    [
+      "K0.3",
+      "K0.4"
+    ],
+    [
+      "K0.4",
+      "K0.5"
+    ],
+    [
+      "K0.5",
+      "K0.6"
+    ],
+    [
+      "K0.6",
+      "K0.7"
+    ],
+    [
+      "K0.7",
+      "K0.8"
+    ],
+    [
+      "K0.8",
+      "K0.9"
+    ],
+    [
+      "K1.0",
+      "K1.1"
+    ],
+    [
+      "K1.1",
+      "K1.2"
+    ],
+    [
+      "K1.2",
+      "K1.3"
+    ],
+    [
+      "K1.3",
+      "K1.4"
+    ],
+    [
+      "K1.4",
+      "K1.5"
+    ],
+    [
+      "K1.5",
+      "K1.6"
+    ],
+    [
+      "K1.6",
+      "K1.7"
+    ],
+    [
+      "K1.7",
+      "K1.8"
+    ],
+    [
+      "K1.8",
+      "K1.9"
+    ]
+  ],
+  "build_order": [
+    "C",
+    "A",
+    "B",
+    "K",
+    "core",
+    "pole0",
+    "pole1",
+    "CB.0",
+    "AC.0",
+    "BK.0",
+    "K0.0",
+    "CA.0",
+    "K1.0",
+    "CA.1",
+    "CA.2",
+    "CA.3",
+    "CA.4",
+    "AC.1",
+    "AC.2",
+    "AC.3",
+    "AC.4",
+    "AC.5",
+    "AC.6",
+    "AC.7",
+    "AC.8",
+    "AC.9",
+    "AC.10",
+    "AC.11",
+    "AC.12",
+    "AC.13",
+    "AC.14",
+    "AC.15",
+    "AC.16",
+    "AC.17",
+    "AC.18",
+    "AC.19",
+    "AC.20",
+    "AC.21",
+    "AC.22",
+    "AC.23",
+    "AC.24",
+    "AC.25",
+    "AC.26",
+    "AC.27",
+    "AC.28",
+    "AC.29",
+    "AC.30",
+    "AC.31",
+    "AC.32",
+    "AC.33",
+    "AC.34",
+    "CB.1",
+    "CB.2",
+    "CB.3",
+    "CB.4",
+    "CB.5",
+    "CB.6",
+    "CB.7",
+    "CB.8",
+    "CB.9",
+    "CB.10",
+    "BK.1",
+    "BK.2",
+    "BK.3",
+    "BK.4",
+    "K0.1",
+    "K0.2",
+    "K0.3",
+    "K0.4",
+    "K0.5",
+    "K0.6",
+    "K0.7",
+    "K0.8",
+    "K0.9",
+    "K1.1",
+    "K1.2",
+    "K1.3",
+    "K1.4",
+    "K1.5",
+    "K1.6",
+    "K1.7",
+    "K1.8",
+    "K1.9"
+  ],
+  "channel_times": {
+    "AC.34>C": 50,
+    "K0.0>K0.1": 65,
+    "K0.7>K0.8": 72,
+    "CB.8>CB.9": 59,
+    "K0.1>K0.2": 66,
+    "K1.5>K1.6": 79,
+    "AC.32>AC.33": 49,
+    "K>K0.0": 10,
+    "AC.29>AC.30": 46,
+    "AC.5>AC.6": 22,
+    "CB.4>CB.5": 55,
+    "AC.2>AC.3": 19,
+    "AC.4>AC.5": 21,
+    "BK.0>BK.1": 61,
+    "AC.27>AC.28": 44,
+    "AC.1>AC.2": 18,
+    "BK.2>BK.3": 63,
+    "AC.21>AC.22": 38,
+    "A>AC.0": 8,
+    "AC.26>AC.27": 43,
+    "AC.20>AC.21": 37,
+    "AC.12>AC.13": 29,
+    "CB.0>CB.1": 51,
+    "CB.1>CB.2": 52,
+    "CB.7>CB.8": 58,
+    "AC.33>AC.34": 50,
+    "AC.19>AC.20": 36,
+    "B>BK.0": 9,
+    "AC.3>AC.4": 20,
+    "AC.15>AC.16": 32,
+    "AC.23>AC.24": 40,
+    "K1.0>K1.1": 74,
+    "K1.7>K1.8": 81,
+    "K1.3>K1.4": 77,
+    "K0.5>K0.6": 70,
+    "K0.6>K0.7": 71,
+    "K0.4>K0.5": 69,
+    "BK.1>BK.2": 62,
+    "AC.28>AC.29": 45,
+    "CB.3>CB.4": 54,
+    "K0.3>K0.4": 68,
+    "K1.1>K1.2": 75,
+    "C>CB.0": 7,
+    "AC.16>AC.17": 33,
+    "AC.30>AC.31": 47,
+    "AC.24>AC.25": 41,
+    "CB.5>CB.6": 56,
+    "CB.6>CB.7": 57,
+    "AC.7>AC.8": 24,
+    "CA.0>CA.1": 13,
+    "CA.4>A": 16,
+    "AC.10>AC.11": 27,
+    "CA.3>CA.4": 16,
+    "AC.11>AC.12": 28,
+    "K1.6>K1.7": 80,
+    "AC.25>AC.26": 42,
+    "K>K1.0": 12,
+    "K1.4>K1.5": 78,
+    "CB.2>CB.3": 53,
+    "AC.14>AC.15": 31,
+    "CA.2>CA.3": 15,
+    "BK.4>K": 64,
+    "AC.6>AC.7": 23,
+    "CB.9>CB.10": 60,
+    "CA.1>CA.2": 14,
+    "K0.8>K0.9": 73,
+    "AC.17>AC.18": 34,
+    "AC.22>AC.23": 39,
+    "C>CA.0": 11,
+    "AC.13>AC.14": 30,
+    "CB.10>B": 60,
+    "AC.8>AC.9": 25,
+    "AC.18>AC.19": 35,
+    "K1.8>K1.9": 82,
+    "K1.2>K1.3": 76,
+    "AC.9>AC.10": 26,
+    "K0.2>K0.3": 67,
+    "BK.3>BK.4": 64,
+    "AC.31>AC.32": 48,
+    "AC.0>AC.1": 17
+  },
+  "note": "Local 24-step witness. K has no output event during this witness; its dead-end belts suffice."
+}

@@ -1,0 +1,57 @@
+{
+ "window40_per_port": 5,
+ "window41_per_port": 6,
+ "window40_three_ports": 15,
+ "fullspeed_cases": 64512,
+ "fullspeed_max": 15,
+ "fullspeed_mismatch_max": 0,
+ "fullspeed_mismatch_transfers": 0,
+ "random_cases": 4000,
+ "random_max": 15,
+ "random_mismatch_max": 0,
+ "random_mismatch_transfers": 0,
+ "H01_example_keep": [
+  0,
+  40,
+  80
+ ],
+ "H01_example_clear": [
+  0,
+  17,
+  57,
+  97
+ ],
+ "two_boxes_clear_after_offline_57": {
+  "box1": [
+   0,
+   40,
+   57,
+   97,
+   137,
+   177
+  ],
+  "box2": [
+   23,
+   57,
+   97,
+   137,
+   177
+  ]
+ },
+ "two_boxes_keep_after_offline_57": {
+  "box1": [
+   0,
+   40,
+   80,
+   120,
+   160
+  ],
+  "box2": [
+   23,
+   63,
+   103,
+   143,
+   183
+  ]
+ }
+}

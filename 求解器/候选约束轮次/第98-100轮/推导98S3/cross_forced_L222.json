@@ -1,0 +1,50 @@
+[
+ {
+  "start": 12760,
+  "end": 13240,
+  "period": 480,
+  "delivery": {
+   "精选荞愈胶囊": 33,
+   "高容谷地电池": 36
+  },
+  "ore_min": 60,
+  "ore_max": 60,
+  "ok": true,
+  "compared_steps": 1240,
+  "seed": 2000,
+  "kind": "forced",
+  "family": "L222"
+ },
+ {
+  "start": 12096,
+  "end": 12576,
+  "period": 480,
+  "delivery": {
+   "精选荞愈胶囊": 33,
+   "高容谷地电池": 36
+  },
+  "ore_min": 60,
+  "ore_max": 60,
+  "ok": true,
+  "compared_steps": 576,
+  "seed": 2001,
+  "kind": "forced",
+  "family": "L222"
+ },
+ {
+  "start": 16800,
+  "end": 17280,
+  "period": 480,
+  "delivery": {
+   "高容谷地电池": 36,
+   "精选荞愈胶囊": 33
+  },
+  "ore_min": 60,
+  "ore_max": 60,
+  "ok": true,
+  "compared_steps": 5280,
+  "seed": 2002,
+  "kind": "forced",
+  "family": "L222"
+ }
+]

@@ -1,0 +1,138 @@
+{
+ "block_lemma": {
+  "2": {
+   "patterns": 8,
+   "worst_last_offset": 7,
+   "formula_mismatch": 0,
+   "dfs_states": 47
+  },
+  "3": {
+   "patterns": 29,
+   "worst_last_offset": 7,
+   "formula_mismatch": 0,
+   "dfs_states": 253
+  },
+  "4": {
+   "patterns": 64,
+   "worst_last_offset": 7,
+   "formula_mismatch": 0,
+   "dfs_states": 951
+  },
+  "5": {
+   "patterns": 99,
+   "worst_last_offset": 7,
+   "formula_mismatch": 0,
+   "dfs_states": 3867
+  },
+  "6": {
+   "patterns": 120,
+   "worst_last_offset": 7,
+   "formula_mismatch": 0,
+   "dfs_states": 21513
+  }
+ },
+ "h04": {
+  "cases": 3570,
+  "mismatch": 0
+ },
+ "random_single": {
+  "runs": 1500,
+  "enc_mismatch": 0,
+  "seg_prefix_fail": 0,
+  "max_diff": 8,
+  "max_diff_minus_m": 1,
+  "max_diff_batch_clear": 0,
+  "max_diff_batch_keep": 0,
+  "viol": 0
+ },
+ "random_batch": {
+  "runs": 1500,
+  "enc_mismatch": 0,
+  "seg_prefix_fail": 0,
+  "max_diff": 2,
+  "max_diff_minus_m": 1,
+  "max_diff_batch_clear": 2,
+  "max_diff_batch_keep": 1,
+  "viol": 0
+ },
+ "H03_counterexample": {
+  "counts": [
+   20,
+   0,
+   0
+  ],
+  "enc_ok": true
+ },
+ "H03_counterexample_keep": {
+  "counts": [
+   7,
+   7,
+   6
+  ],
+  "enc_ok": true
+ },
+ "H05_diff2_witness": {
+  "word": [
+   [
+    0,
+    0
+   ],
+   [
+    1,
+    1
+   ],
+   [
+    2,
+    2
+   ],
+   [
+    40,
+    2
+   ],
+   [
+    41,
+    1
+   ],
+   [
+    42,
+    0
+   ]
+  ],
+  "enc_ok": true,
+  "interval_2_41": [
+   0,
+   0,
+   2
+  ]
+ },
+ "bfs_k2_keep": {
+  "states": 540,
+  "violation": false,
+  "max_e": 1
+ },
+ "bfs_k2_clear": {
+  "states": 1740,
+  "violation": false,
+  "max_e": 2
+ },
+ "bfs_k2_clear_single_items_control": {
+  "states": 3204,
+  "violation": true,
+  "max_e": 3
+ },
+ "bfs_k3_keep": {
+  "states": 3058,
+  "violation": false,
+  "max_e": 1
+ },
+ "bfs_k3_clear": {
+  "states": 19276,
+  "violation": false,
+  "max_e": 2
+ },
+ "bfs_k3_clear_single_items_control": {
+  "states": 64108,
+  "violation": true,
+  "max_e": 3
+ }
+}

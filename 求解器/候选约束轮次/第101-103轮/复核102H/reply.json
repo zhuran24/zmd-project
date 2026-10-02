@@ -1,0 +1,54 @@
+{
+  "status": "done",
+  "report_path": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第101-103轮/复核102H.md",
+  "verdicts": [
+    {
+      "name": "传输相位",
+      "verdict": "未否证",
+      "reason": "清空重取相位，保留续冷却。",
+      "revised_text": ""
+    },
+    {
+      "name": "判定先后",
+      "verdict": "未否证",
+      "reason": "实际送货联判，每元件每步一次。",
+      "revised_text": ""
+    },
+    {
+      "name": "轮询均分",
+      "verdict": "未否证",
+      "reason": "段内均分与跨段差界成立。",
+      "revised_text": ""
+    },
+    {
+      "name": "混料轮询分料",
+      "verdict": "未否证",
+      "reason": "同余公式及跨段实际计数成立。",
+      "revised_text": ""
+    },
+    {
+      "name": "整批k件配k条取货通道的均分",
+      "verdict": "未否证",
+      "reason": "跨清空差至多2，循环均分保留。",
+      "revised_text": ""
+    },
+    {
+      "name": "采种单元的回路存量下界",
+      "verdict": "未否证",
+      "reason": "分段界及不耗尽成立；150保守。",
+      "revised_text": ""
+    },
+    {
+      "name": "采种单元不断料",
+      "verdict": "未否证",
+      "reason": "活性和满库存证明不依赖历史。",
+      "revised_text": ""
+    },
+    {
+      "name": "传输箱不满",
+      "verdict": "未否证",
+      "reason": "两读法均可证15件及守恒。",
+      "revised_text": ""
+    }
+  ]
+}

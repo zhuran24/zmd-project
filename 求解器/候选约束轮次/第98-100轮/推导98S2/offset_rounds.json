@@ -1,0 +1,3039 @@
+{
+  "cases": [
+    {
+      "seed": 981100,
+      "outlets": 1,
+      "shared_receiver": false,
+      "lengths": [
+        13
+      ],
+      "offsets": [
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2441,
+      "history_resets": 92,
+      "minimum_stock": [
+        49
+      ],
+      "latest_fill_delay": 1
+    },
+    {
+      "seed": 981101,
+      "outlets": 1,
+      "shared_receiver": false,
+      "lengths": [
+        3
+      ],
+      "offsets": [
+        2
+      ],
+      "spread": 2,
+      "rounds": 100,
+      "steps": 2526,
+      "history_resets": 99,
+      "minimum_stock": [
+        49
+      ],
+      "latest_fill_delay": 3
+    },
+    {
+      "seed": 981102,
+      "outlets": 1,
+      "shared_receiver": false,
+      "lengths": [
+        39
+      ],
+      "offsets": [
+        1
+      ],
+      "spread": 1,
+      "rounds": 100,
+      "steps": 2278,
+      "history_resets": 77,
+      "minimum_stock": [
+        49
+      ],
+      "latest_fill_delay": 2
+    },
+    {
+      "seed": 981103,
+      "outlets": 1,
+      "shared_receiver": false,
+      "lengths": [
+        13
+      ],
+      "offsets": [
+        1
+      ],
+      "spread": 1,
+      "rounds": 100,
+      "steps": 2303,
+      "history_resets": 80,
+      "minimum_stock": [
+        49
+      ],
+      "latest_fill_delay": 2
+    },
+    {
+      "seed": 981104,
+      "outlets": 1,
+      "shared_receiver": false,
+      "lengths": [
+        32
+      ],
+      "offsets": [
+        2
+      ],
+      "spread": 2,
+      "rounds": 100,
+      "steps": 2540,
+      "history_resets": 80,
+      "minimum_stock": [
+        49
+      ],
+      "latest_fill_delay": 3
+    },
+    {
+      "seed": 981105,
+      "outlets": 1,
+      "shared_receiver": false,
+      "lengths": [
+        45
+      ],
+      "offsets": [
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 1777,
+      "history_resets": 64,
+      "minimum_stock": [
+        49
+      ],
+      "latest_fill_delay": 1
+    },
+    {
+      "seed": 981106,
+      "outlets": 1,
+      "shared_receiver": false,
+      "lengths": [
+        28
+      ],
+      "offsets": [
+        1
+      ],
+      "spread": 1,
+      "rounds": 100,
+      "steps": 2501,
+      "history_resets": 82,
+      "minimum_stock": [
+        49
+      ],
+      "latest_fill_delay": 2
+    },
+    {
+      "seed": 981107,
+      "outlets": 1,
+      "shared_receiver": false,
+      "lengths": [
+        41
+      ],
+      "offsets": [
+        1
+      ],
+      "spread": 1,
+      "rounds": 100,
+      "steps": 2527,
+      "history_resets": 86,
+      "minimum_stock": [
+        49
+      ],
+      "latest_fill_delay": 2
+    },
+    {
+      "seed": 981108,
+      "outlets": 1,
+      "shared_receiver": false,
+      "lengths": [
+        30
+      ],
+      "offsets": [
+        2
+      ],
+      "spread": 2,
+      "rounds": 100,
+      "steps": 2661,
+      "history_resets": 81,
+      "minimum_stock": [
+        49
+      ],
+      "latest_fill_delay": 3
+    },
+    {
+      "seed": 981109,
+      "outlets": 1,
+      "shared_receiver": false,
+      "lengths": [
+        30
+      ],
+      "offsets": [
+        1
+      ],
+      "spread": 1,
+      "rounds": 100,
+      "steps": 2704,
+      "history_resets": 78,
+      "minimum_stock": [
+        49
+      ],
+      "latest_fill_delay": 2
+    },
+    {
+      "seed": 981100,
+      "outlets": 1,
+      "shared_receiver": true,
+      "lengths": [
+        13
+      ],
+      "offsets": [
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2349,
+      "history_resets": 86,
+      "minimum_stock": [
+        49
+      ],
+      "latest_fill_delay": 1
+    },
+    {
+      "seed": 981101,
+      "outlets": 1,
+      "shared_receiver": true,
+      "lengths": [
+        3
+      ],
+      "offsets": [
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2528,
+      "history_resets": 99,
+      "minimum_stock": [
+        49
+      ],
+      "latest_fill_delay": 1
+    },
+    {
+      "seed": 981102,
+      "outlets": 1,
+      "shared_receiver": true,
+      "lengths": [
+        39
+      ],
+      "offsets": [
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2277,
+      "history_resets": 75,
+      "minimum_stock": [
+        49
+      ],
+      "latest_fill_delay": 1
+    },
+    {
+      "seed": 981103,
+      "outlets": 1,
+      "shared_receiver": true,
+      "lengths": [
+        13
+      ],
+      "offsets": [
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2302,
+      "history_resets": 79,
+      "minimum_stock": [
+        49
+      ],
+      "latest_fill_delay": 1
+    },
+    {
+      "seed": 981104,
+      "outlets": 1,
+      "shared_receiver": true,
+      "lengths": [
+        32
+      ],
+      "offsets": [
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2450,
+      "history_resets": 78,
+      "minimum_stock": [
+        49
+      ],
+      "latest_fill_delay": 1
+    },
+    {
+      "seed": 981105,
+      "outlets": 1,
+      "shared_receiver": true,
+      "lengths": [
+        45
+      ],
+      "offsets": [
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 1868,
+      "history_resets": 68,
+      "minimum_stock": [
+        49
+      ],
+      "latest_fill_delay": 1
+    },
+    {
+      "seed": 981106,
+      "outlets": 1,
+      "shared_receiver": true,
+      "lengths": [
+        28
+      ],
+      "offsets": [
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2500,
+      "history_resets": 82,
+      "minimum_stock": [
+        49
+      ],
+      "latest_fill_delay": 1
+    },
+    {
+      "seed": 981107,
+      "outlets": 1,
+      "shared_receiver": true,
+      "lengths": [
+        41
+      ],
+      "offsets": [
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2522,
+      "history_resets": 87,
+      "minimum_stock": [
+        49
+      ],
+      "latest_fill_delay": 1
+    },
+    {
+      "seed": 981108,
+      "outlets": 1,
+      "shared_receiver": true,
+      "lengths": [
+        30
+      ],
+      "offsets": [
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2663,
+      "history_resets": 80,
+      "minimum_stock": [
+        49
+      ],
+      "latest_fill_delay": 1
+    },
+    {
+      "seed": 981109,
+      "outlets": 1,
+      "shared_receiver": true,
+      "lengths": [
+        30
+      ],
+      "offsets": [
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2702,
+      "history_resets": 80,
+      "minimum_stock": [
+        49
+      ],
+      "latest_fill_delay": 1
+    },
+    {
+      "seed": 981200,
+      "outlets": 2,
+      "shared_receiver": false,
+      "lengths": [
+        42,
+        22
+      ],
+      "offsets": [
+        0,
+        2
+      ],
+      "spread": 2,
+      "rounds": 100,
+      "steps": 2982,
+      "history_resets": 100,
+      "minimum_stock": [
+        49,
+        49
+      ],
+      "latest_fill_delay": 3
+    },
+    {
+      "seed": 981201,
+      "outlets": 2,
+      "shared_receiver": false,
+      "lengths": [
+        24,
+        28
+      ],
+      "offsets": [
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2104,
+      "history_resets": 77,
+      "minimum_stock": [
+        49,
+        49
+      ],
+      "latest_fill_delay": 2
+    },
+    {
+      "seed": 981202,
+      "outlets": 2,
+      "shared_receiver": false,
+      "lengths": [
+        3,
+        35
+      ],
+      "offsets": [
+        1,
+        0
+      ],
+      "spread": 1,
+      "rounds": 100,
+      "steps": 1773,
+      "history_resets": 55,
+      "minimum_stock": [
+        49,
+        49
+      ],
+      "latest_fill_delay": 2
+    },
+    {
+      "seed": 981203,
+      "outlets": 2,
+      "shared_receiver": false,
+      "lengths": [
+        16,
+        5
+      ],
+      "offsets": [
+        2,
+        0
+      ],
+      "spread": 2,
+      "rounds": 100,
+      "steps": 2520,
+      "history_resets": 98,
+      "minimum_stock": [
+        49,
+        49
+      ],
+      "latest_fill_delay": 3
+    },
+    {
+      "seed": 981204,
+      "outlets": 2,
+      "shared_receiver": false,
+      "lengths": [
+        37,
+        27
+      ],
+      "offsets": [
+        1,
+        0
+      ],
+      "spread": 1,
+      "rounds": 100,
+      "steps": 2193,
+      "history_resets": 58,
+      "minimum_stock": [
+        49,
+        49
+      ],
+      "latest_fill_delay": 2
+    },
+    {
+      "seed": 981205,
+      "outlets": 2,
+      "shared_receiver": false,
+      "lengths": [
+        10,
+        45
+      ],
+      "offsets": [
+        1,
+        0
+      ],
+      "spread": 1,
+      "rounds": 100,
+      "steps": 1746,
+      "history_resets": 60,
+      "minimum_stock": [
+        49,
+        49
+      ],
+      "latest_fill_delay": 2
+    },
+    {
+      "seed": 981206,
+      "outlets": 2,
+      "shared_receiver": false,
+      "lengths": [
+        11,
+        22
+      ],
+      "offsets": [
+        1,
+        0
+      ],
+      "spread": 1,
+      "rounds": 100,
+      "steps": 2789,
+      "history_resets": 109,
+      "minimum_stock": [
+        49,
+        49
+      ],
+      "latest_fill_delay": 2
+    },
+    {
+      "seed": 981207,
+      "outlets": 2,
+      "shared_receiver": false,
+      "lengths": [
+        12,
+        46
+      ],
+      "offsets": [
+        2,
+        2
+      ],
+      "spread": 2,
+      "rounds": 100,
+      "steps": 2167,
+      "history_resets": 72,
+      "minimum_stock": [
+        49,
+        49
+      ],
+      "latest_fill_delay": 4
+    },
+    {
+      "seed": 981208,
+      "outlets": 2,
+      "shared_receiver": false,
+      "lengths": [
+        4,
+        44
+      ],
+      "offsets": [
+        1,
+        0
+      ],
+      "spread": 1,
+      "rounds": 100,
+      "steps": 1831,
+      "history_resets": 64,
+      "minimum_stock": [
+        49,
+        49
+      ],
+      "latest_fill_delay": 2
+    },
+    {
+      "seed": 981209,
+      "outlets": 2,
+      "shared_receiver": false,
+      "lengths": [
+        36,
+        40
+      ],
+      "offsets": [
+        2,
+        1
+      ],
+      "spread": 2,
+      "rounds": 100,
+      "steps": 2664,
+      "history_resets": 94,
+      "minimum_stock": [
+        49,
+        49
+      ],
+      "latest_fill_delay": 3
+    },
+    {
+      "seed": 981200,
+      "outlets": 2,
+      "shared_receiver": true,
+      "lengths": [
+        42,
+        22
+      ],
+      "offsets": [
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2983,
+      "history_resets": 100,
+      "minimum_stock": [
+        48
+      ],
+      "latest_fill_delay": 2
+    },
+    {
+      "seed": 981201,
+      "outlets": 2,
+      "shared_receiver": true,
+      "lengths": [
+        24,
+        28
+      ],
+      "offsets": [
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2178,
+      "history_resets": 82,
+      "minimum_stock": [
+        48
+      ],
+      "latest_fill_delay": 2
+    },
+    {
+      "seed": 981202,
+      "outlets": 2,
+      "shared_receiver": true,
+      "lengths": [
+        3,
+        35
+      ],
+      "offsets": [
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 1771,
+      "history_resets": 55,
+      "minimum_stock": [
+        48
+      ],
+      "latest_fill_delay": 2
+    },
+    {
+      "seed": 981203,
+      "outlets": 2,
+      "shared_receiver": true,
+      "lengths": [
+        16,
+        5
+      ],
+      "offsets": [
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2694,
+      "history_resets": 104,
+      "minimum_stock": [
+        48
+      ],
+      "latest_fill_delay": 2
+    },
+    {
+      "seed": 981204,
+      "outlets": 2,
+      "shared_receiver": true,
+      "lengths": [
+        37,
+        27
+      ],
+      "offsets": [
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2188,
+      "history_resets": 58,
+      "minimum_stock": [
+        48
+      ],
+      "latest_fill_delay": 2
+    },
+    {
+      "seed": 981205,
+      "outlets": 2,
+      "shared_receiver": true,
+      "lengths": [
+        10,
+        45
+      ],
+      "offsets": [
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 1652,
+      "history_resets": 57,
+      "minimum_stock": [
+        48
+      ],
+      "latest_fill_delay": 2
+    },
+    {
+      "seed": 981206,
+      "outlets": 2,
+      "shared_receiver": true,
+      "lengths": [
+        11,
+        22
+      ],
+      "offsets": [
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2784,
+      "history_resets": 109,
+      "minimum_stock": [
+        48
+      ],
+      "latest_fill_delay": 2
+    },
+    {
+      "seed": 981207,
+      "outlets": 2,
+      "shared_receiver": true,
+      "lengths": [
+        12,
+        46
+      ],
+      "offsets": [
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2178,
+      "history_resets": 72,
+      "minimum_stock": [
+        48
+      ],
+      "latest_fill_delay": 2
+    },
+    {
+      "seed": 981208,
+      "outlets": 2,
+      "shared_receiver": true,
+      "lengths": [
+        4,
+        44
+      ],
+      "offsets": [
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 1823,
+      "history_resets": 63,
+      "minimum_stock": [
+        48
+      ],
+      "latest_fill_delay": 2
+    },
+    {
+      "seed": 981209,
+      "outlets": 2,
+      "shared_receiver": true,
+      "lengths": [
+        36,
+        40
+      ],
+      "offsets": [
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2649,
+      "history_resets": 94,
+      "minimum_stock": [
+        48
+      ],
+      "latest_fill_delay": 2
+    },
+    {
+      "seed": 981300,
+      "outlets": 3,
+      "shared_receiver": false,
+      "lengths": [
+        1,
+        32,
+        41
+      ],
+      "offsets": [
+        2,
+        2,
+        1
+      ],
+      "spread": 2,
+      "rounds": 100,
+      "steps": 2342,
+      "history_resets": 62,
+      "minimum_stock": [
+        49,
+        49,
+        49
+      ],
+      "latest_fill_delay": 4
+    },
+    {
+      "seed": 981301,
+      "outlets": 3,
+      "shared_receiver": false,
+      "lengths": [
+        12,
+        8,
+        28
+      ],
+      "offsets": [
+        2,
+        1,
+        1
+      ],
+      "spread": 2,
+      "rounds": 100,
+      "steps": 2226,
+      "history_resets": 67,
+      "minimum_stock": [
+        49,
+        49,
+        49
+      ],
+      "latest_fill_delay": 4
+    },
+    {
+      "seed": 981302,
+      "outlets": 3,
+      "shared_receiver": false,
+      "lengths": [
+        2,
+        10,
+        44
+      ],
+      "offsets": [
+        1,
+        2,
+        2
+      ],
+      "spread": 2,
+      "rounds": 100,
+      "steps": 3751,
+      "history_resets": 126,
+      "minimum_stock": [
+        49,
+        49,
+        49
+      ],
+      "latest_fill_delay": 4
+    },
+    {
+      "seed": 981303,
+      "outlets": 3,
+      "shared_receiver": false,
+      "lengths": [
+        39,
+        32,
+        44
+      ],
+      "offsets": [
+        0,
+        2,
+        0
+      ],
+      "spread": 2,
+      "rounds": 100,
+      "steps": 2331,
+      "history_resets": 89,
+      "minimum_stock": [
+        49,
+        49,
+        49
+      ],
+      "latest_fill_delay": 3
+    },
+    {
+      "seed": 981304,
+      "outlets": 3,
+      "shared_receiver": false,
+      "lengths": [
+        6,
+        26,
+        8
+      ],
+      "offsets": [
+        0,
+        0,
+        1
+      ],
+      "spread": 1,
+      "rounds": 100,
+      "steps": 2331,
+      "history_resets": 66,
+      "minimum_stock": [
+        49,
+        49,
+        49
+      ],
+      "latest_fill_delay": 3
+    },
+    {
+      "seed": 981305,
+      "outlets": 3,
+      "shared_receiver": false,
+      "lengths": [
+        13,
+        18,
+        8
+      ],
+      "offsets": [
+        1,
+        2,
+        1
+      ],
+      "spread": 2,
+      "rounds": 100,
+      "steps": 2568,
+      "history_resets": 85,
+      "minimum_stock": [
+        49,
+        49,
+        49
+      ],
+      "latest_fill_delay": 4
+    },
+    {
+      "seed": 981306,
+      "outlets": 3,
+      "shared_receiver": false,
+      "lengths": [
+        11,
+        48,
+        18
+      ],
+      "offsets": [
+        0,
+        2,
+        0
+      ],
+      "spread": 2,
+      "rounds": 100,
+      "steps": 2542,
+      "history_resets": 97,
+      "minimum_stock": [
+        49,
+        49,
+        49
+      ],
+      "latest_fill_delay": 3
+    },
+    {
+      "seed": 981307,
+      "outlets": 3,
+      "shared_receiver": false,
+      "lengths": [
+        36,
+        47,
+        14
+      ],
+      "offsets": [
+        2,
+        2,
+        1
+      ],
+      "spread": 2,
+      "rounds": 100,
+      "steps": 2531,
+      "history_resets": 77,
+      "minimum_stock": [
+        49,
+        49,
+        49
+      ],
+      "latest_fill_delay": 4
+    },
+    {
+      "seed": 981308,
+      "outlets": 3,
+      "shared_receiver": false,
+      "lengths": [
+        2,
+        10,
+        40
+      ],
+      "offsets": [
+        0,
+        2,
+        0
+      ],
+      "spread": 2,
+      "rounds": 100,
+      "steps": 2509,
+      "history_resets": 104,
+      "minimum_stock": [
+        49,
+        49,
+        49
+      ],
+      "latest_fill_delay": 3
+    },
+    {
+      "seed": 981309,
+      "outlets": 3,
+      "shared_receiver": false,
+      "lengths": [
+        29,
+        13,
+        7
+      ],
+      "offsets": [
+        1,
+        0,
+        1
+      ],
+      "spread": 1,
+      "rounds": 100,
+      "steps": 2391,
+      "history_resets": 91,
+      "minimum_stock": [
+        49,
+        49,
+        49
+      ],
+      "latest_fill_delay": 3
+    },
+    {
+      "seed": 981300,
+      "outlets": 3,
+      "shared_receiver": true,
+      "lengths": [
+        1,
+        32,
+        41
+      ],
+      "offsets": [
+        0,
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2358,
+      "history_resets": 64,
+      "minimum_stock": [
+        47
+      ],
+      "latest_fill_delay": 3
+    },
+    {
+      "seed": 981301,
+      "outlets": 3,
+      "shared_receiver": true,
+      "lengths": [
+        12,
+        8,
+        28
+      ],
+      "offsets": [
+        0,
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2327,
+      "history_resets": 69,
+      "minimum_stock": [
+        47
+      ],
+      "latest_fill_delay": 3
+    },
+    {
+      "seed": 981302,
+      "outlets": 3,
+      "shared_receiver": true,
+      "lengths": [
+        2,
+        10,
+        44
+      ],
+      "offsets": [
+        0,
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 3767,
+      "history_resets": 124,
+      "minimum_stock": [
+        47
+      ],
+      "latest_fill_delay": 3
+    },
+    {
+      "seed": 981303,
+      "outlets": 3,
+      "shared_receiver": true,
+      "lengths": [
+        39,
+        32,
+        44
+      ],
+      "offsets": [
+        0,
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2240,
+      "history_resets": 85,
+      "minimum_stock": [
+        47
+      ],
+      "latest_fill_delay": 3
+    },
+    {
+      "seed": 981304,
+      "outlets": 3,
+      "shared_receiver": true,
+      "lengths": [
+        6,
+        26,
+        8
+      ],
+      "offsets": [
+        0,
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2312,
+      "history_resets": 65,
+      "minimum_stock": [
+        47
+      ],
+      "latest_fill_delay": 3
+    },
+    {
+      "seed": 981305,
+      "outlets": 3,
+      "shared_receiver": true,
+      "lengths": [
+        13,
+        18,
+        8
+      ],
+      "offsets": [
+        0,
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2844,
+      "history_resets": 92,
+      "minimum_stock": [
+        47
+      ],
+      "latest_fill_delay": 3
+    },
+    {
+      "seed": 981306,
+      "outlets": 3,
+      "shared_receiver": true,
+      "lengths": [
+        11,
+        48,
+        18
+      ],
+      "offsets": [
+        0,
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2552,
+      "history_resets": 100,
+      "minimum_stock": [
+        47
+      ],
+      "latest_fill_delay": 3
+    },
+    {
+      "seed": 981307,
+      "outlets": 3,
+      "shared_receiver": true,
+      "lengths": [
+        36,
+        47,
+        14
+      ],
+      "offsets": [
+        0,
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2543,
+      "history_resets": 79,
+      "minimum_stock": [
+        47
+      ],
+      "latest_fill_delay": 3
+    },
+    {
+      "seed": 981308,
+      "outlets": 3,
+      "shared_receiver": true,
+      "lengths": [
+        2,
+        10,
+        40
+      ],
+      "offsets": [
+        0,
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2507,
+      "history_resets": 99,
+      "minimum_stock": [
+        47
+      ],
+      "latest_fill_delay": 3
+    },
+    {
+      "seed": 981309,
+      "outlets": 3,
+      "shared_receiver": true,
+      "lengths": [
+        29,
+        13,
+        7
+      ],
+      "offsets": [
+        0,
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2390,
+      "history_resets": 91,
+      "minimum_stock": [
+        47
+      ],
+      "latest_fill_delay": 3
+    },
+    {
+      "seed": 981400,
+      "outlets": 4,
+      "shared_receiver": false,
+      "lengths": [
+        22,
+        43,
+        6,
+        1
+      ],
+      "offsets": [
+        2,
+        1,
+        1,
+        1
+      ],
+      "spread": 2,
+      "rounds": 100,
+      "steps": 2165,
+      "history_resets": 80,
+      "minimum_stock": [
+        49,
+        49,
+        49,
+        49
+      ],
+      "latest_fill_delay": 5
+    },
+    {
+      "seed": 981401,
+      "outlets": 4,
+      "shared_receiver": false,
+      "lengths": [
+        15,
+        8,
+        9,
+        27
+      ],
+      "offsets": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "spread": 2,
+      "rounds": 100,
+      "steps": 2414,
+      "history_resets": 85,
+      "minimum_stock": [
+        49,
+        49,
+        49,
+        49
+      ],
+      "latest_fill_delay": 6
+    },
+    {
+      "seed": 981402,
+      "outlets": 4,
+      "shared_receiver": false,
+      "lengths": [
+        13,
+        14,
+        14,
+        9
+      ],
+      "offsets": [
+        0,
+        2,
+        2,
+        0
+      ],
+      "spread": 2,
+      "rounds": 100,
+      "steps": 2071,
+      "history_resets": 78,
+      "minimum_stock": [
+        49,
+        49,
+        49,
+        49
+      ],
+      "latest_fill_delay": 4
+    },
+    {
+      "seed": 981403,
+      "outlets": 4,
+      "shared_receiver": false,
+      "lengths": [
+        28,
+        22,
+        14,
+        12
+      ],
+      "offsets": [
+        2,
+        1,
+        1,
+        1
+      ],
+      "spread": 2,
+      "rounds": 100,
+      "steps": 2345,
+      "history_resets": 87,
+      "minimum_stock": [
+        49,
+        49,
+        49,
+        49
+      ],
+      "latest_fill_delay": 5
+    },
+    {
+      "seed": 981404,
+      "outlets": 4,
+      "shared_receiver": false,
+      "lengths": [
+        12,
+        29,
+        20,
+        15
+      ],
+      "offsets": [
+        2,
+        1,
+        1,
+        1
+      ],
+      "spread": 2,
+      "rounds": 100,
+      "steps": 2499,
+      "history_resets": 80,
+      "minimum_stock": [
+        49,
+        49,
+        49,
+        49
+      ],
+      "latest_fill_delay": 5
+    },
+    {
+      "seed": 981405,
+      "outlets": 4,
+      "shared_receiver": false,
+      "lengths": [
+        28,
+        36,
+        8,
+        39
+      ],
+      "offsets": [
+        0,
+        2,
+        2,
+        0
+      ],
+      "spread": 2,
+      "rounds": 100,
+      "steps": 2714,
+      "history_resets": 104,
+      "minimum_stock": [
+        49,
+        49,
+        49,
+        49
+      ],
+      "latest_fill_delay": 4
+    },
+    {
+      "seed": 981406,
+      "outlets": 4,
+      "shared_receiver": false,
+      "lengths": [
+        15,
+        15,
+        48,
+        17
+      ],
+      "offsets": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "spread": 1,
+      "rounds": 100,
+      "steps": 2897,
+      "history_resets": 100,
+      "minimum_stock": [
+        49,
+        49,
+        49,
+        49
+      ],
+      "latest_fill_delay": 4
+    },
+    {
+      "seed": 981407,
+      "outlets": 4,
+      "shared_receiver": false,
+      "lengths": [
+        26,
+        24,
+        15,
+        32
+      ],
+      "offsets": [
+        2,
+        1,
+        1,
+        2
+      ],
+      "spread": 2,
+      "rounds": 100,
+      "steps": 2679,
+      "history_resets": 102,
+      "minimum_stock": [
+        49,
+        49,
+        49,
+        49
+      ],
+      "latest_fill_delay": 5
+    },
+    {
+      "seed": 981408,
+      "outlets": 4,
+      "shared_receiver": false,
+      "lengths": [
+        14,
+        46,
+        43,
+        6
+      ],
+      "offsets": [
+        1,
+        2,
+        1,
+        2
+      ],
+      "spread": 2,
+      "rounds": 100,
+      "steps": 2152,
+      "history_resets": 77,
+      "minimum_stock": [
+        49,
+        49,
+        49,
+        49
+      ],
+      "latest_fill_delay": 5
+    },
+    {
+      "seed": 981409,
+      "outlets": 4,
+      "shared_receiver": false,
+      "lengths": [
+        39,
+        40,
+        41,
+        8
+      ],
+      "offsets": [
+        0,
+        1,
+        2,
+        0
+      ],
+      "spread": 2,
+      "rounds": 100,
+      "steps": 2521,
+      "history_resets": 91,
+      "minimum_stock": [
+        49,
+        49,
+        49,
+        49
+      ],
+      "latest_fill_delay": 4
+    },
+    {
+      "seed": 981400,
+      "outlets": 4,
+      "shared_receiver": true,
+      "lengths": [
+        22,
+        43,
+        6,
+        1
+      ],
+      "offsets": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2252,
+      "history_resets": 84,
+      "minimum_stock": [
+        46
+      ],
+      "latest_fill_delay": 4
+    },
+    {
+      "seed": 981401,
+      "outlets": 4,
+      "shared_receiver": true,
+      "lengths": [
+        15,
+        8,
+        9,
+        27
+      ],
+      "offsets": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2375,
+      "history_resets": 86,
+      "minimum_stock": [
+        46
+      ],
+      "latest_fill_delay": 4
+    },
+    {
+      "seed": 981402,
+      "outlets": 4,
+      "shared_receiver": true,
+      "lengths": [
+        13,
+        14,
+        14,
+        9
+      ],
+      "offsets": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2007,
+      "history_resets": 76,
+      "minimum_stock": [
+        46
+      ],
+      "latest_fill_delay": 4
+    },
+    {
+      "seed": 981403,
+      "outlets": 4,
+      "shared_receiver": true,
+      "lengths": [
+        28,
+        22,
+        14,
+        12
+      ],
+      "offsets": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2247,
+      "history_resets": 86,
+      "minimum_stock": [
+        46
+      ],
+      "latest_fill_delay": 4
+    },
+    {
+      "seed": 981404,
+      "outlets": 4,
+      "shared_receiver": true,
+      "lengths": [
+        12,
+        29,
+        20,
+        15
+      ],
+      "offsets": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2593,
+      "history_resets": 84,
+      "minimum_stock": [
+        46
+      ],
+      "latest_fill_delay": 4
+    },
+    {
+      "seed": 981405,
+      "outlets": 4,
+      "shared_receiver": true,
+      "lengths": [
+        28,
+        36,
+        8,
+        39
+      ],
+      "offsets": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2724,
+      "history_resets": 104,
+      "minimum_stock": [
+        46
+      ],
+      "latest_fill_delay": 4
+    },
+    {
+      "seed": 981406,
+      "outlets": 4,
+      "shared_receiver": true,
+      "lengths": [
+        15,
+        15,
+        48,
+        17
+      ],
+      "offsets": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2695,
+      "history_resets": 92,
+      "minimum_stock": [
+        46
+      ],
+      "latest_fill_delay": 4
+    },
+    {
+      "seed": 981407,
+      "outlets": 4,
+      "shared_receiver": true,
+      "lengths": [
+        26,
+        24,
+        15,
+        32
+      ],
+      "offsets": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2782,
+      "history_resets": 107,
+      "minimum_stock": [
+        46
+      ],
+      "latest_fill_delay": 4
+    },
+    {
+      "seed": 981408,
+      "outlets": 4,
+      "shared_receiver": true,
+      "lengths": [
+        14,
+        46,
+        43,
+        6
+      ],
+      "offsets": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2322,
+      "history_resets": 82,
+      "minimum_stock": [
+        46
+      ],
+      "latest_fill_delay": 4
+    },
+    {
+      "seed": 981409,
+      "outlets": 4,
+      "shared_receiver": true,
+      "lengths": [
+        39,
+        40,
+        41,
+        8
+      ],
+      "offsets": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2522,
+      "history_resets": 90,
+      "minimum_stock": [
+        46
+      ],
+      "latest_fill_delay": 4
+    },
+    {
+      "seed": 981500,
+      "outlets": 5,
+      "shared_receiver": false,
+      "lengths": [
+        45,
+        24,
+        23,
+        21,
+        26
+      ],
+      "offsets": [
+        0,
+        1,
+        0,
+        1,
+        2
+      ],
+      "spread": 2,
+      "rounds": 100,
+      "steps": 2586,
+      "history_resets": 93,
+      "minimum_stock": [
+        49,
+        49,
+        49,
+        49,
+        49
+      ],
+      "latest_fill_delay": 5
+    },
+    {
+      "seed": 981501,
+      "outlets": 5,
+      "shared_receiver": false,
+      "lengths": [
+        45,
+        41,
+        34,
+        8,
+        11
+      ],
+      "offsets": [
+        0,
+        2,
+        0,
+        2,
+        1
+      ],
+      "spread": 2,
+      "rounds": 100,
+      "steps": 2589,
+      "history_resets": 83,
+      "minimum_stock": [
+        49,
+        49,
+        49,
+        49,
+        49
+      ],
+      "latest_fill_delay": 5
+    },
+    {
+      "seed": 981502,
+      "outlets": 5,
+      "shared_receiver": false,
+      "lengths": [
+        21,
+        41,
+        1,
+        29,
+        17
+      ],
+      "offsets": [
+        1,
+        2,
+        0,
+        2,
+        0
+      ],
+      "spread": 2,
+      "rounds": 100,
+      "steps": 2161,
+      "history_resets": 90,
+      "minimum_stock": [
+        49,
+        49,
+        49,
+        49,
+        49
+      ],
+      "latest_fill_delay": 5
+    },
+    {
+      "seed": 981503,
+      "outlets": 5,
+      "shared_receiver": false,
+      "lengths": [
+        32,
+        38,
+        22,
+        8,
+        28
+      ],
+      "offsets": [
+        2,
+        1,
+        0,
+        0,
+        0
+      ],
+      "spread": 2,
+      "rounds": 100,
+      "steps": 2603,
+      "history_resets": 92,
+      "minimum_stock": [
+        49,
+        49,
+        49,
+        49,
+        49
+      ],
+      "latest_fill_delay": 5
+    },
+    {
+      "seed": 981504,
+      "outlets": 5,
+      "shared_receiver": false,
+      "lengths": [
+        31,
+        22,
+        2,
+        35,
+        11
+      ],
+      "offsets": [
+        2,
+        2,
+        0,
+        2,
+        1
+      ],
+      "spread": 2,
+      "rounds": 100,
+      "steps": 2728,
+      "history_resets": 104,
+      "minimum_stock": [
+        49,
+        49,
+        49,
+        49,
+        49
+      ],
+      "latest_fill_delay": 5
+    },
+    {
+      "seed": 981505,
+      "outlets": 5,
+      "shared_receiver": false,
+      "lengths": [
+        48,
+        35,
+        17,
+        21,
+        4
+      ],
+      "offsets": [
+        1,
+        1,
+        1,
+        1,
+        2
+      ],
+      "spread": 2,
+      "rounds": 100,
+      "steps": 2822,
+      "history_resets": 95,
+      "minimum_stock": [
+        49,
+        49,
+        49,
+        49,
+        49
+      ],
+      "latest_fill_delay": 6
+    },
+    {
+      "seed": 981506,
+      "outlets": 5,
+      "shared_receiver": false,
+      "lengths": [
+        38,
+        21,
+        13,
+        41,
+        24
+      ],
+      "offsets": [
+        1,
+        2,
+        2,
+        1,
+        2
+      ],
+      "spread": 2,
+      "rounds": 100,
+      "steps": 2332,
+      "history_resets": 64,
+      "minimum_stock": [
+        49,
+        49,
+        49,
+        49,
+        49
+      ],
+      "latest_fill_delay": 6
+    },
+    {
+      "seed": 981507,
+      "outlets": 5,
+      "shared_receiver": false,
+      "lengths": [
+        6,
+        40,
+        11,
+        19,
+        12
+      ],
+      "offsets": [
+        1,
+        1,
+        0,
+        0,
+        0
+      ],
+      "spread": 1,
+      "rounds": 100,
+      "steps": 2547,
+      "history_resets": 98,
+      "minimum_stock": [
+        49,
+        49,
+        49,
+        49,
+        49
+      ],
+      "latest_fill_delay": 5
+    },
+    {
+      "seed": 981508,
+      "outlets": 5,
+      "shared_receiver": false,
+      "lengths": [
+        32,
+        9,
+        48,
+        45,
+        42
+      ],
+      "offsets": [
+        1,
+        0,
+        1,
+        0,
+        2
+      ],
+      "spread": 2,
+      "rounds": 100,
+      "steps": 2269,
+      "history_resets": 94,
+      "minimum_stock": [
+        49,
+        49,
+        49,
+        49,
+        49
+      ],
+      "latest_fill_delay": 5
+    },
+    {
+      "seed": 981509,
+      "outlets": 5,
+      "shared_receiver": false,
+      "lengths": [
+        6,
+        12,
+        22,
+        26,
+        28
+      ],
+      "offsets": [
+        0,
+        1,
+        2,
+        1,
+        2
+      ],
+      "spread": 2,
+      "rounds": 100,
+      "steps": 2492,
+      "history_resets": 82,
+      "minimum_stock": [
+        49,
+        49,
+        49,
+        49,
+        49
+      ],
+      "latest_fill_delay": 5
+    },
+    {
+      "seed": 981500,
+      "outlets": 5,
+      "shared_receiver": true,
+      "lengths": [
+        45,
+        24,
+        23,
+        21,
+        26
+      ],
+      "offsets": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2653,
+      "history_resets": 92,
+      "minimum_stock": [
+        45
+      ],
+      "latest_fill_delay": 5
+    },
+    {
+      "seed": 981501,
+      "outlets": 5,
+      "shared_receiver": true,
+      "lengths": [
+        45,
+        41,
+        34,
+        8,
+        11
+      ],
+      "offsets": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2525,
+      "history_resets": 83,
+      "minimum_stock": [
+        45
+      ],
+      "latest_fill_delay": 5
+    },
+    {
+      "seed": 981502,
+      "outlets": 5,
+      "shared_receiver": true,
+      "lengths": [
+        21,
+        41,
+        1,
+        29,
+        17
+      ],
+      "offsets": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2089,
+      "history_resets": 87,
+      "minimum_stock": [
+        45
+      ],
+      "latest_fill_delay": 5
+    },
+    {
+      "seed": 981503,
+      "outlets": 5,
+      "shared_receiver": true,
+      "lengths": [
+        32,
+        38,
+        22,
+        8,
+        28
+      ],
+      "offsets": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2586,
+      "history_resets": 92,
+      "minimum_stock": [
+        45
+      ],
+      "latest_fill_delay": 5
+    },
+    {
+      "seed": 981504,
+      "outlets": 5,
+      "shared_receiver": true,
+      "lengths": [
+        31,
+        22,
+        2,
+        35,
+        11
+      ],
+      "offsets": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2659,
+      "history_resets": 101,
+      "minimum_stock": [
+        45
+      ],
+      "latest_fill_delay": 5
+    },
+    {
+      "seed": 981505,
+      "outlets": 5,
+      "shared_receiver": true,
+      "lengths": [
+        48,
+        35,
+        17,
+        21,
+        4
+      ],
+      "offsets": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2745,
+      "history_resets": 91,
+      "minimum_stock": [
+        45
+      ],
+      "latest_fill_delay": 5
+    },
+    {
+      "seed": 981506,
+      "outlets": 5,
+      "shared_receiver": true,
+      "lengths": [
+        38,
+        21,
+        13,
+        41,
+        24
+      ],
+      "offsets": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2541,
+      "history_resets": 71,
+      "minimum_stock": [
+        45
+      ],
+      "latest_fill_delay": 5
+    },
+    {
+      "seed": 981507,
+      "outlets": 5,
+      "shared_receiver": true,
+      "lengths": [
+        6,
+        40,
+        11,
+        19,
+        12
+      ],
+      "offsets": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2619,
+      "history_resets": 98,
+      "minimum_stock": [
+        45
+      ],
+      "latest_fill_delay": 5
+    },
+    {
+      "seed": 981508,
+      "outlets": 5,
+      "shared_receiver": true,
+      "lengths": [
+        32,
+        9,
+        48,
+        45,
+        42
+      ],
+      "offsets": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2279,
+      "history_resets": 95,
+      "minimum_stock": [
+        45
+      ],
+      "latest_fill_delay": 5
+    },
+    {
+      "seed": 981509,
+      "outlets": 5,
+      "shared_receiver": true,
+      "lengths": [
+        6,
+        12,
+        22,
+        26,
+        28
+      ],
+      "offsets": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2481,
+      "history_resets": 82,
+      "minimum_stock": [
+        45
+      ],
+      "latest_fill_delay": 5
+    },
+    {
+      "seed": 981600,
+      "outlets": 6,
+      "shared_receiver": false,
+      "lengths": [
+        30,
+        8,
+        9,
+        42,
+        17,
+        36
+      ],
+      "offsets": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "spread": 1,
+      "rounds": 100,
+      "steps": 2298,
+      "history_resets": 81,
+      "minimum_stock": [
+        49,
+        49,
+        49,
+        49,
+        49,
+        49
+      ],
+      "latest_fill_delay": 6
+    },
+    {
+      "seed": 981601,
+      "outlets": 6,
+      "shared_receiver": false,
+      "lengths": [
+        18,
+        18,
+        27,
+        29,
+        38,
+        3
+      ],
+      "offsets": [
+        0,
+        1,
+        1,
+        1,
+        0,
+        0
+      ],
+      "spread": 1,
+      "rounds": 100,
+      "steps": 2410,
+      "history_resets": 88,
+      "minimum_stock": [
+        49,
+        49,
+        49,
+        49,
+        49,
+        49
+      ],
+      "latest_fill_delay": 6
+    },
+    {
+      "seed": 981602,
+      "outlets": 6,
+      "shared_receiver": false,
+      "lengths": [
+        41,
+        20,
+        37,
+        20,
+        46,
+        41
+      ],
+      "offsets": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "spread": 1,
+      "rounds": 100,
+      "steps": 2694,
+      "history_resets": 105,
+      "minimum_stock": [
+        49,
+        49,
+        49,
+        49,
+        49,
+        49
+      ],
+      "latest_fill_delay": 6
+    },
+    {
+      "seed": 981603,
+      "outlets": 6,
+      "shared_receiver": false,
+      "lengths": [
+        19,
+        16,
+        29,
+        1,
+        36,
+        20
+      ],
+      "offsets": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        1
+      ],
+      "spread": 1,
+      "rounds": 100,
+      "steps": 2622,
+      "history_resets": 113,
+      "minimum_stock": [
+        49,
+        49,
+        49,
+        49,
+        49,
+        49
+      ],
+      "latest_fill_delay": 6
+    },
+    {
+      "seed": 981604,
+      "outlets": 6,
+      "shared_receiver": false,
+      "lengths": [
+        41,
+        24,
+        10,
+        32,
+        9,
+        35
+      ],
+      "offsets": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "spread": 1,
+      "rounds": 100,
+      "steps": 2345,
+      "history_resets": 80,
+      "minimum_stock": [
+        49,
+        49,
+        49,
+        49,
+        49,
+        49
+      ],
+      "latest_fill_delay": 6
+    },
+    {
+      "seed": 981605,
+      "outlets": 6,
+      "shared_receiver": false,
+      "lengths": [
+        32,
+        29,
+        12,
+        30,
+        45,
+        24
+      ],
+      "offsets": [
+        0,
+        0,
+        1,
+        0,
+        1,
+        0
+      ],
+      "spread": 1,
+      "rounds": 100,
+      "steps": 2705,
+      "history_resets": 85,
+      "minimum_stock": [
+        49,
+        49,
+        49,
+        49,
+        49,
+        49
+      ],
+      "latest_fill_delay": 6
+    },
+    {
+      "seed": 981606,
+      "outlets": 6,
+      "shared_receiver": false,
+      "lengths": [
+        34,
+        24,
+        2,
+        3,
+        6,
+        1
+      ],
+      "offsets": [
+        1,
+        0,
+        1,
+        0,
+        0,
+        1
+      ],
+      "spread": 1,
+      "rounds": 100,
+      "steps": 2466,
+      "history_resets": 91,
+      "minimum_stock": [
+        49,
+        49,
+        49,
+        49,
+        49,
+        49
+      ],
+      "latest_fill_delay": 6
+    },
+    {
+      "seed": 981607,
+      "outlets": 6,
+      "shared_receiver": false,
+      "lengths": [
+        30,
+        8,
+        24,
+        24,
+        15,
+        20
+      ],
+      "offsets": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "spread": 1,
+      "rounds": 100,
+      "steps": 2494,
+      "history_resets": 87,
+      "minimum_stock": [
+        49,
+        49,
+        49,
+        49,
+        49,
+        49
+      ],
+      "latest_fill_delay": 6
+    },
+    {
+      "seed": 981608,
+      "outlets": 6,
+      "shared_receiver": false,
+      "lengths": [
+        1,
+        44,
+        35,
+        7,
+        41,
+        8
+      ],
+      "offsets": [
+        0,
+        0,
+        0,
+        1,
+        1,
+        1
+      ],
+      "spread": 1,
+      "rounds": 100,
+      "steps": 2311,
+      "history_resets": 85,
+      "minimum_stock": [
+        49,
+        49,
+        49,
+        49,
+        49,
+        49
+      ],
+      "latest_fill_delay": 6
+    },
+    {
+      "seed": 981609,
+      "outlets": 6,
+      "shared_receiver": false,
+      "lengths": [
+        22,
+        8,
+        42,
+        27,
+        27,
+        12
+      ],
+      "offsets": [
+        0,
+        1,
+        1,
+        0,
+        1,
+        1
+      ],
+      "spread": 1,
+      "rounds": 100,
+      "steps": 1975,
+      "history_resets": 68,
+      "minimum_stock": [
+        49,
+        49,
+        49,
+        49,
+        49,
+        49
+      ],
+      "latest_fill_delay": 6
+    },
+    {
+      "seed": 981600,
+      "outlets": 6,
+      "shared_receiver": true,
+      "lengths": [
+        30,
+        8,
+        9,
+        42,
+        17,
+        36
+      ],
+      "offsets": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2382,
+      "history_resets": 86,
+      "minimum_stock": [
+        44
+      ],
+      "latest_fill_delay": 6
+    },
+    {
+      "seed": 981601,
+      "outlets": 6,
+      "shared_receiver": true,
+      "lengths": [
+        18,
+        18,
+        27,
+        29,
+        38,
+        3
+      ],
+      "offsets": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2399,
+      "history_resets": 88,
+      "minimum_stock": [
+        44
+      ],
+      "latest_fill_delay": 6
+    },
+    {
+      "seed": 981602,
+      "outlets": 6,
+      "shared_receiver": true,
+      "lengths": [
+        41,
+        20,
+        37,
+        20,
+        46,
+        41
+      ],
+      "offsets": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2860,
+      "history_resets": 105,
+      "minimum_stock": [
+        44
+      ],
+      "latest_fill_delay": 6
+    },
+    {
+      "seed": 981603,
+      "outlets": 6,
+      "shared_receiver": true,
+      "lengths": [
+        19,
+        16,
+        29,
+        1,
+        36,
+        20
+      ],
+      "offsets": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2542,
+      "history_resets": 112,
+      "minimum_stock": [
+        44
+      ],
+      "latest_fill_delay": 6
+    },
+    {
+      "seed": 981604,
+      "outlets": 6,
+      "shared_receiver": true,
+      "lengths": [
+        41,
+        24,
+        10,
+        32,
+        9,
+        35
+      ],
+      "offsets": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2265,
+      "history_resets": 77,
+      "minimum_stock": [
+        44
+      ],
+      "latest_fill_delay": 6
+    },
+    {
+      "seed": 981605,
+      "outlets": 6,
+      "shared_receiver": true,
+      "lengths": [
+        32,
+        29,
+        12,
+        30,
+        45,
+        24
+      ],
+      "offsets": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2734,
+      "history_resets": 85,
+      "minimum_stock": [
+        44
+      ],
+      "latest_fill_delay": 6
+    },
+    {
+      "seed": 981606,
+      "outlets": 6,
+      "shared_receiver": true,
+      "lengths": [
+        34,
+        24,
+        2,
+        3,
+        6,
+        1
+      ],
+      "offsets": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2441,
+      "history_resets": 91,
+      "minimum_stock": [
+        44
+      ],
+      "latest_fill_delay": 6
+    },
+    {
+      "seed": 981607,
+      "outlets": 6,
+      "shared_receiver": true,
+      "lengths": [
+        30,
+        8,
+        24,
+        24,
+        15,
+        20
+      ],
+      "offsets": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2409,
+      "history_resets": 84,
+      "minimum_stock": [
+        44
+      ],
+      "latest_fill_delay": 6
+    },
+    {
+      "seed": 981608,
+      "outlets": 6,
+      "shared_receiver": true,
+      "lengths": [
+        1,
+        44,
+        35,
+        7,
+        41,
+        8
+      ],
+      "offsets": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2303,
+      "history_resets": 83,
+      "minimum_stock": [
+        44
+      ],
+      "latest_fill_delay": 6
+    },
+    {
+      "seed": 981609,
+      "outlets": 6,
+      "shared_receiver": true,
+      "lengths": [
+        22,
+        8,
+        42,
+        27,
+        27,
+        12
+      ],
+      "offsets": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "spread": 0,
+      "rounds": 100,
+      "steps": 2054,
+      "history_resets": 75,
+      "minimum_stock": [
+        44
+      ],
+      "latest_fill_delay": 6
+    }
+  ],
+  "case_count": 120,
+  "steps": 293441,
+  "all_cross_equal": true,
+  "all_rounds_refilled_within_n_plus_spread": true,
+  "scope": "local_fixed_offset_calendar_not_factory_proof"
+}

@@ -1,0 +1,9 @@
+{
+  "batch_cases": 600,
+  "group_cases": 1200,
+  "paired_step_states": 624000,
+  "largest_batch_all_interval_gap": 2,
+  "crt_cases": 180,
+  "normalized_state_sha256": "1002f2f544ac5f8d9131071516e37d52d48e4f366bc62128d43596ab7fa78728",
+  "scope": "Local outlet interfaces; random batch schedules are a relaxation, not factory feasibility."
+}

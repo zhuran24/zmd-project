@@ -1,0 +1,75 @@
+{
+  "exhaustive": [
+    {
+      "offsets": [
+        0
+      ],
+      "states": 1,
+      "transitions": 2,
+      "largest_completion_offset": 1,
+      "deadline": 1
+    },
+    {
+      "offsets": [
+        0,
+        0
+      ],
+      "states": 2,
+      "transitions": 10,
+      "largest_completion_offset": 2,
+      "deadline": 2
+    },
+    {
+      "offsets": [
+        0,
+        0,
+        0
+      ],
+      "states": 6,
+      "transitions": 102,
+      "largest_completion_offset": 3,
+      "deadline": 3
+    },
+    {
+      "offsets": [
+        0,
+        2,
+        2
+      ],
+      "states": 2,
+      "transitions": 22,
+      "largest_completion_offset": 4,
+      "deadline": 5
+    },
+    {
+      "offsets": [
+        0,
+        0,
+        2
+      ],
+      "states": 2,
+      "transitions": 22,
+      "largest_completion_offset": 3,
+      "deadline": 5
+    },
+    {
+      "offsets": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "states": 720,
+      "transitions": 1885680,
+      "largest_completion_offset": 6,
+      "deadline": 6
+    }
+  ],
+  "two_encoding_cases": 96,
+  "two_encoding_steps": 189278,
+  "all_equal": true,
+  "max_tested_route_length": 101,
+  "scope": "local arbitrary consumption/priority schedules, not geometric factory certificates"
+}

@@ -1,0 +1,22 @@
+{
+  "constants": {
+    "maximum_loop_offset": 177,
+    "arbitrary_start_offset": 150,
+    "normal_start_offset": 176,
+    "K_output_floor": {
+      "2": 48,
+      "3": 47
+    },
+    "three_outlet_wait_steps": 2,
+    "cooldown_steps": 40
+  },
+  "iterated_epoch_bounds": 28749,
+  "readiness_patterns": 321,
+  "scheduling_states": 4234,
+  "latest_last_send_offset": 7,
+  "methods": [
+    "weighted state enumeration versus component sum",
+    "iterated min map versus closed expression",
+    "all work-conserving choices versus sorted-release counting"
+  ]
+}

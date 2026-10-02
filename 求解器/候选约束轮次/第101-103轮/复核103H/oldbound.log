@@ -1,0 +1,3 @@
+{"single_clear_search": {"cases": 20000, "breaks": 232}, "greedy_clear_stress": {"cases": 1500, "viol_cum": 0, "viol_half": 0}}
+{'cfg': {'k': 2, 'n': 0, 'L': [1, 1, 1, 1], 'Bmode': 'adv'}, 'offline_before_step': 6, 'L': 2, 'phi_s': '111/2', 'old_bound': '55', 'clear_sends': [(1, 1), (9, 1)], 'clear_phi_end': '109/2', 'clear_dual_ok': True, 'keep_sends': [(1, 1), (9, 0)], 'keep_phi_min': '55', 'keep_dual_ok': True, 'cum_bound_m1': '109/2'}
+{'belts': {'CA': [None], 'AC': [None], 'CB': [None]}, 'm': {'C': {'inp': 47, 'out': 1, 'cache': None}, 'A': {'inp': 6, 'out': 1, 'cache': 8}}, 'connC': [1, 0], 'lastC': [-22.0, -22.1], 'connK': [], 'lastK': []}

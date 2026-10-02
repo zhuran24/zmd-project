@@ -1,0 +1,19 @@
+{
+  "machines": {
+    "精炼炉": 51,
+    "粉碎机": 71,
+    "研磨机": 32,
+    "配件机": 6,
+    "塑形机": 6,
+    "封装机": 3,
+    "灌装机": 4,
+    "采种机": 19,
+    "种植机": 38
+  },
+  "machine_count": 230,
+  "body_area": 3567,
+  "routes": 325,
+  "planar_necessary_test": true,
+  "source_units": 47,
+  "core_ore_routes": 6
+}

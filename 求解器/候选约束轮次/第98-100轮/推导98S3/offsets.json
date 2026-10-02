@@ -1,0 +1,147 @@
+[
+ {
+  "seed": 0,
+  "init": "starve",
+  "fast_route_offset": {
+   "0": 30
+  },
+  "slow_refill_after_filler3_start": {
+   "2": 36,
+   "10": 36,
+   "18": 36,
+   "26": 34,
+   "34": 34
+  },
+  "fast_refill_gaps": {
+   "8": 3570
+  },
+  "filler3_starts_mod8": [
+   1,
+   3
+  ],
+  "compared_steps": 960
+ },
+ {
+  "seed": 0,
+  "init": "dense",
+  "fast_route_offset": {
+   "1": 21,
+   "0": 1,
+   "2": 6,
+   "3": 1,
+   "4": 1
+  },
+  "slow_refill_after_filler3_start": {
+   "2": 36,
+   "10": 36,
+   "18": 36,
+   "26": 34,
+   "34": 34
+  },
+  "fast_refill_gaps": {
+   "8": 3570
+  },
+  "filler3_starts_mod8": [
+   0,
+   7
+  ],
+  "compared_steps": 960
+ },
+ {
+  "seed": 1,
+  "init": "starve",
+  "fast_route_offset": {
+   "0": 30
+  },
+  "slow_refill_after_filler3_start": {
+   "2": 36,
+   "10": 36,
+   "18": 36,
+   "26": 36,
+   "34": 36
+  },
+  "fast_refill_gaps": {
+   "8": 3570
+  },
+  "filler3_starts_mod8": [
+   2,
+   6
+  ],
+  "compared_steps": 960
+ },
+ {
+  "seed": 1,
+  "init": "dense",
+  "fast_route_offset": {
+   "6": 1,
+   "1": 16,
+   "7": 2,
+   "2": 6,
+   "3": 3,
+   "5": 1,
+   "4": 1
+  },
+  "slow_refill_after_filler3_start": {
+   "2": 36,
+   "10": 36,
+   "18": 36,
+   "26": 36,
+   "34": 36
+  },
+  "fast_refill_gaps": {
+   "8": 3570
+  },
+  "filler3_starts_mod8": [
+   0,
+   1
+  ],
+  "compared_steps": 960
+ },
+ {
+  "seed": 2,
+  "init": "starve",
+  "fast_route_offset": {
+   "0": 30
+  },
+  "slow_refill_after_filler3_start": {
+   "2": 36,
+   "10": 34,
+   "18": 34,
+   "26": 34,
+   "34": 34
+  },
+  "fast_refill_gaps": {
+   "8": 3570
+  },
+  "filler3_starts_mod8": [
+   0
+  ],
+  "compared_steps": 960
+ },
+ {
+  "seed": 2,
+  "init": "dense",
+  "fast_route_offset": {
+   "1": 23,
+   "7": 2,
+   "3": 2,
+   "2": 2,
+   "4": 1
+  },
+  "slow_refill_after_filler3_start": {
+   "2": 36,
+   "10": 36,
+   "18": 36,
+   "26": 36,
+   "34": 34
+  },
+  "fast_refill_gaps": {
+   "8": 3570
+  },
+  "filler3_starts_mod8": [
+   6,
+   7
+  ],
+  "compared_steps": 960
+ }
+]

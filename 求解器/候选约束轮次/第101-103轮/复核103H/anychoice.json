@@ -1,0 +1,27 @@
+{
+ "k2_batch_anychoice": {
+  "states": 490,
+  "violation": false,
+  "max_e": 2
+ },
+ "k3_batch_anychoice": {
+  "states": 2440,
+  "violation": false,
+  "max_e": 2
+ },
+ "k4_batch_anychoice": {
+  "states": 11947,
+  "violation": false,
+  "max_e": 2
+ },
+ "k2_single_anychoice_control": {
+  "states": 908,
+  "violation": true,
+  "max_e": 3
+ },
+ "k3_single_anychoice_control": {
+  "states": 8208,
+  "violation": true,
+  "max_e": 3
+ }
+}

@@ -1,0 +1,45 @@
+{
+  "seed": 9951,
+  "maxlen": 1,
+  "rounds": 2,
+  "trace": [
+    {
+      "round": 1,
+      "step": 1761,
+      "weight": 115998,
+      "all_nonfinal_caches_done": false
+    },
+    {
+      "round": 2,
+      "step": 3826,
+      "weight": 117376,
+      "all_nonfinal_caches_done": true
+    }
+  ],
+  "manual_operations": 1433,
+  "startup_steps": 3912,
+  "total_steps_compared": 4912,
+  "manual_added": {
+    "蓝铁矿": 1225,
+    "蓝铁块": 3434,
+    "源矿": 402,
+    "蓝铁粉末": 2584,
+    "砂叶粉末": 2298,
+    "致密蓝铁粉末": 1717,
+    "源石粉末": 1368,
+    "钢块": 1467,
+    "荞花粉末": 611,
+    "钢制零件": 456,
+    "致密源石粉末": 609,
+    "钢质瓶": 506,
+    "细磨荞花粉末": 506,
+    "砂叶": 2626,
+    "砂叶种子": 1989,
+    "荞花": 1212,
+    "荞花种子": 918
+  },
+  "weight_upper": 117376,
+  "exact_prepared_state": true,
+  "first_1000_steps_contract": true,
+  "seconds": 3.769
+}

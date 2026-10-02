@@ -1,0 +1,1 @@
+{"cases": 125, "all_ok": true, "controls": [[[1, 1, 1, 1, 1, 1], 5, false], [[1, 1, 1, 1, 1, 1], -1, false]], "max_states": 8005687, "total_states": 21224875, "secs": 213.3}

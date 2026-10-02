@@ -1,0 +1,14 @@
+{
+  "status": "passed",
+  "report": "/home/zhuran24/zmd-research-fresh/求解器/候选约束轮次/第101-103轮/复核102H.md",
+  "report_bytes": 33694,
+  "report_lines": 326,
+  "input_hashes_checked": 16,
+  "links_checked": 43,
+  "python_files_parsed": 11,
+  "verdict_count": 8,
+  "reader_review": "reader_review.md",
+  "scope": "Eight full H candidates; old counterexamples are not counterexamples to the eight new candidates.",
+  "runtime": "All computation scripts executed individually; run_all.py is a serial reproduction entrypoint.",
+  "output_policy": "Only 复核102H.md and files below 复核102H were written; no git, cargo, sim2 or foreign code imports."
+}

@@ -1,0 +1,50 @@
+[
+ {
+  "start": 12160,
+  "end": 12640,
+  "period": 480,
+  "delivery": {
+   "精选荞愈胶囊": 33,
+   "高容谷地电池": 36
+  },
+  "ore_min": 60,
+  "ore_max": 60,
+  "ok": true,
+  "compared_steps": 640,
+  "seed": 2000,
+  "kind": "forced",
+  "family": "L16"
+ },
+ {
+  "start": 12056,
+  "end": 12536,
+  "period": 480,
+  "delivery": {
+   "精选荞愈胶囊": 33,
+   "高容谷地电池": 36
+  },
+  "ore_min": 60,
+  "ore_max": 60,
+  "ok": true,
+  "compared_steps": 536,
+  "seed": 2001,
+  "kind": "forced",
+  "family": "L16"
+ },
+ {
+  "start": 12224,
+  "end": 12704,
+  "period": 480,
+  "delivery": {
+   "高容谷地电池": 36,
+   "精选荞愈胶囊": 33
+  },
+  "ore_min": 60,
+  "ore_max": 60,
+  "ok": true,
+  "compared_steps": 704,
+  "seed": 2002,
+  "kind": "forced",
+  "family": "L16"
+ }
+]
